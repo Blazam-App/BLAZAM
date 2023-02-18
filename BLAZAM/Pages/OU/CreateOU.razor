@@ -1,0 +1,153 @@
+﻿@page "/ou/create"
+@inherits AppComponent
+@attribute [Authorize]
+<Row>
+    <Steps @ref=Steps NavigationAllowed=AllowStep SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged">
+        <Items>
+            <Step Index=1 Name="stepConfigure" Completed=@(newOU!=null)>Create</Step>
+
+
+            <Step Name="stepConfirm">
+                <Marker>
+                    <Icon Name="IconName.Flag" />
+                </Marker>
+                <Caption>
+                    Confirm
+                </Caption>
+            </Step>
+
+
+
+        </Items>
+
+        <Content>
+
+            <StepPanel Name="stepConfigure">
+                <Column Margin=Margin.IsAuto.OnX ColumnSize="ColumnSize.Is12.OnMobile.Is10.OnTablet.Is8.OnDesktop.Is6.OnWidescreen.Is4.OnFullHD">
+
+                    @if (selectedStep == "stepConfigure")
+                    {
+                        <Field>
+                            <FieldLabel>Parent Organizational Unit</FieldLabel>
+                            <FieldBody>
+                                <OUTreeView SelectedOUChanged="OUSelected">
+                                    <NodeContent>
+                                        @context.Name
+                                    </NodeContent>
+                                </OUTreeView>
+                            </FieldBody>
+                        </Field>
+
+                        <Field>
+                            <FieldLabel>Organizational Unit Name</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text=@newOUName />
+
+                            </FieldBody>
+                        </Field>
+                        <Button Color="Color.Primary" Clicked="CreateNewOU">Next</Button>
+
+
+                    }
+                </Column>
+            </StepPanel>
+
+
+
+            <StepPanel Name="stepConfirm">
+                <Column Margin=Margin.IsAuto.OnX ColumnSize="ColumnSize.Is12.OnMobile.Is10.OnTablet.Is8.OnDesktop.Is6.OnWidescreen.Is4.OnFullHD">
+
+                    @if (selectedStep == "stepConfirm")
+                    {
+                        <ConfirmNewOU OU="@newOU" Confirmed="UserCreated" FieldColumnSize="ColumnSize.Is12" />
+                    }
+                </Column>
+
+            </StepPanel>
+
+        </Content>
+
+
+    </Steps>
+    <Column ColumnSize="ColumnSize.Is1.OnTablet.Is2.OnDesktop.Is3.OnWidescreen.Is4.OnWidescreen" />
+
+</Row>
+
+
+
+@code {
+    Steps? Steps;
+
+
+    string selectedStep = "stepConfigure";
+
+    private Task OnSelectedStepChanged(string name)
+    {
+        selectedStep = name;
+
+        return Task.CompletedTask;
+    }
+
+
+
+    bool custom = false;
+
+    string newOUName;
+    bool collapseVisible = false;
+    List<DirectoryTemplate> templates;
+    DirectoryTemplate? selectedTemplate;
+    IADOrganizationalUnit parentOU;
+    IADOrganizationalUnit? newOU;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        templates = await Context.DirectoryTemplates.ToListAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    bool AllowStep(StepNavigationContext context)
+    {
+        switch (context.NextStepName)
+        {
+            case "stepConfigure":
+                return true;
+            case "stepConfirm":
+
+                return newOU != null;
+        }
+        return false;
+    }
+    async void OUSelected(IADOrganizationalUnit ou)
+    {
+        if (parentOU == null)
+        {
+            parentOU = ou;
+            return;
+        }
+        parentOU = ou;
+
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    async void CreateNewOU()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        newOU = parentOU.CreateOU(newOUName);
+       
+
+
+        selectedStep = "stepConfirm";
+
+
+        LoadingData = true;
+
+        await InvokeAsync(StateHasChanged);
+    }
+    async Task UserCreated(IADUser user)
+    {
+
+    }
+}

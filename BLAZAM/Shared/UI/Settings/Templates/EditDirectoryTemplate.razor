@@ -1,0 +1,357 @@
+﻿@using System.Text.RegularExpressions;
+@inherits ValidatedForm
+
+<Validations StatusChanged="OnValidation" Mode="ValidationMode.Auto" @ref=validations>
+    <EditForm OnSubmit="SaveTemplate" Model="DirectoryTemplate">
+        <Row Width="Width.Is100" Margin="Margin.Is2">
+            <Validation>
+                <Field>
+                    <FieldLabel>@SettingsLocalization["Template Name"]</FieldLabel>
+                    <FieldBody>
+                        <TextEdit @bind-Text=DirectoryTemplate.Name>
+                            <Feedback>
+                                <ValidationError />
+                            </Feedback>
+                        </TextEdit>
+                    </FieldBody>
+                </Field>
+
+            </Validation>
+            <Field>
+                <FieldLabel>@SettingsLocalization["Template Category"]</FieldLabel>
+                <FieldBody>
+                    <Autocomplete FreeTyping
+                                  @bind-Search=DirectoryTemplate.Category
+                                  TItem=string
+                                  TValue="string"
+                                  Data="Context.DirectoryTemplates.Select(t=>t.Category).Distinct()" />
+                </FieldBody>
+            </Field>
+            <Card>
+                Variables:
+                <Row Width="Width.Is100">
+                    <Column ColumnSize="ColumnSize.Is6.OnTablet">
+                        <Code>{fn}</Code>:First Name<br />
+                        <Code>{fi}</Code>:First Initial<br />
+                        <Code>{mn}</Code>:Middle Name<br />
+                    </Column>
+                    <Column ColumnSize="ColumnSize.Is6.OnTablet">
+
+                        <Code>{mi}</Code>:Middle Initial<br />
+                        <Code>{ln}</Code>:Last Name<br />
+                        <Code>{li}</Code>:Last Initial<br />
+                    </Column>
+                    <Column ColumnSize="ColumnSize.Is6.OnTablet">
+
+                        <Code>{AlphaNum[:u/l]}</Code>:Random letter or number (optional force uppercase/lowercase)<br />
+                        <Code>{Alpha[:u/l]}</Code>:Random letter (optional force uppercase/lowercase)<br />
+                        <Code>{Num}</Code>:Random number<br />
+                    </Column>
+
+                </Row>
+            </Card>
+            <Section Padding=Padding.Is0 Title="Account and Name">
+                
+                   
+                    <Validation>
+                        <Field ColumnSize="ColumnSize.Is6.OnTablet">
+                            <FieldLabel>Username Format</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text=DirectoryTemplate.UsernameFormula>
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field>
+                            <FieldLabel>Display Name Format</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text=DirectoryTemplate.DisplayNameFormula>
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+
+                    <Field>
+                        <FieldLabel>Password</FieldLabel>
+                        <FieldBody>
+                            <TextEdit Placeholder="{AlphaNum}{Alpha:U}{Alpha:L}{Num}{Num}{Num}" @bind-Text=DirectoryTemplate.PasswordFormula>
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+
+
+
+            </Section>
+            <Section Padding=Padding.Is0 Title="Fields">
+                <Column ColumnSize="ColumnSize.Is8">
+                    <Help Display="Display.InlineFlex">
+                        Fields left blank will be editable by the user on creation.
+                        Fields with values will not be editable.
+                    </Help>
+                </Column>
+                <Column ColumnSize="ColumnSize.Is4">
+                    <Dropdown Display="Display.InlineFlex">
+                        <DropdownToggle Color="Color.Primary">
+                            Add Field
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            @foreach (var field in fields.OrderBy(f => f.DisplayName))
+                            {
+                                @if (field.FieldName != "samaccountname" &&
+                               field.FieldName != "userPrincipalName" &&
+
+                               field.FieldName != "sn" &&
+                               field.FieldName != "givenname" &&
+                               field.FieldName != "middleName" &&
+                               field.FieldName != "displayName" &&
+                               field.FieldName != "cn" &&
+                               field.FieldName != "site" &&
+                               field.FieldName != "distinguishedName" &&
+                               field.FieldName != "memberOf" &&
+                               field.FieldName != "objectSID" &&
+                               !DirectoryTemplate.FieldValues.Any(f => f.Field.Equals(field)) &&
+                               field.IsActionAppropriateForObject(DirectoryTemplate.ObjectType))
+                                {
+                                    <DropdownItem Clicked=@(()=>{DirectoryTemplate.FieldValues.Add(new(){ Field=field});}) Color="Color.Secondary">@field.DisplayName</DropdownItem>
+
+                                }
+
+                            }
+
+                        </DropdownMenu>
+                    </Dropdown>
+                </Column>
+
+
+                @foreach (var field in DirectoryTemplate.FieldValues.OrderBy(fv => fv.Field.DisplayName))
+                {
+                    <Field>
+                        <FieldLabel>@field.Field.DisplayName</FieldLabel>
+                        <Row>
+                            <Column ColumnSize="ColumnSize.Is11">
+
+                                <FieldBody>
+                                    <TextEdit @bind-Text=field.Value />
+                                </FieldBody>
+                            </Column>
+                            <Column ColumnSize="ColumnSize.Is1">
+                                <AppCloseButton Clicked=@(()=>{DirectoryTemplate.FieldValues.Remove(field);InvokeAsync(StateHasChanged);}) />
+                            </Column>
+                        </Row>
+                    </Field>
+                }
+            </Section>
+            <Field>
+                <FieldLabel>@SettingsLocalization["OU"]: @SelectedOU?.CanonicalName</FieldLabel>
+                @if (SelectedOU != null)
+                {
+                    <FieldBody>
+                        <BLAZAM.Server.Shared.UI.OU.OUTreeView StartRootExpanded=false @bind-SelectedOU=@SelectedOU @bind-StartingSelectedOU=@SelectedOU>
+                            <NodeContent Context="ouContext">
+                                @ouContext.Name
+                            </NodeContent>
+                        </BLAZAM.Server.Shared.UI.OU.OUTreeView>
+
+                    </FieldBody>
+                }
+
+            </Field>
+            <Field>
+                <FieldLabel>@SettingsLocalization["Groups"]</FieldLabel>
+
+                <FieldBody>
+                    <ADGroupAutoComplete Multiple @bind-SelectedGroups="@SelectedGroups" />
+
+                </FieldBody>
+            </Field>
+        </Row>
+
+        @{
+            string buttonText = "";
+            @if (DirectoryTemplate.DirectoryTemplateId == 0)
+            {
+                buttonText = "Add this template";
+            }
+            else
+            {
+                buttonText = "Save this template";
+            }
+        }
+        <Button Disabled=saveDisabled Color="Color.Success" Type="ButtonType.Submit">@buttonText</Button>
+        @if (DirectoryTemplate.DirectoryTemplateId == 0)
+        {
+            <Button Color="Color.Warning" Clicked="@(()=>{ DirectoryTemplate=null;})">Cancel</Button>
+
+        }
+    </EditForm>
+</Validations>
+
+
+@code {
+    bool ouCollapseVisible = true;
+    Validations? validations;
+    List<ActiveDirectoryField> fields = new();
+
+    List<TemplateVariable> usernameVariables = new List<TemplateVariable>()
+    {
+
+        new TemplateVariable(){DisplayName="First Name", Value="{fn}"},
+        new TemplateVariable(){DisplayName="First Initial", Value="{fi}"},
+        new TemplateVariable(){DisplayName="Middle Name", Value="{mn}"},
+        new TemplateVariable(){DisplayName="Middle Initial", Value="{mi}"},
+        new TemplateVariable(){DisplayName="Last Name", Value="{ln}"},
+        new TemplateVariable(){DisplayName="Last Initial", Value="{li}"},
+
+    };
+
+    List<string> selectedUsernameFormatValues { get; set; } = new();
+
+
+
+
+
+    public DirectoryTemplate _template;
+
+    [Parameter]
+    public DirectoryTemplate DirectoryTemplate
+    {
+        get => _template; set
+        {
+            if (_template == value) return;
+            _template = value;
+            LoadData();
+            DirectoryTemplateChanged.InvokeAsync(value);
+
+        }
+    }
+
+    [Parameter]
+    public EventCallback<DirectoryTemplate> DirectoryTemplateChanged { get; set; }
+
+
+    async Task LoadData()
+    {
+        if (Context == null) await OnInitializedAsync();
+        var matching = await Context.DirectoryTemplates.Where(dt => dt.DirectoryTemplateId == DirectoryTemplate.DirectoryTemplateId).FirstOrDefaultAsync();
+        if (matching != null)
+            DirectoryTemplate = matching;
+        SelectedOU = (await Directory.OUs.FindOuByStringAsync(DirectoryTemplate.ParentOU)).FirstOrDefault();
+        if (SelectedOU == null)
+        {
+            SelectedOU = await Directory.OUs.GetApplicationRootOU();
+        }
+        fields = await Context.ActiveDirectoryFields.ToListAsync();
+
+        await RefreshGroups();
+        InvokeAsync(StateHasChanged);
+
+    }
+
+
+
+
+    IADOrganizationalUnit SelectedOU;
+    List<IADGroup> SelectedGroups = new();
+
+    async Task RefreshGroups()
+    {
+        List<IADGroup> groups = new();
+        if (DirectoryTemplate != null)
+        {
+            foreach (var sid in DirectoryTemplate.AssignedGroupSids)
+            {
+                groups.Add(Directory.Groups.FindGroupBySID(sid.GroupSid));
+            }
+        }
+        SelectedGroups = groups;
+    }
+    async Task SaveTemplate()
+    {
+
+
+        DirectoryTemplate.ParentOU = SelectedOU.DN;
+        DirectoryTemplate.AssignedGroupSids.Clear();
+        foreach (var group in SelectedGroups)
+        {
+            var existing = Context.DirectoryTemplateGroups.Where(g => g.GroupSid == group.SID.ToSidString()).FirstOrDefault();
+            if (existing == null)
+                existing = new DirectoryTemplateGroup() { GroupSid = group.SID.ToSidString() };
+            DirectoryTemplate.AssignedGroupSids.Add(existing);
+        }
+        List<DirectoryTemplateFieldValue> replaceValues = new();
+        foreach (var field in DirectoryTemplate.FieldValues)
+        {
+            var trackedField = Context.ActiveDirectoryFields.Where(f => f.Equals(field.Field)).FirstOrDefault();
+            if (trackedField != null)
+            {
+                var replaceWith = new DirectoryTemplateFieldValue
+                    {
+                        Field = trackedField,
+                        Value = field.Value
+                    };
+                replaceValues.Add(replaceWith);
+            }
+        }
+        DirectoryTemplate.FieldValues = replaceValues;
+
+        if (DirectoryTemplate.DirectoryTemplateId == 0)
+        {
+            try
+            {
+                await Context.DirectoryTemplates.AddAsync(DirectoryTemplate);
+
+                var result = await Context.SaveChangesAsync();
+                if (result > 0)
+                {
+                    NotificationService.Success(null, DirectoryTemplate.Name + " was added.");
+                    // DirectoryTemplate = new();
+
+                }
+            }
+            catch (DbUpdateException ex)
+            {
+                switch (ex.InnerException?.HResult)
+                {
+                    case -2146232060:
+                        NotificationService.Error("Each template must be uniquely named.", "Duplicate Template Name");
+
+                        break;
+                }
+            }
+            catch (SqlException ex)
+            {
+
+            }
+        }
+        else
+        {
+            var result = await Context.SaveChangesAsync();
+            if (result > 0)
+            {
+                NotificationService.Success("Template changes saved");
+            }
+            else
+            {
+                NotificationService.Warning("No changes");
+
+            }
+        }
+
+    }
+
+    class TemplateVariable
+    {
+        public string DisplayName { get; set; }
+        public string Value { get; set; }
+    }
+}

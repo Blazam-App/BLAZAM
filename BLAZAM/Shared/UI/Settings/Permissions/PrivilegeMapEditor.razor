@@ -1,0 +1,177 @@
+@inherits ValidatedForm
+@inject IDbContextFactory<DatabaseContext> DbFactory
+
+<Form @onsubmit="@Save">
+    <Validations Model="Map" Mode="ValidationMode.Auto">
+        <Field Horizontal>
+            <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["User Groups"]</FieldLabel>
+            <FieldBody ColumnSize="ColumnSize.Is10">
+                <Validation @ref="PrivValidation">
+                    @if (!ReadOnly)
+                    {
+                        <Autocomplete TItem="PrivilegeLevel"
+                                  TValue="PrivilegeLevel"
+                                  FreeTyping=false
+                                  MinLength=-1
+                                  Data="@privilegeLevels"
+                                  TextField="@(( item ) => Directory.Groups.FindGroupBySID(item.GroupSID)?.GroupName)"
+                                  ValueField="@(( item ) => item)"
+                                  Placeholder=@SettingsLocalization["Choose or Search..."]
+                                  SelectionMode="AutocompleteSelectionMode.Checkbox"
+                                  CloseOnSelection="false"
+                                  @bind-SelectedValues="Map.PrivilegeLevels"
+                                  @bind-SelectedTexts="selectedPrivilegeLevelNames" />
+                        <ValidationError />
+                    }
+                    else
+                    {
+                        @if (selectedPrivilegeLevelNames != null)
+                        {
+                            @foreach (var name in selectedPrivilegeLevelNames)
+                            {
+                                <Button Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</Button>
+                            }
+                        }
+                    }
+
+                </Validation>
+
+            </FieldBody>
+        </Field>
+        <Field Horizontal>
+            <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["Access Levels"]</FieldLabel>
+            <FieldBody ColumnSize="ColumnSize.Is10">
+                <Validation @ref=AccValidation Validator="ValidationRule.IsNotEmpty">
+                    @if (!ReadOnly)
+                    {
+                        <Autocomplete TItem="AccessLevel"
+                                  TValue="AccessLevel"
+                                  FreeTyping=false
+                                  MinLength=-1
+                                  Data="@accessLevels"
+                                  TextField="@(( item ) => item.Name)"
+                                  ValueField="@(( item ) => item)"
+                                  Placeholder=@SettingsLocalization["Choose or Search..."]
+                                  SelectionMode="AutocompleteSelectionMode.Checkbox"
+                                  CloseOnSelection="false"
+                                  @bind-SelectedValues="Map.AccessLevels"
+                                  @bind-SelectedTexts="selectedAccessLevelNames"
+                                  Disabled=ReadOnly />
+                    }
+                    else
+                    {
+                        @if (selectedAccessLevelNames != null)
+                        {
+                            @foreach (var name in selectedAccessLevelNames)
+                            {
+                                <Button Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</Button>
+                            }
+                        }
+                    }
+
+                    <ValidationError />
+
+                </Validation>
+
+            </FieldBody>
+        </Field>
+        @if (!ReadOnly)
+        {
+            <Button Color=Color.Success Disabled=saveDisabled Type="ButtonType.Submit">Save Mapping</Button>
+        }
+    </Validations>
+    <AppCloseButton Clicked="DeleteMapping"/>
+</Form>
+@{
+    ValidateCheck();
+}
+@code {
+    PrivilegeMap _map;
+    [Parameter]
+    public PrivilegeMap Map
+    {
+        get => _map; set
+        {
+            if (_map == value) return;
+            _map = value;
+            RefreshData();
+
+
+        }
+    }
+    [Parameter]
+    public bool ReadOnly { get; set; } = false;
+
+    Validation? PrivValidation;
+    Validation? AccValidation;
+
+    List<AccessLevel> accessLevels;
+    List<PrivilegeLevel> privilegeLevels;
+    List<string> selectedAccessLevelNames;
+    List<string> selectedPrivilegeLevelNames;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Context.Attach(Map);
+
+        // RefreshData();
+    }
+    async Task RefreshData()
+    {
+        Context = await DbFactory.CreateDbContextAsync();
+        if (Context != null)
+        {
+            accessLevels = await Context.AccessLevels.ToListAsync();
+            privilegeLevels = await Context.PrivilegeLevel.Where(p => !p.IsSuperAdmin).ToListAsync();
+            if (Map.PrivilegeMapId != 0)
+            {
+                selectedAccessLevelNames = Map.AccessLevels.Select(a => a.Name).ToList();
+                selectedPrivilegeLevelNames = Map.PrivilegeLevels.Select(a => Directory.Groups.FindGroupBySID(a.GroupSID).GroupName).ToList();
+            }
+            await InvokeAsync(StateHasChanged);
+        }
+
+    }
+    async Task DeleteMapping()
+    {
+        if (Map.PrivilegeMapId == 0)
+        {
+            Map = null;
+        }
+
+        else
+        {
+            Context.PrivilegeMap.Remove(Map);
+            await Context.SaveChangesAsync();
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+    async Task Save()
+    {
+        if (Map.PrivilegeMapId == 0)
+            Context.PrivilegeMap.Add(Map);
+        var result = Context.SaveChanges();
+        await InvokeAsync(StateHasChanged);
+
+    }
+    async void ValidateCheck()
+    {
+        if (PrivValidation != null && !ReadOnly)
+        {
+            if (Map != null) { 
+            if (Map.PrivilegeLevels == null || Map.PrivilegeLevels?.Count < 1)
+                PrivValidation.Status = ValidationStatus.Error;
+            else
+                PrivValidation.Status = ValidationStatus.Success;
+            if (Map.AccessLevels == null || Map.AccessLevels?.Count < 1)
+                AccValidation.Status = ValidationStatus.Error;
+            else
+                AccValidation.Status = ValidationStatus.Success;
+            if (AccValidation.Status == ValidationStatus.Success && PrivValidation.Status == ValidationStatus.Success)
+                saveDisabled = false;
+            else
+                saveDisabled = true;
+        }
+    }
+    }
+}

@@ -1,0 +1,36 @@
+﻿@page "/audit"
+@attribute [Authorize(Roles = UserRoles.SuperAdmin)]
+
+@inherits AppComponent
+<h3>Audit</h3>
+<DataGrid TItem="CommonAuditLog"
+          Data="@auditEntries.OrderByDescending(ae=>ae.Timestamp)"
+          Responsive
+          Virtualize>
+    <DataGridCommandColumn />
+    <DataGridColumn Field="@nameof(CommonAuditLog.Id)" Caption="#" Sortable="false" />
+    <DataGridColumn Field="@nameof(CommonAuditLog.Timestamp)" Caption="Timestamp" />
+    <DataGridColumn Field="@nameof(CommonAuditLog.Username)" Caption="Username" />
+    <DataGridColumn Field="@nameof(CommonAuditLog.IpAddress)" Caption="IP" />
+    <DataGridColumn Field="@nameof(CommonAuditLog.Action)" Caption="Action" />
+    <DataGridColumn Field="@nameof(CommonAuditLog.Target)" Caption="Target" />
+    <DataGridColumn Field="@nameof(CommonAuditLog.BeforeAction)" Caption="Before" />
+    <DataGridColumn Field="@nameof(CommonAuditLog.AfterAction)" Caption="After" />
+
+</DataGrid>
+@code {
+    List<CommonAuditLog> auditEntries = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        using (var context = await DbFactory.CreateDbContextAsync())
+        {
+            auditEntries = await context.LogonAuditLog.ToListAsync<CommonAuditLog>();
+            auditEntries.AddRange(context.UserAuditLog.ToList<CommonAuditLog>());
+            auditEntries.AddRange(context.GroupAuditLog.ToList<CommonAuditLog>());
+            auditEntries.AddRange(context.OUAuditLog.ToList<CommonAuditLog>());
+            auditEntries.AddRange(context.ComputerAuditLog.ToList<CommonAuditLog>());
+        }
+    }
+}

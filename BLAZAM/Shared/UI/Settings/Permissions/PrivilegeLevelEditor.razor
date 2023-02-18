@@ -1,0 +1,92 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+@using BLAZAM.Server.Data.Services.Email;
+
+@inherits AppComponent
+<h3>User Groups</h3>
+    <LoadingIndicator Visible=LoadingData>
+        <p> Only users in the following Active Directory groups (or nested groups) will be allowed to log in to the applicaiton.</p>
+        <ListGroup>
+            <TextEdit Placeholder="Filter Groups" @bind-Text="@GroupFilter" />
+        @if (AllLevels.Count > 0)
+        {
+            @foreach (var pl in AllLevels.Where(l => Directory.Groups.FindGroupBySID(l.GroupSID).GroupName.StartsWith(GroupFilter, StringComparison.OrdinalIgnoreCase) || Directory.Groups.FindGroupBySID(l.GroupSID).GroupName.Contains(GroupFilter, StringComparison.OrdinalIgnoreCase)))
+            {
+                <BLAZAM.Server.Shared.UI.Settings.Permissions.PriviligeLevelListItem Level="pl" Context="Context" />
+            }
+        }
+            <ListGroupItem Name="AddUserGroup">
+
+                <Button Width=Width.Is100 Background="Background.Success" Clicked="@ShowAddGroup">
+                    @SettingsLocalization["Create New User Group"]
+                </Button>
+            </ListGroupItem>
+
+        </ListGroup>
+
+
+        <Button Background="Background.Primary" Clicked="@ShowAddGroup">
+
+            <Icon Name="IconName.PlusSquare" />
+        </Button>
+        <AddPrivilegeLevelModal @ref=@addGroupModal Context="Context" GroupAdded="GroupAdded" />
+       
+    </LoadingIndicator>
+
+@{
+
+}
+@code {
+    string _groupFilter = "";
+    string GroupFilter
+    {
+        get => _groupFilter; set
+        {
+            if (_groupFilter == value) return;
+            _groupFilter = value;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+    AddPrivilegeLevelModal addGroupModal;
+    PrivilegeLevel SelectedPrivilegeLevel;
+    List<PrivilegeLevel> AllLevels { get; set; } = new List<PrivilegeLevel>();
+    DbSet<PrivilegeLevel> settings;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Task.Run(async () =>
+        {
+
+            settings = Context.PrivilegeLevel;
+            RefreshLevels();
+        });
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    private async Task RefreshLevels()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+
+        AllLevels.Clear();
+        AllLevels = await settings.ToListAsync();
+        LoadingData = false;
+
+        await InvokeAsync(StateHasChanged);
+
+    }
+    private async void ShowAddGroup()
+    {
+        addGroupModal.Show();
+
+    }
+
+    private async void GroupAdded()
+    {
+        await RefreshLevels();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

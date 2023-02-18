@@ -1,0 +1,40 @@
+﻿@page "/recyclebin"
+@inherits AppComponent
+@attribute [Authorize(Roles = UserRoles.SuperAdmin)]
+
+
+<h3>RecycleBin</h3>
+    <DataGrid TItem="IDirectoryModel"
+          Data="deletedObjects"
+          Responsive
+     Virtualize>
+        <DataGridCommandColumn />
+        <DataGridColumn Field="@nameof(IDirectoryModel.ObjectType)" Caption="Type"/>
+        <DataGridColumn Field="@nameof(IDirectoryModel.CanonicalName)" Caption="Canonical Name"/>
+        <DataGridColumn Field="@nameof(IDirectoryModel.LastChanged)" Caption="Deleted At" />
+        <DataGridColumn>
+            <DisplayTemplate>
+            <Button Color="Color.Primary" Clicked="@(()=>{ Directory.RestoreTombstone(context,context.LastKnownParent); })">Restore</Button>
+
+            </DisplayTemplate>
+
+
+        </DataGridColumn>
+
+    </DataGrid>
+    
+
+
+
+@code {
+    List<IDirectoryModel> deletedObjects = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var search = new ADSearch() { SearchRoot = Directory.GetDeleteObjectsEntry() };
+        search.SearchDeleted = true;
+        deletedObjects = await search.SearchAsync<DirectoryModel, IDirectoryModel>();
+        //deletedObjects = Directory.GetDeletedObjects();
+        await InvokeAsync(StateHasChanged);
+    }
+}

@@ -1,0 +1,66 @@
+﻿@page "/settings"
+@page "/settings/{selectedTab}"
+@layout MainLayout
+@attribute [Authorize(Roles = UserRoles.SuperAdmin)]
+
+@inherits AppComponent
+<AuthorizeView>
+    <SetHeader>
+        <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
+        <Items>
+            <Tab Name="app">@SettingsLocalization["Application"]</Tab>
+            <Tab Name="auth">@SettingsLocalization["Authentication"]</Tab>
+            <Tab Name="dir">@SettingsLocalization["Active Directory"]</Tab>
+            <Tab Name="email">@SettingsLocalization["Email"]</Tab>
+            <Tab Name="update">@SettingsLocalization["Update"]</Tab>
+            <Tab Name="system">@SettingsLocalization["System"]</Tab>
+        </Items>
+    </Tabs>
+    </SetHeader>
+    <Tabs SelectedTab="@selectedTab">
+        
+        <Content>
+            <TabPanel Name="app">
+                <BLAZAM.Server.Shared.UI.Settings.ApplicationSettings />
+
+            </TabPanel>
+            <TabPanel Name="auth">
+                <BLAZAM.Server.Shared.UI.Settings.AuthenticationSetting />
+
+            </TabPanel>
+            <TabPanel Name="dir">
+                <BLAZAM.Server.Shared.UI.Settings.DirectorySettings />
+
+            </TabPanel>
+            <TabPanel Name="email">
+                <BLAZAM.Server.Shared.UI.Settings.EmailSettings />
+
+            </TabPanel>
+            <TabPanel Name="update">
+                <BLAZAM.Server.Shared.UI.Settings.UpdateSettings />
+
+            </TabPanel>
+            <TabPanel Name="system">
+                <BLAZAM.Server.Shared.UI.Settings.SystemSettings />
+
+            </TabPanel>
+        </Content>
+    </Tabs>
+</AuthorizeView>
+
+@code {
+    [Parameter]
+    public string selectedTab { get; set; } = "app";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        selectedTab= selectedTab ?? "app";
+    }
+    private Task OnSelectedTabChanged(string name)
+    {
+        selectedTab = name;
+        Nav.NavigateTo("/settings/" + name);
+        return Task.CompletedTask;
+    }
+}

@@ -1,0 +1,80 @@
+@using Microsoft.EntityFrameworkCore
+@layout InstallLayout
+@inherits AppComponent
+@{
+    string connString;
+
+    using (var context = DbFactory.CreateDbContext())
+    {
+        connString = context.Database.GetConnectionString();
+
+        // Censor Password
+        string[] keyValuePairs = connString.Split(';');
+
+        // Remove the key-value pair for the Password parameter
+        keyValuePairs = keyValuePairs.Where(x => !x.StartsWith("Password=")).ToArray();
+
+        // Join the list back into a single connection string
+        connString = string.Join(";", keyValuePairs);
+
+    }
+
+}
+<h3>Database</h3>
+@if (!Completed && !Monitor.DatabaseUpdatePending)
+{
+
+    <div>
+        <h5>The server is reachable but the database has not been installed yet.</h5>
+        <h6>The account running this web server must have permission to create databases on the configured SQL server.</h6>
+        <progress max="100" value="@progressValue" />
+        <p>Connection String:</p>
+        <small>The password has been removed from the connection string if it was present.</small><br />
+        <code>@connString</code><br />
+        <button class="btn btn-primary" @onclick="InstallDB">Install</button>
+    </div>
+}
+else if(!Completed && Monitor.DatabaseUpdatePending)
+{
+    <div>
+        <h5>The database needs an update</h5>
+        <h6>The database already needs and update.</h6>
+        <progress max="100" value="@progressValue" />
+       <br/>
+        <button class="btn btn-primary" @onclick="InstallDB">Install</button>
+    </div>
+}
+
+else
+{
+    <div>
+        <h6>Installed</h6>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool Completed { get; set; }
+    [Parameter]
+    public EventCallback StepCompleted { get; set; }
+    int? progressValue = 0;
+    protected void InstallDB()
+    {
+        Task.Run(async () =>
+        {
+
+            progressValue = null;
+            await InvokeAsync(StateHasChanged);
+            if (Program.ApplyDatabaseMigrations())
+            {
+                Completed = true;
+                InvokeAsync(StepCompleted.InvokeAsync);
+
+            }
+            progressValue = 0;
+
+            await InvokeAsync(StateHasChanged);
+
+        });
+    }
+}

@@ -1,0 +1,344 @@
+@inject IDbContextFactory<DatabaseContext> dbFactory
+@inherits ValidatedForm
+@{
+    bool tracked = Context.Entry(WorkingModel).State != EntityState.Detached;
+    bool collapseVisible = false;
+
+
+}
+
+<Validations Mode=ValidationMode.Auto Model="WorkingModel" StatusChanged="OnValidation">
+    <Row>
+        <Column>
+            <Row>
+                <Validation>
+                    <Field ColumnSize="ColumnSize.IsHalf.OnTablet">
+                        <FieldLabel>@SettingsLocalization["Name"]</FieldLabel>
+                        <FieldBody>
+                            <TextEdit @bind-Text=WorkingModel.Name>
+
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+
+
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Field Horizontal ColumnSize="ColumnSize.IsHalf.OnTablet">
+                    <FieldLabel>
+                        @SettingsLocalization["Assign Objects"]
+                    </FieldLabel>
+                    @foreach (var adObjectType in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
+                    {
+                        //Prepare data to show object access addbutons
+                        var existingAccess = WorkingModel.ObjectMap.Where(m => m.ObjectType == (ActiveDirectoryObjectType)adObjectType).FirstOrDefault();
+                        bool buttonDisabled = true;
+                        if (existingAccess == null)
+                        {
+                            buttonDisabled = false;
+                        }
+                        var name = Enum.GetName(typeof(ActiveDirectoryObjectType), adObjectType);
+                        <Column ColumnSize="ColumnSize.IsQuarter.OnFullHD.IsHalf">
+                            <Button Width=Width.Is100 Disabled=buttonDisabled Color=Color.Success Clicked="()=>AddObjectTypeAccess(adObjectType)">@SettingsLocalization[name]</Button>
+                        </Column>
+
+                    }
+                </Field>
+            </Row>
+            @if (WorkingModel.ObjectMap.Count > 0)
+            {
+
+
+                <Row>
+                    <h3>Assign Object Permissions</h3>
+
+                </Row>
+            }
+            @foreach (var objectMap in WorkingModel.ObjectMap)
+            {
+                //Prepare data to show object access fields
+
+                var name = Enum.GetName(typeof(ActiveDirectoryObjectType), objectMap.ObjectType);
+
+                <Field Horizontal Margin="Margin.Is2.OnY">
+                    <FieldLabel ColumnSize="ColumnSize.Is4" Class="h3">@SettingsLocalization[name]</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.Is6">
+
+                        <Select TValue="int" SelectedValueChanged="(int value)=>SetObjectMapAccess(objectMap,value)" SelectedValue="objectMap.ObjectAccessLevelId">
+
+                            @foreach (ObjectAccessLevel levelValue in ObjectAccessLevels.Levels)
+                            {
+                                <SelectItem Value="levelValue.ObjectAccessLevelId">@SettingsLocalization[levelValue.Name]</SelectItem>
+
+                            }
+                        </Select>
+                        @if (objectMap.ObjectType == ActiveDirectoryObjectType.User && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.ObjectAccessLevelId)
+                        {
+                            <Switch @bind-Checked=objectMap.AllowDisabled>@SettingsLocalization["Allow Disabled User Access"]</Switch>
+                        }
+                    </FieldBody>
+                    <FieldBody ColumnSize="ColumnSize.Is2">
+                        <AppCloseButton Clicked="()=>RemoveObjectTypeAccess(objectMap)" />
+
+                    </FieldBody>
+                </Field>
+                @if (objectMap.ObjectAccessLevelId != null && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.ObjectAccessLevelId)
+                {
+
+                    <h4>@name Actions</h4>
+
+                    <Field Horizontal>
+                        @foreach (var action in actions.OrderBy(f => f.Name))
+                        {
+                            if (action.IsActionAppropriateForObject(objectMap.ObjectType))
+                            {
+                                if (!WorkingModel.ActionMap.Any(a => a.ObjectAction == action))
+                                {
+
+
+
+                                    <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.Is1">
+                                        <Button Color=Color.Secondary Clicked="()=>AddActionAccess(action,objectMap.ObjectType)">@SettingsLocalization[@action.Name+" "+@name]</Button>
+                                    </Column>
+                                }
+                            }
+                        }
+                    </Field>
+                    @if (WorkingModel.ActionMap.Any())
+                    {
+                        foreach (var actionMap in WorkingModel.ActionMap.ToList())
+                        {
+                            string aname = Enum.GetName(typeof(ActiveDirectoryObjectType), actionMap.ObjectType);
+
+                            <Field Horizontal>
+                                <FieldLabel ColumnSize="ColumnSize.Is6">@SettingsLocalization[actionMap.ObjectAction.Name+" "+aname]</FieldLabel>
+                                <FieldBody ColumnSize="ColumnSize.Is6">
+                                    <RadioGroup @bind-CheckedValue=actionMap.AllowOrDeny>
+                                        <Radio Value="false">@SettingsLocalization["Deny"]</Radio>
+                                        <Radio Value="true">@SettingsLocalization["Allow"]</Radio>
+                                        <AppCloseButton Clicked="()=>RemoveActionAccess(actionMap)" />
+
+                                    </RadioGroup>
+                                </FieldBody>
+                            </Field>
+                        }
+                    }
+                }
+
+            }
+
+            @if (ShowFields)
+            {
+                <h4>Fields</h4>
+
+                <Field Horizontal>
+
+                    @foreach (var field in fields.OrderBy(f => f.FieldName))
+                    {
+
+                        if (ShowField(field))
+                        {
+                            var existingFieldAccess = WorkingModel.FieldMap.Where(m => m.Field.FieldName == field.FieldName).FirstOrDefault();
+                            if (existingFieldAccess == null)
+                            {
+                                <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.Is1">
+                                    <Button Color=Color.Secondary Clicked="()=>AddFieldAccess(field)">@SettingsLocalization[field.FieldName]</Button>
+                                </Column>
+                            }
+                        }
+                    }
+
+                </Field>
+                foreach (var field in WorkingModel.FieldMap.OrderBy(f => f.Field.FieldName))
+                {
+
+
+                    <Field Horizontal>
+                        <FieldLabel ColumnSize="ColumnSize.Is6">@field.Field.FieldName</FieldLabel>
+                        <FieldBody ColumnSize="ColumnSize.Is6">
+                            <Select TValue="int" @bind-SelectedValue="field.FieldAccessLevelId">
+                                @foreach (FieldAccessLevel levelValue in FieldAccessLevels.Levels)
+                                {
+
+                                    <SelectItem Value="levelValue.FieldAccessLevelId">@SettingsLocalization[levelValue.Name]</SelectItem>
+
+                                }
+                            </Select>
+                            <AppCloseButton Clicked="()=>RemoveFieldAccess(field)" />
+
+                        </FieldBody>
+                    </Field>
+                }
+            }
+        </Column>
+    </Row>
+
+    @{
+        string buttonLabel = SettingsLocalization["Create Access Level"];
+        if (Model.AccessLevelId > 0)
+            buttonLabel = SettingsLocalization["Update Access Level"];
+    }
+    <Button Color=Color.Success Margin=Margin.IsAuto.OnX Disabled=saveDisabled Clicked="CreateAccessLevel">@buttonLabel</Button>
+</Validations>
+@code {
+    protected DatabaseContext Context;
+
+    [Parameter]
+    public EventCallback LevelsChanged { get; set; }
+    ObjectAccessLevel checkedValue;
+    bool ShowFields
+    {
+        get
+        {
+            return WorkingModel.ObjectMap.AsQueryable().Any(om => om.ObjectAccessLevelId > ObjectAccessLevels.Deny.ObjectAccessLevelId);
+            foreach (var map in WorkingModel.ObjectMap)
+            {
+                if (map.ObjectAccessLevel != null)
+                {
+                    if (map.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level)
+                    {
+                        return true;
+                    }
+                }
+                if (map.ObjectAccessLevelId != 0)
+                {
+                    if (map.ObjectAccessLevelId > ObjectAccessLevels.Deny.ObjectAccessLevelId)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
+    [Parameter]
+    public AccessLevel Model { get; set; } = new AccessLevel();
+
+    public AccessLevel WorkingModel { get; set; } = new AccessLevel();
+
+    IEnumerable<ActiveDirectoryField> fields;
+    IEnumerable<ActionAccessFlag> actions;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Context = dbFactory.CreateDbContext();
+
+        fields = Context.ActiveDirectoryFields.AsEnumerable();
+        actions = Context.ObjectActionFlag.AsEnumerable();
+        if (Model.AccessLevelId > 0)
+        {
+            bool tracked = Context.Entry(Model).State != EntityState.Detached;
+            WorkingModel = Context.AccessLevels.Where(l => l.AccessLevelId == Model.AccessLevelId).FirstOrDefault();
+
+            tracked = Context.Entry(Model).State != EntityState.Detached;
+
+        }
+        else
+        {
+            WorkingModel = Model;
+        }
+
+    }
+
+    private void CreateAccessLevel()
+    {
+        bool addition = false;
+        if (WorkingModel.AccessLevelId == 0)
+        {
+            Context.AccessLevels.Add(WorkingModel);
+            addition = true;
+        }
+        Context.SaveChanges();
+        if (addition)
+            WorkingModel = new();
+        LevelsChanged.InvokeAsync();
+        StateHasChanged();
+    }
+
+    private void AddObjectTypeAccess(object objectTypeIndex)
+    {
+        var typeEnum = (ActiveDirectoryObjectType)objectTypeIndex;
+        if (typeEnum != null)
+        {
+            WorkingModel.ObjectMap.Add(new ObjectAccessMapping()
+                {
+                    ObjectType = typeEnum,
+                    ObjectAccessLevelId = ObjectAccessLevels.Deny.ObjectAccessLevelId
+                });
+        }
+        StateHasChanged();
+    }
+    private void AddActionAccess(ActionAccessFlag action, ActiveDirectoryObjectType type)
+    {
+        var proposedAddition = new ActionAccessMapping()
+            {
+                ObjectType = type,
+                ObjectAction = action
+            };
+        if (WorkingModel.ActionMap == null)
+            WorkingModel.ActionMap = new List<ActionAccessMapping>();
+
+        WorkingModel.ActionMap.Add(proposedAddition);
+        StateHasChanged();
+    }
+    private void RemoveActionAccess(ActionAccessMapping action)
+    {
+        WorkingModel.ActionMap.Remove(action);
+
+        StateHasChanged();
+    }
+    private void AddFieldAccess(ActiveDirectoryField fieldToAdd)
+    {
+
+        WorkingModel.FieldMap.Add(new FieldAccessMapping()
+            {
+                Field = fieldToAdd,
+                FieldAccessLevelId = FieldAccessLevels.Deny.FieldAccessLevelId
+            });
+
+        StateHasChanged();
+    }
+    private void RemoveFieldAccess(FieldAccessMapping fieldToRemove)
+    {
+
+        WorkingModel.FieldMap.Remove(fieldToRemove);
+
+        StateHasChanged();
+    }
+    private void RemoveObjectTypeAccess(ObjectAccessMapping accessToRemove)
+    {
+        WorkingModel.ObjectMap.Remove(accessToRemove);
+
+        InvokeAsync(StateHasChanged);
+    }
+    Task OnCheckedValueChanged(ObjectAccessLevel nl)
+    {
+       
+        return Task.CompletedTask;
+    }
+
+    void SetObjectMapAccess(ObjectAccessMapping mapping, int accessIndex)
+    {
+        mapping.ObjectAccessLevelId = (int)accessIndex;
+        StateHasChanged();
+
+    }
+
+    private bool ShowField(ActiveDirectoryField field)
+    {
+        foreach (var map in WorkingModel.ObjectMap)
+        {
+            if (map.ObjectAccessLevelId != ObjectAccessLevels.Deny.ObjectAccessLevelId)
+            {
+
+                return field.IsActionAppropriateForObject(map.ObjectType);
+            }
+        }
+        return false;
+
+
+    }
+}

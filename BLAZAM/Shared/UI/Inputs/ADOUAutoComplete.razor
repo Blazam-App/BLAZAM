@@ -1,0 +1,81 @@
+﻿@namespace BLAZAM.Server.Shared.UI
+@inherits AutoCompleteComponent
+<Autocomplete TItem="IADOrganizationalUnit"
+              TValue="IADOrganizationalUnit"
+              Data="@OrganizationalUnits"
+              @bind-Search="SearchTerm"
+              ReadData="@SearchOrganizationalUnits"
+              TextField="@(( item ) => item.DN)"
+              ValueField="@(( item ) => item)"
+              @bind-SelectedValue="@SelectedOU"
+              Placeholder="Search..."
+              FreeTyping>
+    <ItemContent>
+        <Row Padding="Padding.Is0" TextWeight="TextWeight.Bold">
+
+            @context?.Value?.CanonicalName
+
+
+        </Row>
+        <Row Padding="Padding.Is0">
+            @context.Text
+        </Row>
+    </ItemContent>
+    <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+</Autocomplete>
+@code {
+
+
+    IEnumerable<IADOrganizationalUnit> _organizationalUnits;
+
+    [Parameter]
+    public IEnumerable<IADOrganizationalUnit> OrganizationalUnits
+    {
+        get => _organizationalUnits; set
+        {   
+            if (_organizationalUnits == value) return;
+            _organizationalUnits = value;
+            OrganizationalUnitsChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<IEnumerable<IADOrganizationalUnit>> OrganizationalUnitsChanged { get; set; }
+
+
+
+
+    public IADOrganizationalUnit _selectedOU;
+
+    [Parameter]
+    public IADOrganizationalUnit SelectedOU
+    {
+        get => _selectedOU; set
+        {
+            if (_selectedOU == value) return;
+            OrganizationalUnits = new List<IADOrganizationalUnit> { value }.AsEnumerable();
+            _selectedOU = value;
+            SelectedOUChanged.InvokeAsync(value);
+        }
+    }
+    
+    [Parameter]
+    public EventCallback<IADOrganizationalUnit> SelectedOUChanged { get; set; }
+    
+    
+    
+    
+    private async Task SearchOrganizationalUnits(AutocompleteReadDataEventArgs autocompleteReadDataEventArgs)
+    {
+        if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
+        {
+           var temp = await Directory.OUs.FindOuByStringAsync(autocompleteReadDataEventArgs.SearchValue);
+            if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
+            {
+                OrganizationalUnits = temp;
+            }
+
+
+        }
+    }
+}

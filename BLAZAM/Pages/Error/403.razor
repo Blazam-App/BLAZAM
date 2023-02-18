@@ -1,0 +1,19 @@
+﻿@inherits AppComponent
+
+<Div Margin="Margin.IsAuto" Width=Width.Is100 Height=Height.Is100 TextAlignment="TextAlignment.Center" Display="Display.Table">
+    <Div Display="Display.TableCell" VerticalAlignment="VerticalAlignment.Middle">
+        <Div>
+            @*<Icon Style="font-size:4em;opacity:20%" Name=Name />*@
+            <Div Style="width:0px;height:0px;" Position="Position.Relative" Margin="Margin.IsAuto.OnX">
+                <Icon Style="font-size:12em;opacity:20%;position: absolute;left: -118px;top:-109px;" Name=@("fa-solid fa-handcuffs") />
+            </Div>
+
+        </Div>
+        <Heading style="margin-top:85px;" TextColor="TextColor.Muted">Woah there buddy!</Heading>
+        <Paragraph TextColor="TextColor.Muted">You're not authorized to go here.</Paragraph>
+       
+    </Div>
+</Div>
+@code {
+
+}

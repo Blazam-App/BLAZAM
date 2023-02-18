@@ -1,0 +1,21 @@
+﻿@inject IStringLocalizer<AppLocalization> AppLocalization;
+@inject NavigationManager Nav
+
+<Bar Mode="BarMode.VerticalInline"
+     CollapseMode="BarCollapseMode.Small"
+     Breakpoint="Breakpoint.Desktop"
+     NavigationBreakpoint="Breakpoint.Tablet"
+     ThemeContrast="ThemeContrast.Dark">
+    <BarBrand>
+        <BarItem onclick=@(()=>{Nav.NavigateTo("/",true);})>
+          
+                <Image class="app-icon" src="@StaticAssets.ApplicationIcon" />
+                <Div Margin=Margin.Is2.OnX TextAlignment="TextAlignment.Center">
+                    @DatabaseCache.ApplicationSettings?.AppAbbreviation
+                </Div>
+        </BarItem>
+    </BarBrand>
+</Bar>
+@code {
+
+}

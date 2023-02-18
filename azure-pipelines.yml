@@ -1,0 +1,54 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- master
+
+pool:
+  name: Default
+
+
+variables:
+  buildConfiguration: 'Debug'
+  
+
+
+steps:
+- checkout: self
+- checkout: git://ADAM/blazam.org
+  
+- script: dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
+  displayName: 'dotnet build $(buildConfiguration)'
+
+- task: AssemblyVersionLoader@1
+  inputs:
+    sourceFileName: '$(Build.ArtifactStagingDirectory)/BLAZAM.dll'
+
+- task: PowerShell@2
+  displayName:  Build Number
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "##vso[task.setvariable variable=buildNumber;]$(AssemblyInfo.AssemblyVersion.Major).$(AssemblyInfo.AssemblyVersion.Minor).$(AssemblyInfo.AssemblyVersion.Build).$(AssemblyInfo.ProductVersion)"
+
+- task: PowerShell@2
+  displayName: Show Build Number
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Build Version Number: $(buildNumber)"
+
+- task: PowerShell@2
+  displayName: Update Pipeline Build Number
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "##vso[build.updatebuildnumber]$(buildNumber)"
+
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: '_BLAZAM'

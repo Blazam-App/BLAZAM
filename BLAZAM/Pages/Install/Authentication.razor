@@ -1,0 +1,55 @@
+﻿@using System.Text.Json
+@using System.Net
+@using System.Diagnostics
+@using Microsoft.EntityFrameworkCore;
+@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+@using BLAZAM.Server.Data.Services.Email;
+@layout InstallLayout
+@inject IDbContextFactory<DatabaseContext> DbFactory
+@inject NavigationManager NavManager
+@inject HttpClient HttpClient
+
+<h3>Authentication</h3>
+<div>
+<h6>Please set a secure admin password. This account will have total application access.</h6>
+<b>Username:</b><p>Admin</p>
+<b>Password:</b><br />
+<form @onsubmit="SubmitForm">
+<input @bind="@adminPassword" type="password"/><br />
+<button class="btn btn-primary">Save Password</button>
+</form>
+    <div class="@showError">
+        @errorText
+    </div>
+</div>
+
+<br />
+@{
+    DatabaseContext context = DbFactory.CreateDbContext();
+   
+}
+@code {
+    [Parameter]
+    public EventCallback StepCompleted { get; set; }
+
+    private string errorText = "";
+    private string showError = "d-none";
+    public string adminPassword = "";
+    public async void SubmitForm(){
+        DatabaseContext context = DbFactory.CreateDbContext();
+        try
+        {
+            context.AuthenticationSettings.FirstOrDefault().AdminPassword = adminPassword;
+            
+            await context.SaveChangesAsync();
+            StepCompleted.InvokeAsync();
+
+        }catch(Exception ex)
+        {
+            errorText = ex.Message+" "  + ex.InnerException?.Message;
+            showError = "";
+
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+}

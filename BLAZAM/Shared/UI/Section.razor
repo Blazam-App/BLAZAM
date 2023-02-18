@@ -1,0 +1,123 @@
+﻿
+<Div Border="Border" Padding=Padding Margin=Margin Class=@("section")>
+    @if (SectionHeaderPosition == HeaderPosition.TopLeft || SectionHeaderPosition == HeaderPosition.TopRight)
+    {
+        <Div Class="section-title-container">
+
+            <Div Background=BackgroundColor Class="section-title">
+                <div class="section-title-text @HeadingSizeString text-@TextColor.Name">@Title</div>
+               
+            </Div>
+        </Div>
+
+    }
+    <Row Width="Width.Is100" Class="section-content">
+        @ChildContent
+    </Row>
+
+    @if (SectionHeaderPosition == HeaderPosition.BottomLeft || SectionHeaderPosition == HeaderPosition.BottomRight)
+    {
+        <Div Class="section-title-container">
+
+            <Div Class="section-title">
+                <div class="section-title-text @HeadingSizeString text-@TextColor.Name">@Title</div>
+            </Div>
+        </Div>
+
+    }
+</Div>
+@{
+    string borderColor = "";
+    string hspacing = "";
+    string hmargin = "";
+    string vspacing = "";
+    string vmargin = "";
+    Tooltip tooltip;
+    @if (SectionHeaderPosition == HeaderPosition.TopLeft || SectionHeaderPosition == HeaderPosition.TopRight)
+    {
+        vspacing = " top: -25px";
+        vmargin = "margin-bottom: -35px";
+    }
+    else
+    {
+        vspacing = " bottom: -22px";
+        vmargin = "margin-top: -50px";
+    }
+
+
+
+    @if (SectionHeaderPosition == HeaderPosition.TopLeft || SectionHeaderPosition == HeaderPosition.BottomLeft)
+
+    {
+        hspacing = "left: 25px";
+        hmargin = "margin-right: 50px";
+    }
+    else
+    {
+        hspacing = "right: 25px; \r\n float: right";
+        hmargin = "margin-left: 50px";
+    }
+
+}
+<style>
+    .section {
+        position: relative;
+        border-radius: 5px;
+        margin: 20px 0;
+    }
+
+
+    .section-title {
+        position: relative;
+    @vspacing;
+    @vmargin;
+    @hspacing;
+    @hmargin;
+        padding: 10px;
+        max-width: fit-content;
+    }
+
+    .section-title-text {
+        /*  margin-left: 10px; */
+    }
+
+    .section-content {
+        padding: 10px;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public HeaderPosition SectionHeaderPosition { get; set; } = HeaderPosition.TopLeft;
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public IFluentSpacing Margin { get; set; }
+
+    [Parameter]
+    public IFluentSpacing Padding { get; set; }
+
+    /// <summary>
+    /// Color for the text
+    /// </summary>
+    [Parameter]
+    public TextColor TextColor { get; set; } = TextColor.Secondary;
+
+    [Parameter]
+    public Background BackgroundColor { get; set; } = Background.Light;
+
+    [Parameter]
+    public IFluentBorder Border { get; set; } = Blazorise.Border.Rounded.Is1.Dark.OnAll;
+
+    string HeadingSizeString { get { return "h" + HeadingSize.ToString(); } }
+    [Parameter]
+    public HeadingSize HeadingSize { get; set; } = HeadingSize.Is4;
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public enum HeaderPosition { TopLeft, TopRight, BottomRight, BottomLeft };
+}
+

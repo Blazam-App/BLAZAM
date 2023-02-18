@@ -1,0 +1,99 @@
+@page "/install/permissions"
+
+@layout InstallLayout
+@inherits ValidatedForm
+@{
+
+
+}
+
+<h3>Permissions</h3>
+
+
+<h5>Please configure at least one super admin Active Directory group.</h5>
+<label>Admin Group Name</label>
+<br />
+<ADGroupAutoComplete @bind-SelectedGroup="adminGroupName"/>
+
+
+<br />
+<div>
+    @foreach (PrivilegeLevel adminGroup in adminGroups)
+    {
+        <div>
+            @ActiveDirectoryContext.Instance.Groups.FindGroupBySID(adminGroup.GroupSID)?.GroupName
+            
+            <button tpye="button" @onclick="(() => Remove(adminGroup))">-</button>
+        </div>
+    }
+</div>
+
+
+<button @onclick="Add" type="button" class="btn btn-primary">+</button><br/>
+<Button Color="Color.Success" @onclick=@(()=>StepCompleted.InvokeAsync()) Disabled="@disableNext">Proceed</Button>
+
+    
+
+
+
+@code {
+    bool disableNext = true;
+    [Parameter]
+    public EventCallback StepCompleted { get; set; }
+    List<PrivilegeLevel> adminGroups { get; set; } = new List<PrivilegeLevel>();
+    public bool Loading { get; set; }
+    public IADGroup adminGroupName { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        base.OnInitialized();
+        try
+        {
+            adminGroups = Context.PrivilegeLevel.Where(e => e.IsSuperAdmin == true).ToList();
+            if (adminGroups.Any() != null)
+            {
+                disableNext = false;
+            }
+        }
+        catch (Exception)
+        {
+
+        }
+
+    }
+    private async void Add()
+    {
+        
+        if (adminGroupName != null)
+        {
+            await Context.PrivilegeLevel.AddAsync(new PrivilegeLevel
+                {
+                    GroupSID = adminGroupName.SID,
+                    IsSuperAdmin = true,
+                });
+            Context.SaveChanges();
+            adminGroups = await Context.PrivilegeLevel.Where(e => e.IsSuperAdmin == true).ToListAsync();
+            if (adminGroups.Any() != null)
+            {
+                disableNext = false;
+            }
+            await InvokeAsync(StateHasChanged);
+
+        }
+    }
+    private async void Remove(PrivilegeLevel level)
+    {
+        Context.PrivilegeLevel.Remove(level);
+        await Context.SaveChangesAsync();
+        adminGroups = await Context.PrivilegeLevel.Where(e => e.IsSuperAdmin == true).ToListAsync(); 
+        if (adminGroups.Any() != null)
+        {
+            disableNext = false;
+        }
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+
+}

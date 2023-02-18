@@ -1,0 +1,40 @@
+@inherits AppComponent
+<Div Padding="Padding.Is3.OnX">
+    @if (Monitor.DirectoryConnected == ConnectionState.Connecting)
+    {
+        <Row>
+            Connecting to Active Directory... Some features are disabled...
+            <Progress Animated=true Value="100" />
+        </Row>
+    }
+    <Row Style="height:1.5em">
+        <Column TextAlignment="TextAlignment.Start">
+            <Copyright Margin="Margin.Is0" />
+        </Column>
+        <Column Style="cursor:pointer" TextAlignment="TextAlignment.End">
+            @if (AutoUpdateService.IsUpdatedScheduled)
+            {
+                <Tooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/app");}) TextColor="TextColor.Muted" Float=Float.End Style="width:max-content" Fade Text="An automatic update is scheduled. Click for details">
+
+                    <Icon Name=@("fa-solid fa-circle-up") />
+                </Tooltip>
+            }
+
+            <Tooltip Margin="Margin.Is1.OnX" TextColor="TextColor.Muted" Float=Float.End Style="width:max-content" Fade FadeDuration=500 Trigger=TooltipTrigger.Click Text="@Program.Version.Version">
+
+                Version: @Program.Version.ShortVersion
+            </Tooltip>
+
+
+        </Column>
+    </Row>
+</Div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Monitor.OnDirectoryConnectionChanged += ((state) => InvokeAsync(StateHasChanged));
+
+    }
+}

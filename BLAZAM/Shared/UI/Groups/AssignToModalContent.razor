@@ -1,0 +1,67 @@
+﻿@inherits AppModalContent
+
+
+<Row Background="Background.Light" TextColor="TextColor.Dark">
+    <Field>
+        <FieldLabel>Group Name</FieldLabel>
+        <ADGroupAutoComplete @bind-SelectedGroup="@Group" />
+    </Field>
+    <Field>
+        <FieldLabel>Copy Memberships From</FieldLabel>
+        <ADUserOrGroupAutoComplete @bind-SelectedModel="@CopyFrom" />
+    </Field>
+    @if (CopyFrom != null)
+    {
+        var existingGroups = DirectoryModel.MemberOf;
+        <Paragraph>Will be added to...</Paragraph>
+
+        foreach (var group in CopyFrom.MemberOf)
+        {
+            <Card>
+                <CardHeader>
+
+                    @if (existingGroups.Contains(group))
+                    {
+                        <Icon Name=@("fa-check") />
+                    }
+                    else
+                    {
+                        <Icon Name=@("fa-plus") />
+                    }
+                    @group.GroupName
+
+                </CardHeader>
+            </Card>
+        }
+    }
+</Row>
+<Row>
+    <Button Color="Color.Primary" Clicked="AssignToGroup">Add</Button>
+
+</Row>
+
+
+@code {
+
+    [Parameter]
+    public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
+
+    [Parameter]
+    public IGroupableDirectoryModel DirectoryModel { get; set; }
+
+    public IGroupableDirectoryModel CopyFrom { get; set; }
+
+    IADGroup Group { get; set; }
+
+    async Task AssignToGroup()
+    {
+
+        DirectoryModel.AssignTo(Group);
+        NotificationService.Warning(DirectoryModel.CanonicalName + " has been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
+        ModelChanged.InvokeAsync();
+
+        Close();
+
+
+    }
+}

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*" Name="BLAZAMSetup" Language="1033" Version="1.0.0.0" Manufacturer="Jacobsen Productions" UpgradeCode="a69798e9-33c2-4074-be98-2602d6e517db">
+		<UIRef Id="WixUI_InstallDir" />
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+        <MediaTemplate />
+        <Feature Id="ProductFeature" Title="BLAZAMSetup" Level="1">
+            <ComponentGroupRef Id="ProductComponents" />
+        </Feature>
+        <UI>
+            <Dialog Id="Welcome" Width="370" Height="270">
+                <Control Type="Text" Id="WelcomeText" Width="259" Height="44" X="60" Y="49">
+                    <Text>This installer will install the Blazor Accounts Manager Web Application. This product requires a MSSQL server and an Active Directory.</Text>
+                </Control>
+                <Control Type="PushButton" Id="Next" Width="56" Height="17" X="158" Y="199">
+                    <Text>Next</Text>
+                </Control>
+            </Dialog>
+        </UI>
+    </Product>
+    <Fragment>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="INSTALLFOLDER" Name="BLAZAMSetup" />
+            </Directory>
+        </Directory>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+            <Component Id="ProductComponent" Guid="">
+                <File Source="$(var.BLAZAM.TargetPath)" />
+            </Component>
+            <Component Id="ServiceComponent" Guid="">
+                <ServiceInstall Name="BLAZAM Sever" Type="ownProcess" Start="auto" ErrorControl="normal" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

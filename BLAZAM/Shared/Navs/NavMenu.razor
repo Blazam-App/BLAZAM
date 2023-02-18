@@ -1,0 +1,287 @@
+﻿@using BLAZAM.Server.Background;
+@using BLAZAM.Server.Pages;
+@using Microsoft.Extensions.Localization;
+@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+@using BLAZAM.Server.Data.Services.Email;
+@inherits AppComponent
+@{
+
+}
+<Bar Mode="BarMode.VerticalInline"
+     CollapseMode="BarCollapseMode.Small"
+     Breakpoint="Breakpoint.Desktop"
+     NavigationBreakpoint="Breakpoint.Tablet"
+     ThemeContrast="ThemeContrast.Dark">
+    <BarBrand>
+        <BarItem>
+            <BarLink TextColor=TextColor.Light To="/home">
+                <Image class="app-icon" src="@StaticAssets.ApplicationIcon" />
+                <Div Margin=Margin.Is2.OnX TextAlignment="TextAlignment.Center">
+                    @DatabaseCache.ApplicationSettings?.AppAbbreviation
+                </Div>
+            </BarLink>
+        </BarItem>
+    </BarBrand>
+    <BarToggler />
+
+    <BarMenu>
+        <BarStart>
+            <BarItem>
+                <BarLink To="/home">
+                    <BarIcon IconName="IconName.Dashboard" />
+                    @AppLocalization["Home"]
+                </BarLink>
+            </BarItem>
+            @{
+                string userRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchUsers;
+                string groupRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchGroups;
+                string computerRole = UserRoles.SuperAdmin + ", " + UserRoles.Computers;
+                string ouRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchOUs;
+                string createRole = UserRoles.SuperAdmin + ", " + UserRoles.CreateUsers + ", " + UserRoles.CreateGroups + ", " + UserRoles.CreateOUs;
+                string createUser = UserRoles.SuperAdmin + ", " + UserRoles.CreateUsers;
+                string createGroup = UserRoles.SuperAdmin + ", " + UserRoles.CreateGroups;
+                string createOU = UserRoles.SuperAdmin + ", " + UserRoles.CreateOUs;
+            }
+            <AuthorizeView Roles=@userRole>
+
+                <BarItem Disabled="@(Monitor.DirectoryConnected != ConnectionState.Up)">
+                    <AuthorizeView Context="createContext" Roles=@createUser>
+                        <Authorized>
+                            <BarDropdown>
+                                <BarDropdownToggle>
+
+                                    <BarIcon IconName="IconName.User" />
+                                    @AppLocalization["Users"]
+                                </BarDropdownToggle>
+                                <BarDropdownMenu>
+                                    <BarDropdownItem To="/users/search" Match="Match.Prefix"><Icon Name="IconName.Search" />@AppLocalization["Search Users"]</BarDropdownItem>
+
+                                    <BarDropdownItem To="/users/create" Match="Match.Prefix"><Icon Name="IconName.UserPlus" />@AppLocalization["Create User"]</BarDropdownItem>
+
+
+
+
+                                </BarDropdownMenu>
+                            </BarDropdown>
+
+
+
+                        </Authorized>
+                        <NotAuthorized>
+                            <BarLink To="/users/search" Match="Match.Prefix">
+                                <BarIcon IconName="IconName.User" />
+                                @AppLocalization["Users"]
+                            </BarLink>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </BarItem>
+            </AuthorizeView>
+            <AuthorizeView Roles=@groupRole>
+
+                <BarItem Disabled="@(Monitor.DirectoryConnected != ConnectionState.Up)">
+                    <AuthorizeView Context="createContext" Roles=@createGroup>
+                        <Authorized>
+                            <BarDropdown>
+                                <BarDropdownToggle>
+
+                                    <BarIcon IconName="@("fa-user-group")" />
+                                    @AppLocalization["Groups"]
+                                </BarDropdownToggle>
+                                <BarDropdownMenu>
+                                    <BarDropdownItem To="/groups/search" Match="Match.Prefix"><Icon Name="IconName.Search" />@AppLocalization["Search Groups"]</BarDropdownItem>
+
+                                    <BarDropdownItem To="/groups/create" Match="Match.Prefix"><Icon Name="IconName.PlusCircle" />@AppLocalization["Create Group"]</BarDropdownItem>
+
+
+
+
+                                </BarDropdownMenu>
+                            </BarDropdown>
+
+
+
+                        </Authorized>
+                        <NotAuthorized>
+                            <BarLink To="/groups/search" Match="Match.Prefix">
+                                <BarIcon IconName="@("fa-user-group")" />
+                                @AppLocalization["Groups"]
+                            </BarLink>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </BarItem>
+
+            </AuthorizeView>
+
+            <AuthorizeView Roles=@computerRole>
+
+                <BarItem Disabled="@(Monitor.DirectoryConnected != ConnectionState.Up)">
+                    <AuthorizeView Context="createContext" Roles=@createGroup>
+                        <Authorized>
+                            <BarDropdown>
+                                <BarDropdownToggle>
+
+                                    <BarIcon IconName="@("fa-computer")" />
+                                    @AppLocalization["Computers"]
+                                </BarDropdownToggle>
+                                <BarDropdownMenu>
+                                    <BarDropdownItem To="/computers/search" Match="Match.Prefix"><Icon Name="IconName.Search" />@AppLocalization["Search Computers"]</BarDropdownItem>
+
+                                    <BarDropdownItem To="/computers/create" Match="Match.Prefix"><Icon Name="IconName.PlusCircle" />@AppLocalization["Create Computer"]</BarDropdownItem>
+
+
+
+
+                                </BarDropdownMenu>
+                            </BarDropdown>
+
+
+
+                        </Authorized>
+                        <NotAuthorized>
+                            <BarLink To="/computers/search" Match="Match.Prefix">
+                                <BarIcon IconName="@("fa-computer")" />
+                                @AppLocalization["Computers"]
+                            </BarLink>
+                        </NotAuthorized>
+                    </AuthorizeView>
+
+                </BarItem>
+            </AuthorizeView>
+
+            <AuthorizeView Roles=@ouRole>
+                <BarItem Disabled="@(Monitor.DirectoryConnected != ConnectionState.Up)">
+                    <AuthorizeView Context="createContext" Roles=@createOU>
+                        <Authorized>
+                            <BarDropdown>
+                                <BarDropdownToggle>
+
+                                    <BarIcon IconName="@("fa-folder")" />
+                                    @AppLocalization["OU"]
+                                </BarDropdownToggle>
+                                <BarDropdownMenu>
+                                    <BarDropdownItem To="/ou/search" Match="Match.Prefix"><Icon Name="IconName.Search" />@AppLocalization["Search OUs"]</BarDropdownItem>
+
+                                    <BarDropdownItem To="/ou/create" Match="Match.Prefix"><Icon Name="IconName.FolderPlus" />@AppLocalization["Create OU"]</BarDropdownItem>
+
+
+
+
+                                </BarDropdownMenu>
+                            </BarDropdown>
+
+
+
+                        </Authorized>
+                        <NotAuthorized>
+                            <BarLink To="/ou/search" Match="Match.Prefix">
+                                <BarIcon IconName="@("fa-folder")" />
+                                @AppLocalization["OU"]
+                            </BarLink>
+                        </NotAuthorized>
+                    </AuthorizeView>
+
+                </BarItem>
+            </AuthorizeView>
+
+
+
+            <AuthorizeView Roles=@UserRoles.SuperAdmin>
+                <BarItem>
+                    <BarLink To="/recyclebin">
+                        <BarIcon IconName=@("fa-solid fa-trash") />
+                        @AppLocalization["Recycle Bin"]
+                    </BarLink>
+                </BarItem>
+                <BarItem>
+                    <BarDropdown>
+                        <BarDropdownToggle>
+                            <BarIcon IconName="IconName.Wrench" />
+                            @AppLocalization["Configure"]
+                        </BarDropdownToggle>
+                        <BarDropdownMenu>
+                            <BarDropdownItem To="/settings">@AppLocalization["Settings"]</BarDropdownItem>
+
+                            <BarDropdownItem To="/permissions">@AppLocalization["Permissions"]</BarDropdownItem>
+                            <BarDropdownItem To="/templates">@AppLocalization["Templates"]</BarDropdownItem>
+
+
+                            <BarDropdownItem To="/audit">@AppLocalization["Audit"]</BarDropdownItem>
+                        </BarDropdownMenu>
+                    </BarDropdown>
+                </BarItem>
+            </AuthorizeView>
+
+            <BarItem>
+                <BarDropdown>
+                    <BarDropdownToggle>
+                        <BarIcon IconName=@("fa-solid fa-id-card-clip") />
+                        @UserStateService.CurrentUsername
+                    </BarDropdownToggle>
+                    <BarDropdownMenu>
+                        <BarDropdown>
+                            <BarDropdownToggle>Theme</BarDropdownToggle>
+                            <BarDropdownMenu>
+                                @foreach (var theme in ApplicationTheme.Themes)
+                                {
+                                    <BarDropdownItem Clicked=@(()=>{SetUserTheme(theme);})> @theme.Name</BarDropdownItem>
+                                }
+
+                            </BarDropdownMenu>
+                        </BarDropdown>
+                        @if (UserStateService.CurrentUserState?.Impersonator == null)
+                        {
+                            <BarDropdownItem To="/logout">
+                                <BarIcon IconName="@("fa-right-from-bracket")" />
+                                @AppLocalization["Sign Out"]
+                            </BarDropdownItem>
+                        }
+                        else
+                        {
+                            <BarDropdownItem To="/unimpersonate">
+                                <BarIcon IconName=@("fa-user-slash") />
+                                @AppLocalization["Stop It"]
+                            </BarDropdownItem>
+                        }
+
+                    </BarDropdownMenu>
+                </BarDropdown>
+            </BarItem>
+
+        </BarStart>
+        <BarEnd>
+            <ScheduledUpdateAnnouncer />
+
+        </BarEnd>
+    </BarMenu>
+</Bar>
+
+@code {
+    private bool collapseNavMenu = true;
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+        Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
+
+
+
+
+
+        InvokeAsync(StateHasChanged);
+
+
+    }
+    async Task SetUserTheme(ApplicationTheme theme)
+    {
+        UserStateService.CurrentUserState.UserSettings.Theme = theme.Name;
+        UserStateService.CurrentUserState.SaveUserSettings();
+        Refresh();
+    }
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+}

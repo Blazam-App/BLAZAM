@@ -1,0 +1,34 @@
+﻿@inherits Widget
+@attribute [Authorize]
+<Div Background="Background.Secondary" TextColor="TextColor.Light">
+    <h3>Locked Out Users</h3>
+    <Div Overflow="Overflow.Auto" Style="max-height:350px;">
+
+        @foreach (var user in LockedUsers)
+        {
+
+            <Card Background="Background.Light" TextColor="TextColor.Dark" Style="cursor:pointer" @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
+
+                @user.DisplayName <br>
+                @user.SamAccountName <br>
+                @DirectoryTools.PrettifyOu(user.OU) <br>
+                @user.LockoutTime <br>
+            </Card>
+        }
+    </Div>
+</Div>
+@code {
+    List<IADUser> LockedUsers = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+
+        Name = "Locked Out Users";
+        LockedUsers = (await Directory.Users.FindLockedOutUsersAsync()).OrderByDescending(u=>u.LockoutTime).Where(u=>u.CanRead).ToList();
+        LoadingData = false;
+        InvokeAsync(StateHasChanged);
+    }
+    
+
+}

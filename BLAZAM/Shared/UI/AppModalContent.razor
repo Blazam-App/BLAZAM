@@ -1,0 +1,14 @@
+﻿@inherits DirectoryModelComponent
+
+@code {
+    [CascadingParameter] protected Modal Modal { get; set; }
+    [Parameter]
+    public EventCallback ModelChanged { get; set; }
+
+    protected void Close(){
+        Modal.Close(CloseReason.UserClosing);
+        InvokeAsync(StateHasChanged);
+
+    }
+
+}
