@@ -1,7 +1,9 @@
-using BLAZAM.Server;
+
+using Setup;
 using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using WixSharp;
 using WixSharp.UI.Forms;
@@ -11,6 +13,8 @@ namespace WixSharpSetup
 {
     public partial class DatabaseDialog : ManagedForm, IManagedDialog
     {
+        string appSettingsPath = Path.GetFullPath(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + @"\Blazam Server\appsettings.json");
+        public static bool Skipped = false;
 
         public DatabaseDialog()
         {
@@ -24,8 +28,23 @@ namespace WixSharpSetup
         {
             banner.Image = Runtime.Session.GetResourceBitmap("WixUI_Bmp_Banner");
             Text = "[ProductName] Setup";
-            next.Enabled= false;
-            CustomPanel.Visible= false;
+            
+            if (InstallationType.installationType == "SERVICE")
+            {
+                if (System.IO.File.Exists(appSettingsPath))
+                {
+                    Skipped = true;
+                    Shell.GoNext();
+                }
+            }
+            else
+            {
+
+            }
+            ErrorBox.Text = appSettingsPath + System.IO.File.Exists(appSettingsPath).ToString() + InstallationType.installationType;
+            next.Enabled = false;
+            CustomPanel.Visible = false;
+            ErrorBox.Visible = true;
             //resolve all Control.Text cases with embedded MSI properties (e.g. 'ProductName') and *.wxl file entries
             base.Localize();
         }
@@ -37,6 +56,13 @@ namespace WixSharpSetup
 
         void next_Click(object sender, EventArgs e)
         {
+            ApplyAppSettingsAction.Username = UsernameBox.Text;
+            ApplyAppSettingsAction.Password = PasswordBox.Text;
+            ApplyAppSettingsAction.Database = DatabaseBox.Text;
+            ApplyAppSettingsAction.Server = ServerBox.Text; 
+            ApplyAppSettingsAction.Port= PortBox.Text;  
+            ApplyAppSettingsAction.Custom= ConnectionStringBox.Text;  
+
             Shell.GoNext();
         }
 

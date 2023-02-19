@@ -26,7 +26,10 @@ namespace WixSharpSetup
 
         void back_Click(object sender, EventArgs e)
         {
-            Shell.GoPrev();
+            if (DatabaseDialog.Skipped)
+                Shell.GoTo<Setup.InstallDirDialog>();
+            else
+                Shell.GoPrev();
         }
 
         void next_Click(object sender, EventArgs e)

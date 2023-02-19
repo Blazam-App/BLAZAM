@@ -37,8 +37,8 @@
     {
         base.OnInitialized();
 
-        if (DatabaseCache.AppIcon != null)
-            appIconBytes = DatabaseCache.AppIcon.ReizeRawImage(250);
+        if (StaticAssets.AppIcon() != null)
+            appIconBytes = StaticAssets.AppIcon(250);
 
     }
 }

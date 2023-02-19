@@ -12,8 +12,7 @@ namespace WixSharpSetup
     {
         public ManagedForm Host;
         ISession session => Host?.Runtime.Session;
-        string installationType = "IIS";
-
+        public static string installationType = "IIS";
         public InstallationType()
         {
             //NOTE: If this assembly is compiled for v4.0.30319 runtime, it may not be compatible with the MSI hosted CLR.
@@ -75,11 +74,13 @@ namespace WixSharpSetup
         private void iisRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             session["INSTALL_TYPE"] = "IIS";
+            installationType = "IIS";
         }
 
         private void serviceRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             session["INSTALL_TYPE"] = "SERVICE";
+            installationType = "SERVICE";
         }
     }
 }

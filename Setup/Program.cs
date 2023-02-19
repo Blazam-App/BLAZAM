@@ -1,16 +1,24 @@
-﻿using System;
+﻿using BLAZAM.Server;
+using Microsoft.Deployment.WindowsInstaller;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using WixSharp;
 using WixSharp.Bootstrapper;
+using WixSharp.CommonTasks;
 using WixSharp.UI.WPF;
 
 namespace Setup
 {
     internal class Program
     {
+        private const string SourcePath = @"..\BLAZAM\bin\Release\net6.0\publish\";
+        public static string DestinationPath = @"%ProgramFiles%\Blazam Server\";
+
         static void Main()
         {
             //_ = AspNetCore6();
@@ -43,18 +51,25 @@ namespace Setup
 
         private static string BuildMsi()
         {
-            File service;
-           
+            File service = new File(SourcePath + "blazam.exe");
+
             var project = new ManagedProject("BLAZAM",
-                              new Dir(@"%ProgramFiles%\Jacobsen Productions\BLAZAM Server",
-                                  new Files(@"..\BLAZAM\bin\Debug\net6.0\*"),
-                                  service = new File(@"..\BLAZAM\bin\Debug\net6.0\blazam.exe")));
+                              new ManagedAction(ApplyAppSettingsAction.Apply),
+                              new Dir(DestinationPath,
+                                  new Files(SourcePath+"*"),
+                                  service = new File(SourcePath + "blazam.exe")));
+            project.ManagedUI = ManagedUI.Default;
             project.ControlPanelInfo.NoModify = true;
+            project.ControlPanelInfo.Manufacturer = "BlazamApp";
+            project.ControlPanelInfo.Name = "Blazam";
             project.InstallPrivileges = InstallPrivileges.elevated;
             project.InstallScope = InstallScope.perMachine;
-            project.LicenceFile = @"..\BLAZAM\license.rtf";
+            project.LicenceFile = SourcePath + "license.rtf";
             project.GUID = new Guid("6fe30b47-2577-43ad-9095-1861ba25889b");
-
+            project.UpgradeCode = new Guid("6fe30b47-2577-43ad-9095-1861ba25889b");
+            project.ProductId = Guid.NewGuid();
+            project.EnableUninstallFullUI();
+            project.GenerateProductGuids();
 
             service.ServiceInstaller = new ServiceInstaller
             {
@@ -87,6 +102,8 @@ namespace Setup
 
             //project.SourceBaseDir = "<input dir path>";
             //project.OutDir = "<output dir path>";
+            
+
 
             return project.BuildMsi();
         }

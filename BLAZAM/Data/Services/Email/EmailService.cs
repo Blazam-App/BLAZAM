@@ -1,6 +1,7 @@
 ﻿using BLAZAM.Common;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Models.Database;
+using BLAZAM.Server.Pages;
 using BLAZAM.Server.Shared.Email;
 using BLAZAM.Server.Shared.Layouts;
 using BLAZAM.Server.Shared.ResourceFiles;
@@ -146,7 +147,7 @@ namespace BLAZAM.Server.Data.Services.Email
                 //Start body builder for attached logo image ref
                 var builder = new BodyBuilder();
                 //Attach logo
-                var image = builder.LinkedResources.Add("logo.png", DatabaseCache.AppIcon.ReizeRawImage(75));
+                var image = builder.LinkedResources.Add("logo.png", StaticAssets.AppIcon(75));
                 //Generate attachment ID
                 image.ContentId = MimeUtils.GenerateMessageId();
                 //Replace logo placeholder in template with referenced img tag

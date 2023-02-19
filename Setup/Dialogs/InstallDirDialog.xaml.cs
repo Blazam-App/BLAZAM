@@ -80,14 +80,14 @@ namespace Setup
                             session[installDirProperty] = installDir;
                         }
 
-                        if (installDir == "ABSOLUTEPATH")
-                            installDir = session.Property("INSTALLDIR_ABSOLUTEPATH");
+                      
 
                         return installDir;
                     }
                     else
                     {
                         //INSTALLDIR set either from the command line or by one of the early setup events (e.g. UILoaded)
+                        
                         return installDirPropertyValue;
                     }
                 }
@@ -97,7 +97,8 @@ namespace Setup
 
             set
             {
-                session[installDirProperty] = value;
+                session["WixSharp_UI_INSTALLDIR"] = value;
+                Program.DestinationPath = value;
                 base.NotifyOfPropertyChange(() => InstallDirPath);
             }
         }
