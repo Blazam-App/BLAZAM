@@ -43,15 +43,27 @@ namespace Setup
 
         private static string BuildMsi()
         {
+            File service;
+           
             var project = new ManagedProject("BLAZAM",
                               new Dir(@"%ProgramFiles%\Jacobsen Productions\BLAZAM Server",
-                                  new Files(@"..\BLAZAM\bin\Debug\net6.0\*")));
+                                  new Files(@"..\BLAZAM\bin\Debug\net6.0\*"),
+                                  service = new File(@"..\BLAZAM\bin\Debug\net6.0\blazam.exe")));
             project.ControlPanelInfo.NoModify = true;
             project.InstallPrivileges = InstallPrivileges.elevated;
             project.InstallScope = InstallScope.perMachine;
             project.LicenceFile = @"..\BLAZAM\license.rtf";
             project.GUID = new Guid("6fe30b47-2577-43ad-9095-1861ba25889b");
 
+
+            service.ServiceInstaller = new ServiceInstaller
+            {
+                Name = "Blazam Server",
+                StartOn = SvcEvent.Install,
+                StopOn = SvcEvent.InstallUninstall_Wait,
+                RemoveOn = SvcEvent.Uninstall_Wait
+            };
+            
             // project.ManagedUI = ManagedUI.DefaultWpf; // all stock UI dialogs
 
             //custom set of UI WPF dialogs
