@@ -1,0 +1,38 @@
+{
+  "profiles": {
+    "BLAZAM": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7099;http://localhost:5099",
+      "hotReloadEnabled": false,
+      "nativeDebugging": false
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "BBIIS": {
+      "commandName": "IIS",
+      "workingDirectory": "\\\\bbiis\\inetpub\\blazam_dev",
+      "launchUrl": "http://blazam-dev.branchburg.k12.nj.us",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:56095/",
+      "sslPort": 44397
+    }
+  }
+}

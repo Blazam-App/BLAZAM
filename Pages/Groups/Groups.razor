@@ -1,0 +1,145 @@
+﻿@page "/groups/search"
+
+@page "/groups/search/{SearchTermParameter}"
+
+@attribute [Authorize]
+@inherits DirectorySearchPage
+
+
+<AuthorizeView Roles="@(UserRoles.SearchGroups+","+UserRoles.SuperAdmin)">
+
+    <SetHeader>
+        <CascadingValue Value="Searcher">
+            <SearchPageHeader OnSubmit=SubmitSearch Text="Search Groups">
+                <ADGroupAutoComplete @bind-SearchTerm="@SearchTerm" />
+            </SearchPageHeader>
+        </CascadingValue>
+
+    </SetHeader>
+
+
+
+    @if (Searcher.Results != null && Searcher.Results.Count > 1)
+    {
+
+        <Row Width="Width.Is100">
+            <Column ColumnSize="ColumnSize.Is6">
+                Results found: @Searcher.Results.Count
+            </Column>
+            <Column ColumnSize="ColumnSize.Is6">
+                Time elapsed: @Searcher.SearchTime
+            </Column>
+        </Row>
+
+        <Virtualize Items="results.Cast<IADGroup>().ToArray()" TItem="IADGroup" Context="u" OverscanCount="30">
+            <ItemContent>
+                @if (u.CanRead)
+                {
+
+
+                    <Div Class="cursor-pointer" @onclick=@(()=>{ SubmitSearch(u.CanonicalName);}) Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+                        <Heading Margin="Margin.Is2.FromBottom">@u.GroupName</Heading>
+                        <Small>@u.DisplayName</Small>
+                    </Div>
+
+
+                }
+            </ItemContent>
+            <Placeholder>
+                <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+                    <Heading Margin="Margin.Is2.FromBottom">Loading...</Heading>
+                    <Small>Loading...</Small>
+                </Div>
+
+            </Placeholder>
+        </Virtualize>
+    }
+    else if (Searcher.Results != null && Searcher.Results.Count == 1)
+    {
+        var group = (IADGroup)Searcher.Results[0];
+        if (group.CanRead)
+        {
+            if (!group.NewEntry)
+                AuditLogger.Group.Searched(group);
+            <ViewGroup Group="group" />
+        }
+        else
+        {
+            <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
+
+        }
+    }
+    else if (LoadingData)
+    {
+        <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
+            <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
+        </LoadingIndicator>
+    }
+    else
+    {
+        <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
+
+    }
+
+
+</AuthorizeView>
+
+@code {
+    protected string ModelsTypeName { get; set; } = "Groups";
+    protected string SearchIcon { get; set; } = "fa-solid fa-users";
+
+
+    public override string SearchTermParameter
+    {
+        get => base.SearchTermParameter;
+        set
+        {
+            base.SearchTermParameter = value;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        BaseSearchUri = "/groups/search/";
+        await base.OnInitializedAsync();
+        Searcher.ResultsCollected += ((batch) =>
+             {
+                 results.AddRange(batch);
+
+                 InvokeAsync(StateHasChanged);
+             });
+        Searcher.OnSearchStarted += (() =>
+       {
+           InvokeAsync(StateHasChanged);
+       });
+        Searcher.OnSearchCompleted += (() =>
+       {
+           InvokeAsync(StateHasChanged);
+       });
+        Search();
+
+    }
+
+    public override async Task InvokeSearch()
+    {
+        Searcher.GeneralSearchTerm = SearchTermParameter;
+        Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.Group;
+        Searcher.ExactMatch = true;
+
+
+        await Searcher.SearchAsync<ADGroup, IADGroup>();
+        if (Searcher.Results.Count < 1)
+        {
+            Searcher.ExactMatch = false;
+            await Searcher.SearchAsync<ADGroup, IADGroup>();
+
+
+        }
+    }
+
+
+
+
+}

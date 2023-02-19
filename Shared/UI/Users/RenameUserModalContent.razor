@@ -1,0 +1,111 @@
+﻿@inherits AppModalContent
+<Div Background="Background.Light" TextColor="TextColor.Dark">
+<Section Title=@UserLocalization["Name"]>
+
+
+    @if (User.CanReadField(ActiveDirectoryFields.GivenName))
+    {
+        <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
+            <FieldLabel>
+                @UserLocalization["First Name"]
+            </FieldLabel>
+            <FieldBody>
+                <TextEdit @bind-Text="@User.GivenName" />
+
+            </FieldBody>
+        </Field>
+    }
+    @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
+    {
+        <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
+            <FieldLabel>
+                @UserLocalization["Middle Name"]
+            </FieldLabel>
+            <FieldBody>
+                <TextEdit @bind-Text="@User.MiddleName" />
+
+            </FieldBody>
+        </Field>
+    }
+    @if (User.CanReadField(ActiveDirectoryFields.SN))
+    {
+        <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
+            <FieldLabel>
+                @UserLocalization["Last Name"]
+            </FieldLabel>
+            <FieldBody>
+                <TextEdit @bind-Text="@User.Surname" />
+
+            </FieldBody>
+        </Field>
+    }
+    @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
+    {
+        <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
+            <FieldLabel>
+                @UserLocalization["Display Name"]
+            </FieldLabel>
+            <FieldBody>
+                <TextEdit Text="@User.DisplayName" TextChanged="DisplayNameChanged" />
+
+            </FieldBody>
+        </Field>
+    }
+    
+</Section>
+@if (User.CanEditField(ActiveDirectoryFields.SAMAccountName))
+{
+    <Field Horizontal>
+        <FieldLabel>
+            @UserLocalization["Username"]
+        </FieldLabel>
+        <FieldBody>
+            <TextEdit @bind-Text="@User.SamAccountName" />
+
+        </FieldBody>
+    </Field>
+}
+@if (User.CanEditField(ActiveDirectoryFields.Mail))
+{
+    <Field Horizontal>
+        <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+            @UserLocalization["Email Address"]
+        </FieldLabel>
+        <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
+            <TextEdit @bind-Text="@User.Email" />
+
+        </FieldBody>
+    </Field>
+}
+
+    <Button Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Changes"]</Button>
+</Div>
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    async Task DisplayNameChanged(string newName)
+    {
+        if (Directory.Users.FindUsersByContainerName(newName) != null)
+        {
+            User.DisplayName = newName;
+            User.CanonicalName = newName;
+        }
+        else
+        {
+            NotificationService.Error("That name already exists. Please choose a different Display Name", "Name Exists");
+        }
+    }
+    async Task SaveChanges()
+    {
+        NotificationService.Warning("The user has been renamed but changes must be saved.", "User renamed");
+        ModelChanged.InvokeAsync();
+        Close();
+
+    }
+
+}

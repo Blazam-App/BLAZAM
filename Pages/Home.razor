@@ -1,0 +1,61 @@
+﻿@attribute [Authorize]
+@inherits AppComponent
+@page "/Home"
+@using BLAZAM.Server.Shared.UI.Dashboard.Widgets;
+@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+@using BLAZAM.Server.Data.Services.Email;
+
+<DropContainer @ref=widgetContainer TItem="Widget" @bind-Items="widgets" ItemsFilter="@((item, dropZone) => item.Slot == dropZone)" ItemDropped="@ItemDropped" Flex="Flex.Wrap.Grow.Is1">
+    <ChildContent>
+        <DropZone TItem="Widget" Name="slot1" AllowReorder Border="Border.Rounded" Background="Background.Light" Margin="Margin.Is3" Flex="Flex.Grow.Is1" />
+        <DropZone TItem="Widget" Name="slot2" AllowReorder Border="Border.Rounded" Background="Background.Light" Margin="Margin.Is3" Flex="Flex.Grow.Is1" />
+        <DropZone TItem="Widget" Name="slot3" AllowReorder Border="Border.Rounded" Background="Background.Light" Margin="Margin.Is3" Flex="Flex.Grow.Is1" />
+
+    </ChildContent>
+    <ItemTemplate>
+        <Card Shadow="Shadow.Default" Margin="Margin.Is3.OnY" Background="Background.Secondary" TextColor="TextColor.Light">
+            <CardBody>
+                <DynamicComponent Type="@context.GetType()" />
+                <AppCloseButton Clicked=@(()=>{RemoveWidget(context);}) Position="Position.Absolute" style="right:10px;top:15px"/>
+            </CardBody>
+        </Card>
+    </ItemTemplate>
+</DropContainer>
+
+
+
+
+
+
+
+
+
+
+@code {
+    DropContainer<Widget> widgetContainer;
+    List<Widget> widgets = new List<Widget>();
+    private Task ItemDropped(DraggableDroppedEventArgs<AppComponent> dropItem)
+    {
+        return Task.CompletedTask;
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        widgets = new List<Widget>(Widgets.Available(UserStateService.CurrentUserState));
+
+        return base.OnInitializedAsync();
+    }
+
+    private Task ItemDropped(DraggableDroppedEventArgs<Widget> dropItem)
+    {
+        dropItem.Item.Slot = dropItem.DropZoneName;
+        return Task.CompletedTask;
+    }
+    async Task RemoveWidget(Widget widget)
+    {
+        widgets.Remove(widget);
+        await InvokeAsync(StateHasChanged);
+        widgetContainer.Refresh();
+    }
+    
+}

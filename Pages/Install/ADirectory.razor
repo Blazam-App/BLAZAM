@@ -1,0 +1,54 @@
+@page "/install/directory"
+@layout InstallLayout
+@inherits AppComponent
+@inject NavigationManager Nav;
+@{
+}
+<h3>Active Directory</h3>
+    <div>
+    <BLAZAM.Server.Shared.UI.Settings.DirectorySettings />
+
+        <BLAZAM.Server.Shared.UI.Settings.ActiveDirectoryStatusPanel DirectoryConnected="ShowNext"/>
+        <br/>
+        <br/>
+        <Button Color="Color.Success" @onclick="Refresh" Disabled="@disableNext">Proceed</Button>
+    </div>
+
+@code {
+    [Parameter]
+    public EventCallback StepCompleted { get; set; }
+
+    ADSettings currentSettings;
+
+    bool disableNext = true;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        var status = Directory.Status;
+        Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
+        try
+        {
+            currentSettings = Context.ActiveDirectorySettings.FirstOrDefault();
+        }
+        catch (InvalidOperationException)
+        {
+            Nav.NavigateTo("/oops");
+        }
+        catch (Exception)
+        {
+            //Ignoor oother exceptions
+        }
+       
+    }
+
+ 
+   
+   
+    private void ShowNext()
+    {
+        disableNext = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+}

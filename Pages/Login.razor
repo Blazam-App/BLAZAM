@@ -1,0 +1,91 @@
+﻿@page "/login"
+@using BLAZAM.Common.Data;
+@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+@using BLAZAM.Server.Data.Services.Email;
+@inherits ValidatedForm
+@layout LoginLayout
+@{
+    var username = new Dictionary<string, object> { { "name", "username" } };
+    var password = new Dictionary<string, object> { { "name", "password" } };
+    var redirect = new Dictionary<string, object> { { "name", "redirectUri" } };
+    //var redirectUrl = Nav.Uri.Substring(Nav.Uri.IndexOf("?returnUrl=")+11);
+    var redirectUrl = Nav.Uri;
+}
+<Heading Padding="Padding.Is4.FromBottom">
+
+
+    @DatabaseCache.ApplicationSettings?.AppName
+
+</Heading>
+
+
+
+<Div class="brand-icon">
+    <img src="@StaticAssets.ApplicationIcon" />
+
+</Div>
+<Form class="login-form" method="post" action="/signin" TextAlignment="TextAlignment.Center">
+    <Field>
+        <FieldLabel>Username</FieldLabel>
+        <FieldBody>
+            <TextEdit Autofocus TextAlignment="TextAlignment.Center" Attributes=username @bind-Text=LoginRequest.Username>
+                <Feedback>
+                    <ValidationError />
+                </Feedback>
+            </TextEdit>
+        </FieldBody>
+    </Field>
+    <Field>
+        <FieldLabel>Password</FieldLabel>
+        <FieldBody>
+            <TextEdit TextAlignment="TextAlignment.Center" Attributes=password Role="TextRole.Password" @bind-Text=LoginRequest.Password>
+                <Feedback>
+                    <ValidationError />
+                </Feedback>
+            </TextEdit>
+        </FieldBody>
+    </Field>
+    <input type="hidden" name="ReturnUrl" value="@redirectUrl" />
+    <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</Button>
+    <Copyright Margin=Margin.IsAuto.OnX Padding="Padding.Is5.FromTop" />
+</Form>
+
+<style>
+    .brand-icon {
+        position: fixed;
+        left: 5px;
+        top: 5px;
+    }
+
+        .brand-icon img {
+            max-width: 65px;
+            max-height: 65px;
+        }
+
+    .login-form input {
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+@code {
+    LoginRequest LoginRequest = new();
+    AppSettings AppSettings;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (Monitor.AppReady != ConnectionState.Up)
+            Monitor.OnAppReadyChanged += AppReadyChanged;
+        Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
+    }
+
+    async void AppReadyChanged(ConnectionState state)
+    {
+        if (state == ConnectionState.Up)
+            await InvokeAsync(StateHasChanged);
+
+
+    }
+
+
+}

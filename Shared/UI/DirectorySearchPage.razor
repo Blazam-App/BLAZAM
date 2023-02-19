@@ -1,0 +1,141 @@
+﻿@inherits AppComponent
+
+
+@if (Searcher.SearchState == SearchState.Collecting)
+{
+    <PageProgress Visible Color="Color.Secondary" />
+}
+
+@code {
+
+
+    string _searchTermParameter;
+    /// <summary>
+    /// The search term that comes from the URI
+    /// </summary>
+    [Parameter]
+    public virtual string? SearchTermParameter
+    {
+        get => _searchTermParameter; set
+        {
+            if (_searchTermParameter == value) return;
+            LoadingData = true;
+            Searcher?.Results.Clear();
+            _searchTermParameter = value;
+            SearchTerm = value;
+            Search();
+            //Searcher.GeneralSearchTerm = value;
+            if (_searchTermParameter.IsNullOrEmpty())
+                LoadingData = false;
+            InvokeAsync(StateHasChanged);
+
+        }
+    }
+
+
+    public ADSearch Searcher { get; set; }
+
+
+
+    bool _searchDisabledObjects;
+    /// <summary>
+    /// Indicates whether to search for disabled
+    /// Active Diretory Entries
+    /// </summary>
+    protected bool SearchDisabledObjects
+    {
+        get => _searchDisabledObjects; set
+        {
+            if (_searchDisabledObjects == value) return;
+            _searchDisabledObjects = value;
+            InvokeAsync(StateHasChanged);
+
+        }
+    }
+
+    /// <summary>
+    /// The search term that comes from the search text box
+    /// </summary>
+    public string? SearchTerm { get; set; }
+
+    /// <summary>
+    /// Standard search page initializer that copies the url search term to the
+    /// text search term if it is set.
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnInitializedAsync()
+    {
+
+        Searcher = new ADSearch();
+        Searcher.GeneralSearchTerm = SearchTermParameter;
+        base.OnInitializedAsync();
+        SearchDisabledObjects = UserStateService?.CurrentUserState?.UserSettings?.SearchDisabledUsers == true;
+
+
+
+        Searcher.OnSearchStarted += (() =>
+       {
+           InvokeAsync(StateHasChanged);
+       });
+        Searcher.OnSearchCompleted += (() =>
+       {
+           InvokeAsync(StateHasChanged);
+       });
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    protected virtual List<IDirectoryModel> results { get; set; } = new List<IDirectoryModel>();
+    protected string BaseSearchUri = "";
+
+    /// <summary>
+    /// Should not be called directly.
+    ///  <para>Always call <see cref="Search"/> when not user intitiated.</para>
+    ///   And <see cref="SubmitSearch"/> on user intitiation.
+    /// </summary>
+    /// <returns>A task of the search</returns>
+    /// <exception cref="ApplicationException"></exception>
+    public virtual async Task InvokeSearch()
+    {
+        throw new ApplicationException("Invoke search in Child component not implemented");
+    }
+    protected async Task SubmitSearch() => await SubmitSearch(null);
+    protected async Task SubmitSearch(string? searchTerm=null)
+    {
+        if (searchTerm != null)
+            SearchTerm = searchTerm;
+        
+
+        SearchTermParameter = SearchTerm;
+        Nav.NavigateTo(BaseSearchUri + SearchTerm);
+
+
+        //Search();
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    protected async Task Search()
+    {
+        results.Clear();
+
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        if (!SearchTermParameter.IsNullOrEmpty() && SearchTermParameter.Length > 2)
+        {
+            await InvokeSearch();
+
+        }
+        else
+        {
+            Searcher.Results.Clear();
+        }
+
+        LoadingData = false;
+
+        InvokeAsync(StateHasChanged);
+
+
+
+    }
+}

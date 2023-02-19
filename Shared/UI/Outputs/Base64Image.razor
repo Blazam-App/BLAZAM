@@ -1,0 +1,12 @@
+﻿@{
+    var base64 = "";
+    if(Data!=null)
+        base64 = Convert.ToBase64String(Data);
+
+}
+<Image Style="max-height:100%;max-width:100%;"  Source=@("data:image/png;base64,"+@base64)/>
+
+@code {
+    [Parameter]
+    public byte[] Data { get; set; }
+}

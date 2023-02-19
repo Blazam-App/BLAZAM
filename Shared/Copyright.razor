@@ -1,0 +1,12 @@
+﻿@inherits Blazorise.BaseComponent
+
+<Div style="cursor:pointer; width:max-content" Border=@Border Margin="@Margin" Padding=@Padding Height="@Height" Width=@Width Background="@Background" TextColor="TextColor.Muted">
+    <Tooltip Margin=Blazorise.Margin.IsAuto.OnX Style="width:max-content" Fade FadeDuration=500 Trigger=TooltipTrigger.Click Text="Written by Chris Jacobsen">
+        BLAZAM&#8482; @DateTime.Now.Year
+    </Tooltip>
+
+</Div>
+
+@code {
+
+}

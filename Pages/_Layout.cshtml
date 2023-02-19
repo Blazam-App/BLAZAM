@@ -1,0 +1,82 @@
+﻿@using BLAZAM.Common.Data.Database;
+@using Blazorise.Extensions;
+@using Microsoft.AspNetCore.Components.Web
+@namespace BLAZAM.Server.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="~/" />
+
+    <link rel="icon" type="image/x-icon" href=@StaticAssets.Favicon>
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="BLAZAM.styles.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+
+    <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
+    <link href="_content/Blazorise.Bootstrap5/blazorise.bootstrap5.css" rel="stylesheet" />
+    <link href="_content/Blazorise.TreeView/blazorise.treeview.css" rel="stylesheet" />
+    <link href="_content/Blazorise.LoadingIndicator/blazorise.loadingindicator.css" rel="stylesheet" />
+    <link href="_content/Blazorise.Snackbar/blazorise.snackbar.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+
+
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+</head>
+
+<body>
+    @RenderBody()
+    
+    <div id="blazor-error-ui">
+        @if (!Program.InDebugMode)
+        {
+            <strong>An error has occurred. This application may no longer respond until reloaded.</strong>
+        }
+        else
+        {
+            <strong>An unhandled exception has occurred.See browser dev tools for details.</strong >
+        }
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_framework/blazor.server.js"></script>
+
+    <!-- BLAZAM Dev Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-415DR9ZVBH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-415DR9ZVBH');
+        gtag('set', 'user_properties', {
+            app_version: '@Program.Version'
+        });
+    </script>
+
+    @if (DatabaseCache.ApplicationSettings?.AnalyticsId.IsNullOrEmpty()==false)
+    {
+    <!-- Blazam Installation Google tag (gtag.js) -->
+
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-415DR9ZVBH"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+
+            gtag('config', '@DatabaseCache.ApplicationSettings.AnalyticsId');
+            gtag('set', 'user_properties', {
+                app_version: '@Program.Version'
+            });
+        </script>
+    }
+  
+
+</body>
+</html>

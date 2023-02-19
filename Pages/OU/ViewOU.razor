@@ -1,0 +1,153 @@
+﻿@inherits DirectoryModelComponent
+
+<SetSubHeader>
+    <Bar Mode="BarMode.Horizontal"
+         CollapseMode="BarCollapseMode.Small"
+         Breakpoint="Breakpoint.Desktop"
+         NavigationBreakpoint="Breakpoint.Tablet"
+         ThemeContrast="ThemeContrast.Dark"
+         Padding="Padding.Is2.OnX"
+         Background="Background.Dark"
+         TextColor="TextColor.Light"
+         VerticalAlignment="VerticalAlignment.Middle">
+        <BarBrand Width=Width.Is100>
+            <Row>
+                <Column ColumnSize="ColumnSize.Is11.OnTablet.Is10">
+
+                    <Row>
+                        <Column ColumnSize="ColumnSize.Is4.OnTablet">
+                            @OU.CanonicalName
+
+
+                        </Column>
+                        <Column ColumnSize="ColumnSize.Is8.OnTablet">
+                            <Small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(OU.OU) </Small>
+
+                        </Column>
+                    </Row>
+                </Column>
+
+                
+                <Column Float=Float.End ColumnSize="ColumnSize.Is1.OnTablet.Is2">
+
+                    <Dropdown>
+                        <DropdownToggle Color="Color.Primary">
+                            <Icon Name=@("fa-gear") />
+                        </DropdownToggle>
+                        <DropdownMenu>
+                           
+                            @if (OU.CanEdit)
+                            {
+                                <DropdownItem Clicked="ToggleEditMode">Edit...</DropdownItem>
+                            }
+                           
+                            @if (OU.CanRename)
+                            {
+                                <DropdownItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</DropdownItem>
+
+                            }
+                            @if (OU.CanMove)
+                            {
+                                <DropdownItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</DropdownItem>
+                            }
+                            @if (OU.CanDelete)
+                            {
+                                <DropdownItem Clicked="@DeleteOU">Delete...</DropdownItem>
+                            }
+                        </DropdownMenu>
+                    </Dropdown>
+                </Column>
+            </Row>
+
+        </BarBrand>
+
+    </Bar>
+
+</SetSubHeader>
+
+
+
+<AppModal TextColor="TextColor.Dark" Title="Move To" @ref=@MoveToModal>
+    @if (MoveToModal.IsShown)
+    {
+        <BLAZAM.Server.Shared.UI.OU.MoveToOUModalContent DirectoryModel="OU" />
+    }
+</AppModal>
+<AppModal Title="Rename OU" @ref=@RenameModal>
+    @if (RenameModal.IsShown)
+    {
+        <RenameOUModalContent OU="OU" />
+    }
+</AppModal>
+
+
+@if(OU!=null){
+    <Card>
+        <CardHeader>
+            @OU.CanonicalName
+        </CardHeader>
+        <CardBody>
+        @foreach(var childOU in OU.Children)
+        {
+            <ViewOU OU=childOU/>
+        }
+    </CardBody>
+    </Card>
+}
+
+@if (OU.HasUnsavedChanges)
+{
+        <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
+}
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (!OU.NewEntry)
+            AuditLogger.OU.Searched(OU);
+    }
+    async void SaveChanges()
+    {
+        if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
+        {
+            OU.CommitChanges();
+            EditMode = false;
+            NotificationService.Success("The changes made to this ou have been saved.", "Changes Saved");
+            InvokeAsync(StateHasChanged);
+
+        }
+
+    }
+    async void DiscardChanges()
+    {
+        if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
+        {
+            OU.DiscardChanges();
+            EditMode = false;
+            InvokeAsync(StateHasChanged);
+
+        }
+
+    }
+    async Task DeleteOU()
+    {
+        if (await MessageService.Confirm("Are you sure you want to delete " + OU.CanonicalName + "?", "Delete OU"))
+        {
+            try
+            {
+                OU.Delete();
+                NotificationService.Success(OU.CanonicalName+ " has been deleted.", "OU Deleted");
+
+                OU = null;
+                Nav.NavigateTo("/ou/search");
+
+            }
+            catch (ApplicationException ex)
+            {
+                NotificationService.Error(ex.Message);
+            }
+       
+            InvokeAsync(StateHasChanged);
+        }
+    }
+}

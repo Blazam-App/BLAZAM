@@ -1,0 +1,43 @@
+﻿@inherits AppModal
+<Modal @ref="Modal">
+    <ModalContent Centered>
+        <ModalHeader>
+            <ModalTitle>Add User Group</ModalTitle>
+            <AppCloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Row>
+                <Field>
+                    <FieldLabel>Group Name</FieldLabel>
+                    <ADGroupAutoComplete SelectedGroup="selectedGroup" />
+                </Field>
+                <Field>
+                    <FieldLabel>Super User</FieldLabel>
+                    <Switch TValue="bool" @bind-Checked="@NewPrivilegeLevel.IsSuperAdmin" />
+                </Field>
+            </Row>
+            <Row>
+                <Button Color="Color.Primary" Clicked="AddGroup">Add</Button>
+
+            </Row>
+
+
+        </ModalBody>
+    </ModalContent>
+</Modal>
+@code {
+    IADGroup selectedGroup;
+    [Parameter]
+    public EventCallback GroupAdded { get; set; }
+
+    PrivilegeLevel NewPrivilegeLevel = new PrivilegeLevel();
+    private async void AddGroup()
+    {
+        NewPrivilegeLevel.GroupSID = selectedGroup.SID;
+        Context.PrivilegeLevel.Add(NewPrivilegeLevel);
+        await Context.SaveChangesAsync();
+        NewPrivilegeLevel = new PrivilegeLevel();
+        await Modal?.Hide();
+        GroupAdded.InvokeAsync();
+    }
+}

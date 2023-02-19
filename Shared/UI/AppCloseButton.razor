@@ -1,0 +1,30 @@
+﻿@inherits BaseComponent
+<Div id="@ElementId"
+     type="button"
+     disabled="@DisabledString"
+     aria-label="Close"
+     @attributes="@Attributes"
+     Background="Background"
+     TextColor="TextColor"
+     TextAlignment="TextAlignment"
+     Border="Border"
+     Display="Display"
+     Flex="Flex"
+     Float="Float"
+     Height="Height"
+     Width="Width"
+     Margin="Margin"
+     Overflow="Overflow"
+     Padding="Padding"
+     Position="Position"
+     Shadow="Shadow"
+     Style=@StyleNames>
+
+
+    <Icon Name=@("fa-times")
+          @onclick=@ClickHandler
+          style="text-align: center; vertical-align: middle; padding:0.5rem; cursor:pointer; width: 2em; height: 2em;border: 0; border-radius: 0.5rem;" />
+</Div>
+@code {
+
+}

@@ -1,0 +1,187 @@
+﻿@inject IDbContextFactory<DatabaseContext> DbFactory
+@inherits ValidatedForm
+
+
+<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
+  
+    <Row>
+        <Column ColumnSize="ColumnSize.Is4.OnDesktop">
+            <ActiveDirectoryStatusPanel />
+        </Column>
+        <Column ColumnSize="ColumnSize.Is8.OnDesktop">
+            <Form @onsubmit="Save">
+                <Validations @ref="Validation" Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
+
+                    <Row Margin=Margin.Is3>
+                        <Validation>
+                            <Field Horizontal>
+                                <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["Server"]</FieldLabel>
+                                <FieldBody ColumnSize="ColumnSize.Is10">
+                                    <TextEdit Placeholder="Can be your domain name in most environments" @bind-Text="@settings.ServerAddress">
+                                        <Feedback>
+                                            <ValidationError />
+                                        </Feedback>
+                                    </TextEdit>
+                                </FieldBody>
+                            </Field>
+                        </Validation>
+                    </Row>
+                    <Row Margin=Margin.Is3>
+                        <Validation>
+                            <Field Horizontal>
+                                <FieldLabel ColumnSize="ColumnSize.Is12.Is6.OnDesktop">
+                                    <Row Display=Display.Flex VerticalAlignment=VerticalAlignment.Middle>
+                                        <Column Margin=Margin.IsAuto.OnY ColumnSize="ColumnSize.Is12.Is2.OnWidescreen">
+                                            @SettingsLocalization["Port"]
+
+
+                                        </Column>
+                                        <Column ColumnSize="ColumnSize.Is12.Is10.OnWidescreen">
+
+                                            <FieldHelp>
+                                                The default port of 389 is the recommended port to use.
+                                                <Tooltip Display="Display.InlineBlock" Multiline Style="max-width:300px" Text="The application will automatically use an SSL
+                                            connection if the server's CA Certificate is a trusted CA on this web server. Using port 636 can work,
+                                            but may lead to unexpected behaviour of other services that listen to Active Directory changes.">
+                                                    <Icon Name="IconName.QuestionCircle" TextColor="TextColor.Info" />
+                                                </Tooltip>
+                                            </FieldHelp>
+                                        </Column>
+                                    </Row>
+
+                                </FieldLabel>
+                                <FieldBody Display=Display.Flex VerticalAlignment=VerticalAlignment.Middle ColumnSize="ColumnSize.Is12.Is6.OnDesktop">
+                                    <NumericEdit Margin=Margin.IsAuto.OnY @bind-Value="@settings.ServerPort">
+                                        <Feedback>
+                                            <ValidationError />
+                                        </Feedback>
+                                    </NumericEdit>
+                                </FieldBody>
+
+
+
+                            </Field>
+
+                        </Validation>
+                    </Row>
+                    <Row Margin=Margin.Is3>
+                        <Validation>
+                            <Field Horizontal>
+                                <FieldLabel ColumnSize="ColumnSize.Is4.OnDesktop">@SettingsLocalization["Username"]</FieldLabel>
+                                <FieldBody ColumnSize="ColumnSize.Is8">
+                                    <TextEdit name="username" Placeholder="A user with admin permissions on your intended BaseDN" @bind-Text="@settings.Username">
+                                        <Feedback>
+                                            <ValidationError />
+                                        </Feedback>
+                                    </TextEdit>
+                                </FieldBody>
+                            </Field>
+
+                        </Validation>
+                    </Row>
+                    <Row Margin=Margin.Is3>
+                        <Validation>
+                            <Field Horizontal>
+                                <FieldLabel ColumnSize="ColumnSize.Is4.OnDesktop">@SettingsLocalization["Password"]</FieldLabel>
+                                <FieldBody ColumnSize="ColumnSize.Is8">
+                                    <TextEdit name="password" Role="TextRole.Password" @bind-Text="@settings.Password">
+                                        <Feedback>
+                                            <ValidationError />
+                                        </Feedback>
+                                    </TextEdit>
+                                </FieldBody>
+                            </Field>
+
+                        </Validation>
+                    </Row>
+                    <Row Margin=Margin.Is3>
+                        <Validation>
+                            <Field Horizontal>
+                                <FieldLabel ColumnSize="ColumnSize.Is4.OnDesktop">@SettingsLocalization["UseTLS"]</FieldLabel>
+                                <FieldBody ColumnSize="ColumnSize.Is8">
+                                    <Switch TValue="bool" @bind-Checked="@settings.UseTLS" />
+                                </FieldBody>
+                            </Field>
+
+                        </Validation>
+                    </Row>
+                    <Row Margin=Margin.Is3>
+                        <Validation>
+                            <Field Horizontal>
+                                <FieldLabel ColumnSize="ColumnSize.Is4.OnDesktop">@SettingsLocalization["FQDN"]</FieldLabel>
+                                <FieldBody ColumnSize="ColumnSize.Is8">
+                                    <TextEdit name="fqdn" @bind-Text="@settings.FQDN">
+                                        <Feedback>
+                                            <ValidationError />
+                                        </Feedback>
+                                    </TextEdit>
+                                </FieldBody>
+                            </Field>
+
+                        </Validation>
+                    </Row>
+
+                    <Row Margin=Margin.Is3>
+                        <Validation>
+                            <Field Horizontal>
+                                <FieldLabel ColumnSize="ColumnSize.Is4.OnDesktop">@SettingsLocalization["BaseDN"]</FieldLabel>
+                                <FieldBody ColumnSize="ColumnSize.Is8">
+                                    <TextEdit name="baseDN" @bind-Text="@settings.ApplicationBaseDN">
+                                        <Feedback>
+                                            <ValidationError />
+                                        </Feedback>
+                                    </TextEdit>
+                                </FieldBody>
+                            </Field>
+
+                        </Validation>
+                    </Row>
+                    <Row Margin=Margin.Is3>
+                        <Button Disabled="saveDisabled" Type="ButtonType.Submit" Color="Color.Success">Save Changes</Button>
+                    </Row>
+                </Validations>
+            </Form>
+        </Column>
+    </Row>
+</LoadingIndicator>
+@code {
+
+    ADSettings settings = new ADSettings();
+    Validations? Validation;
+    bool _insert;
+    protected override async Task OnInitializedAsync()
+    {
+        Task.Run(async () =>
+        {
+            var set = Context.ActiveDirectorySettings.FirstOrDefault();
+            if (set != null)
+            {
+                settings = set;
+            }
+            else
+            {
+                _insert = true;
+            }
+            LoadingData = false;
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+    protected override async void Save()
+    {
+        if (await Validation.ValidateAll())
+        {
+            if (_insert)
+            {
+                Context.ActiveDirectorySettings.Add(settings);
+                _insert = false;
+            }
+            base.Save();
+        }
+
+    }
+
+}
+
+
+
+

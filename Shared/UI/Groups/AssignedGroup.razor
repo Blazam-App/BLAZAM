@@ -1,0 +1,104 @@
+﻿@inherits DirectoryModelComponent
+
+<Card Background="Background.Light" TextColor="TextColor.Dark">
+    @if (Group != null)
+    {
+        var linkAdd = "/groups/search/" + Group.GroupName;
+        <CardHeader>
+            <Paragraph Style="cursor:pointer;" Display=Display.InlineBlock onclick="@(()=>{
+            if(AllowNavigation)
+             Nav.NavigateTo(Group.SearchUri);
+            })">
+                @Group.GroupName
+
+            </Paragraph>
+            @if (AllowUnassign)
+            {
+                <Button Float=Float.End Color="Color.Danger" Clicked="RemoveFromGroup"><Icon Name="@("fa-times")" /></Button>
+            }
+        </CardHeader>
+    }
+
+    else
+    {
+        <CardHeader>
+            <Accordion>
+                <Collapse Visible="@collapse1Visible">
+                    <CollapseHeader>
+                        <Heading Size="HeadingSize.Is5">
+
+                            <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)">
+                                @Group.GroupName
+                                @if (AllowUnassign)
+                                {
+                                    <Button Color="Color.Danger" Clicked="RemoveFromGroup"><Icon Name="@("fa-times")" /></Button>
+
+                                }
+
+                            </Button>
+
+                        </Heading>
+
+                    </CollapseHeader>
+                    <CollapseBody>
+                        @if (collapse1Visible && Group.IsAGroupMember)
+                        {
+                            var deniedRead = false;
+
+                            @foreach (var group in Group.MemberOf)
+                            {
+                                if (group.CanRead)
+                                {
+                                    <AssignedGroup AllowUnassign=AllowUnassign AllowNavigation=AllowNavigation Group="group" Member="Group" />
+                                }
+                                else
+                                {
+                                    deniedRead = true;
+                                }
+                            }
+
+                            if (deniedRead)
+                            {
+                                <Column ColumnSize="ColumnSize.Is6.OnDesktop">
+                                    The user is in more groups you don't have access to
+                                </Column>
+                            }
+
+
+                        }
+                    </CollapseBody>
+                </Collapse>
+
+            </Accordion>
+        </CardHeader>
+
+    }
+</Card>
+
+@code {
+   
+    bool collapse1Visible = false;
+
+    [Parameter]
+    public bool AllowNavigation { get; set; } = true; 
+    
+    [Parameter]
+    public bool AllowUnassign { get; set; } = true;
+
+
+    [Parameter]
+    public IGroupableDirectoryModel Member { get; set; }
+
+    [Parameter]
+    public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
+    async Task RemoveFromGroup()
+    {
+
+        Member.UnassignFrom(Group);
+        NotificationService.Warning(Member.CanonicalName + " removed from " + Group.CanonicalName + ". Don't forget to save your changes.", "Sucess");
+
+        OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group));
+
+    }
+
+}
