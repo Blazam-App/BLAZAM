@@ -1,40 +1,44 @@
-name: Build and Publish Release
+name: Build and Release
+
 on:
   push:
     branches:
-      - Beta-Stable
+      - Beta-Nightly
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v2
-      - name: Setup .NET
+      - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.x
-      - name: Build Application
-        run: dotnet build --configuration Release
-      - name: Zip Artifacts
-        run: zip -r myapp.zip bin/Release/*
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build application
+        run: dotnet build -c Release
+      - name: Compress files
+        run: Compress-Archive -Path bin\Release\* -DestinationPath blazam-nightly.zip
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v1.0.0
-          release_name: Release 1.0.0
-          body: 'Release of version 1.0.0'
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: Automated release created by GitHub Actions
           draft: false
           prerelease: false
-      - name: Upload Artifacts
+      - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./myapp.zip
-          asset_name: myapp.zip
+          asset_path: blazam-nightly.zip
+          asset_name: blazam-nightly.zip
           asset_content_type: application/zip
