@@ -31,7 +31,7 @@ jobs:
           $versionInfo = (Get-Item $file).VersionInfo
           $fileVersion = $versionInfo.FileVersion
           $productVersion = $versionInfo.ProductVersion
-          echo "ASSEMBLY_VERSION=$fileVersion.$productVersion" >> $GITHUB_OUTPUT
+          echo "ASSEMBLY_VERSION=$fileVersion.$productVersion" >> $GITHUB_ENV
       - name: Show Version
         run: echo $ASSEMBLY_VERSION
       - name: Compress files
