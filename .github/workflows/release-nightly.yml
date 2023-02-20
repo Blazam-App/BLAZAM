@@ -1,10 +1,10 @@
-name: Publish and Release
+name: Publish and Release Nightly
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - Beta-Stable
+      - Beta-Nightly
     
 
 jobs:
@@ -44,7 +44,7 @@ jobs:
         
         with:
           tag_name: ${{ github.ref }}
-          release_name: ${{ env.ASSEMBLY_VERSION }}
+          release_name: Nightly - v${{ env.ASSEMBLY_VERSION }}
           body: Automated release created by GitHub Actions
           draft: true
           prerelease: false
@@ -55,6 +55,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: blazam-stable-v${{ env.ASSEMBLY_VERSION }}.zip
-          asset_name: blazam-stable-v${{ env.ASSEMBLY_VERSION }}.zip
+          asset_path: blazam-nightly-v${{ env.ASSEMBLY_VERSION }}.zip
+          asset_name: blazam-nightly-v${{ env.ASSEMBLY_VERSION }}.zip
           asset_content_type: application/zip
