@@ -47,7 +47,7 @@ jobs:
           release_name: Stable - v${{ env.ASSEMBLY_VERSION }}
           body: Automated release created by GitHub Actions
           draft: true
-          prerelease: false
+          prerelease: true
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
