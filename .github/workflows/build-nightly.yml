@@ -24,9 +24,11 @@ jobs:
       - name: Set assembly version as environment variable
         shell: pwsh
         run: |
-          $assemblyInfo = Get-Item -Path "bin\Publish\BLAZAM.dll"
-          $assemblyVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($assemblyInfo.FullName).ProductVersion
-          echo "##vso[task.setvariable variable=ASSEMBLY_VERSION]$assemblyVersion"
+          $file = "C:\Users\Chris\source\repos\Blazam-App\BLAZAM\BLAZAM\bin\Release\net6.0\BLAZAM.dll";
+          $versionInfo = (Get-Item $file).VersionInfo
+          $fileVersion = $versionInfo.FileVersion
+          $productVersion = $versionInfo.ProductVersion
+          echo "##vso[task.setvariable variable=ASSEMBLY_VERSION]$fileVersion.$productVersion"
       - name: Compress files
         run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-nightly.zip
       - name: Create Release
@@ -36,7 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ env.ASSEMBLY_VERSION }}
+          release_name: ${{ env.ASSEMBLY_VERSION }}
           body: Automated release created by GitHub Actions
           draft: true
           prerelease: false

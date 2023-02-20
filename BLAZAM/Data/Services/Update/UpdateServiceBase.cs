@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Octokit;
 using System.Collections;
 using System.Net;
 using System.Net.Http.Formatting;
@@ -120,6 +121,11 @@ namespace BLAZAM.Server.Data.Services.Update
 
         public async Task<Build?> GetLatestBuild()
         {
+            var client = new GitHubClient(new ProductHeaderValue("BLAZAM-APP"));
+            var releases = await client.Repository.Release.GetAll("Blazam-App", "Blazam");
+            var nightlyReleases = releases.Where(r => r.TagName.Contains("Beta-Nightly"));
+
+
             BuildHttpClient buildClient = BuildClient;
 
             var builds = await buildClient.GetBuildsAsync(projectGUID);

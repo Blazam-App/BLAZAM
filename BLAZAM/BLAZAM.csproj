@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.6.6</AssemblyVersion>
-		<Version>2023.02.20.0139</Version>
+		<Version>2023.02.20.1637</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -82,6 +82,7 @@
 		<PackageReference Include="Microsoft.VisualStudio.Services.Release.Client" Version="16.170.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.11" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Include="Octokit" Version="5.0.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
 		<PackageReference Include="SixLabors.ImageSharp.Web" Version="2.0.2" />
