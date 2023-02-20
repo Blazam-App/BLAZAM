@@ -33,7 +33,7 @@ jobs:
           $productVersion = $versionInfo.ProductVersion
           echo "ASSEMBLY_VERSION=$fileVersion.$productVersion" >> $GITHUB_ENV
       - name: Show Version
-        run: echo $ASSEMBLY_VERSION
+        run: echo $env.ASSEMBLY_VERSION
       - name: Compress files
         run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-nightly.zip
       - name: Create Release
@@ -41,7 +41,7 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          ASSEMBLY_VERSION: ${{ steps.get_version.outputs.ASSEMBLY_VERSION }}
+        
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ env.ASSEMBLY_VERSION }}
