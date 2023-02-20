@@ -31,8 +31,7 @@ jobs:
           $versionInfo = (Get-Item $file).VersionInfo
           $fileVersion = $versionInfo.FileVersion
           $productVersion = $versionInfo.ProductVersion
-          export ASSEMBLY_VERSION=$fileVersion.$productVersion
-          echo "::set-env name=ASSEMBLY_VERSION::$ASSEMBLY_VERSION"
+          echo "ASSEMBLY_VERSION=$fileVersion.$productVersion" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
       - name: Show Version
         run: echo $ASSEMBLY_VERSION
       - name: Compress files
