@@ -1,4 +1,4 @@
-name: Build and Release
+name: Publish and Release
 
 on:
   push:
@@ -18,9 +18,9 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build application
-        run: dotnet build -c Release
+        run: dotnet public -c Release -o bin\Publish
       - name: Compress files
-        run: Compress-Archive -Path bin\Release\* -DestinationPath blazam-nightly.zip
+        run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-nightly.zip
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
