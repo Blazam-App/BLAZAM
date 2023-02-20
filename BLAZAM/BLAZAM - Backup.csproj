@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.6.6</AssemblyVersion>
-		<Version>2023.02.18.1547</Version>
+		<Version>2023.02.19.1601</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -21,6 +21,8 @@
 
 	<ItemGroup>
 	  <None Remove="nssm.exe" />
+	  <None Remove="static\img\default_logo.png" />
+	  <None Remove="static\img\default_logo2.png" />
 	</ItemGroup>
 
 	
@@ -31,6 +33,12 @@
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
 	  <Content Include="nssm.exe">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="static\img\default_logo.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="static\img\default_logo2.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>
@@ -119,6 +127,9 @@
 	  <Content Update="appsettings.json">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </Content>
+	  <Content Update="wwwroot\favicon.ico">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -147,6 +158,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Update="license.rtf">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	  <None Update="updater\update.ps1">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>

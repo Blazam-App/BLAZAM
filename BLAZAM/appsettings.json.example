@@ -8,6 +8,10 @@
     }
   },
   "DebugMode": "true",
+  "InstallType": "IIS",
+  "ListeningAddress": "*",
+  "HTTPPort": "79",
+  "HTTPSPort": "442",
   "AllowedHosts": "*",
   "ConnectionStrings": {
     "SQLConnectionString": "Data Source=localhost;Database=BLAZAM;Persist Security Info=True;Integrated Security=False;Connection Timeout=10;TrustServerCertificate=True;"

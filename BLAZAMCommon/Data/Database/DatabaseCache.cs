@@ -16,11 +16,7 @@ namespace BLAZAM.Common.Data.Database
             get
             {
                 var appIcon = ApplicationSettings?.AppIcon;
-                if(appIcon == null)
-                {
-                        appIcon = GetDefaultIcon();
-                    
-                }
+               
                 return appIcon;
             }
         }
@@ -77,14 +73,6 @@ namespace BLAZAM.Common.Data.Database
 
         }
 
-        private static  byte[] GetDefaultIcon()
-        {
-            var defaultIconFilePath = Path.GetFullPath("static/img/default_logo2.png");
-            if (!File.Exists(defaultIconFilePath))
-                defaultIconFilePath = Path.GetFullPath("bin/Debug/net6.0/static/img/default_logo2.png");
-            var defaultIcon = File.ReadAllBytes(defaultIconFilePath);
-            return defaultIcon;
-        }
 
         private static async Task<T> UpdateProperty<T>(T originalProperty, Func<DatabaseContext, IQueryable<T>> value)
         {

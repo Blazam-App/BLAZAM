@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Reflection.Metadata;
-
 namespace BLAZAM.Server.Pages
 {
     public class StaticAssets : PageModel
@@ -52,11 +51,34 @@ namespace BLAZAM.Server.Pages
             });
 
         }
-        private byte[] AppIcon(int size = 250)
+        public static byte[] AppIcon(int size = 250)
         {
 
-            return DatabaseCache.AppIcon.ReizeRawImage(size);
+            var dbIcon = DatabaseCache.AppIcon;
+            if (dbIcon != null)
+            {
+                return dbIcon.ReizeRawImage(size);
+            }
+            else
+            {
+                var defIcon = GetDefaultIcon();
+                if (defIcon != null)
+                {
+                    return defIcon.ReizeRawImage(size);
+                }
+            }
+            return null;
         }
+
+
+        private static byte[]? GetDefaultIcon()
+        {
+            var defaultIconFilePath = Path.GetFullPath(Program.RootDirectory+@"static\img\default_logo2.png");
+            if (System.IO.File.Exists(defaultIconFilePath))
+                return System.IO.File.ReadAllBytes(defaultIconFilePath);
+            return null;
+        }
+
         private IActionResult GetImage(string data)
         {
             switch (data.ToLower())
