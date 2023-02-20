@@ -38,7 +38,7 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          ASSEMBLY_VERSION: ${{ steps.get_version.outputs.file_version }}.${{ steps.get_version.outputs.product_version }}
+          ASSEMBLY_VERSION: ${{ steps.get_version.outputs.fileVersion }}.${{ steps.get_version.outputs.productVersion }}
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ env.ASSEMBLY_VERSION }}
