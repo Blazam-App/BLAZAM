@@ -33,8 +33,8 @@ jobs:
           $productVersion = $versionInfo.ProductVersion
           echo "##vso[task.setvariable variable=ASSEMBLY_VERSION]$fileVersion.$productVersion"
           echo "ASSEMBLY_VERSION=$fileVersion.$productVersion" >> $GITHUB_ENV
-        env:
-          ASSEMBLY_VERSION: "VERSION READ ERROR"
+      - name: Show Version
+        run: echo $ASSEMBLY_VERSION
       - name: Compress files
         run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-nightly.zip
       - name: Create Release
@@ -42,10 +42,9 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          ASSEMBLY_VERSION: ${{ steps.get_version.outputs.fileVersion }}.${{ steps.get_version.outputs.productVersion }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: ${{ env.ASSEMBLY_VERSION }}
+          release_name: $ASSEMBLY_VERSION
           body: Automated release created by GitHub Actions
           draft: true
           prerelease: false
