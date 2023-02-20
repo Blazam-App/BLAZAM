@@ -9,14 +9,16 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: self-hosted
+   
+        
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.x
+      #- name: Setup .NET Core SDK
+      #  uses: actions/setup-dotnet@v1
+      #  with:
+      #    dotnet-version: 6.x
       - name: Restore dependencies
         run: dotnet restore
       - name: Build application
@@ -30,7 +32,9 @@ jobs:
           $fileVersion = $versionInfo.FileVersion
           $productVersion = $versionInfo.ProductVersion
           echo "##vso[task.setvariable variable=ASSEMBLY_VERSION]$fileVersion.$productVersion"
-      
+          echo "ASSEMBLY_VERSION=$fileVersion.$productVersion" >> $GITHUB_ENV
+        env:
+          ASSEMBLY_VERSION: "VERSION READ ERROR"
       - name: Compress files
         run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-nightly.zip
       - name: Create Release
