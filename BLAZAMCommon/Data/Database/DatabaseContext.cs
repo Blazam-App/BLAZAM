@@ -322,19 +322,16 @@ namespace BLAZAM.Common.Data.Database
             {
                 entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AppSettingsId] = 1"));
 
-                entity.Property(e => e.AppSettingsId).UseIdentityColumn();
             });
 
             modelBuilder.Entity<ADSettings>(entity =>
             {
                 entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[ADSettingsId] = 1"));
 
-                entity.Property(e => e.ADSettingsId).UseIdentityColumn();
             });
             modelBuilder.Entity<AuthenticationSettings>(entity =>
             {
                 entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AuthenticationSettingsId] = 1"));
-                entity.Property(e => e.AuthenticationSettingsId).UseIdentityColumn();
                 entity.HasData(new AuthenticationSettings { AuthenticationSettingsId = 1, AdminPassword = "password" });
             });
 
@@ -342,7 +339,6 @@ namespace BLAZAM.Common.Data.Database
             {
                 entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[EmailSettingsId] = 1"));
 
-                entity.Property(e => e.EmailSettingsId).UseIdentityColumn();
             });
 
             modelBuilder.Entity<EmailTemplate>(entity =>

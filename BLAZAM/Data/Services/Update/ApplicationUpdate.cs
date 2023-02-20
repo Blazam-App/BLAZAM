@@ -40,16 +40,20 @@ namespace BLAZAM.Server.Data.Services.Update
         /// <summary>
         /// The version of this update
         /// </summary>
-        public ApplicationVersion Version { get; set; }
+        public ApplicationVersion Version { get=>Release.Version; }
 
         /// <summary>
         /// The Azure pipeline build of this update
         /// </summary>
+        /// <remarks>Use <see cref="Release"/> instead</remarks>
+        [Obsolete("Use Release instead")]
         public Build Build { get; set; }
 
         /// <summary>
         /// The Azure pipeling build artifact for this update
         /// </summary>
+        /// <remarks>Use <see cref="Release"/> instead</remarks>
+        [Obsolete("Use Release instead")]
         public BuildArtifact? Artifact { get; set; }
 
         /// <summary>
@@ -141,6 +145,7 @@ namespace BLAZAM.Server.Data.Services.Update
             get { return Version.CompareTo(Program.Version) > 0; }
         }
 
+        internal IApplicationRelease Release { get; set; }
 
         public async Task<bool> Prepare()
         {
@@ -360,19 +365,19 @@ namespace BLAZAM.Server.Data.Services.Update
         public async Task<bool> Download()
         {
 
-            if (Artifact == null)
+            if (Release == null)
             {
                 return false;
             }
             Loggers.UpdateLogger.Debug("Attempting download of update " + Version);
-            Loggers.UpdateLogger.Debug("Download URL: " + Artifact.Resource.Url);
+            Loggers.UpdateLogger.Debug("Download URL: " + Release.DownloadURL);
             Loggers.UpdateLogger.Debug("Download Path: " + UpdateDownloadDirectory);
 
             cancellationTokenSource = new CancellationTokenSource();
             var progress = new FileProgress();
             using (var client = new HttpClient())
             {
-                using (var response = await client.GetAsync(Artifact.Resource.DownloadUrl, HttpCompletionOption.ResponseHeadersRead))
+                using (var response = await client.GetAsync(Release.DownloadURL, HttpCompletionOption.ResponseHeadersRead))
                 {
                     if (!response.IsSuccessStatusCode)
                     {
@@ -386,8 +391,7 @@ namespace BLAZAM.Server.Data.Services.Update
                     {
                         using (var streamToWriteTo = UpdateFile.OpenWriteStream())
                         {
-                            int totalBytes = int.Parse(Artifact.Resource.Properties["artifactsize"]);
-                            progress.ExpectedSize = (int)(totalBytes / expectedCompressionRatio);
+                            progress.ExpectedSize = (int)Release.ExpectedSize;
                             var buffer = new byte[4096];
                             int bytesRead;
                             int totalBytesRead = 0;
@@ -399,7 +403,7 @@ namespace BLAZAM.Server.Data.Services.Update
                                     await streamToWriteTo.WriteAsync(buffer, 0, bytesRead);
                                     totalBytesRead += bytesRead;
                                     progress.CompletedBytes = totalBytesRead;
-                                    double percent = (double)totalBytesRead / totalBytes * 100;
+                                    
                                     DownloadPercentageChanged?.Invoke(progress);
                                 }
                                 else

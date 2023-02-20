@@ -38,6 +38,20 @@
                     </FieldBody>
                 </Field>
             </Row>
+
+            <Row Margin=Margin.Is3>
+                <Field Horizontal ColumnSize="ColumnSize.Is6.OnDesktop" hidden="@(!settings.AutoUpdate)">
+                    <FieldLabel>@SettingsLocalization["Update Branch"]</FieldLabel>
+                    <FieldHelp>Choosing the Dev branch may result in application breakage</FieldHelp>
+                    <FieldBody>
+                        <Select TValue="string" @bind-SelectedValue="@settings.UpdateBranch">
+                            <SelectItem Value=@("Stable")>Stable</SelectItem>
+                            <SelectItem Value=@("Nightly")>Nightly</SelectItem>
+                            <SelectItem Value=@("Dev")>Dev</SelectItem>
+                        </Select>
+                    </FieldBody>
+                </Field>
+            </Row>
         }
        
         
