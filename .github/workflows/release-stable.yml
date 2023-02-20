@@ -43,7 +43,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         
         with:
-          tag_name: ${{ github.ref }}/{{ env.ASSEMBLY_VERSION }}
+          tag_name: Stable-v${{ env.ASSEMBLY_VERSION }}
           release_name: Stable - v${{ env.ASSEMBLY_VERSION }}
           body: Automated release created by GitHub Actions
           draft: true
