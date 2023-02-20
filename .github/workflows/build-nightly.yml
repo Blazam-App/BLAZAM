@@ -18,7 +18,7 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build application
-        run: dotnet public -c Release -o bin\Publish
+        run: dotnet publish -c Release -o bin\Publish
       - name: Compress files
         run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-nightly.zip
       - name: Create Release
