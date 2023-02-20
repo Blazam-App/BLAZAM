@@ -1,0 +1,40 @@
+name: Build and Publish Release
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.x
+      - name: Build Application
+        run: dotnet build --configuration Release
+      - name: Zip Artifacts
+        run: zip -r myapp.zip bin/Release/*
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v1.0.0
+          release_name: Release 1.0.0
+          body: 'Release of version 1.0.0'
+          draft: false
+          prerelease: false
+      - name: Upload Artifacts
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./myapp.zip
+          asset_name: myapp.zip
+          asset_content_type: application/zip
