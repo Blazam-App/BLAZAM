@@ -24,7 +24,7 @@ jobs:
       - name: Set assembly version as environment variable
         shell: pwsh
         run: |
-          $file = "C:\Users\Chris\source\repos\Blazam-App\BLAZAM\BLAZAM\bin\Release\net6.0\BLAZAM.dll";
+          $file = "bin\Publish\BLAZAM.dll";
           $versionInfo = (Get-Item $file).VersionInfo
           $fileVersion = $versionInfo.FileVersion
           $productVersion = $versionInfo.ProductVersion
