@@ -1,9 +1,10 @@
 name: Publish and Release
 
-on: 
+on:
+  workflow_dispatch:
   push:
     branches:
-      - Beta-Stable
+      - Beta-Nightly
     
 
 jobs:
@@ -20,6 +21,12 @@ jobs:
         run: dotnet restore
       - name: Build application
         run: dotnet publish -c Release -o bin\Publish
+      - name: Set assembly version as environment variable
+        shell: pwsh
+        run: |
+          $assemblyInfo = Get-Item -Path "bin\Publish\BLAZAM.dll"
+          $assemblyVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($assemblyInfo.FullName).ProductVersion
+          echo "##vso[task.setvariable variable=ASSEMBLY_VERSION]$assemblyVersion"
       - name: Compress files
         run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-nightly.zip
       - name: Create Release
@@ -29,9 +36,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: Release ${{ env.ASSEMBLY_VERSION }}
           body: Automated release created by GitHub Actions
-          draft: false
+          draft: true
           prerelease: false
       - name: Upload Release Asset
         id: upload-release-asset
