@@ -1,8 +1,9 @@
 name: Build and Publish Release
 on:
   push:
-    branches:
-      - Beta-Nightly
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
 jobs:
   build:
     runs-on: windows-latest
