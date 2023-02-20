@@ -18,6 +18,7 @@ namespace Setup
     {
         private const string SourcePath = @"..\BLAZAM\bin\Release\net6.0\publish\";
         public static string DestinationPath = @"%ProgramFiles%\Blazam Server\";
+        public static File service;
 
         static void Main()
         {
@@ -51,10 +52,9 @@ namespace Setup
 
         private static string BuildMsi()
         {
-            File service = new File(SourcePath + "blazam.exe");
 
             var project = new ManagedProject("BLAZAM",
-                              new ManagedAction(ApplyAppSettingsAction.Apply),
+                              new ManagedAction(ApplyAppSettingsAction.Apply, Return.check, When.After, Step.InstallFinalize, Condition.NOT_Installed),
                               new Dir(DestinationPath,
                                   new Files(SourcePath+"*"),
                                   service = new File(SourcePath + "blazam.exe")));
@@ -69,11 +69,12 @@ namespace Setup
             project.UpgradeCode = new Guid("6fe30b47-2577-43ad-9095-1861ba25889b");
             project.ProductId = Guid.NewGuid();
             project.EnableUninstallFullUI();
-            project.GenerateProductGuids();
+           // project.GenerateProductGuids();
 
             service.ServiceInstaller = new ServiceInstaller
             {
                 Name = "Blazam Server",
+                Account = ".\\LOCAL_SERVICE",
                 StartOn = SvcEvent.Install,
                 StopOn = SvcEvent.InstallUninstall_Wait,
                 RemoveOn = SvcEvent.Uninstall_Wait
@@ -87,6 +88,7 @@ namespace Setup
             project.ManagedUI.InstallDialogs.Add<Setup.WelcomeDialog>()
                                             .Add<Setup.LicenceDialog>()
                                             .Add<WixSharpSetup.InstallationType>()
+                                            .Add<WixSharpSetup.ServiceSettings>()
                                             .Add<WixSharpSetup.AspHostingDialog>()
                                             .Add<WixSharpSetup.NetCoreDialog>()
                                             .Add<Setup.InstallDirDialog>()

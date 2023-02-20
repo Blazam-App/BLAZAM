@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using Microsoft.Deployment.WindowsInstaller;
+using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
@@ -71,7 +72,7 @@ namespace Setup
                     {
                         // We are executed before any of the MSI actions are invoked so the INSTALLDIR (if set to absolute path)
                         // is not resolved yet. So we need to do it manually
-                        string installDir="";
+                        string installDir = "";
                         if (INSTALL_TYPE == "SERVICE")
                             installDir = session.GetDirectoryPath(installDirProperty);
                         if (INSTALL_TYPE == "IIS")
@@ -80,14 +81,14 @@ namespace Setup
                             session[installDirProperty] = installDir;
                         }
 
-                      
+
 
                         return installDir;
                     }
                     else
                     {
                         //INSTALLDIR set either from the command line or by one of the early setup events (e.g. UILoaded)
-                        
+
                         return installDirPropertyValue;
                     }
                 }
@@ -99,7 +100,7 @@ namespace Setup
             {
                 session["WixSharp_UI_INSTALLDIR"] = value;
                 Program.DestinationPath = value;
-                base.NotifyOfPropertyChange(() => InstallDirPath);
+                base.NotifyOfPropertyChange(() => installDirProperty);
             }
         }
 
@@ -116,7 +117,9 @@ namespace Setup
             => shell?.GoPrev();
 
         public void GoNext()
-            => shell?.GoNext();
+            {
+            Program.DestinationPath = InstallDirPath.Replace("%ProgramFiles%",Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86));
+            shell?.GoNext(); }
 
         public void Cancel()
             => shell?.Cancel();
