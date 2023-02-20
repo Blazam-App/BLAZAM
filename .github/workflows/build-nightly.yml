@@ -31,9 +31,10 @@ jobs:
           $versionInfo = (Get-Item $file).VersionInfo
           $fileVersion = $versionInfo.FileVersion
           $productVersion = $versionInfo.ProductVersion
-          echo "ASSEMBLY_VERSION=$fileVersion.$productVersion" >> $GITHUB_ENV
+          export ASSEMBLY_VERSION=$fileVersion.$productVersion
+          echo "::set-env name=ASSEMBLY_VERSION::$ASSEMBLY_VERSION"
       - name: Show Version
-        run: echo $env.ASSEMBLY_VERSION
+        run: echo $ASSEMBLY_VERSION
       - name: Compress files
         run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-nightly.zip
       - name: Create Release
