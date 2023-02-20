@@ -1,9 +1,10 @@
 name: Publish and Release
 
-on:
+on: 
   push:
     branches:
       - Beta-Stable
+    
 
 jobs:
   build:
