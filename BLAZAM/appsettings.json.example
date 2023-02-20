@@ -7,7 +7,7 @@
       "Microsoft.EntityFrameworkCore.Database.Command": "Warning"
     }
   },
-  "DebugMode": "true",
+  "DebugMode": "false",
   "InstallType": "IIS",
   "ListeningAddress": "*",
   "HTTPPort": "79",
