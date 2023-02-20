@@ -41,9 +41,10 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          ASSEMBLY_VERSION: ${{ steps.get_version.outputs.ASSEMBLY_VERSION }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: ${{ steps.get_version.outputs.ASSEMBLY_VERSION }}
+          release_name: ${{ env.ASSEMBLY_VERSION }}
           body: Automated release created by GitHub Actions
           draft: true
           prerelease: false
