@@ -31,8 +31,7 @@ jobs:
           $versionInfo = (Get-Item $file).VersionInfo
           $fileVersion = $versionInfo.FileVersion
           $productVersion = $versionInfo.ProductVersion
-          echo "##vso[task.setvariable variable=ASSEMBLY_VERSION]$fileVersion.$productVersion"
-          echo "ASSEMBLY_VERSION=$fileVersion.$productVersion" >> $GITHUB_ENV
+          echo "ASSEMBLY_VERSION=$fileVersion.$productVersion" >> $GITHUB_OUTPUT
       - name: Show Version
         run: echo $ASSEMBLY_VERSION
       - name: Compress files
@@ -44,7 +43,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: $ASSEMBLY_VERSION
+          release_name: ${{ steps.get_version.outputs.ASSEMBLY_VERSION }}
           body: Automated release created by GitHub Actions
           draft: true
           prerelease: false
