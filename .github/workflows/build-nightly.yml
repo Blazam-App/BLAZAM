@@ -2,7 +2,7 @@ name: Build and Publish Release
 on:
   push:
     branches:
-      - main
+      - Beta-Nightly
 jobs:
   build:
     runs-on: windows-latest
