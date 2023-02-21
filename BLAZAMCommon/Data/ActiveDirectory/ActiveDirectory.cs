@@ -213,7 +213,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 
                             if (ad != null && ad.FQDN != null && ad.Username != null)
                             {
-                                if (NetworkTools.PingHost(ad.ServerAddress))
+                                if (NetworkTools.IsPortOpen(ad.ServerAddress,ad.ServerPort))
                                 {
                                     try
                                     {
