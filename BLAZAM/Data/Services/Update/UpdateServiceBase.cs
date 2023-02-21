@@ -121,9 +121,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
         public async Task<Build?> GetLatestBuild()
         {
-            var client = new GitHubClient(new ProductHeaderValue("BLAZAM-APP"));
-            var releases = await client.Repository.Release.GetAll("Blazam-App", "Blazam");
-            var nightlyReleases = releases.Where(r => r.TagName.Contains("Beta-Nightly"));
+           
 
 
             BuildHttpClient buildClient = BuildClient;

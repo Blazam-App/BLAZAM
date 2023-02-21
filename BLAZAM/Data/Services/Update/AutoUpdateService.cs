@@ -45,7 +45,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 try
                 {
                     var fileVersion = new ApplicationVersion(file.Name);
-                    if (fileVersion.CompareTo(Program.Version) < 0)
+                    if (fileVersion.CompareTo(Program.Version) < 0 && file.SinceLastModified > TimeSpan.FromDays(1))
                     {
                         Loggers.UpdateLogger.Debug("Deleting old update file: " + file);
                         file.Delete();

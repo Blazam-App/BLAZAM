@@ -83,7 +83,7 @@ namespace BLAZAM
         /// A list of address strings eg: {"https://localhost:7900/","http://localhost:5900/"}
         /// </returns>
         internal static List<string> ListeningAddresses { get; private set; } = new List<string>();
-        
+
         static bool? installationCompleted = null;
         /// <summary>
         /// Indicates the Installation status
@@ -92,7 +92,7 @@ namespace BLAZAM
         {
             get
             {
-                return DatabaseCache.ApplicationSettings?.InstallationCompleted==true;
+                return DatabaseCache.ApplicationSettings?.InstallationCompleted == true;
                 if (installationCompleted == null) installationCompleted = File.Exists(InstallFlagFilePath);
 
                 return installationCompleted == true;
@@ -141,7 +141,7 @@ namespace BLAZAM
                 ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default,
                 Args = args
             });
-            
+
             //Set DebugMode flag from configuration
             InDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
 
@@ -149,7 +149,7 @@ namespace BLAZAM
             //Set application directories
             RootDirectory = new SystemDirectory(builder.Environment.ContentRootPath);
             TempDirectory = new SystemDirectory(Path.GetTempPath() + "Blazam\\");
-            AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)+"Blazam\\");
+            AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "Blazam\\");
 
 
             //Store the configuration so other pages/objects can easily access it
@@ -362,9 +362,8 @@ namespace BLAZAM
             AppInstance = builder.Build();
 
 
-            if (InstallationCompleted)
-                //Perform database auto update
-                ApplyDatabaseMigrations();
+            //Perform database auto update
+            ApplyDatabaseMigrations();
 
 
 
@@ -457,7 +456,7 @@ namespace BLAZAM
                 Oops.ErrorMessage = "Applicatin Directory Error";
                 Oops.DetailsMessage = "The application does not have write permission to the 'writable' directory.";
             }
-            catch(DirectoryNotFoundException ex)
+            catch (DirectoryNotFoundException ex)
             {
                 Writable = false;
 

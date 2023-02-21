@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using BLAZAM.Common.Data.Database;
 
@@ -49,5 +50,8 @@ namespace BLAZAM.Common.Models.Database
 
         public bool AutoUpdate { get; set; }
         public TimeSpan AutoUpdateTime { get; set; } = TimeSpan.FromHours(2);
+
+        [DefaultValue("Stable")]
+        public string UpdateBranch { get; set; } = "Stable";
     }
 }
