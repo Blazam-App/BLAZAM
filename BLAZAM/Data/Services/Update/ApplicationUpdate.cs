@@ -68,7 +68,7 @@ namespace BLAZAM.Server.Data.Services.Update
         /// <summary>
         /// The local path for staging directory path for this update
         /// </summary>
-        public SystemDirectory UpdateStagingDirectory { get => new SystemDirectory(StagingDirectory + Version.Version + "\\"); }
+        public SystemDirectory UpdateStagingDirectory { get => new SystemDirectory(StagingDirectory + Version.Version); }
 
         /// <summary>
         /// The local path within the staging directory from which
@@ -77,7 +77,7 @@ namespace BLAZAM.Server.Data.Services.Update
         /// <returns>
         /// eg: C:\inetpub\blazam\Writable\Update\Staging\0.5.4.2023.1.22.2245\_BLAZAM
         /// </returns>
-        public SystemDirectory UpdateSourcePath { get => new SystemDirectory(UpdateStagingDirectory + "_BLAZAM"); }
+        public SystemDirectory UpdateSourcePath { get => UpdateStagingDirectory; }
 
         /// <summary>
         /// The local path to the directory containing the downloaded update zip file

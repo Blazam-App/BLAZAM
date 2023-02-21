@@ -1,6 +1,6 @@
 ﻿#Name BLAZAM Updater Script
 #Purpose Provides a decoupled way to elevate, manage IIS server, and update web app
-#Version 1.0.0
+#Version 1.0.1
 
 
 
