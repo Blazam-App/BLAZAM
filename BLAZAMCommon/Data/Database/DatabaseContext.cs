@@ -66,7 +66,7 @@ namespace BLAZAM.Common.Data.Database
                         if (endIndex >= 0)
                         {
                             string dataSourceElement = connectionString.Substring(startIndex, endIndex - startIndex);
-                            string[] dataSourceParts = dataSourceElement.Split(':');
+                            string[] dataSourceParts = dataSourceElement.Split(',');
                             if (dataSourceParts.Length == 2)
                             {
                                 string portFragment = dataSourceParts[1];
@@ -100,7 +100,7 @@ namespace BLAZAM.Common.Data.Database
                             if (endIndex >= 0)
                             {
                                 string dataSourceElement = connectionString.Substring(startIndex, endIndex - startIndex);
-                                string[] dataSourceParts = dataSourceElement.Split(':');
+                                string[] dataSourceParts = dataSourceElement.Split(',');
                                 if (dataSourceParts.Length > 0)
                                 {
                                     string serverFragment = dataSourceParts[0];
@@ -322,19 +322,16 @@ namespace BLAZAM.Common.Data.Database
             {
                 entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AppSettingsId] = 1"));
 
-                entity.Property(e => e.AppSettingsId).UseIdentityColumn();
             });
 
             modelBuilder.Entity<ADSettings>(entity =>
             {
                 entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[ADSettingsId] = 1"));
 
-                entity.Property(e => e.ADSettingsId).UseIdentityColumn();
             });
             modelBuilder.Entity<AuthenticationSettings>(entity =>
             {
                 entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AuthenticationSettingsId] = 1"));
-                entity.Property(e => e.AuthenticationSettingsId).UseIdentityColumn();
                 entity.HasData(new AuthenticationSettings { AuthenticationSettingsId = 1, AdminPassword = "password" });
             });
 
@@ -342,7 +339,6 @@ namespace BLAZAM.Common.Data.Database
             {
                 entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[EmailSettingsId] = 1"));
 
-                entity.Property(e => e.EmailSettingsId).UseIdentityColumn();
             });
 
             modelBuilder.Entity<EmailTemplate>(entity =>
@@ -375,8 +371,11 @@ namespace BLAZAM.Common.Data.Database
         {
             if (ConnectionString != null)
             {
-                if (Pingable)
+
+                if (NetworkTools.IsPortOpen(Server, Port))
+
                 {
+
                     //Check for db connection
                     try
                     {
@@ -465,6 +464,7 @@ namespace BLAZAM.Common.Data.Database
 
                 }
                 return ConnectionStatus.ServerUnreachable;
+
             }
             return ConnectionStatus.IncompleteConfiguration;
         }

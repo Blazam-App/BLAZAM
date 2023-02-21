@@ -29,6 +29,10 @@
             return true;
         }
 
+        public DateTime LastModified { get => File.GetLastWriteTime(Path); }
+
+        public TimeSpan SinceLastModified { get => DateTime.Now - LastModified; }
+
         public void Delete()
         {
             File.Delete(Path);

@@ -7,7 +7,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - blazam
 on:
   push:
     branches:
-      - Beta-Stable
+      - Beta-Nightly
   workflow_dispatch:
 
 jobs:
