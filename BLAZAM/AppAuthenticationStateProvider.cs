@@ -271,15 +271,27 @@ namespace BLAZAM
             if (userRoles.Count > 0)
             {
                 //Build the base of the ClaimIdentity
-#pragma warning disable CS8604 // Possible null reference argument.
                 List<Claim> claims = new List<Claim>
                    {
                             new Claim(ClaimTypes.Sid, user.SID.ToSidString()),
-                           new Claim(ClaimTypes.Name, user.DisplayName),
-                           new Claim(ClaimTypes.GivenName, user.GivenName),
-                           new Claim(ClaimTypes.Surname, user.Surname),
+                           
                         };
-#pragma warning restore CS8604 // Possible null reference argument.
+                if (user.DisplayName != null)
+                {
+                    claims.Add(new Claim(ClaimTypes.Name, user.DisplayName));
+                }
+                else
+                {
+                    claims.Add(new Claim(ClaimTypes.Name, user.SamAccountName));
+
+                }
+                if(user.GivenName!=null)
+                    claims.Add(new Claim(ClaimTypes.GivenName, user.GivenName));
+                if(user.Surname!=null)
+                    claims.Add(new Claim(ClaimTypes.Surname, user.Surname));
+
+                
+                           
                 if (loginReq.Impersonation)
                 {
                     //Handle Impersonated login
