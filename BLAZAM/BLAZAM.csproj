@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.6.6</AssemblyVersion>
-		<Version>2023.02.21.0056</Version>
+		<Version>2023.02.21.1841</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -98,7 +98,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
-	  <ProjectReference Include="..\BLAZAMInstallerActions\BLAZAMInstallerActions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
