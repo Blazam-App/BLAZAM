@@ -46,7 +46,7 @@
         try
         {
             var context = DbFactory.CreateDbContext();
-            if (context.AppSettings.FirstOrDefault().InstallationCompleted==false)
+            if (context!=null && context?.AppSettings?.FirstOrDefault()?.InstallationCompleted!=true)
             {
                 NavManager.NavigateTo("/install");
             }
