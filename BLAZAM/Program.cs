@@ -105,6 +105,11 @@ namespace BLAZAM
         internal static bool InDebugMode;
 
         /// <summary>
+        /// Flag for checking if the application is running in Demo Mode.
+        /// </summary>
+        internal static bool InDemoMode;
+
+        /// <summary>
         /// Can be used for JWT Token signing
         /// </summary>
         internal static SymmetricSecurityKey TokenKey;
@@ -144,6 +149,7 @@ namespace BLAZAM
 
             //Set DebugMode flag from configuration
             InDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
+            InDemoMode = builder.Configuration.GetValue<bool>("DemoMode");
 
 
             //Set application directories
@@ -317,7 +323,7 @@ namespace BLAZAM
 
             //Provide encyption service
             //There's no benefit to filling memory with identical instances of this, so singleton
-            builder.Services.AddSingleton<EncryptionService>();
+            builder.Services.AddSingleton<IEncryptionService,EncryptionService>();
 
             //Provide database and active directory monitoring service
             //This serivice runs a Timer, and so singleton

@@ -9,7 +9,7 @@
     <BarBrand>
         <BarItem onclick=@(()=>{Nav.NavigateTo("/",true);})>
           
-                <Image class="app-icon" src="@StaticAssets.ApplicationIcon" />
+                <Image class="app-icon" src="@StaticAssets.ApplicationIconUri" />
                 <Div Margin=Margin.Is2.OnX TextAlignment="TextAlignment.Center">
                     @DatabaseCache.ApplicationSettings?.AppAbbreviation
                 </Div>

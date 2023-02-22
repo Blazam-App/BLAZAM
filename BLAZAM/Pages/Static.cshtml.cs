@@ -9,8 +9,8 @@ namespace BLAZAM.Server.Pages
     public class StaticAssets : PageModel
     {
 
-        public static string ApplicationIcon = "/static/img/appicon.png";
-        public static string Favicon = "/static/img/favicon.ico";
+        public static string ApplicationIconUri = "/static/img/appicon.png";
+        public static string FaviconUri = "/static/img/favicon.ico";
 
 
 
@@ -42,7 +42,7 @@ namespace BLAZAM.Server.Pages
                 switch (Method.ToLower())
                 {
                     case "img":
-                        return GetImage(Data);
+                        return GetImg(Data);
                    
 
                 }
@@ -79,7 +79,7 @@ namespace BLAZAM.Server.Pages
             return null;
         }
 
-        private IActionResult GetImage(string data)
+        public IActionResult GetImg(string data)
         {
             switch (data.ToLower())
             {

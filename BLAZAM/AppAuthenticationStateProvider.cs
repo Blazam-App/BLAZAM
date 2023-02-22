@@ -28,8 +28,10 @@ namespace BLAZAM
             PermissionHandler permissionHandler,
             IApplicationUserStateService userStateService,
             IHttpContextAccessor ca,
-            IDuoClientProvider dcp)
+            IDuoClientProvider dcp,
+            IEncryptionService enc)
         {
+            this._encryption = enc;
             this._directory = directoy;
             this._factory = factory;
             this._permissionHandler = permissionHandler;
@@ -41,6 +43,7 @@ namespace BLAZAM
 
         private IHttpContextAccessor _httpContextAccessor;
         private IDuoClientProvider _duoClientProvider;
+        private IEncryptionService _encryption;
         private IActiveDirectory _directory;
         private IDbContextFactory<DatabaseContext> _factory;
         private PermissionHandler _permissionHandler;
@@ -118,7 +121,8 @@ namespace BLAZAM
                 //Check admin credentials
                 if (settings != null && loginReq.Username.Equals("admin", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (loginReq.Password == settings.AdminPassword)
+                    var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
+                    if (loginReq.Password == adminPass)
                         result = await SetUser(this.GetLocalAdmin());
 
                 }
