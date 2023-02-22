@@ -127,19 +127,22 @@ namespace BLAZAM.Server.Data.Services.Update
             get
             {
                 return " -UpdateSourcePath '" + UpdateSourcePath + "' -WebAddress " + DatabaseCache.ApplicationSettings.AppFQDN + " -ApplicationDirectory '" + Program.RootDirectory + "'" +
-                   " -Username " + DatabaseCache.ActiveDirectorySettings?.Username + " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN + " -Password '" + DatabaseCache.ActiveDirectorySettings?.Password + "'";
+                   " -Username " + DatabaseCache.ActiveDirectorySettings?.Username + " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN + " -Password '" + Encryption.DecryptObject<string>(DatabaseCache.ActiveDirectorySettings?.Password) + "'";
             }
         }
 
-
-
-
+        public ApplicationUpdate()
+        {
+            encryption = new Encryption();
+        }
 
         public AppEvent<FileProgress> DownloadPercentageChanged { get; set; }
 
         bool downloaded = false;
         bool staged = false;
         bool backedUp = false;
+        private Encryption encryption;
+
         public bool Newer
         {
             get { return Version.CompareTo(Program.Version) > 0; }

@@ -1,24 +1,11 @@
-﻿@using BLAZAM.Server.Data;
-@using BLAZAM.Server.Shared.UI.Outputs
-@using Microsoft.EntityFrameworkCore;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
-@inject IDbContextFactory<DatabaseContext> dbFactory
-@inject IActiveDirectory directory
+﻿@using System.DirectoryServices;
+@inherits AppComponent
 <Card>
     <CardHeader>
-      Active Directory Connection Status
+        Active Directory Connection Status
     </CardHeader>
     <CardBody>
-        <Row>
-            <Column>
-                Server Online
-            </Column>
-            <Column>
-                <StatusCheck Status="_serverStatus" />
-
-            </Column>
-        </Row>
+      
         <Row>
             <Column>
                 Server Port Open
@@ -34,11 +21,26 @@
                 Credentials OK
             </Column>
             <Column>
-                <StatusCheck Status="_credStatus"/>
+                <StatusCheck Status="_credStatus" />
+            </Column>
+        </Row>
+
+        <Row>
+            <Column>
+                Encrypted Connection
+                @if (!_encryptedStatus)
+                {
+                    <br/>
+                    <Help>You may need to install the Active Directry CA</Help>
+                }
+            </Column>
+            <Column>
+                <StatusCheck Status="_encryptedStatus" />
+             
             </Column>
         </Row>
     </CardBody>
-    <Progress Value="100" Animated Striped Visibility=@showProgress/>
+    <Progress Value="100" Animated Striped Visibility=@showProgress />
 </Card>
 @{
 
@@ -47,10 +49,10 @@
 @code {
 
     [Parameter]
-    public EventCallback DirectoryConnected{ get; set; }
+    public EventCallback DirectoryConnected { get; set; }
 
 
-    bool _serverStatus;
+    bool _encryptedStatus;
     bool _portStatus;
     bool _credStatus;
     Blazorise.Visibility showProgress = Visibility.Visible;
@@ -69,38 +71,37 @@
 
     private async void UpdateStatus(object? state)
     {
-        if (directory.Status== DirectoryConnectionStatus.Connecting)
+        if (Directory.Status == DirectoryConnectionStatus.Connecting)
         {
             showProgress = Visibility.Default;
             await InvokeAsync(StateHasChanged);
 
         }
-        if (directory.Pingable)
-        {
-            _serverStatus = true;
-            if (directory.PortOpen)
-            {
-                _portStatus = true;
-                if (directory.Status == DirectoryConnectionStatus.OK)
-                {
-                    _credStatus = true;
 
-                }
-                else
+        if (Directory.PortOpen)
+        {
+            _portStatus = true;
+            if (Directory.Status == DirectoryConnectionStatus.OK)
+            {
+                _credStatus = true;
+                if ((Directory.DirectoryEntry.AuthenticationType & AuthenticationTypes.Signing) == AuthenticationTypes.Signing ||
+                    (Directory.DirectoryEntry.AuthenticationType | AuthenticationTypes.Encryption) == AuthenticationTypes.Encryption)
                 {
-                    _credStatus = false;
+                    _encryptedStatus = true;
                 }
             }
             else
             {
-                _portStatus = false;
+                _credStatus = false;
             }
         }
         else
         {
-            _serverStatus = false;
+            _portStatus = false;
         }
-        if (directory.Status == DirectoryConnectionStatus.Connecting)
+
+
+        if (Directory.Status == DirectoryConnectionStatus.Connecting)
         {
             showProgress = Visibility.Default;
 
@@ -114,9 +115,5 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    private Task StatusChanged()
-    {
-        DirectoryConnected.InvokeAsync();
-        return null;
-    }
+   
 }

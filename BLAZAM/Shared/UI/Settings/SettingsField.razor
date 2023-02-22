@@ -1,0 +1,25 @@
+<Row Margin=Margin.Is3.OnX.Is1.FromBottom>
+    <Field Horizontal>
+
+        <FieldLabel Margin=Margin.IsAuto.OnY ColumnSize="ColumnSize.Is2.OnDesktop">
+            @FieldLabel
+
+        </FieldLabel>
+        <FieldBody Margin=Margin.IsAuto.OnY ColumnSize="ColumnSize.Is10">
+           
+            @FieldBody
+            <FieldHelp>
+                @FieldHelp
+            </FieldHelp>
+        </FieldBody>
+    </Field>
+</Row>
+@code {
+
+    [Parameter]
+    public RenderFragment FieldLabel { get; set; }
+    [Parameter]
+    public RenderFragment FieldBody { get; set; }
+    [Parameter]
+    public RenderFragment FieldHelp { get; set; }
+}

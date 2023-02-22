@@ -6,23 +6,23 @@
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
 
+    <Row Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
+        <Heading>@SettingsLocalization["Email Settings"]</Heading>
+        <Form @onsubmit="Save">
 
-    <Validations Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
-        <Row Margin=Margin.Is3>
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["Email Enabled"]</FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is10">
-                    <Switch @bind-Checked="settings.Enabled" />
-                </FieldBody>
-            </Field>
+            <Validations Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
+                <SettingsField>
+                    <FieldLabel>@SettingsLocalization["Email Enabled"]</FieldLabel>
+                    <FieldBody>
+                        <Switch @bind-Checked="settings.Enabled" />
+                    </FieldBody>
+                </SettingsField>
 
-        </Row>
 
-        <Row Margin=Margin.Is3>
-            <Validation>
-                <Field Horizontal>
-                    <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["Admin bcc"]</FieldLabel>
-                    <Column ColumnSize="ColumnSize.Is10">
+                <Validation>
+                    <SettingsField>
+                        <FieldLabel>@SettingsLocalization["Admin bcc"]</FieldLabel>
+
                         <FieldHelp>
                             Addresses to blind copy all application emails that are sent.
                         </FieldHelp>
@@ -34,33 +34,28 @@
                                 </Feedback>
                             </TextEdit>
                         </FieldBody>
-                    </Column>
 
-                </Field>
-            </Validation>
 
-        </Row>
-        <Row Margin=Margin.Is3>
-            <Validation>
-                <Field Horizontal>
-                    <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["SMTP Server"]</FieldLabel>
-                    <FieldBody ColumnSize="ColumnSize.Is10">
+                    </SettingsField>
+                </Validation>
 
-                        <TextEdit @bind-Text="settings.SMTPServer">
-                            <Feedback>
-                                <ValidationError />
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
-                </Field>
-            </Validation>
-        </Row>
-        <Row Margin=Margin.Is3>
-            <Column ColumnSize="ColumnSize.IsAuto.OnDesktop">
                 <Validation>
-                    <Field Horizontal>
-                        <FieldLabel ColumnSize="ColumnSize.Is6.OnDesktop">@SettingsLocalization["SMTP Port"]</FieldLabel>
-                        <FieldBody ColumnSize="ColumnSize.Is6">
+                    <SettingsField>
+                        <FieldLabel>@SettingsLocalization["SMTP Server"]</FieldLabel>
+                        <FieldBody>
+
+                            <TextEdit @bind-Text="settings.SMTPServer">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </SettingsField>
+                </Validation>
+                <Validation>
+                    <SettingsField>
+                        <FieldLabel>@SettingsLocalization["SMTP Port"]</FieldLabel>
+                        <FieldBody>
 
                             <NumericEdit @bind-Value="settings.SMTPPort">
                                 <Feedback>
@@ -68,133 +63,117 @@
                                 </Feedback>
                             </NumericEdit>
                         </FieldBody>
-                    </Field>
+                    </SettingsField>
                 </Validation>
-            </Column>
-            <Column ColumnSize="ColumnSize.IsAuto.OnDesktop">
-                <Field Horizontal>
-                    <FieldLabel ColumnSize="ColumnSize.Is6.OnDesktop">@SettingsLocalization["Use TLS"]</FieldLabel>
-                    <FieldBody ColumnSize="ColumnSize.Is6">
+                <SettingsField>
+                    <FieldLabel>@SettingsLocalization["Use TLS"]</FieldLabel>
+                    <FieldBody>
                         <Switch TValue="bool" @bind-Checked="settings.UseTLS" />
                     </FieldBody>
-                </Field>
+                </SettingsField>
 
-            </Column>
-            <Column ColumnSize="ColumnSize.IsAuto.OnDesktop">
-                <Field Horizontal>
-                    <FieldLabel ColumnSize="ColumnSize.Is6.OnDesktop">@SettingsLocalization["Use SMTP Authentication"]</FieldLabel>
-                    <FieldBody ColumnSize="ColumnSize.Is6">
+                <SettingsField>
+                    <FieldLabel>@SettingsLocalization["Use SMTP Authentication"]</FieldLabel>
+                    <FieldBody>
                         <Switch TValue="bool" @bind-Checked="settings.UseSMTPAuth" />
                     </FieldBody>
-                </Field>
+                </SettingsField>
 
-            </Column>
-        </Row>
-        @if (settings.UseSMTPAuth)
-        {
-            <Row Margin=Margin.Is3>
+                @if (settings.UseSMTPAuth)
+                {
+                    <Validation>
+                        <SettingsField>
+                            <FieldLabel>@SettingsLocalization["SMTP Username"]</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="settings.SMTPUsername">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </SettingsField>
+                    </Validation>
+                    <Validation>
+                        <SettingsField>
+                            <FieldLabel>@SettingsLocalization["SMTP Password"]</FieldLabel>
+                            <FieldBody>
+
+                                <TextEdit @bind-Text="settings.SMTPPassword">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </SettingsField>
+                    </Validation>
+                }
                 <Validation>
-                    <Field Horizontal>
-                        <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["SMTP Username"]</FieldLabel>
-                        <FieldBody ColumnSize="ColumnSize.Is10">
-                            <TextEdit @bind-Text="settings.SMTPUsername">
+                    <SettingsField>
+                        <FieldLabel>@SettingsLocalization["From Address"]</FieldLabel>
+                        <FieldBody>
+
+                            <TextEdit @bind-Text="settings.FromAddress">
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
                             </TextEdit>
                         </FieldBody>
-                    </Field>
+                    </SettingsField>
                 </Validation>
-            </Row>
-            <Row Margin=Margin.Is3>
                 <Validation>
-                    <Field Horizontal>
-                        <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["SMTP Password"]</FieldLabel>
-                        <FieldBody ColumnSize="ColumnSize.Is10">
+                    <SettingsField>
+                        <FieldLabel>@SettingsLocalization["From Display Name"]</FieldLabel>
+                        <FieldBody>
 
-                            <TextEdit @bind-Text="settings.SMTPPassword">
+                            <TextEdit @bind-Text="settings.FromName">
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
                             </TextEdit>
                         </FieldBody>
-                    </Field>
+                    </SettingsField>
                 </Validation>
-            </Row>
-        }
-        <Row Margin=Margin.Is3>
-            <Validation>
-                <Field Horizontal>
-                    <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["From Address"]</FieldLabel>
-                    <FieldBody ColumnSize="ColumnSize.Is10">
+                <Validation>
+                    <SettingsField>
+                        <FieldLabel>@SettingsLocalization["Reply-To Address"]</FieldLabel>
+                        <FieldBody>
 
-                        <TextEdit @bind-Text="settings.FromAddress">
-                            <Feedback>
-                                <ValidationError />
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
-                </Field>
-            </Validation>
-        </Row>
-        <Row Margin=Margin.Is3>
-            <Validation>
-                <Field Horizontal>
-                    <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["From Display Name"]</FieldLabel>
-                    <FieldBody ColumnSize="ColumnSize.Is10">
-
-                        <TextEdit @bind-Text="settings.FromName">
-                            <Feedback>
-                                <ValidationError />
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
-                </Field>
-            </Validation>
-        </Row>
-        <Row Margin=Margin.Is3>
-            <Validation>
-                <Field Horizontal>
-                    <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["Reply-To Address"]</FieldLabel>
-                    <FieldBody ColumnSize="ColumnSize.Is10">
-
-                        <TextEdit @bind-Text="settings.ReplyToAddress">
-                            <Feedback>
-                                <ValidationError />
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
-                </Field>
-            </Validation>
-        </Row>
-        <Row Margin=Margin.Is3>
-            <Validation>
-                <Field Horizontal>
-                    <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["Reply-To Display Name"]</FieldLabel>
-                    <FieldBody ColumnSize="ColumnSize.Is10">
-
-                        <TextEdit @bind-Text="settings.ReplyToName">
-                            <Feedback>
-                                <ValidationError />
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
-                </Field>
-            </Validation>
-        </Row>
-        <Row Margin=Margin.Is3>
-            <Validations Model="testRecipient" StatusChanged="OnValidation">
-                <Validation Validator="ValidationRule.IsEmail">
-                    <TextEdit Disabled=@(!settings.Enabled) @bind-Text=testRecipient />
-                    <Button Disabled=@(!settings.Enabled && !settings.Valid()) @onclick="SendTestEmail" Color="Color.Success">Send Test Email</Button>
+                            <TextEdit @bind-Text="settings.ReplyToAddress">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </SettingsField>
                 </Validation>
+                <Validation>
+                    <SettingsField>
+                        <FieldLabel>@SettingsLocalization["Reply-To Display Name"]</FieldLabel>
+                        <FieldBody>
+
+                            <TextEdit @bind-Text="settings.ReplyToName">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </SettingsField>
+                </Validation>
+                <Validations Model="testRecipient" StatusChanged="OnValidation">
+                    <Validation Validator="ValidationRule.IsEmail">
+                        <TextEdit Disabled=@(!settings.Enabled) @bind-Text=testRecipient />
+                        <Button Disabled=@(!settings.Enabled && !settings.Valid()) @onclick="SendTestEmail" Color="Color.Success">Send Test Email</Button>
+                    </Validation>
+                </Validations>
+
+                <SettingsField>
+                    <FieldBody>
+                        <Button Disabled="saveDisabled" Type="ButtonType.Submit" Color="Color.Success">Save Changes</Button>
+                    </FieldBody>
+                </SettingsField>
             </Validations>
-        </Row>
-
-        <Row Margin=Margin.Is3>
-            <Button Disabled="saveDisabled" @onclick="Save" Color="Color.Success">Save Changes</Button>
-        </Row>
-    </Validations>
+        </Form>
+    </Row>
 </LoadingIndicator>
 @code {
     BLAZAM.Common.Models.Database.EmailSettings settings = new BLAZAM.Common.Models.Database.EmailSettings();

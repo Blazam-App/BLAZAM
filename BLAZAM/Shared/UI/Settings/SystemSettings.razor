@@ -1,19 +1,27 @@
 ﻿@inherits ValidatedForm
+<Row Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
+    <Heading>@SettingsLocalization["System Settings"]</Heading>
+    <Form @onsubmit="Save">
 
-<h3>SystemSettings</h3>
-<Row Margin=Margin.Is3>
-        <Field Horizontal ColumnSize="ColumnSize.Is6.OnDesktop">
-            <FieldLabel ColumnSize="ColumnSize.Is6.OnDesktop">@SettingsLocalization["Google Analytics ID"]</FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is6">
-                <TextEdit @bind-Text="@settings.AnalyticsId"/>
+        <SettingsField>
+            <FieldLabel>@SettingsLocalization["Google Analytics ID"]</FieldLabel>
+            <FieldBody>
+                <TextEdit @bind-Text="@settings.AnalyticsId" />
             </FieldBody>
-        </Field>
+        </SettingsField>
+        <SettingsField>
+            <FieldBody>
+                <Button Color="Color.Danger" Clicked=RestartApplication>Restart Web Application</Button>
 
+            </FieldBody>
+        </SettingsField>
+        <SettingsField>
+            <FieldBody>
+                <Button Disabled="saveDisabled" Type="ButtonType.Submit" Color="Color.Success">Save Changes</Button>
+            </FieldBody>
+        </SettingsField>
+    </Form>
 </Row>
-<Row Margin=Margin.Is3>
-    <Button @onclick="Save" Color="Color.Success">Save Changes</Button>
-</Row>
-<Button Color="Color.Danger" Clicked=RestartApplication>Restart Web Application</Button>
 @code {
     AppSettings settings = new AppSettings();
 
@@ -27,8 +35,8 @@
         });
     }
 
-    
-    
+
+
     [Inject] ApplicationManager applicationManager { get; set; }
 
     async Task RestartApplication()
@@ -39,6 +47,6 @@
         }
     }
 
-  
-    
+
+
 }
