@@ -21,13 +21,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory
     public class ActiveDirectoryContext : IDisposable, IActiveDirectory
     {
         public IEncryptionService Encryption { get; }
-
         public static ActiveDirectoryContext Instance;
 
         IADUser? _keepAliveUser { get; set; }
 
         private AuthenticationTypes _authType;
-        public DirectoryEntry? DirectoryEntry { get; private set; }
+        public DirectoryEntry? AppRootDirectoryEntry { get; private set; }
+        public DirectoryEntry RootDirectoryEntry { get; private set; }
+
         public DirectoryEntry GetDirectoryEntry(string? baseDN = null)
         {
             if (baseDN == null || baseDN == "")
@@ -37,10 +38,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             {
                 _authType = AuthenticationTypes.SecureSocketsLayer;
             }
-            return DirectoryEntry = new DirectoryEntry(
+            return new DirectoryEntry(
                 "LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + baseDN,
                 ConnectionSettings?.Username,
-                Encryption.DecryptObject<string>(ConnectionSettings?.Password),
+                 Encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 _authType
                 );
         }
@@ -222,14 +223,18 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                                     try
                                     {
 
-                                        DirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, Encryption.DecryptObject<string>(ad.Password), _authType);
+                                        AppRootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, Encryption.DecryptObject<string>(ad.Password), _authType);
+                                        RootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/"+ad.FQDN.FqdnToDN(), ad.Username, Encryption.DecryptObject<string>(ad.Password), _authType);
                                         //var nativeEntry = DirectoryEntry.NativeObject;
-                                        using (var authTest = new DirectorySearcher(DirectoryEntry, "(sAMAccountName=" + ad.Username + ")"))
+                                        var search = new ADSearch() { ObjectTypeFilter=ActiveDirectoryObjectType.User, SearchRoot = RootDirectoryEntry, SamAccountName = ad.Username, ExactMatch = true };
+                                        var results = search.Search<ADUser,IADUser>();
+                                 
+                                        using (var authTest = new DirectorySearcher(AppRootDirectoryEntry, "(sAMAccountName=" + ad.Username + ")"))
                                         {
                                             try
                                             {
                                                 var result = Users.FindUsersByString(ad.Username);
-                                                if (result.Count > 0)
+                                                if (results.Count > 0)
                                                     Status = DirectoryConnectionStatus.OK;
                                                 else
                                                     Status = DirectoryConnectionStatus.BadConfiguration;
