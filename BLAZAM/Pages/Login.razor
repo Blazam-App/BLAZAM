@@ -35,7 +35,7 @@
         <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Clicked=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); }) Color="Color.Primary">@AppLocalization["Custom Login"]</Button>
 
     }
-    @if (!Program.InDebugMode || DemoCustomLogin)
+    @if (!Program.InDemoMode || DemoCustomLogin)
     {
         <Field>
             <FieldLabel>Username</FieldLabel>
