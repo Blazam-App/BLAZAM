@@ -79,13 +79,13 @@ namespace BLAZAM
             return new ClaimsPrincipal(identity);
         }
 
-        private ClaimsPrincipal GetLocalAdmin()
+        private ClaimsPrincipal GetLocalAdmin(string name="admin")
         {
 
             var identity = new ClaimsIdentity(new[]
             {
                     new Claim(ClaimTypes. Sid, "1"),
-                    new Claim(ClaimTypes.Name, "admin"),
+                    new Claim(ClaimTypes.Name, name),
                     new Claim(ClaimTypes.Role, UserRoles.SuperAdmin ),
                     new Claim(ClaimTypes.Actor,"1")
                 }, AppAuthenticationTypes.LocalAuthentication);
@@ -126,9 +126,15 @@ namespace BLAZAM
                         result = await SetUser(this.GetLocalAdmin());
 
                 }
+                //Check if we're in demo mode and this is a demo login
+                else if (Program.InDemoMode && settings != null && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password=="demo")
+                {
+                    result = await SetUser(this.GetLocalAdmin("Demo"));
+
+                }
                 else
                 {
-                    //Login username is not "admin", so we'll try active directory
+                    //Login username is not "admin" or "demo" or we're not in demo mode, so we'll try active directory
                     var userClaim = await AttemptADLogin(loginReq);
                     //If active directory login/impersonation succeeded the userClaim will be popluated
                     if (userClaim != null && userClaim.Identity.IsAuthenticated)
