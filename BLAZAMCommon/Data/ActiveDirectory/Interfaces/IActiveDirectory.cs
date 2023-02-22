@@ -15,7 +15,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         bool Pingable { get; }
         bool PortOpen { get; }
         DirectoryConnectionStatus Status { get; }
-        DirectoryEntry? DirectoryEntry { get; }
+        DirectoryEntry? AppRootDirectoryEntry { get; }
         IADOUSearcher? OUs { get; }
         IADGroupSearcher? Groups { get; }
         IADUserSearcher? Users { get; }

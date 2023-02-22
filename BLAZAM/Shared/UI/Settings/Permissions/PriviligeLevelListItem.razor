@@ -36,7 +36,7 @@
                                 <Field>
                                     <FieldLabel>@AppLocalization["Group Name"]</FieldLabel>
                                     <FieldBody>
-                                        <Switch @bind-Checked="Level.IsSuperAdmin">Super User Group</Switch>
+                                        <Switch Disabled=Program.InDemoMode @bind-Checked="Level.IsSuperAdmin">Super User Group</Switch>
 
 
                                     </FieldBody>
