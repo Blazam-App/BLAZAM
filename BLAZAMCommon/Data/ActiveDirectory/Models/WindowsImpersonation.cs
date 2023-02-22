@@ -57,7 +57,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         public WindowsImpersonation()
         {
-
+            
         }
 
         public static T Run<T>(Func<T> task)
