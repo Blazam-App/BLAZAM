@@ -84,8 +84,8 @@
             if (Directory.Status == DirectoryConnectionStatus.OK)
             {
                 _credStatus = true;
-                if ((Directory.DirectoryEntry.AuthenticationType & AuthenticationTypes.Signing) == AuthenticationTypes.Signing ||
-                    (Directory.DirectoryEntry.AuthenticationType | AuthenticationTypes.Encryption) == AuthenticationTypes.Encryption)
+                if ((Directory.AppRootDirectoryEntry.AuthenticationType & AuthenticationTypes.Signing) == AuthenticationTypes.Signing ||
+                    (Directory.AppRootDirectoryEntry.AuthenticationType | AuthenticationTypes.Encryption) == AuthenticationTypes.Encryption)
                 {
                     _encryptedStatus = true;
                 }
