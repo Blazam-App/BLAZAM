@@ -3,7 +3,7 @@
 namespace BLAZAM.Server.Data.Services.Update
 {
     [Serializable]
-    internal class ApplicationUpdateException : Exception
+    public class ApplicationUpdateException : ApplicationException
     {
         public ApplicationUpdateException()
         {

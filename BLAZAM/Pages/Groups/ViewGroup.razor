@@ -108,17 +108,7 @@
                 @ULoc["Group Name"]
             </FieldLabel>
             <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@Group.CanonicalName" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Name)) />
-
-            </FieldBody>
-        </Field>
-
-        <Field Horizontal>
-            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                @ULoc["Description"]
-            </FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                <TextEdit @bind-Text="@Group.Description" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Description)) />
+                    <TextEdit @bind-Text="@Group.CanonicalName" Disabled />
 
             </FieldBody>
         </Field>
@@ -131,7 +121,7 @@
                 @ULoc["Account Name"]
             </FieldLabel>
             <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                <TextEdit @bind-Text="@Group.SamAccountName" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.SAMAccountName)) />
+                <TextEdit @bind-Text="@Group.SamAccountName" Disabled/>
 
             </FieldBody>
         </Field>

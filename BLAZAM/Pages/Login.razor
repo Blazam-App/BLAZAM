@@ -24,19 +24,11 @@
     <img src="@StaticAssets.ApplicationIconUri" />
 
 </Div>
-<Form class="login-form" method="post" action="/signin" TextAlignment="TextAlignment.Center">
-    @if (Program.InDemoMode && !DemoCustomLogin)
-    {
-                <TextEdit Autofocus TextAlignment="TextAlignment.Center" Attributes=username Text="demo" Display="Display.None"/>
-        <TextEdit TextAlignment="TextAlignment.Center" Attributes=password Role="TextRole.Password" Text="demo" Display="Display.None" />
-            <input type="hidden" name="ReturnUrl" value="@redirectUrl" />
 
-        <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</Button><br/>
-        <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Clicked=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); }) Color="Color.Primary">@AppLocalization["Custom Login"]</Button>
+@if (!Program.InDemoMode || DemoCustomLogin)
+{
+    <Form class="login-form" method="post" action="/signin" TextAlignment="TextAlignment.Center">
 
-    }
-    @if (!Program.InDemoMode || DemoCustomLogin)
-    {
         <Field>
             <FieldLabel>Username</FieldLabel>
             <FieldBody>
@@ -47,21 +39,42 @@
                 </TextEdit>
                 </FieldBody>
                 </Field>
-        <Field>
-            <FieldLabel>Password</FieldLabel>
-            <FieldBody>
+                <Field>
+                <FieldLabel>Password</FieldLabel>
+                <FieldBody>
                 <TextEdit TextAlignment="TextAlignment.Center" Attributes=password Role="TextRole.Password" @bind-Text=LoginRequest.Password>
-                    <Feedback>
-                        <ValidationError />
-                    </Feedback>
+                <Feedback>
+                    <ValidationError />
+                </Feedback>
                 </TextEdit>
-            </FieldBody>
-        </Field>
+                </FieldBody>
+                </Field>
+                <input type="hidden" name="ReturnUrl" value="@redirectUrl" />
+
+                <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</Button><br />
+                </Form>
+
+}
+@if (Program.InDemoMode)
+{
+    <Form class="login-form" method="post" action="/signin" TextAlignment="TextAlignment.Center">
+
+        <TextEdit Autofocus TextAlignment="TextAlignment.Center" Attributes=username Text="demo" Display="Display.None" />
+        <TextEdit TextAlignment="TextAlignment.Center" Attributes=password Role="TextRole.Password" Text="demo" Display="Display.None" />
         <input type="hidden" name="ReturnUrl" value="@redirectUrl" />
-        <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</Button>
-    }
-    <Copyright Margin=Margin.IsAuto.OnX Padding="Padding.Is5.FromTop" />
-</Form>
+
+        <Dropdown Margin=Margin.IsAuto.OnX.Is2.FromTop>
+        <Button Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</Button>
+        <DropdownToggle Color="Color.Primary" Split />
+            <DropdownMenu>
+                <DropdownItem Clicked=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</DropdownItem>
+            </DropdownMenu>
+        </Dropdown>
+
+    </Form>
+
+}
+<Copyright Margin=Margin.IsAuto.OnX Padding="Padding.Is5.FromTop" />
 
 <style>
     .brand-icon {

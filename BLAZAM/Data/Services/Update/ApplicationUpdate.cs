@@ -1,7 +1,6 @@
 ﻿using Microsoft.TeamFoundation.Build.WebApi;
 using System.IO.Compression;
 using BLAZAM.Common.Data.ActiveDirectory.Models;
-using BLAZAM.Common.Data;
 using Blazorise;
 using Microsoft.VisualStudio.Services.Common.CommandLine;
 using System.Diagnostics;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Build.Framework;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common;
+using BLAZAM.Common.Data.FileSystem;
 
 namespace BLAZAM.Server.Data.Services.Update
 {

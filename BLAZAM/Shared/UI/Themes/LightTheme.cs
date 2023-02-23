@@ -14,7 +14,7 @@ namespace BLAZAM.Server.Shared.UI.Themes
             _light = Color.WhiteSmoke.ToHex();
             _dark = "#001529";
             _primary = "#2261d3";
-            _secondary = "#2c4681";
+            _secondary = "#a9acb3";
             _info = "#46a9ef";
             _success = Color.ForestGreen.ToHex();
             _warning = Color.Gold.ToHex();

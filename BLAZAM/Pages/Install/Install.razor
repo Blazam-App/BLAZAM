@@ -170,7 +170,7 @@ else
                  selectedStep = "step1";
                  if (Context != null)
                  {
-                     var result = Context.TestConnection();
+                     var result = Context.Status;
                      if (result != DatabaseContext.ConnectionStatus.ServerUnreachable)
                      {
                          if (result == DatabaseContext.ConnectionStatus.OK)
@@ -213,7 +213,7 @@ else
                                                  if (currentSettings != null)
                                                  {
 
-                                                     if (Context.TestConnection() == DatabaseContext.ConnectionStatus.OK)
+                                                     if (Context.Status == DatabaseContext.ConnectionStatus.OK)
                                                      {
                                                          _step = 6;
                                                          selectedStep = "step6";
