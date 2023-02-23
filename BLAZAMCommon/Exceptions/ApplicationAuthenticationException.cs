@@ -3,7 +3,7 @@
 namespace BLAZAM.Common.Exceptions
 {
     [Serializable]
-    public class AuthenticationException : Exception
+    public class AuthenticationException : ApplicationException
     {
         public AuthenticationException()
         {

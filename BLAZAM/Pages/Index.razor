@@ -1,15 +1,9 @@
 ﻿@page "/"
-@using BLAZAM.Server.Background;
-@using BLAZAM.Server.Errors.Database;
 @layout MinLayout
-@using BLAZAM.Server.Shared.ResourceFiles;
-@using Microsoft.EntityFrameworkCore
-@using System.DirectoryServices
 
 @inject NavigationManager NavManager
 @inject IDbContextFactory<DatabaseContext> DbFactory
 @inject ConnMonitor tester
-@using Microsoft.Extensions.Localization
 @inject IStringLocalizer<AppLocalization> Localizer
 <h2>
     @Localizer["ApplicationStarting"]

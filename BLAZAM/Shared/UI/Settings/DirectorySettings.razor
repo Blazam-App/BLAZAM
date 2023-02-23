@@ -18,11 +18,25 @@
                         <SettingsField>
                             <FieldLabel>@SettingsLocalization["Server"]</FieldLabel>
                             <FieldBody>
-                                <TextEdit Placeholder="Can be your domain name in most environments" @bind-Text="@settings.ServerAddress">
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
+                                @if(Program.InDemoMode && UserStateService.CurrentUsername != "admin")
+                                {
+
+                                    <TextEdit Text="Private" Disabled>
+                                            <Feedback>
+                                                <ValidationError />
+                                            </Feedback>
+                                        </TextEdit>
+                                }
+                                else
+                                {
+
+                                    <TextEdit Placeholder="Can be your domain name in most environments" @bind-Text="@settings.ServerAddress">
+                                        <Feedback>
+                                            <ValidationError />
+                                        </Feedback>
+                                    </TextEdit>
+
+                                }
                             </FieldBody>
                         </SettingsField>
                     </Validation>
@@ -41,11 +55,25 @@
                                 </Tooltip>
                             </FieldHelp>
                             <FieldBody>
-                                <NumericEdit Margin=Margin.IsAuto.OnY @bind-Value="@settings.ServerPort">
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </NumericEdit>
+                                @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin")
+                                {
+                                    <NumericEdit Margin=Margin.IsAuto.OnY Value="0" Disabled>
+                                        <Feedback>
+                                            <ValidationError />
+                                        </Feedback>
+                                    </NumericEdit>
+                                }
+                                else
+                                {
+
+                                    <NumericEdit Margin=Margin.IsAuto.OnY @bind-Value="@settings.ServerPort">
+                                        <Feedback>
+                                            <ValidationError />
+                                        </Feedback>
+                                    </NumericEdit>
+
+                                }
+                             
                             </FieldBody>
 
 
