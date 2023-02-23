@@ -1,5 +1,14 @@
 ﻿@inherits LayoutComponentBase
-
+@using BLAZAM.Server.Background;
+@using BLAZAM.Server.Data;
+@using BLAZAM.Server.Errors.ActiveDirectory;
+@using BLAZAM.Server.Errors.Database;
+@using Microsoft.EntityFrameworkCore
+@using System.DirectoryServices
+@inject NavigationManager NavManager
+@inject IActiveDirectory directory
+@inject IDbContextFactory<DatabaseContext> DbFactory
+@inject ConnMonitor monitor
 <PageTitle>BLAZAM</PageTitle>
 
 <Layout Sider>

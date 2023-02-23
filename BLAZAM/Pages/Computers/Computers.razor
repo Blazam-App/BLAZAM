@@ -18,7 +18,13 @@
     </SetHeader>
 
 
-
+    @if (Program.InDemoMode)
+    {
+        <Alert Visible Background=Background.Info>
+        <AlertMessage Display="Display.InlineBlock">The demo does not have any computers to interact with, sorry...</AlertMessage>
+        <AppCloseButton Display="Display.InlineBlock" Float="Float.End"/>
+        </Alert>
+    }
     @if (Searcher.Results != null && Searcher.Results.Count > 1)
     {
 
@@ -81,7 +87,7 @@
 
     }
 
-
+   
 </AuthorizeView>
 
 @code {

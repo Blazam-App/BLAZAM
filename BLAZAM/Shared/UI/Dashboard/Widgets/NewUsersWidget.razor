@@ -8,11 +8,11 @@
         @foreach (var user in NewUsers)
         {
 
-            <Card Background="Background.Light" TextColor="TextColor.Dark" Style="cursor:pointer" @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
+            <Div Background="Background.Secondary" TextColor="TextColor.Light" Style="cursor:pointer" @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
 
 
                <UserListItem User="user"/>
-            </Card>
+            </Div>
 
         }
     </Div>

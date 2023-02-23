@@ -43,6 +43,11 @@
     {
         if (await MessageService.Confirm("Are you sure you want to restart the application? All connected users will be disconnected.", "Restart Application"))
         {
+            if (Program.InDemoMode && !UserStateService.CurrentUsername.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                NotificationService.Warning("Restarting the application is not allowed in the demo");
+                return;
+            }
             applicationManager.Restart();
         }
     }

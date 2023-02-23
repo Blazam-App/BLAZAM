@@ -17,7 +17,13 @@
 
     </SetHeader>
 
-
+    @if (Program.InDemoMode)
+    {
+        <Alert Visible Background=Background.Info>
+        <AlertMessage Display="Display.InlineBlock">Try searching Finance, Marketing, Share, ERP, Technology...</AlertMessage>
+        <AppCloseButton Display="Display.InlineBlock" Float="Float.End" />
+        </Alert>
+    }
 
     @if (Searcher.Results != null && Searcher.Results.Count > 1)
     {

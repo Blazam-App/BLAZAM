@@ -14,7 +14,13 @@
         </CascadingValue>
 
     </SetHeader>
-
+    @if (Program.InDemoMode)
+    {
+        <Alert Visible Background=Background.Info>
+        <AlertMessage Display="Display.InlineBlock">Try searching Moore, Howard, Evans, Manny...</AlertMessage>
+        <AppCloseButton Display="Display.InlineBlock" Float="Float.End" />
+        </Alert>
+    }
 
     @if (Searcher.Results.Count > 1)
     {
