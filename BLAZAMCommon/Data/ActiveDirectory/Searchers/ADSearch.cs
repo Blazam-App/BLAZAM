@@ -96,13 +96,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         public AppEvent OnSearchStarted { get; set; }
         public ActiveDirectoryObjectType? ObjectTypeFilter { get; set; }
         public bool? EnabledOnly { get; set; }
-        public int MaxResults { get; internal set; } = 5000;
+        public int MaxResults { get; set; } = 5000;
         public List<SearchResult> SearchResults { get; set; } = new();
         public List<IDirectoryModel> Results { get; set; } = new();
         public string LdapQuery { get; private set; }
         public TimeSpan SearchTime { get; set; }
         public bool SearchDeleted { get; set; } = false;
-        public string? MemberOf { get; internal set; }
+        public string? MemberOf { get; set; }
 
         public async Task<List<I>> SearchAsync<T, I>() where T : I, IDirectoryModel, new()
         {
@@ -110,6 +110,16 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             {
                 return Search<T, I>();
             });
+        }
+
+        public List<IDirectoryModel> Search()
+        {
+            return Search<DirectoryModel, IDirectoryModel>();
+        }
+
+        public async Task<List<IDirectoryModel>> SearchAsync()
+        {
+            return await SearchAsync<DirectoryModel, IDirectoryModel>();
         }
 
         /// <summary>
@@ -143,6 +153,11 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
                 switch (ObjectTypeFilter)
                 {
+                    case null:
+                        if (GeneralSearchTerm != null)
+                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(distinguishedName=" + GeneralSearchTerm + ")(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(proxyAddresses=*" + GeneralSearchTerm + "*))";
+                        break;
+
                     case ActiveDirectoryObjectType.Group:
                         searcher.Filter = "(&(objectCategory=group)(objectClass=group))";
                         if (GeneralSearchTerm != null)
@@ -220,7 +235,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                 if (SearchDeleted)
                     searcher.Tombstone = true;
                 //searcher.Asynchronous = true;
-                //se.SizeLimit = returnCount;
+                searcher.SizeLimit = MaxResults;
                 searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + FilterQuery + ")";
                 LdapQuery = searcher.Filter;
                 SearchTime = DateTime.Now - startTime;

@@ -1,14 +1,59 @@
-﻿@inherits AppComponentBase
+﻿@page "/search"
+@page "/search/{SearchTermParameter}"
+@inherits AppComponentBase
+<h1>Search</h1>
+<AuthorizeView Roles="@(UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
+
+    <SetSubHeader>
+        <CascadingValue Value="Searcher">
+
+            <SearchPageHeader OnSubmit=SubmitSearch Text="Search">
+                <ADAutoComplete @bind-SearchTerm="@SearchTerm" @bind-SearchDisabled=@SearchDisabledObjects />
+            </SearchPageHeader>
+        </CascadingValue>
+    </SetSubHeader>
 
 
-@if (Searcher.SearchState == SearchState.Collecting)
-{
-    <PageProgress Visible Color="Color.Secondary" />
-}
 
+
+    @if (Searcher.Results.Count > 1)
+    {
+        <Row Width="Width.Is100">
+            <Column ColumnSize="ColumnSize.Is6">
+                Results found: @Searcher.Results.Count
+            </Column>
+            <Column ColumnSize="ColumnSize.Is6">
+                Time elapsed: @Searcher.SearchTime
+            </Column>
+        </Row>
+
+        <Virtualize Items="results" TItem="IDirectoryModel" Context="u" OverscanCount="30">
+            <ItemContent>
+                @if (u.CanRead)
+                {
+
+
+                    <Div Class="cursor-pointer" @onclick=@(()=>{ SubmitSearch(u.CanonicalName);}) Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+                        <Heading Margin="Margin.Is2.FromBottom">@u.ObjectType</Heading>
+                        <Heading Margin="Margin.Is2.FromBottom">@u.CanonicalName</Heading>
+                        <Small>@u.SamAccountName</Small>
+                    </Div>
+
+
+                }
+            </ItemContent>
+            <Placeholder>
+                <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+                    <Heading Margin="Margin.Is2.FromBottom">Loading...</Heading>
+                    <Small>Loading...</Small>
+                </Div>
+
+            </Placeholder>
+        </Virtualize>
+    }
+
+</AuthorizeView>
 @code {
-
-
     string _searchTermParameter;
     /// <summary>
     /// The search term that comes from the URI
@@ -23,7 +68,7 @@
             Searcher?.Results.Clear();
             _searchTermParameter = value;
             SearchTerm = value;
-            Search();
+            PerformSearch();
             //Searcher.GeneralSearchTerm = value;
             if (_searchTermParameter.IsNullOrEmpty())
                 LoadingData = false;
@@ -68,6 +113,7 @@
 
         Searcher = new ADSearch();
         Searcher.GeneralSearchTerm = SearchTermParameter;
+
         base.OnInitializedAsync();
         SearchDisabledObjects = UserStateService?.CurrentUserState?.UserSettings?.SearchDisabledUsers == true;
 
@@ -81,33 +127,29 @@
        {
            InvokeAsync(StateHasChanged);
        });
+        Searcher.ResultsCollected += ((batch) =>
+             {
+                 results.AddRange(batch);
+                 InvokeAsync(StateHasChanged);
+             });
+
+        PerformSearch();
         await InvokeAsync(StateHasChanged);
 
     }
 
     protected virtual List<IDirectoryModel> results { get; set; } = new List<IDirectoryModel>();
-    protected string BaseSearchUri = "";
 
-    /// <summary>
-    /// Should not be called directly.
-    ///  <para>Always call <see cref="Search"/> when not user intitiated.</para>
-    ///   And <see cref="SubmitSearch"/> on user intitiation.
-    /// </summary>
-    /// <returns>A task of the search</returns>
-    /// <exception cref="ApplicationException"></exception>
-    public virtual async Task InvokeSearch()
-    {
-        throw new ApplicationException("Invoke search in Child component not implemented");
-    }
+
     protected async Task SubmitSearch() => await SubmitSearch(null);
-    protected async Task SubmitSearch(string? searchTerm=null)
+    protected async Task SubmitSearch(string? searchTerm = null)
     {
         if (searchTerm != null)
             SearchTerm = searchTerm;
-        
+
 
         SearchTermParameter = SearchTerm;
-        Nav.NavigateTo(BaseSearchUri + SearchTerm);
+        Nav.NavigateTo("/search/" + SearchTerm);
 
 
         //Search();
@@ -115,7 +157,7 @@
         InvokeAsync(StateHasChanged);
     }
 
-    protected async Task Search()
+    protected async Task PerformSearch()
     {
         results.Clear();
 
@@ -138,4 +180,24 @@
 
 
     }
+
+
+    public async Task InvokeSearch()
+    {
+        Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
+
+        Searcher.EnabledOnly = !SearchDisabledObjects;
+        Searcher.GeneralSearchTerm = SearchTermParameter;
+        Searcher.ObjectTypeFilter = null;
+        Searcher.ExactMatch = true;
+
+        await Searcher.SearchAsync<ADUser, IADUser>();
+        if (Searcher.Results.Count < 1)
+        {
+            Searcher.ExactMatch = false;
+            await Searcher.SearchAsync<ADUser, IADUser>();
+
+        }
+    }
+
 }
