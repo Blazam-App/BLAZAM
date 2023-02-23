@@ -25,28 +25,41 @@
 
 </Div>
 <Form class="login-form" method="post" action="/signin" TextAlignment="TextAlignment.Center">
-    <Field>
-        <FieldLabel>Username</FieldLabel>
-        <FieldBody>
-            <TextEdit Autofocus TextAlignment="TextAlignment.Center" Attributes=username @bind-Text=LoginRequest.Username>
+    @if (Program.InDemoMode && !DemoCustomLogin)
+    {
+                <TextEdit Autofocus TextAlignment="TextAlignment.Center" Attributes=username Text="demo" Display="Display.None"/>
+        <TextEdit TextAlignment="TextAlignment.Center" Attributes=password Role="TextRole.Password" Text="demo" Display="Display.None" />
+            <input type="hidden" name="ReturnUrl" value="@redirectUrl" />
+
+        <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</Button><br/>
+        <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Clicked=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); }) Color="Color.Primary">@AppLocalization["Custom Login"]</Button>
+
+    }
+    @if (!Program.InDemoMode || DemoCustomLogin)
+    {
+        <Field>
+            <FieldLabel>Username</FieldLabel>
+            <FieldBody>
+                <TextEdit Autofocus TextAlignment="TextAlignment.Center" Attributes=username @bind-Text=LoginRequest.Username>
                 <Feedback>
                     <ValidationError />
                 </Feedback>
-            </TextEdit>
-        </FieldBody>
-    </Field>
-    <Field>
-        <FieldLabel>Password</FieldLabel>
-        <FieldBody>
-            <TextEdit TextAlignment="TextAlignment.Center" Attributes=password Role="TextRole.Password" @bind-Text=LoginRequest.Password>
-                <Feedback>
-                    <ValidationError />
-                </Feedback>
-            </TextEdit>
-        </FieldBody>
-    </Field>
-    <input type="hidden" name="ReturnUrl" value="@redirectUrl" />
-    <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</Button>
+                </TextEdit>
+                </FieldBody>
+                </Field>
+        <Field>
+            <FieldLabel>Password</FieldLabel>
+            <FieldBody>
+                <TextEdit TextAlignment="TextAlignment.Center" Attributes=password Role="TextRole.Password" @bind-Text=LoginRequest.Password>
+                    <Feedback>
+                        <ValidationError />
+                    </Feedback>
+                </TextEdit>
+            </FieldBody>
+        </Field>
+        <input type="hidden" name="ReturnUrl" value="@redirectUrl" />
+        <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</Button>
+    }
     <Copyright Margin=Margin.IsAuto.OnX Padding="Padding.Is5.FromTop" />
 </Form>
 
@@ -69,6 +82,7 @@
     }
 </style>
 @code {
+    bool DemoCustomLogin = false;
     LoginRequest LoginRequest = new();
     AppSettings AppSettings;
     protected override async Task OnInitializedAsync()

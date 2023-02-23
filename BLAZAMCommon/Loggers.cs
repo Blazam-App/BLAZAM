@@ -31,7 +31,8 @@ namespace BLAZAM.Common
                     .WriteTo.File(logPath + @"system\system.txt", rollingInterval: RollingInterval.Hour, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}")
                     .WriteTo.Logger(lc =>
                     {
-                        lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
+                        lc.WriteTo.Console();
+                        //lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
                     })
 
                     .CreateLogger();
