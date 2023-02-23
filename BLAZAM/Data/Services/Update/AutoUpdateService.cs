@@ -106,15 +106,16 @@ namespace BLAZAM.Server.Data.Services.Update
             }
         }
 
-        private void ScheduleUpdate(TimeSpan updateTime, ApplicationUpdate latestUpdate)
+        private void ScheduleUpdate(TimeSpan updateTimeOfDay, ApplicationUpdate updateToInstall)
         {
-            if (ScheduledUpdate != latestUpdate)
+            bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall ;
+            if (ScheduledUpdate != updateToInstall)
             {
-                Loggers.UpdateLogger.Information("New update found: " + latestUpdate.Version);
+                Loggers.UpdateLogger.Information("New update found: " + updateToInstall.Version);
 
                 //Update availabled
                 var now = DateTime.Now;
-                ScheduledUpdateTime = new DateTime(now.Year, now.Month, now.Day, updateTime.Hours, updateTime.Minutes, updateTime.Seconds);
+                ScheduledUpdateTime = new DateTime(now.Year, now.Month, now.Day, updateTimeOfDay.Hours, updateTimeOfDay.Minutes, updateTimeOfDay.Seconds);
 
 
                 //Check if we're past the scheduled time this day
@@ -126,26 +127,30 @@ namespace BLAZAM.Server.Data.Services.Update
 
                 TimeSpan timeUntilUpdate = (ScheduledUpdateTime - now);
 
-                ScheduledUpdate = latestUpdate;
+                ScheduledUpdate = updateToInstall;
 
                 autoUpdateApplyTimer = new Timer(Update, null, (int)timeUntilUpdate.TotalMilliseconds, Timeout.Infinite);
                 Loggers.UpdateLogger.Information("Auto-update scheduled: " + timeUntilUpdate.TotalMinutes + "mins from now at " + ScheduledUpdateTime);
-                try
+                if (justScheduled)
                 {
-                    email.SendMessage(
-                        "Update Schedueled",
-                        "admin@blazam.org",
-                        (MarkupString)"Update Scheduled",
-                        (MarkupString)("The application has schedueled an update to version "
-                        + ScheduledUpdate.Version + " at " + ScheduledUpdateTime
-                        ));
-                }
-                catch (Exception ex)
-                {
-                    Loggers.UpdateLogger.Error("Error while sending auto update scheduled email", ex);
+                    Loggers.UpdateLogger.Debug("Update just scheduled, so sending notification email to admins");
 
-                }
+                    try
+                    {
+                        email.SendMessage(
+                            "Update Schedueled",
+                            "admin@blazam.org",
+                            (MarkupString)"Update Scheduled",
+                            (MarkupString)("The application has schedueled an update to version "
+                            + ScheduledUpdate.Version + " at " + ScheduledUpdateTime
+                            ));
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.UpdateLogger.Error("Error while sending auto update scheduled email", ex);
 
+                    }
+                }
 
                 OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
             }
