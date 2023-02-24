@@ -22,17 +22,20 @@ namespace BLAZAM.Common
             RequestLogger = SetupLogger(logPath+@"requests\requests.txt");
             DatabaseLogger = SetupLogger(logPath+@"database\db.txt");
             ActiveDirectryLogger = SetupLogger(logPath + @"activedirectory\activedirectory.txt");
-            UpdateLogger = SetupLogger(logPath + @"update\update.txt",RollingInterval.Day);
+            UpdateLogger = SetupLogger(logPath + @"update\update.txt",RollingInterval.Month);
 
             Log.Logger = new LoggerConfiguration()
                     .Enrich.FromLogContext()
 
 
-                    .WriteTo.File(logPath + @"system\system.txt", rollingInterval: RollingInterval.Hour, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}")
+                    .WriteTo.File(logPath + @"system\system.txt",
+                    rollingInterval: RollingInterval.Hour,
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}",
+                    retainedFileTimeLimit: TimeSpan.FromDays(30))
                     .WriteTo.Logger(lc =>
                     {
-                        lc.WriteTo.Console();
-                        //lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
+                        //lc.WriteTo.Console();
+                        lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
                     })
 
                     .CreateLogger();
@@ -46,7 +49,14 @@ namespace BLAZAM.Common
                //.WriteTo.File(WritablePath+@"\logs\log.txt")
                .WriteTo.File(logFilePath,
                rollingInterval: RollingInterval.Hour,
-   outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}")
+   outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}",
+   retainedFileTimeLimit:TimeSpan.FromDays(30))
+
+               .WriteTo.Logger(lc =>
+               {
+                   //lc.WriteTo.Console();
+                   lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
+               })
 
                .CreateLogger();
         }

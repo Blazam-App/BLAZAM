@@ -67,7 +67,7 @@ namespace BLAZAM.Common.Data.Database
 
 
                 }
-                throw new ApplicationException("Error getting server address from appconfig");
+                throw new DatabaseConnectionStringException("Error getting server address from appconfig");
 
             }
 
@@ -88,6 +88,14 @@ namespace BLAZAM.Common.Data.Database
                         string portFragment = dataSourceParts[1];
                         return int.Parse(portFragment);  // Outputs "serverPort"
                     }
+                    else if(dataSourceParts.Length == 1)
+                    {
+                        return 1433;
+                    }
+                    else
+                    {
+                        throw new ApplicationException("The server string has too many components in AppSettings");
+                    }
 
 
 
@@ -95,7 +103,7 @@ namespace BLAZAM.Common.Data.Database
 
 
                 }
-                throw new ApplicationException("Error getting server address from appconfig");
+                throw new DatabaseConnectionStringException("Error getting server port from appconfig");
 
             }
 

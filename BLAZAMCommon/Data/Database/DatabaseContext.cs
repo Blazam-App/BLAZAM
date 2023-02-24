@@ -21,7 +21,7 @@ namespace BLAZAM.Common.Data.Database
         /// <para>Usually in the Program.Main method before injecting the service.</para>
         /// </summary>
         public static DatabaseConnectionString? ConnectionString { get; set; }
-       
+
 
         /// <summary>
         /// Checks the realtime pingabillity and connectivity to the database right now
@@ -33,8 +33,8 @@ namespace BLAZAM.Common.Data.Database
                 return TestConnection();
             }
         }
-       
-      
+
+
         public enum ConnectionStatus
         {
             OK, ServerUnreachable,
@@ -290,77 +290,83 @@ namespace BLAZAM.Common.Data.Database
             if (ConnectionString != null)
             {
 
-                if (NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort))
 
+
+                //Check for db connection
+                try
                 {
 
-                    //Check for db connection
-                    try
+                    if (!NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort)) return ConnectionStatus.ServerUnreachable;
+
+
+                    Database.OpenConnection();
+
+
+                    //Check for tables
+                    if (AllTablesPresent())
                     {
-                        Database.OpenConnection();
+                        //Installation has been completed
 
+                        Database.CloseConnection();
 
-                        //Check for tables
-                        if (AllTablesPresent())
-                        {
-                            //Installation has been completed
-                           
-                            Database.CloseConnection();
-
-                            return ConnectionStatus.OK;
-                        }
-                        else
-                        {
-                            Database.CloseConnection();
-
-                            return ConnectionStatus.TablesMissing;
-                        }
-
-
-
+                        return ConnectionStatus.OK;
                     }
-                    catch (SqlException ex)
+                    else
                     {
-                        switch (ex.Number)
-                        {
-                            case 53:
-                                //Server unreachable
-                                return ConnectionStatus.ServerUnreachable;
+                        Database.CloseConnection();
 
-                            case 208:
-                                //Tables Missing
-                                return ConnectionStatus.TablesMissing;
-
-                            case 18456:
-                                //Database may be missing or permission issue
-
-                                return ConnectionStatus.DatabaseConnectionIssue;
-
-
-
-                        }
-
+                        return ConnectionStatus.TablesMissing;
                     }
 
 
-                    catch (RetryLimitExceededException ex)
-                    {
-                        //Couldn't connect to DB
-                        
-                        return ConnectionStatus.DatabaseConnectionIssue;
-
-                    }
-                    catch (Exception ex) { 
-                    
-
-                        //Installation not completed
-
-
-                    }
-                    throw new ApplicationException("Unknown error checking connecting to database. The port is open.");
 
                 }
-                return ConnectionStatus.ServerUnreachable;
+                catch (SqlException ex)
+                {
+                    switch (ex.Number)
+                    {
+                        case 53:
+                            //Server unreachable
+                            return ConnectionStatus.ServerUnreachable;
+
+                        case 208:
+                            //Tables Missing
+                            return ConnectionStatus.TablesMissing;
+
+                        case 18456:
+                            //Database may be missing or permission issue
+
+                            return ConnectionStatus.DatabaseConnectionIssue;
+
+
+
+                    }
+
+                }
+
+
+                catch (RetryLimitExceededException ex)
+                {
+                    //Couldn't connect to DB
+
+                    return ConnectionStatus.DatabaseConnectionIssue;
+
+                }
+                catch(DatabaseConnectionStringException ex)
+                {
+                    return ConnectionStatus.IncompleteConfiguration;
+                }
+                catch (Exception ex)
+                {
+                    
+
+                    //Installation not completed
+
+
+                }
+                throw new ApplicationException("Unknown error checking connecting to database. The port is open.");
+
+
 
             }
             return ConnectionStatus.IncompleteConfiguration;
