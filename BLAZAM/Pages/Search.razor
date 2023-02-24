@@ -214,7 +214,7 @@
     {
         Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
 
-        Searcher.EnabledOnly = !SearchDisabledObjects;
+        Searcher.EnabledOnly = !MainLayout.SearchDisabledObjects;
         Searcher.GeneralSearchTerm = SearchTermParameter;
         Searcher.ObjectTypeFilter = SearchObjectType;
         Searcher.ExactMatch = true;
