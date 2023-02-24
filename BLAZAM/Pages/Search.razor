@@ -1,17 +1,13 @@
 ﻿@page "/search"
 @page "/search/{SearchTermParameter}"
+@using BLAZAM.Server.Pages.Computers
+@using BLAZAM.Server.Pages.Groups
+@using BLAZAM.Server.Pages.OU
 @using BLAZAM.Server.Pages.Users
 @inherits AppComponentBase
 <AuthorizeView Roles="@(UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
 
-    <SetHeader>
-        <CascadingValue Value="Searcher">
-
-            <SearchPageHeader OnSubmit=SubmitSearch Text="Search">
-                <ADAutoComplete @bind-SearchTerm="@SearchTerm" @bind-SearchDisabled=@SearchDisabledObjects />
-            </SearchPageHeader>
-        </CascadingValue>
-    </SetHeader>
+  
     @if (Program.InDemoMode)
     {
         <Alert Visible Background=Background.Info>
@@ -39,7 +35,7 @@
                 {
 
 
-                    <Div Class="cursor-pointer" @onclick=@(()=>{ SubmitSearch(u.CanonicalName);}) Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+                    <Div Class="cursor-pointer" @onclick=@(()=>{MainLayout.SubmitSearch(u.CanonicalName);}) Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
                         <Heading Margin="Margin.Is2.FromBottom">@u.ObjectType</Heading>
                         <Heading Margin="Margin.Is2.FromBottom">@u.CanonicalName</Heading>
                         <Small>@u.SamAccountName</Small>
@@ -65,11 +61,16 @@
             switch (result.ObjectType)
             {
                 case ActiveDirectoryObjectType.User:
-
-
                     <ViewUser User="(IADUser)result" />
-
-
+                    break;
+                case ActiveDirectoryObjectType.Group:
+                    <ViewGroup Group="(IADGroup)result" />
+                    break;
+                case ActiveDirectoryObjectType.Computer:
+                    <ViewComputer Computer="(IADComputer)result" />
+                    break;
+                case ActiveDirectoryObjectType.OU:
+                    <ViewOU OU="(IADOrganizationalUnit)result" />
                     break;
             }
         }
@@ -78,7 +79,6 @@
             <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
 
         }
-        var user = (IADUser)Searcher.Results[0];
 
     }
     else if (LoadingData)
@@ -123,26 +123,13 @@
     public ADSearch Searcher { get; set; }
 
 
-
-    bool _searchDisabledObjects;
-    /// <summary>
-    /// Indicates whether to search for disabled
-    /// Active Diretory Entries
-    /// </summary>
-    protected bool SearchDisabledObjects
-    {
-        get => _searchDisabledObjects; set
-        {
-            if (_searchDisabledObjects == value) return;
-            _searchDisabledObjects = value;
-            InvokeAsync(StateHasChanged);
-
-        }
-    }
+    [CascadingParameter]
+    public MainLayout? MainLayout{ get; set; }
 
     /// <summary>
     /// The search term that comes from the search text box
     /// </summary>
+    [CascadingParameter]
     public string? SearchTerm { get; set; }
 
     /// <summary>
@@ -157,7 +144,6 @@
         Searcher.GeneralSearchTerm = SearchTermParameter;
 
         base.OnInitializedAsync();
-        SearchDisabledObjects = UserStateService?.CurrentUserState?.UserSettings?.SearchDisabledUsers == true;
 
 
 
@@ -183,21 +169,7 @@
     protected virtual List<IDirectoryModel> results { get; set; } = new List<IDirectoryModel>();
 
 
-    protected async Task SubmitSearch() => await SubmitSearch(null);
-    protected async Task SubmitSearch(string? searchTerm = null)
-    {
-        if (searchTerm != null)
-            SearchTerm = searchTerm;
-
-
-        SearchTermParameter = SearchTerm;
-        Nav.NavigateTo("/search/" + SearchTerm);
-
-
-        //Search();
-
-        InvokeAsync(StateHasChanged);
-    }
+   
 
     protected async Task PerformSearch()
     {
@@ -228,7 +200,7 @@
     {
         Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
 
-        Searcher.EnabledOnly = !SearchDisabledObjects;
+        Searcher.EnabledOnly = !MainLayout.SearchDisabledObjects;
         Searcher.GeneralSearchTerm = SearchTermParameter;
         Searcher.ObjectTypeFilter = null;
         Searcher.ExactMatch = true;
