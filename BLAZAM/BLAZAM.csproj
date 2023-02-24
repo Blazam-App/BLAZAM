@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.6.6</AssemblyVersion>
-		<Version>2023.02.23.1354</Version>
+		<Version>2023.02.24.1244</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -44,16 +44,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blazorise" Version="1.2.0" />
-		<PackageReference Include="Blazorise.Bootstrap" Version="1.2.0" />
-		<PackageReference Include="Blazorise.Bootstrap5" Version="1.2.0" />
-		<PackageReference Include="Blazorise.Components" Version="1.2.0" />
-		<PackageReference Include="Blazorise.Cropper" Version="1.2.0" />
-		<PackageReference Include="Blazorise.DataGrid" Version="1.2.0" />
-		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.0" />
-		<PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.0" />
-		<PackageReference Include="Blazorise.RichTextEdit" Version="1.2.0" />
-		<PackageReference Include="Blazorise.TreeView" Version="1.1.7" />
+		<PackageReference Include="Blazorise" Version="1.2.1" />
+		<PackageReference Include="Blazorise.Bootstrap" Version="1.2.1" />
+		<PackageReference Include="Blazorise.Bootstrap5" Version="1.2.1" />
+		<PackageReference Include="Blazorise.Components" Version="1.2.1" />
+		<PackageReference Include="Blazorise.Cropper" Version="1.2.1" />
+		<PackageReference Include="Blazorise.DataGrid" Version="1.2.1" />
+		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.1" />
+		<PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.1" />
+		<PackageReference Include="Blazorise.RichTextEdit" Version="1.2.1" />
+		<PackageReference Include="Blazorise.TreeView" Version="1.2.1" />
 		<PackageReference Include="BlazorTemplater" Version="1.5.1" />
 		<PackageReference Include="Cassia" Version="2.0.0.60" />
 		<PackageReference Include="Core.System.Configuration.Install" Version="1.1.0" />
