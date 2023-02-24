@@ -323,7 +323,7 @@ namespace BLAZAM
 
             //Provide encyption service
             //There's no benefit to filling memory with identical instances of this, so singleton
-            builder.Services.AddSingleton<IEncryptionService,EncryptionService>();
+            builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 
             //Provide database and active directory monitoring service
             //This serivice runs a Timer, and so singleton
@@ -472,24 +472,29 @@ namespace BLAZAM
 
         }
 
-        internal static bool ApplyDatabaseMigrations()
+        internal static async Task<bool> ApplyDatabaseMigrations()
         {
-            try
+            return await Task.Run(() =>
             {
-                using (var scope = AppInstance.Services.CreateScope())
-                {
-                    var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-                    if (context.Database.GetPendingMigrations().Count() > 0)
-                        context.Database.Migrate();
 
+                try
+                {
+                    using (var scope = AppInstance.Services.CreateScope())
+                    {
+                        var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+                        if (context.Database.GetPendingMigrations().Count() > 0)
+                            context.Database.Migrate();
+
+                    }
+                    return true;
                 }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
-                return false;
-            }
+                catch (Exception ex)
+                {
+                    Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
+                    return false;
+                }
+            });
+
         }
 
     }
