@@ -14,20 +14,20 @@
                         FreeTyping>
             <ItemContent>
                 <Row Padding="Padding.Is0" TextWeight="TextWeight.Bold">
-                    
+
                     @context?.Value?.ObjectType
-                    
+
 
                 </Row>
                 <Row Padding="Padding.Is0" TextWeight="TextWeight.Bold">
                     <Small>
-                    @context?.Value?.CanonicalName
+                        @context?.Value?.CanonicalName
                     </Small>
 
                 </Row>
                 <Row Padding="Padding.Is0">
                     <Small>
-                    @context.Text
+                        @context.Text
                     </Small>
                 </Row>
             </ItemContent>
@@ -59,12 +59,8 @@
     }
 </Row>
 
-@code{
-    /// <summary>
-    /// Sets the autocomplete search to only return the following object types. If null returns all object types
-    /// </summary>
-    [Parameter]
-    public ActiveDirectoryObjectType? ObjectType { get; set; } = null;
+@code {
+ 
 
     IEnumerable<IDirectoryModel> _searchResults = new List<IDirectoryModel>();
     bool _searchDisabled;
@@ -80,6 +76,7 @@
             SearchDisabledChanged.InvokeAsync(value);
         }
     }
+   
 
     [Parameter]
     public EventCallback<bool> SearchDisabledChanged { get; set; }
@@ -132,7 +129,7 @@
 
             var search = new ADSearch();
 
-            search.ObjectTypeFilter = ObjectType;
+            search.ObjectTypeFilter = SearchObjectType;
             search.GeneralSearchTerm = autocompleteReadDataEventArgs.SearchValue.Replace(" ", "*");
             search.EnabledOnly = enabledUsersOnly;
             search.MaxResults = 10;
@@ -144,13 +141,13 @@
             }
             return;
 
-/*
-            var temp = (await Directory.Users.FindUsersByStringAsync(autocompleteReadDataEventArgs.SearchValue.Replace(" ", "*"), enabledUsersOnly)).Where(u => u.CanRead);
-            if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
-            {
-                SearchResults = temp;
-            }
-            */
+            /*
+                        var temp = (await Directory.Users.FindUsersByStringAsync(autocompleteReadDataEventArgs.SearchValue.Replace(" ", "*"), enabledUsersOnly)).Where(u => u.CanRead);
+                        if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
+                        {
+                            SearchResults = temp;
+                        }
+                        */
         }
     }
 

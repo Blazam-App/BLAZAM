@@ -1,3 +1,4 @@
+@inherits AppComponentBase
 <Form @onsubmit="(()=>{OnSubmit.InvokeAsync();})">
 
     <Bar Mode="BarMode.Horizontal"
@@ -23,7 +24,8 @@
 
                 </Column>
                 <Column Style="align-self: center;" ColumnSize="ColumnSize.Is9.OnFullHD.Is8.OnDesktop.Is7.OnTablet">
-                    @ChildContent
+                         <ADAutoComplete @bind-SearchObjectType=SelectedObjectType @bind-SearchTerm="@SearchTerm" @bind-SearchDisabled=@SearchDisabledObjects />
+
 
                 </Column>
                 <Column Style="align-self: center;" ColumnSize="ColumnSize.Is1.OnFullHD.Is2.OnDesktop.Is2.OnTablet">
@@ -66,7 +68,31 @@
 
     bool disableCancel = false;
 
-    ActiveDirectoryObjectType? SelectedObjectType;
+
+      string _searchTerm;
+    /// <summary>
+    /// The search term that comes from the search text box
+    /// </summary>
+    public string? SearchTerm { get=>_searchTerm; set
+        {
+            if (_searchTerm == value) return;
+            _searchTerm = value;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    ActiveDirectoryObjectType? _selectedObjectType;
+    [Parameter]
+    public ActiveDirectoryObjectType? SelectedObjectType {
+        get=>_selectedObjectType;
+        set{
+            if(_selectedObjectType == value) return;
+            _selectedObjectType = value;
+            SelectedObjectTypeChanged.InvokeAsync(value);
+        }
+    }
+    [Parameter]
+    public EventCallback<ActiveDirectoryObjectType?> SelectedObjectTypeChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,5 +105,23 @@
 
             InvokeAsync(StateHasChanged);
         });
+    }
+
+
+  
+    bool _searchDisabledObjects;
+    /// <summary>
+    /// Indicates whether to search for disabled
+    /// Active Diretory Entries
+    /// </summary>
+    public bool SearchDisabledObjects
+    {
+        get => _searchDisabledObjects; set
+        {
+            if (_searchDisabledObjects == value) return;
+            _searchDisabledObjects = value;
+            InvokeAsync(StateHasChanged);
+
+        }
     }
 }

@@ -120,6 +120,9 @@ namespace BLAZAM.Server.Shared.UI
         [Inject]
         protected IDbContextFactory<DatabaseContext> DbFactory { get; set; }
 
+        [CascadingParameter]
+        public ActiveDirectoryObjectType? SearchObjectType { get; set; }
+
         protected override void OnInitialized()
         {
             try

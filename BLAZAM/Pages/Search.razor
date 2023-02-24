@@ -35,7 +35,7 @@
                 {
 
 
-                    <Div Class="cursor-pointer" @onclick=@(()=>{MainLayout.SubmitSearch(u.CanonicalName);}) Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+                    <Div Class="cursor-pointer" @onclick=@(()=>{SubmitSearch(u.CanonicalName);}) Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
                         <Heading Margin="Margin.Is2.FromBottom">@u.ObjectType</Heading>
                         <Heading Margin="Margin.Is2.FromBottom">@u.CanonicalName</Heading>
                         <Small>@u.SamAccountName</Small>
@@ -168,6 +168,20 @@
 
     protected virtual List<IDirectoryModel> results { get; set; } = new List<IDirectoryModel>();
 
+    public async Task SubmitSearch() => await SubmitSearch(null);
+    public async Task SubmitSearch(string? searchTerm = null)
+    {
+        if (searchTerm != null)
+            SearchTerm = searchTerm;
+
+
+        Nav.NavigateTo("/search/" + SearchTerm);
+
+
+        //Search();
+
+        InvokeAsync(StateHasChanged);
+    }
 
    
 
@@ -200,9 +214,9 @@
     {
         Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
 
-        Searcher.EnabledOnly = !MainLayout.SearchDisabledObjects;
+        Searcher.EnabledOnly = !SearchDisabledObjects;
         Searcher.GeneralSearchTerm = SearchTermParameter;
-        Searcher.ObjectTypeFilter = null;
+        Searcher.ObjectTypeFilter = SearchObjectType;
         Searcher.ExactMatch = true;
 
         await Searcher.SearchAsync<ADUser, IADUser>();

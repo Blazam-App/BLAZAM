@@ -32,13 +32,9 @@
                     }
                     else
                     {
-                        <CascadingValue Value="SearchTerm">
                             <CascadingValue Value="this">
-                                <SearchPageHeader OnSubmit=SubmitSearch Text="Search">
-                                    <ADAutoComplete @bind-SearchTerm="@SearchTerm" @bind-SearchDisabled=@SearchDisabledObjects />
-                                </SearchPageHeader>
+                                <SearchPageHeader Text="Search"/>
                             </CascadingValue>
-                        </CascadingValue>
                     }
                     @if (setSubHeader != null)
                     {
@@ -78,24 +74,10 @@
 
 </Layout>
 @code {
-    string _searchTerm;
-    /// <summary>
-    /// The search term that comes from the search text box
-    /// </summary>
-    public string? SearchTerm { get=>_searchTerm; set
-        {
-            if (_searchTerm == value) return;
-            _searchTerm = value;
-            InvokeAsync(StateHasChanged);
-        }
-    }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        SearchDisabledObjects = UserStateService?.CurrentUserState?.UserSettings?.SearchDisabledUsers == true;
+  
 
-    }
+
 
     SetHeader? setHeader;
     public void SetHeader(SetHeader? setHeader)
@@ -122,35 +104,6 @@
     }
 
     public void Update() => StateHasChanged();
-    public async Task SubmitSearch() => await SubmitSearch(null);
-    public async Task SubmitSearch(string? searchTerm = null)
-    {
-        if (searchTerm != null)
-            SearchTerm = searchTerm;
-
-
-        Nav.NavigateTo("/search/" + SearchTerm);
-
-
-        //Search();
-
-        InvokeAsync(StateHasChanged);
-    }
-
-    bool _searchDisabledObjects;
-    /// <summary>
-    /// Indicates whether to search for disabled
-    /// Active Diretory Entries
-    /// </summary>
-    public bool SearchDisabledObjects
-    {
-        get => _searchDisabledObjects; set
-        {
-            if (_searchDisabledObjects == value) return;
-            _searchDisabledObjects = value;
-            InvokeAsync(StateHasChanged);
-
-        }
-    }
+    
 
 }
