@@ -489,6 +489,8 @@ namespace BLAZAM
             }
             catch (Exception ex)
             {
+                Oops.ErrorMessage = ex.Message;
+                
                 Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
                 return false;
             }

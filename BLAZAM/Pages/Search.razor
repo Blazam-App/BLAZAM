@@ -1,18 +1,24 @@
 ﻿@page "/search"
 @page "/search/{SearchTermParameter}"
+@using BLAZAM.Server.Pages.Users
 @inherits AppComponentBase
-<h1>Search</h1>
 <AuthorizeView Roles="@(UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
 
-    <SetSubHeader>
+    <SetHeader>
         <CascadingValue Value="Searcher">
 
             <SearchPageHeader OnSubmit=SubmitSearch Text="Search">
                 <ADAutoComplete @bind-SearchTerm="@SearchTerm" @bind-SearchDisabled=@SearchDisabledObjects />
             </SearchPageHeader>
         </CascadingValue>
-    </SetSubHeader>
-
+    </SetHeader>
+    @if (Program.InDemoMode)
+    {
+        <Alert Visible Background=Background.Info>
+        <AlertMessage Display="Display.InlineBlock">Try searching Moore, Howard, Evans, Manny...</AlertMessage>
+        <AppCloseButton Display="Display.InlineBlock" Float="Float.End" />
+        </Alert>
+    }
 
 
 
@@ -51,9 +57,45 @@
             </Placeholder>
         </Virtualize>
     }
+    else if (Searcher.Results.Count == 1)
+    {
+        var result = Searcher.Results[0];
+        if (result.CanRead)
+        {
+            switch (result.ObjectType)
+            {
+                case ActiveDirectoryObjectType.User:
 
+
+                    <ViewUser User="(IADUser)result" />
+
+
+                    break;
+            }
+        }
+        else
+        {
+            <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
+
+        }
+        var user = (IADUser)Searcher.Results[0];
+
+    }
+    else if (LoadingData)
+    {
+        <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
+            <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
+        </LoadingIndicator>
+    }
+    else
+    {
+        <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
+
+    }
 </AuthorizeView>
 @code {
+    string ModelsTypeName = "Search";
+    protected string SearchIcon { get; set; } = "fa-solid fa-building";
     string _searchTermParameter;
     /// <summary>
     /// The search term that comes from the URI
