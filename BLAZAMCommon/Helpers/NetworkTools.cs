@@ -1,4 +1,5 @@
-﻿using System.Net.NetworkInformation;
+﻿using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
 namespace BLAZAM.Common.Helpers
@@ -24,11 +25,13 @@ namespace BLAZAM.Common.Helpers
 
         public static bool IsPortOpen(string hostNameOrAddress, int port)
         {
-            return IsAnyPortOpen(hostNameOrAddress,new int[] {port});
+            return IsAnyPortOpen(hostNameOrAddress, new int[] { port });
         }
         public static bool IsAnyPortOpen(string hostNameOrAddress, int[] ports)
         {
             bool portOpen = false;
+            IPAddress ip;
+            IPAddress.TryParse(hostNameOrAddress, out ip);
 
             foreach (int port in ports)
             {
@@ -36,7 +39,10 @@ namespace BLAZAM.Common.Helpers
                 {
                     try
                     {
-                        client.Connect(hostNameOrAddress, port);
+                        if (ip != null)
+                            client.Connect(ip, port);
+                        else
+                            client.Connect(hostNameOrAddress, port);
                         portOpen = true;
                         break;
                     }
