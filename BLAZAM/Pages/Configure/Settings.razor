@@ -3,7 +3,7 @@
 @layout MainLayout
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
-@inherits AppComponent
+@inherits AppComponentBase
 <AuthorizeView>
     <SetHeader>
         <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">

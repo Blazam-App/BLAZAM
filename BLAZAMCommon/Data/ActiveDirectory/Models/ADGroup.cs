@@ -8,13 +8,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
     public class ADGroup : GroupableDirectoryModel, IADGroup
     {
-        public override string SearchUri
-        {
-            get
-            {
-                return "/groups/search/" + CanonicalName;
-            }
-        }
+     
         public override string? DisplayName { get => base.CanonicalName; set => base.CanonicalName = value; }
         public string GroupName
         {

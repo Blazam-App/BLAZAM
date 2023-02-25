@@ -1,0 +1,240 @@
+﻿@page "/search"
+@page "/search/{SearchTermParameter}"
+@using BLAZAM.Server.Pages.Computers
+@using BLAZAM.Server.Pages.Groups
+@using BLAZAM.Server.Pages.OU
+@using BLAZAM.Server.Pages.Users
+@inherits AppComponentBase
+@attribute [Authorize]
+<AuthorizeView Roles="@(UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
+
+  
+    @if (Program.InDemoMode)
+    {
+        <Alert Visible Background=Background.Info>
+        <AlertMessage Display="Display.InlineBlock">Try searching Moore, Howard, Evans, Manny...</AlertMessage>
+        <AppCloseButton Display="Display.InlineBlock" Float="Float.End" />
+        </Alert>
+    }
+
+
+
+    @if (Searcher.Results.Count > 1)
+    {
+        <Row Width="Width.Is100">
+            <Column ColumnSize="ColumnSize.Is6">
+                Results found: @Searcher.Results.Count
+            </Column>
+            <Column ColumnSize="ColumnSize.Is6">
+                Time elapsed: @Searcher.SearchTime
+            </Column>
+        </Row>
+
+        <Virtualize Items="results" TItem="IDirectoryModel" Context="u" OverscanCount="30">
+            <ItemContent>
+                @if (u.CanRead)
+                {
+
+
+                    <Div Class="cursor-pointer" @onclick=@(()=>{SubmitSearch(u.CanonicalName);}) Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+                        <Heading Margin="Margin.Is2.FromBottom">@u.ObjectType</Heading>
+                        <Heading Margin="Margin.Is2.FromBottom">@u.CanonicalName</Heading>
+                        <Small>@u.SamAccountName</Small>
+                    </Div>
+
+
+                }
+            </ItemContent>
+            <Placeholder>
+                <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+                    <Heading Margin="Margin.Is2.FromBottom">Loading...</Heading>
+                    <Small>Loading...</Small>
+                </Div>
+
+            </Placeholder>
+        </Virtualize>
+    }
+    else if (Searcher.Results.Count == 1)
+    {
+        var result = Searcher.Results[0];
+        if (result.CanRead)
+        {
+            switch (result.ObjectType)
+            {
+                case ActiveDirectoryObjectType.User:
+                    <ViewUser User="(IADUser)result" />
+                    break;
+                case ActiveDirectoryObjectType.Group:
+                    <ViewGroup Group="(IADGroup)result" />
+                    break;
+                case ActiveDirectoryObjectType.Computer:
+                    <ViewComputer Computer="(IADComputer)result" />
+                    break;
+                case ActiveDirectoryObjectType.OU:
+                    <ViewOU OU="(IADOrganizationalUnit)result" />
+                    break;
+            }
+        }
+        else
+        {
+            <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
+
+        }
+
+    }
+    else if (LoadingData)
+    {
+        <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
+            <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
+        </LoadingIndicator>
+    }
+    else
+    {
+        <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
+
+    }
+</AuthorizeView>
+@code {
+
+    [CascadingParameter]
+    public SearchService SearchParameters { get; set; }
+
+    string ModelsTypeName = "Search";
+    protected string SearchIcon { get; set; } = "fa-solid fa-building";
+    string _searchTermParameter;
+    /// <summary>
+    /// The search term that comes from the URI
+    /// </summary>
+    [Parameter]
+    public virtual string? SearchTermParameter
+    {
+        get => _searchTermParameter; set
+        {
+            if (_searchTermParameter == value) return;
+            LoadingData = true;
+            Searcher?.Results.Clear();
+            _searchTermParameter = value;
+            SearchService.SearchTerm = value;
+            PerformSearch();
+            //Searcher.GeneralSearchTerm = value;
+            if (_searchTermParameter.IsNullOrEmpty())
+                LoadingData = false;
+            InvokeAsync(StateHasChanged);
+
+        }
+    }
+
+
+    public ADSearch Searcher { get; set; }
+
+
+    [CascadingParameter]
+    public MainLayout? MainLayout{ get; set; }
+
+    /// <summary>
+    /// The search term that comes from the search text box
+    /// </summary>
+    [CascadingParameter]
+    public string? SearchTerm { get; set; }
+
+    /// <summary>
+    /// Standard search page initializer that copies the url search term to the
+    /// text search term if it is set.
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnInitializedAsync()
+    {
+
+        Searcher = new ADSearch();
+        SearchService.SearchTerm = SearchTermParameter;
+        Searcher.GeneralSearchTerm = SearchTermParameter;
+
+        base.OnInitializedAsync();
+
+
+
+        Searcher.OnSearchStarted += (() =>
+       {
+           InvokeAsync(StateHasChanged);
+       });
+        Searcher.OnSearchCompleted += (() =>
+       {
+           InvokeAsync(StateHasChanged);
+       });
+        Searcher.ResultsCollected += ((batch) =>
+             {
+                 results.AddRange(batch);
+                 InvokeAsync(StateHasChanged);
+             });
+
+        PerformSearch();
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    [CascadingParameter]
+    public ActiveDirectoryObjectType? SearchObjectType { get; set; }
+
+    protected virtual List<IDirectoryModel> results { get; set; } = new List<IDirectoryModel>();
+
+    public async Task SubmitSearch() => await SubmitSearch(null);
+    public async Task SubmitSearch(string? searchTerm = null)
+    {
+        if (searchTerm != null)
+            SearchService.SearchTerm = searchTerm;
+
+
+        Nav.NavigateTo("/search/" + SearchService.SearchTerm);
+
+
+        //Search();
+
+        InvokeAsync(StateHasChanged);
+    }
+
+   
+
+    protected async Task PerformSearch()
+    {
+        results.Clear();
+
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        if (!SearchTermParameter.IsNullOrEmpty() && SearchTermParameter.Length > 2)
+        {
+            await InvokeSearch();
+
+        }
+        else
+        {
+            Searcher.Results.Clear();
+        }
+
+        LoadingData = false;
+
+        InvokeAsync(StateHasChanged);
+
+
+
+    }
+
+
+    public async Task InvokeSearch()
+    {
+       // Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
+
+        Searcher.EnabledOnly = !SearchService.IncludeDisabled;
+        Searcher.GeneralSearchTerm = SearchService.SearchTerm;
+        Searcher.ObjectTypeFilter = SearchService.SeachObjectType;
+        Searcher.ExactMatch = true;
+
+        await Searcher.SearchAsync<ADUser, IADUser>();
+        if (Searcher.Results.Count < 1)
+        {
+            Searcher.ExactMatch = false;
+            await Searcher.SearchAsync<ADUser, IADUser>();
+
+        }
+    }
+
+}

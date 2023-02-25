@@ -216,6 +216,7 @@ namespace BLAZAM
                 CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
+
                     options.Events.OnCheckSlidingExpiration = async (context) =>
                     {
                         if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
@@ -227,10 +228,11 @@ namespace BLAZAM
                         //Use session timeout from settings in database
                         if (DatabaseCache.AuthenticationSettings.SessionTimeout != null)
                             context.Options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
+                        
                     };
                     options.LoginPath = new PathString("/login");
                     options.LogoutPath = new PathString("/logout");
-                    options.ExpireTimeSpan = TimeSpan.FromSeconds(1);
+                    options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
                     options.SlidingExpiration = true;
                 });
             /*
@@ -316,6 +318,9 @@ namespace BLAZAM
 
             //Add custom Auth
             builder.Services.AddScoped<AppAuthenticationStateProvider, AppAuthenticationStateProvider>();
+
+            //Add web user application search as a service
+            builder.Services.AddScoped<SearchService>();
 
 
             //Provide DuoSecurity service
@@ -494,7 +499,6 @@ namespace BLAZAM
                     return false;
                 }
             });
-
         }
 
     }
