@@ -27,7 +27,7 @@
                         </Addon>
                     <Addon AddonType="AddonType.Body" >
                         <Div Style="width: 1%;flex: 1 1 auto;">
-                            <ADAutoComplete SearchDisabled=@SearchService.IncludeDisabled @bind-SearchTerm="@SearchService.SearchTerm" />
+                            <ADAutoComplete SearchObjectType="@SearchService.SeachObjectType" SearchDisabled=@SearchService.IncludeDisabled @bind-SearchTerm="@SearchService.SearchTerm" />
                             </Div>
                         </Addon>
 
