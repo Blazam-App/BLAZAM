@@ -65,7 +65,7 @@ else
 
             progressValue = null;
             await InvokeAsync(StateHasChanged);
-            if (Program.ApplyDatabaseMigrations())
+            if (await Program.ApplyDatabaseMigrations())
             {
                 Completed = true;
                 InvokeAsync(StepCompleted.InvokeAsync);

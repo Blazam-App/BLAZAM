@@ -28,7 +28,7 @@ namespace BLAZAM.Server.Background
                     break;
                 case DatabaseContext.ConnectionStatus.ServerUnreachable:
 
-                    Oops.ErrorMessage = "Database server is not reachable!";
+                    Oops.ErrorMessage = "Database server is not reachable! Check your connection string! Is the port open?";
                     goto default;
 
                 case DatabaseContext.ConnectionStatus.IncompleteConfiguration:
