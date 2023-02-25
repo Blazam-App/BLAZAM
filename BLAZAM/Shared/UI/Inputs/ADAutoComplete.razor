@@ -1,66 +1,63 @@
 ﻿@inherits AutoCompleteComponentBase
-<Row>
-    <Column ColumnSize="ColumnSize.Is8.OnTablet" Height="Height.Is100" Margin="Margin.IsAuto.OnY">
-        <Autocomplete TItem="IDirectoryModel"
-                      TValue="IDirectoryModel"
-                      Data="@SearchResults"
-                      @bind-Search="SearchTerm"
-                      ReadData="@GetResults"
-                      TextField="@(( item ) => item.SamAccountName)"
-                      ValueField="@(( item ) => item)"
-                      @bind-SelectedValue="@SelectedResult"
-                      Placeholder="Search..."
-                      MinLength="3"
-                        FreeTyping>
-            <ItemContent>
-                <Row Padding="Padding.Is0" TextWeight="TextWeight.Bold">
+<Autocomplete TItem="IDirectoryModel"
+              TValue="IDirectoryModel"
+              Data="@SearchResults"
+              @bind-Search="SearchTerm"
+              ReadData="@GetResults"
+              TextField="@(( item ) => item.SamAccountName)"
+              ValueField="@(( item ) => item)"
+              @bind-SelectedValue="@SelectedResult"
+              Placeholder="Search..."
+              MinLength="1"
+              Style=""
+                FreeTyping>
+    <ItemContent>
+        <Div Padding="Padding.Is0" TextWeight="TextWeight.Bold">
+            <Div Flex="Flex.InlineFlex">
+                @context?.Value?.ObjectType
 
-                    @context?.Value?.ObjectType
+            </Div>
+            @if (context?.Value != null && context.Value is IGroupableDirectoryModel gdm)
+            {
+                if (gdm.LockedOut)
+                {
+
+                    <Badge Flex=Flex.InlineFlex Float=Float.End Background="Background.Warning">Locked</Badge>
+
+                }
+                if (!gdm.Enabled)
+                {
+
+                    <Badge Flex=Flex.InlineFlex Float=Float.End Background="Background.Danger">Disabled</Badge>
+
+                }
+            }
 
 
-                </Row>
-                <Row Padding="Padding.Is0" TextWeight="TextWeight.Bold">
-                    <Small>
-                        @context?.Value?.CanonicalName
-                    </Small>
 
-                </Row>
-                <Row Padding="Padding.Is0">
-                    <Small>
-                        @context.Text
-                    </Small>
-                </Row>
-            </ItemContent>
-            <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
-        </Autocomplete>
-    </Column>
-    @if (UserStateService?.CurrentUserState?.IsSuperAdmin == true || UserStateService?.CurrentUserState?.DirectoryUser?.CanSearchDisabled == true)
-    {
-        <Field Horizontal ColumnSize="ColumnSize.Is4.OnTablet" Margin=Margin.Is0>
-        <FieldBody ColumnSize="ColumnSize.Is12" Display="Display.InlineBlock" Margin="Margin.IsAuto.OnY">
-            <Tooltip Style="width:max-content" Placement=TooltipPlacement.Bottom Text="Include Disabled Users">
-                <Row>
 
-                    <Column Display=Display.InlineFlex ColumnSize="ColumnSize.Is2">
-                        <Switch Checked="SearchDisabled" TValue="bool" CheckedChanged=DisabledOptionChanged />
-                    </Column>
+        </Div>
+        <Div Padding="Padding.Is0" TextWeight="TextWeight.Bold">
+            <Small>
+                @context?.Value?.CanonicalName
+            </Small>
 
-                    <Column Display=Display.InlineFlex ColumnSize="ColumnSize.Is9.OnDesktop">
-                        <Small>
-                            Include Disabled Users
-                        </Small>
-                    </Column>
-                </Row>
-            </Tooltip>
+        </Div>
+        <Div Padding="Padding.Is0">
+            <Small>
+                @context.Text
+            </Small>
+        </Div>
+    </ItemContent>
+    <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+</Autocomplete>
 
-        </FieldBody>
 
-        </Field>
-    }
-</Row>
+
 
 @code {
- 
+    [CascadingParameter]
+    public SearchService SearchParameters { get; set; }
 
     IEnumerable<IDirectoryModel> _searchResults = new List<IDirectoryModel>();
     bool _searchDisabled;
@@ -76,10 +73,15 @@
             SearchDisabledChanged.InvokeAsync(value);
         }
     }
-   
+
 
     [Parameter]
     public EventCallback<bool> SearchDisabledChanged { get; set; }
+
+
+    [Parameter]
+    public ActiveDirectoryObjectType? SearchObjectType { get; set; }
+
 
     [Parameter]
     public IEnumerable<IDirectoryModel> SearchResults
@@ -93,6 +95,7 @@
             SearchResultsChanged.InvokeAsync(value);
         }
     }
+
 
     [Parameter]
     public EventCallback<IEnumerable<IDirectoryModel>> SearchResultsChanged { get; set; }
@@ -123,15 +126,12 @@
         if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
         {
 
-            bool? enabledUsersOnly = null;
-            if (!SearchDisabled)
-                enabledUsersOnly = true;
 
             var search = new ADSearch();
 
             search.ObjectTypeFilter = SearchObjectType;
             search.GeneralSearchTerm = autocompleteReadDataEventArgs.SearchValue.Replace(" ", "*");
-            search.EnabledOnly = enabledUsersOnly;
+            search.EnabledOnly = !SearchDisabled;
             search.MaxResults = 10;
             var temp = await search.SearchAsync();
 
@@ -157,16 +157,5 @@
         SearchDisabled = (bool)UserStateService.CurrentUserState?.UserSettings?.SearchDisabledUsers;
     }
 
-    async Task DisabledOptionChanged(bool state)
-    {
-        SearchDisabled = state;
-        try
-        {
-            UserStateService.CurrentUserState.UserSettings.SearchDisabledUsers = state;
-            await UserStateService.CurrentUserState.SaveUserSettings();
-        }
-        catch
-        {
-        }
-    }
+
 }

@@ -5,6 +5,7 @@
 @using BLAZAM.Server.Pages.OU
 @using BLAZAM.Server.Pages.Users
 @inherits AppComponentBase
+@attribute [Authorize]
 <AuthorizeView Roles="@(UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
 
   
@@ -94,6 +95,10 @@
     }
 </AuthorizeView>
 @code {
+
+    [CascadingParameter]
+    public SearchService SearchParameters { get; set; }
+
     string ModelsTypeName = "Search";
     protected string SearchIcon { get; set; } = "fa-solid fa-building";
     string _searchTermParameter;
@@ -109,7 +114,7 @@
             LoadingData = true;
             Searcher?.Results.Clear();
             _searchTermParameter = value;
-            SearchTerm = value;
+            SearchService.SearchTerm = value;
             PerformSearch();
             //Searcher.GeneralSearchTerm = value;
             if (_searchTermParameter.IsNullOrEmpty())
@@ -141,6 +146,7 @@
     {
 
         Searcher = new ADSearch();
+        SearchService.SearchTerm = SearchTermParameter;
         Searcher.GeneralSearchTerm = SearchTermParameter;
 
         base.OnInitializedAsync();
@@ -166,16 +172,19 @@
 
     }
 
+    [CascadingParameter]
+    public ActiveDirectoryObjectType? SearchObjectType { get; set; }
+
     protected virtual List<IDirectoryModel> results { get; set; } = new List<IDirectoryModel>();
 
     public async Task SubmitSearch() => await SubmitSearch(null);
     public async Task SubmitSearch(string? searchTerm = null)
     {
         if (searchTerm != null)
-            SearchTerm = searchTerm;
+            SearchService.SearchTerm = searchTerm;
 
 
-        Nav.NavigateTo("/search/" + SearchTerm);
+        Nav.NavigateTo("/search/" + SearchService.SearchTerm);
 
 
         //Search();
@@ -212,11 +221,11 @@
 
     public async Task InvokeSearch()
     {
-        Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
+       // Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
 
-        Searcher.EnabledOnly = !MainLayout.SearchDisabledObjects;
-        Searcher.GeneralSearchTerm = SearchTermParameter;
-        Searcher.ObjectTypeFilter = SearchObjectType;
+        Searcher.EnabledOnly = !SearchService.IncludeDisabled;
+        Searcher.GeneralSearchTerm = SearchService.SearchTerm;
+        Searcher.ObjectTypeFilter = SearchService.SeachObjectType;
         Searcher.ExactMatch = true;
 
         await Searcher.SearchAsync<ADUser, IADUser>();

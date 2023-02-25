@@ -319,6 +319,9 @@ namespace BLAZAM
             //Add custom Auth
             builder.Services.AddScoped<AppAuthenticationStateProvider, AppAuthenticationStateProvider>();
 
+            //Add web user application search as a service
+            builder.Services.AddScoped<SearchService>();
+
 
             //Provide DuoSecurity service
             builder.Services.AddSingleton<IDuoClientProvider, DuoClientProvider>();

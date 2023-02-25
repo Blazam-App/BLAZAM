@@ -42,146 +42,33 @@
                 string createGroup = UserRoles.SuperAdmin + ", " + UserRoles.CreateGroups;
                 string createOU = UserRoles.SuperAdmin + ", " + UserRoles.CreateOUs;
             }
-            <AuthorizeView Roles=@userRole>
 
-                <BarItem Disabled="@(Monitor.DirectoryConnected != ConnectionState.Up)">
-                    <AuthorizeView Context="createContext" Roles=@createUser>
-                        <Authorized>
-                            <BarDropdown>
-                                <BarDropdownToggle>
+            <BarItem Disabled="@(Monitor.DirectoryConnected != ConnectionState.Up)">
+                <AuthorizeView Context="createContext" Roles=@createRole>
+                    <BarDropdown>
+                        <BarDropdownToggle>
 
-                                    <BarIcon IconName="IconName.User" />
-                                    @AppLocalization["Users"]
-                                </BarDropdownToggle>
-                                <BarDropdownMenu>
-                                    <BarDropdownItem To="/users/search" Match="Match.Prefix"><Icon Name="IconName.Search" />@AppLocalization["Search Users"]</BarDropdownItem>
+                            <BarIcon IconName="IconName.PlusCircle" />
+                            @AppLocalization["Create"]
+                        </BarDropdownToggle>
+                        <BarDropdownMenu>
 
-                                    <BarDropdownItem To="/users/create" Match="Match.Prefix"><Icon Name="IconName.UserPlus" />@AppLocalization["Create User"]</BarDropdownItem>
-
-
-
-
-                                </BarDropdownMenu>
-                            </BarDropdown>
-
-
-
-                        </Authorized>
-                        <NotAuthorized>
-                            <BarLink To="/users/search" Match="Match.Prefix">
-                                <BarIcon IconName="IconName.User" />
-                                @AppLocalization["Users"]
-                            </BarLink>
-                        </NotAuthorized>
-                    </AuthorizeView>
-                </BarItem>
-            </AuthorizeView>
-            <AuthorizeView Roles=@groupRole>
-
-                <BarItem Disabled="@(Monitor.DirectoryConnected != ConnectionState.Up)">
-                    <AuthorizeView Context="createContext" Roles=@createGroup>
-                        <Authorized>
-                            <BarDropdown>
-                                <BarDropdownToggle>
-
-                                    <BarIcon IconName="@("fa-user-group")" />
-                                    @AppLocalization["Groups"]
-                                </BarDropdownToggle>
-                                <BarDropdownMenu>
-                                    <BarDropdownItem To="/groups/search" Match="Match.Prefix"><Icon Name="IconName.Search" />@AppLocalization["Search Groups"]</BarDropdownItem>
-
-                                    <BarDropdownItem To="/groups/create" Match="Match.Prefix"><Icon Name="IconName.PlusCircle" />@AppLocalization["Create Group"]</BarDropdownItem>
+                            <BarDropdownItem To="/users/create" Match="Match.Prefix"><Icon Name="IconName.UserPlus" />@AppLocalization["Create User"]</BarDropdownItem>
+                            <BarDropdownItem To="/groups/create" Match="Match.Prefix"><Icon Name="IconName.PlusCircle" />@AppLocalization["Create Group"]</BarDropdownItem>
+                            <BarDropdownItem To="/computers/create" Match="Match.Prefix"><Icon Name="IconName.PlusCircle" />@AppLocalization["Create Computer"]</BarDropdownItem>
+                            <BarDropdownItem To="/ou/create" Match="Match.Prefix"><Icon Name="IconName.FolderPlus" />@AppLocalization["Create OU"]</BarDropdownItem>
 
 
 
 
-                                </BarDropdownMenu>
-                            </BarDropdown>
+                        </BarDropdownMenu>
+                    </BarDropdown>
 
 
 
-                        </Authorized>
-                        <NotAuthorized>
-                            <BarLink To="/groups/search" Match="Match.Prefix">
-                                <BarIcon IconName="@("fa-user-group")" />
-                                @AppLocalization["Groups"]
-                            </BarLink>
-                        </NotAuthorized>
-                    </AuthorizeView>
-                </BarItem>
-
-            </AuthorizeView>
-
-            <AuthorizeView Roles=@computerRole>
-
-                <BarItem Disabled="@(Monitor.DirectoryConnected != ConnectionState.Up)">
-                    <AuthorizeView Context="createContext" Roles=@createGroup>
-                        <Authorized>
-                            <BarDropdown>
-                                <BarDropdownToggle>
-
-                                    <BarIcon IconName="@("fa-computer")" />
-                                    @AppLocalization["Computers"]
-                                </BarDropdownToggle>
-                                <BarDropdownMenu>
-                                    <BarDropdownItem To="/computers/search" Match="Match.Prefix"><Icon Name="IconName.Search" />@AppLocalization["Search Computers"]</BarDropdownItem>
-
-                                    <BarDropdownItem To="/computers/create" Match="Match.Prefix"><Icon Name="IconName.PlusCircle" />@AppLocalization["Create Computer"]</BarDropdownItem>
-
-
-
-
-                                </BarDropdownMenu>
-                            </BarDropdown>
-
-
-
-                        </Authorized>
-                        <NotAuthorized>
-                            <BarLink To="/computers/search" Match="Match.Prefix">
-                                <BarIcon IconName="@("fa-computer")" />
-                                @AppLocalization["Computers"]
-                            </BarLink>
-                        </NotAuthorized>
-                    </AuthorizeView>
-
-                </BarItem>
-            </AuthorizeView>
-
-            <AuthorizeView Roles=@ouRole>
-                <BarItem Disabled="@(Monitor.DirectoryConnected != ConnectionState.Up)">
-                    <AuthorizeView Context="createContext" Roles=@createOU>
-                        <Authorized>
-                            <BarDropdown>
-                                <BarDropdownToggle>
-
-                                    <BarIcon IconName="@("fa-folder")" />
-                                    @AppLocalization["OU"]
-                                </BarDropdownToggle>
-                                <BarDropdownMenu>
-                                    <BarDropdownItem To="/ou/search" Match="Match.Prefix"><Icon Name="IconName.Search" />@AppLocalization["Search OUs"]</BarDropdownItem>
-
-                                    <BarDropdownItem To="/ou/create" Match="Match.Prefix"><Icon Name="IconName.FolderPlus" />@AppLocalization["Create OU"]</BarDropdownItem>
-
-
-
-
-                                </BarDropdownMenu>
-                            </BarDropdown>
-
-
-
-                        </Authorized>
-                        <NotAuthorized>
-                            <BarLink To="/ou/search" Match="Match.Prefix">
-                                <BarIcon IconName="@("fa-folder")" />
-                                @AppLocalization["OU"]
-                            </BarLink>
-                        </NotAuthorized>
-                    </AuthorizeView>
-
-                </BarItem>
-            </AuthorizeView>
+                    
+                </AuthorizeView>
+            </BarItem>
 
 
 

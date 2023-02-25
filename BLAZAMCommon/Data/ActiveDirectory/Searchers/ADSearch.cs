@@ -153,15 +153,16 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
                 switch (ObjectTypeFilter)
                 {
+                    case ActiveDirectoryObjectType.All:
                     case null:
                         if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(distinguishedName=" + GeneralSearchTerm + ")(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(proxyAddresses=*" + GeneralSearchTerm + "*))";
+                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(distinguishedName=" + GeneralSearchTerm + ")(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(proxyAddresses=*" + GeneralSearchTerm + "*))";
                         break;
 
                     case ActiveDirectoryObjectType.Group:
                         searcher.Filter = "(&(objectCategory=group)(objectClass=group))";
                         if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*))";
+                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*))";
                      
                         break;
                     case ActiveDirectoryObjectType.User:
@@ -189,10 +190,16 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                         searcher.VirtualListView = null;
                         searcher.Filter = "(&(objectCategory=organizationalUnit))";
                         if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(distinguishedName=" + GeneralSearchTerm + ")(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*))";
+                            FilterQuery = "(|(distinguishedName=" + GeneralSearchTerm + ")(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*))";
 
                         break;
                 }
+                if (EnabledOnly == true)
+                {
+                    searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + "(!userAccountControl:1.2.840.113556.1.4.803:= 2))";
+                }
+
+
                 if (!FilterQuery.IsNullOrEmpty())
                     if (ExactMatch)
                         FilterQuery = FilterQuery.Replace("*", "");
@@ -223,6 +230,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                     //FilterQuery += ")";
 
                 }
+  
                 if (!SearchDeleted)
                 {
                     searcher.PropertiesToLoad.Add("samaccountname");

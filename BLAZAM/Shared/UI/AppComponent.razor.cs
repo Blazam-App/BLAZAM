@@ -68,7 +68,10 @@ namespace BLAZAM.Server.Shared.UI
     public class AppComponentBase:ComponentBase
     {
         [Inject]
-        protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }
+        protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }  
+        
+        [Inject]
+        protected SearchService SearchService { get; set; }
 
         [Inject]
         protected IStringLocalizer<SettingsLocalization> SettingsLocalization { get; set; }
@@ -120,8 +123,7 @@ namespace BLAZAM.Server.Shared.UI
         [Inject]
         protected IDbContextFactory<DatabaseContext> DbFactory { get; set; }
 
-        [CascadingParameter]
-        public ActiveDirectoryObjectType? SearchObjectType { get; set; }
+
 
         protected override void OnInitialized()
         {
