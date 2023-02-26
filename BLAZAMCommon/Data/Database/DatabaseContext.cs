@@ -242,7 +242,6 @@ namespace BLAZAM.Common.Data.Database
             modelBuilder.Entity<AppSettings>(entity =>
             {
                 entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AppSettingsId] = 1"));
-
             });
 
             modelBuilder.Entity<ADSettings>(entity =>
@@ -361,7 +360,7 @@ namespace BLAZAM.Common.Data.Database
                 }
                 catch (Exception ex)
                 {
-
+                    
 
                     //Installation not completed
 

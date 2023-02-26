@@ -118,43 +118,43 @@
 
                         try
                         {
-                                 if (Context.AuthenticationSettings.FirstOrDefault() != null && Context.AuthenticationSettings.FirstOrDefault().AdminPassword != "password")
-                                 {
-                                     _step = 3;
-                                     selectedStep = "3";
+                            if (Context.AuthenticationSettings.FirstOrDefault() != null && Context.AuthenticationSettings.FirstOrDefault().AdminPassword != "password")
+                            {
+                                _step = 3;
+                                selectedStep = "3";
 
-                                     await InvokeAsync(StateHasChanged);
-                            
-                               
-                                    //check directory
-                                    if (Context.ActiveDirectorySettings.FirstOrDefault() != null)
+                                await InvokeAsync(StateHasChanged);
+
+
+                                //check directory
+                                if (Context.ActiveDirectorySettings.FirstOrDefault() != null)
+                                {
+                                    if (Directory.Status == DirectoryConnectionStatus.OK)
                                     {
-                                        if (Directory.Status == DirectoryConnectionStatus.OK)
+                                        _step = 4;
+                                        selectedStep = "4";
+
+                                        await InvokeAsync(StateHasChanged);
+
+                                        //check permissions
+                                        PrivilegeLevel currentSettings = Context.PrivilegeLevel.FirstOrDefault();
+                                        if (currentSettings != null)
                                         {
-                                            _step = 4;
-                                            selectedStep = "4";
 
-                                            await InvokeAsync(StateHasChanged);
-
-                                            //check permissions
-                                            PrivilegeLevel currentSettings = Context.PrivilegeLevel.FirstOrDefault();
-                                            if (currentSettings != null)
+                                            if (Context.Status == DatabaseContext.ConnectionStatus.OK)
                                             {
+                                                _step = 5;
+                                                selectedStep = "5";
 
-                                                if (Context.Status == DatabaseContext.ConnectionStatus.OK)
-                                                {
-                                                    _step = 5;
-                                                    selectedStep = "5";
-
-                                                    //NavManager.NavigateTo("/");
-                                                }
-
-
+                                                //NavManager.NavigateTo("/");
                                             }
-                                        }
 
+
+                                        }
                                     }
+
                                 }
+                            }
                         }
                         catch (Exception)
                         {
@@ -192,7 +192,11 @@
         //await File.WriteAllTextAsync(Program.InstallFlagFilePath, "");
         try
         {
-
+            if (Context.AppSettings.FirstOrDefault() == null)
+            {
+                Context.AppSettings.Add(new());
+                Context.SaveChanges();
+            }
             (await Context.AppSettings.FirstOrDefaultAsync()).InstallationCompleted = true;
             await Context.SaveChangesAsync();
             Nav.NavigateTo("/logout", true);
