@@ -9,7 +9,6 @@ namespace BLAZAM.Server.Middleware
         private readonly RequestDelegate _next;
         private readonly ConnMonitor _monitor;
         private readonly List<string> _uriIgnoreList = new List<string> { "/css", "/_content","/_blazor","/BLAZAM.styles.css","/_framework" };
-
         public ApplicationStatusRedirectMiddleware(
            RequestDelegate next,
            ConnMonitor monitor)
@@ -34,11 +33,8 @@ namespace BLAZAM.Server.Middleware
                             }
                             break;
                         case ConnectionState.Up:
-                            if (Program.InstallationCompleted)
-                            {
-
-                            }
-                            else
+                            var dbContext = factory.CreateDbContext();
+                            if (!Program.InstallationCompleted)
                             {
                                 if (intendedUri != "/install")
                                 {

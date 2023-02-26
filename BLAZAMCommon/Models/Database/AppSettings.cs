@@ -8,7 +8,6 @@ namespace BLAZAM.Common.Models.Database
     public class AppSettings
     {
 
-
         public int AppSettingsId { get; set; }
         public DateTime? LastUpdateCheck { get; set; }
         [Required]
@@ -16,7 +15,7 @@ namespace BLAZAM.Common.Models.Database
         {
             get;
             set;
-        }
+        } = "Blazam";
         public bool InstallationCompleted { get; set; }
         public string? MOTD { get; set; }
         public bool ForceHTTPS { get; set; }
