@@ -38,35 +38,7 @@
     {
         await base.OnInitializedAsync();
         tester.OnAppReadyChanged += AppReady;
-        /*
-        try
-        {
-            var context = DbFactory.CreateDbContext();
-            if (context!=null && context?.AppSettings?.FirstOrDefault()?.InstallationCompleted!=true)
-            {
-                NavManager.NavigateTo("/install");
-            }
-        }
-        catch (InvalidOperationException ex)
-        {
-            switch (ex.HResult){
-                //Connection string not set exception
-                case -2146233079:
-                    NavManager.NavigateTo("/oops", true);
-                    break;
-            }
-        }
-        catch (SqlException ex)
-        {
-            switch (ex.HResult)
-            {
-                //SQL Coulmun not found exception
-                case -2146232060:
-                    //NavManager.NavigateTo("/install", true);
-                    break;
-            }
-        }
-        */
+       
     }
     private void AppReady(ConnectionState newStatus)
     {
