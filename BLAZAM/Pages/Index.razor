@@ -11,7 +11,6 @@
 </h2>
 <progress />
 @{
-    tester.OnAppReadyChanged += AppReady;
 
     Task.Run(async () => {
         while (NavManager.ToBaseRelativePath(NavManager.Uri) == "")
@@ -37,6 +36,8 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        tester.OnAppReadyChanged += AppReady;
+
         try
         {
             var context = DbFactory.CreateDbContext();
@@ -60,7 +61,7 @@
             {
                 //SQL Coulmun not found exception
                 case -2146232060:
-                    NavManager.NavigateTo("/install", true);
+                    //NavManager.NavigateTo("/install", true);
                     break;
             }
         }

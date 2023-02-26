@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Models.Database
             set;
         } = "Blazam";
         public bool InstallationCompleted { get; set; }
-        public string? MOTD { get; set; }
+        public string? MOTD { get; set; } = "Welcome to Blazam. Head over to the <a href=\"/settings\">settings<a/> page to configure this application.<br/>To remove this message, modify or clear the Homepage Message settings on the <a href=\"/settings\">settings<a/> page.";
         public bool ForceHTTPS { get; set; }
         public int? HttpsPort { get; set; }
         public string? AppFQDN { get; set; }

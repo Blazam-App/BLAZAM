@@ -1,12 +1,6 @@
 @inherits AppComponentBase
 <Div Padding="Padding.Is3.OnX">
-    @if (Monitor.DirectoryConnected == ConnectionState.Connecting)
-    {
-        <Row>
-            Connecting to Active Directory... Some features are disabled...
-            <Progress Animated=true Value="100" />
-        </Row>
-    }
+
     <Row Style="height:1.5em">
         <Column TextAlignment="TextAlignment.Start">
             <Copyright Margin="Margin.Is0" />
@@ -29,12 +23,3 @@
         </Column>
     </Row>
 </Div>
-
-@code {
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        Monitor.OnDirectoryConnectionChanged += ((state) => InvokeAsync(StateHasChanged));
-
-    }
-}

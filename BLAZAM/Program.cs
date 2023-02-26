@@ -55,7 +55,7 @@ namespace BLAZAM
         /// <returns>
         /// eg: C:\inetpub\blazam\writable\
         /// </returns>
-        internal static SystemDirectory WritablePath => new SystemDirectory(Program.RootDirectory + @"writable\");
+        internal static SystemDirectory WritablePath => new SystemDirectory(Program.TempDirectory + @"writable\");
         /// <summary>
         /// The temporary file directry
         /// </summary>
@@ -65,13 +65,7 @@ namespace BLAZAM
         internal static SystemDirectory TempDirectory { get; private set; }
         public static SystemDirectory AppDataDirectory { get; private set; }
 
-        /// <summary>
-        /// The installation flag file path
-        /// </summary>
-        /// <returns>
-        /// eg: C:\inetpub\blazam\writable\installed.flag
-        /// </returns>
-        internal static string InstallFlagFilePath => WritablePath + @"installed.flag";
+  
         /// <summary>
         /// The running Blazam version
         /// </summary>
@@ -98,11 +92,12 @@ namespace BLAZAM
             {
                 using (var context = _programDbFactory.CreateDbContext())
                 {
-                    if (!context.Seeded()) return false;
-                    return (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
-                    if (installationCompleted == null) installationCompleted = File.Exists(InstallFlagFilePath);
-
-                    return installationCompleted == true;
+                    if (installationCompleted == null)
+                    {
+                        if (!context.Seeded()) installationCompleted=false;
+                        else installationCompleted=(DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                    }
+                    return installationCompleted != false;
                 }
             }
         }
