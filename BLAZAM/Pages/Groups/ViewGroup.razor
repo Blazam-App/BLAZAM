@@ -84,7 +84,7 @@
             <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignToModal.Hide(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
         </AppModal>
         <AppModal TextColor="TextColor.Dark" Title="Assign To" @ref=@AssignMemberModal>
-            <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignMemberModal.Hide(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
+            <AddMemberModalContent OnGroupMembershipChange=@((change)=>{AssignMemberModal.Hide(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
         </AppModal>
         <AppModal TextColor="TextColor.Dark" Title="Move To" @ref=@MoveToModal>
             @if (MoveToModal.IsShown)

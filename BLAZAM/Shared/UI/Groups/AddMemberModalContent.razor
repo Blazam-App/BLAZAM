@@ -12,7 +12,7 @@
     </Field>
     @if (CopyFrom != null)
     {
-        var existingGroups = DirectoryModel.MemberOf;
+        var existingGroups = Entry.MemberOf;
         <Paragraph>Will be added to...</Paragraph>
 
         foreach (var group in CopyFrom.MemberOf)
@@ -47,21 +47,22 @@
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
 
     [Parameter]
-    public IGroupableDirectoryModel DirectoryModel { get; set; }
+    public IADGroup Group { get; set; }
 
     public IGroupableDirectoryModel CopyFrom { get; set; }
 
-    IDirectoryModel Entry { get; set; }
+    IGroupableDirectoryModel Entry { get; set; }
 
     async Task AssignToGroup()
     {
+        if (Entry is IGroupableDirectoryModel groupableEntry)
+        {
+            groupableEntry.AssignTo(Group);
+            NotificationService.Warning(groupableEntry.CanonicalName + " has been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
+            ModelChanged.InvokeAsync();
 
-        DirectoryModel.AssignTo(Group);
-        NotificationService.Warning(DirectoryModel.CanonicalName + " has been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
-        ModelChanged.InvokeAsync();
-
-        Close();
-
+            Close();
+        }
 
     }
 }
