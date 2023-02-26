@@ -54,7 +54,12 @@
                 </Validation>
                 <Validation>
                     <SettingsField>
-                        <FieldLabel>@SettingsLocalization["User Helpdesk URL"]<Tooltip Text="Not Yet Implemented"><Badge Background="Background.Warning" Pill>!</Badge></Tooltip></FieldLabel>
+                        <FieldLabel>
+                            @SettingsLocalization["User Helpdesk URL"]
+                            <Tooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
+                                <Badge Background="Background.Warning" Pill>!</Badge>
+                            </Tooltip>
+                        </FieldLabel>
                         <FieldBody>
                             <TextEdit Placeholder="If not provided, support links will be disabled" @bind-Text="@settings.UserHelpdeskURL">
                                 <Feedback>

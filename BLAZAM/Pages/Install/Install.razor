@@ -82,6 +82,13 @@
     [Parameter]
     public string selectedStep { get; set; } = "0";
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (Program.InstallationCompleted)
+            Nav.NavigateTo("/");
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

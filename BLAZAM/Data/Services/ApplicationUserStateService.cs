@@ -188,7 +188,7 @@ namespace BLAZAM.Server.Data.Services
                 if (UserStates.Count > 0 && UserStates.Contains(state))
                 {
                     UserStates.Remove(state);
-                    OnUserStateRemoved(state);
+                    OnUserStateRemoved?.Invoke(state);
                 }
 
 
