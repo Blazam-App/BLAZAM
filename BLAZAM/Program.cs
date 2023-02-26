@@ -92,7 +92,7 @@ namespace BLAZAM
             {
                 using (var context = _programDbFactory.CreateDbContext())
                 {
-                    if (installationCompleted == null)
+                    if (installationCompleted != true)
                     {
                         if (!context.Seeded()) installationCompleted=false;
                         else installationCompleted=(DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
@@ -239,6 +239,8 @@ namespace BLAZAM
                     options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
                     options.SlidingExpiration = true;
                 });
+
+         
             /*
             Keeping  this here for a possible API in the future
             It's some original test code from before AppAuthenticatinProvider was

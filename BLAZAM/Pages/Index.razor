@@ -11,7 +11,7 @@
 </h2>
 <progress />
 @{
-
+    
     Task.Run(async () => {
         while (NavManager.ToBaseRelativePath(NavManager.Uri) == "")
         {
@@ -31,13 +31,14 @@
         }
 
     });
+    
 }
 @code{
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         tester.OnAppReadyChanged += AppReady;
-
+        /*
         try
         {
             var context = DbFactory.CreateDbContext();
@@ -65,6 +66,7 @@
                     break;
             }
         }
+        */
     }
     private void AppReady(ConnectionState newStatus)
     {
