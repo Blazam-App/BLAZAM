@@ -27,6 +27,11 @@
         </LayoutContent>
 
         <LayoutFooter>
+            @if (Program.InstallationCompleted)
+            {
+                <DirectoryConnectingIndicator />
+
+            }
             <AppFooter />
 
         </LayoutFooter>

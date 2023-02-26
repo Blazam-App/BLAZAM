@@ -10,8 +10,8 @@
             <Step Completed=@(_step>1) Name="1">@SettingsLocalization["Database"]</Step>
             <Step Completed=@(_step>2) Name="2">@SettingsLocalization["Authentication"]</Step>
             <Step Completed=@(_step>3) Name="3">@SettingsLocalization["Directory"]</Step>
-            <Step Completed=@(_step>4) Name="4">@SettingsLocalization["Permissions"]</Step>
-            <Step Name="step5">
+            @*<Step Completed=@(_step>4) Name="4">@SettingsLocalization["Permissions"]</Step>*@
+            <Step Name="step4">
                 <Marker>
                     <Icon Name="IconName.Flag" />
                 </Marker>
@@ -53,6 +53,7 @@
                     <ADirectory StepCompleted="UpdateStatuses" />
                 }
             </StepPanel>
+            @*
             <StepPanel Name="4">
 
                 @if (_step > 3)
@@ -61,7 +62,8 @@
                 }
 
             </StepPanel>
-            <StepPanel Name="5">
+            *@
+            <StepPanel Name="4">
                 <h2>Installation Complete</h2>
                 <Button @onclick="FinalizeInstall" Color="Color.Success">Finalize Install</Button>
             </StepPanel>
@@ -79,6 +81,13 @@
     int _step = 0;
     [Parameter]
     public string selectedStep { get; set; } = "0";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (Program.InstallationCompleted)
+            Nav.NavigateTo("/");
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -137,6 +146,7 @@
                                         await InvokeAsync(StateHasChanged);
 
                                         //check permissions
+                                        /*
                                         PrivilegeLevel currentSettings = Context.PrivilegeLevel.FirstOrDefault();
                                         if (currentSettings != null)
                                         {
@@ -151,6 +161,7 @@
 
 
                                         }
+                                        */
                                     }
 
                                 }
@@ -198,8 +209,8 @@
                 Context.SaveChanges();
             }
             (await Context.AppSettings.FirstOrDefaultAsync()).InstallationCompleted = true;
-            await Context.SaveChangesAsync();
-            Nav.NavigateTo("/logout", true);
+            var result = await Context.SaveChangesAsync();
+            Nav.NavigateTo("/home", true);
         }
         catch
         {
