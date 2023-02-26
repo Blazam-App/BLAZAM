@@ -6,8 +6,11 @@ using BLAZAM.Common.Models.Database.Templates;
 using BLAZAM.Common.Models.Database.User;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.Services.Common;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace BLAZAM.Common.Data.Database
 {
@@ -303,7 +306,7 @@ namespace BLAZAM.Common.Data.Database
 
 
                     //Check for tables
-                    if (AllTablesPresent())
+                    if (Seeded())
                     {
                         //Installation has been completed
 
@@ -352,13 +355,13 @@ namespace BLAZAM.Common.Data.Database
                     return ConnectionStatus.DatabaseConnectionIssue;
 
                 }
-                catch(DatabaseConnectionStringException ex)
+                catch (DatabaseConnectionStringException ex)
                 {
                     return ConnectionStatus.IncompleteConfiguration;
                 }
                 catch (Exception ex)
                 {
-                    
+
 
                     //Installation not completed
 
@@ -371,19 +374,16 @@ namespace BLAZAM.Common.Data.Database
             }
             return ConnectionStatus.IncompleteConfiguration;
         }
-        public bool AllTablesPresent()
+        public bool Seeded()
         {
 
-            var type = GetType();
-            var properties = type.GetProperties();
-            foreach (var property in properties)
-            {
-
-                if (property.PropertyType.IsAssignableFrom(typeof(DbSet<>)) && property.GetValue(this) == null)
-                {
-                    return false;
-                }
-            }
+            var migs = this.Database.GetPendingMigrations();
+            var seedFound = false;
+            migs.ForEach(m => {
+                if (m.Contains("seed"))
+                    seedFound = true;
+            });
+            if (seedFound) return false;
             if (this.AuthenticationSettings.FirstOrDefault() == null)
                 return false;
             return true;
