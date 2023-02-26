@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.6.6</AssemblyVersion>
-		<Version>2023.02.24.1558</Version>
+		<Version>2023.02.26.0243</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -94,6 +94,7 @@
 	<ItemGroup>
 		<Folder Include="Data\Services\RPC\" />
 		<Folder Include="Exceptions\ActiveDirectory\" />
+		<Folder Include="Pages\Groups\" />
 		<Folder Include="Shared\UI\General\" />
 	</ItemGroup>
 

@@ -7,16 +7,17 @@
     <Row Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
         <Heading>@SettingsLocalization["Active Directory Settings"]</Heading>
 
-        <Column ColumnSize="ColumnSize.Is4.OnDesktop">
+       @* <Column ColumnSize="ColumnSize.Is4.OnDesktop">
             <ActiveDirectoryStatusPanel />
-        </Column>
-        <Column ColumnSize="ColumnSize.Is8.OnDesktop">
+        </Column>*@
+        <Column ColumnSize="ColumnSize.Is12.OnDesktop">
             <Form @onsubmit="Save">
                 <Validations @ref="Validation" Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
 
                     <Validation>
                         <SettingsField>
                             <FieldLabel>@SettingsLocalization["Server"]</FieldLabel>
+                            <FieldHelp>Can be your domain name in most environments</FieldHelp>
                             <FieldBody>
                                 @if(Program.InDemoMode && UserStateService.CurrentUsername != "admin")
                                 {
@@ -30,7 +31,7 @@
                                 else
                                 {
 
-                                    <TextEdit Placeholder="Can be your domain name in most environments" @bind-Text="@settings.ServerAddress">
+                                    <TextEdit @bind-Text="@settings.ServerAddress">
                                         <Feedback>
                                             <ValidationError />
                                         </Feedback>
@@ -87,7 +88,7 @@
                         <SettingsField>
                             <FieldLabel>@SettingsLocalization["Username"]</FieldLabel>
                             <FieldBody>
-                                <TextEdit name="username" Placeholder="A user with admin permissions on your intended BaseDN" @bind-Text="@settings.Username">
+                                <TextEdit name="username" @bind-Text="@settings.Username">
                                     <Feedback>
                                         <ValidationError />
                                     </Feedback>

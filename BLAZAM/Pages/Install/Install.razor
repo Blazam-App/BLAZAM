@@ -1,64 +1,17 @@
-@page "/oldinstall"
-@using BLAZAM.Server.Shared.ResourceFiles;
-@using Microsoft.EntityFrameworkCore
-@using Microsoft.Extensions.Localization;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
-@layout InstallLayout
-@inherits AppComponent
-Test
-@if (ErrorMessage !=null){
-    <Card>
-        <CardHeader>Installation Error</CardHeader>
-        <CardBody>
-            @ErrorMessage
-        </CardBody>
-    </Card>
-}
-else if (_checkingInstallation)
-{
-    <Steps SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged" NavigationAllowed="((c)=>false)">
-        <Items>
-            <Step Completed=@(_step>1) Name="step1">@SettingsLocalization["Database"]</Step>
-            <Step Completed=@(_step>2) Name="step2">@SettingsLocalization["Authentication"]</Step>
-            <Step Completed=@(_step>3) Name="step3">@SettingsLocalization["Application"]</Step>
-            <Step Completed=@(_step>4) Name="step4">@SettingsLocalization["Directory"]</Step>
-            <Step Completed=@(_step>5) Name="step5">@SettingsLocalization["Permissions"]</Step>
-            <Step Name="step6">
-                <Marker>
-                    <Icon Name="IconName.Flag" />
-                </Marker>
-                <Caption>
-                    Finish
-                </Caption>
-            </Step>
-        </Items>
-        <Content>
+﻿@page "/install"
+@page "/install/{selectedStep}"
+@layout MinLayout
+@inherits AppComponentBase
 
-            <StepPanel Name="step1">
 
-                <div class="justify-content-center">
-                    <h2>
-                        Checking Installation...
-                    </h2>
-                    <progress class="align-middle" />
-                </div>
-            </StepPanel>
-        </Content>
-    </Steps>
-
-}
-else
-{
+<PageTitle>Install - Blazam</PageTitle>
     <Steps SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged" NavigationAllowed="NavigationAllowed">
         <Items>
-            <Step Completed=@(_step>0) Name="step0">@SettingsLocalization["Writable Directory"]</Step>
-            <Step Completed=@(_step>1) Name="step1">@SettingsLocalization["Database"]</Step>
-            <Step Completed=@(_step>2) Name="step2">@SettingsLocalization["Authentication"]</Step>
-            <Step Completed=@(_step>3) Name="step3">@SettingsLocalization["Application"]</Step>
-            <Step Completed=@(_step>4) Name="step4">@SettingsLocalization["Directory"]</Step>
-            <Step Completed=@(_step>5) Name="step5">@SettingsLocalization["Permissions"]</Step>
-            <Step Name="step6">
+            <Step Completed=@(_step>1) Name="1">@SettingsLocalization["Database"]</Step>
+            <Step Completed=@(_step>2) Name="2">@SettingsLocalization["Authentication"]</Step>
+            <Step Completed=@(_step>3) Name="3">@SettingsLocalization["Directory"]</Step>
+            <Step Completed=@(_step>4) Name="4">@SettingsLocalization["Permissions"]</Step>
+            <Step Name="step5">
                 <Marker>
                     <Icon Name="IconName.Flag" />
                 </Marker>
@@ -68,60 +21,52 @@ else
             </Step>
         </Items>
         <Content>
-            <StepPanel Name="step0">
-                
+            <StepPanel Name="0">
+
                 <Card>
                     <CardHeader>
-                        Writable Directory
+                        Checking Installation
                     </CardHeader>
                     <CardBody>
-                        You must create a directory named "Writable" under the root directory of the web applicaiton.<br><br>
-                        Don't forget to provide write permissions for the Application Pool Identity user (IISUsers by default).
+                        Please wait while the installation status of the application is checked...
                     </CardBody>
-</Card>
-<Button Color="Color.Primary" Clicked="RecheckWritable">Check again...</Button>
+                </Card>
+               
             </StepPanel>
-            <StepPanel Name="step1">
+            <StepPanel Name="1">
                 @if (_step > 0)
                 {
-                <Database Completed=@(_step>1) StepCompleted="UpdateStatuses" />
+                    <InstallDatabase Completed=@(_step>1) StepCompleted="UpdateStatuses" />
                 }
             </StepPanel>
-            <StepPanel Name="step2">
+            <StepPanel Name="2">
                 @if (_step > 1)
                 {
                     <Authentication StepCompleted="UpdateStatuses" />
                 }
 
             </StepPanel>
-            <StepPanel Name="step3">
+           
+            <StepPanel Name="3">
                 @if (_step > 2)
-                {
-                    <Application StepCompleted="UpdateStatuses" />
-                }
-            </StepPanel>
-            <StepPanel Name="step4">
-                @if (_step > 3)
                 {
                     <ADirectory StepCompleted="UpdateStatuses" />
                 }
             </StepPanel>
-            <StepPanel Name="step5">
+            <StepPanel Name="4">
 
-                @if (_step > 4)
+                @if (_step > 3)
                 {
                     <Permissions StepCompleted="ShowLastStep" />
                 }
 
             </StepPanel>
-            <StepPanel Name="step6">
+            <StepPanel Name="5">
                 <h2>Installation Complete</h2>
                 <Button @onclick="FinalizeInstall" Color="Color.Success">Finalize Install</Button>
             </StepPanel>
         </Content>
     </Steps>
-
-}
 
 
 
@@ -131,125 +76,16 @@ else
 
 
 @code {
-    bool _checkingInstallation = false;
-    private int _step = 0;
-    string ErrorMessage;
-    bool _databaseStatus;
-    bool _authenticationStatus;
-    bool _applicationStatus;
-    bool _directoryStatus;
-    bool _permissionsStatus;
-    protected override void OnInitialized()
+    int _step = 0;
+    [Parameter]
+    public string selectedStep { get; set; } = "0";
+
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        if (_step == 0 && !_checkingInstallation){
-            if (DatabaseContext.ConnectionString != null)
-            {
-                UpdateStatuses();
+        await base.OnInitializedAsync();
+        //CheckDatabase
+        UpdateStatuses();
 
-            }
-            else{
-
-                ErrorMessage = "Connection String is missing";
-            }
-        }
-    }
-
-    private async void UpdateStatuses()
-    {
-        _checkingInstallation = true;
-
-        await Task.Run(async () =>
-         {
-
-             await InvokeAsync(StateHasChanged);
-             //Check Write directory
-             if(Program.Writable){
-                 //CheckDatabase
-                 _step = 1;
-                 selectedStep = "step1";
-                 if (Context != null)
-                 {
-                     var result = Context.Status;
-                     if (result != DatabaseContext.ConnectionStatus.ServerUnreachable)
-                     {
-                         if (result == DatabaseContext.ConnectionStatus.OK)
-                         {
-                             _step = 2;
-                             selectedStep = "step2";
-
-                             await InvokeAsync(StateHasChanged);
-
-                             //Check Authentication
-                             try
-                             {
-                                 if (Context.AuthenticationSettings.FirstOrDefault() != null && Context.AuthenticationSettings.FirstOrDefault().AdminPassword != "password")
-                                 {
-                                     _step = 3;
-                                     selectedStep = "step3";
-
-                                     await InvokeAsync(StateHasChanged);
-
-                                     //check Application
-                                     if (Context.AppSettings.FirstOrDefault() != null)
-                                     {
-                                         _step = 4;
-                                         selectedStep = "step4";
-
-                                         await InvokeAsync(StateHasChanged);
-
-                                         //check directory
-                                         if (Context.ActiveDirectorySettings.FirstOrDefault() != null)
-                                         {
-                                             if (Directory.Status == DirectoryConnectionStatus.OK)
-                                             {
-                                                 _step = 5;
-                                                 selectedStep = "step5";
-
-                                                 await InvokeAsync(StateHasChanged);
-
-                                                 //check permissions
-                                                 PrivilegeLevel currentSettings = Context.PrivilegeLevel.FirstOrDefault();
-                                                 if (currentSettings != null)
-                                                 {
-
-                                                     if (Context.Status == DatabaseContext.ConnectionStatus.OK)
-                                                     {
-                                                         _step = 6;
-                                                         selectedStep = "step6";
-
-                                                         //NavManager.NavigateTo("/");
-                                                     }
-
-
-                                                 }
-                                             }
-
-                                         }
-                                     }
-
-                                 }
-                             }
-                             catch (Exception)
-                             {
-
-                             }
-                         }
-                     }
-                     else
-                     {
-                         Nav.NavigateTo("/oops");
-                     }
-                 }
-
-
-                
-             }
-             _checkingInstallation = false;
-
-             await InvokeAsync(StateHasChanged);
-
-         });
 
     }
     private bool NavigationAllowed(StepNavigationContext context)
@@ -261,8 +97,78 @@ else
 
         return true;
     }
+    async void UpdateStatuses()
+    {
+        Context = DbFactory.CreateDbContext();
+        _step = 1;
+        selectedStep = "1";
+        if (Context != null)
+        {
+            var result = Context.Status;
+            if (result != DatabaseContext.ConnectionStatus.ServerUnreachable)
+            {
+                if (result == DatabaseContext.ConnectionStatus.OK)
+                {
+                    if (!Context.Database.GetPendingMigrations().Any())
+                    {
+                        _step = 2;
+                        selectedStep = "2";
 
-    string selectedStep = "step0";
+                        await InvokeAsync(StateHasChanged);
+
+                        try
+                        {
+                            if (Context.AuthenticationSettings.FirstOrDefault() != null && Context.AuthenticationSettings.FirstOrDefault().AdminPassword != "password")
+                            {
+                                _step = 3;
+                                selectedStep = "3";
+
+                                await InvokeAsync(StateHasChanged);
+
+
+                                //check directory
+                                if (Context.ActiveDirectorySettings.FirstOrDefault() != null)
+                                {
+                                    if (Directory.Status == DirectoryConnectionStatus.OK)
+                                    {
+                                        _step = 4;
+                                        selectedStep = "4";
+
+                                        await InvokeAsync(StateHasChanged);
+
+                                        //check permissions
+                                        PrivilegeLevel currentSettings = Context.PrivilegeLevel.FirstOrDefault();
+                                        if (currentSettings != null)
+                                        {
+
+                                            if (Context.Status == DatabaseContext.ConnectionStatus.OK)
+                                            {
+                                                _step = 5;
+                                                selectedStep = "5";
+
+                                                //NavManager.NavigateTo("/");
+                                            }
+
+
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Nav.NavigateTo("/oops");
+            }
+        }
+    }
 
     private Task OnSelectedStepChanged(string name)
     {
@@ -272,10 +178,10 @@ else
     }
     private void ShowLastStep()
     {
-        selectedStep = "step6";
+        selectedStep = "6";
         _step = 6;
         UpdateStatuses();
-    } 
+    }
     private void RecheckWritable()
     {
         Program.CheckWritablePathPermissions();
@@ -283,7 +189,23 @@ else
     }
     private async void FinalizeInstall()
     {
-        await File.WriteAllTextAsync(Program.InstallFlagFilePath, "");
-        Nav.NavigateTo("/logout",true);
+        //await File.WriteAllTextAsync(Program.InstallFlagFilePath, "");
+        try
+        {
+            if (Context.AppSettings.FirstOrDefault() == null)
+            {
+                Context.AppSettings.Add(new());
+                Context.SaveChanges();
+            }
+            (await Context.AppSettings.FirstOrDefaultAsync()).InstallationCompleted = true;
+            await Context.SaveChangesAsync();
+            Nav.NavigateTo("/logout", true);
+        }
+        catch
+        {
+            NotificationService.Error("Sorry, ran into an error while finalizing install");
+
+            }
+
     }
 }

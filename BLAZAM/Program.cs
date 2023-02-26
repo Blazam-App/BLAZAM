@@ -84,6 +84,10 @@ namespace BLAZAM
         /// </returns>
         internal static List<string> ListeningAddresses { get; private set; } = new List<string>();
 
+        private static IDbContextFactory<DatabaseContext> _programDbFactory;
+
+
+
         static bool? installationCompleted = null;
         /// <summary>
         /// Indicates the Installation status
@@ -92,10 +96,14 @@ namespace BLAZAM
         {
             get
             {
-                return DatabaseCache.ApplicationSettings?.InstallationCompleted == true;
-                if (installationCompleted == null) installationCompleted = File.Exists(InstallFlagFilePath);
+                using (var context = _programDbFactory.CreateDbContext())
+                {
+                    if (!context.Seeded()) return false;
+                    return (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                    if (installationCompleted == null) installationCompleted = File.Exists(InstallFlagFilePath);
 
-                return installationCompleted == true;
+                    return installationCompleted == true;
+                }
             }
         }
 
@@ -113,6 +121,7 @@ namespace BLAZAM
         /// Can be used for JWT Token signing
         /// </summary>
         internal static SymmetricSecurityKey TokenKey;
+
         /// <summary>
         /// A static reference for the current asp
         /// net core application instance
@@ -216,6 +225,7 @@ namespace BLAZAM
                 CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
+
                     options.Events.OnCheckSlidingExpiration = async (context) =>
                     {
                         if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
@@ -227,10 +237,11 @@ namespace BLAZAM
                         //Use session timeout from settings in database
                         if (DatabaseCache.AuthenticationSettings.SessionTimeout != null)
                             context.Options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
+
                     };
                     options.LoginPath = new PathString("/login");
                     options.LogoutPath = new PathString("/logout");
-                    options.ExpireTimeSpan = TimeSpan.FromSeconds(1);
+                    options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
                     options.SlidingExpiration = true;
                 });
             /*
@@ -316,6 +327,9 @@ namespace BLAZAM
 
             //Add custom Auth
             builder.Services.AddScoped<AppAuthenticationStateProvider, AppAuthenticationStateProvider>();
+
+            //Add web user application search as a service
+            builder.Services.AddScoped<SearchService>();
 
 
             //Provide DuoSecurity service
@@ -412,8 +426,8 @@ namespace BLAZAM
             //Start the database cache
             using (var scope = AppInstance.Services.CreateScope())
             {
-                var factory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DatabaseContext>>();
-                DatabaseCache.Start(factory, Loggers.DatabaseLogger);
+                _programDbFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DatabaseContext>>();
+                DatabaseCache.Start(_programDbFactory, Loggers.DatabaseLogger);
             }
 
 
@@ -472,7 +486,7 @@ namespace BLAZAM
 
         }
 
-        internal static async Task<bool> ApplyDatabaseMigrations()
+        internal static async Task<bool> ApplyDatabaseMigrations(bool force = false)
         {
             return await Task.Run(() =>
             {
@@ -482,8 +496,10 @@ namespace BLAZAM
                     using (var scope = AppInstance.Services.CreateScope())
                     {
                         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-                        if (context.Database.GetPendingMigrations().Count() > 0)
-                            context.Database.Migrate();
+                        if (context != null)
+                            if(context.Seeded()||force)
+                                if (context.Database.GetPendingMigrations().Count() > 0)
+                                    context.Database.Migrate();
 
                     }
                     return true;
@@ -494,7 +510,6 @@ namespace BLAZAM
                     return false;
                 }
             });
-
         }
 
     }

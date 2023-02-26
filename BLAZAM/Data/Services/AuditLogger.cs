@@ -194,8 +194,8 @@ namespace BLAZAM.Server.Data.Services
                         Action = action,
                         Target = searchedGroup.GroupName,
                         BeforeAction=beforeAction,
-                        AfterAction = afterAction
-
+                        AfterAction = afterAction,
+                        Username = CurrentUser.AuditUsername
                     });
                     context.SaveChanges();
                     return true;

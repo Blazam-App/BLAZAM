@@ -5,10 +5,6 @@
 @inherits ValidatedForm
 @layout LoginLayout
 @{
-    var username = new Dictionary<string, object> { { "name", "username" } };
-    var password = new Dictionary<string, object> { { "name", "password" } };
-    var redirect = new Dictionary<string, object> { { "name", "redirectUri" } };
-    //var redirectUrl = Nav.Uri.Substring(Nav.Uri.IndexOf("?returnUrl=")+11);
     var redirectUrl = Nav.Uri;
 }
 <Heading Padding="Padding.Is4.FromBottom">
@@ -21,47 +17,46 @@
 
 
 <Div class="brand-icon">
-    <img src="@StaticAssets.ApplicationIconUri" />
+    <Image Source="@StaticAssets.ApplicationIconUri" />
 
 </Div>
 
 @if (!Program.InDemoMode || DemoCustomLogin)
 {
-    <Form class="login-form" method="post" action="/signin" TextAlignment="TextAlignment.Center">
+    <Form Class="login-form" method="post" action="/signin" TextAlignment="TextAlignment.Center" >
 
         <Field>
-            <FieldLabel>Username</FieldLabel>
             <FieldBody>
-                <TextEdit Autofocus TextAlignment="TextAlignment.Center" Attributes=username @bind-Text=LoginRequest.Username>
-                <Feedback>
-                    <ValidationError />
-                </Feedback>
+                <TextEdit Autofocus TextAlignment="TextAlignment.Center" Placeholder="Username" name="username" @bind-Text=LoginRequest.Username>
+                    <Feedback>
+                        <ValidationError />
+                    </Feedback>
                 </TextEdit>
-                </FieldBody>
-                </Field>
-                <Field>
-                <FieldLabel>Password</FieldLabel>
-                <FieldBody>
-                <TextEdit TextAlignment="TextAlignment.Center" Attributes=password Role="TextRole.Password" @bind-Text=LoginRequest.Password>
-                <Feedback>
-                    <ValidationError />
-                </Feedback>
+            </FieldBody>
+        </Field>
+        <Field>
+            <FieldBody>
+                <TextEdit TextAlignment="TextAlignment.Center" Placeholder="Password" name="password" Role="TextRole.Password" @bind-Text=LoginRequest.Password>
+                    <Feedback>
+                        <ValidationError />
+                    </Feedback>
                 </TextEdit>
-                </FieldBody>
-                </Field>
-                <input type="hidden" name="ReturnUrl" value="@redirectUrl" />
+            </FieldBody>
+                </Field>        
+                <TextEdit Visibility=Visibility.Invisible name="ReturnUrl" Text="@redirectUrl" />
 
-                <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</Button><br />
-                </Form>
+
+        <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</Button><br />
+    </Form>
 
 }
 @if (Program.InDemoMode)
 {
-    <Form class="login-form" method="post" action="/signin" TextAlignment="TextAlignment.Center">
+    <Form Class="login-form" method="post" action="/signin" TextAlignment="TextAlignment.Center">
 
-        <TextEdit Autofocus TextAlignment="TextAlignment.Center" Attributes=username Text="demo" Display="Display.None" />
-        <TextEdit TextAlignment="TextAlignment.Center" Attributes=password Role="TextRole.Password" Text="demo" Display="Display.None" />
-        <input type="hidden" name="ReturnUrl" value="@redirectUrl" />
+        <TextEdit Autofocus TextAlignment="TextAlignment.Center" name="username" Text="demo" Display="Display.None" />
+        <TextEdit TextAlignment="TextAlignment.Center" name="password" Role="TextRole.Password" Text="demo" Display="Display.None" />
+        <TextEdit Visibility=Visibility.Invisible name="ReturnUrl" Text="@redirectUrl" />
 
         <Dropdown Margin=Margin.IsAuto.OnX.Is2.FromTop>
         <Button Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</Button>
@@ -75,7 +70,6 @@
 
 }
 <Copyright Margin=Margin.IsAuto.OnX Padding="Padding.Is5.FromTop" />
-
 <style>
     .brand-icon {
         position: fixed;
@@ -94,6 +88,7 @@
         margin-right: auto;
     }
 </style>
+
 @code {
     bool DemoCustomLogin = false;
     LoginRequest LoginRequest = new();

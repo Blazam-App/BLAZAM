@@ -47,6 +47,25 @@ namespace BLAZAM.Server.Shared.UI
 
         //
         // Summary:
+        //     Checks if the given string meets minimum password complexity.
+        //
+        // Parameters:
+        //   value:
+        //     String to check for the range.
+        //
+        //   min:
+        //     Minimum length allowed.
+        //
+        // Returns:
+        //     True if string length is long enough and has at least
+        //     one leter, number, and special character.
+        public static bool IsValidPassword(string value, int min=6)
+        {
+            Regex regex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{"+min+",}$");
+            return regex.Match(value).Success;
+        }
+        //
+        // Summary:
         //     Check if the string is null or empty.
         //
         // Parameters:
@@ -235,7 +254,24 @@ namespace BLAZAM.Server.Shared.UI
         {
             ValidationRule.IsUppercase(e);
         }
-
+        //
+        // Summary:
+        //     Checks if the given string meets minimum password complexity.
+        //
+        // Parameters:
+        //   value:
+        //     String to check for the range.
+        //
+        //   min:
+        //     Minimum length allowed.
+        //
+        // Returns:
+        //     True if string length is long enough and has at least
+        //     one leter, number, and special character.
+        public static void IsValidPassword(ValidatorEventArgs e)
+        {
+            e.Status = (IsValidPassword(e.Value as string) ? ValidationStatus.Success : ValidationStatus.Error);
+        }
         //
         // Summary:
         //     Check if the string is lowercase.
