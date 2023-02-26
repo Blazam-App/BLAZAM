@@ -8,7 +8,7 @@ namespace BLAZAM.Server.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ConnMonitor _monitor;
-        private readonly List<string> _uriIgnoreList = new List<string> { "/css", "/_content","/_blazor","/BLAZAM.styles.css","/_framework" };
+        private readonly List<string> _uriIgnoreList = new List<string> { "/static","/css", "/_content","/_blazor","/BLAZAM.styles.css","/_framework" };
         public ApplicationStatusRedirectMiddleware(
            RequestDelegate next,
            ConnMonitor monitor)
@@ -33,7 +33,7 @@ namespace BLAZAM.Server.Middleware
                             }
                             break;
                         case ConnectionState.Up:
-                            var dbContext = factory.CreateDbContext();
+                            
                             if (!Program.InstallationCompleted)
                             {
                                 if (intendedUri != "/install")
@@ -50,34 +50,7 @@ namespace BLAZAM.Server.Middleware
                             }
                             break;
                     }
-                    /*
-                    if (Program.InstallationCompleted )
-                    {
-                        if (_monitor.AppReady != ConnectionState.Up)
-                        {
-
-
-                            if (_monitor.AppReady == ConnectionState.Connecting && intendedUri != "/")
-                            {
-                                context.Response.Redirect("/");
-                            }
-                            //else if (_monitor.AppReady == ConnectionState.Down && intendedUri != "/oops")
-                            //{
-                            //    context.Response.Redirect("/oops");
-                            //}
-
-
-
-                        }
-
-
-                    }
-                    else if (intendedUri != "/install")
-                        {
-                           // context.Response.Redirect("/install");
-
-                        }
-                    */
+                
 
                 }
                 catch
