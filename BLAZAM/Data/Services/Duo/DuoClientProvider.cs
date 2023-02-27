@@ -1,12 +1,12 @@
 ﻿using BLAZAM.Common.Data.Database;
 using DuoUniversal;
 using Microsoft.EntityFrameworkCore;
-
+using RestSharp;
 namespace BLAZAM.Server.Data.Services.Duo
 {
     public interface IDuoClientProvider
     {
-        public Client GetDuoClient();
+        public RestClient GetDuoClient();
     }
     internal class DuoClientProvider : IDuoClientProvider
     {
@@ -22,7 +22,7 @@ namespace BLAZAM.Server.Data.Services.Duo
            
         }
 
-        public Client GetDuoClient()
+        public RestClient GetDuoClient()
         {
             using (var context = DbFactory.CreateDbContext())
             {
@@ -53,8 +53,12 @@ namespace BLAZAM.Server.Data.Services.Duo
             {
                 throw new DuoException("A 'Redirect URI' configuration value is required in the appsettings file.");
             }
-
-            return new ClientBuilder(ClientId, ClientSecret, ApiHost, RedirectUri).Build();
+            var requst = new RestRequest()
+            {
+                 Method
+            }
+            var client= new RestClient() ;
+            
         }
     }
 }
