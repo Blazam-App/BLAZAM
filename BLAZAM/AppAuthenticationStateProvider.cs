@@ -173,8 +173,6 @@ namespace BLAZAM
             if (!loginReq.Impersonation)
             {
                 user = _directory.Authenticate(loginReq);
-                /*
-                 * Duo Authentication if i ever get it working with blazor server
                 if (user != null)
                 {
                     //Check if we need to perform MFA
@@ -201,7 +199,6 @@ namespace BLAZAM
                         }
                     }
                 }
-                */
             }
             else
                 user = _directory.Users.FindUsersByString(loginReq.Username, true, true).FirstOrDefault();
@@ -217,12 +214,15 @@ namespace BLAZAM
             // Initiate the Duo authentication for a specific username
 
             // Get a Duo client
-            Client duoClient = _duoClientProvider.GetDuoClient();
-           
+            DuoClient duoClient = _duoClientProvider.GetDuoClient();
+
             // Check if Duo seems to be healthy and able to service authentications.
             // If Duo were unhealthy, you could possibly send user to an error page, or implement a fail mode
-            var isDuoHealthy = await duoClient.DoHealthCheck();
+            var isDuoUp = await duoClient.Ping();
+            var isDuoHealthy = await duoClient.Check();
+            var isDuoUserReady = await duoClient.PreAuth(loginReq.Username);
 
+            /*
             // Generate a random state value to tie the authentication steps together
             string state = Client.GenerateState();
             // Save the state and username in the session for later
@@ -236,6 +236,7 @@ namespace BLAZAM
             // The Duo prompt, after authentication, will redirect back to the configured Redirect URI to complete the authentication flow.
             // In this example, that is /duo_callback, which is implemented in Callback.cshtml.cs.
             // return new RedirectResult(promptUri);
+            */
             return true;
         }
 
