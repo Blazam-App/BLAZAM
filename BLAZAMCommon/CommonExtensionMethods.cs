@@ -159,8 +159,8 @@ namespace BLAZAM
             if (value == null) return null;
             try
             {
-                
-                long? fileTime = value?.ToFileTimeUtc();
+               
+                long ? fileTime = value?.ToFileTimeUtc();
                 object fto = 0;
                 IADsLargeInteger largeInt = new ADsLargeInteger();
                 largeInt.HighPart = (int)(fileTime >> 32);
@@ -174,9 +174,12 @@ namespace BLAZAM
         }
         public static DateTime? AdsValueToDateTime(this object value)
         {
+            //read file time 133213804065419619
             try
             {
+              
                 IADsLargeInteger v = value as IADsLargeInteger;
+         
                 if (null == v) return DateTime.MinValue;
 
                 long dV = ((long)v.HighPart << 32) + (long)v.LowPart;

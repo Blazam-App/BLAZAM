@@ -14,13 +14,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         private IQueryable<IADComputer>? childComputerCache;
         private IQueryable<IADGroup>? childGroupCache;
 
-        public override string SearchUri
-        {
-            get
-            {
-                return "/ou/search/" + CanonicalName;
-            }
-        }
+     
         public async Task<bool> HasChildrenAsync()
         {
             return await Task.Run(() => {

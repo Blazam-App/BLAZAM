@@ -1,7 +1,7 @@
 ﻿@page "/permissions"
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
-@inherits AppComponent
+@inherits AppComponentBase
 <AuthorizeView Roles=@UserRoles.SuperAdmin>
 
     <h2>Permissions</h2>

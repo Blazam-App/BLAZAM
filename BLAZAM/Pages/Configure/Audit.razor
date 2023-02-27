@@ -1,7 +1,7 @@
 ﻿@page "/audit"
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
-@inherits AppComponent
+@inherits AppComponentBase
 <h3>Audit</h3>
 <DataGrid TItem="CommonAuditLog"
           Data="@auditEntries.OrderByDescending(ae=>ae.Timestamp)"

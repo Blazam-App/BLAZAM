@@ -43,6 +43,35 @@ namespace BLAZAM.Common.Data.Database
                 throw new ApplicationException("Connection String missing a Server or Data Source parameter");
             }
         }
+        public string Database
+        {
+            get
+            {
+                if (ConnectionString != null)
+                {
+                    string search = "Initial Catalog=";
+                    int startIndex = ConnectionString.IndexOf(search);
+                    if (startIndex == -1)
+                    {
+                       // search = "Server=";
+                       // startIndex = ConnectionString.IndexOf(search);
+                    }
+                    if (startIndex >= 0)
+                    {
+                        startIndex += search.Length;
+                        int endIndex = ConnectionString.IndexOf(";", startIndex);
+                        if (endIndex >= 0)
+                        {
+                            return ConnectionString.Substring(startIndex, endIndex - startIndex);
+
+                        }
+
+                    }
+
+                }
+                throw new ApplicationException("Connection String missing a Server or Data Source parameter");
+            }
+        }
 
         public string ServerAddress
         {
@@ -73,7 +102,7 @@ namespace BLAZAM.Common.Data.Database
 
 
         }
-
+       
         public int ServerPort
         {
             get
