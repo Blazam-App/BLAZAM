@@ -34,6 +34,10 @@ using Microsoft.Extensions.Logging;
 using Serilog.Events;
 using Blazorise.RichTextEdit;
 using BLAZAM.Server.Pages.Error;
+using ITfoxtec.Identity.Saml2.Schemas.Metadata;
+using ITfoxtec.Identity.Saml2;
+using ITfoxtec.Identity.Saml2.MvcCore.Configuration;
+using Microsoft.TeamFoundation.TestManagement.WebApi;
 
 namespace BLAZAM
 {
@@ -311,6 +315,30 @@ namespace BLAZAM
             builder.Services.AddSingleton<IActiveDirectory, ActiveDirectoryContext>();
 
 
+            builder.Services.Configure<Saml2Configuration>(Configuration.GetSection("Saml2"));
+
+            builder.Services.Configure<Saml2Configuration>(saml2Configuration =>
+            {
+                saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
+
+                var entityDescriptor = new EntityDescriptor();
+               /*
+                entityDescriptor.ReadIdPSsoDescriptorFromUrl(new Uri(Configuration["Saml2:IdPMetadata"]));
+                if (entityDescriptor.IdPSsoDescriptor != null)
+                {
+                    saml2Configuration.SingleSignOnDestination = entityDescriptor.IdPSsoDescriptor.SingleSignOnServices.First().Location;
+                    saml2Configuration.SignatureValidationCertificates.AddRange(entityDescriptor.IdPSsoDescriptor.SigningCertificates);
+                }
+                else
+                {
+                    throw new Exception("IdPSsoDescriptor not loaded from metadata.");
+                }
+               */
+            });
+
+            builder.Services.AddSaml2();
+
+
 
             //Provide an ApplicationManager as a service
             builder.Services.AddScoped<ApplicationManager>();
@@ -414,11 +442,20 @@ namespace BLAZAM
             AppInstance.UseCookiePolicy();
             AppInstance.UseAuthentication();
             AppInstance.UseAuthorization();
-
+            AppInstance.UseSaml2();
             //AppInstance.MapControllers();
             AppInstance.MapBlazorHub();
             AppInstance.MapFallbackToPage("/_Host");
+            AppInstance.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
 
+                endpoints.MapControllerRoute(
+                    
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+          
 
             //Start the database cache
             using (var scope = AppInstance.Services.CreateScope())
