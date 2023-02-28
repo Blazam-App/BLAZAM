@@ -105,8 +105,15 @@ namespace BLAZAM.Server.Data.Services.Update
                 Loggers.UpdateLogger.Error("Error while checking for auto update", ex);
             }
         }
+        public void Cancel()
+        {
+            ScheduledUpdate = null;
+            ScheduledUpdateTime = DateTime.MinValue;
+            autoUpdateApplyTimer.Dispose();
+            autoUpdateApplyTimer = null;
+        }
 
-        private void ScheduleUpdate(TimeSpan updateTimeOfDay, ApplicationUpdate updateToInstall)
+        public void ScheduleUpdate(TimeSpan updateTimeOfDay, ApplicationUpdate updateToInstall)
         {
             bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall ;
             if (ScheduledUpdate != updateToInstall)
