@@ -1,6 +1,6 @@
-﻿#Name BLAZAM Updater Script
-#Purpose Provides a decoupled way to elevate, manage IIS server, and update web app
-#Version 1.0.1
+#Name BLAZAM Updater Script
+#Purpose Provides a decoupled way to elevate, and update web app
+#Version 1.1.0
 
 
 
@@ -8,14 +8,15 @@ param(
     [string]$Username,
     [string]$Password,
     [string]$Domain,
-    [string]$WebAddress,
+    [string]$ProcessId,
     [string]$UpdateSourcePath,
     [string]$ApplicationDirectory
 )
-Write-Host("Performs a self update of the BLAZAM IIS Web Application.")
+Write-Host("Performs a self update of the BLAZAM Web Application.")
 
-Write-Host("Usage:`r`n updater.ps1 -Username user -Password pass -WebAddress blazam.example.com -UpdateSourcePath 'C:\UpdateSourcePath\_BLAZAM' -ApplicationDirectory 'C:\inetpub\blazam\'")
-
+Write-Host("Usage:`r`n updater.ps1 -Username user -Password pass -ProcessId 1234 -UpdateSourcePath 'C:\UpdateSourcePath\_BLAZAM' -ApplicationDirectory 'C:\inetpub\blazam\'")
+<#
+Allow the script to run as the current user
 if ($Username -eq "") {
     Write-Host("Error: Username not provided")
     exit
@@ -28,194 +29,92 @@ if ($Domain -eq "") {
     Write-Host("Error: Domain not provided")
     exit
 }
-
+#>
+if ($ProcessId -eq "") {
+    Write-Host("Error: Process ID not provided")
+    exit
+}
 
 Write-Host("Username: " + $Username);
 Write-Host("Password: " + $Password);
 Write-Host("Domain: " + $Domain);
-Write-Host("WebAddress: " + $WebAddress);
 Write-Host("ApplicationDirectory: " + $ApplicationDirectory);
 Write-Host("Update Source Path: " + $UpdateSourcePath);
+Write-Host("Process Id: " + $ProcessId);
 
 
-$securePassword = ConvertTo-SecureString $Password -AsPlainText -Force
-$credential = New-Object System.Management.Automation.PSCredential($Username, $securePassword)
 
-$out = Invoke-Command -ComputerName "localhost" -Credential $credential -ArgumentList $WebAddress, $UpdateSourcePath, $ApplicationDirectory  -ScriptBlock {
-    param(
-        [string]$address, 
+$updateScript= {
+     param(
         [string]$source,
-        [string]$destination
+        [string]$destination,
+        [string]$processId
     )
     function Quit {
         Stop-Transcript -ErrorAction SilentlyContinue
         exit
     }
 
-    function Get-AppPool{
-        $sites = Get-IISSite;
-
-        foreach ($site in $sites) {
-    
-            $bindings = Get-IISSiteBinding -Name $site.Name
-            #Write-Host ($site);
-    
-            # Write-Host ($binding);
-            foreach ($binding in $bindings) {
-            
-                #Write-Host ($binding.Host);
-                if ($binding.Host -contains $address) {
-                    #Write-Host ("Found Site")
-                    $runningSite = $site
-                    #Write-Host("SiteName: "+$site.Name)
-                    $pools = Get-IISAppPool
-                    foreach ($pool in $pools) {
-                        #Write-Host("Pool Name: "+$pool.Name)
-                        #Write-Host("Applications: "+$site.Applications)
-                        [string] $testPoolName = $pool.Name + "/"
-                        [string] $appName = $site.Applications
-                        #Write-Host("Testing: "+$testPoolName + "==" + $appName)
-                        if ($appName -eq $testPoolName) {
-                            #Write-Host("Found app pool")
-                            $runningAppPool = $pool
-                            break
-                        }
-                    }
-                }
-            }
-        }
-        return $runningAppPool
-    }
-
-    $date = Get-Date
-    $DateStr = $date.ToString("yyyyMMddHHmmss")
-    $backupDirectory = $env:TEMP + "\BLAZAM\backup\" + $DateStr + "\"
-
-    $logPath = $destination + "Writable\Update\testlog.txt"
+    $logPath = $destination + "updater\lastUpdateAttempt.txt"
 
     Write-Host("Log path: " + $logPath)
     Start-Transcript -Path $logPath
+
+
+    $date = Get-Date
+    $backupDateStr = $date.ToString("yyyyMMddHHmmss")
+    $backupDirectory = $env:TEMP + "\BLAZAM\backup\" + $backupDateStr + "\"
+
     Write-Host("Backup path: " + $backupDirectory)
-
-
-    if (($address -eq $null) -or ($address -eq "")) {
-        Write-Host("Error: WebAddress was not provided!")
-        Quit
-    }
 
     if (($source -eq $null) -or ($source -eq "")) {
         Write-Host("Error: Source was not provided!")
+        Write-Host("You must provide the update source path. This should be the unzipped application root directory")
         Quit
     }
     
     if (($destination -eq $null) -or ($destination -eq "")) {
         Write-Host("Error: Destination was not provided!")
+        Write-Host("You must provide the current application path. This should be the current application root directory")
+
+        Quit
+    }
+
+        if (($processId -eq $null) -or ($processId -eq "")) {
+        Write-Host("Error: Process ID was not provided!")
+        Write-Host("You must provide the running proceess ID. You cannot update the app while stopped.")
+
         Quit
     }
     
-    Write-Host("WebAddress: " + $address);
     Write-Host("Update Source Path: " + $source);
     Write-Host("Destination Path: " + $destination);
-
-    $runningAppPool
-    $runningSite
-
-
+    Write-Host("Process ID: " + $processId);
     Write-Host("Running as " + $env:UserDomain + "\" + $env:UserName);
     
-
-    $sites = Get-IISSite;
-
-    foreach ($site in $sites) {
-
-        $bindings = Get-IISSiteBinding -Name $site.Name
-        Write-Host ($site);
-
-        # Write-Host ($binding);
-        foreach ($binding in $bindings) {
-        
-            Write-Host ($binding.Host);
-            if ($binding.Host -contains $address) {
-                #Write-Host ("Found Site")
-                $runningSite = $site
-                #Write-Host("SiteName: "+$site.Name)
-                $pools = Get-IISAppPool
-                foreach ($pool in $pools) {
-                    #Write-Host("Pool Name: "+$pool.Name)
-                    #Write-Host("Applications: "+$site.Applications)
-                    [string] $testPoolName = $pool.Name + "/"
-                    [string] $appName = $site.Applications
-                    #Write-Host("Testing: "+$testPoolName + "==" + $appName)
-                    if ($appName -eq $testPoolName) {
-                        Write-Host("Found app pool")
-                        $runningAppPool = $pool
-                        break
-                    }
-                }
-            }
-        }
-    }
-    if ($runningAppPool -eq $null) {
-        Write-Host("Error: Site Not Found: " + $address)
+    $process = Get-Process -Id $processId
+    if($process -eq $null){
+        Write-Host("Error: A process with process id of "+$processId+" was not found")
         Quit
     }
+    $commandLine = (gcim win32_process | Where-Object -Property "processid" -EQ -Value $processId | Select-Object commandline).commandline
 
-    Write-Host("App Pool Name: " + $runningAppPool.Name)
-    Write-Host("Site State: " + $runningSite.State)
-        
-    Write-Host("Pool State: " + $runningAppPool.State)
+    $processFilePath = ($commandLine -split " ")[0]
+    if($processFilePath.Contains("w3wp.exe")){
+        $hParam = ($commandLine | Select-String -Pattern '-h ".*?"' -AllMatches).Matches.Value -replace '-h ','' -replace '"',''
+        $processArguments ='-h "'+$hParam +'"'
+    }
+    Write-Host "Re-Launch Command "$processFilePath" "$processArguments
+
+    Stop-Process -ID $processId -Force
     
-#    if ($runningSite.State -ne 'Stopped') {
-#        
-#        $runningSite | Stop-IISSite -Confirm:$false
-#    }
-#    Write-Host("Waiting up to 60 seconds for Application to stop")
-#    $retries = 60
-#    while ($retries -gt 0) {
-#        Start-Sleep -Seconds 1
-#        $retries = $retries - 1
-#        if ($runningSite.State -eq 'Stopped') {
-#            Write-Host("Application stopped")
-#            $retries = 0
-#        }else{
-#            Write-Host("Application not stopped yet.")
-#        }
-#    }
-#    if ($runningSite.State -ne 'Stopped') {
-#        
-#        Write-Host("Error: Web Application failed to shutdown")
-#        Quit
-#    }
-
-    if ($runningAppPool.State -ne 'Stopped') {
-        
-        $runningAppPool | Stop-WebAppPool
-    }
-
-    Write-Host("Waiting up to 60 seconds for ApplicationPool to stop")
-    $retries = 60
-    while ($retries -gt 0) {
-        Start-Sleep -Seconds 1
-        $retries = $retries - 1
-        if ($runningAppPool.State -eq 'Stopped') {
-            Write-Host("Application Pool stopped")
-            $retries = 0
-        }else{
-            
-            Write-Host($runningAppPool.Name + ":"+$runningAppPool.State)
-            Write-Host("Application Pool not stopped yet.")
-        }
-    }
-    Write-Host("Site State: " + $runningSite.State)
-        
-    Write-Host("Pool State: " + $runningAppPool.State)
-        
-    if ($runningAppPool.State -ne 'Stopped') {
-        Write-Host("Error: Web Application Pool failed to shutdown")
-        Quit
-
-    }
     Start-Sleep -Seconds 2
+    if($process.ExitTime -ne $null)
+    {
+        
+        Write-Host("Error: Web Application failed to stop")
+        Quit
+    }
     #Perform Backup Section
     $backupSource = $destination + "*"
     Write-Host("Backing up current")
@@ -234,14 +133,24 @@ $out = Invoke-Command -ComputerName "localhost" -Credential $credential -Argumen
     Copy-Item -Path $source -Destination $destination  -Exclude "*\updater\*" -Recurse -Verbose -Force
     
     Start-Sleep -Seconds 2
-    Write-Host("Restarting ApplicationPool")
-         
-    $runningAppPool | Start-WebAppPool
-    #  $runningSite | Start-IISSite
+    Write-Host("Restarting Application")
+    Write-Host("Process path: " + $processFilePath)
+
+    if($processArguments -ne $null -and $processArguments -ne "")
+    {
+        
+        Write-Host("Starting with arguments: " + $processArguments)
+        $restartedProcess = Start-Process -FilePath $processFilePath -ArgumentList $processArguments -PassThru
+
+    }else{
+        $restartedProcess = Start-Process -FilePath $processFilePath -PassThru
+
+    }
     Write-Host("Waiting 15 seconds for Application to restart")
 
     Start-Sleep -Seconds 15
-    if ($runningSite.State -ne 'Started' -and $runningAppPool.State -ne 'Started') {
+    Write-Host("Process Stats: "+($restartedProcess| Select-Object *))
+    if ($restartedProcess.ExitTime -eq $null) {
         Write-Host("Error: Web Application failed to restart rolling back changes")
         #Perform Rollback Section
         $restoreSource = $backupDirectory + "*"
@@ -251,12 +160,21 @@ $out = Invoke-Command -ComputerName "localhost" -Credential $credential -Argumen
         Copy-Item -Path $restoreSource -Destination $backupDirectory -Recurse -Verbose -Force
         Write-Host("Restarting ApplicationPool")
 
-        $runningAppPool | Start-WebAppPool
+        if($processArguments -ne $null -and $processArguments -ne "")
+        {
+            
+            Write-Host("Starting with arguments: " + $processArguments)
+            $restartedProcess = Start-Process -FilePath $processFilePath -ArgumentList $processArguments -PassThru
+    
+        }else{
+            $restartedProcess = Start-Process -FilePath $processFilePath -PassThru
+    
+        }
         #$runningSite | Start-IISSite
         Write-Host("Waiting 15 seconds for Application to restart")
     
         Start-Sleep -Seconds 15
-        if ($runningSite.State -ne 'Started' -and $runningAppPool.State -ne 'Started') {
+        if ($restartedProcess.ExitTime -eq $null) {
             Write-Host("Error: Rollback performed, but application did not start! Oh no...")
         }
         else {
@@ -267,6 +185,18 @@ $out = Invoke-Command -ComputerName "localhost" -Credential $credential -Argumen
     }
     Write-Host("Web Application successfully updated")
     Stop-Transcript
+}
+
+if($Username -ne "" -and $Password -ne "")
+{
+$securePassword = ConvertTo-SecureString $Password -AsPlainText -Force
+$credential = New-Object System.Management.Automation.PSCredential($Username, $securePassword)
+$out = Invoke-Command -ComputerName "localhost" -Credential $credential -ArgumentList  $UpdateSourcePath, $ApplicationDirectory,$ProcessId  -ScriptBlock $updateScript
+
+}
+else{
+$out = Invoke-Command -ArgumentList  $UpdateSourcePath, $ApplicationDirectory,$ProcessId  -ScriptBlock $updateScript
+
 }
 Write-Host($out)
 exit

@@ -16,13 +16,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
     public class ApplicationUpdate
     {
-        /// <summary>
-        /// The expected compression ratio of the zipped update.
-        /// Azure doesn't provide a Content-Length header but does
-        /// provide the uncompressed size via API. So, we need to
-        /// guestimate the zipped file size.
-        /// </summary>
-        const double expectedCompressionRatio = 2.73;
+   
 
         /// <summary>
         /// This might not have a successful injection.
@@ -42,19 +36,6 @@ namespace BLAZAM.Server.Data.Services.Update
         /// </summary>
         public ApplicationVersion Version { get=>Release.Version; }
 
-        /// <summary>
-        /// The Azure pipeline build of this update
-        /// </summary>
-        /// <remarks>Use <see cref="Release"/> instead</remarks>
-        [Obsolete("Use Release instead")]
-        public Build Build { get; set; }
-
-        /// <summary>
-        /// The Azure pipeling build artifact for this update
-        /// </summary>
-        /// <remarks>Use <see cref="Release"/> instead</remarks>
-        [Obsolete("Use Release instead")]
-        public BuildArtifact? Artifact { get; set; }
 
         /// <summary>
         /// The application update directory, in temporary files
@@ -105,7 +86,7 @@ namespace BLAZAM.Server.Data.Services.Update
         {
             get
             {
-                return "/c start Powershell -command \"" + CommandProcessPath + CommandArguments + "\"";
+                return "/c start Powershell -ExecutionPolicy Bypass -command \"" + CommandProcessPath + CommandArguments + "\"";
             }
         }
         private SystemFile CommandProcessPath
@@ -126,7 +107,7 @@ namespace BLAZAM.Server.Data.Services.Update
         {
             get
             {
-                return " -UpdateSourcePath '" + UpdateSourcePath + "' -WebAddress " + DatabaseCache.ApplicationSettings.AppFQDN + " -ApplicationDirectory '" + Program.RootDirectory + "'" +
+                return " -UpdateSourcePath '" + UpdateSourcePath + "' -ProcessId " + Program.ApplicationProcess.Id + " -ApplicationDirectory '" + Program.RootDirectory + "'" +
                    " -Username " + DatabaseCache.ActiveDirectorySettings?.Username + " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN + " -Password '" + Encryption.DecryptObject<string>(DatabaseCache.ActiveDirectorySettings?.Password) + "'";
             }
         }
