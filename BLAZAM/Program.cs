@@ -34,6 +34,8 @@ using Microsoft.Extensions.Logging;
 using Serilog.Events;
 using Blazorise.RichTextEdit;
 using BLAZAM.Server.Pages.Error;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace BLAZAM
 {
@@ -65,7 +67,10 @@ namespace BLAZAM
         internal static SystemDirectory TempDirectory { get; private set; }
         public static SystemDirectory AppDataDirectory { get; private set; }
 
-  
+        /// <summary>
+        /// The process of the running application
+        /// </summary>
+        public static Process ApplicationProcess { get; private set; }
         /// <summary>
         /// The running Blazam version
         /// </summary>
@@ -94,8 +99,8 @@ namespace BLAZAM
                 {
                     if (installationCompleted != true)
                     {
-                        if (!context.Seeded()) installationCompleted=false;
-                        else installationCompleted=(DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                        if (!context.Seeded()) installationCompleted = false;
+                        else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
                     }
                     return installationCompleted != false;
                 }
@@ -142,7 +147,7 @@ namespace BLAZAM
         public static void Main(string[] args)
         {
 
-
+            ApplicationProcess = Process.GetCurrentProcess();
 
             //Build the application and allow it to run as a service
             var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
@@ -150,6 +155,7 @@ namespace BLAZAM
                 ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default,
                 Args = args
             });
+
 
             //Set DebugMode flag from configuration
             InDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
@@ -240,7 +246,7 @@ namespace BLAZAM
                     options.SlidingExpiration = true;
                 });
 
-         
+
             /*
             Keeping  this here for a possible API in the future
             It's some original test code from before AppAuthenticatinProvider was
@@ -494,7 +500,7 @@ namespace BLAZAM
                     {
                         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
                         if (context != null)
-                            if(context.Seeded()||force)
+                            if (context.Seeded() || force)
                                 if (context.Database.GetPendingMigrations().Count() > 0)
                                     context.Database.Migrate();
 

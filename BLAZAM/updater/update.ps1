@@ -1,6 +1,6 @@
 ﻿#Name BLAZAM Updater Script
-#Purpose Provides a decoupled way to elevate, manage IIS server, and update web app
-#Version 1.0.1
+#Purpose Provides a decoupled way to elevate, and update web app
+#Version 1.1.0
 
 
 
@@ -8,13 +8,13 @@ param(
     [string]$Username,
     [string]$Password,
     [string]$Domain,
-    [string]$WebAddress,
+    [string]$ProcessId,
     [string]$UpdateSourcePath,
     [string]$ApplicationDirectory
 )
 Write-Host("Performs a self update of the BLAZAM IIS Web Application.")
 
-Write-Host("Usage:`r`n updater.ps1 -Username user -Password pass -WebAddress blazam.example.com -UpdateSourcePath 'C:\UpdateSourcePath\_BLAZAM' -ApplicationDirectory 'C:\inetpub\blazam\'")
+Write-Host("Usage:`r`n updater.ps1 -Username user -Password pass -ProcessId 1234 -UpdateSourcePath 'C:\UpdateSourcePath\_BLAZAM' -ApplicationDirectory 'C:\inetpub\blazam\'")
 
 if ($Username -eq "") {
     Write-Host("Error: Username not provided")
@@ -29,11 +29,14 @@ if ($Domain -eq "") {
     exit
 }
 
+if ($ProcessId -eq "") {
+    Write-Host("Error: Process ID not provided")
+    exit
+}
 
 Write-Host("Username: " + $Username);
 Write-Host("Password: " + $Password);
 Write-Host("Domain: " + $Domain);
-Write-Host("WebAddress: " + $WebAddress);
 Write-Host("ApplicationDirectory: " + $ApplicationDirectory);
 Write-Host("Update Source Path: " + $UpdateSourcePath);
 
@@ -41,11 +44,11 @@ Write-Host("Update Source Path: " + $UpdateSourcePath);
 $securePassword = ConvertTo-SecureString $Password -AsPlainText -Force
 $credential = New-Object System.Management.Automation.PSCredential($Username, $securePassword)
 
-$out = Invoke-Command -ComputerName "localhost" -Credential $credential -ArgumentList $WebAddress, $UpdateSourcePath, $ApplicationDirectory  -ScriptBlock {
+$out = Invoke-Command -ComputerName "localhost" -Credential $credential -ArgumentList  $UpdateSourcePath, $ApplicationDirectory,$procProcessIdessId  -ScriptBlock {
     param(
-        [string]$address, 
         [string]$source,
-        [string]$destination
+        [string]$destination,
+        [string]$processId
     )
     function Quit {
         Stop-Transcript -ErrorAction SilentlyContinue
@@ -91,17 +94,11 @@ $out = Invoke-Command -ComputerName "localhost" -Credential $credential -Argumen
     $DateStr = $date.ToString("yyyyMMddHHmmss")
     $backupDirectory = $env:TEMP + "\BLAZAM\backup\" + $DateStr + "\"
 
-    $logPath = $destination + "Writable\Update\testlog.txt"
+    $logPath = $destination + "updater\testlog.txt"
 
     Write-Host("Log path: " + $logPath)
     Start-Transcript -Path $logPath
     Write-Host("Backup path: " + $backupDirectory)
-
-
-    if (($address -eq $null) -or ($address -eq "")) {
-        Write-Host("Error: WebAddress was not provided!")
-        Quit
-    }
 
     if (($source -eq $null) -or ($source -eq "")) {
         Write-Host("Error: Source was not provided!")
@@ -112,10 +109,15 @@ $out = Invoke-Command -ComputerName "localhost" -Credential $credential -Argumen
         Write-Host("Error: Destination was not provided!")
         Quit
     }
+
+        if (($processId -eq $null) -or ($processId -eq "")) {
+        Write-Host("Error: Process ID was not provided!")
+        Quit
+    }
     
-    Write-Host("WebAddress: " + $address);
     Write-Host("Update Source Path: " + $source);
     Write-Host("Destination Path: " + $destination);
+    Write-Host("Process ID: " + $processId);
 
     $runningAppPool
     $runningSite
@@ -123,7 +125,7 @@ $out = Invoke-Command -ComputerName "localhost" -Credential $credential -Argumen
 
     Write-Host("Running as " + $env:UserDomain + "\" + $env:UserName);
     
-
+<#
     $sites = Get-IISSite;
 
     foreach ($site in $sites) {
@@ -215,7 +217,29 @@ $out = Invoke-Command -ComputerName "localhost" -Credential $credential -Argumen
         Quit
 
     }
+#>
+    $process = Get-Process -Id $processId
+    $commandLine = gcim win32_process | Where-Object -Property "processid" -EQ -Value $processId | Select-Object commandline
+
+    $processFilePath = ($commandLine -split " ")[0]
+    if($processFilePath.Contains("w3wp.exe")){
+        $hParam = ($commandLine | Select-String -Pattern '-h ".*?"' -AllMatches).Matches.Value -replace '-h ','' -replace '"',''
+        $relaunchCommand ='-h "'+$hParam +'"'
+    }
+    else{
+        $relaunchCommand = $commandLine
+    }
+    Write-Host "Re-Launch Command" $relaunchCommand
+
+    Stop-Process -ID $processId -Force
+    
     Start-Sleep -Seconds 2
+    if($process.ExitTime -ne $null)
+    {
+        
+        Write-Host("Error: Web Application failed to stop")
+        Quit
+    }
     #Perform Backup Section
     $backupSource = $destination + "*"
     Write-Host("Backing up current")
@@ -235,9 +259,9 @@ $out = Invoke-Command -ComputerName "localhost" -Credential $credential -Argumen
     
     Start-Sleep -Seconds 2
     Write-Host("Restarting ApplicationPool")
-         
-    $runningAppPool | Start-WebAppPool
+    # $runningAppPool | Start-WebAppPool
     #  $runningSite | Start-IISSite
+    
     Write-Host("Waiting 15 seconds for Application to restart")
 
     Start-Sleep -Seconds 15
