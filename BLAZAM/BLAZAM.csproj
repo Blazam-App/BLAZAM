@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.6.6</AssemblyVersion>
-		<Version>2023.02.27.2031</Version>
+		<Version>2023.02.28.0034</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -57,7 +57,6 @@
 		<PackageReference Include="BlazorTemplater" Version="1.5.1" />
 		<PackageReference Include="Cassia" Version="2.0.0.60" />
 		<PackageReference Include="Core.System.Configuration.Install" Version="1.1.0" />
-		<PackageReference Include="DuoUniversal" Version="1.2.0" />
 		<PackageReference Include="MailKit" Version="3.5.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.13" />
@@ -100,6 +99,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\duo_apiv2_csharp\duo_api_csharp\duo_api_csharp.csproj" />
 	  <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
 	</ItemGroup>
 

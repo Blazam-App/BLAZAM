@@ -1,0 +1,27 @@
+﻿@page "/login/2fa/{loginReqString}"
+@using BLAZAM.Server.Data.Services.Duo;
+@inject IDuoClientProvider _duoClientProvider
+@inject IApplicationUserStateService userStateService
+@inject LoginService loginService
+@layout LoginLayout
+<h3>SecondFactor</h3>
+
+@code {
+    [Parameter]
+    public string loginReqString{ get; set; }
+
+    public LoginRequest LoginRequest => Encryption.DecryptObject<LoginRequest>(loginReqString);
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        // Get a Duo client
+        DuoClient duoClient = _duoClientProvider.GetDuoClient();
+        // Client client = new Client();
+        // Check if Duo seems to be healthy and able to service authentications.
+        // If Duo were unhealthy, you could possibly send user to an error page, or implement a fail mode
+        var isDuoUp = await duoClient.Ping();
+        var isDuoHealthy = await duoClient.Check();
+        var isDuoUserReady = await duoClient.PreAuth(LoginRequest.Username);
+        var duoUserAuthenticated = await duoClient.Auth(LoginRequest.Username);
+    }
+}

@@ -5,7 +5,6 @@ using BLAZAM.Server.Data.Services.Duo;
 using BLAZAM.Server.Data;
 using BLAZAM.Server.Pages.Users;
 using BLAZAM.Server.Shared.UI.Settings.Permissions;
-using DuoUniversal;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +13,8 @@ using System.Security.Claims;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+using Microsoft.AspNetCore.Components;
+using Duo;
 
 namespace BLAZAM
 {
@@ -29,7 +30,8 @@ namespace BLAZAM
             IApplicationUserStateService userStateService,
             IHttpContextAccessor ca,
             IDuoClientProvider dcp,
-            IEncryptionService enc)
+            IEncryptionService enc,
+            NavigationManager nav)
         {
             this._encryption = enc;
             this._directory = directoy;
@@ -39,10 +41,12 @@ namespace BLAZAM
             this.CurrentUser = this.GetAnonymous();
             this._httpContextAccessor = ca;
             this._duoClientProvider = dcp;
+            this._nav = nav;
         }
 
         private IHttpContextAccessor _httpContextAccessor;
         private IDuoClientProvider _duoClientProvider;
+        private readonly NavigationManager _nav;
         private IEncryptionService _encryption;
         private IActiveDirectory _directory;
         private IDbContextFactory<DatabaseContext> _factory;
@@ -53,6 +57,8 @@ namespace BLAZAM
 
         private ClaimsPrincipal? CurrentUser;
         private ApplicationUserState _newUserState = new();
+
+        public AppEvent<string> OnDuoPrompt { get; set; }
 
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
@@ -150,6 +156,7 @@ namespace BLAZAM
                     _userStateService.SetUserState(_newUserState);
 
                 //Return the authenticationstate
+   
                 if (result != null)
                     return result;
                 else
@@ -173,32 +180,7 @@ namespace BLAZAM
             if (!loginReq.Impersonation)
             {
                 user = _directory.Authenticate(loginReq);
-                if (user != null)
-                {
-                    //Check if we need to perform MFA
-                    using (var context = _factory.CreateDbContext())
-                    {
-                        //Get settings from DB
-                        var authSettings = context.AuthenticationSettings.FirstOrDefault();
-                        if (authSettings != null &&
-                            authSettings.DuoClientSecret != null &&
-                            authSettings.DuoClientId != null &&
-                            authSettings.DuoApiHost != null
-                            )
-                        {
-                            //Settings are configured so
-                            if (!(await PerformDuoAuthentication(loginReq)))
-                            {
-                                //Duo authentication failed;
-
-                                return null;
-
-                            }
-                            //Duo authentication succeeded
-
-                        }
-                    }
-                }
+                
             }
             else
                 user = _directory.Users.FindUsersByString(loginReq.Username, true, true).FirstOrDefault();
@@ -212,15 +194,26 @@ namespace BLAZAM
         private async Task<bool> PerformDuoAuthentication(LoginRequest loginReq)
         {
             // Initiate the Duo authentication for a specific username
+            // Get a Duo client
+
+            //DuoApi duo = _duoClientProvider.GetApi();
+            //duo.
+           // Client duoClient = _duoClientProvider.GetDuoClient();
+
+            // Check if Duo seems to be healthy and able to service authentications.
+            // If Duo were unhealthy, you could possibly send user to an error page, or implement a fail mode
+            //var isDuoHealthy = await duoClient.DoHealthCheck();
+
 
             // Get a Duo client
             DuoClient duoClient = _duoClientProvider.GetDuoClient();
-
+           // Client client = new Client();
             // Check if Duo seems to be healthy and able to service authentications.
             // If Duo were unhealthy, you could possibly send user to an error page, or implement a fail mode
             var isDuoUp = await duoClient.Ping();
             var isDuoHealthy = await duoClient.Check();
             var isDuoUserReady = await duoClient.PreAuth(loginReq.Username);
+            var duoUserAuthenticated = await duoClient.Auth(loginReq.Username);
 
             /*
             // Generate a random state value to tie the authentication steps together
@@ -233,10 +226,12 @@ namespace BLAZAM
             string promptUri = duoClient.GenerateAuthUri(loginReq.Username, state);
 
             // Redirect the user's browser to the Duo prompt.
+            OnDuoPrompt?.Invoke(promptUri);
+            //_nav.NavigateTo(promptUri, true);
             // The Duo prompt, after authentication, will redirect back to the configured Redirect URI to complete the authentication flow.
             // In this example, that is /duo_callback, which is implemented in Callback.cshtml.cs.
             // return new RedirectResult(promptUri);
-            */
+           */
             return true;
         }
 

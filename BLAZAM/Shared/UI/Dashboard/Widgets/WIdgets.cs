@@ -10,14 +10,22 @@ namespace BLAZAM.Server.Shared.UI.Dashboard.Widgets
         public static List<Widget> Available(IApplicationUserState? applicationUser)
         {
             var widgets = new List<Widget>();
-            if (applicationUser != null)
+            try
             {
-                if (applicationUser.IsSuperAdmin || applicationUser.DirectoryUser.CanUnlock)
-                    widgets.Add(new LockedOutUsers() { Slot = "slot1" });
-                if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers))
-                    widgets.Add(new NewUsersWidget() { Slot = "slot2" });
-                if (applicationUser.IsSuperAdmin)
-                    widgets.Add(new ChangedPasswordsWidget() { Slot = "slot1" });
+
+                if (applicationUser != null)
+                {
+                    if (applicationUser.IsSuperAdmin || applicationUser.DirectoryUser.CanUnlock)
+                        widgets.Add(new LockedOutUsers() { Slot = "slot1" });
+                    if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers))
+                        widgets.Add(new NewUsersWidget() { Slot = "slot2" });
+                    if (applicationUser.IsSuperAdmin)
+                        widgets.Add(new ChangedPasswordsWidget() { Slot = "slot1" });
+                }
+            }
+            catch (NullReferenceException)
+            {
+
             }
             return widgets;
         }

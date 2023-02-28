@@ -16,23 +16,20 @@ namespace BLAZAM.Server.Data.Services.Duo
     {
         public RestResponse Response { get; private set; }
 
+
+        private CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
+
         private string _clientId;
         private string _apiHost;
         private string _clientSecret;
 
-        const string baseUri = "https://api-XXXXXXXX.duosecurity.com";
         const string preAuthUri = "/auth/v2/preauth";
         const string authUri = "/auth/v2/auth";
         const string pingUri = "/auth/v2/ping";
         const string checkUri = "/auth/v2/check";
-        string BaseUri => baseUri.Replace("api-XXXXXXXX.duosecurity.com", _apiHost);
+        string BaseUri =>  "https://"+_apiHost;
 
-        string PingEndpoint => pingUri;
-        string CheckEnpoint => checkUri;
-        string PreAuthEndpoint => preAuthUri;
-        string AuthEndpoint => authUri;
 
-        Dictionary<string, string> Parameters = new Dictionary<string, string>();
 
         public string RequestTimestamp { get; private set; }
 
@@ -50,7 +47,7 @@ namespace BLAZAM.Server.Data.Services.Duo
             return request;
         }
 
-        private RestClient NewClient(string endpoint,string data="")
+        private RestClient NewClient(string endpoint, string data = "")
         {
             RequestTimestamp = Timestamp;
             CurrentEnpoint = endpoint;
@@ -101,37 +98,9 @@ namespace BLAZAM.Server.Data.Services.Duo
         string HeaderDate;
         private string signaturePlainText;
         private string signaturePlainText2;
+        private DuoResponseData? PreAuthResponse;
+        private DuoResponseData? AuthResponse;
 
-        string HMACSignature
-        {
-            get
-            {
-
-                string paramString = "";
-                foreach (var thing in Parameters.OrderBy(p => p.Key))
-                {
-                    paramString = thing.Key + "=" + thing.Value + "&";
-                }
-                if (paramString != "")
-                    paramString = paramString.Substring(0, paramString.Length - 1);
-                signaturePlainText = RequestTimestamp + "\n"
-                    + Method.ToString().ToUpper() + "\n"
-                    + _apiHost + "\n"
-                    + CurrentEnpoint + "\n"
-                    + HttpUtility.UrlEncode(paramString) + "\n";
-
-                var keyBytes = Encoding.ASCII.GetBytes(_clientSecret);
-                using (var hmac = new HMACSHA1(keyBytes))
-                {
-
-                    MemoryStream stream = new MemoryStream(keyBytes);
-                    var signtatureEncoded = hmac.ComputeHash(stream);
-
-                    return BitConverter.ToString(signtatureEncoded).Replace("-", "");
-                }
-                throw new ApplicationException("Unable to create authorization signature for Duo request");
-            }
-        }
         protected string CanonicalizeRequest(string canon_params)
         {
             string[] lines = {
@@ -157,38 +126,7 @@ namespace BLAZAM.Server.Data.Services.Duo
             string hex = BitConverter.ToString(hmac.Hash);
             return hex.Replace("-", "").ToLower();
         }
-        string TestHMACSignature
-        {
-            get
-            {
-
-                string paramString = "";
-                foreach (var thing in Parameters.OrderBy(p => p.Key))
-                {
-                    paramString = thing.Key + "=" + thing.Value + "&";
-                }
-                if (paramString != "")
-                    paramString = paramString.Substring(0, paramString.Length - 1);
-
-
-                signaturePlainText2 = "Tue, 21 Aug 2012 17:29:18 -0000" + "\n"
-                    + "POST" + "\n"
-                    + "api-xxxxxxxx.duosecurity.com" + "\n"
-                    + "/auth/v2/auth" + "\n"
-                    + HttpUtility.UrlEncode("device=auto&factor=push&hostname=wks01&ipaddr=10.2.3.4&username=narroway") + "\n";
-
-                var keyBytes = Encoding.ASCII.GetBytes("Zh5eGmUq9zpfQnyUIu5OL9iWoMMv5ZNmk3zLJ4Ep");
-                using (var hmac = new HMACSHA1(keyBytes))
-                {
-
-                    MemoryStream stream = new MemoryStream(keyBytes);
-                    var signtatureEncoded = hmac.ComputeHash(stream);
-
-                    return BitConverter.ToString(signtatureEncoded).Replace("-", "");
-                }
-                throw new ApplicationException("Unable to create authorization signature for Duo request");
-            }
-        }
+     
         /// <summary>
         /// Checks if the Duo API is reachable
         /// </summary>
@@ -197,10 +135,11 @@ namespace BLAZAM.Server.Data.Services.Duo
         {
             try
             {
-                RestClient client = NewClient(PingEndpoint);
-
                 Method = HttpMethod.Get;
-                var request = NewRequest(PingEndpoint);
+
+                RestClient client = NewClient(pingUri);
+
+                var request = NewRequest(pingUri);
                 Response = await client.ExecuteAsync(request);
                 return Response.IsSuccessStatusCode;
             }
@@ -219,12 +158,12 @@ namespace BLAZAM.Server.Data.Services.Duo
         {
             try
             {
-
-
-                RestClient client = NewClient(CheckEnpoint);
-
                 Method = HttpMethod.Get;
-                var request = NewRequest(CheckEnpoint);
+
+
+                RestClient client = NewClient(checkUri);
+
+                var request = NewRequest(checkUri);
                 Response = await client.ExecuteAsync(request);
                 return Response.IsSuccessStatusCode;
             }
@@ -267,22 +206,59 @@ namespace BLAZAM.Server.Data.Services.Duo
             return string.Join("&", ret.ToArray());
         }
         /// <summary>
-        /// Checks if the Duo authentication settings are correct
+        /// Checks that the user is authorized, if they are in Duo
         /// </summary>
         /// <returns></returns>
         public async Task<bool> PreAuth(string username)
         {
             try
             {
-                var data = CanonicalizeParams(new() { {"username", username } });
-
-                RestClient client = NewClient(PreAuthEndpoint, data);
-
                 Method = HttpMethod.Post;
-                var request = NewRequest(PreAuthEndpoint);
+
+                var data = CanonicalizeParams(new() { { "username", username } });
+
+                RestClient client = NewClient(preAuthUri, data);
+
+                var request = NewRequest(preAuthUri);
+                request.Method = RestSharp.Method.Post;
                 request.AddParameter("username", username);
-                Response = await client.ExecuteAsync(request);
-                return Response.IsSuccessStatusCode;
+                PreAuthResponse = (await client.ExecuteAsync<DuoResponseData>(request)).Data;
+
+                if (PreAuthResponse.Response.Result == "auth" || PreAuthResponse.Response.Result == "allow")
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception e)
+            {
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks that the user is authorized, if they are in Duo
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> Auth(string username)
+        {
+            try
+            {
+                Method = HttpMethod.Post;
+
+                var data = CanonicalizeParams(new() { { "username", username },{ "factor","auto"},{"device","auto" } });
+
+                RestClient client = NewClient(authUri, data);
+
+                var request = NewRequest(authUri);
+                request.Method = RestSharp.Method.Post;
+                request.AddParameter("username", username);
+                request.AddParameter("factor", "auto");
+                request.AddParameter("device", "auto");
+                 AuthResponse =(await client.ExecuteAsync<DuoResponseData>(request,CancellationTokenSource.Token)).Data;
+                if (AuthResponse.Response.Result == "allow") return true;
+                return false;
             }
             catch (Exception e)
             {

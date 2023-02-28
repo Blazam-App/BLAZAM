@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLAZAMCommon", "BLAZAMCommo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLAZAMInstallerActions", "BLAZAMInstallerActions\BLAZAMInstallerActions.csproj", "{D5755B06-B178-4370-89D8-16EAFF4F1EC7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "duo_api_csharp", "..\..\duo_apiv2_csharp\duo_api_csharp\duo_api_csharp.csproj", "{6E96C9D9-0825-4D26-83C7-8A62180F8FB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,18 @@ Global
 		{D5755B06-B178-4370-89D8-16EAFF4F1EC7}.Release|x64.Build.0 = Release|Any CPU
 		{D5755B06-B178-4370-89D8-16EAFF4F1EC7}.Release|x86.ActiveCfg = Release|Any CPU
 		{D5755B06-B178-4370-89D8-16EAFF4F1EC7}.Release|x86.Build.0 = Release|Any CPU
+		{6E96C9D9-0825-4D26-83C7-8A62180F8FB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E96C9D9-0825-4D26-83C7-8A62180F8FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E96C9D9-0825-4D26-83C7-8A62180F8FB9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6E96C9D9-0825-4D26-83C7-8A62180F8FB9}.Debug|x64.Build.0 = Debug|Any CPU
+		{6E96C9D9-0825-4D26-83C7-8A62180F8FB9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6E96C9D9-0825-4D26-83C7-8A62180F8FB9}.Debug|x86.Build.0 = Debug|Any CPU
+		{6E96C9D9-0825-4D26-83C7-8A62180F8FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E96C9D9-0825-4D26-83C7-8A62180F8FB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E96C9D9-0825-4D26-83C7-8A62180F8FB9}.Release|x64.ActiveCfg = Release|Any CPU
+		{6E96C9D9-0825-4D26-83C7-8A62180F8FB9}.Release|x64.Build.0 = Release|Any CPU
+		{6E96C9D9-0825-4D26-83C7-8A62180F8FB9}.Release|x86.ActiveCfg = Release|Any CPU
+		{6E96C9D9-0825-4D26-83C7-8A62180F8FB9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
