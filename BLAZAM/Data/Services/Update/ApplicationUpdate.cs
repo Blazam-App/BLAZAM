@@ -86,7 +86,7 @@ namespace BLAZAM.Server.Data.Services.Update
         {
             get
             {
-                return "/c start Powershell -command \"" + CommandProcessPath + CommandArguments + "\"";
+                return "/c start Powershell -ExecutionPolicy Bypass -command \"" + CommandProcessPath + CommandArguments + "\"";
             }
         }
         private SystemFile CommandProcessPath

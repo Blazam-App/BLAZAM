@@ -209,7 +209,7 @@ namespace BLAZAM
             //Grab the connection string and store it in the context statically
             //This can obviously only be changed on app restart
             DatabaseContext.ConnectionString = new DatabaseConnectionString(builder.Configuration.GetConnectionString("SQLConnectionString"));
-
+            Loggers.SystemLogger.Debug("Connection String: " +DatabaseContext.ConnectionString);
 
 
 
