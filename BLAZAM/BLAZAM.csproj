@@ -99,7 +99,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\duo_apiv2_csharp\duo_api_csharp\duo_api_csharp.csproj" />
 	  <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
 	</ItemGroup>
 
