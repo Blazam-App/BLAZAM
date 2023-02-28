@@ -4,6 +4,18 @@
 @inject IApplicationUserStateService userStateService
 @inject LoginService loginService
 @layout LoginLayout
+<Card>
+    <CardHeader Background="Background.Primary"></CardHeader>
+    <CardBody>
+        <Image Style="max-width:50px" Source="@StaticAssets.ApplicationIconUri"/>
+        <Heading>Check</Heading>
+        <Paragraph>Verify it's you by approving the notification...</Paragraph>
+        <Div Margin="Margin.Is5.OnX">
+            <Text>Sent to </Text>
+            
+        </Div>
+    </CardBody>
+</Card>
 <h3>SecondFactor</h3>
 
 @code {
