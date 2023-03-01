@@ -146,6 +146,7 @@ namespace BLAZAM
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
+            Console.WriteLine("Working Directory: " + Environment.CurrentDirectory);
 
             ApplicationProcess = Process.GetCurrentProcess();
 
