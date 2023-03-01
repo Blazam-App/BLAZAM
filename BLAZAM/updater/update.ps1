@@ -14,7 +14,7 @@ param(
 )
 Write-Host("Performs a self update of the BLAZAM Web Application.")
 
-Write-Host("Usage:`r`n updater.ps1 -Username user -Password pass -ProcessId 1234 -UpdateSourcePath 'C:\UpdateSourcePath\_BLAZAM' -ApplicationDirectory 'C:\inetpub\blazam\'")
+Write-Host("Usage:`r`n updater.ps1 [-Username user] [-Password pass] [-Domain contoso.com] -ProcessId 1234 -UpdateSourcePath 'C:\UpdateSourcePath\_BLAZAM' -ApplicationDirectory 'C:\inetpub\blazam\'")
 <#
 Allow the script to run as the current user
 if ($Username -eq "") {
@@ -41,8 +41,6 @@ Write-Host("Domain: " + $Domain);
 Write-Host("ApplicationDirectory: " + $ApplicationDirectory);
 Write-Host("Update Source Path: " + $UpdateSourcePath);
 Write-Host("Process Id: " + $ProcessId);
-
-
 
 $updateScript= {
      param(
@@ -97,12 +95,7 @@ $updateScript= {
         Quit
         }
 
-
-    $process = Get-Process -Id $processId
-    if($process -eq $null){
-        Write-Host("Error: A process with process id of "+$processId+" was not found")
-        Quit
-    }
+    #Generate relaunch command for after update
     $commandLine = (gcim win32_process | Where-Object -Property "processid" -EQ -Value $processId | Select-Object commandline).commandline
 
     $processFilePath = ($commandLine -split " ")[0]
@@ -110,16 +103,33 @@ $updateScript= {
         $hParam = ($commandLine | Select-String -Pattern '-h ".*?"' -AllMatches).Matches.Value -replace '-h ','' -replace '"',''
         $processArguments ='-h "'+$hParam +'"'
     }
+
     Write-Host "Re-Launch Command "$processFilePath" "$processArguments
+
+    #Stop the running application
+    $process = Get-Process -Id $processId
+    if($process -eq $null){
+        Write-Host("Error: A process with process id of "+$processId+" was not found")
+        Quit
+    }
+   
+    
+    Write-Host("Process Found: "+($process| Select-Object *))
 
     Stop-Process -ID $processId -Force
     
-    Start-Sleep -Seconds 2
-    if($process.ExitTime -ne $null)
-    {
-        
-        Write-Host("Error: Web Application failed to stop")
-        Quit
+    #Check if the app stopped
+    for ($i=0; $i -lt 15; $i++) {
+        Start-Sleep -Seconds 1
+        $process.Refresh()
+        if ($process.HasExited) {
+            break
+        }
+    }
+    
+    if (!$process.HasExited) {
+    Write-Host("Error: Web Application failed to stop")
+    Quit
     }
     #Perform Backup Section
     $backupSource = $destination + "*"
@@ -136,7 +146,8 @@ $updateScript= {
     Write-Host("Applying Update")
     Write-Host("Source: " + $source)
     Write-Host("Destination: " + $destination)
-    Copy-Item -Path $source -Destination $destination  -Exclude "*\updater\*" -Recurse -Verbose -Force
+    Copy-Item -Path $source -Destination $destination -Recurse -Verbose -Force
+    #Copy-Item -Path $source -Destination $destination  -Exclude "*\updater\*" -Recurse -Verbose -Force
     
     Start-Sleep -Seconds 2
     Write-Host("Restarting Application")
@@ -153,8 +164,17 @@ $updateScript= {
 
     }
     Write-Host("Waiting 15 seconds for Application to restart")
-
-    Start-Sleep -Seconds 15
+    #Check if the app stopped
+    for ($i=0; $i -lt 15; $i++) {
+        Start-Sleep -Seconds 1
+        $restartedProcess.Refresh()
+        if ($restartedProcess.StartTime -ne $null) {
+            Start-Sleep -Seconds 5
+            break
+        }
+    }
+    
+    $restartedProcess.Refresh()
     Write-Host("Process Stats: "+($restartedProcess| Select-Object *))
     if ($restartedProcess.HasExited -ne $false) {
         Write-Host("Error: Web Application failed to restart rolling back changes")
@@ -195,14 +215,16 @@ $updateScript= {
 
 if($Username -ne "" -and $Password -ne "")
 {
-$securePassword = ConvertTo-SecureString $Password -AsPlainText -Force
-$credential = New-Object System.Management.Automation.PSCredential($Username, $securePassword)
-$out = Invoke-Command -ComputerName "localhost" -Credential $credential -ArgumentList  $UpdateSourcePath, $ApplicationDirectory,$ProcessId  -ScriptBlock $updateScript
+    $securePassword = ConvertTo-SecureString $Password -AsPlainText -Force
+    $credential = New-Object System.Management.Automation.PSCredential($Username, $securePassword)
+    Enter-PSSession -ComputerName localhost -Credential $credential
+   
+ }
+    $out = Invoke-Command -ArgumentList  $UpdateSourcePath, $ApplicationDirectory,$ProcessId  -ScriptBlock $updateScript
 
-}
-else{
-$out = Invoke-Command -ArgumentList  $UpdateSourcePath, $ApplicationDirectory,$ProcessId  -ScriptBlock $updateScript
-
+if($Username -ne "" -and $Password -ne "")
+{
+    Exit-PSSession -ErrorAction Continue
 }
 Write-Host($out)
 exit
