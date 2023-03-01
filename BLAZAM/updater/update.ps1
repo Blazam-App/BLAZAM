@@ -237,13 +237,14 @@ Write-Host("Global Process Id: " +  $global:processId);
    
 
     StopApp
+    <#
     if($process.ExitTime -ne $null)
     {
         
         Write-Host("Error: Web Application failed to stop")
         Quit
     }
-    
+    #>
     PerformBackup
    
    ApplyUpdate
