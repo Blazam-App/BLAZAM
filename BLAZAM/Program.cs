@@ -441,6 +441,7 @@ namespace BLAZAM
             foreach (var address in addressFeature.Addresses)
             {
                 ListeningAddresses.Add(address);
+                Loggers.SystemLogger.Debug("Listening on: " + address);
             }
 
             Task.Delay(5000).ContinueWith(t =>
