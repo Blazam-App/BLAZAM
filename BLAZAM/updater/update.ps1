@@ -92,6 +92,12 @@ $updateScript= {
     Write-Host("Process ID: " + $processId);
     Write-Host("Running as " + $env:UserDomain + "\" + $env:UserName);
     
+    if (!(Test-Path -Path $destination -PathType Container)) {
+        Write-Host("Error: Destination directory doesn't exist. Quitting.")
+        Quit
+        }
+
+
     $process = Get-Process -Id $processId
     if($process -eq $null){
         Write-Host("Error: A process with process id of "+$processId+" was not found")
@@ -140,10 +146,10 @@ $updateScript= {
     {
         
         Write-Host("Starting with arguments: " + $processArguments)
-        $restartedProcess = Start-Process -FilePath $processFilePath -ArgumentList $processArguments -PassThru
+        $restartedProcess = Start-Process -FilePath $processFilePath -ArgumentList $processArguments -WorkingDirectory $destination -PassThru
 
     }else{
-        $restartedProcess = Start-Process -FilePath $processFilePath -PassThru
+        $restartedProcess = Start-Process -FilePath $processFilePath -WorkingDirectory $destination -PassThru
 
     }
     Write-Host("Waiting 15 seconds for Application to restart")
