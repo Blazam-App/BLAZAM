@@ -156,7 +156,7 @@ $updateScript= {
 
     Start-Sleep -Seconds 15
     Write-Host("Process Stats: "+($restartedProcess| Select-Object *))
-    if ($restartedProcess.ExitTime -ne $null) {
+    if ($restartedProcess.HasExited -ne $false) {
         Write-Host("Error: Web Application failed to restart rolling back changes")
         #Perform Rollback Section
         $restoreSource = $backupDirectory + "*"
