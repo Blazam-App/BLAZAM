@@ -1,12 +1,6 @@
 ﻿@page "/oops"
-@using BLAZAM.Server.Background;
-@using BLAZAM.Server.Shared.Layouts;
-@using BLAZAM.Server.Shared.ResourceFiles;
-@using Microsoft.Extensions.Localization;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
+
 @layout ErrorLayout
-@inject ConnMonitor monitor
 @inject IStringLocalizer<AppLocalization> Loc
 
 @if (Program.IsDevelopment)

@@ -5,6 +5,7 @@ using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Common.Models.Database;
+using BLAZAM.Server.Data.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Buffers.Text;
 using System.DirectoryServices;
@@ -19,13 +20,15 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 {
     public class ActiveDirectoryContext : IDisposable, IActiveDirectory
     {
-
+        public IEncryptionService Encryption { get; }
         public static ActiveDirectoryContext Instance;
 
         IADUser? _keepAliveUser { get; set; }
 
         private AuthenticationTypes _authType;
-        public DirectoryEntry? DirectoryEntry { get; private set; }
+        public DirectoryEntry? AppRootDirectoryEntry { get; private set; }
+        public DirectoryEntry RootDirectoryEntry { get; private set; }
+
         public DirectoryEntry GetDirectoryEntry(string? baseDN = null)
         {
             if (baseDN == null || baseDN == "")
@@ -35,16 +38,16 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             {
                 _authType = AuthenticationTypes.SecureSocketsLayer;
             }
-            return DirectoryEntry = new DirectoryEntry(
+            return new DirectoryEntry(
                 "LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + baseDN,
                 ConnectionSettings?.Username,
-                ConnectionSettings?.Password,
+                 Encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 _authType
                 );
         }
         public DirectoryEntry GetDeleteObjectsEntry() => new DirectoryEntry("LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.ApplicationBaseDN,
                 ConnectionSettings?.Username,
-                ConnectionSettings?.Password,
+                Encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 (AuthenticationTypes.FastBind | AuthenticationTypes.Secure));
 
         public List<IDirectoryModel> GetDeletedObjects()
@@ -129,8 +132,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
         public ActiveDirectoryContext(IDbContextFactory<DatabaseContext> factory,
             IApplicationUserStateService userStateService,
-            WmiFactoryService wmiFactory)
+            WmiFactoryService wmiFactory,
+            IEncryptionService encryptionService)
         {
+            Encryption = encryptionService;
             Instance = this;
             Factory = factory;
             UserStateService = userStateService;
@@ -213,19 +218,23 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 
                             if (ad != null && ad.FQDN != null && ad.Username != null)
                             {
-                                if (NetworkTools.PingHost(ad.ServerAddress))
+                                if (NetworkTools.IsPortOpen(ad.ServerAddress,ad.ServerPort))
                                 {
                                     try
                                     {
 
-                                        DirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, ad.Password, _authType);
+                                        AppRootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, Encryption.DecryptObject<string>(ad.Password), _authType);
+                                        RootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/"+ad.FQDN.FqdnToDN(), ad.Username, Encryption.DecryptObject<string>(ad.Password), _authType);
                                         //var nativeEntry = DirectoryEntry.NativeObject;
-                                        using (var authTest = new DirectorySearcher(DirectoryEntry, "(sAMAccountName=" + ad.Username + ")"))
+                                        var search = new ADSearch() { ObjectTypeFilter=ActiveDirectoryObjectType.User, SearchRoot = RootDirectoryEntry, SamAccountName = ad.Username, ExactMatch = true };
+                                        var results = search.Search<ADUser,IADUser>();
+                                 
+                                        using (var authTest = new DirectorySearcher(AppRootDirectoryEntry, "(sAMAccountName=" + ad.Username + ")"))
                                         {
                                             try
                                             {
                                                 var result = Users.FindUsersByString(ad.Username);
-                                                if (result.Count > 0)
+                                                if (results.Count > 0)
                                                     Status = DirectoryConnectionStatus.OK;
                                                 else
                                                     Status = DirectoryConnectionStatus.BadConfiguration;
@@ -343,7 +352,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                 {
                     Domain = ConnectionSettings.FQDN,
                     UserName = ConnectionSettings.Username,
-                    SecurePassword = ConnectionSettings.Password.ToSecureString()
+                    SecurePassword = Encryption.DecryptObject<string>(ConnectionSettings.Password).ToSecureString()
                 },
                 AuthType.Negotiate);
 

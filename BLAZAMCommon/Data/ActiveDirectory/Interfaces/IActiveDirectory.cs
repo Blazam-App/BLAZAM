@@ -3,6 +3,7 @@ using System.DirectoryServices;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Server.Data.Services;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 {
@@ -15,7 +16,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         bool Pingable { get; }
         bool PortOpen { get; }
         DirectoryConnectionStatus Status { get; }
-        DirectoryEntry? DirectoryEntry { get; }
+        DirectoryEntry? AppRootDirectoryEntry { get; }
         IADOUSearcher? OUs { get; }
         IADGroupSearcher? Groups { get; }
         IADUserSearcher? Users { get; }
@@ -23,6 +24,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         ADSettings? ConnectionSettings { get; }
         AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
         IADComputerSearcher? Computers { get; }
+        IEncryptionService Encryption { get; }
+
         /// <summary>
         /// Authenticates a login request's credentials against the configured
         /// Activer Directory connection in the application settings database.

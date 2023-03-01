@@ -3,16 +3,14 @@
 
 <Bar Mode="BarMode.VerticalInline"
      CollapseMode="BarCollapseMode.Small"
-     Breakpoint="Breakpoint.Desktop"
+     Breakpoint="Breakpoint.FullHD"
      NavigationBreakpoint="Breakpoint.Tablet"
      ThemeContrast="ThemeContrast.Dark">
     <BarBrand>
         <BarItem onclick=@(()=>{Nav.NavigateTo("/",true);})>
           
-                <Image class="app-icon" src="@StaticAssets.ApplicationIcon" />
-                <Div Margin=Margin.Is2.OnX TextAlignment="TextAlignment.Center">
-                    @DatabaseCache.ApplicationSettings?.AppAbbreviation
-                </Div>
+                <Image class="app-icon" src="@StaticAssets.ApplicationIconUri" />
+               
         </BarItem>
     </BarBrand>
 </Bar>

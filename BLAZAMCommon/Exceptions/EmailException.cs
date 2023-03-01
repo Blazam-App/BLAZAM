@@ -3,7 +3,7 @@
 namespace BLAZAM.Server.Data.Services.Email
 {
     [Serializable]
-    internal class EmailException : ApplicationException
+    public class EmailException : ApplicationException
     {
         public EmailException()
         {

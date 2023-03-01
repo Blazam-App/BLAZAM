@@ -1,6 +1,6 @@
 @using Microsoft.EntityFrameworkCore
 @layout InstallLayout
-@inherits AppComponent
+@inherits AppComponentBase
 @{
     string connString;
 
@@ -20,36 +20,30 @@
     }
 
 }
-<h3>Database</h3>
-@if (!Completed && !Monitor.DatabaseUpdatePending)
+<Heading Size="HeadingSize.Is3">Database</Heading>
+@if (!Completed && Monitor.DatabaseUpdatePending)
 {
-
-    <div>
-        <h5>The server is reachable but the database has not been installed yet.</h5>
-        <h6>The account running this web server must have permission to create databases on the configured SQL server.</h6>
-        <progress max="100" value="@progressValue" />
-        <p>Connection String:</p>
-        <small>The password has been removed from the connection string if it was present.</small><br />
-        <code>@connString</code><br />
-        <button class="btn btn-primary" @onclick="InstallDB">Install</button>
-    </div>
-}
-else if(!Completed && Monitor.DatabaseUpdatePending)
-{
-    <div>
-        <h5>The database needs an update</h5>
-        <h6>The database already needs and update.</h6>
-        <progress max="100" value="@progressValue" />
-       <br/>
-        <button class="btn btn-primary" @onclick="InstallDB">Install</button>
-    </div>
+    <Div>
+    <Heading Size="HeadingSize.Is5">The database is ready to install.</Heading>
+        <Heading Size="HeadingSize.Is5">Type</Heading><Text>@(Context.Database.IsSqlServer() ? "SQL" : "SQLite")</Text>
+        <Heading Size="HeadingSize.Is5">Server</Heading><Text>@DatabaseContext.ConnectionString.ServerAddress</Text>
+        <Heading Size="HeadingSize.Is5">Port</Heading><Text>@DatabaseContext.ConnectionString.ServerPort</Text>
+        <Heading Size="HeadingSize.Is5">Database</Heading><Text>@DatabaseContext.ConnectionString.Database</Text>
+<Divider/>
+    <Help>Make sure the settings above are as intended. The application should be provided a
+        dedicated database. If you are using SQLite as your database option you don't need to worry about this.
+    </Help>
+        <Progress Max="100" Value="@progressValue" Animated Striped/>
+        <br />
+        <Button Color="Color.Primary" @onclick="InstallDB">Install</Button>
+    </Div>
 }
 
 else
 {
-    <div>
-        <h6>Installed</h6>
-    </div>
+    <Div>
+    <Heading Size="HeadingSize.Is6">Installed</Heading>
+    </Div>
 }
 
 @code {
@@ -63,9 +57,9 @@ else
         Task.Run(async () =>
         {
 
-            progressValue = null;
+            progressValue = 100;
             await InvokeAsync(StateHasChanged);
-            if (Program.ApplyDatabaseMigrations())
+            if (await Program.ApplyDatabaseMigrations(true))
             {
                 Completed = true;
                 InvokeAsync(StepCompleted.InvokeAsync);

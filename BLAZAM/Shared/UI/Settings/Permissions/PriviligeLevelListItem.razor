@@ -11,7 +11,7 @@
 
                             </Column>
                             <Column ColumnSize="ColumnSize.Is6.OnTablet">
-                                <Switch Checked="Level?.IsSuperAdmin" Disabled>Super User Group</Switch>
+                                <Switch  Checked="Level?.IsSuperAdmin" Disabled>Super User Group</Switch>
 
 
                             </Column>
@@ -36,7 +36,7 @@
                                 <Field>
                                     <FieldLabel>@AppLocalization["Group Name"]</FieldLabel>
                                     <FieldBody>
-                                        <Switch @bind-Checked="Level.IsSuperAdmin">Super User Group</Switch>
+                                <Switch Disabled=@(Program.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Level.IsSuperAdmin">Super User Group</Switch>
 
 
                                     </FieldBody>

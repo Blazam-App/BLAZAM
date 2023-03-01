@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM
 {
-    public class SystemDirectory:FileSystemBase
+    public class SystemDirectory : FileSystemBase
     {
         public SystemDirectory(string path) : base(path)
         {
@@ -22,9 +22,12 @@ namespace BLAZAM
                 List<SystemDirectory> dirs = new();
                 try
                 {
-                    foreach (var directory in Directory.GetDirectories(Path))
+                    if (Directory.Exists(Path))
                     {
-                        dirs.Add(new SystemDirectory(directory));
+                        foreach (var directory in Directory.GetDirectories(Path))
+                        {
+                            dirs.Add(new SystemDirectory(directory));
+                        }
                     }
                 }
                 catch (DirectoryNotFoundException)
@@ -40,25 +43,32 @@ namespace BLAZAM
         }
         public bool Exists => Directory.Exists(Path);
 
-        public List<SystemFile> Files { get {
+        public List<SystemFile> Files
+        {
+            get
+            {
                 List<SystemFile> files = new();
                 try
                 {
-                    foreach (var file in Directory.GetFiles(Path))
+                    if (Directory.Exists(Path))
                     {
-                        files.Add(new SystemFile(file));
+                        foreach (var file in Directory.GetFiles(Path))
+                        {
+                            files.Add(new SystemFile(file));
+                        }
                     }
                 }
                 catch (DirectoryNotFoundException)
                 {
 
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    Log.Error("Error getting directory files: "+Path,ex);
+                    Log.Error("Error getting directory files: " + Path, ex);
                 }
                 return files;
-            } }
+            }
+        }
 
         public string Name => System.IO.Path.GetDirectoryName(Path);
 
@@ -78,7 +88,7 @@ namespace BLAZAM
 
             if (Directory.Exists(Path))
             {
-               
+
                 var directories = Directory.GetDirectories(Path, "*", SearchOption.AllDirectories).AsEnumerable();
 
                 if (copyingDownTree)
@@ -104,9 +114,9 @@ namespace BLAZAM
             return false;
         }
 
-        public void Delete(bool recursive =false)
+        public void Delete(bool recursive = false)
         {
-            Directory.Delete(Path,recursive);
+            Directory.Delete(Path, recursive);
         }
 
         public void EnsureCreated()

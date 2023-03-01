@@ -6,10 +6,16 @@
 @using Microsoft.EntityFrameworkCore
 @inherits LayoutComponentBase
 @inject NavigationManager Nav
+
+
+
+
 <PageTitle>Error</PageTitle>
  <Layout Sider>
     <LayoutSider>
         <LayoutSiderContent>
+            <ErrorMenu />
+
         </LayoutSiderContent>
     </LayoutSider>
     <Layout>
@@ -23,6 +29,10 @@
                 </CardBody>
             </Card>
         </LayoutContent>
+         <LayoutFooter>
+            <AppFooter />
+
+        </LayoutFooter>
     </Layout>
 </Layout>
 

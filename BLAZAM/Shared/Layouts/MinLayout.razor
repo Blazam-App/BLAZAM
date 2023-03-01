@@ -1,9 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@using BLAZAM.Server.Background;
-@using BLAZAM.Server.Errors.ActiveDirectory;
-@using BLAZAM.Server.Errors.Database;
-@using Microsoft.Data.SqlClient;
-@using System.DirectoryServices
 @inject NavigationManager Nav
 @inject ConnMonitor monitor
 
@@ -32,6 +27,11 @@
         </LayoutContent>
 
         <LayoutFooter>
+            @if (Program.InstallationCompleted)
+            {
+                <DirectoryConnectingIndicator />
+
+            }
             <AppFooter />
 
         </LayoutFooter>
@@ -42,18 +42,6 @@
     [Parameter]
     public RenderFragment? PageHeader { get; set; }
 
-
-    private void AppReady(ConnectionState newStatus)
-    {
-        if (newStatus == ConnectionState.Up)
-        {
-            if (Nav.ToBaseRelativePath(Nav.Uri) == "")
-            {
-                Nav.NavigateTo("/home");
-
-            }
-        }
-    }
 
 }
 

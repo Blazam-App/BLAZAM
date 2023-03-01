@@ -26,7 +26,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             get
             {
-                return "/";
+                return "/search/"+CanonicalName;
             }
         }
 

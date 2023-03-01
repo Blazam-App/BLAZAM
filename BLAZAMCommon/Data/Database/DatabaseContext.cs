@@ -6,8 +6,11 @@ using BLAZAM.Common.Models.Database.Templates;
 using BLAZAM.Common.Models.Database.User;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.Services.Common;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace BLAZAM.Common.Data.Database
 {
@@ -20,14 +23,11 @@ namespace BLAZAM.Common.Data.Database
         /// <para>This should be set before any attempts to connect.</para>
         /// <para>Usually in the Program.Main method before injecting the service.</para>
         /// </summary>
-        public static string? ConnectionString { get; set; }
-        /// <summary>
-        /// The last error message recieved by this instance
-        /// </summary>
-        public string? LastErrorMessage { get; private set; }
+        public static DatabaseConnectionString? ConnectionString { get; set; }
+
 
         /// <summary>
-        /// Checks the pingabillity and connectivity to the database
+        /// Checks the realtime pingabillity and connectivity to the database right now
         /// </summary>
         public ConnectionStatus Status
         {
@@ -36,87 +36,8 @@ namespace BLAZAM.Common.Data.Database
                 return TestConnection();
             }
         }
-        /// <summary>
-        /// Pings the configured <see cref="Server"/>
-        /// </summary>
-        public bool Pingable
-        {
-            get
-            {
-                if (Server != null && Server != "")
-                    return NetworkTools.PingHost(Server);
-                return false;
-            }
-        }
-        /// <summary>
-        /// Checks if the configured <see cref="Port"/> on the configured <see cref="Server"/> is open
-        /// </summary>
-        public int Port
-        {
-            get
-            {
-                string connectionString = Database.GetConnectionString();
-                if (connectionString != null)
-                {
-                    int startIndex = connectionString.IndexOf("Data Source=");
-                    if (startIndex >= 0)
-                    {
-                        startIndex += "Data Source=".Length;
-                        int endIndex = connectionString.IndexOf(";", startIndex);
-                        if (endIndex >= 0)
-                        {
-                            string dataSourceElement = connectionString.Substring(startIndex, endIndex - startIndex);
-                            string[] dataSourceParts = dataSourceElement.Split(',');
-                            if (dataSourceParts.Length == 2)
-                            {
-                                string portFragment = dataSourceParts[1];
-                                return int.Parse(portFragment);  // Outputs "serverPort"
-                            }
-                        }
 
-                    }
 
-                }
-                return 1433;
-            }
-        }
-        /// <summary>
-        /// The database server as defined in the <see cref="ConnectionString"/>
-        /// </summary>
-        public string? Server
-        {
-            get
-            {
-                try
-                {
-                    string connectionString = Database.GetConnectionString();
-                    if (connectionString != null)
-                    {
-                        int startIndex = connectionString.IndexOf("Data Source=");
-                        if (startIndex >= 0)
-                        {
-                            startIndex += "Data Source=".Length;
-                            int endIndex = connectionString.IndexOf(";", startIndex);
-                            if (endIndex >= 0)
-                            {
-                                string dataSourceElement = connectionString.Substring(startIndex, endIndex - startIndex);
-                                string[] dataSourceParts = dataSourceElement.Split(',');
-                                if (dataSourceParts.Length > 0)
-                                {
-                                    string serverFragment = dataSourceParts[0];
-                                    return serverFragment;  // Outputs "serverNameOrIp"
-                                }
-                            }
-
-                        }
-
-                    }
-                }
-                catch { }
-                return null;
-
-            }
-        }
         public enum ConnectionStatus
         {
             OK, ServerUnreachable,
@@ -187,7 +108,7 @@ namespace BLAZAM.Common.Data.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(ConnectionString,
+            optionsBuilder.UseSqlServer(ConnectionString?.ConnectionString,
                 options => options.EnableRetryOnFailure(
                     maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(1),
@@ -321,7 +242,6 @@ namespace BLAZAM.Common.Data.Database
             modelBuilder.Entity<AppSettings>(entity =>
             {
                 entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AppSettingsId] = 1"));
-
             });
 
             modelBuilder.Entity<ADSettings>(entity =>
@@ -367,120 +287,102 @@ namespace BLAZAM.Common.Data.Database
         /// This should be private
         /// </summary>
         /// <returns></returns>
-        public ConnectionStatus TestConnection()
+        private ConnectionStatus TestConnection()
         {
             if (ConnectionString != null)
             {
 
-                if (NetworkTools.IsPortOpen(Server, Port))
 
+
+                //Check for db connection
+                try
                 {
 
-                    //Check for db connection
-                    try
+                    if (!NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort)) return ConnectionStatus.ServerUnreachable;
+
+
+                    Database.OpenConnection();
+
+
+                    //Check for tables
+                    if (Seeded())
                     {
-                        Database.OpenConnection();
+                        //Installation has been completed
 
+                        Database.CloseConnection();
 
-                        //Check for tables
-                        if (AllTablesPresent())
-                        {
-                            //Installation has been completed
-                            LastErrorMessage = string.Empty;
-                            Database.CloseConnection();
-
-                            return ConnectionStatus.OK;
-                        }
-                        else
-                        {
-                            Database.CloseConnection();
-
-                            return ConnectionStatus.TablesMissing;
-                        }
-
-
-
+                        return ConnectionStatus.OK;
                     }
-                    catch (SqlException ex)
+                    else
                     {
-                        LastErrorMessage = ex.Message;
-                        switch (ex.Number)
-                        {
-                            case 53:
-                                //Server unreachable
-                                return ConnectionStatus.ServerUnreachable;
+                        Database.CloseConnection();
 
-                            case 208:
-                                //Tables Missing
-                                return ConnectionStatus.TablesMissing;
-
-                            case 18456:
-                                //Database may be missing or permission issue
-
-                                return ConnectionStatus.DatabaseConnectionIssue;
-
-
-
-                        }
-
+                        return ConnectionStatus.TablesMissing;
                     }
 
-
-                    catch (RetryLimitExceededException ex)
-                    {
-                        //Couldn't connect to DB
-
-                        LastErrorMessage = ex.Message;
-                        if (Server != null)
-                        {
-                            if (NetworkTools.PingHost(Server))
-                            {
-                                if (NetworkTools.IsPortOpen(Server, Port))
-                                {
-                                    return ConnectionStatus.TablesMissing;
-
-                                }
-                            }
-                            else
-                            {
-                                return ConnectionStatus.ServerUnreachable;
-                            }
-                        }
-                        else
-                            return ConnectionStatus.IncompleteConfiguration;
-                        return ConnectionStatus.DatabaseConnectionIssue;
-
-                    }
-                    catch (Exception ex)
-                    {
-                        LastErrorMessage = ex.Message;
-
-                        //Installation not completed
-
-
-                    }
-                    LastErrorMessage = "Unknown Error";
 
 
                 }
-                return ConnectionStatus.ServerUnreachable;
+                catch (SqlException ex)
+                {
+                    switch (ex.Number)
+                    {
+                        case 53:
+                            //Server unreachable
+                            return ConnectionStatus.ServerUnreachable;
+
+                        case 208:
+                            //Tables Missing
+                            return ConnectionStatus.TablesMissing;
+
+                        case 18456:
+                            //Database may be missing or permission issue
+
+                            return ConnectionStatus.DatabaseConnectionIssue;
+
+
+
+                    }
+
+                }
+
+
+                catch (RetryLimitExceededException ex)
+                {
+                    //Couldn't connect to DB
+
+                    return ConnectionStatus.DatabaseConnectionIssue;
+
+                }
+                catch (DatabaseConnectionStringException ex)
+                {
+                    return ConnectionStatus.IncompleteConfiguration;
+                }
+                catch (Exception ex)
+                {
+                    
+
+                    //Installation not completed
+
+
+                }
+                throw new ApplicationException("Unknown error checking connecting to database. The port is open.");
+
+
 
             }
             return ConnectionStatus.IncompleteConfiguration;
         }
-        public bool AllTablesPresent()
+        public bool Seeded()
         {
 
-            var type = GetType();
-            var properties = type.GetProperties();
-            foreach (var property in properties)
-            {
-
-                if (property.PropertyType.IsAssignableFrom(typeof(DbSet<>)) && property.GetValue(this) == null)
-                {
-                    return false;
-                }
-            }
+            var migs = this.Database.GetPendingMigrations();
+            var seedFound = false;
+            migs.ForEach(m => {
+                if (m.Contains("seed"))
+                    seedFound = true;
+            });
+            if (seedFound) return false;
             if (this.AuthenticationSettings.FirstOrDefault() == null)
                 return false;
             return true;

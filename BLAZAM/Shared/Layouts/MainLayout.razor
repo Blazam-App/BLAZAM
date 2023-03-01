@@ -5,68 +5,80 @@
 @using BLAZAM.Server.Errors.Database;
 @using Microsoft.EntityFrameworkCore
 @using System.DirectoryServices
-@inject NavigationManager NavManager
+@inject NavigationManager Nav
 @inject IActiveDirectory directory
+@inject IApplicationUserStateService UserStateService
 @inject IDbContextFactory<DatabaseContext> DbFactory
 @inject ConnMonitor monitor
 <PageTitle>BLAZAM</PageTitle>
+<CascadingValue Value="this">
+    <Layout Sider>
+        <AuthorizeView Context="authContext">
+            <Authorized>
+                <LayoutSider>
+                    <LayoutSiderContent>
+                        <NavMenu />
+                    </LayoutSiderContent>
+                </LayoutSider>
 
-<Layout Sider>
-    <AuthorizeView Context="authContext">
-        <Authorized>
-            <LayoutSider>
-                <LayoutSiderContent>
-                    <NavMenu />
-                </LayoutSiderContent>
-            </LayoutSider>
+                <Layout Background="Background.Light" TextColor="TextColor.Dark">
 
-            <Layout Background="Background.Light" TextColor="TextColor.Dark">
+                    <LayoutHeader Fixed>
 
-                <LayoutHeader Fixed>
+                        @if (setHeader != null)
+                        {
+                            @setHeader.ChildContent
 
-                    @if (setHeader != null)
-                    {
-                        @setHeader.ChildContent
+                        }
+                        else
+                        {
+                            <SearchPageHeader Text="Search" />
+                        }
+                        @if (setSubHeader != null)
+                        {
+                            @setSubHeader.ChildContent
 
-                    }
-                    @if (setSubHeader != null)
-                    {
-                        @setSubHeader.ChildContent
+                        }
+                    </LayoutHeader>
+                    <LayoutContent Style="height: 100vh;overflow: auto;">
 
-                    }
-                </LayoutHeader>
-                <LayoutContent Style="height: 100vh;overflow: auto;">
- 
-                            <CascadingValue Value="this">
-                                @Body
-                            </CascadingValue>
-           
-                </LayoutContent>
-                <LayoutFooter>
-                    <AppFooter />
-                    <AuthorizeView Context="authorizedContext" Roles=@UserRoles.SuperAdmin>
+                        @Body
+
+                    </LayoutContent>
+                    <LayoutFooter>
+                     <DirectoryConnectingIndicator/>
+                        
+                        <AppFooter />
                         @if (Program.InDebugMode)
                         {
-                            <DevTools />
+                            <AuthorizeView Context="authorizedContext" Roles=@UserRoles.SuperAdmin>
+                                <DevTools />
+                            </AuthorizeView>
                         }
-                    </AuthorizeView>
-                </LayoutFooter>
-            </Layout>
-            <NotificationBroadcastListener />
-        </Authorized>
-        <NotAuthorized>
-            <Layout>
-                <LayoutContent Style="height: 100vh;overflow: auto;">
-                    <CascadingValue Value="this">
-                        @Body
-                    </CascadingValue>
-                </LayoutContent>
-            </Layout>
-        </NotAuthorized>
-    </AuthorizeView>
+                    </LayoutFooter>
+                </Layout>
+                <NotificationBroadcastListener />
+            </Authorized>
+            <NotAuthorized>
+                <Layout>
+                    <LayoutContent Style="height: 100vh;overflow: auto;">
+                        <CascadingValue Value="this">
+                            @Body
+                        </CascadingValue>
+                    </LayoutContent>
+                </Layout>
+            </NotAuthorized>
+        </AuthorizeView>
 
-</Layout>
+    </Layout>
+</CascadingValue>
+
 @code {
+
+
+
+
+
     SetHeader? setHeader;
     public void SetHeader(SetHeader? setHeader)
     {

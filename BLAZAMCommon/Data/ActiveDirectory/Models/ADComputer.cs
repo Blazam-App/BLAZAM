@@ -10,13 +10,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
     public class ADComputer : GroupableDirectoryModel, IADComputer
     {
-        public override string SearchUri
-        {
-            get
-            {
-                return "/computers/search/" + CanonicalName;
-            }
-        }
+       
         private ADComputerSessions sessionManager;
         private WmiConnection wmiConnection
         {

@@ -1,10 +1,10 @@
-@inherits AppComponent
+@inherits AppComponentBase
 @inject IHttpContextAccessor ca
 <Accordion Border=Border.Is0.RoundedZero>
     <Collapse Border=Border.Is0.RoundedZero Visible="@collapseVisible">
         <CollapseHeader Border=Border.Is0.RoundedZero>
             <Button Border=Border.Is0.RoundedZero Background="Background.Dark" TextColor="TextColor.Light" style="height:15px;" Clicked="@(()=>collapseVisible = !collapseVisible)">Dev Tools</Button>
-            
+
         </CollapseHeader>
         <CollapseBody>
             <Row>
@@ -51,6 +51,8 @@
                         }
                     </CardBody>
                 </Card>
+
+
                 <Card ColumnSize="ColumnSize.Is3.OnFullHD.Is6.OnDesktop">
                     <CardHeader>
                         User
@@ -81,37 +83,49 @@
                         }
                     </CardBody>
                 </Card>
+
+
+
                 <Card ColumnSize="ColumnSize.Is3.OnFullHD.Is6.OnDesktop">
                     <CardHeader>
                         Active Directory
                     </CardHeader>
                     <CardBody>
                         <Row>
-                            <Row>ActiveDirectory Status: @Enum.GetName(typeof(DirectoryConnectionStatus),Directory.Status)</Row>
+                            <Row>ActiveDirectory Status: @DirectoryStatus</Row>
                             <Row>ActiveDirectory Server: @Directory.ConnectionSettings?.ServerAddress</Row>
-                            <Row>ActiveDirectory Server Pingable: @Directory.Pingable</Row>
+                            <Row>ActiveDirectory Server Pingable: @DirectoryPingable</Row>
 
                             <Row>ActiveDirectory Server Port: @Directory.ConnectionSettings?.ServerPort</Row>
-                            <Row>ActiveDirectory Server Port Open: @Directory.PortOpen</Row>
+                            <Row>ActiveDirectory Server Port Open: @DirectoryPortOpen</Row>
 
-                            </Row>
-                        </CardBody>
-                    </Card>
+                        </Row>
+                    </CardBody>
+                </Card>
 
-                </Row>
+            </Row>
         </CollapseBody>
     </Collapse>
-   
+
 </Accordion>
 
 
-    @code{
+@code {
+    string DirectoryStatus = "";
+    bool DirectoryPingable;
+    bool DirectoryPortOpen;
     bool collapseVisible = false;
     Timer t;
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        t = new Timer((obj) => { InvokeAsync(StateHasChanged); }, null, 500, 500);
+        t = new Timer((obj) =>
+        {
+            DirectoryPingable = Directory.Pingable;
+            DirectoryPortOpen = Directory.PortOpen;
+            DirectoryStatus = Enum.GetName(typeof(DirectoryConnectionStatus), Directory.Status);
+            InvokeAsync(StateHasChanged);
+        }, null, 500, 2000);
     }
 
 }

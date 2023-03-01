@@ -1,9 +1,8 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory;
-using BLAZAM.Server.Exceptions;
 
 namespace BLAZAM.Server.Errors.ActiveDirectory
 {
-    public class CriticalActiveDirectoryException:AppException
+    public class CriticalActiveDirectoryException: ApplicationException
     {
         public ActiveDirectoryContext Context { get;}
         public override string Message { get;}

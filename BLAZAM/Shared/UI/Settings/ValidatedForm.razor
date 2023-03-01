@@ -1,4 +1,4 @@
-﻿@inherits AppComponent
+﻿@inherits AppComponentBase
 @using System.ComponentModel.DataAnnotations
 
 
@@ -17,7 +17,12 @@
     {
         try
         {
+            if(Program.InDemoMode && !UserStateService.CurrentUsername.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                NotificationService.Warning("Settings changes are not allowed in the demo");
+                return;
 
+            }
             await Context.SaveChangesAsync();
             NotificationService.Success("Settings have been saved");
         }

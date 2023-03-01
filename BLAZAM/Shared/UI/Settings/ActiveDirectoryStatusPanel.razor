@@ -1,24 +1,11 @@
-﻿@using BLAZAM.Server.Data;
-@using BLAZAM.Server.Shared.UI.Outputs
-@using Microsoft.EntityFrameworkCore;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
-@inject IDbContextFactory<DatabaseContext> dbFactory
-@inject IActiveDirectory directory
+﻿@using System.DirectoryServices;
+@inherits AppComponentBase
 <Card>
     <CardHeader>
-      Active Directory Connection Status
+        Active Directory Connection Status
     </CardHeader>
     <CardBody>
-        <Row>
-            <Column>
-                Server Online
-            </Column>
-            <Column>
-                <StatusCheck Status="_serverStatus" />
 
-            </Column>
-        </Row>
         <Row>
             <Column>
                 Server Port Open
@@ -34,34 +21,48 @@
                 Credentials OK
             </Column>
             <Column>
-                <StatusCheck Status="_credStatus"/>
+                <StatusCheck Status="_credStatus" />
+            </Column>
+        </Row>
+
+        <Row>
+            <Column>
+                Encrypted Connection
+                @if (!_encryptedStatus)
+                {
+                    <br />
+                    <Help>You may need to install the Active Directry CA</Help>
+                }
+            </Column>
+            <Column>
+                <StatusCheck Status="_encryptedStatus" />
+
             </Column>
         </Row>
     </CardBody>
-    <Progress Value="100" Animated Striped Visibility=@showProgress/>
-</Card>
-@{
+    <Progress Value="100" Animated Striped Visibility=@showProgress />
+    </Card>
+    @{
 
 
 }
 @code {
 
     [Parameter]
-    public EventCallback DirectoryConnected{ get; set; }
+    public EventCallback DirectoryConnected { get; set; }
 
-
-    bool _serverStatus;
+    bool _monitoring = false;
+    bool _encryptedStatus;
     bool _portStatus;
     bool _credStatus;
     Blazorise.Visibility showProgress = Visibility.Visible;
     DatabaseContext _context;
-    Timer t;
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Timer t = new Timer(UpdateStatus, null, 0, 1000);
-        //Monitor.OnDirectoryConnectionChanged += ((state) => { UpdateStatus(state); });
-        //UpdateStatus(null);
+        Monitor.OnDirectoryConnectionChanged += ((state) => { UpdateStatus(state); });
+        UpdateStatus(null);
+
     }
 
 
@@ -69,54 +70,66 @@
 
     private async void UpdateStatus(object? state)
     {
-        if (directory.Status== DirectoryConnectionStatus.Connecting)
+        Task.Run(async () =>
         {
-            showProgress = Visibility.Default;
-            await InvokeAsync(StateHasChanged);
-
-        }
-        if (directory.Pingable)
-        {
-            _serverStatus = true;
-            if (directory.PortOpen)
+            if (_monitoring == false)
             {
-                _portStatus = true;
-                if (directory.Status == DirectoryConnectionStatus.OK)
+                _monitoring = true;
+                while (_monitoring == true)
                 {
-                    _credStatus = true;
+                    if (Directory.Status == DirectoryConnectionStatus.Connecting)
+                    {
+                        showProgress = Visibility.Default;
+                        await InvokeAsync(StateHasChanged);
 
-                }
-                else
-                {
-                    _credStatus = false;
+                    }
+
+                    if (Directory.PortOpen)
+                    {
+                        _portStatus = true;
+                        if (Directory.Status == DirectoryConnectionStatus.OK)
+                        {
+                            _credStatus = true;
+                            if ((Directory.AppRootDirectoryEntry.AuthenticationType & AuthenticationTypes.Signing) == AuthenticationTypes.Signing ||
+                        (Directory.AppRootDirectoryEntry.AuthenticationType | AuthenticationTypes.Encryption) == AuthenticationTypes.Encryption)
+                            {
+                                _encryptedStatus = true;
+                            }
+                            showProgress = Visibility.Invisible;
+
+                            DirectoryConnected.InvokeAsync();
+
+                        }
+                        else
+                        {
+                            _credStatus = false;
+                        }
+                    }
+                    else
+                    {
+                        _portStatus = false;
+                    }
+
+
+                    if (Directory.Status == DirectoryConnectionStatus.Connecting)
+                    {
+                        showProgress = Visibility.Default;
+
+                    }
+                    else
+                    {
+
+                        showProgress = Visibility.Invisible;
+                    }
+
+                    await InvokeAsync(StateHasChanged);
+                    await Task.Delay(1000);
                 }
             }
-            else
-            {
-                _portStatus = false;
-            }
-        }
-        else
-        {
-            _serverStatus = false;
-        }
-        if (directory.Status == DirectoryConnectionStatus.Connecting)
-        {
-            showProgress = Visibility.Default;
 
-        }
-        else
-        {
+        });
 
-            showProgress = Visibility.Invisible;
-        }
-
-        await InvokeAsync(StateHasChanged);
     }
 
-    private Task StatusChanged()
-    {
-        DirectoryConnected.InvokeAsync();
-        return null;
-    }
+
 }

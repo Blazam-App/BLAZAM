@@ -1,15 +1,9 @@
 ﻿@page "/"
-@using BLAZAM.Server.Background;
-@using BLAZAM.Server.Errors.Database;
 @layout MinLayout
-@using BLAZAM.Server.Shared.ResourceFiles;
-@using Microsoft.EntityFrameworkCore
-@using System.DirectoryServices
 
 @inject NavigationManager NavManager
 @inject IDbContextFactory<DatabaseContext> DbFactory
 @inject ConnMonitor tester
-@using Microsoft.Extensions.Localization
 @inject IStringLocalizer<AppLocalization> Localizer
 <h2>
     @Localizer["ApplicationStarting"]
@@ -17,8 +11,7 @@
 </h2>
 <progress />
 @{
-    tester.OnAppReadyChanged += AppReady;
-
+    
     Task.Run(async () => {
         while (NavManager.ToBaseRelativePath(NavManager.Uri) == "")
         {
@@ -38,38 +31,14 @@
         }
 
     });
+    
 }
 @code{
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        try
-        {
-            var context = DbFactory.CreateDbContext();
-            if (context!=null && context?.AppSettings?.FirstOrDefault()?.InstallationCompleted!=true)
-            {
-                NavManager.NavigateTo("/install");
-            }
-        }
-        catch (InvalidOperationException ex)
-        {
-            switch (ex.HResult){
-                //Connection string not set exception
-                case -2146233079:
-                    NavManager.NavigateTo("/oops", true);
-                    break;
-            }
-        }
-        catch (SqlException ex)
-        {
-            switch (ex.HResult)
-            {
-                //SQL Coulmun not found exception
-                case -2146232060:
-                    NavManager.NavigateTo("/install", true);
-                    break;
-            }
-        }
+        tester.OnAppReadyChanged += AppReady;
+       
     }
     private void AppReady(ConnectionState newStatus)
     {

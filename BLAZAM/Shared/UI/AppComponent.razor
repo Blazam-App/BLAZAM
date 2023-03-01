@@ -28,6 +28,9 @@
     [Inject] protected AutoUpdateService AutoUpdateService { get; set; }
 
     [Inject] protected EmailService EmailService { get; set; }
+
+    [Inject] protected IEncryptionService EncryptionService { get; set; }
+
     [Inject] protected INotificationService NotificationService { get; set; }
 
     protected bool LoadingData { get; set; } = true;
