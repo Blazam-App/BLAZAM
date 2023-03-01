@@ -64,7 +64,7 @@ $updateScript= {
             Stop-Process -ID $global:processId -Force
         }
         
-        Start-Sleep -Seconds 2
+        Start-Sleep -Seconds 15
         
     }
     
@@ -237,13 +237,14 @@ Write-Host("Global Process Id: " +  $global:processId);
    
 
     StopApp
+    <#
     if($process.ExitTime -ne $null)
     {
         
         Write-Host("Error: Web Application failed to stop")
         Quit
     }
-    
+    #>
     PerformBackup
    
    ApplyUpdate
