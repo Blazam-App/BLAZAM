@@ -64,7 +64,7 @@ $updateScript= {
             Stop-Process -ID $global:processId -Force
         }
         
-        Start-Sleep -Seconds 2
+        Start-Sleep -Seconds 15
         
     }
     
