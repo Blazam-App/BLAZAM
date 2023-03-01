@@ -1,3 +1,21 @@
 site_name: Blazam Documentation
 repo_url: https://github.com/Blazam-App/BLAZAM
+edit_uri: tree/Docs/BLAZAM/docs
 theme: material
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+
+nav:
+    - Home: 'index.md'
+    - 'Installation Guide':
+        - 'MSI Installer': 'install/msi.md'
+        - Manual Installation: 
+            - 'Install': 'install/manual.md'
+            - 'Configuration': 'install/config.md'
+    - About:
+        - 'License': 'license.md'
+        - 'Privacy': 'privacy.md'

@@ -1,7 +1,10 @@
-# Welcome to MkDocs
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
 
+# Blazam
+
+A powerful web-based Active Directory management portal.
+
+## Beta Warning
 ## Commands
 
 * `mkdocs new [dir-name]` - Create a new project.
