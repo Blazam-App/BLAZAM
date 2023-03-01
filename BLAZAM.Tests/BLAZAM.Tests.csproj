@@ -26,4 +26,8 @@
     <ProjectReference Include="..\BLAZAM\BLAZAM.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resouces\" />
+  </ItemGroup>
+
 </Project>
