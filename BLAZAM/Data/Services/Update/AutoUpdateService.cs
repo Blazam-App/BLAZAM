@@ -58,6 +58,9 @@ namespace BLAZAM.Server.Data.Services.Update
                 }
 
             }
+            /*
+             * Disable to test strange behavior, the staging folders are deleted on shutdown
+             * during an update
             var oldStaginDirectories = ApplicationUpdate.StagingDirectory.SubDirectories;
             foreach (var dir in oldStaginDirectories)
             {
@@ -77,6 +80,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 }
               
             }
+            */
         }
 
         private async void CheckForUpdate(object? state)
