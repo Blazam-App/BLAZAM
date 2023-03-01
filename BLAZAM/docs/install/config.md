@@ -69,10 +69,11 @@ file in the root path of the application directory.
 | Values      | Description                          |
 | ----------- | ------------------------------------ |
 | `*`         | Allows all IP addresses to communicate with the Blazam|
+| `subnet/mask`| Allows only IP's from the defined subnet to communicate with the Blazam|
 
 
 #### SQLConnectionString
 
 | Values      | Description                          |
 | ----------- | ------------------------------------ |
-| `string`         | The connection string to connect to your SQL server. If you need a generator try [this one](https://www.aireforge.com/tools/sql-server-connection-string-generator)|
+| `string`         | The connection string to connect to your SQL server. If you need a generator try [this one](https://www.aireforge.com/tools/sql-server-connection-string-generator).|
