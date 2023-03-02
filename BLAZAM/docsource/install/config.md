@@ -1,7 +1,8 @@
 ﻿# Configuration
 All web host application settings are set in the `appsettings.json`
 file in the root path of the application directory.
-## appsettings.json
+## AppSettings
+`appsettings.json`
 ### Example File
 ```
 {
@@ -26,6 +27,9 @@ file in the root path of the application directory.
 }
 ```
 ### Config Options
+#### Logging
+It is recommended not to modify these settings
+
 #### DebugMode
 | Values      | Description                          |
 | ----------- | ------------------------------------ |
@@ -34,7 +38,7 @@ file in the root path of the application directory.
 
 #### InstallType
 
-!!! note
+!!! note inline end
 
     This will likely not be implemented
 | Values      | Description                          |
@@ -45,7 +49,7 @@ file in the root path of the application directory.
 
 #### HTTPPort
 
-!!! note
+!!! info
 
     This setting has no effect when running under IIS
 | Values      | Description                          |
@@ -56,7 +60,7 @@ file in the root path of the application directory.
 
 #### HTTPSPort
 
-!!! note
+!!! info
 
     This setting has no effect when running under IIS
 | Values      | Description                          |

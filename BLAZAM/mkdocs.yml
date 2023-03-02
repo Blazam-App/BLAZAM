@@ -1,6 +1,8 @@
 site_name: Blazam Documentation
 repo_url: https://github.com/Blazam-App/BLAZAM
 edit_uri: tree/Docs/BLAZAM/docs
+docs_dir: docsource
+site_dir: wwwroot/docs
 theme: material
 markdown_extensions:
   - admonition
@@ -11,11 +13,14 @@ markdown_extensions:
 
 nav:
     - Home: 'index.md'
-    - 'Installation Guide':
+    - Installation Guide:
         - 'MSI Installer': 'install/msi.md'
         - Manual Installation: 
             - 'Install': 'install/manual.md'
             - 'Configuration': 'install/config.md'
+        - Security: 'install/security.md'
+    - Permissions:
+        - 'Abstract': 'permissions/abstract.md'
     - About:
         - 'License': 'license.md'
         - 'Privacy': 'privacy.md'
