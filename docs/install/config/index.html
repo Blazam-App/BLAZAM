@@ -15,7 +15,7 @@
     
     
       
-        <title>Install - Blazam Documentation</title>
+        <title>Configuration - Blazam Documentation</title>
       
     
     
@@ -48,7 +48,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#pre-requisites" class="md-skip">
+        <a href="#configuration" class="md-skip">
           Skip to content
         </a>
       
@@ -76,7 +76,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Install
+              Configuration
             
           </span>
         </div>
@@ -252,6 +252,18 @@
           
           
 
+
+  <li class="md-nav__item">
+    <a href="../manual/" title="Install" class="md-nav__link">
+      Install
+    </a>
+  </li>
+
+        
+          
+          
+          
+
   
 
 
@@ -259,21 +271,25 @@
     
     <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
+      
+    
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
-        Install
+        Configuration
         <span class="md-nav__icon md-icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
         </span>
       </label>
     
-    <a href="./" title="Install" class="md-nav__link md-nav__link--active">
-      Install
+    <a href="./" title="Configuration" class="md-nav__link md-nav__link--active">
+      Configuration
     </a>
     
       
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
+  
+    
   
   
     <label class="md-nav__title" for="__toc">
@@ -285,16 +301,73 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-Requisites
+  <a href="#appsettings" class="md-nav__link">
+    AppSettings
   </a>
   
-    <nav class="md-nav" aria-label="Pre-Requisites">
+    <nav class="md-nav" aria-label="AppSettings">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#download" class="md-nav__link">
-    Download
+  <a href="#example-file" class="md-nav__link">
+    Example File
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#config-options" class="md-nav__link">
+    Config Options
+  </a>
+  
+    <nav class="md-nav" aria-label="Config Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#logging" class="md-nav__link">
+    Logging
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugmode" class="md-nav__link">
+    DebugMode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installtype" class="md-nav__link">
+    InstallType
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#httpport" class="md-nav__link">
+    HTTPPort
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#httpsport" class="md-nav__link">
+    HTTPSPort
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#allowedhosts" class="md-nav__link">
+    AllowedHosts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sqlconnectionstring" class="md-nav__link">
+    SQLConnectionString
   </a>
   
 </li>
@@ -303,18 +376,9 @@
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#install-under-iis" class="md-nav__link">
-    Install under IIS
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#install-as-service" class="md-nav__link">
-    Install as Service
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -322,18 +386,6 @@
   
 </nav>
     
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../config/" title="Configuration" class="md-nav__link">
-      Configuration
-    </a>
   </li>
 
         
@@ -469,6 +521,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon">
@@ -479,16 +533,73 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-Requisites
+  <a href="#appsettings" class="md-nav__link">
+    AppSettings
   </a>
   
-    <nav class="md-nav" aria-label="Pre-Requisites">
+    <nav class="md-nav" aria-label="AppSettings">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#download" class="md-nav__link">
-    Download
+  <a href="#example-file" class="md-nav__link">
+    Example File
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#config-options" class="md-nav__link">
+    Config Options
+  </a>
+  
+    <nav class="md-nav" aria-label="Config Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#logging" class="md-nav__link">
+    Logging
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugmode" class="md-nav__link">
+    DebugMode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installtype" class="md-nav__link">
+    InstallType
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#httpport" class="md-nav__link">
+    HTTPPort
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#httpsport" class="md-nav__link">
+    HTTPSPort
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#allowedhosts" class="md-nav__link">
+    AllowedHosts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sqlconnectionstring" class="md-nav__link">
+    SQLConnectionString
   </a>
   
 </li>
@@ -497,18 +608,9 @@
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#install-under-iis" class="md-nav__link">
-    Install under IIS
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#install-as-service" class="md-nav__link">
-    Install as Service
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -524,7 +626,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/Blazam-App/BLAZAM/tree/Docs/BLAZAM/docs/install/manual.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/Blazam-App/BLAZAM/blob/Docs/BLAZAM/docsource/install/config.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -532,53 +634,151 @@
                   
                 
                 
-                  <h1>Install</h1>
-                
-                <h2 id="pre-requisites">Pre-Requisites</h2>
-<ul>
-<li>Install an SQL Express or MS SQL server, or use an existing one.</li>
-<li>Create an empty database, a new SQL or AD user to connect with, and permissions and logons set.<ul>
-<li>Refer to your database documentation for security setup and best practices</li>
-</ul>
-</li>
-<li>Download and <a href="https://aka.ms/dotnet-download">Install .NET Core 6.x Runtime</a> from Micrsoft<ul>
-<li>If running under IIS, you will also need the <a href="https://aka.ms/dotnet-download">.NET Core 6.x Web Hosting Bundle</a>, also from Microsft.</li>
-</ul>
-</li>
-</ul>
-<h3 id="download"><a href="https://blazam.org/download">Download</a></h3>
-<h2 id="install-under-iis">Install under IIS</h2>
-<p>Feel free to deviate from the instructions to fit your desired deployment</p>
-<ol>
-<li>Install the Application Initialization Module<ul>
-<li>You can find the module under <code>Server Roles</code> -&gt; <code>Web Server</code> -&gt; <code>Application Developer</code> -&gt; <code>Application Initialization</code>.</li>
-</ul>
-</li>
-<li>Copy contents of zip file to a directory accessible by IIS</li>
-<li>
-<p>Create new Site in IIS for Blazam</p>
-<ul>
-<li>Point the root directory to the directory you unzipped the files to.</li>
-</ul>
-</li>
-<li>
-<p>Set ApplicationPool to AlwayRunning (Optional)</p>
-<ul>
-<li>In IIS Manager, right click on the application pool under which the application runs and select <code>Advanced Settings</code>.  </li>
-<li>Set start mode to <code>Always Running</code>.</li>
-</ul>
-</li>
-<li>
-<p>Set IIS Site to Preload (Optional)</p>
-<ul>
-<li>In IIS Manager, right click on the site for the application, select <code>Manage Website</code> -&gt; <code>Advanced Settings</code> and set the <code>Preload Enabled</code> value to <code>true</code>.</li>
-</ul>
-</li>
-<li>
-<p>Continue with <a href="../config/">Configuration</a></p>
-</li>
-</ol>
-<h2 id="install-as-service">Install as Service</h2>
+                <h1 id="configuration">Configuration</h1>
+<p>All web host application settings are set in the <code>appsettings.json</code>
+file in the root path of the application directory.</p>
+<h2 id="appsettings">AppSettings</h2>
+<p><code>appsettings.json</code></p>
+<h3 id="example-file">Example File</h3>
+<div class="highlight"><pre><span></span><code>{
+  &quot;Logging&quot;: {
+    &quot;LogLevel&quot;: {
+      &quot;Default&quot;: &quot;Information&quot;,
+      &quot;Microsoft.AspNetCore&quot;: &quot;Information&quot;,
+      &quot;Microsoft.Hosting.Lifetime&quot;: &quot;Information&quot;,
+      &quot;Microsoft.EntityFrameworkCore.Database.Command&quot;: &quot;Warning&quot;
+    }
+  },
+  &quot;DebugMode&quot;: &quot;false&quot;,
+  &quot;InstallType&quot;: &quot;IIS&quot;,
+  &quot;ListeningAddress&quot;: &quot;*&quot;,
+  &quot;HTTPPort&quot;: &quot;79&quot;,
+  &quot;HTTPSPort&quot;: &quot;442&quot;,
+  &quot;AllowedHosts&quot;: &quot;*&quot;,
+  &quot;ConnectionStrings&quot;: {
+    &quot;SQLConnectionString&quot;: &quot;Data Source=localhost;Database=BLAZAM;Persist Security Info=True;Integrated Security=False;Connection Timeout=10;TrustServerCertificate=True;&quot;
+  }
+
+}
+</code></pre></div>
+
+<h3 id="config-options">Config Options</h3>
+<h4 id="logging">Logging</h4>
+<p>It is recommended not to modify these settings</p>
+<h4 id="debugmode">DebugMode</h4>
+<table>
+<thead>
+<tr>
+<th>Values</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>true</code></td>
+<td>The application will provide a demo user for login</td>
+</tr>
+<tr>
+<td><code>false</code></td>
+<td>The application will operate in the normal mode</td>
+</tr>
+</tbody>
+</table>
+<h4 id="installtype">InstallType</h4>
+<div class="admonition note inline end">
+<p class="admonition-title">Note</p>
+<p>This will likely not be implemented</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Values</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IIS</code></td>
+<td>Lets the application know it is running under IIS</td>
+</tr>
+<tr>
+<td><code>Service</code></td>
+<td>Lets the application know it is running as a service</td>
+</tr>
+</tbody>
+</table>
+<h4 id="httpport">HTTPPort</h4>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>This setting has no effect when running under IIS</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Values</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PortNumber</code></td>
+<td>If running as a service, the application will listen for HTTP connections on this port</td>
+</tr>
+</tbody>
+</table>
+<h4 id="httpsport">HTTPSPort</h4>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>This setting has no effect when running under IIS</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Values</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PortNumber</code></td>
+<td>If running as a service, the application will listen for HTTPS connections on this port</td>
+</tr>
+</tbody>
+</table>
+<h4 id="allowedhosts">AllowedHosts</h4>
+<table>
+<thead>
+<tr>
+<th>Values</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>*</code></td>
+<td>Allows all IP addresses to communicate with the Blazam</td>
+</tr>
+<tr>
+<td><code>subnet/mask</code></td>
+<td>Allows only IP's from the defined subnet to communicate with the Blazam</td>
+</tr>
+</tbody>
+</table>
+<h4 id="sqlconnectionstring">SQLConnectionString</h4>
+<table>
+<thead>
+<tr>
+<th>Values</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>string</code></td>
+<td>The connection string to connect to your SQL server. If you need a generator try <a href="https://www.aireforge.com/tools/sql-server-connection-string-generator">this one</a>.</td>
+</tr>
+</tbody>
+</table>
                 
               
               
@@ -597,7 +797,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../msi/" title="MSI Installer" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../manual/" title="Install" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -606,19 +806,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                MSI Installer
+                Install
               </div>
             </div>
           </a>
         
         
-          <a href="../config/" title="Configuration" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../security/" title="Security" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Configuration
+                Security
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">

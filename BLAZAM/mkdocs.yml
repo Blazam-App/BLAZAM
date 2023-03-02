@@ -2,7 +2,7 @@ site_name: Blazam Documentation
 repo_url: https://github.com/Blazam-App/BLAZAM
 edit_uri: blob/Docs/BLAZAM/docsource
 docs_dir: docsource
-site_dir: wwwroot/docs
+site_dir: ../docs
 theme: material
 markdown_extensions:
   - admonition
