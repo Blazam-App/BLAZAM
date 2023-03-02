@@ -88,7 +88,7 @@ namespace BLAZAM.Common.Data.Database
                         string portFragment = dataSourceParts[1];
                         return int.Parse(portFragment);  // Outputs "serverPort"
                     }
-
+                    return 1433;
 
 
 

@@ -1,4 +1,5 @@
-﻿using BLAZAM.Common.Data.Database;
+﻿using BLAZAM.Common;
+using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.EntityFrameworkCore;
@@ -171,10 +172,15 @@ namespace BLAZAM.Server.Data.Services
         }
         public void RemoveUserState(IApplicationUserState state)
         {
-            if (state != null)
-                if (UserStates.Count > 0 && UserStates.Contains(state))
-                    UserStates.Remove(state);
-
+            try
+            {
+                if (state != null)
+                    if (UserStates.Count > 0 && UserStates.Contains(state))
+                        UserStates.Remove(state);
+            }catch(Exception ex)
+            {
+                Loggers.SystemLogger.Error("Error trying to remove user state", ex);
+            }
 
         }
 
