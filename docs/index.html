@@ -8,7 +8,11 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
+        <meta name="description" content="Documentation for the Blazam application">
       
+      
+      
+        <meta name="author" content="Chris Jacobsen">
       
       <link rel="shortcut icon" href="assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.2.2">
@@ -211,22 +215,22 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#beta-warning" class="md-nav__link">
-    Beta Warning
+  <a href="#summary" class="md-nav__link">
+    Summary
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
-    Commands
+  <a href="#requirements" class="md-nav__link">
+    Requirements
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#project-layout" class="md-nav__link">
-    Project layout
+  <a href="#open-source" class="md-nav__link">
+    Open Source
   </a>
   
 </li>
@@ -468,22 +472,22 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#beta-warning" class="md-nav__link">
-    Beta Warning
+  <a href="#summary" class="md-nav__link">
+    Summary
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
-    Commands
+  <a href="#requirements" class="md-nav__link">
+    Requirements
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#project-layout" class="md-nav__link">
-    Project layout
+  <a href="#open-source" class="md-nav__link">
+    Open Source
   </a>
   
 </li>
@@ -509,21 +513,36 @@
                 
                 
                 <h1 id="blazam">Blazam</h1>
+<p><a href="https://blazam.org">Main Site</a></p>
 <p>A powerful web-based Active Directory management portal.</p>
-<h2 id="beta-warning">Beta Warning</h2>
-<h2 id="commands">Commands</h2>
+<div class="admonition warning">
+<p class="admonition-title">Beta Warning</p>
+<p>This app is currently in beta. If you choose to install now you may
+have to reinstall from scratch in a future update.</p>
+</div>
+<h2 id="summary">Summary</h2>
+<p>Blazam is a powerful, mobile-friendly, web-based Active Directory management portal.</p>
+<h2 id="requirements">Requirements</h2>
 <ul>
-<li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
-<li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
-<li><code>mkdocs build</code> - Build the documentation site.</li>
-<li><code>mkdocs -h</code> - Print help message and exit.</li>
+<li>Active Directory</li>
+<li>Windows Host Machine (Workstation/Server)</li>
+<li>Well-defined OU structure</li>
 </ul>
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
-</code></pre>
+<div class="admonition warning">
+<p class="admonition-title">Sorry</p>
+<p>This app is simply not designed for organizations that clump all their users into a select few OU's. 
+Having a well defined OU structure is imperitive to the operation of this application.</p>
+<p>Sure you can use it, but the granularity of your delegation control is proprtional to the granularity
+of your OU tree.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Continuing</p>
+<p>If you're looking for an app that delegate based on groups instead of OU's, good luck.
+The technical reality of LDAP and Active Directory prohibit any tolerable experience
+delegating groups to groups.</p>
+</div>
+<h2 id="open-source">Open Source</h2>
+<p>This program and the documentation are open source. Contributions are encouraged.</p>
                 
               
               
@@ -563,6 +582,10 @@ docs/
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Blazam 2023
+          </div>
         
         Made with
         <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
