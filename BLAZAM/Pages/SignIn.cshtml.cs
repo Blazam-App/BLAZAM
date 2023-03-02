@@ -56,9 +56,11 @@ namespace BLAZAM.Server.Pages
             {
                 await HttpContext.SignInAsync(result.User);
                 AuditLogger.Logon.Login(result.User);
-                return Redirect(req.ReturnUrl);
+                //return Redirect(req.ReturnUrl);
             }
-
+            Response.Headers.Add("Refresh", "0.5");
+            //Nav.NavigateTo(req.ReturnUrl, true);
+            //return (IActionResult)Results.Ok();
                 return Redirect(req.ReturnUrl);
 
         }

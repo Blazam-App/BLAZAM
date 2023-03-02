@@ -34,6 +34,8 @@ using Microsoft.Extensions.Logging;
 using Serilog.Events;
 using Blazorise.RichTextEdit;
 using BLAZAM.Server.Pages.Error;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace BLAZAM
 {
@@ -55,7 +57,7 @@ namespace BLAZAM
         /// <returns>
         /// eg: C:\inetpub\blazam\writable\
         /// </returns>
-        internal static SystemDirectory WritablePath => new SystemDirectory(Program.RootDirectory + @"writable\");
+        internal static SystemDirectory WritablePath => new SystemDirectory(Program.TempDirectory + @"writable\");
         /// <summary>
         /// The temporary file directry
         /// </summary>
@@ -66,12 +68,9 @@ namespace BLAZAM
         public static SystemDirectory AppDataDirectory { get; private set; }
 
         /// <summary>
-        /// The installation flag file path
+        /// The process of the running application
         /// </summary>
-        /// <returns>
-        /// eg: C:\inetpub\blazam\writable\installed.flag
-        /// </returns>
-        internal static string InstallFlagFilePath => WritablePath + @"installed.flag";
+        public static Process ApplicationProcess { get; private set; }
         /// <summary>
         /// The running Blazam version
         /// </summary>
@@ -84,6 +83,10 @@ namespace BLAZAM
         /// </returns>
         internal static List<string> ListeningAddresses { get; private set; } = new List<string>();
 
+        private static IDbContextFactory<DatabaseContext> _programDbFactory;
+
+
+
         static bool? installationCompleted = null;
         /// <summary>
         /// Indicates the Installation status
@@ -92,10 +95,15 @@ namespace BLAZAM
         {
             get
             {
-                return DatabaseCache.ApplicationSettings?.InstallationCompleted == true;
-                if (installationCompleted == null) installationCompleted = File.Exists(InstallFlagFilePath);
-
-                return installationCompleted == true;
+                using (var context = _programDbFactory.CreateDbContext())
+                {
+                    if (installationCompleted != true)
+                    {
+                        if (!context.Seeded()) installationCompleted = false;
+                        else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                    }
+                    return installationCompleted != false;
+                }
             }
         }
 
@@ -113,6 +121,7 @@ namespace BLAZAM
         /// Can be used for JWT Token signing
         /// </summary>
         internal static SymmetricSecurityKey TokenKey;
+
         /// <summary>
         /// A static reference for the current asp
         /// net core application instance
@@ -137,8 +146,9 @@ namespace BLAZAM
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
+            Console.WriteLine("Working Directory: " + Environment.CurrentDirectory);
 
-
+            ApplicationProcess = Process.GetCurrentProcess();
 
             //Build the application and allow it to run as a service
             var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
@@ -146,6 +156,7 @@ namespace BLAZAM
                 ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default,
                 Args = args
             });
+
 
             //Set DebugMode flag from configuration
             InDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
@@ -199,7 +210,7 @@ namespace BLAZAM
             //Grab the connection string and store it in the context statically
             //This can obviously only be changed on app restart
             DatabaseContext.ConnectionString = new DatabaseConnectionString(builder.Configuration.GetConnectionString("SQLConnectionString"));
-
+            Loggers.SystemLogger.Debug("Connection String: " +DatabaseContext.ConnectionString);
 
 
 
@@ -216,6 +227,7 @@ namespace BLAZAM
                 CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
+
                     options.Events.OnCheckSlidingExpiration = async (context) =>
                     {
                         if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
@@ -227,12 +239,15 @@ namespace BLAZAM
                         //Use session timeout from settings in database
                         if (DatabaseCache.AuthenticationSettings.SessionTimeout != null)
                             context.Options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
+
                     };
                     options.LoginPath = new PathString("/login");
                     options.LogoutPath = new PathString("/logout");
-                    options.ExpireTimeSpan = TimeSpan.FromSeconds(1);
+                    options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
                     options.SlidingExpiration = true;
                 });
+
+
             /*
             Keeping  this here for a possible API in the future
             It's some original test code from before AppAuthenticatinProvider was
@@ -317,13 +332,16 @@ namespace BLAZAM
             //Add custom Auth
             builder.Services.AddScoped<AppAuthenticationStateProvider, AppAuthenticationStateProvider>();
 
+            //Add web user application search as a service
+            builder.Services.AddScoped<SearchService>();
+
 
             //Provide DuoSecurity service
             builder.Services.AddSingleton<IDuoClientProvider, DuoClientProvider>();
 
             //Provide encyption service
             //There's no benefit to filling memory with identical instances of this, so singleton
-            builder.Services.AddSingleton<IEncryptionService,EncryptionService>();
+            builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 
             //Provide database and active directory monitoring service
             //This serivice runs a Timer, and so singleton
@@ -412,8 +430,8 @@ namespace BLAZAM
             //Start the database cache
             using (var scope = AppInstance.Services.CreateScope())
             {
-                var factory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DatabaseContext>>();
-                DatabaseCache.Start(factory, Loggers.DatabaseLogger);
+                _programDbFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DatabaseContext>>();
+                DatabaseCache.Start(_programDbFactory, Loggers.DatabaseLogger);
             }
 
 
@@ -423,6 +441,7 @@ namespace BLAZAM
             foreach (var address in addressFeature.Addresses)
             {
                 ListeningAddresses.Add(address);
+                Loggers.SystemLogger.Debug("Listening on: " + address);
             }
 
             Task.Delay(5000).ContinueWith(t =>
@@ -472,24 +491,30 @@ namespace BLAZAM
 
         }
 
-        internal static bool ApplyDatabaseMigrations()
+        internal static async Task<bool> ApplyDatabaseMigrations(bool force = false)
         {
-            try
+            return await Task.Run(() =>
             {
-                using (var scope = AppInstance.Services.CreateScope())
-                {
-                    var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-                    if (context.Database.GetPendingMigrations().Count() > 0)
-                        context.Database.Migrate();
 
+                try
+                {
+                    using (var scope = AppInstance.Services.CreateScope())
+                    {
+                        var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+                        if (context != null)
+                            if (context.Seeded() || force)
+                                if (context.Database.GetPendingMigrations().Count() > 0)
+                                    context.Database.Migrate();
+
+                    }
+                    return true;
                 }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
-                return false;
-            }
+                catch (Exception ex)
+                {
+                    Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
+                    return false;
+                }
+            });
         }
 
     }

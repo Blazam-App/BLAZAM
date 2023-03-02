@@ -27,6 +27,11 @@
         </LayoutContent>
 
         <LayoutFooter>
+            @if (Program.InstallationCompleted)
+            {
+                <DirectoryConnectingIndicator />
+
+            }
             <AppFooter />
 
         </LayoutFooter>
@@ -37,18 +42,6 @@
     [Parameter]
     public RenderFragment? PageHeader { get; set; }
 
-
-    private void AppReady(ConnectionState newStatus)
-    {
-        if (newStatus == ConnectionState.Up)
-        {
-            if (Nav.ToBaseRelativePath(Nav.Uri) == "")
-            {
-                Nav.NavigateTo("/home");
-
-            }
-        }
-    }
 
 }
 

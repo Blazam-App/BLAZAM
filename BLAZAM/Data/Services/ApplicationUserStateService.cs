@@ -24,10 +24,23 @@ namespace BLAZAM.Server.Data.Services
         private IDbContextFactory<DatabaseContext> Factory;
 
         private int? Timeout { get; set; }
+
+
         /// <summary>
-        /// Called when a new UserState is added to the cache. The new user state is passed along with the event.
+        /// Called when a new UserState is added to the cache.
         /// </summary>
         public AppEvent<IApplicationUserState> UserStateAdded { get; set; }
+
+
+        /// <summary>
+        /// Called when a UserState is removeed from the cache. 
+        /// </summary>
+        /// <remarks>
+        /// This can happen on timeout or user intitiated logout.
+        /// </remarks>
+        public AppEvent<IApplicationUserState> OnUserStateRemoved { get; set; }
+
+
         /// <summary>
         /// A cached list of user states for logged in users. This allows easy, cached access to the users permissions and DirectryEntry
         /// </summary>

@@ -8,7 +8,6 @@ namespace BLAZAM.Common.Models.Database
     public class AppSettings
     {
 
-
         public int AppSettingsId { get; set; }
         public DateTime? LastUpdateCheck { get; set; }
         [Required]
@@ -16,9 +15,9 @@ namespace BLAZAM.Common.Models.Database
         {
             get;
             set;
-        }
+        } = "Blazam";
         public bool InstallationCompleted { get; set; }
-        public string? MOTD { get; set; }
+        public string? MOTD { get; set; } = "Welcome to Blazam. Head over to the <a href=\"/settings\">settings<a/> page to configure this application.<br/>To remove this message, modify or clear the Homepage Message settings on the <a href=\"/settings\">settings<a/> page.";
         public bool ForceHTTPS { get; set; }
         public int? HttpsPort { get; set; }
         public string? AppFQDN { get; set; }

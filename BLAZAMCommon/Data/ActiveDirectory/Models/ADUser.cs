@@ -14,13 +14,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
     public class ADUser : GroupableDirectoryModel, IADUser
     {
-        public override string SearchUri
-        {
-            get
-            {
-                return "/users/search/" + CanonicalName;
-            }
-        }
+      
         public SecureString NewPassword { get; set; }
         [Obsolete("Use SetPassword(SecureString password) instead.")]
         public bool SetPassword(string password) => SetPassword(password.ToSecureString());
