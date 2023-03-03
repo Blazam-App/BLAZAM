@@ -13,7 +13,7 @@
 <h5>Please configure at least one super admin Active Directory group.</h5>
 <label>Admin Group Name</label>
 <br />
-<ADGroupAutoComplete @bind-SelectedGroup="adminGroupName"/>
+<ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.Group" @bind-SelectedResult="adminGroupName"/>
 
 
 <br />
@@ -42,7 +42,7 @@
     public EventCallback StepCompleted { get; set; }
     List<PrivilegeLevel> adminGroups { get; set; } = new List<PrivilegeLevel>();
     public bool Loading { get; set; }
-    public IADGroup adminGroupName { get; set; }
+    public IDirectoryModel adminGroupName { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

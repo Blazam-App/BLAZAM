@@ -1,61 +1,76 @@
 ﻿@inherits AutoCompleteComponentBase
-<Autocomplete TItem="IDirectoryModel"
-              TValue="IDirectoryModel"
-              Data="@SearchResults"
-              @bind-Search="SearchTerm"
-              ReadData="@GetResults"
-              TextField="@(( item ) => item.SamAccountName)"
-              ValueField="@(( item ) => item)"
-              @bind-SelectedValue="@SelectedResult"
-              Placeholder="Search..."
-              MinLength="1"
-              Style=""
-                FreeTyping>
-    <ItemContent>
-        <Div Padding="Padding.Is0" TextWeight="TextWeight.Bold">
-            <Div Flex="Flex.InlineFlex">
-                @context?.Value?.ObjectType
+<Div Display="Display">
+    <Autocomplete TItem="IDirectoryModel"
+                  TValue="IDirectoryModel"
+                  Data="@SearchResults"
+                  @bind-Search="SearchTerm"
+                  ReadData="@GetResults"
+                  TextField="@(( item ) => item.SamAccountName)"
+                  ValueField="@(( item ) => item)"
+                  @bind-SelectedValue="@SelectedResult"
+                  @bind-SelectedValues=@SelectedResults
+                  @bind-SelectedTexts=SelectedResultNames
+                  Placeholder="Search..."
+                  MinLength="1"
+                  Multiple=Multiple
+                  Style=""
+                    FreeTyping>
+        <ItemContent>
+            <Div Padding="Padding.Is0" TextWeight="TextWeight.Bold">
+                <Div Flex="Flex.InlineFlex">
+                    @context?.Value?.ObjectType
+
+                </Div>
+                @if (context?.Value != null && context.Value is IGroupableDirectoryModel gdm)
+                {
+                    if (gdm.LockedOut)
+                    {
+
+                        <Badge Flex=Flex.InlineFlex Float=Float.End Background="Background.Warning">Locked</Badge>
+
+                    }
+                    if (!gdm.Enabled)
+                    {
+
+                        <Badge Flex=Flex.InlineFlex Float=Float.End Background="Background.Danger">Disabled</Badge>
+
+                    }
+                }
+
+
+
 
             </Div>
-            @if (context?.Value != null && context.Value is IGroupableDirectoryModel gdm)
-            {
-                if (gdm.LockedOut)
-                {
+            <Div Padding="Padding.Is0" TextWeight="TextWeight.Bold">
+                <Small>
+                    @context?.Value?.CanonicalName
+                </Small>
 
-                    <Badge Flex=Flex.InlineFlex Float=Float.End Background="Background.Warning">Locked</Badge>
-
-                }
-                if (!gdm.Enabled)
-                {
-
-                    <Badge Flex=Flex.InlineFlex Float=Float.End Background="Background.Danger">Disabled</Badge>
-
-                }
-            }
-
-
-
-
-        </Div>
-        <Div Padding="Padding.Is0" TextWeight="TextWeight.Bold">
-            <Small>
-                @context?.Value?.CanonicalName
-            </Small>
-
-        </Div>
-        <Div Padding="Padding.Is0">
-            <Small>
-                @context.Text
-            </Small>
-        </Div>
-    </ItemContent>
-    <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
-</Autocomplete>
-
+            </Div>
+            <Div Padding="Padding.Is0">
+                <Small>
+                    @context.Text
+                </Small>
+            </Div>
+        </ItemContent>
+        <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+    </Autocomplete>
+</Div>
 
 
 
 @code {
+
+    [Parameter]
+    public bool Multiple { get; set; }
+
+
+    [Parameter]
+    public Func<IDirectoryModel,bool>CustomResultsFilter{ get; set; }
+
+    [Parameter]
+    public IFluentDisplay Display { get; set; }
+
     [CascadingParameter]
     public SearchService SearchParameters { get; set; }
 
@@ -121,6 +136,35 @@
     [Parameter]
     public EventCallback<IDirectoryModel> SelectedResultChanged { get; set; }
 
+
+
+
+
+    public List<IDirectoryModel> _selectedResults;
+
+    [Parameter]
+    public List<IDirectoryModel> SelectedResults
+    {
+        get => _selectedResults; set
+        {
+            if (_selectedResults == value) return;
+            _selectedResults = value;
+            SearchResults = value; //quesitnoable neccessity
+            SelectedResultsChanged.InvokeAsync(value);
+            SelectedResultNames = value.Select(g => g.CanonicalName).ToList();
+
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<List<IDirectoryModel>> SelectedResultsChanged { get; set; }
+
+    List<string> SelectedResultNames = new();
+
+
+
+
     private async Task GetResults(AutocompleteReadDataEventArgs autocompleteReadDataEventArgs)
     {
         if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
@@ -138,6 +182,16 @@
             if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
             {
                 SearchResults = temp;
+
+                if (CustomResultsFilter != null)
+                {
+                    List<IDirectoryModel> filteredResults = new();
+                    foreach(var result in SearchResults){
+                        if (CustomResultsFilter.Invoke(result))
+                            filteredResults.Add(result);
+                    }
+                    SearchResults = filteredResults;
+                }
             }
             return;
 

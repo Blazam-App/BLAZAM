@@ -196,6 +196,7 @@ namespace BLAZAM.Server.Data.Services
                         BeforeAction=beforeAction,
                         AfterAction = afterAction,
                         Username = CurrentUser.AuditUsername
+
                     });
                     context.SaveChanges();
                     return true;

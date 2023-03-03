@@ -11,6 +11,7 @@ namespace BLAZAM.Common.Models.Database.Permissions
         public List<ObjectAccessMapping> ObjectMap { get; set; } = new();
         public List<ActionAccessMapping> ActionMap { get; set; } = new();
         public List<FieldAccessMapping> FieldMap { get; set; } = new();
+        public List<PrivilegeMap> PrivilegeMaps { get; set; }
         public int CompareTo(AccessLevel? other)
         {
             if(other == null) return 1;

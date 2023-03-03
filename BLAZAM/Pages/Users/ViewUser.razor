@@ -140,7 +140,7 @@
                 <AppModal Title="Rename User" @ref=@RenameModal>
                     @if (RenameModal.IsShown)
                     {
-                        <RenameUserModalContent ModelChanged=@(()=>{InvokeAsync(StateHasChanged);}) User="User" />
+                        <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) User="User" />
                     }
                 </AppModal>
                 <AppModal Title="Change Password" @ref=@ChangePasswordModal>
@@ -654,7 +654,7 @@
     {
         base.OnInitialized();
         User.OnModelChanged += RefreshHeader;
-      
+        User.OnDirectoryModelRenamed += Renamed;
     }
 
     void RefreshHeader()
@@ -773,5 +773,14 @@
             NotificationService.Warning(User.DisplayName + " will have their thumbnail deleted on save.", "Thumbnail Deletion Pending");
             InvokeAsync(StateHasChanged);
         }
+    }
+
+    async void Renamed(IDirectoryModel renamedUser)
+    {
+        if(renamedUser is IADUser user)
+        {
+            Nav.NavigateTo(user.SearchUri);
+        }
+       
     }
 }

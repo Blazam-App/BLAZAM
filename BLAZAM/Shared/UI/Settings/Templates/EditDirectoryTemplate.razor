@@ -170,7 +170,7 @@
                 <FieldLabel>@SettingsLocalization["Groups"]</FieldLabel>
 
                 <FieldBody>
-                    <ADGroupAutoComplete Multiple @bind-SelectedGroups="@SelectedGroups" />
+                    <ADAutoComplete Multiple @bind-SelectedResults="@SelectedGroups" />
 
                 </FieldBody>
             </Field>
@@ -261,19 +261,22 @@
 
 
     IADOrganizationalUnit SelectedOU;
-    List<IADGroup> SelectedGroups = new();
+
+
+    List<IDirectoryModel> SelectedGroups = new();
 
     async Task RefreshGroups()
     {
-        List<IADGroup> groups = new();
+        SelectedGroups.Clear();
         if (DirectoryTemplate != null)
         {
             foreach (var sid in DirectoryTemplate.AssignedGroupSids)
             {
-                groups.Add(Directory.Groups.FindGroupBySID(sid.GroupSid));
+                var temp = Directory.Groups.FindGroupBySID(sid.GroupSid)
+                if(temp!=null)
+                    SelectedGroups.Add(temp);
             }
         }
-        SelectedGroups = groups;
     }
     async Task SaveTemplate()
     {
