@@ -127,14 +127,6 @@ namespace BLAZAM
             }
         }
     
-        public static string Render<T>(this T self,IDbContextFactory<DatabaseContext>? factory=null) where T : IComponent
-        {
-            string html = new ComponentRenderer<T> ()
-            //.Set(c => c.Title, title)
-            .AddService(factory)
-            .Render();
-            return html;
-        }
 
         #region ADSI Extension Methods
 
