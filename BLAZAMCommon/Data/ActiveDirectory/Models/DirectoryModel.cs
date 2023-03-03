@@ -31,8 +31,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         }
 
 
-        public AppEvent OnModelChanged { get; set; }
-        public AppEvent OnModelCommited { get; set; }
+        public AppEvent? OnModelChanged { get; set; }
+
+        public AppEvent<IDirectoryModel>? OnDirectoryModelRenamed { get; set; }
+        public AppEvent? OnModelCommited { get; set; }
         public List<DirectoryModelChange> Changes
         {
             get
@@ -870,6 +872,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         public virtual bool Rename(string newName)
         {
             DirectoryEntry.Rename("cn="+newName);
+            OnDirectoryModelRenamed?.Invoke(this);
             return true;
         }
         protected virtual void RemoveFromListProperty(string propertyName, object? value)
