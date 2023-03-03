@@ -1,15 +1,20 @@
 @inherits ValidatedForm
 @inject IDbContextFactory<DatabaseContext> DbFactory
+@if (Map != null)
+{
 
-<Form @onsubmit="@Save">
-    <Validations Model="Map" Mode="ValidationMode.Auto">
-        <Field Horizontal>
+
+    <Form @onsubmit="@Save">
+        <Validations Model="Map" Mode="ValidationMode.Auto">
+            <Field Horizontal>
             <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["User Groups"]</FieldLabel>
             <FieldBody ColumnSize="ColumnSize.Is10">
                 <Validation @ref="PrivValidation">
                     @if (!ReadOnly)
-                    {
-                        <Autocomplete TItem="PrivilegeLevel"
+                        {
+
+
+                            <Autocomplete TItem="PrivilegeLevel"
                                   TValue="PrivilegeLevel"
                                   FreeTyping=false
                                   MinLength=-1
@@ -21,30 +26,30 @@
                                   CloseOnSelection="false"
                                   @bind-SelectedValues="Map.PrivilegeLevels"
                                   @bind-SelectedTexts="selectedPrivilegeLevelNames" />
-                        <ValidationError />
-                    }
-                    else
-                    {
-                        @if (selectedPrivilegeLevelNames != null)
+                            <ValidationError />
+                        }
+                        else
                         {
-                            @foreach (var name in selectedPrivilegeLevelNames)
+                            @if (selectedPrivilegeLevelNames != null)
                             {
-                                <Button Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</Button>
+                                @foreach (var name in selectedPrivilegeLevelNames)
+                                {
+                                    <Button Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</Button>
+                                }
                             }
                         }
-                    }
 
-                </Validation>
+                    </Validation>
 
-            </FieldBody>
-        </Field>
-        <Field Horizontal>
+                </FieldBody>
+            </Field>
+            <Field Horizontal>
             <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["Access Levels"]</FieldLabel>
             <FieldBody ColumnSize="ColumnSize.Is10">
                 <Validation @ref=AccValidation Validator="ValidationRule.IsNotEmpty">
                     @if (!ReadOnly)
-                    {
-                        <Autocomplete TItem="AccessLevel"
+                        {
+                            <Autocomplete TItem="AccessLevel"
                                   TValue="AccessLevel"
                                   FreeTyping=false
                                   MinLength=-1
@@ -57,33 +62,35 @@
                                   @bind-SelectedValues="Map.AccessLevels"
                                   @bind-SelectedTexts="selectedAccessLevelNames"
                                   Disabled=ReadOnly />
-                    }
-                    else
-                    {
-                        @if (selectedAccessLevelNames != null)
+                        }
+                        else
                         {
-                            @foreach (var name in selectedAccessLevelNames)
+                            @if (selectedAccessLevelNames != null)
                             {
-                                <Button Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</Button>
+                                @foreach (var name in selectedAccessLevelNames)
+                                {
+                                    <Button Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</Button>
+                                }
                             }
                         }
-                    }
 
-                    <ValidationError />
+                        <ValidationError />
 
-                </Validation>
+                    </Validation>
 
-            </FieldBody>
-        </Field>
-        @if (!ReadOnly)
-        {
-            <Button Color=Color.Success Disabled=saveDisabled Type="ButtonType.Submit">Save Mapping</Button>
-        }
-    </Validations>
-    <AppCloseButton Clicked="DeleteMapping"/>
-</Form>
-@{
+                </FieldBody>
+            </Field>
+            @if (!ReadOnly)
+            {
+                <Button Color=Color.Success Disabled=saveDisabled Type="ButtonType.Submit">Save Mapping</Button>
+                <AppCloseButton Clicked="DeleteMapping" />
+            }
+        </Validations>
+
+    </Form>
+
     ValidateCheck();
+
 }
 @code {
     PrivilegeMap _map;
@@ -112,13 +119,20 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Context.Attach(Map);
+        try
+        {
+            Context.Attach(Map);
+        }
+        catch
+        {
+        }
+        RefreshData();
 
         // RefreshData();
     }
     async Task RefreshData()
     {
-        Context = await DbFactory.CreateDbContextAsync();
+        //Context = await DbFactory.CreateDbContextAsync();
         if (Context != null)
         {
             accessLevels = await Context.AccessLevels.ToListAsync();
@@ -145,6 +159,8 @@
             await Context.SaveChangesAsync();
         }
         await InvokeAsync(StateHasChanged);
+        NotificationService.Success("Mapping deleted");
+
     }
     async Task Save()
     {
@@ -152,26 +168,27 @@
             Context.PrivilegeMap.Add(Map);
         var result = Context.SaveChanges();
         await InvokeAsync(StateHasChanged);
-
+        NotificationService.Success("Mapping saved");
     }
     async void ValidateCheck()
     {
         if (PrivValidation != null && !ReadOnly)
         {
-            if (Map != null) { 
-            if (Map.PrivilegeLevels == null || Map.PrivilegeLevels?.Count < 1)
-                PrivValidation.Status = ValidationStatus.Error;
-            else
-                PrivValidation.Status = ValidationStatus.Success;
-            if (Map.AccessLevels == null || Map.AccessLevels?.Count < 1)
-                AccValidation.Status = ValidationStatus.Error;
-            else
-                AccValidation.Status = ValidationStatus.Success;
-            if (AccValidation.Status == ValidationStatus.Success && PrivValidation.Status == ValidationStatus.Success)
-                saveDisabled = false;
-            else
-                saveDisabled = true;
+            if (Map != null)
+            {
+                if (Map.PrivilegeLevels == null || Map.PrivilegeLevels?.Count < 1)
+                    PrivValidation.Status = ValidationStatus.Error;
+                else
+                    PrivValidation.Status = ValidationStatus.Success;
+                if (Map.AccessLevels == null || Map.AccessLevels?.Count < 1)
+                    AccValidation.Status = ValidationStatus.Error;
+                else
+                    AccValidation.Status = ValidationStatus.Success;
+                if (AccValidation.Status == ValidationStatus.Success && PrivValidation.Status == ValidationStatus.Success)
+                    saveDisabled = false;
+                else
+                    saveDisabled = true;
+            }
         }
-    }
     }
 }
