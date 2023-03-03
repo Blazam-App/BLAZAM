@@ -30,11 +30,11 @@
         }
         @foreach (var map in appliedMappings)
         {
-            <PrivilegeMapEditor Map="map" />
+            <PrivilegeMapEditor MappingDeleted="@(()=>{RefreshData();})" Map="map" />
         }
         @if (NewMapping != null)
         {
-            <PrivilegeMapEditor Map="NewMapping" />
+            <PrivilegeMapEditor MappingDeleted="@(()=>{RefreshData();})" Map="NewMapping" />
         }
     </CardBody>
     <CardFooter>
@@ -59,7 +59,7 @@
         }
     }
 
-    private PrivilegeMap NewMapping;
+    private PrivilegeMap? NewMapping;
     List<PrivilegeMap> appliedMappings { get; set; } = new List<PrivilegeMap>();
     List<PrivilegeMap> inheritedMappings { get; set; } = new List<PrivilegeMap>();
 
@@ -73,13 +73,16 @@
     {
         if (Context != null && newOU != null)
         {
-            appliedMappings = OU.DirectPermissionMappings;
-            inheritedMappings = OU.InheritedPermissionMappings;
-            NewMapping = null;
-            await InvokeAsync(StateHasChanged);
+            await RefreshData();
         }
     }
-
+    async Task RefreshData()
+    {
+        appliedMappings = OU.DirectPermissionMappings;
+        inheritedMappings = OU.InheritedPermissionMappings;
+        NewMapping = null;
+        await InvokeAsync(StateHasChanged);
+    }
     void AddNewMapping()
     {
         NewMapping = new() { OU = OU.DN };

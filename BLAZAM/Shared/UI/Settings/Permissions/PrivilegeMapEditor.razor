@@ -100,12 +100,16 @@
         get => _map; set
         {
             if (_map == value) return;
+
             _map = value;
+
             RefreshData();
 
 
         }
     }
+    [Parameter]
+    public EventCallback MappingDeleted{ get; set; }
     [Parameter]
     public bool ReadOnly { get; set; } = false;
 
@@ -118,23 +122,29 @@
     List<string> selectedPrivilegeLevelNames;
     protected override async Task OnInitializedAsync()
     {
+        //Wait for a database connection
         await base.OnInitializedAsync();
-        try
-        {
-            Context.Attach(Map);
-        }
-        catch
-        {
-        }
-        RefreshData();
+        //try
+        //{
+        //    //Context.Attach( Map);
 
-        // RefreshData();
+        //}
+        //catch
+        //{
+        //}
+        ////RefreshData();
+
+        RefreshData();
     }
     async Task RefreshData()
     {
         //Context = await DbFactory.CreateDbContextAsync();
         if (Context != null)
         {
+            if (Map.PrivilegeMapId != 0)
+            {
+                Map = Context.PrivilegeMap.Include(m => m.PrivilegeLevels).Where(pm => pm.PrivilegeMapId == Map.PrivilegeMapId).FirstOrDefault();
+            }
             accessLevels = await Context.AccessLevels.ToListAsync();
             privilegeLevels = await Context.PrivilegeLevel.Where(p => !p.IsSuperAdmin).ToListAsync();
             if (Map.PrivilegeMapId != 0)
@@ -160,6 +170,7 @@
         }
         await InvokeAsync(StateHasChanged);
         NotificationService.Success("Mapping deleted");
+        MappingDeleted.InvokeAsync();
 
     }
     async Task Save()
@@ -169,6 +180,7 @@
         var result = Context.SaveChanges();
         await InvokeAsync(StateHasChanged);
         NotificationService.Success("Mapping saved");
+
     }
     async void ValidateCheck()
     {
