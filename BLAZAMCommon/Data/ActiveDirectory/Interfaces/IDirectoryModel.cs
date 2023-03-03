@@ -39,6 +39,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         IADOrganizationalUnit? LastKnownParent { get; }
         bool IsDeleted { get; }
         List<DirectoryModelChange> Changes { get; }
+        AppEvent<IDirectoryModel> OnDirectoryModelRenamed { get; set; }
 
         DirectoryChangeResult CommitChanges();
         Task<DirectoryChangeResult> CommitChangesAsync();

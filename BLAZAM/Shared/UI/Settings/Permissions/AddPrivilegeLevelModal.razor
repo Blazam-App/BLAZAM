@@ -13,7 +13,7 @@
                 </Field>
                 <Field>
                     <FieldLabel>Super User</FieldLabel>
-                    <Switch TValue="bool" @bind-Checked="@NewPrivilegeLevel.IsSuperAdmin" />
+                    <Switch TValue="bool" @bind-Checked="@NewPrivilegeLevel.IsSuperAdmin" Disabled=Program.InDemoMode/>
                 </Field>
             </Row>
             <Row>

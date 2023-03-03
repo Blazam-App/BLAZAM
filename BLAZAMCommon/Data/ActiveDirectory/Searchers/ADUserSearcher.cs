@@ -128,7 +128,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             }.Search<ADUser, IADUser>().FirstOrDefault();
         }
 
-        public IADUser? FindUsersByContainerName(string searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = true)
+        public IADUser? FindUsersByContainerName(string searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
         {
             return new ADSearch()
             {
