@@ -4,11 +4,15 @@
 <Row Background="Background.Light" TextColor="TextColor.Dark">
     <Field>
         <FieldLabel>Group Name</FieldLabel>
-        <ADGroupAutoComplete @bind-SelectedGroup="@Group" />
+        <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.Group"
+            @bind-SelectedResult=@Group/>
     </Field>
     <Field>
         <FieldLabel>Copy Memberships From</FieldLabel>
-        <ADUserOrGroupAutoComplete @bind-SelectedModel="@CopyFrom" />
+        <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.All"
+                        @bind-SelectedResult=@copyFrom
+                        CustomResultsFilter="(result)=>result is IGroupableDirectoryModel" />
+
     </Field>
     @if (CopyFrom != null)
     {
@@ -46,22 +50,28 @@
     [Parameter]
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
 
+    /// <summary>
+    /// The directry entry that we are assigning
+    /// </summary>
     [Parameter]
     public IGroupableDirectoryModel DirectoryModel { get; set; }
 
-    public IGroupableDirectoryModel CopyFrom { get; set; }
+    IDirectoryModel copyFrom;
+    public IGroupableDirectoryModel CopyFrom { get => (IGroupableDirectoryModel)copyFrom; set => copyFrom = value; }
 
-    IADGroup Group { get; set; }
+    IDirectoryModel Group { get; set; }
 
     async Task AssignToGroup()
     {
+        if (Group is IADGroup group)
+        {
+            DirectoryModel.AssignTo(group);
+            NotificationService.Warning(DirectoryModel.CanonicalName + " has been assigned to " + group.GroupName + " but changes must be saved.", "Assignment Pending");
+            ModelChanged.InvokeAsync();
 
-        DirectoryModel.AssignTo(Group);
-        NotificationService.Warning(DirectoryModel.CanonicalName + " has been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
-        ModelChanged.InvokeAsync();
+            Close();
 
-        Close();
-
+        }
 
     }
 }
