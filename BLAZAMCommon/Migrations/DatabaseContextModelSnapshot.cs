@@ -34,7 +34,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasIndex("ActionMapActionAccessMappingId");
 
-                    b.ToTable("AccessLevelActionAccessMapping", (string)null);
+                    b.ToTable("AccessLevelActionAccessMapping");
                 });
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
@@ -49,7 +49,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasIndex("FieldMapFieldAccessMappingId");
 
-                    b.ToTable("AccessLevelFieldAccessMapping", (string)null);
+                    b.ToTable("AccessLevelFieldAccessMapping");
                 });
 
             modelBuilder.Entity("AccessLevelObjectAccessMapping", b =>
@@ -64,7 +64,22 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasIndex("ObjectMapObjectAccessMappingId");
 
-                    b.ToTable("AccessLevelObjectAccessMapping", (string)null);
+                    b.ToTable("AccessLevelObjectAccessMapping");
+                });
+
+            modelBuilder.Entity("AccessLevelPrivilegeMap", b =>
+                {
+                    b.Property<int>("AccessLevelsAccessLevelId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrivilegeMapsPrivilegeMapId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AccessLevelsAccessLevelId", "PrivilegeMapsPrivilegeMapId");
+
+                    b.HasIndex("PrivilegeMapsPrivilegeMapId");
+
+                    b.ToTable("AccessLevelPrivilegeMap");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.ADSettings", b =>
@@ -103,7 +118,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("ADSettingsId");
 
-                    b.ToTable("ActiveDirectorySettings", null, t =>
+                    b.ToTable("ActiveDirectorySettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[ADSettingsId] = 1");
                         });
@@ -127,7 +142,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("ActiveDirectoryFieldId");
 
-                    b.ToTable("ActiveDirectoryFields", (string)null);
+                    b.ToTable("ActiveDirectoryFields");
 
                     b.HasData(
                         new
@@ -381,7 +396,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("AppSettingsId");
 
-                    b.ToTable("AppSettings", null, t =>
+                    b.ToTable("AppSettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[AppSettingsId] = 1")
                                 .HasName("CK_Table_Column1");
@@ -725,7 +740,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("AuthenticationSettingsId");
 
-                    b.ToTable("AuthenticationSettings", null, t =>
+                    b.ToTable("AuthenticationSettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[AuthenticationSettingsId] = 1")
                                 .HasName("CK_Table_Column2");
@@ -787,7 +802,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("EmailSettingsId");
 
-                    b.ToTable("EmailSettings", null, t =>
+                    b.ToTable("EmailSettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[EmailSettingsId] = 1")
                                 .HasName("CK_Table_Column3");
@@ -824,7 +839,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("EmailTemplateId");
 
-                    b.ToTable("EmailTemplates", (string)null);
+                    b.ToTable("EmailTemplates");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.AccessLevel", b =>
@@ -839,14 +854,9 @@ namespace BLAZAM.Common.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PrivilegeMapId")
-                        .HasColumnType("int");
-
                     b.HasKey("AccessLevelId");
 
-                    b.HasIndex("PrivilegeMapId");
-
-                    b.ToTable("AccessLevels", (string)null);
+                    b.ToTable("AccessLevels");
 
                     b.HasData(
                         new
@@ -870,7 +880,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("ActionAccessFlagId");
 
-                    b.ToTable("ObjectActionFlag", (string)null);
+                    b.ToTable("ObjectActionFlag");
 
                     b.HasData(
                         new
@@ -941,7 +951,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasIndex("ObjectActionActionAccessFlagId");
 
-                    b.ToTable("ActionAccessMapping", (string)null);
+                    b.ToTable("ActionAccessMapping");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", b =>
@@ -961,7 +971,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("FieldAccessLevelId");
 
-                    b.ToTable("FieldAccessLevel", (string)null);
+                    b.ToTable("FieldAccessLevel");
 
                     b.HasData(
                         new
@@ -1004,7 +1014,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasIndex("FieldAccessLevelId");
 
-                    b.ToTable("AccessLevelFieldMapping", (string)null);
+                    b.ToTable("AccessLevelFieldMapping");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessLevel", b =>
@@ -1024,7 +1034,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("ObjectAccessLevelId");
 
-                    b.ToTable("ObjectAccessLevel", (string)null);
+                    b.ToTable("ObjectAccessLevel");
 
                     b.HasData(
                         new
@@ -1062,7 +1072,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasIndex("ObjectAccessLevelId");
 
-                    b.ToTable("AccessLevelObjectMapping", (string)null);
+                    b.ToTable("AccessLevelObjectMapping");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.PrivilegeLevel", b =>
@@ -1085,7 +1095,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("PrivilegeLevelId");
 
-                    b.ToTable("PrivilegeLevel", (string)null);
+                    b.ToTable("PrivilegeLevel");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.PrivilegeMap", b =>
@@ -1105,7 +1115,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("PrivilegeMapId");
 
-                    b.ToTable("PrivilegeMap", (string)null);
+                    b.ToTable("PrivilegeMap");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplate", b =>
@@ -1147,7 +1157,7 @@ namespace BLAZAM.Common.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("DirectoryTemplates", (string)null);
+                    b.ToTable("DirectoryTemplates");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplateFieldValue", b =>
@@ -1174,7 +1184,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasIndex("FieldActiveDirectoryFieldId");
 
-                    b.ToTable("DirectoryTemplateFieldValues", (string)null);
+                    b.ToTable("DirectoryTemplateFieldValues");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplateGroup", b =>
@@ -1196,7 +1206,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasIndex("DirectoryTemplateId");
 
-                    b.ToTable("DirectoryTemplateGroups", (string)null);
+                    b.ToTable("DirectoryTemplateGroups");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.User.UserSettings", b =>
@@ -1231,7 +1241,7 @@ namespace BLAZAM.Common.Migrations
                     b.HasIndex("UserGUID")
                         .IsUnique();
 
-                    b.ToTable("UserSettings", (string)null);
+                    b.ToTable("UserSettings");
                 });
 
             modelBuilder.Entity("PrivilegeLevelPrivilegeMap", b =>
@@ -1246,7 +1256,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasIndex("PrivilegeMapsPrivilegeMapId");
 
-                    b.ToTable("PrivilegeLevelPrivilegeMap", (string)null);
+                    b.ToTable("PrivilegeLevelPrivilegeMap");
                 });
 
             modelBuilder.Entity("AccessLevelActionAccessMapping", b =>
@@ -1294,11 +1304,19 @@ namespace BLAZAM.Common.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.AccessLevel", b =>
+            modelBuilder.Entity("AccessLevelPrivilegeMap", b =>
                 {
+                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.AccessLevel", null)
+                        .WithMany()
+                        .HasForeignKey("AccessLevelsAccessLevelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.PrivilegeMap", null)
-                        .WithMany("AccessLevels")
-                        .HasForeignKey("PrivilegeMapId");
+                        .WithMany()
+                        .HasForeignKey("PrivilegeMapsPrivilegeMapId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessMapping", b =>
@@ -1392,11 +1410,6 @@ namespace BLAZAM.Common.Migrations
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessLevel", b =>
                 {
                     b.Navigation("ObjectAccessMappings");
-                });
-
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.PrivilegeMap", b =>
-                {
-                    b.Navigation("AccessLevels");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplate", b =>

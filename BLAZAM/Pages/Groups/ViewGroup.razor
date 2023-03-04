@@ -47,7 +47,7 @@
                                     {
                                         <DropdownItem Clicked="ToggleEditMode">Edit...</DropdownItem>
                                     }
-                                   
+                                        <DropdownItem Clicked="@(()=>{AssignMemberModal?.Show();})">Add Group Member...</DropdownItem>
                                     @if (Group.CanAssign)
                                     {
                                         RefreshGroupGroups();
@@ -82,6 +82,9 @@
 
         <AppModal TextColor="TextColor.Dark" Title="Assign To" @ref=@AssignToModal>
             <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignToModal.Hide(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
+        </AppModal>
+        <AppModal TextColor="TextColor.Dark" Title="Assign To" @ref=@AssignMemberModal>
+            <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal.Hide();InvokeAsync(StateHasChanged);}) Group="Group" />
         </AppModal>
         <AppModal TextColor="TextColor.Dark" Title="Move To" @ref=@MoveToModal>
             @if (MoveToModal.IsShown)
@@ -232,8 +235,7 @@ InvokeAsync(StateHasChanged);
 
 
 @code {
-
-
+    AppModal? AssignMemberModal;
 
 
     List<IGroupableDirectoryModel> Members = new();

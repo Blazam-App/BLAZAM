@@ -1,17 +1,25 @@
 ﻿@inherits AppComponentBase
-@inject AppAuthenticationStateProvider appAuth
-<h3>ImpersonateUser</h3>
-<ADUserAutoComplete @bind-SelectedUser=User/>
+
 <Form method="post" action="/signin">
+
+<SettingsField>
+    <FieldLabel>@SettingsLocalization["Impersonate User"]</FieldLabel>
+    <FieldBody>
+            <ADAutoComplete Display=Display.InlineFlex SearchObjectType="ActiveDirectoryObjectType.User" @bind-SelectedResult=User />
+            <Button Display=Display.InlineFlex Color=Color.Primary Type="ButtonType.Submit">Impersonate User</Button>
+
+    </FieldBody>
+</SettingsField>
+
+@*Hidden Login form to send impersonation login data*@
 
     <input type="text" class="d-none" name="Username" value="@User?.SamAccountName" />
     <input type="text" class="d-none" name="Passowrd" value="impersonate" />
     <input type="text" class="d-none" name="Impersonation" value="true"/>
-    <Button Type="ButtonType.Submit">Impersonate User</Button>
 
 </Form>
 @code {
-    public IADUser? User{ get; set; }
+    public IDirectoryModel? User { get; set; }
 
-   
+
 }

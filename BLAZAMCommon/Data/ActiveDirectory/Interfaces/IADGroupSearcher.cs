@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
+﻿using BLAZAM.Common.Data.ActiveDirectory.Models;
+
+namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 {
     public interface IADGroupSearcher
     {
@@ -10,6 +12,6 @@
         List<IADGroup> GetGroupMembers(IADGroup group);
         List<IADUser> GetDirectUserMembers(IADGroup group, bool ignoreDisabledUsers = true);
         bool IsAMemberOf(IADGroup? group, IGroupableDirectoryModel? user, bool v, bool ignoreDisabledUsers = true);
-
+       // List<IGroupableDirectoryModel> GetMembers (IADGroup aDGroup);
     }
 }

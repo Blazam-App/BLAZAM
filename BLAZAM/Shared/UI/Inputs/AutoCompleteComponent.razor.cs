@@ -5,6 +5,7 @@ namespace BLAZAM.Server.Shared.UI.Inputs
 {
     public class AutoCompleteComponentBase:AppComponentBase
     {
+
         [Parameter]
         public string SearchTerm
         {

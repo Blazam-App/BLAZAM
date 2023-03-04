@@ -1,5 +1,5 @@
 ﻿@inherits ValidatedForm
-    <ListGroupItem Name="@Group?.GroupName">
+<ListGroupItem Name="@Group?.CanonicalName">
     <Accordion>
         <Collapse Visible="@collapse1Visible">
             <CollapseHeader>
@@ -7,7 +7,7 @@
                     <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)">
                         <Row Width="Width.Is100">
                             <Column ColumnSize="ColumnSize.Is6.OnTablet">
-                                @Group?.GroupName
+                                @Group?.CanonicalName
 
                             </Column>
                             <Column ColumnSize="ColumnSize.Is6.OnTablet">
@@ -27,7 +27,11 @@
                                 <Field>
                                     <FieldLabel>@AppLocalization["Group Name"]</FieldLabel>
                                     <FieldBody>
-                                        <ADGroupAutoComplete @bind-SelectedGroup="@Group"/>
+                                        <ADAutoComplete 
+                                            SearchObjectType="ActiveDirectoryObjectType.All" 
+                                            @bind-SelectedResult=@Group 
+                                            CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group"/>
+                                        @*<ADGroupAutoComplete @bind-SelectedGroup="@Group"/>*@
                                     </FieldBody>
                                 </Field>
 
@@ -56,7 +60,7 @@
 </ListGroupItem>
 
 @code {
-    IADGroup Group;
+    IDirectoryModel Group;
     [Parameter]
     public PrivilegeLevel Level { get; set; }
     [Parameter]
