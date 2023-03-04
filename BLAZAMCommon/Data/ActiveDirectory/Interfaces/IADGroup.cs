@@ -8,7 +8,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         bool HasMembers { get; }
         List<IADUser> UserMembers { get; }
         List<IADGroup> GroupMembers { get; }
-
+        //List<IGroupableDirectoryModel> Members { get;}
         void AssignMember(IGroupableDirectoryModel member);
         void UnassignMember(IGroupableDirectoryModel member);
     }

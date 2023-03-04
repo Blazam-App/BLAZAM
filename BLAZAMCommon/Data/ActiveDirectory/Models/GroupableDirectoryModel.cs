@@ -18,8 +18,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         protected List<GroupMembership> ToAssign = new List<GroupMembership>();
         protected List<GroupMembership> ToUnassign = new List<GroupMembership>();
-        protected List<GroupMembership> MembersToRemove = new List<GroupMembership>();
-        protected List<GroupMembership> MembersToAdd = new List<GroupMembership>();
+       
 
         public virtual bool CanAssign
         {
@@ -289,8 +288,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             base.DiscardChanges();
             ToAssign = new();
             ToUnassign = new();
-            MembersToRemove = new();
-            MembersToAdd = new();
         }
 
 
