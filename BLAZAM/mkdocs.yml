@@ -6,7 +6,24 @@ repo_url: https://github.com/Blazam-App/BLAZAM
 edit_uri: blob/Docs/BLAZAM/docsource
 docs_dir: docsource
 site_dir: ../docs
-theme: material
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-7 
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+extra:
+  analytics:
+    provider: google
+    property: G-TG0YV4T565
 markdown_extensions:
   - admonition
   - pymdownx.details
@@ -22,7 +39,9 @@ nav:
             - 'Install': 'install/manual.md'
             - 'Configuration': 'install/config.md'
         - Security: 'install/security.md'
-    - Permissions:
+    - Admin Guide:
+      - Introduction: 'adminguide.md'
+      - Permissions:
         - 'Abstract': 'permissions/abstract.md'
     - About:
         - 'License': 'license.md'
