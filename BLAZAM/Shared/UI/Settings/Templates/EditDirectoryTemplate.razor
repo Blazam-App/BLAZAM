@@ -272,7 +272,7 @@
         {
             foreach (var sid in DirectoryTemplate.AssignedGroupSids)
             {
-                var temp = Directory.Groups.FindGroupBySID(sid.GroupSid)
+                var temp = Directory.Groups.FindGroupBySID(sid.GroupSid);
                 if(temp!=null)
                     SelectedGroups.Add(temp);
             }
