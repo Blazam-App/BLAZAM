@@ -374,7 +374,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         /// <param name="allowSelector"></param>
         /// <param name="denySelector"></param>
         /// <returns></returns>
-        protected virtual bool HasPermission(Func<IEnumerable<PrivilegeMap>, IEnumerable<PrivilegeMap>> allowSelector, Func<IEnumerable<PrivilegeMap>, IEnumerable<PrivilegeMap>>? denySelector = null)
+        protected virtual bool HasPermission(Func<IEnumerable<PermissionMap>, IEnumerable<PermissionMap>> allowSelector, Func<IEnumerable<PermissionMap>, IEnumerable<PermissionMap>>? denySelector = null)
         {
             if (UserStateService.CurrentUserState != null)
             {

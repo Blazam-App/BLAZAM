@@ -25,6 +25,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
         IADComputerSearcher? Computers { get; }
         IEncryptionService Encryption { get; }
+        IDirectoryModel? GetDirectoryModelBySid(string sid);
 
         /// <summary>
         /// Authenticates a login request's credentials against the configured
@@ -46,6 +47,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         Task ConnectAsync();
         void Dispose();
         DirectoryEntry GetDeleteObjectsEntry();
+        /// <summary>
+        /// Retuns the directory entry of the given Base distiguished
+        /// name. If no base is provided,  the application scope BaseDN setting
+        /// will be used
+        /// </summary>
+        /// <param name="baseDN"></param>
+        /// <returns></returns>
         DirectoryEntry GetDirectoryEntry(string? baseDN = null);
         bool RestoreTombstone(IDirectoryModel model, IADOrganizationalUnit newOU);
     }

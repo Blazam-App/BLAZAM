@@ -10,7 +10,12 @@
             <TextEdit Placeholder="Filter Groups" @bind-Text="@GroupFilter" />
         @if (AllLevels.Count > 0)
         {
-            @foreach (var pl in AllLevels.Where(l => Directory.Groups.FindGroupBySID(l.GroupSID).GroupName.StartsWith(GroupFilter, StringComparison.OrdinalIgnoreCase) || Directory.Groups.FindGroupBySID(l.GroupSID).GroupName.Contains(GroupFilter, StringComparison.OrdinalIgnoreCase)))
+            
+            @foreach (var pl in AllLevels.Where(l => 
+            Directory.Groups.FindGroupBySID(l.DelegateSid).GroupName
+            .StartsWith(GroupFilter, StringComparison.OrdinalIgnoreCase) ||
+           Directory.Groups.FindGroupBySID(l.DelegateSid).GroupName
+            .Contains(GroupFilter, StringComparison.OrdinalIgnoreCase)))
             {
                 <BLAZAM.Server.Shared.UI.Settings.Permissions.PriviligeLevelListItem Level="pl" Context="Context" />
             }
@@ -43,16 +48,16 @@
         }
     }
     AddPrivilegeLevelModal addGroupModal;
-    PrivilegeLevel SelectedPrivilegeLevel;
-    List<PrivilegeLevel> AllLevels { get; set; } = new List<PrivilegeLevel>();
-    DbSet<PrivilegeLevel> settings;
+    PermissionDelegate SelectedPermissionDelegate;
+    List<PermissionDelegate> AllLevels { get; set; } = new List<PermissionDelegate>();
+    DbSet<PermissionDelegate> settings;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         Task.Run(async () =>
         {
 
-            settings = Context.PrivilegeLevel;
+            settings = Context.PermissionDelegate;
             RefreshLevels();
         });
         await InvokeAsync(StateHasChanged);

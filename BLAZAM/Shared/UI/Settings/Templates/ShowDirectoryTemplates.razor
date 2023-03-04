@@ -66,7 +66,7 @@
             if (_selectedTemplate == value) return;
             _selectedTemplate = value;
            // if(value!=null){
-               // var availableGroups = Context.PrivilegeMap.Where(pm => pm.OU.Contains(value.ParentOU) && pm.AccessLevels.Any(al => al.ActionMap.Any(am => am.ObjectType == ActiveDirectoryObjectType.User && am.ObjectAction.ActionAccessFlagId == ActionAccessFlags.Create.ActionAccessFlagId))).ToList();
+               // var availableGroups = Context.PermissionMap.Where(pm => pm.OU.Contains(value.ParentOU) && pm.AccessLevels.Any(al => al.ActionMap.Any(am => am.ObjectType == ActiveDirectoryObjectType.User && am.ObjectAction.ActionAccessFlagId == ActionAccessFlags.Create.ActionAccessFlagId))).ToList();
           //  }
         }
     }

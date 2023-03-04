@@ -74,8 +74,8 @@ namespace BLAZAM.Common.Data.Database
         public DbSet<ObjectAccessLevel> ObjectAccessLevel { get; set; }
         public DbSet<ActionAccessFlag> ObjectActionFlag { get; set; }
 
-        public DbSet<PrivilegeLevel> PrivilegeLevel { get; set; }
-        public DbSet<PrivilegeMap> PrivilegeMap { get; set; }
+        public DbSet<PermissionDelegate> PermissionDelegate { get; set; }
+        public DbSet<PermissionMap> PermissionMap { get; set; }
 
 
         //Templates
@@ -226,7 +226,7 @@ namespace BLAZAM.Common.Data.Database
             });
 
 
-            modelBuilder.Entity<PrivilegeMap>(entity =>
+            modelBuilder.Entity<PermissionMap>(entity =>
             {
                 entity.Navigation(e => e.AccessLevels).AutoInclude();
 

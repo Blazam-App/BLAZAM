@@ -395,9 +395,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
         }
 
-        public List<PrivilegeLevel> PrivilegeLevels { get; set; } = new List<PrivilegeLevel>();
+        public List<PermissionDelegate> PermissionDelegates { get; set; } = new List<PermissionDelegate>();
 
-        public List<PrivilegeMap> PermissionMappings { get; set; } = new List<PrivilegeMap>();
+        public List<PermissionMap> PermissionMappings { get; set; } = new List<PermissionMap>();
 
         public bool HasUserPrivilege
         {

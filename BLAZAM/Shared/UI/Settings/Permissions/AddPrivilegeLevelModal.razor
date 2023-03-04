@@ -13,7 +13,7 @@
                 </Field>
                 <Field>
                     <FieldLabel>Super User</FieldLabel>
-                    <Switch TValue="bool" @bind-Checked="@NewPrivilegeLevel.IsSuperAdmin" Disabled=Program.InDemoMode/>
+                    <Switch TValue="bool" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=Program.InDemoMode/>
                 </Field>
             </Row>
             <Row>
@@ -29,14 +29,14 @@
     IADGroup selectedGroup;
     [Parameter]
     public EventCallback GroupAdded { get; set; }
-
-    PrivilegeLevel NewPrivilegeLevel = new PrivilegeLevel();
+    
+    PermissionDelegate NewPermissionDelegate = new PermissionDelegate();
     private async void AddGroup()
     {
-        NewPrivilegeLevel.GroupSID = selectedGroup.SID;
-        Context.PrivilegeLevel.Add(NewPrivilegeLevel);
+        NewPermissionDelegate.DelegateSid = selectedGroup.SID;
+        Context.PermissionDelegate.Add(NewPermissionDelegate);
         await Context.SaveChangesAsync();
-        NewPrivilegeLevel = new PrivilegeLevel();
+        NewPermissionDelegate = new PermissionDelegate();
         await Modal?.Hide();
         GroupAdded.InvokeAsync();
     }

@@ -7,13 +7,13 @@
     <h2>Permissions</h2>
     @if (Monitor.DirectoryConnected == ConnectionState.Up)
     {
-        <BLAZAM.Server.Shared.UI.Settings.Permissions.PrivilegeLevelEditor />
+     <BLAZAM.Server.Shared.UI.Settings.Permissions.PrivilegeLevelEditor/>
     }
     <BLAZAM.Server.Shared.UI.Settings.Permissions.AccessLevelEditor />
     @if (Monitor.DirectoryConnected == ConnectionState.Up)
     {
         <BLAZAM.Server.Shared.UI.Settings.Permissions.ImpersonateUser />
-        <BLAZAM.Server.Shared.UI.Settings.Permissions.PrivilegeMapper />
+        <BLAZAM.Server.Shared.UI.Settings.Permissions.PrivilegeMapper/>
 
     }
 </AuthorizeView>

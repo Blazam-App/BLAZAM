@@ -6,10 +6,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
     public interface IADOrganizationalUnit : IDirectoryModel
     {
         string Name { get; set; }
-        List<PrivilegeMap> InheritedPermissionMappings { get; }
-        IQueryable<PrivilegeMap> AppliedPermissionMappings { get; }
-        List<PrivilegeMap> DirectPermissionMappings { get; }
-        IQueryable<PrivilegeMap> OffspringPermissionMappings { get; }
+        List<PermissionMap> InheritedPermissionMappings { get; }
+        IQueryable<PermissionMap> AppliedPermissionMappings { get; }
+        List<PermissionMap> DirectPermissionMappings { get; }
+        IQueryable<PermissionMap> OffspringPermissionMappings { get; }
         IEnumerable<IADOrganizationalUnit> Children { get; }
         IQueryable<IADUser> ChildUsers { get; }
         IADUser CreateUser(string containerName);

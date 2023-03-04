@@ -339,7 +339,7 @@ namespace BLAZAM
         {
             List<Claim> userRoles = new();
 
-            if (user.PrivilegeLevels.Any(p => p.IsSuperAdmin))
+            if (user.PermissionDelegates.Any(p => p.IsSuperAdmin))
             {
                 userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SuperAdmin));
 

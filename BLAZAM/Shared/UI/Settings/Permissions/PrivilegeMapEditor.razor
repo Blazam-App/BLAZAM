@@ -14,25 +14,25 @@
                         {
 
 
-                            <Autocomplete TItem="PrivilegeLevel"
-                                  TValue="PrivilegeLevel"
+                            <Autocomplete TItem="PermissionDelegate"
+                                  TValue="PermissionDelegate"
                                   FreeTyping=false
                                   MinLength=-1
-                                  Data="@privilegeLevels"
-                                  TextField="@(( item ) => Directory.Groups.FindGroupBySID(item.GroupSID)?.GroupName)"
+                                  Data="@PermissionDelegates"
+                                  TextField="@(( item ) => Directory.Groups.FindGroupBySID(item.DelegateSid)?.GroupName)"
                                   ValueField="@(( item ) => item)"
                                   Placeholder=@SettingsLocalization["Choose or Search..."]
                                   SelectionMode="AutocompleteSelectionMode.Checkbox"
                                   CloseOnSelection="false"
-                                  @bind-SelectedValues="Map.PrivilegeLevels"
-                                  @bind-SelectedTexts="selectedPrivilegeLevelNames" />
+                                  @bind-SelectedValues="Map.PermissionDelegates"
+                                  @bind-SelectedTexts="selectedPermissionDelegateNames" />
                             <ValidationError />
                         }
                         else
                         {
-                            @if (selectedPrivilegeLevelNames != null)
+                            @if (selectedPermissionDelegateNames != null)
                             {
-                                @foreach (var name in selectedPrivilegeLevelNames)
+                                @foreach (var name in selectedPermissionDelegateNames)
                                 {
                                     <Button Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</Button>
                                 }
@@ -93,9 +93,9 @@
 
 }
 @code {
-    PrivilegeMap _map;
+    PermissionMap _map;
     [Parameter]
-    public PrivilegeMap Map
+    public PermissionMap Map
     {
         get => _map; set
         {
@@ -117,9 +117,9 @@
     Validation? AccValidation;
 
     List<AccessLevel> accessLevels;
-    List<PrivilegeLevel> privilegeLevels;
+    List<PermissionDelegate> PermissionDelegates;
     List<string> selectedAccessLevelNames;
-    List<string> selectedPrivilegeLevelNames;
+    List<string> selectedPermissionDelegateNames;
     protected override async Task OnInitializedAsync()
     {
         //Wait for a database connection
@@ -141,16 +141,16 @@
         //Context = await DbFactory.CreateDbContextAsync();
         if (Context != null)
         {
-            if (Map.PrivilegeMapId != 0)
+            if (Map.PermissionMapId != 0)
             {
-                Map = Context.PrivilegeMap.Include(m => m.PrivilegeLevels).Where(pm => pm.PrivilegeMapId == Map.PrivilegeMapId).FirstOrDefault();
+                Map = Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.PermissionMapId == Map.PermissionMapId).FirstOrDefault();
             }
             accessLevels = await Context.AccessLevels.ToListAsync();
-            privilegeLevels = await Context.PrivilegeLevel.Where(p => !p.IsSuperAdmin).ToListAsync();
-            if (Map.PrivilegeMapId != 0)
+            PermissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin).ToListAsync();
+            if (Map.PermissionMapId != 0)
             {
                 selectedAccessLevelNames = Map.AccessLevels.Select(a => a.Name).ToList();
-                selectedPrivilegeLevelNames = Map.PrivilegeLevels.Select(a => Directory.Groups.FindGroupBySID(a.GroupSID).GroupName).ToList();
+                selectedPermissionDelegateNames = Map.PermissionDelegates.Select(a => Directory.Groups.FindGroupBySID(a.DelegateSid).GroupName).ToList();
             }
             await InvokeAsync(StateHasChanged);
         }
@@ -158,14 +158,14 @@
     }
     async Task DeleteMapping()
     {
-        if (Map.PrivilegeMapId == 0)
+        if (Map.PermissionMapId == 0)
         {
             Map = null;
         }
 
         else
         {
-            Context.PrivilegeMap.Remove(Map);
+            Context.PermissionMap.Remove(Map);
             await Context.SaveChangesAsync();
         }
         await InvokeAsync(StateHasChanged);
@@ -175,8 +175,8 @@
     }
     async Task Save()
     {
-        if (Map.PrivilegeMapId == 0)
-            Context.PrivilegeMap.Add(Map);
+        if (Map.PermissionMapId == 0)
+            Context.PermissionMap.Add(Map);
         var result = Context.SaveChanges();
         await InvokeAsync(StateHasChanged);
         NotificationService.Success("Mapping saved");
@@ -188,7 +188,7 @@
         {
             if (Map != null)
             {
-                if (Map.PrivilegeLevels == null || Map.PrivilegeLevels?.Count < 1)
+                if (Map.PermissionDelegates == null || Map.PermissionDelegates?.Count < 1)
                     PrivValidation.Status = ValidationStatus.Error;
                 else
                     PrivValidation.Status = ValidationStatus.Success;

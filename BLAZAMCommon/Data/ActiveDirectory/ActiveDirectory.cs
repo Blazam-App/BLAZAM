@@ -26,9 +26,20 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         IADUser? _keepAliveUser { get; set; }
 
         private AuthenticationTypes _authType;
+            /// <summary>
+            /// The application scoped directory entry root
+            /// </summary>
+
         public DirectoryEntry? AppRootDirectoryEntry { get; private set; }
+        /// <summary>
+        /// The domain directory entry root
+        /// </summary>
+        /// <remarks>
+        /// Caution should be used when providing this to the UI
+        /// </remarks>
         public DirectoryEntry RootDirectoryEntry { get; private set; }
 
+       
         public DirectoryEntry GetDirectoryEntry(string? baseDN = null)
         {
             if (baseDN == null || baseDN == "")
@@ -385,6 +396,15 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             }
             return false;
 
+        }
+
+        public IDirectoryModel? GetDirectoryModelBySid(string sid)
+        {
+            var searcher = new ADSearch();
+            searcher.SearchRoot = RootDirectoryEntry;
+            searcher.SID = sid;
+            var result = searcher.Search().FirstOrDefault();
+            return result;
         }
     }
 }

@@ -8,11 +8,27 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BLAZAM.Common.Migrations
 {
     /// <inheritdoc />
-    public partial class seed : Migration
+    public partial class betaseed : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "Audit");
+
+            migrationBuilder.CreateTable(
+                name: "AccessLevels",
+                columns: table => new
+                {
+                    AccessLevelId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccessLevels", x => x.AccessLevelId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "ActiveDirectoryFields",
                 columns: table => new
@@ -55,35 +71,22 @@ namespace BLAZAM.Common.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     LastUpdateCheck = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AppName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InstallationCompleted = table.Column<bool>(type: "bit", nullable: false),
                     MOTD = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ForceHTTPS = table.Column<bool>(type: "bit", nullable: false),
                     HttpsPort = table.Column<int>(type: "int", nullable: true),
                     AppFQDN = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AnalyticsId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserHelpdeskURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AppIcon = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                    AppIcon = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    AutoUpdate = table.Column<bool>(type: "bit", nullable: false),
+                    AutoUpdateTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    UpdateBranch = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AppSettings", x => x.AppSettingsId);
                     table.CheckConstraint("CK_Table_Column1", "[AppSettingsId] = 1");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AuditLog",
-                columns: table => new
-                {
-                    AuditLogId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AuditLog", x => x.AuditLogId);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,7 +96,10 @@ namespace BLAZAM.Common.Migrations
                     AuthenticationSettingsId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SessionTimeout = table.Column<int>(type: "int", nullable: true),
-                    AdminPassword = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    AdminPassword = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DuoClientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DuoClientSecret = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DuoApiHost = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -102,11 +108,52 @@ namespace BLAZAM.Common.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ComputerAuditLog",
+                schema: "Audit",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComputerAuditLog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DirectoryTemplates",
+                columns: table => new
+                {
+                    DirectoryTemplateId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ObjectType = table.Column<int>(type: "int", nullable: false),
+                    DisplayNameFormula = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordFormula = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UsernameFormula = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ParentOU = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DirectoryTemplates", x => x.DirectoryTemplateId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EmailSettings",
                 columns: table => new
                 {
                     EmailSettingsId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Enabled = table.Column<bool>(type: "bit", nullable: false),
+                    AdminBcc = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FromName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ReplyToAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ReplyToName = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -156,6 +203,46 @@ namespace BLAZAM.Common.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GroupAuditLog",
+                schema: "Audit",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupAuditLog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LogonAuditLog",
+                schema: "Audit",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LogonAuditLog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ObjectAccessLevel",
                 columns: table => new
                 {
@@ -183,32 +270,148 @@ namespace BLAZAM.Common.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PrivilegeLevel",
+                name: "OUAuditLog",
+                schema: "Audit",
                 columns: table => new
                 {
-                    PrivilegeLevelId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GroupSID = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OUAuditLog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PermissionDelegate",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DelegateSid = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     IsSuperAdmin = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PrivilegeLevel", x => x.PrivilegeLevelId);
+                    table.PrimaryKey("PK_PermissionDelegate", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PrivilegeMap",
+                name: "PermissionMap",
                 columns: table => new
                 {
-                    PrivilegeMapId = table.Column<int>(type: "int", nullable: false)
+                    PermissionMapId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OU = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PrivilegeMap", x => x.PrivilegeMapId);
+                    table.PrimaryKey("PK_PermissionMap", x => x.PermissionMapId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PermissionsAuditLog",
+                schema: "Audit",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PermissionsAuditLog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RequestAuditLog",
+                schema: "Audit",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RequestAuditLog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SettingsAuditLog",
+                schema: "Audit",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SettingsAuditLog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SystemAuditLog",
+                schema: "Audit",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SystemAuditLog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserAuditLog",
+                schema: "Audit",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAuditLog", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -219,11 +422,59 @@ namespace BLAZAM.Common.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserGUID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     APIToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Theme = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Theme = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SearchDisabledUsers = table.Column<bool>(type: "bit", nullable: false),
+                    SearchDisabledComputers = table.Column<bool>(type: "bit", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserSettings", x => x.UserSettingsId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DirectoryTemplateFieldValues",
+                columns: table => new
+                {
+                    DirectoryTemplateFieldValueId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FieldActiveDirectoryFieldId = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DirectoryTemplateId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DirectoryTemplateFieldValues", x => x.DirectoryTemplateFieldValueId);
+                    table.ForeignKey(
+                        name: "FK_DirectoryTemplateFieldValues_ActiveDirectoryFields_FieldActiveDirectoryFieldId",
+                        column: x => x.FieldActiveDirectoryFieldId,
+                        principalTable: "ActiveDirectoryFields",
+                        principalColumn: "ActiveDirectoryFieldId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DirectoryTemplateFieldValues_DirectoryTemplates_DirectoryTemplateId",
+                        column: x => x.DirectoryTemplateId,
+                        principalTable: "DirectoryTemplates",
+                        principalColumn: "DirectoryTemplateId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DirectoryTemplateGroups",
+                columns: table => new
+                {
+                    DirectoryTemplateGroupId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupSid = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DirectoryTemplateId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DirectoryTemplateGroups", x => x.DirectoryTemplateGroupId);
+                    table.ForeignKey(
+                        name: "FK_DirectoryTemplateGroups_DirectoryTemplates_DirectoryTemplateId",
+                        column: x => x.DirectoryTemplateId,
+                        principalTable: "DirectoryTemplates",
+                        principalColumn: "DirectoryTemplateId");
                 });
 
             migrationBuilder.CreateTable(
@@ -295,69 +546,50 @@ namespace BLAZAM.Common.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccessLevels",
-                columns: table => new
-                {
-                    AccessLevelId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PrivilegeMapId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AccessLevels", x => x.AccessLevelId);
-                    table.ForeignKey(
-                        name: "FK_AccessLevels_PrivilegeMap_PrivilegeMapId",
-                        column: x => x.PrivilegeMapId,
-                        principalTable: "PrivilegeMap",
-                        principalColumn: "PrivilegeMapId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PrivilegeLevelPrivilegeMap",
-                columns: table => new
-                {
-                    PrivilegeLevelsPrivilegeLevelId = table.Column<int>(type: "int", nullable: false),
-                    PrivilegeMapsPrivilegeMapId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PrivilegeLevelPrivilegeMap", x => new { x.PrivilegeLevelsPrivilegeLevelId, x.PrivilegeMapsPrivilegeMapId });
-                    table.ForeignKey(
-                        name: "FK_PrivilegeLevelPrivilegeMap_PrivilegeLevel_PrivilegeLevelsPrivilegeLevelId",
-                        column: x => x.PrivilegeLevelsPrivilegeLevelId,
-                        principalTable: "PrivilegeLevel",
-                        principalColumn: "PrivilegeLevelId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PrivilegeLevelPrivilegeMap_PrivilegeMap_PrivilegeMapsPrivilegeMapId",
-                        column: x => x.PrivilegeMapsPrivilegeMapId,
-                        principalTable: "PrivilegeMap",
-                        principalColumn: "PrivilegeMapId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AccessLevelActionAccessMapping",
+                name: "AccessLevelPermissionMap",
                 columns: table => new
                 {
                     AccessLevelsAccessLevelId = table.Column<int>(type: "int", nullable: false),
-                    ActionMapActionAccessMappingId = table.Column<int>(type: "int", nullable: false)
+                    PermissionMapsPermissionMapId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccessLevelActionAccessMapping", x => new { x.AccessLevelsAccessLevelId, x.ActionMapActionAccessMappingId });
+                    table.PrimaryKey("PK_AccessLevelPermissionMap", x => new { x.AccessLevelsAccessLevelId, x.PermissionMapsPermissionMapId });
                     table.ForeignKey(
-                        name: "FK_AccessLevelActionAccessMapping_AccessLevels_AccessLevelsAccessLevelId",
+                        name: "FK_AccessLevelPermissionMap_AccessLevels_AccessLevelsAccessLevelId",
                         column: x => x.AccessLevelsAccessLevelId,
                         principalTable: "AccessLevels",
                         principalColumn: "AccessLevelId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AccessLevelActionAccessMapping_ActionAccessMapping_ActionMapActionAccessMappingId",
-                        column: x => x.ActionMapActionAccessMappingId,
-                        principalTable: "ActionAccessMapping",
-                        principalColumn: "ActionAccessMappingId",
+                        name: "FK_AccessLevelPermissionMap_PermissionMap_PermissionMapsPermissionMapId",
+                        column: x => x.PermissionMapsPermissionMapId,
+                        principalTable: "PermissionMap",
+                        principalColumn: "PermissionMapId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PermissionDelegatePermissionMap",
+                columns: table => new
+                {
+                    PermissionDelegatesId = table.Column<int>(type: "int", nullable: false),
+                    PermissionsMapsPermissionMapId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PermissionDelegatePermissionMap", x => new { x.PermissionDelegatesId, x.PermissionsMapsPermissionMapId });
+                    table.ForeignKey(
+                        name: "FK_PermissionDelegatePermissionMap_PermissionDelegate_PermissionDelegatesId",
+                        column: x => x.PermissionDelegatesId,
+                        principalTable: "PermissionDelegate",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PermissionDelegatePermissionMap_PermissionMap_PermissionsMapsPermissionMapId",
+                        column: x => x.PermissionsMapsPermissionMapId,
+                        principalTable: "PermissionMap",
+                        principalColumn: "PermissionMapId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -409,10 +641,34 @@ namespace BLAZAM.Common.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "AccessLevelActionAccessMapping",
+                columns: table => new
+                {
+                    AccessLevelsAccessLevelId = table.Column<int>(type: "int", nullable: false),
+                    ActionMapActionAccessMappingId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccessLevelActionAccessMapping", x => new { x.AccessLevelsAccessLevelId, x.ActionMapActionAccessMappingId });
+                    table.ForeignKey(
+                        name: "FK_AccessLevelActionAccessMapping_AccessLevels_AccessLevelsAccessLevelId",
+                        column: x => x.AccessLevelsAccessLevelId,
+                        principalTable: "AccessLevels",
+                        principalColumn: "AccessLevelId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccessLevelActionAccessMapping_ActionAccessMapping_ActionMapActionAccessMappingId",
+                        column: x => x.ActionMapActionAccessMappingId,
+                        principalTable: "ActionAccessMapping",
+                        principalColumn: "ActionAccessMappingId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AccessLevels",
-                columns: new[] { "AccessLevelId", "Name", "PrivilegeMapId" },
-                values: new object[] { 1, "Deny All", null });
+                columns: new[] { "AccessLevelId", "Name" },
+                values: new object[] { 1, "Deny All" });
 
             migrationBuilder.InsertData(
                 table: "ActiveDirectoryFields",
@@ -445,17 +701,19 @@ namespace BLAZAM.Common.Migrations
                     { 24, "User Principal Name", "userPrincipalName" },
                     { 25, "Telephone Number", "telephoneNumber" },
                     { 26, "Street", "street" },
-                    { 27, "Container Name", "cn" },
+                    { 27, "Canonical Name", "cn" },
                     { 28, "Home Drive", "homeDrive" },
                     { 29, "Department", "department" },
                     { 30, "Middle Name", "middleName" },
-                    { 31, "Pager", "pager" }
+                    { 31, "Pager", "pager" },
+                    { 32, "OS", "operatingSystemVersion" },
+                    { 33, "Account Expiration", "accountExpires" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AuthenticationSettings",
-                columns: new[] { "AuthenticationSettingsId", "AdminPassword", "SessionTimeout" },
-                values: new object[] { 1, "password", 900000 });
+                columns: new[] { "AuthenticationSettingsId", "AdminPassword", "DuoApiHost", "DuoClientId", "DuoClientSecret", "SessionTimeout" },
+                values: new object[] { 1, "password", null, null, null, 900000 });
 
             migrationBuilder.InsertData(
                 table: "FieldAccessLevel",
@@ -523,9 +781,9 @@ namespace BLAZAM.Common.Migrations
                 column: "ObjectAccessLevelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccessLevels_PrivilegeMapId",
-                table: "AccessLevels",
-                column: "PrivilegeMapId");
+                name: "IX_AccessLevelPermissionMap_PermissionMapsPermissionMapId",
+                table: "AccessLevelPermissionMap",
+                column: "PermissionMapsPermissionMapId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ActionAccessMapping_ObjectActionActionAccessFlagId",
@@ -533,9 +791,30 @@ namespace BLAZAM.Common.Migrations
                 column: "ObjectActionActionAccessFlagId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PrivilegeLevelPrivilegeMap_PrivilegeMapsPrivilegeMapId",
-                table: "PrivilegeLevelPrivilegeMap",
-                column: "PrivilegeMapsPrivilegeMapId");
+                name: "IX_DirectoryTemplateFieldValues_DirectoryTemplateId",
+                table: "DirectoryTemplateFieldValues",
+                column: "DirectoryTemplateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DirectoryTemplateFieldValues_FieldActiveDirectoryFieldId",
+                table: "DirectoryTemplateFieldValues",
+                column: "FieldActiveDirectoryFieldId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DirectoryTemplateGroups_DirectoryTemplateId",
+                table: "DirectoryTemplateGroups",
+                column: "DirectoryTemplateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DirectoryTemplates_Name",
+                table: "DirectoryTemplates",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PermissionDelegatePermissionMap_PermissionsMapsPermissionMapId",
+                table: "PermissionDelegatePermissionMap",
+                column: "PermissionsMapsPermissionMapId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserSettings_UserGUID",
@@ -557,16 +836,26 @@ namespace BLAZAM.Common.Migrations
                 name: "AccessLevelObjectAccessMapping");
 
             migrationBuilder.DropTable(
+                name: "AccessLevelPermissionMap");
+
+            migrationBuilder.DropTable(
                 name: "ActiveDirectorySettings");
 
             migrationBuilder.DropTable(
                 name: "AppSettings");
 
             migrationBuilder.DropTable(
-                name: "AuditLog");
+                name: "AuthenticationSettings");
 
             migrationBuilder.DropTable(
-                name: "AuthenticationSettings");
+                name: "ComputerAuditLog",
+                schema: "Audit");
+
+            migrationBuilder.DropTable(
+                name: "DirectoryTemplateFieldValues");
+
+            migrationBuilder.DropTable(
+                name: "DirectoryTemplateGroups");
 
             migrationBuilder.DropTable(
                 name: "EmailSettings");
@@ -575,7 +864,39 @@ namespace BLAZAM.Common.Migrations
                 name: "EmailTemplates");
 
             migrationBuilder.DropTable(
-                name: "PrivilegeLevelPrivilegeMap");
+                name: "GroupAuditLog",
+                schema: "Audit");
+
+            migrationBuilder.DropTable(
+                name: "LogonAuditLog",
+                schema: "Audit");
+
+            migrationBuilder.DropTable(
+                name: "OUAuditLog",
+                schema: "Audit");
+
+            migrationBuilder.DropTable(
+                name: "PermissionDelegatePermissionMap");
+
+            migrationBuilder.DropTable(
+                name: "PermissionsAuditLog",
+                schema: "Audit");
+
+            migrationBuilder.DropTable(
+                name: "RequestAuditLog",
+                schema: "Audit");
+
+            migrationBuilder.DropTable(
+                name: "SettingsAuditLog",
+                schema: "Audit");
+
+            migrationBuilder.DropTable(
+                name: "SystemAuditLog",
+                schema: "Audit");
+
+            migrationBuilder.DropTable(
+                name: "UserAuditLog",
+                schema: "Audit");
 
             migrationBuilder.DropTable(
                 name: "UserSettings");
@@ -593,7 +914,13 @@ namespace BLAZAM.Common.Migrations
                 name: "AccessLevels");
 
             migrationBuilder.DropTable(
-                name: "PrivilegeLevel");
+                name: "DirectoryTemplates");
+
+            migrationBuilder.DropTable(
+                name: "PermissionDelegate");
+
+            migrationBuilder.DropTable(
+                name: "PermissionMap");
 
             migrationBuilder.DropTable(
                 name: "ObjectActionFlag");
@@ -606,9 +933,6 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.DropTable(
                 name: "ObjectAccessLevel");
-
-            migrationBuilder.DropTable(
-                name: "PrivilegeMap");
         }
     }
 }
