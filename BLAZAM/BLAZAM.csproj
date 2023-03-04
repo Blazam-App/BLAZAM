@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.6.7</AssemblyVersion>
-		<Version>2023.03.04.0027</Version>
+		<Version>2023.03.04.0147</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -14,9 +14,13 @@
 
 	<ItemGroup>
 	  <Compile Remove="Data\Permissions\**" />
+	  <Compile Remove="Exceptions\**" />
 	  <Content Remove="Data\Permissions\**" />
+	  <Content Remove="Exceptions\**" />
 	  <EmbeddedResource Remove="Data\Permissions\**" />
+	  <EmbeddedResource Remove="Exceptions\**" />
 	  <None Remove="Data\Permissions\**" />
+	  <None Remove="Exceptions\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -93,8 +97,11 @@
 
 	<ItemGroup>
 		<Folder Include="Data\Services\RPC\" />
-		<Folder Include="Exceptions\ActiveDirectory\" />
 		<Folder Include="Shared\UI\General\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\.editorconfig" Link=".editorconfig" />
 	</ItemGroup>
 
 	<ItemGroup>

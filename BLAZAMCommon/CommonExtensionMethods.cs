@@ -153,6 +153,7 @@ namespace BLAZAM
             {
                
                 long ? fileTime = value?.ToFileTimeUtc();
+                if(fileTime == null) return null;
                 object fto = 0;
                 IADsLargeInteger largeInt = new ADsLargeInteger();
                 largeInt.HighPart = (int)(fileTime >> 32);

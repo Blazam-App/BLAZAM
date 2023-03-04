@@ -76,7 +76,7 @@ namespace BLAZAM.Server.Data.Services.Update
             */
         }
 
-        private async void CheckForUpdate(object state)
+        private async void CheckForUpdate(object? state)
         {
             await GetLatestUpdate();
         }

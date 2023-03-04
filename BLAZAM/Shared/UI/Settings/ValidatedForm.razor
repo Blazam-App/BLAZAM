@@ -28,7 +28,7 @@
         }
         catch (Exception ex)
         {
-            NotificationService.Error(ex.Message);
+            await NotificationService.Error(ex.Message);
             
         }
         await InvokeAsync(StateHasChanged);

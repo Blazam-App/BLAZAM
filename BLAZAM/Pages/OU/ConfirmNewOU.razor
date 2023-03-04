@@ -26,7 +26,7 @@
         if (await MessageService.Confirm("Are you sure you want to create this OU?", "Create OU"))
         {
             OU.CommitChanges();
-            NotificationService.Success("OU created");
+            await NotificationService.Success("OU created");
 
             Nav.NavigateTo("/ou/create",true);
         }

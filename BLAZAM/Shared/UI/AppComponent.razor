@@ -36,12 +36,12 @@
 
     protected bool LoadingData { get; set; } = true;
     protected DatabaseContext? Context;
-    [Inject] protected IDbContextFactory<DatabaseContext> DbFactory { get; set; }
+    [Inject] protected IDbContextFactory<DatabaseContext>? DbFactory { get; set; }
     protected override void OnInitialized()
     {
         try
         {
-            Context = DbFactory.CreateDbContext();
+            Context = DbFactory?.CreateDbContext();
         }
         catch (Exception ex)
         {

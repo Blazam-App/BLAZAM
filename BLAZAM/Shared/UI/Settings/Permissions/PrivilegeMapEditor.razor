@@ -179,7 +179,7 @@
             Context.PrivilegeMap.Add(Map);
         var result = Context.SaveChanges();
         await InvokeAsync(StateHasChanged);
-        NotificationService.Success("Mapping saved");
+        await NotificationService.Success("Mapping saved");
 
     }
     async void ValidateCheck()

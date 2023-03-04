@@ -148,6 +148,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
                     try
                     {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                         email.SendMessage(
                             "Update Schedueled",
                             "admin@blazam.org",
@@ -155,6 +156,7 @@ namespace BLAZAM.Server.Data.Services.Update
                             (MarkupString)("The application has schedueled an update to version "
                             + ScheduledUpdate.Version + " at " + ScheduledUpdateTime
                             ));
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     }
                     catch (Exception ex)
                     {

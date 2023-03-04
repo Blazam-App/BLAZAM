@@ -65,7 +65,7 @@
             {
                 if (!_user.NewEntry)
                     AuditLogger.User.Searched(_user);
-                RefreshUserGroups();
+                RefreshGroupGroupsAsync();
             }
 
         }
@@ -115,10 +115,17 @@
 
         });
     }
-    protected async Task RefreshGroupGroups()
+    protected async Task RefreshGroupGroupsAsync()
     {
         await Task.Run(() =>
         {
+            RefreshGroupGroups();
+
+        });
+    }
+    protected async Task RefreshGroupGroups()
+    {
+       
             LoadingData = true;
             InvokeAsync(StateHasChanged);
 
@@ -127,7 +134,7 @@
             LoadingData = false;
             InvokeAsync(StateHasChanged);
 
-        });
+       
     }
     protected async Task RefreshComputerGroups()
     {

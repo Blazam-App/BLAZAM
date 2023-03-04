@@ -177,7 +177,7 @@ namespace BLAZAM.Server.Shared.UI
         public async Task CopyToClipboard(string text)
         {
             await JS.InvokeVoidAsync("navigator.clipboard.writeText", text);
-            NotificationService.Info("\"" + text + "\" copied to clipboard.");
+            await NotificationService.Info("\"" + text + "\" copied to clipboard.");
         }
 
         /// <summary>

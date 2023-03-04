@@ -118,7 +118,7 @@
         }
         else
         {
-            NotificationService.Error("That name already exists. Please choose a different Display Name", "Name Exists");
+            await NotificationService.Error("That name already exists. Please choose a different Display Name", "Name Exists");
         }
         LoadingData = false;
 
