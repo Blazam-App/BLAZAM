@@ -130,13 +130,13 @@ else
             DownladProgress = null;
             LatestAvailableVersion.DownloadPercentageChanged -= UpdateDownloadPercentage;
 
-            NotificationService.Success("Update downloaded successfully. Preparing for update...");
+            await NotificationService.Success("Update downloaded successfully. Preparing for update...");
 
             if (await MessageService.Confirm("The update has been downloaded. Would you like to Stage the update?"))
             {
                 updateStage = UpdateStage.Staging;
 
-                InvokeAsync(StateHasChanged);
+                await InvokeAsync(StateHasChanged);
                 if (await LatestAvailableVersion.Stage())
                 {
 
@@ -189,7 +189,7 @@ else
                     }
                     updateStage = UpdateStage.None;
 
-                    InvokeAsync(StateHasChanged);
+                    await InvokeAsync(StateHasChanged);
                 }
             }
         }

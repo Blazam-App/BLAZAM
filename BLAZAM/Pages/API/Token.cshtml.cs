@@ -22,7 +22,6 @@ namespace BLAZAM.Server.Pages.API
             Context = context;
         }
 
-        [Authorize]
         public JsonResult OnGet()
         {
             JwtTokenHandler = new JwtSecurityTokenHandler();

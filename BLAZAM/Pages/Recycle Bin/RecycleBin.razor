@@ -34,7 +34,7 @@
         var search = new ADSearch() { SearchRoot = Directory.GetDeleteObjectsEntry() };
         search.SearchDeleted = true;
         deletedObjects = await search.SearchAsync<DirectoryModel, IDirectoryModel>();
-        //deletedObjects = Directory.GetDeletedObjects();
+
         await InvokeAsync(StateHasChanged);
     }
 }

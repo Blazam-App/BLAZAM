@@ -20,7 +20,7 @@
         get => _group; set
         {
             if (_group == value) return;
-            
+
             _group = value;
 
             if (_group != null)
@@ -42,7 +42,7 @@
             _groups = value;
             if (_groups != null)
             {
-               
+
                 RefreshGroupGroups();
             }
         }
@@ -102,56 +102,53 @@
 
     protected async Task RefreshUserGroups()
     {
-        await Task.Run(() =>
-        {
-            LoadingData = true;
-            InvokeAsync(StateHasChanged);
-            if (User != null)
-                memberOfGroups = User.MemberOf;
 
-            LoadingData = false;
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        if (User != null)
+            memberOfGroups = User.MemberOf;
 
-            InvokeAsync(StateHasChanged);
+        LoadingData = false;
 
-        });
+        await InvokeAsync(StateHasChanged);
+
+
     }
     protected async Task RefreshGroupGroupsAsync()
     {
-        await Task.Run(() =>
-        {
-            RefreshGroupGroups();
 
-        });
+        await RefreshGroupGroups();
+
+
     }
     protected async Task RefreshGroupGroups()
     {
-       
-            LoadingData = true;
-            InvokeAsync(StateHasChanged);
 
-            if (Group != null)
-                memberOfGroups = Group.MemberOf;
-            LoadingData = false;
-            InvokeAsync(StateHasChanged);
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
 
-       
+        if (Group != null)
+            memberOfGroups = Group.MemberOf;
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
+
     }
     protected async Task RefreshComputerGroups()
     {
-        await Task.Run(() =>
-        {
-            LoadingData = true;
-            InvokeAsync(StateHasChanged);
 
-            if (Computer != null)
-                memberOfGroups = Computer.MemberOf;
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (Computer != null)
+            memberOfGroups = Computer.MemberOf;
 
 
-            LoadingData = false;
+        LoadingData = false;
 
-            InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
 
-        });
+
     }
 
     [Parameter]

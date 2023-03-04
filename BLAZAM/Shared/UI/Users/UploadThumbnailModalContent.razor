@@ -50,11 +50,11 @@
         try{
             DirectoryModel.ThumbnailPhoto = newThumbnail;
 
-            NotificationService.Warning("Thumbnail changed for " + DirectoryModel.DisplayName + " but changes need to be saved.", "Thumbnail Changed");
+            await NotificationService.Warning("Thumbnail changed for " + DirectoryModel.DisplayName + " but changes need to be saved.", "Thumbnail Changed");
         }
         catch
         {
-            NotificationService.Error("Unable to set thumbnail for " + DirectoryModel.DisplayName, "Change Failed");
+            await NotificationService.Error("Unable to set thumbnail for " + DirectoryModel.DisplayName, "Change Failed");
 
         }
         Close();

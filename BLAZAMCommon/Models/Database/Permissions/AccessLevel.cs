@@ -18,6 +18,11 @@ namespace BLAZAM.Common.Models.Database.Permissions
             return this.AccessLevelId.CompareTo(other.AccessLevelId);
         }
 
+        public override int GetHashCode()
+        {
+            return AccessLevelId.ToString().GetHashCode();
+        }
+
         public override bool Equals(object? obj)
         {
             if(obj is AccessLevel al)

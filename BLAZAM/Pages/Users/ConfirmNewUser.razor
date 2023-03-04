@@ -346,7 +346,7 @@
     public DirectoryTemplate? DirectoryTemplate { get; set; }
 
     [Parameter]
-    public EventCallback<IADUser>? Confirmed { get; set; }
+    public EventCallback<IADUser> Confirmed { get; set; }
 
     bool InDirectoryTemplate(ActiveDirectoryField field)
     {

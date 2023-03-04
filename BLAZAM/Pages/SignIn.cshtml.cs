@@ -47,7 +47,6 @@ namespace BLAZAM.Server.Pages
                      url[0] == '~' && url[1] == '/'));   // "~/" or "~/foo"
         }
 
-        [HttpPost]
         public async Task<IActionResult> OnPost([FromFormAttribute]LoginRequest req)
         {
 
@@ -55,7 +54,7 @@ namespace BLAZAM.Server.Pages
             if (result != null)
             {
                 await HttpContext.SignInAsync(result.User);
-                AuditLogger.Logon.Login(result.User);
+                await AuditLogger.Logon.Login(result.User);
                 //return Redirect(req.ReturnUrl);
             }
             Response.Headers.Add("Refresh", "0.5");

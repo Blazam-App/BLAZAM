@@ -130,9 +130,12 @@ namespace BLAZAM.Server.Data.Services
         }
 
         public IDbContextFactory<DatabaseContext> DbFactory { get; set; }
-       
 
-      
+
+        public override int GetHashCode()
+        {
+            return User.FindFirstValue(ClaimTypes.Actor).GetHashCode();
+        }
         public override bool Equals(object? obj)
         {
             if (obj is ApplicationUserState otherState)

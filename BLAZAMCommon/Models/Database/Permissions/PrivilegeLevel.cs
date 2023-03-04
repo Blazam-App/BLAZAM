@@ -17,7 +17,10 @@ namespace BLAZAM.Common.Models.Database.Permissions
                 return GroupSID.ToSidString().CompareTo(pl.GroupSID.ToSidString());
             return 0;
         }
-
+        public override int GetHashCode()
+        {
+            return PrivilegeLevelId.ToString().GetHashCode();
+        }
         public override bool Equals(object? obj)
         {
             if(obj is PrivilegeLevel l)

@@ -38,7 +38,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         bool HasCreateGroupPrivilege { get; }
         bool HasCreateOUPrivilege { get; }
         byte[]? ThumbnailPhoto { get; set; }
-        DateTime? ExpireTime { get; set; }
         SecureString NewPassword { get; set; }
 
         bool SetPassword(string password);
