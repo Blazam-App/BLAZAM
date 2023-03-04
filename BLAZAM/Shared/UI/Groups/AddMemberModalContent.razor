@@ -8,19 +8,21 @@
     </Field>
     <Field>
         <FieldLabel>Copy Memberships From</FieldLabel>
-        <ADUserOrGroupAutoComplete @bind-SelectedModel="@CopyFrom" />
+        <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.Group"
+                        @bind-SelectedResult=@copyFrom
+                        CustomResultsFilter="(result)=>result is IADGroup" />
     </Field>
     @if (CopyFrom != null)
     {
-        var existingGroups = Entry.MemberOf;
-        <Paragraph>Will be added to...</Paragraph>
+        var existingMembers = Group.UserMembers;
+        <Paragraph>Will be assigned...</Paragraph>
 
-        foreach (var group in CopyFrom.MemberOf)
+        foreach (var member in CopyFrom.UserMembers)
         {
             <Card>
                 <CardHeader>
 
-                    @if (existingGroups.Contains(group))
+                    @if (existingMembers.Contains(member))
                     {
                         <Icon Name=@("fa-check") />
                     }
@@ -28,7 +30,7 @@
                     {
                         <Icon Name=@("fa-plus") />
                     }
-                    @group.GroupName
+                    @member.CanonicalName
 
                 </CardHeader>
             </Card>
@@ -46,23 +48,35 @@
     [Parameter]
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
 
-    [Parameter]
-    public IADGroup Group { get; set; }
 
-    public IGroupableDirectoryModel CopyFrom { get; set; }
 
-    IGroupableDirectoryModel Entry { get; set; }
+    IDirectoryModel copyFrom;
+
+    public IADGroup CopyFrom { get => (IADGroup)copyFrom; set => copyFrom = value; }
+
+    IDirectoryModel Entry { get; set; }
 
     async Task AssignToGroup()
     {
         if (Entry is IGroupableDirectoryModel groupableEntry)
         {
-            groupableEntry.AssignTo(Group);
+            Group.AssignMember(groupableEntry);
             NotificationService.Warning(groupableEntry.CanonicalName + " has been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
             ModelChanged.InvokeAsync();
 
             Close();
         }
+        if (CopyFrom != null)
+        {
+            foreach (var member in CopyFrom.UserMembers)
+            {
+                Group.AssignMember(member);
+               
+            }
+            NotificationService.Warning("The selected members have been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
+            ModelChanged.InvokeAsync();
 
+            Close();
+        }
     }
 }

@@ -72,6 +72,17 @@
             Close();
 
         }
+        if (CopyFrom != null)
+        {
+            foreach (var g in CopyFrom.MemberOf)
+            {
+                DirectoryModel.AssignTo(g);
 
+            }
+            NotificationService.Warning(DirectoryModel.CanonicalName+" has been assigned to the selected groups but changes must be saved.", "Assignment Pending");
+            ModelChanged.InvokeAsync();
+
+            Close();
+        }
     }
 }

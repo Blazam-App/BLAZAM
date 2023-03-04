@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Services.Common;
 using System.Collections.Generic;
 using System.Data;
 using System.DirectoryServices;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 
@@ -26,7 +27,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             get
             {
-                return "/search/"+CanonicalName;
+                return "/search/" + CanonicalName;
             }
         }
 
@@ -51,7 +52,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     {
 
                     }
-                    if ((currentValue==null && prop.Value!=null )||!currentValue.Equals(prop.Value))
+                    if ((currentValue == null && prop.Value != null) || !currentValue.Equals(prop.Value))
                         changes.Add(new DirectoryModelChange()
                         {
                             Field = prop.Key,
@@ -623,7 +624,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     {
                         if (p.Value == null || (p.Value is string strValue && strValue.IsNullOrEmpty())) continue;
                         if (!DirectoryEntry.Properties.Contains(p.Key) || !DirectoryEntry.Properties[p.Key].Value.Equals(p.Value))
-                            DirectoryEntry.Properties[p.Key].Value = p.Value;
+                                DirectoryEntry.Properties[p.Key].Value = p.Value;
                     }
                     foreach (PropertyValueCollection property in DirectoryEntry.Properties)
                     {
@@ -871,7 +872,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         }
         public virtual bool Rename(string newName)
         {
-            DirectoryEntry.Rename("cn="+newName);
+            DirectoryEntry.Rename("cn=" + newName);
             OnDirectoryModelRenamed?.Invoke(this);
             return true;
         }
