@@ -13,7 +13,10 @@ namespace BLAZAM.Common.Models.Database.Permissions
         public bool AllowOrDeny { get; set; }
         public ActionAccessFlag ObjectAction { get; set; }
         public List<AccessLevel> AccessLevels { get; set; }
-
+        public override int GetHashCode()
+        {
+            return (ObjectType.ToString()+ ObjectAction.Name).GetHashCode();
+        }
         public override bool Equals(object? obj)
         {
             if (obj is ActionAccessMapping mapping)

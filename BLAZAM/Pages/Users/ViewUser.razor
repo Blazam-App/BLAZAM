@@ -681,6 +681,7 @@
             return false;
         }
     }
+
     protected async Task RefreshUserGroups()
     {
         await Task.Run(() =>
@@ -695,7 +696,7 @@
         });
     }
 
-    async Task SetExpireTime(DateTime? time)
+    void SetExpireTime(DateTime? time)
     {
         if (time != null && time != DateTime.MinValue)
             User.ExpireTime = time.Value.AddDays(1);
@@ -710,16 +711,16 @@
             {
                 var changes = User.Changes;
                 await User.CommitChangesAsync();
-                AuditLogger.User.Changed(User, changes);
+                await AuditLogger.User.Changed(User, changes);
                 EditMode = false;
-                NotificationService.Success("The changes made to this user have been saved.", "Changes Saved");
+                await NotificationService.Success("The changes made to this user have been saved.", "Changes Saved");
             }
             catch (ApplicationException ex)
             {
-                NotificationService.Error(ex.Message, "Save Failed");
+                await NotificationService.Error(ex.Message, "Save Failed");
 
             }
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
 
         }
 
@@ -730,7 +731,7 @@
         {
             User.DiscardChanges();
             EditMode = false;
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
 
         }
 
@@ -740,8 +741,8 @@
         if (await MessageService.Confirm("Are you sure you want to unlock " + User.DisplayName + "?", "Unlock User"))
         {
             User.LockedOut = false;
-            NotificationService.Warning(User.DisplayName + " will be unlocked when changes are saved.", "Unlock Pending");
-            InvokeAsync(StateHasChanged);
+            await NotificationService.Warning(User.DisplayName + " will be unlocked when changes are saved.", "Unlock Pending");
+            await InvokeAsync(StateHasChanged);
 
         }
 
@@ -753,16 +754,16 @@
             try
             {
                 User.Delete();
-                NotificationService.Success(User.DisplayName + " has been deleted.", "User Deleted");
+                await NotificationService.Success(User.DisplayName + " has been deleted.", "User Deleted");
                 //User = null;
                 Nav.NavigateTo("/users/search");
             }
             catch (ApplicationException ex)
             {
-                NotificationService.Error(ex.Message);
+                await NotificationService.Error(ex.Message);
             }
 
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
         }
     }
     async Task RemoveThumbnail()
@@ -770,12 +771,12 @@
         if (await MessageService.Confirm("Are you sure you want to delete the thumbnail photo for" + User.DisplayName + "?", "Delete Thumbnail"))
         {
             User.ThumbnailPhoto = null;
-            NotificationService.Warning(User.DisplayName + " will have their thumbnail deleted on save.", "Thumbnail Deletion Pending");
-            InvokeAsync(StateHasChanged);
+            await NotificationService.Warning(User.DisplayName + " will have their thumbnail deleted on save.", "Thumbnail Deletion Pending");
+            await InvokeAsync(StateHasChanged);
         }
     }
 
-    async void Renamed(IDirectoryModel renamedUser)
+    void Renamed(IDirectoryModel renamedUser)
     {
         if(renamedUser is IADUser user)
         {

@@ -4,10 +4,10 @@
 
 @inherits AppComponentBase
 <h3>User Groups</h3>
-    <LoadingIndicator Visible=LoadingData>
-        <p> Only users in the following Active Directory groups (or nested groups) will be allowed to log in to the applicaiton.</p>
-        <ListGroup>
-            <TextEdit Placeholder="Filter Groups" @bind-Text="@GroupFilter" />
+<LoadingIndicator Visible=LoadingData>
+    <p> Only users in the following Active Directory groups (or nested groups) will be allowed to log in to the applicaiton.</p>
+    <ListGroup>
+        <TextEdit Placeholder="Filter Groups" @bind-Text="@GroupFilter" />
         @if (AllLevels.Count > 0)
         {
             @foreach (var pl in AllLevels.Where(l => Directory.Groups.FindGroupBySID(l.GroupSID).GroupName.StartsWith(GroupFilter, StringComparison.OrdinalIgnoreCase) || Directory.Groups.FindGroupBySID(l.GroupSID).GroupName.Contains(GroupFilter, StringComparison.OrdinalIgnoreCase)))
@@ -15,18 +15,18 @@
                 <BLAZAM.Server.Shared.UI.Settings.Permissions.PriviligeLevelListItem Level="pl" Context="Context" />
             }
         }
-            <ListGroupItem Name="AddUserGroup">
+        <ListGroupItem Name="AddUserGroup">
 
-                <Button Width=Width.Is100 Background="Background.Success" Clicked="@ShowAddGroup">
-                    @SettingsLocalization["Create New User Group"]
-                </Button>
-            </ListGroupItem>
+            <Button Width=Width.Is100 Background="Background.Success" Clicked="@ShowAddGroup">
+                @SettingsLocalization["Create New User Group"]
+            </Button>
+        </ListGroupItem>
 
-        </ListGroup>
+    </ListGroup>
 
-        <AddPrivilegeLevelModal @ref=@addGroupModal Context="Context" GroupAdded="GroupAdded" />
-       
-    </LoadingIndicator>
+    <AddPrivilegeLevelModal @ref=@addGroupModal Context="Context" GroupAdded="GroupAdded" />
+
+</LoadingIndicator>
 
 @{
 
@@ -49,12 +49,10 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Task.Run(async () =>
-        {
 
-            settings = Context.PrivilegeLevel;
-            RefreshLevels();
-        });
+
+        settings = Context.PrivilegeLevel;
+        await RefreshLevels();
         await InvokeAsync(StateHasChanged);
 
     }

@@ -31,6 +31,6 @@
         Name = "Disabled Users";
         LockedUsers = (await Directory.Users.FindChangedUsersAsync(false)).Where(u => u.Disabled).ToList();
         LoadingData = false;
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 }

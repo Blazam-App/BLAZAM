@@ -196,7 +196,7 @@
 
 
 
-            AuditLogger.Computer.Searched(Computer);
+            await AuditLogger.Computer.Searched(Computer);
         }
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
@@ -230,7 +230,7 @@
             try
             {
                 Computer.Delete();
-                NotificationService.Success(Computer.CanonicalName + " has been deleted.", "Computer Deleted");
+                await NotificationService.Success(Computer.CanonicalName + " has been deleted.", "Computer Deleted");
 
                 Computer = null;
                 Nav.NavigateTo("/users/search");
@@ -238,7 +238,7 @@
             }
             catch (ApplicationException ex)
             {
-                NotificationService.Error(ex.Message);
+                await NotificationService.Error(ex.Message);
             }
             await InvokeAsync(StateHasChanged);
         }
@@ -249,7 +249,7 @@
         {
             await Computer.CommitChangesAsync();
             EditMode = false;
-            NotificationService.Success("The changes made to this computer have been saved.", "Changes Saved");
+            await NotificationService.Success("The changes made to this computer have been saved.", "Changes Saved");
             await InvokeAsync(StateHasChanged);
 
         }

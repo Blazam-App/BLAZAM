@@ -253,7 +253,7 @@
         fields = await Context.ActiveDirectoryFields.ToListAsync();
 
         await RefreshGroups();
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
 
     }
 
@@ -316,7 +316,7 @@
                 var result = await Context.SaveChangesAsync();
                 if (result > 0)
                 {
-                    NotificationService.Success(null, DirectoryTemplate.Name + " was added.");
+                    await NotificationService.Success(null, DirectoryTemplate.Name + " was added.");
                     // DirectoryTemplate = new();
 
                 }
@@ -326,7 +326,7 @@
                 switch (ex.InnerException?.HResult)
                 {
                     case -2146232060:
-                        NotificationService.Error("Each template must be uniquely named.", "Duplicate Template Name");
+                        await NotificationService.Error("Each template must be uniquely named.", "Duplicate Template Name");
 
                         break;
                 }
@@ -341,11 +341,11 @@
             var result = await Context.SaveChangesAsync();
             if (result > 0)
             {
-                NotificationService.Success("Template changes saved");
+                await NotificationService.Success("Template changes saved");
             }
             else
             {
-                NotificationService.Warning("No changes");
+                await NotificationService.Warning("No changes");
 
             }
         }
@@ -354,7 +354,7 @@
 
     class TemplateVariable
     {
-        public string DisplayName { get; set; }
-        public string Value { get; set; }
+        public string? DisplayName { get; set; }
+        public string? Value { get; set; }
     }
 }

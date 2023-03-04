@@ -94,30 +94,30 @@
 
 @code {
     AppModal? RenameModal;
-    string newCategoryName;
+    string? newCategoryName;
     protected async Task DuplicateTemplate(DirectoryTemplate template)
     {
         SelectedTemplate = (DirectoryTemplate)template.Clone();
         await InvokeAsync(StateHasChanged);
-        Header?.OnRefreshRequested.Invoke();
+        Header?.OnRefreshRequested?.Invoke();
 
 
     }
     async Task RenameSelectedCategory()
     {
-        var temp = Context.DirectoryTemplates.Where(t => t.Category == SelectedCategory).ToList();
+        var temp = Context?.DirectoryTemplates.Where(t => t.Category == SelectedCategory).ToList();
         foreach (var template in temp)
         {
             template.Category = newCategoryName;
         }
         if (SelectedTemplate.Category == SelectedCategory)
             SelectedTemplate.Category = newCategoryName;
-        Context.SaveChanges();
+        Context?.SaveChanges();
 
-        NotificationService.Success("Renamed category "+ SelectedCategory + " to "+newCategoryName);
+        await NotificationService.Success("Renamed category " + SelectedCategory + " to " + newCategoryName);
         SelectedCategory = newCategoryName;
         await FetchTemplates();
-        RenameModal.Hide();
+        RenameModal?.Hide();
         await InvokeAsync(StateHasChanged);
     }
 }

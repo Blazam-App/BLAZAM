@@ -46,18 +46,18 @@
     async Task SaveChanges()
     {
         if(GroupName.IsNullOrEmpty()){
-            NotificationService.Warning("You must provide a group name", "Group name");
+            await NotificationService.Warning("You must provide a group name", "Group name");
             GroupName = Group.CanonicalName;
         }
         //Group.CommitChanges();
         try{
             Group.Rename(GroupName);
-            NotificationService.Success("The group has been renamed.", "Group renamed");
+            await NotificationService.Success("The group has been renamed.", "Group renamed");
             Close();
         }
         catch(Exception ex)
         {
-            NotificationService.Error("The group could not be renamed.", "Group renamed");
+            await NotificationService.Error("The group could not be renamed.", "Group renamed");
         }
 
     }

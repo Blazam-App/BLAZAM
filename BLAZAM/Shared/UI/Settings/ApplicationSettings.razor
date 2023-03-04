@@ -124,12 +124,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Task.Run(() =>
-        {
-            settings = Context.AppSettings.FirstOrDefault();
-            LoadingData = false;
-            InvokeAsync(StateHasChanged);
-        });
+
+        settings = await Context.AppSettings.FirstOrDefaultAsync();
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
     }
 
 

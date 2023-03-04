@@ -9,7 +9,10 @@
             <Row>
                 <Field>
                     <FieldLabel>Group Name</FieldLabel>
-                    <ADGroupAutoComplete SelectedGroup="selectedGroup" />
+                    <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.All"
+                                    @bind-SelectedResult=@selectedGroup
+                                    CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
+                
                 </Field>
                 <Field>
                     <FieldLabel>Super User</FieldLabel>
@@ -26,7 +29,7 @@
     </ModalContent>
 </Modal>
 @code {
-    IADGroup selectedGroup;
+    IDirectoryModel selectedGroup;
     [Parameter]
     public EventCallback GroupAdded { get; set; }
 
@@ -38,6 +41,6 @@
         await Context.SaveChangesAsync();
         NewPrivilegeLevel = new PrivilegeLevel();
         await Modal?.Hide();
-        GroupAdded.InvokeAsync();
+        await GroupAdded.InvokeAsync();
     }
 }

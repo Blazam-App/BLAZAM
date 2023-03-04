@@ -27,7 +27,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Task.Run(() =>
+        await Task.Run(() =>
         {
             settings = Context.AppSettings.FirstOrDefault();
             LoadingData = false;

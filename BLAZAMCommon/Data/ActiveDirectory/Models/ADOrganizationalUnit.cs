@@ -170,7 +170,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             return newUser;
 
         }
-
+        public override int GetHashCode()
+        {
+            return DN.GetHashCode();
+        }
         public override bool Equals(object? obj)
         {
             if (obj is IADOrganizationalUnit otherOU)
