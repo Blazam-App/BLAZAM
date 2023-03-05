@@ -26,9 +26,17 @@ namespace BLAZAM
 
 
 
-        
 
-     
+
+        public static bool IsUrlLocalToHost(this string url)
+        {
+            if (url.StartsWith("https://localhost")) return true;
+            if (url == "") return true;
+            return ((url[0] == '/' && (url.Length == 1 ||
+                    (url[1] != '/' && url[1] != '\\'))) ||   // "/" or "/foo" but not "//" or "/\"
+                    (url.Length > 1 &&
+                     url[0] == '~' && url[1] == '/'));   // "~/" or "~/foo"
+        }
 
         public static string ToPlainText(this SecureString? secureString)
         {
