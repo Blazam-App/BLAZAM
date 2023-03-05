@@ -4,48 +4,48 @@
 
 @inherits AppComponentBase
 <h3>Delegates</h3>
-    <LoadingIndicator Visible=LoadingData>
-        <p> Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) will be allowed to log in to the applicaiton.</p>
-        <p> The acceess allowed to each delegate is controlled by the mapped access level.</p>
-        <ListGroup>
-            <Row>
-                <Column ColumnSize="ColumnSize.Is10.OnTablet">
+<LoadingIndicator Visible=LoadingData>
+    <p> Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) will be allowed to log in to the applicaiton.</p>
+    <p> The acceess allowed to each delegate is controlled by the mapped access level.</p>
+    <ListGroup>
+        <Row>
+            <Column ColumnSize="ColumnSize.Is10.OnTablet">
                 <TextEdit Display=Display.InlineFlex Placeholder="Filter Delegates" @bind-Text="@GroupFilter" />
 
-                </Column>
+            </Column>
 
             <Column ColumnSize="ColumnSize.Is2.OnTablet">
                 <Button Color=Color.Secondary Float=Float.End Display=Display.InlineFlex Clicked="(()=>{trashModal.Show();})"><Icon Name=IconName.Delete /></Button>
 
             </Column>
-            </Row>
+        </Row>
         @if (AllLevels.Count > 0)
         {
 
             @foreach (var pl in AllLevels.Where(l => l.DeletedAt == null).Where(l =>
            Directory.GetDirectoryModelBySid(l.DelegateSid).CanonicalName
-            .StartsWith(GroupFilter, StringComparison.OrdinalIgnoreCase) ||
+           .StartsWith(GroupFilter, StringComparison.OrdinalIgnoreCase) ||
            Directory.GetDirectoryModelBySid(l.DelegateSid).CanonicalName
-            .Contains(GroupFilter, StringComparison.OrdinalIgnoreCase)))
+           .Contains(GroupFilter, StringComparison.OrdinalIgnoreCase)))
             {
                 <BLAZAM.Server.Shared.UI.Settings.Permissions.PriviligeLevelListItem Level="pl" Context="Context" />
             }
         }
-            <ListGroupItem Name="AddUserGroup">
+        <ListGroupItem Name="AddUserGroup">
 
-                <Button Background="Background.Success" TextColor="TextColor.Light" Clicked="@ShowAddGroup">
-                    @SettingsLocalization["Create New Delegation Target"]
-                </Button>
-            </ListGroupItem>
+            <Button Background="Background.Success" TextColor="TextColor.Light" Clicked="@ShowAddGroup">
+                @SettingsLocalization["Create New Delegation Target"]
+            </Button>
+        </ListGroupItem>
 
-        </ListGroup>
-        <AppModal @ref=@trashModal Title="Deleted Delegates">
+    </ListGroup>
+    <AppModal @ref=@trashModal Title="Deleted Delegates">
         @foreach (var deleg in AllLevels.Where(l => l.DeletedAt != null))
-            {
+        {
             var model = @Directory.GetDirectoryModelBySid(deleg.DelegateSid);
             <Row>
                 <Column>
-                    <Strong>@model.ObjectType</Strong><br/>
+                    <Strong>@model.ObjectType</Strong><br />
                     <Text>@model.CanonicalName</Text>
                     <Text>@deleg.DeletedAt</Text>
                 </Column>
@@ -54,11 +54,11 @@
                 </Column>
 
             </Row>
-                }
-        </AppModal>
-        <AddPrivilegeLevelModal @ref=@addGroupModal Context="Context" GroupAdded="GroupAdded" />
-       
-    </LoadingIndicator>
+        }
+    </AppModal>
+    <AddPrivilegeLevelModal @ref=@addGroupModal Context="Context" DelegateAdded="GroupAdded" />
+
+</LoadingIndicator>
 
 @{
 
@@ -82,12 +82,11 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Task.Run(async () =>
-        {
 
-            settings = Context.PermissionDelegate;
-            RefreshLevels();
-        });
+
+        settings = Context.PermissionDelegate;
+        RefreshLevels();
+
         await InvokeAsync(StateHasChanged);
 
     }

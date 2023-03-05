@@ -32,7 +32,7 @@
 @code {
     IDirectoryModel selectedDelegate;
     [Parameter]
-    public EventCallback GroupAdded { get; set; }
+    public EventCallback DelegateAdded { get; set; }
 
     PermissionDelegate NewPermissionDelegate = new PermissionDelegate();
     private async void AddGroup()
@@ -44,7 +44,7 @@
             await Context.SaveChangesAsync();
             NewPermissionDelegate = new PermissionDelegate();
             await Modal?.Hide();
-            await GroupAdded.InvokeAsync();
+            await DelegateAdded.InvokeAsync();
         }catch(DbUpdateException ex)
         {
             switch (ex.InnerException?.HResult)
