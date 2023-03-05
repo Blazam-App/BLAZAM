@@ -6,7 +6,6 @@
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
 
-    <Row Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
         <Heading>@SettingsLocalization["Email Settings"]</Heading>
         <Form @onsubmit="Save">
 
@@ -173,7 +172,6 @@
                 </SettingsField>
             </Validations>
         </Form>
-    </Row>
 </LoadingIndicator>
 @code {
     BLAZAM.Common.Models.Database.EmailSettings settings = new BLAZAM.Common.Models.Database.EmailSettings();

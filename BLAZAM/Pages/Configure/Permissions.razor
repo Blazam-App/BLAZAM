@@ -1,22 +1,53 @@
 ﻿@page "/permissions"
+@page "/permissions/{selectedTab}"
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
-@inherits AppComponentBase
+@inherits TabbedAppComponentBase
 <AuthorizeView Roles=@UserRoles.SuperAdmin>
 
-    <h2>Permissions</h2>
-    @if (Monitor.DirectoryConnected == ConnectionState.Up)
-    {
-     <BLAZAM.Server.Shared.UI.Settings.Permissions.PrivilegeLevelEditor/>
-    }
-    <BLAZAM.Server.Shared.UI.Settings.Permissions.AccessLevelEditor />
-    @if (Monitor.DirectoryConnected == ConnectionState.Up)
-    {
-        <BLAZAM.Server.Shared.UI.Settings.Permissions.ImpersonateUser />
-        <BLAZAM.Server.Shared.UI.Settings.Permissions.PrivilegeMapper/>
+    <SetHeader>
+        <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
+            <Items>
+                <Tab Name="delegates">@SettingsLocalization["Delegates"]</Tab>
+                <Tab Name="accessLevels">@SettingsLocalization["Access Levels"]</Tab>
+                <Tab Name="mappings">@SettingsLocalization["Mappings"]</Tab>
+           
+            </Items>
+        </Tabs>
+    </SetHeader>
+    <Tabs SelectedTab="@selectedTab">
 
-    }
+        <Content>
+            <TabPanel Name="delegates" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
+                @if (Monitor.DirectoryConnected == ConnectionState.Up)
+                {
+                    <BLAZAM.Server.Shared.UI.Settings.Permissions.DelegateEditor />
+                }
+            </TabPanel>
+            <TabPanel Name="accessLevels" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
+                <BLAZAM.Server.Shared.UI.Settings.Permissions.AccessLevelEditor />
+
+            </TabPanel>
+            <TabPanel Name="mappings" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
+                @if (Monitor.DirectoryConnected == ConnectionState.Up)
+                {
+                    <BLAZAM.Server.Shared.UI.Settings.Permissions.ImpersonateUser />
+                    <BLAZAM.Server.Shared.UI.Settings.Permissions.PrivilegeMapper />
+
+                }
+
+            </TabPanel>
+           
+        </Content>
+    </Tabs>
 </AuthorizeView>
-@code {
 
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        selectedTab = "delegates";
+        BaseUri = "/permissions";
+    }
 }

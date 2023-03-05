@@ -32,18 +32,20 @@
                     </FieldLabel>
                     @foreach (var adObjectType in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
                     {
-                        //Prepare data to show object access addbutons
-                        var existingAccess = WorkingModel.ObjectMap.Where(m => m.ObjectType == (ActiveDirectoryObjectType)adObjectType).FirstOrDefault();
-                        bool buttonDisabled = true;
-                        if (existingAccess == null)
+                        if ((ActiveDirectoryObjectType)adObjectType != ActiveDirectoryObjectType.All)
                         {
-                            buttonDisabled = false;
+                            //Prepare data to show object access addbutons
+                            var existingAccess = WorkingModel.ObjectMap.Where(m => m.ObjectType == (ActiveDirectoryObjectType)adObjectType).FirstOrDefault();
+                            bool buttonDisabled = true;
+                            if (existingAccess == null)
+                            {
+                                buttonDisabled = false;
+                            }
+                            var name = Enum.GetName(typeof(ActiveDirectoryObjectType), adObjectType);
+                            <Column ColumnSize="ColumnSize.IsQuarter.OnFullHD.IsHalf">
+                                <Button Width=Width.Is100 Disabled=buttonDisabled Color=Color.Success Clicked="()=>AddObjectTypeAccess(adObjectType)">@SettingsLocalization[name]</Button>
+                            </Column>
                         }
-                        var name = Enum.GetName(typeof(ActiveDirectoryObjectType), adObjectType);
-                        <Column ColumnSize="ColumnSize.IsQuarter.OnFullHD.IsHalf">
-                            <Button Width=Width.Is100 Disabled=buttonDisabled Color=Color.Success Clicked="()=>AddObjectTypeAccess(adObjectType)">@SettingsLocalization[name]</Button>
-                        </Column>
-
                     }
                 </Field>
             </Row>
@@ -63,12 +65,12 @@
                 var name = Enum.GetName(typeof(ActiveDirectoryObjectType), objectMap.ObjectType);
 
                 <Field Horizontal Margin="Margin.Is2.OnY">
-                    <FieldLabel ColumnSize="ColumnSize.Is4" Class="h3">@SettingsLocalization[name]</FieldLabel>
-                    <FieldBody ColumnSize="ColumnSize.Is6">
+                <FieldLabel ColumnSize="ColumnSize.Is4" Class="h3">@SettingsLocalization[name]</FieldLabel>
+                <FieldBody ColumnSize="ColumnSize.Is6">
 
-                        <Select TValue="int" SelectedValueChanged="(int value)=>SetObjectMapAccess(objectMap,value)" SelectedValue="objectMap.ObjectAccessLevelId">
+                    <Select TValue="int" SelectedValueChanged="(int value)=>SetObjectMapAccess(objectMap,value)" SelectedValue="objectMap.ObjectAccessLevelId">
 
-                            @foreach (ObjectAccessLevel levelValue in ObjectAccessLevels.Levels)
+                        @foreach (ObjectAccessLevel levelValue in ObjectAccessLevels.Levels)
                             {
                                 <SelectItem Value="levelValue.ObjectAccessLevelId">@SettingsLocalization[levelValue.Name]</SelectItem>
 
@@ -90,7 +92,7 @@
                     <h4>@name Actions</h4>
 
                     <Field Horizontal>
-                        @foreach (var action in actions.OrderBy(f => f.Name))
+                    @foreach (var action in actions.OrderBy(f => f.Name))
                         {
                             if (action.IsActionAppropriateForObject(objectMap.ObjectType))
                             {
@@ -113,16 +115,16 @@
                             string aname = Enum.GetName(typeof(ActiveDirectoryObjectType), actionMap.ObjectType);
 
                             <Field Horizontal>
-                                <FieldLabel ColumnSize="ColumnSize.Is6">@SettingsLocalization[actionMap.ObjectAction.Name+" "+aname]</FieldLabel>
-                                <FieldBody ColumnSize="ColumnSize.Is6">
-                                    <RadioGroup @bind-CheckedValue=actionMap.AllowOrDeny>
-                                        <Radio Value="false">@SettingsLocalization["Deny"]</Radio>
-                                        <Radio Value="true">@SettingsLocalization["Allow"]</Radio>
-                                        <AppCloseButton Clicked="()=>RemoveActionAccess(actionMap)" />
+                            <FieldLabel ColumnSize="ColumnSize.Is6">@SettingsLocalization[actionMap.ObjectAction.Name+" "+aname]</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.Is6">
+                                <RadioGroup @bind-CheckedValue=actionMap.AllowOrDeny>
+                                    <Radio Value="false">@SettingsLocalization["Deny"]</Radio>
+                                    <Radio Value="true">@SettingsLocalization["Allow"]</Radio>
+                                    <AppCloseButton Clicked="()=>RemoveActionAccess(actionMap)" />
 
-                                    </RadioGroup>
-                                </FieldBody>
-                            </Field>
+                                </RadioGroup>
+                            </FieldBody>
+                        </Field>
                         }
                     }
                 }
@@ -135,7 +137,7 @@
 
                 <Field Horizontal>
 
-                    @foreach (var field in fields.OrderBy(f => f.FieldName))
+                @foreach (var field in fields.OrderBy(f => f.FieldName))
                     {
 
                         if (ShowField(field))
@@ -156,10 +158,10 @@
 
 
                     <Field Horizontal>
-                        <FieldLabel ColumnSize="ColumnSize.Is6">@field.Field.FieldName</FieldLabel>
-                        <FieldBody ColumnSize="ColumnSize.Is6">
-                            <Select TValue="int" @bind-SelectedValue="field.FieldAccessLevelId">
-                                @foreach (FieldAccessLevel levelValue in FieldAccessLevels.Levels)
+                    <FieldLabel ColumnSize="ColumnSize.Is6">@field.Field.FieldName</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.Is6">
+                        <Select TValue="int" @bind-SelectedValue="field.FieldAccessLevelId">
+                            @foreach (FieldAccessLevel levelValue in FieldAccessLevels.Levels)
                                 {
 
                                     <SelectItem Value="levelValue.FieldAccessLevelId">@SettingsLocalization[levelValue.Name]</SelectItem>
@@ -316,7 +318,7 @@
     }
     Task OnCheckedValueChanged(ObjectAccessLevel nl)
     {
-       
+
         return Task.CompletedTask;
     }
 

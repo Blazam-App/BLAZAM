@@ -1,48 +1,39 @@
 @inherits AppComponentBase
 
-<Accordion>
+<Heading Size="HeadingSize.Is3">
+    @SettingsLocalization["Access Levels"]
+</Heading>
+<p> Access levels are a template of permissions that can be applied to specific OU's for specific delegates.</p>
+<LoadingIndicator Visible=LoadingData>
 
-    <Collapse Visible="@collapseVisible">
-        <CollapseHeader>
-            <Heading Size="HeadingSize.Is5">
-                <Button Clicked="@(()=>collapseVisible = !collapseVisible)"><h3>@SettingsLocalization["Access Levels"]</h3></Button>
-            </Heading>
-        </CollapseHeader>
-        <CollapseBody>
-            <LoadingIndicator Visible=LoadingData>
+    @if (CurrentAccessLevels != null)
+    {
+        @foreach (AccessLevel ap in CurrentAccessLevels)
+        {
 
-                @if (CurrentAccessLevels != null)
-                {
-                    @foreach (AccessLevel ap in CurrentAccessLevels)
-                    {
+            <ShowAccessLevel Model="ap" />
+        }
+    }
+    <Accordion>
 
-                        <ShowAccessLevel Model="ap" />
-                    }
-                }
-                <Accordion>
+        <Collapse Visible="@addCollapseVisible">
+            <CollapseHeader>
+                <Heading Size="HeadingSize.Is5">
+                    <Button Background=Background.Success TextColor=TextColor.Light Clicked="@(()=>addCollapseVisible = !addCollapseVisible)">@SettingsLocalization["Add New Access Level"]</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody>
 
-                    <Collapse Visible="@addCollapseVisible">
-                        <CollapseHeader>
-                            <Heading Size="HeadingSize.Is5">
-                                <Button Background=Background.Success TextColor=TextColor.Light Clicked="@(()=>addCollapseVisible = !addCollapseVisible)">@SettingsLocalization["Add New Access Level"]</Button>
-                            </Heading>
-                        </CollapseHeader>
-                        <CollapseBody>
-
-                            <EditAccessLevel LevelsChanged="Update" />
+                <EditAccessLevel LevelsChanged="Update" />
 
 
-                        </CollapseBody>
-                    </Collapse>
-                </Accordion>
-            </LoadingIndicator>
+            </CollapseBody>
+        </Collapse>
+    </Accordion>
+</LoadingIndicator>
 
-        </CollapseBody>
-    </Collapse>
-</Accordion>
 @code {
     int x = 0;
-    bool collapseVisible;
     bool addCollapseVisible;
     List<AccessLevel> CurrentAccessLevels;
     protected override async Task OnInitializedAsync()
@@ -54,7 +45,7 @@
     }
     async void Update()
     {
-        CurrentAccessLevels = await  Context.AccessLevels.ToListAsync();
+        CurrentAccessLevels = await Context.AccessLevels.ToListAsync();
         await InvokeAsync(StateHasChanged);
     }
 }

@@ -11,7 +11,8 @@
     </ModalContent>
 </Modal>
 @code {
-
+    [Inject]
+    protected INotificationService NotificationService{ get; set; }
     [Parameter]
     public DatabaseContext Context { get; set; }
 

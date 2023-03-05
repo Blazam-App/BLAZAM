@@ -2,18 +2,22 @@
 <Modal @ref="Modal">
     <ModalContent Centered>
         <ModalHeader>
-            <ModalTitle>Add User Group</ModalTitle>
+            <ModalTitle>Add Delegate</ModalTitle>
             <AppCloseButton />
         </ModalHeader>
         <ModalBody>
             <Row>
                 <Field>
-                    <FieldLabel>Group Name</FieldLabel>
-                    <ADGroupAutoComplete SelectedGroup="selectedGroup" />
+                    <FieldLabel>User or Group</FieldLabel>
+                    <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.All"
+                                    @bind-SelectedResult=@selectedDelegate
+                                    CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
+
                 </Field>
                 <Field>
                     <FieldLabel>Super User</FieldLabel>
-                    <Switch TValue="bool" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=Program.InDemoMode/>
+                    <FieldHelp>Will have complete and total acceess to the application if enabled</FieldHelp>
+                    <Switch TValue="bool" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=Program.InDemoMode />
                 </Field>
             </Row>
             <Row>
@@ -26,18 +30,38 @@
     </ModalContent>
 </Modal>
 @code {
-    IADGroup selectedGroup;
+    IDirectoryModel selectedDelegate;
     [Parameter]
     public EventCallback GroupAdded { get; set; }
-    
+
     PermissionDelegate NewPermissionDelegate = new PermissionDelegate();
     private async void AddGroup()
     {
-        NewPermissionDelegate.DelegateSid = selectedGroup.SID;
-        Context.PermissionDelegate.Add(NewPermissionDelegate);
-        await Context.SaveChangesAsync();
-        NewPermissionDelegate = new PermissionDelegate();
-        await Modal?.Hide();
-        GroupAdded.InvokeAsync();
+        try
+        {
+            NewPermissionDelegate.DelegateSid = selectedDelegate.SID;
+            Context.PermissionDelegate.Add(NewPermissionDelegate);
+            await Context.SaveChangesAsync();
+            NewPermissionDelegate = new PermissionDelegate();
+            await Modal?.Hide();
+            await GroupAdded.InvokeAsync();
+        }catch(DbUpdateException ex)
+        {
+            switch (ex.InnerException?.HResult)
+            {
+                case -2146232060:
+                    var confilctingDelegate = Context.PermissionDelegate.Where(pd=>pd.DelegateSid==selectedDelegate.SID).FirstOrDefault();
+                    if(confilctingDelegate.DeletedAt==null)
+                    await NotificationService.Error("That delegate already exists.");
+                    else
+                        await NotificationService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
+
+                    break;
+            }
+        }
+        catch(Exception ex)
+        {
+            await NotificationService.Error("An unexpected error has occured.");
+        }
     }
 }

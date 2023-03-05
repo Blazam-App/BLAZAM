@@ -26,6 +26,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         IADComputerSearcher? Computers { get; }
         IEncryptionService Encryption { get; }
         IDirectoryModel? GetDirectoryModelBySid(string sid);
+        IDirectoryModel? GetDirectoryModelBySid(byte[] sid);
 
         /// <summary>
         /// Authenticates a login request's credentials against the configured

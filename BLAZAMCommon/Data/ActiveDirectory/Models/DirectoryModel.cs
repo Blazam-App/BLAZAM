@@ -918,10 +918,11 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             return obj is DirectoryModel model &&
                    DN == model.DN;
         }
-
+        /*
         public override int GetHashCode()
         {
-            return DN.GetHashCode();
+            return DN?.GetHashCode();
         }
+        */
     }
 }

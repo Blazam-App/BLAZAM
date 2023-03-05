@@ -6,7 +6,6 @@
 
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
-    <Row Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
         <Heading>@SettingsLocalization["Authentication Settings"]</Heading>
         <Form @onsubmit=Save>
         <Validations Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
@@ -89,7 +88,6 @@
 
         </Validations>
         </Form>
-    </Row>
 </LoadingIndicator>
 @code {
     AuthenticationSettings settings = new AuthenticationSettings();

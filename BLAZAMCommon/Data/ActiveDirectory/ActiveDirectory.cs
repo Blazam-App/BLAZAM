@@ -398,6 +398,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 
         }
 
+        public IDirectoryModel? GetDirectoryModelBySid(byte[] sid) => GetDirectoryModelBySid(sid.ToSidString());
         public IDirectoryModel? GetDirectoryModelBySid(string sid)
         {
             var searcher = new ADSearch();

@@ -269,6 +269,10 @@ namespace BLAZAM.Common.Data.Database
             {
                 entity.HasIndex(e => e.UserGUID).IsUnique();
             });
+              modelBuilder.Entity<PermissionDelegate>(entity =>
+            {
+                entity.HasIndex(e => e.DelegateSid).IsUnique();
+            });
 
         }
 

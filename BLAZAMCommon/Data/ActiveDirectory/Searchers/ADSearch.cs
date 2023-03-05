@@ -196,7 +196,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                 }
                 if (EnabledOnly == true)
                 {
-                    searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + "(!userAccountControl:1.2.840.113556.1.4.803:= 2))";
+                    //searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + "(!userAccountControl:1.2.840.113556.1.4.803:= 2))";
                 }
 
 
