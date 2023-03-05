@@ -122,12 +122,25 @@ namespace BLAZAM.Common.Data.Database
                                 sqlOptions.EnableRetryOnFailure();
 
                             }
-                                ).EnableSensitiveDataLogging();
+                                ).EnableSensitiveDataLogging()
+                                .LogTo(Loggers.DatabaseLogger.Information);
                     break;
                 case "SQLite":
 
                     optionsBuilder.UseSqlite(
-                        Configuration.GetConnectionString("SQLiteConnectionString")).EnableSensitiveDataLogging();
+                        Configuration.GetConnectionString("SQLiteConnectionString")).EnableSensitiveDataLogging()
+                        .LogTo(Loggers.DatabaseLogger.Information);
+                    break;
+                case "MySQL":
+                    optionsBuilder.UseMySql(ConnectionString.ConnectionString,
+                        ServerVersion.AutoDetect(ConnectionString.ConnectionString),
+                        mySqlOptionsAction: options =>{
+                            options.SchemaBehavior(Pomelo.EntityFrameworkCore.MySql.Infrastructure.MySqlSchemaBehavior.Ignore);
+                            options.SetSqlModeOnOpen();
+                        })
+                        
+                        .EnableSensitiveDataLogging()
+                                .LogTo(Loggers.DatabaseLogger.Information);
                     break;
             }
 
@@ -140,7 +153,7 @@ namespace BLAZAM.Common.Data.Database
                     )
                 );
             */
-            optionsBuilder.UseLoggerFactory(loggerFactory);
+            //optionsBuilder.UseLoggerFactory(loggerFactory);
 
         }
 

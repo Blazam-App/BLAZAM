@@ -215,19 +215,7 @@ namespace BLAZAM
             //Grab the connection string and store it in the context statically
             //This can obviously only be changed on app restart
 
-            DatabaseContext.Configuration = builder.Configuration;
 
-            if (builder.Configuration.GetValue<string>("DatabaseType") == "SQLite")
-            {
-                DatabaseContext.ConnectionString = new DatabaseConnectionString(builder.Configuration.GetConnectionString("SQLiteConnectionString"));
-
-            }
-            else
-            {
-                DatabaseContext.ConnectionString = new DatabaseConnectionString(builder.Configuration.GetConnectionString("SQLConnectionString"));
-
-            }
-            Loggers.SystemLogger.Debug("Connection String: " + DatabaseContext.ConnectionString);
 
 
 
@@ -300,30 +288,29 @@ namespace BLAZAM
             builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = InDebugMode; });
 
             //Inject the database as a service
-            builder.Services.AddDbContextFactory<DatabaseContext>(opt =>
-                          {
-                              var dbType = Configuration.GetValue<string>("DatabaseType");
-                              switch (dbType)
-                              {
-                                  case "SQL":
 
-                                      opt.UseSqlServer(
-                                          builder.Configuration.GetConnectionString("SQLConnectionString"),
-                                              sqlServerOptionsAction: sqlOptions =>
-                                                  {
-                                                      sqlOptions.EnableRetryOnFailure();
+            DatabaseContext.Configuration = builder.Configuration;
+            var dbType = builder.Configuration.GetValue<string>("DatabaseType");
+            switch (dbType.ToLower())
+            {
+                case "sqlite":
+                DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("SQLiteConnectionString"), DatabaseType.SQLite);
+                    break;
+                case "sql":
+                DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("SQLConnectionString"), DatabaseType.SQL);
+                    break;
+                case "mysql":
+                    DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("MySQLConnectionString"), DatabaseType.MySQL);
+                    break;
 
-                                                  }
-                                                  ).EnableSensitiveDataLogging();
-                                      break;
-                                  case "SQLite":
+            }
+            Loggers.SystemLogger.Debug("Connection String: " + DatabaseContext.ConnectionString);
 
-                                      opt.UseSqlite(
-                                          builder.Configuration.GetConnectionString("SQLiteConnectionString")).EnableSensitiveDataLogging();
-                                      break;
-                              }
-                          }
-                );
+            builder.Services.AddDbContextFactory<DatabaseContext>();
+
+
+
+
             //Provide an Http client as a service with custom construction via api service class
             builder.Services.AddHttpClient();
             //Also keeping this here for a possible future API, though this would be for internal use
