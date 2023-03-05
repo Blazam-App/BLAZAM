@@ -14,7 +14,10 @@ namespace BLAZAM.Common.Models.Database
         {
             return FieldName;
         }
-
+        public override int GetHashCode()
+        {
+            return FieldName.GetHashCode();
+        }
         public override bool Equals(object? obj)
         {
             if (obj is ActiveDirectoryField)

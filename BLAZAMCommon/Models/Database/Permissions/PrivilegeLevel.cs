@@ -20,7 +20,10 @@ namespace BLAZAM.Common.Models.Database.Permissions
                 return DelegateSid.ToSidString().CompareTo(pl.DelegateSid.ToSidString());
             return 0;
         }
-
+        public override int GetHashCode()
+        {
+            return PrivilegeLevelId.ToString().GetHashCode();
+        }
         public override bool Equals(object? obj)
         {
             if(obj is PermissionDelegate l)

@@ -66,8 +66,8 @@
         if (Group is IADGroup group)
         {
             DirectoryModel.AssignTo(group);
-            NotificationService.Warning(DirectoryModel.CanonicalName + " has been assigned to " + group.GroupName + " but changes must be saved.", "Assignment Pending");
-            ModelChanged.InvokeAsync();
+            await NotificationService.Warning(DirectoryModel.CanonicalName + " has been assigned to " + group.GroupName + " but changes must be saved.", "Assignment Pending");
+            await ModelChanged.InvokeAsync();
 
             Close();
 
@@ -79,8 +79,8 @@
                 DirectoryModel.AssignTo(g);
 
             }
-            NotificationService.Warning(DirectoryModel.CanonicalName+" has been assigned to the selected groups but changes must be saved.", "Assignment Pending");
-            ModelChanged.InvokeAsync();
+            await NotificationService.Warning(DirectoryModel.CanonicalName + " has been assigned to the selected groups but changes must be saved.", "Assignment Pending");
+            await ModelChanged.InvokeAsync();
 
             Close();
         }

@@ -83,7 +83,7 @@ namespace BLAZAM
         /// </returns>
         internal static List<string> ListeningAddresses { get; private set; } = new List<string>();
 
-        private static IDbContextFactory<DatabaseContext> _programDbFactory;
+        private static IDbContextFactory<DatabaseContext>? _programDbFactory;
 
 
 
@@ -95,9 +95,9 @@ namespace BLAZAM
         {
             get
             {
-                using (var context = _programDbFactory.CreateDbContext())
+                using (var context = _programDbFactory?.CreateDbContext())
                 {
-                    if (installationCompleted != true)
+                    if (installationCompleted != true && context!=null)
                     {
                         if (!context.Seeded()) installationCompleted = false;
                         else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
@@ -120,18 +120,18 @@ namespace BLAZAM
         /// <summary>
         /// Can be used for JWT Token signing
         /// </summary>
-        internal static SymmetricSecurityKey TokenKey;
+        internal static SymmetricSecurityKey? TokenKey;
 
         /// <summary>
         /// A static reference for the current asp
         /// net core application instance
         /// </summary>
-        public static WebApplication AppInstance { get; private set; }
+        public static WebApplication? AppInstance { get; private set; }
         /// <summary>
         /// A static reference to the asp net 
         /// core application configuration
         /// </summary>
-        public static ConfigurationManager Configuration { get; private set; }
+        public static ConfigurationManager? Configuration { get; private set; }
         /// <summary>
         /// Indicates whether the Account running the website can wrrite to the writable path
         /// </summary>
@@ -177,7 +177,7 @@ namespace BLAZAM
 
 
             //Setup host logging so it can catch the earliest logs possible
-
+        
             Loggers.SetupLoggers(WritablePath + @"logs\");
             builder.Host.UseSerilog(Log.Logger);
 

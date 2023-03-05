@@ -70,13 +70,13 @@
           //  }
         }
     }
-    IEnumerable<DirectoryTemplate> SavedTemplates { get; set; }
+    IEnumerable<DirectoryTemplate>? SavedTemplates { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         categories.AddRange(DbFactory.CreateDbContext().DirectoryTemplates.Where(t => t.Category != null && t.Category != "").Select(t => t.Category).Distinct().ToList());
-        UpdateTemplateList();
+        await UpdateTemplateList();
 
         await InvokeAsync(StateHasChanged);
     }

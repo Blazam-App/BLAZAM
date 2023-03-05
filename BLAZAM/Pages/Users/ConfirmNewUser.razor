@@ -343,7 +343,7 @@
 
 @code {
     [Parameter]
-    public DirectoryTemplate DirectoryTemplate { get; set; }
+    public DirectoryTemplate? DirectoryTemplate { get; set; }
 
     [Parameter]
     public EventCallback<IADUser> Confirmed { get; set; }
@@ -351,7 +351,7 @@
     bool InDirectoryTemplate(ActiveDirectoryField field)
     {
         if (DirectoryTemplate == null) return true;
-        return DirectoryTemplate.FieldValues.Any(f => f.Field.FieldName == field.FieldName);
+        return DirectoryTemplate?.FieldValues.Any(f => f.Field.FieldName == field.FieldName)==true;
     }
     async Task ConfirmUser(){
         try{

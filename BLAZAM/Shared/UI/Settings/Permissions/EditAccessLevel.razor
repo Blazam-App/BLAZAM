@@ -185,11 +185,10 @@
     <Button Color=Color.Success Margin=Margin.IsAuto.OnX Disabled=saveDisabled Clicked="CreateAccessLevel">@buttonLabel</Button>
 </Validations>
 @code {
-    protected DatabaseContext Context;
 
     [Parameter]
     public EventCallback LevelsChanged { get; set; }
-    ObjectAccessLevel checkedValue;
+    ObjectAccessLevel? checkedValue;
     bool ShowFields
     {
         get

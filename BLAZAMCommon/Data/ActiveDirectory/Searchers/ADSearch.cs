@@ -22,14 +22,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
     public class ADSearch
     {
-        private string samAccountName;
-        private string lockoutTime;
-        private string sid;
-        private string created;
-        private string changed;
-        private string pwdLastSet;
-        private string cn;
-        private string dn;
+        private string? samAccountName;
+        private string? lockoutTime;
+        private string? sid;
+        private string? created;
+        private string? changed;
+        private string? pwdLastSet;
+        private string? cn;
+        private string? dn;
 
         /// <summary>
         /// Indicates whether the resulting fields searched 
@@ -40,23 +40,25 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         /// <summary>
         /// A string to find in the common name and username fields
         /// </summary>
-        public string GeneralSearchTerm { get; set; }
+        public string? GeneralSearchTerm { get; set; }
 
-        public string SamAccountName { get => samAccountName; set { samAccountName = value; GeneralSearchTerm = null; } }
+        public string? SamAccountName { get => samAccountName; set { samAccountName = value; GeneralSearchTerm = null; } }
 
-        public string LockoutTime { get => lockoutTime; set { lockoutTime = value; GeneralSearchTerm = null; } }
+        public string? LockoutTime { get => lockoutTime; set { lockoutTime = value; GeneralSearchTerm = null; } }
 
-        public string SID { get => sid; set { sid = value; GeneralSearchTerm = null; } }
+        public string? SID { get => sid; set { sid = value; GeneralSearchTerm = null; } }
 
-        public string DN { get => dn; set { dn = value; GeneralSearchTerm = null; } }
+        public string? DN { get => dn; set { dn = value; GeneralSearchTerm = null; } }
 
-        public string Created { get => created; set { created = value; GeneralSearchTerm = null; } }
+        public string? Created { get => created; set { created = value; GeneralSearchTerm = null; } }
 
-        public string Changed { get => changed; set { changed = value; GeneralSearchTerm = null; } }
+        public string? Changed { get => changed; set { changed = value; GeneralSearchTerm = null; } }
 
-        public string PasswordLastSet { get => pwdLastSet; set { pwdLastSet = value; GeneralSearchTerm = null; } }
+        public string? PasswordLastSet { get => pwdLastSet; set { pwdLastSet = value; GeneralSearchTerm = null; } }
 
-        public string CN { get => cn; set { cn = value; GeneralSearchTerm = null; } }
+        public string? CN { get => cn; set { cn = value; GeneralSearchTerm = null; } }
+
+        public string? MemberOf { get; set; }
 
 
         /// <summary>
@@ -102,7 +104,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         public string LdapQuery { get; private set; }
         public TimeSpan SearchTime { get; set; }
         public bool SearchDeleted { get; set; } = false;
-        public string? MemberOf { get; set; }
 
         public async Task<List<I>> SearchAsync<T, I>() where T : I, IDirectoryModel, new()
         {

@@ -33,8 +33,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         /// entry.
         /// </summary>
         string SearchUri { get; }
-        AppEvent OnModelCommited { get; set; }
-        AppEvent OnModelChanged { get; set; }
+        AppEvent? OnModelCommited { get; set; }
+        AppEvent? OnModelChanged { get; set; }
         Dictionary<string, object> NewEntryProperties { get; set; }
         IADOrganizationalUnit? LastKnownParent { get; }
         bool IsDeleted { get; }

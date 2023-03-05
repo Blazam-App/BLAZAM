@@ -10,6 +10,7 @@ namespace BLAZAM.Common.Models.Database
 
 
         public static List<ActiveDirectoryField> Fields = new List<ActiveDirectoryField>() {
+#pragma warning disable CS8604 // Possible null reference argument.
             SN,
             GivenName,
             PhysicalDeliveryOffice,
@@ -35,8 +36,10 @@ namespace BLAZAM.Common.Models.Database
             OperatingSystem,
             CanonicalName,
             AccountExpires
+#pragma warning restore CS8604 // Possible null reference argument.
 
         };
+#pragma warning disable CA2211 // Non-constant fields should not be visible
         public static ActiveDirectoryField SN = new ActiveDirectoryField() { ActiveDirectoryFieldId = 1, FieldName = "sn", DisplayName ="Last Name"};
         public static ActiveDirectoryField GivenName = new ActiveDirectoryField() { ActiveDirectoryFieldId = 2, FieldName = "givenname", DisplayName ="First Name" };
         public static ActiveDirectoryField PhysicalDeliveryOffice = new ActiveDirectoryField() { ActiveDirectoryFieldId = 3, FieldName = "physicalDeliveryOfficeName", DisplayName ="Office"};
@@ -70,7 +73,8 @@ namespace BLAZAM.Common.Models.Database
         public static ActiveDirectoryField Pager = new ActiveDirectoryField() { ActiveDirectoryFieldId = 31, FieldName = "pager",DisplayName="Pager" };
         public static ActiveDirectoryField OperatingSystem = new ActiveDirectoryField() { ActiveDirectoryFieldId = 32, FieldName = "operatingSystemVersion", DisplayName="OS" };
         public static ActiveDirectoryField AccountExpires = new ActiveDirectoryField() { ActiveDirectoryFieldId = 33, FieldName = "accountExpires", DisplayName="Account Expiration" };
+#pragma warning restore CA2211 // Non-constant fields should not be visible
 
-        
+
     }
 }

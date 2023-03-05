@@ -196,7 +196,7 @@
         try
         {
             await EmailService.SendTestEmail(testRecipient);
-            MessageService.Success("A test email was sent to " + testRecipient, "Test Email Sent");
+            await MessageService.Success("A test email was sent to " + testRecipient, "Test Email Sent");
 
         }
         catch (Exception ex)

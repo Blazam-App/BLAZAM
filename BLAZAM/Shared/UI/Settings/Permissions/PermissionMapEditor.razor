@@ -133,27 +133,36 @@
         //{
         //}
         ////RefreshData();
-
-        RefreshData();
+        LoadingData = false;
+        await RefreshData();
     }
+
     async Task RefreshData()
     {
-        //Context = await DbFactory.CreateDbContextAsync();
-        if (Context != null)
+
+        if (!LoadingData)
         {
-            if (Map.PermissionMapId != 0)
+            LoadingData = true;
+
+            //Context = await DbFactory.CreateDbContextAsync();
+            if (Context != null)
             {
-                Map = Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.PermissionMapId == Map.PermissionMapId).FirstOrDefault();
+                if (Map.PrivilegeMapId != 0)
+                {
+                    Map = Context.PrivilegeMap.Include(m => m.PrivilegeLevels).Where(pm => pm.PrivilegeMapId == Map.PrivilegeMapId).FirstOrDefault();
+                }
+                accessLevels = await Context.AccessLevels.ToListAsync();
+                privilegeLevels = await Context.PrivilegeLevel.Where(p => !p.IsSuperAdmin).ToListAsync();
+                if (Map.PrivilegeMapId != 0)
+                {
+                    selectedAccessLevelNames = Map.AccessLevels.Select(a => a.Name).ToList();
+                    selectedPrivilegeLevelNames = Map.PrivilegeLevels.Select(a => Directory.Groups.FindGroupBySID(a.GroupSID).GroupName).ToList();
+                }
+                await InvokeAsync(StateHasChanged);
             }
-            accessLevels = await Context.AccessLevels.ToListAsync();
-            PermissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin).ToListAsync();
-            if (Map.PermissionMapId != 0)
-            {
-                selectedAccessLevelNames = Map.AccessLevels.Select(a => a.Name).ToList();
-                selectedPermissionDelegateNames = Map.PermissionDelegates.Select(a => Directory.Groups.FindGroupBySID(a.DelegateSid).GroupName).ToList();
-            }
-            await InvokeAsync(StateHasChanged);
+
         }
+        LoadingData = false;
 
     }
     async Task DeleteMapping()
@@ -169,8 +178,8 @@
             await Context.SaveChangesAsync();
         }
         await InvokeAsync(StateHasChanged);
-        NotificationService.Success("Mapping deleted");
-        MappingDeleted.InvokeAsync();
+        await NotificationService.Success("Mapping deleted");
+        await MappingDeleted.InvokeAsync();
 
     }
     async Task Save()
@@ -179,7 +188,7 @@
             Context.PermissionMap.Add(Map);
         var result = Context.SaveChanges();
         await InvokeAsync(StateHasChanged);
-        NotificationService.Success("Mapping saved");
+        await NotificationService.Success("Mapping saved");
 
     }
     async void ValidateCheck()

@@ -13,6 +13,7 @@
                                     @bind-SelectedResult=@selectedDelegate
                                     CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
 
+
                 </Field>
                 <Field>
                     <FieldLabel>Super User</FieldLabel>
@@ -30,6 +31,7 @@
     </ModalContent>
 </Modal>
 @code {
+
     IDirectoryModel selectedDelegate;
     [Parameter]
     public EventCallback DelegateAdded { get; set; }
@@ -63,5 +65,6 @@
         {
             await NotificationService.Error("An unexpected error has occured.");
         }
+
     }
 }

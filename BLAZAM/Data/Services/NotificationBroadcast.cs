@@ -3,13 +3,13 @@
     public static class NotificationBroadcast
     {
 
-        public static AppEvent<NotificationMessage> OnInfoBroadcast { get; set; }
+        public static AppEvent<NotificationMessage>? OnInfoBroadcast { get; set; }
 
-        public static AppEvent<NotificationMessage> OnSuccessBroadcast { get; set; }
+        public static AppEvent<NotificationMessage>? OnSuccessBroadcast { get; set; }
 
-        public static AppEvent<NotificationMessage> OnErrorBroadcast { get; set; }
+        public static AppEvent<NotificationMessage>? OnErrorBroadcast { get; set; }
 
-        public static AppEvent<NotificationMessage> OnWarningBroadcast { get; set; }
+        public static AppEvent<NotificationMessage>? OnWarningBroadcast { get; set; }
 
         public static void Info(string message, string? title = null)
         {
@@ -32,6 +32,6 @@
     public class NotificationMessage
     {
         public string? Title { get; internal set; }
-        public string Message { get; internal set; }
+        public string? Message { get; internal set; }
     }
 }
