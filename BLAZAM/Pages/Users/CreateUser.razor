@@ -254,7 +254,7 @@
         newUser.DisplayName = SelectedTemplate.GenerateDisplayName(newUserName);
         newUser.NewPassword = SelectedTemplate.GeneratePassword().ToSecureString();
         //newUser.CanonicalName = SelectedTemplate.GenerateDisplayName(newUserName);
-        newUser.StagePasswordChange(newUser.NewPassword); 
+        newUser.StagePasswordChange(newUser.NewPassword,true); 
         if(!newUserName.GivenName.IsNullOrEmpty())
             newUser.GivenName = newUserName.GivenName;
         if (!newUserName.MiddleName.IsNullOrEmpty())

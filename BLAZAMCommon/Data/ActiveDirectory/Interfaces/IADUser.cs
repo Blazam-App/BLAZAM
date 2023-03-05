@@ -40,8 +40,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         byte[]? ThumbnailPhoto { get; set; }
         SecureString NewPassword { get; set; }
 
-        bool SetPassword(string password);
-        bool SetPassword(SecureString password);
-        void StagePasswordChange(SecureString newPassword);
+        bool SetPassword(SecureString password, bool requireChange);
+        void StagePasswordChange(SecureString newPassword, bool requireChange);
     }
 }

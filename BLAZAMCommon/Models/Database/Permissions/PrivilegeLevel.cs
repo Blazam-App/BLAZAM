@@ -22,7 +22,7 @@ namespace BLAZAM.Common.Models.Database.Permissions
         }
         public override int GetHashCode()
         {
-            return PrivilegeLevelId.ToString().GetHashCode();
+            return Id.ToString().GetHashCode();
         }
         public override bool Equals(object? obj)
         {

@@ -14,23 +14,23 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
     public class ADUser : GroupableDirectoryModel, IADUser
     {
-      
+
         public SecureString NewPassword { get; set; }
-        [Obsolete("Use SetPassword(SecureString password) instead.")]
-        public bool SetPassword(string password) => SetPassword(password.ToSecureString());
-        public bool SetPassword(SecureString password)
+        public bool SetPassword(SecureString password, bool requireChange = false)
         {
 
             try
             {
 
 
-                using (PrincipalContext pContext = new PrincipalContext(ContextType.Domain, DirectorySettings.FQDN, DirectorySettings.Username,Directory.Encryption.DecryptObject<string>(DirectorySettings.Password)))
+                using (PrincipalContext pContext = new PrincipalContext(ContextType.Domain, DirectorySettings.FQDN, DirectorySettings.Username, Directory.Encryption.DecryptObject<string>(DirectorySettings.Password)))
                 {
                     UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
                     if (up != null)
                     {
                         up.SetPassword(password.ToPlainText());
+                        if (requireChange)
+                            up.ExpirePasswordNow();
 
                         up.Save();
 
@@ -44,7 +44,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
                 return false;
             }
-          
+
         }
 
         public byte[]? ThumbnailPhoto
@@ -162,19 +162,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 });
             }
         }
-        [Obsolete("Use StagePasswordChange(SecureString newPassword) instead.")]
-        public void StagePasswordChange(string newPassword)
+
+        public void StagePasswordChange(SecureString newPassword, bool requireChange = false)
         {
             CommitActions.Add(() =>
             {
-                return SetPassword(newPassword.ToSecureString());
-            });
-        }
-        public void StagePasswordChange(SecureString newPassword)
-        {
-            CommitActions.Add(() =>
-            {
-                return SetPassword(newPassword);
+                return SetPassword(newPassword, requireChange);
             });
         }
         /// <summary>
@@ -225,7 +218,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
                 var com = GetProperty<object>("pwdLastSet");
                 return com.AdsValueToDateTime();
-               
+
             }
 
         }

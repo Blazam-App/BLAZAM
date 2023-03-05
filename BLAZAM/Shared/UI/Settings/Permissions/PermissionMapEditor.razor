@@ -147,16 +147,16 @@
             //Context = await DbFactory.CreateDbContextAsync();
             if (Context != null)
             {
-                if (Map.PrivilegeMapId != 0)
+                if (Map.PermissionMapId != 0)
                 {
-                    Map = Context.PrivilegeMap.Include(m => m.PrivilegeLevels).Where(pm => pm.PrivilegeMapId == Map.PrivilegeMapId).FirstOrDefault();
+                    Map = Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.PermissionMapId == Map.PermissionMapId).FirstOrDefault();
                 }
                 accessLevels = await Context.AccessLevels.ToListAsync();
-                privilegeLevels = await Context.PrivilegeLevel.Where(p => !p.IsSuperAdmin).ToListAsync();
-                if (Map.PrivilegeMapId != 0)
+                PermissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin).ToListAsync();
+                if (Map.PermissionMapId != 0)
                 {
                     selectedAccessLevelNames = Map.AccessLevels.Select(a => a.Name).ToList();
-                    selectedPrivilegeLevelNames = Map.PrivilegeLevels.Select(a => Directory.Groups.FindGroupBySID(a.GroupSID).GroupName).ToList();
+                    selectedPermissionDelegateNames = Map.PermissionDelegates.Select(a => Directory.GetDirectoryModelBySid(a.DelegateSid).CanonicalName).ToList();
                 }
                 await InvokeAsync(StateHasChanged);
             }
