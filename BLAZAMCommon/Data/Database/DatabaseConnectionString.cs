@@ -12,7 +12,8 @@ namespace BLAZAM.Common.Data.Database
         {
             ConnectionString = connectionString;
         }
-
+        public bool FileBased => ServerAddress.EndsWith(".db");
+        public SystemFile File => new(ServerAddress);
         public string ConnectionString { get; set; }
         public string AddressComponent
         {
@@ -49,6 +50,8 @@ namespace BLAZAM.Common.Data.Database
             {
                 if (ConnectionString != null)
                 {
+                    if (FileBased) return "File Based";
+                    
                     string search = "Initial Catalog=";
                     int startIndex = ConnectionString.IndexOf(search);
                     if (startIndex == -1)
@@ -77,6 +80,7 @@ namespace BLAZAM.Common.Data.Database
         {
             get
             {
+
                 var fullAddress = AddressComponent;
 
                 if (fullAddress != null)
@@ -107,6 +111,7 @@ namespace BLAZAM.Common.Data.Database
         {
             get
             {
+
                 var fullAddress = AddressComponent;
 
                 if (fullAddress != null)

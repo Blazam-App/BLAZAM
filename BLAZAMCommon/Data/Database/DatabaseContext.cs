@@ -8,9 +8,9 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Services.Common;
-using System.DirectoryServices.ActiveDirectory;
 
 namespace BLAZAM.Common.Data.Database
 {
@@ -104,10 +104,34 @@ namespace BLAZAM.Common.Data.Database
         public DbSet<RequestAuditLog> RequestAuditLog { get; set; }
         public DbSet<PermissionsAuditLog> PermissionsAuditLog { get; set; }
         public DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
-
+        public static ConfigurationManager Configuration { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+
+
+            var dbType = Configuration.GetValue<string>("DatabaseType");
+            switch (dbType)
+            {
+                case "SQL":
+
+                    optionsBuilder.UseSqlServer(
+                        Configuration.GetConnectionString("SQLConnectionString"),
+                            sqlServerOptionsAction: sqlOptions =>
+                            {
+                                sqlOptions.EnableRetryOnFailure();
+
+                            }
+                                ).EnableSensitiveDataLogging();
+                    break;
+                case "SQLite":
+
+                    optionsBuilder.UseSqlite(
+                        Configuration.GetConnectionString("SQLiteConnectionString")).EnableSensitiveDataLogging();
+                    break;
+            }
+
+            /*
             optionsBuilder.UseSqlServer(ConnectionString?.ConnectionString,
                 options => options.EnableRetryOnFailure(
                     maxRetryCount: 5,
@@ -115,7 +139,7 @@ namespace BLAZAM.Common.Data.Database
                     errorNumbersToAdd: new List<int>() { }
                     )
                 );
-
+            */
             optionsBuilder.UseLoggerFactory(loggerFactory);
 
         }
@@ -301,6 +325,18 @@ namespace BLAZAM.Common.Data.Database
                 //Check for db connection
                 try
                 {
+
+                    //Handle SQLite
+                    if (ConnectionString.FileBased)
+                    {
+                        if (ConnectionString.File.Writable)
+                        {
+                            ConnectionString.File.EnsureCreated();
+                            return ConnectionStatus.OK;
+                        }
+                        return ConnectionStatus.DatabaseConnectionIssue;
+                    }
+
 
                     if (!NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort)) return ConnectionStatus.ServerUnreachable;
 

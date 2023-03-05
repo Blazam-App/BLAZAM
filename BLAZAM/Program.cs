@@ -36,6 +36,7 @@ using Blazorise.RichTextEdit;
 using BLAZAM.Server.Pages.Error;
 using System.Diagnostics;
 using System.Reflection;
+using Microsoft.Win32;
 
 namespace BLAZAM
 {
@@ -97,13 +98,17 @@ namespace BLAZAM
             {
                 using (var context = _programDbFactory?.CreateDbContext())
                 {
-                    if (installationCompleted != true && context!=null)
+                    if (installationCompleted != true && context != null)
                     {
                         if (!context.Seeded()) installationCompleted = false;
                         else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
                     }
                     return installationCompleted != false;
                 }
+            }
+            set
+            {
+                installationCompleted = value;
             }
         }
 
@@ -177,7 +182,7 @@ namespace BLAZAM
 
 
             //Setup host logging so it can catch the earliest logs possible
-        
+
             Loggers.SetupLoggers(WritablePath + @"logs\");
             builder.Host.UseSerilog(Log.Logger);
 
@@ -209,8 +214,20 @@ namespace BLAZAM
 
             //Grab the connection string and store it in the context statically
             //This can obviously only be changed on app restart
-            DatabaseContext.ConnectionString = new DatabaseConnectionString(builder.Configuration.GetConnectionString("SQLConnectionString"));
-            Loggers.SystemLogger.Debug("Connection String: " +DatabaseContext.ConnectionString);
+
+            DatabaseContext.Configuration = builder.Configuration;
+
+            if (builder.Configuration.GetValue<string>("DatabaseType") == "SQLite")
+            {
+                DatabaseContext.ConnectionString = new DatabaseConnectionString(builder.Configuration.GetConnectionString("SQLiteConnectionString"));
+
+            }
+            else
+            {
+                DatabaseContext.ConnectionString = new DatabaseConnectionString(builder.Configuration.GetConnectionString("SQLConnectionString"));
+
+            }
+            Loggers.SystemLogger.Debug("Connection String: " + DatabaseContext.ConnectionString);
 
 
 
@@ -284,15 +301,28 @@ namespace BLAZAM
 
             //Inject the database as a service
             builder.Services.AddDbContextFactory<DatabaseContext>(opt =>
-                opt.UseSqlServer(
-                    builder.Configuration.GetConnectionString("SQLConnectionString"),
-                        sqlServerOptionsAction: sqlOptions =>
-                            {
-                                sqlOptions.EnableRetryOnFailure();
+                          {
+                              var dbType = Configuration.GetValue<string>("DatabaseType");
+                              switch (dbType)
+                              {
+                                  case "SQL":
 
-                            }
-                            ).EnableSensitiveDataLogging()
+                                      opt.UseSqlServer(
+                                          builder.Configuration.GetConnectionString("SQLConnectionString"),
+                                              sqlServerOptionsAction: sqlOptions =>
+                                                  {
+                                                      sqlOptions.EnableRetryOnFailure();
 
+                                                  }
+                                                  ).EnableSensitiveDataLogging();
+                                      break;
+                                  case "SQLite":
+
+                                      opt.UseSqlite(
+                                          builder.Configuration.GetConnectionString("SQLiteConnectionString")).EnableSensitiveDataLogging();
+                                      break;
+                              }
+                          }
                 );
             //Provide an Http client as a service with custom construction via api service class
             builder.Services.AddHttpClient();
