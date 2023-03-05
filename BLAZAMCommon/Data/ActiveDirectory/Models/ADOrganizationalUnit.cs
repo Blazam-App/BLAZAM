@@ -86,14 +86,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 SetProperty("name", value);
             }
         }
-        public List<PrivilegeMap> InheritedPermissionMappings
+        public List<PermissionMap> InheritedPermissionMappings
         {
             get
             {
                 return this.AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
             }
         }
-        public List<PrivilegeMap> DirectPermissionMappings
+        public List<PermissionMap> DirectPermissionMappings
         {
             get
             {
@@ -102,23 +102,23 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         }
 
 
-        public IQueryable<PrivilegeMap> AppliedPermissionMappings
+        public IQueryable<PermissionMap> AppliedPermissionMappings
         {
             get
             {
 
 
-                return Context.PrivilegeMap.Include(m => m.PrivilegeLevels).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length);
+                return Context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length);
             }
         }
 
-        public IQueryable<PrivilegeMap> OffspringPermissionMappings
+        public IQueryable<PermissionMap> OffspringPermissionMappings
         {
             get
             {
 
 
-                return Context.PrivilegeMap.Include(m => m.PrivilegeLevels).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
+                return Context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
             }
         }
         /// <summary>

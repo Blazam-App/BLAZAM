@@ -2,19 +2,22 @@
 
 namespace BLAZAM.Common.Models.Database.Permissions
 {
-    public class PrivilegeLevel : IComparable
+    public class PermissionDelegate : IComparable
     {
-        public int PrivilegeLevelId { get; set; }
-        public byte[] GroupSID { get; set; }
+        public int Id { get; set; }
+        public byte[] DelegateSid { get; set; }
         public bool IsSuperAdmin { get; set; }
-        public List<PrivilegeMap> PrivilegeMaps { get; set; }
+        public List<PermissionMap> PermissionsMaps { get; set; }
 
         public DateTime? DeletedAt { get; set; }
 
+        [NotMapped]
+        public string? DelegateName { get; set; }
+        
         public int CompareTo(object? obj)
         {
-            if (obj != null && obj is PrivilegeLevel pl)
-                return GroupSID.ToSidString().CompareTo(pl.GroupSID.ToSidString());
+            if (obj != null && obj is PermissionDelegate pl)
+                return DelegateSid.ToSidString().CompareTo(pl.DelegateSid.ToSidString());
             return 0;
         }
         public override int GetHashCode()
@@ -23,9 +26,9 @@ namespace BLAZAM.Common.Models.Database.Permissions
         }
         public override bool Equals(object? obj)
         {
-            if(obj is PrivilegeLevel l)
+            if(obj is PermissionDelegate l)
             {
-                if(l.PrivilegeLevelId==this.PrivilegeLevelId || l.GroupSID == this.GroupSID)
+                if(l.Id==this.Id || l.DelegateSid == this.DelegateSid)
                 {
                     return true;
                 }

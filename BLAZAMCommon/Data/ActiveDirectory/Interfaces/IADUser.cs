@@ -28,8 +28,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         string? Title { get; set; }
         string? UserPrincipalName { get; set; }
         string? Zip { get; set; }
-        List<PrivilegeLevel> PrivilegeLevels { get; set; }
-        List<PrivilegeMap> PermissionMappings { get; set; }
+        List<PermissionDelegate> PermissionDelegates { get; set; }
+        List<PermissionMap> PermissionMappings { get; set; }
         bool HasComputerPrivilege { get; }
         bool HasOUPrivilege { get; }
         bool HasGroupPrivilege { get; }

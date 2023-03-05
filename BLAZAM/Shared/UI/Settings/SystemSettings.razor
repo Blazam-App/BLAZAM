@@ -1,5 +1,4 @@
 ﻿@inherits ValidatedForm
-<Row Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
     <Heading>@SettingsLocalization["System Settings"]</Heading>
     <Form @onsubmit="Save">
 
@@ -21,7 +20,6 @@
             </FieldBody>
         </SettingsField>
     </Form>
-</Row>
 @code {
     AppSettings settings = new AppSettings();
 

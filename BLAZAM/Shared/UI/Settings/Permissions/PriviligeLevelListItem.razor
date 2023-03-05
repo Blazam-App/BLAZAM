@@ -25,7 +25,7 @@
                         <Column ColumnSize="ColumnSize.Is4.OnDesktop">
                             
                                 <Field>
-                                    <FieldLabel>@AppLocalization["Group Name"]</FieldLabel>
+                                    <FieldLabel>@AppLocalization["Delgate Name"]</FieldLabel>
                                     <FieldBody>
                                         <ADAutoComplete 
                                             SearchObjectType="ActiveDirectoryObjectType.All" 
@@ -36,9 +36,9 @@
                                 </Field>
 
                         </Column>
-                        <Column ColumnSize="ColumnSize.Is4.OnDesktop">
+                        <Column ColumnSize="ColumnSize.Is2.OnDesktop">
                                 <Field>
-                                    <FieldLabel>@AppLocalization["Group Name"]</FieldLabel>
+                                    <FieldLabel></FieldLabel>
                                     <FieldBody>
                                 <Switch Disabled=@(Program.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Level.IsSuperAdmin">Super User Group</Switch>
 
@@ -50,6 +50,9 @@
                         <Column ColumnSize="ColumnSize.Is4.OnDesktop">
                             <Button VerticalAlignment="VerticalAlignment.Middle" @onclick="Save" Color="Color.Success">Save Changes</Button>
                         </Column>
+                    <Column ColumnSize="ColumnSize.Is2.OnDesktop">
+                        <AppCloseButton VerticalAlignment="VerticalAlignment.Middle" @onclick="DeletePermissionGroup" Color="Color.Success" />
+                    </Column>
                     </Row>
 
              
@@ -62,7 +65,7 @@
 @code {
     IDirectoryModel Group;
     [Parameter]
-    public PrivilegeLevel Level { get; set; }
+    public PermissionDelegate Level { get; set; }
     [Parameter]
     public DatabaseContext Context { get; set; }
 
@@ -70,14 +73,22 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Group = Directory.Groups.FindGroupBySID(Level.GroupSID);
+        Group = Directory.GetDirectoryModelBySid(Level.DelegateSid);
     }
 
     bool collapse1Visible = false;
+
+    async Task DeletePermissionGroup()
+    {
+        Level.DeletedAt = DateTime.UtcNow;
+        await Context.SaveChangesAsync();
+        await NotificationService.Info("Permission Group removed.");
+
+    }
     private async void Save()
     {
         collapse1Visible = false;
-        Level.GroupSID = Group.SID;
+        Level.DelegateSid = Group.SID;
         await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
     }
