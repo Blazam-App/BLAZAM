@@ -136,9 +136,10 @@ namespace BLAZAM.Common.Data.Database
                         ServerVersion.AutoDetect(ConnectionString.ConnectionString),
                         mySqlOptionsAction: options =>{
                             options.SchemaBehavior(Pomelo.EntityFrameworkCore.MySql.Infrastructure.MySqlSchemaBehavior.Ignore);
-                            options.SetSqlModeOnOpen();
+                            //options.SetSqlModeOnOpen();
+                            
                         })
-                        
+                       
                         .EnableSensitiveDataLogging()
                                 .LogTo(Loggers.DatabaseLogger.Information);
                     break;

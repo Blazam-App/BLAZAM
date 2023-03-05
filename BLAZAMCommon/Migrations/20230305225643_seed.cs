@@ -14,9 +14,6 @@ namespace BLAZAM.Common.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                name: "Audit");
-
             migrationBuilder.AlterDatabase()
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -136,7 +133,6 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "ComputerAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -262,7 +258,6 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "GroupAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -289,7 +284,6 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "LogonAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -347,7 +341,6 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "OUAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -406,7 +399,6 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PermissionsAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -433,7 +425,6 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "RequestAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -460,7 +451,6 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "SettingsAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -487,7 +477,6 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "SystemAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -506,7 +495,6 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "UserAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -988,8 +976,7 @@ namespace BLAZAM.Common.Migrations
                 name: "AuthenticationSettings");
 
             migrationBuilder.DropTable(
-                name: "ComputerAuditLog",
-                schema: "Audit");
+                name: "ComputerAuditLog");
 
             migrationBuilder.DropTable(
                 name: "DirectoryTemplateFieldValues");
@@ -1004,39 +991,31 @@ namespace BLAZAM.Common.Migrations
                 name: "EmailTemplates");
 
             migrationBuilder.DropTable(
-                name: "GroupAuditLog",
-                schema: "Audit");
+                name: "GroupAuditLog");
 
             migrationBuilder.DropTable(
-                name: "LogonAuditLog",
-                schema: "Audit");
+                name: "LogonAuditLog");
 
             migrationBuilder.DropTable(
-                name: "OUAuditLog",
-                schema: "Audit");
+                name: "OUAuditLog");
 
             migrationBuilder.DropTable(
                 name: "PermissionDelegatePermissionMap");
 
             migrationBuilder.DropTable(
-                name: "PermissionsAuditLog",
-                schema: "Audit");
+                name: "PermissionsAuditLog");
 
             migrationBuilder.DropTable(
-                name: "RequestAuditLog",
-                schema: "Audit");
+                name: "RequestAuditLog");
 
             migrationBuilder.DropTable(
-                name: "SettingsAuditLog",
-                schema: "Audit");
+                name: "SettingsAuditLog");
 
             migrationBuilder.DropTable(
-                name: "SystemAuditLog",
-                schema: "Audit");
+                name: "SystemAuditLog");
 
             migrationBuilder.DropTable(
-                name: "UserAuditLog",
-                schema: "Audit");
+                name: "UserAuditLog");
 
             migrationBuilder.DropTable(
                 name: "UserSettings");

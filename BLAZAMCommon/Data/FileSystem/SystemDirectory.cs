@@ -118,10 +118,10 @@ namespace BLAZAM
         {
             get
             {
-                string randomFileName = Guid.NewGuid().ToString()+".txt";
+                string randomFileName = Path + "\\" + Guid.NewGuid().ToString()+".txt";
                 try
                 {
-                    File.WriteAllText(Path+"\\"+randomFileName, "test");
+                    File.WriteAllText(randomFileName, "test");
                 }catch (Exception e)
                 {
                     return false;

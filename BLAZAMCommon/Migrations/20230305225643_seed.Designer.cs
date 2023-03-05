@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Common.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230305181130_seed")]
+    [Migration("20230305225643_seed")]
     partial class seed
     {
         /// <inheritdoc />
@@ -428,7 +428,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ComputerAuditLog", "Audit");
+                    b.ToTable("ComputerAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.GroupAuditLog", b =>
@@ -462,7 +462,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GroupAuditLog", "Audit");
+                    b.ToTable("GroupAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.LogonAuditLog", b =>
@@ -496,7 +496,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LogonAuditLog", "Audit");
+                    b.ToTable("LogonAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.OUAuditLog", b =>
@@ -530,7 +530,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OUAuditLog", "Audit");
+                    b.ToTable("OUAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.PermissionsAuditLog", b =>
@@ -564,7 +564,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PermissionsAuditLog", "Audit");
+                    b.ToTable("PermissionsAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.RequestAuditLog", b =>
@@ -598,7 +598,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RequestAuditLog", "Audit");
+                    b.ToTable("RequestAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.SettingsAuditLog", b =>
@@ -632,7 +632,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SettingsAuditLog", "Audit");
+                    b.ToTable("SettingsAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.SystemAuditLog", b =>
@@ -654,7 +654,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SystemAuditLog", "Audit");
+                    b.ToTable("SystemAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.UserAuditLog", b =>
@@ -688,7 +688,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserAuditLog", "Audit");
+                    b.ToTable("UserAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.AuthenticationSettings", b =>
