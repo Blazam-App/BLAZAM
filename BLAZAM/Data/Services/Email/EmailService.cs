@@ -1,6 +1,7 @@
 ﻿using BLAZAM.Common;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Models.Database;
+using BLAZAM.Common.Models.Database.Audit;
 using BLAZAM.Server.Pages;
 using BLAZAM.Server.Shared.Email;
 using BLAZAM.Server.Shared.Layouts;
@@ -186,10 +187,22 @@ namespace BLAZAM.Server.Data.Services.Email
             }
         }
 
-        private static async Task<bool> TrySend(SmtpClient client, MimeMessage message)
+        private async Task<bool> TrySend(SmtpClient client, MimeMessage message)
         {
             var response = await client.SendAsync(message);
-            //TODO Audit to database
+            using var context = await Factory.CreateDbContextAsync();
+            context.EmailLog.Add(new EmailLog()
+            {
+                Sent = DateTime.Now,
+                To = message.To.ToString(),
+                Cc = message.Cc.ToString(),
+                Bcc = message.Bcc.ToString(),
+                Subject = message.Subject.ToString(),
+                HtmlBody = message.HtmlBody.ToString(),
+                ServerResponse = response
+
+            }) ;
+            await context.SaveChangesAsync();
             return true;
         }
 

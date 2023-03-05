@@ -105,6 +105,7 @@ namespace BLAZAM.Common.Data.Database
         public DbSet<PermissionsAuditLog> PermissionsAuditLog { get; set; }
         public DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
 
+        public DbSet<EmailLog> EmailLog { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
