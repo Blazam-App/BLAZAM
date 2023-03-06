@@ -18,10 +18,7 @@ namespace BLAZAM.Server.Data.Services.Update
     {
    
 
-        /// <summary>
-        /// This might not have a successful injection.
-        /// </summary>
-        [Inject] public NavigationManager? Nav { get; set; }
+
 
         /// <summary>
         /// Token source for cancelling this update when in progress
@@ -353,9 +350,9 @@ namespace BLAZAM.Server.Data.Services.Update
             {
                 return false;
             }
-            Loggers.UpdateLogger.Debug("Attempting download of update " + Version);
-            Loggers.UpdateLogger.Debug("Download URL: " + Release.DownloadURL);
-            Loggers.UpdateLogger.Debug("Download Path: " + UpdateDownloadDirectory);
+            Loggers.UpdateLogger?.Debug("Attempting download of update " + Version);
+            Loggers.UpdateLogger?.Debug("Download URL: " + Release.DownloadURL);
+            Loggers.UpdateLogger?.Debug("Download Path: " + UpdateDownloadDirectory);
 
             cancellationTokenSource = new CancellationTokenSource();
             var progress = new FileProgress();
