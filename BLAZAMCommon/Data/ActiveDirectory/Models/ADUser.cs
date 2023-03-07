@@ -104,9 +104,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 SetProperty(ActiveDirectoryFields.SN.FieldName, value);
             }
         }
-        /// <summary>
-        /// Users require a display name
-        /// </summary>
+
         [Required]
         public override string? DisplayName { get => base.DisplayName; set => base.DisplayName = value; }
 
