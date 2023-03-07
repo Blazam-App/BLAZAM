@@ -16,7 +16,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
     public class ApplicationUpdate
     {
-   
+
 
 
 
@@ -31,7 +31,7 @@ namespace BLAZAM.Server.Data.Services.Update
         /// <summary>
         /// The version of this update
         /// </summary>
-        public ApplicationVersion Version { get=>Release.Version; }
+        public ApplicationVersion Version { get => Release.Version; }
 
 
         /// <summary>
@@ -40,9 +40,12 @@ namespace BLAZAM.Server.Data.Services.Update
         /// <returns>
         /// eg: C:\user\appdata\local\temp\BLAZAM\update\
         ///</returns>
-        private static SystemDirectory UpdateTempDirectory => new SystemDirectory(Program.TempDirectory + "update\\");
+        private static SystemDirectory UpdateTempDirectory
+            => new SystemDirectory(Program.TempDirectory + "update\\");
 
-        public static SystemDirectory StagingDirectory => new SystemDirectory(UpdateTempDirectory + "staged\\");
+        public static SystemDirectory StagingDirectory =>
+            new SystemDirectory(UpdateTempDirectory + "staged\\");
+
         /// <summary>
         /// The local path for staging directory path for this update
         /// </summary>
@@ -63,9 +66,18 @@ namespace BLAZAM.Server.Data.Services.Update
         /// <returns>
         /// eg: C:\inetpub\blazam\Writable\Update\Download\
         /// </returns>
-        public static SystemDirectory UpdateDownloadDirectory { get => new SystemDirectory(UpdateTempDirectory + "download\\"); }
-        public SystemDirectory BackupPath { get => new SystemDirectory(UpdateTempDirectory + "backup\\" + Program.Version + "\\"); }
-        public SystemDirectory BackupDirectory { get => new SystemDirectory(UpdateTempDirectory + "backup\\" + Program.Version + "\\"); }
+        public static SystemDirectory UpdateDownloadDirectory
+        {
+            get => new SystemDirectory(UpdateTempDirectory + "download\\");
+        }
+        public SystemDirectory BackupPath
+        {
+            get => new SystemDirectory(UpdateTempDirectory + "backup\\" + Program.Version + "\\");
+        }
+        public SystemDirectory BackupDirectory
+        {
+            get => new SystemDirectory(UpdateTempDirectory + "backup\\" + Program.Version + "\\");
+        }
 
         /// <summary>
         /// The local path to the downloaded zip file
@@ -105,21 +117,16 @@ namespace BLAZAM.Server.Data.Services.Update
             get
             {
                 return " -UpdateSourcePath '" + UpdateSourcePath + "' -ProcessId " + Program.ApplicationProcess.Id + " -ApplicationDirectory '" + Program.RootDirectory + "'" +
-                   " -Username " + DatabaseCache.ActiveDirectorySettings?.Username + " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN + " -Password '" + Encryption.DecryptObject<string>(DatabaseCache.ActiveDirectorySettings?.Password) + "'";
+                   " -Username " + DatabaseCache.ActiveDirectorySettings?.Username + " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN + " -Password '" + Encryption.Instance.DecryptObject<string>(DatabaseCache.ActiveDirectorySettings?.Password) + "'";
             }
         }
 
-        public ApplicationUpdate()
-        {
-            encryption = new Encryption();
-        }
 
         public AppEvent<FileProgress> DownloadPercentageChanged { get; set; }
 
         bool downloaded = false;
         bool staged = false;
         bool backedUp = false;
-        private Encryption encryption;
 
         public bool Newer
         {
@@ -240,9 +247,9 @@ namespace BLAZAM.Server.Data.Services.Update
         {
             Loggers.UpdateLogger.Information("Attempting backup of current version to: " + BackupPath);
 
-            var result =  await Task.Run(() => { return Program.RootDirectory.CopyTo(BackupDirectory); });
+            var result = await Task.Run(() => { return Program.RootDirectory.CopyTo(BackupDirectory); });
 
-            Loggers.UpdateLogger.Debug("Backup result: "+result.ToString());
+            Loggers.UpdateLogger.Debug("Backup result: " + result.ToString());
 
             return result;
         }
@@ -275,7 +282,7 @@ namespace BLAZAM.Server.Data.Services.Update
         {
             return await Task.Run(() =>
             {
-                Loggers.UpdateLogger.Information("Attempting cleaning of download folder: "+ UpdateFile);
+                Loggers.UpdateLogger.Information("Attempting cleaning of download folder: " + UpdateFile);
 
                 try
                 {
@@ -283,9 +290,9 @@ namespace BLAZAM.Server.Data.Services.Update
                     return true;
 
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Error while cleaning of download folder: " + UpdateFile,ex);
+                    Loggers.UpdateLogger.Error("Error while cleaning of download folder: " + UpdateFile, ex);
 
                     return false;
                 }
@@ -297,7 +304,7 @@ namespace BLAZAM.Server.Data.Services.Update
             {
                 try
                 {
-                  UpdateStagingDirectory.Delete(true);
+                    UpdateStagingDirectory.Delete(true);
                     return true;
 
                 }
@@ -384,7 +391,7 @@ namespace BLAZAM.Server.Data.Services.Update
                                     await streamToWriteTo.WriteAsync(buffer, 0, bytesRead);
                                     totalBytesRead += bytesRead;
                                     progress.CompletedBytes = totalBytesRead;
-                                    
+
                                     DownloadPercentageChanged?.Invoke(progress);
                                 }
                                 else
