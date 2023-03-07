@@ -34,7 +34,7 @@ namespace BLAZAM.Server.Middleware
                             break;
                         case ConnectionState.Up:
                             var appliedSeedMigration = factory.CreateDbContext().AppliedMigrations.Where(m => m.Contains("seed", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                            var stagedSeedMigration = factory.CreateDbContext().AppliedMigrations.Where(m => m.Contains("seed", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                            var stagedSeedMigration = factory.CreateDbContext().PendingMigrations.Where(m => m.Contains("seed", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                             if(appliedSeedMigration!=null && stagedSeedMigration !=null)
                             {
                                 Oops.ErrorMessage = "The application database is incompatible with this version of the application";

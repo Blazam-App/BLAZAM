@@ -405,16 +405,18 @@ namespace BLAZAM.Common.Data.Database
             }
             var appliedMigs = this.Database.GetAppliedMigrations();
             //var migs = this.Database.GetPendingMigrations();
-            var seedFound = false;
-            appliedMigs.ForEach(m =>
+           
+            if (appliedMigs.Count()>0) return true;
+            try
             {
-                if (m.Contains("seed"))
-                    seedFound = true;
-            });
-            if (seedFound) return true;
-            if (this.AuthenticationSettings.FirstOrDefault() == null)
+                if (this.AuthenticationSettings.FirstOrDefault() == null)
+                    return false;
+                return true;
+            }
+            catch
+            {
                 return false;
-            return true;
+            }
         }
 
 

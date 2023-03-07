@@ -36,6 +36,7 @@ using Blazorise.RichTextEdit;
 using BLAZAM.Server.Pages.Error;
 using System.Diagnostics;
 using System.Reflection;
+using BLAZAM.Common.Models.Database;
 
 namespace BLAZAM
 {
@@ -99,10 +100,16 @@ namespace BLAZAM
                 {
                     if (installationCompleted != true && context!=null)
                     {
-
-                        installationCompleted = context.IsSeeded();
-                        //if (!context.Seeded()) installationCompleted = false;
-                        //else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                        if (context.IsSeeded())
+                        {
+                            var appSettings = context.AppSettings.FirstOrDefault();
+                            if (appSettings != null)
+                                installationCompleted = appSettings.InstallationCompleted;
+                            else
+                                installationCompleted = false;
+                            //if (!context.Seeded()) installationCompleted = false;
+                            //else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                        }
                     }
                     return installationCompleted != false;
                 }
