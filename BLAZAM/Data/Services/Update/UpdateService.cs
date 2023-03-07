@@ -48,8 +48,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 ApplicationVersion? latestVer = null;
 
 
-                if (SelectedBranch == null) throw new ApplicationUpdateException("There was no branch selection found in the database");
-
+                if (SelectedBranch == null) return null;
                 //Create a github client to get api data from repo
                 var client = new GitHubClient(new ProductHeaderValue("BLAZAM-APP"));
 

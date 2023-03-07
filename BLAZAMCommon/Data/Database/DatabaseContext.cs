@@ -37,6 +37,22 @@ namespace BLAZAM.Common.Data.Database
             }
         }
 
+        static IEnumerable<string> _pendingMigrations;
+        public IEnumerable<string> PendingMigrations
+        {
+            get {
+                if (_pendingMigrations == null) _pendingMigrations = Database.GetPendingMigrations();
+                return _pendingMigrations;
+            }
+        }
+        static IEnumerable<string> _appliedMigrations;
+        public IEnumerable<string> AppliedMigrations
+        {
+            get {
+                if (_appliedMigrations == null) _appliedMigrations = Database.GetAppliedMigrations();
+                return _appliedMigrations;
+            }
+        }
 
         public enum ConnectionStatus
         {
@@ -269,10 +285,10 @@ namespace BLAZAM.Common.Data.Database
             {
                 entity.HasIndex(e => e.UserGUID).IsUnique();
             });
-              modelBuilder.Entity<PermissionDelegate>(entity =>
-            {
-                entity.HasIndex(e => e.DelegateSid).IsUnique();
-            });
+            modelBuilder.Entity<PermissionDelegate>(entity =>
+          {
+              entity.HasIndex(e => e.DelegateSid).IsUnique();
+          });
 
         }
 
@@ -309,7 +325,7 @@ namespace BLAZAM.Common.Data.Database
 
 
                     //Check for tables
-                    if (Seeded())
+                    if (IsSeeded())
                     {
                         //Installation has been completed
 
@@ -364,7 +380,7 @@ namespace BLAZAM.Common.Data.Database
                 }
                 catch (Exception ex)
                 {
-                    
+
 
                     //Installation not completed
 
@@ -377,16 +393,25 @@ namespace BLAZAM.Common.Data.Database
             }
             return ConnectionStatus.IncompleteConfiguration;
         }
-        public bool Seeded()
+        public bool IsSeeded()
         {
+            try
+            {
+                return AppSettings.FirstOrDefault().InstallationCompleted == true;
+            }
+            catch
+            {
 
-            var migs = this.Database.GetPendingMigrations();
+            }
+            var appliedMigs = this.Database.GetAppliedMigrations();
+            //var migs = this.Database.GetPendingMigrations();
             var seedFound = false;
-            migs.ForEach(m => {
+            appliedMigs.ForEach(m =>
+            {
                 if (m.Contains("seed"))
                     seedFound = true;
             });
-            if (seedFound) return false;
+            if (seedFound) return true;
             if (this.AuthenticationSettings.FirstOrDefault() == null)
                 return false;
             return true;

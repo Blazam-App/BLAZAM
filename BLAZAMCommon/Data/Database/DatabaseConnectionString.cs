@@ -53,8 +53,8 @@ namespace BLAZAM.Common.Data.Database
                     int startIndex = ConnectionString.IndexOf(search);
                     if (startIndex == -1)
                     {
-                       // search = "Server=";
-                       // startIndex = ConnectionString.IndexOf(search);
+                        search = "Database=";
+                        startIndex = ConnectionString.IndexOf(search);
                     }
                     if (startIndex >= 0)
                     {

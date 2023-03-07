@@ -99,8 +99,10 @@ namespace BLAZAM
                 {
                     if (installationCompleted != true && context!=null)
                     {
-                        if (!context.Seeded()) installationCompleted = false;
-                        else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+
+                        installationCompleted = context.IsSeeded();
+                        //if (!context.Seeded()) installationCompleted = false;
+                        //else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
                     }
                     return installationCompleted != false;
                 }
@@ -502,7 +504,7 @@ namespace BLAZAM
                     {
                         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
                         if (context != null)
-                            if (context.Seeded() || force)
+                            if (context.IsSeeded() || force)
                                 if (context.Database.GetPendingMigrations().Count() > 0)
                                     context.Database.Migrate();
 
