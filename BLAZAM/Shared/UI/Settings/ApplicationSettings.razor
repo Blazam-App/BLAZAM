@@ -3,7 +3,7 @@
 @using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 @using BLAZAM.Server.Data.Services.Email;
 @inject IDbContextFactory<DatabaseContext> DbFactory
-@inherits ValidatedForm
+@inherits SettingsComponents
 
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
@@ -119,7 +119,7 @@
                 </LoadingIndicator>
 
                 @code {
-    AppSettings settings = new AppSettings();
+        AppSettings settings = new AppSettings();
 
     protected override async Task OnInitializedAsync()
     {
@@ -133,7 +133,6 @@
 
     private async void LoadIcon(FileUploadEventArgs e)
     {
-        //TODO Try and capture the moment the file upload starts
         using (var stream = e.File.OpenReadStream(5000000))
         {
             using (var memoryStream = new MemoryStream())
@@ -151,7 +150,7 @@
     protected override void Save()
     {
 
-        base.Save();
+        base.Save(Context.ChangeTracker.Entries().Where(e => e.State != EntityState.Detached && e.State != EntityState.Unchanged));
     }
 
 }
