@@ -306,6 +306,6 @@
     }
     async Task UserCreated(IADUser user)
     {
-
+        AuditLogger.User.Created(user);
     }
 }

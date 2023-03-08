@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.6.7</AssemblyVersion>
-		<Version>2023.03.07.0301</Version>
+		<Version>2023.03.07.2246</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -67,6 +67,7 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
 			<PrivateAssets>all</PrivateAssets>

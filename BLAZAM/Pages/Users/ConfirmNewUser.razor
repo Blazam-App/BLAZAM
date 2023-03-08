@@ -356,11 +356,12 @@
     async Task ConfirmUser(){
         try{
             User.CommitChanges();
-            NotificationService.Success("User has been created");
+            await NotificationService.Success("User has been created");
+            await Confirmed.InvokeAsync(User);
             Nav.NavigateTo("/users/search/" + User.SamAccountName);
         }catch(ApplicationException ex)
         {
-            MessageService.Error(ex.Message);
+            await MessageService.Error(ex.Message);
         }
     }
 }

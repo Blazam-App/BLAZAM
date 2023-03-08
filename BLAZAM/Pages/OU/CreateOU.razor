@@ -59,7 +59,7 @@
 
                     @if (selectedStep == "stepConfirm")
                     {
-                        <ConfirmNewOU OU="@newOU" Confirmed="UserCreated" FieldColumnSize="ColumnSize.Is12" />
+                        <ConfirmNewOU OU="@newOU" Confirmed="OUCreated" FieldColumnSize="ColumnSize.Is12" />
                     }
                 </Column>
 
@@ -136,7 +136,7 @@
         LoadingData = true;
         await InvokeAsync(StateHasChanged);
         newOU = parentOU.CreateOU(newOUName);
-       
+
 
 
         selectedStep = "stepConfirm";
@@ -146,8 +146,8 @@
 
         await InvokeAsync(StateHasChanged);
     }
-    async Task UserCreated(IADUser user)
+    async Task OUCreated(IADOrganizationalUnit ou)
     {
-
+        AuditLogger.OU.Created(ou);
     }
 }
