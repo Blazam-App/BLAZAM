@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Common.Data.Database
 {
-    public enum DatabaseType { SQL,MySQL,SQLite}
+    public enum DatabaseType { SQL, MySQL, SQLite }
     public class DatabaseConnectionString
     {
         public DatabaseConnectionString(string connectionString)
@@ -16,8 +16,10 @@ namespace BLAZAM.Common.Data.Database
         }
         public DatabaseConnectionString(string connectionString, DatabaseType dbType)
         {
+
             ConnectionString = connectionString;
-            DatabaseType=dbType;
+            ConnectionString = ConnectionString.Replace("%temp%", Path.GetTempPath().Substring(0, Path.GetTempPath().Length-1));
+            DatabaseType = dbType;
         }
         public DatabaseType DatabaseType;
         public bool FileBased => ServerAddress.EndsWith(".db");
@@ -59,7 +61,7 @@ namespace BLAZAM.Common.Data.Database
                 if (ConnectionString != null)
                 {
                     if (FileBased) return "File Based";
-                    
+
                     string search = "Initial Catalog=";
                     int startIndex = ConnectionString.IndexOf(search);
                     if (startIndex == -1)
@@ -121,7 +123,7 @@ namespace BLAZAM.Common.Data.Database
 
 
         }
-       
+
         public int ServerPort
         {
             get
@@ -137,13 +139,13 @@ namespace BLAZAM.Common.Data.Database
                         string portFragment = dataSourceParts[1];
                         return int.Parse(portFragment);  // Outputs "serverPort"
                     }
-                    else if(dataSourceParts.Length == 1)
+                    else if (dataSourceParts.Length == 1)
                     {
                         switch (DatabaseType)
                         {
                             case DatabaseType.SQL:
                                 return 1433;
-                                case DatabaseType.MySQL:
+                            case DatabaseType.MySQL:
                                 return 3306;
                         }
                         return 0;

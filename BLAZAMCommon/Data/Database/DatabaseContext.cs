@@ -131,37 +131,31 @@ namespace BLAZAM.Common.Data.Database
                         Configuration.GetConnectionString("SQLiteConnectionString")).EnableSensitiveDataLogging()
                         .LogTo(Loggers.DatabaseLogger.Information);
                     break;
-                case "MySQL":
-                    optionsBuilder.UseMySql(ConnectionString.ConnectionString,
-                        ServerVersion.AutoDetect(ConnectionString.ConnectionString),
-                        mySqlOptionsAction: options =>{
-                            options.SchemaBehavior(Pomelo.EntityFrameworkCore.MySql.Infrastructure.MySqlSchemaBehavior.Ignore);
-                            //options.SetSqlModeOnOpen();
-                            
-                        })
-                       
-                        .EnableSensitiveDataLogging()
-                                .LogTo(Loggers.DatabaseLogger.Information);
-                    break;
+                    /*
+                     * This would be how to connct to MySQL, if the seed
+                     * migration can be made to work with SQL,SQLite, and MySQL
+                     case "MySQL":
+                         optionsBuilder.UseMySQL(ConnectionString.ConnectionString,
+                             mySqlOptionsAction: options =>{
+                                 options.EnableRetryOnFailure();
+                                 //options.SetSqlModeOnOpen();
+
+                             })
+
+                             .EnableSensitiveDataLogging()
+                                     .LogTo(Loggers.DatabaseLogger.Information);
+                         break;
+                    */
             }
 
-            /*
-            optionsBuilder.UseSqlServer(ConnectionString?.ConnectionString,
-                options => options.EnableRetryOnFailure(
-                    maxRetryCount: 5,
-                    maxRetryDelay: TimeSpan.FromSeconds(1),
-                    errorNumbersToAdd: new List<int>() { }
-                    )
-                );
-            */
-            //optionsBuilder.UseLoggerFactory(loggerFactory);
 
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ActiveDirectoryField>().HasData(
 
+
+            modelBuilder.Entity<ActiveDirectoryField>().HasData(
 
 
                 new ActiveDirectoryField { ActiveDirectoryFieldId = 1, FieldName = "sn", DisplayName = "Last Name" },
@@ -290,7 +284,11 @@ namespace BLAZAM.Common.Data.Database
             modelBuilder.Entity<AuthenticationSettings>(entity =>
             {
                 entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AuthenticationSettingsId] = 1"));
-                entity.HasData(new AuthenticationSettings { AuthenticationSettingsId = 1, AdminPassword = "password" });
+                entity.HasData(new AuthenticationSettings
+                {
+                    AuthenticationSettingsId = 1,
+                    AdminPassword = "password"
+                });
             });
 
             modelBuilder.Entity<EmailSettings>(entity =>
@@ -299,18 +297,15 @@ namespace BLAZAM.Common.Data.Database
 
             });
 
-            modelBuilder.Entity<EmailTemplate>(entity =>
-            {
-            });
 
             modelBuilder.Entity<UserSettings>(entity =>
             {
                 entity.HasIndex(e => e.UserGUID).IsUnique();
             });
-              modelBuilder.Entity<PermissionDelegate>(entity =>
-            {
-                entity.HasIndex(e => e.DelegateSid).IsUnique();
-            });
+            modelBuilder.Entity<PermissionDelegate>(entity =>
+          {
+              entity.HasIndex(e => e.DelegateSid).IsUnique();
+          });
 
         }
 
@@ -414,7 +409,7 @@ namespace BLAZAM.Common.Data.Database
                 }
                 catch (Exception ex)
                 {
-                    
+
 
                     //Installation not completed
 
@@ -432,7 +427,8 @@ namespace BLAZAM.Common.Data.Database
 
             var migs = this.Database.GetPendingMigrations();
             var seedFound = false;
-            migs.ForEach(m => {
+            migs.ForEach(m =>
+            {
                 if (m.Contains("seed"))
                     seedFound = true;
             });
