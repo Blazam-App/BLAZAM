@@ -167,6 +167,6 @@
 	  </None>
 	</ItemGroup>
 <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-  <Exec Command="powershell.exe -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)&#xD;&#xA;powershell.exe -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\BuildDocumentation.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />
+  <Exec Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)&#xD;&#xA;powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\BuildDocumentation.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />
 </Target>	
 </Project>
