@@ -4,6 +4,7 @@ using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
+using System.ComponentModel.DataAnnotations;
 using System.DirectoryServices.AccountManagement;
 using System.Runtime.ConstrainedExecution;
 using System.Security;
@@ -103,6 +104,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 SetProperty(ActiveDirectoryFields.SN.FieldName, value);
             }
         }
+
+        [Required]
+        public override string? DisplayName { get => base.DisplayName; set => base.DisplayName = value; }
+
         public string? Department
         {
             get

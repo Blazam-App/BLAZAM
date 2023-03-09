@@ -849,17 +849,17 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     var oldValue = DirectoryEntry.Properties[propertyName].Value;
                     if (value == null || (value is string strValue && strValue == ""))
                     {
-                        NewEntryProperties[propertyName.ToLower()] = null;
+                        NewEntryProperties[propertyName] = null;
                     }
                     else
                     {
-                        NewEntryProperties[propertyName.ToLower()] = value;
+                        NewEntryProperties[propertyName] = value;
                     }
                     //Changes.Add(new DirectoryModelChange { Field = propertyName, OldValue = oldValue, NewValue = value });
                 }
                 else
                 {
-                    NewEntryProperties[propertyName.ToLower()] = value;
+                    NewEntryProperties[propertyName] = value;
                 }
                 HasUnsavedChanges = true;
                 OnModelChanged?.Invoke();

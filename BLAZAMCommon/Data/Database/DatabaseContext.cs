@@ -37,6 +37,22 @@ namespace BLAZAM.Common.Data.Database
             }
         }
 
+        static IEnumerable<string> _pendingMigrations;
+        public IEnumerable<string> PendingMigrations
+        {
+            get {
+                if (_pendingMigrations == null) _pendingMigrations = Database.GetPendingMigrations();
+                return _pendingMigrations;
+            }
+        }
+        static IEnumerable<string> _appliedMigrations;
+        public IEnumerable<string> AppliedMigrations
+        {
+            get {
+                if (_appliedMigrations == null) _appliedMigrations = Database.GetAppliedMigrations();
+                return _appliedMigrations;
+            }
+        }
 
         public enum ConnectionStatus
         {
@@ -354,7 +370,7 @@ namespace BLAZAM.Common.Data.Database
 
 
                     //Check for tables
-                    if (Seeded())
+                    if (IsSeeded())
                     {
                         //Installation has been completed
 
@@ -422,20 +438,30 @@ namespace BLAZAM.Common.Data.Database
             }
             return ConnectionStatus.IncompleteConfiguration;
         }
-        public bool Seeded()
+        public bool IsSeeded()
         {
-
-            var migs = this.Database.GetPendingMigrations();
-            var seedFound = false;
-            migs.ForEach(m =>
+            try
             {
-                if (m.Contains("seed"))
-                    seedFound = true;
-            });
-            if (seedFound) return false;
-            if (this.AuthenticationSettings.FirstOrDefault() == null)
+                return AppSettings.FirstOrDefault().InstallationCompleted == true;
+            }
+            catch
+            {
+
+            }
+            var appliedMigs = this.Database.GetAppliedMigrations();
+            //var migs = this.Database.GetPendingMigrations();
+           
+            if (appliedMigs.Count()>0) return true;
+            try
+            {
+                if (this.AuthenticationSettings.FirstOrDefault() == null)
+                    return false;
+                return true;
+            }
+            catch
+            {
                 return false;
-            return true;
+            }
         }
 
 

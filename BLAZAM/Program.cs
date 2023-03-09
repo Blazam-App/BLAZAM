@@ -36,7 +36,7 @@ using Blazorise.RichTextEdit;
 using BLAZAM.Server.Pages.Error;
 using System.Diagnostics;
 using System.Reflection;
-using Microsoft.Win32;
+using BLAZAM.Common.Models.Database;
 
 namespace BLAZAM
 {
@@ -100,8 +100,16 @@ namespace BLAZAM
                 {
                     if (installationCompleted != true && context != null)
                     {
-                        if (!context.Seeded()) installationCompleted = false;
-                        else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                        if (context.IsSeeded())
+                        {
+                            var appSettings = context.AppSettings.FirstOrDefault();
+                            if (appSettings != null)
+                                installationCompleted = appSettings.InstallationCompleted;
+                            else
+                                installationCompleted = false;
+                            //if (!context.Seeded()) installationCompleted = false;
+                            //else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                        }
                     }
                     return installationCompleted != false;
                 }
@@ -519,7 +527,7 @@ namespace BLAZAM
                     {
                         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
                         if (context != null)
-                            if (context.Seeded() || force)
+                            if (context.IsSeeded() || force)
                                 if (context.Database.GetPendingMigrations().Count() > 0)
                                     context.Database.Migrate();
 

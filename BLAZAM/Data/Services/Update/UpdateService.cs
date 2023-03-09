@@ -24,6 +24,7 @@ namespace BLAZAM.Server.Data.Services.Update
     {
         public ApplicationUpdate LatestUpdate { get; set; }
         public Task<BuildArtifact> LatestBuildArtifact { get => GetLatestBuildArtifact(); }
+        public string? SelectedBranch { get; set; }
 
         protected readonly IHttpClientFactory httpClientFactory;
 
@@ -38,19 +39,21 @@ namespace BLAZAM.Server.Data.Services.Update
         {
             try
             {
-                var selectedBranch = DatabaseCache.ApplicationSettings?.UpdateBranch;
+                var dbBranch = DatabaseCache.ApplicationSettings?.UpdateBranch;
+                if (dbBranch != null) {
+                    SelectedBranch = dbBranch;
+                }
 
                 Octokit.Release? latestRelease = null;
                 ApplicationVersion? latestVer = null;
 
 
-                if (selectedBranch == null) throw new ApplicationUpdateException("There was no branch selection found in the database");
-
+                if (SelectedBranch == null) return null;
                 //Create a github client to get api data from repo
                 var client = new GitHubClient(new ProductHeaderValue("BLAZAM-APP"));
 
 
-                if (selectedBranch == ApplicationReleaseBranches.Dev)
+                if (SelectedBranch == ApplicationReleaseBranches.Dev)
                 {
                    //TODO: Implemenet dev branch updates
 
@@ -66,7 +69,7 @@ namespace BLAZAM.Server.Data.Services.Update
                    //Get the releases from the repo
                     var releases = await client.Repository.Release.GetAll("Blazam-App", "Blazam");
                     //Filter the releases to the selected branch
-                    var branchReleases = releases.Where(r => r.TagName.Contains(selectedBranch, StringComparison.OrdinalIgnoreCase));
+                    var branchReleases = releases.Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
                     //Get the first release,which should be the most recent
                     latestRelease = branchReleases.FirstOrDefault();
                     //Get the release filename to prepare a version object
@@ -81,7 +84,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 {
                     IApplicationRelease release = new ApplicationRelease
                     {
-                        Branch = selectedBranch,
+                        Branch = SelectedBranch,
                         GitHubRelease = latestRelease,
                         Version = latestVer
                     };
