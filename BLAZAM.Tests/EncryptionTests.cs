@@ -16,20 +16,37 @@ namespace BLAZAM.Tests
             this.encryption = new Encryption("thisisaseedkeystring");
         }
 
-        [Fact]
-        public void CanEncrypt_String()
+        [Theory]
+        [InlineData("s")]
+        [InlineData("sh")]
+        [InlineData("sho")]
+        [InlineData("shor")]
+        [InlineData("short")]
+        [InlineData("longlonglonglong")]
+        [InlineData("longlonglonglonglonglonglonglonglonglonglonglong")]
+        [InlineData("longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglong")]
+        [InlineData("~!@#$%^&*()_+QWERTYUIP{}ASDFGHJKL:::ZXCVBNM<>?123456789/*-+0.qwertyuiop[]asdfghjkl;zxcvbnm,./`-=")]
+        [InlineData(" ")]
+        [InlineData("                                   ")]
+        [InlineData("a                                   z")]
+        public void CanEncrypt_String(string value)
         {
-            var test = "test";
+            var test = value;
             var cipher = encryption.EncryptObject(test);
             var result = encryption.DecryptObject<string>(cipher);
             Assert.Equal(test, result);
 
         }
 
-        [Fact]
-        public void CanEncrypt_Integer()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(0)]
+        [InlineData(-1)]
+        [InlineData(-123456789123456789)]
+        [InlineData(123456789123456789)]
+        public void CanEncrypt_Integer(int value)
         {
-            int test = 43653456;
+            int test = value;
             var cipher = encryption.EncryptObject(test);
             var result = encryption.DecryptObject<int>(cipher);
             Assert.Equal(test, result);

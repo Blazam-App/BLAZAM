@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Server.Data.Services;
+using Microsoft.VisualStudio.Services.Common;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.Text;
@@ -81,8 +82,10 @@ namespace BLAZAM.Server.Data
         {
             try
             {
-                byte[] iv = new byte[16];
                 byte[] buffer = Convert.FromBase64String(cipherText);
+
+                byte[] iv = buffer.Take(16).ToArray<byte>();
+                buffer = buffer.Skip(16).ToArray<byte>();
                 using Aes aes = Aes.Create();
                 aes.Key = Key;
                 aes.IV = iv;
@@ -118,8 +121,14 @@ namespace BLAZAM.Server.Data
         /// <returns></returns>
         public string EncryptObject(object obj)
         {
-            byte[] iv = new byte[16];
-            byte[] array;
+            Random rand = new Random();
+            int ivSeed = rand.Next(0, 65535);
+
+            var salt = Encoding.UTF8.GetBytes("BLAZAM_SALT");
+
+            var keyGenerator = new Rfc2898DeriveBytes(ivSeed.ToByteArray(), salt, 1000);
+            byte[] iv = keyGenerator.GetBytes(16);
+            byte[] encryptedBytes;
             using Aes aes = Aes.Create();
 
             aes.Key = Key;
@@ -133,20 +142,22 @@ namespace BLAZAM.Server.Data
                     CryptoStreamMode.Write))
                 {
 
-                  //  using (StreamWriter streamWriter = new StreamWriter(cryptoStream))
-                 //   {
-                        var serialized = JsonConvert.SerializeObject(obj);
-                        byte[] data = Encoding.UTF8.GetBytes(serialized);
-                        //streamWriter.Write(serialized.ToString());
-                        cryptoStream.Write(data, 0, data.Length);
-                        cryptoStream.FlushFinalBlock();
+                    //  using (StreamWriter streamWriter = new StreamWriter(cryptoStream))
+                    //   {
+                    var serialized = JsonConvert.SerializeObject(obj);
+                    byte[] data = Encoding.UTF8.GetBytes(serialized);
+                    //streamWriter.Write(serialized.ToString());
+                    cryptoStream.Write(data, 0, data.Length);
+                    cryptoStream.FlushFinalBlock();
 
-                        array = memoryStream.ToArray();
+                    encryptedBytes = memoryStream.ToArray();
 
 
-
-                        return Convert.ToBase64String(array);
-                   // }
+                    var encryptedMessage = new byte[0];
+                    iv.ForEach(x => encryptedMessage=encryptedMessage.Append<byte>(x).ToArray<byte>());
+                    encryptedBytes.ForEach(x => encryptedMessage=encryptedMessage.Append<byte>(x).ToArray<byte>());
+                    return Convert.ToBase64String(encryptedMessage);
+                    // }
                 }
             }
         }
