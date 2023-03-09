@@ -21,6 +21,16 @@
                     </SettingsField>
 
                 </Validation>
+                <SettingsField>
+                    <FieldLabel>@SettingsLocalization["Update Branch"]</FieldLabel>
+                    <FieldBody>
+                    <SelectList
+                        Data="@updateBranches"
+                        TValue="string" 
+                        TItem="string" @bind-SelectedValue=@settings.UpdateBranch/>
+                    </FieldBody>
+                </SettingsField>
+
 
 
                 @if (settings.AutoUpdate)
@@ -73,7 +83,7 @@
 </LoadingIndicator>
 @code {
     AppSettings settings = new AppSettings();
-
+    List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev };
     protected override async Task OnInitializedAsync()
     {
 

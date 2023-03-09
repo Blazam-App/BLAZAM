@@ -55,8 +55,14 @@ namespace BLAZAM.Server.Data.Services.Update
 
                 if (SelectedBranch == ApplicationReleaseBranches.Dev)
                 {
-                   //TODO: Implemenet dev branch updates
-
+                    //TODO: Implemenet dev branch updates
+                    HttpClient artifactClient = httpClientFactory.CreateClient();
+                    artifactClient.BaseAddress = new Uri("https://api.github.com/");
+                    var artifactResponse = await artifactClient.GetFromJsonAsync<ArtifactResponse>("repos/Blazam-App/BLAZAM/actions/artifacts");
+                    if(artifactResponse != null && artifactResponse.artifacts.Count > 0) 
+                    {
+                        var latestDevArtifact = artifactResponse.artifacts.OrderBy(a => a.created_at);
+                    }
                 }
 
                 else
