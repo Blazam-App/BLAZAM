@@ -37,6 +37,8 @@ namespace BLAZAM.Common.Data.Database
             }
         }
 
+
+
         static IEnumerable<string> _pendingMigrations;
         public IEnumerable<string> PendingMigrations
         {
@@ -120,6 +122,8 @@ namespace BLAZAM.Common.Data.Database
         public DbSet<RequestAuditLog> RequestAuditLog { get; set; }
         public DbSet<PermissionsAuditLog> PermissionsAuditLog { get; set; }
         public DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
+
+
         public static ConfigurationManager Configuration { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

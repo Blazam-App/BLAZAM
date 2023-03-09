@@ -5,8 +5,13 @@ using System.Text;
 
 namespace BLAZAM.Server.Data
 {
-    internal class Encryption
+    public class Encryption
     {
+
+        public static Encryption Instance;
+
+
+
         /// <summary>
         /// String used to generate the key bytes
         /// </summary>
@@ -17,22 +22,32 @@ namespace BLAZAM.Server.Data
         public string KeySeedString { get; set; }
 
         /// <summary>
-        /// The size of the key to generate
+        /// The size of the key in bits
         /// </summary>
         public int KeySize { get; set; }
 
-        public int KeyBlockSize { get; set; }
-
+        /// <summary>
+        /// The key that is <see cref="KeySize"/> bits long and was 
+        /// generated from the <see cref="KeySeedString"/> 
+        /// </summary>
         public byte[] Key { get; set; }
 
-        public static Encryption Instance;
 
-        public Encryption(string? keySeedString, int keySize = 256, int keyBlockSize = 128)
+
+        /// <summary>
+        /// Initializes the Encryption service that
+        /// can both encrypt and decrypt any serializable object.
+        /// </summary>
+        /// <param name="keySeedString">Any length string that will be
+        /// processed into a repeatable generated private key</param>
+        /// <param name="keySize">How large a key to generate in bits</param>
+        /// 
+        /// <exception cref="ApplicationException">Thows an exception when no keySeedString is provided.</exception>
+        public Encryption(string? keySeedString, int keySize = 256)
         {
             if (keySeedString == null) throw new ApplicationException("An ecryption seedsting must be provided");
             KeySeedString = keySeedString;
             KeySize = keySize;
-            KeyBlockSize = keyBlockSize;
             GenerateKeyFromSeedString();
             Instance = this;
         }
@@ -54,32 +69,41 @@ namespace BLAZAM.Server.Data
             return Key;
         }
 
-
-        public T DecryptObject<T>(string cipherText)
+        /// <summary>
+        /// Decrypts cipher-text
+        /// </summary>
+        /// <typeparam name="T">The serializable type that should
+        /// represent the decrypted cipher object</typeparam>
+        /// <param name="cipherText"></param>
+        /// <returns></returns>
+        /// <exception cref="ApplicationException"></exception>
+        public T? DecryptObject<T>(string cipherText)
         {
             try
             {
                 byte[] iv = new byte[16];
                 byte[] buffer = Convert.FromBase64String(cipherText);
-                using (Aes aes = Aes.Create())
-                {
-                    aes.Key = Key;
-                    aes.IV = iv;
-                    ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                    using (MemoryStream memoryStream = new MemoryStream(buffer))
-                    {
-                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
-                        {
-                            using (StreamReader streamReader = new StreamReader(cryptoStream))
-                            {
-                                return JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
-                            }
-                        }
-                    }
-                }
+                using Aes aes = Aes.Create();
+                aes.Key = Key;
+                aes.IV = iv;
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+                using MemoryStream memoryStream = new MemoryStream(buffer);
+
+                using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+
+                using StreamReader streamReader = new StreamReader(cryptoStream);
+
+                return JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+
+
+
+
             }
             catch (FormatException ex)
             {
+                //If any issues occur while creating
+                //the decrypted text, return the "encypted"
+                //text
                 if (cipherText is T tText)
                 {
                     return tText;
@@ -87,30 +111,44 @@ namespace BLAZAM.Server.Data
             }
             throw new ApplicationException("Unable to decrypt cipherText");
         }
+        /// <summary>
+        /// Encrypt any serializable object
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public string EncryptObject(object obj)
         {
             byte[] iv = new byte[16];
             byte[] array;
-            using (Aes aes = Aes.Create())
+            using Aes aes = Aes.Create();
+
+            aes.Key = Key;
+            aes.IV = iv;
+            ICryptoTransform encryptor = aes.CreateEncryptor();
+            using (MemoryStream memoryStream = new MemoryStream())
             {
-                aes.Key = Key;
-                aes.IV = iv;
-                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-                using (MemoryStream memoryStream = new MemoryStream())
+                using (CryptoStream cryptoStream = new CryptoStream(
+                    memoryStream,
+                    encryptor,
+                    CryptoStreamMode.Write))
                 {
-                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
-                    {
-                        using (StreamWriter streamWriter = new StreamWriter(cryptoStream))
-                        {
-                            streamWriter.Write(JsonConvert.SerializeObject(obj));
-                        }
+
+                  //  using (StreamWriter streamWriter = new StreamWriter(cryptoStream))
+                 //   {
+                        var serialized = JsonConvert.SerializeObject(obj);
+                        byte[] data = Encoding.UTF8.GetBytes(serialized);
+                        //streamWriter.Write(serialized.ToString());
+                        cryptoStream.Write(data, 0, data.Length);
+                        cryptoStream.FlushFinalBlock();
 
                         array = memoryStream.ToArray();
-                    }
+
+
+
+                        return Convert.ToBase64String(array);
+                   // }
                 }
             }
-
-            return Convert.ToBase64String(array);
         }
 
     }

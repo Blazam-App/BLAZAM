@@ -37,6 +37,12 @@ namespace BLAZAM
         public DateTime LastModified { get => File.GetLastWriteTime(Path); }
 
         public TimeSpan SinceLastModified { get => DateTime.Now - LastModified; }
+        /// <summary>
+        /// Checks if the directory this file is in is writable
+        /// </summary>
+        /// <remarks>
+        /// This does not check if the file itself is writable
+        /// </remarks>
         public bool Writable
         {
             get
@@ -54,18 +60,26 @@ namespace BLAZAM
         {
             return new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.None, bufferSize: 4096, useAsync: true);
         }
-
+        /// <summary>
+        /// Returns an opened stream reader to this file
+        /// </summary>
+        /// <returns></returns>
         public FileStream OpenWriteStream()
         {
             return new FileStream(Path, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
         }
 
+        /// <summary>
+        /// Creates the file if it does not already exist
+        /// </summary>
         public void EnsureCreated()
         {
             if (!Exists)
                 Create();
         }
-
+        /// <summary>
+        /// Creates this file with no bytes
+        /// </summary>
         private void Create()
         {
             var stream = new FileStream(Path, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, bufferSize: 4096, useAsync: true);
