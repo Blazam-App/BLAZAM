@@ -22,16 +22,6 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.x
-      - name: Install MkDocs
-        run: pip install mkdocs
-        
-      - name: Install MkDocs-Material
-        run: pip install mkdocs-material
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1
         with:
@@ -53,17 +43,26 @@ jobs:
         run: echo $env.ASSEMBLY_VERSION
       - name: Compress files
         run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-nightly-v${{ env.ASSEMBLY_VERSION }}.zip
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+     
+      #- name: Create Release
+      #  id: create_release
+      #  uses: actions/create-release@v1
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         
+      #  with:
+      #    tag_name: Nightly
+      #    release_name: Nightly
+      #    body: Automated release created by GitHub Actions
+      #    draft: false
+      #    prerelease: true
+      - name: Update release
+        uses: johnwbyrd/update-release@v1
         with:
-          tag_name: Nightly-v${{ env.ASSEMBLY_VERSION }}
-          release_name: Nightly - v${{ env.ASSEMBLY_VERSION }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files:  blazam-nightly-v${{ env.ASSEMBLY_VERSION }}.zip
+          release: Nightly
           body: Automated release created by GitHub Actions
-          draft: false
           prerelease: true
       - name: Upload Release Asset
         id: upload-release-asset
