@@ -70,37 +70,10 @@ jobs:
       #    asset_content_type: application/zip
 
 
-
-      - name: Get Release ID
-        id: get_release_id
-        uses: "marvinpinto/action-automatic-releases@v1.2.1"
+      - name: Update nightly release
+        uses: eine/tip@master
         with:
-          command: find
-          args: |
-            owner=Blazam-App
-            repo=BLAZAM
-            tag=Nightly
-
-      - name: Replace Asset
-        uses: actions/upload-artifact@v2
-        with:
-          name: Nightly.zip
-          path:  blazam-nightly-v${{ env.ASSEMBLY_VERSION }}.zip
-
-      - name: Delete Old Asset
-        run: |
-          curl \
-            -X DELETE \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/Blazam-App/BLAZAM/releases/assets/Nightly.zip"
-
-      - name: Upload New Asset
-        run: |
-          curl \
-            -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: $(file -b --mime-type  blazam-nightly-v${{ env.ASSEMBLY_VERSION }}.zip)" \
-            --data-binary "@ blazam-nightly-v${{ env.ASSEMBLY_VERSION }}.zip" \
-            "https://uploads.github.com/repos/Blazam-App/BLAZAM/releases/RELEASE_ID/assets?name=Nightly.zip"
-        env:
-          RELEASE_ID: ${{ steps.get_release_id.outputs.id }}
+          tag: Nightly
+          rm: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: blazam-nightly-v${{ env.ASSEMBLY_VERSION }}.zip
