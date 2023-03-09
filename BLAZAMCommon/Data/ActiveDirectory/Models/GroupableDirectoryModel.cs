@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
-    public class GroupableDirectoryModel : DirectoryModel, IGroupableDirectoryModel
+    public class GroupableDirectoryAdapter : DirectoryEntryAdapter, IGroupableDirectoryAdapter
     {
         const int ADS_UF_ACCOUNTDISABLE = 0x0002;
         const int ADS_UF_PASSWD_NOTREQD = 0x0020;

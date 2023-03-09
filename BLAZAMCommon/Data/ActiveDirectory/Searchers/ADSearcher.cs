@@ -134,7 +134,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         protected SearchResultCollection SearchObjectBySID(string sid) => SearchObjects(null, "(objectSid=" + sid + ")", null, 1, false);
 
-        protected List<T> ConvertTo<T>(SearchResultCollection r) where T : IDirectoryModel, new()
+        protected List<T> ConvertTo<T>(SearchResultCollection r) where T : IDirectoryEntryAdapter, new()
         {
             List<T> objects = new List<T>();
 

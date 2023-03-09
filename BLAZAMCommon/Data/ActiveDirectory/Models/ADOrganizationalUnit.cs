@@ -7,7 +7,7 @@ using System.Reflection.PortableExecutable;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
-    public class ADOrganizationalUnit : DirectoryModel, IADOrganizationalUnit
+    public class ADOrganizationalUnit : DirectoryEntryAdapter, IADOrganizationalUnit
     {
         private IEnumerable<IADOrganizationalUnit>? childrenCache;
         private IQueryable<IADUser>? childUserCache;

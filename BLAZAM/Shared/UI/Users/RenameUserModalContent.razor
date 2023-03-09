@@ -87,7 +87,7 @@
     private IADUser _privateUserInstance;
 
     [Parameter]
-    public EventCallback<IDirectoryModel> DirectoryModelRenamed { get; set; }
+    public EventCallback<IDirectoryEntryAdapter> DirectoryModelRenamed { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

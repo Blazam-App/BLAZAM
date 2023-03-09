@@ -11,7 +11,7 @@
         <FieldLabel>Copy Memberships From</FieldLabel>
         <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.All"
                         @bind-SelectedResult=@copyFrom
-                        CustomResultsFilter="(result)=>result is IGroupableDirectoryModel" />
+                        CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
 
     </Field>
     @if (CopyFrom != null)
@@ -54,12 +54,12 @@
     /// The directry entry that we are assigning
     /// </summary>
     [Parameter]
-    public IGroupableDirectoryModel DirectoryModel { get; set; }
+    public IGroupableDirectoryAdapter DirectoryModel { get; set; }
 
-    IDirectoryModel copyFrom;
-    public IGroupableDirectoryModel CopyFrom { get => (IGroupableDirectoryModel)copyFrom; set => copyFrom = value; }
+    IDirectoryEntryAdapter copyFrom;
+    public IGroupableDirectoryAdapter CopyFrom { get => (IGroupableDirectoryAdapter)copyFrom; set => copyFrom = value; }
 
-    IDirectoryModel Group { get; set; }
+    IDirectoryEntryAdapter Group { get; set; }
 
     async Task AssignToGroup()
     {

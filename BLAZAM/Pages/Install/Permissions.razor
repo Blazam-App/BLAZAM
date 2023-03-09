@@ -42,7 +42,7 @@
     public EventCallback StepCompleted { get; set; }
     List<PermissionDelegate> adminGroups { get; set; } = new List<PermissionDelegate>();
     public bool Loading { get; set; }
-    public IDirectoryModel adminGroupName { get; set; }
+    public IDirectoryEntryAdapter adminGroupName { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

@@ -25,8 +25,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
         IADComputerSearcher? Computers { get; }
         IEncryptionService Encryption { get; }
-        IDirectoryModel? GetDirectoryModelBySid(string sid);
-        IDirectoryModel? GetDirectoryModelBySid(byte[] sid);
+        IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid);
+        IDirectoryEntryAdapter? GetDirectoryModelBySid(byte[] sid);
 
         /// <summary>
         /// Authenticates a login request's credentials against the configured
@@ -56,6 +56,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         /// <param name="baseDN"></param>
         /// <returns></returns>
         DirectoryEntry GetDirectoryEntry(string? baseDN = null);
-        bool RestoreTombstone(IDirectoryModel model, IADOrganizationalUnit newOU);
+        bool RestoreTombstone(IDirectoryEntryAdapter model, IADOrganizationalUnit newOU);
     }
 }

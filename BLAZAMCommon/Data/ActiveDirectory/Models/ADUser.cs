@@ -13,7 +13,7 @@ using System.Text;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
-    public class ADUser : GroupableDirectoryModel, IADUser
+    public class ADUser : GroupableDirectoryAdapter, IADUser
     {
 
         public SecureString NewPassword { get; set; }

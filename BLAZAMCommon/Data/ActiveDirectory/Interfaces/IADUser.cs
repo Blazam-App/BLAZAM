@@ -4,7 +4,7 @@ using System.Security;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 {
-    public interface IADUser : IGroupableDirectoryModel
+    public interface IADUser : IGroupableDirectoryAdapter
     {
         string? City { get; set; }
         string? Company { get; set; }

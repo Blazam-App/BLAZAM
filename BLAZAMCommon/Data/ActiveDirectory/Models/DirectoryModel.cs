@@ -18,7 +18,7 @@ using System.Reflection.Metadata.Ecma335;
 namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
 
-    public class DirectoryModel : IDirectoryModel
+    public class DirectoryEntryAdapter : IDirectoryEntryAdapter
     {
         /// <summary>
         /// The base uri to reach this directory model's search result page
@@ -34,7 +34,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         public AppEvent? OnModelChanged { get; set; }
 
-        public AppEvent<IDirectoryModel>? OnDirectoryModelRenamed { get; set; }
+        public AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
         public AppEvent? OnModelCommited { get; set; }
         public List<DirectoryModelChange> Changes
         {
@@ -188,7 +188,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     case ActiveDirectoryObjectType.OU:
                         return typeof(ADOrganizationalUnit);
                     default:
-                        return typeof(DirectoryModel);
+                        return typeof(DirectoryEntryAdapter);
                 }
             }
         }
@@ -915,7 +915,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         public override bool Equals(object? obj)
         {
-            return obj is DirectoryModel model &&
+            return obj is DirectoryEntryAdapter model &&
                    DN == model.DN;
         }
         /*
