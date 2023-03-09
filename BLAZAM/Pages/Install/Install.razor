@@ -147,20 +147,20 @@
                                         //check permissions
                                         /*
                                         PermissionDelegate currentSettings = Context.PermissionDelegate.FirstOrDefault();
-                                        if (currentSettings != null)
-                                        {
+                                            if (currentSettings != null)
+                                            {
 
                                             if (Context.Status == DatabaseContext.ConnectionStatus.OK)
-                                            {
+                                                {
                                                 _step = 5;
                                                 selectedStep = "5";
 
                                                 //NavManager.NavigateTo("/");
-                                            }
-
-
                                         }
-                                        */
+
+
+                                    }
+                                    */
                                     }
 
                                 }
@@ -209,6 +209,8 @@
             }
             (await Context.AppSettings.FirstOrDefaultAsync()).InstallationCompleted = true;
             var result = await Context.SaveChangesAsync();
+            //DatabaseCache.ApplicationSettings.InstallationCompleted = true;
+            Program.InstallationCompleted = true;
             Nav.NavigateTo("/home", true);
         }
         catch

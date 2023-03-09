@@ -8,9 +8,9 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Services.Common;
-using System.DirectoryServices.ActiveDirectory;
 
 namespace BLAZAM.Common.Data.Database
 {
@@ -120,26 +120,58 @@ namespace BLAZAM.Common.Data.Database
         public DbSet<RequestAuditLog> RequestAuditLog { get; set; }
         public DbSet<PermissionsAuditLog> PermissionsAuditLog { get; set; }
         public DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
-
+        public static ConfigurationManager Configuration { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(ConnectionString?.ConnectionString,
-                options => options.EnableRetryOnFailure(
-                    maxRetryCount: 5,
-                    maxRetryDelay: TimeSpan.FromSeconds(1),
-                    errorNumbersToAdd: new List<int>() { }
-                    )
-                );
 
-            optionsBuilder.UseLoggerFactory(loggerFactory);
+
+            var dbType = Configuration.GetValue<string>("DatabaseType");
+            switch (dbType)
+            {
+                case "SQL":
+
+                    optionsBuilder.UseSqlServer(
+                        Configuration.GetConnectionString("SQLConnectionString"),
+                            sqlServerOptionsAction: sqlOptions =>
+                            {
+                                sqlOptions.EnableRetryOnFailure();
+
+                            }
+                                ).EnableSensitiveDataLogging()
+                                .LogTo(Loggers.DatabaseLogger.Information);
+                    break;
+                case "SQLite":
+
+                    optionsBuilder.UseSqlite(
+                        Configuration.GetConnectionString("SQLiteConnectionString")).EnableSensitiveDataLogging()
+                        .LogTo(Loggers.DatabaseLogger.Information);
+                    break;
+                    /*
+                     * This would be how to connct to MySQL, if the seed
+                     * migration can be made to work with SQL,SQLite, and MySQL
+                     case "MySQL":
+                         optionsBuilder.UseMySQL(ConnectionString.ConnectionString,
+                             mySqlOptionsAction: options =>{
+                                 options.EnableRetryOnFailure();
+                                 //options.SetSqlModeOnOpen();
+
+                             })
+
+                             .EnableSensitiveDataLogging()
+                                     .LogTo(Loggers.DatabaseLogger.Information);
+                         break;
+                    */
+            }
+
 
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ActiveDirectoryField>().HasData(
 
+
+            modelBuilder.Entity<ActiveDirectoryField>().HasData(
 
 
                 new ActiveDirectoryField { ActiveDirectoryFieldId = 1, FieldName = "sn", DisplayName = "Last Name" },
@@ -268,7 +300,11 @@ namespace BLAZAM.Common.Data.Database
             modelBuilder.Entity<AuthenticationSettings>(entity =>
             {
                 entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AuthenticationSettingsId] = 1"));
-                entity.HasData(new AuthenticationSettings { AuthenticationSettingsId = 1, AdminPassword = "password" });
+                entity.HasData(new AuthenticationSettings
+                {
+                    AuthenticationSettingsId = 1,
+                    AdminPassword = "password"
+                });
             });
 
             modelBuilder.Entity<EmailSettings>(entity =>
@@ -277,9 +313,6 @@ namespace BLAZAM.Common.Data.Database
 
             });
 
-            modelBuilder.Entity<EmailTemplate>(entity =>
-            {
-            });
 
             modelBuilder.Entity<UserSettings>(entity =>
             {
@@ -317,6 +350,18 @@ namespace BLAZAM.Common.Data.Database
                 //Check for db connection
                 try
                 {
+
+                    //Handle SQLite
+                    if (ConnectionString.FileBased)
+                    {
+                        if (ConnectionString.File.Writable)
+                        {
+                            ConnectionString.File.EnsureCreated();
+                            return ConnectionStatus.OK;
+                        }
+                        return ConnectionStatus.DatabaseConnectionIssue;
+                    }
+
 
                     if (!NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort)) return ConnectionStatus.ServerUnreachable;
 

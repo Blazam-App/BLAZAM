@@ -8,21 +8,18 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BLAZAM.Common.Migrations
 {
     /// <inheritdoc />
-    public partial class betaseed : Migration
+    public partial class seed : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                name: "Audit");
-
             migrationBuilder.CreateTable(
                 name: "AccessLevels",
                 columns: table => new
                 {
-                    AccessLevelId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    AccessLevelId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,10 +30,10 @@ namespace BLAZAM.Common.Migrations
                 name: "ActiveDirectoryFields",
                 columns: table => new
                 {
-                    ActiveDirectoryFieldId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FieldName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ActiveDirectoryFieldId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FieldName = table.Column<string>(type: "TEXT", nullable: false),
+                    DisplayName = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -47,15 +44,15 @@ namespace BLAZAM.Common.Migrations
                 name: "ActiveDirectorySettings",
                 columns: table => new
                 {
-                    ADSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ApplicationBaseDN = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FQDN = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ServerAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ServerPort = table.Column<int>(type: "int", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UseTLS = table.Column<bool>(type: "bit", nullable: false)
+                    ADSettingsId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ApplicationBaseDN = table.Column<string>(type: "TEXT", nullable: false),
+                    FQDN = table.Column<string>(type: "TEXT", nullable: false),
+                    ServerAddress = table.Column<string>(type: "TEXT", nullable: false),
+                    ServerPort = table.Column<int>(type: "INTEGER", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    Password = table.Column<string>(type: "TEXT", nullable: false),
+                    UseTLS = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,60 +64,59 @@ namespace BLAZAM.Common.Migrations
                 name: "AppSettings",
                 columns: table => new
                 {
-                    AppSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    LastUpdateCheck = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    AppName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    InstallationCompleted = table.Column<bool>(type: "bit", nullable: false),
-                    MOTD = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ForceHTTPS = table.Column<bool>(type: "bit", nullable: false),
-                    HttpsPort = table.Column<int>(type: "int", nullable: true),
-                    AppFQDN = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AnalyticsId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserHelpdeskURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AppIcon = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    AutoUpdate = table.Column<bool>(type: "bit", nullable: false),
-                    AutoUpdateTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    UpdateBranch = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    AppSettingsId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    LastUpdateCheck = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    AppName = table.Column<string>(type: "TEXT", nullable: false),
+                    InstallationCompleted = table.Column<bool>(type: "INTEGER", nullable: false),
+                    MOTD = table.Column<string>(type: "TEXT", nullable: true),
+                    ForceHTTPS = table.Column<bool>(type: "INTEGER", nullable: false),
+                    HttpsPort = table.Column<int>(type: "INTEGER", nullable: true),
+                    AppFQDN = table.Column<string>(type: "TEXT", nullable: true),
+                    AnalyticsId = table.Column<string>(type: "TEXT", nullable: true),
+                    UserHelpdeskURL = table.Column<string>(type: "TEXT", nullable: true),
+                    AppIcon = table.Column<byte[]>(type: "BLOB", nullable: true),
+                    AutoUpdate = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AutoUpdateTime = table.Column<TimeSpan>(type: "TEXT", nullable: false),
+                    UpdateBranch = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AppSettings", x => x.AppSettingsId);
-                    table.CheckConstraint("CK_Table_Column1", "[AppSettingsId] = 1");
+                    table.CheckConstraint("CK_Table_Column", "[AppSettingsId] = 1");
                 });
 
             migrationBuilder.CreateTable(
                 name: "AuthenticationSettings",
                 columns: table => new
                 {
-                    AuthenticationSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SessionTimeout = table.Column<int>(type: "int", nullable: true),
-                    AdminPassword = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DuoClientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DuoClientSecret = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DuoApiHost = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    AuthenticationSettingsId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    SessionTimeout = table.Column<int>(type: "INTEGER", nullable: true),
+                    AdminPassword = table.Column<string>(type: "TEXT", nullable: true),
+                    DuoClientId = table.Column<string>(type: "TEXT", nullable: true),
+                    DuoClientSecret = table.Column<string>(type: "TEXT", nullable: true),
+                    DuoApiHost = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AuthenticationSettings", x => x.AuthenticationSettingsId);
-                    table.CheckConstraint("CK_Table_Column2", "[AuthenticationSettingsId] = 1");
+                    table.CheckConstraint("CK_Table_Column", "[AuthenticationSettingsId] = 1");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ComputerAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    Target = table.Column<string>(type: "TEXT", nullable: true),
+                    BeforeAction = table.Column<string>(type: "TEXT", nullable: true),
+                    AfterAction = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -131,15 +127,15 @@ namespace BLAZAM.Common.Migrations
                 name: "DirectoryTemplates",
                 columns: table => new
                 {
-                    DirectoryTemplateId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ObjectType = table.Column<int>(type: "int", nullable: false),
-                    DisplayNameFormula = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PasswordFormula = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UsernameFormula = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ParentOU = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DirectoryTemplateId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Category = table.Column<string>(type: "TEXT", nullable: true),
+                    ObjectType = table.Column<int>(type: "INTEGER", nullable: false),
+                    DisplayNameFormula = table.Column<string>(type: "TEXT", nullable: false),
+                    PasswordFormula = table.Column<string>(type: "TEXT", nullable: false),
+                    UsernameFormula = table.Column<string>(type: "TEXT", nullable: false),
+                    ParentOU = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -150,38 +146,38 @@ namespace BLAZAM.Common.Migrations
                 name: "EmailSettings",
                 columns: table => new
                 {
-                    EmailSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Enabled = table.Column<bool>(type: "bit", nullable: false),
-                    AdminBcc = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FromName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReplyToAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReplyToName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FromAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UseSMTPAuth = table.Column<bool>(type: "bit", nullable: false),
-                    SMTPUsername = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SMTPPassword = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SMTPServer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SMTPPort = table.Column<int>(type: "int", nullable: false),
-                    UseTLS = table.Column<bool>(type: "bit", nullable: false)
+                    EmailSettingsId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Enabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AdminBcc = table.Column<string>(type: "TEXT", nullable: true),
+                    FromName = table.Column<string>(type: "TEXT", nullable: true),
+                    ReplyToAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    ReplyToName = table.Column<string>(type: "TEXT", nullable: true),
+                    FromAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    UseSMTPAuth = table.Column<bool>(type: "INTEGER", nullable: false),
+                    SMTPUsername = table.Column<string>(type: "TEXT", nullable: true),
+                    SMTPPassword = table.Column<string>(type: "TEXT", nullable: true),
+                    SMTPServer = table.Column<string>(type: "TEXT", nullable: false),
+                    SMTPPort = table.Column<int>(type: "INTEGER", nullable: false),
+                    UseTLS = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EmailSettings", x => x.EmailSettingsId);
-                    table.CheckConstraint("CK_Table_Column3", "[EmailSettingsId] = 1");
+                    table.CheckConstraint("CK_Table_Column", "[EmailSettingsId] = 1");
                 });
 
             migrationBuilder.CreateTable(
                 name: "EmailTemplates",
                 columns: table => new
                 {
-                    EmailTemplateId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TemplateName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CC = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BCC = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    EmailTemplateId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TemplateName = table.Column<string>(type: "TEXT", nullable: false),
+                    Subject = table.Column<string>(type: "TEXT", nullable: false),
+                    Body = table.Column<string>(type: "TEXT", nullable: false),
+                    CC = table.Column<string>(type: "TEXT", nullable: false),
+                    BCC = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -192,10 +188,10 @@ namespace BLAZAM.Common.Migrations
                 name: "FieldAccessLevel",
                 columns: table => new
                 {
-                    FieldAccessLevelId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Level = table.Column<int>(type: "int", nullable: false)
+                    FieldAccessLevelId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Level = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -204,18 +200,17 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "GroupAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    Target = table.Column<string>(type: "TEXT", nullable: true),
+                    BeforeAction = table.Column<string>(type: "TEXT", nullable: true),
+                    AfterAction = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -224,18 +219,17 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "LogonAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    Target = table.Column<string>(type: "TEXT", nullable: true),
+                    BeforeAction = table.Column<string>(type: "TEXT", nullable: true),
+                    AfterAction = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -246,10 +240,10 @@ namespace BLAZAM.Common.Migrations
                 name: "ObjectAccessLevel",
                 columns: table => new
                 {
-                    ObjectAccessLevelId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Level = table.Column<int>(type: "int", nullable: false)
+                    ObjectAccessLevelId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Level = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -260,9 +254,9 @@ namespace BLAZAM.Common.Migrations
                 name: "ObjectActionFlag",
                 columns: table => new
                 {
-                    ActionAccessFlagId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ActionAccessFlagId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -271,18 +265,17 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "OUAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    Target = table.Column<string>(type: "TEXT", nullable: true),
+                    BeforeAction = table.Column<string>(type: "TEXT", nullable: true),
+                    AfterAction = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -293,11 +286,11 @@ namespace BLAZAM.Common.Migrations
                 name: "PermissionDelegate",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DelegateSid = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    IsSuperAdmin = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    DelegateSid = table.Column<byte[]>(type: "BLOB", nullable: false),
+                    IsSuperAdmin = table.Column<bool>(type: "INTEGER", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -308,10 +301,10 @@ namespace BLAZAM.Common.Migrations
                 name: "PermissionMap",
                 columns: table => new
                 {
-                    PermissionMapId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OU = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    PermissionMapId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    OU = table.Column<string>(type: "TEXT", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -320,18 +313,17 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PermissionsAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    Target = table.Column<string>(type: "TEXT", nullable: true),
+                    BeforeAction = table.Column<string>(type: "TEXT", nullable: true),
+                    AfterAction = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -340,18 +332,17 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "RequestAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    Target = table.Column<string>(type: "TEXT", nullable: true),
+                    BeforeAction = table.Column<string>(type: "TEXT", nullable: true),
+                    AfterAction = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -360,18 +351,17 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "SettingsAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    Target = table.Column<string>(type: "TEXT", nullable: true),
+                    BeforeAction = table.Column<string>(type: "TEXT", nullable: true),
+                    AfterAction = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -380,14 +370,13 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "SystemAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    Action = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -396,18 +385,17 @@ namespace BLAZAM.Common.Migrations
 
             migrationBuilder.CreateTable(
                 name: "UserAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    Target = table.Column<string>(type: "TEXT", nullable: true),
+                    BeforeAction = table.Column<string>(type: "TEXT", nullable: true),
+                    AfterAction = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -418,14 +406,14 @@ namespace BLAZAM.Common.Migrations
                 name: "UserSettings",
                 columns: table => new
                 {
-                    UserSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserGUID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    APIToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Theme = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SearchDisabledUsers = table.Column<bool>(type: "bit", nullable: false),
-                    SearchDisabledComputers = table.Column<bool>(type: "bit", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserSettingsId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserGUID = table.Column<string>(type: "TEXT", nullable: false),
+                    APIToken = table.Column<string>(type: "TEXT", nullable: true),
+                    Theme = table.Column<string>(type: "TEXT", nullable: true),
+                    SearchDisabledUsers = table.Column<bool>(type: "INTEGER", nullable: false),
+                    SearchDisabledComputers = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -436,11 +424,11 @@ namespace BLAZAM.Common.Migrations
                 name: "DirectoryTemplateFieldValues",
                 columns: table => new
                 {
-                    DirectoryTemplateFieldValueId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FieldActiveDirectoryFieldId = table.Column<int>(type: "int", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DirectoryTemplateId = table.Column<int>(type: "int", nullable: true)
+                    DirectoryTemplateFieldValueId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FieldActiveDirectoryFieldId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Value = table.Column<string>(type: "TEXT", nullable: false),
+                    DirectoryTemplateId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -462,10 +450,10 @@ namespace BLAZAM.Common.Migrations
                 name: "DirectoryTemplateGroups",
                 columns: table => new
                 {
-                    DirectoryTemplateGroupId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GroupSid = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DirectoryTemplateId = table.Column<int>(type: "int", nullable: true)
+                    DirectoryTemplateGroupId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    GroupSid = table.Column<string>(type: "TEXT", nullable: false),
+                    DirectoryTemplateId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -481,10 +469,10 @@ namespace BLAZAM.Common.Migrations
                 name: "AccessLevelFieldMapping",
                 columns: table => new
                 {
-                    FieldAccessMappingId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ActiveDirectoryFieldId = table.Column<int>(type: "int", nullable: false),
-                    FieldAccessLevelId = table.Column<int>(type: "int", nullable: false)
+                    FieldAccessMappingId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ActiveDirectoryFieldId = table.Column<int>(type: "INTEGER", nullable: false),
+                    FieldAccessLevelId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -507,11 +495,11 @@ namespace BLAZAM.Common.Migrations
                 name: "AccessLevelObjectMapping",
                 columns: table => new
                 {
-                    ObjectAccessMappingId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ObjectType = table.Column<int>(type: "int", nullable: false),
-                    ObjectAccessLevelId = table.Column<int>(type: "int", nullable: false),
-                    AllowDisabled = table.Column<bool>(type: "bit", nullable: false)
+                    ObjectAccessMappingId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ObjectType = table.Column<int>(type: "INTEGER", nullable: false),
+                    ObjectAccessLevelId = table.Column<int>(type: "INTEGER", nullable: false),
+                    AllowDisabled = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -528,11 +516,11 @@ namespace BLAZAM.Common.Migrations
                 name: "ActionAccessMapping",
                 columns: table => new
                 {
-                    ActionAccessMappingId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ObjectType = table.Column<int>(type: "int", nullable: false),
-                    AllowOrDeny = table.Column<bool>(type: "bit", nullable: false),
-                    ObjectActionActionAccessFlagId = table.Column<int>(type: "int", nullable: false)
+                    ActionAccessMappingId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ObjectType = table.Column<int>(type: "INTEGER", nullable: false),
+                    AllowOrDeny = table.Column<bool>(type: "INTEGER", nullable: false),
+                    ObjectActionActionAccessFlagId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -549,8 +537,8 @@ namespace BLAZAM.Common.Migrations
                 name: "AccessLevelPermissionMap",
                 columns: table => new
                 {
-                    AccessLevelsAccessLevelId = table.Column<int>(type: "int", nullable: false),
-                    PermissionMapsPermissionMapId = table.Column<int>(type: "int", nullable: false)
+                    AccessLevelsAccessLevelId = table.Column<int>(type: "INTEGER", nullable: false),
+                    PermissionMapsPermissionMapId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -573,8 +561,8 @@ namespace BLAZAM.Common.Migrations
                 name: "PermissionDelegatePermissionMap",
                 columns: table => new
                 {
-                    PermissionDelegatesId = table.Column<int>(type: "int", nullable: false),
-                    PermissionsMapsPermissionMapId = table.Column<int>(type: "int", nullable: false)
+                    PermissionDelegatesId = table.Column<int>(type: "INTEGER", nullable: false),
+                    PermissionsMapsPermissionMapId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -597,8 +585,8 @@ namespace BLAZAM.Common.Migrations
                 name: "AccessLevelFieldAccessMapping",
                 columns: table => new
                 {
-                    AccessLevelsAccessLevelId = table.Column<int>(type: "int", nullable: false),
-                    FieldMapFieldAccessMappingId = table.Column<int>(type: "int", nullable: false)
+                    AccessLevelsAccessLevelId = table.Column<int>(type: "INTEGER", nullable: false),
+                    FieldMapFieldAccessMappingId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -621,8 +609,8 @@ namespace BLAZAM.Common.Migrations
                 name: "AccessLevelObjectAccessMapping",
                 columns: table => new
                 {
-                    AccessLevelsAccessLevelId = table.Column<int>(type: "int", nullable: false),
-                    ObjectMapObjectAccessMappingId = table.Column<int>(type: "int", nullable: false)
+                    AccessLevelsAccessLevelId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ObjectMapObjectAccessMappingId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -645,8 +633,8 @@ namespace BLAZAM.Common.Migrations
                 name: "AccessLevelActionAccessMapping",
                 columns: table => new
                 {
-                    AccessLevelsAccessLevelId = table.Column<int>(type: "int", nullable: false),
-                    ActionMapActionAccessMappingId = table.Column<int>(type: "int", nullable: false)
+                    AccessLevelsAccessLevelId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ActionMapActionAccessMappingId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -812,6 +800,12 @@ namespace BLAZAM.Common.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_PermissionDelegate_DelegateSid",
+                table: "PermissionDelegate",
+                column: "DelegateSid",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PermissionDelegatePermissionMap_PermissionsMapsPermissionMapId",
                 table: "PermissionDelegatePermissionMap",
                 column: "PermissionsMapsPermissionMapId");
@@ -848,8 +842,7 @@ namespace BLAZAM.Common.Migrations
                 name: "AuthenticationSettings");
 
             migrationBuilder.DropTable(
-                name: "ComputerAuditLog",
-                schema: "Audit");
+                name: "ComputerAuditLog");
 
             migrationBuilder.DropTable(
                 name: "DirectoryTemplateFieldValues");
@@ -864,39 +857,31 @@ namespace BLAZAM.Common.Migrations
                 name: "EmailTemplates");
 
             migrationBuilder.DropTable(
-                name: "GroupAuditLog",
-                schema: "Audit");
+                name: "GroupAuditLog");
 
             migrationBuilder.DropTable(
-                name: "LogonAuditLog",
-                schema: "Audit");
+                name: "LogonAuditLog");
 
             migrationBuilder.DropTable(
-                name: "OUAuditLog",
-                schema: "Audit");
+                name: "OUAuditLog");
 
             migrationBuilder.DropTable(
                 name: "PermissionDelegatePermissionMap");
 
             migrationBuilder.DropTable(
-                name: "PermissionsAuditLog",
-                schema: "Audit");
+                name: "PermissionsAuditLog");
 
             migrationBuilder.DropTable(
-                name: "RequestAuditLog",
-                schema: "Audit");
+                name: "RequestAuditLog");
 
             migrationBuilder.DropTable(
-                name: "SettingsAuditLog",
-                schema: "Audit");
+                name: "SettingsAuditLog");
 
             migrationBuilder.DropTable(
-                name: "SystemAuditLog",
-                schema: "Audit");
+                name: "SystemAuditLog");
 
             migrationBuilder.DropTable(
-                name: "UserAuditLog",
-                schema: "Audit");
+                name: "UserAuditLog");
 
             migrationBuilder.DropTable(
                 name: "UserSettings");

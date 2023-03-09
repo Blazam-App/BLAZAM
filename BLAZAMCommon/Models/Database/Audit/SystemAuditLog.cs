@@ -2,7 +2,6 @@
 
 namespace BLAZAM.Common.Models.Database.Audit
 {
-    [Table("SystemAuditLog", Schema = "Audit")]
 
     public class SystemAuditLog
     {
