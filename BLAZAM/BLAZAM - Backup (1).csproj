@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.6.7</AssemblyVersion>
-		<Version>2023.03.09.2339</Version>
+		<Version>2023.03.04.0027</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -167,6 +167,6 @@
 	  </None>
 	</ItemGroup>
 <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-  <Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)&#xD;&#xA;powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\BuildDocumentation.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />
+  <Exec Command="if $(ConfigurationName) == Debug (&#xD;&#xA;    powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File &quot;$ProjectDir\\IncrementBuildNumber.ps1&quot; -ProjectDir &quot;$ProjectDir&quot; -ProjectPath &quot;$ProjectPath&quot;&#xD;&#xA;    powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File &quot;$ProjectDir\\BuildDocumentation.ps1&quot; -ProjectDir &quot;$ProjectDir&quot; -ProjectPath &quot;$ProjectPath&quot;&#xD;&#xA;) else (&#xD;&#xA;    pwsh -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File &quot;$ProjectDir/IncrementBuildNumber.ps1&quot; -ProjectDir &quot;$ProjectDir&quot; -ProjectPath &quot;$ProjectPath&quot;&#xD;&#xA;    pwsh -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File &quot;$ProjectDir/BuildDocumentation.ps1&quot; -ProjectDir &quot;$ProjectDir&quot; -ProjectPath &quot;$ProjectPath&quot;&#xD;&#xA;)" />
 </Target>	
 </Project>
