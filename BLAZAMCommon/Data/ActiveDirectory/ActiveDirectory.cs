@@ -208,7 +208,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                 Context = Factory.CreateDbContext();
 
 
-                if (Context.Status == DatabaseContext.ConnectionStatus.OK)
+                if (Context.Status == DatabaseContext.DatabaseStatus.OK)
                 {
                     if (Status != DirectoryConnectionStatus.OK)
                     {
