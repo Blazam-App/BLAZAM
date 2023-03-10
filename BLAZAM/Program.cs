@@ -110,6 +110,10 @@ namespace BLAZAM
                             //if (!context.Seeded()) installationCompleted = false;
                             //else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
                         }
+                        else
+                            installationCompleted = false;
+
+
                     }
                     return installationCompleted != false;
                 }

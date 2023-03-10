@@ -42,7 +42,8 @@ namespace BLAZAM.Common.Data.Database
         static IEnumerable<string> _pendingMigrations;
         public IEnumerable<string> PendingMigrations
         {
-            get {
+            get
+            {
                 if (_pendingMigrations == null) _pendingMigrations = Database.GetPendingMigrations();
                 return _pendingMigrations;
             }
@@ -50,7 +51,8 @@ namespace BLAZAM.Common.Data.Database
         static IEnumerable<string> _appliedMigrations;
         public IEnumerable<string> AppliedMigrations
         {
-            get {
+            get
+            {
                 if (_appliedMigrations == null) _appliedMigrations = Database.GetAppliedMigrations();
                 return _appliedMigrations;
             }
@@ -83,24 +85,7 @@ namespace BLAZAM.Common.Data.Database
         }
         */
 
-        //Permissions
-        public DbSet<ActiveDirectoryField> ActiveDirectoryFields { get; set; }
-        public DbSet<AccessLevel> AccessLevels { get; set; }
-        public DbSet<ObjectAccessMapping> AccessLevelObjectMapping { get; set; }
-        public DbSet<FieldAccessMapping> AccessLevelFieldMapping { get; set; }
-        public DbSet<FieldAccessLevel> FieldAccessLevel { get; set; }
-        public DbSet<ObjectAccessLevel> ObjectAccessLevel { get; set; }
-        public DbSet<ActionAccessFlag> ObjectActionFlag { get; set; }
-
-        public DbSet<PermissionDelegate> PermissionDelegate { get; set; }
-        public DbSet<PermissionMap> PermissionMap { get; set; }
-
-
-        //Templates
-        public DbSet<DirectoryTemplate> DirectoryTemplates { get; set; }
-        public DbSet<DirectoryTemplateFieldValue> DirectoryTemplateFieldValues { get; set; }
-        public DbSet<DirectoryTemplateGroup> DirectoryTemplateGroups { get; set; }
-
+        
 
         //App Settings
         public DbSet<AppSettings> AppSettings { get; set; }
@@ -124,6 +109,27 @@ namespace BLAZAM.Common.Data.Database
         public DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
 
 
+
+        //Permissions
+        public DbSet<ActiveDirectoryField> ActiveDirectoryFields { get; set; }
+        public DbSet<AccessLevel> AccessLevels { get; set; }
+        public DbSet<ObjectAccessMapping> AccessLevelObjectMapping { get; set; }
+        public DbSet<FieldAccessMapping> AccessLevelFieldMapping { get; set; }
+        public DbSet<FieldAccessLevel> FieldAccessLevel { get; set; }
+        public DbSet<ObjectAccessLevel> ObjectAccessLevel { get; set; }
+        public DbSet<ActionAccessFlag> ObjectActionFlag { get; set; }
+
+        public DbSet<PermissionDelegate> PermissionDelegate { get; set; }
+        public DbSet<PermissionMap> PermissionMap { get; set; }
+
+
+        //Templates
+        public DbSet<DirectoryTemplate> DirectoryTemplates { get; set; }
+        public DbSet<DirectoryTemplateFieldValue> DirectoryTemplateFieldValues { get; set; }
+        public DbSet<DirectoryTemplateGroup> DirectoryTemplateGroups { get; set; }
+
+
+
         public static ConfigurationManager Configuration { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -133,6 +139,7 @@ namespace BLAZAM.Common.Data.Database
             var dbType = Configuration.GetValue<string>("DatabaseType");
             switch (dbType)
             {
+               /*
                 case "SQL":
 
                     optionsBuilder.UseSqlServer(
@@ -151,21 +158,21 @@ namespace BLAZAM.Common.Data.Database
                         Configuration.GetConnectionString("SQLiteConnectionString")).EnableSensitiveDataLogging()
                         .LogTo(Loggers.DatabaseLogger.Information);
                     break;
-                    /*
-                     * This would be how to connct to MySQL, if the seed
-                     * migration can be made to work with SQL,SQLite, and MySQL
-                     case "MySQL":
-                         optionsBuilder.UseMySQL(ConnectionString.ConnectionString,
-                             mySqlOptionsAction: options =>{
-                                 options.EnableRetryOnFailure();
-                                 //options.SetSqlModeOnOpen();
+               */
+                case "MySQL":
+                    optionsBuilder.UseMySql(ConnectionString.ConnectionString,
+                         serverVersion: ServerVersion.AutoDetect(ConnectionString.ConnectionString),
+                        mySqlOptionsAction: options =>
+                        {
+                            options.EnableRetryOnFailure();
+                            //options.SetSqlModeOnOpen();
 
-                             })
+                        })
 
-                             .EnableSensitiveDataLogging()
-                                     .LogTo(Loggers.DatabaseLogger.Information);
-                         break;
-                    */
+                        .EnableSensitiveDataLogging()
+                                .LogTo(Loggers.DatabaseLogger.Information);
+                    break;
+
             }
 
 
@@ -454,8 +461,8 @@ namespace BLAZAM.Common.Data.Database
             }
             var appliedMigs = this.Database.GetAppliedMigrations();
             //var migs = this.Database.GetPendingMigrations();
-           
-            if (appliedMigs.Count()>0) return true;
+
+            if (appliedMigs.Count() > 0) return true;
             try
             {
                 if (this.AuthenticationSettings.FirstOrDefault() == null)
