@@ -50,7 +50,7 @@
                                         <DropdownItem Clicked="@(()=>{AssignMemberModal?.Show();})">Add Group Member...</DropdownItem>
                                     @if (Group.CanAssign)
                                     {
-                                        RefreshGroupGroups();
+                                            RefreshGroupGroupsAsync();
                                         <DropdownItem Clicked="@(()=>{AssignToModal?.Show();})">Assign To...</DropdownItem>
                                     }
                                  
@@ -238,7 +238,7 @@ InvokeAsync(StateHasChanged);
     AppModal? AssignMemberModal;
 
 
-    List<IGroupableDirectoryModel> Members = new();
+    List<IGroupableDirectoryAdapter> Members = new();
 
 
 
@@ -246,7 +246,7 @@ InvokeAsync(StateHasChanged);
     {
         await base.OnInitializedAsync();
         if (!Group.NewEntry)
-            AuditLogger.Group.Searched(Group);
+            await AuditLogger.Group.Searched(Group);
     }
 
     async void DiscardChanges()
@@ -255,7 +255,7 @@ InvokeAsync(StateHasChanged);
         {
             Group.DiscardChanges();
             EditMode = false;
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
 
         }
 
@@ -268,11 +268,11 @@ InvokeAsync(StateHasChanged);
             var changes = Group.Changes;
 
             Group.CommitChanges();
-            AuditLogger.Group.Changed(Group, changes);
+            await AuditLogger.Group.Changed(Group, changes);
 
             EditMode = false;
-            NotificationService.Success("The changes made to this group have been saved.", "Changes Saved");
-            InvokeAsync(StateHasChanged);
+            await NotificationService.Success("The changes made to this group have been saved.", "Changes Saved");
+            await InvokeAsync(StateHasChanged);
 
         }
 
@@ -284,16 +284,16 @@ InvokeAsync(StateHasChanged);
             try
             {
                 Group.Delete();
-                NotificationService.Success(Group.CanonicalName+ " has been deleted.", "Group Deleted");
+                await NotificationService.Success(Group.CanonicalName + " has been deleted.", "Group Deleted");
 
                 Group = null;
                 Nav.NavigateTo("/groups/search");
 
             }catch(ApplicationException ex)
             {
-                NotificationService.Error(ex.Message);
+                await NotificationService.Error(ex.Message);
             }
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
         }
     }
 }

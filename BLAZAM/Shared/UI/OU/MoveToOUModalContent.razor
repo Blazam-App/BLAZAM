@@ -23,7 +23,7 @@
 
 
     [Parameter]
-    public IDirectoryModel DirectoryModel { get; set; }
+    public IDirectoryEntryAdapter DirectoryModel { get; set; }
 
     IADOrganizationalUnit SelectedOU { get; set; }
     IADOrganizationalUnit StartingOU { get; set; }
@@ -45,10 +45,10 @@
             if (DirectoryModel.MoveTo(SelectedOU))
             {
                 await NotificationService.Success(DirectoryModel.CanonicalName + " has been moved to " + SelectedOU.CanonicalName, "Moved");
-                ModelChanged.InvokeAsync();
+                await ModelChanged.InvokeAsync();
                 Close();
             }
-            NotificationService.Error(DirectoryModel.CanonicalName + " was not able to be moved to " + SelectedOU.CanonicalName, "Move failed");
+            await NotificationService.Error(DirectoryModel.CanonicalName + " was not able to be moved to " + SelectedOU.CanonicalName, "Move failed");
 
         }
 

@@ -56,7 +56,7 @@ else
 
 
     [Parameter]
-    public IADComputer Computer { get; set; }
+    public IADComputer? Computer { get; set; }
 
 
 
@@ -107,7 +107,7 @@ else
         await InvokeAsync(StateHasChanged);
     }
 
-    async void RefreshSessions(object state)
+    async void RefreshSessions(object? state)
     {
         try
         {

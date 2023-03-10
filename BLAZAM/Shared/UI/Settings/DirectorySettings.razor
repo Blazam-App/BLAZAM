@@ -4,11 +4,10 @@
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
 
-    <Row Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
         <Heading>@SettingsLocalization["Active Directory Settings"]</Heading>
 
-       @* <Column ColumnSize="ColumnSize.Is4.OnDesktop">
-            <ActiveDirectoryStatusPanel />
+        @* <Column ColumnSize="ColumnSize.Is4.OnDesktop">
+        <ActiveDirectoryStatusPanel />
         </Column>*@
         <Column ColumnSize="ColumnSize.Is12.OnDesktop">
             <Form @onsubmit="Save">
@@ -19,14 +18,14 @@
                             <FieldLabel>@SettingsLocalization["Server"]</FieldLabel>
                             <FieldHelp>Can be your domain name in most environments</FieldHelp>
                             <FieldBody>
-                                @if(Program.InDemoMode && UserStateService.CurrentUsername != "admin")
+                                @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin")
                                 {
 
                                     <TextEdit Text="Private" Disabled>
-                                            <Feedback>
-                                                <ValidationError />
-                                            </Feedback>
-                                        </TextEdit>
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextEdit>
                                 }
                                 else
                                 {
@@ -59,10 +58,10 @@
                                 @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin")
                                 {
                                     <NumericEdit Margin=Margin.IsAuto.OnY Value="0" Disabled>
-                                        <Feedback>
-                                            <ValidationError />
-                                        </Feedback>
-                                    </NumericEdit>
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </NumericEdit>
                                 }
                                 else
                                 {
@@ -74,7 +73,7 @@
                                     </NumericEdit>
 
                                 }
-                             
+
                             </FieldBody>
 
 
@@ -162,7 +161,6 @@
                 </Validations>
             </Form>
         </Column>
-    </Row>
 </LoadingIndicator>
 @code {
 
@@ -174,22 +172,22 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Task.Run(async () =>
-        {
-            var set = Context.ActiveDirectorySettings.FirstOrDefault();
-            if (set != null)
-            {
-                settings = set;
-                passwordInDb = settings?.Password;
 
-            }
-            else
-            {
-                _insert = true;
-            }
-            LoadingData = false;
-            await InvokeAsync(StateHasChanged);
-        });
+        var set = await Context.ActiveDirectorySettings.FirstOrDefaultAsync();
+        if (set != null)
+        {
+            settings = set;
+            passwordInDb = settings?.Password;
+
+        }
+        else
+        {
+            settings.ADSettingsId = 1;
+            _insert = true;
+        }
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
     }
     protected override async void Save()
     {

@@ -30,7 +30,7 @@
             </Column>
         </Row>
 
-        <Virtualize Items="results" TItem="IDirectoryModel" Context="u" OverscanCount="30">
+        <Virtualize Items="results" TItem="IDirectoryEntryAdapter" Context="u" OverscanCount="30">
             <ItemContent>
                 @if (u.CanRead)
                 {
@@ -101,7 +101,7 @@
 
     string ModelsTypeName = "Search";
     protected string SearchIcon { get; set; } = "fa-solid fa-building";
-    string _searchTermParameter;
+    string? _searchTermParameter;
     /// <summary>
     /// The search term that comes from the URI
     /// </summary>
@@ -149,7 +149,7 @@
         SearchService.SearchTerm = SearchTermParameter;
         Searcher.GeneralSearchTerm = SearchTermParameter;
 
-        base.OnInitializedAsync();
+        await base.OnInitializedAsync();
 
 
 
@@ -167,7 +167,7 @@
                  InvokeAsync(StateHasChanged);
              });
 
-        PerformSearch();
+        await PerformSearch();
         await InvokeAsync(StateHasChanged);
 
     }
@@ -175,7 +175,7 @@
     [CascadingParameter]
     public ActiveDirectoryObjectType? SearchObjectType { get; set; }
 
-    protected virtual List<IDirectoryModel> results { get; set; } = new List<IDirectoryModel>();
+    protected virtual List<IDirectoryEntryAdapter> results { get; set; } = new List<IDirectoryEntryAdapter>();
 
     public async Task SubmitSearch() => await SubmitSearch(null);
     public async Task SubmitSearch(string? searchTerm = null)
@@ -189,7 +189,7 @@
 
         //Search();
 
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
    
@@ -212,7 +212,7 @@
 
         LoadingData = false;
 
-        InvokeAsync(StateHasChanged);
+        await  InvokeAsync(StateHasChanged);
 
 
 

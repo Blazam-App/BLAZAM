@@ -70,7 +70,7 @@
 
     private async void UpdateStatus(object? state)
     {
-        Task.Run(async () =>
+        await Task.Run(async () =>
         {
             if (_monitoring == false)
             {
@@ -97,7 +97,7 @@
                             }
                             showProgress = Visibility.Invisible;
 
-                            DirectoryConnected.InvokeAsync();
+                            InvokeAsync(DirectoryConnected.InvokeAsync);
 
                         }
                         else

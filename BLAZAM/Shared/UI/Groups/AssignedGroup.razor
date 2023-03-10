@@ -87,7 +87,7 @@
 
 
     [Parameter]
-    public IGroupableDirectoryModel Member { get; set; }
+    public IGroupableDirectoryAdapter Member { get; set; }
 
     [Parameter]
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
@@ -95,9 +95,9 @@
     {
 
         Member.UnassignFrom(Group);
-        NotificationService.Warning(Member.CanonicalName + " removed from " + Group.CanonicalName + ". Don't forget to save your changes.", "Sucess");
+        await NotificationService.Warning(Member.CanonicalName + " removed from " + Group.CanonicalName + ". Don't forget to save your changes.", "Sucess");
 
-        OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group));
+        await OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group));
 
     }
 

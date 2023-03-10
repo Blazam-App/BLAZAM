@@ -29,7 +29,8 @@ namespace BLAZAM.Server.Middleware
 
 
             // If the ForceHttps flag is set to true, redirect to HTTPS.
-            if (forceHttps && !context.Request.IsHttps)
+            if (forceHttps 
+                && !context.Request.IsHttps)
             {
                 string httpsUrl = "https://" + context.Request.Host + context.Request.Path;
                 context.Response.Redirect(httpsUrl);

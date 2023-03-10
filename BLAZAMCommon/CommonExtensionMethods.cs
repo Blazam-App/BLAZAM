@@ -25,10 +25,32 @@ namespace BLAZAM
 
 
 
+        public static byte[] ToByteArray(this int number, int? length = null)
+        {
+            byte[] byteArray = BitConverter.GetBytes(number);
 
-        
+            // Check endianness and reverse byte array if necessary
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(byteArray);
+            }
+            if (length != null)
+                // Pad the byte array to the desired length with zeroes
+                Array.Resize(ref byteArray, (int)length);
 
-     
+            return byteArray;
+        }
+
+
+        public static bool IsUrlLocalToHost(this string url)
+        {
+            if (url.StartsWith("https://localhost")) return true;
+            if (url == "") return true;
+            return ((url[0] == '/' && (url.Length == 1 ||
+                    (url[1] != '/' && url[1] != '\\'))) ||   // "/" or "/foo" but not "//" or "/\"
+                    (url.Length > 1 &&
+                     url[0] == '~' && url[1] == '/'));   // "~/" or "~/foo"
+        }
 
         public static string ToPlainText(this SecureString? secureString)
         {
@@ -36,11 +58,11 @@ namespace BLAZAM
             IntPtr bstrPtr = Marshal.SecureStringToBSTR(secureString);
             try
             {
-                var plainText =  Marshal.PtrToStringBSTR(bstrPtr);
+                var plainText = Marshal.PtrToStringBSTR(bstrPtr);
                 if (plainText == null)
-                    plainText= String.Empty;
+                    plainText = String.Empty;
                 return plainText;
-               
+
             }
             finally
             {
@@ -114,7 +136,7 @@ namespace BLAZAM
         {
             using (var image = Image.Load(rawImage))
             {
-                if(image.Height>image.Width)
+                if (image.Height > image.Width)
                     image.Mutate(x => x.Resize(0, maxDimension));
                 else
                     image.Mutate(x => x.Resize(maxDimension, 0));
@@ -126,7 +148,7 @@ namespace BLAZAM
                 }
             }
         }
-    
+
 
         #region ADSI Extension Methods
 
@@ -141,7 +163,7 @@ namespace BLAZAM
             [DispId(2)] int HighPart { get; set; }
             [DispId(3)] int LowPart { get; set; }
         }
-        public class ADsLargeInteger:IADsLargeInteger
+        public class ADsLargeInteger : IADsLargeInteger
         {
             public int HighPart { get; set; }
             public int LowPart { get; set; }
@@ -151,8 +173,9 @@ namespace BLAZAM
             if (value == null) return null;
             try
             {
-               
-                long ? fileTime = value?.ToFileTimeUtc();
+
+                long? fileTime = value?.ToFileTimeUtc();
+                if (fileTime == null) return null;
                 object fto = 0;
                 IADsLargeInteger largeInt = new ADsLargeInteger();
                 largeInt.HighPart = (int)(fileTime >> 32);
@@ -169,9 +192,9 @@ namespace BLAZAM
             //read file time 133213804065419619
             try
             {
-              
+
                 IADsLargeInteger v = value as IADsLargeInteger;
-         
+
                 if (null == v) return DateTime.MinValue;
 
                 long dV = ((long)v.HighPart << 32) + (long)v.LowPart;

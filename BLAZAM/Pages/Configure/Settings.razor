@@ -3,7 +3,7 @@
 @layout MainLayout
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
-@inherits AppComponentBase
+@inherits TabbedAppComponentBase
 <AuthorizeView>
     <SetHeader>
         <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
@@ -20,27 +20,27 @@
     <Tabs SelectedTab="@selectedTab">
         
         <Content>
-            <TabPanel Name="app">
+            <TabPanel Name="app" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
                 <BLAZAM.Server.Shared.UI.Settings.ApplicationSettings />
 
             </TabPanel>
-            <TabPanel Name="auth">
+            <TabPanel Name="auth" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
                 <BLAZAM.Server.Shared.UI.Settings.AuthenticationSetting />
 
             </TabPanel>
-            <TabPanel Name="dir">
+            <TabPanel Name="dir" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
                 <BLAZAM.Server.Shared.UI.Settings.DirectorySettings />
 
             </TabPanel>
-            <TabPanel Name="email">
+            <TabPanel Name="email" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
                 <BLAZAM.Server.Shared.UI.Settings.EmailSettings />
 
             </TabPanel>
-            <TabPanel Name="update">
+            <TabPanel Name="update" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
                 <BLAZAM.Server.Shared.UI.Settings.UpdateSettings />
 
             </TabPanel>
-            <TabPanel Name="system">
+            <TabPanel Name="system" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
                 <BLAZAM.Server.Shared.UI.Settings.SystemSettings />
 
             </TabPanel>
@@ -49,18 +49,5 @@
 </AuthorizeView>
 
 @code {
-    [Parameter]
-    public string selectedTab { get; set; } = "app";
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        selectedTab= selectedTab ?? "app";
-    }
-    private Task OnSelectedTabChanged(string name)
-    {
-        selectedTab = name;
-        Nav.NavigateTo("/settings/" + name);
-        return Task.CompletedTask;
-    }
+  
 }

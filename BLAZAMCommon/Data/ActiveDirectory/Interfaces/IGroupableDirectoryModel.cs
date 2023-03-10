@@ -2,7 +2,7 @@
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 {
-    public interface IGroupableDirectoryModel : IDirectoryModel
+    public interface IGroupableDirectoryAdapter : IDirectoryEntryAdapter
     {
         string? Description { get; set; }
         string? DisplayName { get; set; }
@@ -10,38 +10,38 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         bool IsAGroupMember { get; }
         List<IADGroup> MemberOf { get; }
         /// <summary>
-        /// Indicates whether the current web user can assign this <see cref="IGroupableDirectoryModel"/> to any groups
+        /// Indicates whether the current web user can assign this <see cref="IGroupableDirectoryAdapter"/> to any groups
         /// </summary>
         bool CanAssign { get; }
         /// <summary>
-        /// Indicates whether the current web user can enable this <see cref="IGroupableDirectoryModel"/>
+        /// Indicates whether the current web user can enable this <see cref="IGroupableDirectoryAdapter"/>
         /// </summary>
         bool CanEnable { get; }
         /// <summary>
-        /// Indicates whether the current web user can disable this <see cref="IGroupableDirectoryModel"/>
+        /// Indicates whether the current web user can disable this <see cref="IGroupableDirectoryAdapter"/>
         /// </summary>
         bool CanDisable { get; }
         /// <summary>
-        /// Indicates whether the current web user can unlock this <see cref="IGroupableDirectoryModel"/>
+        /// Indicates whether the current web user can unlock this <see cref="IGroupableDirectoryAdapter"/>
         /// </summary>
         bool CanUnlock { get; }
         /// <summary>
-        /// Indicates whether this <see cref="IGroupableDirectoryModel"/> is currently locked out
+        /// Indicates whether this <see cref="IGroupableDirectoryAdapter"/> is currently locked out
         /// of logging in
         /// </summary>
         bool LockedOut { get; set; }
         /// <summary>
-        /// Indicates whether this <see cref="IGroupableDirectoryModel"/> is disabled
+        /// Indicates whether this <see cref="IGroupableDirectoryAdapter"/> is disabled
         /// </summary>
         bool Disabled { get; set; }
 
         /// <summary>
-        /// Indicates whether this <see cref="IGroupableDirectoryModel"/> is disabled
+        /// Indicates whether this <see cref="IGroupableDirectoryAdapter"/> is disabled
         /// </summary>
         bool Enabled { get; set; }
 
         /// <summary>
-        /// Indicates whether the current web user can search disabled <see cref="IGroupableDirectoryModel"/>'s
+        /// Indicates whether the current web user can search disabled <see cref="IGroupableDirectoryAdapter"/>'s
         /// </summary>
         bool CanSearchDisabled { get; }
         DateTime? LockoutTime { get; }

@@ -44,7 +44,7 @@
     MarkupString? MOTD;
     DropContainer<Widget>? widgetContainer;
     List<Widget> widgets = new List<Widget>();
-    private Task ItemDropped(DraggableDroppedEventArgs<AppComponent> dropItem)
+    private Task ItemDropped(DraggableDroppedEventArgs<AppComponentBase> dropItem)
     {
         return Task.CompletedTask;
     }

@@ -30,15 +30,15 @@ namespace BLAZAM.Server.Data.Services
         {
             using (var Context = await Factory.CreateDbContextAsync())
             {
-                var cursor = await Context.PrivilegeLevel.Include(pl=>pl.PrivilegeMaps).ToListAsync();
+                var cursor = await Context.PermissionDelegate.Include(pl=>pl.PermissionsMaps).ToListAsync();
                 foreach(var l in cursor) { 
                 
                     
                     
-                    if (user.IsAMemberOf(ActiveDirectoryContext.Instance.Groups.FindGroupBySID(l.GroupSID)))
+                    if (user.IsAMemberOf(ActiveDirectoryContext.Instance.Groups.FindGroupBySID(l.DelegateSid)))
                     {
-                        user.PrivilegeLevels.Add(l);
-                        user.PermissionMappings.AddRange(l.PrivilegeMaps);
+                        user.PermissionDelegates.Add(l);
+                        user.PermissionMappings.AddRange(l.PermissionsMaps);
                     }
                 }
                

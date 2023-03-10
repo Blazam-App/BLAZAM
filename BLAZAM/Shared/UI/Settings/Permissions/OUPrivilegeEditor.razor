@@ -19,7 +19,7 @@
                         {
                             <Card>
                                 <CardBody>
-                                    <PrivilegeMapEditor Map="map" ReadOnly=true />
+                                    <PermissionMapEditor Map="map" ReadOnly=true />
                                 </CardBody>
                             </Card>
                         }
@@ -30,11 +30,11 @@
         }
         @foreach (var map in appliedMappings)
         {
-            <PrivilegeMapEditor MappingDeleted="@(()=>{RefreshData();})" Map="map" />
+            <PermissionMapEditor MappingDeleted="@(()=>{RefreshData();})" Map="map" />
         }
         @if (NewMapping != null)
         {
-            <PrivilegeMapEditor MappingDeleted="@(()=>{RefreshData();})" Map="NewMapping" />
+            <PermissionMapEditor MappingDeleted="@(()=>{RefreshData();})" Map="NewMapping" />
         }
     </CardBody>
     <CardFooter>
@@ -59,9 +59,9 @@
         }
     }
 
-    private PrivilegeMap? NewMapping;
-    List<PrivilegeMap> appliedMappings { get; set; } = new List<PrivilegeMap>();
-    List<PrivilegeMap> inheritedMappings { get; set; } = new List<PrivilegeMap>();
+    private PermissionMap? NewMapping;
+    List<PermissionMap> appliedMappings { get; set; } = new List<PermissionMap>();
+    List<PermissionMap> inheritedMappings { get; set; } = new List<PermissionMap>();
 
     protected override async Task OnInitializedAsync()
     {

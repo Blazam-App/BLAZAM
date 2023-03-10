@@ -104,7 +104,7 @@
     {
         await base.OnInitializedAsync();
         if (!OU.NewEntry)
-            AuditLogger.OU.Searched(OU);
+            await AuditLogger.OU.Searched(OU);
     }
     async void SaveChanges()
     {
@@ -112,8 +112,8 @@
         {
             OU.CommitChanges();
             EditMode = false;
-            NotificationService.Success("The changes made to this ou have been saved.", "Changes Saved");
-            InvokeAsync(StateHasChanged);
+            await NotificationService.Success("The changes made to this ou have been saved.", "Changes Saved");
+            await InvokeAsync(StateHasChanged);
 
         }
 
@@ -124,7 +124,7 @@
         {
             OU.DiscardChanges();
             EditMode = false;
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
 
         }
 
@@ -136,7 +136,7 @@
             try
             {
                 OU.Delete();
-                NotificationService.Success(OU.CanonicalName+ " has been deleted.", "OU Deleted");
+                await NotificationService.Success(OU.CanonicalName + " has been deleted.", "OU Deleted");
 
                 OU = null;
                 Nav.NavigateTo("/ou/search");
@@ -144,10 +144,10 @@
             }
             catch (ApplicationException ex)
             {
-                NotificationService.Error(ex.Message);
+                await NotificationService.Error(ex.Message);
             }
        
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
         }
     }
 }

@@ -68,7 +68,6 @@
                         }
                         <Paragraph>Current Version: @Program.Version</Paragraph>
 
-                        LatestAvailableVersion.Nav = Nav;
                        <Button Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(LatestAvailableVersion.UpdateCommand);})>Copy Command</Button>
                         
                    
@@ -102,7 +101,7 @@ else
 }
 
 @code {
-    ApplicationUpdate LatestAvailableVersion { get; set; }
+    ApplicationUpdate? LatestAvailableVersion { get; set; }
 
     UpdateStage updateStage = UpdateStage.None;
 
@@ -116,11 +115,11 @@ else
         LatestAvailableVersion = await UpdateService.GetLatestUpdate();
         updateChecked = true;
         LoadingData = false;
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
     async Task ApplyUpdate()
     {
-        NotificationService.Info("Update started. Downloading update...");
+        await NotificationService.Info("Update started. Downloading update...");
 
         updateStage = UpdateStage.Downloading;
         LatestAvailableVersion.DownloadPercentageChanged += UpdateDownloadPercentage;
@@ -130,13 +129,13 @@ else
             DownladProgress = null;
             LatestAvailableVersion.DownloadPercentageChanged -= UpdateDownloadPercentage;
 
-            NotificationService.Success("Update downloaded successfully. Preparing for update...");
+            await NotificationService.Success("Update downloaded successfully. Preparing for update...");
 
             if (await MessageService.Confirm("The update has been downloaded. Would you like to Stage the update?"))
             {
                 updateStage = UpdateStage.Staging;
 
-                InvokeAsync(StateHasChanged);
+                await InvokeAsync(StateHasChanged);
                 if (await LatestAvailableVersion.Stage())
                 {
 
@@ -153,12 +152,12 @@ else
                     {
                         updateStage = UpdateStage.BackingUp;
 
-                        InvokeAsync(StateHasChanged);
+                        await InvokeAsync(StateHasChanged);
                         if (!await LatestAvailableVersion.Backup())
                         {
 
 
-                            NotificationService.Error("Backup failed.");
+                            await NotificationService.Error("Backup failed.");
                             return;
 
                         }
@@ -168,17 +167,17 @@ else
                         updateStage = UpdateStage.Applying;
 
 
-                        InvokeAsync(StateHasChanged);
+                        await InvokeAsync(StateHasChanged);
 
                         var output = await LatestAvailableVersion.Apply();
                         if (output != null)
                         {
-                            NotificationService.Success("Update started successfully. The web application will restart and update momentarily.");
+                            await NotificationService.Success("Update started successfully. The web application will restart and update momentarily.");
 
                         }
                         if (Program.InDebugMode)
                         {
-                            MessageService.Info(output);
+                            await MessageService.Info(output);
 
                         }
 
@@ -189,13 +188,13 @@ else
                     }
                     updateStage = UpdateStage.None;
 
-                    InvokeAsync(StateHasChanged);
+                    await InvokeAsync(StateHasChanged);
                 }
             }
         }
         else
         {
-            NotificationService.Error("Update failed.");
+            await NotificationService.Error("Update failed.");
             updateStage = UpdateStage.None;
 
         }
@@ -210,7 +209,7 @@ else
     {
 
         DownladProgress = progress;
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
 
     }
     protected void UpdateDB()

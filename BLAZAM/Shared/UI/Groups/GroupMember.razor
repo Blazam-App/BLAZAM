@@ -22,7 +22,7 @@
     bool collapse1Visible = false;
 
     [Parameter]
-    public IGroupableDirectoryModel Member { get; set; }
+    public IGroupableDirectoryAdapter Member { get; set; }
 
     [Parameter]
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }

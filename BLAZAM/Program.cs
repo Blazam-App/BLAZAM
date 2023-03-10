@@ -36,6 +36,7 @@ using Blazorise.RichTextEdit;
 using BLAZAM.Server.Pages.Error;
 using System.Diagnostics;
 using System.Reflection;
+using BLAZAM.Common.Models.Database;
 
 namespace BLAZAM
 {
@@ -83,7 +84,7 @@ namespace BLAZAM
         /// </returns>
         internal static List<string> ListeningAddresses { get; private set; } = new List<string>();
 
-        private static IDbContextFactory<DatabaseContext> _programDbFactory;
+        private static IDbContextFactory<DatabaseContext>? _programDbFactory;
 
 
 
@@ -95,15 +96,37 @@ namespace BLAZAM
         {
             get
             {
-                using (var context = _programDbFactory.CreateDbContext())
+                using (var context = _programDbFactory?.CreateDbContext())
                 {
-                    if (installationCompleted != true)
+                    if (installationCompleted != true && context != null)
                     {
-                        if (!context.Seeded()) installationCompleted = false;
-                        else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                        if (context.IsSeeded())
+                        {
+                            try
+                            {
+                                var appSettings = context.AppSettings.FirstOrDefault();
+                                if (appSettings != null)
+                                    installationCompleted = appSettings.InstallationCompleted;
+                                else
+                                    installationCompleted = false;
+                            }catch (Exception ex)
+                            {
+                                Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database.", ex);
+                            }
+                            //if (!context.Seeded()) installationCompleted = false;
+                            //else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                        }
+                        else
+                            installationCompleted = false;
+
+
                     }
                     return installationCompleted != false;
                 }
+            }
+            set
+            {
+                installationCompleted = value;
             }
         }
 
@@ -120,18 +143,18 @@ namespace BLAZAM
         /// <summary>
         /// Can be used for JWT Token signing
         /// </summary>
-        internal static SymmetricSecurityKey TokenKey;
+        internal static SymmetricSecurityKey? TokenKey;
 
         /// <summary>
         /// A static reference for the current asp
         /// net core application instance
         /// </summary>
-        public static WebApplication AppInstance { get; private set; }
+        public static WebApplication? AppInstance { get; private set; }
         /// <summary>
         /// A static reference to the asp net 
         /// core application configuration
         /// </summary>
-        public static ConfigurationManager Configuration { get; private set; }
+        public static ConfigurationManager? Configuration { get; private set; }
         /// <summary>
         /// Indicates whether the Account running the website can wrrite to the writable path
         /// </summary>
@@ -209,8 +232,8 @@ namespace BLAZAM
 
             //Grab the connection string and store it in the context statically
             //This can obviously only be changed on app restart
-            DatabaseContext.ConnectionString = new DatabaseConnectionString(builder.Configuration.GetConnectionString("SQLConnectionString"));
-            Loggers.SystemLogger.Debug("Connection String: " +DatabaseContext.ConnectionString);
+
+
 
 
 
@@ -283,17 +306,29 @@ namespace BLAZAM
             builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = InDebugMode; });
 
             //Inject the database as a service
-            builder.Services.AddDbContextFactory<DatabaseContext>(opt =>
-                opt.UseSqlServer(
-                    builder.Configuration.GetConnectionString("SQLConnectionString"),
-                        sqlServerOptionsAction: sqlOptions =>
-                            {
-                                sqlOptions.EnableRetryOnFailure();
 
-                            }
-                            ).EnableSensitiveDataLogging()
+            DatabaseContext.Configuration = builder.Configuration;
+            var dbType = builder.Configuration.GetValue<string>("DatabaseType");
+            switch (dbType.ToLower())
+            {
+                case "sqlite":
+                    DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("SQLiteConnectionString"), DatabaseType.SQLite);
+                    break;
+                case "sql":
+                    DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("SQLConnectionString"), DatabaseType.SQL);
+                    break;
+                case "mysql":
+                    DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("MySQLConnectionString"), DatabaseType.MySQL);
+                    break;
 
-                );
+            }
+            Loggers.SystemLogger.Debug("Connection String: " + DatabaseContext.ConnectionString);
+
+            builder.Services.AddDbContextFactory<DatabaseContext>();
+
+
+
+
             //Provide an Http client as a service with custom construction via api service class
             builder.Services.AddHttpClient();
             //Also keeping this here for a possible future API, though this would be for internal use
@@ -502,7 +537,7 @@ namespace BLAZAM
                     {
                         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
                         if (context != null)
-                            if (context.Seeded() || force)
+                            if (context.IsSeeded() || force)
                                 if (context.Database.GetPendingMigrations().Count() > 0)
                                     context.Database.Migrate();
 

@@ -108,7 +108,7 @@ namespace BLAZAM.Server.Data.Services
             {
                 if (User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin)) return true;
                 if (DirectoryUser != null)
-                    return DirectoryUser.PrivilegeLevels.Any(p => p.IsSuperAdmin);
+                    return DirectoryUser.PermissionDelegates.Any(p => p.IsSuperAdmin);
                 return false;
             }
         }
@@ -130,9 +130,12 @@ namespace BLAZAM.Server.Data.Services
         }
 
         public IDbContextFactory<DatabaseContext> DbFactory { get; set; }
-       
 
-      
+
+        public override int GetHashCode()
+        {
+            return User.FindFirstValue(ClaimTypes.Actor).GetHashCode();
+        }
         public override bool Equals(object? obj)
         {
             if (obj is ApplicationUserState otherState)

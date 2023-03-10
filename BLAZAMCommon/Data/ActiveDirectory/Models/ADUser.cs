@@ -4,6 +4,7 @@ using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
+using System.ComponentModel.DataAnnotations;
 using System.DirectoryServices.AccountManagement;
 using System.Runtime.ConstrainedExecution;
 using System.Security;
@@ -12,25 +13,25 @@ using System.Text;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
-    public class ADUser : GroupableDirectoryModel, IADUser
+    public class ADUser : GroupableDirectoryAdapter, IADUser
     {
-      
+
         public SecureString NewPassword { get; set; }
-        [Obsolete("Use SetPassword(SecureString password) instead.")]
-        public bool SetPassword(string password) => SetPassword(password.ToSecureString());
-        public bool SetPassword(SecureString password)
+        public bool SetPassword(SecureString password, bool requireChange = false)
         {
 
             try
             {
 
 
-                using (PrincipalContext pContext = new PrincipalContext(ContextType.Domain, DirectorySettings.FQDN, DirectorySettings.Username,Directory.Encryption.DecryptObject<string>(DirectorySettings.Password)))
+                using (PrincipalContext pContext = new PrincipalContext(ContextType.Domain, DirectorySettings.FQDN, DirectorySettings.Username, Directory.Encryption.DecryptObject<string>(DirectorySettings.Password)))
                 {
                     UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
                     if (up != null)
                     {
                         up.SetPassword(password.ToPlainText());
+                        if (requireChange)
+                            up.ExpirePasswordNow();
 
                         up.Save();
 
@@ -44,7 +45,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
                 return false;
             }
-          
+
         }
 
         public byte[]? ThumbnailPhoto
@@ -103,6 +104,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 SetProperty(ActiveDirectoryFields.SN.FieldName, value);
             }
         }
+
+        [Required]
+        public override string? DisplayName { get => base.DisplayName; set => base.DisplayName = value; }
+
         public string? Department
         {
             get
@@ -162,19 +167,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 });
             }
         }
-        [Obsolete("Use StagePasswordChange(SecureString newPassword) instead.")]
-        public void StagePasswordChange(string newPassword)
+
+        public void StagePasswordChange(SecureString newPassword, bool requireChange = false)
         {
             CommitActions.Add(() =>
             {
-                return SetPassword(newPassword.ToSecureString());
-            });
-        }
-        public void StagePasswordChange(SecureString newPassword)
-        {
-            CommitActions.Add(() =>
-            {
-                return SetPassword(newPassword);
+                return SetPassword(newPassword, requireChange);
             });
         }
         /// <summary>
@@ -225,7 +223,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
                 var com = GetProperty<object>("pwdLastSet");
                 return com.AdsValueToDateTime();
-               
+
             }
 
         }
@@ -395,9 +393,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
         }
 
-        public List<PrivilegeLevel> PrivilegeLevels { get; set; } = new List<PrivilegeLevel>();
+        public List<PermissionDelegate> PermissionDelegates { get; set; } = new List<PermissionDelegate>();
 
-        public List<PrivilegeMap> PermissionMappings { get; set; } = new List<PrivilegeMap>();
+        public List<PermissionMap> PermissionMappings { get; set; } = new List<PermissionMap>();
 
         public bool HasUserPrivilege
         {

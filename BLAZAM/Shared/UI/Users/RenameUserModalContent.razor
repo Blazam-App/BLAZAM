@@ -87,7 +87,7 @@
     private IADUser _privateUserInstance;
 
     [Parameter]
-    public EventCallback<IDirectoryModel> DirectoryModelRenamed { get; set; }
+    public EventCallback<IDirectoryEntryAdapter> DirectoryModelRenamed { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -118,7 +118,7 @@
         }
         else
         {
-            NotificationService.Error("That name already exists. Please choose a different Display Name", "Name Exists");
+            await NotificationService.Error("That name already exists. Please choose a different Display Name", "Name Exists");
         }
         LoadingData = false;
 

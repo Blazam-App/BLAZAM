@@ -1,7 +1,7 @@
 ﻿@inherits AutoCompleteComponentBase
 <Div Display="Display">
-    <Autocomplete TItem="IDirectoryModel"
-                  TValue="IDirectoryModel"
+    <Autocomplete TItem="IDirectoryEntryAdapter"
+                  TValue="IDirectoryEntryAdapter"
                   Data="@SearchResults"
                   @bind-Search="SearchTerm"
                   ReadData="@GetResults"
@@ -21,7 +21,7 @@
                     @context?.Value?.ObjectType
 
                 </Div>
-                @if (context?.Value != null && context.Value is IGroupableDirectoryModel gdm)
+                @if (context?.Value != null && context.Value is IGroupableDirectoryAdapter gdm)
                 {
                     if (gdm.LockedOut)
                     {
@@ -66,7 +66,7 @@
 
 
     [Parameter]
-    public Func<IDirectoryModel,bool>CustomResultsFilter{ get; set; }
+    public Func<IDirectoryEntryAdapter,bool>CustomResultsFilter{ get; set; }
 
     [Parameter]
     public IFluentDisplay Display { get; set; }
@@ -74,7 +74,7 @@
     [CascadingParameter]
     public SearchService SearchParameters { get; set; }
 
-    IEnumerable<IDirectoryModel> _searchResults = new List<IDirectoryModel>();
+    IEnumerable<IDirectoryEntryAdapter> _searchResults = new List<IDirectoryEntryAdapter>();
     bool _searchDisabled;
     [Parameter]
     public bool SearchDisabled
@@ -99,7 +99,7 @@
 
 
     [Parameter]
-    public IEnumerable<IDirectoryModel> SearchResults
+    public IEnumerable<IDirectoryEntryAdapter> SearchResults
     {
         get => _searchResults;
         set
@@ -113,18 +113,18 @@
 
 
     [Parameter]
-    public EventCallback<IEnumerable<IDirectoryModel>> SearchResultsChanged { get; set; }
+    public EventCallback<IEnumerable<IDirectoryEntryAdapter>> SearchResultsChanged { get; set; }
 
-    public IDirectoryModel _selectedResult;
+    public IDirectoryEntryAdapter _selectedResult;
     [Parameter]
-    public IDirectoryModel SelectedResult
+    public IDirectoryEntryAdapter SelectedResult
     {
         get => _selectedResult;
         set
         {
             if (_selectedResult == value)
                 return;
-            SearchResults = new List<IDirectoryModel>
+            SearchResults = new List<IDirectoryEntryAdapter>
                 {
                     value
                 };
@@ -134,16 +134,16 @@
     }
 
     [Parameter]
-    public EventCallback<IDirectoryModel> SelectedResultChanged { get; set; }
+    public EventCallback<IDirectoryEntryAdapter> SelectedResultChanged { get; set; }
 
 
 
 
 
-    public List<IDirectoryModel> _selectedResults;
+    public List<IDirectoryEntryAdapter> _selectedResults;
 
     [Parameter]
-    public List<IDirectoryModel> SelectedResults
+    public List<IDirectoryEntryAdapter> SelectedResults
     {
         get => _selectedResults; set
         {
@@ -158,7 +158,7 @@
     }
 
     [Parameter]
-    public EventCallback<List<IDirectoryModel>> SelectedResultsChanged { get; set; }
+    public EventCallback<List<IDirectoryEntryAdapter>> SelectedResultsChanged { get; set; }
 
     List<string> SelectedResultNames = new();
 
@@ -185,7 +185,7 @@
 
                 if (CustomResultsFilter != null)
                 {
-                    List<IDirectoryModel> filteredResults = new();
+                    List<IDirectoryEntryAdapter> filteredResults = new();
                     foreach(var result in SearchResults){
                         if (CustomResultsFilter.Invoke(result))
                             filteredResults.Add(result);

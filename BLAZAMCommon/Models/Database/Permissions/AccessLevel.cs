@@ -11,11 +11,16 @@ namespace BLAZAM.Common.Models.Database.Permissions
         public List<ObjectAccessMapping> ObjectMap { get; set; } = new();
         public List<ActionAccessMapping> ActionMap { get; set; } = new();
         public List<FieldAccessMapping> FieldMap { get; set; } = new();
-        public List<PrivilegeMap> PrivilegeMaps { get; set; }
+        public List<PermissionMap> PermissionMaps { get; set; }
         public int CompareTo(AccessLevel? other)
         {
             if(other == null) return 1;
             return this.AccessLevelId.CompareTo(other.AccessLevelId);
+        }
+
+        public override int GetHashCode()
+        {
+            return AccessLevelId.ToString().GetHashCode();
         }
 
         public override bool Equals(object? obj)

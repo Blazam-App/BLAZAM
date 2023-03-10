@@ -114,9 +114,9 @@
         if (Context != null)
         {
             var result = Context.Status;
-            if (result != DatabaseContext.ConnectionStatus.ServerUnreachable)
+            if (result != DatabaseContext.DatabaseStatus.ServerUnreachable)
             {
-                if (result == DatabaseContext.ConnectionStatus.OK)
+                if (result == DatabaseContext.DatabaseStatus.OK)
                 {
                     if (!Context.Database.GetPendingMigrations().Any())
                     {
@@ -144,24 +144,23 @@
                                         selectedStep = "4";
 
                                         await InvokeAsync(StateHasChanged);
-
                                         //check permissions
                                         /*
-                                        PrivilegeLevel currentSettings = Context.PrivilegeLevel.FirstOrDefault();
-                                        if (currentSettings != null)
-                                        {
+                                        PermissionDelegate currentSettings = Context.PermissionDelegate.FirstOrDefault();
+                                            if (currentSettings != null)
+                                            {
 
                                             if (Context.Status == DatabaseContext.ConnectionStatus.OK)
-                                            {
+                                                {
                                                 _step = 5;
                                                 selectedStep = "5";
 
                                                 //NavManager.NavigateTo("/");
-                                            }
+                                    }
 
 
-                                        }
-                                        */
+                                    }
+                                    */
                                     }
 
                                 }
@@ -200,21 +199,24 @@
     }
     private async void FinalizeInstall()
     {
-        //await File.WriteAllTextAsync(Program.InstallFlagFilePath, "");
         try
         {
             if (Context.AppSettings.FirstOrDefault() == null)
             {
-                Context.AppSettings.Add(new());
+                var settings = new AppSettings();
+                settings.AppSettingsId = 1;
+                Context.AppSettings.Add(settings);
                 Context.SaveChanges();
+                DatabaseCache.ApplicationSettings = settings;
             }
             (await Context.AppSettings.FirstOrDefaultAsync()).InstallationCompleted = true;
             var result = await Context.SaveChangesAsync();
+            Program.InstallationCompleted = true;
             Nav.NavigateTo("/home", true);
         }
         catch
         {
-            NotificationService.Error("Sorry, ran into an error while finalizing install");
+            await NotificationService.Error("Sorry, ran into an error while finalizing install");
 
             }
 
