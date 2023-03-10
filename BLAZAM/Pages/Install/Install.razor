@@ -114,9 +114,9 @@
         if (Context != null)
         {
             var result = Context.Status;
-            if (result != DatabaseContext.ConnectionStatus.ServerUnreachable)
+            if (result != DatabaseContext.DatabaseStatus.ServerUnreachable)
             {
-                if (result == DatabaseContext.ConnectionStatus.OK)
+                if (result == DatabaseContext.DatabaseStatus.OK)
                 {
                     if (!Context.Database.GetPendingMigrations().Any())
                     {
@@ -156,7 +156,7 @@
                                                 selectedStep = "5";
 
                                                 //NavManager.NavigateTo("/");
-                                        }
+                                    }
 
 
                                     }
@@ -199,17 +199,18 @@
     }
     private async void FinalizeInstall()
     {
-        //await File.WriteAllTextAsync(Program.InstallFlagFilePath, "");
         try
         {
             if (Context.AppSettings.FirstOrDefault() == null)
             {
-                Context.AppSettings.Add(new());
+                var settings = new AppSettings();
+                settings.AppSettingsId = 1;
+                Context.AppSettings.Add(settings);
                 Context.SaveChanges();
+                DatabaseCache.ApplicationSettings = settings;
             }
             (await Context.AppSettings.FirstOrDefaultAsync()).InstallationCompleted = true;
             var result = await Context.SaveChangesAsync();
-            //DatabaseCache.ApplicationSettings.InstallationCompleted = true;
             Program.InstallationCompleted = true;
             Nav.NavigateTo("/home", true);
         }

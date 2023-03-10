@@ -22,23 +22,23 @@ namespace BLAZAM.Server.Background
         {
             switch (_context.Status)
             {
-                case DatabaseContext.ConnectionStatus.OK:
+                case DatabaseContext.DatabaseStatus.OK:
                         Connected = ConnectionState.Up;
 
                     break;
-                case DatabaseContext.ConnectionStatus.ServerUnreachable:
+                case DatabaseContext.DatabaseStatus.ServerUnreachable:
 
                     Oops.ErrorMessage = "Database server is not reachable! Check your connection string! Is the port open?";
                     goto default;
 
-                case DatabaseContext.ConnectionStatus.IncompleteConfiguration:
+                case DatabaseContext.DatabaseStatus.IncompleteConfiguration:
                     Oops.ErrorMessage = "Web application configuration is corrupt or missing!";
                     goto default;
 
-                case DatabaseContext.ConnectionStatus.DatabaseConnectionIssue:
+                case DatabaseContext.DatabaseStatus.DatabaseConnectionIssue:
                     Oops.ErrorMessage = "Database server is up, but the application is unable to connect to the database!";
                     goto default;
-                case DatabaseContext.ConnectionStatus.TablesMissing:
+                case DatabaseContext.DatabaseStatus.TablesMissing:
                     Oops.ErrorMessage = "Database is corrupt, or installation was incomplete!";
                     Connected = ConnectionState.Up;
 
