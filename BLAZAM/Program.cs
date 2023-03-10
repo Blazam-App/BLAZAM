@@ -102,11 +102,17 @@ namespace BLAZAM
                     {
                         if (context.IsSeeded())
                         {
-                            var appSettings = context.AppSettings.FirstOrDefault();
-                            if (appSettings != null)
-                                installationCompleted = appSettings.InstallationCompleted;
-                            else
-                                installationCompleted = false;
+                            try
+                            {
+                                var appSettings = context.AppSettings.FirstOrDefault();
+                                if (appSettings != null)
+                                    installationCompleted = appSettings.InstallationCompleted;
+                                else
+                                    installationCompleted = false;
+                            }catch (Exception ex)
+                            {
+                                Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database.", ex);
+                            }
                             //if (!context.Seeded()) installationCompleted = false;
                             //else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
                         }

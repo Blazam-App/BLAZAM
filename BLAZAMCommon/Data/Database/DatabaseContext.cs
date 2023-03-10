@@ -16,7 +16,6 @@ namespace BLAZAM.Common.Data.Database
 {
     public class DatabaseContext : DbContext
     {
-        private ILoggerFactory loggerFactory;
 
         /// <summary>
         /// The connection string as set in the ASP Net Core appsettings.json
@@ -29,7 +28,7 @@ namespace BLAZAM.Common.Data.Database
         /// <summary>
         /// Checks the realtime pingabillity and connectivity to the database right now
         /// </summary>
-        public ConnectionStatus Status
+        public DatabaseStatus Status
         {
             get
             {
@@ -58,7 +57,7 @@ namespace BLAZAM.Common.Data.Database
             }
         }
 
-        public enum ConnectionStatus
+        public enum DatabaseStatus
         {
             OK, ServerUnreachable,
             TablesMissing,
@@ -66,26 +65,13 @@ namespace BLAZAM.Common.Data.Database
             IncompleteConfiguration
         }
 
-
-        public DatabaseContext(ILoggerFactory loggerFactory, DbContextOptions options) : base(options)
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="options"><inheritdoc/></param>
+        public DatabaseContext( DbContextOptions options) : base(options)
         {
-            this.loggerFactory = loggerFactory;
         }
-
-        /*
-        public DatabaseContext(string connectionString)
-        {
-            ConnectionString = connectionString;
-
-            var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
-
-            optionsBuilder.UseSqlServer(connectionString);
-
-
-        }
-        */
-
-        
 
         //App Settings
         public DbSet<AppSettings> AppSettings { get; set; }
@@ -139,29 +125,29 @@ namespace BLAZAM.Common.Data.Database
             var dbType = Configuration.GetValue<string>("DatabaseType");
             switch (dbType)
             {
-               /*
-                case "SQL":
+                
+                 case "SQL":
 
-                    optionsBuilder.UseSqlServer(
-                        Configuration.GetConnectionString("SQLConnectionString"),
-                            sqlServerOptionsAction: sqlOptions =>
-                            {
-                                sqlOptions.EnableRetryOnFailure();
+                     optionsBuilder.UseSqlServer(
+                         Configuration.GetConnectionString("SQLConnectionString"),
+                             sqlServerOptionsAction: sqlOptions =>
+                             {
+                                 sqlOptions.EnableRetryOnFailure();
 
-                            }
-                                ).EnableSensitiveDataLogging()
-                                .LogTo(Loggers.DatabaseLogger.Information);
-                    break;
-                case "SQLite":
+                             }
+                                 ).EnableSensitiveDataLogging()
+                                 .LogTo(Loggers.DatabaseLogger.Information);
+                     break;
+                 case "SQLite":
 
-                    optionsBuilder.UseSqlite(
-                        Configuration.GetConnectionString("SQLiteConnectionString")).EnableSensitiveDataLogging()
-                        .LogTo(Loggers.DatabaseLogger.Information);
-                    break;
-               */
+                     optionsBuilder.UseSqlite(
+                         Configuration.GetConnectionString("SQLiteConnectionString")).EnableSensitiveDataLogging()
+                         .LogTo(Loggers.DatabaseLogger.Information);
+                     break;
+                
                 case "MySQL":
                     optionsBuilder.UseMySql(ConnectionString.ConnectionString,
-                         serverVersion: ServerVersion.AutoDetect(ConnectionString.ConnectionString),
+                         serverVersion: new MySqlServerVersion(new Version(8, 0, 32)),
                         mySqlOptionsAction: options =>
                         {
                             options.EnableRetryOnFailure();
@@ -300,17 +286,33 @@ namespace BLAZAM.Common.Data.Database
 
             modelBuilder.Entity<AppSettings>(entity =>
             {
-                entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AppSettingsId] = 1"));
+                entity.Property(e => e.AppSettingsId).ValueGeneratedNever();
+
+                if (Database.IsMySql())
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "AppSettingsId = 1"));
+                else
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AppSettingsId] = 1"));
             });
 
             modelBuilder.Entity<ADSettings>(entity =>
             {
-                entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[ADSettingsId] = 1"));
+                entity.Property(e => e.ADSettingsId).ValueGeneratedNever();
+
+                if (Database.IsMySql())
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "ADSettingsId = 1"));
+                else
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[ADSettingsId] = 1"));
 
             });
             modelBuilder.Entity<AuthenticationSettings>(entity =>
             {
-                entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AuthenticationSettingsId] = 1"));
+                entity.Property(e => e.AuthenticationSettingsId).ValueGeneratedNever();
+
+                if (Database.IsMySql())
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "AuthenticationSettingsId = 1"));
+
+                else
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AuthenticationSettingsId] = 1"));
                 entity.HasData(new AuthenticationSettings
                 {
                     AuthenticationSettingsId = 1,
@@ -320,7 +322,13 @@ namespace BLAZAM.Common.Data.Database
 
             modelBuilder.Entity<EmailSettings>(entity =>
             {
-                entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[EmailSettingsId] = 1"));
+                entity.Property(e => e.EmailSettingsId).ValueGeneratedNever();
+
+                if (Database.IsMySql())
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "EmailSettingsId = 1"));
+
+                else
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[EmailSettingsId] = 1"));
 
             });
 
@@ -351,7 +359,7 @@ namespace BLAZAM.Common.Data.Database
         /// This should be private
         /// </summary>
         /// <returns></returns>
-        private ConnectionStatus TestConnection()
+        private DatabaseStatus TestConnection()
         {
             if (ConnectionString != null)
             {
@@ -368,13 +376,13 @@ namespace BLAZAM.Common.Data.Database
                         if (ConnectionString.File.Writable)
                         {
                             ConnectionString.File.EnsureCreated();
-                            return ConnectionStatus.OK;
+                            return DatabaseStatus.OK;
                         }
-                        return ConnectionStatus.DatabaseConnectionIssue;
+                        return DatabaseStatus.DatabaseConnectionIssue;
                     }
 
 
-                    if (!NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort)) return ConnectionStatus.ServerUnreachable;
+                    if (!NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort)) return DatabaseStatus.ServerUnreachable;
 
 
                     Database.OpenConnection();
@@ -387,13 +395,13 @@ namespace BLAZAM.Common.Data.Database
 
                         Database.CloseConnection();
 
-                        return ConnectionStatus.OK;
+                        return DatabaseStatus.OK;
                     }
                     else
                     {
                         Database.CloseConnection();
 
-                        return ConnectionStatus.TablesMissing;
+                        return DatabaseStatus.TablesMissing;
                     }
 
 
@@ -405,16 +413,16 @@ namespace BLAZAM.Common.Data.Database
                     {
                         case 53:
                             //Server unreachable
-                            return ConnectionStatus.ServerUnreachable;
+                            return DatabaseStatus.ServerUnreachable;
 
                         case 208:
                             //Tables Missing
-                            return ConnectionStatus.TablesMissing;
+                            return DatabaseStatus.TablesMissing;
 
                         case 18456:
                             //Database may be missing or permission issue
 
-                            return ConnectionStatus.DatabaseConnectionIssue;
+                            return DatabaseStatus.DatabaseConnectionIssue;
 
 
 
@@ -427,12 +435,12 @@ namespace BLAZAM.Common.Data.Database
                 {
                     //Couldn't connect to DB
 
-                    return ConnectionStatus.DatabaseConnectionIssue;
+                    return DatabaseStatus.DatabaseConnectionIssue;
 
                 }
                 catch (DatabaseConnectionStringException ex)
                 {
-                    return ConnectionStatus.IncompleteConfiguration;
+                    return DatabaseStatus.IncompleteConfiguration;
                 }
                 catch (Exception ex)
                 {
@@ -447,7 +455,7 @@ namespace BLAZAM.Common.Data.Database
 
 
             }
-            return ConnectionStatus.IncompleteConfiguration;
+            return DatabaseStatus.IncompleteConfiguration;
         }
         public bool IsSeeded()
         {

@@ -53,8 +53,7 @@ namespace BLAZAM.Common.Migrations
                 name: "ActiveDirectorySettings",
                 columns: table => new
                 {
-                    ADSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ADSettingsId = table.Column<int>(type: "int", nullable: false),
                     ApplicationBaseDN = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     FQDN = table.Column<string>(type: "longtext", nullable: false)
@@ -71,7 +70,7 @@ namespace BLAZAM.Common.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ActiveDirectorySettings", x => x.ADSettingsId);
-                    table.CheckConstraint("CK_Table_Column", "[ADSettingsId] = 1");
+                    table.CheckConstraint("CK_Table_Column", "ADSettingsId = 1");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -79,8 +78,7 @@ namespace BLAZAM.Common.Migrations
                 name: "AppSettings",
                 columns: table => new
                 {
-                    AppSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    AppSettingsId = table.Column<int>(type: "int", nullable: false),
                     LastUpdateCheck = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     AppName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -104,7 +102,7 @@ namespace BLAZAM.Common.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AppSettings", x => x.AppSettingsId);
-                    table.CheckConstraint("CK_Table_Column1", "[AppSettingsId] = 1");
+                    table.CheckConstraint("CK_Table_Column1", "AppSettingsId = 1");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -112,8 +110,7 @@ namespace BLAZAM.Common.Migrations
                 name: "AuthenticationSettings",
                 columns: table => new
                 {
-                    AuthenticationSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    AuthenticationSettingsId = table.Column<int>(type: "int", nullable: false),
                     SessionTimeout = table.Column<int>(type: "int", nullable: true),
                     AdminPassword = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -127,7 +124,7 @@ namespace BLAZAM.Common.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AuthenticationSettings", x => x.AuthenticationSettingsId);
-                    table.CheckConstraint("CK_Table_Column2", "[AuthenticationSettingsId] = 1");
+                    table.CheckConstraint("CK_Table_Column2", "AuthenticationSettingsId = 1");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -187,8 +184,7 @@ namespace BLAZAM.Common.Migrations
                 name: "EmailSettings",
                 columns: table => new
                 {
-                    EmailSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    EmailSettingsId = table.Column<int>(type: "int", nullable: false),
                     Enabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     AdminBcc = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -213,7 +209,7 @@ namespace BLAZAM.Common.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EmailSettings", x => x.EmailSettingsId);
-                    table.CheckConstraint("CK_Table_Column3", "[EmailSettingsId] = 1");
+                    table.CheckConstraint("CK_Table_Column3", "EmailSettingsId = 1");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 

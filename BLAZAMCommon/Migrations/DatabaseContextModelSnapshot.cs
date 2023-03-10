@@ -82,7 +82,6 @@ namespace BLAZAM.Common.Migrations
             modelBuilder.Entity("BLAZAM.Common.Models.Database.ADSettings", b =>
                 {
                     b.Property<int>("ADSettingsId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<string>("ApplicationBaseDN")
@@ -115,7 +114,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.ToTable("ActiveDirectorySettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "[ADSettingsId] = 1");
+                            t.HasCheckConstraint("CK_Table_Column", "ADSettingsId = 1");
                         });
                 });
 
@@ -341,7 +340,6 @@ namespace BLAZAM.Common.Migrations
             modelBuilder.Entity("BLAZAM.Common.Models.Database.AppSettings", b =>
                 {
                     b.Property<int>("AppSettingsId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<string>("AnalyticsId")
@@ -389,7 +387,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.ToTable("AppSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "[AppSettingsId] = 1")
+                            t.HasCheckConstraint("CK_Table_Column", "AppSettingsId = 1")
                                 .HasName("CK_Table_Column1");
                         });
                 });
@@ -691,7 +689,6 @@ namespace BLAZAM.Common.Migrations
             modelBuilder.Entity("BLAZAM.Common.Models.Database.AuthenticationSettings", b =>
                 {
                     b.Property<int?>("AuthenticationSettingsId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<string>("AdminPassword")
@@ -713,7 +710,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.ToTable("AuthenticationSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "[AuthenticationSettingsId] = 1")
+                            t.HasCheckConstraint("CK_Table_Column", "AuthenticationSettingsId = 1")
                                 .HasName("CK_Table_Column2");
                         });
 
@@ -729,7 +726,6 @@ namespace BLAZAM.Common.Migrations
             modelBuilder.Entity("BLAZAM.Common.Models.Database.EmailSettings", b =>
                 {
                     b.Property<int>("EmailSettingsId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<string>("AdminBcc")
@@ -773,7 +769,7 @@ namespace BLAZAM.Common.Migrations
 
                     b.ToTable("EmailSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "[EmailSettingsId] = 1")
+                            t.HasCheckConstraint("CK_Table_Column", "EmailSettingsId = 1")
                                 .HasName("CK_Table_Column3");
                         });
                 });
