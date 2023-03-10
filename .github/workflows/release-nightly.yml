@@ -81,5 +81,5 @@ jobs:
         with:
           tag: Nightly
           rm: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN }}
           files: blazam-nightly.zip
