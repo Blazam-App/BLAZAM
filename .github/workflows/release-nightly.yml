@@ -29,7 +29,7 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build application
-        run: dotnet publish -c Release -o bin/ublish
+        run: dotnet publish -c Release -o bin/publish
       - name: Set assembly version as environment variable
         shell: pwsh
         id: get_version
