@@ -30,51 +30,11 @@ jobs:
         run: dotnet restore
       - name: Build application
         run: dotnet publish -c Release -o bin/publish
-      - name: Set assembly version as environment variable
-        shell: pwsh
-        id: get_version
-        run: |
-          $file = "bin/publish/BLAZAM.dll";
-          $versionInfo = (Get-Item $file).VersionInfo
-          $fileVersion = $versionInfo.FileVersion
-          $productVersion = $versionInfo.ProductVersion
-          echo "ASSEMBLY_VERSION=$fileVersion.$productVersion" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
-      - name: Show Version
-        run: echo $env.ASSEMBLY_VERSION
 
       - name: "Compress files"
         uses: montudor/action-zip@v1
         with:
           args: zip -qq -r blazam-nightly.zip bin/publish
-      # Only works on windows
-      #- name: Compress files
-      #  run: Compress-Archive -Path bin/publish/* -DestinationPath blazam-nightly-v${{ env.ASSEMBLY_VERSION }}.zip
-     
-      #- name: Create Release
-      #  id: create_release
-      #  uses: actions/create-release@v1
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-        
-      #  with:
-      #    tag_name: Nightly
-      #    release_name: Nightly
-      #    body: Automated release created by GitHub Actions
-      #    draft: false
-      #    prerelease: true
-     
-
-      #- name: Upload Release Asset
-      #  id: upload-release-asset
-      #  uses: actions/upload-release-asset@v1
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-      #  with:
-      #    upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #    asset_path: blazam-nightly-v${{ env.ASSEMBLY_VERSION }}.zip
-      #    asset_name: blazam-nightly-v${{ env.ASSEMBLY_VERSION }}.zip
-      #    asset_content_type: application/zip
-
 
       - name: Update nightly release
         uses: svenstaro/upload-release-action@v2
