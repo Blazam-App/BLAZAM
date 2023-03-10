@@ -77,9 +77,10 @@ jobs:
 
 
       - name: Update nightly release
-        uses: eine/tip@master
+        uses: svenstaro/upload-release-action@v2
         with:
+          repo_token: ${{ secrets.RELEASE_TOKEN }}
+          file: blazam-nightly.zip
+          asset_name: blazam-nightly.zip
           tag: Nightly
-          rm: true
-          token: ${{ secrets.RELEASE_TOKEN }}
-          files: blazam-nightly.zip
+          overwrite: true
