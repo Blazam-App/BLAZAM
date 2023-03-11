@@ -46,12 +46,15 @@ jobs:
       #  with:
       #    args: zip -qq -r blazam-dev.zip bin/publish
 
-
-      - name: Update dev release
-        uses: svenstaro/upload-release-action@v2
+      - name: Remove old release
+        uses: geekyeggo/delete-artifact@v2
         with:
-          repo_token: ${{ secrets.RELEASE_TOKEN }}
-          file: blazam-dev.zip
-          asset_name: blazam-dev.zip
-          tag: Dev
-          overwrite: true
+          name: blazam-dev.zip
+      #- name: Update dev release
+      #  uses: svenstaro/upload-release-action@v2
+      #  with:
+      #    repo_token: ${{ secrets.RELEASE_TOKEN }}
+      #    file: blazam-dev.zip
+      #    asset_name: blazam-dev.zip
+      #    tag: Dev
+      #    overwrite: true
