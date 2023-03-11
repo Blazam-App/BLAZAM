@@ -40,7 +40,8 @@ namespace BLAZAM.Server.Data.Services.Update
             try
             {
                 var dbBranch = DatabaseCache.ApplicationSettings?.UpdateBranch;
-                if (dbBranch != null) {
+                if (dbBranch != null)
+                {
                     SelectedBranch = dbBranch;
                 }
 
@@ -53,42 +54,25 @@ namespace BLAZAM.Server.Data.Services.Update
                 var client = new GitHubClient(new ProductHeaderValue("BLAZAM-APP"));
 
 
-                if (SelectedBranch == ApplicationReleaseBranches.Dev)
-                {
-                    //TODO: Implemenet dev branch updates
-                    HttpClient artifactClient = httpClientFactory.CreateClient();
-                    artifactClient.BaseAddress = new Uri("https://api.github.com/");
-                    var artifactResponse = await artifactClient.GetFromJsonAsync<ArtifactResponse>("repos/Blazam-App/BLAZAM/actions/artifacts");
-                    if(artifactResponse != null && artifactResponse.artifacts.Count > 0) 
-                    {
-                        var latestDevArtifact = artifactResponse.artifacts.OrderBy(a => a.created_at);
-                    }
-                }
-
-                else
-                {
-                    //Dev branch not selected, so pull the asse
-
-
 
 
                 //Get the releases from the repo
                 var releases = await client.Repository.Release.GetAll("Blazam-App", "Blazam");
                 //Filter the releases to the selected branch
-                var branchReleases = releases.Where(r => r.TagName.Contains(selectedBranch, StringComparison.OrdinalIgnoreCase));
+                var branchReleases = releases.Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
                 //Get the first release,which should be the most recent
                 latestRelease = branchReleases.FirstOrDefault();
                 //Get the release filename to prepare a version object
                 var filename = Path.GetFileNameWithoutExtension(latestRelease.Assets.FirstOrDefault().Name);
                 //Create that version object
-                if (selectedBranch == "Stable")
+                if (SelectedBranch == "Stable")
                     latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
                 else
                     latestVer = new ApplicationVersion("999.999.999.9999.99.99.99.99");
 
 
 
-                if (latestRelease != null && ((latestVer != null && selectedBranch == "Stable") || (selectedBranch == "Nightly" || selectedBranch == "Dev")))
+                if (latestRelease != null && ((latestVer != null && SelectedBranch == "Stable") || (SelectedBranch == "Nightly" || SelectedBranch == "Dev")))
                 {
                     IApplicationRelease release = new ApplicationRelease
                     {
@@ -99,6 +83,7 @@ namespace BLAZAM.Server.Data.Services.Update
                     return new ApplicationUpdate { Release = release };
 
                 }
+
             }
             catch (Exception ex)
             {
