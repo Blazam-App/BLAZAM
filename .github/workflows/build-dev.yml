@@ -30,11 +30,19 @@ jobs:
         run: dotnet restore
       - name: Build application
         run: dotnet publish -c Release -o bin/publish
-     
-      - name: "Compress files"
-        uses: montudor/action-zip@v1
-        with:
-          args: zip -qq -r blazam-dev.zip bin/publish
+
+
+
+
+      - name: Compress files
+        run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-nightly.zip
+
+
+      # For Linux
+      #- name: "Compress files"
+      #  uses: montudor/action-zip@v1
+      #  with:
+      #    args: zip -qq -r blazam-dev.zip bin/publish
 
 
       - name: Update dev release
