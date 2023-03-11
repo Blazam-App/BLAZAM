@@ -30,6 +30,8 @@ jobs:
         run: dotnet restore
       - name: Build application
         run: dotnet publish -c Release -o bin/publish
+      - name: Test application
+        run: dotnet test -c Release
 
 
 
