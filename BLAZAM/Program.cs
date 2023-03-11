@@ -358,7 +358,7 @@ namespace BLAZAM
             builder.Services.AddScoped<ApplicationManager>();
 
             //Provide a PermissionHandler as a service
-            builder.Services.AddScoped<PermissionHandler>();
+            builder.Services.AddScoped<LoginPermissionApplicator>();
 
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();

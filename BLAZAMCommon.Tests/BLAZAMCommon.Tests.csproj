@@ -22,11 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BLAZAM\BLAZAM.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Resouces\" />
+    <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
   </ItemGroup>
 
 </Project>

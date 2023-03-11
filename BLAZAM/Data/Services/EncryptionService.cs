@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BLAZAM.Common.Data;
+using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.Text;

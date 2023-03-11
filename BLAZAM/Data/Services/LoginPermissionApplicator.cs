@@ -6,12 +6,12 @@ using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.EntityFrameworkCore;
 namespace BLAZAM.Server.Data.Services
 {
-    public class PermissionHandler
+    public class LoginPermissionApplicator
     {
         protected IDbContextFactory<DatabaseContext> Factory { get; set; }
         protected IActiveDirectory Directory { get; set; }
 
-        public PermissionHandler(IDbContextFactory<DatabaseContext> factory, IActiveDirectory directory)
+        public LoginPermissionApplicator(IDbContextFactory<DatabaseContext> factory, IActiveDirectory directory)
         {
             Factory = factory;
             Directory = directory;

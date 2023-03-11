@@ -9,6 +9,7 @@ using Microsoft.Build.Framework;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common;
 using BLAZAM.Common.Data.FileSystem;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.Server.Data.Services.Update
 {
