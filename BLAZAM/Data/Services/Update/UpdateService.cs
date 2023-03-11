@@ -65,10 +65,10 @@ namespace BLAZAM.Server.Data.Services.Update
                 //Get the release filename to prepare a version object
                 var filename = Path.GetFileNameWithoutExtension(latestRelease.Assets.FirstOrDefault().Name);
                 //Create that version object
-                if (SelectedBranch == "Stable")
+                //if (SelectedBranch == "Stable")
                     latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
-                else
-                    latestVer = new ApplicationVersion("999.999.9999.99.99.99.99");
+                //else
+                   // latestVer = new ApplicationVersion("999.999.9999.99.99.99.99");
 
 
 
