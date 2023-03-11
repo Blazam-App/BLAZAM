@@ -37,7 +37,7 @@ jobs:
 
 
       - name: Compress files
-        run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-dev.zip
+        run: Compress-Archive -Path bin/publish/* -DestinationPath blazam-dev-v${{ env.ASSEMBLY_VERSION }}.zip
 
 
       # For Linux
@@ -46,15 +46,23 @@ jobs:
       #  with:
       #    args: zip -qq -r blazam-dev.zip bin/publish
 
-      - name: Remove old release
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: blazam-dev.zip
+     
       #- name: Update dev release
       #  uses: svenstaro/upload-release-action@v2
       #  with:
       #    repo_token: ${{ secrets.RELEASE_TOKEN }}
       #    file: blazam-dev.zip
-      #    asset_name: blazam-dev.zip
+      #    asset_name: blazam-dev-v${{ env.ASSEMBLY_VERSION }}.zip
       #    tag: Dev
       #    overwrite: true
+      - name: Update dev release
+        uses: andelf/nightly-release@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          tag_name: Dev
+          name: 'Dev'
+          prerelease: true
+          body: '${{ secrets.RELEASE_TOKEN }}'
+          files: |
+            ./blazam-dev-v${{ env.ASSEMBLY_VERSION }}.zip
