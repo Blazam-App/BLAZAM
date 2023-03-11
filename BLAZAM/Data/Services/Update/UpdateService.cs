@@ -24,6 +24,7 @@ namespace BLAZAM.Server.Data.Services.Update
     {
         public ApplicationUpdate LatestUpdate { get; set; }
         public Task<BuildArtifact> LatestBuildArtifact { get => GetLatestBuildArtifact(); }
+        public string? SelectedBranch { get; set; }
 
         protected readonly IHttpClientFactory httpClientFactory;
 
@@ -38,18 +39,35 @@ namespace BLAZAM.Server.Data.Services.Update
         {
             try
             {
-                var selectedBranch = DatabaseCache.ApplicationSettings?.UpdateBranch;
+                var dbBranch = DatabaseCache.ApplicationSettings?.UpdateBranch;
+                if (dbBranch != null) {
+                    SelectedBranch = dbBranch;
+                }
 
                 Octokit.Release? latestRelease = null;
                 ApplicationVersion? latestVer = null;
 
 
-                if (selectedBranch == null) throw new ApplicationUpdateException("There was no branch selection found in the database");
-
+                if (SelectedBranch == null) return null;
                 //Create a github client to get api data from repo
                 var client = new GitHubClient(new ProductHeaderValue("BLAZAM-APP"));
 
 
+                if (SelectedBranch == ApplicationReleaseBranches.Dev)
+                {
+                    //TODO: Implemenet dev branch updates
+                    HttpClient artifactClient = httpClientFactory.CreateClient();
+                    artifactClient.BaseAddress = new Uri("https://api.github.com/");
+                    var artifactResponse = await artifactClient.GetFromJsonAsync<ArtifactResponse>("repos/Blazam-App/BLAZAM/actions/artifacts");
+                    if(artifactResponse != null && artifactResponse.artifacts.Count > 0) 
+                    {
+                        var latestDevArtifact = artifactResponse.artifacts.OrderBy(a => a.created_at);
+                    }
+                }
+
+                else
+                {
+                    //Dev branch not selected, so pull the asse
 
 
 
@@ -74,7 +92,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 {
                     IApplicationRelease release = new ApplicationRelease
                     {
-                        Branch = selectedBranch,
+                        Branch = SelectedBranch,
                         GitHubRelease = latestRelease,
                         Version = latestVer
                     };

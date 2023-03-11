@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -8,481 +9,590 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BLAZAM.Common.Migrations
 {
     /// <inheritdoc />
-    public partial class betaseed : Migration
+    public partial class seed : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                name: "Audit");
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AccessLevels",
                 columns: table => new
                 {
                     AccessLevelId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AccessLevels", x => x.AccessLevelId);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "ActiveDirectoryFields",
                 columns: table => new
                 {
                     ActiveDirectoryFieldId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FieldName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    FieldName = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DisplayName = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ActiveDirectoryFields", x => x.ActiveDirectoryFieldId);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "ActiveDirectorySettings",
                 columns: table => new
                 {
-                    ADSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ApplicationBaseDN = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FQDN = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ServerAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ADSettingsId = table.Column<int>(type: "int", nullable: false),
+                    ApplicationBaseDN = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FQDN = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ServerAddress = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     ServerPort = table.Column<int>(type: "int", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UseTLS = table.Column<bool>(type: "bit", nullable: false)
+                    Username = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Password = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UseTLS = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ActiveDirectorySettings", x => x.ADSettingsId);
-                    table.CheckConstraint("CK_Table_Column", "[ADSettingsId] = 1");
-                });
+                    table.CheckConstraint("CK_Table_Column", "ADSettingsId = 1");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AppSettings",
                 columns: table => new
                 {
-                    AppSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    LastUpdateCheck = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    AppName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    InstallationCompleted = table.Column<bool>(type: "bit", nullable: false),
-                    MOTD = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ForceHTTPS = table.Column<bool>(type: "bit", nullable: false),
+                    AppSettingsId = table.Column<int>(type: "int", nullable: false),
+                    LastUpdateCheck = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    AppName = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    InstallationCompleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    MOTD = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ForceHTTPS = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     HttpsPort = table.Column<int>(type: "int", nullable: true),
-                    AppFQDN = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AnalyticsId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserHelpdeskURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AppIcon = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    AutoUpdate = table.Column<bool>(type: "bit", nullable: false),
-                    AutoUpdateTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    UpdateBranch = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    AppFQDN = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AnalyticsId = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserHelpdeskURL = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AppIcon = table.Column<byte[]>(type: "longblob", nullable: true),
+                    AutoUpdate = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AutoUpdateTime = table.Column<TimeSpan>(type: "time(6)", nullable: false),
+                    UpdateBranch = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AppSettings", x => x.AppSettingsId);
-                    table.CheckConstraint("CK_Table_Column1", "[AppSettingsId] = 1");
-                });
+                    table.CheckConstraint("CK_Table_Column1", "AppSettingsId = 1");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AuthenticationSettings",
                 columns: table => new
                 {
-                    AuthenticationSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AuthenticationSettingsId = table.Column<int>(type: "int", nullable: false),
                     SessionTimeout = table.Column<int>(type: "int", nullable: true),
-                    AdminPassword = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DuoClientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DuoClientSecret = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DuoApiHost = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    AdminPassword = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DuoClientId = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DuoClientSecret = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DuoApiHost = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AuthenticationSettings", x => x.AuthenticationSettingsId);
-                    table.CheckConstraint("CK_Table_Column2", "[AuthenticationSettingsId] = 1");
-                });
+                    table.CheckConstraint("CK_Table_Column2", "AuthenticationSettingsId = 1");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "ComputerAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Timestamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Username = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IpAddress = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Action = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Target = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    BeforeAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AfterAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ComputerAuditLog", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "DirectoryTemplates",
                 columns: table => new
                 {
                     DirectoryTemplateId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Category = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     ObjectType = table.Column<int>(type: "int", nullable: false),
-                    DisplayNameFormula = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PasswordFormula = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UsernameFormula = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ParentOU = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DisplayNameFormula = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PasswordFormula = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UsernameFormula = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ParentOU = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DirectoryTemplates", x => x.DirectoryTemplateId);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "EmailSettings",
                 columns: table => new
                 {
-                    EmailSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Enabled = table.Column<bool>(type: "bit", nullable: false),
-                    AdminBcc = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FromName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReplyToAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReplyToName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FromAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UseSMTPAuth = table.Column<bool>(type: "bit", nullable: false),
-                    SMTPUsername = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SMTPPassword = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SMTPServer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmailSettingsId = table.Column<int>(type: "int", nullable: false),
+                    Enabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AdminBcc = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FromName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ReplyToAddress = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ReplyToName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FromAddress = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UseSMTPAuth = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    SMTPUsername = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SMTPPassword = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SMTPServer = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     SMTPPort = table.Column<int>(type: "int", nullable: false),
-                    UseTLS = table.Column<bool>(type: "bit", nullable: false)
+                    UseTLS = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EmailSettings", x => x.EmailSettingsId);
-                    table.CheckConstraint("CK_Table_Column3", "[EmailSettingsId] = 1");
-                });
+                    table.CheckConstraint("CK_Table_Column3", "EmailSettingsId = 1");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "EmailTemplates",
                 columns: table => new
                 {
                     EmailTemplateId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TemplateName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CC = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BCC = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    TemplateName = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Subject = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Body = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CC = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    BCC = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EmailTemplates", x => x.EmailTemplateId);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "FieldAccessLevel",
                 columns: table => new
                 {
                     FieldAccessLevelId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Level = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FieldAccessLevel", x => x.FieldAccessLevelId);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "GroupAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Timestamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Username = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IpAddress = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Action = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Target = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    BeforeAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AfterAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GroupAuditLog", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "LogonAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Timestamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Username = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IpAddress = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Action = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Target = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    BeforeAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AfterAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LogonAuditLog", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "ObjectAccessLevel",
                 columns: table => new
                 {
                     ObjectAccessLevelId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Level = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ObjectAccessLevel", x => x.ObjectAccessLevelId);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "ObjectActionFlag",
                 columns: table => new
                 {
                     ActionAccessFlagId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ObjectActionFlag", x => x.ActionAccessFlagId);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "OUAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Timestamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Username = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IpAddress = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Action = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Target = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    BeforeAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AfterAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OUAuditLog", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "PermissionDelegate",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DelegateSid = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    IsSuperAdmin = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    DelegateSid = table.Column<byte[]>(type: "varbinary(3072)", nullable: false),
+                    IsSuperAdmin = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PermissionDelegate", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "PermissionMap",
                 columns: table => new
                 {
                     PermissionMapId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OU = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    OU = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PermissionMap", x => x.PermissionMapId);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "PermissionsAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Timestamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Username = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IpAddress = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Action = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Target = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    BeforeAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AfterAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PermissionsAuditLog", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "RequestAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Timestamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Username = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IpAddress = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Action = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Target = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    BeforeAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AfterAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RequestAuditLog", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "SettingsAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Timestamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Username = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IpAddress = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Action = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Target = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    BeforeAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AfterAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SettingsAuditLog", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "SystemAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Timestamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Username = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Action = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SystemAuditLog", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "UserAuditLog",
-                schema: "Audit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BeforeAction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AfterAction = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Timestamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Username = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IpAddress = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Action = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Target = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    BeforeAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AfterAction = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserAuditLog", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "UserSettings",
                 columns: table => new
                 {
                     UserSettingsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserGUID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    APIToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Theme = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SearchDisabledUsers = table.Column<bool>(type: "bit", nullable: false),
-                    SearchDisabledComputers = table.Column<bool>(type: "bit", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserGUID = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    APIToken = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Theme = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SearchDisabledUsers = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    SearchDisabledComputers = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Username = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserSettings", x => x.UserSettingsId);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "DirectoryTemplateFieldValues",
                 columns: table => new
                 {
                     DirectoryTemplateFieldValueId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     FieldActiveDirectoryFieldId = table.Column<int>(type: "int", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Value = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     DirectoryTemplateId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DirectoryTemplateFieldValues", x => x.DirectoryTemplateFieldValueId);
                     table.ForeignKey(
-                        name: "FK_DirectoryTemplateFieldValues_ActiveDirectoryFields_FieldActiveDirectoryFieldId",
+                        name: "FK_DirectoryTemplateFieldValues_ActiveDirectoryFields_FieldActi~",
                         column: x => x.FieldActiveDirectoryFieldId,
                         principalTable: "ActiveDirectoryFields",
                         principalColumn: "ActiveDirectoryFieldId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DirectoryTemplateFieldValues_DirectoryTemplates_DirectoryTemplateId",
+                        name: "FK_DirectoryTemplateFieldValues_DirectoryTemplates_DirectoryTem~",
                         column: x => x.DirectoryTemplateId,
                         principalTable: "DirectoryTemplates",
                         principalColumn: "DirectoryTemplateId");
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "DirectoryTemplateGroups",
                 columns: table => new
                 {
                     DirectoryTemplateGroupId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GroupSid = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    GroupSid = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     DirectoryTemplateId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DirectoryTemplateGroups", x => x.DirectoryTemplateGroupId);
                     table.ForeignKey(
-                        name: "FK_DirectoryTemplateGroups_DirectoryTemplates_DirectoryTemplateId",
+                        name: "FK_DirectoryTemplateGroups_DirectoryTemplates_DirectoryTemplate~",
                         column: x => x.DirectoryTemplateId,
                         principalTable: "DirectoryTemplates",
                         principalColumn: "DirectoryTemplateId");
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AccessLevelFieldMapping",
                 columns: table => new
                 {
                     FieldAccessMappingId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ActiveDirectoryFieldId = table.Column<int>(type: "int", nullable: false),
                     FieldAccessLevelId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -490,7 +600,7 @@ namespace BLAZAM.Common.Migrations
                 {
                     table.PrimaryKey("PK_AccessLevelFieldMapping", x => x.FieldAccessMappingId);
                     table.ForeignKey(
-                        name: "FK_AccessLevelFieldMapping_ActiveDirectoryFields_ActiveDirectoryFieldId",
+                        name: "FK_AccessLevelFieldMapping_ActiveDirectoryFields_ActiveDirector~",
                         column: x => x.ActiveDirectoryFieldId,
                         principalTable: "ActiveDirectoryFields",
                         principalColumn: "ActiveDirectoryFieldId",
@@ -501,49 +611,52 @@ namespace BLAZAM.Common.Migrations
                         principalTable: "FieldAccessLevel",
                         principalColumn: "FieldAccessLevelId",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AccessLevelObjectMapping",
                 columns: table => new
                 {
                     ObjectAccessMappingId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ObjectType = table.Column<int>(type: "int", nullable: false),
                     ObjectAccessLevelId = table.Column<int>(type: "int", nullable: false),
-                    AllowDisabled = table.Column<bool>(type: "bit", nullable: false)
+                    AllowDisabled = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AccessLevelObjectMapping", x => x.ObjectAccessMappingId);
                     table.ForeignKey(
-                        name: "FK_AccessLevelObjectMapping_ObjectAccessLevel_ObjectAccessLevelId",
+                        name: "FK_AccessLevelObjectMapping_ObjectAccessLevel_ObjectAccessLevel~",
                         column: x => x.ObjectAccessLevelId,
                         principalTable: "ObjectAccessLevel",
                         principalColumn: "ObjectAccessLevelId",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "ActionAccessMapping",
                 columns: table => new
                 {
                     ActionAccessMappingId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ObjectType = table.Column<int>(type: "int", nullable: false),
-                    AllowOrDeny = table.Column<bool>(type: "bit", nullable: false),
+                    AllowOrDeny = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     ObjectActionActionAccessFlagId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ActionAccessMapping", x => x.ActionAccessMappingId);
                     table.ForeignKey(
-                        name: "FK_ActionAccessMapping_ObjectActionFlag_ObjectActionActionAccessFlagId",
+                        name: "FK_ActionAccessMapping_ObjectActionFlag_ObjectActionActionAcces~",
                         column: x => x.ObjectActionActionAccessFlagId,
                         principalTable: "ObjectActionFlag",
                         principalColumn: "ActionAccessFlagId",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AccessLevelPermissionMap",
@@ -556,18 +669,19 @@ namespace BLAZAM.Common.Migrations
                 {
                     table.PrimaryKey("PK_AccessLevelPermissionMap", x => new { x.AccessLevelsAccessLevelId, x.PermissionMapsPermissionMapId });
                     table.ForeignKey(
-                        name: "FK_AccessLevelPermissionMap_AccessLevels_AccessLevelsAccessLevelId",
+                        name: "FK_AccessLevelPermissionMap_AccessLevels_AccessLevelsAccessLeve~",
                         column: x => x.AccessLevelsAccessLevelId,
                         principalTable: "AccessLevels",
                         principalColumn: "AccessLevelId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AccessLevelPermissionMap_PermissionMap_PermissionMapsPermissionMapId",
+                        name: "FK_AccessLevelPermissionMap_PermissionMap_PermissionMapsPermiss~",
                         column: x => x.PermissionMapsPermissionMapId,
                         principalTable: "PermissionMap",
                         principalColumn: "PermissionMapId",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "PermissionDelegatePermissionMap",
@@ -580,18 +694,19 @@ namespace BLAZAM.Common.Migrations
                 {
                     table.PrimaryKey("PK_PermissionDelegatePermissionMap", x => new { x.PermissionDelegatesId, x.PermissionsMapsPermissionMapId });
                     table.ForeignKey(
-                        name: "FK_PermissionDelegatePermissionMap_PermissionDelegate_PermissionDelegatesId",
+                        name: "FK_PermissionDelegatePermissionMap_PermissionDelegate_Permissio~",
                         column: x => x.PermissionDelegatesId,
                         principalTable: "PermissionDelegate",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PermissionDelegatePermissionMap_PermissionMap_PermissionsMapsPermissionMapId",
+                        name: "FK_PermissionDelegatePermissionMap_PermissionMap_PermissionsMap~",
                         column: x => x.PermissionsMapsPermissionMapId,
                         principalTable: "PermissionMap",
                         principalColumn: "PermissionMapId",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AccessLevelFieldAccessMapping",
@@ -604,18 +719,19 @@ namespace BLAZAM.Common.Migrations
                 {
                     table.PrimaryKey("PK_AccessLevelFieldAccessMapping", x => new { x.AccessLevelsAccessLevelId, x.FieldMapFieldAccessMappingId });
                     table.ForeignKey(
-                        name: "FK_AccessLevelFieldAccessMapping_AccessLevelFieldMapping_FieldMapFieldAccessMappingId",
+                        name: "FK_AccessLevelFieldAccessMapping_AccessLevelFieldMapping_FieldM~",
                         column: x => x.FieldMapFieldAccessMappingId,
                         principalTable: "AccessLevelFieldMapping",
                         principalColumn: "FieldAccessMappingId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AccessLevelFieldAccessMapping_AccessLevels_AccessLevelsAccessLevelId",
+                        name: "FK_AccessLevelFieldAccessMapping_AccessLevels_AccessLevelsAcces~",
                         column: x => x.AccessLevelsAccessLevelId,
                         principalTable: "AccessLevels",
                         principalColumn: "AccessLevelId",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AccessLevelObjectAccessMapping",
@@ -628,18 +744,19 @@ namespace BLAZAM.Common.Migrations
                 {
                     table.PrimaryKey("PK_AccessLevelObjectAccessMapping", x => new { x.AccessLevelsAccessLevelId, x.ObjectMapObjectAccessMappingId });
                     table.ForeignKey(
-                        name: "FK_AccessLevelObjectAccessMapping_AccessLevelObjectMapping_ObjectMapObjectAccessMappingId",
+                        name: "FK_AccessLevelObjectAccessMapping_AccessLevelObjectMapping_Obje~",
                         column: x => x.ObjectMapObjectAccessMappingId,
                         principalTable: "AccessLevelObjectMapping",
                         principalColumn: "ObjectAccessMappingId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AccessLevelObjectAccessMapping_AccessLevels_AccessLevelsAccessLevelId",
+                        name: "FK_AccessLevelObjectAccessMapping_AccessLevels_AccessLevelsAcce~",
                         column: x => x.AccessLevelsAccessLevelId,
                         principalTable: "AccessLevels",
                         principalColumn: "AccessLevelId",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AccessLevelActionAccessMapping",
@@ -652,18 +769,19 @@ namespace BLAZAM.Common.Migrations
                 {
                     table.PrimaryKey("PK_AccessLevelActionAccessMapping", x => new { x.AccessLevelsAccessLevelId, x.ActionMapActionAccessMappingId });
                     table.ForeignKey(
-                        name: "FK_AccessLevelActionAccessMapping_AccessLevels_AccessLevelsAccessLevelId",
+                        name: "FK_AccessLevelActionAccessMapping_AccessLevels_AccessLevelsAcce~",
                         column: x => x.AccessLevelsAccessLevelId,
                         principalTable: "AccessLevels",
                         principalColumn: "AccessLevelId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AccessLevelActionAccessMapping_ActionAccessMapping_ActionMapActionAccessMappingId",
+                        name: "FK_AccessLevelActionAccessMapping_ActionAccessMapping_ActionMap~",
                         column: x => x.ActionMapActionAccessMappingId,
                         principalTable: "ActionAccessMapping",
                         principalColumn: "ActionAccessMappingId",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.InsertData(
                 table: "AccessLevels",
@@ -812,7 +930,13 @@ namespace BLAZAM.Common.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_PermissionDelegatePermissionMap_PermissionsMapsPermissionMapId",
+                name: "IX_PermissionDelegate_DelegateSid",
+                table: "PermissionDelegate",
+                column: "DelegateSid",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PermissionDelegatePermissionMap_PermissionsMapsPermissionMap~",
                 table: "PermissionDelegatePermissionMap",
                 column: "PermissionsMapsPermissionMapId");
 
@@ -848,8 +972,7 @@ namespace BLAZAM.Common.Migrations
                 name: "AuthenticationSettings");
 
             migrationBuilder.DropTable(
-                name: "ComputerAuditLog",
-                schema: "Audit");
+                name: "ComputerAuditLog");
 
             migrationBuilder.DropTable(
                 name: "DirectoryTemplateFieldValues");
@@ -864,39 +987,31 @@ namespace BLAZAM.Common.Migrations
                 name: "EmailTemplates");
 
             migrationBuilder.DropTable(
-                name: "GroupAuditLog",
-                schema: "Audit");
+                name: "GroupAuditLog");
 
             migrationBuilder.DropTable(
-                name: "LogonAuditLog",
-                schema: "Audit");
+                name: "LogonAuditLog");
 
             migrationBuilder.DropTable(
-                name: "OUAuditLog",
-                schema: "Audit");
+                name: "OUAuditLog");
 
             migrationBuilder.DropTable(
                 name: "PermissionDelegatePermissionMap");
 
             migrationBuilder.DropTable(
-                name: "PermissionsAuditLog",
-                schema: "Audit");
+                name: "PermissionsAuditLog");
 
             migrationBuilder.DropTable(
-                name: "RequestAuditLog",
-                schema: "Audit");
+                name: "RequestAuditLog");
 
             migrationBuilder.DropTable(
-                name: "SettingsAuditLog",
-                schema: "Audit");
+                name: "SettingsAuditLog");
 
             migrationBuilder.DropTable(
-                name: "SystemAuditLog",
-                schema: "Audit");
+                name: "SystemAuditLog");
 
             migrationBuilder.DropTable(
-                name: "UserAuditLog",
-                schema: "Audit");
+                name: "UserAuditLog");
 
             migrationBuilder.DropTable(
                 name: "UserSettings");

@@ -56,14 +56,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                 _authType
                 );
         }
-        public DirectoryEntry GetDeleteObjectsEntry() => new DirectoryEntry("LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.ApplicationBaseDN,
+        public DirectoryEntry GetDeleteObjectsEntry() => new DirectoryEntry("LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.FQDN.FqdnToDN(),
                 ConnectionSettings?.Username,
                 Encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 (AuthenticationTypes.FastBind | AuthenticationTypes.Secure));
 
-        public List<IDirectoryModel> GetDeletedObjects()
+        public List<IDirectoryEntryAdapter> GetDeletedObjects()
         {
-            List<IDirectoryModel> found = new List<IDirectoryModel>();
+            List<IDirectoryEntryAdapter> found = new List<IDirectoryEntryAdapter>();
             var entry = GetDeleteObjectsEntry();
 
             DirectorySearcher searcher = new DirectorySearcher(entry);
@@ -74,7 +74,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 
             foreach (SearchResult result in results)
             {
-                var model = new DirectoryModel();
+                var model = new DirectoryEntryAdapter();
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 model.Parse(result, this);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -208,7 +208,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                 Context = Factory.CreateDbContext();
 
 
-                if (Context.Status == DatabaseContext.ConnectionStatus.OK)
+                if (Context.Status == DatabaseContext.DatabaseStatus.OK)
                 {
                     if (Status != DirectoryConnectionStatus.OK)
                     {
@@ -351,7 +351,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             return null;
         }
 
-        public bool RestoreTombstone(IDirectoryModel model, IADOrganizationalUnit newOU)
+        public bool RestoreTombstone(IDirectoryEntryAdapter model, IADOrganizationalUnit newOU)
         {
             if (!model.IsDeleted) throw new ApplicationException(model.CanonicalName + " is not deleted");
 
@@ -398,8 +398,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 
         }
 
-        public IDirectoryModel? GetDirectoryModelBySid(byte[] sid) => GetDirectoryModelBySid(sid.ToSidString());
-        public IDirectoryModel? GetDirectoryModelBySid(string sid)
+        public IDirectoryEntryAdapter? GetDirectoryModelBySid(byte[] sid) => GetDirectoryModelBySid(sid.ToSidString());
+        public IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid)
         {
             var searcher = new ADSearch();
             searcher.SearchRoot = RootDirectoryEntry;

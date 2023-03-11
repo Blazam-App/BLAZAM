@@ -33,20 +33,18 @@ namespace BLAZAM.Server.Pages
         public void OnGet(string returnUrl="")
         {
             ViewData["Layout"] = "_Layout";
-            if (IsUrlLocalToHost(returnUrl))
+            if (returnUrl.IsUrlLocalToHost())
             {
                 RedirectUri = returnUrl;
             }
         }
 
-        public static bool IsUrlLocalToHost(string url)
-        {
-            return ((url[0] == '/' && (url.Length == 1 ||
-                    (url[1] != '/' && url[1] != '\\'))) ||   // "/" or "/foo" but not "//" or "/\"
-                    (url.Length > 1 &&
-                     url[0] == '~' && url[1] == '/'));   // "~/" or "~/foo"
-        }
-
+      
+        /// <summary>
+        /// The authentication endpoint for web clients
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
         public async Task<IActionResult> OnPost([FromFormAttribute]LoginRequest req)
         {
 
@@ -57,10 +55,9 @@ namespace BLAZAM.Server.Pages
                 await AuditLogger.Logon.Login(result.User);
                 //return Redirect(req.ReturnUrl);
             }
-            Response.Headers.Add("Refresh", "0.5");
-            //Nav.NavigateTo(req.ReturnUrl, true);
+            //Nav.NavigateTo("/signin?returnUrl="+req.ReturnUrl, true);
             //return (IActionResult)Results.Ok();
-                return Redirect(req.ReturnUrl);
+            return Redirect("/signin?returnUrl="+req.ReturnUrl);
 
         }
 

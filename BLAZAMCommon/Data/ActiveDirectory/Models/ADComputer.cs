@@ -8,7 +8,7 @@ using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
-    public class ADComputer : GroupableDirectoryModel, IADComputer
+    public class ADComputer : GroupableDirectoryAdapter, IADComputer
     {
        
         private ADComputerSessions sessionManager;

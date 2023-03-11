@@ -4,10 +4,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 {
     public class GroupMembershipChange
     {
-        public IGroupableDirectoryModel Member { get; }
+        public IGroupableDirectoryAdapter Member { get; }
         public IADGroup Group { get; }
 
-        public GroupMembershipChange(IGroupableDirectoryModel member, IADGroup group)
+        public GroupMembershipChange(IGroupableDirectoryAdapter member, IADGroup group)
         {
             Member = member;
             Group = group;

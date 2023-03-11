@@ -7,14 +7,18 @@
       "Microsoft.EntityFrameworkCore.Database.Command": "Warning"
     }
   },
+  "EncryptionKey": "supersecretstring",
   "DebugMode": "false",
   "InstallType": "IIS",
   "ListeningAddress": "*",
   "HTTPPort": "79",
   "HTTPSPort": "442",
   "AllowedHosts": "*",
+  "DatabaseType": "SQLite",
   "ConnectionStrings": {
-    "SQLConnectionString": "Data Source=localhost;Database=BLAZAM;Persist Security Info=True;Integrated Security=False;Connection Timeout=10;TrustServerCertificate=True;"
+    "SQLConnectionString": "Data Source=localhost;Database=BLAZAM;Persist Security Info=True;Integrated Security=False;Connection Timeout=10;TrustServerCertificate=True;",
+    "SQLiteConnectionString": "Data Source=%temp%/Blazam/database.db;",
+    "MySQLConnectionString": "Server=localhost;User=blazam;Password=blazam;Database=blazam;"
   }
 
 }

@@ -6,6 +6,7 @@ namespace BLAZAM
     {
         public FileSystemBase(string path)
         {
+            path = path.Replace("%temp%", System.IO.Path.GetTempPath());
             Path = System.IO.Path.GetFullPath(path);
             if (Path.IsNullOrEmpty())
                 Path = path;

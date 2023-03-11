@@ -3,7 +3,7 @@ using System.DirectoryServices;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 {
-    public interface IADOrganizationalUnit : IDirectoryModel
+    public interface IADOrganizationalUnit : IDirectoryEntryAdapter
     {
         string Name { get; set; }
         List<PermissionMap> InheritedPermissionMappings { get; }

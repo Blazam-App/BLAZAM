@@ -30,7 +30,7 @@
             </Column>
         </Row>
 
-        <Virtualize Items="results" TItem="IDirectoryModel" Context="u" OverscanCount="30">
+        <Virtualize Items="results" TItem="IDirectoryEntryAdapter" Context="u" OverscanCount="30">
             <ItemContent>
                 @if (u.CanRead)
                 {
@@ -175,7 +175,7 @@
     [CascadingParameter]
     public ActiveDirectoryObjectType? SearchObjectType { get; set; }
 
-    protected virtual List<IDirectoryModel> results { get; set; } = new List<IDirectoryModel>();
+    protected virtual List<IDirectoryEntryAdapter> results { get; set; } = new List<IDirectoryEntryAdapter>();
 
     public async Task SubmitSearch() => await SubmitSearch(null);
     public async Task SubmitSearch(string? searchTerm = null)
