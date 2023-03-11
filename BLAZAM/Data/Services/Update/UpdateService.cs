@@ -50,34 +50,27 @@ namespace BLAZAM.Server.Data.Services.Update
                 var client = new GitHubClient(new ProductHeaderValue("BLAZAM-APP"));
 
 
-                if (selectedBranch == ApplicationReleaseBranches.Dev)
-                {
-                   //TODO: Implemenet dev branch updates
-
-                }
-
-                else
-                {
-                    //Dev branch not selected, so pull the asse
 
 
 
 
-                   //Get the releases from the repo
-                    var releases = await client.Repository.Release.GetAll("Blazam-App", "Blazam");
-                    //Filter the releases to the selected branch
-                    var branchReleases = releases.Where(r => r.TagName.Contains(selectedBranch, StringComparison.OrdinalIgnoreCase));
-                    //Get the first release,which should be the most recent
-                    latestRelease = branchReleases.FirstOrDefault();
-                    //Get the release filename to prepare a version object
-                    var filename = Path.GetFileNameWithoutExtension(latestRelease.Assets.FirstOrDefault().Name);
-                    //Create that version object
+                //Get the releases from the repo
+                var releases = await client.Repository.Release.GetAll("Blazam-App", "Blazam");
+                //Filter the releases to the selected branch
+                var branchReleases = releases.Where(r => r.TagName.Contains(selectedBranch, StringComparison.OrdinalIgnoreCase));
+                //Get the first release,which should be the most recent
+                latestRelease = branchReleases.FirstOrDefault();
+                //Get the release filename to prepare a version object
+                var filename = Path.GetFileNameWithoutExtension(latestRelease.Assets.FirstOrDefault().Name);
+                //Create that version object
+                if (selectedBranch == "Stable")
                     latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
+                else
+                    latestVer = new ApplicationVersion("999.999.999.9999.99.99.99.99");
 
 
-                }
 
-                if (latestRelease != null && latestVer != null)
+                if (latestRelease != null && ((latestVer != null && selectedBranch == "Stable") || (selectedBranch == "Nightly" || selectedBranch == "Dev")))
                 {
                     IApplicationRelease release = new ApplicationRelease
                     {
