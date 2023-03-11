@@ -68,7 +68,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 if (SelectedBranch == "Stable")
                     latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
                 else
-                    latestVer = new ApplicationVersion("999.999.999.9999.99.99.99.99");
+                    latestVer = new ApplicationVersion("999.999.9999.99.99.99.99");
 
 
 
