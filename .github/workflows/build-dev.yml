@@ -35,7 +35,7 @@ jobs:
 
 
       - name: Compress files
-        run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-nightly.zip
+        run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-dev.zip
 
 
       # For Linux
