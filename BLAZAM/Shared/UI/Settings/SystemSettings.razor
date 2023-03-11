@@ -60,9 +60,7 @@
 
     async Task DownloadLogs()
     {
-        MemoryStream memoryStream = new MemoryStream();
-        ZipArchive zip = new ZipArchive(memoryStream);
-        zip.
+        ZipArchive zip = Loggers.GenerateZip();
     }
 
 
