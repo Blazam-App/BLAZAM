@@ -33,7 +33,17 @@ jobs:
       - name: Test application
         run: dotnet test -c Release
 
-
+      - name: Set assembly version as environment variable
+        shell: pwsh
+        id: get_version
+        run: |
+          $file = "bin/publish/BLAZAM.dll";
+          $versionInfo = (Get-Item $file).VersionInfo
+          $fileVersion = $versionInfo.FileVersion
+          $productVersion = $versionInfo.ProductVersion
+          echo "ASSEMBLY_VERSION=$fileVersion.$productVersion" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Show Version
+        run: echo $env.ASSEMBLY_VERSION
 
 
       - name: Compress files

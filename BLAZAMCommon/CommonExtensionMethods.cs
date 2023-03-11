@@ -21,10 +21,46 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.TeamFoundation.Work.WebApi;
 using Newtonsoft.Json.Linq;
 using System.DirectoryServices.ActiveDirectory;
+using System.IO.Compression;
+
 namespace BLAZAM
 {
     public static class CommonExtensions
     {
+        /// <summary>
+        /// Adds all files in a directory recursively to the zip archive
+        /// </summary>
+        /// <param name="archive"></param>
+        /// <param name="directory"></param>
+        /// <param name="zipBasePath">The root path within the archive
+        /// to place the added files</param>
+        /// <returns></returns>
+        public static void AddToZip(this ZipArchive archive, SystemDirectory directory,string zipBasePath="")
+        {
+            // Loop through all files in the current directory
+            foreach (var file in directory.Files)
+            {
+                // Create an entry for each file with its relative path
+                ZipArchiveEntry entry = archive.CreateEntry(Path.Combine(zipBasePath, file.Name));
+
+                // Copy the file contents to the entry stream
+                using (FileStream fs = file.OpenReadStream())
+                using (Stream es = entry.Open())
+                {
+                    fs.CopyTo(es);
+                }
+            }
+
+            // Loop through all subdirectories in the current directory
+            foreach (var sdi in directory.SubDirectories)
+            {
+                // Recursively add files and subdirectories with their relative paths
+                AddToZip(archive, sdi, Path.Combine(zipBasePath, sdi.Name));
+            }
+        }
+
+
+
 
         // A method that returns the number of different bits between two byte arrays
         public static int BitDifference(this byte[] a, byte[] b)

@@ -1,4 +1,5 @@
-﻿@inherits ValidatedForm
+﻿@using System.IO.Compression;
+@inherits ValidatedForm
     <Heading>@SettingsLocalization["System Settings"]</Heading>
     <Form @onsubmit="Save">
 
@@ -14,6 +15,12 @@
 
             </FieldBody>
         </SettingsField>
+    <SettingsField>
+        <FieldBody>
+            <Button Color="Color.Primary" Clicked=DownloadLogs>Download Logs</Button>
+
+        </FieldBody>
+    </SettingsField>
         <SettingsField>
             <FieldBody>
                 <Button Type="ButtonType.Submit" Color="Color.Success">Save Changes</Button>
@@ -50,6 +57,13 @@
         }
     }
 
+
+    async Task DownloadLogs()
+    {
+        MemoryStream memoryStream = new MemoryStream();
+        ZipArchive zip = new ZipArchive(memoryStream);
+        zip.
+    }
 
 
 }
