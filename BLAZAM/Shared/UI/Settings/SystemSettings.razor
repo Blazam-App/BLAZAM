@@ -17,7 +17,9 @@
         </SettingsField>
     <SettingsField>
         <FieldBody>
-            <Button Color="Color.Primary" Clicked=DownloadLogs>Download Logs</Button>
+            <Blazorise.Link To="/download/logs" Target="Target.Blank">
+            <Button Color="Color.Primary">Download Logs</Button>
+            </Blazorise.Link>
 
         </FieldBody>
     </SettingsField>
@@ -55,12 +57,6 @@
             }
             applicationManager.Restart();
         }
-    }
-
-
-    async Task DownloadLogs()
-    {
-        ZipArchive zip = Loggers.GenerateZip();
     }
 
 

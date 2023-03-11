@@ -65,13 +65,14 @@ namespace BLAZAM.Common
                .CreateLogger();
         }
 
-        public static ZipArchive GenerateZip()
+        public static MemoryStream GenerateZip()
         {
             MemoryStream memoryStream = new MemoryStream();
-            ZipArchive zip = new ZipArchive(memoryStream,ZipArchiveMode.Create,true);
+            ZipArchive zip = new ZipArchive(memoryStream,ZipArchiveMode.Create);
             // Recursively add files and subdirectories to the zip archive
-            zip.AddToZip(new SystemDirectory(LogPath));
-            return zip;
+            zip.AddToZip(new SystemDirectory(LogPath),LogPath);
+          
+            return memoryStream;
         }
     }
 }

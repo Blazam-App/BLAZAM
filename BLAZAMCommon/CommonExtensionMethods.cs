@@ -32,22 +32,32 @@ namespace BLAZAM
         /// </summary>
         /// <param name="archive"></param>
         /// <param name="directory"></param>
-        /// <param name="zipBasePath">The root path within the archive
-        /// to place the added files</param>
+        /// <param name="basePath">The root path from where files are
+        /// being added.
+        /// </param>
         /// <returns></returns>
-        public static void AddToZip(this ZipArchive archive, SystemDirectory directory,string zipBasePath="")
+        public static void AddToZip(this ZipArchive archive, SystemDirectory directory, string basePath)
         {
             // Loop through all files in the current directory
             foreach (var file in directory.Files)
             {
-                // Create an entry for each file with its relative path
-                ZipArchiveEntry entry = archive.CreateEntry(Path.Combine(zipBasePath, file.Name));
-
-                // Copy the file contents to the entry stream
-                using (FileStream fs = file.OpenReadStream())
-                using (Stream es = entry.Open())
+                try
                 {
-                    fs.CopyTo(es);
+                    using FileStream fs = file.OpenReadStream();
+                    // Create an entry for each file with its relative path
+                    ZipArchiveEntry entry = archive.CreateEntry(directory.Path.Replace(basePath, "") + "/" + file.Name + file.Extension);
+
+                    // Copy the file contents to the entry stream
+
+
+                    using (Stream es = entry.Open())
+                    {
+                        fs.CopyTo(es);
+                    }
+                }
+                catch
+                {
+
                 }
             }
 
@@ -55,7 +65,7 @@ namespace BLAZAM
             foreach (var sdi in directory.SubDirectories)
             {
                 // Recursively add files and subdirectories with their relative paths
-                AddToZip(archive, sdi, Path.Combine(zipBasePath, sdi.Name));
+                AddToZip(archive, sdi, basePath);
             }
         }
 
