@@ -23,7 +23,7 @@ namespace BLAZAM.Server.Data.Services.Update
     public class UpdateService : UpdateServiceBase
     {
         public ApplicationUpdate LatestUpdate { get; set; }
-        public Task<BuildArtifact> LatestBuildArtifact { get => GetLatestBuildArtifact(); }
+        public Task<BuildArtifact?> LatestBuildArtifact { get => GetLatestBuildArtifact(); }
         public string? SelectedBranch { get; set; }
 
         protected readonly IHttpClientFactory httpClientFactory;
@@ -35,7 +35,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
         }
 
-        public async Task<ApplicationUpdate> GetLatestUpdate()
+        public async Task<ApplicationUpdate?> GetLatestUpdate()
         {
             try
             {
@@ -63,16 +63,14 @@ namespace BLAZAM.Server.Data.Services.Update
                 //Get the first release,which should be the most recent
                 latestRelease = branchReleases.FirstOrDefault();
                 //Get the release filename to prepare a version object
-                var filename = Path.GetFileNameWithoutExtension(latestRelease.Assets.FirstOrDefault().Name);
+                var filename = Path.GetFileNameWithoutExtension(latestRelease?.Assets.FirstOrDefault()?.Name);
                 //Create that version object
-                //if (SelectedBranch == "Stable")
-                    latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
-                //else
-                   // latestVer = new ApplicationVersion("999.999.9999.99.99.99.99");
+                latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
 
 
 
-                if (latestRelease != null && ((latestVer != null && SelectedBranch == "Stable") || (SelectedBranch == "Nightly" || SelectedBranch == "Dev")))
+
+                if (latestRelease != null && latestVer != null)
                 {
                     IApplicationRelease release = new ApplicationRelease
                     {
