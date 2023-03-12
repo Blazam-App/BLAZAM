@@ -361,9 +361,9 @@ namespace BLAZAM.Server.Data.Services.Update
             {
                 return false;
             }
-            Loggers.UpdateLogger.Debug("Attempting download of update " + Version);
-            Loggers.UpdateLogger.Debug("Download URL: " + Release.DownloadURL);
-            Loggers.UpdateLogger.Debug("Download Path: " + UpdateDownloadDirectory);
+            Loggers.UpdateLogger?.Debug("Attempting download of update " + Version);
+            Loggers.UpdateLogger?.Debug("Download URL: " + Release.DownloadURL);
+            Loggers.UpdateLogger?.Debug("Download Path: " + UpdateDownloadDirectory);
 
             cancellationTokenSource = new CancellationTokenSource();
             var progress = new FileProgress();
@@ -373,7 +373,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 {
                     if (!response.IsSuccessStatusCode)
                     {
-                        Loggers.UpdateLogger.Debug("Unable to connect to download url: " + response.StatusCode + " : " + response.ReasonPhrase);
+                        Loggers.UpdateLogger?.Debug("Unable to connect to download url: " + response.StatusCode + " : " + response.ReasonPhrase);
 
                         return false;
                     }
