@@ -1,6 +1,8 @@
 ﻿@page "/users/create"
 @inherits TemplateComponent
 @attribute [Authorize]
+<AppPageTitle>Create User</AppPageTitle>
+
 <Row>
     <Steps @ref=Steps NavigationAllowed=AllowStep SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged">
         <Items>

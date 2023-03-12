@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BLAZAM.Common.Data.Database;
 
 namespace BLAZAM.Common.Models.Database
 {
@@ -20,7 +19,7 @@ namespace BLAZAM.Common.Models.Database
         /// TODO Implement
         /// </remarks>
         public DateTime? LastUpdateCheck { get; set; }
-        
+
         /// <summary>
         /// The name given to the application by it's administrator
         /// </summary>
@@ -48,7 +47,7 @@ namespace BLAZAM.Common.Models.Database
 
 
         public string? AppFQDN { get; set; }
-        
+
         /// <summary>
         /// The Google Analytics Id to use for this particular installation
         /// </summary>
@@ -65,7 +64,7 @@ namespace BLAZAM.Common.Models.Database
         /// </summary>
         /// <returns>
         /// <para>If the name has spaces, it will return the first letter of each word.</para>
-        /// <para>Otherwise the first 4 letters will be returned</para>
+        /// <para>Otherwise the first 14 letters will be returned</para>
         /// </returns>
         [NotMapped]
         public string AppAbbreviation
@@ -74,6 +73,8 @@ namespace BLAZAM.Common.Models.Database
             {
                 if (AppName != null)
                 {
+                    if (AppName.Length < 14)
+                        return AppName;
                     if (AppName.Contains(" "))
                     {
                         var words = AppName.Split(' ');
@@ -85,9 +86,7 @@ namespace BLAZAM.Common.Models.Database
                         return abb;
                     }
                     else
-                    {
-                        return AppName.Substring(0,4);
-                    }
+                        return AppName.Substring(0, 14);
                 }
                 return "";
             }

@@ -1,6 +1,10 @@
 ﻿@inject IStringLocalizer<AppLocalization> Loc
 @inject IStringLocalizer<UserLocalization> ULoc
 @inherits DirectoryModelComponent
+
+
+<AppPageTitle>@Group?.CanonicalName</AppPageTitle>
+
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
 
 

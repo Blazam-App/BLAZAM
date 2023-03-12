@@ -4,6 +4,8 @@
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 @inherits TabbedAppComponentBase
+
+<AppPageTitle>Settings</AppPageTitle>
 <AuthorizeView>
     <SetHeader>
         <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">

@@ -2,8 +2,9 @@
 @inherits AppComponentBase
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
+<AppPageTitle>Recycle Bin</AppPageTitle>
 
-<h3>RecycleBin</h3>
+<h3>Recycle Bin</h3>
     <DataGrid TItem="IDirectoryEntryAdapter"
           Data="deletedObjects"
           Responsive

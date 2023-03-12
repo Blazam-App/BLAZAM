@@ -4,6 +4,10 @@
 @using BLAZAM.Server.Shared.UI.Dashboard.Widgets;
 @using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 @using BLAZAM.Server.Data.Services.Email;
+
+
+<AppPageTitle>Home</AppPageTitle>
+
 @if (MOTD.HasValue && MOTD.Value.ToString()!="")
 {
     <Alert Background="Background.Light" TextColor="TextColor.Dark" Visible>

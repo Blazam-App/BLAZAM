@@ -1,6 +1,8 @@
 ﻿@page "/ou/create"
 @inherits AppComponentBase
 @attribute [Authorize]
+<AppPageTitle>Create OU</AppPageTitle>
+
 <Row>
     <Steps @ref=Steps NavigationAllowed=AllowStep SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged">
         <Items>

@@ -1,0 +1,15 @@
+﻿<PageTitle>
+    @ChildContent - @AppAbbreviation
+</PageTitle>
+@code {
+    /// <summary>
+    /// The title of the current page
+    /// </summary>
+    /// <remarks>
+    /// This will be prepended to the App's abbreviation  
+    /// </remarks>
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private string AppAbbreviation { get => DatabaseCache.ApplicationSettings.AppAbbreviation; }
+}
