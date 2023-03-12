@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System;
 using System.Text;
+using BLAZAM.Common.Data.ActiveDirectory.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.TeamFoundation.Work.WebApi;
 using Newtonsoft.Json.Linq;
@@ -27,6 +28,12 @@ namespace BLAZAM
 {
     public static class CommonExtensions
     {
+        public static string GetValueChangesString(this List<AuditChangeLog> changes,Func<AuditChangeLog,object?>valueSelector)
+        {
+            var values = "";
+            foreach (var c in changes)
+            {
+                string? value = "";
         /// <summary>
         /// Adds all files in a directory recursively to the zip archive
         /// </summary>
@@ -69,9 +76,69 @@ namespace BLAZAM
             }
         }
 
+                if (valueSelector.Invoke(c) is IEnumerable<object> enumerable)
+                {
+                    foreach (var obj in enumerable)
+                    {
+                        value += obj.ToString() + ",";
+                    }
+                }
+                else
+                {
+                    value = valueSelector.Invoke(c)?.ToString();
+                }
+                values += c.Field + "=" + value + ";";
 
+            }
+            return values;
+        }
 
+      
+        public static List<AuditChangeLog> GetChanges(this object changed, object original)
+        {
+            // Check if both objects are null or same reference
+            if (ReferenceEquals(changed, original))
+                return new List<AuditChangeLog>();
 
+            // Check if either object is null
+            if (changed == null || original == null)
+                throw new ArgumentNullException();
+
+            // Check if both objects are of the same type
+            if (changed.GetType() != original.GetType())
+                throw new ArgumentException("Objects must be of the same type");
+
+            // Create a list to store the changes
+            var changes = new List<AuditChangeLog>();
+
+            // Get the properties of the object type
+            var properties = changed.GetType().GetProperties();
+
+            // Iterate over each property
+            foreach (var property in properties)
+            {
+                // Get the values of the property for both objects
+                var oldValue = property.GetValue(original);
+                var newValue = property.GetValue(changed);
+
+                // Compare the values using Equals method
+                if (!Equals(oldValue, newValue))
+                {
+                    // Create a new AuditChangeLog instance with the property name and values
+                    var change = new AuditChangeLog
+                    {
+                        Field = property.Name,
+                        OldValue = oldValue,
+                        NewValue = newValue
+                    };
+
+                    // Add the change to the list
+                    changes.Add(change);
+                }
+            }
+
+            // Return the list of changes
+            return changes;
         // A method that returns the number of different bits between two byte arrays
         public static int BitDifference(this byte[] a, byte[] b)
         {

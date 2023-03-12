@@ -358,7 +358,8 @@
         try{
             User.CommitChanges();
             await NotificationService.Success("User has been created");
-            Nav.NavigateTo("/search/" + User.SamAccountName);
+            await Confirmed.InvokeAsync(User);
+             Nav.NavigateTo("/search/" + User.SamAccountName);
         }catch(ApplicationException ex)
         {
             await MessageService.Error(ex.Message);

@@ -19,7 +19,7 @@
     public IFluentColumnWithSize FieldColumnSize { get; set; } = ColumnSize.Is6.OnWidescreen.Is4.OnFullHD;
 
     [Parameter]
-    public EventCallback<IADUser> Confirmed { get; set; }
+    public EventCallback<IADOrganizationalUnit> Confirmed { get; set; }
 
     [Parameter]
     public IADOrganizationalUnit OU { get; set; }
@@ -30,7 +30,7 @@
         {
             OU.CommitChanges();
             await NotificationService.Success("OU created");
-
+            await Confirmed.InvokeAsync(OU);
             Nav.NavigateTo("/ou/create",true);
         }
     }

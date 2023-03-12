@@ -2,7 +2,7 @@
 @using Microsoft.EntityFrameworkCore;
 @using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 @using BLAZAM.Server.Data.Services.Email;
-@inherits ValidatedForm
+@inherits SettingsComponents
 
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
@@ -90,8 +90,11 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        if (Context != null)
+        if (Context != null){
+        originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
             settings = await Context.AppSettings.FirstOrDefaultAsync();
+
+        }
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
 
@@ -111,6 +114,7 @@
                 settings.AppIcon = memoryStream.ToArray();
             }
         }
+        AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
         await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
 

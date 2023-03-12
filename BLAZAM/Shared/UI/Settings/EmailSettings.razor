@@ -1,4 +1,4 @@
-﻿@inherits ValidatedForm
+@inherits SettingsComponents
 
 
 
@@ -178,8 +178,10 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+
         if (Context != null)
         {
+            originalSettings = await Context.EmailSettings.AsNoTracking().FirstOrDefaultAsync();
             var set = Context.EmailSettings.FirstOrDefault();
 
             if (set != null)
@@ -210,6 +212,7 @@
         {
             Context.EmailSettings.Add(settings);
         }
+        AuditLogger.System.SettingsChanged("Email", settings.GetChanges(originalSettings));
         base.Save();
 
     }

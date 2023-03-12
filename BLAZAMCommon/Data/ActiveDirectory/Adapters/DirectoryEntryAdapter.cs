@@ -36,11 +36,11 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         public AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
         public AppEvent? OnModelCommited { get; set; }
-        public List<DirectoryModelChange> Changes
+        public virtual List<AuditChangeLog> Changes
         {
             get
             {
-                List<DirectoryModelChange> changes = new();
+                List<AuditChangeLog> changes = new();
                 foreach (var prop in NewEntryProperties)
                 {
                     object? currentValue = null;

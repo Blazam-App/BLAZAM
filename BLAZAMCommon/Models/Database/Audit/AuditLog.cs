@@ -3,7 +3,7 @@ using System.Net;
 
 namespace BLAZAM.Common.Models.Database.Audit
 {
-    public class CommonAuditLog
+    public class CommonAuditLog : ICommonAuditLog
     {
         public int Id { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
