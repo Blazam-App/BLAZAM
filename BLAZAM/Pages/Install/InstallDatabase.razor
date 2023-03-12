@@ -2,20 +2,22 @@
 @layout InstallLayout
 @inherits AppComponentBase
 @{
-    string connString;
+    string? connString;
 
     using (var context = DbFactory.CreateDbContext())
     {
         connString = context.Database.GetConnectionString();
+        if (connString != null && connString.Contains(";"))
+        {
+            // Censor Password
+            string[] keyValuePairs = connString.Split(';');
 
-        // Censor Password
-        string[] keyValuePairs = connString.Split(';');
+            // Remove the key-value pair for the Password parameter
+            keyValuePairs = keyValuePairs.Where(x => !x.StartsWith("Password=")).ToArray();
 
-        // Remove the key-value pair for the Password parameter
-        keyValuePairs = keyValuePairs.Where(x => !x.StartsWith("Password=")).ToArray();
-
-        // Join the list back into a single connection string
-        connString = string.Join(";", keyValuePairs);
+            // Join the list back into a single connection string
+            connString = string.Join(";", keyValuePairs);
+        }
 
     }
 
@@ -24,16 +26,17 @@
 @if (!Completed && Monitor.DatabaseUpdatePending)
 {
     <Div>
-    <Heading Size="HeadingSize.Is5">The database is ready to install.</Heading>
-        <Heading Size="HeadingSize.Is5">Type</Heading><Text>@DatabaseContext.ConnectionString.DatabaseType</Text>
-        <Heading Size="HeadingSize.Is5">Server</Heading><Text>@DatabaseContext.ConnectionString.ServerAddress</Text>
-        <Heading Size="HeadingSize.Is5">Port</Heading><Text>@DatabaseContext.ConnectionString.ServerPort</Text>
-        <Heading Size="HeadingSize.Is5">Database</Heading><Text>@DatabaseContext.ConnectionString.Database</Text>
-<Divider/>
-    <Help>Make sure the settings above are as intended. The application should be provided a
-        dedicated database. If you are using SQLite as your database option you don't need to worry about this.
-    </Help>
-        <Progress Max="100" Value="@progressValue" Animated Striped/>
+        <Heading Size="HeadingSize.Is5">The database is ready to install.</Heading>
+        <Heading Size="HeadingSize.Is5">Type</Heading><Text>@DatabaseContext.ConnectionString?.DatabaseType</Text>
+        <Heading Size="HeadingSize.Is5">Server</Heading><Text>@DatabaseContext.ConnectionString?.ServerAddress</Text>
+        <Heading Size="HeadingSize.Is5">Port</Heading><Text>@DatabaseContext.ConnectionString?.ServerPort</Text>
+        <Heading Size="HeadingSize.Is5">Database</Heading><Text>@DatabaseContext.ConnectionString?.Database</Text>
+        <Divider />
+        <Help>
+            Make sure the settings above are as intended. The application should be provided a
+            dedicated database. If you are using SQLite as your database option you don't need to worry about this.
+        </Help>
+        <Progress Max="100" Value="@progressValue" Animated Striped />
         <br />
         <Button Color="Color.Primary" @onclick="InstallDB">Install</Button>
     </Div>
@@ -42,7 +45,7 @@
 else
 {
     <Div>
-    <Heading Size="HeadingSize.Is6">Installed</Heading>
+        <Heading Size="HeadingSize.Is6">Installed</Heading>
     </Div>
 }
 

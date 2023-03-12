@@ -15,11 +15,10 @@
 
 
 @code {
-    
+#nullable disable warnings
     [Parameter]
     public string To { get; set; }
 
-    bool collapse1Visible = false;
 
     [Parameter]
     public IGroupableDirectoryAdapter Member { get; set; }
@@ -30,7 +29,7 @@
     {
       
             Group.UnassignMember(Member);
-            OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group));
+            await OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group));
 
            // Notifications.Success("Removed from " + Group.DisplayName, "Sucess", options => options.IntervalBeforeClose = 5000);
         

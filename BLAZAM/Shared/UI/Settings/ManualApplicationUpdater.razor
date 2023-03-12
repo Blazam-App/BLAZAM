@@ -57,7 +57,7 @@
                         if (Program.InDebugMode && !LatestAvailableVersion.Newer)
                         {
                             <h4>
-                            Downgrade Available (Debug Mode)
+                                Downgrade Available (Debug Mode)
                             </h4>
                         }
                         else
@@ -68,14 +68,14 @@
                         }
                         <Paragraph>Current Version: @Program.Version</Paragraph>
 
-                       <Button Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(LatestAvailableVersion.UpdateCommand);})>Copy Command</Button>
-                        
-                   
-                       
+                        <Button Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(LatestAvailableVersion.UpdateCommand);})>Copy Command</Button>
+
+
+
                         <Paragraph>Available Version: @LatestAvailableVersion.Version</Paragraph>
                         <Button Color=Color.Success Clicked="ApplyUpdate">Apply Update</Button>
-                                <Button Clicked=TestAutoUpdate Color="Color.Success">Test Auto Update</Button>
-                                <Button Clicked=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Danger">Cancel Auto Update</Button>
+                        <Button Clicked=TestAutoUpdate Color="Color.Success">Test Auto Update</Button>
+                        <Button Clicked=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Danger">Cancel Auto Update</Button>
                     }
                     else
                     {
@@ -106,14 +106,13 @@ else
     UpdateStage updateStage = UpdateStage.None;
 
     FileProgress? DownladProgress { get; set; } = null;
-    bool updateChecked = false;
 
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         LatestAvailableVersion = await UpdateService.GetLatestUpdate();
-        updateChecked = true;
+  
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
     }
@@ -124,7 +123,7 @@ else
         updateStage = UpdateStage.Downloading;
         LatestAvailableVersion.DownloadPercentageChanged += UpdateDownloadPercentage;
 
-        if ( await LatestAvailableVersion.Download())
+        if (await LatestAvailableVersion.Download())
         {
             DownladProgress = null;
             LatestAvailableVersion.DownloadPercentageChanged -= UpdateDownloadPercentage;
@@ -201,11 +200,12 @@ else
         updateStage = UpdateStage.None;
 
     }
-    async void TestAutoUpdate()
+    void TestAutoUpdate()
     {
-        AutoUpdateService.ScheduleUpdate(DateTime.Now.TimeOfDay + TimeSpan.FromSeconds(30), LatestAvailableVersion);
+        if (LatestAvailableVersion != null)
+            AutoUpdateService.ScheduleUpdate(DateTime.Now.TimeOfDay + TimeSpan.FromSeconds(30), LatestAvailableVersion);
     }
-    async void UpdateDownloadPercentage(FileProgress progress)
+    async void UpdateDownloadPercentage(FileProgress? progress)
     {
 
         DownladProgress = progress;

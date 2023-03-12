@@ -21,7 +21,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         bool CanRename { get; }
         bool CanCreate { get; }
         bool CanDelete { get; }
-        DirectoryEntry DirectoryEntry { get; set; }
+        DirectoryEntry? DirectoryEntry { get; set; }
         string? ADSPath { get; set; }
         bool CanEdit { get; }
         string? OU { get; }
@@ -39,7 +39,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         IADOrganizationalUnit? LastKnownParent { get; }
         bool IsDeleted { get; }
         List<DirectoryModelChange> Changes { get; }
-        AppEvent<IDirectoryEntryAdapter> OnDirectoryModelRenamed { get; set; }
+        AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
 
         DirectoryChangeResult CommitChanges();
         Task<DirectoryChangeResult> CommitChangesAsync();

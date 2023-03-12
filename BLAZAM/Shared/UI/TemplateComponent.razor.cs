@@ -33,7 +33,7 @@ namespace BLAZAM.Server.Shared.UI
             {
 
                 selectedTemplate = value;
-                Header?.OnRefreshRequested.Invoke();
+                Header?.OnRefreshRequested?.Invoke();
 
             }
 
@@ -44,7 +44,7 @@ namespace BLAZAM.Server.Shared.UI
             set
             {
                 selectedCategory = value;
-                Header?.OnRefreshRequested.Invoke();
+                Header?.OnRefreshRequested?.Invoke();
             }
         }
         protected override async Task OnInitializedAsync()
@@ -55,6 +55,7 @@ namespace BLAZAM.Server.Shared.UI
 
         protected async Task FetchTemplates()
         {
+            if(Context==null) return;
             var temp = await Context.DirectoryTemplates.OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
             if (temp != null)
                 Templates = temp;
@@ -66,7 +67,7 @@ namespace BLAZAM.Server.Shared.UI
                 SelectedCategory = TemplateCategories[0];
             }
             await InvokeAsync(StateHasChanged);
-            Header?.OnRefreshRequested.Invoke();
+            Header?.OnRefreshRequested?.Invoke();
         }
 
     }

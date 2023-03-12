@@ -20,11 +20,8 @@ namespace BLAZAM.Server.Pages
             AuditLogger = logger;
         }
 
-        public bool _authenticating { get; set; }
-        public bool _directoryAvailable { get; set; }
-        public string _username { get; set; }
-        public string _password { get; set; }
-        public string RedirectUri { get; private set; }
+
+        public string RedirectUri { get; set; }
         public AppAuthenticationStateProvider Auth { get; }
         public NavigationManager Nav { get; private set; }
         public ConnMonitor Monitor { get; private set; }

@@ -10,20 +10,20 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 
     public interface IActiveDirectory
     {
-        IApplicationUserStateService? UserStateService { get; }
+        IApplicationUserStateService UserStateService { get; }
         DatabaseContext? Context { get; }
-        IDbContextFactory<DatabaseContext>? Factory { get; }
+        IDbContextFactory<DatabaseContext> Factory { get; }
         bool Pingable { get; }
         bool PortOpen { get; }
         DirectoryConnectionStatus Status { get; }
         DirectoryEntry? AppRootDirectoryEntry { get; }
-        IADOUSearcher? OUs { get; }
-        IADGroupSearcher? Groups { get; }
-        IADUserSearcher? Users { get; }
+        IADOUSearcher OUs { get; }
+        IADGroupSearcher Groups { get; }
+        IADUserSearcher Users { get; }
         AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
         ADSettings? ConnectionSettings { get; }
         AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
-        IADComputerSearcher? Computers { get; }
+        IADComputerSearcher Computers { get; }
         IEncryptionService Encryption { get; }
         IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid);
         IDirectoryEntryAdapter? GetDirectoryModelBySid(byte[] sid);

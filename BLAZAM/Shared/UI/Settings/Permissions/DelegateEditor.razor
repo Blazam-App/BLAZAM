@@ -64,6 +64,7 @@
 
 }
 @code {
+#nullable disable warnings
     string _groupFilter = "";
     string GroupFilter
     {
@@ -76,7 +77,6 @@
     }
     AppModal? trashModal;
     AddPrivilegeLevelModal addGroupModal;
-    PermissionDelegate SelectedPermissionDelegate;
     List<PermissionDelegate> AllLevels { get; set; } = new List<PermissionDelegate>();
     DbSet<PermissionDelegate> settings;
     protected override async Task OnInitializedAsync()

@@ -118,12 +118,14 @@ namespace BLAZAM.Server.Data.Services.Update
             get
             {
                 return " -UpdateSourcePath '" + UpdateSourcePath + "' -ProcessId " + Program.ApplicationProcess.Id + " -ApplicationDirectory '" + Program.RootDirectory + "'" +
-                   " -Username " + DatabaseCache.ActiveDirectorySettings?.Username + " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN + " -Password '" + Encryption.Instance.DecryptObject<string>(DatabaseCache.ActiveDirectorySettings?.Password) + "'";
+                   " -Username " + DatabaseCache.ActiveDirectorySettings?.Username + 
+                   " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN + 
+                   " -Password '" + Encryption.Instance.DecryptObject<string>(DatabaseCache.ActiveDirectorySettings?.Password) + "'";
             }
         }
 
 
-        public AppEvent<FileProgress> DownloadPercentageChanged { get; set; }
+        public AppEvent<FileProgress?> DownloadPercentageChanged { get; set; }
 
         bool downloaded = false;
         bool staged = false;
@@ -195,7 +197,7 @@ namespace BLAZAM.Server.Data.Services.Update
             });
 
             //If the updater upated we can  run the updater
-            var updaterRan = await InvokeUpdateExecutable();
+            var updaterRan = InvokeUpdateExecutable();
 
             if (updaterRan)
             {
@@ -218,7 +220,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
         }
 
-        private async Task<bool> InvokeUpdateExecutable()
+        private bool InvokeUpdateExecutable()
         {
             var process = new Process
             {
@@ -254,7 +256,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
             return result;
         }
-
+        /*
         /// <summary>
         /// Checks if the running application identity has write
         /// permission to a specified path. It does this by creating
@@ -278,7 +280,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 return false;
             }
         }
-
+        */
         public async Task<bool> CleanDownload()
         {
             return await Task.Run(() =>
@@ -358,9 +360,9 @@ namespace BLAZAM.Server.Data.Services.Update
             {
                 return false;
             }
-            Loggers.UpdateLogger?.Debug("Attempting download of update " + Version);
-            Loggers.UpdateLogger?.Debug("Download URL: " + Release.DownloadURL);
-            Loggers.UpdateLogger?.Debug("Download Path: " + UpdateDownloadDirectory);
+            Loggers.UpdateLogger.Debug("Attempting download of update " + Version);
+            Loggers.UpdateLogger.Debug("Download URL: " + Release.DownloadURL);
+            Loggers.UpdateLogger.Debug("Download Path: " + UpdateDownloadDirectory);
 
             cancellationTokenSource = new CancellationTokenSource();
             var progress = new FileProgress();
@@ -405,8 +407,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
                             downloaded = true;
 
-                            // await streamToReadFrom.CopyToAsync(streamToWriteTo,);
-                            // downloaded = true;
+                           
                         }
                     }
                 }

@@ -130,7 +130,7 @@ namespace BLAZAM.Server.Data.Services.Email
 
             var email = new MimeMessage();
             EmailSettings? settings = GetSettings();
-            if (settings.Valid())
+            if (settings != null && settings.Valid())
             {
                 if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty()) email.From.Add(MailboxAddress.Parse(settings.SMTPUsername));
                 else email.From.Add(MailboxAddress.Parse(settings.FromAddress));

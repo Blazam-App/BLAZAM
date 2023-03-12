@@ -18,6 +18,7 @@
 
 
 @code {
+#nullable disable warnings
     [Parameter]
     public EventCallback StepCompleted { get; set; }
 
@@ -33,7 +34,7 @@
                 AppName = appName,
     });
         await context.SaveChangesAsync();
-        StepCompleted.InvokeAsync();
+        await StepCompleted.InvokeAsync();
 
     }
 }

@@ -9,7 +9,7 @@
     /// This will be prepended to the App's abbreviation  
     /// </remarks>
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 
     private string AppAbbreviation { get => DatabaseCache.ApplicationSettings.AppAbbreviation; }
 }

@@ -54,17 +54,15 @@ namespace BLAZAM.Server.Data.Services
                 {
                     try
                     {
-                        using (var context = DbFactory.CreateDbContext())
+                        using var context = DbFactory.CreateDbContext();
+                        userSettings = context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
+                        if (userSettings == null)
                         {
-                            userSettings = context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
-                            if (userSettings == null)
-                            {
-                                userSettings = new UserSettings();
-                                userSettings.UserGUID = User.FindFirstValue(ClaimTypes.Sid);
-                                userSettings.Username = User.Identity?.Name;
-                                context.UserSettings.Add(userSettings);
-                                context.SaveChanges();
-                            }
+                            userSettings = new UserSettings();
+                            userSettings.UserGUID = User.FindFirstValue(ClaimTypes.Sid);
+                            userSettings.Username = User.Identity?.Name;
+                            context.UserSettings.Add(userSettings);
+                            context.SaveChanges();
                         }
                     }
                     catch
@@ -84,16 +82,14 @@ namespace BLAZAM.Server.Data.Services
         {
             try
             {
-                using (var context = await DbFactory.CreateDbContextAsync())
+                using var context = await DbFactory.CreateDbContextAsync();
+                var dbUserSettings = await context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefaultAsync();
+                if (dbUserSettings != null)
                 {
-                    var dbUserSettings = await context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefaultAsync();
-                    if (dbUserSettings != null)
-                    {
-                        dbUserSettings.Theme = this.UserSettings?.Theme;
-                        dbUserSettings.SearchDisabledUsers = this.UserSettings.SearchDisabledUsers;
-                        dbUserSettings.SearchDisabledComputers = this.UserSettings.SearchDisabledComputers;
-                        return (await context.SaveChangesAsync()) > 0;
-                    }
+                    dbUserSettings.Theme = this.UserSettings?.Theme;
+                    dbUserSettings.SearchDisabledUsers = this.UserSettings.SearchDisabledUsers;
+                    dbUserSettings.SearchDisabledComputers = this.UserSettings.SearchDisabledComputers;
+                    return (await context.SaveChangesAsync()) > 0;
                 }
             }
             catch

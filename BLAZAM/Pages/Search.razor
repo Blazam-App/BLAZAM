@@ -8,7 +8,7 @@
 @attribute [Authorize]
 <AuthorizeView Roles="@(UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
 
-  
+
     @if (Program.InDemoMode)
     {
         <Alert Visible Background=Background.Info>
@@ -59,21 +59,24 @@
         var result = Searcher.Results[0];
         if (result.CanRead)
         {
-            switch (result.ObjectType)
-            {
-                case ActiveDirectoryObjectType.User:
-                    <ViewUser User="(IADUser)result" />
-                    break;
-                case ActiveDirectoryObjectType.Group:
-                    <ViewGroup Group="(IADGroup)result" />
-                    break;
-                case ActiveDirectoryObjectType.Computer:
-                    <ViewComputer Computer="(IADComputer)result" />
-                    break;
-                case ActiveDirectoryObjectType.OU:
-                    <ViewOU OU="(IADOrganizationalUnit)result" />
-                    break;
-            }
+            <LoadingIndicator ZIndex=100 Visible=@SavingChanges>
+
+                @switch (result.ObjectType)
+                {
+                    case ActiveDirectoryObjectType.User:
+                        <ViewUser @bind-SavingChanges="SavingChanges" User="(IADUser)result" />
+                        break;
+                    case ActiveDirectoryObjectType.Group:
+                        <ViewGroup @bind-SavingChanges="SavingChanges" Group="(IADGroup)result" />
+                        break;
+                    case ActiveDirectoryObjectType.Computer:
+                        <ViewComputer @bind-SavingChanges="SavingChanges"  Computer="(IADComputer)result" />
+                        break;
+                    case ActiveDirectoryObjectType.OU:
+                        <ViewOU @bind-SavingChanges="SavingChanges" OU="(IADOrganizationalUnit)result" />
+                        break;
+                }
+            </LoadingIndicator>
         }
         else
         {
@@ -99,6 +102,7 @@
     [CascadingParameter]
     public SearchService SearchParameters { get; set; }
 
+    bool SavingChanges = false;
     string ModelsTypeName = "Search";
     protected string SearchIcon { get; set; } = "fa-solid fa-building";
     string? _searchTermParameter;
@@ -125,11 +129,11 @@
     }
 
 
-    public ADSearch Searcher { get; set; }
+    public ADSearch Searcher { get; set; } = default;
 
 
     [CascadingParameter]
-    public MainLayout? MainLayout{ get; set; }
+    public MainLayout? MainLayout { get; set; }
 
     /// <summary>
     /// The search term that comes from the search text box
@@ -192,7 +196,7 @@
         await InvokeAsync(StateHasChanged);
     }
 
-   
+
 
     protected async Task PerformSearch()
     {
@@ -212,7 +216,7 @@
 
         LoadingData = false;
 
-        await  InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
 
 
 
@@ -221,7 +225,7 @@
 
     public async Task InvokeSearch()
     {
-       // Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
+        // Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
 
         Searcher.EnabledOnly = !SearchService.IncludeDisabled;
         Searcher.GeneralSearchTerm = SearchService.SearchTerm;

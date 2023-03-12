@@ -139,16 +139,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             DirectorySearcher searcher;
             try
             {
-                if (SearchRoot == null)
-                    SearchRoot = ActiveDirectoryContext.Instance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
+                SearchRoot ??= ActiveDirectoryContext.Instance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
                 var pageOffset = 1;
                 var pageSize = 40;
                 searcher = new DirectorySearcher(SearchRoot)
                 {
-                    VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset)
+                    VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset),
+                    Filter = "(&(|(objectClass=user)(objectClass=group)(objectCategory=computer)(objectClass=organizationalUnit)))"
                 };
-
-                searcher.Filter = "(&(|(objectClass=user)(objectClass=group)(objectCategory=computer)(objectClass=organizationalUnit)))";
                 if (SearchDeleted)
                     searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + "(isDeleted=TRUE)" + ")";
 
@@ -341,7 +339,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         public List<T> ConvertTo<T>(ICollection r) where T : IDirectoryEntryAdapter, new()
         {
-            List<T> objects = new List<T>();
+            List<T> objects = new();
 
 
             if (r != null && r.Count > 0)
@@ -361,7 +359,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         }
         public List<IDirectoryEntryAdapter> Encapsulate(SearchResultCollection r)
         {
-            List<IDirectoryEntryAdapter> objects = new List<IDirectoryEntryAdapter>();
+            List<IDirectoryEntryAdapter> objects = new();
 
 
             if (r != null && r.Count > 0)

@@ -5,7 +5,6 @@
 @using Microsoft.Data.SqlClient;
 @using Microsoft.EntityFrameworkCore
 @inherits LayoutComponentBase
-@inject NavigationManager Nav
 
 
 
@@ -36,12 +35,3 @@
     </Layout>
 </Layout>
 
-@if (_loading)
-{
-    <PageProgress Visible/> 
-}
-
-@code{
-    bool _loading;
-    
-}

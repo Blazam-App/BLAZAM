@@ -17,6 +17,7 @@
 <p>email: @userBench?.SamAccountName</p>
 <PageProgress Visible="Running" />
 @code {
+#nullable disable warnings
     ActiveDirectoryContext ad;
     bool Running = false;
     int runCount;

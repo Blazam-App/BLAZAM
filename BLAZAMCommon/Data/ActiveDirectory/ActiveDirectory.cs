@@ -390,8 +390,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                         return true;
                     }
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
+                    Loggers.ActiveDirectryLogger.Error("Error attempting to restore " + model.CanonicalName);
+                    Loggers.ActiveDirectryLogger.Error(ex.Message, ex);
                 }
             }
             return false;

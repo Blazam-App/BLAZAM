@@ -1,6 +1,7 @@
 ﻿@inherits DirectoryModelComponent
 
 @code {
+#nullable disable warnings
     [CascadingParameter] protected Modal Modal { get; set; }
     [Parameter]
     public EventCallback ModelChanged { get; set; }

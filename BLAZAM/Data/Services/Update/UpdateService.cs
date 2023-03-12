@@ -23,7 +23,6 @@ namespace BLAZAM.Server.Data.Services.Update
     public class UpdateService : UpdateServiceBase
     {
         public ApplicationUpdate LatestUpdate { get; set; }
-        public Task<BuildArtifact?> LatestBuildArtifact { get => GetLatestBuildArtifact(); }
         public string? SelectedBranch { get; set; }
 
         protected readonly IHttpClientFactory httpClientFactory;
@@ -65,6 +64,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 //Get the release filename to prepare a version object
                 var filename = Path.GetFileNameWithoutExtension(latestRelease?.Assets.FirstOrDefault()?.Name);
                 //Create that version object
+                if (filename == null) throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
                 latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
 
 

@@ -71,7 +71,7 @@ namespace BLAZAM
             }
         }
 
-        public string Name => System.IO.Path.GetDirectoryName(Path);
+        public string? Name => System.IO.Path.GetDirectoryName(Path);
 
 
         /// <summary>
@@ -124,6 +124,8 @@ namespace BLAZAM
                     File.WriteAllText(randomFileName, "test");
                 }catch (Exception e)
                 {
+
+                    Loggers.SystemLogger.Error(e.Message);
                     return false;
                 }
                 File.Delete(randomFileName);

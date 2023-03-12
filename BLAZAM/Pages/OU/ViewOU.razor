@@ -69,13 +69,13 @@
 
 
 <AppModal TextColor="TextColor.Dark" Title="Move To" @ref=@MoveToModal>
-    @if (MoveToModal.IsShown)
+    @if (MoveToModal?.IsShown==true)
     {
         <BLAZAM.Server.Shared.UI.OU.MoveToOUModalContent DirectoryModel="OU" />
     }
 </AppModal>
 <AppModal Title="Rename OU" @ref=@RenameModal>
-    @if (RenameModal.IsShown)
+    @if (RenameModal?.IsShown == true)
     {
         <RenameOUModalContent OU="OU" />
     }

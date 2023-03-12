@@ -57,7 +57,7 @@ namespace BLAZAM.Server.Background
             }
         }
 
-        protected async override void Tick(object? state)
+        protected override void Tick(object? state)
         {
             switch (_directry.Status)
             {

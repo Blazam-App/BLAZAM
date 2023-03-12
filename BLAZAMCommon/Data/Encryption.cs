@@ -79,7 +79,7 @@ namespace BLAZAM.Common.Data
         /// <param name="cipherText"></param>
         /// <returns></returns>
         /// <exception cref="ApplicationException"></exception>
-        public T? DecryptObject<T>(string cipherText)
+        public T? DecryptObject<T>(string? cipherText)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace BLAZAM.Common.Data
 
 
             }
-            catch (FormatException ex)
+            catch (FormatException)
             {
                 //If any issues occur while creating
                 //the decrypted text, return the "encypted"

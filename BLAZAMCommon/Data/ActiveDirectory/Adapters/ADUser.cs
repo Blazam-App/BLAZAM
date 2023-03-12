@@ -3,10 +3,8 @@ using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.DirectoryServices.AccountManagement;
-using System.Runtime.ConstrainedExecution;
 using System.Security;
 using System.Security.AccessControl;
 using System.Text;
@@ -23,8 +21,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             try
             {
 
-
-                using (PrincipalContext pContext = new PrincipalContext(ContextType.Domain, DirectorySettings.FQDN, DirectorySettings.Username, Directory.Encryption.DecryptObject<string>(DirectorySettings.Password)))
+                if (SamAccountName == null) throw new ApplicationException("samaccount name not found!");
+                if (DirectorySettings == null) throw new ApplicationException("Directory settings not found when trying to change directory user password");
+                using (PrincipalContext pContext = new PrincipalContext(
+                    ContextType.Domain,
+                    DirectorySettings.FQDN,
+                    DirectorySettings.Username,
+                    Directory.Encryption.DecryptObject<string>(DirectorySettings.Password)))
                 {
                     UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
                     if (up != null)
@@ -150,6 +153,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             set
             {
                 SetProperty(ActiveDirectoryFields.HomeDirectory.FieldName, value);
+                if (value == null || value == "") return;
+
                 CommitActions.Add(() =>
                 {
                     return WindowsImpersonation.Run(() =>
@@ -180,7 +185,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         /// </summary>
         public void SetHomeDirectoryPermissions()
         {
-
+            if (SamAccountName == null) throw new ApplicationException("Samaccount name is null while setting home directory");
+            if (HomeDirectory == null) throw new ApplicationException("HomeDirectory is null while setting home directory");
             FileSystemRights Rights;
 
             //What rights are we setting?
@@ -222,6 +228,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             get
             {
                 var com = GetProperty<object>("pwdLastSet");
+                if (com == null) return null;
                 return com.AdsValueToDateTime();
 
             }
@@ -235,7 +242,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
                 base.SamAccountName = value;
                 if (UserPrincipalName == null)
-                    UserPrincipalName = value + "@" + Context.ActiveDirectorySettings.FirstOrDefault().FQDN;
+                    UserPrincipalName = value + "@" + Context.ActiveDirectorySettings.FirstOrDefault()?.FQDN;
 
                 else
                     UserPrincipalName = value + "@" + UserPrincipalName.Split("@")[1];

@@ -2,21 +2,22 @@
 @using Microsoft.EntityFrameworkCore;
 @using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 @using BLAZAM.Server.Data.Services.Email;
-@inject IDbContextFactory<DatabaseContext> DbFactory
 @inherits ValidatedForm
 
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
-        <Heading>@SettingsLocalization["Update Settings"]</Heading>
-        <Form @onsubmit="Save">
+    <Heading>@SettingsLocalization["Update Settings"]</Heading>
+    <Form @onsubmit="Save">
 
-            <Validations Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
+        <Validations Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
 
+            @if (settings != null)
+            {
                 <Validation>
                     <SettingsField>
                         <FieldLabel>@SettingsLocalization["Allow Auto Update"]</FieldLabel>
                         <FieldBody>
-                            <Switch TValue="bool" @bind-Checked="@settings.AutoUpdate" />
+                            <Switch TValue="bool" @bind-Checked=@(settings.AutoUpdate) />
                         </FieldBody>
                     </SettingsField>
 
@@ -24,21 +25,19 @@
                 <SettingsField>
                     <FieldLabel>@SettingsLocalization["Update Branch"]</FieldLabel>
                     <FieldBody>
-                    <SelectList
-                        Data="@updateBranches"
-                        TValue="string" 
-                        TItem="string"
-                        TextField="item=>item"
-                        ValueField="item=>item"
-                        @bind-SelectedValue=@settings.UpdateBranch/>
+                        <SelectList Data="@updateBranches"
+                                TValue="string"
+                                TItem="string"
+                                TextField="item=>item"
+                                ValueField="item=>item"
+                                @bind-SelectedValue=@settings.UpdateBranch />
                     </FieldBody>
                 </SettingsField>
 
 
 
-                @if (settings.AutoUpdate)
+                @if (settings?.AutoUpdate == true)
                 {
-
                     <SettingsField>
                         <FieldLabel>@SettingsLocalization["Auto Update Time"]</FieldLabel>
                         <FieldHelp>The time of each day to automatically apply an update.</FieldHelp>
@@ -74,31 +73,35 @@
 
                     </FieldBody>
                 </SettingsField>
-                
+
 
                 <SettingsField>
                     <FieldBody>
                         <Button Disabled="saveDisabled" Type="ButtonType.Submit" Color="Color.Success">Save Changes</Button>
                     </FieldBody>
                 </SettingsField>
-            </Validations>
-        </Form>
+            }
+        </Validations>
+    </Form>
 </LoadingIndicator>
 @code {
-    AppSettings settings = new AppSettings();
+    AppSettings? settings = new AppSettings();
     List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev };
     protected override async Task OnInitializedAsync()
     {
-
-        settings = await Context.AppSettings.FirstOrDefaultAsync();
-            LoadingData = false;
+        await base.OnInitializedAsync();
+        if (Context != null)
+            settings = await Context.AppSettings.FirstOrDefaultAsync();
+        LoadingData = false;
         await InvokeAsync(StateHasChanged);
 
     }
 
 
-    private async void LoadIcon(FileUploadEventArgs e)
+    private async void UploadIcon(FileUploadEventArgs e)
     {
+        if (Context == null) throw new ApplicationException("Unable to retrieve database settings table: AppSettings");
+        if (settings == null) throw new ApplicationException("App Settings is null");
         //TODO Try and capture the moment the file upload starts
         using (var stream = e.File.OpenReadStream(5000000))
         {

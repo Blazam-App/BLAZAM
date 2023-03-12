@@ -14,12 +14,12 @@ namespace BLAZAM.Server.Data.Services
 
         public EncryptionService()
         {
-            Encryption = new Encryption(Program.Configuration.GetValue<string>("EncryptionKey"));
+            Encryption = new Encryption(Program.Configuration?.GetValue<string>("EncryptionKey"));
         }
 
 
 
-        public T DecryptObject<T>(string cipherText) => Encryption.DecryptObject<T>(cipherText);
+        public T? DecryptObject<T>(string? cipherText) => Encryption.DecryptObject<T>(cipherText);
         public string EncryptObject(object obj) => Encryption.EncryptObject(obj);
 
 

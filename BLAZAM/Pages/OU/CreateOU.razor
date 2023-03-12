@@ -97,14 +97,13 @@
     string newOUName;
     bool collapseVisible = false;
     List<DirectoryTemplate> templates;
-    DirectoryTemplate? selectedTemplate;
-    IADOrganizationalUnit parentOU;
+    IADOrganizationalUnit? parentOU;
     IADOrganizationalUnit? newOU;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        templates = await Context.DirectoryTemplates.ToListAsync();
+        templates = await Context?.DirectoryTemplates.ToListAsync();
         await InvokeAsync(StateHasChanged);
     }
 

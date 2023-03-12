@@ -31,6 +31,8 @@
     </Row>
 
 @code {
+
+#nullable disable warnings
     TreeView<IADOrganizationalUnit> OUTree { get; set; }
     IADOrganizationalUnit selectedNode;
     IList<IADOrganizationalUnit> ExpandedNodes = new List<IADOrganizationalUnit>();

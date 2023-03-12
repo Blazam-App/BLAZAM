@@ -207,7 +207,7 @@ namespace BLAZAM
 
         public static string ToSidString(this byte[] sid)
         {
-            if (null == sid) return null;
+            if (null == sid) return "";
             // Create a SecurityIdentifier object from the input byte array
             var securityIdentifier = new SecurityIdentifier(sid, 0);
 
@@ -277,8 +277,9 @@ namespace BLAZAM
             //read file time 133213804065419619
             try
             {
+                if(value==null) return DateTime.MinValue;
 
-                IADsLargeInteger v = value as IADsLargeInteger;
+                IADsLargeInteger? v = value as IADsLargeInteger;
 
                 if (null == v) return DateTime.MinValue;
 
