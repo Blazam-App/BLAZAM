@@ -34,6 +34,7 @@ namespace BLAZAM.Server.Data.Services.Update
         /// </summary>
         public ApplicationVersion Version { get => Release.Version; }
 
+        public string Branch { get => Release.Branch; }
 
         /// <summary>
         /// The application update directory, in temporary files

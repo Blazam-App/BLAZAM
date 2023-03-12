@@ -23,6 +23,8 @@
 }
 
 <LoadingIndicator Visible=LoadingData>
+    <Button Color="Color.Primary" Clicked=@GetLatestUpdate>Refresh Latest Update</Button>
+
     @{
         if (LatestAvailableVersion != null)
         {
@@ -73,6 +75,7 @@
 
 
                         <Paragraph>Available Version: @LatestAvailableVersion.Version</Paragraph>
+                        <Paragraph>Update Branch: @LatestAvailableVersion.Branch</Paragraph>
                         <Button Color=Color.Success Clicked="ApplyUpdate">Apply Update</Button>
                         <Button Clicked=TestAutoUpdate Color="Color.Success">Test Auto Update</Button>
                         <Button Clicked=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Danger">Cancel Auto Update</Button>
@@ -111,8 +114,19 @@ else
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        LatestAvailableVersion = await UpdateService.GetLatestUpdate();
-  
+        GetLatestUpdate();
+    }
+    async Task GetLatestUpdate()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        try{
+            LatestAvailableVersion = await UpdateService.GetLatestUpdate();
+        }
+        catch(Exception ex)
+        {
+            NotificationService.Error(ex.Message);
+        }
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
     }
@@ -128,67 +142,68 @@ else
             DownladProgress = null;
             LatestAvailableVersion.DownloadPercentageChanged -= UpdateDownloadPercentage;
 
-            await NotificationService.Success("Update downloaded successfully. Preparing for update...");
+            //await NotificationService.Success("Update downloaded successfully. Preparing for update...");
 
-            if (await MessageService.Confirm("The update has been downloaded. Would you like to Stage the update?"))
+            //if (await MessageService.Confirm("The update has been downloaded. Would you like to Stage the update?"))
+            //{
+            updateStage = UpdateStage.Staging;
+
+            await InvokeAsync(StateHasChanged);
+            if (await LatestAvailableVersion.Stage())
             {
-                updateStage = UpdateStage.Staging;
 
-                await InvokeAsync(StateHasChanged);
-                if (await LatestAvailableVersion.Stage())
+                /*
+                                    if (await MessageService.Confirm(
+                                        "The update has been staged. Would you like to backup the current version?",
+                                        "Backup?",
+                                        options =>
+                                        {
+                                            options.CancelButtonText = "No";
+                                            options.OkButtonText = "Yes";
+                                        }
+                                    ))
+                                    {
+                                        updateStage = UpdateStage.BackingUp;
+
+                                        await InvokeAsync(StateHasChanged);
+                                        if (!await LatestAvailableVersion.Backup())
+                                        {
+
+
+                                            await NotificationService.Error("Backup failed.");
+                                            return;
+
+                                        }
+                                    }
+                */
+                if (await MessageService.Confirm("Would you like to apply the update?"))
                 {
+                    updateStage = UpdateStage.Applying;
 
-
-                    if (await MessageService.Confirm(
-                        "The update has been staged. Would you like to backup the current version?",
-                        "Backup?",
-                        options =>
-                        {
-                            options.CancelButtonText = "No";
-                            options.OkButtonText = "Yes";
-                        }
-                    ))
-                    {
-                        updateStage = UpdateStage.BackingUp;
-
-                        await InvokeAsync(StateHasChanged);
-                        if (!await LatestAvailableVersion.Backup())
-                        {
-
-
-                            await NotificationService.Error("Backup failed.");
-                            return;
-
-                        }
-                    }
-                    if (await MessageService.Confirm("Would you like to apply the update?"))
-                    {
-                        updateStage = UpdateStage.Applying;
-
-
-                        await InvokeAsync(StateHasChanged);
-
-                        var output = await LatestAvailableVersion.Apply();
-                        if (output != null)
-                        {
-                            await NotificationService.Success("Update started successfully. The web application will restart and update momentarily.");
-
-                        }
-                        if (Program.InDebugMode)
-                        {
-                            await MessageService.Info(output);
-
-                        }
-
-
-
-                        updateStage = UpdateStage.Applied;
-
-                    }
-                    updateStage = UpdateStage.None;
 
                     await InvokeAsync(StateHasChanged);
+
+                    var output = await LatestAvailableVersion.Apply();
+                    if (output != null)
+                    {
+                        await NotificationService.Success("Update started successfully. The web application will restart and update momentarily.");
+
+                    }
+                    if (Program.InDebugMode)
+                    {
+                        await MessageService.Info(output);
+
+                    }
+
+
+
+                    updateStage = UpdateStage.Applied;
+
                 }
+                updateStage = UpdateStage.None;
+
+                await InvokeAsync(StateHasChanged);
+                //}
             }
         }
         else

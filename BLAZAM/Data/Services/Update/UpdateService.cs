@@ -17,6 +17,7 @@ using Blazorise;
 using Octokit;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BLAZAM.Server.Data.Services.Update
 {
@@ -83,6 +84,10 @@ namespace BLAZAM.Server.Data.Services.Update
                 }
 
             }
+            catch(Octokit.RateLimitExceededException ex)
+            {
+                throw ex;
+            }
             catch (Exception ex)
             {
                 Loggers.UpdateLogger.Error("An error occured while getting latest update", ex);
@@ -93,7 +98,16 @@ namespace BLAZAM.Server.Data.Services.Update
 
         private async void CheckForUpdate(object? state)
         {
-            await GetLatestUpdate();
+            try
+            {
+                await GetLatestUpdate();
+            }
+            catch(Exception ex)
+            {
+                Loggers.UpdateLogger.Error("Error while checking for latest update");
+                Loggers.UpdateLogger.Error(ex.Message,ex);
+
+            }
         }
 
 
