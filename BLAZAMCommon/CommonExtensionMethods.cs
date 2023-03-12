@@ -34,6 +34,26 @@ namespace BLAZAM
             foreach (var c in changes)
             {
                 string? value = "";
+
+                if (valueSelector.Invoke(c) is IEnumerable<object> enumerable)
+                {
+                    foreach (var obj in enumerable)
+                    {
+                        value += obj.ToString() + ",";
+                    }
+                }
+                else
+                {
+                    value = valueSelector.Invoke(c)?.ToString();
+                }
+                values += c.Field + "=" + value + ";";
+
+            }
+            return values;
+        }
+
+
+
         /// <summary>
         /// Adds all files in a directory recursively to the zip archive
         /// </summary>
@@ -76,24 +96,7 @@ namespace BLAZAM
             }
         }
 
-                if (valueSelector.Invoke(c) is IEnumerable<object> enumerable)
-                {
-                    foreach (var obj in enumerable)
-                    {
-                        value += obj.ToString() + ",";
-                    }
-                }
-                else
-                {
-                    value = valueSelector.Invoke(c)?.ToString();
-                }
-                values += c.Field + "=" + value + ";";
 
-            }
-            return values;
-        }
-
-      
         public static List<AuditChangeLog> GetChanges(this object changed, object original)
         {
             // Check if both objects are null or same reference
@@ -139,6 +142,8 @@ namespace BLAZAM
 
             // Return the list of changes
             return changes;
+
+        }
         // A method that returns the number of different bits between two byte arrays
         public static int BitDifference(this byte[] a, byte[] b)
         {

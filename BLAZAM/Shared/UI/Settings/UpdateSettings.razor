@@ -1,8 +1,4 @@
-﻿@using BLAZAM.Server.Pages;
-@using Microsoft.EntityFrameworkCore;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
-@inherits SettingsComponents
+﻿@inherits SettingsComponents
 
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
@@ -90,8 +86,9 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        if (Context != null){
-        originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
+        if (Context != null)
+        {
+            originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
             settings = await Context.AppSettings.FirstOrDefaultAsync();
 
         }
@@ -124,3 +121,4 @@
 
 
 }
+

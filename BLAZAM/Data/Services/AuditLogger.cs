@@ -90,7 +90,7 @@ namespace BLAZAM.Server.Data.Services
             Logon = new LogonAudit(factory, userStateService);
         }
 
-       
+
     }
 
     public class OUAudit : DirectoryAudit
@@ -100,12 +100,12 @@ namespace BLAZAM.Server.Data.Services
         {
         }
 
-        public override async Task<bool> Searched(IDirectoryModel searchedOU) 
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedOU)
             => await Log<OUAuditLog>(c => c.OUAuditLog,
                 AuditActions.Group_Searched,
                 searchedOU);
 
-        public override async Task<bool> Created(IDirectoryModel newOU)
+        public override async Task<bool> Created(IDirectoryEntryAdapter newOU)
 
         {
             var oldValues = "";
@@ -157,13 +157,13 @@ namespace BLAZAM.Server.Data.Services
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
-        public override async Task<bool> Searched(IDirectoryModel searchedGroup) => await Log<GroupAuditLog>(c => c.GroupAuditLog, AuditActions.Group_Searched, searchedGroup);
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedGroup) => await Log<GroupAuditLog>(c => c.GroupAuditLog, AuditActions.Group_Searched, searchedGroup);
 
-        public override async Task<bool> Changed(IDirectoryModel changedGroup, List<AuditChangeLog> changes)
+        public override async Task<bool> Changed(IDirectoryEntryAdapter changedGroup, List<AuditChangeLog> changes)
         {
 
             await Log<GroupAuditLog>(c => c.GroupAuditLog,
-                AuditActions.Group_Changed,
+                AuditActions.Group_Edited,
                 changedGroup,
                 changes.GetValueChangesString(c => c.OldValue),
                 changes.GetValueChangesString(c => c.NewValue));
@@ -211,9 +211,9 @@ namespace BLAZAM.Server.Data.Services
         {
         }
 
-        public override async Task<bool> Searched(IDirectoryModel searchedUser) => await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.User_Searched, searchedUser);
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedUser) => await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.User_Searched, searchedUser);
 
-        public override async Task<bool> Created(IDirectoryModel newUser)
+        public override async Task<bool> Created(IDirectoryEntryAdapter newUser)
         {
             var oldValues = "";
             var newValues = "";
@@ -225,9 +225,9 @@ namespace BLAZAM.Server.Data.Services
             return true;
         }
 
-        public override async Task<bool> Changed(IDirectoryModel changedUser, List<AuditChangeLog> changes)
+        public override async Task<bool> Changed(IDirectoryEntryAdapter changedUser, List<AuditChangeLog> changes)
         {
-            await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.User_Changed, changedUser, changes.GetValueChangesString(c => c.OldValue), changes.GetValueChangesString(c => c.NewValue));
+            await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.User_Edited, changedUser, changes.GetValueChangesString(c => c.OldValue), changes.GetValueChangesString(c => c.NewValue));
             return true;
         }
 
@@ -251,17 +251,17 @@ namespace BLAZAM.Server.Data.Services
         {
         }
 
-        public virtual Task<bool> Changed(IDirectoryModel changedUser, List<AuditChangeLog> changes)
+        public virtual Task<bool> Changed(IDirectoryEntryAdapter changedUser, List<AuditChangeLog> changes)
         {
             throw new NotImplementedException();
         }
 
-        public virtual Task<bool> Created(IDirectoryModel newUser)
+        public virtual Task<bool> Created(IDirectoryEntryAdapter newUser)
         {
             throw new NotImplementedException();
         }
 
-        public virtual Task<bool> Searched(IDirectoryModel searchedUser)
+        public virtual Task<bool> Searched(IDirectoryEntryAdapter searchedUser)
         {
             throw new NotImplementedException();
         }
@@ -279,7 +279,7 @@ namespace BLAZAM.Server.Data.Services
             Func<DatabaseContext,
             DbSet<T>> auditTable,
             string action,
-            IDirectoryModel relatedEntry,
+            IDirectoryEntryAdapter relatedEntry,
             string? beforeAction = null,
             string? afterAction = null) where T : class, ICommonAuditLog, new()
         {
@@ -327,7 +327,6 @@ namespace BLAZAM.Server.Data.Services
                 changes.GetValueChangesString(c => c.OldValue),
                 changes.GetValueChangesString(c => c.NewValue)
                 );
-            return true;
         }
 
 
@@ -340,20 +339,18 @@ namespace BLAZAM.Server.Data.Services
                 using var context = await Factory.CreateDbContextAsync();
                 context.SystemAuditLog.Add(new SystemAuditLog
                 {
-                    context.SystemAuditLog.Add(new SystemAuditLog
-                    {
-                        Action = action,
-                        Username = "System",
-                        BeforeAction = beforeAction,
-                        AfterAction = afterAction,
-                        Timestamp = DateTime.Now,
+                    Action = action,
+                    Username = "System",
+                    BeforeAction = beforeAction,
+                    AfterAction = afterAction,
+                    Timestamp = DateTime.Now,
 
 
 
-                    });
-                    context.SaveChanges();
-                    return true;
-                }
+                });
+                context.SaveChanges();
+                return true;
+
             }
             catch
             {

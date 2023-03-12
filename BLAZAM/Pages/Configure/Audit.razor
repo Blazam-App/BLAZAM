@@ -7,7 +7,6 @@
 
 
 
-@inherits AppComponentBase
 
 
 <AppPageTitle>Audit</AppPageTitle>
@@ -25,6 +24,7 @@
     <DataGridColumn Field="@nameof(CommonAuditLog.Target)" Caption="Target" />
     <DataGridColumn Field="@nameof(CommonAuditLog.BeforeAction)" Caption="Before" />
     <DataGridColumn Field="@nameof(CommonAuditLog.AfterAction)" Caption="After" />
+</DataGrid>
 
 
 <SetSubHeader>
