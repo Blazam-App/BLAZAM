@@ -123,6 +123,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
 
         settings = await Context.AppSettings.FirstOrDefaultAsync();
         LoadingData = false;
@@ -149,8 +150,8 @@
 
     protected override void Save()
     {
-
-        base.Save(Context.ChangeTracker.Entries().Where(e => e.State != EntityState.Detached && e.State != EntityState.Unchanged));
+        AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
+        base.Save();
     }
 
 }

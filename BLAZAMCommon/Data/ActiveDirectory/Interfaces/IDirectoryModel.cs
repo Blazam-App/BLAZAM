@@ -38,7 +38,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         Dictionary<string, object> NewEntryProperties { get; set; }
         IADOrganizationalUnit? LastKnownParent { get; }
         bool IsDeleted { get; }
-        List<DirectoryModelChange> Changes { get; }
+        List<AuditChangeLog> Changes { get; }
         AppEvent<IDirectoryModel> OnDirectoryModelRenamed { get; set; }
 
         DirectoryChangeResult CommitChanges();

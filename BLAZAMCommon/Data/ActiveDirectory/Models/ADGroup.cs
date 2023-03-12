@@ -24,7 +24,30 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 SetProperty("name", value);
             }
         }
+        public override List<AuditChangeLog> Changes
+        {
+            get
+            {
+                List<AuditChangeLog> changes = base.Changes;
+                if (MembersToAdd.Count > 0 || MembersToRemove.Count > 0)
+                {
+                    var members = Members;
+                    members.AddRange(MembersToAdd.Select(gm => gm.Member.DN));
+                    MembersToRemove.ForEach(gm => { 
+                        members.Remove(gm.Member.DN);
+                    });
+                    changes.Add(new AuditChangeLog()
+                    {
+                        Field = "member",
+                        OldValue = Members,
+                        NewValue = members
+                    });
+                }
 
+                return changes;
+
+            }
+        }
         public override DirectoryChangeResult CommitChanges()
         {
             DirectoryChangeResult dcr = new DirectoryChangeResult();

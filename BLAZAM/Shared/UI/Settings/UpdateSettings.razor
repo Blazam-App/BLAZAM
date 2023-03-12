@@ -3,7 +3,7 @@
 @using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 @using BLAZAM.Server.Data.Services.Email;
 @inject IDbContextFactory<DatabaseContext> DbFactory
-@inherits ValidatedForm
+@inherits SettingsComponents
 
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
@@ -76,6 +76,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
 
         settings = await Context.AppSettings.FirstOrDefaultAsync();
             LoadingData = false;
@@ -95,6 +96,7 @@
                 settings.AppIcon = memoryStream.ToArray();
             }
         }
+        AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
         await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
 

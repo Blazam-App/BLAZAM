@@ -1,4 +1,4 @@
-﻿@inherits ValidatedForm
+﻿@inherits SettingsComponents
     <Heading>@SettingsLocalization["System Settings"]</Heading>
     <Form @onsubmit="Save">
 
@@ -25,12 +25,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Run(() =>
-        {
-            settings = Context.AppSettings.FirstOrDefault();
-            LoadingData = false;
-            InvokeAsync(StateHasChanged);
-        });
+        originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
+
+        settings = Context.AppSettings.FirstOrDefault();
+        LoadingData = false;
+        InvokeAsync(StateHasChanged);
     }
 
 
@@ -50,6 +49,11 @@
         }
     }
 
+    protected override void Save()
+    {
+        AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
+        base.Save();
+    }
 
 
 }

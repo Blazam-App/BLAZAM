@@ -103,10 +103,16 @@ namespace BLAZAM.Server.Data.Services
 
     public class OUAudit : DirectoryAudit
     {
-        public OUAudit(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public OUAudit(IDbContextFactory<DatabaseContext> factory,
+            IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
-        public override async Task<bool> Searched(IDirectoryModel searchedOU) => await Log<OUAuditLog>(c => c.OUAuditLog, AuditActions.Group_Searched, searchedOU);
+
+        public override async Task<bool> Searched(IDirectoryModel searchedOU) 
+            => await Log<OUAuditLog>(c => c.OUAuditLog,
+                AuditActions.Group_Searched,
+                searchedOU);
+
         public override async Task<bool> Created(IDirectoryModel newOU)
         {
             var oldValues = "";
@@ -118,12 +124,13 @@ namespace BLAZAM.Server.Data.Services
             await Log<OUAuditLog>(c => c.OUAuditLog, AuditActions.OU_Created, newOU, oldValues, newValues);
             return true;
         }
-     
+
     }
 
     public class ComputerAudit : DirectoryAudit
     {
-        public ComputerAudit(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public ComputerAudit(IDbContextFactory<DatabaseContext> factory,
+            IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
         public override async Task<bool> Searched(IDirectoryModel searchedComputer) => await Log<ComputerAuditLog>(c => c.ComputerAuditLog, AuditActions.Computer_Searched, searchedComputer);
@@ -132,27 +139,27 @@ namespace BLAZAM.Server.Data.Services
 
     public class GroupAudit : DirectoryAudit
     {
-        public GroupAudit(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public GroupAudit(IDbContextFactory<DatabaseContext> factory,
+            IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
         public override async Task<bool> Searched(IDirectoryModel searchedGroup) => await Log<GroupAuditLog>(c => c.GroupAuditLog, AuditActions.Group_Searched, searchedGroup);
 
-        public override async Task<bool> Changed(IDirectoryModel changedGroup, List<DirectoryModelChange> changes)
+        public override async Task<bool> Changed(IDirectoryModel changedGroup, List<AuditChangeLog> changes)
         {
-            var oldValues = "";
-            var newValues = "";
-            foreach (var c in changes)
-            {
-                oldValues += c.Field + "=" + c.OldValue;
-                newValues += c.Field + "=" + c.NewValue;
-            }
-            await Log<GroupAuditLog>(c => c.GroupAuditLog, AuditActions.Group_Changed, changedGroup, oldValues, newValues);
+
+            await Log<GroupAuditLog>(c => c.GroupAuditLog,
+                AuditActions.Group_Changed,
+                changedGroup,
+                changes.GetValueChangesString(c => c.OldValue),
+                changes.GetValueChangesString(c => c.NewValue));
             return true;
         }
     }
-    public class LogonAudit: CommonAudit
+    public class LogonAudit : CommonAudit
     {
-        public LogonAudit(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public LogonAudit(IDbContextFactory<DatabaseContext> factory,
+            IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
 
@@ -206,16 +213,9 @@ namespace BLAZAM.Server.Data.Services
             return true;
         }
 
-        public override async Task<bool> Changed(IDirectoryModel changedUser, List<DirectoryModelChange> changes)
+        public override async Task<bool> Changed(IDirectoryModel changedUser, List<AuditChangeLog> changes)
         {
-            var oldValues = "";
-            var newValues = "";
-            foreach (var c in changes)
-            {
-                oldValues += c.Field + "=" + c.OldValue;
-                newValues += c.Field + "=" + c.NewValue;
-            }
-            await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.User_Changed, changedUser, oldValues, newValues);
+            await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.User_Changed, changedUser, changes.GetValueChangesString(c => c.OldValue), changes.GetValueChangesString(c => c.NewValue));
             return true;
         }
 
@@ -239,7 +239,7 @@ namespace BLAZAM.Server.Data.Services
         {
         }
 
-        public virtual Task<bool> Changed(IDirectoryModel changedUser, List<DirectoryModelChange> changes)
+        public virtual Task<bool> Changed(IDirectoryModel changedUser, List<AuditChangeLog> changes)
         {
             throw new NotImplementedException();
         }
@@ -269,7 +269,7 @@ namespace BLAZAM.Server.Data.Services
             string action,
             IDirectoryModel relatedEntry,
             string? beforeAction = null,
-            string? afterAction = null) where T: class,ICommonAuditLog, new()
+            string? afterAction = null) where T : class, ICommonAuditLog, new()
         {
 
             try
@@ -308,9 +308,20 @@ namespace BLAZAM.Server.Data.Services
             return await Log(message);
         }
 
+        public async Task<bool> SettingsChanged(string category, List<AuditChangeLog> changes)
+        {
+
+            return await Log("Settings_Changed",
+                changes.GetValueChangesString(c => c.OldValue),
+                changes.GetValueChangesString(c => c.NewValue)
+                );
+            return true;
+        }
 
 
-        private async Task<bool> Log(string action)
+        private async Task<bool> Log(string action,
+            string? beforeAction = null,
+            string? afterAction = null)
         {
             try
             {
@@ -320,6 +331,8 @@ namespace BLAZAM.Server.Data.Services
                     {
                         Action = action,
                         Username = "System",
+                        BeforeAction = beforeAction,
+                        AfterAction = afterAction,
                         Timestamp = DateTime.Now,
 
 

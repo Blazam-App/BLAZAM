@@ -1,6 +1,6 @@
 ﻿@page "/test"
 @inject IDbContextFactory<DatabaseContext> DbFactory
-@inherits ValidatedForm
+@inherits SettingsComponents
 
 
 
@@ -180,6 +180,8 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        originalSettings = await Context.EmailSettings.AsNoTracking().FirstOrDefaultAsync();
+
         var set = Context.EmailSettings.FirstOrDefault();
 
         if (set != null)
@@ -210,6 +212,7 @@
         {
             Context.EmailSettings.Add(settings);
         }
+        AuditLogger.System.SettingsChanged("Email", settings.GetChanges(originalSettings));
         base.Save();
 
     }

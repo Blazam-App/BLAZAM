@@ -1,5 +1,5 @@
 ﻿@inject IDbContextFactory<DatabaseContext> DbFactory
-@inherits ValidatedForm
+@inherits SettingsComponents
 
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
@@ -172,6 +172,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        originalSettings = await Context.ActiveDirectorySettings.AsNoTracking().FirstOrDefaultAsync();
 
         var set = await Context.ActiveDirectorySettings.FirstOrDefaultAsync();
         if (set != null)
@@ -202,6 +203,7 @@
                 Context.ActiveDirectorySettings.Add(settings);
                 _insert = false;
             }
+            AuditLogger.System.SettingsChanged("Active Directory", settings.GetChanges(originalSettings));
             base.Save();
         }
 
