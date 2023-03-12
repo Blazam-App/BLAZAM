@@ -127,7 +127,7 @@
 
                         try
                         {
-                            if (Context.AuthenticationSettings.FirstOrDefault() != null && Context.AuthenticationSettings.FirstOrDefault().AdminPassword != "password")
+                            if (Context.AuthenticationSettings.FirstOrDefault() != null && Context.AuthenticationSettings.FirstOrDefault()?.AdminPassword != "password")
                             {
                                 _step = 3;
                                 selectedStep = "3";
@@ -201,12 +201,12 @@
     {
         try
         {
-            if (Context.AppSettings.FirstOrDefault() == null)
+            if (Context?.AppSettings.FirstOrDefault() == null)
             {
                 var settings = new AppSettings();
                 settings.AppSettingsId = 1;
-                Context.AppSettings.Add(settings);
-                Context.SaveChanges();
+                Context?.AppSettings.Add(settings);
+                Context?.SaveChanges();
                 DatabaseCache.ApplicationSettings = settings;
             }
             (await Context.AppSettings.FirstOrDefaultAsync()).InstallationCompleted = true;

@@ -9,6 +9,7 @@ using Microsoft.Build.Framework;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common;
 using BLAZAM.Common.Data.FileSystem;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.Server.Data.Services.Update
 {
@@ -33,6 +34,7 @@ namespace BLAZAM.Server.Data.Services.Update
         /// </summary>
         public ApplicationVersion Version { get => Release.Version; }
 
+        public string Branch { get => Release.Branch; }
 
         /// <summary>
         /// The application update directory, in temporary files
@@ -117,12 +119,14 @@ namespace BLAZAM.Server.Data.Services.Update
             get
             {
                 return " -UpdateSourcePath '" + UpdateSourcePath + "' -ProcessId " + Program.ApplicationProcess.Id + " -ApplicationDirectory '" + Program.RootDirectory + "'" +
-                   " -Username " + DatabaseCache.ActiveDirectorySettings?.Username + " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN + " -Password '" + Encryption.Instance.DecryptObject<string>(DatabaseCache.ActiveDirectorySettings?.Password) + "'";
+                   " -Username " + DatabaseCache.ActiveDirectorySettings?.Username + 
+                   " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN + 
+                   " -Password '" + Encryption.Instance.DecryptObject<string>(DatabaseCache.ActiveDirectorySettings?.Password) + "'";
             }
         }
 
 
-        public AppEvent<FileProgress> DownloadPercentageChanged { get; set; }
+        public AppEvent<FileProgress?> DownloadPercentageChanged { get; set; }
 
         bool downloaded = false;
         bool staged = false;
@@ -194,7 +198,7 @@ namespace BLAZAM.Server.Data.Services.Update
             });
 
             //If the updater upated we can  run the updater
-            var updaterRan = await InvokeUpdateExecutable();
+            var updaterRan = InvokeUpdateExecutable();
 
             if (updaterRan)
             {
@@ -217,7 +221,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
         }
 
-        private async Task<bool> InvokeUpdateExecutable()
+        private bool InvokeUpdateExecutable()
         {
             var process = new Process
             {
@@ -253,7 +257,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
             return result;
         }
-
+        /*
         /// <summary>
         /// Checks if the running application identity has write
         /// permission to a specified path. It does this by creating
@@ -277,7 +281,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 return false;
             }
         }
-
+        */
         public async Task<bool> CleanDownload()
         {
             return await Task.Run(() =>
@@ -369,7 +373,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 {
                     if (!response.IsSuccessStatusCode)
                     {
-                        Loggers.UpdateLogger.Debug("Unable to connect to download url: " + response.StatusCode + " : " + response.ReasonPhrase);
+                        Loggers.UpdateLogger?.Debug("Unable to connect to download url: " + response.StatusCode + " : " + response.ReasonPhrase);
 
                         return false;
                     }
@@ -404,8 +408,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
                             downloaded = true;
 
-                            // await streamToReadFrom.CopyToAsync(streamToWriteTo,);
-                            // downloaded = true;
+                           
                         }
                     }
                 }

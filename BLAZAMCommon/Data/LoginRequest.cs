@@ -11,7 +11,7 @@ namespace BLAZAM.Common.Data
         [Required]
         public string? Username { get; set; }
         [Required]
-        public string? Password { get => password.ToPlainText(); set => password = value.ToSecureString(); }
+        public string? Password { get => password.ToPlainText(); set => password = value?.ToSecureString(); }
         public SecureString? SecurePassword => password;
         public string? ReturnUrl { get; set; } = "/";
         public bool Valid

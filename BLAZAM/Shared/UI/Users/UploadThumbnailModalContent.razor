@@ -17,7 +17,7 @@
     <Button Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Photo"]</Button>
 </Div>
 @code {
-    byte[] newThumbnail;
+    byte[]? newThumbnail;
     [Parameter]
     public IADUser DirectoryModel { get; set; }
 

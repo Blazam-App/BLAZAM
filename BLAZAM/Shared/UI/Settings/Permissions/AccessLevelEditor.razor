@@ -33,9 +33,8 @@
 </LoadingIndicator>
 
 @code {
-    int x = 0;
     bool addCollapseVisible;
-    List<AccessLevel> CurrentAccessLevels;
+    List<AccessLevel> CurrentAccessLevels=new();
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

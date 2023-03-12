@@ -16,18 +16,18 @@ namespace BLAZAM.Tests.Updates
         ApplicationVersion  longHigh = new ApplicationVersion("0.5.2.2023.2.3.1053");
 
         [Fact]
-        public async void Basic_Comparison_Valid()
+        public void Basic_Comparison_Valid()
         {
             Assert.True(basicLow.CompareTo(basicHigh)>0);
         }
         [Fact]
-        public async void Long_Comparison_Valid()
+        public void Long_Comparison_Valid()
         {
             Assert.True(longLow.CompareTo(longHigh)> 0);
         }
 
         [Fact]
-        public async void Long_Basic_Comparison_Valid()
+        public void Long_Basic_Comparison_Valid()
         {
             Assert.True(longLow.CompareTo(basicHigh) > 0);
         }

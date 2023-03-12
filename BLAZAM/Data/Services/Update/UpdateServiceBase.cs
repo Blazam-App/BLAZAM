@@ -1,4 +1,5 @@
-﻿using Microsoft.TeamFoundation.Build.WebApi;
+﻿using BLAZAM.Common;
+using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using Newtonsoft.Json;
@@ -15,24 +16,11 @@ namespace BLAZAM.Server.Data.Services.Update
     {
 
 
-        protected string organization = "branchburg";
-        protected string projectGUID = "40e01d64-a275-43b6-b071-e4b7339a9b8c";
-        protected string personalAccessToken = "iu4ayxl65otldw5b3cggezcaqufdusfsyb5ile226bhkq3gwrdfa";
-
-
+     
         private MediaTypeFormatter m_formatter = new VssJsonMediaTypeFormatter();
 
         protected Timer _updateCheckTimer;
-        protected BuildHttpClient BuildClient
-        {
-            get
-            {
-                VssCredentials credentials = new VssBasicCredential(string.Empty, personalAccessToken);
-                VssConnection connection = new VssConnection(new Uri($"https://dev.azure.com/{organization}"), credentials);
-                return connection.GetClient<BuildHttpClient>();
-
-            }
-        }
+       
         protected async Task<T> ReadContentAsAsync<T>(HttpResponseMessage response, CancellationToken cancellationToken = default)
         {
             CheckForDisposed();
@@ -110,47 +98,8 @@ namespace BLAZAM.Server.Data.Services.Update
             return false;
         }
 
-        public async Task<ApplicationVersion> GetLatestVersion()
-        {
-            var versionString = (await GetLatestBuild()).BuildNumber;
-           
+       
 
-            return new ApplicationVersion(versionString);
-
-        }
-
-        public async Task<Build?> GetLatestBuild()
-        {
-           
-
-
-            BuildHttpClient buildClient = BuildClient;
-
-            var builds = await buildClient.GetBuildsAsync(projectGUID);
-            if (builds.Count > 0)
-            {
-                return builds.Where(r => r.Status == BuildStatus.Completed && !r.Deleted && r.Result == BuildResult.Succeeded).OrderByDescending(r => r.FinishTime).First();
-
-            }
-            return null;
-        }
-
-        public async Task<BuildArtifact?> GetLatestBuildArtifact()
-        {
-            try
-            {
-                var latestBuild = await GetLatestBuild();
-                var artifacts = await BuildClient.GetArtifactsAsync(projectGUID, latestBuild.Id);
-                if (artifacts.Count > 0)
-                {
-                    return artifacts.First();
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return null;
-        }
+      
     }
 }

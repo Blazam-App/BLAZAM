@@ -1,6 +1,8 @@
 ﻿@page "/ou/create"
 @inherits AppComponentBase
 @attribute [Authorize]
+<AppPageTitle>Create OU</AppPageTitle>
+
 <Row>
     <Steps @ref=Steps NavigationAllowed=AllowStep SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged">
         <Items>
@@ -95,14 +97,13 @@
     string newOUName;
     bool collapseVisible = false;
     List<DirectoryTemplate> templates;
-    DirectoryTemplate? selectedTemplate;
-    IADOrganizationalUnit parentOU;
+    IADOrganizationalUnit? parentOU;
     IADOrganizationalUnit? newOU;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        templates = await Context.DirectoryTemplates.ToListAsync();
+        templates = await Context?.DirectoryTemplates.ToListAsync();
         await InvokeAsync(StateHasChanged);
     }
 

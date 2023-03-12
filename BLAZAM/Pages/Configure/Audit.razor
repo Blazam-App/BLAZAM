@@ -2,13 +2,16 @@
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 @inherits AppComponentBase
+
+
+<AppPageTitle>Audit</AppPageTitle>
 <h3>Audit</h3>
 <DataGrid TItem="CommonAuditLog"
           Data="@auditEntries.OrderByDescending(ae=>ae.Timestamp)"
           Responsive
+          Filterable
           Virtualize>
     <DataGridCommandColumn />
-    <DataGridColumn Field="@nameof(CommonAuditLog.Id)" Caption="#" Sortable="false" />
     <DataGridColumn Field="@nameof(CommonAuditLog.Timestamp)" Caption="Timestamp" />
     <DataGridColumn Field="@nameof(CommonAuditLog.Username)" Caption="Username" />
     <DataGridColumn Field="@nameof(CommonAuditLog.IpAddress)" Caption="IP" />

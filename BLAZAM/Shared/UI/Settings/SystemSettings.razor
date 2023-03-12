@@ -1,7 +1,9 @@
-﻿@inherits ValidatedForm
+﻿@using System.IO.Compression;
+@inherits ValidatedForm
     <Heading>@SettingsLocalization["System Settings"]</Heading>
     <Form @onsubmit="Save">
-
+    @if (settings != null)
+    {
         <SettingsField>
             <FieldLabel>@SettingsLocalization["Google Analytics ID"]</FieldLabel>
             <FieldBody>
@@ -14,6 +16,16 @@
 
             </FieldBody>
         </SettingsField>
+    }
+    
+    <SettingsField>
+        <FieldBody>
+            <Blazorise.Link To="/download/logs" Target="Target.Blank">
+            <Button Color="Color.Primary">Download Logs</Button>
+            </Blazorise.Link>
+
+        </FieldBody>
+    </SettingsField>
         <SettingsField>
             <FieldBody>
                 <Button Type="ButtonType.Submit" Color="Color.Success">Save Changes</Button>
@@ -21,13 +33,14 @@
         </SettingsField>
     </Form>
 @code {
-    AppSettings settings = new AppSettings();
+#nullable disable warnings
+    AppSettings? settings = new AppSettings();
 
     protected override async Task OnInitializedAsync()
     {
         await Task.Run(() =>
         {
-            settings = Context.AppSettings.FirstOrDefault();
+            settings = Context?.AppSettings.FirstOrDefault();
             LoadingData = false;
             InvokeAsync(StateHasChanged);
         });
@@ -43,13 +56,12 @@
         {
             if (Program.InDemoMode && !UserStateService.CurrentUsername.Equals("admin", StringComparison.OrdinalIgnoreCase))
             {
-                NotificationService.Warning("Restarting the application is not allowed in the demo");
+                await NotificationService.Warning("Restarting the application is not allowed in the demo");
                 return;
             }
             applicationManager.Restart();
         }
     }
-
 
 
 }

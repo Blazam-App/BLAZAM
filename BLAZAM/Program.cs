@@ -109,7 +109,8 @@ namespace BLAZAM
                                     installationCompleted = appSettings.InstallationCompleted;
                                 else
                                     installationCompleted = false;
-                            }catch (Exception ex)
+                            }
+                            catch (Exception ex)
                             {
                                 Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database.", ex);
                             }
@@ -149,7 +150,7 @@ namespace BLAZAM
         /// A static reference for the current asp
         /// net core application instance
         /// </summary>
-        public static WebApplication? AppInstance { get; private set; }
+        public static WebApplication AppInstance { get; private set; }
         /// <summary>
         /// A static reference to the asp net 
         /// core application configuration
@@ -309,21 +310,23 @@ namespace BLAZAM
 
             DatabaseContext.Configuration = builder.Configuration;
             var dbType = builder.Configuration.GetValue<string>("DatabaseType");
-            switch (dbType.ToLower())
+            if (dbType != null && Configuration != null)
             {
-                case "sqlite":
-                    DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("SQLiteConnectionString"), DatabaseType.SQLite);
-                    break;
-                case "sql":
-                    DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("SQLConnectionString"), DatabaseType.SQL);
-                    break;
-                case "mysql":
-                    DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("MySQLConnectionString"), DatabaseType.MySQL);
-                    break;
+                switch (dbType.ToLower())
+                {
+                    case "sqlite":
+                        DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("SQLiteConnectionString"), DatabaseType.SQLite);
+                        break;
+                    case "sql":
+                        DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("SQLConnectionString"), DatabaseType.SQL);
+                        break;
+                    case "mysql":
+                        DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("MySQLConnectionString"), DatabaseType.MySQL);
+                        break;
 
+                }
+                Loggers.SystemLogger.Debug("Connection String: " + DatabaseContext.ConnectionString);
             }
-            Loggers.SystemLogger.Debug("Connection String: " + DatabaseContext.ConnectionString);
-
             builder.Services.AddDbContextFactory<DatabaseContext>();
 
 
@@ -358,7 +361,7 @@ namespace BLAZAM
             builder.Services.AddScoped<ApplicationManager>();
 
             //Provide a PermissionHandler as a service
-            builder.Services.AddScoped<PermissionHandler>();
+            builder.Services.AddScoped<LoginPermissionApplicator>();
 
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();
@@ -472,13 +475,19 @@ namespace BLAZAM
 
             AppInstance.Start();
             var server = AppInstance.Services.GetService<IServer>();
-            var addressFeature = server.Features.Get<IServerAddressesFeature>();
-            foreach (var address in addressFeature.Addresses)
+            if (server != null)
             {
-                ListeningAddresses.Add(address);
-                Loggers.SystemLogger.Debug("Listening on: " + address);
-            }
+                var addressFeature = server.Features.Get<IServerAddressesFeature>();
+                if (addressFeature != null)
+                {
 
+                    foreach (var address in addressFeature.Addresses)
+                    {
+                        ListeningAddresses.Add(address);
+                        Loggers.SystemLogger.Debug("Listening on: " + address);
+                    }
+                }
+            }
             Task.Delay(5000).ContinueWith(t =>
             {
                 new AutoLauncher(AppInstance.Services.GetService<IHttpClientFactory>());
@@ -516,7 +525,7 @@ namespace BLAZAM
                 Oops.ErrorMessage = "Applicatin Directory Error";
                 Oops.DetailsMessage = "The application does not have write permission to the 'writable' directory.";
             }
-            catch (DirectoryNotFoundException ex)
+            catch (DirectoryNotFoundException )
             {
                 Writable = false;
 

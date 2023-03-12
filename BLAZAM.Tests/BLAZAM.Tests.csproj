@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
     <ProjectReference Include="..\BLAZAM\BLAZAM.csproj" />
   </ItemGroup>
 

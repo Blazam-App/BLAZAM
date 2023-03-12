@@ -1,4 +1,5 @@
 ﻿@inherits DirectoryModelComponent
+<AppPageTitle>@Computer?.CanonicalName</AppPageTitle>
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
 
@@ -34,6 +35,24 @@
 
                         <Column ColumnSize="ColumnSize.Is1.OnTablet.Is2">
 
+                            @switch (Computer.Online)
+                            {
+                                case true:
+                                    <Tooltip Text="Online">
+                                        <Icon TextColor="TextColor.Success" Name=@("fa-solid fa-circle-up") />
+                                    </Tooltip>
+                                    break;
+                                case false:
+                                    <Tooltip Text="Offline">
+                                        <Icon TextColor="TextColor.Danger" Name=@("fa-solid fa-circle-down") />
+                                    </Tooltip>
+                                    break;
+                                case null:
+                                    <Tooltip Text="Checking">
+                                        <Icon TextColor="TextColor.Warning" Name=@("fa-solid fa-circle-question") />
+                                    </Tooltip>
+                                    break;
+                            }
                             @if (Computer.LockedOut)
                             {
                                 <Icon Name=@("fa-lock")>Account Locked</Icon>
@@ -95,31 +114,29 @@
 
         <Card Shadow="Shadow.Default">
 
-            <Check @bind-Checked="Computer.Disabled" Disabled=@((Computer.Disabled && !Computer.CanEnable)||(!Computer.Disabled && !Computer.CanDisable))>Disabled</Check>
-            <Check @bind-Checked="Computer.LockedOut" Disabled=@(!Computer.LockedOut || (Computer.LockedOut && !Computer.CanUnlock))>Locked out</Check>
-            <Check Checked="Computer.Online" Disabled>Online</Check>
+           
 
             <CardHeader>
                 @Computer.SamAccountName
             </CardHeader>
             <CardBody>
                 <LoadingIndicator Visible=@(drives==null)>
-                    @if (drives!=null && drives.Count > 0)
+                    @if (drives != null && drives.Count > 0)
                     {
 
                         <DataGrid TItem="IADComputerDrive"
                               Data="drives"
-                              Responsive>
-                            <DataGridColumn Field="@nameof(IADComputerDrive.Description)" Caption="Drive Type" />
-                            <DataGridColumn Field="@nameof(IADComputerDrive.Letter)" Caption="Drive Letter" />
-                            <DataGridColumn Context="fieldContext" Field="@nameof(IADComputerDrive.UsedSpace)" Caption="Space Used">
-                                <DisplayTemplate>
-                                    @Math.Round(fieldContext.UsedSpace,0) GB / @Math.Round(fieldContext.Capacity,0) GB
-                                </DisplayTemplate>
-                            </DataGridColumn>
-                            <DataGridColumn Context="fieldContext" Field="@nameof(IADComputerDrive.PercentUsed)" Caption="Percent Full">
-                                <DisplayTemplate>
-                                    @{
+                                Responsive>
+                        <DataGridColumn Field="@nameof(IADComputerDrive.Description)" Caption="Drive Type" />
+                        <DataGridColumn Field="@nameof(IADComputerDrive.Letter)" Caption="Drive Letter" />
+                        <DataGridColumn Context="fieldContext" Field="@nameof(IADComputerDrive.UsedSpace)" Caption="Space Used">
+                            <DisplayTemplate>
+                                @Math.Round(fieldContext.UsedSpace,0) GB / @Math.Round(fieldContext.Capacity,0) GB
+                            </DisplayTemplate>
+                        </DataGridColumn>
+                        <DataGridColumn Context="fieldContext" Field="@nameof(IADComputerDrive.PercentUsed)" Caption="Percent Full">
+                            <DisplayTemplate>
+                                @{
                                         var bg = Color.Success;
                                         switch (fieldContext.PercentUsed)
                                         {

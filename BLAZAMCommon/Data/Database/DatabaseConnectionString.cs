@@ -14,17 +14,17 @@ namespace BLAZAM.Common.Data.Database
         {
             ConnectionString = connectionString;
         }
-        public DatabaseConnectionString(string connectionString, DatabaseType dbType)
+        public DatabaseConnectionString(string? connectionString, DatabaseType dbType)
         {
 
             ConnectionString = connectionString;
-            ConnectionString = ConnectionString.Replace("%temp%", Path.GetTempPath().Substring(0, Path.GetTempPath().Length-1));
+            //ConnectionString = ConnectionString.Replace("%temp%", Path.GetTempPath().Substring(0, Path.GetTempPath().Length-1));
             DatabaseType = dbType;
         }
         public DatabaseType DatabaseType;
         public bool FileBased => ServerAddress.EndsWith(".db");
         public SystemFile File => new(ServerAddress);
-        public string ConnectionString { get; set; }
+        public string? ConnectionString { get; set; }
         public string AddressComponent
         {
             get

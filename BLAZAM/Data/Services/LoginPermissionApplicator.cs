@@ -6,12 +6,12 @@ using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.EntityFrameworkCore;
 namespace BLAZAM.Server.Data.Services
 {
-    public class PermissionHandler
+    public class LoginPermissionApplicator
     {
         protected IDbContextFactory<DatabaseContext> Factory { get; set; }
         protected IActiveDirectory Directory { get; set; }
 
-        public PermissionHandler(IDbContextFactory<DatabaseContext> factory, IActiveDirectory directory)
+        public LoginPermissionApplicator(IDbContextFactory<DatabaseContext> factory, IActiveDirectory directory)
         {
             Factory = factory;
             Directory = directory;
@@ -34,11 +34,14 @@ namespace BLAZAM.Server.Data.Services
                 foreach(var l in cursor) { 
                 
                     
-                    
-                    if (user.IsAMemberOf(ActiveDirectoryContext.Instance.Groups.FindGroupBySID(l.DelegateSid)))
+                    var permissiondelegate = ActiveDirectoryContext.Instance.Groups.FindGroupBySID(l.DelegateSid);
+                    if (permissiondelegate != null)
                     {
-                        user.PermissionDelegates.Add(l);
-                        user.PermissionMappings.AddRange(l.PermissionsMaps);
+                        if (user.IsAMemberOf(permissiondelegate)||user.Equals(permissiondelegate))
+                        {
+                            user.PermissionDelegates.Add(l);
+                            user.PermissionMappings.AddRange(l.PermissionsMaps);
+                        }
                     }
                 }
                

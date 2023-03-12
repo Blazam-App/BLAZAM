@@ -63,11 +63,13 @@
 </ListGroupItem>
 
 @code {
-    IDirectoryEntryAdapter Group;
+
+#nullable disable warnings
+    IDirectoryEntryAdapter? Group;
     [Parameter]
     public PermissionDelegate Level { get; set; }
     [Parameter]
-    public DatabaseContext Context { get; set; }
+    public new DatabaseContext Context { get; set; }
 
 
     protected override async Task OnInitializedAsync()
@@ -82,7 +84,7 @@
     {
         Level.DeletedAt = DateTime.UtcNow;
         await Context.SaveChangesAsync();
-        await NotificationService.Info("Permission Group removed.");
+        await NotificationService.Info("Permission Delegate removed.");
 
     }
     private async void Save()

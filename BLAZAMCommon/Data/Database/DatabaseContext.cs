@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Services.Common;
+using Microsoft.VisualStudio.Services.WebApi;
 
 namespace BLAZAM.Common.Data.Database
 {
@@ -43,7 +44,7 @@ namespace BLAZAM.Common.Data.Database
         {
             get
             {
-                if (_pendingMigrations == null) _pendingMigrations = Database.GetPendingMigrations();
+                _pendingMigrations ??= Database.GetPendingMigrations();
                 return _pendingMigrations;
             }
         }
@@ -52,7 +53,7 @@ namespace BLAZAM.Common.Data.Database
         {
             get
             {
-                if (_appliedMigrations == null) _appliedMigrations = Database.GetAppliedMigrations();
+                _appliedMigrations ??= Database.GetAppliedMigrations();
                 return _appliedMigrations;
             }
         }
@@ -146,7 +147,7 @@ namespace BLAZAM.Common.Data.Database
                      break;
                 
                 case "MySQL":
-                    optionsBuilder.UseMySql(ConnectionString.ConnectionString,
+                    optionsBuilder.UseMySql(ConnectionString?.ConnectionString,
                          serverVersion: new MySqlServerVersion(new Version(8, 0, 32)),
                         mySqlOptionsAction: options =>
                         {
@@ -431,21 +432,21 @@ namespace BLAZAM.Common.Data.Database
                 }
 
 
-                catch (RetryLimitExceededException ex)
+                catch (RetryLimitExceededException )
                 {
                     //Couldn't connect to DB
 
                     return DatabaseStatus.DatabaseConnectionIssue;
 
                 }
-                catch (DatabaseConnectionStringException ex)
+                catch (DatabaseConnectionStringException )
                 {
                     return DatabaseStatus.IncompleteConfiguration;
                 }
                 catch (Exception ex)
                 {
 
-
+                    Loggers.DatabaseLogger.Error(ex.Message,ex);
                     //Installation not completed
 
 
@@ -461,7 +462,7 @@ namespace BLAZAM.Common.Data.Database
         {
             try
             {
-                return AppSettings.FirstOrDefault().InstallationCompleted == true;
+                return AppSettings.FirstOrDefault()?.InstallationCompleted == true;
             }
             catch
             {

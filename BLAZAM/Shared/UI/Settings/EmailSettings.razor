@@ -1,6 +1,4 @@
-﻿@page "/test"
-@inject IDbContextFactory<DatabaseContext> DbFactory
-@inherits ValidatedForm
+﻿@inherits ValidatedForm
 
 
 
@@ -174,19 +172,21 @@
         </Form>
 </LoadingIndicator>
 @code {
+#nullable disable warnings
     BLAZAM.Common.Models.Database.EmailSettings settings = new BLAZAM.Common.Models.Database.EmailSettings();
     string testRecipient;
-    bool _tls;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        var set = Context.EmailSettings.FirstOrDefault();
-
-        if (set != null)
+        if (Context != null)
         {
-            settings = set;
-        }
+            var set = Context.EmailSettings.FirstOrDefault();
 
+            if (set != null)
+            {
+                settings = set;
+            }
+        }
 
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
@@ -201,12 +201,12 @@
         }
         catch (Exception ex)
         {
-            MessageService.Error(ex.Message, "Test Failed");
+            await MessageService.Error(ex.Message, "Test Failed");
         }
     }
     protected override void Save()
     {
-        if (settings.EmailSettingsId == 0)
+        if (settings.EmailSettingsId == 0 && Context!=null)
         {
             Context.EmailSettings.Add(settings);
         }

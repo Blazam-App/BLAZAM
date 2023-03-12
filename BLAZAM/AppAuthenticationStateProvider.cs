@@ -25,7 +25,7 @@ namespace BLAZAM
     {
         public AppAuthenticationStateProvider(IDbContextFactory<DatabaseContext> factory,
             IActiveDirectory directoy,
-            PermissionHandler permissionHandler,
+            LoginPermissionApplicator permissionHandler,
             IApplicationUserStateService userStateService,
             IHttpContextAccessor ca,
             IDuoClientProvider dcp,
@@ -41,18 +41,18 @@ namespace BLAZAM
             this._duoClientProvider = dcp;
         }
 
-        private IHttpContextAccessor _httpContextAccessor;
-        private IDuoClientProvider _duoClientProvider;
-        private IEncryptionService _encryption;
-        private IActiveDirectory _directory;
-        private IDbContextFactory<DatabaseContext> _factory;
-        private PermissionHandler _permissionHandler;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IDuoClientProvider _duoClientProvider;
+        private readonly IEncryptionService _encryption;
+        private readonly IActiveDirectory _directory;
+        private readonly IDbContextFactory<DatabaseContext> _factory;
+        private readonly LoginPermissionApplicator _permissionHandler;
 
-        private IApplicationUserStateService _userStateService;
+        private readonly IApplicationUserStateService _userStateService;
 
 
         private ClaimsPrincipal? CurrentUser;
-        private ApplicationUserState _newUserState = new();
+        private readonly ApplicationUserState _newUserState = new();
 
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
@@ -79,7 +79,7 @@ namespace BLAZAM
             return new ClaimsPrincipal(identity);
         }
 
-        private ClaimsPrincipal GetLocalAdmin(string name="admin")
+        private ClaimsPrincipal GetLocalAdmin(string name = "admin")
         {
 
             var identity = new ClaimsIdentity(new[]
@@ -127,7 +127,7 @@ namespace BLAZAM
 
                 }
                 //Check if we're in demo mode and this is a demo login
-                else if (Program.InDemoMode && settings != null && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password=="demo")
+                else if (Program.InDemoMode && settings != null && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
                 {
                     result = await SetUser(this.GetLocalAdmin("Demo"));
 
@@ -137,13 +137,13 @@ namespace BLAZAM
                     //Login username is not "admin" or "demo" or we're not in demo mode, so we'll try active directory
                     var userClaim = await AttemptADLogin(loginReq);
                     //If active directory login/impersonation succeeded the userClaim will be popluated
-                    if (userClaim != null && userClaim.Identity.IsAuthenticated)
+                    if (userClaim != null && userClaim.Identity?.IsAuthenticated == true)
                         //Set the user in the authentication provider
                         result = await SetUser(userClaim);
                 }
-
-                //User claim processing is done so we can set the UserState with the new identity
-                _newUserState.User = result?.User;
+                if (result?.User != null)
+                    //User claim processing is done so we can set the UserState with the new identity
+                    _newUserState.User = result.User;
 
                 //Pass this state to the State Service for statefulness if it's populated
                 if (_newUserState.User != null)
@@ -169,7 +169,7 @@ namespace BLAZAM
         /// </returns>
         private async Task<ClaimsPrincipal?> AttemptADLogin(LoginRequest loginReq)
         {
-            IADUser user;
+            IADUser? user;
             if (!loginReq.Impersonation)
             {
                 user = _directory.Authenticate(loginReq);
@@ -208,7 +208,7 @@ namespace BLAZAM
 
 
             return await CreateDirectoryPrincipal(user, loginReq);
-          
+
 
         }
 
@@ -218,7 +218,7 @@ namespace BLAZAM
 
             // Get a Duo client
             Client duoClient = _duoClientProvider.GetDuoClient();
-           
+
             // Check if Duo seems to be healthy and able to service authentications.
             // If Duo were unhealthy, you could possibly send user to an error page, or implement a fail mode
             var isDuoHealthy = await duoClient.DoHealthCheck();
@@ -249,7 +249,7 @@ namespace BLAZAM
         /// database permission tables</returns>
         private async Task<ClaimsPrincipal?> CreateDirectoryPrincipal(IADUser? user, LoginRequest loginReq)
         {
-            ClaimsPrincipal principal = null;
+            ClaimsPrincipal? principal = null;
 
 
             if (user != null)
@@ -269,7 +269,7 @@ namespace BLAZAM
         /// database permission tables</returns>
         private async Task<ClaimsIdentity?> CreateDirectoryIdentity(IADUser user, LoginRequest loginReq)
         {
-            
+
             var identity = new ClaimsIdentity();
 
             _newUserState.DirectoryUser = user;
@@ -281,10 +281,10 @@ namespace BLAZAM
             if (userRoles.Count > 0)
             {
                 //Build the base of the ClaimIdentity
-                List<Claim> claims = new List<Claim>
-                   {
+                List<Claim> claims = new()
+                {
                             new Claim(ClaimTypes.Sid, user.SID.ToSidString()),
-                           
+
                         };
                 if (user.DisplayName != null)
                 {
@@ -295,13 +295,13 @@ namespace BLAZAM
                     claims.Add(new Claim(ClaimTypes.Name, user.SamAccountName));
 
                 }
-                if(user.GivenName!=null)
+                if (user.GivenName != null)
                     claims.Add(new Claim(ClaimTypes.GivenName, user.GivenName));
-                if(user.Surname!=null)
+                if (user.Surname != null)
                     claims.Add(new Claim(ClaimTypes.Surname, user.Surname));
 
-                
-                           
+
+
                 if (loginReq.Impersonation)
                 {
                     //Handle Impersonated login
@@ -335,8 +335,9 @@ namespace BLAZAM
         /// </summary>
         /// <param name="user">The Active Directory user who authenticated</param>
         /// <returns>A list of Claim Roles that the user has been privileged</returns>
-        private  List<Claim> TransformUserRoles(IADUser? user)
+        private List<Claim> TransformUserRoles(IADUser user)
         {
+            
             List<Claim> userRoles = new();
 
             if (user.PermissionDelegates.Any(p => p.IsSuperAdmin))

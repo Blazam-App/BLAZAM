@@ -93,9 +93,10 @@
 
 }
 @code {
-    PermissionMap _map;
+#nullable disable warnings
+    PermissionMap? _map;
     [Parameter]
-    public PermissionMap Map
+    public PermissionMap? Map
     {
         get => _map; set
         {
@@ -124,15 +125,7 @@
     {
         //Wait for a database connection
         await base.OnInitializedAsync();
-        //try
-        //{
-        //    //Context.Attach( Map);
-
-        //}
-        //catch
-        //{
-        //}
-        ////RefreshData();
+       
         LoadingData = false;
         await RefreshData();
     }
@@ -142,9 +135,10 @@
 
         if (!LoadingData)
         {
+            if (Map == null) return;
+
             LoadingData = true;
 
-            //Context = await DbFactory.CreateDbContextAsync();
             if (Context != null)
             {
                 if (Map.PermissionMapId != 0)
@@ -156,7 +150,9 @@
                 if (Map.PermissionMapId != 0)
                 {
                     selectedAccessLevelNames = Map.AccessLevels.Select(a => a.Name).ToList();
-                    selectedPermissionDelegateNames = Map.PermissionDelegates.Select(a => Directory.GetDirectoryModelBySid(a.DelegateSid).CanonicalName).ToList();
+                    selectedPermissionDelegateNames = Map.PermissionDelegates.Select(
+                        a => Directory.GetDirectoryModelBySid(a.DelegateSid).CanonicalName)
+                        .ToList();
                 }
                 await InvokeAsync(StateHasChanged);
             }
@@ -182,7 +178,7 @@
         await MappingDeleted.InvokeAsync();
 
     }
-    async Task Save()
+   new async Task Save()
     {
         if (Map.PermissionMapId == 0)
             Context.PermissionMap.Add(Map);
@@ -191,9 +187,9 @@
         await NotificationService.Success("Mapping saved");
 
     }
-    async void ValidateCheck()
+    void ValidateCheck()
     {
-        if (PrivValidation != null && !ReadOnly)
+        if (PrivValidation != null && AccValidation!=null && !ReadOnly)
         {
             if (Map != null)
             {

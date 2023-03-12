@@ -47,6 +47,7 @@
 
 @code {
 
+#nullable disable warnings
     [Parameter]
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
 
@@ -59,7 +60,7 @@
     IDirectoryEntryAdapter copyFrom;
     public IGroupableDirectoryAdapter CopyFrom { get => (IGroupableDirectoryAdapter)copyFrom; set => copyFrom = value; }
 
-    IDirectoryEntryAdapter Group { get; set; }
+    new IDirectoryEntryAdapter Group { get; set; }
 
     async Task AssignToGroup()
     {
