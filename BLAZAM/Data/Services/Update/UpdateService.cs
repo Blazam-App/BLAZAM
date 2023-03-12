@@ -17,13 +17,13 @@ using Blazorise;
 using Octokit;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BLAZAM.Server.Data.Services.Update
 {
     public class UpdateService : UpdateServiceBase
     {
         public ApplicationUpdate LatestUpdate { get; set; }
-        public Task<BuildArtifact> LatestBuildArtifact { get => GetLatestBuildArtifact(); }
         public string? SelectedBranch { get; set; }
 
         protected readonly IHttpClientFactory httpClientFactory;
@@ -35,12 +35,13 @@ namespace BLAZAM.Server.Data.Services.Update
 
         }
 
-        public async Task<ApplicationUpdate> GetLatestUpdate()
+        public async Task<ApplicationUpdate?> GetLatestUpdate()
         {
             try
             {
                 var dbBranch = DatabaseCache.ApplicationSettings?.UpdateBranch;
-                if (dbBranch != null) {
+                if (dbBranch != null)
+                {
                     SelectedBranch = dbBranch;
                 }
 
@@ -48,38 +49,27 @@ namespace BLAZAM.Server.Data.Services.Update
                 ApplicationVersion? latestVer = null;
 
 
-                if (SelectedBranch == null) throw new ApplicationUpdateException("There was no branch selection found in the database");
-
+                if (SelectedBranch == null) return null;
                 //Create a github client to get api data from repo
                 var client = new GitHubClient(new ProductHeaderValue("BLAZAM-APP"));
 
 
-                if (SelectedBranch == ApplicationReleaseBranches.Dev)
-                {
-                   //TODO: Implemenet dev branch updates
-
-                }
-
-                else
-                {
-                    //Dev branch not selected, so pull the asse
 
 
+                //Get the releases from the repo
+                var releases = await client.Repository.Release.GetAll("Blazam-App", "Blazam");
+                //Filter the releases to the selected branch
+                var branchReleases = releases.Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
+                //Get the first release,which should be the most recent
+                latestRelease = branchReleases.FirstOrDefault();
+                //Get the release filename to prepare a version object
+                var filename = Path.GetFileNameWithoutExtension(latestRelease?.Assets.FirstOrDefault()?.Name);
+                //Create that version object
+                if (filename == null) throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
+                latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
 
 
-                   //Get the releases from the repo
-                    var releases = await client.Repository.Release.GetAll("Blazam-App", "Blazam");
-                    //Filter the releases to the selected branch
-                    var branchReleases = releases.Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
-                    //Get the first release,which should be the most recent
-                    latestRelease = branchReleases.FirstOrDefault();
-                    //Get the release filename to prepare a version object
-                    var filename = Path.GetFileNameWithoutExtension(latestRelease.Assets.FirstOrDefault().Name);
-                    //Create that version object
-                    latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
 
-
-                }
 
                 if (latestRelease != null && latestVer != null)
                 {
@@ -92,6 +82,11 @@ namespace BLAZAM.Server.Data.Services.Update
                     return new ApplicationUpdate { Release = release };
 
                 }
+
+            }
+            catch(Octokit.RateLimitExceededException ex)
+            {
+                throw ex;
             }
             catch (Exception ex)
             {
@@ -103,7 +98,16 @@ namespace BLAZAM.Server.Data.Services.Update
 
         private async void CheckForUpdate(object? state)
         {
-            await GetLatestUpdate();
+            try
+            {
+                await GetLatestUpdate();
+            }
+            catch(Exception ex)
+            {
+                Loggers.UpdateLogger.Error("Error while checking for latest update");
+                Loggers.UpdateLogger.Error(ex.Message,ex);
+
+            }
         }
 
 

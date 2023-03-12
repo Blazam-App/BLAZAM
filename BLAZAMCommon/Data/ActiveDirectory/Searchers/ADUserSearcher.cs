@@ -116,8 +116,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             return new List<IADUser>(ConvertTo<ADUser>(SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User, 1000, ignoreDisabledUsers)).OrderByDescending(u => u.LastChanged));
 
         }
-        public IADUser? FindUserBySID(string sid)
+        public IADUser? FindUserBySID(string? sid)
         {
+            if(sid== null) return null; 
             return new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
@@ -128,8 +129,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             }.Search<ADUser, IADUser>().FirstOrDefault();
         }
 
-        public IADUser? FindUsersByContainerName(string searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
+        public IADUser? FindUsersByContainerName(string? searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
         {
+
             return new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,

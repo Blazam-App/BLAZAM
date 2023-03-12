@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
-    public class GroupableDirectoryModel : DirectoryModel, IGroupableDirectoryModel
+    public class GroupableDirectoryAdapter : DirectoryEntryAdapter, IGroupableDirectoryAdapter
     {
         const int ADS_UF_ACCOUNTDISABLE = 0x0002;
         const int ADS_UF_PASSWD_NOTREQD = 0x0020;
@@ -250,7 +250,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             get
             {
-                if (UserStateService.CurrentUserState.IsSuperAdmin) return true;
+                if (UserStateService.CurrentUserState?.IsSuperAdmin==true) return true;
                 return UserStateService.CurrentUserState.DirectoryUser.PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == ObjectType && om.AllowDisabled)));
 
             }
@@ -261,7 +261,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             get
             {
-                var com = GetProperty<object>("accountExpires").AdsValueToDateTime();
+                var com = GetProperty<object>("accountExpires")?.AdsValueToDateTime();
                 if (com == ADS_NULL_TIME || com == DateTime.MinValue) com = null;
                 return com;
             }

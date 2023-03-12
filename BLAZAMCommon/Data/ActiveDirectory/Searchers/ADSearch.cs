@@ -90,7 +90,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         /// or listen to <see cref="OnSearchCompleted"/>
         /// to confirm search is completed and no more results are coming.</para>
         /// </summary>
-        public AppEvent<IEnumerable<IDirectoryModel>> ResultsCollected { get; set; }
+        public AppEvent<IEnumerable<IDirectoryEntryAdapter>> ResultsCollected { get; set; }
         /// <summary>
         /// Event fired when all results have been collected, or an error occurred
         /// </summary>
@@ -100,12 +100,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         public bool? EnabledOnly { get; set; }
         public int MaxResults { get; set; } = 5000;
         public List<SearchResult> SearchResults { get; set; } = new();
-        public List<IDirectoryModel> Results { get; set; } = new();
+        public List<IDirectoryEntryAdapter> Results { get; set; } = new();
         public string LdapQuery { get; private set; }
         public TimeSpan SearchTime { get; set; }
         public bool SearchDeleted { get; set; } = false;
 
-        public async Task<List<I>> SearchAsync<T, I>() where T : I, IDirectoryModel, new()
+        public async Task<List<I>> SearchAsync<T, I>() where T : I, IDirectoryEntryAdapter, new()
         {
             return await Task.Run(() =>
             {
@@ -113,14 +113,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             });
         }
 
-        public List<IDirectoryModel> Search()
+        public List<IDirectoryEntryAdapter> Search()
         {
-            return Search<DirectoryModel, IDirectoryModel>();
+            return Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         }
 
-        public async Task<List<IDirectoryModel>> SearchAsync()
+        public async Task<List<IDirectoryEntryAdapter>> SearchAsync()
         {
-            return await SearchAsync<DirectoryModel, IDirectoryModel>();
+            return await SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         /// <typeparam name="TObject">The object type to convert search results to</typeparam>
         /// <typeparam name="TInterface">The interface type to case converted search results to</typeparam>
         /// <returns>A list of search results converted and casted to supplied types</returns>
-        public List<TInterface> Search<TObject, TInterface>() where TObject : TInterface, IDirectoryModel, new()
+        public List<TInterface> Search<TObject, TInterface>() where TObject : TInterface, IDirectoryEntryAdapter, new()
         {
             var startTime = DateTime.Now;
             SearchState = SearchState.Started;
@@ -139,16 +139,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             DirectorySearcher searcher;
             try
             {
-                if (SearchRoot == null)
-                    SearchRoot = ActiveDirectoryContext.Instance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
+                SearchRoot ??= ActiveDirectoryContext.Instance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
                 var pageOffset = 1;
                 var pageSize = 40;
                 searcher = new DirectorySearcher(SearchRoot)
                 {
-                    VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset)
+                    VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset),
+                    Filter = "(&(|(objectClass=user)(objectClass=group)(objectCategory=computer)(objectClass=organizationalUnit)))"
                 };
-
-                searcher.Filter = "(&(|(objectClass=user)(objectClass=group)(objectCategory=computer)(objectClass=organizationalUnit)))";
                 if (SearchDeleted)
                     searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + "(isDeleted=TRUE)" + ")";
 
@@ -321,7 +319,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         {
             tokenSource.Cancel();
         }
-        private void AddResults<T, I>(SearchResultCollection lastResults) where T : I, IDirectoryModel, new()
+        private void AddResults<T, I>(SearchResultCollection lastResults) where T : I, IDirectoryEntryAdapter, new()
         {
 
             //var last = new List<I>((IEnumerable<I>)ConvertTo<T>(lastResults));
@@ -334,14 +332,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         }
 
-        public List<I> ConvertTo<T, I>(ICollection r) where T : I, IDirectoryModel, new()
+        public List<I> ConvertTo<T, I>(ICollection r) where T : I, IDirectoryEntryAdapter, new()
         {
             return new List<I>((IEnumerable<I>)ConvertTo<T>(r));
         }
 
-        public List<T> ConvertTo<T>(ICollection r) where T : IDirectoryModel, new()
+        public List<T> ConvertTo<T>(ICollection r) where T : IDirectoryEntryAdapter, new()
         {
-            List<T> objects = new List<T>();
+            List<T> objects = new();
 
 
             if (r != null && r.Count > 0)
@@ -359,14 +357,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             }
             return objects;
         }
-        public List<IDirectoryModel> Encapsulate(SearchResultCollection r)
+        public List<IDirectoryEntryAdapter> Encapsulate(SearchResultCollection r)
         {
-            List<IDirectoryModel> objects = new List<IDirectoryModel>();
+            List<IDirectoryEntryAdapter> objects = new();
 
 
             if (r != null && r.Count > 0)
             {
-                IDirectoryModel thisObject = null;
+                IDirectoryEntryAdapter thisObject = null;
                 foreach (SearchResult sr in r)
                 {
                     if (sr.Properties["objectClass"].Contains("top"))

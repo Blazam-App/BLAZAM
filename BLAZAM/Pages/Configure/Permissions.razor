@@ -3,6 +3,8 @@
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 @inherits TabbedAppComponentBase
+
+<AppPageTitle>Permissions</AppPageTitle>
 <AuthorizeView Roles=@UserRoles.SuperAdmin>
 
     <SetHeader>

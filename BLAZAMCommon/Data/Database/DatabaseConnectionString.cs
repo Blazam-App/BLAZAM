@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Services.Zeus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,14 +7,24 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Common.Data.Database
 {
+    public enum DatabaseType { SQL, MySQL, SQLite }
     public class DatabaseConnectionString
     {
         public DatabaseConnectionString(string connectionString)
         {
             ConnectionString = connectionString;
         }
+        public DatabaseConnectionString(string? connectionString, DatabaseType dbType)
+        {
 
-        public string ConnectionString { get; set; }
+            ConnectionString = connectionString;
+            //ConnectionString = ConnectionString.Replace("%temp%", Path.GetTempPath().Substring(0, Path.GetTempPath().Length-1));
+            DatabaseType = dbType;
+        }
+        public DatabaseType DatabaseType;
+        public bool FileBased => ServerAddress.EndsWith(".db");
+        public SystemFile File => new(ServerAddress);
+        public string? ConnectionString { get; set; }
         public string AddressComponent
         {
             get
@@ -49,12 +60,21 @@ namespace BLAZAM.Common.Data.Database
             {
                 if (ConnectionString != null)
                 {
+                    if (FileBased) return "File Based";
+
                     string search = "Initial Catalog=";
                     int startIndex = ConnectionString.IndexOf(search);
                     if (startIndex == -1)
                     {
-                       // search = "Server=";
-                       // startIndex = ConnectionString.IndexOf(search);
+                        try
+                        {
+                            search = "Database=";
+                            startIndex = ConnectionString.IndexOf(search);
+                        }
+                        catch
+                        {
+
+                        }
                     }
                     if (startIndex >= 0)
                     {
@@ -69,7 +89,7 @@ namespace BLAZAM.Common.Data.Database
                     }
 
                 }
-                throw new ApplicationException("Connection String missing a Server or Data Source parameter");
+                throw new ApplicationException("Connection String missing a Database or Initial Catalog parameter");
             }
         }
 
@@ -77,6 +97,7 @@ namespace BLAZAM.Common.Data.Database
         {
             get
             {
+
                 var fullAddress = AddressComponent;
 
                 if (fullAddress != null)
@@ -102,11 +123,12 @@ namespace BLAZAM.Common.Data.Database
 
 
         }
-       
+
         public int ServerPort
         {
             get
             {
+
                 var fullAddress = AddressComponent;
 
                 if (fullAddress != null)
@@ -117,9 +139,16 @@ namespace BLAZAM.Common.Data.Database
                         string portFragment = dataSourceParts[1];
                         return int.Parse(portFragment);  // Outputs "serverPort"
                     }
-                    else if(dataSourceParts.Length == 1)
+                    else if (dataSourceParts.Length == 1)
                     {
-                        return 1433;
+                        switch (DatabaseType)
+                        {
+                            case DatabaseType.SQL:
+                                return 1433;
+                            case DatabaseType.MySQL:
+                                return 3306;
+                        }
+                        return 0;
                     }
                     else
                     {

@@ -8,14 +8,15 @@ using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
-    public class ADComputer : GroupableDirectoryModel, IADComputer
+    public class ADComputer : GroupableDirectoryAdapter, IADComputer
     {
-       
+
         private ADComputerSessions sessionManager;
-        private WmiConnection wmiConnection
+        private WmiConnection? wmiConnection
         {
             get
             {
+                if (CanonicalName == null) return null;
                 return new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName));
             }
         }
@@ -51,13 +52,20 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
                 if (value == online) return;
                 online = value;
-                OnOnlineChanged?.Invoke((bool)value);
+                if (value != null)
+                    OnOnlineChanged?.Invoke((bool)value);
             }
         }
 
-        public List<IADComputerDrive> GetDrives() { return wmiConnection.Drives; }
+        public List<IADComputerDrive> GetDrives()
+        {
+            if (wmiConnection == null) return new();
+            return wmiConnection.Drives;
+        }
         public async Task<List<IADComputerDrive>> GetDrivesAsync()
         {
+            if (wmiConnection == null) return new();
+
             return await Task.Run(() =>
             {
                 return wmiConnection.Drives;
@@ -65,7 +73,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         }
         public async Task<List<IRemoteSession>> GetRemoteSessionsAsync()
         {
-            return await Task.Run(() => {
+            if (CanonicalName == null) return new List<IRemoteSession>();
+            return await Task.Run(() =>
+            {
                 if (sessionManager == null)
                 {
                     sessionManager = new ADComputerSessions(CanonicalName);
@@ -80,7 +90,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         /// Rename this computer
         /// </summary>
         /// <param name="newName">The new PC name</param>
-        internal bool Rename(string newName)
+        internal new bool Rename(string newName)
         {
             try
             {
@@ -90,7 +100,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
             catch (Exception ex)
             {
-
+                Loggers.ActiveDirectryLogger.Error(ex.Message);
             }
             return false;
 
@@ -144,6 +154,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                             }
                             catch (Exception ex)
                             {
+                                Loggers.ActiveDirectryLogger.Error(ex.Message);
+
                                 //MainWindow.Get.Toast("Error pinging " + destination);
                                 //Debug.WriteLine("Error pinging " + destination);
                             }
@@ -153,6 +165,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     }
                     catch (Exception ex)
                     {
+                        Loggers.ActiveDirectryLogger.Error(ex.Message);
 
                     }
                 }

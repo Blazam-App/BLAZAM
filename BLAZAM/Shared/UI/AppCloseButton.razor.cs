@@ -65,13 +65,13 @@ public partial class AppCloseButton : BaseComponent
     /// <summary>
     /// Gets the string representing the disabled state.
     /// </summary>
-    protected string DisabledString
+    protected string? DisabledString
         => Disabled ? bool.TrueString.ToLowerInvariant() : null;
 
     /// <summary>
     /// Holds the information about the Blazorise global options.
     /// </summary>
-    [Inject] protected BlazoriseOptions Options { get; set; }
+    [Inject] protected new BlazoriseOptions Options { get; set; }
 
     /// <summary>
     /// Flag to indicate that the button is not responsive for user interaction.

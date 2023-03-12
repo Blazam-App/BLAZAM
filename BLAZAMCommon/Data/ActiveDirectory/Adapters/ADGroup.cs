@@ -7,7 +7,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
 
 
-    public class ADGroup : GroupableDirectoryModel, IADGroup
+    public class ADGroup : GroupableDirectoryAdapter, IADGroup
     {
         protected List<GroupMembership> MembersToRemove = new List<GroupMembership>();
         protected List<GroupMembership> MembersToAdd = new List<GroupMembership>();
@@ -139,7 +139,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
 }
         
-        public void UnassignMember(IGroupableDirectoryModel member)
+        public void UnassignMember(IGroupableDirectoryAdapter member)
         {
 
             MembersToRemove.Add(new GroupMembership(this, member));
@@ -149,7 +149,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
 
         }
-        public void AssignMember(IGroupableDirectoryModel member)
+        public void AssignMember(IGroupableDirectoryAdapter member)
         {
 
             MembersToAdd.Add(new GroupMembership(this, member));

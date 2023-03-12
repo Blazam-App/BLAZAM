@@ -3,6 +3,7 @@
 @using BLAZAM.Server.Data.Services.Email;
 @inject IDbContextFactory<DatabaseContext> factory
 @code {
+#nullable disable warnings
     protected DatabaseContext context;
     protected override async Task OnInitializedAsync()
     {

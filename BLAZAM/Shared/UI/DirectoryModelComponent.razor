@@ -65,11 +65,29 @@
 
         }
     }
-    protected List<IADGroup> memberOfGroups;
+    protected List<IADGroup> memberOfGroups = new();
 
     [Parameter]
     public IADOrganizationalUnit OU { get; set; }
 
+    bool _savingChanges = false;
+    /// <summary>
+    /// Indicates whether changes to the model are being saved right now.
+    /// </summary>
+    [Parameter]
+    public bool SavingChanges
+    {
+        get => _savingChanges;
+        set
+        {
+            if (value == _savingChanges) return;
+            _savingChanges = value;
+            SavingChangesChanged.InvokeAsync(value);
+
+        }
+    }
+    [Parameter]
+    public EventCallback<bool> SavingChangesChanged { get; set; }
 
 
 
@@ -81,7 +99,7 @@
     /// <returns></returns>
     protected override async Task OnInitializedAsync()
     {
-        base.OnInitializedAsync();
+        await base.OnInitializedAsync();
         if (_searchTerm == null || _searchTerm == "")
         {
             LoadingData = false;
@@ -149,7 +167,7 @@
     [Parameter]
     public IFluentColumnWithSize FieldColumnSize { get; set; } = ColumnSize.Is6.OnWidescreen.Is4.OnFullHD;
 
-    protected async Task ToggleEditMode()
+    protected void ToggleEditMode()
     {
         EditMode = !EditMode;
     }

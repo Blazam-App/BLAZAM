@@ -132,7 +132,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         }
 
-        public bool IsAMemberOf(IADGroup? group, IGroupableDirectoryModel? userOrGroup, bool v, bool ignoreDisabledUsers = true)
+        public bool IsAMemberOf(IADGroup? group, IGroupableDirectoryAdapter? userOrGroup, bool v, bool ignoreDisabledUsers = true)
         {
 
             string UserSearchFieldsQuery = "(&(memberOf:1.2.840.113556.1.4.1941:=" + group.DN + ")(distinguishedName=" + userOrGroup.DN + "))";

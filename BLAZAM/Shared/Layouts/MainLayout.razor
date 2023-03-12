@@ -10,7 +10,7 @@
 @inject IApplicationUserStateService UserStateService
 @inject IDbContextFactory<DatabaseContext> DbFactory
 @inject ConnMonitor monitor
-<PageTitle>BLAZAM</PageTitle>
+<PageTitle>@DatabaseCache.ApplicationSettings.AppAbbreviation</PageTitle>
 <CascadingValue Value="this">
     <Layout Sider>
         <AuthorizeView Context="authContext">

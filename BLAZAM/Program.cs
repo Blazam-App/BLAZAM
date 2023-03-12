@@ -36,6 +36,7 @@ using Blazorise.RichTextEdit;
 using BLAZAM.Server.Pages.Error;
 using System.Diagnostics;
 using System.Reflection;
+using BLAZAM.Common.Models.Database;
 
 namespace BLAZAM
 {
@@ -97,13 +98,36 @@ namespace BLAZAM
             {
                 using (var context = _programDbFactory?.CreateDbContext())
                 {
-                    if (installationCompleted != true && context!=null)
+                    if (installationCompleted != true && context != null)
                     {
-                        if (!context.Seeded()) installationCompleted = false;
-                        else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                        if (context.IsSeeded())
+                        {
+                            try
+                            {
+                                var appSettings = context.AppSettings.FirstOrDefault();
+                                if (appSettings != null)
+                                    installationCompleted = appSettings.InstallationCompleted;
+                                else
+                                    installationCompleted = false;
+                            }
+                            catch (Exception ex)
+                            {
+                                Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database.", ex);
+                            }
+                            //if (!context.Seeded()) installationCompleted = false;
+                            //else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                        }
+                        else
+                            installationCompleted = false;
+
+
                     }
                     return installationCompleted != false;
                 }
+            }
+            set
+            {
+                installationCompleted = value;
             }
         }
 
@@ -126,7 +150,7 @@ namespace BLAZAM
         /// A static reference for the current asp
         /// net core application instance
         /// </summary>
-        public static WebApplication? AppInstance { get; private set; }
+        public static WebApplication AppInstance { get; private set; }
         /// <summary>
         /// A static reference to the asp net 
         /// core application configuration
@@ -177,7 +201,7 @@ namespace BLAZAM
 
 
             //Setup host logging so it can catch the earliest logs possible
-        
+
             Loggers.SetupLoggers(WritablePath + @"logs\");
             builder.Host.UseSerilog(Log.Logger);
 
@@ -209,8 +233,8 @@ namespace BLAZAM
 
             //Grab the connection string and store it in the context statically
             //This can obviously only be changed on app restart
-            DatabaseContext.ConnectionString = new DatabaseConnectionString(builder.Configuration.GetConnectionString("SQLConnectionString"));
-            Loggers.SystemLogger.Debug("Connection String: " +DatabaseContext.ConnectionString);
+
+
 
 
 
@@ -283,17 +307,31 @@ namespace BLAZAM
             builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = InDebugMode; });
 
             //Inject the database as a service
-            builder.Services.AddDbContextFactory<DatabaseContext>(opt =>
-                opt.UseSqlServer(
-                    builder.Configuration.GetConnectionString("SQLConnectionString"),
-                        sqlServerOptionsAction: sqlOptions =>
-                            {
-                                sqlOptions.EnableRetryOnFailure();
 
-                            }
-                            ).EnableSensitiveDataLogging()
+            DatabaseContext.Configuration = builder.Configuration;
+            var dbType = builder.Configuration.GetValue<string>("DatabaseType");
+            if (dbType != null && Configuration != null)
+            {
+                switch (dbType.ToLower())
+                {
+                    case "sqlite":
+                        DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("SQLiteConnectionString"), DatabaseType.SQLite);
+                        break;
+                    case "sql":
+                        DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("SQLConnectionString"), DatabaseType.SQL);
+                        break;
+                    case "mysql":
+                        DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("MySQLConnectionString"), DatabaseType.MySQL);
+                        break;
 
-                );
+                }
+                Loggers.SystemLogger.Debug("Connection String: " + DatabaseContext.ConnectionString);
+            }
+            builder.Services.AddDbContextFactory<DatabaseContext>();
+
+
+
+
             //Provide an Http client as a service with custom construction via api service class
             builder.Services.AddHttpClient();
             //Also keeping this here for a possible future API, though this would be for internal use
@@ -323,7 +361,7 @@ namespace BLAZAM
             builder.Services.AddScoped<ApplicationManager>();
 
             //Provide a PermissionHandler as a service
-            builder.Services.AddScoped<PermissionHandler>();
+            builder.Services.AddScoped<LoginPermissionApplicator>();
 
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();
@@ -437,13 +475,19 @@ namespace BLAZAM
 
             AppInstance.Start();
             var server = AppInstance.Services.GetService<IServer>();
-            var addressFeature = server.Features.Get<IServerAddressesFeature>();
-            foreach (var address in addressFeature.Addresses)
+            if (server != null)
             {
-                ListeningAddresses.Add(address);
-                Loggers.SystemLogger.Debug("Listening on: " + address);
-            }
+                var addressFeature = server.Features.Get<IServerAddressesFeature>();
+                if (addressFeature != null)
+                {
 
+                    foreach (var address in addressFeature.Addresses)
+                    {
+                        ListeningAddresses.Add(address);
+                        Loggers.SystemLogger.Debug("Listening on: " + address);
+                    }
+                }
+            }
             Task.Delay(5000).ContinueWith(t =>
             {
                 new AutoLauncher(AppInstance.Services.GetService<IHttpClientFactory>());
@@ -481,7 +525,7 @@ namespace BLAZAM
                 Oops.ErrorMessage = "Applicatin Directory Error";
                 Oops.DetailsMessage = "The application does not have write permission to the 'writable' directory.";
             }
-            catch (DirectoryNotFoundException ex)
+            catch (DirectoryNotFoundException )
             {
                 Writable = false;
 
@@ -502,7 +546,7 @@ namespace BLAZAM
                     {
                         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
                         if (context != null)
-                            if (context.Seeded() || force)
+                            if (context.IsSeeded() || force)
                                 if (context.Database.GetPendingMigrations().Count() > 0)
                                     context.Database.Migrate();
 

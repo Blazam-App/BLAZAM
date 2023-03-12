@@ -50,15 +50,15 @@
 
 
 
-    IDirectoryModel copyFrom;
+    IDirectoryEntryAdapter? copyFrom;
 
     public IADGroup CopyFrom { get => (IADGroup)copyFrom; set => copyFrom = value; }
 
-    IDirectoryModel Entry { get; set; }
+    IDirectoryEntryAdapter Entry { get; set; }
 
     async Task AssignToGroup()
     {
-        if (Entry is IGroupableDirectoryModel groupableEntry)
+        if (Entry is IGroupableDirectoryAdapter groupableEntry)
         {
             Group.AssignMember(groupableEntry);
             await NotificationService.Warning(groupableEntry.CanonicalName + " has been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");

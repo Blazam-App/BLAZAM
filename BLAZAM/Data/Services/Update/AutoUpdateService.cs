@@ -53,7 +53,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Loggers.UpdateLogger.Debug("Deleting unknown file: " + file);
+                    Loggers.UpdateLogger.Debug("Deleting unknown file: " + file,ex);
                     file.Delete();
                 }
 

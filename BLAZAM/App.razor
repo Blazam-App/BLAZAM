@@ -21,7 +21,7 @@
                                     Authorizing...
                                 </Authorizing>
                                 <NotAuthorized>
-                                    @if (!context.User.Identity.IsAuthenticated)
+                                    @if (!context.User.Identity?.IsAuthenticated==true)
                                     {
                                 var test2 = test;
                                 <PageTitle>Login</PageTitle>
@@ -81,7 +81,7 @@
                                     Authorizing...
                                 </Authorizing>
                                 <NotAuthorized>
-                                    @if (!context.User.Identity.IsAuthenticated)
+                                    @if (!context.User.Identity?.IsAuthenticated==true)
                                     {
                                         <PageTitle>Login</PageTitle>
                                         <LayoutView Layout="@typeof(LoginLayout)">
@@ -132,7 +132,7 @@
 
 </Blazorise.ThemeProvider>
 @code {
-    ApplicationTheme activeTheme;
+    ApplicationTheme activeTheme = new LightTheme();
     protected override void OnInitialized()
     {
         base.OnInitialized();

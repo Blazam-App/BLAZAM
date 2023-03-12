@@ -24,6 +24,8 @@
                                   @bind-Search=DirectoryTemplate.Category
                                   TItem=string
                                   TValue="string"
+                                  TextField="item=>item"
+                                  ValueField="item=>item"
                                   Data="Context.DirectoryTemplates.Select(t=>t.Category).Distinct()" />
                 </FieldBody>
             </Field>
@@ -198,6 +200,7 @@
 
 
 @code {
+#nullable disable warnings
     bool ouCollapseVisible = true;
     Validations? validations;
     List<ActiveDirectoryField> fields = new();
@@ -263,7 +266,7 @@
     IADOrganizationalUnit SelectedOU;
 
 
-    List<IDirectoryModel> SelectedGroups = new();
+    List<IDirectoryEntryAdapter> SelectedGroups = new();
 
     async Task RefreshGroups()
     {
@@ -280,7 +283,7 @@
     }
     async Task SaveTemplate()
     {
-
+        if (Context == null) throw new ApplicationException("Database not available");
 
         DirectoryTemplate.ParentOU = SelectedOU.DN;
         DirectoryTemplate.AssignedGroupSids.Clear();
@@ -334,6 +337,8 @@
             catch (SqlException ex)
             {
 
+                Loggers.DatabaseLogger.Error("Error attempting to save creation template "+_template.Name);
+                Loggers.DatabaseLogger.Error(ex.Message, ex);
             }
         }
         else

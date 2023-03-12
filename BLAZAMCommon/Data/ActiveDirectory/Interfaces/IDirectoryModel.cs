@@ -6,7 +6,7 @@ using System.DirectoryServices;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 {
-    public interface IDirectoryModel : IDisposable
+    public interface IDirectoryEntryAdapter : IDisposable
     {
         string? SamAccountName { get; set; }
         string? CanonicalName { get; set; }
@@ -21,7 +21,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         bool CanRename { get; }
         bool CanCreate { get; }
         bool CanDelete { get; }
-        DirectoryEntry DirectoryEntry { get; set; }
+        DirectoryEntry? DirectoryEntry { get; set; }
         string? ADSPath { get; set; }
         bool CanEdit { get; }
         string? OU { get; }
@@ -38,8 +38,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         Dictionary<string, object> NewEntryProperties { get; set; }
         IADOrganizationalUnit? LastKnownParent { get; }
         bool IsDeleted { get; }
-        List<AuditChangeLog> Changes { get; }
-        AppEvent<IDirectoryModel> OnDirectoryModelRenamed { get; set; }
+        List<DirectoryModelChange> Changes { get; }
+        AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
 
         DirectoryChangeResult CommitChanges();
         Task<DirectoryChangeResult> CommitChangesAsync();

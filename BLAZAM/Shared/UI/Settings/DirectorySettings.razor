@@ -164,6 +164,7 @@
 </LoadingIndicator>
 @code {
 
+#nullable disable warnings
     ADSettings settings = new ADSettings();
     Validations? Validation;
     bool _insert;
@@ -183,6 +184,7 @@
         }
         else
         {
+            settings.ADSettingsId = 1;
             _insert = true;
         }
         LoadingData = false;

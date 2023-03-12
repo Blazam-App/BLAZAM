@@ -76,7 +76,8 @@
 </Card>
 
 @code {
-   
+
+#nullable disable warnings
     bool collapse1Visible = false;
 
     [Parameter]
@@ -87,7 +88,7 @@
 
 
     [Parameter]
-    public IGroupableDirectoryModel Member { get; set; }
+    public IGroupableDirectoryAdapter Member { get; set; }
 
     [Parameter]
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }

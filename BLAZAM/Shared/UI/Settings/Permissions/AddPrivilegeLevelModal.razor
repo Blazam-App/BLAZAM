@@ -32,7 +32,7 @@
 </Modal>
 @code {
 
-    IDirectoryModel selectedDelegate;
+    IDirectoryEntryAdapter? selectedDelegate;
     [Parameter]
     public EventCallback DelegateAdded { get; set; }
 
@@ -41,28 +41,35 @@
     {
         try
         {
+            if (Context == null) return;
+
             NewPermissionDelegate.DelegateSid = selectedDelegate.SID;
             Context.PermissionDelegate.Add(NewPermissionDelegate);
             await Context.SaveChangesAsync();
             NewPermissionDelegate = new PermissionDelegate();
             await Modal?.Hide();
             await DelegateAdded.InvokeAsync();
-        }catch(DbUpdateException ex)
+        }
+        catch (DbUpdateException ex)
         {
             switch (ex.InnerException?.HResult)
             {
                 case -2146232060:
-                    var confilctingDelegate = Context.PermissionDelegate.Where(pd=>pd.DelegateSid==selectedDelegate.SID).FirstOrDefault();
-                    if(confilctingDelegate.DeletedAt==null)
-                    await NotificationService.Error("That delegate already exists.");
-                    else
-                        await NotificationService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
+                    var confilctingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
+                    if (confilctingDelegate != null)
+                        if (confilctingDelegate.DeletedAt == null)
+                            await NotificationService.Error("That delegate already exists.");
+                        else
+                            await NotificationService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
 
                     break;
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
+
+            Loggers.ActiveDirectryLogger.Error("Error attempting to add delegate " + selectedDelegate.CanonicalName);
+            Loggers.ActiveDirectryLogger.Error(ex.Message, ex);
             await NotificationService.Error("An unexpected error has occured.");
         }
 

@@ -10,20 +10,20 @@ namespace BLAZAM.Server.Data.Services.Update
     }
     internal class ApplicationRelease : IApplicationRelease
     {
-        public string DownloadURL
+        public string? DownloadURL
         {
             get
             {
-                 return ReleaseAsset.BrowserDownloadUrl;
+                 return ReleaseAsset?.BrowserDownloadUrl;
 
             }
         }
 
-        public long ExpectedSize
+        public long? ExpectedSize
         {
             get
             {
-                  return ReleaseAsset.Size;
+                  return ReleaseAsset?.Size;
             }
         }
 
@@ -31,7 +31,7 @@ namespace BLAZAM.Server.Data.Services.Update
         
         public ApplicationVersion Version { get; set; }
         public Release? GitHubRelease { get; internal set; }
-        private ReleaseAsset? ReleaseAsset => GitHubRelease.Assets.FirstOrDefault();
+        private ReleaseAsset? ReleaseAsset => GitHubRelease?.Assets.FirstOrDefault();
 
     }
 }

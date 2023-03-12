@@ -2,16 +2,17 @@
 @inherits AppComponentBase
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
+<AppPageTitle>Recycle Bin</AppPageTitle>
 
-<h3>RecycleBin</h3>
-    <DataGrid TItem="IDirectoryModel"
+<h3>Recycle Bin</h3>
+    <DataGrid TItem="IDirectoryEntryAdapter"
           Data="deletedObjects"
           Responsive
      Virtualize>
         <DataGridCommandColumn />
-        <DataGridColumn Field="@nameof(IDirectoryModel.ObjectType)" Caption="Type"/>
-        <DataGridColumn Field="@nameof(IDirectoryModel.CanonicalName)" Caption="Canonical Name"/>
-        <DataGridColumn Field="@nameof(IDirectoryModel.LastChanged)" Caption="Deleted At" />
+        <DataGridColumn Field="@nameof(IDirectoryEntryAdapter.ObjectType)" Caption="Type"/>
+        <DataGridColumn Field="@nameof(IDirectoryEntryAdapter.CanonicalName)" Caption="Canonical Name"/>
+        <DataGridColumn Field="@nameof(IDirectoryEntryAdapter.LastChanged)" Caption="Deleted At" />
         <DataGridColumn>
             <DisplayTemplate>
             <Button Color="Color.Primary" Clicked="@(()=>{ Directory.RestoreTombstone(context,context.LastKnownParent); })">Restore</Button>
@@ -27,13 +28,13 @@
 
 
 @code {
-    List<IDirectoryModel> deletedObjects = new();
+    List<IDirectoryEntryAdapter> deletedObjects = new();
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         var search = new ADSearch() { SearchRoot = Directory.GetDeleteObjectsEntry() };
         search.SearchDeleted = true;
-        deletedObjects = await search.SearchAsync<DirectoryModel, IDirectoryModel>();
+        deletedObjects = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
 
         await InvokeAsync(StateHasChanged);
     }

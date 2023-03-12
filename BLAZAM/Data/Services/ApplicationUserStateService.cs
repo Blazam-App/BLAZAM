@@ -106,7 +106,7 @@ namespace BLAZAM.Server.Data.Services
             }
         }
 
-        public string CurrentUsername
+        public string? CurrentUsername
         {
             get
             {
@@ -117,9 +117,9 @@ namespace BLAZAM.Server.Data.Services
                     {
                         if (cu.User.FindFirstValue(ClaimTypes.UserData) != null)
                         {
-                            return cu.Impersonator.Identity.Name;
+                            return cu.Impersonator?.Identity?.Name;
                         }
-                        return cu.User.Identity.Name;
+                        return cu.User?.Identity?.Name;
                     }
                 }
                 catch
@@ -143,7 +143,7 @@ namespace BLAZAM.Server.Data.Services
             if (userClaim == null) return null;
 
             //Prepare empty application user state in case we don't find or make one
-            IApplicationUserState existingState;
+            IApplicationUserState? existingState;
 
             //Search existing user stated for matching principals
             existingState = UserStates.Where(s => s.User.FindFirstValue(ClaimTypes.Sid) == userClaim.FindFirstValue(ClaimTypes.Sid)

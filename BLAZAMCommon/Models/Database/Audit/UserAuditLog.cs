@@ -2,9 +2,7 @@
 
 namespace BLAZAM.Common.Models.Database.Audit
 {
-    [Table("UserAuditLog", Schema = "Audit")]
-
-    public class UserAuditLog : CommonAuditLog, ICommonAuditLog
+    public class UserAuditLog : CommonAuditLog
     {
     }
 }

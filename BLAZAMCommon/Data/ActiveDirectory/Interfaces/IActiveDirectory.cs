@@ -10,23 +10,23 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 
     public interface IActiveDirectory
     {
-        IApplicationUserStateService? UserStateService { get; }
+        IApplicationUserStateService UserStateService { get; }
         DatabaseContext? Context { get; }
-        IDbContextFactory<DatabaseContext>? Factory { get; }
+        IDbContextFactory<DatabaseContext> Factory { get; }
         bool Pingable { get; }
         bool PortOpen { get; }
         DirectoryConnectionStatus Status { get; }
         DirectoryEntry? AppRootDirectoryEntry { get; }
-        IADOUSearcher? OUs { get; }
-        IADGroupSearcher? Groups { get; }
-        IADUserSearcher? Users { get; }
+        IADOUSearcher OUs { get; }
+        IADGroupSearcher Groups { get; }
+        IADUserSearcher Users { get; }
         AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
         ADSettings? ConnectionSettings { get; }
         AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
-        IADComputerSearcher? Computers { get; }
+        IADComputerSearcher Computers { get; }
         IEncryptionService Encryption { get; }
-        IDirectoryModel? GetDirectoryModelBySid(string sid);
-        IDirectoryModel? GetDirectoryModelBySid(byte[] sid);
+        IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid);
+        IDirectoryEntryAdapter? GetDirectoryModelBySid(byte[] sid);
 
         /// <summary>
         /// Authenticates a login request's credentials against the configured
@@ -56,6 +56,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         /// <param name="baseDN"></param>
         /// <returns></returns>
         DirectoryEntry GetDirectoryEntry(string? baseDN = null);
-        bool RestoreTombstone(IDirectoryModel model, IADOrganizationalUnit newOU);
+        bool RestoreTombstone(IDirectoryEntryAdapter model, IADOrganizationalUnit newOU);
     }
 }

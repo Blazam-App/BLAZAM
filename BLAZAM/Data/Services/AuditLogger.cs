@@ -13,63 +13,63 @@ namespace BLAZAM.Server.Data.Services
     {
 
         //User Actions
-        public static string User_Searched = "User Searched";
-        public static string User_Enabled = "User Enabled";
-        public static string User_Disabled = "User Disabled";
-        public static string User_Assigned = "User Assigned";
-        public static string User_Unassigned = "User Unassigned";
-        public static string User_Unlocked = "User Unlocked";
-        public static string User_Created = "User Created";
-        public static string User_Deleted = "User Deleted";
-        public static string User_Moved = "User Moved";
-        public static string User_Changed = "User Changed";
+        public const string User_Searched = "User Searched";
+        public const string User_Enabled = "User Enabled";
+        public const string User_Disabled = "User Disabled";
+        public const string User_Assigned = "User Assigned";
+        public const string User_Unassigned = "User Unassigned";
+        public const string User_Unlocked = "User Unlocked";
+        public const string User_Created = "User Created";
+        public const string User_Deleted = "User Deleted";
+        public const string User_Moved = "User Moved";
+        public const string User_Edited = "User Edited";
 
         //Computer Actions
-        public static string Computer_Searched = "Computer Searched";
-        public static string Computer_Enabled = "Computer Enabled";
-        public static string Computer_Disabled = "Computer Disabled";
-        public static string Computer_Assigned = "Computer Assigned";
-        public static string Computer_Unassigned = "Computer Unassigned";
-        public static string Computer_Unlocked = "Computer Unlocked";
-        public static string Computer_Created = "Computer Created";
-        public static string Computer_Deleted = "Computer Deleted";
-        public static string Computer_Moved = "Computer Moved";
-        public static string Computer_Changed = "Computer Changed";
+        public const string Computer_Searched = "Computer Searched";
+        public const string Computer_Enabled = "Computer Enabled";
+        public const string Computer_Disabled = "Computer Disabled";
+        public const string Computer_Assigned = "Computer Assigned";
+        public const string Computer_Unassigned = "Computer Unassigned";
+        public const string Computer_Unlocked = "Computer Unlocked";
+        public const string Computer_Created = "Computer Created";
+        public const string Computer_Deleted = "Computer Deleted";
+        public const string Computer_Moved = "Computer Moved";
+        public const string Computer_Edited = "Computer Edited";
 
 
         //Group Actions
-        public static string Group_Searched = "Group Searched";
-        public static string Group_Assigned = "Group Assigned";
-        public static string Group_Unassigned = "Group Unassigned";
-        public static string Group_Created = "Group Created";
-        public static string Group_Deleted = "Group Deleted";
-        public static string Group_Moved = "Group Moved";
-        public static string Group_Changed = "Group Changed";
+        public const string Group_Searched = "Group Searched";
+        public const string Group_Assigned = "Group Assigned";
+        public const string Group_Unassigned = "Group Unassigned";
+        public const string Group_Created = "Group Created";
+        public const string Group_Deleted = "Group Deleted";
+        public const string Group_Moved = "Group Moved";
+        public const string Group_Edited = "Group Edited";
 
 
         //OU Actions
-        public static string OU_Searched = "OU Searched";
-        public static string OU_Created = "OU Created";
-        public static string OU_Deleted = "OU Deleted";
-        public static string OU_Moved = "OU Moved";
-        public static string OU_Changed = "OU Changed";
+        public const string OU_Searched = "OU Searched";
+        public const string OU_Created = "OU Created";
+        public const string OU_Deleted = "OU Deleted";
+        public const string OU_Moved = "OU Moved";
+        public const string OU_Edited = "OU Edited";
 
         //Settings Actions
-        public static string Settings_Edited = "Settings Edited";
+        public const string Settings_Edited = "Settings Edited";
 
         //Permissions Actions
-        public static string Permission_Group_Added = "Group Added";
-        public static string Permission_Level_Added = "Level Added";
-        public static string Permission_Mapping_Added = "Mapping Added";
-        public static string Permission_Group_Edited = "Group Edited";
-        public static string Permission_Level_Edited = "Level Edited";
-        public static string Permission_Mapping_Edited = "Mapping Edited";
-        public static string Permission_Group_Deleted = "Group Deleted";
-        public static string Permission_Level_Deleted = "Level Deleted";
-        public static string Permission_Mapping_Deleted = "Mapping Deleted";
+        public const string Permission_Group_Added = "Group Added";
+        public const string Permission_Level_Added = "Level Added";
+        public const string Permission_Mapping_Added = "Mapping Added";
+        public const string Permission_Group_Edited = "Group Edited";
+        public const string Permission_Level_Edited = "Level Edited";
+        public const string Permission_Mapping_Edited = "Mapping Edited";
+        public const string Permission_Group_Deleted = "Group Deleted";
+        public const string Permission_Level_Deleted = "Level Deleted";
+        public const string Permission_Mapping_Deleted = "Mapping Deleted";
 
     }
-    public class AuditLogger : IDisposable
+    public class AuditLogger
     {
 
 
@@ -90,15 +90,7 @@ namespace BLAZAM.Server.Data.Services
             Logon = new LogonAudit(factory, userStateService);
         }
 
-        public void Dispose()
-        {
-            System = null;
-            User = null;
-            Group = null;
-            Computer = null;
-            Logon = null;
-            OU = null;
-        }
+       
     }
 
     public class OUAudit : DirectoryAudit
@@ -114,6 +106,7 @@ namespace BLAZAM.Server.Data.Services
                 searchedOU);
 
         public override async Task<bool> Created(IDirectoryModel newOU)
+
         {
             var oldValues = "";
             var newValues = "";
@@ -133,8 +126,29 @@ namespace BLAZAM.Server.Data.Services
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
-        public override async Task<bool> Searched(IDirectoryModel searchedComputer) => await Log<ComputerAuditLog>(c => c.ComputerAuditLog, AuditActions.Computer_Searched, searchedComputer);
+        public async Task<bool> Searched(IADComputer searchedComputer) => await Log(AuditActions.Computer_Searched, searchedComputer);
 
+        private async Task<bool> Log(string action, IADComputer searchedComputer)
+        {
+
+            try
+            {
+                using var context = await Factory.CreateDbContextAsync();
+                context.ComputerAuditLog.Add(new ComputerAuditLog
+                {
+                    Action = action,
+                    Target = searchedComputer.CanonicalName,
+                    Username = UserStateService?.CurrentUsername
+
+                });
+                context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 
     public class GroupAudit : DirectoryAudit
@@ -175,16 +189,14 @@ namespace BLAZAM.Server.Data.Services
 
             try
             {
-                using (var context = await Factory.CreateDbContextAsync())
+                using var context = await Factory.CreateDbContextAsync();
+                context.LogonAuditLog.Add(new LogonAuditLog
                 {
-                    context.LogonAuditLog.Add(new LogonAuditLog
-                    {
-                        Action = action,
-                        Username = CurrentUser.AuditUsername
-                    });
-                    context.SaveChanges();
-                    return true;
-                }
+                    Action = action,
+                    Username = CurrentUser.AuditUsername
+                });
+                context.SaveChanges();
+                return true;
             }
             catch
             {
@@ -325,7 +337,8 @@ namespace BLAZAM.Server.Data.Services
         {
             try
             {
-                using (var context = await Factory.CreateDbContextAsync())
+                using var context = await Factory.CreateDbContextAsync();
+                context.SystemAuditLog.Add(new SystemAuditLog
                 {
                     context.SystemAuditLog.Add(new SystemAuditLog
                     {

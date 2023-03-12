@@ -18,7 +18,7 @@ using System.Reflection.Metadata.Ecma335;
 namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
 
-    public class DirectoryModel : IDirectoryModel
+    public class DirectoryEntryAdapter : IDirectoryEntryAdapter
     {
         /// <summary>
         /// The base uri to reach this directory model's search result page
@@ -34,7 +34,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         public AppEvent? OnModelChanged { get; set; }
 
-        public AppEvent<IDirectoryModel>? OnDirectoryModelRenamed { get; set; }
+        public AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
         public AppEvent? OnModelCommited { get; set; }
         public virtual List<AuditChangeLog> Changes
         {
@@ -43,20 +43,20 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 List<AuditChangeLog> changes = new();
                 foreach (var prop in NewEntryProperties)
                 {
-                    object currentValue = null;
+                    object? currentValue = null;
                     try
                     {
-                        currentValue = DirectoryEntry.Properties[prop.Key].Value;
+                        currentValue = DirectoryEntry?.Properties[prop.Key].Value;
                     }
                     catch
                     {
 
                     }
-                    if ((currentValue == null && prop.Value != null) || !currentValue.Equals(prop.Value))
-                        changes.Add(new AuditChangeLog()
+                    if ((currentValue == null && prop.Value != null) || (currentValue != null && !currentValue.Equals(prop.Value)))
+                        changes.Add(new DirectoryModelChange()
                         {
                             Field = prop.Key,
-                            OldValue = DirectoryEntry.Properties[prop.Key].Value,
+                            OldValue = DirectoryEntry?.Properties[prop.Key].Value,
                             NewValue = prop.Value
                         });
                 }
@@ -65,8 +65,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
         }
         protected List<Func<bool>> CommitActions { get; set; } = new();
-        private DirectoryEntry directoryEntry;
-        public SearchResult searchResult;
+        private DirectoryEntry? directoryEntry;
+        public SearchResult? searchResult;
         protected DatabaseContext Context;
         protected IApplicationUserStateService UserStateService { get; set; }
 
@@ -96,7 +96,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             try
             {
-                var changedDirectoryEntry = DirectoryEntry.Invoke(method, args);
+                var changedDirectoryEntry = DirectoryEntry?.Invoke(method, args);
 
                 return true;
 
@@ -113,30 +113,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             return false;
         }
 
-        public DirectoryEntry DirectoryEntry
+        public DirectoryEntry? DirectoryEntry
         {
             get
             {
-
-                /* if (directoryEntry == null)
-                 {
-                     directoryEntry = searchResult.GetDirectoryEntry();
-                     try
-                     {
-                         if (directoryEntry.SchemaClassName == null)
-                         {
-                             directoryEntry = null;
-                         }
-                     }
-                     catch
-                     {
-                         directoryEntry = null;
-                         return null;
-                     }
-                     directoryEntry.UsePropertyCache = true;
-
-                 }*/
-
                 return directoryEntry;
             }
             set
@@ -149,7 +129,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             get
             {
-                if (Classes.Contains("top"))
+                if (Classes != null && Classes.Contains("top"))
                 {
                     if (Classes.Contains("computer"))
                     {
@@ -188,12 +168,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     case ActiveDirectoryObjectType.OU:
                         return typeof(ADOrganizationalUnit);
                     default:
-                        return typeof(DirectoryModel);
+                        return typeof(DirectoryEntryAdapter);
                 }
             }
         }
 
-        protected SearchResult SearchResult
+        protected SearchResult? SearchResult
         {
             get => searchResult;
             set => searchResult = value;
@@ -222,7 +202,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 if (DirectoryEntry == null)
                     return GetStringProperty("adspath");
                 else
-                    return DirectoryEntry.Path;
+                    return DirectoryEntry?.Path;
             }
             set
             {
@@ -237,9 +217,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             get
             {
                 var cn = GetStringProperty("cn");
-                if (IsDeleted && cn.Contains("DEL:"))
-                    return cn.Substring(0, cn.IndexOf("DEL:")).Replace("\n", "");
-                return cn;
+                if (cn != null)
+                {
+                    if (IsDeleted && cn.Contains("DEL:"))
+                        return cn.Substring(0, cn.IndexOf("DEL:")).Replace("\n", "");
+                    return cn;
+                }
+                return null;
             }
             set
             {
@@ -282,7 +266,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             get
             {
                 var parentDN = GetStringProperty("lastknownparent");
-                return Directory.OUs.FindOuByDN(parentDN);
+                if (parentDN != null)
+                    return Directory.OUs.FindOuByDN(parentDN);
+                return null;
             }
 
         }
@@ -300,8 +286,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             get
             {
                 var timeUTC = GetProperty<DateTime?>("whenChanged");
-
-                return DateTime.Parse(timeUTC.Value.ToString("MM/dd/yyyy HH:mm:ssZ"));
+                if (timeUTC != null)
+                    return DateTime.Parse(timeUTC.Value.ToString("MM/dd/yyyy HH:mm:ssZ"));
+                else
+                    return null;
             }
             set
             {
@@ -334,7 +322,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
                 try
                 {
-                    return SearchResult.Properties["objectclass"].Cast<string>().ToList();
+                    return SearchResult?.Properties["objectclass"].Cast<string>().ToList();
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -343,25 +331,36 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
             set
             {
-                DirectoryEntry.Properties["objectclass"].Value = value;
+                if (DirectoryEntry != null)
+                    DirectoryEntry.Properties["objectclass"].Value = value;
+                else
+                    Loggers.ActiveDirectryLogger.Error("Error setting objectClass for " + DN);
 
             }
         }
 
         public virtual bool MoveTo(IADOrganizationalUnit parentOUToMoveTo)
         {
-            this.DirectoryEntry.MoveTo(parentOUToMoveTo.DirectoryEntry);
+            if (parentOUToMoveTo.DirectoryEntry != null)
+            {
+                DirectoryEntry?.MoveTo(parentOUToMoveTo.DirectoryEntry);
 
-            return true;
+                return true;
+            }
+            return false;
         }
 
         public virtual string? OU { get => DirectoryTools.DnToOu(ADSPath); }
 
         public async Task<IADOrganizationalUnit?> GetParent()
         {
+            if (DirectoryEntry == null || DirectoryEntry.Parent == null) return null;
+
             var parent = new ADOrganizationalUnit();
+
             await parent.Parse(DirectoryEntry.Parent, Directory);
             return parent;
+
 
         }
 
@@ -380,10 +379,21 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
 
                 if (UserStateService.CurrentUserState.IsSuperAdmin) return true;
+                if (DN == null)
+                {
+                    Loggers.ActiveDirectryLogger.Error("The directory object " + ADSPath
+                        + " did not load a distinguished name.");
+                    return false;
+                }
+                var baseSearch = UserStateService.CurrentUserState?.DirectoryUser?.PermissionMappings
+                    .Where(pm => DN.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length);
 
-                var baseSearch = UserStateService.CurrentUserState?.DirectoryUser?.PermissionMappings.Where(pm => this.DN.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length);
-
-
+                if (baseSearch == null)
+                {
+                    Loggers.ActiveDirectryLogger.Error("The active user state for " + DN + " could not" +
+                        "be found in the application cache.");
+                    return false;
+                }
                 var possibleReads = allowSelector.Invoke(baseSearch).ToList();
                 if (denySelector != null)
                 {
@@ -496,25 +506,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level
                )))
                );
-            if (UserStateService.CurrentUserState.IsSuperAdmin) return true;
-            var possibleReads = UserStateService.CurrentUserState.DirectoryUser.PermissionMappings.Where(pm => this.DN.Contains(pm.OU) && pm.AccessLevels.Any(al => al.FieldMap.Any(om => om.Field.FieldName == field.FieldName && om.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level))).OrderByDescending(pm => pm.OU.Length).ToList();
-            var possibleDenys = UserStateService.CurrentUserState.DirectoryUser.PermissionMappings.Where(pm => this.DN.Contains(pm.OU) && pm.AccessLevels.Any(al => al.FieldMap.Any(om => om.Field.FieldName == field.FieldName && om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level))).OrderByDescending(pm => pm.OU.Length).ToList();
-            if (possibleReads != null && possibleReads.Count > 0)
-            {
-                if (possibleDenys != null && possibleDenys.Count > 0)
-                {
-                    foreach (var d in possibleDenys)
-                    {
-                        if (d.OU.Length > possibleReads.OrderByDescending(r => r.OU.Length).First().OU.Length)
-                            return false;
-                    }
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            return false;
 
         }
 
@@ -531,25 +522,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level
                )))
                );
-            if (UserStateService.CurrentUserState.IsSuperAdmin) return true;
-            var possibleReads = UserStateService.CurrentUserState.DirectoryUser.PermissionMappings.Where(pm => this.DN.Contains(pm.OU) && pm.AccessLevels.Any(al => al.FieldMap.Any(om => om.Field.FieldName == field.FieldName && om.FieldAccessLevel.Level > FieldAccessLevels.Read.Level))).OrderByDescending(pm => pm.OU.Length).ToList();
-            var possibleDenys = UserStateService.CurrentUserState.DirectoryUser.PermissionMappings.Where(pm => this.DN.Contains(pm.OU) && pm.AccessLevels.Any(al => al.FieldMap.Any(om => om.Field.FieldName == field.FieldName && om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level))).OrderByDescending(pm => pm.OU.Length).ToList();
-            if (possibleReads != null && possibleReads.Count > 0)
-            {
-                if (possibleDenys != null && possibleDenys.Count > 0)
-                {
-                    foreach (var d in possibleDenys)
-                    {
-                        if (d.OU.Length > possibleReads.OrderByDescending(r => r.OU.Length).First().OU.Length)
-                            return false;
-                    }
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            return false;
+
 
         }
 
@@ -582,7 +555,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         private void DirectoryEntry_Disposed(object? sender, EventArgs e)
         {
-            var test = 1;
+            //Not utilized
         }
 
         public virtual async Task Parse(SearchResult result, IActiveDirectory directory) => await Parse(null, result, directory);
@@ -601,30 +574,17 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
                 if (!NewEntry)
                 {
-
-                    /*
-                    var propEnum = DirectoryEntry.Properties.GetEnumerator();
-                    while (propEnum.MoveNext())
+                    if (DirectoryEntry == null)
                     {
-                        try
-                        {
-                            var value = propEnum.Value;
-                            if (value is string val && val == "")
-                            {
-                                DirectoryEntry.Properties[propEnum.Key.ToString()].Clear();
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-
-                        }
+                        Loggers.ActiveDirectryLogger.Error("The directory entry for a new " +
+                            " entry is somehow missing on commit.");
+                        throw new ApplicationException("DirectoryEntry is null");
                     }
-                    */
                     foreach (var p in NewEntryProperties)
                     {
                         if (p.Value == null || (p.Value is string strValue && strValue.IsNullOrEmpty())) continue;
-                        if (!DirectoryEntry.Properties.Contains(p.Key) || !DirectoryEntry.Properties[p.Key].Value.Equals(p.Value))
-                                DirectoryEntry.Properties[p.Key].Value = p.Value;
+                        if (!DirectoryEntry.Properties.Contains(p.Key) || DirectoryEntry.Properties[p.Key].Value?.Equals(p.Value) != true)
+                            DirectoryEntry.Properties[p.Key].Value = p.Value;
                     }
                     foreach (PropertyValueCollection property in DirectoryEntry.Properties)
                     {
@@ -639,13 +599,23 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 }
                 else
                 {
+                    if (DirectoryEntry == null)
+                    {
+                        Loggers.ActiveDirectryLogger.Error("The directory entry for " + DN +
+                            " is somehow missing on commit.");
+                        throw new ApplicationException("DirectoryEntry is null");
+                    }
                     foreach (var p in NewEntryProperties)
                     {
                         if (p.Value == null || (p.Value is string strValue && strValue.IsNullOrEmpty())) continue;
                         DirectoryEntry.Properties[p.Key].Value = p.Value;
                     }
                 }
+
+
                 DirectoryEntry.CommitChanges();
+
+
                 foreach (var action in CommitActions)
                 {
                     if (!action.Invoke())
@@ -653,6 +623,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                         throw new ApplicationException("Error processing Commit Actions");
                     }
                 }
+
+
                 HasUnsavedChanges = false;
                 OnModelCommited?.Invoke();
                 return new DirectoryChangeResult();
@@ -676,7 +648,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     case ActiveDirectoryObjectType.OU:
                     case ActiveDirectoryObjectType.Group:
                     case ActiveDirectoryObjectType.Computer:
-                        DirectoryEntry.Parent.Children.Remove(DirectoryEntry);
+                        DirectoryEntry?.Parent.Children.Remove(DirectoryEntry);
                         break;
                     default:
                         throw new ApplicationException("Deleting objects other than users is not supported yet.");
@@ -687,7 +659,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
             catch (UnauthorizedAccessException ex)
             {
-
+                throw new ApplicationException("The application directory user does not " +
+                    "have permission to delete entries",ex);
             }
         }
         public virtual void DiscardChanges()
@@ -696,16 +669,16 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             HasUnsavedChanges = false;
             NewEntryProperties = new();
             if (SearchResult != null)
-                DirectoryEntry = SearchResult.GetDirectoryEntry();
+                DirectoryEntry = SearchResult?.GetDirectoryEntry();
             else
-                DirectoryEntry.RefreshCache();
+                DirectoryEntry?.RefreshCache();
 
             OnModelChanged?.Invoke();
 
         }
 
 
-        protected virtual T GetProperty<T>(string propertyName)
+        protected virtual T? GetProperty<T>(string propertyName)
         {
             try
             {
@@ -745,18 +718,18 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
             if (DirectoryEntry == null)
             {
-                if (SearchResult.Properties.Contains(propertyName))
-                    return (T)SearchResult.Properties[propertyName][0];
+                if (SearchResult != null && SearchResult.Properties.Contains(propertyName))
+                    return (T?)SearchResult?.Properties[propertyName][0];
                 else
                 {
-                    DirectoryEntry = SearchResult.GetDirectoryEntry();
+                    DirectoryEntry = SearchResult?.GetDirectoryEntry();
 
                 }
             }
             try
             {
-                if (NewEntryProperties.ContainsKey(propertyName.ToLower()))
-                    return (T)NewEntryProperties[propertyName.ToLower()];
+                if (NewEntryProperties.ContainsKey(propertyName))
+                    return (T)NewEntryProperties[propertyName];
             }
             catch (InvalidCastException ex)
             {
@@ -770,12 +743,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
             try
             {
-                return (T)DirectoryEntry.Properties[propertyName]?.Value;
+                return (T?)DirectoryEntry?.Properties[propertyName].Value;
             }
             catch (ArgumentException)
             {
-                var temp = DirectoryEntry.Properties[propertyName];
-                var temp2 = (T)temp.Value;
+                var temp = DirectoryEntry?.Properties[propertyName];
+                var temp2 = (T?)temp?.Value;
                 return temp2;
             }
             catch (InvalidCastException ex)
@@ -809,20 +782,25 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             try
             {
                 List<string> values = new List<string>();
-                object[] rawValue;
+                object[]? rawValue = null;
                 try
                 {
                     rawValue = GetValue<object[]>(propertyName);
                 }
                 catch (InvalidCastException)
                 {
-                    rawValue = new object[] { GetValue<string>(propertyName) };
+                    //Asked for string list but may have found just a single string
+                    string? str = GetValue<string>(propertyName);
+                    if (str != null)
+                        rawValue = new object[] { str };
                 }
                 if (rawValue != null)
                 {
                     foreach (object o in rawValue)
                     {
-                        values.Add(o.ToString());
+                        string? str = o?.ToString();
+                        if (str != null)
+                            values.Add(str);
                     }
                 }
                 return values;
@@ -846,10 +824,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
                 if (!NewEntry)
                 {
-                    var oldValue = DirectoryEntry.Properties[propertyName].Value;
+                    var oldValue = DirectoryEntry?.Properties[propertyName]?.Value;
                     if (value == null || (value is string strValue && strValue == ""))
                     {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
                         NewEntryProperties[propertyName] = null;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
                     }
                     else
                     {
@@ -859,7 +839,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 }
                 else
                 {
+#pragma warning disable CS8601 // Possible null reference assignment.
                     NewEntryProperties[propertyName] = value;
+#pragma warning restore CS8601 // Possible null reference assignment.
                 }
                 HasUnsavedChanges = true;
                 OnModelChanged?.Invoke();
@@ -872,7 +854,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         }
         public virtual bool Rename(string newName)
         {
-            DirectoryEntry.Rename("cn=" + newName);
+            DirectoryEntry?.Rename("cn=" + newName);
             OnDirectoryModelRenamed?.Invoke(this);
             return true;
         }
@@ -880,9 +862,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             try
             {
-                var before = DirectoryEntry.Properties[propertyName].Value;
-                DirectoryEntry.Properties[propertyName].Remove(value);
-                var after = DirectoryEntry.Properties[propertyName].Value;
+                var before = DirectoryEntry?.Properties[propertyName].Value;
+                DirectoryEntry?.Properties[propertyName].Remove(value);
+                var after = DirectoryEntry?.Properties[propertyName].Value;
 
                 HasUnsavedChanges = true;
 
@@ -897,7 +879,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             try
             {
-                DirectoryEntry.Properties[propertyName].Add(value);
+                DirectoryEntry?.Properties[propertyName].Add(value);
                 HasUnsavedChanges = true;
 
             }
@@ -915,14 +897,18 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         public override bool Equals(object? obj)
         {
-            return obj is DirectoryModel model &&
+            return obj is DirectoryEntryAdapter model &&
                    DN == model.DN;
         }
-        /*
+
         public override int GetHashCode()
         {
-            return DN?.GetHashCode();
+            if (DN != null)
+                return DN.GetHashCode();
+            else
+                return -1;
         }
-        */
+
+
     }
 }

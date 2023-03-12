@@ -1,11 +1,6 @@
-@inject IDbContextFactory<DatabaseContext> dbFactory
+
 @inherits ValidatedForm
-@{
-    bool tracked = Context.Entry(WorkingModel).State != EntityState.Detached;
-    bool collapseVisible = false;
 
-
-}
 
 <Validations Mode=ValidationMode.Auto Model="WorkingModel" StatusChanged="OnValidation">
     <Row>
@@ -86,7 +81,7 @@
 
                     </FieldBody>
                 </Field>
-                @if (objectMap.ObjectAccessLevelId != null && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.ObjectAccessLevelId)
+                @if (objectMap.ObjectAccessLevelId != 0 && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.ObjectAccessLevelId)
                 {
 
                     <h4>@name Actions</h4>
@@ -112,7 +107,7 @@
                     {
                         foreach (var actionMap in WorkingModel.ActionMap.ToList())
                         {
-                            string aname = Enum.GetName(typeof(ActiveDirectoryObjectType), actionMap.ObjectType);
+                            string? aname = Enum.GetName(typeof(ActiveDirectoryObjectType), actionMap.ObjectType);
 
                             <Field Horizontal>
                             <FieldLabel ColumnSize="ColumnSize.Is6">@SettingsLocalization[actionMap.ObjectAction.Name+" "+aname]</FieldLabel>
@@ -220,21 +215,19 @@
 
     public AccessLevel WorkingModel { get; set; } = new AccessLevel();
 
-    IEnumerable<ActiveDirectoryField> fields;
-    IEnumerable<ActionAccessFlag> actions;
+    IEnumerable<ActiveDirectoryField> fields = new List<ActiveDirectoryField>();
+    IEnumerable<ActionAccessFlag> actions = new List<ActionAccessFlag>();
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Context = dbFactory.CreateDbContext();
+        Context = DbFactory.CreateDbContext();
 
         fields = Context.ActiveDirectoryFields.AsEnumerable();
         actions = Context.ObjectActionFlag.AsEnumerable();
         if (Model.AccessLevelId > 0)
         {
-            bool tracked = Context.Entry(Model).State != EntityState.Detached;
             WorkingModel = Context.AccessLevels.Where(l => l.AccessLevelId == Model.AccessLevelId).FirstOrDefault();
 
-            tracked = Context.Entry(Model).State != EntityState.Detached;
 
         }
         else
@@ -246,6 +239,8 @@
 
     private void CreateAccessLevel()
     {
+        if (Context == null) return;
+
         bool addition = false;
         if (WorkingModel.AccessLevelId == 0)
         {

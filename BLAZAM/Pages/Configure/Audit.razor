@@ -7,7 +7,24 @@
 
 
 
+@inherits AppComponentBase
+
+
+<AppPageTitle>Audit</AppPageTitle>
 <h3>Audit</h3>
+<DataGrid TItem="CommonAuditLog"
+          Data="@auditEntries.OrderByDescending(ae=>ae.Timestamp)"
+          Responsive
+          Filterable
+          Virtualize>
+    <DataGridCommandColumn />
+    <DataGridColumn Field="@nameof(CommonAuditLog.Timestamp)" Caption="Timestamp" />
+    <DataGridColumn Field="@nameof(CommonAuditLog.Username)" Caption="Username" />
+    <DataGridColumn Field="@nameof(CommonAuditLog.IpAddress)" Caption="IP" />
+    <DataGridColumn Field="@nameof(CommonAuditLog.Action)" Caption="Action" />
+    <DataGridColumn Field="@nameof(CommonAuditLog.Target)" Caption="Target" />
+    <DataGridColumn Field="@nameof(CommonAuditLog.BeforeAction)" Caption="Before" />
+    <DataGridColumn Field="@nameof(CommonAuditLog.AfterAction)" Caption="After" />
 
 
 <SetSubHeader>

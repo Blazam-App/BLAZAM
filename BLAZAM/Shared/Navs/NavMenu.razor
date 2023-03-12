@@ -33,14 +33,14 @@
                 </BarLink>
             </BarItem>
             @{
-                string userRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchUsers;
-                string groupRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchGroups;
-                string computerRole = UserRoles.SuperAdmin + ", " + UserRoles.Computers;
-                string ouRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchOUs;
+               //string userRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchUsers;
+                //string groupRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchGroups;
+                //string computerRole = UserRoles.SuperAdmin + ", " + UserRoles.Computers;
+                //string ouRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchOUs;
                 string createRole = UserRoles.SuperAdmin + ", " + UserRoles.CreateUsers + ", " + UserRoles.CreateGroups + ", " + UserRoles.CreateOUs;
-                string createUser = UserRoles.SuperAdmin + ", " + UserRoles.CreateUsers;
-                string createGroup = UserRoles.SuperAdmin + ", " + UserRoles.CreateGroups;
-                string createOU = UserRoles.SuperAdmin + ", " + UserRoles.CreateOUs;
+                //string createUser = UserRoles.SuperAdmin + ", " + UserRoles.CreateUsers;
+                //string createGroup = UserRoles.SuperAdmin + ", " + UserRoles.CreateGroups;
+                //string createOU = UserRoles.SuperAdmin + ", " + UserRoles.CreateOUs;
             }
 
             <BarItem Disabled="@(Monitor.DirectoryConnected != ConnectionState.Up)">
@@ -159,11 +159,17 @@
 
 
     }
-    async Task SetUserTheme(ApplicationTheme theme)
+    void SetUserTheme(ApplicationTheme theme)
     {
-        UserStateService.CurrentUserState.UserSettings.Theme = theme.Name;
-        UserStateService.CurrentUserState.SaveUserSettings();
-        Refresh();
+        try
+        {
+            UserStateService.CurrentUserState.UserSettings.Theme = theme.Name;
+            UserStateService.CurrentUserState.SaveUserSettings();
+            Refresh();
+        }catch(Exception ex)
+        {
+            NotificationService.Error(ex.Message);
+        }
     }
 
     private void ToggleNavMenu()

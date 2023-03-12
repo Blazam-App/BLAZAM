@@ -125,7 +125,7 @@ namespace BLAZAM.Server.Shared.UI
             Context?.Dispose();
         }
 
-        public async Task CopyToClipboard(string text)
+        public async Task CopyToClipboard(string? text)
         {
             await JS.InvokeVoidAsync("navigator.clipboard.writeText", text);
             await NotificationService.Info("\"" + text + "\" copied to clipboard.");

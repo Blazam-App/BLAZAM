@@ -1,4 +1,5 @@
 @inherits DirectoryModelComponent
+<AppPageTitle>Confirm User Creation</AppPageTitle>
 
 
 
@@ -358,7 +359,7 @@
             User.CommitChanges();
             await NotificationService.Success("User has been created");
             await Confirmed.InvokeAsync(User);
-            Nav.NavigateTo("/users/search/" + User.SamAccountName);
+             Nav.NavigateTo("/search/" + User.SamAccountName);
         }catch(ApplicationException ex)
         {
             await MessageService.Error(ex.Message);

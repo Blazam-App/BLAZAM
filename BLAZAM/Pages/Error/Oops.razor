@@ -8,13 +8,14 @@
     <DevTools />
 }
 
+<AppPageTitle>Oops</AppPageTitle>
 <h3>@Loc["Oops"]</h3>
 <h6>@ErrorMessage</h6>
 <p>@Loc["Please report to"] yourself</p>
 @code {
 
-    public static string ErrorMessage {get;set;}
-    public static string DetailsMessage {get;set;}
-    public static string HelpMessage {get;set;}
+    public static string? ErrorMessage {get;set;}
+    public static string? DetailsMessage {get;set;}
+    public static string? HelpMessage {get;set;}
 
 }

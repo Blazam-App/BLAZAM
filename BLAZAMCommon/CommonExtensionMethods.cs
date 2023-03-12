@@ -18,6 +18,11 @@ using System.Collections;
 using System;
 using System.Text;
 using BLAZAM.Common.Data.ActiveDirectory.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.TeamFoundation.Work.WebApi;
+using Newtonsoft.Json.Linq;
+using System.DirectoryServices.ActiveDirectory;
+using System.IO.Compression;
 
 namespace BLAZAM
 {
@@ -29,6 +34,47 @@ namespace BLAZAM
             foreach (var c in changes)
             {
                 string? value = "";
+        /// <summary>
+        /// Adds all files in a directory recursively to the zip archive
+        /// </summary>
+        /// <param name="archive"></param>
+        /// <param name="directory"></param>
+        /// <param name="basePath">The root path from where files are
+        /// being added.
+        /// </param>
+        /// <returns></returns>
+        public static void AddToZip(this ZipArchive archive, SystemDirectory directory, string basePath)
+        {
+            // Loop through all files in the current directory
+            foreach (var file in directory.Files)
+            {
+                try
+                {
+                    using FileStream fs = file.OpenReadStream();
+                    // Create an entry for each file with its relative path
+                    ZipArchiveEntry entry = archive.CreateEntry(directory.Path.Replace(basePath, "") + "/" + file.Name + file.Extension);
+
+                    // Copy the file contents to the entry stream
+
+
+                    using (Stream es = entry.Open())
+                    {
+                        fs.CopyTo(es);
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+
+            // Loop through all subdirectories in the current directory
+            foreach (var sdi in directory.SubDirectories)
+            {
+                // Recursively add files and subdirectories with their relative paths
+                AddToZip(archive, sdi, basePath);
+            }
+        }
 
                 if (valueSelector.Invoke(c) is IEnumerable<object> enumerable)
                 {
@@ -93,6 +139,58 @@ namespace BLAZAM
 
             // Return the list of changes
             return changes;
+        // A method that returns the number of different bits between two byte arrays
+        public static int BitDifference(this byte[] a, byte[] b)
+        {
+            // Check that the arrays have the same length
+            if (a.Length != b.Length) throw new ArgumentException("Arrays must have the same length");
+
+            // Initialize a counter for different bits
+            int diff = 0;
+
+            // Loop through each byte in the arrays
+            for (int i = 0; i < a.Length; i++)
+            {
+                // XOR the bytes and count the number of 1s in the result
+                diff += BitCount((byte)(a[i] ^ b[i]));
+            }
+
+            // Return the total number of different bits
+            return diff;
+        }
+
+        // A method that returns the number of 1s in a byte using Brian Kernighan's algorithm
+        public static int BitCount(this byte n)
+        {
+            // Initialize a counter for 1s
+            int count = 0;
+
+            // Loop until n becomes zero
+            while (n > 0)
+            {
+                // Clear the least significant bit set to 1 and increment the counter
+                n &= (byte)(n - 1);
+                count++;
+            }
+
+            // Return the number of 1s in n
+            return count;
+        }
+
+        public static byte[] ToByteArray(this int number, int? length = null)
+        {
+            byte[] byteArray = BitConverter.GetBytes(number);
+
+            // Check endianness and reverse byte array if necessary
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(byteArray);
+            }
+            if (length != null)
+                // Pad the byte array to the desired length with zeroes
+                Array.Resize(ref byteArray, (int)length);
+
+            return byteArray;
         }
 
 
@@ -112,11 +210,11 @@ namespace BLAZAM
             IntPtr bstrPtr = Marshal.SecureStringToBSTR(secureString);
             try
             {
-                var plainText =  Marshal.PtrToStringBSTR(bstrPtr);
+                var plainText = Marshal.PtrToStringBSTR(bstrPtr);
                 if (plainText == null)
-                    plainText= String.Empty;
+                    plainText = String.Empty;
                 return plainText;
-               
+
             }
             finally
             {
@@ -176,7 +274,7 @@ namespace BLAZAM
 
         public static string ToSidString(this byte[] sid)
         {
-            if (null == sid) return null;
+            if (null == sid) return "";
             // Create a SecurityIdentifier object from the input byte array
             var securityIdentifier = new SecurityIdentifier(sid, 0);
 
@@ -190,7 +288,7 @@ namespace BLAZAM
         {
             using (var image = Image.Load(rawImage))
             {
-                if(image.Height>image.Width)
+                if (image.Height > image.Width)
                     image.Mutate(x => x.Resize(0, maxDimension));
                 else
                     image.Mutate(x => x.Resize(maxDimension, 0));
@@ -202,7 +300,7 @@ namespace BLAZAM
                 }
             }
         }
-    
+
 
         #region ADSI Extension Methods
 
@@ -217,7 +315,7 @@ namespace BLAZAM
             [DispId(2)] int HighPart { get; set; }
             [DispId(3)] int LowPart { get; set; }
         }
-        public class ADsLargeInteger:IADsLargeInteger
+        public class ADsLargeInteger : IADsLargeInteger
         {
             public int HighPart { get; set; }
             public int LowPart { get; set; }
@@ -227,9 +325,9 @@ namespace BLAZAM
             if (value == null) return null;
             try
             {
-               
-                long ? fileTime = value?.ToFileTimeUtc();
-                if(fileTime == null) return null;
+
+                long? fileTime = value?.ToFileTimeUtc();
+                if (fileTime == null) return null;
                 object fto = 0;
                 IADsLargeInteger largeInt = new ADsLargeInteger();
                 largeInt.HighPart = (int)(fileTime >> 32);
@@ -246,9 +344,10 @@ namespace BLAZAM
             //read file time 133213804065419619
             try
             {
-              
-                IADsLargeInteger v = value as IADsLargeInteger;
-         
+                if(value==null) return DateTime.MinValue;
+
+                IADsLargeInteger? v = value as IADsLargeInteger;
+
                 if (null == v) return DateTime.MinValue;
 
                 long dV = ((long)v.HighPart << 32) + (long)v.LowPart;

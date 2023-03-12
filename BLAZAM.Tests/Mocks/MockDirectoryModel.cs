@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Tests.Mocks
 {
-    internal class MockDirectoryModel : IDirectoryModel
+    internal class MockDirectoryModel : IDirectoryEntryAdapter
     {
         public string? SamAccountName
         {
@@ -59,7 +59,7 @@ namespace BLAZAM.Tests.Mocks
 
         public List<AuditChangeLog> Changes => throw new NotImplementedException();
 
-        public AppEvent<IDirectoryModel> OnDirectoryModelRenamed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public AppEvent<IDirectoryEntryAdapter> OnDirectoryModelRenamed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public bool CanEditField(ActiveDirectoryField field)
         {

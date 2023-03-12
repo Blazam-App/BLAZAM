@@ -6,7 +6,6 @@ namespace BLAZAM.Common.Data.Database
     public class DatabaseCache : IDisposable
     {
         private static bool _started;
-        private static Timer t;
 
         private static IDbContextFactory<DatabaseContext> dbContextFactory;
         private static ILogger _logger;
@@ -79,23 +78,21 @@ namespace BLAZAM.Common.Data.Database
 
             //Console.WriteLine("Updating "+typeof(T).Name);
 
-            using (var _context = await dbContextFactory.CreateDbContextAsync())
+            using var _context = await dbContextFactory.CreateDbContextAsync();
+            try
             {
-                try
-                {
-                    var temp = await value.Invoke(_context).FirstOrDefaultAsync();
-                    //Console.WriteLine("Finished " + typeof(T).Name);
-
-                    return temp;
-                }
-                catch (Exception)
-                {
-
-                }
+                var temp = await value.Invoke(_context).FirstOrDefaultAsync();
                 //Console.WriteLine("Finished " + typeof(T).Name);
 
-                return originalProperty;
+                return temp;
             }
+            catch (Exception)
+            {
+
+            }
+            //Console.WriteLine("Finished " + typeof(T).Name);
+
+            return originalProperty;
 
         }
 
