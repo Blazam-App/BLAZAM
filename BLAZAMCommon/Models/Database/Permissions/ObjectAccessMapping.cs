@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Common.Models.Database.Permissions
 {

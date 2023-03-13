@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Net;
+﻿using System.Net;
 
 namespace BLAZAM.Common.Models.Database.Audit
 {

@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Common.Models.Database;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.NetworkInformation;
 using System.Net;
 using System.Management;

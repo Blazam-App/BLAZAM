@@ -15,6 +15,8 @@ namespace BLAZAM.Server.Shared.UI.Themes
         protected ThemeTextColorOptions _textColorOptions { get; set; }
         protected ThemeBarOptions _barOptions { get; set; }
 
+        protected string _textWhite="#ffffff";
+        protected string _textSecondary;
         protected string _textLight;
         protected string _textDark;
         protected string _light;
@@ -82,9 +84,10 @@ namespace BLAZAM.Server.Shared.UI.Themes
 
             _textColorOptions = new ThemeTextColorOptions()
             {
+                 White=_textWhite,
                 Primary = _primary,
-                Secondary = _secondary,
                 Success = _success,
+                Secondary = _textSecondary==null? _secondary :_textSecondary,
                 Info = _info,
                 Warning = _warning,
                 Danger = _danger,
@@ -94,7 +97,6 @@ namespace BLAZAM.Server.Shared.UI.Themes
                 Muted = _muted,
 
             };
-            
             _barOptions = new ThemeBarOptions()
             {
                 DarkColors = new()

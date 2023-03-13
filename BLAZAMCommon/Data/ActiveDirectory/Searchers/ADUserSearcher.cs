@@ -11,7 +11,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         }
 
         public async Task<List<IADUser>> FindUsersByStringAsync(string searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
-        {
+        { 
             return await Task.Run(() =>
             {
                 return FindUsersByString(searchTerm, ignoreDisabledUsers,exactMatch);
@@ -52,6 +52,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         public List<IADUser>? FindLockedOutUsers(bool? ignoreDisabledUsers = true)
         {
+            return new ADSearch()
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.User,
+                EnabledOnly = ignoreDisabledUsers,
+                LockoutTime = 1
+
+            }.Search<ADUser, IADUser>();
 
             string UserSearchFieldsQuery = "(lockoutTime>=1)";
 
@@ -70,13 +77,26 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         public List<IADUser>? FindNewUsers(bool? ignoreDisabledUsers = true)
         {
+            
+            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
+
+            var tstamp = threeMonthsAgo.ToString("yyyyMMddHHmmss.fZ");
+            return new ADSearch()
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.User,
+                EnabledOnly = ignoreDisabledUsers,
+                Created = tstamp
+
+            }.Search<ADUser, IADUser>().OrderByDescending(u => u.Created).ToList();
+           /*
+           
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
          
             var tstamp = threeMonthsAgo.ToString("yyyyMMddHHmmss.fZ");
             string UserSearchFieldsQuery = "(whenCreated>="+tstamp+")";
 
             return new List<IADUser>(ConvertTo<ADUser>(SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User, 1000, ignoreDisabledUsers)).OrderByDescending(u => u.Created));
-
+            */
         }
 
         public async Task<List<IADUser>> FindChangedPasswordUsersAsync(bool? ignoreDisabledUsers = true)

@@ -364,9 +364,6 @@ namespace BLAZAM.Common.Migrations
                     b.Property<bool>("ForceHTTPS")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int?>("HttpsPort")
-                        .HasColumnType("int");
-
                     b.Property<bool>("InstallationCompleted")
                         .HasColumnType("tinyint(1)");
 
@@ -641,16 +638,16 @@ namespace BLAZAM.Common.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("AfterAction")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("BeforeAction")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("IpAddress")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Target")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime(6)");

@@ -10,33 +10,37 @@ namespace BLAZAM.Common.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "HttpsPort",
+                table: "AppSettings");
+
             migrationBuilder.AddColumn<string>(
                 name: "AfterAction",
-                schema: "Audit",
                 table: "SystemAuditLog",
-                type: "nvarchar(max)",
-                nullable: true);
+                type: "longtext",
+                nullable: true)
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddColumn<string>(
                 name: "BeforeAction",
-                schema: "Audit",
                 table: "SystemAuditLog",
-                type: "nvarchar(max)",
-                nullable: true);
+                type: "longtext",
+                nullable: true)
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddColumn<string>(
                 name: "IpAddress",
-                schema: "Audit",
                 table: "SystemAuditLog",
-                type: "nvarchar(max)",
-                nullable: true);
+                type: "longtext",
+                nullable: true)
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddColumn<string>(
                 name: "Target",
-                schema: "Audit",
                 table: "SystemAuditLog",
-                type: "nvarchar(max)",
-                nullable: true);
+                type: "longtext",
+                nullable: true)
+                .Annotation("MySql:CharSet", "utf8mb4");
         }
 
         /// <inheritdoc />
@@ -44,23 +48,25 @@ namespace BLAZAM.Common.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "AfterAction",
-                schema: "Audit",
                 table: "SystemAuditLog");
 
             migrationBuilder.DropColumn(
                 name: "BeforeAction",
-                schema: "Audit",
                 table: "SystemAuditLog");
 
             migrationBuilder.DropColumn(
                 name: "IpAddress",
-                schema: "Audit",
                 table: "SystemAuditLog");
 
             migrationBuilder.DropColumn(
                 name: "Target",
-                schema: "Audit",
                 table: "SystemAuditLog");
+
+            migrationBuilder.AddColumn<int>(
+                name: "HttpsPort",
+                table: "AppSettings",
+                type: "int",
+                nullable: true);
         }
     }
 }
