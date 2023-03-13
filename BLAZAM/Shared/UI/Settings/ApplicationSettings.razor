@@ -1,8 +1,5 @@
-﻿@using BLAZAM.Server.Pages;
-@using Microsoft.EntityFrameworkCore;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
-@inherits ValidatedForm
+﻿
+@inherits SettingsComponents
 
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
@@ -118,10 +115,11 @@
                 </LoadingIndicator>
 
                 @code {
-    AppSettings settings = new AppSettings();
+        AppSettings settings = new AppSettings();
 
     protected override async Task OnInitializedAsync()
     {
+        originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
 
         settings = await Context.AppSettings.FirstOrDefaultAsync();
         LoadingData = false;
@@ -132,7 +130,6 @@
 
     private async void LoadIcon(FileUploadEventArgs e)
     {
-        //TODO Try and capture the moment the file upload starts
         using (var stream = e.File.OpenReadStream(5000000))
         {
             using (var memoryStream = new MemoryStream())
@@ -149,6 +146,7 @@
 
     protected override void Save()
     {
+        AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
         base.Save();
     }
 

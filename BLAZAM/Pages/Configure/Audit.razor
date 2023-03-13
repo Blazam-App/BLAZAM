@@ -1,32 +1,78 @@
 ﻿@page "/audit"
-@attribute [Authorize(Roles = UserRoles.SuperAdmin)]
+@page "/audit/{selectedTab}"
 
-@inherits AppComponentBase
+@attribute [Authorize(Roles = UserRoles.SuperAdmin)]
+@inherits TabbedAppComponentBase
+
+
+
+
 
 
 <AppPageTitle>Audit</AppPageTitle>
 <h3>Audit</h3>
-<DataGrid TItem="CommonAuditLog"
-          Data="@auditEntries.OrderByDescending(ae=>ae.Timestamp)"
-          Responsive
-          Filterable
-          Virtualize>
-    <DataGridCommandColumn />
-    <DataGridColumn Field="@nameof(CommonAuditLog.Timestamp)" Caption="Timestamp" />
-    <DataGridColumn Field="@nameof(CommonAuditLog.Username)" Caption="Username" />
-    <DataGridColumn Field="@nameof(CommonAuditLog.IpAddress)" Caption="IP" />
-    <DataGridColumn Field="@nameof(CommonAuditLog.Action)" Caption="Action" />
-    <DataGridColumn Field="@nameof(CommonAuditLog.Target)" Caption="Target" />
-    <DataGridColumn Field="@nameof(CommonAuditLog.BeforeAction)" Caption="Before" />
-    <DataGridColumn Field="@nameof(CommonAuditLog.AfterAction)" Caption="After" />
 
-</DataGrid>
+
+<SetSubHeader>
+    <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
+        <Items>
+            <Tab Name="user">@SettingsLocalization["User"]</Tab>
+            <Tab Name="system">@SettingsLocalization["System"]</Tab>
+
+        </Items>
+    </Tabs>
+</SetSubHeader>
+<Tabs SelectedTab="@selectedTab">
+
+    <Content>
+        <TabPanel Name="user">
+            <DataGrid TItem="CommonAuditLog"
+                      Data="@auditEntries.OrderByDescending(ae=>ae.Timestamp)"
+                        Responsive
+                        Virtualize>
+                <DataGridCommandColumn />
+                <DataGridColumn Field="@nameof(CommonAuditLog.Timestamp)" Caption="Timestamp" Filterable />
+                <DataGridColumn Field="@nameof(CommonAuditLog.Username)" Caption="Username" Filterable />
+                <DataGridColumn Field="@nameof(CommonAuditLog.IpAddress)" Caption="IP" Filterable />
+                <DataGridColumn Field="@nameof(CommonAuditLog.Action)" Caption="Action" Filterable />
+                <DataGridColumn Field="@nameof(CommonAuditLog.Target)" Caption="Target" Filterable />
+                <DataGridColumn Field="@nameof(CommonAuditLog.BeforeAction)" Caption="Before" Filterable />
+                <DataGridColumn Field="@nameof(CommonAuditLog.AfterAction)" Caption="After" Filterable />
+
+            </DataGrid>
+        </TabPanel>
+        <TabPanel Name="system">
+            <DataGrid TItem="SystemAuditLog"
+                      Data="@systemAuditEntries.OrderByDescending(ae=>ae.Timestamp)"
+                        Responsive
+                        Virtualize>
+                <DataGridCommandColumn />
+                <DataGridColumn Field="@nameof(SystemAuditLog.Timestamp)" Caption="Timestamp" Filterable />
+                <DataGridColumn Field="@nameof(SystemAuditLog.Username)" Caption="Username" Filterable />
+                <DataGridColumn Field="@nameof(SystemAuditLog.IpAddress)" Caption="IP" Filterable />
+                <DataGridColumn Field="@nameof(SystemAuditLog.Action)" Caption="Action" Filterable />
+                <DataGridColumn Field="@nameof(SystemAuditLog.Target)" Caption="Target" Filterable />
+                <DataGridColumn Field="@nameof(SystemAuditLog.BeforeAction)" Caption="Before" Filterable />
+                <DataGridColumn Field="@nameof(SystemAuditLog.AfterAction)" Caption="After" Filterable />
+
+            </DataGrid>
+        </TabPanel>
+       
+
+    </Content>
+</Tabs>
+
+
 @code {
     List<CommonAuditLog> auditEntries = new();
+    List<SystemAuditLog> systemAuditEntries = new();
 
     protected override async Task OnInitializedAsync()
     {
+        if (selectedTab == null) selectedTab = "user";
+
         await base.OnInitializedAsync();
+        BaseUri = "/audit";
         using (var context = await DbFactory.CreateDbContextAsync())
         {
             auditEntries = await context.LogonAuditLog.ToListAsync<CommonAuditLog>();
@@ -34,6 +80,8 @@
             auditEntries.AddRange(context.GroupAuditLog.ToList<CommonAuditLog>());
             auditEntries.AddRange(context.OUAuditLog.ToList<CommonAuditLog>());
             auditEntries.AddRange(context.ComputerAuditLog.ToList<CommonAuditLog>());
+
+            systemAuditEntries = await context.SystemAuditLog.ToListAsync();
         }
     }
 }

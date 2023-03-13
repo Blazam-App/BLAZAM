@@ -20,13 +20,8 @@
         get => _group; set
         {
             if (_group == value) return;
-
             _group = value;
 
-            if (_group != null)
-
-                if (!_group.NewEntry)
-                    AuditLogger.Group.Searched(_group);
         }
     }
 

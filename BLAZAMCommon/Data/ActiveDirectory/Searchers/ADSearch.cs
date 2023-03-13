@@ -23,7 +23,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
     public class ADSearch
     {
         private string? samAccountName;
-        private string? lockoutTime;
+        private long? lockoutTime;
         private string? sid;
         private string? created;
         private string? changed;
@@ -44,7 +44,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         public string? SamAccountName { get => samAccountName; set { samAccountName = value; GeneralSearchTerm = null; } }
 
-        public string? LockoutTime { get => lockoutTime; set { lockoutTime = value; GeneralSearchTerm = null; } }
+        /// <summary>
+        /// The ADS long value to search for locked out users from"
+        /// </summary>
+        /// <remarks>
+        /// To find all locked out entries, use 1
+        /// </remarks>
+        public long? LockoutTime { get => lockoutTime; set { lockoutTime = value; GeneralSearchTerm = null; } }
 
         public string? SID { get => sid; set { sid = value; GeneralSearchTerm = null; } }
 
@@ -211,10 +217,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                     if (!CN.IsNullOrEmpty())
                         FilterQuery += $"(cn=*{CN}*)";
                     if (!Changed.IsNullOrEmpty())
-                        FilterQuery += $"(whenChanged>=\"{Changed}\")";
+                        FilterQuery += $"(whenChanged>={Changed})";
+                    if (!Created.IsNullOrEmpty())
+                        FilterQuery += $"(whenCreated>={Created})";
                     if (!SamAccountName.IsNullOrEmpty())
                         FilterQuery += $"(samaccountname=*{SamAccountName}*)";
-                    if (!LockoutTime.IsNullOrEmpty())
+                    if (LockoutTime!=null)
                         FilterQuery += $"(lockoutTime>={LockoutTime})";
                     if (!DN.IsNullOrEmpty())
                         FilterQuery += $"(distinguishedName={DN})";

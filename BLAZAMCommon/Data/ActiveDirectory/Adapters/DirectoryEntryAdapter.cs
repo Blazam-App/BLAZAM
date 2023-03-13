@@ -36,11 +36,11 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         public AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
         public AppEvent? OnModelCommited { get; set; }
-        public List<DirectoryModelChange> Changes
+        public virtual List<AuditChangeLog> Changes
         {
             get
             {
-                List<DirectoryModelChange> changes = new();
+                List<AuditChangeLog> changes = new();
                 foreach (var prop in NewEntryProperties)
                 {
                     object? currentValue = null;
@@ -53,7 +53,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
                     }
                     if ((currentValue == null && prop.Value != null) || (currentValue != null && !currentValue.Equals(prop.Value)))
-                        changes.Add(new DirectoryModelChange()
+                        changes.Add(new AuditChangeLog()
                         {
                             Field = prop.Key,
                             OldValue = DirectoryEntry?.Properties[prop.Key].Value,
@@ -835,7 +835,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     {
                         NewEntryProperties[propertyName] = value;
                     }
-                    //Changes.Add(new DirectoryModelChange { Field = propertyName, OldValue = oldValue, NewValue = value });
+                    //Changes.Add(new AuditChangeLog { Field = propertyName, OldValue = oldValue, NewValue = value });
                 }
                 else
                 {

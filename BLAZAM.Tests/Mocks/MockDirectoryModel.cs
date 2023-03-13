@@ -57,7 +57,7 @@ namespace BLAZAM.Tests.Mocks
 
         public bool IsDeleted => throw new NotImplementedException();
 
-        public List<DirectoryModelChange> Changes => throw new NotImplementedException();
+        public List<AuditChangeLog> Changes => throw new NotImplementedException();
 
         public AppEvent<IDirectoryEntryAdapter> OnDirectoryModelRenamed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

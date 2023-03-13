@@ -1,5 +1,5 @@
-﻿
-@inherits ValidatedForm
+@inherits SettingsComponents
+
 
 
 
@@ -99,6 +99,8 @@
         await InvokeAsync(StateHasChanged);
 
 
+        originalSettings = await Context.AuthenticationSettings.AsNoTracking().FirstOrDefaultAsync();
+
         settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
         _timeoutString = settings.SessionTimeout.ToString() + " Minutes";
         adminPasswordInDb = settings?.AdminPassword;
@@ -123,6 +125,7 @@
             adminPasswordInDb = settings.AdminPassword;
 
         }
+        AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
         base.Save();
         await InvokeAsync(StateHasChanged);
 

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Common.Models.Database
 {

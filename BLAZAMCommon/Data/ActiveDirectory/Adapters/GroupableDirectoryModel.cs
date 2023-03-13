@@ -16,8 +16,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         DateTime ADS_NULL_TIME = DateTime.ParseExact("12/31/1600 7:00:00 PM", "MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
 
-        protected List<GroupMembership> ToAssign = new List<GroupMembership>();
-        protected List<GroupMembership> ToUnassign = new List<GroupMembership>();
+        protected List<GroupMembership> ToAssignTo = new List<GroupMembership>();
+        protected List<GroupMembership> ToUnassignFrom = new List<GroupMembership>();
        
 
         public virtual bool CanAssign
@@ -63,6 +63,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
 
         private List<IADGroup> _memberOf;
+        /// <summary>
+        /// Returns the groups this entry is a member of.
+        /// </summary>
+        /// <remarks>
+        /// It also adds the pending groups to be added, and the groups to be removed from.
+        /// </remarks>
         public virtual List<IADGroup> MemberOf
         {
             get
@@ -74,8 +80,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 }
                 var temp = new List<IADGroup>(_memberOf);
                 
-                temp.AddRange(ToAssign.Select(gm=>gm.Group).ToList());
-                ToUnassign.ForEach(g => temp.Remove(g.Group));
+                temp.AddRange(ToAssignTo.Select(gm=>gm.Group).ToList());
+                ToUnassignFrom.ForEach(g => temp.Remove(g.Group));
                 return temp;
             }
            
@@ -265,16 +271,35 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
         }
 
+        public override List<AuditChangeLog> Changes
+        {
+            get
+            {
+                List<AuditChangeLog> changes = base.Changes;
+                if(ToAssignTo.Count>0 || ToUnassignFrom.Count > 0)
+                {
+                    changes.Add(new AuditChangeLog()
+                    {
+                        Field = "memberOf",
+                        OldValue = _memberOf.Select(m => m.CanonicalName).ToList(),
+                        NewValue = MemberOf.Select(m => m.CanonicalName).ToList()
+                    });
+                }
+             
+                return changes;
+
+            }
+        }
 
         public override DirectoryChangeResult CommitChanges()
         {
             DirectoryChangeResult  dcr = new DirectoryChangeResult();
-            ToAssign.ForEach(g => {
+            ToAssignTo.ForEach(g => {
                 g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
                 dcr.AssignedGroups.Add(g.Group);
 
             });
-            ToUnassign.ForEach(g => {
+            ToUnassignFrom.ForEach(g => {
                 g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
                 dcr.UnassignedGroups.Add(g.Group);
             });
@@ -286,8 +311,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         public override void DiscardChanges()
         {
             base.DiscardChanges();
-            ToAssign = new();
-            ToUnassign = new();
+            ToAssignTo = new();
+            ToUnassignFrom = new();
         }
 
 
@@ -295,7 +320,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         public void AssignTo(IADGroup group)
         {
 
-            ToAssign.Add(new GroupMembership(group, this));
+            ToAssignTo.Add(new GroupMembership(group, this));
             HasUnsavedChanges = true;
 
             return;
@@ -306,7 +331,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         public void UnassignFrom(IADGroup group)
         {
 
-            ToUnassign.Add(new GroupMembership(group, this));
+            ToUnassignFrom.Add(new GroupMembership(group, this));
             HasUnsavedChanges = true;
             return;
 
