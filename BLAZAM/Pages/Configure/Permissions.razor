@@ -21,7 +21,7 @@
 
         <Content>
             <TabPanel Name="delegates" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-                @if (Monitor.DirectoryConnected == ConnectionState.Up)
+                @if (Monitor.DirectoryConnected == ServiceConnectionState.Up)
                 {
                     <BLAZAM.Server.Shared.UI.Settings.Permissions.DelegateEditor />
                 }
@@ -31,7 +31,7 @@
 
             </TabPanel>
             <TabPanel Name="mappings" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-                @if (Monitor.DirectoryConnected == ConnectionState.Up)
+                @if (Monitor.DirectoryConnected == ServiceConnectionState.Up)
                 {
                     <BLAZAM.Server.Shared.UI.Settings.Permissions.ImpersonateUser />
                     <BLAZAM.Server.Shared.UI.Settings.Permissions.PrivilegeMapper />

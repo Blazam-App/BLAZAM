@@ -16,9 +16,9 @@
                         Conn Monitor
                     </CardHeader>
                     <CardBody>
-                        <Row>Database Status: @Enum.GetName(typeof(ConnectionState),Monitor.DatabaseConnected)</Row>
-                        <Row>ActiveDirectory Status: @Enum.GetName(typeof(ConnectionState),Monitor.DirectoryConnected)</Row>
-                        <Row>App Ready Status: @Enum.GetName(typeof(ConnectionState),Monitor.AppReady)</Row>
+                        <Row>Database Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DatabaseConnected)</Row>
+                        <Row>ActiveDirectory Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DirectoryConnected)</Row>
+                        <Row>App Ready Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.AppReady)</Row>
                         <Row>Error Message: @Oops.ErrorMessage</Row>
                     </CardBody>
                 </Card>

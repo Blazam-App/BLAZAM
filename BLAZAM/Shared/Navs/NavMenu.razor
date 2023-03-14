@@ -43,7 +43,7 @@
                 //string createOU = UserRoles.SuperAdmin + ", " + UserRoles.CreateOUs;
             }
 
-            <BarItem Disabled="@(Monitor.DirectoryConnected != ConnectionState.Up)">
+            <BarItem Disabled="@(Monitor.DirectoryConnected != ServiceConnectionState.Up)">
                 <AuthorizeView Context="createContext" Roles=@createRole>
                     <BarDropdown>
                         <BarDropdownToggle>

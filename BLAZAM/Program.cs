@@ -531,7 +531,7 @@ namespace BLAZAM
                     using (var scope = AppInstance.Services.CreateScope())
                     {
                         var context = scope.ServiceProvider.GetRequiredService<AppDatabaseFactory>().CreateDbContext();
-                        if (context != null)
+                        if (context != null && context.Status == DatabaseContext.DatabaseStatus.OK)
                             if (context.IsSeeded() || force)
                                 if (context.Database.GetPendingMigrations().Count() > 0)
                                     context.Database.Migrate();

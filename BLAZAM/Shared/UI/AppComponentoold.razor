@@ -48,7 +48,7 @@
         {
             Loggers.DatabaseLogger.Error("Failed to connect to database", ex);
         }
-        Monitor.OnDirectoryConnectionChanged += (ConnectionState status) => { InvokeAsync(StateHasChanged); };
+        Monitor.OnDirectoryConnectionChanged += ((state)=>{InvokeAsync(StateHasChanged); });
 
         base.OnInitialized();
     }

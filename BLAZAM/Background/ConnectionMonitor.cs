@@ -1,12 +1,14 @@
 ﻿
 
+using BLAZAM.Common.Data;
+
 namespace BLAZAM.Server.Background
 {
-    public enum ConnectionState { Down,Up,Connecting};
+    
 
     public class ConnectionMonitor : IConnectionMonitor
     {
-        public virtual ConnectionState Connected
+        public virtual ServiceConnectionState Status
         {
             get => _connected; set
             {
@@ -21,12 +23,12 @@ namespace BLAZAM.Server.Background
         /// The time between ticks of the Monitor Timer in milliseconds.
         /// </summary>
         protected virtual int Interval { get; set; } = 20000;
-        public AppEvent<ConnectionState>? OnConnectedChanged { get; set; }
+        public AppEvent<ServiceConnectionState>? OnConnectedChanged { get; set; }
 
         protected bool _monitoring;
 
         protected Timer? _timer;
-        private ConnectionState _connected = ConnectionState.Connecting;
+        private ServiceConnectionState _connected = ServiceConnectionState.Connecting;
 
 
         /// <summary>
@@ -38,7 +40,7 @@ namespace BLAZAM.Server.Background
         {
             if (_monitoring == false)
             {
-                Connected = ConnectionState.Connecting;
+                Status = ServiceConnectionState.Connecting;
                 _monitoring = true;
                 Task.Run(() => {
                     while (_monitoring)

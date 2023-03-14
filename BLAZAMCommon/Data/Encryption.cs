@@ -47,11 +47,13 @@ namespace BLAZAM.Common.Data
         /// <exception cref="ApplicationException">Thows an exception when no keySeedString is provided.</exception>
         public Encryption(string? keySeedString, int keySize = 256)
         {
-            if (keySeedString==null || keySeedString == "") throw new ApplicationException("An ecryption seedsting must be provided");
+            Instance = this;
+
+            //if (keySeedString==null || keySeedString == "") throw new ApplicationException("An ecryption seedsting must be provided");
+            if (keySeedString == null || keySeedString == "") return;
             KeySeedString = keySeedString;
             KeySize = keySize;
             GenerateKeyFromSeedString();
-            Instance = this;
         }
 
         /// <summary>
