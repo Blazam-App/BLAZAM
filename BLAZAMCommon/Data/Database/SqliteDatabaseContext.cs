@@ -10,6 +10,10 @@ namespace BLAZAM.Common.Data.Database
 {
     public class SqliteDatabaseContext:DatabaseContext
     {
+        public SqliteDatabaseContext()
+        {
+        }
+
         public SqliteDatabaseContext(DatabaseConnectionString databaseConnectionString) : base(databaseConnectionString)
         {
         }

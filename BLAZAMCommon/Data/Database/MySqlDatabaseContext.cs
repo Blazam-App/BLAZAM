@@ -10,6 +10,10 @@ namespace BLAZAM.Common.Data.Database
 {
     public class MySqlDatabaseContext:DatabaseContext
     {
+        public MySqlDatabaseContext()
+        {
+        }
+
         public MySqlDatabaseContext(DatabaseConnectionString databaseConnectionString):base(databaseConnectionString)
         {
         }
