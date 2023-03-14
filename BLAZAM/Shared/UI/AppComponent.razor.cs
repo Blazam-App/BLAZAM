@@ -70,9 +70,9 @@ namespace BLAZAM.Server.Shared.UI
         protected INotificationService NotificationService { get; set; }
 
         protected bool LoadingData { get; set; } = true;
-        protected DatabaseContext? Context;
+        protected IDatabaseContext? Context;
         [Inject]
-        protected IDbContextFactory<DatabaseContext> DbFactory { get; set; }
+        protected AppDatabaseFactory DbFactory { get; set; }
 
 
 

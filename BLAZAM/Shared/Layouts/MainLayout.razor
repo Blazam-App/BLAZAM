@@ -8,7 +8,7 @@
 @inject NavigationManager Nav
 @inject IActiveDirectory directory
 @inject IApplicationUserStateService UserStateService
-@inject IDbContextFactory<DatabaseContext> DbFactory
+@inject AppDatabaseFactory DbFactory
 @inject ConnMonitor monitor
 <PageTitle>@DatabaseCache.ApplicationSettings.AppAbbreviation</PageTitle>
 <CascadingValue Value="this">

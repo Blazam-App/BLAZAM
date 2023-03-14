@@ -13,8 +13,8 @@ namespace BLAZAM.Server.Pages
 
         [BindProperty(SupportsGet = true)]
         public string Data { get; set; }
-        public DatabaseContext Context { get; private set; }
-        public StaticModel(IDbContextFactory<DatabaseContext> factory)
+        public  IDatabaseContext Context { get; private set; }
+        public StaticModel(AppDatabaseFactory factory)
         {
             Context = factory.CreateDbContext();
 

@@ -9,7 +9,7 @@ namespace BLAZAM.Common.Data.Services
     public interface IApplicationUserState
     {
         string AuditUsername { get; }
-        IDbContextFactory<DatabaseContext> DbFactory { get; set; }
+        AppDatabaseFactory DbFactory { get; set; }
         IADUser? DirectoryUser { get; set; }
         ClaimsPrincipal? Impersonator { get; set; }
         bool IsSuperAdmin { get; }

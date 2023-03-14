@@ -125,7 +125,7 @@ namespace BLAZAM.Server.Data.Services
             }
         }
 
-        public IDbContextFactory<DatabaseContext> DbFactory { get; set; }
+        public AppDatabaseFactory DbFactory { get; set; }
 
 
         public override int GetHashCode()

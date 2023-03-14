@@ -8,10 +8,10 @@ namespace BLAZAM.Server.Background
 {
     public class DirectoryMonitor : ConnectionMonitor
     {
-        private IDbContextFactory<DatabaseContext> _factory;
+        private AppDatabaseFactory _factory;
         private IActiveDirectory _directry;
 
-        public DirectoryMonitor(IDbContextFactory<DatabaseContext> DbFactory, IActiveDirectory directry)
+        public DirectoryMonitor(AppDatabaseFactory DbFactory, IActiveDirectory directry)
         {
             _factory = DbFactory;
 

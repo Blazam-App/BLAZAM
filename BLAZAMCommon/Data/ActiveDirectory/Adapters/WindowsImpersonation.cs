@@ -46,7 +46,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         //This parameter causes LogonUser to create a primary token. 
         const int LOGON32_LOGON_INTERACTIVE = 2;
 
-        public IDbContextFactory<DatabaseContext> Factory { get; }
+        public AppDatabaseFactory Factory { get; }
 
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern bool LogonUser(String lpszUsername, String lpszDomain, String lpszPassword,

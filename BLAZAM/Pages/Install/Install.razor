@@ -113,10 +113,9 @@
         selectedStep = "1";
         if (Context != null)
         {
-            var result = Context.Status;
-            if (result != DatabaseContext.DatabaseStatus.ServerUnreachable)
+            if (Context.Status != DatabaseContext.DatabaseStatus.ServerUnreachable)
             {
-                if (result == DatabaseContext.DatabaseStatus.OK)
+                if (Context.Status == DatabaseContext.DatabaseStatus.OK)
                 {
                     if (!Context.Database.GetPendingMigrations().Any())
                     {

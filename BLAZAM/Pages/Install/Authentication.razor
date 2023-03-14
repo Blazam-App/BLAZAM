@@ -71,7 +71,7 @@
     public string adminPassword = "";
     public async void SubmitForm()
     {
-        DatabaseContext context = DbFactory.CreateDbContext();
+        IDatabaseContext context = DbFactory.CreateDbContext();
         try
         {
             context.AuthenticationSettings.FirstOrDefault().AdminPassword = adminPassword;
