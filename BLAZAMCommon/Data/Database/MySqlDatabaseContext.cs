@@ -25,6 +25,10 @@ namespace BLAZAM.Common.Data.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            if (ConnectionString == null)
+            {
+                return;
+            }
             optionsBuilder.UseMySql(ConnectionString?.Value,
                            serverVersion: new MySqlServerVersion(new Version(8, 0, 32)),
                           mySqlOptionsAction: options =>

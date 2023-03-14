@@ -66,6 +66,10 @@ namespace BLAZAM.Common.Data.Database
             IncompleteConfiguration
         }
 
+        public DatabaseContext()
+        {
+        }
+
         public DatabaseContext(DatabaseConnectionString databaseConnectionString) : base()
         {
             ConnectionString = databaseConnectionString;
