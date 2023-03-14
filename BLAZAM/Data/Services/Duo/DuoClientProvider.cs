@@ -10,13 +10,13 @@ namespace BLAZAM.Server.Data.Services.Duo
     }
     internal class DuoClientProvider : IDuoClientProvider
     {
-        public IDbContextFactory<DatabaseContext> DbFactory { get; private set; }
+        public AppDatabaseFactory DbFactory { get; private set; }
         private string ClientId { get; set; }
         private string ClientSecret { get; set; }
         private string ApiHost { get; set; }
         private string RedirectUri { get; set; }
 
-        public DuoClientProvider(IDbContextFactory<DatabaseContext> factory)
+        public DuoClientProvider(AppDatabaseFactory factory)
         {
             DbFactory = factory;
            

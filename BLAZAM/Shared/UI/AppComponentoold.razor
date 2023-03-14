@@ -36,8 +36,8 @@
     [Inject] protected INotificationService NotificationService { get; set; }
 
     protected bool LoadingData { get; set; } = true;
-    protected DatabaseContext? Context;
-    [Inject] protected IDbContextFactory<DatabaseContext>? DbFactory { get; set; }
+    protected IDatabaseContext? Context;
+    [Inject] protected AppDatabaseFactory? DbFactory { get; set; }
     protected override void OnInitialized()
     {
         try

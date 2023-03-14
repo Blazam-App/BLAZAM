@@ -69,7 +69,7 @@
     [Parameter]
     public PermissionDelegate Level { get; set; }
     [Parameter]
-    public new DatabaseContext Context { get; set; }
+    public new IDatabaseContext Context { get; set; }
 
 
     protected override async Task OnInitializedAsync()

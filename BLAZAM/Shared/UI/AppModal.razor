@@ -15,7 +15,7 @@
     [Inject]
     protected INotificationService NotificationService{ get; set; }
     [Parameter]
-    public DatabaseContext? Context { get; set; }
+    public IDatabaseContext? Context { get; set; }
 
     [Parameter]
     public string? Title{ get; set; }

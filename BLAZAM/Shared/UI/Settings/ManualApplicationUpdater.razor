@@ -60,6 +60,8 @@
                         {
                             <h4>
                                 Downgrade Available (Debug Mode)
+                                <Icon Display="Display.InlineBlock" Name="IconName.QuestionCircle" Clicked=@(()=>{CopyToClipboard(LatestAvailableVersion.UpdateCommand);}) />
+
                             </h4>
                         }
                         else
@@ -70,15 +72,17 @@
                         }
                         <Paragraph>Current Version: @Program.Version</Paragraph>
 
-                        <Button Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(LatestAvailableVersion.UpdateCommand);})>Copy Command</Button>
 
 
 
                         <Paragraph>Available Version: @LatestAvailableVersion.Version</Paragraph>
                         <Paragraph>Update Branch: @LatestAvailableVersion.Branch</Paragraph>
                         <Button Color=Color.Success Clicked="ApplyUpdate">Apply Update</Button>
-                        <Button Clicked=TestAutoUpdate Color="Color.Success">Test Auto Update</Button>
-                        <Button Clicked=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Danger">Cancel Auto Update</Button>
+                        <Button Disabled=@(AutoUpdateService.IsUpdatedScheduled) Clicked=TestAutoUpdate Color="Color.Success">Test Auto Update</Button>
+                        @if (AutoUpdateService.IsUpdatedScheduled)
+                        {
+                            <Button Clicked=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Danger">Cancel Auto Update</Button>
+                        }
                     }
                     else
                     {
@@ -120,10 +124,11 @@ else
     {
         LoadingData = true;
         await InvokeAsync(StateHasChanged);
-        try{
+        try
+        {
             LatestAvailableVersion = await UpdateService.GetLatestUpdate();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             NotificationService.Error(ex.Message);
         }

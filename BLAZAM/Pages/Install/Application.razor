@@ -2,7 +2,7 @@
 @using Microsoft.EntityFrameworkCore
 @layout InstallLayout
 @inject NavigationManager NavManager
-@inject IDbContextFactory<DatabaseContext> DbFactory
+@inject AppDatabaseFactory DbFactory
 @{
  
 }
@@ -24,7 +24,7 @@
 
     string appName;
     string appFQDN;
-    DatabaseContext context;
+     IDatabaseContext context;
     private async void Submit()
     {
         context = DbFactory.CreateDbContext();

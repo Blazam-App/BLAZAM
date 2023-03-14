@@ -17,7 +17,7 @@ namespace BLAZAM.Server.Data.Services.Update
         public AppEvent OnAutoUpdateFailed { get; set; }
 
         private readonly EmailService email;
-        private readonly IDbContextFactory<DatabaseContext> factory;
+        private readonly AppDatabaseFactory factory;
         private UpdateService updateService;
         private Timer? updateCheckTimer;
         private Timer? autoUpdateApplyTimer = null;
@@ -27,7 +27,7 @@ namespace BLAZAM.Server.Data.Services.Update
         public ApplicationUpdate? ScheduledUpdate { get; set; }
         //private AuditLogger Audit;
 
-        public AutoUpdateService(IDbContextFactory<DatabaseContext> factory, UpdateService updateService, EmailService emailService)
+        public AutoUpdateService(AppDatabaseFactory factory, UpdateService updateService, EmailService emailService)
         {
             this.email = emailService;
             this.factory = factory;

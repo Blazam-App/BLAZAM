@@ -11,8 +11,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
     public interface IActiveDirectory
     {
         IApplicationUserStateService UserStateService { get; }
-        DatabaseContext? Context { get; }
-        IDbContextFactory<DatabaseContext> Factory { get; }
+        IDatabaseContext? Context { get; }
+        AppDatabaseFactory Factory { get; }
         bool Pingable { get; }
         bool PortOpen { get; }
         DirectoryConnectionStatus Status { get; }

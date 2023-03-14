@@ -80,7 +80,7 @@ namespace BLAZAM.Server.Data.Services
         public OUAudit OU;
         public LogonAudit Logon;
 
-        public AuditLogger(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService)
+        public AuditLogger(AppDatabaseFactory factory, IApplicationUserStateService userStateService)
         {
             System = new SystemAudit(factory);
             User = new UserAudit(factory, userStateService);
@@ -95,7 +95,7 @@ namespace BLAZAM.Server.Data.Services
 
     public class OUAudit : DirectoryAudit
     {
-        public OUAudit(IDbContextFactory<DatabaseContext> factory,
+        public OUAudit(AppDatabaseFactory factory,
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
@@ -122,7 +122,7 @@ namespace BLAZAM.Server.Data.Services
 
     public class ComputerAudit : DirectoryAudit
     {
-        public ComputerAudit(IDbContextFactory<DatabaseContext> factory,
+        public ComputerAudit(AppDatabaseFactory factory,
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
@@ -153,7 +153,7 @@ namespace BLAZAM.Server.Data.Services
 
     public class GroupAudit : DirectoryAudit
     {
-        public GroupAudit(IDbContextFactory<DatabaseContext> factory,
+        public GroupAudit(AppDatabaseFactory factory,
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
@@ -172,7 +172,7 @@ namespace BLAZAM.Server.Data.Services
     }
     public class LogonAudit : CommonAudit
     {
-        public LogonAudit(IDbContextFactory<DatabaseContext> factory,
+        public LogonAudit(AppDatabaseFactory factory,
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
@@ -207,7 +207,7 @@ namespace BLAZAM.Server.Data.Services
 
     public class UserAudit : DirectoryAudit
     {
-        public UserAudit(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public UserAudit(AppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
 
@@ -238,7 +238,7 @@ namespace BLAZAM.Server.Data.Services
     {
         protected IApplicationUserStateService UserStateService { get; private set; }
         protected IApplicationUserState? CurrentUser { get; set; }
-        public CommonAudit(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService) : base(factory)
+        public CommonAudit(AppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory)
         {
             UserStateService = userStateService;
             CurrentUser = UserStateService.CurrentUserState;
@@ -247,7 +247,7 @@ namespace BLAZAM.Server.Data.Services
     }
     public class DirectoryAudit : CommonAudit
     {
-        public DirectoryAudit(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public DirectoryAudit(AppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
 
@@ -276,7 +276,7 @@ namespace BLAZAM.Server.Data.Services
         /// <param name="afterAction"></param>
         /// <returns></returns>
         protected virtual async Task<bool> Log<T>(
-            Func<DatabaseContext,
+            Func<IDatabaseContext,
             DbSet<T>> auditTable,
             string action,
             IDirectoryEntryAdapter relatedEntry,
@@ -311,7 +311,7 @@ namespace BLAZAM.Server.Data.Services
     public class SystemAudit : BaseAudit
     {
 
-        public SystemAudit(IDbContextFactory<DatabaseContext> factory) : base(factory)
+        public SystemAudit(AppDatabaseFactory factory) : base(factory)
         {
         }
         public async Task<bool> LogMessage(string message)
@@ -361,9 +361,9 @@ namespace BLAZAM.Server.Data.Services
 
     public class BaseAudit
     {
-        protected IDbContextFactory<DatabaseContext> Factory { get; set; }
+        protected AppDatabaseFactory Factory { get; set; }
 
-        public BaseAudit(IDbContextFactory<DatabaseContext> factory)
+        public BaseAudit(AppDatabaseFactory factory)
         {
             Factory = factory;
         }

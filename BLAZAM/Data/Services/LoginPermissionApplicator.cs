@@ -8,10 +8,10 @@ namespace BLAZAM.Server.Data.Services
 {
     public class LoginPermissionApplicator
     {
-        protected IDbContextFactory<DatabaseContext> Factory { get; set; }
+        protected AppDatabaseFactory Factory { get; set; }
         protected IActiveDirectory Directory { get; set; }
 
-        public LoginPermissionApplicator(IDbContextFactory<DatabaseContext> factory, IActiveDirectory directory)
+        public LoginPermissionApplicator(AppDatabaseFactory factory, IActiveDirectory directory)
         {
             Factory = factory;
             Directory = directory;

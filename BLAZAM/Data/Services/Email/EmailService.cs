@@ -27,10 +27,10 @@ namespace BLAZAM.Server.Data.Services.Email
     public class EmailService
     {
         public static EmailService? Instance { get; set; }
-        private IDbContextFactory<DatabaseContext> Factory { get; set; }
+        private AppDatabaseFactory Factory { get; set; }
 
 
-        public EmailService(IDbContextFactory<DatabaseContext> factory)
+        public EmailService(AppDatabaseFactory factory)
         {
             Instance = this;
             Factory = factory;

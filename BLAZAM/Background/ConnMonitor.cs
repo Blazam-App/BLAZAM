@@ -10,8 +10,8 @@ namespace BLAZAM.Server.Background
 
         public DatabaseMonitor DatabaseMonitor;
         public DirectoryMonitor DirectoryMonitor;
-        private IDbContextFactory<DatabaseContext> _factory;
-        private DatabaseContext _context;
+        private AppDatabaseFactory _factory;
+        private  IDatabaseContext _context;
         public AppEvent<ConnectionState>? OnAppReadyChanged { get; set; }
         public AppEvent<ConnectionState>? OnDirectoryConnectionChanged { get; set; }
 
@@ -24,7 +24,7 @@ namespace BLAZAM.Server.Background
         private Timer? _timer;
         bool _monitoring;
 
-        public ConnMonitor(IDbContextFactory<DatabaseContext> DbFactory, IActiveDirectory directory)
+        public ConnMonitor(AppDatabaseFactory DbFactory, IActiveDirectory directory)
         {
             _factory = DbFactory;
             _context = DbFactory.CreateDbContext();

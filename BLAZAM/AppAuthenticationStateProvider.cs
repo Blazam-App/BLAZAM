@@ -23,7 +23,7 @@ namespace BLAZAM
     /// </summary>
     public class AppAuthenticationStateProvider : AuthenticationStateProvider
     {
-        public AppAuthenticationStateProvider(IDbContextFactory<DatabaseContext> factory,
+        public AppAuthenticationStateProvider(AppDatabaseFactory factory,
             IActiveDirectory directoy,
             LoginPermissionApplicator permissionHandler,
             IApplicationUserStateService userStateService,
@@ -45,7 +45,7 @@ namespace BLAZAM
         private readonly IDuoClientProvider _duoClientProvider;
         private readonly IEncryptionService _encryption;
         private readonly IActiveDirectory _directory;
-        private readonly IDbContextFactory<DatabaseContext> _factory;
+        private readonly AppDatabaseFactory _factory;
         private readonly LoginPermissionApplicator _permissionHandler;
 
         private readonly IApplicationUserStateService _userStateService;
