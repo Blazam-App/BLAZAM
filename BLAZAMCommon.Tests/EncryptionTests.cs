@@ -128,18 +128,21 @@ namespace BLAZAM.Tests
         [Fact]
         public void Accetable_KeyVariance()
         {
-            List<byte[]>generatedKeys= new List<byte[]>();
-            
-            testSeedStrings.ForEach(seedString => {
+            List<byte[]> generatedKeys = new List<byte[]>();
+
+            testSeedStrings.ForEach(seedString =>
+            {
                 encryption = new Encryption(seedString);
                 generatedKeys.Add(encryption.Key);
             });
-           
-            List<int> lowestVariances= new List<int>();
-            generatedKeys.ForEach(key => {
+
+            List<int> lowestVariances = new List<int>();
+            generatedKeys.ForEach(key =>
+            {
                 //Compare against all other keys and return lowest variance value
                 int lowestVariance = int.MaxValue;
-                generatedKeys.Where(k=>!k.SequenceEqual(key)).ToList().ForEach(otherKey => {
+                generatedKeys.Where(k => !k.SequenceEqual(key)).ToList().ForEach(otherKey =>
+                {
                     //Calculate xor of the two 256 bit keys
                     int variance = key.BitDifference(otherKey);
                     //Update lowestVariance if needed
@@ -148,25 +151,21 @@ namespace BLAZAM.Tests
                 lowestVariances.Add(lowestVariance);
             });
             int lowestVarianceValue = lowestVariances.OrderBy(v => v).First();
-            int lowestIndex=lowestVariances.IndexOf(lowestVarianceValue);
+            int lowestIndex = lowestVariances.IndexOf(lowestVarianceValue);
 
 
-            Assert.True(lowestVarianceValue>90) ;
+            Assert.True(lowestVarianceValue > 90);
         }
 
         [Theory]
         [InlineData((string)null)]
         [InlineData("")]
-        public void ThrowsFor_EmptySeedString(string? seedString)
+        public void Key_Null_ForInvalid_EncryptionKeyString(string? seedString)
         {
-            Assert.Throws<ApplicationException>(() =>
-            {
-                encryption = new Encryption(seedString);
-                var test = "testString";
-                var cipher = encryption.EncryptObject(test);
-                var result = encryption.DecryptObject<string>(cipher);
 
-            });
+            encryption = new Encryption(seedString);
+            Assert.Null(encryption.Key);
+            
         }
     }
 }

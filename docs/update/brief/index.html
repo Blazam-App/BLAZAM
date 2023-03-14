@@ -19,7 +19,7 @@
     
     
       
-        <title>Manual Update - Blazam Documentation</title>
+        <title>Updates - Blazam Documentation</title>
       
     
     
@@ -52,7 +52,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#manual-update" class="md-skip">
+        <a href="#updates" class="md-skip">
           Skip to content
         </a>
       
@@ -80,7 +80,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Manual Update
+              Updates
             
           </span>
         </div>
@@ -473,6 +473,90 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#application-updates" class="md-nav__link">
+    Application Updates
+  </a>
+  
+    <nav class="md-nav" aria-label="Application Updates">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#branches" class="md-nav__link">
+    Branches
+  </a>
+  
+    <nav class="md-nav" aria-label="Branches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stable" class="md-nav__link">
+    Stable
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nightly" class="md-nav__link">
+    Nightly
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dev" class="md-nav__link">
+    Dev
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-updates" class="md-nav__link">
+    Database Updates
+  </a>
+  
+    <nav class="md-nav" aria-label="Database Updates">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#minor-updates" class="md-nav__link">
+    Minor Updates
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#major-updates" class="md-nav__link">
+    Major Updates
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -483,7 +567,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/Blazam-App/BLAZAM/blob/Docs/BLAZAM/docsource/update/manual.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/Blazam-App/BLAZAM/blob/Docs/BLAZAM/docsource/update/brief.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -491,19 +575,45 @@
                   
                 
                 
-                <h1 id="manual-update">Manual Update</h1>
+                <h1 id="updates">Updates</h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Auto-update is still very much in Alpha</p>
+<p>It is not recommended to enable automatic updates at this time</p>
+</div>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>The end goal is to have Blazam update itself. While progress to that goal
 has been made. Further testing and optimization are required.</p>
 </div>
-<p>Manual updating is very easy with Blazam</p>
-<ol>
-<li><a href="" title="https://blazam.org/download">Download the latest release</a></li>
-<li>Stop your Blazam instance via IIS or Services</li>
-<li>Extract the contents of the release zip file to the application directory</li>
-<li>Restart Blazam</li>
-</ol>
+<h2 id="application-updates">Application Updates</h2>
+<p>Blazam is capable of performing self-updates. You also have the option
+of allowing Blazam to automatically apply updates when new versions are released.</p>
+<h3 id="branches">Branches</h3>
+<p>Updates are divided into three branches</p>
+<h4 id="stable">Stable</h4>
+<p>This is the primary branch with the most stable versions of Blazam.</p>
+<p>If you don't have any intentions of helping developement. This is the branch
+you should use.</p>
+<h4 id="nightly">Nightly</h4>
+<p>This branch is updated at a daily pace. It may not get updated every night,
+but it will include features not available in Stable, with the added risk of
+application crashes and bug.</p>
+<p>If you want to help developement, are ok with a few bugs and crashes,
+but don't know how to code. This is the branch you should use.</p>
+<h4 id="dev">Dev</h4>
+<p>This branch is updated at the most rapid pace. There may be multiple updates per day.</p>
+<p>If you understand ASP .NET Core programming, and want to help, this is
+the branch you should choose.</p>
+<h2 id="database-updates">Database Updates</h2>
+<h3 id="minor-updates">Minor Updates</h3>
+<p>Minor updates are applied automatically by Blazam at launch.</p>
+<h3 id="major-updates">Major Updates</h3>
+<p>Major updates to the database are breaking changes. </p>
+<p>These updates will
+require the database to be re-built from scratch. </p>
+<p>We will provide migration tools
+for this process when Blazam leaves Beta.</p>
                 
               
               
