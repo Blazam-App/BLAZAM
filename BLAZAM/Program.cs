@@ -542,6 +542,7 @@ namespace BLAZAM
                 catch (Exception ex)
                 {
                     Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
+                    throw ex;
                     return false;
                 }
             });

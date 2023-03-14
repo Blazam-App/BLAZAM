@@ -7,69 +7,8 @@
 @inject IApplicationUserStateService userStateService
 <Blazorise.ThemeProvider Theme="@activeTheme.Theme">
     <CascadingAuthenticationState>
-        @if (Debugger.IsAttached)
-        {
-
-
-                    <Router AppAssembly="@typeof(App).Assembly">
-                        <Found Context="routeData">
-                    @{
-                        var test = routeData;
-                    }
-                            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                                <Authorizing>
-                                    Authorizing...
-                                </Authorizing>
-                                <NotAuthorized>
-                                    @if (!context.User.Identity?.IsAuthenticated==true)
-                                    {
-                                var test2 = test;
-                                <PageTitle>Login</PageTitle>
-                                        <LayoutView Layout="@typeof(LoginLayout)">
-                                            <BLAZAM.Server.Pages.Login />
-                                        </LayoutView>
-                                        @*<RedirectToLogin />*@
-                                    }
-                                    else
-                                    {
-                                        @if (context != null)
-                                        {
-
-                                        }
-                                <BLAZAM.Server.Pages.Error._403 />
-
-                                    }
-                                </NotAuthorized>
-
-                            </AuthorizeRouteView>
-                            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-                        </Found>
-                        <NotFound>
-                            <PageTitle>Not found</PageTitle>
-                            <LayoutView Layout="@typeof(MainLayout)">
-                                <BLAZAM.Server.Pages.Error._404 />
-                            </LayoutView>
-                        </NotFound>
-                    </Router>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        }else
-        {
-
+      
+   
 
             <ErrorBoundary>
 
@@ -121,8 +60,6 @@
 
 
 
-
-        }
   
        
     </CascadingAuthenticationState>

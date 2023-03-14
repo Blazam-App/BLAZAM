@@ -62,14 +62,20 @@ else
 
             progressValue = 100;
             await InvokeAsync(StateHasChanged);
-            if (await Program.ApplyDatabaseMigrations(true))
+            try
             {
-                Completed = true;
-                await InvokeAsync(StepCompleted.InvokeAsync);
+                if (await Program.ApplyDatabaseMigrations(true))
+                {
+                    Completed = true;
+                    await InvokeAsync(StepCompleted.InvokeAsync);
 
+                }
+                progressValue = 0;
             }
-            progressValue = 0;
-
+            catch(Exception  ex)
+            {
+                MessageService.Error(ex.Message, ex.GetType().FullName);
+            }
             await InvokeAsync(StateHasChanged);
 
         });

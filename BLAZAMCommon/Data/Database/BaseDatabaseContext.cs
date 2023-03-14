@@ -397,17 +397,19 @@ namespace BLAZAM.Common.Data.Database
 
                     Database.OpenConnection();
                     //Check for tables
+
                     if (IsSeeded())
                     {
                         //Installation has been completed
                         Database.CloseConnection();
-                        return DatabaseStatus.OK;
                     }
                     else
                     {
                         Database.CloseConnection();
-                        return DatabaseStatus.TablesMissing;
+                       // return DatabaseStatus.TablesMissing;
                     }
+                    return DatabaseStatus.OK;
+
                 }
                 catch (SqlException ex)
                 {
@@ -439,6 +441,10 @@ namespace BLAZAM.Common.Data.Database
                 {
                     return DatabaseStatus.IncompleteConfiguration;
                 }
+                catch (ApplicationException ex) {
+                    
+                    return DatabaseStatus.IncompleteConfiguration;
+                }
                 catch (Exception ex)
                 {
                     Loggers.DatabaseLogger.Error(ex.Message, ex);
@@ -452,7 +458,12 @@ namespace BLAZAM.Common.Data.Database
             return DatabaseStatus.IncompleteConfiguration;
         }
 
-
+        /// <summary>
+        /// Checks if the database seed migration hase been applied
+        /// </summary>
+        /// <remarks>If the database cannot connect this method returns true</remarks>
+        /// <returns>Returns true if the seed migration has been applied, or the database can't be reached, otherwise
+        /// returns false.</returns>
         public virtual bool IsSeeded()
         {
             try
@@ -464,6 +475,7 @@ namespace BLAZAM.Common.Data.Database
             {
 
             }
+
             var appliedMigs = Database.GetAppliedMigrations();
             //var migs = this.Database.GetPendingMigrations();
 
