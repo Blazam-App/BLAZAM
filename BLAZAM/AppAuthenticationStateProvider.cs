@@ -14,6 +14,7 @@ using System.Security.Claims;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace BLAZAM
 {
@@ -50,6 +51,30 @@ namespace BLAZAM
 
         private readonly IApplicationUserStateService _userStateService;
 
+
+        public static Action<CookieAuthenticationOptions> ApplyAuthenticationCookieOptions()
+        {
+            return options =>
+            {
+                options.Events.OnValidatePrincipal = async (context) =>
+                {
+                    if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                    {
+                        var currentUtc = DateTimeOffset.UtcNow;
+                        context.Properties.IssuedUtc = currentUtc;
+                        context.Properties.ExpiresUtc = currentUtc.AddMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
+                    }
+                };
+                options.LoginPath = new PathString("/login");
+                options.LogoutPath = new PathString("/logout");
+                if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
+                else
+                    options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
+
+                options.SlidingExpiration = true;
+            };
+        }
 
         private ClaimsPrincipal? CurrentUser;
         private readonly ApplicationUserState _newUserState = new();

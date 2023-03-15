@@ -40,6 +40,7 @@ using BLAZAM.Common.Models.Database;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding;
 using BLAZAM.Common.Data;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BLAZAM
 {
@@ -165,7 +166,6 @@ namespace BLAZAM
         public static bool Writable { get; private set; }
 
 
-
         /// <summary>
         /// The main injection point for the web application.
         /// It all starts here.
@@ -250,29 +250,9 @@ namespace BLAZAM
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            var test = builder.Services.AddAuthentication(
+            builder.Services.AddAuthentication(
                 CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-
-                    options.Events.OnCheckSlidingExpiration = async (context) =>
-                    {
-                        if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
-                            context.Options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
-                        var shouldRenew = context.ShouldRenew;
-                    };
-                    options.Events.OnSigningIn = async (context) =>
-                    {
-                        //Use session timeout from settings in database
-                        if (DatabaseCache.AuthenticationSettings.SessionTimeout != null)
-                            context.Options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
-
-                    };
-                    options.LoginPath = new PathString("/login");
-                    options.LogoutPath = new PathString("/logout");
-                    options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
-                    options.SlidingExpiration = true;
-                });
+                .AddCookie(AppAuthenticationStateProvider.ApplyAuthenticationCookieOptions());
 
 
             /*
@@ -312,7 +292,7 @@ namespace BLAZAM
             //Inject the database as a service
 
             DatabaseContext.Configuration = builder.Configuration;
-            
+
             builder.Services.AddSingleton<AppDatabaseFactory>();
 
             //builder.Services.AddDbContextFactory<DatabaseContext>();
@@ -393,10 +373,10 @@ namespace BLAZAM
             //Add Blazorize UI framework
 
             builder.Services.AddBlazorise(options =>
-                {
-                    options.Immediate = true;
+            {
+                options.Immediate = true;
 
-                })
+            })
                 .AddBootstrap5Providers()
                 .AddFontAwesomeIcons()
                 .AddLogging();
@@ -440,6 +420,7 @@ namespace BLAZAM
 
 
 
+            //AppInstance.UseMiddleware<SessionTimeoutMiddlware>();
             AppInstance.UseMiddleware<HttpsRedirectionMiddleware>();
             AppInstance.UseMiddleware<ApplicationStatusRedirectMiddleware>();
             AppInstance.UseStaticFiles();
@@ -486,6 +467,8 @@ namespace BLAZAM
             //AppInstance.Run();
 
         }
+
+       
 
         public static bool IsDevelopment
         {

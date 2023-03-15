@@ -3,6 +3,8 @@
 @using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 @using BLAZAM.Server.Data.Services.Email;
 @using System.Diagnostics;
+@using Microsoft.AspNetCore.Authentication.Cookies;
+@using Microsoft.Extensions.Options;
 @inject IHttpContextAccessor context
 @inject IApplicationUserStateService userStateService
 <Blazorise.ThemeProvider Theme="@activeTheme.Theme">
@@ -68,7 +70,68 @@
     <MessageProvider />
 
 </Blazorise.ThemeProvider>
+
+@inject IJSRuntime JSRuntime
+
+
+
+@{
+    _httpContext = context.HttpContext;
+    JSRuntime.InvokeVoidAsync("updateCookieExpiration");
+}
+
+
 @code {
+    static HttpContext _httpContext;
+    [JSInvokable("UpdateCookieExpiration")]
+    public static async Task UpdateCookieExpirationAsync()
+    {
+        if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+        {
+            // Get the current authentication cookie
+            var cookie = _httpContext.Request.Cookies[CookieAuthenticationDefaults.CookiePrefix + CookieAuthenticationDefaults.AuthenticationScheme];
+            if (cookie != null)
+            {
+                // Get the TicketDataFormat from the authentication options
+                var ticketDataFormat = _httpContext.RequestServices.GetRequiredService<IOptionsMonitor<CookieAuthenticationOptions>>().Get(CookieAuthenticationDefaults.AuthenticationScheme).TicketDataFormat;
+
+                // Decrypt the cookie to get the authentication ticket
+                var ticket = ticketDataFormat.Unprotect(cookie);
+                if (ticket != null)
+                {
+                    var currentUtc = DateTimeOffset.UtcNow;
+                    var dbTimeoutValue = (double)DatabaseCache.AuthenticationSettings.SessionTimeout;
+                    // Check if current issued time is too far for new expiration time
+                    if (ticket.Properties.IssuedUtc.Value.AddMinutes(dbTimeoutValue) > currentUtc)
+                    {
+                        //Original cookie still valid under new timeout
+
+                        // Update the ExpiresUtc property of the ticket with the new value from the database
+                        ticket.Properties.IssuedUtc = currentUtc;
+                        ticket.Properties.ExpiresUtc = currentUtc.AddMinutes(dbTimeoutValue);
+
+                        // Replace the cookie with a new one that has the updated expiration time
+                        var newCookie = ticketDataFormat.Protect(ticket);
+                        _httpContext.Response.Cookies.Append(
+                            CookieAuthenticationDefaults.CookiePrefix + CookieAuthenticationDefaults.AuthenticationScheme,
+                            newCookie,
+                            new CookieOptions
+                                {
+                                    HttpOnly = true,
+                                    Secure = true,
+                                    Expires = ticket.Properties.ExpiresUtc
+                                });
+                    }
+                    else
+                    {
+                        // Original cookie would be expired with new timeout
+                        _httpContext.Response.Cookies.Delete(CookieAuthenticationDefaults.CookiePrefix + CookieAuthenticationDefaults.AuthenticationScheme);
+                        _httpContext.Response.Redirect("/login");
+                    }
+                }
+            }
+        }
+    }
     ApplicationTheme activeTheme = new LightTheme();
     protected override void OnInitialized()
     {

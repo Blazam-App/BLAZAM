@@ -53,9 +53,9 @@ namespace BLAZAM.Server.Pages
                 //return Redirect(req.ReturnUrl);
             }
             //Nav.NavigateTo("/signin?returnUrl="+req.ReturnUrl, true);
-            //return (IActionResult)Results.Ok();
-            return Redirect("/signin?returnUrl="+req.ReturnUrl);
-
+            //return (IActionResult)Results.Problem("Authentication failed");
+            //return Redirect("/signin?returnUrl="+req.ReturnUrl);
+            return Redirect(req.ReturnUrl);
         }
 
 
