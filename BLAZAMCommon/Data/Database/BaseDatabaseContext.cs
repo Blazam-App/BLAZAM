@@ -27,7 +27,7 @@ namespace BLAZAM.Common.Data.Database
         /// <summary>
         /// Checks the realtime pingabillity and connectivity to the database right now
         /// </summary>
-        public virtual DatabaseStatus Status
+        public virtual ServiceConnectionState Status
         {
             get
             {
@@ -132,51 +132,7 @@ namespace BLAZAM.Common.Data.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //Keeping the contents of this method here for now, delete and replace with NotImplementedException
-            //When ready
-            //No child classes rely on this
-            /*
-            _dbType ??= Configuration.GetValue<string>("DatabaseType");
-            Console.WriteLine("Database Type: " + _dbType);
-            switch (_dbType)
-            {
-
-                case "SQL":
-
-                    optionsBuilder.UseSqlServer(
-                        Configuration.GetConnectionString("SQLConnectionString"),
-                            sqlServerOptionsAction: sqlOptions =>
-                            {
-                                sqlOptions.EnableRetryOnFailure();
-
-                            }
-                                ).EnableSensitiveDataLogging()
-                                .LogTo(Loggers.DatabaseLogger.Information);
-                    break;
-                case "SQLite":
-
-                    optionsBuilder.UseSqlite(
-                        Configuration.GetConnectionString("SQLiteConnectionString")).EnableSensitiveDataLogging()
-                        .LogTo(Loggers.DatabaseLogger.Information);
-                    break;
-
-                case "MySQL":
-                    optionsBuilder.UseMySql(ConnectionString?.ConnectionString,
-                         serverVersion: new MySqlServerVersion(new Version(8, 0, 32)),
-                        mySqlOptionsAction: options =>
-                        {
-                            options.EnableRetryOnFailure();
-                            //options.SetSqlModeOnOpen();
-
-                        })
-
-                        .EnableSensitiveDataLogging()
-                                .LogTo(Loggers.DatabaseLogger.Information);
-                    break;
-
-            }
-
-            */
+            throw new NotImplementedException("DatabaseContext of type " + this.GetType().FullName + " has not implemented OnConfiguring");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -364,7 +320,7 @@ namespace BLAZAM.Common.Data.Database
 
 
 
-
+        public DatabaseException DownReason { get; set; }
 
 
 
@@ -373,42 +329,56 @@ namespace BLAZAM.Common.Data.Database
         /// This should be private
         /// </summary>
         /// <returns></returns>
-        private DatabaseStatus TestConnection()
+        private ServiceConnectionState TestConnection()
         {
             if (ConnectionString != null)
             {
                 //Check for db connection
                 try
                 {
-
                     //Handle SQLite
                     if (ConnectionString.FileBased)
                     {
                         if (ConnectionString.File.Writable)
                         {
                             ConnectionString.File.EnsureCreated();
-                            return DatabaseStatus.OK;
+                            return ServiceConnectionState.Up;
                         }
-                        return DatabaseStatus.DatabaseConnectionIssue;
+                        else
+                        {
+                            DownReason = new("The Sqlite database folder is not writable by the current server user.");
+                        }
+                        return ServiceConnectionState.Down;
                     }
 
 
-                    if (!NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort)) return DatabaseStatus.ServerUnreachable;
-
-                    Database.OpenConnection();
-                    //Check for tables
-
-                    if (IsSeeded())
+                    if (NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort))
                     {
-                        //Installation has been completed
-                        Database.CloseConnection();
+
+
+
+                        Database.OpenConnection();
+                        //Check for tables
+
+                        if (IsSeeded())
+                        {
+                            //Installation has been completed
+
+                            Database.CloseConnection();
+                        }
+                        else
+                        {
+                            Database.CloseConnection();
+                            // return DatabaseStatus.TablesMissing;
+                        }
+                        return ServiceConnectionState.Up;
+
                     }
                     else
                     {
-                        Database.CloseConnection();
-                       // return DatabaseStatus.TablesMissing;
+                        DownReason = new("The database port is not open or is not reachable.");
+
                     }
-                    return DatabaseStatus.OK;
 
                 }
                 catch (SqlException ex)
@@ -417,15 +387,20 @@ namespace BLAZAM.Common.Data.Database
                     {
                         case 53:
                             //Server unreachable
-                            return DatabaseStatus.ServerUnreachable;
+                            DownReason = new("The database port is open but connecting as an Sql server failed.");
+                            break;
+
 
                         case 208:
                             //Tables Missing
-                            return DatabaseStatus.TablesMissing;
-
+                            DownReason = new("The database is missing a table. It may be in a corrupt state.");
+                            break;
                         case 18456:
                             //Database may be missing or permission issue
-                            return DatabaseStatus.DatabaseConnectionIssue;
+                            DownReason = new("The database server is reachable, but the database could not be found or the" +
+                                " credentials provided do not have permission to the database.");
+                            break;
+
                     }
 
                 }
@@ -434,28 +409,33 @@ namespace BLAZAM.Common.Data.Database
                 catch (RetryLimitExceededException)
                 {
                     //Couldn't connect to DB
-                    return DatabaseStatus.DatabaseConnectionIssue;
+                    DownReason = new("The retry limit exceeded trying to connect to the database.");
+
 
                 }
-                catch (DatabaseConnectionStringException)
+                catch (DatabaseConnectionStringException ex)
                 {
-                    return DatabaseStatus.IncompleteConfiguration;
+                    DownReason = new("The database connection string is malformed. " + ex.Message);
+
                 }
-                catch (ApplicationException ex) {
-                    
-                    return DatabaseStatus.IncompleteConfiguration;
+                catch (ApplicationException ex)
+                {
+
+                    DownReason = new("The database experienced a general error. " + ex.Message);
+
                 }
                 catch (Exception ex)
                 {
                     Loggers.DatabaseLogger.Error(ex.Message, ex);
-                    //Installation not completed
+                    DownReason = new("The database experienced an unexpected error. " + ex.Message);
+
                 }
-                throw new ApplicationException("Unknown error checking connecting to database. The port is open.");
 
 
 
             }
-            return DatabaseStatus.IncompleteConfiguration;
+            return ServiceConnectionState.Down;
+
         }
 
         /// <summary>

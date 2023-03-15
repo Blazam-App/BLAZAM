@@ -92,7 +92,6 @@
     {
         if (Context == null) throw new ApplicationException("Unable to retrieve database settings table: AppSettings");
         if (settings == null) throw new ApplicationException("App Settings is null");
-        //TODO Try and capture the moment the file upload starts
         using (var stream = e.File.OpenReadStream(5000000))
         {
             using (var memoryStream = new MemoryStream())

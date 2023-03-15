@@ -21,36 +21,9 @@ namespace BLAZAM.Server.Background
 
         protected override void Tick(object? state)
         {
-            switch (_context.Status)
-            {
-                case DatabaseContext.DatabaseStatus.OK:
-                        Status = ServiceConnectionState.Up;
 
-                    break;
-                case DatabaseContext.DatabaseStatus.ServerUnreachable:
-
-                    Oops.ErrorMessage = "Database server is not reachable! Check your connection string! Is the port open?";
-                    goto default;
-
-                case DatabaseContext.DatabaseStatus.IncompleteConfiguration:
-                    Oops.ErrorMessage = "Web application configuration is corrupt or missing!";
-                    goto default;
-
-                case DatabaseContext.DatabaseStatus.DatabaseConnectionIssue:
-                    Oops.ErrorMessage = "Database server is up, but the application is unable to connect to the database!";
-                    goto default;
-                case DatabaseContext.DatabaseStatus.TablesMissing:
-                    Oops.ErrorMessage = "Database is corrupt, or installation was incomplete!";
-                    Status = ServiceConnectionState.Up;
-
-                    break;
-                    //goto default;
-                default:
-                    
-                        Status = ServiceConnectionState.Down;
-                    
-                    break;
-            }
+            Status = _context.Status;
+            
         }
        
     }

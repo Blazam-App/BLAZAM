@@ -39,6 +39,7 @@ using System.Reflection;
 using BLAZAM.Common.Models.Database;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM
 {
@@ -531,7 +532,7 @@ namespace BLAZAM
                     using (var scope = AppInstance.Services.CreateScope())
                     {
                         var context = scope.ServiceProvider.GetRequiredService<AppDatabaseFactory>().CreateDbContext();
-                        if (context != null && context.Status == DatabaseContext.DatabaseStatus.OK)
+                        if (context != null && context.Status == ServiceConnectionState.Up)
                             if (context.IsSeeded() || force)
                                 if (context.Database.GetPendingMigrations().Count() > 0)
                                     context.Database.Migrate();
