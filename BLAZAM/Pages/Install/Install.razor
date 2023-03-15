@@ -5,70 +5,70 @@
 
 
 <PageTitle>Install - Blazam</PageTitle>
-    <Steps SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged" NavigationAllowed="NavigationAllowed">
-        <Items>
-            <Step Completed=@(_step>1) Name="1">@SettingsLocalization["Database"]</Step>
-            <Step Completed=@(_step>2) Name="2">@SettingsLocalization["Authentication"]</Step>
-            <Step Completed=@(_step>3) Name="3">@SettingsLocalization["Directory"]</Step>
-            @*<Step Completed=@(_step>4) Name="4">@SettingsLocalization["Permissions"]</Step>*@
-            <Step Name="step4">
-                <Marker>
-                    <Icon Name="IconName.Flag" />
-                </Marker>
-                <Caption>
-                    Finish
-                </Caption>
-            </Step>
-        </Items>
-        <Content>
-            <StepPanel Name="0">
+<Steps SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged" NavigationAllowed="NavigationAllowed">
+    <Items>
+        <Step Completed=@(_step>1) Name="1">@SettingsLocalization["Database"]</Step>
+        <Step Completed=@(_step>2) Name="2">@SettingsLocalization["Authentication"]</Step>
+        <Step Completed=@(_step>3) Name="3">@SettingsLocalization["Directory"]</Step>
+        @*<Step Completed=@(_step>4) Name="4">@SettingsLocalization["Permissions"]</Step>*@
+        <Step Name="step4">
+            <Marker>
+                <Icon Name="IconName.Flag" />
+            </Marker>
+            <Caption>
+                Finish
+            </Caption>
+        </Step>
+    </Items>
+    <Content>
+        <StepPanel Name="0">
 
-                <Card>
-                    <CardHeader>
-                        Checking Installation
-                    </CardHeader>
-                    <CardBody>
-                        Please wait while the installation status of the application is checked...
-                    </CardBody>
-                </Card>
-               
-            </StepPanel>
-            <StepPanel Name="1">
-                @if (_step > 0)
-                {
-                    <InstallDatabase Completed=@(_step>1) StepCompleted="UpdateStatuses" />
-                }
-            </StepPanel>
-            <StepPanel Name="2">
-                @if (_step > 1)
-                {
-                    <Authentication StepCompleted="UpdateStatuses" />
-                }
+            <Card>
+                <CardHeader>
+                    Checking Installation
+                </CardHeader>
+                <CardBody>
+                    Please wait while the installation status of the application is checked...
+                </CardBody>
+            </Card>
 
-            </StepPanel>
-           
-            <StepPanel Name="3">
-                @if (_step > 2)
-                {
-                    <ADirectory StepCompleted="UpdateStatuses" />
-                }
-            </StepPanel>
-            @*
-            <StepPanel Name="4">
+        </StepPanel>
+        <StepPanel Name="1">
+            @if (_step > 0)
+            {
+                <InstallDatabase Completed=@(_step>1) StepCompleted="UpdateStatuses" />
+            }
+        </StepPanel>
+        <StepPanel Name="2">
+            @if (_step > 1)
+            {
+                <Authentication StepCompleted="UpdateStatuses" />
+            }
 
-                @if (_step > 3)
-                {
-                    <Permissions StepCompleted="ShowLastStep" />
-                }
+        </StepPanel>
 
-            </StepPanel>
-            *@
-            <StepPanel Name="4">
-                <h2>Installation Complete</h2>
-                <Button @onclick="FinalizeInstall" Color="Color.Success">Finalize Install</Button>
-            </StepPanel>
-        </Content>
-    </Steps>
+        <StepPanel Name="3">
+            @if (_step > 2)
+            {
+                <ADirectory StepCompleted="UpdateStatuses" />
+            }
+        </StepPanel>
+        @*
+        <StepPanel Name="4">
+
+        @if (_step > 3)
+        {
+        <Permissions StepCompleted="ShowLastStep" />
+        }
+
+        </StepPanel>
+        *@
+        <StepPanel Name="4">
+            <h2>Installation Complete</h2>
+            <Button @onclick="FinalizeInstall" Color="Color.Success">Finalize Install</Button>
+        </StepPanel>
+    </Content>
+</Steps>
 
 
 
@@ -113,64 +113,63 @@
         selectedStep = "1";
         if (Context != null)
         {
-            if (Context.Status != DatabaseContext.DatabaseStatus.ServerUnreachable)
+            if (Context.Status == ServiceConnectionState.Up)
             {
-                if (Context.Status == DatabaseContext.DatabaseStatus.OK)
+
+                if (!Context.Database.GetPendingMigrations().Any())
                 {
-                    if (!Context.Database.GetPendingMigrations().Any())
+                    _step = 2;
+                    selectedStep = "2";
+
+                    await InvokeAsync(StateHasChanged);
+
+                    try
                     {
-                        _step = 2;
-                        selectedStep = "2";
-
-                        await InvokeAsync(StateHasChanged);
-
-                        try
+                        if (Context.AuthenticationSettings.FirstOrDefault() != null && Context.AuthenticationSettings.FirstOrDefault()?.AdminPassword != "password")
                         {
-                            if (Context.AuthenticationSettings.FirstOrDefault() != null && Context.AuthenticationSettings.FirstOrDefault()?.AdminPassword != "password")
+                            _step = 3;
+                            selectedStep = "3";
+
+                            await InvokeAsync(StateHasChanged);
+
+
+                            //check directory
+                            if (Context.ActiveDirectorySettings.FirstOrDefault() != null)
                             {
-                                _step = 3;
-                                selectedStep = "3";
-
-                                await InvokeAsync(StateHasChanged);
-
-
-                                //check directory
-                                if (Context.ActiveDirectorySettings.FirstOrDefault() != null)
+                                if (Directory.Status == DirectoryConnectionStatus.OK)
                                 {
-                                    if (Directory.Status == DirectoryConnectionStatus.OK)
-                                    {
-                                        _step = 4;
-                                        selectedStep = "4";
+                                    _step = 4;
+                                    selectedStep = "4";
 
-                                        await InvokeAsync(StateHasChanged);
-                                        //check permissions
-                                        /*
-                                        PermissionDelegate currentSettings = Context.PermissionDelegate.FirstOrDefault();
-                                            if (currentSettings != null)
+                                    await InvokeAsync(StateHasChanged);
+                                    //check permissions
+                                    /*
+                                    PermissionDelegate currentSettings = Context.PermissionDelegate.FirstOrDefault();
+                                        if (currentSettings != null)
+                                        {
+
+                                        if (Context.Status == DatabaseContext.ConnectionStatus.OK)
                                             {
+                                            _step = 5;
+                                            selectedStep = "5";
 
-                                            if (Context.Status == DatabaseContext.ConnectionStatus.OK)
-                                                {
-                                                _step = 5;
-                                                selectedStep = "5";
+                                            //NavManager.NavigateTo("/");
+                                }
 
-                                                //NavManager.NavigateTo("/");
-                                    }
-
-
-                                    }
-                                    */
-                                    }
 
                                 }
+                                */
+                                }
+
                             }
                         }
-                        catch (Exception)
-                        {
+                    }
+                    catch (Exception)
+                    {
 
-                        }
                     }
                 }
+
             }
             else
             {
@@ -217,7 +216,7 @@
         {
             await NotificationService.Error("Sorry, ran into an error while finalizing install");
 
-            }
+        }
 
     }
 }

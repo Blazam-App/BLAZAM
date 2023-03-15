@@ -21,16 +21,22 @@ namespace BLAZAM.Server.Background
         public bool RedirectToHttps { get; set; }
         public ServiceConnectionState? DatabaseConnected { get => DatabaseMonitor.Status; }
         public ServiceConnectionState? DirectoryConnected { get => DirectoryMonitor.Status; }
-        public ServiceConnectionState AppReady { get
+
+        /// <summary>
+        /// Indicated whether the application is ready to serve users.
+        /// </summary>
+        /// 
+        public ServiceConnectionState AppReady
+        {
+            get => _appReady; protected set
             {
-                if (_encryption.Status == ServiceConnectionState.Down)
-                {
-                    Oops.ErrorMessage = "EncryptionKey missing or invalid in appsettings.json";
-                    return ServiceConnectionState.Down;
-                }
-                return _appReady;
+                if (_appReady == value) return;
+                _appReady = value;
+                OnAppReadyChanged?.Invoke(value);
+
+
             }
-            protected set => _appReady = value; }
+        }
         public bool DatabaseUpdatePending { get; private set; }
 
         private Timer? _timer;
@@ -46,12 +52,22 @@ namespace BLAZAM.Server.Background
             DirectoryMonitor = new DirectoryMonitor(directory);
             DatabaseMonitor.OnConnectedChanged += ((ServiceConnectionState newStatus) =>
             {
+                if (_encryption.Status == ServiceConnectionState.Down)
+                {
+                    Oops.ErrorMessage = "EncryptionKey missing or invalid in appsettings.json";
+                    AppReady = ServiceConnectionState.Down;
+                    return;
+                }
                 if (AppReady != newStatus)
                 {
                     OnAppReadyChanged?.Invoke(newStatus);
                     AppReady = newStatus;
+                    if(newStatus== ServiceConnectionState.Down && _context.DownReason!=null)
+                    {
+                        Oops.ErrorMessage = _context.DownReason.GetType().FullName;
+                        Oops.HelpMessage = _context.DownReason.Message;
+                    }
                 }
-                if (_encryption.Status == ServiceConnectionState.Down) AppReady = ServiceConnectionState.Down;
 
 
             });
