@@ -56,8 +56,22 @@ namespace BLAZAM
         {
             return options =>
             {
+
+                options.Events.OnSigningIn = async (context) =>
+                {
+                    var sessionTimeout = context.HttpContext.SessionTimeout();
+                    Console.WriteLine(context.Principal?.Identity?.Name + " validated: " + sessionTimeout.ToString());
+                    if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                    {
+                        var currentUtc = DateTimeOffset.UtcNow;
+                        context.Properties.IssuedUtc = currentUtc;
+                        context.Properties.ExpiresUtc = currentUtc.AddMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
+                    }
+                };
                 options.Events.OnValidatePrincipal = async (context) =>
                 {
+                    var sessionTimeout = context.HttpContext.SessionTimeout();
+                    Console.WriteLine(context.Principal?.Identity?.Name + " validated: " + sessionTimeout.ToString());
                     if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
                     {
                         var currentUtc = DateTimeOffset.UtcNow;
@@ -69,8 +83,8 @@ namespace BLAZAM
                 options.LogoutPath = new PathString("/logout");
                 if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
                     options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
-                else
-                    options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
+                //else
+                  //  options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
 
                 options.SlidingExpiration = true;
             };

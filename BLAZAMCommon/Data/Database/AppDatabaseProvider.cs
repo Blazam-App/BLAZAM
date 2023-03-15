@@ -31,7 +31,7 @@ namespace BLAZAM.Common.Data.Database
         public IDatabaseContext CreateDbContext()
         {
             var _dbType = _configuration.GetValue<string>("DatabaseType");
-            Console.WriteLine("Database Type: " + _dbType);
+           // Console.WriteLine("Database Type: " + _dbType);
             IDatabaseContext databaseContext = null;
             switch (_dbType.ToLower())
             {

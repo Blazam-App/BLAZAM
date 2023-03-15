@@ -77,13 +77,24 @@
 
 @{
     _httpContext = context.HttpContext;
+    currentUri = Nav.BaseUri;
     JSRuntime.InvokeVoidAsync("updateCookieExpiration");
 }
 
 
 @code {
+    [Inject] NavigationManager Nav { get; set; }
+    static string currentUri;
     static HttpContext _httpContext;
     [JSInvokable("UpdateCookieExpiration")]
+    public static async Task UpdateCookieExpiration()
+    {
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri(currentUri);
+        var response = await client.GetAsync("/");
+
+
+    }
     public static async Task UpdateCookieExpirationAsync()
     {
         if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
@@ -132,6 +143,7 @@
             }
         }
     }
+    
     ApplicationTheme activeTheme = new LightTheme();
     protected override void OnInitialized()
     {

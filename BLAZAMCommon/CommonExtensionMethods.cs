@@ -24,11 +24,34 @@ using Newtonsoft.Json.Linq;
 using System.DirectoryServices.ActiveDirectory;
 using System.IO.Compression;
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BLAZAM
 {
     public static class CommonExtensions
     {
+        public static TimeSpan? SessionTimeout(this HttpContext httpContext)
+        {
+            // Get the current authentication cookie
+            var cookie = httpContext.Request.Cookies[CookieAuthenticationDefaults.CookiePrefix + CookieAuthenticationDefaults.AuthenticationScheme];
+            if (cookie != null)
+            {
+                // Get the TicketDataFormat from the authentication options
+                var ticketDataFormat = httpContext.RequestServices.GetRequiredService<IOptionsMonitor<CookieAuthenticationOptions>>().Get(CookieAuthenticationDefaults.AuthenticationScheme).TicketDataFormat;
+
+                // Decrypt the cookie to get the authentication ticket
+                var ticket = ticketDataFormat.Unprotect(cookie);
+                if (ticket != null)
+                {
+                    return ticket.Properties.ExpiresUtc - ticket.Properties.IssuedUtc;
+                }
+
+            }
+            return null;
+        }
         public static string GetValueChangesString(this List<AuditChangeLog> changes, Func<AuditChangeLog, object?> valueSelector)
         {
             var values = "";
