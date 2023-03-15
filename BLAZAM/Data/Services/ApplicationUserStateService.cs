@@ -21,7 +21,7 @@ namespace BLAZAM.Server.Data.Services
     {
         private IHttpContextAccessor HttpContextAccessor { get; set; }
 
-        private IDbContextFactory<DatabaseContext> Factory;
+        private AppDatabaseFactory Factory;
 
         private int? Timeout { get; set; }
 
@@ -53,7 +53,7 @@ namespace BLAZAM.Server.Data.Services
         /// <param name="httpContextAccessor">An HTTP Context Accessor to get the current ClaimsPrincipal of the current session.
         /// This Principal is persisted via the browser authentication cookie</param>
         /// <param name="factory">Database Context Factory for accessing the Authentication Setting - SessionTimeout</param>
-        public ApplicationUserStateService(IHttpContextAccessor httpContextAccessor, IDbContextFactory<DatabaseContext> factory)
+        public ApplicationUserStateService(IHttpContextAccessor httpContextAccessor, AppDatabaseFactory factory)
         {
 
             HttpContextAccessor = httpContextAccessor;

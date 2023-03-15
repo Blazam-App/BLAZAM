@@ -1,4 +1,5 @@
-﻿using BLAZAM.Common.Data.ActiveDirectory;
+﻿using BLAZAM.Common.Data;
+using BLAZAM.Common.Data.ActiveDirectory;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Server.Pages.Error;
@@ -8,12 +9,10 @@ namespace BLAZAM.Server.Background
 {
     public class DirectoryMonitor : ConnectionMonitor
     {
-        private IDbContextFactory<DatabaseContext> _factory;
         private IActiveDirectory _directry;
 
-        public DirectoryMonitor(IDbContextFactory<DatabaseContext> DbFactory, IActiveDirectory directry)
+        public DirectoryMonitor( IActiveDirectory directry)
         {
-            _factory = DbFactory;
 
             _directry = directry;
             _directry.OnStatusChanged += StatusChanged;
@@ -24,7 +23,7 @@ namespace BLAZAM.Server.Background
             switch (value)
             {
                 case DirectoryConnectionStatus.OK:
-                    Connected = ConnectionState.Up;
+                    Status = ServiceConnectionState.Up;
 
                     break;
                 case DirectoryConnectionStatus.BadCredentials:
@@ -47,11 +46,11 @@ namespace BLAZAM.Server.Background
                     Oops.ErrorMessage = "Database is corrupt, or installation was incomplete!";
                     goto default;
                 case DirectoryConnectionStatus.Connecting:
-                    Connected = ConnectionState.Connecting;
+                    Status = ServiceConnectionState.Connecting;
                     break;
                 default:
 
-                    Connected = ConnectionState.Down;
+                    Status = ServiceConnectionState.Down;
 
                     break;
             }
@@ -59,36 +58,7 @@ namespace BLAZAM.Server.Background
 
         protected override void Tick(object? state)
         {
-            switch (_directry.Status)
-            {
-                case DirectoryConnectionStatus.OK:
-                    Connected = ConnectionState.Up;
-
-                    break;
-                case DirectoryConnectionStatus.BadCredentials:
-                    Oops.ErrorMessage = "Bad Credentials!";
-                    goto default;
-
-                case DirectoryConnectionStatus.ConnectionDown:
-                    Oops.ErrorMessage = "Active Directory server connection is down.";
-                    goto default;
-
-                case DirectoryConnectionStatus.ServerDown:
-                    Oops.ErrorMessage = "Active Directory Server appears down.";
-                    goto default;
-                case DirectoryConnectionStatus.UnreachableConfiguration:
-                    Oops.ErrorMessage = "Database is corrupt, or installation was incomplete!";
-                    goto default;
-                case DirectoryConnectionStatus.Connecting:
-                    Connected = ConnectionState.Connecting;
-                    break;
-                default:
-
-                    Connected = ConnectionState.Down;
-
-                    break;
-            }
-
+            StatusChanged(_directry.Status);
 
         }
     }

@@ -95,14 +95,14 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        if (Monitor.AppReady != ConnectionState.Up)
+        if (Monitor.AppReady != ServiceConnectionState.Up)
             Monitor.OnAppReadyChanged += AppReadyChanged;
         Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
     }
 
-    async void AppReadyChanged(ConnectionState state)
+    async void AppReadyChanged(ServiceConnectionState state)
     {
-        if (state == ConnectionState.Up)
+        if (state == ServiceConnectionState.Up)
             await InvokeAsync(StateHasChanged);
 
 

@@ -1,5 +1,6 @@
 ﻿
 
+using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Server.Pages.Error;
 
@@ -7,10 +8,10 @@ namespace BLAZAM.Server.Background
 {
     public class DatabaseMonitor : ConnectionMonitor
     {
-        private DatabaseContext _context;
+        private  IDatabaseContext _context;
 
 
-        public DatabaseMonitor(DatabaseContext context)
+        public DatabaseMonitor(IDatabaseContext context)
         {
             Interval = 10000;
             _context = context;
@@ -23,7 +24,7 @@ namespace BLAZAM.Server.Background
             switch (_context.Status)
             {
                 case DatabaseContext.DatabaseStatus.OK:
-                        Connected = ConnectionState.Up;
+                        Status = ServiceConnectionState.Up;
 
                     break;
                 case DatabaseContext.DatabaseStatus.ServerUnreachable:
@@ -40,13 +41,13 @@ namespace BLAZAM.Server.Background
                     goto default;
                 case DatabaseContext.DatabaseStatus.TablesMissing:
                     Oops.ErrorMessage = "Database is corrupt, or installation was incomplete!";
-                    Connected = ConnectionState.Up;
+                    Status = ServiceConnectionState.Up;
 
                     break;
                     //goto default;
                 default:
                     
-                        Connected = ConnectionState.Down;
+                        Status = ServiceConnectionState.Down;
                     
                     break;
             }

@@ -7,7 +7,7 @@ namespace BLAZAM.Common.Data.Database
     {
         private static bool _started;
 
-        private static IDbContextFactory<DatabaseContext> dbContextFactory;
+        private static AppDatabaseFactory dbContextFactory;
         private static ILogger _logger;
 
         public static byte[] AppIcon
@@ -19,7 +19,7 @@ namespace BLAZAM.Common.Data.Database
                 return appIcon;
             }
         }
-        public static void Start(IDbContextFactory<DatabaseContext> factory, ILogger logger)
+        public static void Start(AppDatabaseFactory factory, ILogger logger)
         {
             _logger = logger;
             if (!_started)
@@ -73,7 +73,7 @@ namespace BLAZAM.Common.Data.Database
         }
 
 
-        private static async Task<T> UpdateProperty<T>(T originalProperty, Func<DatabaseContext, IQueryable<T>> value)
+        private static async Task<T> UpdateProperty<T>(T originalProperty, Func<IDatabaseContext, IQueryable<T>> value)
         {
 
             //Console.WriteLine("Updating "+typeof(T).Name);

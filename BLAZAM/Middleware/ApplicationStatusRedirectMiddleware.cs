@@ -1,4 +1,5 @@
-﻿using BLAZAM.Common.Data.Database;
+﻿using BLAZAM.Common.Data;
+using BLAZAM.Common.Data.Database;
 using BLAZAM.Server.Background;
 using BLAZAM.Server.Pages.Error;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@ namespace BLAZAM.Server.Middleware
             _monitor = monitor;
         }
 
-        public async Task InvokeAsync(HttpContext context, IDbContextFactory<DatabaseContext> factory)
+        public async Task InvokeAsync(HttpContext context, AppDatabaseFactory factory)
         {
             intendedUri = context.Request.Path.ToUriComponent();
             if (!InIgnoreList(intendedUri))
@@ -29,10 +30,10 @@ namespace BLAZAM.Server.Middleware
                 {
                     switch (_monitor.AppReady)
                     {
-                        case ConnectionState.Connecting:
+                        case ServiceConnectionState.Connecting:
                             SendTo(context, "/");
                             break;
-                        case ConnectionState.Up:
+                        case ServiceConnectionState.Up:
                             var appliedSeedMigration = factory.CreateDbContext().AppliedMigrations.Where(m => m.Contains("seed", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                             var stagedSeedMigration = factory.CreateDbContext().PendingMigrations.Where(m => m.Contains("seed", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                             if(appliedSeedMigration!=null && stagedSeedMigration !=null)
@@ -48,7 +49,7 @@ namespace BLAZAM.Server.Middleware
                                 SendTo(context,"/install");
                             }
                             break;
-                        case ConnectionState.Down:
+                        case ServiceConnectionState.Down:
                             SendTo(context, "/oops");
 
                             break;

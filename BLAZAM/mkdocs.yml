@@ -22,6 +22,10 @@ nav:
             - 'Install': 'install/manual.md'
             - 'Configuration': 'install/config.md'
         - Security: 'install/security.md'
+        - Updating:
+            - 'Manual Updates': 'updates/manual.md'
+            - 'Self Updates': 'updates/self.md'
+            - 'Auto Updates': 'updates/auto.md'
     - Permissions:
         - 'Abstract': 'permissions/abstract.md'
     - About:

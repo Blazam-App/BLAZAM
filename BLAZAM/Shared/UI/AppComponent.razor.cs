@@ -13,6 +13,7 @@ using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using Blazorise;
 using Microsoft.Extensions.Localization;
 using BLAZAM.Server.Data.Services.Email;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.Server.Shared.UI
 {
@@ -70,9 +71,9 @@ namespace BLAZAM.Server.Shared.UI
         protected INotificationService NotificationService { get; set; }
 
         protected bool LoadingData { get; set; } = true;
-        protected DatabaseContext? Context;
+        protected IDatabaseContext? Context;
         [Inject]
-        protected IDbContextFactory<DatabaseContext> DbFactory { get; set; }
+        protected AppDatabaseFactory DbFactory { get; set; }
 
 
 
@@ -87,7 +88,7 @@ namespace BLAZAM.Server.Shared.UI
                 Loggers.DatabaseLogger.Error("Failed to connect to database", ex);
             }
 
-            Monitor.OnDirectoryConnectionChanged += (ConnectionState status) =>
+            Monitor.OnDirectoryConnectionChanged += (ServiceConnectionState status) =>
             {
                 InvokeAsync(StateHasChanged);
             };

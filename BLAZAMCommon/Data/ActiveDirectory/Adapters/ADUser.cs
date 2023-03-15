@@ -242,7 +242,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
                 base.SamAccountName = value;
                 if (UserPrincipalName == null)
-                    UserPrincipalName = value + "@" + Context.ActiveDirectorySettings.FirstOrDefault()?.FQDN;
+                    UserPrincipalName = value + "@" + DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.FQDN;
 
                 else
                     UserPrincipalName = value + "@" + UserPrincipalName.Split("@")[1];

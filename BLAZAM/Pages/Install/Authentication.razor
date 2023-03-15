@@ -28,6 +28,7 @@
             <Validation Validator="AppValidationRule.IsValidPassword">
                 <SettingsField>
                     <FieldLabel>Password</FieldLabel>
+                    <FieldHelp>Must be 6 characters or longer containing at least one letter,numer and special character.</FieldHelp>
                     <FieldBody>
                         <TextEdit Role="TextRole.Password" @bind-Text=adminPassword>
                             <Feedback>
@@ -71,7 +72,7 @@
     public string adminPassword = "";
     public async void SubmitForm()
     {
-        DatabaseContext context = DbFactory.CreateDbContext();
+        IDatabaseContext context = DbFactory.CreateDbContext();
         try
         {
             context.AuthenticationSettings.FirstOrDefault().AdminPassword = adminPassword;

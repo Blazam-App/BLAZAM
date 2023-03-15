@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
 @inject IActiveDirectory directory
-@inject IDbContextFactory<DatabaseContext> DbFactory
+@inject AppDatabaseFactory DbFactory
 @inject ConnMonitor monitor
 
 
@@ -30,14 +30,14 @@
                     </Card>
                            
 
-                    @if (monitor.DirectoryConnected == ConnectionState.Connecting)
+                    @if (monitor.DirectoryConnected == ServiceConnectionState.Connecting)
                     {
                         <Row>
                             <Paragraph>Please wait or use admin login...</Paragraph>
                             <Loader TextColor="TextColor.Light" Margin="Margin.IsAuto.OnX" />
                         </Row>
                     }
-                    @if (monitor.DirectoryConnected == ConnectionState.Down)
+                    @if (monitor.DirectoryConnected == ServiceConnectionState.Down)
                     {
                         <Row>
                             <Paragraph TextColor="TextColor.Danger">Active Directry connection unavailable.</Paragraph>

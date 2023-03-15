@@ -1,5 +1,7 @@
-﻿using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+﻿using BLAZAM.Common.Data;
+using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Server.Data.Services;
 using BLAZAM.Server.Pages.Error;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,39 +10,52 @@ namespace BLAZAM.Server.Background
     public class ConnMonitor
     {
 
-        public DatabaseMonitor DatabaseMonitor;
-        public DirectoryMonitor DirectoryMonitor;
-        private IDbContextFactory<DatabaseContext> _factory;
-        private DatabaseContext _context;
-        public AppEvent<ConnectionState>? OnAppReadyChanged { get; set; }
-        public AppEvent<ConnectionState>? OnDirectoryConnectionChanged { get; set; }
+        public readonly DatabaseMonitor DatabaseMonitor;
+        public readonly DirectoryMonitor DirectoryMonitor;
+        private readonly IEncryptionService _encryption;
+        private readonly AppDatabaseFactory _factory;
+        private readonly IDatabaseContext _context;
+        public AppEvent<ServiceConnectionState>? OnAppReadyChanged { get; set; }
+        public AppEvent<ServiceConnectionState>? OnDirectoryConnectionChanged { get; set; }
 
         public bool RedirectToHttps { get; set; }
-        public ConnectionState? DatabaseConnected { get => DatabaseMonitor.Connected; }
-        public ConnectionState? DirectoryConnected { get => DirectoryMonitor.Connected; }
-        public ConnectionState AppReady { get; protected set; } = ConnectionState.Connecting;
+        public ServiceConnectionState? DatabaseConnected { get => DatabaseMonitor.Status; }
+        public ServiceConnectionState? DirectoryConnected { get => DirectoryMonitor.Status; }
+        public ServiceConnectionState AppReady { get
+            {
+                if (_encryption.Status == ServiceConnectionState.Down)
+                {
+                    Oops.ErrorMessage = "EncryptionKey missing or invalid in appsettings.json";
+                    return ServiceConnectionState.Down;
+                }
+                return _appReady;
+            }
+            protected set => _appReady = value; }
         public bool DatabaseUpdatePending { get; private set; }
 
         private Timer? _timer;
         bool _monitoring;
+        private ServiceConnectionState _appReady = ServiceConnectionState.Connecting;
 
-        public ConnMonitor(IDbContextFactory<DatabaseContext> DbFactory, IActiveDirectory directory)
+        public ConnMonitor(AppDatabaseFactory DbFactory, IActiveDirectory directory, IEncryptionService encryption)
         {
+            _encryption = encryption;
             _factory = DbFactory;
             _context = DbFactory.CreateDbContext();
             DatabaseMonitor = new DatabaseMonitor(_context);
-            DirectoryMonitor = new DirectoryMonitor(DbFactory, directory);
-            DatabaseMonitor.OnConnectedChanged += ((ConnectionState newStatus) =>
+            DirectoryMonitor = new DirectoryMonitor(directory);
+            DatabaseMonitor.OnConnectedChanged += ((ServiceConnectionState newStatus) =>
             {
                 if (AppReady != newStatus)
                 {
                     OnAppReadyChanged?.Invoke(newStatus);
                     AppReady = newStatus;
                 }
+                if (_encryption.Status == ServiceConnectionState.Down) AppReady = ServiceConnectionState.Down;
 
 
             });
-            DirectoryMonitor.OnConnectedChanged += ((ConnectionState newStatus) =>
+            DirectoryMonitor.OnConnectedChanged += ((ServiceConnectionState newStatus) =>
             {
                 OnDirectoryConnectionChanged?.Invoke(newStatus);
             });
@@ -70,7 +85,7 @@ namespace BLAZAM.Server.Background
                     try
                     {
                         RedirectToHttps = _context.AppSettings.First().ForceHTTPS;
-                       
+
                     }
                     catch (Exception)
                     {
@@ -89,7 +104,7 @@ namespace BLAZAM.Server.Background
                     {
 
                     }
-                  
+
 
                 }
             });

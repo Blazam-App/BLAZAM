@@ -1,7 +1,21 @@
 # BLAZAM
-https://blazam.org
 
 This app is still in Beta. If you choose to install now, you may need to re-install from scratch in a future update.
+
+## Website
+[blazam.org](https://blazam.org)
+
+
+## Demo
+[blazam.org/demo](https://blazam.org/demo)
+
+## Documentation
+[docs.blazam.org](https://docs.blazam.org)
+
+## Installation
+Blazam's MSI installer is still under construction. Therefore,
+the only option to install for now is a [manual installation](https://docs.blazam.org/install/manual)
+
 ## Who is it for?
 * Do you manage an Active Directory environment?
 * Do you want easier delegation of basic account functions?
@@ -16,6 +30,3 @@ This app is still in Beta. If you choose to install now, you may need to re-inst
 * Configurable user creation templates to share with your users to ensure the proper infomation is provided.
 * Manage user thumbnail photo.
 * Access Active Directory recycle bin from any web browser.
-
-## How to get it?
-To get your own copy of this amazing kit, head over to the download page and follow the install instructions.

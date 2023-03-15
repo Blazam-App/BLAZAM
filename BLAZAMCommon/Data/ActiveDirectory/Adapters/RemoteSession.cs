@@ -208,22 +208,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
 
 
-        private void Monitor()
-        {
-            if (!Monitoring)
-            {
-                Monitoring = true;
-                Task.Run(() =>
-                {
-                    while (true)
-                    {
-                        Task.Delay(1000).Wait();
-                        GetNewSessionState();
-                    }
-                });
-            }
-        }
-
         private void GetNewSessionState()
         {
             try

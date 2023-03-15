@@ -108,7 +108,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
 
 
-                return Context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length);
+                return DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length);
             }
         }
 
@@ -118,7 +118,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
 
 
-                return Context.PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
+                return DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
             }
         }
         /// <summary>

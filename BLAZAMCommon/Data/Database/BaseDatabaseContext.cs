@@ -15,21 +15,19 @@ using Microsoft.VisualStudio.Services.WebApi;
 
 namespace BLAZAM.Common.Data.Database
 {
-    public class DatabaseContext : DbContext
+    public class DatabaseContext : DbContext, IDatabaseContext
     {
-
         /// <summary>
         /// The connection string as set in the ASP Net Core appsettings.json
         /// <para>This should be set before any attempts to connect.</para>
         /// <para>Usually in the Program.Main method before injecting the service.</para>
         /// </summary>
-        public static DatabaseConnectionString? ConnectionString { get; set; }
-
+        public DatabaseConnectionString? ConnectionString { get; set; }
 
         /// <summary>
         /// Checks the realtime pingabillity and connectivity to the database right now
         /// </summary>
-        public DatabaseStatus Status
+        public virtual DatabaseStatus Status
         {
             get
             {
@@ -40,7 +38,7 @@ namespace BLAZAM.Common.Data.Database
 
 
         static IEnumerable<string> _pendingMigrations;
-        public IEnumerable<string> PendingMigrations
+        public virtual IEnumerable<string> PendingMigrations
         {
             get
             {
@@ -49,7 +47,9 @@ namespace BLAZAM.Common.Data.Database
             }
         }
         static IEnumerable<string> _appliedMigrations;
-        public IEnumerable<string> AppliedMigrations
+        private string _dbType;
+
+        public virtual IEnumerable<string> AppliedMigrations
         {
             get
             {
@@ -66,54 +66,65 @@ namespace BLAZAM.Common.Data.Database
             IncompleteConfiguration
         }
 
+        public DatabaseContext(DatabaseConnectionString databaseConnectionString) : base()
+        {
+            ConnectionString = databaseConnectionString;
+            _dbType = "SQL";
+        }
+
+
+
+
+
+
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
         /// <param name="options"><inheritdoc/></param>
-        public DatabaseContext( DbContextOptions options) : base(options)
+        public DatabaseContext(DbContextOptions options) : base(options)
         {
         }
 
         //App Settings
-        public DbSet<AppSettings> AppSettings { get; set; }
-        public DbSet<ADSettings> ActiveDirectorySettings { get; set; }
-        public DbSet<AuthenticationSettings> AuthenticationSettings { get; set; }
-        public DbSet<EmailSettings> EmailSettings { get; set; }
-        public DbSet<EmailTemplate> EmailTemplates { get; set; }
-        public DbSet<UserSettings> UserSettings { get; set; }
+        public virtual DbSet<AppSettings> AppSettings { get; set; }
+        public virtual DbSet<ADSettings> ActiveDirectorySettings { get; set; }
+        public virtual DbSet<AuthenticationSettings> AuthenticationSettings { get; set; }
+        public virtual DbSet<EmailSettings> EmailSettings { get; set; }
+        public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
+        public virtual DbSet<UserSettings> UserSettings { get; set; }
 
 
 
         //Audit Logs
-        public DbSet<SystemAuditLog> SystemAuditLog { get; set; }
-        public DbSet<LogonAuditLog> LogonAuditLog { get; set; }
-        public DbSet<UserAuditLog> UserAuditLog { get; set; }
-        public DbSet<GroupAuditLog> GroupAuditLog { get; set; }
-        public DbSet<ComputerAuditLog> ComputerAuditLog { get; set; }
-        public DbSet<OUAuditLog> OUAuditLog { get; set; }
-        public DbSet<RequestAuditLog> RequestAuditLog { get; set; }
-        public DbSet<PermissionsAuditLog> PermissionsAuditLog { get; set; }
-        public DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
+        public virtual DbSet<SystemAuditLog> SystemAuditLog { get; set; }
+        public virtual DbSet<LogonAuditLog> LogonAuditLog { get; set; }
+        public virtual DbSet<UserAuditLog> UserAuditLog { get; set; }
+        public virtual DbSet<GroupAuditLog> GroupAuditLog { get; set; }
+        public virtual DbSet<ComputerAuditLog> ComputerAuditLog { get; set; }
+        public virtual DbSet<OUAuditLog> OUAuditLog { get; set; }
+        public virtual DbSet<RequestAuditLog> RequestAuditLog { get; set; }
+        public virtual DbSet<PermissionsAuditLog> PermissionsAuditLog { get; set; }
+        public virtual DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
 
 
 
         //Permissions
-        public DbSet<ActiveDirectoryField> ActiveDirectoryFields { get; set; }
-        public DbSet<AccessLevel> AccessLevels { get; set; }
-        public DbSet<ObjectAccessMapping> AccessLevelObjectMapping { get; set; }
-        public DbSet<FieldAccessMapping> AccessLevelFieldMapping { get; set; }
-        public DbSet<FieldAccessLevel> FieldAccessLevel { get; set; }
-        public DbSet<ObjectAccessLevel> ObjectAccessLevel { get; set; }
-        public DbSet<ActionAccessFlag> ObjectActionFlag { get; set; }
+        public virtual DbSet<ActiveDirectoryField> ActiveDirectoryFields { get; set; }
+        public virtual DbSet<AccessLevel> AccessLevels { get; set; }
+        public virtual DbSet<ObjectAccessMapping> AccessLevelObjectMapping { get; set; }
+        public virtual DbSet<FieldAccessMapping> AccessLevelFieldMapping { get; set; }
+        public virtual DbSet<FieldAccessLevel> FieldAccessLevel { get; set; }
+        public virtual DbSet<ObjectAccessLevel> ObjectAccessLevel { get; set; }
+        public virtual DbSet<ActionAccessFlag> ObjectActionFlag { get; set; }
 
-        public DbSet<PermissionDelegate> PermissionDelegate { get; set; }
-        public DbSet<PermissionMap> PermissionMap { get; set; }
+        public virtual DbSet<PermissionDelegate> PermissionDelegate { get; set; }
+        public virtual DbSet<PermissionMap> PermissionMap { get; set; }
 
 
         //Templates
-        public DbSet<DirectoryTemplate> DirectoryTemplates { get; set; }
-        public DbSet<DirectoryTemplateFieldValue> DirectoryTemplateFieldValues { get; set; }
-        public DbSet<DirectoryTemplateGroup> DirectoryTemplateGroups { get; set; }
+        public virtual DbSet<DirectoryTemplate> DirectoryTemplates { get; set; }
+        public virtual DbSet<DirectoryTemplateFieldValue> DirectoryTemplateFieldValues { get; set; }
+        public virtual DbSet<DirectoryTemplateGroup> DirectoryTemplateGroups { get; set; }
 
 
 
@@ -121,31 +132,34 @@ namespace BLAZAM.Common.Data.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
-
-            var dbType = Configuration.GetValue<string>("DatabaseType");
-            switch (dbType)
+            //Keeping the contents of this method here for now, delete and replace with NotImplementedException
+            //When ready
+            //No child classes rely on this
+            /*
+            _dbType ??= Configuration.GetValue<string>("DatabaseType");
+            Console.WriteLine("Database Type: " + _dbType);
+            switch (_dbType)
             {
-                
-                 case "SQL":
 
-                     optionsBuilder.UseSqlServer(
-                         Configuration.GetConnectionString("SQLConnectionString"),
-                             sqlServerOptionsAction: sqlOptions =>
-                             {
-                                 sqlOptions.EnableRetryOnFailure();
+                case "SQL":
 
-                             }
-                                 ).EnableSensitiveDataLogging()
-                                 .LogTo(Loggers.DatabaseLogger.Information);
-                     break;
-                 case "SQLite":
+                    optionsBuilder.UseSqlServer(
+                        Configuration.GetConnectionString("SQLConnectionString"),
+                            sqlServerOptionsAction: sqlOptions =>
+                            {
+                                sqlOptions.EnableRetryOnFailure();
 
-                     optionsBuilder.UseSqlite(
-                         Configuration.GetConnectionString("SQLiteConnectionString")).EnableSensitiveDataLogging()
-                         .LogTo(Loggers.DatabaseLogger.Information);
-                     break;
-                
+                            }
+                                ).EnableSensitiveDataLogging()
+                                .LogTo(Loggers.DatabaseLogger.Information);
+                    break;
+                case "SQLite":
+
+                    optionsBuilder.UseSqlite(
+                        Configuration.GetConnectionString("SQLiteConnectionString")).EnableSensitiveDataLogging()
+                        .LogTo(Loggers.DatabaseLogger.Information);
+                    break;
+
                 case "MySQL":
                     optionsBuilder.UseMySql(ConnectionString?.ConnectionString,
                          serverVersion: new MySqlServerVersion(new Version(8, 0, 32)),
@@ -162,7 +176,7 @@ namespace BLAZAM.Common.Data.Database
 
             }
 
-
+            */
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -355,7 +369,6 @@ namespace BLAZAM.Common.Data.Database
 
 
 
-
         /// <summary>
         /// This should be private
         /// </summary>
@@ -364,9 +377,6 @@ namespace BLAZAM.Common.Data.Database
         {
             if (ConnectionString != null)
             {
-
-
-
                 //Check for db connection
                 try
                 {
@@ -385,27 +395,20 @@ namespace BLAZAM.Common.Data.Database
 
                     if (!NetworkTools.IsPortOpen(ConnectionString.ServerAddress, ConnectionString.ServerPort)) return DatabaseStatus.ServerUnreachable;
 
-
                     Database.OpenConnection();
-
-
                     //Check for tables
+
                     if (IsSeeded())
                     {
                         //Installation has been completed
-
                         Database.CloseConnection();
-
-                        return DatabaseStatus.OK;
                     }
                     else
                     {
                         Database.CloseConnection();
-
-                        return DatabaseStatus.TablesMissing;
+                       // return DatabaseStatus.TablesMissing;
                     }
-
-
+                    return DatabaseStatus.OK;
 
                 }
                 catch (SqlException ex)
@@ -422,34 +425,30 @@ namespace BLAZAM.Common.Data.Database
 
                         case 18456:
                             //Database may be missing or permission issue
-
                             return DatabaseStatus.DatabaseConnectionIssue;
-
-
-
                     }
 
                 }
 
 
-                catch (RetryLimitExceededException )
+                catch (RetryLimitExceededException)
                 {
                     //Couldn't connect to DB
-
                     return DatabaseStatus.DatabaseConnectionIssue;
 
                 }
-                catch (DatabaseConnectionStringException )
+                catch (DatabaseConnectionStringException)
                 {
+                    return DatabaseStatus.IncompleteConfiguration;
+                }
+                catch (ApplicationException ex) {
+                    
                     return DatabaseStatus.IncompleteConfiguration;
                 }
                 catch (Exception ex)
                 {
-
-                    Loggers.DatabaseLogger.Error(ex.Message,ex);
+                    Loggers.DatabaseLogger.Error(ex.Message, ex);
                     //Installation not completed
-
-
                 }
                 throw new ApplicationException("Unknown error checking connecting to database. The port is open.");
 
@@ -458,23 +457,32 @@ namespace BLAZAM.Common.Data.Database
             }
             return DatabaseStatus.IncompleteConfiguration;
         }
-        public bool IsSeeded()
+
+        /// <summary>
+        /// Checks if the database seed migration hase been applied
+        /// </summary>
+        /// <remarks>If the database cannot connect this method returns true</remarks>
+        /// <returns>Returns true if the seed migration has been applied, or the database can't be reached, otherwise
+        /// returns false.</returns>
+        public virtual bool IsSeeded()
         {
             try
             {
-                return AppSettings.FirstOrDefault()?.InstallationCompleted == true;
+                if (AppSettings.FirstOrDefault()?.InstallationCompleted == true)
+                    return true;
             }
             catch
             {
 
             }
-            var appliedMigs = this.Database.GetAppliedMigrations();
+
+            var appliedMigs = Database.GetAppliedMigrations();
             //var migs = this.Database.GetPendingMigrations();
 
             if (appliedMigs.Count() > 0) return true;
             try
             {
-                if (this.AuthenticationSettings.FirstOrDefault() == null)
+                if (AuthenticationSettings.FirstOrDefault() == null)
                     return false;
                 return true;
             }
@@ -483,8 +491,6 @@ namespace BLAZAM.Common.Data.Database
                 return false;
             }
         }
-
-
 
     }
 }

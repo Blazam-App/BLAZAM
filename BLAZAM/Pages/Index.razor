@@ -2,26 +2,27 @@
 @layout MinLayout
 
 @inject NavigationManager NavManager
-@inject IDbContextFactory<DatabaseContext> DbFactory
+@inject AppDatabaseFactory DbFactory
 @inject ConnMonitor tester
 @inject IStringLocalizer<AppLocalization> Localizer
 <h2>
     @Localizer["ApplicationStarting"]
-   
+
 </h2>
 <progress />
 @{
-    
-    Task.Run(async () => {
+
+    Task.Run(async () =>
+    {
         while (NavManager.ToBaseRelativePath(NavManager.Uri) == "")
         {
             if (Program.InstallationCompleted)
             {
-                if (tester.AppReady == ConnectionState.Up)
+                if (tester.AppReady == ServiceConnectionState.Up)
                 {
                     NavManager.NavigateTo("/home", true);
                 }
-                else if (tester.AppReady == ConnectionState.Down)
+                else if (tester.AppReady == ServiceConnectionState.Down)
                 {
                     NavManager.NavigateTo("/oops", true);
 
@@ -31,25 +32,24 @@
         }
 
     });
-    
+
 }
-@code{
+@code {
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         tester.OnAppReadyChanged += AppReady;
-       
+
     }
-    private void AppReady(ConnectionState newStatus)
+    private void AppReady(ServiceConnectionState newStatus)
     {
-        if (newStatus == ConnectionState.Up)
-        {
+        if (newStatus == ServiceConnectionState.Up)
             if (NavManager.ToBaseRelativePath(NavManager.Uri) == "")
             {
                 NavManager.NavigateTo("/home");
 
             }
-        }
     }
 }
+
 

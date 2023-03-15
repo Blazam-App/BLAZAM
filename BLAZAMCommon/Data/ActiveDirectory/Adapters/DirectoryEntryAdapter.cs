@@ -67,7 +67,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         protected List<Func<bool>> CommitActions { get; set; } = new();
         private DirectoryEntry? directoryEntry;
         public SearchResult? searchResult;
-        protected DatabaseContext Context;
+        protected AppDatabaseFactory DbFactory;
         protected IApplicationUserStateService UserStateService { get; set; }
 
         bool _newEntry = false;
@@ -542,11 +542,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
 
             UserStateService = directory.UserStateService;
-            Context = await directory.Factory.CreateDbContextAsync();
-            using (var context = await directory.Factory.CreateDbContextAsync())
-            {
-                DirectorySettings = await context.ActiveDirectorySettings.FirstOrDefaultAsync();
-            }
+            DbFactory = directory.Factory;
+           
+                DirectorySettings = await DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefaultAsync();
+            
 
         }
 

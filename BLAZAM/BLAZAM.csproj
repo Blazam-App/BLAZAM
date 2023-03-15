@@ -5,8 +5,8 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
-		<AssemblyVersion>0.6.7</AssemblyVersion>
-		<Version>2023.03.13.0006</Version>
+		<AssemblyVersion>0.7.0</AssemblyVersion>
+		<Version>2023.03.14.2256</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -29,9 +29,6 @@
 
 
 	<ItemGroup>
-	  <Content Include="appsettings.json.example">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
 	  <Content Include="nssm.exe">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
@@ -126,9 +123,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Update="appsettings.json">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	  </Content>
 	  <Content Update="wwwroot\favicon.ico">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>

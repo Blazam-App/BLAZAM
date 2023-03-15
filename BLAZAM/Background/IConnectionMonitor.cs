@@ -1,9 +1,11 @@
-﻿namespace BLAZAM.Server.Background
+﻿using BLAZAM.Common.Data;
+
+namespace BLAZAM.Server.Background
 {
     public interface IConnectionMonitor
     {
-        public ConnectionState Connected { get; }
-        public AppEvent<ConnectionState>? OnConnectedChanged { get; set; }
+        public ServiceConnectionState Status { get; }
+        public AppEvent<ServiceConnectionState>? OnConnectedChanged { get; set; }
 
         public void Monitor();
     }

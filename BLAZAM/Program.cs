@@ -37,6 +37,8 @@ using BLAZAM.Server.Pages.Error;
 using System.Diagnostics;
 using System.Reflection;
 using BLAZAM.Common.Models.Database;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Scaffolding;
 
 namespace BLAZAM
 {
@@ -84,7 +86,7 @@ namespace BLAZAM
         /// </returns>
         internal static List<string> ListeningAddresses { get; private set; } = new List<string>();
 
-        private static IDbContextFactory<DatabaseContext>? _programDbFactory;
+        private static AppDatabaseFactory? _programDbFactory;
 
 
 
@@ -309,25 +311,10 @@ namespace BLAZAM
             //Inject the database as a service
 
             DatabaseContext.Configuration = builder.Configuration;
-            var dbType = builder.Configuration.GetValue<string>("DatabaseType");
-            if (dbType != null && Configuration != null)
-            {
-                switch (dbType.ToLower())
-                {
-                    case "sqlite":
-                        DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("SQLiteConnectionString"), DatabaseType.SQLite);
-                        break;
-                    case "sql":
-                        DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("SQLConnectionString"), DatabaseType.SQL);
-                        break;
-                    case "mysql":
-                        DatabaseContext.ConnectionString = new DatabaseConnectionString(Configuration.GetConnectionString("MySQLConnectionString"), DatabaseType.MySQL);
-                        break;
+            
+            builder.Services.AddSingleton<AppDatabaseFactory>();
 
-                }
-                Loggers.SystemLogger.Debug("Connection String: " + DatabaseContext.ConnectionString);
-            }
-            builder.Services.AddDbContextFactory<DatabaseContext>();
+            //builder.Services.AddDbContextFactory<DatabaseContext>();
 
 
 
@@ -468,7 +455,7 @@ namespace BLAZAM
             //Start the database cache
             using (var scope = AppInstance.Services.CreateScope())
             {
-                _programDbFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DatabaseContext>>();
+                _programDbFactory = scope.ServiceProvider.GetRequiredService<AppDatabaseFactory>();
                 DatabaseCache.Start(_programDbFactory, Loggers.DatabaseLogger);
             }
 
@@ -537,15 +524,14 @@ namespace BLAZAM
 
         internal static async Task<bool> ApplyDatabaseMigrations(bool force = false)
         {
-            return await Task.Run(() =>
-            {
 
+            return await Task.Run(() => {
                 try
                 {
                     using (var scope = AppInstance.Services.CreateScope())
                     {
-                        var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-                        if (context != null)
+                        var context = scope.ServiceProvider.GetRequiredService<AppDatabaseFactory>().CreateDbContext();
+                        if (context != null && context.Status == DatabaseContext.DatabaseStatus.OK)
                             if (context.IsSeeded() || force)
                                 if (context.Database.GetPendingMigrations().Count() > 0)
                                     context.Database.Migrate();
@@ -556,9 +542,11 @@ namespace BLAZAM
                 catch (Exception ex)
                 {
                     Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
+                    throw ex;
                     return false;
                 }
             });
+           
         }
 
     }

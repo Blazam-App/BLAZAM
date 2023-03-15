@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BLAZAM.Common.Migrations
+namespace BLAZAM.Common.Migrations.MySql
 {
-    [DbContext(typeof(DatabaseContext))]
-    [Migration("20230310145225_seed")]
-    partial class seed
+    [DbContext(typeof(MySqlDatabaseContext))]
+    [Migration("20230314010609_seedMySql")]
+    partial class seedMySql
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -367,9 +367,6 @@ namespace BLAZAM.Common.Migrations
                     b.Property<bool>("ForceHTTPS")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int?>("HttpsPort")
-                        .HasColumnType("int");
-
                     b.Property<bool>("InstallationCompleted")
                         .HasColumnType("tinyint(1)");
 
@@ -641,6 +638,18 @@ namespace BLAZAM.Common.Migrations
 
                     b.Property<string>("Action")
                         .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("AfterAction")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("BeforeAction")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Target")
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("Timestamp")

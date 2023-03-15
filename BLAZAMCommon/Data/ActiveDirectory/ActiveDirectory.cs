@@ -82,6 +82,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             }
             return found;
         }
+
         private Timer t;
 
         public IADUserSearcher Users { get; }
@@ -89,7 +90,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         public IADOUSearcher OUs { get; }
         public IADComputerSearcher Computers { get; }
 
-        public DatabaseContext? Context { get; private set; }
+        public IDatabaseContext? Context { get; private set; }
         public bool Pingable
         {
             get
@@ -126,7 +127,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         }
         public AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
         public AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
-        public IDbContextFactory<DatabaseContext>? Factory { get; private set; }
+        public AppDatabaseFactory? Factory { get; private set; }
         public ADSettings? ConnectionSettings { get; private set; }
 
         public IApplicationUserStateService? UserStateService { get; set; }
@@ -141,7 +142,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         /// </summary>
         /// <param name="context"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
-        public ActiveDirectoryContext(IDbContextFactory<DatabaseContext> factory,
+        public ActiveDirectoryContext(AppDatabaseFactory factory,
             IApplicationUserStateService userStateService,
             WmiFactoryService wmiFactory,
             IEncryptionService encryptionService)
@@ -151,9 +152,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             Factory = factory;
             UserStateService = userStateService;
             UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             ConnectAsync();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             t = new Timer(KeepAlive, null, 30000, 30000);
 
             Users = new ADUserSearcher(this);

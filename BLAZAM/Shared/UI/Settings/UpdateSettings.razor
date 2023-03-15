@@ -9,15 +9,7 @@
 
             @if (settings != null)
             {
-                <Validation>
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["Allow Auto Update"]</FieldLabel>
-                        <FieldBody>
-                            <Switch TValue="bool" @bind-Checked=@(settings.AutoUpdate) />
-                        </FieldBody>
-                    </SettingsField>
 
-                </Validation>
                 <SettingsField>
                     <FieldLabel>@SettingsLocalization["Update Branch"]</FieldLabel>
                     <FieldBody>
@@ -28,8 +20,29 @@
                                 ValueField="item=>item"
                                 @bind-SelectedValue=@settings.UpdateBranch />
                     </FieldBody>
+
                 </SettingsField>
 
+
+                <SettingsField>
+
+                    <FieldLabel>
+                        @SettingsLocalization["Update"]
+                    </FieldLabel>
+                    <FieldBody>
+
+                        <ManualApplicationUpdater />
+
+                    </FieldBody>
+                </SettingsField>
+
+
+                <SettingsField>
+                    <FieldLabel>@SettingsLocalization["Allow Auto Update"]</FieldLabel>
+                    <FieldBody>
+                        <Switch TValue="bool" @bind-Checked=@(settings.AutoUpdate) />
+                    </FieldBody>
+                </SettingsField>
 
 
                 @if (settings?.AutoUpdate == true)
@@ -44,31 +57,8 @@
                         </FieldBody>
                     </SettingsField>
 
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["Update Branch"]</FieldLabel>
-                        <FieldHelp>Choosing the Dev branch may result in application breakage</FieldHelp>
-                        <FieldBody>
-                            <Select TValue="string" @bind-SelectedValue="@settings.UpdateBranch">
-                                <SelectItem Value=@("Stable")>Stable</SelectItem>
-                                <SelectItem Value=@("Nightly")>Nightly</SelectItem>
-                                <SelectItem Value=@("Dev")>Dev</SelectItem>
-                            </Select>
-                        </FieldBody>
-                    </SettingsField>
+
                 }
-
-
-                <SettingsField>
-
-                    <FieldLabel>
-                        @SettingsLocalization["Update"]
-                    </FieldLabel>
-                    <FieldBody>
-
-                        <ManualApplicationUpdater />
-
-                    </FieldBody>
-                </SettingsField>
 
 
                 <SettingsField>

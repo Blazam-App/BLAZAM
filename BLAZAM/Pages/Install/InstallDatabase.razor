@@ -27,10 +27,10 @@
 {
     <Div>
         <Heading Size="HeadingSize.Is5">The database is ready to install.</Heading>
-        <Heading Size="HeadingSize.Is5">Type</Heading><Text>@DatabaseContext.ConnectionString?.DatabaseType</Text>
-        <Heading Size="HeadingSize.Is5">Server</Heading><Text>@DatabaseContext.ConnectionString?.ServerAddress</Text>
-        <Heading Size="HeadingSize.Is5">Port</Heading><Text>@DatabaseContext.ConnectionString?.ServerPort</Text>
-        <Heading Size="HeadingSize.Is5">Database</Heading><Text>@DatabaseContext.ConnectionString?.Database</Text>
+        <Heading Size="HeadingSize.Is5">Type</Heading><Text>@Context.ConnectionString?.DatabaseType</Text>
+        <Heading Size="HeadingSize.Is5">Server</Heading><Text>@Context.ConnectionString?.ServerAddress</Text>
+        <Heading Size="HeadingSize.Is5">Port</Heading><Text>@Context.ConnectionString?.ServerPort</Text>
+        <Heading Size="HeadingSize.Is5">Database</Heading><Text>@Context.ConnectionString?.Database</Text>
         <Divider />
         <Help>
             Make sure the settings above are as intended. The application should be provided a
@@ -62,14 +62,20 @@ else
 
             progressValue = 100;
             await InvokeAsync(StateHasChanged);
-            if (await Program.ApplyDatabaseMigrations(true))
+            try
             {
-                Completed = true;
-                await InvokeAsync(StepCompleted.InvokeAsync);
+                if (await Program.ApplyDatabaseMigrations(true))
+                {
+                    Completed = true;
+                    await InvokeAsync(StepCompleted.InvokeAsync);
 
+                }
+                progressValue = 0;
             }
-            progressValue = 0;
-
+            catch(Exception  ex)
+            {
+                MessageService.Error(ex.Message, ex.GetType().FullName);
+            }
             await InvokeAsync(StateHasChanged);
 
         });

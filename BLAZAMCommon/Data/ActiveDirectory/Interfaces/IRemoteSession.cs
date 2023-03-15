@@ -7,7 +7,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
     public interface IRemoteSession
     {
         IPAddress ClientIPAddress { get; }
-        ConnectionState ConnectionState { get; }
+        Cassia.ConnectionState ConnectionState { get; }
         DateTime? ConnectTime { get; }
         TimeSpan? IdleTime { get; }
         DateTime? LoginTime { get; }
