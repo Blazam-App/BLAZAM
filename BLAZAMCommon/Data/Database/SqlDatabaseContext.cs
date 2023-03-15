@@ -26,7 +26,8 @@ namespace BLAZAM.Common.Data.Database
         {
             if (ConnectionString == null)
             {
-                return;
+                ConnectionString = new DatabaseConnectionString("test");
+
             }
             optionsBuilder.UseSqlServer(
                        ConnectionString.Value,

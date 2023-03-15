@@ -30,7 +30,8 @@ namespace BLAZAM.Common.Data.Database
         {
             if (ConnectionString == null)
             {
-                return;
+                ConnectionString = new DatabaseConnectionString("test");
+
             }
             optionsBuilder.UseSqlite(
                          ConnectionString.Value).EnableSensitiveDataLogging()
