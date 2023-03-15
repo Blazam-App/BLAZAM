@@ -366,10 +366,6 @@ namespace BLAZAM
 
 
 
-
-            //builder.Services.AddBlazoredSessionStorage(); 
-            //builder.Services.AddScoped<LoginRedirector>();
-
             //Add Blazorize UI framework
 
             builder.Services.AddBlazorise(options =>
@@ -413,14 +409,12 @@ namespace BLAZAM
             {
                 AppInstance.Environment.EnvironmentName = "Development";
                 AppInstance.UseDeveloperExceptionPage();
-                AppInstance.UseDeveloperExceptionPage();
             }
 
 
 
 
 
-            //AppInstance.UseMiddleware<SessionTimeoutMiddlware>();
             AppInstance.UseMiddleware<HttpsRedirectionMiddleware>();
             AppInstance.UseMiddleware<ApplicationStatusRedirectMiddleware>();
             AppInstance.UseStaticFiles();
