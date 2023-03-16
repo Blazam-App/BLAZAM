@@ -1,4 +1,5 @@
 using BLAZAM.Common.Data;
+using BLAZAM.Common.Extensions;
 using BLAZAM.Server.Background;
 using BLAZAM.Server.Data;
 using BLAZAM.Server.Data.Services;
@@ -53,7 +54,7 @@ namespace BLAZAM.Server.Pages
                 //return Redirect(req.ReturnUrl);
             }
             //Nav.NavigateTo("/signin?returnUrl="+req.ReturnUrl, true);
-            //return (IActionResult)Results.Problem("Authentication failed");
+            //return (IActionResult)Results.Ok();
             //return Redirect("/signin?returnUrl="+req.ReturnUrl);
             return Redirect(req.ReturnUrl);
         }

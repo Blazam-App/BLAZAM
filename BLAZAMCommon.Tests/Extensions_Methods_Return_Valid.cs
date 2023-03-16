@@ -1,4 +1,5 @@
-using static BLAZAM.CommonExtensions;
+using BLAZAM.Common.Extensions;
+using static BLAZAM.Common.Extensions.CommonExtensions;
 
 namespace BLAZAM.Tests
 {

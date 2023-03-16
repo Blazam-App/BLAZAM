@@ -15,6 +15,7 @@ using BLAZAM.Common.Helpers;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using BLAZAM.Common.Extensions;
 
 namespace BLAZAM
 {
@@ -91,7 +92,7 @@ namespace BLAZAM
         }
 
         private ClaimsPrincipal? CurrentUser;
-        private readonly ApplicationUserState _newUserState = new();
+        private ApplicationUserState _newUserState;
 
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
@@ -137,7 +138,7 @@ namespace BLAZAM
         /// <returns>A fully processed AuthenticationState with all Claims and application permissions applied.</returns>
         public async Task<AuthenticationState?> Login(LoginRequest loginReq)
         {
-
+            _newUserState = new(_factory);
             if (loginReq != null && loginReq.Username != null && loginReq.Username != "")
             {
                 AuthenticationState? result = null;

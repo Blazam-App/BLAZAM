@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations.Schema;
+using BLAZAM.Common.Extensions;
 
 namespace BLAZAM.Common.Models.Database.Permissions
 {

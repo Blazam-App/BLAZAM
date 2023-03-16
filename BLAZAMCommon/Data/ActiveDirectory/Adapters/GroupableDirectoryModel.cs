@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Models.Database.Permissions;
 using System.Data;
 using System.Globalization;
@@ -177,6 +178,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
             set
             {
+                //TODO disable/enable user
                 if (value && !Disabled)
                 {
                     UAC = (UAC | ADS_UF_ACCOUNTDISABLE);

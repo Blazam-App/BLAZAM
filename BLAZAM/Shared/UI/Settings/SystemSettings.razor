@@ -1,5 +1,6 @@
 @inherits SettingsComponents
 @using System.IO.Compression;
+@using BLAZAM.Common.Extensions;
     <Heading>@SettingsLocalization["System Settings"]</Heading>
     <Form @onsubmit="Save">
     @if (settings != null)

@@ -28,30 +28,12 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
 
-namespace BLAZAM
+namespace BLAZAM.Common.Extensions
 {
     public static class CommonExtensions
     {
-        public static TimeSpan? SessionTimeout(this HttpContext httpContext)
-        {
-            // Get the current authentication cookie
-            var cookie = httpContext.Request.Cookies[CookieAuthenticationDefaults.CookiePrefix + CookieAuthenticationDefaults.AuthenticationScheme];
-            if (cookie != null)
-            {
-                // Get the TicketDataFormat from the authentication options
-                var ticketDataFormat = httpContext.RequestServices.GetRequiredService<IOptionsMonitor<CookieAuthenticationOptions>>().Get(CookieAuthenticationDefaults.AuthenticationScheme).TicketDataFormat;
-
-                // Decrypt the cookie to get the authentication ticket
-                var ticket = ticketDataFormat.Unprotect(cookie);
-                if (ticket != null)
-                {
-                    return ticket.Properties.ExpiresUtc - ticket.Properties.IssuedUtc;
-                }
-
-            }
-            return null;
-        }
         public static string GetValueChangesString(this List<AuditChangeLog> changes, Func<AuditChangeLog, object?> valueSelector)
         {
             var values = "";
@@ -116,7 +98,7 @@ namespace BLAZAM
             foreach (var sdi in directory.SubDirectories)
             {
                 // Recursively add files and subdirectories with their relative paths
-                AddToZip(archive, sdi, basePath);
+                archive.AddToZip(sdi, basePath);
             }
         }
 
@@ -162,7 +144,7 @@ namespace BLAZAM
                     newValue = property.GetValue(changed);
 
                 // Compare the values using Equals method
-                if ((oldValue is null || newValue is null)
+                if (oldValue is null || newValue is null
                     || !Equals(oldValue, newValue))
                 {
                     // Create a new AuditChangeLog instance with the property name and values
@@ -193,7 +175,7 @@ namespace BLAZAM
             for (int i = 0; i < a.Length; i++)
             {
                 // XOR the bytes and count the number of 1s in the result
-                diff += BitCount((byte)(a[i] ^ b[i]));
+                diff += ((byte)(a[i] ^ b[i])).BitCount();
             }
 
             // Return the total number of different bits
@@ -239,21 +221,21 @@ namespace BLAZAM
         {
             if (url.StartsWith("https://localhost")) return true;
             if (url == "") return true;
-            return ((url[0] == '/' && (url.Length == 1 ||
-                    (url[1] != '/' && url[1] != '\\'))) ||   // "/" or "/foo" but not "//" or "/\"
-                    (url.Length > 1 &&
-                     url[0] == '~' && url[1] == '/'));   // "~/" or "~/foo"
+            return url[0] == '/' && (url.Length == 1 ||
+                    url[1] != '/' && url[1] != '\\') ||   // "/" or "/foo" but not "//" or "/\"
+                    url.Length > 1 &&
+                     url[0] == '~' && url[1] == '/';   // "~/" or "~/foo"
         }
 
         public static string ToPlainText(this SecureString? secureString)
         {
-            if (secureString == null) return String.Empty;
+            if (secureString == null) return string.Empty;
             IntPtr bstrPtr = Marshal.SecureStringToBSTR(secureString);
             try
             {
                 var plainText = Marshal.PtrToStringBSTR(bstrPtr);
                 if (plainText == null)
-                    plainText = String.Empty;
+                    plainText = string.Empty;
                 return plainText;
 
             }
@@ -300,7 +282,7 @@ namespace BLAZAM
         }
         public static string ToHex(this System.Drawing.Color color)
         {
-            String rtn = String.Empty;
+            string rtn = string.Empty;
             try
             {
                 rtn = "#" + color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2") + color.A.ToString("X2");
@@ -391,7 +373,7 @@ namespace BLAZAM
 
                 if (null == v) return DateTime.MinValue;
 
-                long dV = ((long)v.HighPart << 32) + (long)v.LowPart;
+                long dV = ((long)v.HighPart << 32) + v.LowPart;
                 return DateTime.FromFileTime(dV);
             }
             catch

@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.IdentityModel.Tokens;

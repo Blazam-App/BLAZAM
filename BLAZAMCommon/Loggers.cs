@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using BLAZAM.Common.Extensions;
+using Serilog;
 using Serilog.Events;
 using System;
 using System.Collections.Generic;

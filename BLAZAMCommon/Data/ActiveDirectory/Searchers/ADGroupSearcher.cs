@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.ActiveDirectory.Models;
+using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Helpers;
 using static Microsoft.VisualStudio.Services.Graph.GraphResourceIds;
 

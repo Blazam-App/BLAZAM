@@ -35,6 +35,7 @@
                                 <Row>Authenticated: @state.User?.Identity?.IsAuthenticated</Row>
                                 <Row>Auth Type: @state.User?.Identity?.AuthenticationType</Row>
                                 <Row>Last Access: @state.LastAccessed</Row>
+                                <Row>Ticket Expiration: @(state.Ticket?.Properties.ExpiresUtc)</Row>
                                 <Row>Is Super Admin: @state.IsSuperAdmin</Row>
                                 <Row>Directory Entry Exists: @(state.DirectoryUser != null)</Row>
                                     @if (state.DirectoryUser != null)

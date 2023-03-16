@@ -3,6 +3,7 @@ using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Models.Database.User;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -37,7 +38,21 @@ namespace BLAZAM.Server.Data.Services
         /// The last request time for this web user
         /// </summary>
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
-        private UserSettings? userSettings;
+
+
+        public AuthenticationTicket Ticket { get; set; }
+
+        public UserSettings? userSettings { get; set; }
+        private readonly AppDatabaseFactory _dbFactory;
+
+        public ApplicationUserState(AppDatabaseFactory factory)
+        {
+            _dbFactory = factory;
+        }
+
+
+
+
         /// <summary>
         /// Provides access to the user's settings in the database
         /// </summary>
@@ -54,7 +69,7 @@ namespace BLAZAM.Server.Data.Services
                 {
                     try
                     {
-                        using var context = DbFactory.CreateDbContext();
+                        using var context = _dbFactory.CreateDbContext();
                         userSettings = context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
                         if (userSettings == null)
                         {
@@ -82,7 +97,7 @@ namespace BLAZAM.Server.Data.Services
         {
             try
             {
-                using var context = await DbFactory.CreateDbContextAsync();
+                using var context = await _dbFactory.CreateDbContextAsync();
                 var dbUserSettings = await context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefaultAsync();
                 if (dbUserSettings != null)
                 {
@@ -125,9 +140,7 @@ namespace BLAZAM.Server.Data.Services
             }
         }
 
-        public AppDatabaseFactory DbFactory { get; set; }
-
-
+    
         public override int GetHashCode()
         {
             return User.FindFirstValue(ClaimTypes.Actor).GetHashCode();

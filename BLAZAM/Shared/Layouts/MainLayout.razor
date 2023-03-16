@@ -73,6 +73,21 @@
     </Layout>
 </CascadingValue>
 
+
+
+@using System.Security.Claims;
+@inject IJSRuntime JSRuntime
+@inject IApplicationUserStateService UserStateService
+
+
+@{
+    if (UserStateService.CurrentUserState.User.FindFirst(ClaimTypes.Sid) != null)
+    {
+        JSRuntime.InvokeVoidAsync("updateCookieExpiration");
+
+    }
+}
+
 @code {
 
 
