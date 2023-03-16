@@ -1,0 +1,92 @@
+@inject IMessageService MessageService
+@inject IApplicationUserStateService UserStateService
+@inject NavigationManager Nav
+@inject IJSRuntime JSRuntime
+
+
+    <AppModal Title="Your session is about to expire" @ref="ExpirationWarningModal">
+
+    @if (ExpirationWarningModal?.IsShown == true)
+    {
+       
+        var timeLeft = _ticket.Properties.ExpiresUtc - DateTime.UtcNow;
+        if (timeLeft.Value.TotalMilliseconds < 0)
+        {
+            ExpirationWarningModal.Hide();
+            ExpiredModal.AllowClose = false;
+            ExpiredModal.Show();
+            //Nav.NavigateTo(Nav.Uri,true);
+        }
+        string formattedTimeLeft = "";
+        if (timeLeft != null)
+        {
+
+            if (timeLeft.Value.Hours > 0)
+            {
+                formattedTimeLeft += timeLeft.Value.Hours + ":";
+            }
+            formattedTimeLeft += timeLeft.Value.Minutes + ":";
+            formattedTimeLeft += timeLeft.Value.Seconds.ToString("D2");
+            Task.Delay(1000).ContinueWith((state) =>
+            {
+                InvokeAsync(StateHasChanged);
+            });
+        }
+        <Div Background="Background.Light" TextColor="TextColor.Dark">
+            <Row>
+                <Field>
+                    <FieldLabel>
+                        Session expires in @formattedTimeLeft
+                    </FieldLabel>
+                </Field>
+            </Row>
+            <Row>
+                <Button Color="Color.Primary" Clicked=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>Refresh Session</Button>
+
+            </Row>
+        </Div>
+    }
+
+    </AppModal>
+<AppModal Title="Session Expired" @ref="ExpiredModal">
+
+    @if (ExpiredModal?.IsShown == true)
+    {
+        <Div Background="Background.Light" TextColor="TextColor.Dark">
+            <Row>
+                <Field>
+                    <FieldLabel>Your session has expired.</FieldLabel>
+                   
+                </Field>
+            </Row>
+            <Row>
+                <Button Color="Color.Primary" Clicked=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>Log In</Button>
+
+            </Row>
+        </Div>
+    }
+
+</AppModal>
+@code {
+    private Timer _t;
+    AppModal? ExpirationWarningModal;
+    AppModal? ExpiredModal;
+    AuthenticationTicket? _ticket;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _t = new Timer(CheckExpiration, null, 30000, 30000);
+    }
+    private async void CheckExpiration(object? obj)
+    {
+        if (UserStateService.CurrentUserState?.Ticket != null)
+        {
+            _ticket = UserStateService.CurrentUserState?.Ticket;
+            if (_ticket.Properties.ExpiresUtc - DateTime.UtcNow < TimeSpan.FromMinutes(2) && ExpirationWarningModal?.IsShown == false)
+            {
+                ExpirationWarningModal.Show();
+            }
+        }
+    }
+}

@@ -178,6 +178,10 @@
             buttonLabel = SettingsLocalization["Update Access Level"];
     }
     <Button Color=Color.Success Margin=Margin.IsAuto.OnX Disabled=saveDisabled Clicked="CreateAccessLevel">@buttonLabel</Button>
+    @if (WorkingModel.AccessLevelId != 0)
+    {
+        <Button Color=Color.Danger Margin=Margin.IsAuto.OnX Clicked="DeleteAccessLevel">@SettingsLocalization["Delete Access Level"]</Button>
+    }
 </Validations>
 @code {
 
@@ -322,7 +326,11 @@
         StateHasChanged();
 
     }
-
+    async Task DeleteAccessLevel()
+    {
+        WorkingModel.DeletedAt = DateTime.UtcNow;
+        await Context.SaveChangesAsync();
+    }
     private bool ShowField(ActiveDirectoryField field)
     {
         foreach (var map in WorkingModel.ObjectMap)

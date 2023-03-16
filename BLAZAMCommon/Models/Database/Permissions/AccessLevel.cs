@@ -12,6 +12,7 @@ namespace BLAZAM.Common.Models.Database.Permissions
         public List<ActionAccessMapping> ActionMap { get; set; } = new();
         public List<FieldAccessMapping> FieldMap { get; set; } = new();
         public List<PermissionMap> PermissionMaps { get; set; }
+        public DateTime? DeletedAt { get; set; }
         public int CompareTo(AccessLevel? other)
         {
             if(other == null) return 1;

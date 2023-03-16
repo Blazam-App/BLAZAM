@@ -1,5 +1,5 @@
 ﻿@inherits BaseComponent
-<Modal @ref="Modal" TextColor="TextColor">
+<Modal Closing="ModalClosing" FocusTrap="FocusTrap" RenderMode="ModalRenderMode.LazyLoad"   @ref="Modal" TextColor="TextColor">
     <ModalContent Centered>
         <ModalHeader Background="Background.Dark" TextColor="TextColor.Light">
             <ModalTitle>@Title</ModalTitle>
@@ -11,14 +11,21 @@
     </ModalContent>
 </Modal>
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     [Inject]
     protected INotificationService NotificationService{ get; set; }
     [Parameter]
     public IDatabaseContext? Context { get; set; }
 
+
     [Parameter]
     public string? Title{ get; set; }
+
+    [Parameter]
+    public bool AllowClose { get; set; } = true;
+    
+    [Parameter]
+    public bool FocusTrap{ get; set; } = false;
 
     [Parameter]
     public RenderFragment? ChildContent{ get; set; }
@@ -42,6 +49,13 @@
     [Parameter]
     public EventCallback<bool> IsShownChanged { get; set; }
 
+    async Task ModalClosing(ModalClosingEventArgs args)
+    {
+        if (!AllowClose)
+        {
+            args.Cancel=true;
+        }
+    }
     public void Show()
     {
         IsShown = true;

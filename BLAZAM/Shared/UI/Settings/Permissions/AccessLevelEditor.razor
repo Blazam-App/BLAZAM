@@ -38,13 +38,17 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        CurrentAccessLevels = await Context.AccessLevels.ToListAsync();
-        LoadingData = false;
+        Update();
 
     }
     async void Update()
     {
-        CurrentAccessLevels = await Context.AccessLevels.ToListAsync();
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+
+        CurrentAccessLevels = await Context.AccessLevels.Where(al => al.DeletedAt == null).ToListAsync();
+        LoadingData = false;
+
         await InvokeAsync(StateHasChanged);
     }
 }
