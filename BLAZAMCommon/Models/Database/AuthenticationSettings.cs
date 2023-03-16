@@ -2,9 +2,8 @@
 
 namespace BLAZAM.Common.Models.Database
 {
-    public class AuthenticationSettings
+    public class AuthenticationSettings : AppDbSetBase
     {
-        public int? AuthenticationSettingsId { get; set; }
         public int? SessionTimeout { get; set; }
         public string? AdminPassword { get; set; }
         public string? DuoClientId { get; set; }

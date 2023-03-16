@@ -118,7 +118,7 @@ namespace BLAZAM.Common.Data.Database
         public virtual DbSet<ActionAccessFlag> ObjectActionFlag { get; set; }
 
         public virtual DbSet<PermissionDelegate> PermissionDelegate { get; set; }
-        public virtual DbSet<PermissionMap> PermissionMap { get; set; }
+        public virtual DbSet<PermissionMapping> PermissionMap { get; set; }
 
 
         //Templates
@@ -142,39 +142,39 @@ namespace BLAZAM.Common.Data.Database
             modelBuilder.Entity<ActiveDirectoryField>().HasData(
 
 
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 1, FieldName = "sn", DisplayName = "Last Name" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 2, FieldName = "givenname", DisplayName = "First Name" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 3, FieldName = "physicalDeliveryOfficeName", DisplayName = "Office" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 4, FieldName = "employeeId", DisplayName = "Employee ID" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 5, FieldName = "homeDirectory", DisplayName = "Home Directory" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 6, FieldName = "scriptPath", DisplayName = "Logon Script Path" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 7, FieldName = "profilePath", DisplayName = "Profile Path" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 8, FieldName = "homePhone", DisplayName = "Home Phone Number" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 9, FieldName = "streetAddress", DisplayName = "Street Address" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 10, FieldName = "city", DisplayName = "City" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 11, FieldName = "st", DisplayName = "State" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 12, FieldName = "postalCode", DisplayName = "Zip Code" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 13, FieldName = "site", DisplayName = "Site" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 14, FieldName = "name", DisplayName = "Name" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 15, FieldName = "samaccountname", DisplayName = "Username" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 16, FieldName = "objectSID", DisplayName = "SID" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 17, FieldName = "mail", DisplayName = "E-Mail Address" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 18, FieldName = "description", DisplayName = "Description" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 19, FieldName = "displayName", DisplayName = "Display Name" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 20, FieldName = "distinguishedName", DisplayName = "Distinguished Name" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 21, FieldName = "memberOf", DisplayName = "Member Of" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 22, FieldName = "company", DisplayName = "Company" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 23, FieldName = "title", DisplayName = "Title" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 24, FieldName = "userPrincipalName", DisplayName = "User Principal Name" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 25, FieldName = "telephoneNumber", DisplayName = "Telephone Number" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 26, FieldName = "street", DisplayName = "Street" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 27, FieldName = "cn", DisplayName = "Canonical Name" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 28, FieldName = "homeDrive", DisplayName = "Home Drive" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 29, FieldName = "department", DisplayName = "Department" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 30, FieldName = "middleName", DisplayName = "Middle Name" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 31, FieldName = "pager", DisplayName = "Pager" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 32, FieldName = "operatingSystemVersion", DisplayName = "OS" },
-                new ActiveDirectoryField { ActiveDirectoryFieldId = 33, FieldName = "accountExpires", DisplayName = "Account Expiration" }
+                new ActiveDirectoryField { Id = 1, FieldName = "sn", DisplayName = "Last Name" },
+                new ActiveDirectoryField { Id = 2, FieldName = "givenname", DisplayName = "First Name" },
+                new ActiveDirectoryField { Id = 3, FieldName = "physicalDeliveryOfficeName", DisplayName = "Office" },
+                new ActiveDirectoryField { Id = 4, FieldName = "employeeId", DisplayName = "Employee ID" },
+                new ActiveDirectoryField { Id = 5, FieldName = "homeDirectory", DisplayName = "Home Directory" },
+                new ActiveDirectoryField { Id = 6, FieldName = "scriptPath", DisplayName = "Logon Script Path" },
+                new ActiveDirectoryField { Id = 7, FieldName = "profilePath", DisplayName = "Profile Path" },
+                new ActiveDirectoryField { Id = 8, FieldName = "homePhone", DisplayName = "Home Phone Number" },
+                new ActiveDirectoryField { Id = 9, FieldName = "streetAddress", DisplayName = "Street Address" },
+                new ActiveDirectoryField { Id = 10, FieldName = "city", DisplayName = "City" },
+                new ActiveDirectoryField { Id = 11, FieldName = "st", DisplayName = "State" },
+                new ActiveDirectoryField { Id = 12, FieldName = "postalCode", DisplayName = "Zip Code" },
+                new ActiveDirectoryField { Id = 13, FieldName = "site", DisplayName = "Site" },
+                new ActiveDirectoryField { Id = 14, FieldName = "name", DisplayName = "Name" },
+                new ActiveDirectoryField { Id = 15, FieldName = "samaccountname", DisplayName = "Username" },
+                new ActiveDirectoryField { Id = 16, FieldName = "objectSID", DisplayName = "SID" },
+                new ActiveDirectoryField { Id = 17, FieldName = "mail", DisplayName = "E-Mail Address" },
+                new ActiveDirectoryField { Id = 18, FieldName = "description", DisplayName = "Description" },
+                new ActiveDirectoryField { Id = 19, FieldName = "displayName", DisplayName = "Display Name" },
+                new ActiveDirectoryField { Id = 20, FieldName = "distinguishedName", DisplayName = "Distinguished Name" },
+                new ActiveDirectoryField { Id = 21, FieldName = "memberOf", DisplayName = "Member Of" },
+                new ActiveDirectoryField { Id = 22, FieldName = "company", DisplayName = "Company" },
+                new ActiveDirectoryField { Id = 23, FieldName = "title", DisplayName = "Title" },
+                new ActiveDirectoryField { Id = 24, FieldName = "userPrincipalName", DisplayName = "User Principal Name" },
+                new ActiveDirectoryField { Id = 25, FieldName = "telephoneNumber", DisplayName = "Telephone Number" },
+                new ActiveDirectoryField { Id = 26, FieldName = "street", DisplayName = "Street" },
+                new ActiveDirectoryField { Id = 27, FieldName = "cn", DisplayName = "Canonical Name" },
+                new ActiveDirectoryField { Id = 28, FieldName = "homeDrive", DisplayName = "Home Drive" },
+                new ActiveDirectoryField { Id = 29, FieldName = "department", DisplayName = "Department" },
+                new ActiveDirectoryField { Id = 30, FieldName = "middleName", DisplayName = "Middle Name" },
+                new ActiveDirectoryField { Id = 31, FieldName = "pager", DisplayName = "Pager" },
+                new ActiveDirectoryField { Id = 32, FieldName = "operatingSystemVersion", DisplayName = "OS" },
+                new ActiveDirectoryField { Id = 33, FieldName = "accountExpires", DisplayName = "Account Expiration" }
 
             );
 
@@ -185,7 +185,7 @@ namespace BLAZAM.Common.Data.Database
             modelBuilder.Entity<AccessLevel>(entity =>
             {
                 entity.HasData(
-                        new AccessLevel { AccessLevelId = 1, Name = "Deny All" }
+                        new AccessLevel { Id = 1, Name = "Deny All" }
                 );
                 entity.Navigation(e => e.ObjectMap).AutoInclude();
                 entity.Navigation(e => e.FieldMap).AutoInclude();
@@ -193,9 +193,9 @@ namespace BLAZAM.Common.Data.Database
             });
 
             modelBuilder.Entity<FieldAccessLevel>().HasData(
-                new FieldAccessLevel() { FieldAccessLevelId = 1, Name = "Deny", Level = 10 },
-                new FieldAccessLevel() { FieldAccessLevelId = 2, Name = "Read", Level = 100 },
-                new FieldAccessLevel() { FieldAccessLevelId = 3, Name = "Edit", Level = 1000 }
+                new FieldAccessLevel() { Id = 1, Name = "Deny", Level = 10 },
+                new FieldAccessLevel() { Id = 2, Name = "Read", Level = 100 },
+                new FieldAccessLevel() { Id = 3, Name = "Edit", Level = 1000 }
             );
             modelBuilder.Entity<FieldAccessMapping>(entity =>
             {
@@ -205,8 +205,8 @@ namespace BLAZAM.Common.Data.Database
             modelBuilder.Entity<ObjectAccessLevel>(entity =>
             {
                 entity.HasData(
-                new ObjectAccessLevel() { ObjectAccessLevelId = 1, Name = "Deny", Level = 10 },
-                new ObjectAccessLevel() { ObjectAccessLevelId = 2, Name = "Read", Level = 1000 });
+                new ObjectAccessLevel() { Id = 1, Name = "Deny", Level = 10 },
+                new ObjectAccessLevel() { Id = 2, Name = "Read", Level = 1000 });
 
                 entity.Navigation(e => e.ObjectAccessMappings).AutoInclude();
             }
@@ -225,15 +225,15 @@ namespace BLAZAM.Common.Data.Database
                 entity.Navigation(e => e.Field).AutoInclude();
             });
             modelBuilder.Entity<ActionAccessFlag>().HasData(
-                  new ActionAccessFlag() { ActionAccessFlagId = 1, Name = "Assign" },
-                  new ActionAccessFlag() { ActionAccessFlagId = 2, Name = "UnAssign" },
-                  new ActionAccessFlag() { ActionAccessFlagId = 3, Name = "Unlock" },
-                  new ActionAccessFlag() { ActionAccessFlagId = 4, Name = "Enable" },
-                  new ActionAccessFlag() { ActionAccessFlagId = 5, Name = "Disable" },
-                  new ActionAccessFlag() { ActionAccessFlagId = 6, Name = "Rename" },
-                  new ActionAccessFlag() { ActionAccessFlagId = 7, Name = "Move" },
-                  new ActionAccessFlag() { ActionAccessFlagId = 8, Name = "Create" },
-                  new ActionAccessFlag() { ActionAccessFlagId = 9, Name = "Delete" }
+                  new ActionAccessFlag() { Id = 1, Name = "Assign" },
+                  new ActionAccessFlag() { Id = 2, Name = "UnAssign" },
+                  new ActionAccessFlag() { Id = 3, Name = "Unlock" },
+                  new ActionAccessFlag() { Id = 4, Name = "Enable" },
+                  new ActionAccessFlag() { Id = 5, Name = "Disable" },
+                  new ActionAccessFlag() { Id = 6, Name = "Rename" },
+                  new ActionAccessFlag() { Id = 7, Name = "Move" },
+                  new ActionAccessFlag() { Id = 8, Name = "Create" },
+                  new ActionAccessFlag() { Id = 9, Name = "Delete" }
 
             );
             modelBuilder.Entity<ActionAccessMapping>(entity =>
@@ -242,7 +242,7 @@ namespace BLAZAM.Common.Data.Database
             });
 
 
-            modelBuilder.Entity<PermissionMap>(entity =>
+            modelBuilder.Entity<PermissionMapping>(entity =>
             {
                 entity.Navigation(e => e.AccessLevels).AutoInclude();
 
@@ -257,7 +257,7 @@ namespace BLAZAM.Common.Data.Database
 
             modelBuilder.Entity<AppSettings>(entity =>
             {
-                entity.Property(e => e.AppSettingsId).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 if (Database.IsMySql())
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "AppSettingsId = 1"));
@@ -267,7 +267,7 @@ namespace BLAZAM.Common.Data.Database
 
             modelBuilder.Entity<ADSettings>(entity =>
             {
-                entity.Property(e => e.ADSettingsId).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 if (Database.IsMySql())
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "ADSettingsId = 1"));
@@ -277,7 +277,7 @@ namespace BLAZAM.Common.Data.Database
             });
             modelBuilder.Entity<AuthenticationSettings>(entity =>
             {
-                entity.Property(e => e.AuthenticationSettingsId).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 if (Database.IsMySql())
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "AuthenticationSettingsId = 1"));
@@ -286,14 +286,14 @@ namespace BLAZAM.Common.Data.Database
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AuthenticationSettingsId] = 1"));
                 entity.HasData(new AuthenticationSettings
                 {
-                    AuthenticationSettingsId = 1,
+                    Id = 1,
                     AdminPassword = "password"
                 });
             });
 
             modelBuilder.Entity<EmailSettings>(entity =>
             {
-                entity.Property(e => e.EmailSettingsId).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 if (Database.IsMySql())
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "EmailSettingsId = 1"));

@@ -403,7 +403,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         public List<PermissionDelegate> PermissionDelegates { get; set; } = new List<PermissionDelegate>();
 
-        public List<PermissionMap> PermissionMappings { get; set; } = new List<PermissionMap>();
+        public List<PermissionMapping> PermissionMappings { get; set; } = new List<PermissionMapping>();
 
         public bool HasUserPrivilege
         {
@@ -482,7 +482,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                             a => a.ObjectMap.Any(
                                 o => o.ObjectType == objectType && o.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level) &&
                                 a.ActionMap.Any(am => am.ObjectType == objectType &&
-                                am.ObjectAction.ActionAccessFlagId == ActionAccessFlags.Create.ActionAccessFlagId)
+                                am.ObjectAction.Id == ActionAccessFlags.Create.Id)
                             )
                         );
         }

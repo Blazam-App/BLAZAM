@@ -1,9 +1,7 @@
 ﻿namespace BLAZAM.Common.Models.Database
 {
-    public class EmailTemplate
+    public class EmailTemplate:AppDbSetBase
     {
-        public int EmailTemplateId { get; set; }
-
         public string TemplateName { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }

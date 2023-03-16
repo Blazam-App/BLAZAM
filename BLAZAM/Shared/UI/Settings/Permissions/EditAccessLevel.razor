@@ -67,11 +67,11 @@
 
                         @foreach (ObjectAccessLevel levelValue in ObjectAccessLevels.Levels)
                             {
-                                <SelectItem Value="levelValue.ObjectAccessLevelId">@SettingsLocalization[levelValue.Name]</SelectItem>
+                                <SelectItem Value="levelValue.Id">@SettingsLocalization[levelValue.Name]</SelectItem>
 
                             }
                         </Select>
-                        @if (objectMap.ObjectType == ActiveDirectoryObjectType.User && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.ObjectAccessLevelId)
+                        @if (objectMap.ObjectType == ActiveDirectoryObjectType.User && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
                         {
                             <Switch @bind-Checked=objectMap.AllowDisabled>@SettingsLocalization["Allow Disabled User Access"]</Switch>
                         }
@@ -81,7 +81,7 @@
 
                     </FieldBody>
                 </Field>
-                @if (objectMap.ObjectAccessLevelId != 0 && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.ObjectAccessLevelId)
+                @if (objectMap.ObjectAccessLevelId != 0 && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
                 {
 
                     <h4>@name Actions</h4>
@@ -159,7 +159,7 @@
                             @foreach (FieldAccessLevel levelValue in FieldAccessLevels.Levels)
                                 {
 
-                                    <SelectItem Value="levelValue.FieldAccessLevelId">@SettingsLocalization[levelValue.Name]</SelectItem>
+                                    <SelectItem Value="levelValue.Id">@SettingsLocalization[levelValue.Name]</SelectItem>
 
                                 }
                             </Select>
@@ -174,11 +174,11 @@
 
     @{
         string buttonLabel = SettingsLocalization["Create Access Level"];
-        if (Model.AccessLevelId > 0)
+        if (Model.Id > 0)
             buttonLabel = SettingsLocalization["Update Access Level"];
     }
     <Button Color=Color.Success Margin=Margin.IsAuto.OnX Disabled=saveDisabled Clicked="CreateAccessLevel">@buttonLabel</Button>
-    @if (WorkingModel.AccessLevelId != 0)
+    @if (WorkingModel.Id != 0)
     {
         <Button Color=Color.Danger Margin=Margin.IsAuto.OnX Clicked="DeleteAccessLevel">@SettingsLocalization["Delete Access Level"]</Button>
     }
@@ -192,7 +192,7 @@
     {
         get
         {
-            return WorkingModel.ObjectMap.AsQueryable().Any(om => om.ObjectAccessLevelId > ObjectAccessLevels.Deny.ObjectAccessLevelId);
+            return WorkingModel.ObjectMap.AsQueryable().Any(om => om.ObjectAccessLevelId > ObjectAccessLevels.Deny.Id);
             foreach (var map in WorkingModel.ObjectMap)
             {
                 if (map.ObjectAccessLevel != null)
@@ -204,7 +204,7 @@
                 }
                 if (map.ObjectAccessLevelId != 0)
                 {
-                    if (map.ObjectAccessLevelId > ObjectAccessLevels.Deny.ObjectAccessLevelId)
+                    if (map.ObjectAccessLevelId > ObjectAccessLevels.Deny.Id)
                     {
                         return true;
                     }
@@ -228,9 +228,9 @@
 
         fields = Context.ActiveDirectoryFields.AsEnumerable();
         actions = Context.ObjectActionFlag.AsEnumerable();
-        if (Model.AccessLevelId > 0)
+        if (Model.Id > 0)
         {
-            WorkingModel = Context.AccessLevels.Where(l => l.AccessLevelId == Model.AccessLevelId).FirstOrDefault();
+            WorkingModel = Context.AccessLevels.Where(l => l.Id == Model.Id).FirstOrDefault();
 
 
         }
@@ -246,7 +246,7 @@
         if (Context == null) return;
 
         bool addition = false;
-        if (WorkingModel.AccessLevelId == 0)
+        if (WorkingModel.Id == 0)
         {
             Context.AccessLevels.Add(WorkingModel);
             addition = true;
@@ -266,7 +266,7 @@
             WorkingModel.ObjectMap.Add(new ObjectAccessMapping()
                 {
                     ObjectType = typeEnum,
-                    ObjectAccessLevelId = ObjectAccessLevels.Deny.ObjectAccessLevelId
+                    ObjectAccessLevelId = ObjectAccessLevels.Deny.Id
                 });
         }
         StateHasChanged();
@@ -296,7 +296,7 @@
         WorkingModel.FieldMap.Add(new FieldAccessMapping()
             {
                 Field = fieldToAdd,
-                FieldAccessLevelId = FieldAccessLevels.Deny.FieldAccessLevelId
+                FieldAccessLevelId = FieldAccessLevels.Deny.Id
             });
 
         StateHasChanged();
@@ -335,7 +335,7 @@
     {
         foreach (var map in WorkingModel.ObjectMap)
         {
-            if (map.ObjectAccessLevelId != ObjectAccessLevels.Deny.ObjectAccessLevelId)
+            if (map.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
             {
 
                 return field.IsActionAppropriateForObject(map.ObjectType);

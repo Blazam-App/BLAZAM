@@ -86,14 +86,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 SetProperty("name", value);
             }
         }
-        public List<PermissionMap> InheritedPermissionMappings
+        public List<PermissionMapping> InheritedPermissionMappings
         {
             get
             {
                 return this.AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
             }
         }
-        public List<PermissionMap> DirectPermissionMappings
+        public List<PermissionMapping> DirectPermissionMappings
         {
             get
             {
@@ -102,7 +102,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         }
 
 
-        public IQueryable<PermissionMap> AppliedPermissionMappings
+        public IQueryable<PermissionMapping> AppliedPermissionMappings
         {
             get
             {
@@ -112,7 +112,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
         }
 
-        public IQueryable<PermissionMap> OffspringPermissionMappings
+        public IQueryable<PermissionMapping> OffspringPermissionMappings
         {
             get
             {

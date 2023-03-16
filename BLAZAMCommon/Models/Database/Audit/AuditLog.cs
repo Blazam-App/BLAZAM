@@ -2,7 +2,7 @@
 
 namespace BLAZAM.Common.Models.Database.Audit
 {
-    public class CommonAuditLog : ICommonAuditLog
+    public class CommonAuditLog : AppDbSetBase, ICommonAuditLog
     {
         public int Id { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;

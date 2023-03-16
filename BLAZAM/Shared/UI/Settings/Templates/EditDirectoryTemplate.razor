@@ -181,7 +181,7 @@
 
         @{
             string buttonText = "";
-            @if (DirectoryTemplate.DirectoryTemplateId == 0)
+            @if (DirectoryTemplate.Id == 0)
             {
                 buttonText = "Add this template";
             }
@@ -191,7 +191,7 @@
             }
         }
         <Button Disabled=saveDisabled Color="Color.Success" Type="ButtonType.Submit">@buttonText</Button>
-        @if (DirectoryTemplate.DirectoryTemplateId == 0)
+        @if (DirectoryTemplate.Id == 0)
         {
             <Button Color="Color.Warning" Clicked="@(()=>{ DirectoryTemplate=null;})">Cancel</Button>
 
@@ -246,7 +246,7 @@
     async Task LoadData()
     {
         if (Context == null) await OnInitializedAsync();
-        var matching = await Context.DirectoryTemplates.Where(dt => dt.DirectoryTemplateId == DirectoryTemplate.DirectoryTemplateId).FirstOrDefaultAsync();
+        var matching = await Context.DirectoryTemplates.Where(dt => dt.Id == DirectoryTemplate.Id).FirstOrDefaultAsync();
         if (matching != null)
             DirectoryTemplate = matching;
         SelectedOU = (await Directory.OUs.FindOuByStringAsync(DirectoryTemplate.ParentOU)).FirstOrDefault();
@@ -311,7 +311,7 @@
         }
         DirectoryTemplate.FieldValues = replaceValues;
 
-        if (DirectoryTemplate.DirectoryTemplateId == 0)
+        if (DirectoryTemplate.Id == 0)
         {
             try
             {

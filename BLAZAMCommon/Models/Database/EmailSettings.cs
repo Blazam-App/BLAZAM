@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Common.Models.Database
 {
-    public class EmailSettings
+    public class EmailSettings : AppDbSetBase
     {
-        public int EmailSettingsId { get; set; } = 0;
         public bool Enabled { get; set; } = false;
         [DisplayName("Admin BCC")]
         public string? AdminBcc { get; set; }

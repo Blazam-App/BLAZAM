@@ -4,12 +4,11 @@ using BLAZAM.Common.Extensions;
 
 namespace BLAZAM.Common.Models.Database.Permissions
 {
-    public class PermissionDelegate : IComparable
+    public class PermissionDelegate : AppDbSetBase, IComparable
     {
-        public int Id { get; set; }
         public byte[] DelegateSid { get; set; }
         public bool IsSuperAdmin { get; set; }
-        public List<PermissionMap> PermissionsMaps { get; set; }
+        public List<PermissionMapping> PermissionsMaps { get; set; }
 
         public DateTime? DeletedAt { get; set; }
 
