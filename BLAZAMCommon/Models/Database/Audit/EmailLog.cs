@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Common.Models.Database.Audit
 {
-    internal class EmailLog
+    internal class EmailLog : AppDbSetBase
     {
-        public int EmailLogId {get;set;}
         public string? To { get; set; }
 
         public string? Cc { get; set; }

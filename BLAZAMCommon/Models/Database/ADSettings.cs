@@ -2,9 +2,8 @@
 
 namespace BLAZAM.Common.Models.Database
 {
-    public class ADSettings
+    public class ADSettings : AppDbSetBase
     {
-        public int ADSettingsId { get; set; }
         [Required(ErrorMessage ="The base DN is required.")]
         public string ApplicationBaseDN { get; set; }
         [Required]

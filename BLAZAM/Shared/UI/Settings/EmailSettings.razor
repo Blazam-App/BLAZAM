@@ -208,7 +208,7 @@
     }
     protected override void Save()
     {
-        if (settings.EmailSettingsId == 0 && Context!=null)
+        if (settings.Id == 0 && Context!=null)
         {
             Context.EmailSettings.Add(settings);
         }

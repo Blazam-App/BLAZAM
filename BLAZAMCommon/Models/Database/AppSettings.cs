@@ -7,10 +7,9 @@ namespace BLAZAM.Common.Models.Database
     /// <summary>
     /// The base application settings. These are the most general settings, and application wide.
     /// </summary>
-    public class AppSettings
+    public class AppSettings : AppDbSetBase
     {
 
-        public int AppSettingsId { get; set; }
         /// <summary>
         /// The timestamp of the last update check
         /// </summary>

@@ -3,9 +3,9 @@ using BLAZAM.Common.Models.Database.Permissions;
 
 namespace BLAZAM.Common.Models.Database
 {
-    public class ActiveDirectoryField
+    public class ActiveDirectoryField : AppDbSetBase
     {
-        public int ActiveDirectoryFieldId { get; set; }
+
         public string FieldName { get; set; }
         public virtual ICollection<FieldAccessMapping> FieldAccessMappings { get; set; }
         public string DisplayName { get; internal set; }

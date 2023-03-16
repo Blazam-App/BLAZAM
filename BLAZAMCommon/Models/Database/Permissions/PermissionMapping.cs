@@ -3,9 +3,8 @@ using System.Configuration;
 
 namespace BLAZAM.Common.Models.Database.Permissions
 {
-    public class PermissionMap
+    public class PermissionMapping : AppDbSetBase
     {
-        public int PermissionMapId { get; set; }
         
         public List<PermissionDelegate> PermissionDelegates { get; set; }
         public List<AccessLevel> AccessLevels { get; set; }

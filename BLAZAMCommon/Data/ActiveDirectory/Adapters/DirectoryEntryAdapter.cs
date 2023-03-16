@@ -373,7 +373,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         /// <param name="allowSelector"></param>
         /// <param name="denySelector"></param>
         /// <returns></returns>
-        protected virtual bool HasPermission(Func<IEnumerable<PermissionMap>, IEnumerable<PermissionMap>> allowSelector, Func<IEnumerable<PermissionMap>, IEnumerable<PermissionMap>>? denySelector = null)
+        protected virtual bool HasPermission(Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null)
         {
             if (UserStateService.CurrentUserState != null)
             {
@@ -478,12 +478,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             return HasPermission(p => p.Where(pm =>
                pm.AccessLevels.Any(al => al.ActionMap.Any(am =>
-              am.AllowOrDeny && am.ObjectAction.ActionAccessFlagId == action.ActionAccessFlagId &&
+              am.AllowOrDeny && am.ObjectAction.Id == action.Id &&
               am.ObjectType == ObjectType
                ))),
                p => p.Where(pm =>
                pm.AccessLevels.Any(al => al.ActionMap.Any(am =>
-              !am.AllowOrDeny && am.ObjectAction.ActionAccessFlagId == action.ActionAccessFlagId &&
+              !am.AllowOrDeny && am.ObjectAction.Id == action.Id &&
               am.ObjectType == ObjectType
                )))
                );

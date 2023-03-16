@@ -202,7 +202,7 @@
             if (Context?.AppSettings.FirstOrDefault() == null)
             {
                 var settings = new AppSettings();
-                settings.AppSettingsId = 1;
+                settings.Id = 1;
                 Context?.AppSettings.Add(settings);
                 Context?.SaveChanges();
                 DatabaseCache.ApplicationSettings = settings;
