@@ -65,6 +65,13 @@ namespace BLAZAM.Common.Data.Database
             DatabaseConnectionIssue,
             IncompleteConfiguration
         }
+        /// <summary>
+        /// Constructor for building migrations
+        /// </summary>
+        public DatabaseContext()
+        {
+            ConnectionString = new("");
+        }
 
         public DatabaseContext(DatabaseConnectionString databaseConnectionString) : base()
         {

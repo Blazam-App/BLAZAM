@@ -330,6 +330,7 @@
     {
         WorkingModel.DeletedAt = DateTime.UtcNow;
         await Context.SaveChangesAsync();
+        InvokeAsync(StateHasChanged);
     }
     private bool ShowField(ActiveDirectoryField field)
     {

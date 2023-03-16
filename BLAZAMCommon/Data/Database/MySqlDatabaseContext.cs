@@ -10,6 +10,12 @@ namespace BLAZAM.Common.Data.Database
 {
     public class MySqlDatabaseContext:DatabaseContext
     {
+       /// <inheritdoc/>
+        public MySqlDatabaseContext():base()
+        {
+            ConnectionString = new("server=localhost");
+        }
+
         public MySqlDatabaseContext(DatabaseConnectionString databaseConnectionString):base(databaseConnectionString)
         {
         }
