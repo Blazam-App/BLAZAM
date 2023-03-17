@@ -10,6 +10,12 @@ namespace BLAZAM.Common.Data.Database
 {
     public class MySqlDatabaseContext:DatabaseContext
     {
+       /// <inheritdoc/>
+        public MySqlDatabaseContext():base()
+        {
+            ConnectionString = new("server=localhost");
+        }
+
         public MySqlDatabaseContext(DatabaseConnectionString databaseConnectionString):base(databaseConnectionString)
         {
         }
@@ -21,6 +27,10 @@ namespace BLAZAM.Common.Data.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+               if (ConnectionString == null)
+            {
+                ConnectionString = new DatabaseConnectionString("Server=localhost;User=blazam;Password=blazam;Database=blazam;");
+            }
             optionsBuilder.UseMySql(ConnectionString?.Value,
                            serverVersion: new MySqlServerVersion(new Version(8, 0, 32)),
                           mySqlOptionsAction: options =>

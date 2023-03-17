@@ -12,9 +12,8 @@ namespace BLAZAM.Common.Models.Database.User
         LockedOutUsers,
         PasswordsChanged
     }
-    internal class DashboardWidget
+    internal class DashboardWidget : AppDbSetBase
     {
-        public int Id { get; set; }
         public Widget WidgetID { get; set; }
         public int Slot { get; set; }
         public int Order { get; set; }

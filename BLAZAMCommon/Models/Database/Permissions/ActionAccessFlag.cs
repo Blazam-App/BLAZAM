@@ -3,9 +3,8 @@ using Microsoft.Azure.DevOps.Licensing.WebApi;
 
 namespace BLAZAM.Common.Models.Database.Permissions
 {
-    public class ActionAccessFlag
+    public class ActionAccessFlag : AppDbSetBase
     {
-        public int ActionAccessFlagId { get; set; }
         public string Name { get; set; }
 
         public override bool Equals(object? obj)

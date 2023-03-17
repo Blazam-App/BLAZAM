@@ -19,69 +19,54 @@ namespace BLAZAM.Common.Migrations.MySql
                 .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("AccessLevelActionAccessMapping", b =>
-                {
-                    b.Property<int>("AccessLevelsAccessLevelId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ActionMapActionAccessMappingId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AccessLevelsAccessLevelId", "ActionMapActionAccessMappingId");
-
-                    b.HasIndex("ActionMapActionAccessMappingId");
-
-                    b.ToTable("AccessLevelActionAccessMapping");
-                });
-
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
                 {
-                    b.Property<int>("AccessLevelsAccessLevelId")
+                    b.Property<int>("AccessLevelsId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FieldMapFieldAccessMappingId")
+                    b.Property<int>("FieldMapId")
                         .HasColumnType("int");
 
-                    b.HasKey("AccessLevelsAccessLevelId", "FieldMapFieldAccessMappingId");
+                    b.HasKey("AccessLevelsId", "FieldMapId");
 
-                    b.HasIndex("FieldMapFieldAccessMappingId");
+                    b.HasIndex("FieldMapId");
 
                     b.ToTable("AccessLevelFieldAccessMapping");
                 });
 
             modelBuilder.Entity("AccessLevelObjectAccessMapping", b =>
                 {
-                    b.Property<int>("AccessLevelsAccessLevelId")
+                    b.Property<int>("AccessLevelsId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ObjectMapObjectAccessMappingId")
+                    b.Property<int>("ObjectMapId")
                         .HasColumnType("int");
 
-                    b.HasKey("AccessLevelsAccessLevelId", "ObjectMapObjectAccessMappingId");
+                    b.HasKey("AccessLevelsId", "ObjectMapId");
 
-                    b.HasIndex("ObjectMapObjectAccessMappingId");
+                    b.HasIndex("ObjectMapId");
 
                     b.ToTable("AccessLevelObjectAccessMapping");
                 });
 
-            modelBuilder.Entity("AccessLevelPermissionMap", b =>
+            modelBuilder.Entity("AccessLevelPermissionMapping", b =>
                 {
-                    b.Property<int>("AccessLevelsAccessLevelId")
+                    b.Property<int>("AccessLevelsId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PermissionMapsPermissionMapId")
+                    b.Property<int>("PermissionMapsId")
                         .HasColumnType("int");
 
-                    b.HasKey("AccessLevelsAccessLevelId", "PermissionMapsPermissionMapId");
+                    b.HasKey("AccessLevelsId", "PermissionMapsId");
 
-                    b.HasIndex("PermissionMapsPermissionMapId");
+                    b.HasIndex("PermissionMapsId");
 
-                    b.ToTable("AccessLevelPermissionMap");
+                    b.ToTable("AccessLevelPermissionMapping");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.ADSettings", b =>
                 {
-                    b.Property<int>("ADSettingsId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<string>("ApplicationBaseDN")
@@ -110,7 +95,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("ADSettingsId");
+                    b.HasKey("Id");
 
                     b.ToTable("ActiveDirectorySettings", t =>
                         {
@@ -120,7 +105,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryField", b =>
                 {
-                    b.Property<int>("ActiveDirectoryFieldId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -132,206 +117,206 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("ActiveDirectoryFieldId");
+                    b.HasKey("Id");
 
                     b.ToTable("ActiveDirectoryFields");
 
                     b.HasData(
                         new
                         {
-                            ActiveDirectoryFieldId = 1,
+                            Id = 1,
                             DisplayName = "Last Name",
                             FieldName = "sn"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 2,
+                            Id = 2,
                             DisplayName = "First Name",
                             FieldName = "givenname"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 3,
+                            Id = 3,
                             DisplayName = "Office",
                             FieldName = "physicalDeliveryOfficeName"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 4,
+                            Id = 4,
                             DisplayName = "Employee ID",
                             FieldName = "employeeId"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 5,
+                            Id = 5,
                             DisplayName = "Home Directory",
                             FieldName = "homeDirectory"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 6,
+                            Id = 6,
                             DisplayName = "Logon Script Path",
                             FieldName = "scriptPath"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 7,
+                            Id = 7,
                             DisplayName = "Profile Path",
                             FieldName = "profilePath"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 8,
+                            Id = 8,
                             DisplayName = "Home Phone Number",
                             FieldName = "homePhone"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 9,
+                            Id = 9,
                             DisplayName = "Street Address",
                             FieldName = "streetAddress"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 10,
+                            Id = 10,
                             DisplayName = "City",
                             FieldName = "city"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 11,
+                            Id = 11,
                             DisplayName = "State",
                             FieldName = "st"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 12,
+                            Id = 12,
                             DisplayName = "Zip Code",
                             FieldName = "postalCode"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 13,
+                            Id = 13,
                             DisplayName = "Site",
                             FieldName = "site"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 14,
+                            Id = 14,
                             DisplayName = "Name",
                             FieldName = "name"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 15,
+                            Id = 15,
                             DisplayName = "Username",
                             FieldName = "samaccountname"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 16,
+                            Id = 16,
                             DisplayName = "SID",
                             FieldName = "objectSID"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 17,
+                            Id = 17,
                             DisplayName = "E-Mail Address",
                             FieldName = "mail"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 18,
+                            Id = 18,
                             DisplayName = "Description",
                             FieldName = "description"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 19,
+                            Id = 19,
                             DisplayName = "Display Name",
                             FieldName = "displayName"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 20,
+                            Id = 20,
                             DisplayName = "Distinguished Name",
                             FieldName = "distinguishedName"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 21,
+                            Id = 21,
                             DisplayName = "Member Of",
                             FieldName = "memberOf"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 22,
+                            Id = 22,
                             DisplayName = "Company",
                             FieldName = "company"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 23,
+                            Id = 23,
                             DisplayName = "Title",
                             FieldName = "title"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 24,
+                            Id = 24,
                             DisplayName = "User Principal Name",
                             FieldName = "userPrincipalName"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 25,
+                            Id = 25,
                             DisplayName = "Telephone Number",
                             FieldName = "telephoneNumber"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 26,
+                            Id = 26,
                             DisplayName = "Street",
                             FieldName = "street"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 27,
+                            Id = 27,
                             DisplayName = "Canonical Name",
                             FieldName = "cn"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 28,
+                            Id = 28,
                             DisplayName = "Home Drive",
                             FieldName = "homeDrive"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 29,
+                            Id = 29,
                             DisplayName = "Department",
                             FieldName = "department"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 30,
+                            Id = 30,
                             DisplayName = "Middle Name",
                             FieldName = "middleName"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 31,
+                            Id = 31,
                             DisplayName = "Pager",
                             FieldName = "pager"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 32,
+                            Id = 32,
                             DisplayName = "OS",
                             FieldName = "operatingSystemVersion"
                         },
                         new
                         {
-                            ActiveDirectoryFieldId = 33,
+                            Id = 33,
                             DisplayName = "Account Expiration",
                             FieldName = "accountExpires"
                         });
@@ -339,7 +324,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.AppSettings", b =>
                 {
-                    b.Property<int>("AppSettingsId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<string>("AnalyticsId")
@@ -380,7 +365,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<string>("UserHelpdeskURL")
                         .HasColumnType("longtext");
 
-                    b.HasKey("AppSettingsId");
+                    b.HasKey("Id");
 
                     b.ToTable("AppSettings", t =>
                         {
@@ -697,7 +682,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.AuthenticationSettings", b =>
                 {
-                    b.Property<int?>("AuthenticationSettingsId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<string>("AdminPassword")
@@ -715,7 +700,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int?>("SessionTimeout")
                         .HasColumnType("int");
 
-                    b.HasKey("AuthenticationSettingsId");
+                    b.HasKey("Id");
 
                     b.ToTable("AuthenticationSettings", t =>
                         {
@@ -726,15 +711,14 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.HasData(
                         new
                         {
-                            AuthenticationSettingsId = 1,
-                            AdminPassword = "password",
-                            SessionTimeout = 900000
+                            Id = 1,
+                            AdminPassword = "password"
                         });
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.EmailSettings", b =>
                 {
-                    b.Property<int>("EmailSettingsId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<string>("AdminBcc")
@@ -774,7 +758,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<bool>("UseTLS")
                         .HasColumnType("tinyint(1)");
 
-                    b.HasKey("EmailSettingsId");
+                    b.HasKey("Id");
 
                     b.ToTable("EmailSettings", t =>
                         {
@@ -785,7 +769,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.EmailTemplate", b =>
                 {
-                    b.Property<int>("EmailTemplateId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -809,36 +793,39 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("EmailTemplateId");
+                    b.HasKey("Id");
 
                     b.ToTable("EmailTemplates");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.AccessLevel", b =>
                 {
-                    b.Property<int>("AccessLevelId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("AccessLevelId");
+                    b.HasKey("Id");
 
                     b.ToTable("AccessLevels");
 
                     b.HasData(
                         new
                         {
-                            AccessLevelId = 1,
+                            Id = 1,
                             Name = "Deny All"
                         });
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessFlag", b =>
                 {
-                    b.Property<int>("ActionAccessFlagId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -846,83 +833,88 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("ActionAccessFlagId");
+                    b.HasKey("Id");
 
                     b.ToTable("ObjectActionFlag");
 
                     b.HasData(
                         new
                         {
-                            ActionAccessFlagId = 1,
+                            Id = 1,
                             Name = "Assign"
                         },
                         new
                         {
-                            ActionAccessFlagId = 2,
+                            Id = 2,
                             Name = "UnAssign"
                         },
                         new
                         {
-                            ActionAccessFlagId = 3,
+                            Id = 3,
                             Name = "Unlock"
                         },
                         new
                         {
-                            ActionAccessFlagId = 4,
+                            Id = 4,
                             Name = "Enable"
                         },
                         new
                         {
-                            ActionAccessFlagId = 5,
+                            Id = 5,
                             Name = "Disable"
                         },
                         new
                         {
-                            ActionAccessFlagId = 6,
+                            Id = 6,
                             Name = "Rename"
                         },
                         new
                         {
-                            ActionAccessFlagId = 7,
+                            Id = 7,
                             Name = "Move"
                         },
                         new
                         {
-                            ActionAccessFlagId = 8,
+                            Id = 8,
                             Name = "Create"
                         },
                         new
                         {
-                            ActionAccessFlagId = 9,
+                            Id = 9,
                             Name = "Delete"
                         });
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessMapping", b =>
                 {
-                    b.Property<int>("ActionAccessMappingId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AccessLevelId")
                         .HasColumnType("int");
 
                     b.Property<bool>("AllowOrDeny")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int>("ObjectActionActionAccessFlagId")
+                    b.Property<int>("ObjectActionId")
                         .HasColumnType("int");
 
                     b.Property<int>("ObjectType")
                         .HasColumnType("int");
 
-                    b.HasKey("ActionAccessMappingId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ObjectActionActionAccessFlagId");
+                    b.HasIndex("AccessLevelId");
+
+                    b.HasIndex("ObjectActionId");
 
                     b.ToTable("ActionAccessMapping");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", b =>
                 {
-                    b.Property<int>("FieldAccessLevelId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -933,26 +925,26 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("FieldAccessLevelId");
+                    b.HasKey("Id");
 
                     b.ToTable("FieldAccessLevel");
 
                     b.HasData(
                         new
                         {
-                            FieldAccessLevelId = 1,
+                            Id = 1,
                             Level = 10,
                             Name = "Deny"
                         },
                         new
                         {
-                            FieldAccessLevelId = 2,
+                            Id = 2,
                             Level = 100,
                             Name = "Read"
                         },
                         new
                         {
-                            FieldAccessLevelId = 3,
+                            Id = 3,
                             Level = 1000,
                             Name = "Edit"
                         });
@@ -960,7 +952,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessMapping", b =>
                 {
-                    b.Property<int>("FieldAccessMappingId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -970,7 +962,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int>("FieldAccessLevelId")
                         .HasColumnType("int");
 
-                    b.HasKey("FieldAccessMappingId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ActiveDirectoryFieldId");
 
@@ -981,7 +973,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessLevel", b =>
                 {
-                    b.Property<int>("ObjectAccessLevelId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -992,20 +984,20 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("ObjectAccessLevelId");
+                    b.HasKey("Id");
 
                     b.ToTable("ObjectAccessLevel");
 
                     b.HasData(
                         new
                         {
-                            ObjectAccessLevelId = 1,
+                            Id = 1,
                             Level = 10,
                             Name = "Deny"
                         },
                         new
                         {
-                            ObjectAccessLevelId = 2,
+                            Id = 2,
                             Level = 1000,
                             Name = "Read"
                         });
@@ -1013,7 +1005,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessMapping", b =>
                 {
-                    b.Property<int>("ObjectAccessMappingId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -1026,7 +1018,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int>("ObjectType")
                         .HasColumnType("int");
 
-                    b.HasKey("ObjectAccessMappingId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ObjectAccessLevelId");
 
@@ -1057,9 +1049,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("PermissionDelegate");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.PermissionMap", b =>
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.PermissionMapping", b =>
                 {
-                    b.Property<int>("PermissionMapId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -1070,14 +1062,14 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("PermissionMapId");
+                    b.HasKey("Id");
 
                     b.ToTable("PermissionMap");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplate", b =>
                 {
-                    b.Property<int>("DirectoryTemplateId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -1107,7 +1099,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("DirectoryTemplateId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -1117,32 +1109,32 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplateFieldValue", b =>
                 {
-                    b.Property<int>("DirectoryTemplateFieldValueId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int?>("DirectoryTemplateId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FieldActiveDirectoryFieldId")
+                    b.Property<int>("FieldId")
                         .HasColumnType("int");
 
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("DirectoryTemplateFieldValueId");
+                    b.HasKey("Id");
 
                     b.HasIndex("DirectoryTemplateId");
 
-                    b.HasIndex("FieldActiveDirectoryFieldId");
+                    b.HasIndex("FieldId");
 
                     b.ToTable("DirectoryTemplateFieldValues");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplateGroup", b =>
                 {
-                    b.Property<int>("DirectoryTemplateGroupId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -1153,7 +1145,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("DirectoryTemplateGroupId");
+                    b.HasKey("Id");
 
                     b.HasIndex("DirectoryTemplateId");
 
@@ -1162,7 +1154,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.User.UserSettings", b =>
                 {
-                    b.Property<int>("UserSettingsId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -1185,7 +1177,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<string>("Username")
                         .HasColumnType("longtext");
 
-                    b.HasKey("UserSettingsId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserGUID")
                         .IsUnique();
@@ -1193,47 +1185,32 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("UserSettings");
                 });
 
-            modelBuilder.Entity("PermissionDelegatePermissionMap", b =>
+            modelBuilder.Entity("PermissionDelegatePermissionMapping", b =>
                 {
                     b.Property<int>("PermissionDelegatesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PermissionsMapsPermissionMapId")
+                    b.Property<int>("PermissionsMapsId")
                         .HasColumnType("int");
 
-                    b.HasKey("PermissionDelegatesId", "PermissionsMapsPermissionMapId");
+                    b.HasKey("PermissionDelegatesId", "PermissionsMapsId");
 
-                    b.HasIndex("PermissionsMapsPermissionMapId");
+                    b.HasIndex("PermissionsMapsId");
 
-                    b.ToTable("PermissionDelegatePermissionMap");
-                });
-
-            modelBuilder.Entity("AccessLevelActionAccessMapping", b =>
-                {
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.AccessLevel", null)
-                        .WithMany()
-                        .HasForeignKey("AccessLevelsAccessLevelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.ActionAccessMapping", null)
-                        .WithMany()
-                        .HasForeignKey("ActionMapActionAccessMappingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.ToTable("PermissionDelegatePermissionMapping");
                 });
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.AccessLevel", null)
                         .WithMany()
-                        .HasForeignKey("AccessLevelsAccessLevelId")
+                        .HasForeignKey("AccessLevelsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.FieldAccessMapping", null)
                         .WithMany()
-                        .HasForeignKey("FieldMapFieldAccessMappingId")
+                        .HasForeignKey("FieldMapId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1242,37 +1219,41 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.AccessLevel", null)
                         .WithMany()
-                        .HasForeignKey("AccessLevelsAccessLevelId")
+                        .HasForeignKey("AccessLevelsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.ObjectAccessMapping", null)
                         .WithMany()
-                        .HasForeignKey("ObjectMapObjectAccessMappingId")
+                        .HasForeignKey("ObjectMapId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AccessLevelPermissionMap", b =>
+            modelBuilder.Entity("AccessLevelPermissionMapping", b =>
                 {
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.AccessLevel", null)
                         .WithMany()
-                        .HasForeignKey("AccessLevelsAccessLevelId")
+                        .HasForeignKey("AccessLevelsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.PermissionMap", null)
+                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.PermissionMapping", null)
                         .WithMany()
-                        .HasForeignKey("PermissionMapsPermissionMapId")
+                        .HasForeignKey("PermissionMapsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessMapping", b =>
                 {
+                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.AccessLevel", null)
+                        .WithMany("ActionMap")
+                        .HasForeignKey("AccessLevelId");
+
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.ActionAccessFlag", "ObjectAction")
                         .WithMany()
-                        .HasForeignKey("ObjectActionActionAccessFlagId")
+                        .HasForeignKey("ObjectActionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1317,7 +1298,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasOne("BLAZAM.Common.Models.Database.ActiveDirectoryField", "Field")
                         .WithMany()
-                        .HasForeignKey("FieldActiveDirectoryFieldId")
+                        .HasForeignKey("FieldId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1331,7 +1312,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasForeignKey("DirectoryTemplateId");
                 });
 
-            modelBuilder.Entity("PermissionDelegatePermissionMap", b =>
+            modelBuilder.Entity("PermissionDelegatePermissionMapping", b =>
                 {
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.PermissionDelegate", null)
                         .WithMany()
@@ -1339,9 +1320,9 @@ namespace BLAZAM.Common.Migrations.MySql
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.PermissionMap", null)
+                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.PermissionMapping", null)
                         .WithMany()
-                        .HasForeignKey("PermissionsMapsPermissionMapId")
+                        .HasForeignKey("PermissionsMapsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1349,6 +1330,11 @@ namespace BLAZAM.Common.Migrations.MySql
             modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryField", b =>
                 {
                     b.Navigation("FieldAccessMappings");
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.AccessLevel", b =>
+                {
+                    b.Navigation("ActionMap");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", b =>

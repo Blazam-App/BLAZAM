@@ -94,9 +94,9 @@
 }
 @code {
 #nullable disable warnings
-    PermissionMap? _map;
+    PermissionMapping? _map;
     [Parameter]
-    public PermissionMap? Map
+    public PermissionMapping? Map
     {
         get => _map; set
         {
@@ -141,13 +141,13 @@
 
             if (Context != null)
             {
-                if (Map.PermissionMapId != 0)
+                if (Map.Id != 0)
                 {
-                    Map = Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.PermissionMapId == Map.PermissionMapId).FirstOrDefault();
+                    Map = Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Map.Id).FirstOrDefault();
                 }
                 accessLevels = await Context.AccessLevels.ToListAsync();
                 PermissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin).ToListAsync();
-                if (Map.PermissionMapId != 0)
+                if (Map.Id != 0)
                 {
                     selectedAccessLevelNames = Map.AccessLevels.Select(a => a.Name).ToList();
                     selectedPermissionDelegateNames = Map.PermissionDelegates.Select(
@@ -163,7 +163,7 @@
     }
     async Task DeleteMapping()
     {
-        if (Map.PermissionMapId == 0)
+        if (Map.Id == 0)
         {
             Map = null;
         }
@@ -180,7 +180,7 @@
     }
    new async Task Save()
     {
-        if (Map.PermissionMapId == 0)
+        if (Map.Id == 0)
             Context.PermissionMap.Add(Map);
         var result = Context.SaveChanges();
         await InvokeAsync(StateHasChanged);

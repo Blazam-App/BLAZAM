@@ -1,8 +1,7 @@
 ﻿namespace BLAZAM.Common.Models.Database.User
 {
-    public class UserSettings
+    public class UserSettings : AppDbSetBase
     {
-        public int UserSettingsId { get; set; }
         public string UserGUID { get; set; }
         public string? APIToken { get; set; }
         public string? Theme { get; set; }

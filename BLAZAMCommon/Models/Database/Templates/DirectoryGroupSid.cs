@@ -1,8 +1,7 @@
 ﻿namespace BLAZAM.Common.Models.Database.Templates
 {
-    public class DirectoryTemplateGroup
+    public class DirectoryTemplateGroup : AppDbSetBase
     {
-        public int DirectoryTemplateGroupId { get; set; }
         public string GroupSid { get; set; }
 
     }

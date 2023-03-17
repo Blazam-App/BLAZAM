@@ -33,7 +33,7 @@ namespace BLAZAM.Common.Data.Database
         DbSet<ActionAccessFlag> ObjectActionFlag { get; set; }
         DbSet<OUAuditLog> OUAuditLog { get; set; }
         DbSet<PermissionDelegate> PermissionDelegate { get; set; }
-        DbSet<PermissionMap> PermissionMap { get; set; }
+        DbSet<PermissionMapping> PermissionMap { get; set; }
         DbSet<PermissionsAuditLog> PermissionsAuditLog { get; set; }
         DbSet<RequestAuditLog> RequestAuditLog { get; set; }
         DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
