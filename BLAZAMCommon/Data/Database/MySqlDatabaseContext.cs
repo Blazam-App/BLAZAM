@@ -27,6 +27,10 @@ namespace BLAZAM.Common.Data.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+               if (ConnectionString == null)
+            {
+                ConnectionString = new DatabaseConnectionString("Server=localhost;User=blazam;Password=blazam;Database=blazam;");
+            }
             optionsBuilder.UseMySql(ConnectionString?.Value,
                            serverVersion: new MySqlServerVersion(new Version(8, 0, 32)),
                           mySqlOptionsAction: options =>

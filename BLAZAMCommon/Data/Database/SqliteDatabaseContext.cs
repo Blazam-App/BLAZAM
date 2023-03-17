@@ -30,12 +30,16 @@ namespace BLAZAM.Common.Data.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            if (ConnectionString == null)
+            {
+                ConnectionString = new DatabaseConnectionString("test");
 
+            }
             optionsBuilder.UseSqlite(
                          ConnectionString.Value).EnableSensitiveDataLogging()
                           .LogTo(Loggers.DatabaseLogger.Information);
         }
 
-        
+
     }
 }

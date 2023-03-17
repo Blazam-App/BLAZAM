@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory;
 using BLAZAM.Common.Models.Database.Permissions;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Common.Models.Database
 {
@@ -7,7 +8,7 @@ namespace BLAZAM.Common.Models.Database
     {
 
         public string FieldName { get; set; }
-        public virtual ICollection<FieldAccessMapping> FieldAccessMappings { get; set; }
+        public List<ActiveDirectoryObjectType> ObjectTypes { get; set; }
         public string DisplayName { get; internal set; }
 
         public override string? ToString()
