@@ -9,7 +9,7 @@
          ThemeContrast="ThemeContrast.Dark"
          Padding="Padding.Is2.OnX"
          Background="Background.Dark"
-         TextColor="TextColor.Light"
+         
          VerticalAlignment="VerticalAlignment.Middle">
         <BarBrand Width=Width.Is100>
             <Row>
@@ -39,21 +39,21 @@
                            
                             @if (OU.CanEdit)
                             {
-                                <DropdownItem Clicked="ToggleEditMode">Edit...</DropdownItem>
+                                <MudMenuItem Clicked="ToggleEditMode">Edit...</MudMenuItem>
                             }
                            
                             @if (OU.CanRename)
                             {
-                                <DropdownItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</DropdownItem>
+                                <MudMenuItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
 
                             }
                             @if (OU.CanMove)
                             {
-                                <DropdownItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</DropdownItem>
+                                <MudMenuItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
                             }
                             @if (OU.CanDelete)
                             {
-                                <DropdownItem Clicked="@DeleteOU">Delete...</DropdownItem>
+                                <MudMenuItem Clicked="@DeleteOU">Delete...</MudMenuItem>
                             }
                         </DropdownMenu>
                     </Dropdown>
@@ -68,7 +68,7 @@
 
 
 
-<AppModal TextColor="TextColor.Dark" Title="Move To" @ref=@MoveToModal>
+<AppModal TextColor="Color.Dark" Title="Move To" @ref=@MoveToModal>
     @if (MoveToModal?.IsShown==true)
     {
         <BLAZAM.Server.Shared.UI.OU.MoveToOUModalContent DirectoryModel="OU" />
@@ -83,17 +83,17 @@
 
 
 @if(OU!=null){
-    <Card>
-        <CardHeader>
+    <MudCard>
+        <MudCardHeader>
             @OU.CanonicalName
-        </CardHeader>
-        <CardBody>
+        </MudCardHeader>
+        <MudCardBody>
         @foreach(var childOU in OU.Children)
         {
             <ViewOU OU=childOU/>
         }
-    </CardBody>
-    </Card>
+    </MudCardBody>
+    </MudCard>
 }
 
 @if (OU.HasUnsavedChanges)

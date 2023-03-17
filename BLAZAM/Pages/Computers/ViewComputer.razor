@@ -14,7 +14,7 @@
                  ThemeContrast="ThemeContrast.Dark"
                  Padding="Padding.Is2.OnX"
                  Background="Background.Dark"
-                 TextColor="TextColor.Light"
+                 
                  VerticalAlignment="VerticalAlignment.Middle">
                 <BarBrand Width=Width.Is100>
                     <Row>
@@ -38,19 +38,19 @@
                             @switch (Computer.Online)
                             {
                                 case true:
-                                    <Tooltip Text="Online">
-                                        <Icon TextColor="TextColor.Success" Name=@("fa-solid fa-circle-up") />
-                                    </Tooltip>
+                                    <MudTooltip Text="Online">
+                                        <Icon TextColor="Color.Success" Name=@("fa-solid fa-circle-up") />
+                                    </MudTooltip>
                                     break;
                                 case false:
-                                    <Tooltip Text="Offline">
-                                        <Icon TextColor="TextColor.Danger" Name=@("fa-solid fa-circle-down") />
-                                    </Tooltip>
+                                    <MudTooltip Text="Offline">
+                                        <Icon TextColor="Color.Error" Name=@("fa-solid fa-circle-down") />
+                                    </MudTooltip>
                                     break;
                                 case null:
-                                    <Tooltip Text="Checking">
-                                        <Icon TextColor="TextColor.Warning" Name=@("fa-solid fa-circle-question") />
-                                    </Tooltip>
+                                    <MudTooltip Text="Checking">
+                                        <Icon TextColor="Color.Warning" Name=@("fa-solid fa-circle-question") />
+                                    </MudTooltip>
                                     break;
                             }
                             @if (Computer.LockedOut)
@@ -65,40 +65,40 @@
                                     <Icon Name=@("fa-gear") />
                                 </DropdownToggle>
                                 <DropdownMenu>
-                                    <DropdownItem>
-                                        <Switch @bind-Checked=@(Computer.Enabled) Disabled=@((Computer.Disabled && !Computer.CanEnable)||(Computer.Enabled && !Computer.CanDisable))>Account Enabled</Switch>
+                                    <MudMenuItem>
+                                        <MudSwitch Label="Account Enabled" @bind-Checked=@(Computer.Enabled) Disabled=@((Computer.Disabled && !Computer.CanEnable)||(Computer.Enabled && !Computer.CanDisable))/>
 
-                                    </DropdownItem>
+                                    </MudMenuItem>
                                     <DropdownDivider />
                                     @if (Computer.CanEdit)
                                     {
-                                        <DropdownItem Clicked="ToggleEditMode">Edit...</DropdownItem>
+                                        <MudMenuItem Clicked="ToggleEditMode">Edit...</MudMenuItem>
                                     }
                                     @if (Computer.LockedOut && Computer.CanUnlock)
                                     {
-                                        <DropdownItem Clicked="Unlock">Unlock...</DropdownItem>
+                                        <MudMenuItem Clicked="Unlock">Unlock...</MudMenuItem>
                                     }
                                     @if (Computer.CanAssign)
                                     {
                                         RefreshComputerGroups();
-                                        <DropdownItem Clicked="@(()=>{AssignToModal?.Show();})">Assign To...</DropdownItem>
+                                        <MudMenuItem Clicked="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
                                     }
                                     @if (Computer.CanDisable)
                                     {
-                                        <DropdownItem Clicked="@(()=>{ChangePasswordModal?.Show();})">Change Password...</DropdownItem>
+                                        <MudMenuItem Clicked="@(()=>{ChangePasswordModal?.Show();})">Change Password...</MudMenuItem>
                                     }
                                     @if (Computer.CanRename)
                                     {
-                                        <DropdownItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</DropdownItem>
+                                        <MudMenuItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
 
                                     }
                                     @if (Computer.CanMove)
                                     {
-                                        <DropdownItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</DropdownItem>
+                                        <MudMenuItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
                                     }
                                     @if (Computer.CanDelete)
                                     {
-                                        <DropdownItem Clicked="@DeleteComputer">Delete...</DropdownItem>
+                                        <MudMenuItem Clicked="@DeleteComputer">Delete...</MudMenuItem>
                                     }
                                 </DropdownMenu>
                             </Dropdown>
@@ -112,14 +112,14 @@
 
         </SetSubHeader>
 
-        <Card Shadow="Shadow.Default">
+        <MudCard Shadow="Shadow.Default">
 
            
 
-            <CardHeader>
+            <MudCardHeader>
                 @Computer.SamAccountName
-            </CardHeader>
-            <CardBody>
+            </MudCardHeader>
+            <MudCardBody>
                 <LoadingIndicator Visible=@(drives==null)>
                     @if (drives != null && drives.Count > 0)
                     {
@@ -141,7 +141,7 @@
                                         switch (fieldContext.PercentUsed)
                                         {
                                             case > 85:
-                                                bg = Color.Danger;
+                                                bg = Color.Error;
                                                 break;
                                             case > 75:
                                                 bg = Color.Warning;
@@ -150,11 +150,11 @@
                                         }
                                         var percentString = (int)fieldContext.PercentUsed + "%";
                                     }
-                                    <Tooltip Text="@percentString">
+                                    <MudTooltip Text="@percentString">
                                         <Progress Color=bg Value="(int)fieldContext.PercentUsed">
                                             @percentString
                                         </Progress>
-                                    </Tooltip>
+                                    </MudTooltip>
                                 </DisplayTemplate>
                             </DataGridColumn>
                             <DataGridColumn Field="@nameof(IADComputerDrive.FileSystem)" Caption="File System" />
@@ -169,8 +169,8 @@
 
 
 
-            </CardBody>
-        </Card>
+            </MudCardBody>
+        </MudCard>
 
 
         @if (Computer.HasUnsavedChanges)

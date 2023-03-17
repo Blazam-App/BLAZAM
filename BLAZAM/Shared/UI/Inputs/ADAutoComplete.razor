@@ -1,5 +1,5 @@
 ﻿@inherits AutoCompleteComponentBase
-<Div Display="Display">
+<div Display="Display">
     <Autocomplete TItem="IDirectoryEntryAdapter"
                   TValue="IDirectoryEntryAdapter"
                   Data="@SearchResults"
@@ -16,11 +16,11 @@
                   Style=""
                     FreeTyping>
         <ItemContent>
-            <Div Padding="Padding.Is0" TextWeight="TextWeight.Bold">
-                <Div Flex="Flex.InlineFlex">
+            <div Padding="Padding.Is0" TextWeight="TextWeight.Bold">
+                <div Flex="Flex.InlineFlex">
                     @context?.Value?.ObjectType
 
-                </Div>
+                </div>
                 @if (context?.Value != null && context.Value is IGroupableDirectoryAdapter gdm)
                 {
                     if (gdm.LockedOut)
@@ -40,22 +40,22 @@
 
 
 
-            </Div>
-            <Div Padding="Padding.Is0" TextWeight="TextWeight.Bold">
+            </div>
+            <div Padding="Padding.Is0" TextWeight="TextWeight.Bold">
                 <Small>
                     @context?.Value?.CanonicalName
                 </Small>
 
-            </Div>
-            <Div Padding="Padding.Is0">
+            </div>
+            <div Padding="Padding.Is0">
                 <Small>
                     @context.Text
                 </Small>
-            </Div>
+            </div>
         </ItemContent>
         <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
     </Autocomplete>
-</Div>
+</div>
 
 
 

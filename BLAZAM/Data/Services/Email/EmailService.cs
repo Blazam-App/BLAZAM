@@ -40,7 +40,7 @@ namespace BLAZAM.Server.Data.Services.Email
 
         private ComponentRenderer<TComponent> GetRenderer<TComponent>() where TComponent : IComponent => new ComponentRenderer<TComponent>()
             .AddService(Factory)
-            .UseLayout<DefaultEmailLayout>()
+            .UseLayout<DefaultEmailMudLayout>()
             .AddServiceProvider(Program.AppInstance.Services);
 
 

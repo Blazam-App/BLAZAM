@@ -7,28 +7,28 @@
 
 
 
-<Card>
-    <CardBody>
+<MudCard>
+    <MudCardBody>
         Something terrible has happened...
 
-    </CardBody>
-</Card>
+    </MudCardBody>
+</MudCard>
 
 @if (Program.InDebugMode)
 {
 
-    <Card>
-        <CardHeader>
+    <MudCard>
+        <MudCardHeader>
             @Error.Source : @Error.GetType()
-        </CardHeader>
-        <CardBody>
+        </MudCardHeader>
+        <MudCardBody>
             Error Message: @Error.Message
-        </CardBody>
-        <CardBody TextOverflow="TextOverflow.NoWrap" Overflow="Overflow.Scroll">
+        </MudCardBody>
+        <MudCardBody TextOverflow="TextOverflow.NoWrap" Overflow="Overflow.Scroll">
             Stack Trace: <br>
             @((MarkupString)_error.StackTrace.Replace("\n","<br><br>"))
-        </CardBody>
-    </Card>
+        </MudCardBody>
+    </MudCard>
 
 
 

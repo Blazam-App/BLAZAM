@@ -1,86 +1,86 @@
 ﻿@inherits AppModalContent
 <LoadingIndicator Visible=LoadingData>
 
-    <Div Background="Background.Light" TextColor="TextColor.Dark">
+    <div Background="Background.Light" TextColor="Color.Dark">
         <Section Title=@UserLocalization["Name"]>
 
 
             @if (User.CanReadField(ActiveDirectoryFields.GivenName))
             {
-                <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-                <FieldLabel>
+                <MudField Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
+                <MudFieldLabel>
                     @UserLocalization["First Name"]
                 </FieldLabel>
-                <FieldBody>
-                    <TextEdit @bind-Text="@_privateUserInstance.GivenName" />
+                
+                    <MudTextField  @bind-Value="@_privateUserInstance.GivenName" />
 
-                </FieldBody>
-                </Field>
+                
+                </MudField>
             }
             @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
             {
-                <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-                <FieldLabel>
+                <MudField Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
+                <MudFieldLabel>
                     @UserLocalization["Middle Name"]
                 </FieldLabel>
-                <FieldBody>
-                    <TextEdit @bind-Text="@_privateUserInstance.MiddleName" />
+                
+                    <MudTextField  @bind-Value="@_privateUserInstance.MiddleName" />
 
-                </FieldBody>
-                </Field>
+                
+                </MudField>
             }
             @if (User.CanReadField(ActiveDirectoryFields.SN))
             {
-                <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-                <FieldLabel>
+                <MudField Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
+                <MudFieldLabel>
                     @UserLocalization["Last Name"]
                 </FieldLabel>
-                <FieldBody>
-                    <TextEdit @bind-Text="@_privateUserInstance.Surname" />
+                
+                    <MudTextField  @bind-Value="@_privateUserInstance.Surname" />
 
-                </FieldBody>
-                </Field>
+                
+                </MudField>
             }
             @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
             {
-                <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-                <FieldLabel>
+                <MudField Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
+                <MudFieldLabel>
                     @UserLocalization["Display Name"]
                 </FieldLabel>
-                <FieldBody>
-                    <TextEdit Text="@_privateUserInstance.DisplayName" TextChanged="DisplayNameChanged" />
+                
+                    <MudTextField  Text="@_privateUserInstance.DisplayName" TextChanged="DisplayNameChanged" />
 
-                </FieldBody>
-                </Field>
+                
+                </MudField>
             }
 
         </Section>
         @if (User.CanEditField(ActiveDirectoryFields.SAMAccountName))
         {
-            <Field Horizontal>
-            <FieldLabel>
+            <MudField>
+            <MudFieldLabel>
                 @UserLocalization["Username"]
             </FieldLabel>
-            <FieldBody>
-                <TextEdit @bind-Text="@_privateUserInstance.SamAccountName" />
+            
+                <MudTextField  @bind-Value="@_privateUserInstance.SamAccountName" />
 
-            </FieldBody>
-        </Field>
+            
+        </MudField>
         }
         @if (User.CanEditField(ActiveDirectoryFields.Mail))
         {
-            <Field Horizontal>
-            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+            <MudField>
+            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                 @UserLocalization["Email Address"]
             </FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                <TextEdit @bind-Text="@_privateUserInstance.Email" />
+           
+                <MudTextField  @bind-Value="@_privateUserInstance.Email" />
 
-            </FieldBody>
-        </Field>
+            
+        </MudField>
         }
-        <Button Disabled=saveDisabled Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Changes"]</Button>
-    </Div>
+        <MudButton Disabled=saveDisabled Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
+    </div>
 </LoadingIndicator>
 
 @code {

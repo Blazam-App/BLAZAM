@@ -1,94 +1,61 @@
 ﻿@page "/ou/create"
-@inherits AppComponentBase
+@inherits TabbedAppComponentBase
 @attribute [Authorize]
 <AppPageTitle>Create OU</AppPageTitle>
 
 <Row>
-    <Steps @ref=Steps NavigationAllowed=AllowStep SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged">
-        <Items>
-            <Step Index=1 Name="stepConfigure" Completed=@(newOU!=null)>Create</Step>
+    <MudTabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="selectedStep">
+        <MudTabPanel>
+            <ChildContent>
+                <MudText>
+                    <MudField>
+
+                        <OUTreeView Label="Parent Organizational Unit"
+                                    SelectedOUChanged="OUSelected">
+                            <NodeContent>
+                                @context.Name
+                            </NodeContent>
+                        </OUTreeView>
+
+                    </MudField>
+
+                    <MudField>
+
+                        <MudTextField Label="Organizational Unit Name" @bind-Value=@newOUName />
 
 
-            <Step Name="stepConfirm">
-                <Marker>
-                    <Icon Name="IconName.Flag" />
-                </Marker>
-                <Caption>
-                    Confirm
-                </Caption>
-            </Step>
-
-
-
-        </Items>
-
-        <Content>
-
-            <StepPanel Name="stepConfigure">
-                <Column Margin=Margin.IsAuto.OnX ColumnSize="ColumnSize.Is12.OnMobile.Is10.OnTablet.Is8.OnDesktop.Is6.OnWidescreen.Is4.OnFullHD">
-
-                    @if (selectedStep == "stepConfigure")
-                    {
-                        <Field>
-                            <FieldLabel>Parent Organizational Unit</FieldLabel>
-                            <FieldBody>
-                                <OUTreeView SelectedOUChanged="OUSelected">
-                                    <NodeContent>
-                                        @context.Name
-                                    </NodeContent>
-                                </OUTreeView>
-                            </FieldBody>
-                        </Field>
-
-                        <Field>
-                            <FieldLabel>Organizational Unit Name</FieldLabel>
-                            <FieldBody>
-                                <TextEdit @bind-Text=@newOUName />
-
-                            </FieldBody>
-                        </Field>
-                        <Button Color="Color.Primary" Clicked="CreateNewOU">Next</Button>
-
-
-                    }
-                </Column>
-            </StepPanel>
-
-
-
-            <StepPanel Name="stepConfirm">
-                <Column Margin=Margin.IsAuto.OnX ColumnSize="ColumnSize.Is12.OnMobile.Is10.OnTablet.Is8.OnDesktop.Is6.OnWidescreen.Is4.OnFullHD">
-
-                    @if (selectedStep == "stepConfirm")
-                    {
-                        <ConfirmNewOU OU="@newOU" Confirmed="OUCreated" FieldColumnSize="ColumnSize.Is12" />
-                    }
-                </Column>
-
-            </StepPanel>
-
-        </Content>
-
-
-    </Steps>
-    <Column ColumnSize="ColumnSize.Is1.OnTablet.Is2.OnDesktop.Is3.OnWidescreen.Is4.OnWidescreen" />
+                    </MudField>
+                    <MudButton Color="Color.Primary" Clicked="CreateNewOU">Next</MudButton>
+                </MudText>
+            </ChildContent>
+            <TabContent>
+                Create
+            </TabContent>
+        </MudTabPanel>
+          <MudTabPanel>
+            <ChildContent>
+                <MudText>
+                    <ConfirmNewOU OU="@newOU" Confirmed="OUCreated" />
+                </MudText>
+            </ChildContent>
+            <TabContent>
+                Confirm
+            </TabContent>
+        </MudTabPanel>
+    </MudTabs>
+    <MudText>@($"Active Index: {selectedStep}")</MudText>
+   
 
 </Row>
 
 
 
 @code {
-    Steps? Steps;
 
 
-    string selectedStep = "stepConfigure";
+    int selectedStep;
 
-    private Task OnSelectedStepChanged(string name)
-    {
-        selectedStep = name;
-
-        return Task.CompletedTask;
-    }
+   
 
 
 
@@ -106,7 +73,7 @@
         templates = await Context?.DirectoryTemplates.ToListAsync();
         await InvokeAsync(StateHasChanged);
     }
-
+    /*
     bool AllowStep(StepNavigationContext context)
     {
         switch (context.NextStepName)
@@ -119,6 +86,7 @@
         }
         return false;
     }
+    */
     async void OUSelected(IADOrganizationalUnit ou)
     {
         if (parentOU == null)
@@ -140,7 +108,7 @@
 
 
 
-        selectedStep = "stepConfirm";
+        selectedStep = 1;
 
 
         LoadingData = true;

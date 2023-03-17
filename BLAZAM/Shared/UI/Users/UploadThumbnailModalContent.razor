@@ -1,21 +1,29 @@
 ﻿@inherits AppModalContent
 @using Blazorise.Cropper
-<Div Background="Background.Light" TextColor="TextColor.Dark">
-    @if(newThumbnail!=null)
+<div Background="Background.Light" TextColor="Color.Dark">
+    @if (newThumbnail != null)
     {
         <Base64Image Data="newThumbnail" />
 
     }
-    <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">
+    <MudText>
         @SettingsLocalization["Upload Thumbnail Photo"]
-    </FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is8">
+    </MudText>
 
-        <Blazorise.FilePicker Upload="LoadIcon" />
+    <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
+        <ButtonTemplate>
+            <MudButton HtmlTag="label"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CloudUpload">
+                Upload Files
+            </MudButton>
+        </ButtonTemplate>
+    </MudFileUpload>
 
-    </FieldBody>
-    <Button Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Photo"]</Button>
-</Div>
+
+    <MudButton Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Photo"]</MudButton>
+</div>
 @code {
     byte[]? newThumbnail;
     [Parameter]
@@ -26,9 +34,10 @@
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
     }
-    private async void LoadIcon(FileUploadEventArgs e)
+    private async void LoadIcon(IBrowserFile e)
     {
-        using (var stream = e.File.OpenReadStream(5000000))
+        
+        using (var stream = e.OpenReadStream(5000000))
         {
             using (var memoryStream = new MemoryStream())
             {
@@ -46,7 +55,8 @@
     async Task SaveChanges()
     {
         //User.CommitChanges();
-        try{
+        try
+        {
             DirectoryModel.ThumbnailPhoto = newThumbnail;
 
             await NotificationService.Warning("Thumbnail changed for " + DirectoryModel.DisplayName + " but changes need to be saved.", "Thumbnail Changed");
@@ -59,6 +69,6 @@
         Close();
 
     }
-    
+
 
 }

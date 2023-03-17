@@ -1,5 +1,5 @@
 @inherits AppComponentBase
-<Form @onsubmit="(()=>{SearchService.Search();})">
+<MudForm @onsubmit="(()=>{SearchService.Search();})">
 
     <Bar Mode="BarMode.Horizontal"
          CollapseMode="BarCollapseMode.Small"
@@ -8,10 +8,10 @@
          ThemeContrast="ThemeContrast.Dark"
          Padding="Padding.Is2.OnX"
          Background="Background.Dark"
-         TextColor="TextColor.Dark"
+         TextColor="Color.Dark"
          VerticalAlignment="VerticalAlignment.Middle">
         <BarBrand Padding=Padding.Is0.OnY Width="Width.Is100">
-            <Div Style="font-size:0.8em;align-self: center;">
+            <div Style="font-size:0.8em;align-self: center;">
 
                     <Addons Width="Width.Is100">
                         <Addon AddonType="AddonType.Start">
@@ -26,14 +26,14 @@
                             </DropdownList>
                         </Addon>
                     <Addon AddonType="AddonType.Body" >
-                        <Div Style="width: 1%;flex: 1 1 auto;">
+                        <div Style="width: 1%;flex: 1 1 auto;">
                             <ADAutoComplete SearchObjectType="@SearchService.SeachObjectType" SearchDisabled=@SearchService.IncludeDisabled @bind-SearchTerm="@SearchService.SearchTerm" />
-                            </Div>
+                            </div>
                         </Addon>
 
                         @if (UserStateService?.CurrentUserState?.IsSuperAdmin == true || UserStateService?.CurrentUserState?.DirectoryUser?.CanSearchDisabled == true)
                         {
-                        var buttonColor = Color.Danger;
+                        var buttonColor = Color.Error;
                         if (!SearchService.IncludeDisabled)
                         {
                             buttonColor = Color.Success;
@@ -41,12 +41,12 @@
                         <Addon AddonType="AddonType.Body">
 
                               
-                                <Button Type="ButtonType.Button" Clicked=@(async()=>{
+                                <MudButton Type="ButtonType.Button" Clicked=@(async()=>{
                                 SearchService.IncludeDisabled= !SearchService.IncludeDisabled;
                                     await InvokeAsync(StateHasChanged);
                                     }) Color=buttonColor>
                                     Enabled Only
-                                </Button>
+                                </MudButton>
 
                                  
                                
@@ -58,27 +58,27 @@
 
                             @if (Searcher?.SearchState == SearchState.Collecting)
                             {
-                                <Button Float="Float.End" Type="ButtonType.Button" Clicked=@(()=>{
+                                <MudButton Float="Float.End" Type="ButtonType.Button" Clicked=@(()=>{
                                     disableCancel = true;
                                     Searcher.Cancel();
                                     }) Color="Color.Primary" Disabled=@disableCancel>
                                     Cancel
-                                </Button>
+                                </MudButton>
 
                             }
                             else
                             {
-                                <Button Float="Float.End" Type="ButtonType.Submit" Color="Color.Primary">Search</Button>
+                                <MudButton Float="Float.End" Type="ButtonType.Submit" Color="Color.Primary">Search</MudButton>
 
                             }
 
                         </Addon>
                     </Addons>
-            </Div>
+            </div>
         </BarBrand>
     </Bar>
 
-</Form>
+</MudForm>
 
 @code {
     List<ActiveDirectoryObjectType?> ObjectTypes = new List<ActiveDirectoryObjectType?> { ActiveDirectoryObjectType.All, ActiveDirectoryObjectType.User, ActiveDirectoryObjectType.Group, ActiveDirectoryObjectType.OU, ActiveDirectoryObjectType.Computer };

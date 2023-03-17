@@ -7,60 +7,47 @@
 @layout InstallLayout
 @inherits ValidatedForm
 
-<Heading Size="HeadingSize.Is3">Authentication</Heading>
-<Div>
-    <Heading Size="HeadingSize.Is6">
+<MudText Typo="Typo.h1" Size="HeadingSize.Is3">Authentication</MudText>
+<div>
+    <MudText Typo="Typo.h1" Size="HeadingSize.Is6">
         Please set a secure admin password.
 
-    </Heading>
-    <Heading Size="HeadingSize.Is6">
+    </MudText>
+    <MudText Typo="Typo.h1" Size="HeadingSize.Is6">
 
         This account will have total application access.
-    </Heading>
-    <Form @onsubmit="SubmitForm">
+    </MudText>
+    <MudForm @onsubmit="SubmitForm">
         <SettingsField>
-            <FieldLabel>Username</FieldLabel>
-            <FieldBody>
-                <TextEdit Text="admin" Disabled />
-            </FieldBody>
+
+            <MudTextField Label="Username" Text="admin" T=string Disabled />
+
         </SettingsField>
-        <Validations Model=adminPassword StatusChanged="OnValidation">
-            <Validation Validator="AppValidationRule.IsValidPassword">
-                <SettingsField>
-                    <FieldLabel>Password</FieldLabel>
-                    <FieldHelp>Must be 6 characters or longer containing at least one letter,numer and special character.</FieldHelp>
-                    <FieldBody>
-                        <TextEdit Role="TextRole.Password" @bind-Text=adminPassword>
-                            <Feedback>
-                                <ValidationError>
-                                    The password does not meet the minimum complexity requirements.
-                                </ValidationError>
-                            </Feedback>
-                            </TextEdit>
-                    </FieldBody>
-                </SettingsField>
-            </Validation>
-            <Validation Validator="Matches">
-                <SettingsField>
-                    <FieldLabel>Confirm Password</FieldLabel>
-                    <FieldBody>
-                        <TextEdit Role="TextRole.Password">
-                            <Feedback>
-                                <ValidationError>
-                                    The passwords do not match.
-                                </ValidationError>
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
-                </SettingsField>
-            </Validation>
-        </Validations>
+        <SettingsField>
+
+            <MudTextField Label="Password"
+                          HelperText="=Must be 6 characters or longer containing at least one letter,numer and special character."
+                          InputType="InputType.Password"
+                          @bind-Value=adminPassword>
 
 
-        <Button Disabled=saveDisabled Color="Color.Primary" Type="ButtonType.Submit">Save Password</Button>
-    </Form>
 
-</Div>
+            </MudTextField>
+
+        </SettingsField>
+        <SettingsField>
+
+            <MudTextField Label="Confirm Password" InputType="InputType.Password" T="string">
+
+            </MudTextField>
+
+        </SettingsField>
+
+
+        <MudButton Disabled=saveDisabled Color="Color.Primary" Type="ButtonType.Submit">Save Password</MudButton>
+    </MudForm>
+
+</div>
 
 
 @code {
@@ -89,8 +76,8 @@
         }
         await InvokeAsync(StateHasChanged);
     }
-    async void Matches(ValidatorEventArgs e)
-    {
-        e.Status = ((adminPassword.Equals(e.Value as string)) ? ValidationStatus.Success : ValidationStatus.Error);
-    }
+    //async void Matches(ValidatorEventArgs e)
+    //{
+    //    e.Status = ((adminPassword.Equals(e.Value as string)) ? ValidationStatus.Success : ValidationStatus.Error);
+    //}
 }

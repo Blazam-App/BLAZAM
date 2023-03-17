@@ -5,7 +5,7 @@
 
 
 <PageTitle>Install - Blazam</PageTitle>
-<Steps SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged" NavigationAllowed="NavigationAllowed">
+<Steps SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged">
     <Items>
         <Step Completed=@(_step>1) Name="1">@SettingsLocalization["Database"]</Step>
         <Step Completed=@(_step>2) Name="2">@SettingsLocalization["Authentication"]</Step>
@@ -23,14 +23,14 @@
     <Content>
         <StepPanel Name="0">
 
-            <Card>
-                <CardHeader>
+            <MudCard>
+                <MudCardHeader>
                     Checking Installation
-                </CardHeader>
-                <CardBody>
+                </MudCardHeader>
+                <MudCardBody>
                     Please wait while the installation status of the application is checked...
-                </CardBody>
-            </Card>
+                </MudCardBody>
+            </MudCard>
 
         </StepPanel>
         <StepPanel Name="1">
@@ -65,7 +65,7 @@
         *@
         <StepPanel Name="4">
             <h2>Installation Complete</h2>
-            <Button @onclick="FinalizeInstall" Color="Color.Success">Finalize Install</Button>
+            <MudButton @onclick="FinalizeInstall" Color="Color.Success">Finalize Install</MudButton>
         </StepPanel>
     </Content>
 </Steps>
@@ -97,6 +97,7 @@
 
 
     }
+    /*
     private bool NavigationAllowed(StepNavigationContext context)
     {
         if (context.NextStepIndex > _step)
@@ -106,6 +107,7 @@
 
         return true;
     }
+    */
     async void UpdateStatuses()
     {
         Context = DbFactory.CreateDbContext();

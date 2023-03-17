@@ -32,7 +32,6 @@ using Serilog;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Serilog.Events;
-using Blazorise.RichTextEdit;
 using BLAZAM.Server.Pages.Error;
 using System.Diagnostics;
 using System.Reflection;
@@ -41,6 +40,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding;
 using BLAZAM.Common.Data;
 using Microsoft.AspNetCore.Components.Authorization;
+using MudBlazor.Services;
 
 namespace BLAZAM
 {
@@ -368,18 +368,21 @@ namespace BLAZAM
 
             //Add Blazorize UI framework
 
-            builder.Services.AddBlazorise(options =>
-            {
-                options.Immediate = true;
+            //builder.Services.AddBlazorise(options =>
+            //{
+            //    options.Immediate = true;
 
-            })
-                .AddBootstrap5Providers()
-                .AddFontAwesomeIcons()
-                .AddLogging();
+            //})
+            //    .AddBootstrap5Providers()
+            //    .AddFontAwesomeIcons()
+            //    .AddLogging();
 
 
-            builder.Services.AddBlazoriseRichTextEdit();
+            //builder.Services.AddBlazoriseRichMudTextField ();
 
+
+
+            builder.Services.AddMudServices();
 
             builder.Host.UseWindowsService();
 

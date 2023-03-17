@@ -15,7 +15,7 @@
         <DataGridColumn Field="@nameof(IDirectoryEntryAdapter.LastChanged)" Caption="Deleted At" />
         <DataGridColumn>
             <DisplayTemplate>
-            <Button Color="Color.Primary" Clicked="@(()=>{ Directory.RestoreTombstone(context,context.LastKnownParent); })">Restore</Button>
+            <MudButton Color="Color.Primary" Clicked="@(()=>{ Directory.RestoreTombstone(context,context.LastKnownParent); })">Restore</MudButton>
 
             </DisplayTemplate>
 

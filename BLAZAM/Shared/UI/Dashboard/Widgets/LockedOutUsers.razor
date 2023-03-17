@@ -1,22 +1,22 @@
 ﻿@inherits Widget
 @attribute [Authorize]
-<Div Background="Background.Secondary" TextColor="TextColor.Light">
+<div Background="Background.Secondary" >
     <h3>Locked Out Users</h3>
-    <Div Overflow="Overflow.Auto" Style="max-height:350px;">
+    <div Overflow="Overflow.Auto" Style="max-height:350px;">
 
         @foreach (var user in LockedUsers)
         {
 
-            <Card Background="Background.Light" TextColor="TextColor.Dark" Style="cursor:pointer" @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
+            <MudCard Background="Background.Light" TextColor="Color.Dark" Style="cursor:pointer" @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
 
                 @user.DisplayName <br>
                 @user.SamAccountName <br>
                 @DirectoryTools.PrettifyOu(user.OU) <br>
                 @user.LockoutTime <br>
-            </Card>
+            </MudCard>
         }
-    </Div>
-</Div>
+    </div>
+</div>
 @code {
     List<IADUser> LockedUsers = new();
 

@@ -12,18 +12,18 @@
 @inject ConnMonitor monitor
 <PageTitle>@DatabaseCache.ApplicationSettings.AppAbbreviation</PageTitle>
 <CascadingValue Value="this">
-    <Layout Sider>
+    <MudMudLayout>
         <AuthorizeView Context="authContext">
             <Authorized>
-                <LayoutSider>
-                    <LayoutSiderContent>
+                <MudDrawer>
+                    <MudDrawerContainer>
                         <NavMenu />
-                    </LayoutSiderContent>
-                </LayoutSider>
+                    </MudDrawerContainer>
+                </MudDrawer>
 
-                <Layout Background="Background.Light" TextColor="TextColor.Dark">
-
-                    <LayoutHeader Fixed>
+                <MudMainContent Background="Background.Light" TextColor="Color.Dark">
+                    
+                    <MudContainer Fixed>
 
                         @if (setHeader != null)
                         {
@@ -39,13 +39,13 @@
                             @setSubHeader.ChildContent
 
                         }
-                    </LayoutHeader>
-                    <LayoutContent Style="height: 100vh;overflow: auto;">
+                    </MudContainer>
+                    <MudContainer Style="height: 100vh;overflow: auto;">
 
                         @Body
 
-                    </LayoutContent>
-                    <LayoutFooter>
+                    </MudContainer>
+                    <MudContainer Fixed>
                      <DirectoryConnectingIndicator/>
                         
                         <AppFooter />
@@ -55,22 +55,20 @@
                                 <DevTools />
                             </AuthorizeView>
                         }
-                    </LayoutFooter>
-                </Layout>
+                    </MudContainer>
+                </MudMainContent>
                 <NotificationBroadcastListener />
             </Authorized>
             <NotAuthorized>
-                <Layout>
-                    <LayoutContent Style="height: 100vh;overflow: auto;">
+                    <MudMainContent Style="height: 100vh;overflow: auto;">
                         <CascadingValue Value="this">
                             @Body
                         </CascadingValue>
-                    </LayoutContent>
-                </Layout>
+                    </MudMainContent>
             </NotAuthorized>
         </AuthorizeView>
 
-    </Layout>
+    </MudMudLayout>
 </CascadingValue>
 
 

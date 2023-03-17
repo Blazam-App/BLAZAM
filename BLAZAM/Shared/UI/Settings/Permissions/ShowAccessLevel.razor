@@ -6,9 +6,9 @@
 
         <Collapse Visible="@collapseVisible">
             <CollapseHeader>
-                <Heading Size="HeadingSize.Is5">
-                    <Button Clicked="@(()=>collapseVisible = !collapseVisible)">@Model.Name</Button>
-                </Heading>
+                <MudText Typo ="Typo.h1" Size="HeadingSize.Is5">
+                    <MudButton Clicked="@(()=>collapseVisible = !collapseVisible)">@Model.Name</MudButton>
+                </MudText>
             </CollapseHeader>
             <CollapseBody>
 

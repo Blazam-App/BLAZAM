@@ -7,7 +7,7 @@
 @using Microsoft.Extensions.Options;
 @inject IHttpContextAccessor context
 @inject IApplicationUserStateService userStateService
-<Blazorise.ThemeProvider Theme="@activeTheme.Theme">
+@*<Blazorise.ThemeProvider Theme="@activeTheme.Theme">*@
     <CascadingAuthenticationState>
       
    
@@ -65,11 +65,16 @@
   
        
     </CascadingAuthenticationState>
-    <PageProgressProvider />
+  @*  <PageProgressProvider />
     <NotificationProvider Location="NotificationLocation.Start" />
-    <MessageProvider />
+    <MessageProvider />*@
+
+    <MudThemeProvider />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
+
     <SessionExpirationWarningProvider />
-</Blazorise.ThemeProvider>
+@*</Blazorise.ThemeProvider>*@
 
 
 @code {

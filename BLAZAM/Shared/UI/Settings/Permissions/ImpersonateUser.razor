@@ -1,14 +1,14 @@
 ﻿@inherits AppComponentBase
 
-<Form method="post" action="/signin">
+<MudForm method="post" action="/signin">
 
 <SettingsField>
-    <FieldLabel>@SettingsLocalization["Impersonate User"]</FieldLabel>
-    <FieldBody>
+    <MudFieldLabel>@SettingsLocalization["Impersonate User"]</FieldLabel>
+    
             <ADAutoComplete Display=Display.InlineFlex SearchObjectType="ActiveDirectoryObjectType.User" @bind-SelectedResult=User />
-            <Button Display=Display.InlineFlex Color=Color.Primary Type="ButtonType.Submit">Impersonate User</Button>
+            <MudButton Display=Display.InlineFlex Color=Color.Primary Type="ButtonType.Submit">Impersonate User</MudButton>
 
-    </FieldBody>
+    
 </SettingsField>
 
 @*Hidden Login form to send impersonation login data*@
@@ -17,7 +17,7 @@
     <input type="text" class="d-none" name="Passowrd" value="impersonate" />
     <input type="text" class="d-none" name="Impersonation" value="true"/>
 
-</Form>
+</MudForm>
 @code {
     public IDirectoryEntryAdapter? User { get; set; }
 

@@ -1,27 +1,27 @@
 ﻿@inherits AppModalContent
-<Div Background="Background.Light" TextColor="TextColor.Dark">
+<div Background="Background.Light" TextColor="Color.Dark">
 <Section Title=@UserLocalization["OU"]>
 
 
     @if (OU.CanReadField(ActiveDirectoryFields.CanonicalName))
     {
-        <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-            <FieldLabel>
+        <MudField Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
+            <MudFieldLabel>
                 @UserLocalization["Name"]
             </FieldLabel>
-            <FieldBody>
-                <TextEdit @bind-Text="@OU.CanonicalName" />
+            
+                <MudTextField  @bind-Value="@OU.CanonicalName" />
 
-            </FieldBody>
-        </Field>
+            
+        </MudField>
     }
     
     
 </Section>
 
 
-    <Button Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Changes"]</Button>
-</Div>
+    <MudButton Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
+</div>
 @code {
 
     protected override async Task OnInitializedAsync()

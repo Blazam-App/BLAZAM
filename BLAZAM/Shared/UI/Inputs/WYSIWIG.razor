@@ -1,6 +1,6 @@
-﻿@using Blazorise.RichTextEdit
-<RichTextEdit @ref="richTextEditRef"
-              Theme="RichTextEditTheme.Snow"
+﻿@using Blazorise.RichMudTextField 
+<RichMudTextField  @ref="richMudTextField Ref"
+              Theme="RichMudTextField Theme.Snow"
               ContentChanged="@OnContentChanged"
               PlaceHolder="Type your post here..."
               ReadOnly="@readOnly"
@@ -9,27 +9,27 @@
               ToolbarPosition="Placement.Bottom">
     <Editor>My example content</Editor>
     <Toolbar>
-        <RichTextEditToolbarGroup>
-            <RichTextEditToolbarButton Action="RichTextEditAction.Bold" />
-            <RichTextEditToolbarButton Action="RichTextEditAction.Italic" />
-            <RichTextEditToolbarSelect Action="RichTextEditAction.Size">
-                <RichTextEditToolbarSelectItem Value="small" />
-                <RichTextEditToolbarSelectItem Selected />
-                <RichTextEditToolbarSelectItem Value="large" />
-                <RichTextEditToolbarSelectItem Value="huge">Very Big</RichTextEditToolbarSelectItem>
-            </RichTextEditToolbarSelect>
-            <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="ordered" />
-            <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="bullet" />
-        </RichTextEditToolbarGroup>
+        <RichMudTextField ToolbarGroup>
+            <RichMudTextField ToolbarButton Action="RichMudTextField Action.Bold" />
+            <RichMudTextField ToolbarButton Action="RichMudTextField Action.Italic" />
+            <RichMudTextField ToolbarSelect Action="RichMudTextField Action.Size">
+                <RichMudTextField ToolbarSelectItem Value="small" />
+                <RichMudTextField ToolbarSelectItem Selected />
+                <RichMudTextField ToolbarSelectItem Value="large" />
+                <RichMudTextField ToolbarSelectItem Value="huge">Very Big</RichMudTextField ToolbarSelectItem>
+            </RichMudTextField ToolbarSelect>
+            <RichMudTextField ToolbarButton Action="RichMudTextField Action.List" Value="ordered" />
+            <RichMudTextField ToolbarButton Action="RichMudTextField Action.List" Value="bullet" />
+        </RichMudTextField ToolbarGroup>
         <!-- Custom toolbar content -->
-        <RichTextEditToolbarGroup Float="Float.End">
-            <Button onClick="window.open('https://www.quilljs.com/','quilljs')"><Icon Name="IconName.InfoCircle" /></Button>
-            <Button Clicked="@OnSave"><Icon Name="IconName.Save" /></Button>
-        </RichTextEditToolbarGroup>
+        <RichMudTextField ToolbarGroup Float="Float.End">
+            <MudButton onClick="window.open('https://www.quilljs.com/','quilljs')"><Icon Name="IconName.InfoCircle" /></MudButton>
+            <MudButton Clicked="@OnSave"><Icon Name="IconName.Save" /></MudButton>
+        </RichMudTextField ToolbarGroup>
     </Toolbar>
-</RichTextEdit>
+</RichMudTextField >
 @code {
-    protected RichTextEdit? richTextEditRef;
+    protected RichMudTextField ? richMudTextField Ref;
     protected bool readOnly;
     protected string? contentAsHtml;
     protected string? contentAsDeltaJson;
@@ -38,15 +38,15 @@
 
     public async Task OnContentChanged()
     {
-        contentAsHtml = await richTextEditRef.GetHtmlAsync();
-        contentAsDeltaJson = await richTextEditRef.GetDeltaAsync();
-        contentAsText = await richTextEditRef.GetTextAsync();
+        contentAsHtml = await richMudTextField Ref.GetHtmlAsync();
+        contentAsDeltaJson = await richMudTextField Ref.GetDeltaAsync();
+        contentAsText = await richMudTextField Ref.GetTextAsync();
     }
 
     public async Task OnSave()
     {
-        savedContent = await richTextEditRef.GetHtmlAsync();
-        await richTextEditRef.ClearAsync();
+        savedContent = await richMudTextField Ref.GetHtmlAsync();
+        await richMudTextField Ref.ClearAsync();
     }
 }
 

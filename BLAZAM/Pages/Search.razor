@@ -36,20 +36,20 @@
                 {
 
 
-                    <Div Class="cursor-pointer" @onclick=@(()=>{SubmitSearch(u.CanonicalName);}) Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
-                        <Heading Margin="Margin.Is2.FromBottom">@u.ObjectType</Heading>
-                        <Heading Margin="Margin.Is2.FromBottom">@u.CanonicalName</Heading>
+                    <div Class="cursor-pointer" @onclick=@(()=>{SubmitSearch(u.CanonicalName);}) Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+                        <MudText Typo ="Typo.h1" Margin="Margin.Is2.FromBottom">@u.ObjectType</MudText>
+                        <MudText Typo ="Typo.h1" Margin="Margin.Is2.FromBottom">@u.CanonicalName</MudText>
                         <Small>@u.SamAccountName</Small>
-                    </Div>
+                    </div>
 
 
                 }
             </ItemContent>
             <Placeholder>
-                <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
-                    <Heading Margin="Margin.Is2.FromBottom">Loading...</Heading>
+                <div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+                    <MudText Typo ="Typo.h1" Margin="Margin.Is2.FromBottom">Loading...</MudText>
                     <Small>Loading...</Small>
-                </Div>
+                </div>
 
             </Placeholder>
         </Virtualize>

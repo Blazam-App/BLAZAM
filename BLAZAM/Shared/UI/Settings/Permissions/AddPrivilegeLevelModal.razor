@@ -7,22 +7,22 @@
         </ModalHeader>
         <ModalBody>
             <Row>
-                <Field>
-                    <FieldLabel>User or Group</FieldLabel>
+                <MudField>
+                    <MudFieldLabel>User or Group</FieldLabel>
                     <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.All"
                                     @bind-SelectedResult=@selectedDelegate
                                     CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
 
 
-                </Field>
-                <Field>
-                    <FieldLabel>Super User</FieldLabel>
-                    <FieldHelp>Will have complete and total acceess to the application if enabled</FieldHelp>
-                    <Switch TValue="bool" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=Program.InDemoMode />
-                </Field>
+                </MudField>
+                <MudField>
+                    <MudFieldLabel>Super User</FieldLabel>
+                    <MudFieldHelp>Will have complete and total acceess to the application if enabled</FieldHelp>
+                    <MudSwitch TValue="bool" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=Program.InDemoMode />
+                </MudField>
             </Row>
             <Row>
-                <Button Color="Color.Primary" Clicked="AddGroup">Add</Button>
+                <MudButton Color="Color.Primary" Clicked="AddGroup">Add</MudButton>
 
             </Row>
 

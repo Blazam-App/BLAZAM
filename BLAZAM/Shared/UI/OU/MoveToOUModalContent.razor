@@ -1,22 +1,22 @@
 ﻿@inherits AppModalContent
-<Div Background="Background.Light" TextColor="TextColor.Dark">
+<div Background="Background.Light" TextColor="Color.Dark">
 <Row>
-    <Field>
-        <FieldLabel>Choose OU</FieldLabel>
-        <FieldBody>
-            <OUTreeView @bind-StartingSelectedOU="StartingOU" @bind-SelectedOU=@SelectedOU>
+    <MudField>
+            <MudText>Choose OU</MudText>
+        
+            <OUTreeView @bind-StartingSelectedOU=@StartingOU @bind-SelectedOU=@SelectedOU>
                 <NodeContent>
                     @context.Name
                 </NodeContent>
             </OUTreeView>
-        </FieldBody>
-    </Field>
+        
+    </MudField>
 </Row>
 <Row>
-    <Button Color="Color.Primary" Clicked="MoveTo">Move</Button>
+    <MudButton Color="Color.Primary" Clicked="MoveTo">Move</MudButton>
 
 </Row>
-</Div>
+</div>
 
 @code {
 

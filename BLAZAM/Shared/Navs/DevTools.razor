@@ -3,34 +3,34 @@
 <Accordion Border=Border.Is0.RoundedZero>
     <Collapse Border=Border.Is0.RoundedZero Visible="@collapseVisible">
         <CollapseHeader Border=Border.Is0.RoundedZero>
-            <Button Border=Border.Is0.RoundedZero Background="Background.Dark" TextColor="TextColor.Light" style="height:15px;" Clicked="@(()=>collapseVisible = !collapseVisible)">Dev Tools</Button>
+            <MudButton Border=Border.Is0.RoundedZero Background="Background.Dark"  style="height:15px;" Clicked="@(()=>collapseVisible = !collapseVisible)">Dev Tools</MudButton>
 
         </CollapseHeader>
         <CollapseBody>
             <Row>
-                <Button Border=Border.Is0.RoundedZero Background="Background.Dark" TextColor="TextColor.Light" style="height:35px;" Clicked="@(()=>{NotificationService.Success("Test Notification " + Guid.NewGuid(),"Test");})">Test Notification</Button>
-                <Button Border=Border.Is0.RoundedZero Background="Background.Dark" TextColor="TextColor.Light" style="height:35px;" Clicked="@(()=>{NotificationBroadcast.Success("Test Broadcast " + Guid.NewGuid(),"Test");})">Test Broadcast</Button>
+                <MudButton Border=Border.Is0.RoundedZero Background="Background.Dark"  style="height:35px;" Clicked="@(()=>{NotificationService.Success("Test Notification " + Guid.NewGuid(),"Test");})">Test Notification</MudButton>
+                <MudButton Border=Border.Is0.RoundedZero Background="Background.Dark"  style="height:35px;" Clicked="@(()=>{NotificationBroadcast.Success("Test Broadcast " + Guid.NewGuid(),"Test");})">Test Broadcast</MudButton>
 
-                <Card ColumnSize="ColumnSize.Is3.OnFullHD.Is6.OnDesktop">
-                    <CardHeader>
+                <MudCard ColumnSize="ColumnSize.Is3.OnFullHD.Is6.OnDesktop">
+                    <MudCardHeader>
                         Conn Monitor
-                    </CardHeader>
-                    <CardBody>
+                    </MudCardHeader>
+                    <MudCardBody>
                         <Row>Database Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DatabaseConnected)</Row>
                         <Row>ActiveDirectory Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DirectoryConnected)</Row>
                         <Row>App Ready Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.AppReady)</Row>
                         <Row>Error Message: @Oops.ErrorMessage</Row>
-                    </CardBody>
-                </Card>
-                <Card ColumnSize="ColumnSize.Is3.OnFullHD.Is6.OnDesktop">
-                    <CardHeader>
+                    </MudCardBody>
+                </MudCard>
+                <MudCard ColumnSize="ColumnSize.Is3.OnFullHD.Is6.OnDesktop">
+                    <MudCardHeader>
                         User State Service
-                    </CardHeader>
-                    <CardBody>
+                    </MudCardHeader>
+                    <MudCardBody>
                         <Row>User States: @UserStateService.UserStates.Count</Row>
                         @foreach (var state in UserStateService.UserStates)
                         {
-                            <Card>
+                            <MudCard>
                                 <Row>Username: @state.User?.Identity?.Name</Row>
                                 <Row>Authenticated: @state.User?.Identity?.IsAuthenticated</Row>
                                 <Row>Auth Type: @state.User?.Identity?.AuthenticationType</Row>
@@ -46,19 +46,19 @@
                                     <Row>Has Computer Priv: @state.DirectoryUser.HasComputerPrivilege</Row>
 
                                 }
-                            </Card>
+                            </MudCard>
 
 
                         }
-                    </CardBody>
-                </Card>
+                    </MudCardBody>
+                </MudCard>
 
 
-                <Card ColumnSize="ColumnSize.Is3.OnFullHD.Is6.OnDesktop">
-                    <CardHeader>
+                <MudCard ColumnSize="ColumnSize.Is3.OnFullHD.Is6.OnDesktop">
+                    <MudCardHeader>
                         User
-                    </CardHeader>
-                    <CardBody>
+                    </MudCardHeader>
+                    <MudCardBody>
                         @{
                             var ids = ca.HttpContext?.User.Identities.ToList();
                         }
@@ -82,16 +82,16 @@
                                 }
                             }
                         }
-                    </CardBody>
-                </Card>
+                    </MudCardBody>
+                </MudCard>
 
 
 
-                <Card ColumnSize="ColumnSize.Is3.OnFullHD.Is6.OnDesktop">
-                    <CardHeader>
+                <MudCard ColumnSize="ColumnSize.Is3.OnFullHD.Is6.OnDesktop">
+                    <MudCardHeader>
                         Active Directory
-                    </CardHeader>
-                    <CardBody>
+                    </MudCardHeader>
+                    <MudCardBody>
                         <Row>
                             <Row>ActiveDirectory Status: @DirectoryStatus</Row>
                             <Row>ActiveDirectory Server: @Directory.ConnectionSettings?.ServerAddress</Row>
@@ -101,8 +101,8 @@
                             <Row>ActiveDirectory Server Port Open: @DirectoryPortOpen</Row>
 
                         </Row>
-                    </CardBody>
-                </Card>
+                    </MudCardBody>
+                </MudCard>
 
             </Row>
         </CollapseBody>

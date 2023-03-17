@@ -79,9 +79,9 @@
                         </ListView>
                     </LoadingIndicator>
 
-                    <Button Color=Color.Secondary Clicked="@(()=>{custom=true;selectedStep="stepOU";})">Custom</Button>
+                    <MudButton Color=Color.Secondary Clicked="@(()=>{custom=true;selectedStep="stepOU";})">Custom</MudButton>
 
-                    <Button Color=Color.Success Clicked="@(()=>{selectedStep="stepName";})">Next</Button>
+                    <MudButton Color=Color.Success Clicked="@(()=>{selectedStep="stepName";})">Next</MudButton>
                 </Column>
             </StepPanel>
             <StepPanel Name="stepName">
@@ -90,8 +90,8 @@
                     @if (selectedStep == "stepName")
                     {
                         <NewUserNameEntry @bind-NewUserName=@newUserName />
-                        <Button Color=Color.Primary Clicked="@(()=>{selectedStep="stepTemplate";})">Back</Button>
-                        <Button Color="Color.Primary" Clicked="CreateTemplateUser">Next</Button>
+                        <MudButton Color=Color.Primary Clicked="@(()=>{selectedStep="stepTemplate";})">Back</MudButton>
+                        <MudButton Color="Color.Primary" Clicked="CreateTemplateUser">Next</MudButton>
 
 
                     }
@@ -107,17 +107,17 @@
                                 @context.Name
                             </NodeContent>
                         </OUTreeView>
-                        <Field Horizontal Margin="Margin.IsAuto.OnX">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                        <MudField Horizontal Margin="Margin.IsAuto.OnX">
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                                 @UserLocalization["Display Name"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@customUserDisplayName" />
+                           
+                                <MudTextField  @bind-Value="@customUserDisplayName" />
 
-                            </FieldBody>
-                        </Field>
-                        <Button Color=Color.Primary Clicked="@(()=>{selectedStep="stepTemplate";})">Back</Button>
-                        <Button Color=Color.Success Clicked="@(()=>{CreateCustomUser();selectedStep="stepDetails";})">Next</Button>
+                            
+                        </MudField>
+                        <MudButton Color=Color.Primary Clicked="@(()=>{selectedStep="stepTemplate";})">Back</MudButton>
+                        <MudButton Color=Color.Success Clicked="@(()=>{CreateCustomUser();selectedStep="stepDetails";})">Next</MudButton>
 
                     }
                 </Column>
@@ -129,8 +129,8 @@
                     {
 
                         <ViewUser User="@newUser" FieldColumnSize="ColumnSize.Is12" />
-                        <Button Color=Color.Primary Clicked="@(()=>{selectedStep="stepTemplate";})">Back</Button>
-                        <Button Color=Color.Success Clicked="@(()=>{selectedStep="stepConfirm";})">Next</Button>
+                        <MudButton Color=Color.Primary Clicked="@(()=>{selectedStep="stepTemplate";})">Back</MudButton>
+                        <MudButton Color=Color.Success Clicked="@(()=>{selectedStep="stepConfirm";})">Next</MudButton>
 
 
                     }
@@ -143,8 +143,8 @@
                     {
 
                         <NewTemplateUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
-                        <Button Disabled=LoadingData Color=Color.Primary Clicked="@(()=>{selectedStep="stepName";})">Back</Button>
-                        <Button Color=Color.Success Clicked="@(()=>{selectedStep="stepConfirm";})">Next</Button>
+                        <MudButton Disabled=LoadingData Color=Color.Primary Clicked="@(()=>{selectedStep="stepName";})">Back</MudButton>
+                        <MudButton Color=Color.Success Clicked="@(()=>{selectedStep="stepConfirm";})">Next</MudButton>
 
 
 

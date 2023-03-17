@@ -7,52 +7,52 @@
 
 <PageTitle>Login</PageTitle>
 
-<Layout>
+<MudLayout>
     <div class="full-screen">
         <div class="blur">
             <div class="full-screenBG" />
         </div>
-        <LayoutContent>
+        <MudMainContent>
 
             <Row>
-                <Div style="height:fit-content; max-height:600px;max-width:550px;position: absolute;
+                <div style="height:fit-content; max-height:600px;max-width:550px;position: absolute;
                             top:0;
                             bottom: 0;
                             left: 0;
                             right: 0;
 
                             margin: auto;">
-                    <Card>
-                        <CardBody>
+                    <MudCard>
+                        <MudCardBody>
                             @Body
 
-                        </CardBody>
-                    </Card>
+                        </MudCardBody>
+                    </MudCard>
                            
 
                     @if (monitor.DirectoryConnected == ServiceConnectionState.Connecting)
                     {
                         <Row>
-                            <Paragraph>Please wait or use admin login...</Paragraph>
-                            <Loader TextColor="TextColor.Light" Margin="Margin.IsAuto.OnX" />
+                            <MudText>Please wait or use admin login...</MudText>
+                            <Loader  Margin="Margin.IsAuto.OnX" />
                         </Row>
                     }
                     @if (monitor.DirectoryConnected == ServiceConnectionState.Down)
                     {
                         <Row>
-                            <Paragraph TextColor="TextColor.Danger">Active Directry connection unavailable.</Paragraph>
-                            <Paragraph TextColor="TextColor.Danger">Local Admin login only!</Paragraph>
+                            <MudText Color="Color.Error">Active Directry connection unavailable.</MudText>
+                            <MudText Color="Color.Error">Local Admin login only!</MudText>
                         </Row>
                     }
 
-                </Div>
+                </div>
             </Row>
-        </LayoutContent>
+        </MudMainContent>
 
 
     </div>
 
-</Layout>
+</MudLayout>
 
 
 <style>

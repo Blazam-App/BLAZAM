@@ -18,12 +18,12 @@
 }
 @if (LoadingData)
 {
-    <Paragraph>Checking for update..</Paragraph>
+    <MudText>Checking for update..</MudText>
 
 }
 
 <LoadingIndicator Visible=LoadingData>
-    <Button Color="Color.Primary" Clicked=@GetLatestUpdate>Refresh Latest Update</Button>
+    <MudButton Color="Color.Primary" Clicked=@GetLatestUpdate>Refresh Latest Update</MudButton>
 
     @{
         if (LatestAvailableVersion != null)
@@ -32,23 +32,23 @@
             switch (updateStage)
             {
                 case UpdateStage.Downloading:
-                    <Paragraph>Downloading Update...</Paragraph>
+                    <MudText>Downloading Update...</MudText>
                     <Progress Value="@DownladProgress?.FilePercentage">
                         @(DownladProgress?.CompletedBytes / 1024 / 1024)MB
                     </Progress>
-                    <Button Color=Color.Danger Clicked=@(()=>{ LatestAvailableVersion.Cancel(); })>Cancel</Button>
+                    <MudButton Color=Color.Error Clicked=@(()=>{ LatestAvailableVersion.Cancel(); })>Cancel</MudButton>
                     break;
                 case UpdateStage.Staging:
-                    <Paragraph>Staging update, please wait a moment...</Paragraph>
+                    <MudText>Staging update, please wait a moment...</MudText>
                     <Progress Animated Striped />
                     break;
                 case UpdateStage.BackingUp:
-                    <Paragraph>Backing up current version, please wait a moment...</Paragraph>
+                    <MudText>Backing up current version, please wait a moment...</MudText>
                     <Progress Animated Striped />
 
                     break;
                 case UpdateStage.Applying:
-                    <Paragraph>Applying update, please wait a moment...</Paragraph>
+                    <MudText>Applying update, please wait a moment...</MudText>
                     <Progress Animated Striped />
 
                     break;
@@ -70,23 +70,23 @@
                             <h4>Update Available</h4>
 
                         }
-                        <Paragraph>Current Version: @Program.Version</Paragraph>
+                        <MudText>Current Version: @Program.Version</MudText>
 
 
 
 
-                        <Paragraph>Available Version: @LatestAvailableVersion.Version</Paragraph>
-                        <Paragraph>Update Branch: @LatestAvailableVersion.Branch</Paragraph>
-                        <Button Color=Color.Success Clicked="ApplyUpdate">Apply Update</Button>
-                        <Button Disabled=@(AutoUpdateService.IsUpdatedScheduled) Clicked=TestAutoUpdate Color="Color.Success">Test Auto Update</Button>
+                        <MudText>Available Version: @LatestAvailableVersion.Version</MudText>
+                        <MudText>Update Branch: @LatestAvailableVersion.Branch</MudText>
+                        <MudButton Color=Color.Success Clicked="ApplyUpdate">Apply Update</MudButton>
+                        <MudButton Disabled=@(AutoUpdateService.IsUpdatedScheduled) Clicked=TestAutoUpdate Color="Color.Success">Test Auto Update</MudButton>
                         @if (AutoUpdateService.IsUpdatedScheduled)
                         {
-                            <Button Clicked=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Danger">Cancel Auto Update</Button>
+                            <MudButton Clicked=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Error">Cancel Auto Update</MudButton>
                         }
                     }
                     else
                     {
-                        <Paragraph>Application is up to date</Paragraph>
+                        <MudText>Application is up to date</MudText>
 
                     }
                     break;
@@ -98,13 +98,13 @@
 
 @if (Monitor.DatabaseUpdatePending)
 {
-    <Paragraph>A database update needs to be applied</Paragraph>
-    <Button Color=Color.Primary Clicked="UpdateDB">Update</Button>
+    <MudText>A database update needs to be applied</MudText>
+    <MudButton Color=Color.Primary Clicked="UpdateDB">Update</MudButton>
 }
 else
 {
 
-    <Paragraph>Database is up to date.</Paragraph>
+    <MudText>Database is up to date.</MudText>
 }
 
 @code {

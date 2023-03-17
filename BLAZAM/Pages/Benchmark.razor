@@ -5,12 +5,12 @@
 
 <h3>Benchmark</h3>
 <p>Number of cycles</p>
-<NumericEdit @bind-Value=runCount />
+<MudNumericField HideSpinButtons="true" @bind-Value=runCount />
 <br />
 <p>Cycle: @cycle</p>
-<Button Disabled=Running Clicked="Benchmark1">Benchmark One</Button>
+<MudButton Disabled=Running Clicked="Benchmark1">Benchmark One</MudButton>
 <p>@elapsed</p>
-<Button Disabled=Running Clicked="Benchmark2">Benchmark Two</Button>
+<MudButton Disabled=Running Clicked="Benchmark2">Benchmark Two</MudButton>
 <p>@elapsed2</p>
 
 <p>User Bench</p>

@@ -8,21 +8,12 @@
 <AppPageTitle>@User?.SamAccountName</AppPageTitle>
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
 
-    <Div Padding="Padding.Is3" Margin="Margin.Is5.OnFullHD.OnX.Is3.OnWidescreen.OnX.Is0">
+    <div Padding="Padding.Is3" Margin="Margin.Is5.OnFullHD.OnX.Is3.OnWidescreen.OnX.Is0">
         <EditForm Model="User">
             @if (User?.NewEntry == false)
             {
                 <SetSubHeader @ref="subHeader">
-                    <Bar Mode="BarMode.Horizontal"
-                     CollapseMode="BarCollapseMode.Small"
-                     Breakpoint="Breakpoint.Desktop"
-                     NavigationBreakpoint="Breakpoint.Tablet"
-                     ThemeContrast="ThemeContrast.Dark"
-                     Padding="Padding.Is2.OnX"
-                     Background="Background.Dark"
-                     TextColor="TextColor.Light"
-                     VerticalAlignment="VerticalAlignment.Middle">
-                        <BarBrand Width=Width.Is100>
+                    
                             <Row>
                                 <Column ColumnSize="ColumnSize.Is10.OnTablet.Is8">
 
@@ -37,10 +28,10 @@
                                                 }
 
                                             }
-                                            <Tooltip Placement="TooltipPlacement.Bottom" Multiline Text=@displayNameTooltipText>
+                                            <MudTooltip Placement="TooltipPlacement.Bottom" Multiline Text=@displayNameTooltipText>
 
                                             @User.DisplayName
-                                            </Tooltip>
+                                            </MudTooltip>
 
 
                                             </Column>
@@ -65,50 +56,50 @@
                                             <Icon Name=@("fa-gear") />
                                         </DropdownToggle>
                                         <DropdownMenu>
-                                            <DropdownItem>
-                                                <Switch @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable))>Account Enabled</Switch>
+                                            <MudMenuItem>
+                                                <MudSwitch @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable))>Account Enabled</Switch>
 
-                                            </DropdownItem>
+                                            </MudMenuItem>
                                             <DropdownDivider />
                                             @if (User.CanEdit)
                                             {
-                                                <DropdownItem Clicked="ToggleEditMode">Edit...</DropdownItem>
+                                                <MudMenuItem Clicked="ToggleEditMode">Edit...</MudMenuItem>
                                             }
                                             @if (User.LockedOut && User.CanUnlock)
                                             {
-                                                <DropdownItem Clicked="Unlock">Unlock...</DropdownItem>
+                                                <MudMenuItem Clicked="Unlock">Unlock...</MudMenuItem>
                                             }
                                             @if (User.CanAssign)
                                             {
                                                 RefreshUserGroups();
-                                                <DropdownItem Clicked="@(()=>{AssignToModal?.Show();})">Assign To...</DropdownItem>
+                                                <MudMenuItem Clicked="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
                                             }
                                             @if (User.CanDisable)
                                             {
-                                                <DropdownItem Clicked="@(()=>{ChangePasswordModal?.Show();})">Change Password...</DropdownItem>
+                                                <MudMenuItem Clicked="@(()=>{ChangePasswordModal?.Show();})">Change Password...</MudMenuItem>
                                             }
                                             @if (User.CanRename)
                                             {
-                                                <DropdownItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</DropdownItem>
+                                                <MudMenuItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
                                                 @if (User.ThumbnailPhoto == null)
                                                 {
-                                                    <DropdownItem Clicked="@(()=>{UploadThumbnailModal?.Show();})">Upload Photo...</DropdownItem>
+                                                    <MudMenuItem Clicked="@(()=>{UploadThumbnailModal?.Show();})">Upload Photo...</MudMenuItem>
 
                                                 }
                                                 else
                                                 {
-                                                    <DropdownItem Clicked="@(()=>{UploadThumbnailModal?.Show();})">Replace Photo...</DropdownItem>
+                                                    <MudMenuItem Clicked="@(()=>{UploadThumbnailModal?.Show();})">Replace Photo...</MudMenuItem>
 
                                                 }
 
                                             }
                                             @if (User.CanMove)
                                             {
-                                                <DropdownItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</DropdownItem>
+                                                <MudMenuItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
                                             }
                                             @if (User.CanDelete)
                                             {
-                                                <DropdownItem Clicked="@DeleteUser">Delete...</DropdownItem>
+                                                <MudMenuItem Clicked="@DeleteUser">Delete...</MudMenuItem>
                                             }
                                         </DropdownMenu>
                                     </Dropdown>
@@ -116,9 +107,6 @@
                             </Row>
 
 
-                        </BarBrand>
-
-                    </Bar>
 
 
                 </SetSubHeader>
@@ -127,13 +115,13 @@
 
             <Row>
 
-                <AppModal TextColor="TextColor.Dark" Title="Upload Thumbnail..." @ref=@UploadThumbnailModal>
+                <AppModal TextColor="Color.Dark" Title="Upload Thumbnail..." @ref=@UploadThumbnailModal>
                     <UploadThumbnailModalContent ModelChanged=@(()=>{InvokeAsync(StateHasChanged);}) DirectoryModel="User" />
                 </AppModal>
-                <AppModal TextColor="TextColor.Dark" Title="Assign To..." @ref=@AssignToModal>
+                <AppModal TextColor="Color.Dark" Title="Assign To..." @ref=@AssignToModal>
                     <AssignToModalContent ModelChanged=@(()=>{InvokeAsync(StateHasChanged);}) DirectoryModel="User" />
                 </AppModal>
-                <AppModal TextColor="TextColor.Dark" Title="Move To" @ref=@MoveToModal>
+                <AppModal TextColor="Color.Dark" Title="Move To" @ref=@MoveToModal>
                     @if (MoveToModal?.IsShown == true)
                     {
                         <MoveToOUModalContent ModelChanged=@(()=>{Nav.NavigateTo(Nav.Uri,true);}) DirectoryModel="User" />
@@ -164,12 +152,12 @@
                             @if (User?.ThumbnailPhoto != null)
                             {
                                 <Column Padding="Padding.Is0" Display=Display.InlineFlex ColumnSize="ColumnSize.Is1.OnFullHD.Is2.OnWidescreen.Is3.OnDesktop.Is4.OnTablet.Is12.OnMobile">
-                                    <Div Position=Position.Relative Display=Display.Block Margin=Margin.IsAuto Style="width:fit-content;height:fit-content" Padding=Padding.Is0>
+                                    <div Position=Position.Relative Display=Display.Block Margin=Margin.IsAuto Style="width:fit-content;height:fit-content" Padding=Padding.Is0>
                                         <Figure Style="width:fit-content;height:fit-content" Margin=Margin.IsAuto TextAlignment=TextAlignment.Center Padding=Padding.Is0 Overflow=Overflow.Hidden Border="Border.Rounded">
                                             <Base64Image Data="User.ThumbnailPhoto.ReizeRawImage(150)" />
                                         </Figure>
-                                        <Icon Clicked=RemoveThumbnail Border=Border.RoundedCircle Background=Background.Dark Display=Display.Block Position=Position.Absolute style="width:20px;height:20px;padding:2px;top:-10px;left:-10px" TextColor=TextColor.Danger Name="@("fa-solid fa-times")" />
-                                    </Div>
+                                        <Icon Clicked=RemoveThumbnail Border=Border.RoundedCircle Background=Background.Dark Display=Display.Block Position=Position.Absolute style="width:20px;height:20px;padding:2px;top:-10px;left:-10px" TextColor=Color.Error Name="@("fa-solid fa-times")" />
+                                    </div>
 
                                 </Column>
                             }
@@ -177,60 +165,57 @@
 
                                 @if (User.CanReadField(ActiveDirectoryFields.GivenName))
                                 {
-                                    <Field Horizontal>
-                                    <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                        @UserLocalization["First Name"]
-                                    </FieldLabel>
-                                    <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                        <TextEdit @bind-Text="@User.GivenName" Disabled=!User.NewEntry />
+                                    <MudField>
+                                   
+                                        <MudTextField Label="@UserLocalization["First Name"]"  @bind-Value="@User.GivenName" Disabled=!User.NewEntry />
 
-                                    </FieldBody>
-                                </Field>
+                                    
+                                </MudField>
                                 }
                                 @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
                                 {
-                                    <Field Horizontal>
-                                    <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                                    <MudField>
+                                    <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                                         @UserLocalization["Middle Name"]
                                     </FieldLabel>
-                                    <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                        <TextEdit @bind-Text="@User.MiddleName" Disabled=!User.NewEntry />
+                                   
+                                        <MudTextField  @bind-Value="@User.MiddleName" Disabled=!User.NewEntry />
 
-                                    </FieldBody>
-                                </Field>
+                                    
+                                </MudField>
                                 }
                                 @if (User.CanReadField(ActiveDirectoryFields.SN))
                                 {
-                                    <Field Horizontal>
-                                    <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                                    <MudField>
+                                    <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                                         @UserLocalization["Last Name"]
                                     </FieldLabel>
-                                    <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                        <TextEdit @bind-Text="@User.Surname" Disabled=!User.NewEntry />
+                                   
+                                        <MudTextField  @bind-Value="@User.Surname" Disabled=!User.NewEntry />
 
-                                    </FieldBody>
-                                </Field>
+                                    
+                                </MudField>
                                 }
                                 @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
                                 {
-                                    <Field Horizontal>
-                                    <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                                    <MudField>
+                                    <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                                         @UserLocalization["Display Name"]
                                     </FieldLabel>
-                                    <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                        <TextEdit @bind-Text="@User.DisplayName" Disabled=!User.NewEntry />
+                                   
+                                        <MudTextField  @bind-Value="@User.DisplayName" Disabled=!User.NewEntry />
 
-                                    </FieldBody>
-                                </Field>
+                                    
+                                </MudField>
                                 }
 
                                 @if (EditMode && !User.NewEntry)
                                 {
-                                    <Field>
-                                        <FieldHelp>
+                                    <MudField>
+                                        <MudFieldHelp>
                                             To Modify the user's name click the Gear button and choose "Rename..."
                                         </FieldHelp>
-                                    </Field>
+                                    </MudField>
                                 }
                             </Column>
                         </Row>
@@ -248,98 +233,98 @@
 
                         @if (User.CanReadField(ActiveDirectoryFields.SAMAccountName))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Username"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
+                           
                             <Addons>
                                 <Addon AddonType="AddonType.Body">
-                                    <TextEdit @bind-Text="@User.SamAccountName" Disabled=!User.NewEntry />
+                                    <MudTextField  @bind-Value="@User.SamAccountName" Disabled=!User.NewEntry />
 
                                 </Addon>
                                 <Addon AddonType="AddonType.End">
-                                    <Button Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.SamAccountName);})><Icon Name=@("fa-solid fa-copy") /></Button>
+                                    <MudButton Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.SamAccountName);})><Icon Name=@("fa-solid fa-copy") /></MudButton>
 
                                 </Addon>
                             </Addons>
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
 
                         @if (User.NewEntry)
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Password"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@Password" Role="TextRole.Password">
-                                <Feedback>
-                                    <ValidationError />
-                                </Feedback>
-                            </TextEdit>
+                           
+                            <MudTextField  @bind-Value="@Password" InputType="InputType.Password">
+                                
+                                    
+                                
+                            </MudTextField >
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                             <Validation Validator="ValidatePassword">
-                                <Field Horizontal ColumnSize="FieldColumnSize">
-                                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                                <MudField>
+                                <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                                 @UserLocalization["Confirm Password"]
                                 </FieldLabel>
-                                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@ConfirmPassword" Role="TextRole.Password">
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
-                                </FieldBody>
-                                </Field>
+                               
+                                <MudTextField  @bind-Value="@ConfirmPassword" InputType="InputType.Password">
+                                    
+                                        
+                                    
+                                </MudTextField >
+                                
+                                </MudField>
                                 </Validation>
                         }
 
                         @if (User.CanReadField(ActiveDirectoryFields.Mail))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Email Address"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
+                           
                             <Addons>
                                 <Addon AddonType="AddonType.Body">
-                                    <TextEdit @bind-Text="@User.Email" Disabled=!User.NewEntry />
+                                    <MudTextField  @bind-Value="@User.Email" Disabled=!User.NewEntry />
 
                                 </Addon>
                                 <Addon AddonType="AddonType.End">
-                                    <Button Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.Email);})><Icon Name=@("fa-solid fa-copy") /></Button>
+                                    <MudButton Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.Email);})><Icon Name=@("fa-solid fa-copy") /></MudButton>
 
                                 </Addon>
                             </Addons>
 
 
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.AccountExpires))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Account Expiration"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
+                           
                             <DateEdit TValue=DateTime? Date="@User.ExpireTime" DateChanged=SetExpireTime Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.AccountExpires)) />
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (EditMode && !User.NewEntry)
                         {
 
-                            <Field>
-                                <FieldHelp>
+                            <MudField>
+                                <MudFieldHelp>
                                     To Modify the user's accounts click the Gear button and choose "Rename..."
                                 </FieldHelp>
-                            </Field>
+                            </MudField>
                         }
 
                     </Section>
@@ -356,75 +341,75 @@
                     <Section Title=@UserLocalization["Organization"]>
                         @if (User.CanReadField(ActiveDirectoryFields.Description))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Description"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.Description" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Description)) />
+                           
+                            <MudTextField  @bind-Value="@User.Description" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Description)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.EmployeeId))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Employee Id"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.EmployeeId" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.EmployeeId)) />
+                           
+                            <MudTextField  @bind-Value="@User.EmployeeId" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.EmployeeId)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.Department))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Department"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.Department" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Department)) />
+                           
+                            <MudTextField  @bind-Value="@User.Department" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Department)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.Company))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Company"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.Company" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Company)) />
+                           
+                            <MudTextField  @bind-Value="@User.Company" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Company)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.Title))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Job Title"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.Title" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Title)) />
+                           
+                            <MudTextField  @bind-Value="@User.Title" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Title)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.PhysicalDeliveryOffice))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Office"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.PhysicalDeliveryOfficeName" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
+                           
+                            <MudTextField  @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                     </Section>
                 }
@@ -441,75 +426,75 @@
 
                         @if (User.CanReadField(ActiveDirectoryFields.HomePhone))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Home Phone"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.HomePhone" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomePhone)) />
+                           
+                            <MudTextField  @bind-Value="@User.HomePhone" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomePhone)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.StreetAddress))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Street Address"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.StreetAddress" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.StreetAddress)) />
+                           
+                            <MudTextField  @bind-Value="@User.StreetAddress" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.StreetAddress)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.Street))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Street"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.Street" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Street)) />
+                           
+                            <MudTextField  @bind-Value="@User.Street" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Street)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.City))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["City"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.City" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.City)) />
+                           
+                            <MudTextField  @bind-Value="@User.City" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.City)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.State))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["State"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.State" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.State)) />
+                           
+                            <MudTextField  @bind-Value="@User.State" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.State)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.PostalCode))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Zip Code"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.Zip" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PostalCode)) />
+                           
+                            <MudTextField  @bind-Value="@User.Zip" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PostalCode)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                     </Section>
                 }
@@ -524,18 +509,18 @@
                     <Section Title=@UserLocalization["Profile"]>
                         @if (User.CanReadField(ActiveDirectoryFields.HomeDirectory))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Home Directory"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
+                           
                             <Addons>
                                 <Addon AddonType="AddonType.Body">
-                                    <TextEdit @bind-Text="@User.HomeDirectory" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
+                                    <MudTextField  @bind-Value="@User.HomeDirectory" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
 
                                 </Addon>
                                 <Addon AddonType="AddonType.End">
-                                    <Button Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.HomeDirectory);})><Icon Name=@("fa-solid fa-copy") /></Button>
+                                    <MudButton Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.HomeDirectory);})><Icon Name=@("fa-solid fa-copy") /></MudButton>
 
                                 </Addon>
                             </Addons>
@@ -543,16 +528,16 @@
 
 
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.HomeDrive))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Home Drive"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
+                           
 
                             <Select TValue="string" @bind-SelectedValue="@User.HomeDrive" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDrive))>
                                 <SelectItem Value="String.Empty"></SelectItem>
@@ -562,32 +547,32 @@
                                             <SelectItem Value=@driveLetter>@driveLetter</SelectItem>
                                         }
                                     </Select>
-                                </FieldBody>
-                            </Field>
+                                
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.ScriptPath))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Script Path"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.ScriptPath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ScriptPath)) />
+                           
+                            <MudTextField  @bind-Value="@User.ScriptPath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ScriptPath)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.ProfilePath))
                         {
-                            <Field Horizontal ColumnSize="FieldColumnSize">
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                             @UserLocalization["Profile Path"]
                             </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                            <TextEdit @bind-Text="@User.ProfilePath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) />
+                           
+                            <MudTextField  @bind-Value="@User.ProfilePath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) />
 
-                            </FieldBody>
-                            </Field>
+                            
+                            </MudField>
                         }
                     </Section>
                 }
@@ -598,9 +583,9 @@
                 @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
                 {
 
-                    <Field ColumnSize="ColumnSize.Is12" Horizontal>
+                    <MudField ColumnSize="ColumnSize.Is12" Horizontal>
 
-                    <FieldBody ColumnSize="ColumnSize.Is12">
+                    <MudFieldBody ColumnSize="ColumnSize.Is12">
                         <Row>
                             @if (User.IsAGroupMember)
                                 {
@@ -629,8 +614,8 @@
                                 }
 
                             </Row>
-                        </FieldBody>
-                    </Field>
+                        
+                    </MudField>
                 }
 
             </Row>
@@ -638,7 +623,7 @@
 
 
         </EditForm>
-    </Div>
+    </div>
     @if (User.HasUnsavedChanges && !User.NewEntry)
     {
         <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />

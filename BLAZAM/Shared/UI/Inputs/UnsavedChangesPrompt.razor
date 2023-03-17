@@ -1,18 +1,18 @@
-﻿<Div Position="Position.Relative" Style="width:0px;height:65px;" Margin="Margin.IsAuto.OnX">
+﻿<div Position="Position.Relative" Style="width:0px;height:65px;" Margin="Margin.IsAuto.OnX">
 
-    <Div Padding=Padding.Is3.OnX Position=Position.Fixed style="right:21px;margin-right: auto;max-width: 300px;bottom: 56px;margin-left: auto;z-index: 5;" Border=Border.Secondary Background="Background.Light" TextColor="TextColor.Dark">
+    <div Padding=Padding.Is3.OnX Position=Position.Fixed style="right:21px;margin-right: auto;max-width: 300px;bottom: 56px;margin-left: auto;z-index: 5;" Border=Border.Secondary Background="Background.Light" TextColor="Color.Dark">
         <Row Margin=Margin.IsAuto.OnX TextAlignment="TextAlignment.Center">
             Unsaved Changes
         </Row>
         <Row>
-            <Button Style="width:max-content" Margin=Margin.IsAuto.OnX Color="Color.Success" Clicked="@(()=>{SaveChanges.InvokeAsync();})">Save Changes</Button>
+            <MudButton Style="width:max-content" Margin=Margin.IsAuto.OnX Color="Color.Success" Clicked="@(()=>{SaveChanges.InvokeAsync();})">Save Changes</MudButton>
         </Row>
         <Row>
-            <Button Style="width:max-content" Margin=Margin.IsAuto.OnX Color="Color.Warning" Clicked="@(()=>{DiscardChanges.InvokeAsync();})">DiscardChanges</Button>
+            <MudButton Style="width:max-content" Margin=Margin.IsAuto.OnX Color="Color.Warning" Clicked="@(()=>{DiscardChanges.InvokeAsync();})">DiscardChanges</MudButton>
         </Row>
 
-    </Div>
-</Div>
+    </div>
+</div>
 
 @code {
     [Parameter]

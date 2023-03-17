@@ -1,19 +1,13 @@
-﻿@inherits BaseComponent
-<Modal Closing="ModalClosing" FocusTrap="FocusTrap" RenderMode="ModalRenderMode.LazyLoad"   @ref="Modal" TextColor="TextColor">
-    <ModalContent Centered>
-        <ModalHeader Background="Background.Dark" TextColor="TextColor.Light">
-            <ModalTitle>@Title</ModalTitle>
-            <AppCloseButton TextColor="TextColor.Light" />
-        </ModalHeader>
-        <ModalBody Background="Background.Light" TextColor="TextColor.Dark">
+﻿
+<MudMessageBox Title=@Title @ref="Modal" >
+    <MessageContent>
             @ChildContent
-        </ModalBody>
-    </ModalContent>
-</Modal>
+    </MessageContent>
+</MudMessageBox>
 @code {
     #nullable disable warnings
-    [Inject]
-    protected INotificationService NotificationService{ get; set; }
+    //[Inject]
+    //protected INotificationService NotificationService{ get; set; }
     [Parameter]
     public IDatabaseContext? Context { get; set; }
 
@@ -31,10 +25,10 @@
     public RenderFragment? ChildContent{ get; set; }
 
     [CascadingParameter]
-    protected Modal? Modal { get; set; }
+    protected MudMessageBox? Modal { get; set; }
 
     [Parameter]
-    public EventCallback<Modal>? ModalChanged { get; set; }
+    public EventCallback<MudMessageBox>? ModalChanged { get; set; }
 
     bool _isShown = false;
 
@@ -49,15 +43,16 @@
     [Parameter]
     public EventCallback<bool> IsShownChanged { get; set; }
 
-    async Task ModalClosing(ModalClosingEventArgs args)
-    {
-        if (!AllowClose)
-        {
-            args.Cancel=true;
-        }
-    }
+    //async Task ModalClosing(ModalClosingEventArgs args)
+    //{
+    //    if (!AllowClose)
+    //    {
+    //        args.Cancel=true;
+    //    }
+    //}
     public void Show()
     {
+        
         IsShown = true;
         Modal?.Show();
     }
@@ -65,7 +60,7 @@
     {
         IsShown = false;
 
-        Modal?.Close(CloseReason.UserClosing);
+        Modal?.Close();
     }
 
 }

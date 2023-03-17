@@ -1,7 +1,6 @@
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using Microsoft.EntityFrameworkCore;
 using BLAZAM.Server.Background;
 using BLAZAM.Server.Shared.ResourceFiles;
 using BLAZAM.Server.Data.Services.Update;

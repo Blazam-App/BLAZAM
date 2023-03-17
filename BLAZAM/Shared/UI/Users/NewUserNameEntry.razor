@@ -3,33 +3,33 @@
 
 <Section Title=@UserLocalization["Name"]>
 
-        <Field Horizontal>
-            <FieldLabel>
+        <MudField>
+            <MudFieldLabel>
                 @UserLocalization["First Name"]
             </FieldLabel>
-            <FieldBody>
-            <TextEdit @bind-Text="@NewUserName.GivenName" />
+            
+            <MudTextField  @bind-Value="@NewUserName.GivenName" />
 
-            </FieldBody>
-        </Field>
-        <Field Horizontal>
-            <FieldLabel>
+            
+        </MudField>
+        <MudField>
+            <MudFieldLabel>
                 @UserLocalization["Middle Name"]
             </FieldLabel>
-            <FieldBody>
-            <TextEdit @bind-Text="@NewUserName.MiddleName" />
+            
+            <MudTextField  @bind-Value="@NewUserName.MiddleName" />
 
-            </FieldBody>
-        </Field>
-        <Field Horizontal>
-            <FieldLabel>
+            
+        </MudField>
+        <MudField>
+            <MudFieldLabel>
                 @UserLocalization["Last Name"]
             </FieldLabel>
-            <FieldBody>
-            <TextEdit @bind-Text="@NewUserName.Surname" />
+            
+            <MudTextField  @bind-Value="@NewUserName.Surname" />
 
-            </FieldBody>
-        </Field>
+            
+        </MudField>
   
 </Section>
 </EditForm>

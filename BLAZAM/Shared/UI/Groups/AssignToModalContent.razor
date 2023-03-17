@@ -1,28 +1,28 @@
 ﻿@inherits AppModalContent
 
 
-<Row Background="Background.Light" TextColor="TextColor.Dark">
-    <Field>
-        <FieldLabel>Group Name</FieldLabel>
+<Row Background="Background.Light" TextColor="Color.Dark">
+    <MudField>
+        <MudFieldLabel>Group Name</FieldLabel>
         <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.Group"
             @bind-SelectedResult=@Group/>
-    </Field>
-    <Field>
-        <FieldLabel>Copy Memberships From</FieldLabel>
+    </MudField>
+    <MudField>
+        <MudFieldLabel>Copy Memberships From</FieldLabel>
         <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.All"
                         @bind-SelectedResult=@copyFrom
                         CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
 
-    </Field>
+    </MudField>
     @if (CopyFrom != null)
     {
         var existingGroups = DirectoryModel.MemberOf;
-        <Paragraph>Will be added to...</Paragraph>
+        <MudText>Will be added to...</MudText>
 
         foreach (var group in CopyFrom.MemberOf)
         {
-            <Card>
-                <CardHeader>
+            <MudCard>
+                <MudCardHeader>
 
                     @if (existingGroups.Contains(group))
                     {
@@ -34,13 +34,13 @@
                     }
                     @group.GroupName
 
-                </CardHeader>
-            </Card>
+                </MudCardHeader>
+            </MudCard>
         }
     }
 </Row>
 <Row>
-    <Button Color="Color.Primary" Clicked="AssignToGroup">Add</Button>
+    <MudButton Color="Color.Primary" Clicked="AssignToGroup">Add</MudButton>
 
 </Row>
 

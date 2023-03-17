@@ -1,14 +1,14 @@
 ﻿
-<Div Border="Border" Padding=Padding Margin=Margin Class=@("section")>
+<div Border="Border" Padding=Padding Margin=Margin Class=@("section")>
     @if (SectionHeaderPosition == HeaderPosition.TopLeft || SectionHeaderPosition == HeaderPosition.TopRight)
     {
-        <Div Class="section-title-container">
+        <div Class="section-title-container">
 
-            <Div Background=BackgroundColor Class="section-title">
-                <div class="section-title-text @HeadingSizeString text-@TextColor.Name">@Title</div>
+            <div Background=BackgroundColor Class="section-title">
+                <div class="section-title-text @HeadingSizeString text-@Color.Name">@Title</div>
                
-            </Div>
-        </Div>
+            </div>
+        </div>
 
     }
     <Row Width="Width.Is100" Class="section-content">
@@ -17,15 +17,15 @@
 
     @if (SectionHeaderPosition == HeaderPosition.BottomLeft || SectionHeaderPosition == HeaderPosition.BottomRight)
     {
-        <Div Class="section-title-container">
+        <div Class="section-title-container">
 
-            <Div Class="section-title">
-                <div class="section-title-text @HeadingSizeString text-@TextColor.Name">@Title</div>
-            </Div>
-        </Div>
+            <div Class="section-title">
+                <div class="section-title-text @HeadingSizeString text-@Color.Name">@Title</div>
+            </div>
+        </div>
 
     }
-</Div>
+</div>
 @{
     string borderColor = "";
     string hspacing = "";
@@ -104,7 +104,7 @@
     /// Color for the text
     /// </summary>
     [Parameter]
-    public TextColor TextColor { get; set; } = TextColor.Secondary;
+    public TextColor TextColor { get; set; } = Color.Secondary;
 
     [Parameter]
     public Background BackgroundColor { get; set; } = Background.Light;

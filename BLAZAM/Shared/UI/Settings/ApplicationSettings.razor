@@ -3,65 +3,65 @@
 
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
-    <Heading>@SettingsLocalization["Application Settings"]</Heading>
-    <Form @onsubmit="Save">
+    <MudText Typo ="Typo.h1">@SettingsLocalization["Application Settings"]</MudText>
+    <MudForm @onsubmit="Save">
 
         <Validations Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
 
             <Validation>
                 <SettingsField>
-                    <FieldLabel>@SettingsLocalization["Application Name"]</FieldLabel>
-                    <FieldBody>
-                        <TextEdit Placeholder="Give you're application a display name" @bind-Text="@settings.AppName">
-                            <Feedback>
-                                <ValidationError />
+                    <MudFieldLabel>@SettingsLocalization["Application Name"]</FieldLabel>
+                    
+                        <MudTextField  Placeholder="Give you're application a display name" @bind-Value="@settings.AppName">
+                            
+                                
                                 <ValidationNone>
                                     You must give the Web Application a personalized name.
                                 </ValidationNone>
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
+                            
+                        </MudTextField >
+                    
                 </SettingsField>
             </Validation>
 
             <Validation>
                 <SettingsField>
-                    <FieldLabel>@SettingsLocalization["Homepage Message"]</FieldLabel>
-                    <FieldBody>
-                        <MemoEdit Placeholder="Place a custom welcome message for your users on the dashboard" @bind-Text="@settings.MOTD">
-                            <Feedback>
-                                <ValidationError />
-                            </Feedback>
+                    <MudFieldLabel>@SettingsLocalization["Homepage Message"]</FieldLabel>
+                    
+                        <MemoEdit Placeholder="Place a custom welcome message for your users on the dashboard" @bind-Value="@settings.MOTD">
+                            
+                                
+                            
                         </MemoEdit>
-                    </FieldBody>
+                    
                 </SettingsField>
 
             </Validation>
 
             <Validation>
                 <SettingsField>
-                    <FieldLabel>@SettingsLocalization["Force Https"]</FieldLabel>
-                    <FieldBody>
-                        <Switch TValue="bool" @bind-Checked="@settings.ForceHTTPS" />
-                    </FieldBody>
+                    <MudFieldLabel>@SettingsLocalization["Force Https"]</FieldLabel>
+                    
+                        <MudSwitch TValue="bool" @bind-Checked="@settings.ForceHTTPS" />
+                    
                 </SettingsField>
 
             </Validation>
             <Validation>
                 <SettingsField>
-                    <FieldLabel>
+                    <MudFieldLabel>
                         @SettingsLocalization["User Helpdesk URL"]
-                        <Tooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
+                        <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
                             <Badge Background="Background.Warning" Pill>!</Badge>
-                        </Tooltip>
+                        </MudTooltip>
                     </FieldLabel>
-                    <FieldBody>
-                        <TextEdit Placeholder="If not provided, support links will be disabled" @bind-Text="@settings.UserHelpdeskURL">
-                            <Feedback>
-                                <ValidationError />
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
+                    
+                        <MudTextField  Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
+                            
+                                
+                            
+                        </MudTextField >
+                    
                 </SettingsField>
 
             </Validation>
@@ -69,49 +69,49 @@
 
             <SettingsField>
 
-                <FieldLabel>
+                <MudFieldLabel>
                     @SettingsLocalization["Branding Icon"]
                     @if (settings != null && settings.AppIcon != null && settings.AppIcon.Length > 0)
                     {
-                        <Image Class="app-icon" Source="@StaticAssets.ApplicationIconUri" />
-                        <Tooltip Text="Remove custom icon">
+                        <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+                        <MudTooltip Text="Remove custom icon">
                             <AppCloseButton Clicked="@(()=>{settings.AppIcon=null;})" />
-                        </Tooltip>
+                        </MudTooltip>
                     }
                 </FieldLabel>
-                <FieldBody>
-                    <Blazorise.FilePicker AutoReset Upload="LoadIcon" />
-                </FieldBody>
+                
+                    <MudFileUpload AutoReset Upload="LoadIcon" />
+                
                 </SettingsField>
 
 
 
                 <Validation Validator="AppValidationRule.IsFqdn">
                 <SettingsField>
-                    <FieldLabel>@SettingsLocalization["Website FQDN"]</FieldLabel>
-                    <FieldHelp>Enter the fqdn of the published website. (eg: blazam.mydomain.company)</FieldHelp>
-                    <FieldBody>
-                        <TextEdit Placeholder="Enter the web address" @bind-Text="@settings.AppFQDN">
-                            <Feedback>
-                                <ValidationError />
+                    <MudFieldLabel>@SettingsLocalization["Website FQDN"]</FieldLabel>
+                    <MudFieldHelp>Enter the fqdn of the published website. (eg: blazam.mydomain.company)</FieldHelp>
+                    
+                        <MudTextField  Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN">
+                            
+                                
                                 <ValidationNone>
                                     You must give the Web Application a FQDN to use auto updates.
                                 </ValidationNone>
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
+                            
+                        </MudTextField >
+                    
                 </SettingsField>
                 </Validation>
 
                 <SettingsField>
-                <FieldBody>
-                    <Button Disabled="saveDisabled" Type="ButtonType.Submit" Color="Color.Success">Save Changes</Button>
-                </FieldBody>
+                
+                    <MudButton Disabled="saveDisabled" Type="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+                
                 </SettingsField>
 
 
                 </Validations>
-                </Form>
+                </MudForm>
                 </LoadingIndicator>
 
                 @code {

@@ -3,52 +3,52 @@
     <Accordion>
         <Collapse Visible="@collapse1Visible">
             <CollapseHeader>
-                <Heading Size="HeadingSize.Is5">
-                    <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)">
+                <MudText Typo ="Typo.h1" Size="HeadingSize.Is5">
+                    <MudButton Clicked="@(()=>collapse1Visible = !collapse1Visible)">
                         <Row Width="Width.Is100">
                             <Column ColumnSize="ColumnSize.Is6.OnTablet">
                                 @Group?.CanonicalName
 
                             </Column>
                             <Column ColumnSize="ColumnSize.Is6.OnTablet">
-                                <Switch  Checked="Level?.IsSuperAdmin" Disabled>Super User Group</Switch>
+                                <MudSwitch  Checked="Level?.IsSuperAdmin" Disabled>Super User Group</Switch>
 
 
                             </Column>
                         </Row>
                             
-                    </Button>
-                </Heading>
+                    </MudButton>
+                </MudText>
             </CollapseHeader>
             <CollapseBody>
                     <Row>
                         <Column ColumnSize="ColumnSize.Is4.OnDesktop">
                             
-                                <Field>
-                                    <FieldLabel>@AppLocalization["Delgate Name"]</FieldLabel>
-                                    <FieldBody>
+                                <MudField>
+                                    <MudFieldLabel>@AppLocalization["Delgate Name"]</FieldLabel>
+                                    
                                         <ADAutoComplete 
                                             SearchObjectType="ActiveDirectoryObjectType.All" 
                                             @bind-SelectedResult=@Group 
                                             CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group"/>
                                         @*<ADGroupAutoComplete @bind-SelectedGroup="@Group"/>*@
-                                    </FieldBody>
-                                </Field>
+                                    
+                                </MudField>
 
                         </Column>
                         <Column ColumnSize="ColumnSize.Is2.OnDesktop">
-                                <Field>
-                                    <FieldLabel></FieldLabel>
-                                    <FieldBody>
-                                <Switch Disabled=@(Program.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Level.IsSuperAdmin">Super User Group</Switch>
+                                <MudField>
+                                    <MudFieldLabel></FieldLabel>
+                                    
+                                <MudSwitch Disabled=@(Program.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Level.IsSuperAdmin">Super User Group</Switch>
 
 
-                                    </FieldBody>
-                                </Field>
+                                    
+                                </MudField>
 
                         </Column>
                         <Column ColumnSize="ColumnSize.Is4.OnDesktop">
-                            <Button VerticalAlignment="VerticalAlignment.Middle" @onclick="Save" Color="Color.Success">Save Changes</Button>
+                            <MudButton VerticalAlignment="VerticalAlignment.Middle" @onclick="Save" Color="Color.Success">Save Changes</MudButton>
                         </Column>
                     <Column ColumnSize="ColumnSize.Is2.OnDesktop">
                         <AppCloseButton VerticalAlignment="VerticalAlignment.Middle" @onclick="DeletePermissionGroup" Color="Color.Success" />

@@ -6,21 +6,21 @@
     <EditForm OnSubmit="SaveTemplate" Model="DirectoryTemplate">
         <Row Width="Width.Is100" Margin="Margin.Is2">
             <Validation>
-                <Field>
-                    <FieldLabel>@SettingsLocalization["Template Name"]</FieldLabel>
-                    <FieldBody>
-                        <TextEdit @bind-Text=DirectoryTemplate.Name>
-                            <Feedback>
-                                <ValidationError />
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
-                </Field>
+                <MudField>
+                    <MudFieldLabel>@SettingsLocalization["Template Name"]</FieldLabel>
+                    
+                        <MudTextField  @bind-Value=DirectoryTemplate.Name>
+                            
+                                
+                            
+                        </MudTextField >
+                    
+                </MudField>
 
             </Validation>
-            <Field>
-                <FieldLabel>@SettingsLocalization["Template Category"]</FieldLabel>
-                <FieldBody>
+            <MudField>
+                <MudFieldLabel>@SettingsLocalization["Template Category"]</FieldLabel>
+                
                     <Autocomplete FreeTyping
                                   @bind-Search=DirectoryTemplate.Category
                                   TItem=string
@@ -28,9 +28,9 @@
                                   TextField="item=>item"
                                   ValueField="item=>item"
                                   Data="Context.DirectoryTemplates.Select(t=>t.Category).Distinct()" />
-                </FieldBody>
-            </Field>
-            <Card>
+                
+            </MudField>
+            <MudCard>
                 Variables:
                 <Row Width="Width.Is100">
                     <Column ColumnSize="ColumnSize.Is6.OnTablet">
@@ -52,45 +52,45 @@
                     </Column>
 
                 </Row>
-            </Card>
+            </MudCard>
             <Section Padding=Padding.Is0 Title="Account and Name">
                 
                    
                     <Validation>
-                        <Field ColumnSize="ColumnSize.Is6.OnTablet">
-                            <FieldLabel>Username Format</FieldLabel>
-                            <FieldBody>
-                                <TextEdit @bind-Text=DirectoryTemplate.UsernameFormula>
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
-                            </FieldBody>
-                        </Field>
+                        <MudField ColumnSize="ColumnSize.Is6.OnTablet">
+                            <MudFieldLabel>Username Format</FieldLabel>
+                            
+                                <MudTextField  @bind-Value=DirectoryTemplate.UsernameFormula>
+                                    
+                                        
+                                    
+                                </MudTextField >
+                            
+                        </MudField>
                     </Validation>
                     <Validation>
-                        <Field>
-                            <FieldLabel>Display Name Format</FieldLabel>
-                            <FieldBody>
-                                <TextEdit @bind-Text=DirectoryTemplate.DisplayNameFormula>
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
-                            </FieldBody>
-                        </Field>
+                        <MudField>
+                            <MudFieldLabel>Display Name Format</FieldLabel>
+                            
+                                <MudTextField  @bind-Value=DirectoryTemplate.DisplayNameFormula>
+                                    
+                                        
+                                    
+                                </MudTextField >
+                            
+                        </MudField>
                     </Validation>
 
-                    <Field>
-                        <FieldLabel>Password</FieldLabel>
-                        <FieldBody>
-                            <TextEdit Placeholder="{AlphaNum}{Alpha:U}{Alpha:L}{Num}{Num}{Num}" @bind-Text=DirectoryTemplate.PasswordFormula>
-                                <Feedback>
-                                    <ValidationError />
-                                </Feedback>
-                            </TextEdit>
-                        </FieldBody>
-                    </Field>
+                    <MudField>
+                        <MudFieldLabel>Password</FieldLabel>
+                        
+                            <MudTextField  Placeholder="{AlphaNum}{Alpha:U}{Alpha:L}{Num}{Num}{Num}" @bind-Value=DirectoryTemplate.PasswordFormula>
+                                
+                                    
+                                
+                            </MudTextField >
+                        
+                    </MudField>
 
 
 
@@ -125,7 +125,7 @@
                                !DirectoryTemplate.FieldValues.Any(f => f.Field.Equals(field)) &&
                                field.IsActionAppropriateForObject(DirectoryTemplate.ObjectType))
                                 {
-                                    <DropdownItem Clicked=@(()=>{DirectoryTemplate.FieldValues.Add(new(){ Field=field});}) Color="Color.Secondary">@field.DisplayName</DropdownItem>
+                                    <MudMenuItem Clicked=@(()=>{DirectoryTemplate.FieldValues.Add(new(){ Field=field});}) Color="Color.Secondary">@field.DisplayName</MudMenuItem>
 
                                 }
 
@@ -138,45 +138,45 @@
 
                 @foreach (var field in DirectoryTemplate.FieldValues.OrderBy(fv => fv.Field.DisplayName))
                 {
-                    <Field>
-                        <FieldLabel>@field.Field.DisplayName</FieldLabel>
+                    <MudField>
+                        <MudFieldLabel>@field.Field.DisplayName</FieldLabel>
                         <Row>
                             <Column ColumnSize="ColumnSize.Is11">
 
-                                <FieldBody>
-                                    <TextEdit @bind-Text=field.Value />
-                                </FieldBody>
+                                
+                                    <MudTextField  @bind-Value=field.Value />
+                                
                             </Column>
                             <Column ColumnSize="ColumnSize.Is1">
                                 <AppCloseButton Clicked=@(()=>{DirectoryTemplate.FieldValues.Remove(field);InvokeAsync(StateHasChanged);}) />
                             </Column>
                         </Row>
-                    </Field>
+                    </MudField>
                 }
             </Section>
-            <Field>
-                <FieldLabel>@SettingsLocalization["OU"]: @SelectedOU?.CanonicalName</FieldLabel>
+            <MudField>
+                <MudFieldLabel>@SettingsLocalization["OU"]: @SelectedOU?.CanonicalName</FieldLabel>
                 @if (SelectedOU != null)
                 {
-                    <FieldBody>
+                    
                         <BLAZAM.Server.Shared.UI.OU.OUTreeView StartRootExpanded=false @bind-SelectedOU=@SelectedOU @bind-StartingSelectedOU=@SelectedOU>
                             <NodeContent Context="ouContext">
                                 @ouContext.Name
                             </NodeContent>
                         </BLAZAM.Server.Shared.UI.OU.OUTreeView>
 
-                    </FieldBody>
+                    
                 }
 
-            </Field>
-            <Field>
-                <FieldLabel>@SettingsLocalization["Groups"]</FieldLabel>
+            </MudField>
+            <MudField>
+                <MudFieldLabel>@SettingsLocalization["Groups"]</FieldLabel>
 
-                <FieldBody>
+                
                     <ADAutoComplete Multiple @bind-SelectedResults="@SelectedGroups" />
 
-                </FieldBody>
-            </Field>
+                
+            </MudField>
         </Row>
 
         @{
@@ -190,10 +190,10 @@
                 buttonText = "Save this template";
             }
         }
-        <Button Disabled=saveDisabled Color="Color.Success" Type="ButtonType.Submit">@buttonText</Button>
+        <MudButton Disabled=saveDisabled Color="Color.Success" Type="ButtonType.Submit">@buttonText</MudButton>
         @if (DirectoryTemplate.Id == 0)
         {
-            <Button Color="Color.Warning" Clicked="@(()=>{ DirectoryTemplate=null;})">Cancel</Button>
+            <MudButton Color="Color.Warning" Clicked="@(()=>{ DirectoryTemplate=null;})">Cancel</MudButton>
 
         }
     </EditForm>

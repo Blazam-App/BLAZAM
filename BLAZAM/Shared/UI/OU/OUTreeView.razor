@@ -1,36 +1,34 @@
 ﻿@inherits AppComponentBase
 <LoadingIndicator Visible=LoadingData>
-        @if (RootOU != null && RootOU.Any())
-        {
-            @*  <TreeView Nodes="RootOU"
-        AutoExpandAll
-        GetChildNodes="@(item => item.Children)"
-        HasChildNodes="@(item => item.Children?.Any() == true)"
-        ExpandedNodes="ExpandedNodes">
-        <NodeContent>
-        <Icon Name="IconName.Folder" />
-        @context.CanonicalName
-        </NodeContent>
-        </TreeView>*@
-
-            <TreeView Nodes=RootOU
-                  TNode=IADOrganizationalUnit
-                  GetChildNodes="@(item => item.Children.Where(c=>c.CanRead||
-                       (StartingSelectedOU!=null &&
-                            (StartingSelectedOU.DN.Contains(c.DN) == true))))"
-                  HasChildNodes="@(item => item.Children?.Any(c=>c.CanRead||
-                        (StartingSelectedOU!=null &&
-                            (StartingSelectedOU.DN.Contains(c.DN) == true))) == true)"
-                  @bind-SelectedNode="SelectedOU"
-                  @bind-ExpandedNodes="ExpandedNodes"
-                  NodeContent="@NodeContent">
+    @if (RootOU != null && RootOU.Any())
+    {
+        <MudText>@Label</MudText>
+        <MudTreeView Items="RootOU"
+                 @bind-SelectedValue="SelectedOU">
+            <ItemTemplate>
+                @NodeContent
+            </ItemTemplate>
+        </MudTreeView>
 
 
-                >
+        @* <TreeView Nodes=RootOU
+    TNode=IADOrganizationalUnit
+    GetChildNodes="@(item => item.Children.Where(c=>c.CanRead||
+    (StartingSelectedOU!=null &&
+    (StartingSelectedOU.DN.Contains(c.DN) == true))))"
+    HasChildNodes="@(item => item.Children?.Any(c=>c.CanRead||
+    (StartingSelectedOU!=null &&
+    (StartingSelectedOU.DN.Contains(c.DN) == true))) == true)"
+    @bind-SelectedNode="SelectedOU"
+    @bind-ExpandedNodes="ExpandedNodes"
+    NodeContent="@NodeContent">
 
-            </TreeView>
 
-        }
+    >
+
+    </TreeView>*@
+
+    }
 
 </LoadingIndicator>
 @code {
@@ -38,6 +36,9 @@
 #nullable disable warnings
     [Parameter]
     public bool StartRootExpanded { get; set; } = true;
+
+     [Parameter]
+    public string? Label { get; set; };
 
 
     [Parameter]
@@ -77,10 +78,10 @@
         get => _selectedNode; set
         {
             if (value == _selectedNode) return;
-            if (value!=null && value.CanRead)
+            if (value != null && value.CanRead)
             {
                 _selectedNode = value;
-                if (TopLevel==null)
+                if (TopLevel == null)
                     OnInitializedAsync();
                 OpenToSelected();
                 SelectedOUChanged.InvokeAsync(value);

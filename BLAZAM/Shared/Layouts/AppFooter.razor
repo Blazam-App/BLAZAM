@@ -1,5 +1,5 @@
 @inherits AppComponentBase
-<Div Padding="Padding.Is3.OnX">
+<div Padding="Padding.Is3.OnX">
 
     <Row Style="height:1.5em">
         <Column TextAlignment="TextAlignment.Start">
@@ -8,18 +8,18 @@
         <Column Style="cursor:pointer" TextAlignment="TextAlignment.End">
             @if (AutoUpdateService.IsUpdatedScheduled)
             {
-                <Tooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/app");}) TextColor="TextColor.Muted" Float=Float.End Style="width:max-content" Fade Text="An automatic update is scheduled. Click for details">
+                <MudTooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/app");}) TextColor="Color.Muted" Float=Float.End Style="width:max-content" Fade Text="An automatic update is scheduled. Click for details">
 
                     <Icon Name=@("fa-solid fa-circle-up") />
-                </Tooltip>
+                </MudTooltip>
             }
 
-            <Tooltip Margin="Margin.Is1.OnX" TextColor="TextColor.Muted" Float=Float.End Style="width:max-content" Fade FadeDuration=500 Trigger=TooltipTrigger.Click Text="@Program.Version.Version">
+            <MudTooltip Margin="Margin.Is1.OnX" TextColor="Color.Muted" Float=Float.End Style="width:max-content" Fade FadeDuration=500 Trigger=TooltipTrigger.Click Text="@Program.Version.Version">
 
                 Version: @Program.Version.ShortVersion
-            </Tooltip>
+            </MudTooltip>
 
 
         </Column>
     </Row>
-</Div>
+</div>

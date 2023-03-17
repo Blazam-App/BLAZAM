@@ -10,21 +10,21 @@
             <ErrorMenu />
         </LayoutSiderContent>
     </LayoutSider>
-    <Layout>
+    <MudLayout>
         <LayoutHeader Fixed>
             @if (PageHeader != null)
             {
                 @PageHeader
             }
         </LayoutHeader>
-        <LayoutContent>
-            <Card>
-                <CardBody>
+        <MudMainContent>
+            <MudCard>
+                <MudCardBody>
                     @Body
 
-                </CardBody>
-            </Card>
-        </LayoutContent>
+                </MudCardBody>
+            </MudCard>
+        </MudMainContent>
 
         <LayoutFooter>
             @if (Program.InstallationCompleted)
@@ -35,8 +35,8 @@
             <AppFooter />
 
         </LayoutFooter>
-    </Layout>
-</Layout>
+    </MudLayout>
+</MudLayout>
 
 @code {
     [Parameter]

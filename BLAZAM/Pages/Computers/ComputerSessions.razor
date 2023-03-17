@@ -35,18 +35,18 @@
             <DisplayTemplate>
                 @if (fieldContext.ConnectionState.ToString() == "Active")
                 {
-                    <Button Color="Color.Warning" Clicked=@(()=>{DisconnectSession(fieldContext);})>Disconnect</Button>
+                    <MudButton Color="Color.Warning" Clicked=@(()=>{DisconnectSession(fieldContext);})>Disconnect</MudButton>
                 }
-                <Button Color="Color.Danger" Clicked=@(()=>{LogoffSession(fieldContext);})>Logoff</Button>
+                <MudButton Color="Color.Error" Clicked=@(()=>{LogoffSession(fieldContext);})>Logoff</MudButton>
             </DisplayTemplate>
         </DataGridColumn>
     </DataGrid>
 }
 else
 {
-    <Div>
+    <div>
         @sessionsErrorMessage
-    </Div>
+    </div>
 }
 
 

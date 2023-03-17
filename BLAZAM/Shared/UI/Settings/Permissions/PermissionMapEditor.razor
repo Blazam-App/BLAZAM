@@ -4,12 +4,10 @@
 {
 
 
-    <Form @onsubmit="@Save">
-        <Validations Model="Map" Mode="ValidationMode.Auto">
-            <Field Horizontal>
-            <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["User Groups"]</FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is10">
-                <Validation @ref="PrivValidation">
+    <MudForm @onsubmit="@Save">
+            <MudField>
+           @* <MudFieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["User Groups"]</FieldLabel>
+            <MudFieldBody ColumnSize="ColumnSize.Is10">
                     @if (!ReadOnly)
                         {
 
@@ -26,7 +24,7 @@
                                   CloseOnSelection="false"
                                   @bind-SelectedValues="Map.PermissionDelegates"
                                   @bind-SelectedTexts="selectedPermissionDelegateNames" />
-                            <ValidationError />
+                            
                         }
                         else
                         {
@@ -34,18 +32,17 @@
                             {
                                 @foreach (var name in selectedPermissionDelegateNames)
                                 {
-                                    <Button Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</Button>
+                                    <MudButton Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</MudButton>
                                 }
                             }
                         }
 
-                    </Validation>
-
-                </FieldBody>
-            </Field>
-            <Field Horizontal>
-            <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["Access Levels"]</FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is10">
+*@
+                
+            </MudField>
+            <MudField>
+           @* <MudFieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["Access Levels"]</FieldLabel>
+            <MudFieldBody ColumnSize="ColumnSize.Is10">
                 <Validation @ref=AccValidation Validator="ValidationRule.IsNotEmpty">
                     @if (!ReadOnly)
                         {
@@ -69,25 +66,24 @@
                             {
                                 @foreach (var name in selectedAccessLevelNames)
                                 {
-                                    <Button Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</Button>
+                                    <MudButton Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</MudButton>
                                 }
                             }
                         }
 
-                        <ValidationError />
+                        
 
                     </Validation>
-
-                </FieldBody>
-            </Field>
+*@
+                
+            </MudField>
             @if (!ReadOnly)
             {
-                <Button Color=Color.Success Disabled=saveDisabled Type="ButtonType.Submit">Save Mapping</Button>
+                <MudButton Color=Color.Success Disabled=saveDisabled Type="ButtonType.Submit">Save Mapping</MudButton>
                 <AppCloseButton Clicked="DeleteMapping" />
             }
-        </Validations>
 
-    </Form>
+    </MudForm>
 
     ValidateCheck();
 
@@ -114,8 +110,7 @@
     [Parameter]
     public bool ReadOnly { get; set; } = false;
 
-    Validation? PrivValidation;
-    Validation? AccValidation;
+
 
     List<AccessLevel> accessLevels;
     List<PermissionDelegate> PermissionDelegates;

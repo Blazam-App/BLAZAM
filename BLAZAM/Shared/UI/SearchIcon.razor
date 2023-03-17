@@ -1,17 +1,17 @@
-<Div Margin="Margin.IsAuto" Width=Width.Is100 Height=Height.Is100 TextAlignment="TextAlignment.Center" Display="Display.Table">
-    <Div Display="Display.TableCell" VerticalAlignment="VerticalAlignment.Middle">
-        <Div>
+<div Margin="Margin.IsAuto" Width=Width.Is100 Height=Height.Is100 TextAlignment="TextAlignment.Center" Display="Display.Table">
+    <div Display="Display.TableCell" VerticalAlignment="VerticalAlignment.Middle">
+        <div>
             <Icon Style="font-size:4em;opacity:20%" Name=Name />
-            <Div Style="width:0px;height:0px;" Position="Position.Relative" Margin="Margin.IsAuto.OnX">
+            <div Style="width:0px;height:0px;" Position="Position.Relative" Margin="Margin.IsAuto.OnX">
                 <Icon Style="font-size:12em;opacity:20%;position: absolute;left: -78px;top:-109px;" Name=@("fa-solid fa-magnifying-glass") />
-            </Div>
+            </div>
 
-        </Div>
-        <Heading style="margin-top:85px;" TextColor="TextColor.Muted">@Text</Heading>
-        <Paragraph TextColor="TextColor.Muted">@Subtext</Paragraph>
+        </div>
+        <MudText Typo ="Typo.h1" style="margin-top:85px;" TextColor="Color.Muted">@Text</MudText>
+        <MudText Color="Color.Muted">@Subtext</MudText>
 
-    </Div>
-</Div>
+    </div>
+</div>
 
 @code{
     [Parameter]

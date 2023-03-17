@@ -10,7 +10,7 @@
 
 @if (MOTD.HasValue && MOTD.Value.ToString()!="")
 {
-    <Alert Background="Background.Light" TextColor="TextColor.Dark" Visible>
+    <Alert Background="Background.Light" TextColor="Color.Dark" Visible>
 
     <AlertMessage>
         @MOTD.Value
@@ -26,12 +26,12 @@
 
     </ChildContent>
     <ItemTemplate>
-        <Card Shadow="Shadow.Default" Margin="Margin.Is3.OnY" Background="Background.Secondary" TextColor="TextColor.Light">
-            <CardBody>
+        <MudCard Shadow="Shadow.Default" Margin="Margin.Is3.OnY" Background="Background.Secondary" >
+            <MudCardBody>
                 <DynamicComponent Type="@context.GetType()" />
                 <AppCloseButton Clicked=@(()=>{RemoveWidget(context);}) Position="Position.Absolute" style="right:10px;top:15px" />
-            </CardBody>
-        </Card>
+            </MudCardBody>
+        </MudCard>
     </ItemTemplate>
     </DropContainer>
 

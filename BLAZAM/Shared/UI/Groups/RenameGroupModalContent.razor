@@ -1,18 +1,18 @@
 ﻿@inherits AppModalContent
-<Div Background="Background.Light" TextColor="TextColor.Dark">
+<div Background="Background.Light" TextColor="Color.Dark">
     <Section Title=@UserLocalization["Name"]>
 
         @if (Group.CanEditField(ActiveDirectoryFields.SAMAccountName))
         {
-            <Field Horizontal>
-                <FieldLabel>
+            <MudField>
+                <MudFieldLabel>
                     @UserLocalization["Group Name"]
                 </FieldLabel>
-                <FieldBody>
-                    <TextEdit @bind-Text="@GroupName" />
+                
+                    <MudTextField  @bind-Value="@GroupName" />
 
-                </FieldBody>
-            </Field>
+                
+            </MudField>
         }
 
       
@@ -20,19 +20,19 @@
 
     @if (Group.CanEditField(ActiveDirectoryFields.Mail))
     {
-        <Field Horizontal>
-            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
+        <MudField>
+            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
                 @UserLocalization["Email Address"]
             </FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                <TextEdit @bind-Text="@Group.Email" />
+           
+                <MudTextField  @bind-Value="@Group.Email" />
 
-            </FieldBody>
-        </Field>
+            
+        </MudField>
     }
 
-    <Button Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Changes"]</Button>
-</Div>
+    <MudButton Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
+</div>
 @code {
     #nullable disable warnings
     string GroupName;

@@ -7,22 +7,22 @@
         <Column>
             <Row>
                 <Validation>
-                    <Field ColumnSize="ColumnSize.IsHalf.OnTablet">
-                        <FieldLabel>@SettingsLocalization["Name"]</FieldLabel>
-                        <FieldBody>
-                            <TextEdit @bind-Text=WorkingModel.Name>
+                    <MudField ColumnSize="ColumnSize.IsHalf.OnTablet">
+                        <MudFieldLabel>@SettingsLocalization["Name"]</FieldLabel>
+                        
+                            <MudTextField  @bind-Value=WorkingModel.Name>
 
-                                <Feedback>
-                                    <ValidationError />
-                                </Feedback>
-                            </TextEdit>
+                                
+                                    
+                                
+                            </MudTextField >
 
 
-                        </FieldBody>
-                    </Field>
+                        
+                    </MudField>
                 </Validation>
-                <Field Horizontal ColumnSize="ColumnSize.IsHalf.OnTablet">
-                    <FieldLabel>
+                <MudField Horizontal ColumnSize="ColumnSize.IsHalf.OnTablet">
+                    <MudFieldLabel>
                         @SettingsLocalization["Assign Objects"]
                     </FieldLabel>
                     @foreach (var adObjectType in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
@@ -38,11 +38,11 @@
                             }
                             var name = Enum.GetName(typeof(ActiveDirectoryObjectType), adObjectType);
                             <Column ColumnSize="ColumnSize.IsQuarter.OnFullHD.IsHalf">
-                                <Button Width=Width.Is100 Disabled=buttonDisabled Color=Color.Success Clicked="()=>AddObjectTypeAccess(adObjectType)">@SettingsLocalization[name]</Button>
+                                <MudButton Width=Width.Is100 Disabled=buttonDisabled Color=Color.Success Clicked="()=>AddObjectTypeAccess(adObjectType)">@SettingsLocalization[name]</MudButton>
                             </Column>
                         }
                     }
-                </Field>
+                </MudField>
             </Row>
             @if (WorkingModel.ObjectMap.Count > 0)
             {
@@ -59,9 +59,9 @@
 
                 var name = Enum.GetName(typeof(ActiveDirectoryObjectType), objectMap.ObjectType);
 
-                <Field Horizontal Margin="Margin.Is2.OnY">
-                <FieldLabel ColumnSize="ColumnSize.Is4" Class="h3">@SettingsLocalization[name]</FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is6">
+                <MudField Horizontal Margin="Margin.Is2.OnY">
+                <MudFieldLabel ColumnSize="ColumnSize.Is4" Class="h3">@SettingsLocalization[name]</FieldLabel>
+                <MudFieldBody ColumnSize="ColumnSize.Is6">
 
                     <Select TValue="int" SelectedValueChanged="(int value)=>SetObjectMapAccess(objectMap,value)" SelectedValue="objectMap.ObjectAccessLevelId">
 
@@ -73,20 +73,20 @@
                         </Select>
                         @if (objectMap.ObjectType == ActiveDirectoryObjectType.User && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
                         {
-                            <Switch @bind-Checked=objectMap.AllowDisabled>@SettingsLocalization["Allow Disabled User Access"]</Switch>
+                            <MudSwitch @bind-Checked=objectMap.AllowDisabled>@SettingsLocalization["Allow Disabled User Access"]</Switch>
                         }
-                    </FieldBody>
-                    <FieldBody ColumnSize="ColumnSize.Is2">
+                    
+                    <MudFieldBody ColumnSize="ColumnSize.Is2">
                         <AppCloseButton Clicked="()=>RemoveObjectTypeAccess(objectMap)" />
 
-                    </FieldBody>
-                </Field>
+                    
+                </MudField>
                 @if (objectMap.ObjectAccessLevelId != 0 && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
                 {
 
                     <h4>@name Actions</h4>
 
-                    <Field Horizontal>
+                    <MudField>
                     @foreach (var action in actions.OrderBy(f => f.Name))
                         {
                             if (action.IsActionAppropriateForObject(objectMap.ObjectType))
@@ -97,29 +97,29 @@
 
 
                                     <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.Is1">
-                                        <Button Color=Color.Secondary Clicked="()=>AddActionAccess(action,objectMap.ObjectType)">@SettingsLocalization[@action.Name+" "+@name]</Button>
+                                        <MudButton Color=Color.Secondary Clicked="()=>AddActionAccess(action,objectMap.ObjectType)">@SettingsLocalization[@action.Name+" "+@name]</MudButton>
                                     </Column>
                                 }
                             }
                         }
-                    </Field>
+                    </MudField>
                     @if (WorkingModel.ActionMap.Any())
                     {
                         foreach (var actionMap in WorkingModel.ActionMap.ToList())
                         {
                             string? aname = Enum.GetName(typeof(ActiveDirectoryObjectType), actionMap.ObjectType);
 
-                            <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is6">@SettingsLocalization[actionMap.ObjectAction.Name+" "+aname]</FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is6">
+                            <MudField>
+                            <MudFieldLabel ColumnSize="ColumnSize.Is6">@SettingsLocalization[actionMap.ObjectAction.Name+" "+aname]</FieldLabel>
+                            <MudFieldBody ColumnSize="ColumnSize.Is6">
                                 <RadioGroup @bind-CheckedValue=actionMap.AllowOrDeny>
                                     <Radio Value="false">@SettingsLocalization["Deny"]</Radio>
                                     <Radio Value="true">@SettingsLocalization["Allow"]</Radio>
                                     <AppCloseButton Clicked="()=>RemoveActionAccess(actionMap)" />
 
                                 </RadioGroup>
-                            </FieldBody>
-                        </Field>
+                            
+                        </MudField>
                         }
                     }
                 }
@@ -130,7 +130,7 @@
             {
                 <h4>Fields</h4>
 
-                <Field Horizontal>
+                <MudField>
 
                 @foreach (var field in fields.OrderBy(f => f.FieldName))
                     {
@@ -141,20 +141,20 @@
                             if (existingFieldAccess == null)
                             {
                                 <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.Is1">
-                                    <Button Color=Color.Secondary Clicked="()=>AddFieldAccess(field)">@SettingsLocalization[field.FieldName]</Button>
+                                    <MudButton Color=Color.Secondary Clicked="()=>AddFieldAccess(field)">@SettingsLocalization[field.FieldName]</MudButton>
                                 </Column>
                             }
                         }
                     }
 
-                </Field>
+                </MudField>
                 foreach (var field in WorkingModel.FieldMap.OrderBy(f => f.Field.FieldName))
                 {
 
 
-                    <Field Horizontal>
-                    <FieldLabel ColumnSize="ColumnSize.Is6">@field.Field.FieldName</FieldLabel>
-                    <FieldBody ColumnSize="ColumnSize.Is6">
+                    <MudField>
+                    <MudFieldLabel ColumnSize="ColumnSize.Is6">@field.Field.FieldName</FieldLabel>
+                    <MudFieldBody ColumnSize="ColumnSize.Is6">
                         <Select TValue="int" @bind-SelectedValue="field.FieldAccessLevelId">
                             @foreach (FieldAccessLevel levelValue in FieldAccessLevels.Levels)
                                 {
@@ -165,8 +165,8 @@
                             </Select>
                             <AppCloseButton Clicked="()=>RemoveFieldAccess(field)" />
 
-                        </FieldBody>
-                    </Field>
+                        
+                    </MudField>
                 }
             }
         </Column>
@@ -177,10 +177,10 @@
         if (Model.Id > 0)
             buttonLabel = SettingsLocalization["Update Access Level"];
     }
-    <Button Color=Color.Success Margin=Margin.IsAuto.OnX Disabled=saveDisabled Clicked="CreateAccessLevel">@buttonLabel</Button>
+    <MudButton Color=Color.Success Margin=Margin.IsAuto.OnX Disabled=saveDisabled Clicked="CreateAccessLevel">@buttonLabel</MudButton>
     @if (WorkingModel.Id != 0)
     {
-        <Button Color=Color.Danger Margin=Margin.IsAuto.OnX Clicked="DeleteAccessLevel">@SettingsLocalization["Delete Access Level"]</Button>
+        <MudButton Color=Color.Error Margin=Margin.IsAuto.OnX Clicked="DeleteAccessLevel">@SettingsLocalization["Delete Access Level"]</MudButton>
     }
 </Validations>
 @code {

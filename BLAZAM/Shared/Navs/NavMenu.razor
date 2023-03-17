@@ -14,11 +14,11 @@
      ThemeContrast="ThemeContrast.Dark">
     <BarBrand>
         <BarItem>
-            <BarLink TextColor=TextColor.Light To="/home">
-                <Image class="app-icon" src="@StaticAssets.ApplicationIconUri" />
-                <Div Margin=Margin.Is2.OnX TextAlignment="TextAlignment.Center">
+            <BarLink TextColor=Color.Light To="/home">
+                <MudImage class="app-icon" src="@StaticAssets.ApplicationIconUri" />
+                <div Margin=Margin.Is2.OnX TextAlignment="TextAlignment.Center">
                     @DatabaseCache.ApplicationSettings?.AppAbbreviation
-                </Div>
+                </div>
             </BarLink>
         </BarItem>
     </BarBrand>
@@ -53,10 +53,10 @@
                         </BarDropdownToggle>
                         <BarDropdownMenu>
 
-                            <BarDropdownItem To="/users/create" Match="Match.Prefix"><Icon Name="IconName.UserPlus" />@AppLocalization["Create User"]</BarDropdownItem>
-                            <BarDropdownItem To="/groups/create" Match="Match.Prefix"><Icon Name="IconName.PlusCircle" />@AppLocalization["Create Group"]</BarDropdownItem>
-                            <BarDropdownItem To="/computers/create" Match="Match.Prefix"><Icon Name="IconName.PlusCircle" />@AppLocalization["Create Computer"]</BarDropdownItem>
-                            <BarDropdownItem To="/ou/create" Match="Match.Prefix"><Icon Name="IconName.FolderPlus" />@AppLocalization["Create OU"]</BarDropdownItem>
+                            <BarMudMenuItem To="/users/create" Match="Match.Prefix"><Icon Name="IconName.UserPlus" />@AppLocalization["Create User"]</BarMudMenuItem>
+                            <BarMudMenuItem To="/groups/create" Match="Match.Prefix"><Icon Name="IconName.PlusCircle" />@AppLocalization["Create Group"]</BarMudMenuItem>
+                            <BarMudMenuItem To="/computers/create" Match="Match.Prefix"><Icon Name="IconName.PlusCircle" />@AppLocalization["Create Computer"]</BarMudMenuItem>
+                            <BarMudMenuItem To="/ou/create" Match="Match.Prefix"><Icon Name="IconName.FolderPlus" />@AppLocalization["Create OU"]</BarMudMenuItem>
 
 
 
@@ -86,13 +86,13 @@
                             @AppLocalization["Configure"]
                         </BarDropdownToggle>
                         <BarDropdownMenu>
-                            <BarDropdownItem To="/settings">@AppLocalization["Settings"]</BarDropdownItem>
+                            <BarMudMenuItem To="/settings">@AppLocalization["Settings"]</BarMudMenuItem>
 
-                            <BarDropdownItem To="/permissions">@AppLocalization["Permissions"]</BarDropdownItem>
-                            <BarDropdownItem To="/templates">@AppLocalization["Templates"]</BarDropdownItem>
+                            <BarMudMenuItem To="/permissions">@AppLocalization["Permissions"]</BarMudMenuItem>
+                            <BarMudMenuItem To="/templates">@AppLocalization["Templates"]</BarMudMenuItem>
 
 
-                            <BarDropdownItem To="/audit">@AppLocalization["Audit"]</BarDropdownItem>
+                            <BarMudMenuItem To="/audit">@AppLocalization["Audit"]</BarMudMenuItem>
                         </BarDropdownMenu>
                     </BarDropdown>
                 </BarItem>
@@ -110,24 +110,24 @@
                             <BarDropdownMenu>
                                 @foreach (var theme in ApplicationTheme.Themes)
                                 {
-                                    <BarDropdownItem Clicked=@(()=>{SetUserTheme(theme);})> @theme.Name</BarDropdownItem>
+                                    <BarMudMenuItem Clicked=@(()=>{SetUserTheme(theme);})> @theme.Name</BarMudMenuItem>
                                 }
 
                             </BarDropdownMenu>
                         </BarDropdown>
                         @if (UserStateService.CurrentUserState?.Impersonator == null)
                         {
-                            <BarDropdownItem To="/logout">
+                            <BarMudMenuItem To="/logout">
                                 <BarIcon IconName="@("fa-right-from-bracket")" />
                                 @AppLocalization["Sign Out"]
-                            </BarDropdownItem>
+                            </BarMudMenuItem>
                         }
                         else
                         {
-                            <BarDropdownItem To="/unimpersonate">
+                            <BarMudMenuItem To="/unimpersonate">
                                 <BarIcon IconName=@("fa-user-slash") />
                                 @AppLocalization["Stop It"]
-                            </BarDropdownItem>
+                            </BarMudMenuItem>
                         }
 
                     </BarDropdownMenu>

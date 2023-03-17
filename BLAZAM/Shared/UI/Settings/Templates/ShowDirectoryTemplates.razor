@@ -20,20 +20,20 @@
                   SelectedItemChanged=@((v)=>{SelectedTemplate=v;})>
 
             <ItemTemplate>
-                <Div>
+                <div>
                     @context.Item.Name
-                </Div>
+                </div>
                
             </ItemTemplate>
         </ListView>
         @if (SelectedTemplate != null)
         {
-            <Button Clicked=@(()=>{DuplicateTemplate(SelectedTemplate);}) Color="Color.Primary"><Icon Name="@("fa-solid fa-copy")" /></Button>
+            <MudButton Clicked=@(()=>{DuplicateTemplate(SelectedTemplate);}) Color="Color.Primary"><Icon Name="@("fa-solid fa-copy")" /></MudButton>
         }
-        <Div>
+        <div>
             <h6>Users granted this template</h6>
 
-        </Div>
+        </div>
     </Column>
     <Column ColumnSize="ColumnSize.Is8.OnTablet">
         @if (SelectedTemplate != null)

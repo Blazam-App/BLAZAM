@@ -3,20 +3,17 @@
 
 @if (OU != null)
 {
-    <Card>
-        <CardHeader>
+    <MudCard>
             @OU.ADSPath
-        </CardHeader>
         
-    </Card>
-    <Button Color=Color.Success Clicked="CommitChanges">Create...</Button>
+    </MudCard>
+    <MudButton Color=Color.Success Clicked="CommitChanges">Create...</MudButton>
 }
 @code {
 
 #nullable disable warnings
 
-    [Parameter]
-    public IFluentColumnWithSize FieldColumnSize { get; set; } = ColumnSize.Is6.OnWidescreen.Is4.OnFullHD;
+    
 
     [Parameter]
     public EventCallback<IADOrganizationalUnit> Confirmed { get; set; }
