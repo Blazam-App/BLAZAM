@@ -73,10 +73,7 @@ namespace BLAZAM.Common.Data.Database
             ConnectionString = new("");
         }
 
-        public DatabaseContext()
-        {
-        }
-
+       
         public DatabaseContext(DatabaseConnectionString databaseConnectionString) : base()
         {
             ConnectionString = databaseConnectionString;
