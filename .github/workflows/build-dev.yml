@@ -47,7 +47,7 @@ jobs:
 
 
       - name: Compress files
-        run: Compress-Archive -Path bin/publish/* -DestinationPath blazam-dev-v${{ env.ASSEMBLY_VERSION }}.zip
+        run: Compress-Archive -Path bin/publish/* -DestinationPath v${{ env.ASSEMBLY_VERSION }}-dev.zip
 
 
       # For Linux
@@ -57,14 +57,7 @@ jobs:
       #    args: zip -qq -r blazam-dev.zip bin/publish
 
      
-      #- name: Update dev release
-      #  uses: svenstaro/upload-release-action@v2
-      #  with:
-      #    repo_token: ${{ secrets.RELEASE_TOKEN }}
-      #    file: blazam-dev.zip
-      #    asset_name: blazam-dev-v${{ env.ASSEMBLY_VERSION }}.zip
-      #    tag: Dev
-      #    overwrite: true
+
       - name: Update dev release
         uses: andelf/nightly-release@main
         env:
@@ -73,6 +66,6 @@ jobs:
           tag_name: Dev
           name: 'Dev'
           prerelease: true
-          body: This release is highly unstable. Expect bugs and crashed on this branch. Developers Only!
+          body: This release is highly unstable. Expect bugs and crashes on this branch. Developers Only!
           files: |
-            ./blazam-dev-v${{ env.ASSEMBLY_VERSION }}.zip
+            ./v${{ env.ASSEMBLY_VERSION }}-dev.zip
