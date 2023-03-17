@@ -79,7 +79,7 @@
             </MudField>
             @if (!ReadOnly)
             {
-                <MudButton Color=Color.Success Disabled=saveDisabled Type="ButtonType.Submit">Save Mapping</MudButton>
+                <MudButton Color=Color.Success Disabled=saveDisabled ButtonType="ButtonType.Submit">Save Mapping</MudButton>
                 <AppCloseButton Clicked="DeleteMapping" />
             }
 
@@ -184,6 +184,7 @@
     }
     void ValidateCheck()
     {
+        /*
         if (PrivValidation != null && AccValidation!=null && !ReadOnly)
         {
             if (Map != null)
@@ -202,5 +203,6 @@
                     saveDisabled = true;
             }
         }
+        */
     }
 }

@@ -10,28 +10,20 @@
 
 
 <PageTitle>Error</PageTitle>
- <Layout Sider>
-    <LayoutSider>
-        <LayoutSiderContent>
+<MudLayout>
             <ErrorMenu />
 
-        </LayoutSiderContent>
-    </LayoutSider>
     <MudLayout>
         <MudMainContent>
             <MudCard Margin="Margin.Is4.OnX.OnDesktop">
-                <MudCardBody>
-                    @Body
-                    <Link To="/">
-                    <MudButton  Color="Color.Primary">Try Home Page</MudButton>
-                    </Link>
-                </MudCardBody>
+                @Body
+                <MudLink To="/">
+                    <MudButton Color="Color.Primary">Try Home Page</MudButton>
+                </MudLink>
             </MudCard>
         </MudMainContent>
-         <LayoutFooter>
             <AppFooter />
 
-        </LayoutFooter>
     </MudLayout>
 </MudLayout>
 

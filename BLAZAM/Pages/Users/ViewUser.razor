@@ -13,98 +13,84 @@
             @if (User?.NewEntry == false)
             {
                 <SetSubHeader @ref="subHeader">
-                    
-                            <Row>
-                                <Column ColumnSize="ColumnSize.Is10.OnTablet.Is8">
 
-                                    <Row>
-                                        <Column ColumnSize="ColumnSize.Is4.OnTablet">
-                                            @{
-                                                var displayNameTooltipText = "";
-                                                if (!User.NewEntry)
-                                                {
-                                                    displayNameTooltipText = $"Password Last Set: {User.PasswordLastSet} \r\n Created: {User.Created}\r\n Last Changed: {User.LastChanged}";
+                    <Row>
 
-                                                }
+                        <Row>
+                            @{
+                                var displayNameTooltipText = "";
+                                if (!User.NewEntry)
+                                {
+                                    displayNameTooltipText = $"Password Last Set: {User.PasswordLastSet} \r\n Created: {User.Created}\r\n Last Changed: {User.LastChanged}";
 
-                                            }
-                                            <MudTooltip Placement="TooltipPlacement.Bottom" Multiline Text=@displayNameTooltipText>
+                                }
 
-                                            @User.DisplayName
-                                            </MudTooltip>
+                            }
+                            <MudTooltip Placement="Placement.Bottom" Text=@displayNameTooltipText>
+
+                                @User.DisplayName
+                            </MudTooltip>
 
 
-                                            </Column>
-                                            <Column ColumnSize="ColumnSize.Is8.OnTablet">
-                                            <Small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(User.OU) </Small>
+                            <Small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(User.OU) </Small>
 
-                                            </Column>
-                                            </Row>
-                                            </Column>
+                        </Row>
 
-                                            <Column ColumnSize="ColumnSize.Is1.OnTablet.Is2">
 
-                                            @if (User.LockedOut)
-                                    {
-                                        <Icon Name=@("fa-lock")>Account Locked</Icon>
-                                    }
-                                </Column>
-                                <Column Float=Float.End ColumnSize="ColumnSize.Is1.OnTablet.Is2">
+                        @if (User.LockedOut)
+                        {
+                            <Icon Name=@("fa-lock")>Account Locked</Icon>
+                        }
 
-                                    <Dropdown>
-                                        <DropdownToggle Color="Color.Primary">
-                                            <Icon Name=@("fa-gear") />
-                                        </DropdownToggle>
-                                        <DropdownMenu>
-                                            <MudMenuItem>
-                                                <MudSwitch @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable))>Account Enabled</Switch>
+                        <MudMenu StartIcon="@Icons.Material.Filled.Settings">
 
-                                            </MudMenuItem>
-                                            <DropdownDivider />
-                                            @if (User.CanEdit)
-                                            {
-                                                <MudMenuItem Clicked="ToggleEditMode">Edit...</MudMenuItem>
-                                            }
-                                            @if (User.LockedOut && User.CanUnlock)
-                                            {
-                                                <MudMenuItem Clicked="Unlock">Unlock...</MudMenuItem>
-                                            }
-                                            @if (User.CanAssign)
-                                            {
-                                                RefreshUserGroups();
-                                                <MudMenuItem Clicked="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
-                                            }
-                                            @if (User.CanDisable)
-                                            {
-                                                <MudMenuItem Clicked="@(()=>{ChangePasswordModal?.Show();})">Change Password...</MudMenuItem>
-                                            }
-                                            @if (User.CanRename)
-                                            {
-                                                <MudMenuItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
-                                                @if (User.ThumbnailPhoto == null)
-                                                {
-                                                    <MudMenuItem Clicked="@(()=>{UploadThumbnailModal?.Show();})">Upload Photo...</MudMenuItem>
+                            <MudMenuItem>
+                                <MudSwitch Label="Account Enabled" @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />
 
-                                                }
-                                                else
-                                                {
-                                                    <MudMenuItem Clicked="@(()=>{UploadThumbnailModal?.Show();})">Replace Photo...</MudMenuItem>
+                            </MudMenuItem>
 
-                                                }
+                            @if (User.CanEdit)
+                            {
+                                <MudMenuItem Clicked="ToggleEditMode">Edit...</MudMenuItem>
+                            }
+                            @if (User.LockedOut && User.CanUnlock)
+                            {
+                                <MudMenuItem Clicked="Unlock">Unlock...</MudMenuItem>
+                            }
+                            @if (User.CanAssign)
+                            {
+                                RefreshUserGroups();
+                                <MudMenuItem Clicked="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
+                            }
+                            @if (User.CanDisable)
+                            {
+                                <MudMenuItem Clicked="@(()=>{ChangePasswordModal?.Show();})">Change Password...</MudMenuItem>
+                            }
+                            @if (User.CanRename)
+                            {
+                                <MudMenuItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
+                                @if (User.ThumbnailPhoto == null)
+                                {
+                                    <MudMenuItem Clicked="@(()=>{UploadThumbnailModal?.Show();})">Upload Photo...</MudMenuItem>
 
-                                            }
-                                            @if (User.CanMove)
-                                            {
-                                                <MudMenuItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
-                                            }
-                                            @if (User.CanDelete)
-                                            {
-                                                <MudMenuItem Clicked="@DeleteUser">Delete...</MudMenuItem>
-                                            }
-                                        </DropdownMenu>
-                                    </Dropdown>
-                                </Column>
-                            </Row>
+                                }
+                                else
+                                {
+                                    <MudMenuItem Clicked="@(()=>{UploadThumbnailModal?.Show();})">Replace Photo...</MudMenuItem>
+
+                                }
+
+                            }
+                            @if (User.CanMove)
+                            {
+                                <MudMenuItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
+                            }
+                            @if (User.CanDelete)
+                            {
+                                <MudMenuItem Clicked="@DeleteUser">Delete...</MudMenuItem>
+                            }
+                        </MudMenu>
+                    </Row>
 
 
 
@@ -166,55 +152,46 @@
                                 @if (User.CanReadField(ActiveDirectoryFields.GivenName))
                                 {
                                     <MudField>
-                                   
-                                        <MudTextField Label="@UserLocalization["First Name"]"  @bind-Value="@User.GivenName" Disabled=!User.NewEntry />
 
-                                    
-                                </MudField>
+                                        <MudTextField Label="@UserLocalization["First Name"]" @bind-Value="@User.GivenName" Disabled=!User.NewEntry />
+
+
+                                    </MudField>
                                 }
                                 @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
                                 {
                                     <MudField>
-                                    <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                        @UserLocalization["Middle Name"]
-                                    </FieldLabel>
-                                   
-                                        <MudTextField  @bind-Value="@User.MiddleName" Disabled=!User.NewEntry />
 
-                                    
-                                </MudField>
+                                        <MudTextField Label="@UserLocalization["Middle Name"]" @bind-Value="@User.MiddleName" Disabled=!User.NewEntry />
+
+
+                                    </MudField>
                                 }
                                 @if (User.CanReadField(ActiveDirectoryFields.SN))
                                 {
                                     <MudField>
-                                    <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                        @UserLocalization["Last Name"]
-                                    </FieldLabel>
-                                   
-                                        <MudTextField  @bind-Value="@User.Surname" Disabled=!User.NewEntry />
 
-                                    
-                                </MudField>
+                                        <MudTextField Label="@UserLocalization["Last Name"]" @bind-Value="@User.Surname" Disabled=!User.NewEntry />
+
+
+                                    </MudField>
                                 }
                                 @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
                                 {
                                     <MudField>
-                                    <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                        @UserLocalization["Display Name"]
-                                    </FieldLabel>
-                                   
-                                        <MudTextField  @bind-Value="@User.DisplayName" Disabled=!User.NewEntry />
 
-                                    
-                                </MudField>
+                                        <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@User.DisplayName" Disabled=!User.NewEntry />
+
+
+                                    </MudField>
                                 }
 
                                 @if (EditMode && !User.NewEntry)
                                 {
                                     <MudField>
-                                        <MudFieldHelp>
+                                        <MudText>
                                             To Modify the user's name click the Gear button and choose "Rename..."
-                                        </FieldHelp>
+                                        </MudText>
                                     </MudField>
                                 }
                             </Column>
@@ -234,96 +211,81 @@
                         @if (User.CanReadField(ActiveDirectoryFields.SAMAccountName))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Username"]
-                            </FieldLabel>
-                           
-                            <Addons>
-                                <Addon AddonType="AddonType.Body">
-                                    <MudTextField  @bind-Value="@User.SamAccountName" Disabled=!User.NewEntry />
 
-                                </Addon>
-                                <Addon AddonType="AddonType.End">
-                                    <MudButton Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.SamAccountName);})><Icon Name=@("fa-solid fa-copy") /></MudButton>
+                                    <Addons>
+                                        <Addon AddonType="AddonType.Body">
+                                            <MudTextField Label="@UserLocalization["Username"]" @bind-Value="@User.SamAccountName" Disabled=!User.NewEntry />
 
-                                </Addon>
-                            </Addons>
-                            
+                                        </Addon>
+                                        <Addon AddonType="AddonType.End">
+                                            <MudButton Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.SamAccountName);})><Icon Name=@("fa-solid fa-copy") /></MudButton>
+
+                                        </Addon>
+                                    </Addons>
+
                             </MudField>
                         }
 
                         @if (User.NewEntry)
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Password"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@Password" InputType="InputType.Password">
-                                
-                                    
-                                
-                            </MudTextField >
 
-                            
+                                    <MudTextField Label="@UserLocalization["Password"]" @bind-Value="@Password" InputType="InputType.Password">
+
+
+
+                                    </MudTextField>
+
+
                             </MudField>
                             <Validation Validator="ValidatePassword">
                                 <MudField>
-                                <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Confirm Password"]
-                                </FieldLabel>
-                               
-                                <MudTextField  @bind-Value="@ConfirmPassword" InputType="InputType.Password">
-                                    
-                                        
-                                    
-                                </MudTextField >
-                                
+
+                                        <MudTextField Label="@UserLocalization["Confirm Password"]" @bind-Value="@ConfirmPassword" InputType="InputType.Password">
+
+
+
+                                        </MudTextField>
+
                                 </MudField>
-                                </Validation>
+                            </Validation>
                         }
 
                         @if (User.CanReadField(ActiveDirectoryFields.Mail))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Email Address"]
-                            </FieldLabel>
-                           
-                            <Addons>
-                                <Addon AddonType="AddonType.Body">
-                                    <MudTextField  @bind-Value="@User.Email" Disabled=!User.NewEntry />
 
-                                </Addon>
-                                <Addon AddonType="AddonType.End">
-                                    <MudButton Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.Email);})><Icon Name=@("fa-solid fa-copy") /></MudButton>
+                                    <Addons>
+                                        <Addon AddonType="AddonType.Body">
+                                            <MudTextField Label="@UserLocalization["Email Address"]" @bind-Value="@User.Email" Disabled=!User.NewEntry />
 
-                                </Addon>
-                            </Addons>
+                                        </Addon>
+                                        <Addon AddonType="AddonType.End">
+                                            <MudButton Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.Email);})><Icon Name=@("fa-solid fa-copy") /></MudButton>
+
+                                        </Addon>
+                                    </Addons>
 
 
 
-                            
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.AccountExpires))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Account Expiration"]
-                            </FieldLabel>
-                           
-                            <DateEdit TValue=DateTime? Date="@User.ExpireTime" DateChanged=SetExpireTime Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.AccountExpires)) />
-                            
+
+                                    <MudDatePicker Label="@UserLocalization["Account Expiration"]" Date="@User.ExpireTime" DateChanged=SetExpireTime Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.AccountExpires)) />
+
                             </MudField>
                         }
                         @if (EditMode && !User.NewEntry)
                         {
 
                             <MudField>
-                                <MudFieldHelp>
+                                <MudText>
                                     To Modify the user's accounts click the Gear button and choose "Rename..."
-                                </FieldHelp>
+                                </MudText>
                             </MudField>
                         }
 
@@ -342,73 +304,55 @@
                         @if (User.CanReadField(ActiveDirectoryFields.Description))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Description"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.Description" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Description)) />
 
-                            
+                                    <MudTextField Label="@UserLocalization["Description"]" @bind-Value="@User.Description" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Description)) />
+
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.EmployeeId))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Employee Id"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.EmployeeId" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.EmployeeId)) />
 
-                            
+                                    <MudTextField Label="@UserLocalization["Employee Id"]" @bind-Value="@User.EmployeeId" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.EmployeeId)) />
+
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.Department))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Department"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.Department" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Department)) />
 
-                            
+                                    <MudTextField Label="@UserLocalization["Department"]" @bind-Value="@User.Department" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Department)) />
+
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.Company))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Company"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.Company" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Company)) />
 
-                            
+                                    <MudTextField Label="@UserLocalization["Company"]" @bind-Value="@User.Company" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Company)) />
+
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.Title))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Job Title"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.Title" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Title)) />
 
-                            
+                                    <MudTextField Label="@UserLocalization["Job Title"]" @bind-Value="@User.Title" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Title)) />
+
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.PhysicalDeliveryOffice))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Office"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
 
-                            
+                                    <MudTextField Label="@UserLocalization["Office"]" @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
+
+
                             </MudField>
                         }
                     </Section>
@@ -427,73 +371,55 @@
                         @if (User.CanReadField(ActiveDirectoryFields.HomePhone))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Home Phone"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.HomePhone" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomePhone)) />
 
-                            
+                                    <MudTextField Label="@UserLocalization["Home Phone"]" @bind-Value="@User.HomePhone" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomePhone)) />
+
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.StreetAddress))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Street Address"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.StreetAddress" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.StreetAddress)) />
 
-                            
+                                    <MudTextField Label="@UserLocalization["Street Address"]" @bind-Value="@User.StreetAddress" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.StreetAddress)) />
+
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.Street))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Street"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.Street" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Street)) />
 
-                            
+                                    <MudTextField Label="@UserLocalization["Street"]" @bind-Value="@User.Street" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Street)) />
+
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.City))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["City"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.City" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.City)) />
 
-                            
+                                    <MudTextField Label="@UserLocalization["City"]" @bind-Value="@User.City" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.City)) />
+
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.State))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["State"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.State" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.State)) />
 
-                            
+                                    <MudTextField Label="@UserLocalization["State"]" @bind-Value="@User.State" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.State)) />
+
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.PostalCode))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Zip Code"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.Zip" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PostalCode)) />
 
-                            
+                                    <MudTextField Label="@UserLocalization["Zip Code"]" @bind-Value="@User.Zip" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PostalCode)) />
+
+
                             </MudField>
                         }
                     </Section>
@@ -510,68 +436,48 @@
                         @if (User.CanReadField(ActiveDirectoryFields.HomeDirectory))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Home Directory"]
-                            </FieldLabel>
-                           
-                            <Addons>
-                                <Addon AddonType="AddonType.Body">
-                                    <MudTextField  @bind-Value="@User.HomeDirectory" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
 
-                                </Addon>
-                                <Addon AddonType="AddonType.End">
-                                    <MudButton Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.HomeDirectory);})><Icon Name=@("fa-solid fa-copy") /></MudButton>
+                                    <Addons>
+                                        <Addon AddonType="AddonType.Body">
+                                            <MudTextField Label="@UserLocalization["Home Directory"]" @bind-Value="@User.HomeDirectory" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
 
-                                </Addon>
-                            </Addons>
+                                        </Addon>
+                                        <Addon AddonType="AddonType.End">
+                                            <MudButton Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.HomeDirectory);})><Icon Name=@("fa-solid fa-copy") /></MudButton>
+
+                                        </Addon>
+                                    </Addons>
 
 
 
 
-                            
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.HomeDrive))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Home Drive"]
-                            </FieldLabel>
-                           
 
-                            <Select TValue="string" @bind-SelectedValue="@User.HomeDrive" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDrive))>
-                                <SelectItem Value="String.Empty"></SelectItem>
-                                @for (var i = 'D'; i <= 'Z'; i++)
-                                        {
-                                            var driveLetter = (i.ToString() + ":");
-                                            <SelectItem Value=@driveLetter>@driveLetter</SelectItem>
-                                        }
-                                    </Select>
-                                
+                                    <HomeDriveSelect Label="@UserLocalization["Home Drive"]" @bind-SelectedValue="@User.HomeDrive" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDrive))/>
+                                    
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.ScriptPath))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Script Path"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.ScriptPath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ScriptPath)) />
 
-                            
+                                    <MudTextField Label="@UserLocalization["Script Path"]" @bind-Value="@User.ScriptPath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ScriptPath)) />
+
+
                             </MudField>
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.ProfilePath))
                         {
                             <MudField>
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                            @UserLocalization["Profile Path"]
-                            </FieldLabel>
-                           
-                            <MudTextField  @bind-Value="@User.ProfilePath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) />
+                                    <MudTextField Label="@UserLocalization["Profile Path"]" @bind-Value="@User.ProfilePath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) />
 
-                            
+
                             </MudField>
                         }
                     </Section>
@@ -585,9 +491,8 @@
 
                     <MudField ColumnSize="ColumnSize.Is12" Horizontal>
 
-                    <MudFieldBody ColumnSize="ColumnSize.Is12">
-                        <Row>
-                            @if (User.IsAGroupMember)
+                            <Row>
+                                @if (User.IsAGroupMember)
                                 {
                                     var deniedRead = false;
                                     @foreach (ADGroup g in User.MemberOf.Where(group => group.CanRead))
@@ -614,7 +519,7 @@
                                 }
 
                             </Row>
-                        
+
                     </MudField>
                 }
 
@@ -651,7 +556,7 @@
     {
         subHeader?.Refresh();
     }
-
+    /*
     void ValidatePassword(ValidatorEventArgs e)
     {
 
@@ -660,6 +565,7 @@
         : ValidationStatus.Success;
 
     }
+    */
 
     bool IsPasswordValid
     {

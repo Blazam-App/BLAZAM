@@ -108,11 +108,8 @@
                             </NodeContent>
                         </OUTreeView>
                         <MudField Horizontal Margin="Margin.IsAuto.OnX">
-                            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Display Name"]
-                            </FieldLabel>
-                           
-                                <MudTextField  @bind-Value="@customUserDisplayName" />
+
+                                <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@customUserDisplayName" />
 
                             
                         </MudField>

@@ -3,10 +3,9 @@
 <MudForm method="post" action="/signin">
 
 <SettingsField>
-    <MudFieldLabel>@SettingsLocalization["Impersonate User"]</FieldLabel>
     
-            <ADAutoComplete Display=Display.InlineFlex SearchObjectType="ActiveDirectoryObjectType.User" @bind-SelectedResult=User />
-            <MudButton Display=Display.InlineFlex Color=Color.Primary Type="ButtonType.Submit">Impersonate User</MudButton>
+            <ADAutoComplete Label="@SettingsLocalization["Impersonate User"]" Display=Display.InlineFlex SearchObjectType="ActiveDirectoryObjectType.User" @bind-SelectedResult=User />
+            <MudButton Display=Display.InlineFlex Color=Color.Primary ButtonType="ButtonType.Submit">Impersonate User</MudButton>
 
     
 </SettingsField>

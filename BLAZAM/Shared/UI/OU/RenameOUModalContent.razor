@@ -5,12 +5,9 @@
 
     @if (OU.CanReadField(ActiveDirectoryFields.CanonicalName))
     {
-        <MudField Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-            <MudFieldLabel>
-                @UserLocalization["Name"]
-            </FieldLabel>
+        <MudField>
             
-                <MudTextField  @bind-Value="@OU.CanonicalName" />
+                    <MudTextField Label="@UserLocalization["Name"]" @bind-Value="@OU.CanonicalName" />
 
             
         </MudField>

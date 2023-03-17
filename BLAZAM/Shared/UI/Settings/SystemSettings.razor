@@ -6,9 +6,8 @@
     @if (settings != null)
     {
         <SettingsField>
-            <MudFieldLabel>@SettingsLocalization["Google Analytics ID"]</FieldLabel>
-            
-                <MudTextField  @bind-Value="@settings.AnalyticsId" />
+
+                <MudTextField Label="@SettingsLocalization["Google Analytics ID"]" @bind-Value="@settings.AnalyticsId" />
             
         </SettingsField>
         <SettingsField>
@@ -21,15 +20,15 @@
     
     <SettingsField>
         
-            <Blazorise.Link To="/download/logs" Target="Target.Blank">
+            <MudLink Href="/download/logs" Target="Target.Blank">
             <MudButton Color="Color.Primary">Download Logs</MudButton>
-            </Blazorise.Link>
+            </MudLink>
 
         
     </SettingsField>
         <SettingsField>
             
-                <MudButton Type="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
             
         </SettingsField>
     </MudForm>

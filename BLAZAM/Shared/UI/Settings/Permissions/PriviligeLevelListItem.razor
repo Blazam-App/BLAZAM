@@ -11,7 +11,7 @@
 
                             </Column>
                             <Column ColumnSize="ColumnSize.Is6.OnTablet">
-                                <MudSwitch  Checked="Level?.IsSuperAdmin" Disabled>Super User Group</Switch>
+                                <MudSwitch Label="Super User Group" Checked="Level?.IsSuperAdmin" Disabled />
 
 
                             </Column>
@@ -25,9 +25,8 @@
                         <Column ColumnSize="ColumnSize.Is4.OnDesktop">
                             
                                 <MudField>
-                                    <MudFieldLabel>@AppLocalization["Delgate Name"]</FieldLabel>
                                     
-                                        <ADAutoComplete 
+                                        <ADAutoComplete Label="@AppLocalization["Delgate Name"]"
                                             SearchObjectType="ActiveDirectoryObjectType.All" 
                                             @bind-SelectedResult=@Group 
                                             CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group"/>
@@ -38,9 +37,8 @@
                         </Column>
                         <Column ColumnSize="ColumnSize.Is2.OnDesktop">
                                 <MudField>
-                                    <MudFieldLabel></FieldLabel>
-                                    
-                                <MudSwitch Disabled=@(Program.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Level.IsSuperAdmin">Super User Group</Switch>
+
+                            <MudSwitch Label="Super User Group" Disabled=@(Program.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Level.IsSuperAdmin" />
 
 
                                     

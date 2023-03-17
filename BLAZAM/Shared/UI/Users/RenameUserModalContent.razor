@@ -7,48 +7,36 @@
 
             @if (User.CanReadField(ActiveDirectoryFields.GivenName))
             {
-                <MudField Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-                <MudFieldLabel>
-                    @UserLocalization["First Name"]
-                </FieldLabel>
+                <MudField>
                 
-                    <MudTextField  @bind-Value="@_privateUserInstance.GivenName" />
+                        <MudTextField Label="@UserLocalization["First Name"]" @bind-Value="@_privateUserInstance.GivenName" />
 
                 
                 </MudField>
             }
             @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
             {
-                <MudField Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-                <MudFieldLabel>
-                    @UserLocalization["Middle Name"]
-                </FieldLabel>
+                <MudField>
                 
-                    <MudTextField  @bind-Value="@_privateUserInstance.MiddleName" />
+                        <MudTextField Label="@UserLocalization["Middle Name"]" @bind-Value="@_privateUserInstance.MiddleName" />
 
                 
                 </MudField>
             }
             @if (User.CanReadField(ActiveDirectoryFields.SN))
             {
-                <MudField Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-                <MudFieldLabel>
-                    @UserLocalization["Last Name"]
-                </FieldLabel>
+                <MudField>
                 
-                    <MudTextField  @bind-Value="@_privateUserInstance.Surname" />
+                        <MudTextField Label="@UserLocalization["Last Name"]" @bind-Value="@_privateUserInstance.Surname" />
 
                 
                 </MudField>
             }
             @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
             {
-                <MudField Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-                <MudFieldLabel>
-                    @UserLocalization["Display Name"]
-                </FieldLabel>
+                <MudField>
                 
-                    <MudTextField  Text="@_privateUserInstance.DisplayName" TextChanged="DisplayNameChanged" />
+                    <MudTextField T="string" Label="@UserLocalization["Display Name"]" Text="@_privateUserInstance.DisplayName" TextChanged="DisplayNameChanged" />
 
                 
                 </MudField>
@@ -58,11 +46,8 @@
         @if (User.CanEditField(ActiveDirectoryFields.SAMAccountName))
         {
             <MudField>
-            <MudFieldLabel>
-                @UserLocalization["Username"]
-            </FieldLabel>
             
-                <MudTextField  @bind-Value="@_privateUserInstance.SamAccountName" />
+                    <MudTextField Label="@UserLocalization["Username"]" @bind-Value="@_privateUserInstance.SamAccountName" />
 
             
         </MudField>
@@ -70,11 +55,8 @@
         @if (User.CanEditField(ActiveDirectoryFields.Mail))
         {
             <MudField>
-            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                @UserLocalization["Email Address"]
-            </FieldLabel>
            
-                <MudTextField  @bind-Value="@_privateUserInstance.Email" />
+                    <MudTextField Label="@UserLocalization["Email Address"]" @bind-Value="@_privateUserInstance.Email" />
 
             
         </MudField>

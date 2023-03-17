@@ -4,29 +4,20 @@
 <Section Title=@UserLocalization["Name"]>
 
         <MudField>
-            <MudFieldLabel>
-                @UserLocalization["First Name"]
-            </FieldLabel>
             
-            <MudTextField  @bind-Value="@NewUserName.GivenName" />
+            <MudTextField Label="@UserLocalization["First Name"]" @bind-Value="@NewUserName.GivenName" />
 
             
         </MudField>
         <MudField>
-            <MudFieldLabel>
-                @UserLocalization["Middle Name"]
-            </FieldLabel>
-            
-            <MudTextField  @bind-Value="@NewUserName.MiddleName" />
+
+                <MudTextField Label="@UserLocalization["Middle Name"]" @bind-Value="@NewUserName.MiddleName" />
 
             
         </MudField>
         <MudField>
-            <MudFieldLabel>
-                @UserLocalization["Last Name"]
-            </FieldLabel>
-            
-            <MudTextField  @bind-Value="@NewUserName.Surname" />
+
+                <MudTextField Label="@UserLocalization["Last Name"]" @bind-Value="@NewUserName.Surname" />
 
             
         </MudField>

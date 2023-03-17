@@ -1,25 +1,11 @@
-<Row Margin=Margin.Is3.OnX.Is1.FromBottom>
+<Row>
     <MudField>
 
-        <MudFieldLabel Margin=Margin.IsAuto.OnY ColumnSize="ColumnSize.Is2.OnDesktop">
-            @FieldLabel
-
-        </FieldLabel>
-        <MudFieldBody Margin=Margin.IsAuto.OnY ColumnSize="ColumnSize.Is10">
-           
-            @FieldBody
-            <MudFieldHelp>
-                @FieldHelp
-            </FieldHelp>
-        
+        @ChildContent
     </MudField>
 </Row>
 @code {
 
     [Parameter]
-    public RenderFragment? FieldLabel { get; set; }
-    [Parameter]
-    public RenderFragment? FieldBody { get; set; }
-    [Parameter]
-    public RenderFragment? FieldHelp { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 }

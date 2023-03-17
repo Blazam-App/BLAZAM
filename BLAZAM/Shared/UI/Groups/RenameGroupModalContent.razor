@@ -5,11 +5,8 @@
         @if (Group.CanEditField(ActiveDirectoryFields.SAMAccountName))
         {
             <MudField>
-                <MudFieldLabel>
-                    @UserLocalization["Group Name"]
-                </FieldLabel>
-                
-                    <MudTextField  @bind-Value="@GroupName" />
+
+                    <MudTextField Label="@UserLocalization["Group Name"]" @bind-Value="@GroupName" />
 
                 
             </MudField>
@@ -21,11 +18,8 @@
     @if (Group.CanEditField(ActiveDirectoryFields.Mail))
     {
         <MudField>
-            <MudFieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                @UserLocalization["Email Address"]
-            </FieldLabel>
-           
-                <MudTextField  @bind-Value="@Group.Email" />
+
+                <MudTextField Label="@UserLocalization["Email Address"]" @bind-Value="@Group.Email" />
 
             
         </MudField>
