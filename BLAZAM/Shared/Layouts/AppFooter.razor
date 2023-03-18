@@ -3,18 +3,18 @@
 
     <Row Style="height:1.5em">
         <Column TextAlignment="TextAlignment.Start">
-            <Copyright Margin="Margin.Is0" />
+            <Copyright />
         </Column>
         <Column Style="cursor:pointer" TextAlignment="TextAlignment.End">
             @if (AutoUpdateService.IsUpdatedScheduled)
             {
-                <MudTooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/app");}) TextColor="Color.Muted" Float=Float.End Style="width:max-content" Fade Text="An automatic update is scheduled. Click for details">
+                <MudTooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/app");}) Class="mud-theme-info" Float=Float.End Style="width:max-content" Fade Text="An automatic update is scheduled. Click for details">
 
-                    <Icon Name=@("fa-solid fa-circle-up") />
+                    <MudIcon Icon=@("fa-solid fa-circle-up") />
                 </MudTooltip>
             }
 
-            <MudTooltip Margin="Margin.Is1.OnX" TextColor="Color.Muted" Float=Float.End Style="width:max-content" Fade FadeDuration=500 Trigger=TooltipTrigger.Click Text="@Program.Version.Version">
+            <MudTooltip Margin="Margin.Is1.OnX" Class="mud-theme-info" Float=Float.End Style="width:max-content" Fade FadeDuration=500 Trigger=TooltipTrigger.Click Text="@Program.Version.Version">
 
                 Version: @Program.Version.ShortVersion
             </MudTooltip>

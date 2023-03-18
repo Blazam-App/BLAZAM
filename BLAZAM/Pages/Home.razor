@@ -10,7 +10,7 @@
 
 @if (MOTD.HasValue && MOTD.Value.ToString()!="")
 {
-    <Alert Background="Background.Light" TextColor="Color.Dark" Visible>
+    <Alert Background="Background.Light" Color="Color.Dark" Visible>
 
     <AlertMessage>
         @MOTD.Value
@@ -18,6 +18,7 @@
     </AlertMessage>
 </Alert>
 }
+@*
 <DropContainer @ref=widgetContainer TItem="Widget" @bind-Items="widgets" ItemsFilter="@((item, dropZone) => item.Slot == dropZone)" ItemDropped="@ItemDropped" Flex="Flex.Wrap.Grow.Is1">
     <ChildContent>
         <DropZone TItem="Widget" Name="slot1" AllowReorder Border="Border.Rounded" Background="Background.Light" Margin="Margin.Is3" Flex="Flex.Grow.Is1" />
@@ -29,11 +30,11 @@
         <MudCard Shadow="Shadow.Default" Margin="Margin.Is3.OnY" Background="Background.Secondary" >
             <MudCardBody>
                 <DynamicComponent Type="@context.GetType()" />
-                <AppCloseButton Clicked=@(()=>{RemoveWidget(context);}) Position="Position.Absolute" style="right:10px;top:15px" />
+                <AppCloseButton OnClick=@(()=>{RemoveWidget(context);}) Position="Position.Absolute" style="right:10px;top:15px" />
             </MudCardBody>
         </MudCard>
     </ItemTemplate>
-    </DropContainer>
+    </DropContainer>*@
 
 
 
@@ -46,16 +47,16 @@
 
     @code {
     MarkupString? MOTD;
-    DropContainer<Widget>? widgetContainer;
-    List<Widget> widgets = new List<Widget>();
-    private Task ItemDropped(DraggableDroppedEventArgs<AppComponentBase> dropItem)
-    {
-        return Task.CompletedTask;
-    }
+    //DropContainer<Widget>? widgetContainer;
+    //List<Widget> widgets = new List<Widget>();
+    //private Task ItemDropped(DraggableDroppedEventArgs<AppComponentBase> dropItem)
+    //{
+    //    return Task.CompletedTask;
+    //}
 
     protected override Task OnInitializedAsync()
     {
-        widgets = new List<Widget>(Widgets.Available(UserStateService.CurrentUserState));
+        //widgets = new List<Widget>(Widgets.Available(UserStateService.CurrentUserState));
         try
         {
             MOTD = (MarkupString)Context.AppSettings.FirstOrDefault().MOTD;
@@ -67,16 +68,16 @@
         return base.OnInitializedAsync();
     }
 
-    private Task ItemDropped(DraggableDroppedEventArgs<Widget> dropItem)
-    {
-        dropItem.Item.Slot = dropItem.DropZoneName;
-        return Task.CompletedTask;
-    }
-    async Task RemoveWidget(Widget widget)
-    {
-        widgets.Remove(widget);
-        await InvokeAsync(StateHasChanged);
-        widgetContainer.Refresh();
-    }
+    //private Task ItemDropped(DraggableDroppedEventArgs<Widget> dropItem)
+    //{
+    //    dropItem.Item.Slot = dropItem.DropZoneName;
+    //    return Task.CompletedTask;
+    //}
+    //async Task RemoveWidget(Widget widget)
+    //{
+    //    widgets.Remove(widget);
+    //    await InvokeAsync(StateHasChanged);
+    //    widgetContainer.Refresh();
+    //}
 
 }

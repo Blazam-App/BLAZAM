@@ -381,6 +381,12 @@ namespace BLAZAM
 
             builder.Services.AddMudServices();
 
+            builder.Services.AddScoped<AppSnackBarService>();
+
+            builder.Services.AddScoped<AppDialogService>();
+
+
+
             builder.Host.UseWindowsService();
 
 

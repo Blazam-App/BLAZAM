@@ -13,7 +13,7 @@
         @*<Step Completed=@(_step>4) Name="4">@SettingsLocalization["Permissions"]</Step>*@
         <Step Name="step4">
             <Marker>
-                <Icon Name="IconName.Flag" />
+                <MudIcon Icon="IconName.Flag" />
             </Marker>
             <Caption>
                 Finish
@@ -216,7 +216,7 @@
         }
         catch
         {
-            await NotificationService.Error("Sorry, ran into an error while finalizing install");
+            SnackBarService.Error("Sorry, ran into an error while finalizing install");
 
         }
 

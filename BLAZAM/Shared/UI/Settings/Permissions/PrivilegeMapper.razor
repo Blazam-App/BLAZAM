@@ -13,11 +13,11 @@
                    @context.Name
                         @if (context.DirectPermissionMappings.Count() > 0)
                         {
-                            <Badge Pill=true Color="Color.Primary">@context.DirectPermissionMappings.Count</Badge>
+                            <MudBadge Pill=true Color="Color.Primary">@context.DirectPermissionMappings.Count</MudBadge>
                         }
                         @if (context.OffspringPermissionMappings.Count() > 0)
                         {
-                            <Badge Pill=true Color="Color.Success">@context.OffspringPermissionMappings.Count()</Badge>
+                            <MudBadge Pill=true Color="Color.Success">@context.OffspringPermissionMappings.Count()</MudBadge>
 
                         }
             </NodeContent>
@@ -32,11 +32,11 @@
 
 @code {
 
-#nullable disable warnings
+    #nullable disable warnings
     MudTreeView<IADOrganizationalUnit> OUTree { get; set; }
     IADOrganizationalUnit selectedNode;
     IList<IADOrganizationalUnit> ExpandedNodes = new List<IADOrganizationalUnit>();
-    IList<IADOrganizationalUnit> ApplicationBaseOUs = new List<IADOrganizationalUnit>();
+    HashSet<IADOrganizationalUnit> ApplicationBaseOUs = new HashSet<IADOrganizationalUnit>();
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -47,13 +47,13 @@
             ADOrganizationalUnit TopLevel = new ADOrganizationalUnit();
             await TopLevel.Parse(Directory.GetDirectoryEntry(), Directory);
             _ = TopLevel.Children;
-            ApplicationBaseOUs.Insert(0, TopLevel);
+            ApplicationBaseOUs.Add(TopLevel);
 
             ExpandedNodes.Add(TopLevel);
             selectedNode = TopLevel;
             while (OUTree == null)
                 Task.Delay(50).Wait();
-            OUTree.Nodes = ApplicationBaseOUs;
+            OUTree.Items = ApplicationBaseOUs;
             LoadingData = false;
             await InvokeAsync(StateHasChanged);
         });
@@ -61,4 +61,26 @@
 
     }
 
+
+
+    void test()
+    {
+        int[] numbers = new int[]{1,2,3,4,5,6};
+        int[] newnumbers = new int[numbers.Length + 1];
+        for (int x = 0; x < numbers.Length; x++)
+        {
+            newnumbers[x] = numbers[x];
+        }
+        numbers[numbers.Length - 1] = 7;
+
+
+
+
+
+        List<int> numberList = new() { 1, 2, 3, 4, 5, 6 };
+        numberList.Add(7);
+        numberList.Remove(3);
+        numberList.RemoveAt(5);
+        numberList.Sort();
+    }
 }

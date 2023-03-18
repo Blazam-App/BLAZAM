@@ -3,72 +3,139 @@
 @using BLAZAM.Server.Data;
 @using BLAZAM.Server.Errors.ActiveDirectory;
 @using BLAZAM.Server.Errors.Database;
+@using BLAZAM.Server.Shared.UI.Themes;
 @using Microsoft.EntityFrameworkCore
 @using System.DirectoryServices
 @inject NavigationManager Nav
 @inject IActiveDirectory directory
 @inject IApplicationUserStateService UserStateService
 @inject AppDatabaseFactory DbFactory
+@inject AppSnackBarService SnackBarService
 @inject ConnMonitor monitor
+@inject IStringLocalizer<AppLocalization> AppLocalization
+@{
+    string topMarginForContent = "";
+}
 <PageTitle>@DatabaseCache.ApplicationSettings.AppAbbreviation</PageTitle>
 <CascadingValue Value="this">
-    <MudMudLayout>
+    <MudLayout>
         <AuthorizeView Context="authContext">
             <Authorized>
-                <MudDrawer>
+                <MudAppBar Elevation="1">
+                    <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                                   Color="Color.Inherit"
+                                   Edge="Edge.Start"
+                                   OnClick="@((e) => {DrawerOpen=!DrawerOpen;})" />
+                    @DatabaseCache.ApplicationSettings?.AppAbbreviation
+                    @if (setHeader != null)
+                    {
+                        @setHeader.ChildContent
+
+                    }
+                    else
+                    {
+                        <SearchPageHeader Text="Search" />
+                    }
+
+                    <MudSpacer />
+
+                    <MudMenu>
+                        <ActivatorContent>
+                            <MudAvatar Color="Color.Secondary">@UserStateService.CurrentUsername.FirstOrDefault()</MudAvatar>
+
+                        </ActivatorContent>
+                        <ChildContent>
+
+                            <MudNavGroup Title="Themes">
+                                @foreach (var theme in ApplicationTheme.Themes)
+                                {
+                                    <MudMenuItem OnClick=@(()=>{SetUserTheme(theme);})>
+                                        @theme.Name
+                                    </MudMenuItem>
+                                }
+
+
+                            </MudNavGroup>
+                            @if (UserStateService.CurrentUserState?.Impersonator == null)
+                            {
+                                <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/logout",true);})" Icon="@Icons.Material.Filled.Logout">
+                                    @AppLocalization["Sign Out"]
+                                </MudMenuItem>
+                            }
+                            else
+                            {
+                                <MudMenuItem Href="/unimpersonate" Icon="@Icons.Material.Filled.PersonOff">
+
+                                    @AppLocalization["Stop It"]
+                                </MudMenuItem>
+                            }
+                        </ChildContent>
+                    </MudMenu>
+                </MudAppBar>
+                @if (setSubHeader != null)
+                {
+                    <MudAppBar Color=Color.Primary Style="top:64px;" Elevation="1">
+                        @setSubHeader.ChildContent
+                    </MudAppBar>
+                    topMarginForContent = "margin-top:64px;";
+                }
+
+                @if (Program.InDebugMode)
+                {
+
+                    <AuthorizeView Context="authorizedContext" Roles=@UserRoles.SuperAdmin>
+                        <MudDrawer Width="450px" @bind-Open=@_devDrawerOpen Anchor=Anchor.End Elevation="2" Class="mud-theme-dark">
+                            <MudDrawerContainer>
+                                <DevTools />
+                            </MudDrawerContainer>
+                        </MudDrawer>
+
+                    </AuthorizeView>
+                }
+
+
+                <MudDrawer @bind-Open=@DrawerOpen Elevation="3" Class="mud-theme-dark">
                     <MudDrawerContainer>
                         <NavMenu />
+                        <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
+                                   OnClick="@(()=>{_devDrawerOpen=!_devDrawerOpen;InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
                     </MudDrawerContainer>
                 </MudDrawer>
 
-                <MudMainContent Background="Background.Light" TextColor="Color.Dark">
-                    
-                    <MudContainer Fixed>
 
-                        @if (setHeader != null)
-                        {
-                            @setHeader.ChildContent
 
-                        }
-                        else
-                        {
-                            <SearchPageHeader Text="Search" />
-                        }
-                        @if (setSubHeader != null)
-                        {
-                            @setSubHeader.ChildContent
+                <MudMainContent Style="@topMarginForContent">
 
-                        }
-                    </MudContainer>
-                    <MudContainer Style="height: 100vh;overflow: auto;">
+
+
+                    <MudContainer MaxWidth="MaxWidth.Medium">
+                        @*<MudContainer Style="height: 100vh;overflow: auto;">*@
+
 
                         @Body
 
+
                     </MudContainer>
-                    <MudContainer Fixed>
-                     <DirectoryConnectingIndicator/>
-                        
+                    <MudElement Style="position:fixed; bottom:0;">
+                        <DirectoryConnectingIndicator />
+
                         <AppFooter />
-                        @if (Program.InDebugMode)
-                        {
-                            <AuthorizeView Context="authorizedContext" Roles=@UserRoles.SuperAdmin>
-                                <DevTools />
-                            </AuthorizeView>
-                        }
-                    </MudContainer>
+
+                    </MudElement>
                 </MudMainContent>
+
                 <NotificationBroadcastListener />
             </Authorized>
             <NotAuthorized>
-                    <MudMainContent Style="height: 100vh;overflow: auto;">
-                        <CascadingValue Value="this">
-                            @Body
-                        </CascadingValue>
-                    </MudMainContent>
+                <MudMainContent Style="height: 100vh;overflow: auto;">
+                    <CascadingValue Value="this">
+                        @Body
+                    </CascadingValue>
+                </MudMainContent>
             </NotAuthorized>
         </AuthorizeView>
 
-    </MudMudLayout>
+    </MudLayout>
 </CascadingValue>
 
 
@@ -90,7 +157,20 @@
 
 
 
+    bool _drawerOpen = true;
+    bool _devDrawerOpen = false;
 
+    private bool DrawerOpen
+    {
+        get => _drawerOpen; set
+        {
+            if (_drawerOpen == value) return;
+            _drawerOpen = value;
+            //TODO Add drawer open preference to user settings
+
+            InvokeAsync(StateHasChanged);
+        }
+    }
 
     SetHeader? setHeader;
     public void SetHeader(SetHeader? setHeader)
@@ -118,5 +198,16 @@
 
     public void Update() => StateHasChanged();
 
-
-}
+    void SetUserTheme(ApplicationTheme theme)
+    {
+        try
+        {
+            UserStateService.CurrentUserState.UserSettings.Theme = theme.Name;
+            UserStateService.CurrentUserState.SaveUserSettings();
+            Nav.NavigateTo(Nav.Uri, true);
+        }catch(Exception ex)
+        {
+            SnackBarService.Error(ex.Message);
+        }
+    }
+} 

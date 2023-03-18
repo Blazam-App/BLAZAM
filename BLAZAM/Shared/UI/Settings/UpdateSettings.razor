@@ -2,7 +2,7 @@
 
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
-    <MudText Typo="Typo.h1">@SettingsLocalization["Update Settings"]</MudText>
+    <MudText Typo="Typo.h4">@SettingsLocalization["Update Settings"]</MudText>
     <MudForm @onsubmit="Save">
 
         <Validations Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">

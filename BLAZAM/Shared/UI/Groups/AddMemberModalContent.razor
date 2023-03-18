@@ -1,17 +1,15 @@
 ﻿@inherits AppModalContent
 
 
-<Row Background="Background.Light" TextColor="Color.Dark">
-    <MudField>
-        <MudFieldLabel>Member</FieldLabel>
-        <ADAutoComplete @bind-SelectedResult="@Entry" />
-    </MudField>
-    <MudField>
-        <MudFieldLabel>Copy Memberships From</FieldLabel>
-        <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.Group"
+<Row Background="Background.Light" Color="Color.Dark">
+    
+            <ADAutoComplete Label="Member" @bind-SelectedResult="@Entry" />
+    
+    
+            <ADAutoComplete Label="Copy Memberships From" SearchObjectType="ActiveDirectoryObjectType.Group"
                         @bind-SelectedResult=@copyFrom
                         CustomResultsFilter="(result)=>result is IADGroup" />
-    </MudField>
+    
     @if (CopyFrom != null)
     {
         var existingMembers = Group.UserMembers;
@@ -24,11 +22,11 @@
 
                     @if (existingMembers.Contains(member))
                     {
-                        <Icon Name=@("fa-check") />
+                        <MudIcon Icon=@("fa-check") />
                     }
                     else
                     {
-                        <Icon Name=@("fa-plus") />
+                        <MudIcon Icon=@("fa-plus") />
                     }
                     @member.CanonicalName
 
@@ -38,7 +36,7 @@
     }
 </Row>
 <Row>
-    <MudButton Color="Color.Primary" Clicked="AssignToGroup">Add</MudButton>
+    <MudButton Color="Color.Primary" OnClick="AssignToGroup">Add</MudButton>
 
 </Row>
 
@@ -61,7 +59,7 @@
         if (Entry is IGroupableDirectoryAdapter groupableEntry)
         {
             Group.AssignMember(groupableEntry);
-            await NotificationService.Warning(groupableEntry.CanonicalName + " has been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
+            SnackBarService.Warning(groupableEntry.CanonicalName + " has been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
             await ModelChanged.InvokeAsync();
 
             Close();
@@ -73,7 +71,7 @@
                 Group.AssignMember(member);
                
             }
-            await NotificationService.Warning("The selected members have been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
+            SnackBarService.Warning("The selected members have been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
             await ModelChanged.InvokeAsync();
 
             Close();

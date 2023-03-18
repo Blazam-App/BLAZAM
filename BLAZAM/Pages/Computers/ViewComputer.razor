@@ -27,7 +27,7 @@
 
                                 </Column>
                                 <Column ColumnSize="ColumnSize.Is8.OnTablet">
-                                    <Small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(Computer.OU) </Small>
+                                    <small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(Computer.OU) </small>
 
                                 </Column>
                             </Row>
@@ -39,30 +39,30 @@
                             {
                                 case true:
                                     <MudTooltip Text="Online">
-                                        <Icon TextColor="Color.Success" Name=@("fa-solid fa-circle-up") />
+                                        <MudIcon Color="Color.Success" Name=@("fa-solid fa-circle-up") />
                                     </MudTooltip>
                                     break;
                                 case false:
                                     <MudTooltip Text="Offline">
-                                        <Icon TextColor="Color.Error" Name=@("fa-solid fa-circle-down") />
+                                        <MudIcon Color="Color.Error" Name=@("fa-solid fa-circle-down") />
                                     </MudTooltip>
                                     break;
                                 case null:
                                     <MudTooltip Text="Checking">
-                                        <Icon TextColor="Color.Warning" Name=@("fa-solid fa-circle-question") />
+                                        <MudIcon Color="Color.Warning" Name=@("fa-solid fa-circle-question") />
                                     </MudTooltip>
                                     break;
                             }
                             @if (Computer.LockedOut)
                             {
-                                <Icon Name=@("fa-lock")>Account Locked</Icon>
+                                <MudIcon Icon=@("fa-lock")>Account Locked</MudIcon>
                             }
                         </Column>
                         <Column Float=Float.End ColumnSize="ColumnSize.Is1.OnTablet.Is2">
 
                             <Dropdown>
                                 <DropdownToggle Color="Color.Primary">
-                                    <Icon Name=@("fa-gear") />
+                                    <MudIcon Icon=@("fa-gear") />
                                 </DropdownToggle>
                                 <DropdownMenu>
                                     <MudMenuItem>
@@ -72,33 +72,33 @@
                                     <DropdownDivider />
                                     @if (Computer.CanEdit)
                                     {
-                                        <MudMenuItem Clicked="ToggleEditMode">Edit...</MudMenuItem>
+                                        <MudMenuItem OnClick="ToggleEditMode">Edit...</MudMenuItem>
                                     }
                                     @if (Computer.LockedOut && Computer.CanUnlock)
                                     {
-                                        <MudMenuItem Clicked="Unlock">Unlock...</MudMenuItem>
+                                        <MudMenuItem OnClick="Unlock">Unlock...</MudMenuItem>
                                     }
                                     @if (Computer.CanAssign)
                                     {
                                         RefreshComputerGroups();
-                                        <MudMenuItem Clicked="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
+                                        <MudMenuItem OnClick="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
                                     }
                                     @if (Computer.CanDisable)
                                     {
-                                        <MudMenuItem Clicked="@(()=>{ChangePasswordModal?.Show();})">Change Password...</MudMenuItem>
+                                        <MudMenuItem OnClick="@(()=>{ChangePasswordModal?.Show();})">Change Password...</MudMenuItem>
                                     }
                                     @if (Computer.CanRename)
                                     {
-                                        <MudMenuItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
+                                        <MudMenuItem OnClick="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
 
                                     }
                                     @if (Computer.CanMove)
                                     {
-                                        <MudMenuItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
+                                        <MudMenuItem OnClick="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
                                     }
                                     @if (Computer.CanDelete)
                                     {
-                                        <MudMenuItem Clicked="@DeleteComputer">Delete...</MudMenuItem>
+                                        <MudMenuItem OnClick="@DeleteComputer">Delete...</MudMenuItem>
                                     }
                                 </DropdownMenu>
                             </Dropdown>
@@ -123,7 +123,7 @@
                 <LoadingIndicator Visible=@(drives==null)>
                     @if (drives != null && drives.Count > 0)
                     {
-
+@*
                         <DataGrid TItem="IADComputerDrive"
                               Data="drives"
                                 Responsive>
@@ -161,7 +161,7 @@
                             <DataGridColumn Field="@nameof(IADComputerDrive.Serial)" Caption="Serial" />
 
 
-                        </DataGrid>
+                        </DataGrid>*@
                     }
 
                 </LoadingIndicator>
@@ -247,7 +247,7 @@
             try
             {
                 Computer.Delete();
-                await NotificationService.Success(Computer.CanonicalName + " has been deleted.", "Computer Deleted");
+                SnackBarService.Success(Computer.CanonicalName + " has been deleted.", "Computer Deleted");
 
                 Computer = null;
                 Nav.NavigateTo("/users/search");
@@ -255,7 +255,7 @@
             }
             catch (ApplicationException ex)
             {
-                await NotificationService.Error(ex.Message);
+                SnackBarService.Error(ex.Message);
             }
             await InvokeAsync(StateHasChanged);
         }
@@ -266,7 +266,7 @@
         {
             await Computer.CommitChangesAsync();
             EditMode = false;
-            await NotificationService.Success("The changes made to this computer have been saved.", "Changes Saved");
+            SnackBarService.Success("The changes made to this computer have been saved.", "Changes Saved");
             await InvokeAsync(StateHasChanged);
 
         }

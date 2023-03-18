@@ -7,7 +7,7 @@
             @OU.ADSPath
         
     </MudCard>
-    <MudButton Color=Color.Success Clicked="CommitChanges">Create...</MudButton>
+    <MudButton Color=Color.Success OnClick="CommitChanges">Create...</MudButton>
 }
 @code {
 
@@ -26,7 +26,7 @@
         if (await MessageService.Confirm("Are you sure you want to create this OU?", "Create OU"))
         {
             OU.CommitChanges();
-            await NotificationService.Success("OU created");
+            SnackBarService.Success("OU created");
             await Confirmed.InvokeAsync(OU);
             Nav.NavigateTo("/ou/create",true);
         }

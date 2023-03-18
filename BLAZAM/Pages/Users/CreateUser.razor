@@ -4,178 +4,143 @@
 <AppPageTitle>Create User</AppPageTitle>
 
 <Row>
-    <Steps @ref=Steps NavigationAllowed=AllowStep SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged">
-        <Items>
-            <Step Index=1 Name="stepTemplate" Completed=@(custom||SelectedTemplate!=null)>Template</Step>
-            @if (!custom)
-            {
-                <Step Index=2 Name="stepName" Completed=@(newUser!=null)>
-                    Name
-                </Step>
-                @if (SelectedTemplate != null && SelectedTemplate.HasEmptyFields())
-                {
-
-                    <Step Index=3 Name="stepFields" Completed=@(selectedStep=="stepConfirm")>Fields</Step>
-
-                }
-                <Step Name="stepConfirm">
-                    <Marker>
-                        <Icon Name="IconName.Flag" />
-                    </Marker>
-                    <Caption>
-                        Confirm
-                    </Caption>
-                </Step>
-
-            }
-            else
-            {
-                <Step Index=2 Completed=@(newUser!=null) Name="stepOU">OU</Step>
-                <Step Index=3 Completed=@(newUser?.SamAccountName!=null && newUser?.SamAccountName!="") Name="stepDetails">Details</Step>
-
-                <Step Name="stepConfirm">
-                    <Marker>
-                        <Icon Name="IconName.Flag" />
-                    </Marker>
-                    <Caption>
-                        Confirm
-                    </Caption>
-                </Step>
-
-            }
-
-        </Items>
-
-        <Content>
-
-            <StepPanel Name="stepTemplate">
-
-                <Column Margin=Margin.IsAuto.OnX ColumnSize="ColumnSize.Is12.OnMobile.Is10.OnTablet.Is8.OnDesktop.Is6.OnWidescreen.Is4.OnFullHD">
-
-                    <LoadingIndicator Visible=@(Templates==null)>
-                        <DropdownList TItem="string" TValue="string"
-                                      Data="@TemplateCategories"
-                                      TextField="@((item)=>item)"
-                                      ValueField="@((item)=>item)"
-                                      @bind-SelectedValue="@SelectedCategory"
-                                      Color="Color.Primary"
-                                      MaxMenuHeight="200px">
-                            @if (SelectedCategory == null)
-                            {
-                                @("Choose a category")
-                            }
-                            else
-                            {
-                                @SelectedCategory
-                            }
-                        </DropdownList>
-                        <ListView TItem="DirectoryTemplate"
-                                  Data="@Templates"
-                                  Mode="ListGroupMode.Selectable"
-                                  @bind-SelectedItem=@SelectedTemplate
-                                  TextField="(item)=>item.Name"
-                                  ValueField="(item)=>item.Name">
-
-                        </ListView>
-                    </LoadingIndicator>
-
-                    <MudButton Color=Color.Secondary Clicked="@(()=>{custom=true;selectedStep="stepOU";})">Custom</MudButton>
-
-                    <MudButton Color=Color.Success Clicked="@(()=>{selectedStep="stepName";})">Next</MudButton>
-                </Column>
-            </StepPanel>
-            <StepPanel Name="stepName">
-                <Column Margin=Margin.IsAuto.OnX ColumnSize="ColumnSize.Is12.OnMobile.Is10.OnTablet.Is8.OnDesktop.Is6.OnWidescreen.Is4.OnFullHD">
-
-                    @if (selectedStep == "stepName")
+    <MudTabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="selectedStep">
+        <MudTabPanel>
+            <TabContent>
+                Template
+            </TabContent>
+            <ChildContent>
+                <LoadingIndicator Visible=@(Templates==null)>
+                    @*
+                    <DropdownList TItem="string" TValue="string"
+                    Data="@TemplateCategories"
+                    TextField="@((item)=>item)"
+                    ValueField="@((item)=>item)"
+                    @bind-SelectedValue="@SelectedCategory"
+                    Color="Color.Primary"
+                    MaxMenuHeight="200px">
+                    @if (SelectedCategory == null)
                     {
-                        <NewUserNameEntry @bind-NewUserName=@newUserName />
-                        <MudButton Color=Color.Primary Clicked="@(()=>{selectedStep="stepTemplate";})">Back</MudButton>
-                        <MudButton Color="Color.Primary" Clicked="CreateTemplateUser">Next</MudButton>
-
-
+                    @("Choose a category")
                     }
-                </Column>
-            </StepPanel>
-            <StepPanel Name="stepOU">
-                <Column Margin=Margin.IsAuto.OnX ColumnSize="ColumnSize.Is12.OnMobile.Is10.OnTablet.Is8.OnDesktop.Is6.OnWidescreen.Is4.OnFullHD">
-
-                    @if (selectedStep == "stepOU")
+                    else
                     {
+                    @SelectedCategory
+                    }
+                    </DropdownList>
+                    <ListView TItem="DirectoryTemplate"
+                    Data="@Templates"
+                    Mode="ListGroupMode.Selectable"
+                    @bind-SelectedItem=@SelectedTemplate
+                    TextField="(item)=>item.Name"
+                    ValueField="(item)=>item.Name">
+
+                    </ListView>*@
+                </LoadingIndicator>
+
+                <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true;selectedStep=0;})">Custom</MudButton>
+
+                <MudButton Color=Color.Success OnClick="@(()=>{selectedStep=0;})">Next</MudButton>
+            </ChildContent>
+
+        </MudTabPanel>
+        @if (!custom)
+        {
+            <MudTabPanel>
+                <TabContent>
+                    Name
+                </TabContent>
+                <ChildContent>
+
+                
+                        <NewUserNameEntry @bind-NewUserName=@newUserName />
+                    <MudButton Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
+                        <MudButton Color="Color.Primary" OnClick="CreateTemplateUser">Next</MudButton>
+
+
+                   
+                </ChildContent>
+
+            </MudTabPanel>
+            @if (SelectedTemplate != null && SelectedTemplate.HasEmptyFields())
+            {
+                <MudTabPanel>
+                    <TabContent>
+                        Fields
+                    </TabContent>
+                    <ChildContent>
+                        <NewTemplateUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
+                        <MudButton Disabled=LoadingData Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
+                        <MudButton Color=Color.Success OnClick="@(()=>{selectedStep=0;})">Next</MudButton>
+
+                    </ChildContent>
+
+                </MudTabPanel>
+            }
+
+        }
+        else
+        {
+            <MudTabPanel>
+                <TabContent>
+                    OU
+                </TabContent>
+                <ChildContent>
                         <OUTreeView SelectedOUChanged="OUSelected">
                             <NodeContent>
                                 @context.Name
                             </NodeContent>
                         </OUTreeView>
-                        <MudField Horizontal Margin="Margin.IsAuto.OnX">
+                        
 
-                                <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@customUserDisplayName" />
-
-                            
-                        </MudField>
-                        <MudButton Color=Color.Primary Clicked="@(()=>{selectedStep="stepTemplate";})">Back</MudButton>
-                        <MudButton Color=Color.Success Clicked="@(()=>{CreateCustomUser();selectedStep="stepDetails";})">Next</MudButton>
-
-                    }
-                </Column>
-            </StepPanel>
-            <StepPanel Name="stepDetails">
-                <Column Margin=Margin.IsAuto.OnX ColumnSize="ColumnSize.Is12.OnMobile.Is10.OnTablet.Is9.OnDesktop.Is8.OnWidescreen.Is7.OnFullHD">
-
-                    @if (selectedStep == "stepDetails")
-                    {
-
-                        <ViewUser User="@newUser" FieldColumnSize="ColumnSize.Is12" />
-                        <MudButton Color=Color.Primary Clicked="@(()=>{selectedStep="stepTemplate";})">Back</MudButton>
-                        <MudButton Color=Color.Success Clicked="@(()=>{selectedStep="stepConfirm";})">Next</MudButton>
+                            <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@customUserDisplayName" />
 
 
-                    }
-                </Column>
-            </StepPanel>
-            <StepPanel Name="stepFields">
-                <Column Margin=Margin.IsAuto.OnX ColumnSize="ColumnSize.Is12.OnMobile.Is10.OnTablet.Is8.OnDesktop.Is6.OnWidescreen.Is4.OnFullHD">
+                        
+                    <MudButton Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
+                    <MudButton Color=Color.Success OnClick="@(()=>{CreateCustomUser();selectedStep=0;})">Next</MudButton>
 
-                    @if (selectedStep == "stepFields")
-                    {
+                    
+                </ChildContent>
 
-                        <NewTemplateUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
-                        <MudButton Disabled=LoadingData Color=Color.Primary Clicked="@(()=>{selectedStep="stepName";})">Back</MudButton>
-                        <MudButton Color=Color.Success Clicked="@(()=>{selectedStep="stepConfirm";})">Next</MudButton>
+            </MudTabPanel>
+            <MudTabPanel>
+                <TabContent>
+                    Details
+                </TabContent>
+                <ChildContent>
+                    <ViewUser User="@newUser"/>
+                    <MudButton Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
+                    <MudButton Color=Color.Success OnClick="@(()=>{selectedStep=0;})">Next</MudButton>
+                </ChildContent>
 
+            </MudTabPanel>
+        }
 
+        <MudTabPanel>
+            <TabContent>
+                Confirm
+            </TabContent>
+            <ChildContent>
+                <ConfirmNewUser User="@newUser" DirectoryTemplate="SelectedTemplate" Confirmed="UserCreated"/>
 
-                    }
-                </Column>
-            </StepPanel>
-            <StepPanel Name="stepConfirm">
-                <Column Margin=Margin.IsAuto.OnX ColumnSize="ColumnSize.Is12.OnMobile.Is10.OnTablet.Is8.OnDesktop.Is6.OnWidescreen.Is4.OnFullHD">
+            </ChildContent>
 
-                    @if (selectedStep == "stepConfirm")
-                    {
-                        <ConfirmNewUser User="@newUser" DirectoryTemplate="SelectedTemplate" Confirmed="UserCreated" FieldColumnSize="ColumnSize.Is12" />
-                    }
-                </Column>
-
-            </StepPanel>
-
-        </Content>
-
-
-    </Steps>
-    <Column ColumnSize="ColumnSize.Is1.OnTablet.Is2.OnDesktop.Is3.OnWidescreen.Is4.OnWidescreen" />
+        </MudTabPanel>
+    </MudTabs>
+    <MudText>@($"Active Index: {selectedStep}")</MudText>
+       
 
 </Row>
 
 
 
 @code {
-    Steps? Steps;
 
 
-    string selectedStep = "stepTemplate";
+    int selectedStep;
 
-    private Task OnSelectedStepChanged(string name)
+    private Task OnSelectedStepChanged(int name)
     {
         selectedStep = name;
 
@@ -197,7 +162,7 @@
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
     }
-
+    /*
     bool AllowStep(StepNavigationContext context)
     {
         switch (context.NextStepName)
@@ -216,6 +181,7 @@
         }
         return false;
     }
+    */
     async void OUSelected(IADOrganizationalUnit ou)
     {
         if (selectedOU == null)
@@ -253,8 +219,8 @@
         newUser.DisplayName = SelectedTemplate.GenerateDisplayName(newUserName);
         newUser.NewPassword = SelectedTemplate.GeneratePassword().ToSecureString();
         //newUser.CanonicalName = SelectedTemplate.GenerateDisplayName(newUserName);
-        newUser.StagePasswordChange(newUser.NewPassword,true); 
-        if(!newUserName.GivenName.IsNullOrEmpty())
+        newUser.StagePasswordChange(newUser.NewPassword, true);
+        if (!newUserName.GivenName.IsNullOrEmpty())
             newUser.GivenName = newUserName.GivenName;
         if (!newUserName.MiddleName.IsNullOrEmpty())
             newUser.MiddleName = newUserName.MiddleName;
@@ -280,8 +246,8 @@
         var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName);
         if (conflictingEntry != null)
         {
-            newUser=null;
-            NotificationService.Warning("An account with that name already exists! " + conflictingEntry.SamAccountName);
+            newUser = null;
+            SnackBarService.Warning("An account with that name already exists! " + conflictingEntry.SamAccountName);
             return;
         }
         SelectedTemplate.AssignedGroupSids.ForEach(sid =>
@@ -292,11 +258,12 @@
         });
         if (SelectedTemplate.HasEmptyFields())
         {
-            selectedStep = "stepFields";
+            selectedStep = 0;
         }
         else
         {
-            selectedStep = "stepConfirm";
+            //Go to confirm step
+            selectedStep = 0;
 
         }
         LoadingData = true;

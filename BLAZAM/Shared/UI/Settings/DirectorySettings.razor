@@ -4,7 +4,7 @@
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
 
-    <MudText Typo="Typo.h1">@SettingsLocalization["Active Directory Settings"]</MudText>
+    <MudText Typo="Typo.h4">@SettingsLocalization["Active Directory Settings"]</MudText>
 
     <MudForm @onsubmit="Save">
 
@@ -39,7 +39,7 @@
             <MudTooltip Display="Display.InlineBlock" Multiline Style="max-width:300px" Text="The application will automatically use an SSL
             connection if the server's CA Certificate is a trusted CA on this web server. Using port 636 can work,
             but may lead to unexpected behaviour of other services that listen to Active Directory changes.">
-            <Icon Name="IconName.QuestionCircle" TextColor="Color.Info" />
+            <MudIcon Icon="IconName.QuestionCircle" Color="Color.Info" />
             </MudTooltip>*@
 
             @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin")

@@ -1,6 +1,6 @@
 ﻿@inherits DirectoryModelComponent
 
-<MudCard Background="Background.Light" TextColor="Color.Dark">
+<MudCard Background="Background.Light" Color="Color.Dark">
     @if (Group != null)
     {
         var linkAdd = "/groups/search/" + Group.GroupName;
@@ -14,7 +14,7 @@
             </MudText>
             @if (AllowUnassign)
             {
-                <MudButton Float=Float.End Color="Color.Error" Clicked="RemoveFromGroup"><Icon Name="@("fa-times")" /></MudButton>
+                <MudButton Float=Float.End Color="Color.Error" OnClick="RemoveFromGroup"><MudIcon Icon="@("fa-times")" /></MudButton>
             }
         </MudCardHeader>
     }
@@ -27,11 +27,11 @@
                     <CollapseHeader>
                         <MudText Typo ="Typo.h1" Size="HeadingSize.Is5">
 
-                            <MudButton Clicked="@(()=>collapse1Visible = !collapse1Visible)">
+                            <MudButton OnClick="@(()=>collapse1Visible = !collapse1Visible)">
                                 @Group.GroupName
                                 @if (AllowUnassign)
                                 {
-                                    <MudButton Color="Color.Error" Clicked="RemoveFromGroup"><Icon Name="@("fa-times")" /></MudButton>
+                                    <MudButton Color="Color.Error" OnClick="RemoveFromGroup"><MudIcon Icon="@("fa-times")" /></MudButton>
 
                                 }
 
@@ -96,7 +96,7 @@
     {
 
         Member.UnassignFrom(Group);
-        await NotificationService.Warning(Member.CanonicalName + " removed from " + Group.CanonicalName + ". Don't forget to save your changes.", "Sucess");
+        SnackBarService.Warning(Member.CanonicalName + " removed from " + Group.CanonicalName + ". Don't forget to save your changes.", "Sucess");
 
         await OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group));
 

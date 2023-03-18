@@ -1,5 +1,5 @@
 ﻿@page "/permissions"
-@page "/permissions/{selectedTab}"
+@page "/permissions/{ActiveTab}"
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 @inherits TabbedAppComponentBase
@@ -8,29 +8,51 @@
 <AuthorizeView Roles=@UserRoles.SuperAdmin>
 
     <SetHeader>
-        <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
+       @* <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
             <Items>
                 <Tab Name="delegates">@SettingsLocalization["Delegates"]</Tab>
                 <Tab Name="accessLevels">@SettingsLocalization["Access Levels"]</Tab>
                 <Tab Name="mappings">@SettingsLocalization["Mappings"]</Tab>
            
             </Items>
-        </Tabs>
+        </Tabs>*@
     </SetHeader>
-    <Tabs SelectedTab="@selectedTab">
 
-        <Content>
-            <TabPanel Name="delegates" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
+
+
+
+    <MudTabs ActivePanelIndex="@ActiveTab">
+        <MudTabPanel>
+            <ChildContent>
+
+
                 @if (Monitor.DirectoryConnected == ServiceConnectionState.Up)
                 {
                     <BLAZAM.Server.Shared.UI.Settings.Permissions.DelegateEditor />
                 }
-            </TabPanel>
-            <TabPanel Name="accessLevels" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
+
+
+            </ChildContent>
+            <TabContent>
+                @SettingsLocalization["Delegates"]
+            </TabContent>
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
+
+
                 <BLAZAM.Server.Shared.UI.Settings.Permissions.AccessLevelEditor />
 
-            </TabPanel>
-            <TabPanel Name="mappings" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
+
+            </ChildContent>
+            <TabContent>
+                @SettingsLocalization["Access Levels"]
+            </TabContent>
+
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
+
                 @if (Monitor.DirectoryConnected == ServiceConnectionState.Up)
                 {
                     <BLAZAM.Server.Shared.UI.Settings.Permissions.ImpersonateUser />
@@ -38,10 +60,18 @@
 
                 }
 
-            </TabPanel>
-           
-        </Content>
-    </Tabs>
+
+            </ChildContent>
+            <TabContent>
+                @SettingsLocalization["Mappings"]
+            </TabContent>
+
+        </MudTabPanel>
+       
+    </MudTabs>
+
+
+    
 </AuthorizeView>
 
 
@@ -49,7 +79,6 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        selectedTab = "delegates";
         BaseUri = "/permissions";
     }
 }

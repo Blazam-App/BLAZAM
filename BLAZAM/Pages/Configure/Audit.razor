@@ -1,5 +1,5 @@
 ﻿@page "/audit"
-@page "/audit/{selectedTab}"
+@page "/audit/{ActiveTab}"
 
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 @inherits TabbedAppComponentBase
@@ -14,18 +14,22 @@
 
 
 <SetSubHeader>
-    <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
+@*    <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
         <Items>
             <Tab Name="user">@SettingsLocalization["User"]</Tab>
             <Tab Name="system">@SettingsLocalization["System"]</Tab>
 
         </Items>
-    </Tabs>
+    </Tabs>*@
 </SetSubHeader>
-<Tabs SelectedTab="@selectedTab">
 
-    <Content>
-        <TabPanel Name="user">
+
+<MudTabs ActivePanelIndex="@ActiveTab">
+    <MudTabPanel>
+        <ChildContent>
+            
+
+
             <DataGrid TItem="CommonAuditLog"
                       Data="@auditEntries.OrderByDescending(ae=>ae.Timestamp)"
                         Responsive
@@ -40,8 +44,17 @@
                 <DataGridColumn Field="@nameof(CommonAuditLog.AfterAction)" Caption="After" Filterable />
 
             </DataGrid>
-        </TabPanel>
-        <TabPanel Name="system">
+
+
+        </ChildContent>
+        <TabContent>
+            @SettingsLocalization["User"]
+        </TabContent>
+    </MudTabPanel>
+    <MudTabPanel>
+        <ChildContent>
+
+
             <DataGrid TItem="SystemAuditLog"
                       Data="@systemAuditEntries.OrderByDescending(ae=>ae.Timestamp)"
                         Responsive
@@ -56,11 +69,18 @@
                 <DataGridColumn Field="@nameof(SystemAuditLog.AfterAction)" Caption="After" Filterable />
 
             </DataGrid>
-        </TabPanel>
-       
 
-    </Content>
-</Tabs>
+
+
+        </ChildContent>
+        <TabContent>
+            @SettingsLocalization["System"]
+        </TabContent>
+
+
+    </MudTabPanel>
+   
+</MudTabs>
 
 
 @code {
@@ -69,7 +89,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (selectedTab == null) selectedTab = "user";
+
 
         await base.OnInitializedAsync();
         BaseUri = "/audit";

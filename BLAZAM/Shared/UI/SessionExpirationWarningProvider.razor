@@ -1,4 +1,4 @@
-@inject IMessageService MessageService
+@inject AppDialogService MessageService
 @inject IApplicationUserStateService UserStateService
 @inject NavigationManager Nav
 @inject IJSRuntime JSRuntime
@@ -32,16 +32,16 @@
                 InvokeAsync(StateHasChanged);
             });
         }
-        <div Background="Background.Light" TextColor="Color.Dark">
+        <div Background="Background.Light" Color="Color.Dark">
             <Row>
-                <MudField>
+                
                     <MudText>
                         Session expires in @formattedTimeLeft
                     </MudText>
-                </MudField>
+                
             </Row>
             <Row>
-                <MudButton Color="Color.Primary" Clicked=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>Refresh Session</MudButton>
+                <MudButton Color="Color.Primary" OnClick=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>Refresh Session</MudButton>
 
             </Row>
         </div>
@@ -52,15 +52,15 @@
 
     @if (ExpiredModal?.IsShown == true)
     {
-        <div Background="Background.Light" TextColor="Color.Dark">
+        <div Background="Background.Light" Color="Color.Dark">
             <Row>
-                <MudField>
+                
                     <MudText>Your session has expired.</MudText>
                    
-                </MudField>
+                
             </Row>
             <Row>
-                <MudButton Color="Color.Primary" Clicked=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>Log In</MudButton>
+                <MudButton Color="Color.Primary" OnClick=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>Log In</MudButton>
 
             </Row>
         </div>

@@ -15,7 +15,7 @@
             </Column>
 
             <Column ColumnSize="ColumnSize.Is2.OnTablet">
-                <MudButton Color=Color.Secondary Float=Float.End Display=Display.InlineFlex Clicked="(()=>{trashModal.Show();})"><Icon Name=IconName.Delete /></MudButton>
+                <MudButton Color=Color.Secondary Float=Float.End Display=Display.InlineFlex OnClick="(()=>{trashModal.Show();})"><MudIcon Icon=IconName.Delete /></MudButton>
 
             </Column>
         </Row>
@@ -33,7 +33,7 @@
         }
         <ListGroupItem Name="AddUserGroup">
 
-            <MudButton Background="Background.Success"  Clicked="@ShowAddGroup">
+            <MudButton Background="Background.Success"  OnClick="@ShowAddGroup">
                 @SettingsLocalization["Create New Delegation Target"]
             </MudButton>
         </ListGroupItem>
@@ -50,7 +50,7 @@
                     <MudText>@deleg.DeletedAt</MudText>
                 </Column>
                 <Column>
-                    <MudButton Float="Float.End" Color="Color.Primary" Clicked="(()=>{RestoreDelegate(deleg);})">Restore</MudButton>
+                    <MudButton Float="Float.End" Color="Color.Primary" OnClick="(()=>{RestoreDelegate(deleg);})">Restore</MudButton>
                 </Column>
 
             </Row>
@@ -112,7 +112,7 @@
     {
         delegateToRestore.DeletedAt = null;
         await Context.SaveChangesAsync();
-        await NotificationService.Success("Delegate restored");
+        SnackBarService.Success("Delegate restored");
         if (AllLevels.Where(l => l.DeletedAt != null).Count() < 1)
         {
             trashModal.Hide();

@@ -1,10 +1,29 @@
-@inherits MudSelect
+@inherits MudSelect<T>
 @typeparam T
-<MudSelect T="@T" Label="@Label" HelperText="@HelperText">
-        @foreach (var val in updateBranches)
+
+<MudSelect T="T"
+     Dense
+     Variant="@Variant"
+    Label="@Label"
+    HelperText="@HelperText"
+    HelperTextOnFocus=@HelperTextOnFocus 
+    Class=@Class  
+    ListClass="@ListClass"
+    
+    Style="@Style"> 
+        @foreach (var val in Values)
         {
-            <MudSelectItem Value="@val">@val</MudSelectItem>
+            <MudSelectItem Value="@val">
+                <MudText Color="@Color">
+                @val
+            </MudText>
+                </MudSelectItem>
         }
 </MudSelect>
 
+
+@code{
+    [Parameter]
+    public Color Color { get; set; }
+}
 

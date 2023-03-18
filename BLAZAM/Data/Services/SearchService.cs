@@ -21,7 +21,7 @@ namespace BLAZAM.Server.Data.Services
         }
         public string? SearchTerm { get; set; }
 
-        public ActiveDirectoryObjectType? SeachObjectType { get; set; } = ActiveDirectoryObjectType.All;
+        public ActiveDirectoryObjectType SeachObjectType { get; set; } = ActiveDirectoryObjectType.All;
 
         public SearchService(IApplicationUserStateService userStateService,NavigationManager nav)
         {

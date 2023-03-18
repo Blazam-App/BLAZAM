@@ -1,7 +1,7 @@
 ﻿@inherits AppModalContent
-<div Background="Background.Light" TextColor="Color.Dark">
+<div Background="Background.Light" Color="Color.Dark">
 <Row>
-    <MudField>
+    
             <MudText>Choose OU</MudText>
         
             <OUTreeView @bind-StartingSelectedOU=@StartingOU @bind-SelectedOU=@SelectedOU>
@@ -10,10 +10,10 @@
                 </NodeContent>
             </OUTreeView>
         
-    </MudField>
+    
 </Row>
 <Row>
-    <MudButton Color="Color.Primary" Clicked="MoveTo">Move</MudButton>
+    <MudButton Color="Color.Primary" OnClick="MoveTo">Move</MudButton>
 
 </Row>
 </div>
@@ -45,11 +45,11 @@
 
             if (DirectoryModel.MoveTo(SelectedOU))
             {
-                await NotificationService.Success(DirectoryModel.CanonicalName + " has been moved to " + SelectedOU.CanonicalName, "Moved");
+                SnackBarService.Success(DirectoryModel.CanonicalName + " has been moved to " + SelectedOU.CanonicalName, "Moved");
                 await ModelChanged.InvokeAsync();
                 Close();
             }
-            await NotificationService.Error(DirectoryModel.CanonicalName + " was not able to be moved to " + SelectedOU.CanonicalName, "Move failed");
+            SnackBarService.Error(DirectoryModel.CanonicalName + " was not able to be moved to " + SelectedOU.CanonicalName, "Move failed");
 
         }
 

@@ -6,9 +6,6 @@
 }
 
 <AppPageTitle>@User?.SamAccountName</AppPageTitle>
-<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
-
-    <div Padding="Padding.Is3" Margin="Margin.Is5.OnFullHD.OnX.Is3.OnWidescreen.OnX.Is0">
         <EditForm Model="User">
             @if (User?.NewEntry == false)
             {
@@ -32,14 +29,14 @@
                             </MudTooltip>
 
 
-                            <Small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(User.OU) </Small>
+                            <small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(User.OU) </small>
 
                         </Row>
 
 
                         @if (User.LockedOut)
                         {
-                            <Icon Name=@("fa-lock")>Account Locked</Icon>
+                            <MudIcon Icon=@("fa-lock")>Account Locked</MudIcon>
                         }
 
                         <MudMenu StartIcon="@Icons.Material.Filled.Settings">
@@ -51,43 +48,43 @@
 
                             @if (User.CanEdit)
                             {
-                                <MudMenuItem Clicked="ToggleEditMode">Edit...</MudMenuItem>
+                                <MudMenuItem OnClick="ToggleEditMode">Edit...</MudMenuItem>
                             }
                             @if (User.LockedOut && User.CanUnlock)
                             {
-                                <MudMenuItem Clicked="Unlock">Unlock...</MudMenuItem>
+                                <MudMenuItem OnClick="Unlock">Unlock...</MudMenuItem>
                             }
                             @if (User.CanAssign)
                             {
                                 RefreshUserGroups();
-                                <MudMenuItem Clicked="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
+                                <MudMenuItem OnClick="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
                             }
                             @if (User.CanDisable)
                             {
-                                <MudMenuItem Clicked="@(()=>{ChangePasswordModal?.Show();})">Change Password...</MudMenuItem>
+                                <MudMenuItem OnClick="@(()=>{ChangePasswordModal?.Show();})">Change Password...</MudMenuItem>
                             }
                             @if (User.CanRename)
                             {
-                                <MudMenuItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
+                                <MudMenuItem OnClick="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
                                 @if (User.ThumbnailPhoto == null)
                                 {
-                                    <MudMenuItem Clicked="@(()=>{UploadThumbnailModal?.Show();})">Upload Photo...</MudMenuItem>
+                                    <MudMenuItem OnClick="@(()=>{UploadThumbnailModal?.Show();})">Upload Photo...</MudMenuItem>
 
                                 }
                                 else
                                 {
-                                    <MudMenuItem Clicked="@(()=>{UploadThumbnailModal?.Show();})">Replace Photo...</MudMenuItem>
+                                    <MudMenuItem OnClick="@(()=>{UploadThumbnailModal?.Show();})">Replace Photo...</MudMenuItem>
 
                                 }
 
                             }
                             @if (User.CanMove)
                             {
-                                <MudMenuItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
+                                <MudMenuItem OnClick="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
                             }
                             @if (User.CanDelete)
                             {
-                                <MudMenuItem Clicked="@DeleteUser">Delete...</MudMenuItem>
+                                <MudMenuItem OnClick="@DeleteUser">Delete...</MudMenuItem>
                             }
                         </MudMenu>
                     </Row>
@@ -101,13 +98,13 @@
 
             <Row>
 
-                <AppModal TextColor="Color.Dark" Title="Upload Thumbnail..." @ref=@UploadThumbnailModal>
+                <AppModal Color="Color.Dark" Title="Upload Thumbnail..." @ref=@UploadThumbnailModal>
                     <UploadThumbnailModalContent ModelChanged=@(()=>{InvokeAsync(StateHasChanged);}) DirectoryModel="User" />
                 </AppModal>
-                <AppModal TextColor="Color.Dark" Title="Assign To..." @ref=@AssignToModal>
+                <AppModal Color="Color.Dark" Title="Assign To..." @ref=@AssignToModal>
                     <AssignToModalContent ModelChanged=@(()=>{InvokeAsync(StateHasChanged);}) DirectoryModel="User" />
                 </AppModal>
-                <AppModal TextColor="Color.Dark" Title="Move To" @ref=@MoveToModal>
+                <AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
                     @if (MoveToModal?.IsShown == true)
                     {
                         <MoveToOUModalContent ModelChanged=@(()=>{Nav.NavigateTo(Nav.Uri,true);}) DirectoryModel="User" />
@@ -142,7 +139,7 @@
                                         <Figure Style="width:fit-content;height:fit-content" Margin=Margin.IsAuto TextAlignment=TextAlignment.Center Padding=Padding.Is0 Overflow=Overflow.Hidden Border="Border.Rounded">
                                             <Base64Image Data="User.ThumbnailPhoto.ReizeRawImage(150)" />
                                         </Figure>
-                                        <Icon Clicked=RemoveThumbnail Border=Border.RoundedCircle Background=Background.Dark Display=Display.Block Position=Position.Absolute style="width:20px;height:20px;padding:2px;top:-10px;left:-10px" TextColor=Color.Error Name="@("fa-solid fa-times")" />
+                                        <MudIcon OnClick=RemoveThumbnail Border=Border.RoundedCircle Background=Background.Dark Display=Display.Block Position=Position.Absolute style="width:20px;height:20px;padding:2px;top:-10px;left:-10px" Color=Color.Error Name="@("fa-solid fa-times")" />
                                     </div>
 
                                 </Column>
@@ -151,48 +148,48 @@
 
                                 @if (User.CanReadField(ActiveDirectoryFields.GivenName))
                                 {
-                                    <MudField>
+                                    
 
                                         <MudTextField Label="@UserLocalization["First Name"]" @bind-Value="@User.GivenName" Disabled=!User.NewEntry />
 
 
-                                    </MudField>
+                                    
                                 }
                                 @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
                                 {
-                                    <MudField>
+                                    
 
                                         <MudTextField Label="@UserLocalization["Middle Name"]" @bind-Value="@User.MiddleName" Disabled=!User.NewEntry />
 
 
-                                    </MudField>
+                                    
                                 }
                                 @if (User.CanReadField(ActiveDirectoryFields.SN))
                                 {
-                                    <MudField>
+                                    
 
                                         <MudTextField Label="@UserLocalization["Last Name"]" @bind-Value="@User.Surname" Disabled=!User.NewEntry />
 
 
-                                    </MudField>
+                                    
                                 }
                                 @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
                                 {
-                                    <MudField>
+                                    
 
                                         <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@User.DisplayName" Disabled=!User.NewEntry />
 
 
-                                    </MudField>
+                                    
                                 }
 
                                 @if (EditMode && !User.NewEntry)
                                 {
-                                    <MudField>
+                                    
                                         <MudText>
                                             To Modify the user's name click the Gear button and choose "Rename..."
                                         </MudText>
-                                    </MudField>
+                                    
                                 }
                             </Column>
                         </Row>
@@ -210,7 +207,7 @@
 
                         @if (User.CanReadField(ActiveDirectoryFields.SAMAccountName))
                         {
-                            <MudField>
+                            
 
                                     <Addons>
                                         <Addon AddonType="AddonType.Body">
@@ -218,17 +215,17 @@
 
                                         </Addon>
                                         <Addon AddonType="AddonType.End">
-                                            <MudButton Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.SamAccountName);})><Icon Name=@("fa-solid fa-copy") /></MudButton>
+                                            <MudButton Color="Color.Primary" OnClick=@(()=>{CopyToClipboard(User.SamAccountName);})><MudIcon Icon=@("fa-solid fa-copy") /></MudButton>
 
                                         </Addon>
                                     </Addons>
 
-                            </MudField>
+                            
                         }
 
                         @if (User.NewEntry)
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["Password"]" @bind-Value="@Password" InputType="InputType.Password">
 
@@ -237,9 +234,9 @@
                                     </MudTextField>
 
 
-                            </MudField>
+                            
                             <Validation Validator="ValidatePassword">
-                                <MudField>
+                                
 
                                         <MudTextField Label="@UserLocalization["Confirm Password"]" @bind-Value="@ConfirmPassword" InputType="InputType.Password">
 
@@ -247,13 +244,13 @@
 
                                         </MudTextField>
 
-                                </MudField>
+                                
                             </Validation>
                         }
 
                         @if (User.CanReadField(ActiveDirectoryFields.Mail))
                         {
-                            <MudField>
+                            
 
                                     <Addons>
                                         <Addon AddonType="AddonType.Body">
@@ -261,7 +258,7 @@
 
                                         </Addon>
                                         <Addon AddonType="AddonType.End">
-                                            <MudButton Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.Email);})><Icon Name=@("fa-solid fa-copy") /></MudButton>
+                                            <MudButton Color="Color.Primary" OnClick=@(()=>{CopyToClipboard(User.Email);})><MudIcon Icon=@("fa-solid fa-copy") /></MudButton>
 
                                         </Addon>
                                     </Addons>
@@ -269,24 +266,24 @@
 
 
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.AccountExpires))
                         {
-                            <MudField>
+                            
 
                                     <MudDatePicker Label="@UserLocalization["Account Expiration"]" Date="@User.ExpireTime" DateChanged=SetExpireTime Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.AccountExpires)) />
 
-                            </MudField>
+                            
                         }
                         @if (EditMode && !User.NewEntry)
                         {
 
-                            <MudField>
+                            
                                 <MudText>
                                     To Modify the user's accounts click the Gear button and choose "Rename..."
                                 </MudText>
-                            </MudField>
+                            
                         }
 
                     </Section>
@@ -303,57 +300,57 @@
                     <Section Title=@UserLocalization["Organization"]>
                         @if (User.CanReadField(ActiveDirectoryFields.Description))
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["Description"]" @bind-Value="@User.Description" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Description)) />
 
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.EmployeeId))
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["Employee Id"]" @bind-Value="@User.EmployeeId" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.EmployeeId)) />
 
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.Department))
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["Department"]" @bind-Value="@User.Department" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Department)) />
 
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.Company))
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["Company"]" @bind-Value="@User.Company" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Company)) />
 
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.Title))
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["Job Title"]" @bind-Value="@User.Title" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Title)) />
 
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.PhysicalDeliveryOffice))
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["Office"]" @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
 
 
-                            </MudField>
+                            
                         }
                     </Section>
                 }
@@ -370,57 +367,57 @@
 
                         @if (User.CanReadField(ActiveDirectoryFields.HomePhone))
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["Home Phone"]" @bind-Value="@User.HomePhone" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomePhone)) />
 
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.StreetAddress))
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["Street Address"]" @bind-Value="@User.StreetAddress" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.StreetAddress)) />
 
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.Street))
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["Street"]" @bind-Value="@User.Street" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Street)) />
 
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.City))
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["City"]" @bind-Value="@User.City" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.City)) />
 
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.State))
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["State"]" @bind-Value="@User.State" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.State)) />
 
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.PostalCode))
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["Zip Code"]" @bind-Value="@User.Zip" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PostalCode)) />
 
 
-                            </MudField>
+                            
                         }
                     </Section>
                 }
@@ -435,7 +432,7 @@
                     <Section Title=@UserLocalization["Profile"]>
                         @if (User.CanReadField(ActiveDirectoryFields.HomeDirectory))
                         {
-                            <MudField>
+                            
 
                                     <Addons>
                                         <Addon AddonType="AddonType.Body">
@@ -443,7 +440,7 @@
 
                                         </Addon>
                                         <Addon AddonType="AddonType.End">
-                                            <MudButton Color="Color.Primary" Clicked=@(()=>{CopyToClipboard(User.HomeDirectory);})><Icon Name=@("fa-solid fa-copy") /></MudButton>
+                                            <MudButton Color="Color.Primary" OnClick=@(()=>{CopyToClipboard(User.HomeDirectory);})><MudIcon Icon=@("fa-solid fa-copy") /></MudButton>
 
                                         </Addon>
                                     </Addons>
@@ -452,33 +449,33 @@
 
 
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.HomeDrive))
                         {
-                            <MudField>
+                            
 
                                     <HomeDriveSelect Label="@UserLocalization["Home Drive"]" @bind-SelectedValue="@User.HomeDrive" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDrive))/>
                                     
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.ScriptPath))
                         {
-                            <MudField>
+                            
 
                                     <MudTextField Label="@UserLocalization["Script Path"]" @bind-Value="@User.ScriptPath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ScriptPath)) />
 
 
-                            </MudField>
+                            
                         }
                         @if (User.CanReadField(ActiveDirectoryFields.ProfilePath))
                         {
-                            <MudField>
+                            
                                     <MudTextField Label="@UserLocalization["Profile Path"]" @bind-Value="@User.ProfilePath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) />
 
 
-                            </MudField>
+                            
                         }
                     </Section>
                 }
@@ -489,7 +486,6 @@
                 @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
                 {
 
-                    <MudField ColumnSize="ColumnSize.Is12" Horizontal>
 
                             <Row>
                                 @if (User.IsAGroupMember)
@@ -520,7 +516,7 @@
 
                             </Row>
 
-                    </MudField>
+                    
                 }
 
             </Row>
@@ -528,12 +524,13 @@
 
 
         </EditForm>
-    </div>
     @if (User.HasUnsavedChanges && !User.NewEntry)
     {
         <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
     }
-</LoadingIndicator>
+<MudOverlay Visible="LoadingData" DarkBackground="true" Absolute="true">
+    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
 
 
 
@@ -610,11 +607,11 @@
                 await User.CommitChangesAsync();
                 await AuditLogger.User.Changed(User, changes);
                 EditMode = false;
-                await NotificationService.Success("The changes made to this user have been saved.", "Changes Saved");
+                SnackBarService.Success("The changes made to this user have been saved.", "Changes Saved");
             }
             catch (ApplicationException ex)
             {
-                await NotificationService.Error(ex.Message, "Save Failed");
+                SnackBarService.Error(ex.Message, "Save Failed");
 
             }
             SavingChanges = false;
@@ -640,7 +637,7 @@
         if (await MessageService.Confirm("Are you sure you want to unlock " + User.DisplayName + "?", "Unlock User"))
         {
             User.LockedOut = false;
-            await NotificationService.Warning(User.DisplayName + " will be unlocked when changes are saved.", "Unlock Pending");
+            SnackBarService.Warning(User.DisplayName + " will be unlocked when changes are saved.", "Unlock Pending");
             await InvokeAsync(StateHasChanged);
 
         }
@@ -653,13 +650,13 @@
             try
             {
                 User.Delete();
-                await NotificationService.Success(User.DisplayName + " has been deleted.", "User Deleted");
+                SnackBarService.Success(User.DisplayName + " has been deleted.", "User Deleted");
                 //User = null;
                 Nav.NavigateTo("/users/search");
             }
             catch (ApplicationException ex)
             {
-                await NotificationService.Error(ex.Message);
+                SnackBarService.Error(ex.Message);
             }
 
             await InvokeAsync(StateHasChanged);
@@ -670,7 +667,7 @@
         if (await MessageService.Confirm("Are you sure you want to delete the thumbnail photo for" + User.DisplayName + "?", "Delete Thumbnail"))
         {
             User.ThumbnailPhoto = null;
-            await NotificationService.Warning(User.DisplayName + " will have their thumbnail deleted on save.", "Thumbnail Deletion Pending");
+            SnackBarService.Warning(User.DisplayName + " will have their thumbnail deleted on save.", "Thumbnail Deletion Pending");
             await InvokeAsync(StateHasChanged);
         }
     }

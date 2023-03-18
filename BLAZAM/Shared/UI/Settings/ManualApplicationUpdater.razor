@@ -23,7 +23,7 @@
 }
 
 <LoadingIndicator Visible=LoadingData>
-    <MudButton Color="Color.Primary" Clicked=@GetLatestUpdate>Refresh Latest Update</MudButton>
+    <MudButton Color="Color.Primary" OnClick=@GetLatestUpdate>Refresh Latest Update</MudButton>
 
     @{
         if (LatestAvailableVersion != null)
@@ -36,7 +36,7 @@
                     <Progress Value="@DownladProgress?.FilePercentage">
                         @(DownladProgress?.CompletedBytes / 1024 / 1024)MB
                     </Progress>
-                    <MudButton Color=Color.Error Clicked=@(()=>{ LatestAvailableVersion.Cancel(); })>Cancel</MudButton>
+                    <MudButton Color=Color.Error OnClick=@(()=>{ LatestAvailableVersion.Cancel(); })>Cancel</MudButton>
                     break;
                 case UpdateStage.Staging:
                     <MudText>Staging update, please wait a moment...</MudText>
@@ -60,7 +60,7 @@
                         {
                             <h4>
                                 Downgrade Available (Debug Mode)
-                                <Icon Display="Display.InlineBlock" Name="IconName.QuestionCircle" Clicked=@(()=>{CopyToClipboard(LatestAvailableVersion.UpdateCommand);}) />
+                                <MudIcon Display="Display.InlineBlock" Name="IconName.QuestionCircle" OnClick=@(()=>{CopyToClipboard(LatestAvailableVersion.UpdateCommand);}) />
 
                             </h4>
                         }
@@ -77,11 +77,11 @@
 
                         <MudText>Available Version: @LatestAvailableVersion.Version</MudText>
                         <MudText>Update Branch: @LatestAvailableVersion.Branch</MudText>
-                        <MudButton Color=Color.Success Clicked="ApplyUpdate">Apply Update</MudButton>
-                        <MudButton Disabled=@(AutoUpdateService.IsUpdatedScheduled) Clicked=TestAutoUpdate Color="Color.Success">Test Auto Update</MudButton>
+                        <MudButton Color=Color.Success OnClick="ApplyUpdate">Apply Update</MudButton>
+                        <MudButton Disabled=@(AutoUpdateService.IsUpdatedScheduled) OnClick=TestAutoUpdate Color="Color.Success">Test Auto Update</MudButton>
                         @if (AutoUpdateService.IsUpdatedScheduled)
                         {
-                            <MudButton Clicked=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Error">Cancel Auto Update</MudButton>
+                            <MudButton OnClick=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Error">Cancel Auto Update</MudButton>
                         }
                     }
                     else
@@ -99,7 +99,7 @@
 @if (Monitor.DatabaseUpdatePending)
 {
     <MudText>A database update needs to be applied</MudText>
-    <MudButton Color=Color.Primary Clicked="UpdateDB">Update</MudButton>
+    <MudButton Color=Color.Primary OnClick="UpdateDB">Update</MudButton>
 }
 else
 {
@@ -130,14 +130,14 @@ else
         }
         catch (Exception ex)
         {
-            NotificationService.Error(ex.Message);
+            SnackBarService.Error(ex.Message);
         }
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
     }
     async Task ApplyUpdate()
     {
-        await NotificationService.Info("Update started. Downloading update...");
+        SnackBarService.Info("Update started. Downloading update...");
 
         updateStage = UpdateStage.Downloading;
         LatestAvailableVersion.DownloadPercentageChanged += UpdateDownloadPercentage;
@@ -147,7 +147,7 @@ else
             DownladProgress = null;
             LatestAvailableVersion.DownloadPercentageChanged -= UpdateDownloadPercentage;
 
-            //await NotificationService.Success("Update downloaded successfully. Preparing for update...");
+            //NotificationService.Success("Update downloaded successfully. Preparing for update...");
 
             //if (await MessageService.Confirm("The update has been downloaded. Would you like to Stage the update?"))
             //{
@@ -175,7 +175,7 @@ else
                                         {
 
 
-                                            await NotificationService.Error("Backup failed.");
+                                            NotificationService.Error("Backup failed.");
                                             return;
 
                                         }
@@ -191,7 +191,7 @@ else
                     var output = await LatestAvailableVersion.Apply();
                     if (output != null)
                     {
-                        await NotificationService.Success("Update started successfully. The web application will restart and update momentarily.");
+                        SnackBarService.Success("Update started successfully. The web application will restart and update momentarily.");
 
                     }
                     if (Program.InDebugMode)
@@ -213,7 +213,7 @@ else
         }
         else
         {
-            await NotificationService.Error("Update failed.");
+            SnackBarService.Error("Update failed.");
             updateStage = UpdateStage.None;
 
         }

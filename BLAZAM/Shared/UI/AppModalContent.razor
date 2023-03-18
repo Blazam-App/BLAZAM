@@ -2,12 +2,12 @@
 
 @code {
 #nullable disable warnings
-    [CascadingParameter] protected Modal Modal { get; set; }
+    [CascadingParameter] protected MudMessageBox Modal { get; set; }
     [Parameter]
     public EventCallback ModelChanged { get; set; }
 
     protected void Close(){
-        Modal.Close(CloseReason.UserClosing);
+        Modal.Close();
         InvokeAsync(StateHasChanged);
 
     }

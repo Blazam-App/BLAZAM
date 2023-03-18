@@ -19,7 +19,7 @@
         <Collapse Visible="@addCollapseVisible">
             <CollapseHeader>
                 <MudText Typo ="Typo.h1" Size="HeadingSize.Is5">
-                    <MudButton Background=Background.Success TextColor=Color.Light Clicked="@(()=>addCollapseVisible = !addCollapseVisible)">@SettingsLocalization["Add New Access Level"]</MudButton>
+                    <MudButton Background=Background.Success  Class="mud-theme-primary" OnClick="@(()=>addCollapseVisible = !addCollapseVisible)">@SettingsLocalization["Add New Access Level"]</MudButton>
                 </MudText>
             </CollapseHeader>
             <CollapseBody>

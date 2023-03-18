@@ -38,7 +38,7 @@
     public bool StartRootExpanded { get; set; } = true;
 
      [Parameter]
-    public string? Label { get; set; };
+    public string? Label { get; set; }
 
 
     [Parameter]
@@ -47,7 +47,7 @@
     IADOrganizationalUnit? _selectedNode;
 
     [Parameter]
-    public IEnumerable<IADOrganizationalUnit> RootOU { get; set; } = new List<IADOrganizationalUnit>();
+    public HashSet<IADOrganizationalUnit> RootOU { get; set; } = new HashSet<IADOrganizationalUnit>();
 
 
     IADOrganizationalUnit? _startingSelectedNode;
@@ -96,7 +96,7 @@
     ADOrganizationalUnit TopLevel;
 
 
-    TreeView<IADOrganizationalUnit>? OUTree { get; set; }
+    MudTreeView<IADOrganizationalUnit>? OUTree { get; set; }
 
 
     IList<IADOrganizationalUnit> ExpandedNodes = new List<IADOrganizationalUnit>();
@@ -108,7 +108,7 @@
         TopLevel = new ADOrganizationalUnit();
         await TopLevel.Parse(Directory.GetDirectoryEntry(), Directory);
         _ = TopLevel.Children;
-        RootOU = new List<IADOrganizationalUnit>() { TopLevel };
+        RootOU = new HashSet<IADOrganizationalUnit>() { TopLevel };
         if (StartingSelectedOU == null)
         {
             SelectedOU = TopLevel;

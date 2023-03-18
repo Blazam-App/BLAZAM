@@ -13,32 +13,32 @@
 
     void UpdateStarted()
     {
-        NotificationService.Info("An update has been started. The application may reboot shortly.");
+        SnackBarService.Info("An update has been started. The application may reboot shortly.");
     }
     void UpdateFailed(Exception ex)
     {
-        NotificationService.Error("The update has failed.");
+        SnackBarService.Error("The update has failed.");
         if (IsAdmin)
         {
-            NotificationService.Error(ex.Message);
+            SnackBarService.Error(ex.Message);
 
     }
 
     }
     void InfoBroadcast(NotificationMessage message)
     {
-        NotificationService.Info(message.Message, message.Title);
+        SnackBarService.Info(message.Message, message.Title);
     }
     void ErrorBroadcast(NotificationMessage message)
     {
-        NotificationService.Error(message.Message, message.Title);
+        SnackBarService.Error(message.Message, message.Title);
     }
     void SuccessBroadcast(NotificationMessage message)
     {
-        NotificationService.Success(message.Message, message.Title);
+        SnackBarService.Success(message.Message, message.Title);
     }
     void WarningBroadcast(NotificationMessage message)
     {
-        NotificationService.Warning(message.Message, message.Title);
+        SnackBarService.Warning(message.Message, message.Title);
     }
 }

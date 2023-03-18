@@ -2,15 +2,13 @@
 
 <Row>
     <Column ColumnSize="ColumnSize.Is4.OnTablet">
-        <DropdownList TItem=string
-                      TValue="string"
-                      @bind-SelectedValue=SelectedCategory
-                      TextField="@((item)=>item)"
-                      ValueField="@((item)=>item)"
-                      Color="Color.Primary"
-                      Data="categories">
+        <MudSelectList
+            Values="categories"
+            @bind-Value=SelectedCategory
+            />
+      
             @SelectedCategory
-        </DropdownList>
+@*
         <ListView TItem="DirectoryTemplate"
                   Data="SavedTemplates"
                   TextField="(item)=>item.Name"
@@ -25,10 +23,10 @@
                 </div>
                
             </ItemTemplate>
-        </ListView>
+        </ListView>*@
         @if (SelectedTemplate != null)
         {
-            <MudButton Clicked=@(()=>{DuplicateTemplate(SelectedTemplate);}) Color="Color.Primary"><Icon Name="@("fa-solid fa-copy")" /></MudButton>
+            <MudButton OnClick=@(()=>{DuplicateTemplate(SelectedTemplate);}) Color="Color.Primary"><MudIcon Icon="@("fa-solid fa-copy")" /></MudButton>
         }
         <div>
             <h6>Users granted this template</h6>

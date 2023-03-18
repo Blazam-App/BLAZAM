@@ -1,87 +1,70 @@
 @inherits AppComponentBase
-<MudForm @onsubmit="(()=>{SearchService.Search();})">
+<MudForm Style="width:100%" Class="mx-2" @onsubmit="(()=>{SearchService.Search();})">
 
-    <Bar Mode="BarMode.Horizontal"
-         CollapseMode="BarCollapseMode.Small"
-         Breakpoint="Breakpoint.Desktop"
-         NavigationBreakpoint="Breakpoint.Tablet"
-         ThemeContrast="ThemeContrast.Dark"
-         Padding="Padding.Is2.OnX"
-         Background="Background.Dark"
-         TextColor="Color.Dark"
-         VerticalAlignment="VerticalAlignment.Middle">
-        <BarBrand Padding=Padding.Is0.OnY Width="Width.Is100">
-            <div Style="font-size:0.8em;align-self: center;">
 
-                    <Addons Width="Width.Is100">
-                        <Addon AddonType="AddonType.Start">
-                            <DropdownList Color=Color.Primary
-                                          @bind-SelectedValue=@SearchService.SeachObjectType
-                                          TItem="ActiveDirectoryObjectType?"
-                                          TValue=ActiveDirectoryObjectType?
-                                          TextField="item=>item.ToString()"
-                                          ValueField="item=>item"
-                                          Data="ObjectTypes">
-                            @SearchService.SeachObjectType
-                            </DropdownList>
-                        </Addon>
-                    <Addon AddonType="AddonType.Body" >
-                        <div Style="width: 1%;flex: 1 1 auto;">
-                            <ADAutoComplete SearchObjectType="@SearchService.SeachObjectType" SearchDisabled=@SearchService.IncludeDisabled @bind-SearchTerm="@SearchService.SearchTerm" />
-                            </div>
-                        </Addon>
 
-                        @if (UserStateService?.CurrentUserState?.IsSuperAdmin == true || UserStateService?.CurrentUserState?.DirectoryUser?.CanSearchDisabled == true)
-                        {
-                        var buttonColor = Color.Error;
-                        if (!SearchService.IncludeDisabled)
-                        {
-                            buttonColor = Color.Success;
-                        }
-                        <Addon AddonType="AddonType.Body">
+    <MudStack Row="true">
+        <MudMenu Color=Color.Secondary StartIcon="@Icons.Material.Filled.TypeSpecimen" Label="@SearchService.SeachObjectType.ToString()">
+            @foreach (var objectType in ObjectTypes)
+            {
+                <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=objectType; })>@objectType</MudMenuItem>
+            }
+        </MudMenu>
+        <MudPaper Class=" mud-overlay-light" Style="width:100%;height:min-content;">
+        <ADAutoComplete Class="mt-0"
+                        Variant="Variant.Filled"
+                        Label="Search Directory"
+                        SearchObjectType="@SearchService.SeachObjectType"
+                        SearchDisabled=@SearchService.IncludeDisabled
+                        @bind-SearchTerm="@SearchService.SearchTerm" />
+        </MudPaper>
+        @if (UserStateService?.CurrentUserState?.IsSuperAdmin == true || UserStateService?.CurrentUserState?.DirectoryUser?.CanSearchDisabled == true)
+        {
+            var buttonColor = Color.Error;
+            if (!SearchService.IncludeDisabled)
 
-                              
-                                <MudButton Type="ButtonType.Button" Clicked=@(async()=>{
-                                SearchService.IncludeDisabled= !SearchService.IncludeDisabled;
-                                    await InvokeAsync(StateHasChanged);
-                                    }) Color=buttonColor>
-                                    Enabled Only
-                                </MudButton>
+            {
+                buttonColor = Color.Success;
+            }
+            <MudButton Class="d-flex" ButtonType="ButtonType.Button" OnClick=@(async()=>{
+                   SearchService.IncludeDisabled= !SearchService.IncludeDisabled;
+                   await InvokeAsync(StateHasChanged);
+                   }) Color=buttonColor>
+                Enabled Only
+            </MudButton>
 
-                                 
-                               
 
-                            </Addon>
 
-                        }
-                        <Addon AddonType="AddonType.End">
 
-                            @if (Searcher?.SearchState == SearchState.Collecting)
-                            {
-                                <MudButton Float="Float.End" Type="ButtonType.Button" Clicked=@(()=>{
-                                    disableCancel = true;
-                                    Searcher.Cancel();
-                                    }) Color="Color.Primary" Disabled=@disableCancel>
-                                    Cancel
-                                </MudButton>
 
-                            }
-                            else
-                            {
-                                <MudButton Float="Float.End" ButtonType="ButtonType.Submit" Color="Color.Primary">Search</MudButton>
+        }
 
-                            }
+        @if (Searcher?.SearchState == SearchState.Collecting)
+        {
+            <MudFab Style="min-width: 56px !important;" Class="d-flex" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Cancel" OnClick=@(()=>{
+                disableCancel = true;
+                Searcher.Cancel();
+                }) />
 
-                        </Addon>
-                    </Addons>
-            </div>
-        </BarBrand>
-    </Bar>
+
+
+        }
+        else
+        {
+            <MudFab Style="min-width: 56px !important;" Class="d-flex" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick=@(()=>{SearchService.Search();}) />
+
+
+        }
+
+
+
+    </MudStack>
+
 
 </MudForm>
 
 @code {
-    List<ActiveDirectoryObjectType?> ObjectTypes = new List<ActiveDirectoryObjectType?> { ActiveDirectoryObjectType.All, ActiveDirectoryObjectType.User, ActiveDirectoryObjectType.Group, ActiveDirectoryObjectType.OU, ActiveDirectoryObjectType.Computer };
+    List<ActiveDirectoryObjectType> ObjectTypes = new() { ActiveDirectoryObjectType.All, ActiveDirectoryObjectType.User, ActiveDirectoryObjectType.Group, ActiveDirectoryObjectType.OU, ActiveDirectoryObjectType.Computer };
 
 
     public ADSearch Searcher { get; set; } = new ADSearch();

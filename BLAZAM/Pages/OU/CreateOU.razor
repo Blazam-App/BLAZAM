@@ -8,7 +8,7 @@
         <MudTabPanel>
             <ChildContent>
                 <MudText>
-                    <MudField>
+                    
 
                         <OUTreeView Label="Parent Organizational Unit"
                                     SelectedOUChanged="OUSelected">
@@ -17,15 +17,15 @@
                             </NodeContent>
                         </OUTreeView>
 
-                    </MudField>
+                    
 
-                    <MudField>
+                    
 
                         <MudTextField Label="Organizational Unit Name" @bind-Value=@newOUName />
 
 
-                    </MudField>
-                    <MudButton Color="Color.Primary" Clicked="CreateNewOU">Next</MudButton>
+                    
+                    <MudButton Color="Color.Primary" OnClick="CreateNewOU">Next</MudButton>
                 </MudText>
             </ChildContent>
             <TabContent>

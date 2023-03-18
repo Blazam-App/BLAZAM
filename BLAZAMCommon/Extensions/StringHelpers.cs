@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Common.Extensions
 {
-    public static  class StringHelpers
+    public static class StringHelpers
     {
         public static bool IsNullOrEmpty(this string? str)
         {
-            return str!=null && str.Length > 0;
+            return str == null || str.Length < 1;
         }
         public static bool IsUrlLocalToHost(this string url)
         {

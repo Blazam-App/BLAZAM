@@ -1,25 +1,24 @@
-﻿
-<MudMessageBox Title=@Title @ref="Modal" >
+﻿@inherits MudMessageBox
+<MudMessageBox OnCancel="OnClosing" Title=@Title @ref="Modal" >
     <MessageContent>
+        <MudText Color="Color">
             @ChildContent
+        </MudText>
     </MessageContent>
 </MudMessageBox>
 @code {
     #nullable disable warnings
-    //[Inject]
-    //protected INotificationService NotificationService{ get; set; }
+    [Inject]
+    protected AppSnackBarService NotificationService { get; set; }
     [Parameter]
     public IDatabaseContext? Context { get; set; }
 
-
-    [Parameter]
-    public string? Title{ get; set; }
-
     [Parameter]
     public bool AllowClose { get; set; } = true;
-    
+
+
     [Parameter]
-    public bool FocusTrap{ get; set; } = false;
+    public Color Color { get; set; } = Color.Default;
 
     [Parameter]
     public RenderFragment? ChildContent{ get; set; }
@@ -52,7 +51,7 @@
     //}
     public void Show()
     {
-        
+
         IsShown = true;
         Modal?.Show();
     }
@@ -61,6 +60,13 @@
         IsShown = false;
 
         Modal?.Close();
+    }
+    private async Task OnClosing(bool modalResult)
+    {
+        if (!AllowClose)
+        {
+            Modal.Show();
+        }
     }
 
 }

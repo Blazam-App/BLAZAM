@@ -2,25 +2,15 @@
 
 @if (Model.Id > 0)
 {
-    <Accordion>
-
-        <Collapse Visible="@collapseVisible">
-            <CollapseHeader>
-                <MudText Typo ="Typo.h1" Size="HeadingSize.Is5">
-                    <MudButton Clicked="@(()=>collapseVisible = !collapseVisible)">@Model.Name</MudButton>
-                </MudText>
-            </CollapseHeader>
-            <CollapseBody>
-
-                <EditAccessLevel Model=Model />
-
-            </CollapseBody>
-        </Collapse>
-    </Accordion>
-}else{
+    <MudExpansionPanel Text="@Model.Name">
+        <EditAccessLevel Model=Model />
+    </MudExpansionPanel>
+}
+else
+{
     <EditAccessLevel Model=Model />
 
-    }
+}
 
 
 @code {
@@ -29,5 +19,5 @@
     [Parameter]
     public AccessLevel Model { get; set; }
 
-  
+
 }

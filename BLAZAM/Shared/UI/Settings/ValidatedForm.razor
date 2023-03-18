@@ -6,12 +6,12 @@
     protected bool saveDisabled = true;
 
 
-    protected virtual Task OnValidation(ValidationsStatusChangedEventArgs eventArgs)
-    {
-        saveDisabled = eventArgs.Status == ValidationStatus.Error;
+    //protected virtual Task OnValidation(ValidationsStatusChangedEventArgs eventArgs)
+    //{
+    //    saveDisabled = eventArgs.Status == ValidationStatus.Error;
 
-        return Task.CompletedTask;
-    }
+    //    return Task.CompletedTask;
+    //}
 
     protected virtual async void Save()
     {
@@ -21,23 +21,23 @@
             {
                 if (Program.InDemoMode && !UserStateService.CurrentUsername.Equals("admin", StringComparison.OrdinalIgnoreCase))
                 {
-                    await NotificationService.Warning("Settings changes are not allowed in the demo");
+                    SnackBarService.Warning("Settings changes are not allowed in the demo");
                     return;
 
                 }
                 await Context.SaveChangesAsync();
-                await NotificationService.Success("Settings have been saved");
+                SnackBarService.Success("Settings have been saved");
             }
             catch (Exception ex)
             {
-                await NotificationService.Error(ex.Message);
+                SnackBarService.Error(ex.Message);
 
             }
             await InvokeAsync(StateHasChanged);
         }
         else
         {
-            await NotificationService.Success("Database not available");
+            SnackBarService.Success("Database not available");
 
         }
     }

@@ -5,7 +5,7 @@
 <AppPageTitle>Recycle Bin</AppPageTitle>
 
 <h3>Recycle Bin</h3>
-    <DataGrid TItem="IDirectoryEntryAdapter"
+    @*<DataGrid TItem="IDirectoryEntryAdapter"
           Data="deletedObjects"
           Responsive
      Virtualize>
@@ -15,7 +15,7 @@
         <DataGridColumn Field="@nameof(IDirectoryEntryAdapter.LastChanged)" Caption="Deleted At" />
         <DataGridColumn>
             <DisplayTemplate>
-            <MudButton Color="Color.Primary" Clicked="@(()=>{ Directory.RestoreTombstone(context,context.LastKnownParent); })">Restore</MudButton>
+            <MudButton Color="Color.Primary" OnClick="@(()=>{ Directory.RestoreTombstone(context,context.LastKnownParent); })">Restore</MudButton>
 
             </DisplayTemplate>
 
@@ -23,7 +23,7 @@
         </DataGridColumn>
 
     </DataGrid>
-    
+    *@
 
 
 

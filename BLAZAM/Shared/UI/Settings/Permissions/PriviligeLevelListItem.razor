@@ -1,64 +1,46 @@
 ﻿@inherits ValidatedForm
-<ListGroupItem Name="@Group?.CanonicalName">
-    <Accordion>
-        <Collapse Visible="@collapse1Visible">
-            <CollapseHeader>
-                <MudText Typo ="Typo.h1" Size="HeadingSize.Is5">
-                    <MudButton Clicked="@(()=>collapse1Visible = !collapse1Visible)">
-                        <Row Width="Width.Is100">
-                            <Column ColumnSize="ColumnSize.Is6.OnTablet">
-                                @Group?.CanonicalName
+<MudExpansionPanel Text="">
+    <TitleContent>
+        <MudStack Row=true>
+            <MudText Typo="Typo.h6">
 
-                            </Column>
-                            <Column ColumnSize="ColumnSize.Is6.OnTablet">
-                                <MudSwitch Label="Super User Group" Checked="Level?.IsSuperAdmin" Disabled />
+                @Group?.CanonicalName
+            </MudText>
+
+            <MudSwitch Label="Super User Group" Checked="Level?.IsSuperAdmin" Disabled />
+        </MudStack>
 
 
-                            </Column>
-                        </Row>
-                            
-                    </MudButton>
-                </MudText>
-            </CollapseHeader>
-            <CollapseBody>
-                    <Row>
-                        <Column ColumnSize="ColumnSize.Is4.OnDesktop">
-                            
-                                <MudField>
-                                    
-                                        <ADAutoComplete Label="@AppLocalization["Delgate Name"]"
-                                            SearchObjectType="ActiveDirectoryObjectType.All" 
-                                            @bind-SelectedResult=@Group 
-                                            CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group"/>
-                                        @*<ADGroupAutoComplete @bind-SelectedGroup="@Group"/>*@
-                                    
-                                </MudField>
-
-                        </Column>
-                        <Column ColumnSize="ColumnSize.Is2.OnDesktop">
-                                <MudField>
-
-                            <MudSwitch Label="Super User Group" Disabled=@(Program.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Level.IsSuperAdmin" />
+    </TitleContent>
+    <ChildContent>
+        <MudStack Row=true>
 
 
-                                    
-                                </MudField>
 
-                        </Column>
-                        <Column ColumnSize="ColumnSize.Is4.OnDesktop">
-                            <MudButton VerticalAlignment="VerticalAlignment.Middle" @onclick="Save" Color="Color.Success">Save Changes</MudButton>
-                        </Column>
-                    <Column ColumnSize="ColumnSize.Is2.OnDesktop">
-                        <AppCloseButton VerticalAlignment="VerticalAlignment.Middle" @onclick="DeletePermissionGroup" Color="Color.Success" />
-                    </Column>
-                    </Row>
+            <ADAutoComplete Label="@AppLocalization["Delgate Name"]"
+                            SearchObjectType="ActiveDirectoryObjectType.All"
+                            @bind-SelectedResult=@Group
+                            CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
+            @*<ADGroupAutoComplete @bind-SelectedGroup="@Group"/>*@
 
-             
-            </CollapseBody>
-        </Collapse>
-    </Accordion>
 
-</ListGroupItem>
+
+
+
+            <MudSwitch Label="Super User Group" Disabled=@(Program.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Level.IsSuperAdmin" />
+
+
+
+
+
+            <MudButton VerticalAlignment="VerticalAlignment.Middle" @onclick="Save" Color="Color.Success">Save Changes</MudButton>
+            <AppCloseButton VerticalAlignment="VerticalAlignment.Middle" @onclick="DeletePermissionGroup" Color="Color.Success" />
+        </MudStack>
+
+
+    </ChildContent>
+</MudExpansionPanel>
+
 
 @code {
 
@@ -82,7 +64,7 @@
     {
         Level.DeletedAt = DateTime.UtcNow;
         await Context.SaveChangesAsync();
-        await NotificationService.Info("Permission Delegate removed.");
+        SnackBarService.Info("Permission Delegate removed.");
 
     }
     private async void Save()

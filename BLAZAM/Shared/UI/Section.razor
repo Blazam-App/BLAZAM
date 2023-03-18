@@ -5,7 +5,7 @@
         <div Class="section-title-container">
 
             <div Background=BackgroundColor Class="section-title">
-                <div class="section-title-text @HeadingSizeString text-@Color.Name">@Title</div>
+                <MudText Color="TextColor" class="section-title-text">@Title</MudText>
                
             </div>
         </div>
@@ -20,7 +20,7 @@
         <div Class="section-title-container">
 
             <div Class="section-title">
-                <div class="section-title-text @HeadingSizeString text-@Color.Name">@Title</div>
+                <MudText Color="TextColor" class="section-title-text">@Title</MudText>
             </div>
         </div>
 
@@ -32,7 +32,6 @@
     string hmargin = "";
     string vspacing = "";
     string vmargin = "";
-    Tooltip tooltip;
     @if (SectionHeaderPosition == HeaderPosition.TopLeft || SectionHeaderPosition == HeaderPosition.TopRight)
     {
         vspacing = " top: -25px";
@@ -94,27 +93,27 @@
     [Parameter]
     public string Title { get; set; }
 
-    [Parameter]
-    public IFluentSpacing Margin { get; set; }
+    //[Parameter]
+    //public IFluentSpacing Margin { get; set; }
 
-    [Parameter]
-    public IFluentSpacing Padding { get; set; }
+    //[Parameter]
+    //public IFluentSpacing Padding { get; set; }
 
     /// <summary>
     /// Color for the text
     /// </summary>
     [Parameter]
-    public TextColor TextColor { get; set; } = Color.Secondary;
+    public Color TextColor { get; set; } = Color.Secondary;
 
-    [Parameter]
-    public Background BackgroundColor { get; set; } = Background.Light;
+    //[Parameter]
+    //public Color BackgroundColor { get; set; } = MudBlazor.ThemeManager.ThemePaletteColor.Surface;
+    string HeadingSizeString { get { return "h4"; } }
 
-    [Parameter]
-    public IFluentBorder Border { get; set; } = Blazorise.Border.Rounded.Is1.Dark.OnAll;
+    //[Parameter]
+    //public IFluentBorder Border { get; set; } = Blazorise.Border.Rounded.Is1.Dark.OnAll;
 
-    string HeadingSizeString { get { return "h" + HeadingSize.ToString(); } }
-    [Parameter]
-    public HeadingSize HeadingSize { get; set; } = HeadingSize.Is4;
+    //[Parameter]
+    //public HeadingSize HeadingSize { get; set; } = HeadingSize.Is4;
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }

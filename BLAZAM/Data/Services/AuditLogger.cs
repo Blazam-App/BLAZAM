@@ -4,7 +4,6 @@ using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Models.Database.Audit;
-using Blazorise;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Services.TestManagement.TestPlanning.WebApi;
 

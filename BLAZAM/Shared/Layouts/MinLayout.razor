@@ -4,19 +4,14 @@
 
 
 <PageTitle>Loading</PageTitle>
-<Layout Sider>
-    <LayoutSider>
-        <LayoutSiderContent>
-            <ErrorMenu />
-        </LayoutSiderContent>
-    </LayoutSider>
     <MudLayout>
-        <LayoutHeader Fixed>
+            <ErrorMenu />
+        <MudContainer Fixed>
             @if (PageHeader != null)
             {
                 @PageHeader
             }
-        </LayoutHeader>
+        </MudContainer>
         <MudMainContent>
             <MudCard>
                 <MudCardBody>
@@ -26,7 +21,7 @@
             </MudCard>
         </MudMainContent>
 
-        <LayoutFooter>
+        <MudContainer Fixed>
             @if (Program.InstallationCompleted)
             {
                 <DirectoryConnectingIndicator />
@@ -34,9 +29,8 @@
             }
             <AppFooter />
 
-        </LayoutFooter>
+        </MudContainer>
     </MudLayout>
-</MudLayout>
 
 @code {
     [Parameter]

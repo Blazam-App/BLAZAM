@@ -37,27 +37,27 @@
 
                             @if (Group.CanEdit)
                             {
-                                <MudMenuItem Clicked="ToggleEditMode">Edit...</MudMenuItem>
+                                <MudMenuItem OnClick="ToggleEditMode">Edit...</MudMenuItem>
                             }
-                            <MudMenuItem Clicked="@(()=>{AssignMemberModal?.Show();})">Add Group Member...</MudMenuItem>
+                            <MudMenuItem OnClick="@(()=>{AssignMemberModal?.Show();})">Add Group Member...</MudMenuItem>
                             @if (Group.CanAssign)
                             {
                                 RefreshGroupGroupsAsync();
-                                <MudMenuItem Clicked="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
+                                <MudMenuItem OnClick="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
                             }
 
                             @if (Group.CanRename)
                             {
-                                <MudMenuItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
+                                <MudMenuItem OnClick="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
 
                             }
                             @if (Group.CanMove)
                             {
-                                <MudMenuItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
+                                <MudMenuItem OnClick="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
                             }
                             @if (Group.CanDelete)
                             {
-                                <MudMenuItem Clicked="@DeleteGroup">Delete...</MudMenuItem>
+                                <MudMenuItem OnClick="@DeleteGroup">Delete...</MudMenuItem>
                             }
                         </MudMenu>
                     </MudItem>
@@ -95,32 +95,32 @@
 
 
 
-            <MudField>
+            
                 <MudTextField Label="@ULoc["Group Name"]" @bind-Value="@Group.CanonicalName" Disabled />
 
 
-            </MudField>
+            
 
 
 
 
-            <MudField>
+            
                 <MudTextField Label="@ULoc["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
 
 
-            </MudField>
+            
 
-            <MudField>
+            
                         <MudTextField Label="@ULoc["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
 
 
-            </MudField>
+            
 @*
             @if (Group.HasMembers)
             {
                 <Section Title="Members">
                     <div>
-                        <ListGroup Margin=Margin.Is3.OnX Background="Background.Light" TextColor="Color.Dark">
+                        <ListGroup Margin=Margin.Is3.OnX Background="Background.Light" Color="Color.Dark">
                             @if (Group.UserMembers.Count > 0)
                             {
                                 <ListGroupItem Background="Background.Dark">
@@ -130,7 +130,7 @@
                             @foreach (var user in Group.UserMembers)
                             {
                                 var linkAdd = "/users/search/" + user.SamAccountName;
-                                <ListGroupItem Background="Background.Light" TextColor="Color.Dark" Padding="Padding.Is0.OnY.Is3.OnX" Style="height:1.5em">
+                                <ListGroupItem Background="Background.Light" Color="Color.Dark" Padding="Padding.Is0.OnY.Is3.OnX" Style="height:1.5em">
                                     <GroupMember Member=user Group="Group" To="@linkAdd" OnGroupMembershipChange="@((change)=>{
 InvokeAsync(StateHasChanged);
 })" />
@@ -145,7 +145,7 @@ InvokeAsync(StateHasChanged);
                             @foreach (var group in Group.GroupMembers)
                             {
                                 string linkAdd = "/groups/search/" + group.SamAccountName;
-                                <ListGroupItem Background="Background.Light" TextColor="Color.Dark" Padding="Padding.Is0.OnY.Is3.OnX" Style="height:1.5em">
+                                <ListGroupItem Background="Background.Light" Color="Color.Dark" Padding="Padding.Is0.OnY.Is3.OnX" Style="height:1.5em">
                                     <GroupMember Member=group Group=Group To=@linkAdd OnGroupMembershipChange="@((change)=>{InvokeAsync(StateHasChanged);})" />
                                 </ListGroupItem>
                             }
@@ -157,7 +157,7 @@ InvokeAsync(StateHasChanged);
             @if (Group.CanReadField(ActiveDirectoryFields.MemberOf))
             {
 
-                <MudField ColumnSize="ColumnSize.Is12" Horizontal>
+                
 
                     <MudFieldBody ColumnSize="ColumnSize.Is12">
                         <Row>
@@ -192,7 +192,7 @@ InvokeAsync(StateHasChanged);
                             }
                         </Row>
 
-                </MudField>
+                
             }
 *@
 
@@ -248,7 +248,7 @@ InvokeAsync(StateHasChanged);
             await AuditLogger.Group.Changed(Group, changes);
 
             EditMode = false;
-            await NotificationService.Success("The changes made to this group have been saved.", "Changes Saved");
+            SnackBarService.Success("The changes made to this group have been saved.", "Changes Saved");
             await InvokeAsync(StateHasChanged);
 
         }
@@ -261,7 +261,7 @@ InvokeAsync(StateHasChanged);
             try
             {
                 Group.Delete();
-                await NotificationService.Success(Group.CanonicalName + " has been deleted.", "Group Deleted");
+                SnackBarService.Success(Group.CanonicalName + " has been deleted.", "Group Deleted");
 
                 Group = null;
                 Nav.NavigateTo("/groups/search");
@@ -269,7 +269,7 @@ InvokeAsync(StateHasChanged);
             }
             catch (ApplicationException ex)
             {
-                await NotificationService.Error(ex.Message);
+                SnackBarService.Error(ex.Message);
             }
             await InvokeAsync(StateHasChanged);
         }

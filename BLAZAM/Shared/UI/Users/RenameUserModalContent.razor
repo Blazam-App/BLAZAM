@@ -1,67 +1,67 @@
 ﻿@inherits AppModalContent
 <LoadingIndicator Visible=LoadingData>
 
-    <div Background="Background.Light" TextColor="Color.Dark">
+    <div Background="Background.Light" Color="Color.Dark">
         <Section Title=@UserLocalization["Name"]>
 
 
             @if (User.CanReadField(ActiveDirectoryFields.GivenName))
             {
-                <MudField>
+                
                 
                         <MudTextField Label="@UserLocalization["First Name"]" @bind-Value="@_privateUserInstance.GivenName" />
 
                 
-                </MudField>
+                
             }
             @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
             {
-                <MudField>
+                
                 
                         <MudTextField Label="@UserLocalization["Middle Name"]" @bind-Value="@_privateUserInstance.MiddleName" />
 
                 
-                </MudField>
+                
             }
             @if (User.CanReadField(ActiveDirectoryFields.SN))
             {
-                <MudField>
+                
                 
                         <MudTextField Label="@UserLocalization["Last Name"]" @bind-Value="@_privateUserInstance.Surname" />
 
                 
-                </MudField>
+                
             }
             @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
             {
-                <MudField>
+                
                 
                     <MudTextField T="string" Label="@UserLocalization["Display Name"]" Text="@_privateUserInstance.DisplayName" TextChanged="DisplayNameChanged" />
 
                 
-                </MudField>
+                
             }
 
         </Section>
         @if (User.CanEditField(ActiveDirectoryFields.SAMAccountName))
         {
-            <MudField>
+            
             
                     <MudTextField Label="@UserLocalization["Username"]" @bind-Value="@_privateUserInstance.SamAccountName" />
 
             
-        </MudField>
+        
         }
         @if (User.CanEditField(ActiveDirectoryFields.Mail))
         {
-            <MudField>
+            
            
                     <MudTextField Label="@UserLocalization["Email Address"]" @bind-Value="@_privateUserInstance.Email" />
 
             
-        </MudField>
+        
         }
-        <MudButton Disabled=saveDisabled Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
+        <MudButton Disabled=saveDisabled Color=Color.Primary OnClick="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
     </div>
 </LoadingIndicator>
 
@@ -102,7 +102,7 @@
         }
         else
         {
-            await NotificationService.Error("That name already exists. Please choose a different Display Name", "Name Exists");
+            SnackBarService.Error("That name already exists. Please choose a different Display Name", "Name Exists");
         }
         LoadingData = false;
 

@@ -7,7 +7,7 @@
         @foreach (var user in LockedUsers)
         {
 
-            <MudCard Background="Background.Light" TextColor="Color.Dark" Style="cursor:pointer" @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
+            <MudCard Background="Background.Light" Color="Color.Dark" Style="cursor:pointer" @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
 
                 @user.DisplayName <br>
                 @user.SamAccountName <br>

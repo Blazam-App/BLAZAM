@@ -1,23 +1,23 @@
 ﻿@inherits AppModalContent
-<div Background="Background.Light" TextColor="Color.Dark">
+<div Background="Background.Light" Color="Color.Dark">
 <Section Title=@UserLocalization["OU"]>
 
 
     @if (OU.CanReadField(ActiveDirectoryFields.CanonicalName))
     {
-        <MudField>
+        
             
                     <MudTextField Label="@UserLocalization["Name"]" @bind-Value="@OU.CanonicalName" />
 
             
-        </MudField>
+        
     }
     
     
 </Section>
 
 
-    <MudButton Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
+    <MudButton Color=Color.Primary OnClick="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
 </div>
 @code {
 
@@ -30,7 +30,7 @@
     
         async Task SaveChanges()
     {
-        await NotificationService.Warning("The ou has been renamed but changes must be saved.", "OU renamed");
+        SnackBarService.Warning("The ou has been renamed but changes must be saved.", "OU renamed");
         Close();
 
     }

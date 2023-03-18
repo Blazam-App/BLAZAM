@@ -1,121 +1,98 @@
-﻿
-@inherits SettingsComponents
+﻿@inherits SettingsComponents
 
 
 <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
-    <MudText Typo ="Typo.h1">@SettingsLocalization["Application Settings"]</MudText>
+    <MudText Typo="Typo.h4">@SettingsLocalization["Application Settings"]</MudText>
     <MudForm @onsubmit="Save">
 
-        <Validations Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
 
-            <Validation>
-                <SettingsField>
-                    <MudFieldLabel>@SettingsLocalization["Application Name"]</FieldLabel>
-                    
-                        <MudTextField  Placeholder="Give you're application a display name" @bind-Value="@settings.AppName">
-                            
-                                
-                                <ValidationNone>
-                                    You must give the Web Application a personalized name.
-                                </ValidationNone>
-                            
-                        </MudTextField >
-                    
-                </SettingsField>
-            </Validation>
+        <SettingsField>
 
-            <Validation>
-                <SettingsField>
-                    <MudFieldLabel>@SettingsLocalization["Homepage Message"]</FieldLabel>
-                    
-                        <MemoEdit Placeholder="Place a custom welcome message for your users on the dashboard" @bind-Value="@settings.MOTD">
-                            
-                                
-                            
-                        </MemoEdit>
-                    
-                </SettingsField>
-
-            </Validation>
-
-            <Validation>
-                <SettingsField>
-                    <MudFieldLabel>@SettingsLocalization["Force Https"]</FieldLabel>
-                    
-                        <MudSwitch TValue="bool" @bind-Checked="@settings.ForceHTTPS" />
-                    
-                </SettingsField>
-
-            </Validation>
-            <Validation>
-                <SettingsField>
-                    <MudFieldLabel>
-                        @SettingsLocalization["User Helpdesk URL"]
-                        <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
-                            <Badge Background="Background.Warning" Pill>!</Badge>
-                        </MudTooltip>
-                    </FieldLabel>
-                    
-                        <MudTextField  Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
-                            
-                                
-                            
-                        </MudTextField >
-                    
-                </SettingsField>
-
-            </Validation>
+                <MudTextField Label="@SettingsLocalization["Application Name"]" Placeholder="Give you're application a display name" @bind-Value="@settings.AppName">
 
 
-            <SettingsField>
+                    <ValidationNone>
+                        You must give the Web Application a personalized name.
+                    </ValidationNone>
 
-                <MudFieldLabel>
-                    @SettingsLocalization["Branding Icon"]
-                    @if (settings != null && settings.AppIcon != null && settings.AppIcon.Length > 0)
-                    {
-                        <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
-                        <MudTooltip Text="Remove custom icon">
-                            <AppCloseButton Clicked="@(()=>{settings.AppIcon=null;})" />
-                        </MudTooltip>
-                    }
-                </FieldLabel>
-                
-                    <MudFileUpload AutoReset Upload="LoadIcon" />
-                
-                </SettingsField>
+                </MudTextField>
+
+        </SettingsField>
+
+        <SettingsField>
+            <MudTextField T="string" Label="@SettingsLocalization["Homepage Message"]" Variant="Variant.Text" @bind-Text="@settings.MOTD" Lines="5" Placeholder="Place a custom welcome message for your users on the dashboard" />
 
 
 
-                <Validation Validator="AppValidationRule.IsFqdn">
-                <SettingsField>
-                    <MudFieldLabel>@SettingsLocalization["Website FQDN"]</FieldLabel>
-                    <MudFieldHelp>Enter the fqdn of the published website. (eg: blazam.mydomain.company)</FieldHelp>
-                    
-                        <MudTextField  Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN">
-                            
-                                
-                                <ValidationNone>
-                                    You must give the Web Application a FQDN to use auto updates.
-                                </ValidationNone>
-                            
-                        </MudTextField >
-                    
-                </SettingsField>
-                </Validation>
 
-                <SettingsField>
-                
-                    <MudButton Disabled="saveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
-                
-                </SettingsField>
+        </SettingsField>
 
 
-                </Validations>
-                </MudForm>
-                </LoadingIndicator>
+        <SettingsField>
 
-                @code {
-        AppSettings settings = new AppSettings();
+            <MudSwitch Label="@SettingsLocalization["Force Https"]" TValue="bool" @bind-Checked="@settings.ForceHTTPS" />
+
+        </SettingsField>
+
+        <SettingsField>
+
+            <MudTextField Label="@SettingsLocalization["User Helpdesk URL"]" Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
+                <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
+                    <MudBadge>!</MudBadge>
+                </MudTooltip>
+
+
+            </MudTextField>
+
+        </SettingsField>
+
+
+
+        <SettingsField>
+
+            <MudContainer>
+                @SettingsLocalization["Branding Icon"]
+                @if (settings != null && settings.AppIcon != null && settings.AppIcon.Length > 0)
+                {
+                    <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+                    <MudTooltip Text="Remove custom icon">
+                        <AppCloseButton OnClick="@(()=>{settings.AppIcon=null;})" />
+                    </MudTooltip>
+                }
+            </MudContainer>
+            <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
+                <ButtonTemplate>
+                    <MudButton HtmlTag="label"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.CloudUpload"
+                               for="@context">
+                        Upload Icon
+                    </MudButton>
+                </ButtonTemplate>
+            </MudFileUpload>
+
+        </SettingsField>
+
+
+
+        <SettingsField>
+
+            <MudTextField Label="@SettingsLocalization["Website FQDN"]" HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
+        </SettingsField>
+
+        <SettingsField>
+
+            <MudButton Disabled="saveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+        </SettingsField>
+
+
+    </MudForm>
+</LoadingIndicator>
+
+@code {
+    AppSettings settings = new AppSettings();
 
     protected override async Task OnInitializedAsync()
     {
@@ -128,9 +105,9 @@
     }
 
 
-    private async void LoadIcon(FileUploadEventArgs e)
+    private async void LoadIcon(IBrowserFile e)
     {
-        using (var stream = e.File.OpenReadStream(5000000))
+        using (var stream = e.OpenReadStream(5000000))
         {
             using (var memoryStream = new MemoryStream())
             {

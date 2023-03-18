@@ -4,7 +4,7 @@
 
 <EditForm OnSubmit="SaveTemplate" Model="DirectoryTemplate">
     <Row Width="Width.Is100" Margin="Margin.Is2">
-        <MudField>
+        
 
             <MudTextField Label="@SettingsLocalization["Template Name"]" @bind-Value=DirectoryTemplate.Name>
 
@@ -12,21 +12,19 @@
 
             </MudTextField>
 
-        </MudField>
+        
 
-        <MudField>
-            <MudFieldLabel>
-                @SettingsLocalization["Template Category"]</FieldLabel>
+        
+            <MudText>
+                @SettingsLocalization["Template Category"]
+            </MudText>
+                <MudAutocomplete T="string" Label="US States" @bind-Value="DirectoryTemplate.Category" SearchFunc="@SearchCategories"
+                                 ResetValueOnEmptyText="false"
+                                 CoerceText="true" CoerceValue="true"
+                                 AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" />
+             
 
-                <Autocomplete FreeTyping
-                              @bind-Search=DirectoryTemplate.Category
-                              TItem=string
-                              TValue="string"
-                              TextField="item=>item"
-                              ValueField="item=>item"
-                              Data="Context.DirectoryTemplates.Select(t=>t.Category).Distinct()" />
-
-        </MudField>
+        
         <MudCard>
             Variables:
             <Row Width="Width.Is100">
@@ -53,7 +51,7 @@
         <Section Padding=Padding.Is0 Title="Account and Name">
 
 
-            <MudField ColumnSize="ColumnSize.Is6.OnTablet">
+            
 
                 <MudTextField Label="Username Format" @bind-Value=DirectoryTemplate.UsernameFormula>
 
@@ -61,8 +59,8 @@
 
                 </MudTextField>
 
-            </MudField>
-            <MudField>
+            
+            
 
                 <MudTextField Label="Display Name Format" @bind-Value=DirectoryTemplate.DisplayNameFormula>
 
@@ -70,9 +68,9 @@
 
                 </MudTextField>
 
-            </MudField>
+            
 
-            <MudField>
+            
 
                     <MudTextField Label="Password" Placeholder="{AlphaNum}{Alpha:U}{Alpha:L}{Num}{Num}{Num}" @bind-Value=DirectoryTemplate.PasswordFormula>
 
@@ -80,7 +78,7 @@
 
                     </MudTextField>
 
-            </MudField>
+            
 
 
 
@@ -115,7 +113,7 @@
                            !DirectoryTemplate.FieldValues.Any(f => f.Field.Equals(field)) &&
                            field.IsActionAppropriateForObject(DirectoryTemplate.ObjectType))
                             {
-                                <MudMenuItem Clicked=@(()=>{DirectoryTemplate.FieldValues.Add(new(){ Field=field});}) Color="Color.Secondary">@field.DisplayName</MudMenuItem>
+                                <MudMenuItem OnClick=@(()=>{DirectoryTemplate.FieldValues.Add(new(){ Field=field});}) Color="Color.Secondary">@field.DisplayName</MudMenuItem>
 
                             }
 
@@ -128,18 +126,18 @@
 
             @foreach (var field in DirectoryTemplate.FieldValues.OrderBy(fv => fv.Field.DisplayName))
             {
-                <MudField>
+                
                         <Row>
 
 
                                 <MudTextField Label="@field.Field.DisplayName" @bind-Value=field.Value />
 
-                                <AppCloseButton Clicked=@(()=>{DirectoryTemplate.FieldValues.Remove(field);InvokeAsync(StateHasChanged);}) />
+                                <AppCloseButton OnClick=@(()=>{DirectoryTemplate.FieldValues.Remove(field);InvokeAsync(StateHasChanged);}) />
                         </Row>
-                </MudField>
+                
             }
         </Section>
-        <MudField>
+        
                 @if (SelectedOU != null)
                 {
 
@@ -152,14 +150,14 @@
 
                 }
 
-        </MudField>
-        <MudField>
+        
+        
 
 
                 <ADAutoComplete Label="@SettingsLocalization["Groups"]" Multiple @bind-SelectedResults="@SelectedGroups" />
 
 
-        </MudField>
+        
     </Row>
 
     @{
@@ -176,16 +174,16 @@
     <MudButton Disabled=saveDisabled Color="Color.Success" ButtonType="ButtonType.Submit">@buttonText</MudButton>
     @if (DirectoryTemplate.Id == 0)
     {
-        <MudButton Color="Color.Warning" Clicked="@(()=>{ DirectoryTemplate=null;})">Cancel</MudButton>
+        <MudButton Color="Color.Warning" OnClick="@(()=>{ DirectoryTemplate=null;})">Cancel</MudButton>
 
     }
 </EditForm>
 
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     bool ouCollapseVisible = true;
-    Validations? validations;
+    //Validations? validations;
     List<ActiveDirectoryField> fields = new();
 
     List<TemplateVariable> usernameVariables = new List<TemplateVariable>()
@@ -251,6 +249,12 @@
 
     List<IDirectoryEntryAdapter> SelectedGroups = new();
 
+    async Task<IEnumerable<string>> SearchCategories(string searchTerm)
+    {
+        return Context.DirectoryTemplates.Select(t => t.Category).Distinct().Where(s => s.Contains(searchTerm) || s.Equals(searchTerm));
+    }
+
+
     async Task RefreshGroups()
     {
         SelectedGroups.Clear();
@@ -302,7 +306,7 @@
                 var result = await Context.SaveChangesAsync();
                 if (result > 0)
                 {
-                    await NotificationService.Success(null, DirectoryTemplate.Name + " was added.");
+                    SnackBarService.Success("", DirectoryTemplate.Name + " was added.");
                     // DirectoryTemplate = new();
 
                 }
@@ -312,7 +316,7 @@
                 switch (ex.InnerException?.HResult)
                 {
                     case -2146232060:
-                        await NotificationService.Error("Each template must be uniquely named.", "Duplicate Template Name");
+                        SnackBarService.Error("Each template must be uniquely named.", "Duplicate Template Name");
 
                         break;
                 }
@@ -329,11 +333,11 @@
             var result = await Context.SaveChangesAsync();
             if (result > 0)
             {
-                await NotificationService.Success("Template changes saved");
+                SnackBarService.Success("Template changes saved");
             }
             else
             {
-                await NotificationService.Warning("No changes");
+                SnackBarService.Warning("No changes");
 
             }
         }

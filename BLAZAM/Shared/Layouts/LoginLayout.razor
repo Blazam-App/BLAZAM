@@ -15,18 +15,16 @@
         <MudMainContent>
 
             <Row>
-                <div style="height:fit-content; max-height:600px;max-width:550px;position: absolute;
+                <div style="height:fit-content; max-height:600px;max-width:450px;position: absolute;
                             top:0;
                             bottom: 0;
                             left: 0;
                             right: 0;
 
                             margin: auto;">
-                    <MudCard>
-                        <MudCardBody>
+                    <MudCard Elevation="10">
                             @Body
 
-                        </MudCardBody>
                     </MudCard>
                            
 
@@ -34,7 +32,7 @@
                     {
                         <Row>
                             <MudText>Please wait or use admin login...</MudText>
-                            <Loader  Margin="Margin.IsAuto.OnX" />
+                            <Loader/>
                         </Row>
                     }
                     @if (monitor.DirectoryConnected == ServiceConnectionState.Down)

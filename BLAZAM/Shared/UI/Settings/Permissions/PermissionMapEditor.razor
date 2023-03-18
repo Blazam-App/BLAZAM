@@ -5,7 +5,7 @@
 
 
     <MudForm @onsubmit="@Save">
-            <MudField>
+            
            @* <MudFieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["User Groups"]</FieldLabel>
             <MudFieldBody ColumnSize="ColumnSize.Is10">
                     @if (!ReadOnly)
@@ -39,8 +39,8 @@
 
 *@
                 
-            </MudField>
-            <MudField>
+            
+            
            @* <MudFieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["Access Levels"]</FieldLabel>
             <MudFieldBody ColumnSize="ColumnSize.Is10">
                 <Validation @ref=AccValidation Validator="ValidationRule.IsNotEmpty">
@@ -76,11 +76,11 @@
                     </Validation>
 *@
                 
-            </MudField>
+            
             @if (!ReadOnly)
             {
                 <MudButton Color=Color.Success Disabled=saveDisabled ButtonType="ButtonType.Submit">Save Mapping</MudButton>
-                <AppCloseButton Clicked="DeleteMapping" />
+                <AppCloseButton OnClick="DeleteMapping" />
             }
 
     </MudForm>
@@ -169,7 +169,7 @@
             await Context.SaveChangesAsync();
         }
         await InvokeAsync(StateHasChanged);
-        await NotificationService.Success("Mapping deleted");
+        SnackBarService.Success("Mapping deleted");
         await MappingDeleted.InvokeAsync();
 
     }
@@ -179,7 +179,7 @@
             Context.PermissionMap.Add(Map);
         var result = Context.SaveChanges();
         await InvokeAsync(StateHasChanged);
-        await NotificationService.Success("Mapping saved");
+        SnackBarService.Success("Mapping saved");
 
     }
     void ValidateCheck()
