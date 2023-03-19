@@ -4,42 +4,28 @@
     <MudCardHeader>
         @OU?.Name
     </MudCardHeader>
-    <MudCardBody>
-        @if (inheritedMappings.Count > 0)
-        {
-            <Accordion>
-                <Collapse Visible="@collapseVisible">
-                    <CollapseHeader>
-                        <MudText Typo ="Typo.h1" Size="HeadingSize.Is5">
-                            <MudButton OnClick="@(()=>collapseVisible = !collapseVisible)">@SettingsLocalization["Inherited Permissions"]</MudButton>
-                        </MudText>
-                    </CollapseHeader>
-                    <CollapseBody>
-                        @foreach (var map in inheritedMappings)
-                        {
-                            <MudCard>
-                                <MudCardBody>
-                                    <PermissionMapEditor Map="map" ReadOnly=true />
-                                </MudCardBody>
-                            </MudCard>
-                        }
-                    </CollapseBody>
-            </Collapse>
+    @if (inheritedMappings.Count > 0)
+    {
+        <MudExpansionPanel Text="@SettingsLocalization["Inherited Permissions"]">
 
-        </Accordion>
-        }
-        @foreach (var map in appliedMappings)
-        {
-            <PermissionMapEditor MappingDeleted="@(()=>{RefreshData();})" Map="map" />
-        }
-        @if (NewMapping != null)
-        {
-            <PermissionMapEditor MappingDeleted="@(()=>{RefreshData();})" Map="NewMapping" />
-        }
-    </MudCardBody>
-    <MudCardFooter>
-        <MudButton OnClick="AddNewMapping" Color="Color.Success">Add new mapping</MudButton>
-    </MudCardFooter>
+            @foreach (var map in inheritedMappings)
+            {
+                <MudCard>
+                    <PermissionMapEditor Map="map" ReadOnly=true />
+                </MudCard>
+            }
+        </MudExpansionPanel>
+
+    }
+    @foreach (var map in appliedMappings)
+    {
+        <PermissionMapEditor MappingDeleted="@(()=>{RefreshData();})" Map="map" />
+    }
+    @if (NewMapping != null)
+    {
+        <PermissionMapEditor MappingDeleted="@(()=>{RefreshData();})" Map="NewMapping" />
+    }
+    <MudButton OnClick="AddNewMapping" Color="Color.Success">Add new mapping</MudButton>
 </MudCard>
 
 

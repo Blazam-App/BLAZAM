@@ -1,48 +1,55 @@
 ﻿@inherits AppComponentBase
-<LoadingIndicator Visible=LoadingData>
-    @if (RootOU != null && RootOU.Any())
-    {
-        <MudText>@Label</MudText>
-        <MudTreeView Items="RootOU"
-                 @bind-SelectedValue="SelectedOU">
-            <ItemTemplate>
-                @NodeContent
-            </ItemTemplate>
-        </MudTreeView>
+@if (RootOU != null && RootOU.Any())
+{
+    <MudText>@Label</MudText>
+    <MudTreeView T="IADOrganizationalUnit" ServerData="GetChildren" Items="RootOU"
+             @bind-SelectedValue="SelectedOU">
+        <ItemTemplate>
+            <MudTreeViewItem @bind-Expanded="@context.IsExpanded"
+                         Value="@context"
+                         Items="@context.Children.ToHashSet()">
+                <Content>
+                    @if (Badge != null)
+                    {
+                        <MudBadge Content="Badge" Overlap="true" Class="mx-6 my-4">
+                            <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@context.HasChildren()" />
+                            <MudIcon Icon="@Icons.Material.Filled.Folder" Class="ml-0 mr-2" Color="@Color.Default" />
+                            <MudText>@context.CanonicalName</MudText>
+                            @EndAdornment.Invoke(context)
+                        </MudBadge>
+                    }
+                    else
+                    {
+                        <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@context.HasChildren()" />
+                        <MudIcon Icon="@Icons.Material.Filled.Folder" Class="ml-0 mr-2" Color="@Color.Default" />
+                        <MudText>@context.CanonicalName</MudText>
+                        @EndAdornment.Invoke(context)
+                    }
+                </Content>
+            </MudTreeViewItem>
+        </ItemTemplate>
+    </MudTreeView>
 
 
-        @* <TreeView Nodes=RootOU
-    TNode=IADOrganizationalUnit
-    GetChildNodes="@(item => item.Children.Where(c=>c.CanRead||
-    (StartingSelectedOU!=null &&
-    (StartingSelectedOU.DN.Contains(c.DN) == true))))"
-    HasChildNodes="@(item => item.Children?.Any(c=>c.CanRead||
-    (StartingSelectedOU!=null &&
-    (StartingSelectedOU.DN.Contains(c.DN) == true))) == true)"
-    @bind-SelectedNode="SelectedOU"
-    @bind-ExpandedNodes="ExpandedNodes"
-    NodeContent="@NodeContent">
 
+}
 
-    >
-
-    </TreeView>*@
-
-    }
-
-</LoadingIndicator>
 @code {
 
 #nullable disable warnings
     [Parameter]
     public bool StartRootExpanded { get; set; } = true;
 
-     [Parameter]
+    [Parameter]
     public string? Label { get; set; }
 
 
     [Parameter]
-    public RenderFragment<IADOrganizationalUnit>? NodeContent { get; set; }
+    public object? Badge { get; set; }
+
+
+    [Parameter]
+    public RenderFragment<IADOrganizationalUnit>? EndAdornment { get; set; }
 
     IADOrganizationalUnit? _selectedNode;
 
@@ -117,8 +124,7 @@
             OpenToSelected();
         LoadingData = false;
 
-        if (NodeContent == null)
-            throw new ApplicationException("OU Tree was provided no NodeContent template");
+
         await InvokeAsync(StateHasChanged);
 
 
@@ -147,6 +153,10 @@
 
 
 
+    async Task<HashSet<IADOrganizationalUnit>> GetChildren(IADOrganizationalUnit parentNode)
+    {
+        return parentNode.Children.ToHashSet();
+    }
 
 
 

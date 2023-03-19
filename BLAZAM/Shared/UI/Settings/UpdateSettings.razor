@@ -1,18 +1,16 @@
 ﻿@inherits SettingsComponents
 
 
-<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
     <MudText Typo="Typo.h4">@SettingsLocalization["Update Settings"]</MudText>
     <MudForm @onsubmit="Save">
 
-        <Validations Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
 
             @if (settings != null)
             {
 
-                <SettingsField>
+                <SettingsField Label="@SettingsLocalization["Update Branch"]">
 
-                    <MudSelect Label="@SettingsLocalization["Update Branch"]" @bind-Value=@settings.UpdateBranch>
+                    <MudSelect @bind-Value=@settings.UpdateBranch>
                         @foreach (var val in updateBranches)
                         {
                             <MudSelectItem Value="@val">@val</MudSelectItem>
@@ -24,12 +22,9 @@
                 </SettingsField>
 
 
-                <SettingsField>
+        <SettingsField Label="@SettingsLocalization["Update"]">
 
-                    <MudText>
-                        @SettingsLocalization["Update"]
-                    </MudText>
-
+             
 
                     <ManualApplicationUpdater />
 
@@ -37,19 +32,19 @@
                 </SettingsField>
 
 
-                <SettingsField>
+                <SettingsField Label="@SettingsLocalization["Allow Auto Update"]">
 
-                    <MudSwitch Label="@SettingsLocalization["Allow Auto Update"]" @bind-Checked=@(settings.AutoUpdate) />
+                    <MudSwitch @bind-Checked=@(settings.AutoUpdate) />
 
                 </SettingsField>
 
 
                 @if (settings?.AutoUpdate == true)
                 {
-                    <SettingsField>
+                    <SettingsField Label="@SettingsLocalization["Auto Update Time"]">
 
                         <MudTimePicker HelperText="The time of each day to automatically apply an update."
-                               Label="@SettingsLocalization["Auto Update Time"]"
+                              
                                @bind-Time="@settings.AutoUpdateTime" />
 
 
@@ -65,9 +60,7 @@
 
                 </SettingsField>
             }
-        </Validations>
     </MudForm>
-</LoadingIndicator>
 @code {
     AppSettings? settings = new AppSettings();
     List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev };

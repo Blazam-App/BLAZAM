@@ -2,24 +2,23 @@
 @inherits SettingsComponents
 
 
-<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
 
     <MudText Typo="Typo.h4">@SettingsLocalization["Active Directory Settings"]</MudText>
 
     <MudForm @onsubmit="Save">
 
-        <SettingsField>
+        <SettingsField Label="@SettingsLocalization["Server"]">
 
 
             @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin")
             {
 
-                <MudTextField HelperText="Can be your domain name in most environments" Label="@SettingsLocalization["Server"]" Value=@("Private") Disabled />
+                <MudTextField HelperText="Can be your domain name in most environments"  Value=@("Private") Disabled />
             }
             else
             {
 
-                <MudTextField HelperText="Can be your domain name in most environments" Label="@SettingsLocalization["Server"]" @bind-Value="@settings.ServerAddress">
+                <MudTextField HelperText="Can be your domain name in most environments" @bind-Value="@settings.ServerAddress">
 
 
 
@@ -28,7 +27,7 @@
             }
 
         </SettingsField>
-        <SettingsField>
+        <SettingsField Label="@SettingsLocalization["Port"]">
 
             @{
                 string helperText = "The default port of 389 is the recommended port to use.";
@@ -44,14 +43,14 @@
 
             @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin")
             {
-                <MudNumericField HelperText="@helperText" Label="@SettingsLocalization["Port"]" HideSpinButtons="true" Value="0" Disabled />
+                <MudNumericField HelperText="@helperText"  HideSpinButtons="true" Value="0" Disabled />
 
 
             }
             else
             {
 
-                <MudNumericField HelperText="@helperText" Label="@SettingsLocalization["Port"]" HideSpinButtons="true" @bind-Value="@settings.ServerPort" />
+                <MudNumericField HelperText="@helperText" HideSpinButtons="true" @bind-Value="@settings.ServerPort" />
 
 
 
@@ -66,21 +65,9 @@
 
 
 
-        <SettingsField>
+        <SettingsField Label="@SettingsLocalization["Username"]">
 
-            <MudTextField Label="@SettingsLocalization["Username"]" name="username" @bind-Value="@settings.Username">
-
-
-
-            </MudTextField>
-
-        </SettingsField>
-
-
-
-        <SettingsField>
-
-            <MudTextField Label="@SettingsLocalization["Password"]" name="password" InputType="InputType.Password" @bind-Value="@settings.Password">
+            <MudTextField name="username" @bind-Value="@settings.Username">
 
 
 
@@ -90,25 +77,37 @@
 
 
 
-        <SettingsField>
+        <SettingsField Label="@SettingsLocalization["Password"]">
 
-            <MudSwitch Label="@SettingsLocalization["UseTLS"]" TValue="bool" @bind-Checked="@settings.UseTLS" />
-
-        </SettingsField>
+            <MudTextField name="password" InputType="InputType.Password" @bind-Value="@settings.Password">
 
 
 
-        <SettingsField>
-
-            <MudTextField Label="@SettingsLocalization["FQDN"]" name="fqdn" @bind-Value="@settings.FQDN" />
+            </MudTextField>
 
         </SettingsField>
 
 
 
-        <SettingsField>
+        <SettingsField Label="@SettingsLocalization["UseTLS"]">
 
-            <MudTextField Label="@SettingsLocalization["BaseDN"]" name="baseDN" @bind-Value="@settings.ApplicationBaseDN" />
+            <MudSwitch TValue="bool" @bind-Checked="@settings.UseTLS" />
+
+        </SettingsField>
+
+
+
+        <SettingsField Label="@SettingsLocalization["FQDN"]">
+
+            <MudTextField name="fqdn" @bind-Value="@settings.FQDN" />
+
+        </SettingsField>
+
+
+
+        <SettingsField Label="@SettingsLocalization["BaseDN"]">
+
+            <MudTextField name="baseDN" @bind-Value="@settings.ApplicationBaseDN" />
 
         </SettingsField>
 
@@ -119,7 +118,6 @@
 
         </SettingsField>
     </MudForm>
-</LoadingIndicator>
 @code {
 
 #nullable disable warnings

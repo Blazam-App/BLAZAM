@@ -38,6 +38,8 @@ using Microsoft.EntityFrameworkCore.Scaffolding;
 using BLAZAM.Common.Data;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor.Services;
+using Google.Apis.Services;
+using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 
 namespace BLAZAM
 {
@@ -379,7 +381,14 @@ namespace BLAZAM
 
 
 
-            builder.Services.AddMudServices();
+            builder.Services.AddMudServices(configuration => {
+                configuration.SnackbarConfiguration.HideTransitionDuration = 250;
+                configuration.SnackbarConfiguration.ShowTransitionDuration = 250;
+                
+            });
+
+
+
 
             builder.Services.AddScoped<AppSnackBarService>();
 

@@ -21,12 +21,18 @@
     <MudLayout>
         <AuthorizeView Context="authContext">
             <Authorized>
-                <MudAppBar Elevation="1">
+                <MudAppBar Color=Color.Primary Elevation="1">
+                    @if (!DrawerOpen)
+                    {
+                        <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+
+                    }
+
                     <MudIconButton Icon="@Icons.Material.Filled.Menu"
                                    Color="Color.Inherit"
                                    Edge="Edge.Start"
-                                   OnClick="@((e) => {DrawerOpen=!DrawerOpen;})" />
-                    @DatabaseCache.ApplicationSettings?.AppAbbreviation
+                                   OnClick="@((e) => {DrawerOpen=!DrawerOpen; })" />
+
                     @if (setHeader != null)
                     {
                         @setHeader.ChildContent
@@ -41,7 +47,10 @@
 
                     <MudMenu>
                         <ActivatorContent>
-                            <MudAvatar Color="Color.Secondary">@UserStateService.CurrentUsername.FirstOrDefault()</MudAvatar>
+                            @{
+                                var avatarBgColor = GenerateAvatarColor(UserStateService?.CurrentUsername);
+                            }
+                            <MudAvatar Elevation="4" Style="@avatarBgColor">@UserStateService.CurrentUsername.FirstOrDefault()</MudAvatar>
 
                         </ActivatorContent>
                         <ChildContent>
@@ -72,13 +81,7 @@
                         </ChildContent>
                     </MudMenu>
                 </MudAppBar>
-                @if (setSubHeader != null)
-                {
-                    <MudAppBar Color=Color.Primary Style="top:64px;" Elevation="1">
-                        @setSubHeader.ChildContent
-                    </MudAppBar>
-                    topMarginForContent = "margin-top:64px;";
-                }
+
 
                 @if (Program.InDebugMode)
                 {
@@ -94,7 +97,7 @@
                 }
 
 
-                <MudDrawer @bind-Open=@DrawerOpen Elevation="3" Class="mud-theme-dark">
+                <MudDrawer Width="185px" @bind-Open=@DrawerOpen Elevation="3" Class="mud-theme-dark">
                     <MudDrawerContainer>
                         <NavMenu />
                         <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
@@ -104,11 +107,17 @@
 
 
 
-                <MudMainContent Style="@topMarginForContent">
+                <MudMainContent>
+                    @if (setSubHeader != null)
+                    {
+                        <MudAppBar Color=Color.Primary Style="top:64px;" Elevation="1">
+                            @setSubHeader?.ChildContent
+                        </MudAppBar>
+                        topMarginForContent = "margin-top:64px;";
+                    }
 
 
-
-                    <MudContainer MaxWidth="MaxWidth.Medium">
+                    <MudContainer style="@topMarginForContent" MaxWidth="MaxWidth.Medium">
                         @*<MudContainer Style="height: 100vh;overflow: auto;">*@
 
 
@@ -205,9 +214,20 @@
             UserStateService.CurrentUserState.UserSettings.Theme = theme.Name;
             UserStateService.CurrentUserState.SaveUserSettings();
             Nav.NavigateTo(Nav.Uri, true);
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             SnackBarService.Error(ex.Message);
         }
+    }
+
+    string GenerateAvatarColor(string username)
+    {
+        if (username.IsNullOrEmpty()) return "background-color:#0c13a7";
+        var usernameHash = username.GetHashCode();
+        byte[] usernameHashBytes = usernameHash.ToByteArray(3);
+        string hexColor = "background-color:#";
+        hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
+        return hexColor;
     }
 } 

@@ -1,0 +1,14 @@
+@inherits MudIcon
+<MudIcon Class="@Class"
+         Color="@Color"
+         Size=@Size
+         Style=@Style
+         Tag=@Tag
+         Title="@Title"
+         ViewBox="@ViewBox"
+         Icon="@Icons.Material.Filled.Close" @onclick=@OnClick />
+
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+}

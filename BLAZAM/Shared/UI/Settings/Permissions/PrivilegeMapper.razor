@@ -1,40 +1,46 @@
-﻿
-@inherits AppComponentBase
-@{
-    var render = true;
-}
-<h3>OU Privilege Mapper</h3>
-    <Row>
+﻿@inherits AppComponentBase
+<MudCard Elevation="2">
+    <h3>OU Privilege Mapper</h3>
 
 
-        <Column ColumnSize="ColumnSize.Is6.OnDesktop.Is4.OnWidescreen">
-            <BLAZAM.Server.Shared.UI.OU.OUTreeView @bind-SelectedOU="selectedNode">
-            <NodeContent>
-                   @context.Name
-                        @if (context.DirectPermissionMappings.Count() > 0)
-                        {
-                            <MudBadge Pill=true Color="Color.Primary">@context.DirectPermissionMappings.Count</MudBadge>
-                        }
-                        @if (context.OffspringPermissionMappings.Count() > 0)
-                        {
-                            <MudBadge Pill=true Color="Color.Success">@context.OffspringPermissionMappings.Count()</MudBadge>
+    <MudGrid>
+        <MudItem xs="3">
+            <BLAZAM.Server.Shared.UI.OU.OUTreeView @bind-SelectedOU="SelectedNode">
+                <EndAdornment>
+                    @if (@context.DirectPermissionMappings.Count() > 0)
+                    {
+                        <MudBadge Overlap Color="Color.Secondary" Content="@context.DirectPermissionMappings.Count()" Class="mx-6 my-4"></MudBadge>
 
-                        }
-            </NodeContent>
+                    }
+                    @if (@context.OffspringPermissionMappings.Count() > 0)
+                    {
+                        <MudBadge Color="Color.Primary" Content="@context.OffspringPermissionMappings.Count()" Class="mx-6 my-4"></MudBadge>
+
+                    }
+                </EndAdornment>
             </BLAZAM.Server.Shared.UI.OU.OUTreeView>
-           
-        </Column>
-        <Column ColumnSize="ColumnSize.Is6.OnDesktop.Is8.OnWidescreen">
-            <OUPrivilegeEditor OU="selectedNode" />
-
-        </Column>
-    </Row>
-
+        </MudItem>
+        <MudItem xs="9">
+            <OUPrivilegeEditor OU="SelectedNode" />
+        </MudItem>
+    </MudGrid>
+</MudCard>
 @code {
 
     #nullable disable warnings
     MudTreeView<IADOrganizationalUnit> OUTree { get; set; }
     IADOrganizationalUnit selectedNode;
+    IADOrganizationalUnit SelectedNode
+    {
+        get => selectedNode; set
+        {
+            if (selectedNode == value) return;
+            selectedNode = value;
+            InvokeAsync(StateHasChanged);
+
+        }
+    }
+
     IList<IADOrganizationalUnit> ExpandedNodes = new List<IADOrganizationalUnit>();
     HashSet<IADOrganizationalUnit> ApplicationBaseOUs = new HashSet<IADOrganizationalUnit>();
     protected override void OnInitialized()
@@ -65,7 +71,7 @@
 
     void test()
     {
-        int[] numbers = new int[]{1,2,3,4,5,6};
+        int[] numbers = new int[] { 1, 2, 3, 4, 5, 6 };
         int[] newnumbers = new int[numbers.Length + 1];
         for (int x = 0; x < numbers.Length; x++)
         {

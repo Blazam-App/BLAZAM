@@ -2,6 +2,7 @@
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Services.Graph;
+using System.Diagnostics.Contracts;
 using System.DirectoryServices;
 using System.Reflection.PortableExecutable;
 
@@ -14,11 +15,22 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         private IQueryable<IADComputer>? childComputerCache;
         private IQueryable<IADGroup>? childGroupCache;
 
-     
-        public async Task<bool> HasChildrenAsync()
+        /// <summary>
+        /// Indicates whether this OU is expanded
+        /// in the ui withing a tree view
+        /// </summary>
+        public bool IsExpanded { get; set; }
+
+        public  bool HasChildren()
+        {
+
+            return Children.Any();
+
+        }
+            public async Task<bool> HasChildrenAsync()
         {
             return await Task.Run(() => {
-                return Children.Any();
+                return HasChildren();
             });
         }
         public async Task<IEnumerable<IADOrganizationalUnit>> GetChildrenAsync()

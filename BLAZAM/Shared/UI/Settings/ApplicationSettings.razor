@@ -1,96 +1,89 @@
 ﻿@inherits SettingsComponents
 
 
-<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
-    <MudText Typo="Typo.h4">@SettingsLocalization["Application Settings"]</MudText>
-    <MudForm @onsubmit="Save">
+<MudText Typo="Typo.h4">@SettingsLocalization["Application Settings"]</MudText>
+<MudForm @onsubmit="Save">
 
 
-        <SettingsField>
+    <SettingsField Label=@SettingsLocalization["Application Name"]>
+        
+        <MudTextField Class="mt-0"  Placeholder="Give you're application a display name" @bind-Value="@settings.AppName"/>
 
-                <MudTextField Label="@SettingsLocalization["Application Name"]" Placeholder="Give you're application a display name" @bind-Value="@settings.AppName">
+    </SettingsField>
 
-
-                    <ValidationNone>
-                        You must give the Web Application a personalized name.
-                    </ValidationNone>
-
-                </MudTextField>
-
-        </SettingsField>
-
-        <SettingsField>
-            <MudTextField T="string" Label="@SettingsLocalization["Homepage Message"]" Variant="Variant.Text" @bind-Text="@settings.MOTD" Lines="5" Placeholder="Place a custom welcome message for your users on the dashboard" />
+    <SettingsField Label="@SettingsLocalization["Homepage Message"]">
+        <MudTextField T="string"  Variant="Variant.Text" @bind-Text="@settings.MOTD" Lines="5" Placeholder="Place a custom welcome message for your users on the dashboard" />
 
 
 
 
-        </SettingsField>
+    </SettingsField>
 
 
-        <SettingsField>
+    <SettingsField Label="@SettingsLocalization["Force Https"]">
 
-            <MudSwitch Label="@SettingsLocalization["Force Https"]" TValue="bool" @bind-Checked="@settings.ForceHTTPS" />
+        <MudSwitch Label="@SettingsLocalization["Enabled"]" TValue="bool" @bind-Checked="@settings.ForceHTTPS" />
 
-        </SettingsField>
+    </SettingsField>
 
-        <SettingsField>
+    <SettingsField Label="@SettingsLocalization["User Helpdesk URL"]">
 
-            <MudTextField Label="@SettingsLocalization["User Helpdesk URL"]" Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
-                <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
-                    <MudBadge>!</MudBadge>
+        <MudTextField  Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
+            <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
+                <MudBadge>!</MudBadge>
+            </MudTooltip>
+
+
+        </MudTextField>
+
+    </SettingsField>
+
+
+
+    <SettingsField  Label="@SettingsLocalization["Branding Icon"]">
+
+        <MudContainer>
+            
+            @if (settings != null && settings.AppIcon != null && settings.AppIcon.Length > 0)
+            {
+                <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+                <MudTooltip Text="Remove custom icon">
+                    <AppCloseButton OnClick="@(()=>{settings.AppIcon=null;})" />
                 </MudTooltip>
+            }
+        </MudContainer>
+        <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
+            <ButtonTemplate>
+                <MudButton HtmlTag="label"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           for="@context">
+                    Upload Icon
+                </MudButton>
+            </ButtonTemplate>
+        </MudFileUpload>
 
-
-            </MudTextField>
-
-        </SettingsField>
-
-
-
-        <SettingsField>
-
-            <MudContainer>
-                @SettingsLocalization["Branding Icon"]
-                @if (settings != null && settings.AppIcon != null && settings.AppIcon.Length > 0)
-                {
-                    <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
-                    <MudTooltip Text="Remove custom icon">
-                        <AppCloseButton OnClick="@(()=>{settings.AppIcon=null;})" />
-                    </MudTooltip>
-                }
-            </MudContainer>
-            <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
-                <ButtonTemplate>
-                    <MudButton HtmlTag="label"
-                               Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.CloudUpload"
-                               for="@context">
-                        Upload Icon
-                    </MudButton>
-                </ButtonTemplate>
-            </MudFileUpload>
-
-        </SettingsField>
+    </SettingsField>
 
 
 
-        <SettingsField>
+    <SettingsField Label="@SettingsLocalization["Website FQDN"]">
 
-            <MudTextField Label="@SettingsLocalization["Website FQDN"]" HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
-        </SettingsField>
+        <MudTextField HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
+    </SettingsField>
 
-        <SettingsField>
+    <SettingsField>
 
-            <MudButton Disabled="saveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+        <MudButton Disabled="saveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
 
-        </SettingsField>
+    </SettingsField>
 
 
-    </MudForm>
-</LoadingIndicator>
-
+</MudForm>
+<MudOverlay Visible="LoadingData" DarkBackground="true" Absolute="true">
+    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
 @code {
     AppSettings settings = new AppSettings();
 

@@ -5,83 +5,62 @@
 
 
     <MudForm @onsubmit="@Save">
-            
-           @* <MudFieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["User Groups"]</FieldLabel>
-            <MudFieldBody ColumnSize="ColumnSize.Is10">
-                    @if (!ReadOnly)
-                        {
 
+        @if (!ReadOnly)
+        {
 
-                            <Autocomplete TItem="PermissionDelegate"
-                                  TValue="PermissionDelegate"
-                                  FreeTyping=false
-                                  MinLength=-1
-                                  Data="@PermissionDelegates"
-                                  TextField="@(( item ) => Directory.Groups.FindGroupBySID(item.DelegateSid)?.GroupName)"
-                                  ValueField="@(( item ) => item)"
-                                  Placeholder=@SettingsLocalization["Choose or Search..."]
-                                  SelectionMode="AutocompleteSelectionMode.Checkbox"
-                                  CloseOnSelection="false"
-                                  @bind-SelectedValues="Map.PermissionDelegates"
-                                  @bind-SelectedTexts="selectedPermissionDelegateNames" />
-                            
-                        }
-                        else
-                        {
-                            @if (selectedPermissionDelegateNames != null)
-                            {
-                                @foreach (var name in selectedPermissionDelegateNames)
-                                {
-                                    <MudButton Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</MudButton>
-                                }
-                            }
-                        }
+            <MudSelectList Values=@PermissionDelegates
+                   Placeholder=@SettingsLocalization["Choose or Search..."]
+                   T="PermissionDelegate"
+                   ToStringFunc="item=>Directory.Groups.FindGroupBySID(item?.DelegateSid)?.GroupName"
+                   Label="@SettingsLocalization["Delegates"]"
+                              MultiSelection
+                   @bind-Text=@selectedPermissionDelegateNames
+                   @bind-SelectedValues=@Map.PermissionDelegates />
 
-*@
-                
-            
-            
-           @* <MudFieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">@SettingsLocalization["Access Levels"]</FieldLabel>
-            <MudFieldBody ColumnSize="ColumnSize.Is10">
-                <Validation @ref=AccValidation Validator="ValidationRule.IsNotEmpty">
-                    @if (!ReadOnly)
-                        {
-                            <Autocomplete TItem="AccessLevel"
-                                  TValue="AccessLevel"
-                                  FreeTyping=false
-                                  MinLength=-1
-                                  Data="@accessLevels"
-                                  TextField="@(( item ) => item.Name)"
-                                  ValueField="@(( item ) => item)"
-                                  Placeholder=@SettingsLocalization["Choose or Search..."]
-                                  SelectionMode="AutocompleteSelectionMode.Checkbox"
-                                  CloseOnSelection="false"
-                                  @bind-SelectedValues="Map.AccessLevels"
-                                  @bind-SelectedTexts="selectedAccessLevelNames"
-                                  Disabled=ReadOnly />
-                        }
-                        else
-                        {
-                            @if (selectedAccessLevelNames != null)
-                            {
-                                @foreach (var name in selectedAccessLevelNames)
-                                {
-                                    <MudButton Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</MudButton>
-                                }
-                            }
-                        }
-
-                        
-
-                    </Validation>
-*@
-                
-            
-            @if (!ReadOnly)
+        }
+        else
+        {
+            @if (selectedPermissionDelegateNames != null)
             {
-                <MudButton Color=Color.Success Disabled=saveDisabled ButtonType="ButtonType.Submit">Save Mapping</MudButton>
-                <AppCloseButton OnClick="DeleteMapping" />
+                @foreach (var name in selectedPermissionDelegateNames)
+                {
+                    <MudButton Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</MudButton>
+                }
             }
+        }
+
+        @if (!ReadOnly)
+        {
+
+            <MudSelectList Values=@accessLevels
+                   Placeholder=@SettingsLocalization["Choose or Search..."]
+                   T="AccessLevel"
+                   ToStringFunc="item=>item?.Name"
+                   Label="@SettingsLocalization["Access Levels"]"
+                   @bind-Text=@selectedAccessLevelNames
+                              MultiSelection
+                   @bind-SelectedValues=@Map.AccessLevels />
+
+        }
+        else
+        {
+            @if (selectedAccessLevelNames != null)
+            {
+                @foreach (var name in selectedAccessLevelNames)
+                {
+                    <MudButton Disabled Width=Width.Auto Flex=Flex.InlineFlex Color="Color.Secondary">@name</MudButton>
+                }
+            }
+        }
+
+
+        @if (!ReadOnly)
+        {
+            <MudButton Color=Color.Success Disabled=saveDisabled ButtonType="ButtonType.Submit">Save Mapping</MudButton>
+            <AppCloseButton OnClick="DeleteMapping" />
+        }
+
 
     </MudForm>
 
@@ -106,7 +85,7 @@
         }
     }
     [Parameter]
-    public EventCallback MappingDeleted{ get; set; }
+    public EventCallback MappingDeleted { get; set; }
     [Parameter]
     public bool ReadOnly { get; set; } = false;
 
@@ -114,13 +93,13 @@
 
     List<AccessLevel> accessLevels;
     List<PermissionDelegate> PermissionDelegates;
-    List<string> selectedAccessLevelNames;
-    List<string> selectedPermissionDelegateNames;
+    string selectedAccessLevelNames;
+    string selectedPermissionDelegateNames;
     protected override async Task OnInitializedAsync()
     {
         //Wait for a database connection
         await base.OnInitializedAsync();
-       
+
         LoadingData = false;
         await RefreshData();
     }
@@ -144,16 +123,36 @@
                 PermissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin).ToListAsync();
                 if (Map.Id != 0)
                 {
-                    selectedAccessLevelNames = Map.AccessLevels.Select(a => a.Name).ToList();
-                    selectedPermissionDelegateNames = Map.PermissionDelegates.Select(
-                        a => Directory.GetDirectoryModelBySid(a.DelegateSid).CanonicalName)
-                        .ToList();
+                    string concatenatd = "";
+
+                    Map.AccessLevels.Select(a => a.Name).ToList().ForEach(s =>
+                    {
+                        concatenatd += s + ", ";
+
+                    });
+                    if (concatenatd != "")
+
+                        concatenatd = concatenatd.Substring(0, concatenatd.Length - 2);
+
+                    selectedAccessLevelNames = concatenatd;
+                    concatenatd = "";
+                    Map.PermissionDelegates.Select(
+                         a => Directory.GetDirectoryModelBySid(a.DelegateSid).CanonicalName)
+                         .ToList().ForEach(s =>
+                         {
+                             concatenatd += s + ", ";
+
+                         });
+                    if (concatenatd != "")
+                        concatenatd = concatenatd.Substring(0, concatenatd.Length - 2);
+
+                    selectedPermissionDelegateNames = concatenatd;
                 }
-                await InvokeAsync(StateHasChanged);
             }
 
         }
         LoadingData = false;
+        await InvokeAsync(StateHasChanged);
 
     }
     async Task DeleteMapping()
@@ -173,7 +172,7 @@
         await MappingDeleted.InvokeAsync();
 
     }
-   new async Task Save()
+    new async Task Save()
     {
         if (Map.Id == 0)
             Context.PermissionMap.Add(Map);

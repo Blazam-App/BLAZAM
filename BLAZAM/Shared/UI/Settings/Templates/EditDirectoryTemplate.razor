@@ -142,9 +142,9 @@
                 {
 
                     <BLAZAM.Server.Shared.UI.OU.OUTreeView Label=@(SettingsLocalization["OU"]+": @SelectedOU?.CanonicalName") StartRootExpanded=false @bind-SelectedOU=@SelectedOU @bind-StartingSelectedOU=@SelectedOU>
-                        <NodeContent Context="ouContext">
+                      @*  <NodeContent Context="ouContext">
                             @ouContext.Name
-                        </NodeContent>
+                        </NodeContent>*@
                     </BLAZAM.Server.Shared.UI.OU.OUTreeView>
 
 

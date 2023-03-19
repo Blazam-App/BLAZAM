@@ -4,7 +4,14 @@ using System.DirectoryServices;
 namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 {
     public interface IADOrganizationalUnit : IDirectoryEntryAdapter
+
     {
+        /// <summary>
+        /// Indicates whether this OU is expanded
+        /// in the ui withing a tree view
+        /// </summary>
+         bool IsExpanded { get; set; }
+
         string Name { get; set; }
         List<PermissionMapping> InheritedPermissionMappings { get; }
         IQueryable<PermissionMapping> AppliedPermissionMappings { get; }
@@ -15,6 +22,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         IADUser CreateUser(string containerName);
         IADOrganizationalUnit CreateOU(string containerName);
         Task<IEnumerable<IADOrganizationalUnit>> GetChildrenAsync();
+        bool HasChildren();
         Task<bool> HasChildrenAsync();
     }
 }

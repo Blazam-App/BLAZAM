@@ -49,7 +49,7 @@
             </MudContainer>
 
             <MudButtonGroup>
-                <MudButton Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
+                <MudButton ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
                 <MudMenu Color="Color.Primary">
                     <MudMenuItem OnClick=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</MudMenuItem>
                 </MudMenu>
