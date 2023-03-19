@@ -2,7 +2,7 @@
 
 
 <MudText Typo="Typo.h4">@SettingsLocalization["Application Settings"]</MudText>
-<MudForm @onsubmit="Save">
+<EditForm @ref=@EditForm Context="editContext" OnValidSubmit="Save" Model="settings" >
 
 
     <SettingsField Label=@SettingsLocalization["Application Name"]>
@@ -57,8 +57,7 @@
                 <MudButton HtmlTag="label"
                            Variant="Variant.Filled"
                            Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.CloudUpload"
-                           for="@context">
+                           StartIcon="@Icons.Material.Filled.CloudUpload">
                     Upload Icon
                 </MudButton>
             </ButtonTemplate>
@@ -70,17 +69,17 @@
 
     <SettingsField Label="@SettingsLocalization["Website FQDN"]">
 
-        <MudTextField HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
+        <MudTextField For=@(()=> settings.AppFQDN) ErrorText="Must be a valid domain name" HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
     </SettingsField>
 
     <SettingsField>
 
-        <MudButton Disabled="saveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
 
     </SettingsField>
 
 
-</MudForm>
+</EditForm>
 <MudOverlay Visible="LoadingData" DarkBackground="true" Absolute="true">
     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
 </MudOverlay>

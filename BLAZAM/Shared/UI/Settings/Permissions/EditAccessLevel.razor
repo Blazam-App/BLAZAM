@@ -159,7 +159,7 @@
     if (Model.Id > 0)
         buttonLabel = SettingsLocalization["Update Access Level"];
 }
-<MudButton Color=Color.Success Margin=Margin.IsAuto.OnX Disabled=saveDisabled OnClick="CreateAccessLevel">@buttonLabel</MudButton>
+<MudButton Color=Color.Success Margin=Margin.IsAuto.OnX Disabled=SaveDisabled OnClick="CreateAccessLevel">@buttonLabel</MudButton>
 @if (WorkingModel.Id != 0)
 {
     <MudButton Color=Color.Error Margin=Margin.IsAuto.OnX OnClick="DeleteAccessLevel">@SettingsLocalization["Delete Access Level"]</MudButton>

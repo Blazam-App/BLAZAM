@@ -3,12 +3,20 @@
 
 
 @code {
-    protected bool saveDisabled = false;
+    bool _saveDisabled = false;
+    protected bool SaveDisabled
+    {
+        get
+        {
+            return _saveDisabled;
+        }
+        set => _saveDisabled = value;
+    }
 
-
+    protected EditForm? EditForm { get; set; }
     //protected virtual Task OnValidation(ValidationsStatusChangedEventArgs eventArgs)
     //{
-    //    saveDisabled = eventArgs.Status == ValidationStatus.Error;
+    //    SaveDisabled = eventArgs.Status == ValidationStatus.Error;
 
     //    return Task.CompletedTask;
     //}
@@ -41,5 +49,5 @@
 
         }
     }
-  
+
 }

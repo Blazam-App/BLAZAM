@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using BLAZAM.Common.Data.Validators;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -44,7 +45,7 @@ namespace BLAZAM.Common.Models.Database
         /// </summary>
         public bool ForceHTTPS { get; set; }
 
-
+        [ValidFQDN]
         public string? AppFQDN { get; set; }
 
         /// <summary>
@@ -54,6 +55,7 @@ namespace BLAZAM.Common.Models.Database
         /// This has no effect on the developer Analytics, that is hard-coded.
         /// </remarks>
         public string? AnalyticsId { get; set; }
+        [ValidWebUrl]
         public string? UserHelpdeskURL { get; set; }
         public byte[]? AppIcon { get; set; }
 

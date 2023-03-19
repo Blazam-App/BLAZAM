@@ -57,7 +57,7 @@
 
         @if (!ReadOnly)
         {
-            <MudButton Color=Color.Success Disabled=saveDisabled ButtonType="ButtonType.Submit">Save Mapping</MudButton>
+            <MudButton Color=Color.Success Disabled=SaveDisabled ButtonType="ButtonType.Submit">Save Mapping</MudButton>
             <AppCloseButton OnClick="DeleteMapping" />
         }
 
@@ -197,9 +197,9 @@
                 else
                     AccValidation.Status = ValidationStatus.Success;
                 if (AccValidation.Status == ValidationStatus.Success && PrivValidation.Status == ValidationStatus.Success)
-                    saveDisabled = false;
+                    SaveDisabled = false;
                 else
-                    saveDisabled = true;
+                    SaveDisabled = true;
             }
         }
         */

@@ -61,7 +61,7 @@
             
         
         }
-        <MudButton Disabled=saveDisabled Color=Color.Primary OnClick="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
+        <MudButton Disabled=SaveDisabled Color=Color.Primary OnClick="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
     </div>
 </LoadingIndicator>
 
@@ -78,7 +78,7 @@
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
         _privateUserInstance = Directory.Users.FindUserBySID(User.SID.ToSidString());
-        saveDisabled = false;
+        SaveDisabled = false;
         await InvokeAsync(StateHasChanged);
     }
 
@@ -92,7 +92,7 @@
     {
         if (Directory.Users.FindUsersByContainerName(_privateUserInstance.DisplayName, false, false) == null)
         {
-            saveDisabled = true;
+            SaveDisabled = true;
             LoadingData = true;
             _privateUserInstance.Rename(_privateUserInstance.DisplayName);
             await _privateUserInstance.CommitChangesAsync();
@@ -106,7 +106,7 @@
         }
         LoadingData = false;
 
-        saveDisabled = false;
+        SaveDisabled = false;
     }
 
 }

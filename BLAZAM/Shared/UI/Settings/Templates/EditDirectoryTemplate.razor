@@ -171,7 +171,7 @@
             buttonText = "Save this template";
         }
     }
-    <MudButton Disabled=saveDisabled Color="Color.Success" ButtonType="ButtonType.Submit">@buttonText</MudButton>
+    <MudButton Disabled=SaveDisabled Color="Color.Success" ButtonType="ButtonType.Submit">@buttonText</MudButton>
     @if (DirectoryTemplate.Id == 0)
     {
         <MudButton Color="Color.Warning" OnClick="@(()=>{ DirectoryTemplate=null;})">Cancel</MudButton>

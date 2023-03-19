@@ -5,9 +5,10 @@
                  @bind-Value="SelectedResult"
                  @bind-Text=@SearchTerm
                  SearchFuncWithCancel="@GetResults"
+                  DebounceInterval=500
                  ResetValueOnEmptyText="true"
-                 CoerceText="true" CoerceValue="true"
-                 AdornmentIcon="@Icons.Material.Filled.Search"
+                 CoerceText="@AllowCustomInput" CoerceValue="false"
+                 Clearable
                  ToStringFunc="item=>item?.CanonicalName"
                  AdornmentColor="Color.Secondary"
                  ProgressIndicatorColor="Color.Secondary"
@@ -72,6 +73,7 @@
 
 @code {
 #nullable disable warnings
+
     [Parameter]
     public string? Label { get; set; }
     [Parameter]
@@ -80,6 +82,10 @@
     public string? Class { get; set; }
     [Parameter]
     public bool Multiple { get; set; }
+
+    
+    [Parameter]
+    public bool AllowCustomInput { get; set; }
 
 
     [Parameter]
