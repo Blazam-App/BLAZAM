@@ -21,7 +21,14 @@ namespace BLAZAM.Server.Shared.UI
         //     True if they are equal.
         public static bool IsEqual(string value, string compare)
         {
-            return value.Equals(compare);
+            try
+            {
+                return value.Equals(compare);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         //

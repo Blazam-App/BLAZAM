@@ -1,15 +1,14 @@
 <MudGrid>
-    <MudItem Class="align-bottom pb-0" xs="12" sm="5" md="4" lg="3" xl="2" xxl="1">
-        @if (Label!=null)
-        {
-            if(FieldLabel==null && !Label.IsNullOrEmpty())
+    <MudItem Class="pb-0" xs="12" sm="5" md="4" lg="3" xl="2" xxl="1">
+       
+            @if(FieldLabel==null && !Label.IsNullOrEmpty())
             {
 
                 <MudText Color=Color.Primary Style="margin-bottom:4px;">
                     @Label
                 </MudText>
             }
-            else
+            else if(FieldLabel!=null)
             {
                 <MudElement>
                     @FieldLabel
@@ -17,7 +16,7 @@
                 </MudElement>
 
             }
-        }
+        
     </MudItem>
     <MudItem xs=12 md=7 lg="9" xl="10" xxl="11">
       

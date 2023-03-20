@@ -7,14 +7,16 @@
 
     <SettingsField>
         <FieldLabel>
-            @SettingsLocalization["Application Name"]
+            <MudText>
+                @SettingsLocalization["Application Name"]
+            </MudText>
         </FieldLabel>
         <ChildContent>
             <MudTextField Class="mt-0" Label=@SettingsLocalization["Application Name"] @bind-Value="@settings.AppName" />
         </ChildContent>
     </SettingsField>
 
-    <SettingsField >
+    <SettingsField>
         <FieldLabel>
             @SettingsLocalization["Homepage Message"]
         </FieldLabel>
@@ -56,7 +58,7 @@
 
 
 
-    <SettingsField >
+    <SettingsField>
         <FieldLabel>
             @SettingsLocalization["Branding Icon"]
         </FieldLabel>
@@ -96,7 +98,7 @@
     </SettingsField>
 
     <SettingsField>
-            <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
     </SettingsField>
 
 

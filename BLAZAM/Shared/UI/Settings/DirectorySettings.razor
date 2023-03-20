@@ -3,121 +3,133 @@
 
 
 
-    <MudText Typo="Typo.h4">@SettingsLocalization["Active Directory Settings"]</MudText>
+<MudText Typo="Typo.h4">@SettingsLocalization["Active Directory Settings"]</MudText>
 
-    <MudForm @onsubmit="Save">
+<MudForm @onsubmit="Save">
 
-        <SettingsField Label="@SettingsLocalization["Server"]">
-
-
-            @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin")
-            {
-
-                <MudTextField HelperText="Can be your domain name in most environments"  Value=@("Private") Disabled />
-            }
-            else
-            {
-
-                <MudTextField HelperText="Can be your domain name in most environments" @bind-Value="@settings.ServerAddress">
+    <SettingsField Label="@SettingsLocalization["Server"]">
 
 
+        @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin" && Program.InstallationCompleted)
+        {
 
-                </MudTextField>
+            <MudTextField Label="@SettingsLocalization["Server"]"
+                      HelperText="Can be your domain name in most environments"
+                      Value=@("Private")
+                            Disabled />
+        }
+        else
+        {
 
-            }
-
-        </SettingsField>
-        <SettingsField Label="@SettingsLocalization["Port"]">
-
-            @{
-                string helperText = "The default port of 389 is the recommended port to use.";
-            }
-
-            @*
-            TODO Add this as a popover
-            <MudTooltip Display="Display.InlineBlock" Multiline Style="max-width:300px" Text="The application will automatically use an SSL
-            connection if the server's CA Certificate is a trusted CA on this web server. Using port 636 can work,
-            but may lead to unexpected behaviour of other services that listen to Active Directory changes.">
-            <MudIcon Icon="IconName.QuestionCircle" Color="Color.Info" />
-            </MudTooltip>*@
-
-            @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin")
-            {
-                <MudNumericField HelperText="@helperText"  HideSpinButtons="true" Value="0" Disabled />
-
-
-            }
-            else
-            {
-
-                <MudNumericField HelperText="@helperText" HideSpinButtons="true" @bind-Value="@settings.ServerPort" />
-
-
-
-
-            }
-
-
-
-
-
-        </SettingsField>
-
-
-
-        <SettingsField Label="@SettingsLocalization["Username"]">
-
-            <MudTextField name="username" @bind-Value="@settings.Username">
+            <MudTextField Label="@SettingsLocalization["Server"]"
+                      HelperText="Can be your domain name in most environments"
+                      @bind-Value="@settings.ServerAddress">
 
 
 
             </MudTextField>
 
-        </SettingsField>
+        }
+
+    </SettingsField>
+    <SettingsField Label="@SettingsLocalization["Port"]">
+
+        @{
+            string helperText = "The default port of 389 is the recommended port to use.";
+        }
+
+        @*
+        TODO Add this as a popover
+        <MudTooltip Display="Display.InlineBlock" Multiline Style="max-width:300px" Text="The application will automatically use an SSL
+        connection if the server's CA Certificate is a trusted CA on this web server. Using port 636 can work,
+        but may lead to unexpected behaviour of other services that listen to Active Directory changes.">
+        <MudIcon Icon="IconName.QuestionCircle" Color="Color.Info" />
+        </MudTooltip>*@
+
+        @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin" && Program.InstallationCompleted)
+        {
+            <MudNumericField HelperText="@helperText"
+                         Label="@SettingsLocalization["Port"]"
+                         HideSpinButtons="true"
+                         Value="0"
+                                  Disabled />
+
+
+        }
+        else
+        {
+
+            <MudNumericField HelperText="@helperText"
+                         Label="@SettingsLocalization["Port"]"
+                         HideSpinButtons="true"
+                         @bind-Value="@settings.ServerPort" />
 
 
 
-        <SettingsField Label="@SettingsLocalization["Password"]">
 
-            <MudTextField name="password" InputType="InputType.Password" @bind-Value="@settings.Password">
-
-
-
-            </MudTextField>
-
-        </SettingsField>
+        }
 
 
 
-        <SettingsField Label="@SettingsLocalization["UseTLS"]">
 
-            <MudSwitch TValue="bool" @bind-Checked="@settings.UseTLS" />
 
-        </SettingsField>
+    </SettingsField>
 
 
 
-        <SettingsField Label="@SettingsLocalization["FQDN"]">
+    <SettingsField Label="@SettingsLocalization["Username"]">
 
-            <MudTextField name="fqdn" @bind-Value="@settings.FQDN" />
-
-        </SettingsField>
+        <MudTextField Label="@SettingsLocalization["Username"]" name="username" @bind-Value="@settings.Username">
 
 
 
-        <SettingsField Label="@SettingsLocalization["BaseDN"]">
+        </MudTextField>
 
-            <MudTextField name="baseDN" @bind-Value="@settings.ApplicationBaseDN" />
-
-        </SettingsField>
+    </SettingsField>
 
 
-        <SettingsField>
 
-            <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+    <SettingsField Label="@SettingsLocalization["Password"]">
 
-        </SettingsField>
-    </MudForm>
+        <MudTextField Label="@SettingsLocalization["Password"]" name="password" InputType="InputType.Password" @bind-Value="@settings.Password">
+
+
+
+        </MudTextField>
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@SettingsLocalization["UseTLS"]">
+
+        <MudSwitch Label="@SettingsLocalization["UseTLS"]" @bind-Checked="@settings.UseTLS" />
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@SettingsLocalization["FQDN"]">
+
+        <MudTextField Label="@SettingsLocalization["FQDN"]" name="fqdn" @bind-Value="@settings.FQDN" />
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@SettingsLocalization["Base DN"]">
+
+        <MudTextField Label="@SettingsLocalization["Base DN"]" name="baseDN" @bind-Value="@settings.ApplicationBaseDN" />
+
+    </SettingsField>
+
+
+    <SettingsField>
+
+        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+    </SettingsField>
+</MudForm>
 @code {
 
 #nullable disable warnings
