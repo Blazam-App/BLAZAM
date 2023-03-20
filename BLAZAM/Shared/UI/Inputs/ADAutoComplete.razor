@@ -12,6 +12,8 @@
                  ToStringFunc="item=>item?.CanonicalName"
                  AdornmentColor="Color.Secondary"
                  ProgressIndicatorColor="Color.Secondary"
+                 Adornment="Adornment.Start"
+                 AdornmentIcon="@Icons.Material.Filled.Search"
                  Variant="@Variant">
     <ItemTemplate>
         <MudText Typo="Typo.h5">
@@ -165,23 +167,23 @@
 
     public List<IDirectoryEntryAdapter> _selectedResults;
 
-    [Parameter]
-    public List<IDirectoryEntryAdapter> SelectedResults
-    {
-        get => _selectedResults; set
-        {
-            if (_selectedResults == value) return;
-            _selectedResults = value;
-            SearchResults = value; //quesitnoable neccessity
-            SelectedResultsChanged.InvokeAsync(value);
-            SelectedResultNames = value.Select(g => g.CanonicalName).ToList();
+    //[Parameter]
+    //public List<IDirectoryEntryAdapter> SelectedResults
+    //{
+    //    get => _selectedResults; set
+    //    {
+    //        if (_selectedResults == value) return;
+    //        _selectedResults = value;
+    //        SearchResults = value; //quesitnoable neccessity
+    //        SelectedResultsChanged.InvokeAsync(value);
+    //        SelectedResultNames = value.Select(g => g.CanonicalName).ToList();
 
-            InvokeAsync(StateHasChanged);
-        }
-    }
+    //        InvokeAsync(StateHasChanged);
+    //    }
+    //}
 
-    [Parameter]
-    public EventCallback<List<IDirectoryEntryAdapter>> SelectedResultsChanged { get; set; }
+    //[Parameter]
+    //public EventCallback<List<IDirectoryEntryAdapter>> SelectedResultsChanged { get; set; }
 
     List<string> SelectedResultNames = new();
 

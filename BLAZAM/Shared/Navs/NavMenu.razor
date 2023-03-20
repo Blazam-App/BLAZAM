@@ -34,8 +34,13 @@
             </MudNavGroup>
         </AuthorizeView>
         <AuthorizeView Roles=@UserRoles.SuperAdmin>
-            <MudNavLink Href="/recyclebin" Icon="@Icons.Material.Filled.DeleteOutline">@AppLocalization["Recycle Bin"]</MudNavLink>
-            <MudNavGroup Title="@AppLocalization["Configure"]" Icon="@Icons.Material.Filled.Handyman" Expanded="false" Disabled=@(Monitor.DirectoryConnected != ServiceConnectionState.Up)>
+            <MudNavLink Href="/recyclebin"
+                        Icon="@Icons.Material.Filled.DeleteOutline"
+                        Disabled=@(Monitor.DirectoryConnected != ServiceConnectionState.Up)>
+                @AppLocalization["Recycle Bin"]
+            </MudNavLink>
+
+            <MudNavGroup Title="@AppLocalization["Configure"]" Icon="@Icons.Material.Filled.Handyman" Expanded="false">
                 <MudNavLink Href="/settings">@AppLocalization["Settings"]</MudNavLink>
                 <MudNavLink Href="/permissions">@AppLocalization["Permissions"]</MudNavLink>
                 <MudNavLink Href="/templates">@AppLocalization["Templates"]</MudNavLink>

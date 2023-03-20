@@ -628,7 +628,7 @@ namespace BLAZAM.Common.Data.Database
                 try
                 {
                     //Handle SQLite
-                    if (ConnectionString.FileBased)
+                    if (Database.IsSqlite())
                     {
                         if (ConnectionString.File.Writable)
                         {

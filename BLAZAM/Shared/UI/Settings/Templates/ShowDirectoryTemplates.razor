@@ -1,10 +1,10 @@
 ﻿@inherits AppComponentBase
 
-<Row>
-    <Column ColumnSize="ColumnSize.Is4.OnTablet">
+<MudStack Row>
         <MudSelectList
+            T="string"
             Values="categories"
-            @bind-Value=SelectedCategory
+            @bind-Text=SelectedCategory
             />
       
             @SelectedCategory
@@ -26,25 +26,22 @@
         </ListView>*@
         @if (SelectedTemplate != null)
         {
-            <MudButton OnClick=@(()=>{DuplicateTemplate(SelectedTemplate);}) Color="Color.Primary"><MudIcon Icon="@("fa-solid fa-copy")" /></MudButton>
+            <MudButton OnClick=@(()=>{DuplicateTemplate(SelectedTemplate);}) Color="Color.Primary"><MudIcon Icon="@Icons.Material.Filled.FileCopy" /></MudButton>
         }
         <div>
             <h6>Users granted this template</h6>
 
         </div>
-    </Column>
-    <Column ColumnSize="ColumnSize.Is8.OnTablet">
         @if (SelectedTemplate != null)
         {
             <EditDirectoryTemplate DirectoryTemplate="SelectedTemplate"  />
 
         }
-    </Column>
-</Row>
+</MudStack>
 @code {
 #nullable disable warnings
-    string? _selectedCategory;
-    string? SelectedCategory
+    string _selectedCategory;
+    string SelectedCategory
     {
         get => _selectedCategory; set
         {
@@ -53,7 +50,7 @@
 
         }
     }
-    List<string?> categories = new() { null };
+    IEnumerable<string> categories = new List<string>() { null };
 
     IEnumerable<DirectoryTemplate> categorizedTemplates { get; set; } = new List<DirectoryTemplate>();
 
@@ -74,7 +71,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        categories.AddRange(DbFactory.CreateDbContext().DirectoryTemplates.Where(t => t.Category != null && t.Category != "").Select(t => t.Category).Distinct().ToList());
+        categories.Concat(DbFactory.CreateDbContext().DirectoryTemplates.Where(t => t.Category != null && t.Category != "").Select(t => t.Category).Distinct());
         await UpdateTemplateList();
 
         await InvokeAsync(StateHasChanged);

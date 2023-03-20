@@ -2,80 +2,101 @@
 
 
 <MudText Typo="Typo.h4">@SettingsLocalization["Application Settings"]</MudText>
-<EditForm @ref=@EditForm Context="editContext" OnValidSubmit="Save" Model="settings" >
+<EditForm @ref=@EditForm Context="editContext" OnValidSubmit="Save" Model="settings">
 
 
-    <SettingsField Label=@SettingsLocalization["Application Name"]>
-        
-        <MudTextField Class="mt-0"  Placeholder="Give you're application a display name" @bind-Value="@settings.AppName"/>
-
+    <SettingsField>
+        <FieldLabel>
+            @SettingsLocalization["Application Name"]
+        </FieldLabel>
+        <ChildContent>
+            <MudTextField Class="mt-0" Label=@SettingsLocalization["Application Name"] @bind-Value="@settings.AppName" />
+        </ChildContent>
     </SettingsField>
 
-    <SettingsField Label="@SettingsLocalization["Homepage Message"]">
-        <MudTextField T="string"  Variant="Variant.Text" @bind-Text="@settings.MOTD" Lines="5" Placeholder="Place a custom welcome message for your users on the dashboard" />
+    <SettingsField >
+        <FieldLabel>
+            @SettingsLocalization["Homepage Message"]
+        </FieldLabel>
+        <ChildContent>
+            <MudTextField Label="@SettingsLocalization["Homepage Message"]" T="string" Variant="Variant.Text" @bind-Text="@settings.MOTD" Lines="5" Placeholder="Place a custom welcome message for your users on the dashboard" />
+
+        </ChildContent>
 
 
 
-
-    </SettingsField>
-
-
-    <SettingsField Label="@SettingsLocalization["Force Https"]">
-
-        <MudSwitch Label="@SettingsLocalization["Enabled"]" TValue="bool" @bind-Checked="@settings.ForceHTTPS" />
-
-    </SettingsField>
-
-    <SettingsField Label="@SettingsLocalization["User Helpdesk URL"]">
-
-        <MudTextField  Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
-            <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
-                <MudBadge>!</MudBadge>
-            </MudTooltip>
-
-
-        </MudTextField>
 
     </SettingsField>
 
 
+    <SettingsField>
+        <FieldLabel>
+            @SettingsLocalization["Force Https"]
+        </FieldLabel>
 
-    <SettingsField  Label="@SettingsLocalization["Branding Icon"]">
-
-        <MudContainer>
-            
-            @if (settings != null && settings.AppIcon != null && settings.AppIcon.Length > 0)
-            {
-                <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
-                <MudTooltip Text="Remove custom icon">
-                    <AppCloseButton OnClick="@(()=>{settings.AppIcon=null;})" />
-                </MudTooltip>
-            }
-        </MudContainer>
-        <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
-            <ButtonTemplate>
-                <MudButton HtmlTag="label"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.CloudUpload">
-                    Upload Icon
-                </MudButton>
-            </ButtonTemplate>
-        </MudFileUpload>
-
-    </SettingsField>
-
-
-
-    <SettingsField Label="@SettingsLocalization["Website FQDN"]">
-
-        <MudTextField For=@(()=> settings.AppFQDN) ErrorText="Must be a valid domain name" HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
+        <ChildContent>
+            <MudSwitch Label="@SettingsLocalization["Enabled"]" TValue="bool" @bind-Checked="@settings.ForceHTTPS" />
+        </ChildContent>
     </SettingsField>
 
     <SettingsField>
+        <FieldLabel>
+            @SettingsLocalization["User Helpdesk URL"]
+        </FieldLabel>
+        <ChildContent>
+            <MudTextField Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
+                <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
+                    <MudBadge>!</MudBadge>
+                </MudTooltip>
 
-        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
 
+            </MudTextField>
+        </ChildContent>
+    </SettingsField>
+
+
+
+    <SettingsField >
+        <FieldLabel>
+            @SettingsLocalization["Branding Icon"]
+        </FieldLabel>
+        <ChildContent>
+            <MudContainer>
+
+                @if (settings != null && settings.AppIcon != null && settings.AppIcon.Length > 0)
+                {
+                    <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+                    <MudTooltip Text="Remove custom icon">
+                        <AppCloseButton OnClick="@(()=>{settings.AppIcon=null;})" />
+                    </MudTooltip>
+                }
+            </MudContainer>
+            <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
+                <ButtonTemplate>
+                    <MudButton HtmlTag="label"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.CloudUpload">
+                        Upload Icon
+                    </MudButton>
+                </ButtonTemplate>
+            </MudFileUpload>
+        </ChildContent>
+    </SettingsField>
+
+
+
+    <SettingsField>
+        <FieldLabel>
+            @SettingsLocalization["Website FQDN"]
+        </FieldLabel>
+        <ChildContent>
+            <MudTextField For=@(()=> settings.AppFQDN) ErrorText="Must be a valid domain name" HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
+        </ChildContent>
+    </SettingsField>
+
+    <SettingsField>
+            <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
     </SettingsField>
 
 

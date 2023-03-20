@@ -7,15 +7,12 @@
 <SetHeader @ref=Header>
 
     
-            <Row Style="font-size:0.8em;">
-                <MudContainer Fixed>
+            <MudStack Row>
                     <div TextOverflow="TextOverflow.Wrap">
                         Templates
 
                     </div>
 
-                </MudContainer>
-                <MudContainer Fixed>
                     <MudSelectList T="string"
                                    Values="TemplateCategories"
                                    @bind-Value="@SelectedCategory" />
@@ -58,21 +55,18 @@
                         }
                     </DropdownList>*@
 
-                </MudContainer>
-                <MudContainer Fixed>
-                    <MudButton Float="Float.End" Color=Color.Primary  OnClick="@(()=>{SelectedTemplate = new();})"><MudIcon Icon="IconName.PlusSquare" /></MudButton>
+                    <MudButton  Color=Color.Secondary  OnClick="@(()=>{SelectedTemplate = new();})" StartIcon="@Icons.Material.Filled.AddCard"/>
                     @if (SelectedCategory != null && SelectedCategory != "All")
                     {
-                        <MudButton OnClick=@(()=>{RenameModal.Show();}) Color="Color.Primary"><MudIcon Icon="@("fa-solid fa-pen-to-square")" /></MudButton>
+                        <MudButton OnClick=@(()=>{RenameModal.Show();}) Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.ChangeCircle"/>
                     }
                     @if (SelectedTemplate != null)
                     {
-                        <MudButton OnClick=@(()=>{DuplicateTemplate(SelectedTemplate);}) Color="Color.Primary"><MudIcon Icon="@("fa-solid fa-copy")" /></MudButton>
+                        <MudButton OnClick=@(()=>{DuplicateTemplate(SelectedTemplate);}) Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.FileCopy" />
                     }
 
 
-                </MudContainer>
-            </Row>
+            </MudStack>
      
     <AppModal @ref=RenameModal Title="Rename Category">
         
@@ -87,7 +81,6 @@
 {
     <EditDirectoryTemplate DirectoryTemplate=@SelectedTemplate />
 }
-@*<ShowDirectoryTemplates />*@
 
 
 

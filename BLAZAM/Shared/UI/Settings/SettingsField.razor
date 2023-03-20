@@ -1,14 +1,25 @@
 <MudGrid>
     <MudItem Class="align-bottom pb-0" xs="12" sm="5" md="4" lg="3" xl="2" xxl="1">
-        @if (!Label.IsNullOrEmpty())
+        @if (Label!=null)
         {
+            if(FieldLabel==null && !Label.IsNullOrEmpty())
+            {
 
-            <MudText Color=Color.Primary Style="margin-bottom:4px; padding-top:16px">
-                @Label
-            </MudText>
+                <MudText Color=Color.Primary Style="margin-bottom:4px;">
+                    @Label
+                </MudText>
+            }
+            else
+            {
+                <MudElement>
+                    @FieldLabel
+
+                </MudElement>
+
+            }
         }
     </MudItem>
-    <MudItem Class="pt-0" xs=12 md=7 lg="9" xl="10" xxl="11">
+    <MudItem xs=12 md=7 lg="9" xl="10" xxl="11">
       
         @ChildContent
     </MudItem>
@@ -17,6 +28,9 @@
 
     [Parameter]
     public string? Label { get; set; }
+
+    [Parameter]
+    public RenderFragment? FieldLabel { get; set; }
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
