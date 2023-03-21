@@ -10,14 +10,40 @@
 
 @if (MOTD.HasValue && MOTD.Value.ToString()!="")
 {
-    <Alert Background="Background.Light" Color="Color.Dark" Visible>
+    <MudAlert Elevation="1">
 
-    <AlertMessage>
+    
         @MOTD.Value
 
-    </AlertMessage>
-</Alert>
+</MudAlert>
 }
+<MudDropContainer @ref=widgetContainer  T="Widget" Items="widgets" ItemsSelector="@((item,dropzone) => item.Slot == dropzone)" ItemDropped="ItemDropped" Class="d-flex flex-wrap flex-grow-1">
+    <ChildContent>
+       
+            <MudPaper Class="ma-4 flex-grow-1">
+                <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
+                <MudDropZone AllowReorder T="Widget" Identifier="slot1" Class="flex-grow-1" />
+                </MudList>
+            </MudPaper>
+             <MudPaper Class="ma-4 flex-grow-1">
+                <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
+                <MudDropZone AllowReorder T="Widget" Identifier="slot2" Class="flex-grow-1" />
+                </MudList>
+            </MudPaper>
+        <MudPaper Class="ma-4 flex-grow-1">
+            <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
+                <MudDropZone AllowReorder T="Widget" Identifier="slot3" Class="flex-grow-1" />
+            </MudList>
+        </MudPaper>
+        }
+    </ChildContent>
+    <ItemRenderer>
+         <MudCard Shadow="Shadow.Default" Margin="Margin.Is3.OnY" Background="Background.Secondary" >
+                <DynamicComponent Type="@context.GetType()" />
+                <AppCloseButton OnClick=@(()=>{RemoveWidget(context);}) Position="Position.Absolute" style="right:10px;top:15px" />
+        </MudCard>
+    </ItemRenderer>
+</MudDropContainer>
 @*
 <DropContainer @ref=widgetContainer TItem="Widget" @bind-Items="widgets" ItemsFilter="@((item, dropZone) => item.Slot == dropZone)" ItemDropped="@ItemDropped" Flex="Flex.Wrap.Grow.Is1">
     <ChildContent>
@@ -47,16 +73,13 @@
 
     @code {
     MarkupString? MOTD;
-    //DropContainer<Widget>? widgetContainer;
-    //List<Widget> widgets = new List<Widget>();
-    //private Task ItemDropped(DraggableDroppedEventArgs<AppComponentBase> dropItem)
-    //{
-    //    return Task.CompletedTask;
-    //}
+    MudDropContainer<Widget>? widgetContainer;
+    List<Widget> widgets = new List<Widget>();
+
 
     protected override Task OnInitializedAsync()
     {
-        //widgets = new List<Widget>(Widgets.Available(UserStateService.CurrentUserState));
+        widgets = new List<Widget>(Widgets.Available(UserStateService.CurrentUserState));
         try
         {
             MOTD = (MarkupString)Context.AppSettings.FirstOrDefault().MOTD;
@@ -68,16 +91,16 @@
         return base.OnInitializedAsync();
     }
 
-    //private Task ItemDropped(DraggableDroppedEventArgs<Widget> dropItem)
-    //{
-    //    dropItem.Item.Slot = dropItem.DropZoneName;
-    //    return Task.CompletedTask;
-    //}
-    //async Task RemoveWidget(Widget widget)
-    //{
-    //    widgets.Remove(widget);
-    //    await InvokeAsync(StateHasChanged);
-    //    widgetContainer.Refresh();
-    //}
+    private Task ItemDropped(MudItemDropInfo<Widget> dropItem)
+    {
+        dropItem.Item.Slot = dropItem.DropzoneIdentifier;
+        return Task.CompletedTask;
+    }
+    async Task RemoveWidget(Widget widget)
+    {
+        widgets.Remove(widget);
+        await InvokeAsync(StateHasChanged);
+        
+    }
 
 }
