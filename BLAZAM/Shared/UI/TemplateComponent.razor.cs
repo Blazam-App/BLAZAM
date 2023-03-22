@@ -63,7 +63,7 @@ namespace BLAZAM.Server.Shared.UI
             if (cats != null)
             {
                 TemplateCategories = cats;
-                TemplateCategories.Prepend("All");
+                TemplateCategories = TemplateCategories.Prepend("All");
                 SelectedCategory = TemplateCategories.FirstOrDefault();
             }
             await InvokeAsync(StateHasChanged);

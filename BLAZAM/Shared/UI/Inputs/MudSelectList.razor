@@ -5,6 +5,7 @@
     @bind-SelectedValues=@SelectedValues
     @bind-Text=@Text
     @bind-Value=@Value
+    FullWidth=@FullWidth
            Dense=@Dense
            Variant="@Variant"
            MultiSelection=@MultiSelection
@@ -14,8 +15,9 @@
            HelperTextOnFocus=@HelperTextOnFocus
            Placeholder="@Placeholder"
            Class=@Class
-           ListClass="@ListClass"
-           Style="@Style">
+           ListClass=@(ListClass+"w-min")
+           Style="@(Style+" min-width:100px;")">
+
     @foreach (var val in Values)
     {
         <MudSelectItem Value="@val">

@@ -8,28 +8,28 @@
 
 <AppPageTitle>Home</AppPageTitle>
 
-@if (MOTD.HasValue && MOTD.Value.ToString()!="")
+@if (MOTD.HasValue && MOTD.Value.ToString() != "")
 {
     <MudAlert Elevation="1">
 
-    
+
         @MOTD.Value
 
-</MudAlert>
+    </MudAlert>
 }
-<MudDropContainer @ref=widgetContainer  T="Widget" Items="widgets" ItemsSelector="@((item,dropzone) => item.Slot == dropzone)" ItemDropped="ItemDropped" Class="d-flex flex-wrap flex-grow-1">
+<MudDropContainer @ref=widgetContainer T="Widget" Items="widgets" ItemsSelector="@((item,dropzone) => item.Slot == dropzone)" ItemDropped="ItemDropped" Class="d-flex flex-wrap flex-grow-1">
     <ChildContent>
-       
-            <MudPaper Class="ma-4 flex-grow-1">
-                <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
+
+        <MudPaper Class="ma-4 flex-grow-1">
+            <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
                 <MudDropZone AllowReorder T="Widget" Identifier="slot1" Class="flex-grow-1" />
-                </MudList>
-            </MudPaper>
-             <MudPaper Class="ma-4 flex-grow-1">
-                <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
+            </MudList>
+        </MudPaper>
+        <MudPaper Class="ma-4 flex-grow-1">
+            <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
                 <MudDropZone AllowReorder T="Widget" Identifier="slot2" Class="flex-grow-1" />
-                </MudList>
-            </MudPaper>
+            </MudList>
+        </MudPaper>
         <MudPaper Class="ma-4 flex-grow-1">
             <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
                 <MudDropZone AllowReorder T="Widget" Identifier="slot3" Class="flex-grow-1" />
@@ -38,40 +38,15 @@
         }
     </ChildContent>
     <ItemRenderer>
-         <MudCard Shadow="Shadow.Default" Margin="Margin.Is3.OnY" Background="Background.Secondary" >
-                <DynamicComponent Type="@context.GetType()" />
-                <AppCloseButton OnClick=@(()=>{RemoveWidget(context);}) Position="Position.Absolute" style="right:10px;top:15px" />
+        <MudCard Shadow="Shadow.Default" Margin="Margin.Is3.OnY" Background="Background.Secondary">
+            <DynamicComponent Type="@context.GetType()" />
+            <AppCloseButton OnClick=@(()=>{RemoveWidget(context);}) Position="Position.Absolute" style="right:10px;top:15px" />
         </MudCard>
     </ItemRenderer>
 </MudDropContainer>
-@*
-<DropContainer @ref=widgetContainer TItem="Widget" @bind-Items="widgets" ItemsFilter="@((item, dropZone) => item.Slot == dropZone)" ItemDropped="@ItemDropped" Flex="Flex.Wrap.Grow.Is1">
-    <ChildContent>
-        <DropZone TItem="Widget" Name="slot1" AllowReorder Border="Border.Rounded" Background="Background.Light" Margin="Margin.Is3" Flex="Flex.Grow.Is1" />
-        <DropZone TItem="Widget" Name="slot2" AllowReorder Border="Border.Rounded" Background="Background.Light" Margin="Margin.Is3" Flex="Flex.Grow.Is1" />
-        <DropZone TItem="Widget" Name="slot3" AllowReorder Border="Border.Rounded" Background="Background.Light" Margin="Margin.Is3" Flex="Flex.Grow.Is1" />
-
-    </ChildContent>
-    <ItemTemplate>
-        <MudCard Shadow="Shadow.Default" Margin="Margin.Is3.OnY" Background="Background.Secondary" >
-            <MudCardBody>
-                <DynamicComponent Type="@context.GetType()" />
-                <AppCloseButton OnClick=@(()=>{RemoveWidget(context);}) Position="Position.Absolute" style="right:10px;top:15px" />
-            </MudCardBody>
-        </MudCard>
-    </ItemTemplate>
-    </DropContainer>*@
 
 
-
-
-
-
-
-
-
-
-    @code {
+@code {
     MarkupString? MOTD;
     MudDropContainer<Widget>? widgetContainer;
     List<Widget> widgets = new List<Widget>();
@@ -86,7 +61,7 @@
         }
         catch
         {
-            
+
         }
         return base.OnInitializedAsync();
     }
@@ -100,7 +75,7 @@
     {
         widgets.Remove(widget);
         await InvokeAsync(StateHasChanged);
-        
+
     }
 
 }

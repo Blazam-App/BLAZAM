@@ -1,31 +1,30 @@
-﻿
-<div Border="Border" Padding=Padding Margin=Margin Class=@("section")>
+﻿<MudPaper Class=@(" mud-width-full section px-3 py")>
     @if (SectionHeaderPosition == HeaderPosition.TopLeft || SectionHeaderPosition == HeaderPosition.TopRight)
     {
-        <div Class="section-title-container">
+        <MudElement Class="section-title-container">
 
-            <div Background=BackgroundColor Class="section-title">
-                <MudText Color="TextColor" class="section-title-text">@Title</MudText>
-               
-            </div>
-        </div>
+            <MudElement Class="section-title">
+                <MudText Color="TextColor" Class="section-title-text">@Title</MudText>
+
+            </MudElement>
+        </MudElement>
 
     }
-    <Row Width="Width.Is100" Class="section-content">
+    <MudElement Class="section-content">
         @ChildContent
-    </Row>
+    </MudElement>
 
     @if (SectionHeaderPosition == HeaderPosition.BottomLeft || SectionHeaderPosition == HeaderPosition.BottomRight)
     {
-        <div Class="section-title-container">
+        <MudElement Class="section-title-container">
 
-            <div Class="section-title">
+            <MudElement Class="section-title">
                 <MudText Color="TextColor" class="section-title-text">@Title</MudText>
-            </div>
-        </div>
+            </MudElement>
+        </MudElement>
 
     }
-</div>
+</MudPaper>
 @{
     string borderColor = "";
     string hspacing = "";

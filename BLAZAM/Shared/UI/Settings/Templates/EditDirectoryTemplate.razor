@@ -6,31 +6,43 @@
     <MudStack>
 
 
-        <MudTextField Label="@SettingsLocalization["Template Name"]" @bind-Value=DirectoryTemplate.Name />
+        <MudTextField Label="@SettingsLocalization["Template Name"]"
+                      @bind-Value=DirectoryTemplate.Name />
 
-
-
-
-        <MudText>
-            @SettingsLocalization["Template Category"]
-        </MudText>
-
+        <MudAutocomplete CoerceValue SearchFunc="SearchCategories"
+                         @bind-Value=DirectoryTemplate.Category
+                         Label="@SettingsLocalization["Template Category"]" />
 
 
 
         <MudCard>
             Variables:
-            <MudStack>
+            <MudStack Row>
                 <code>{fn}</code>:First Name<br />
+            </MudStack>
+            <MudStack Row>
+
                 <code>{fi}</code>:First Initial<br />
+            </MudStack>
+            <MudStack Row>
                 <code>{mn}</code>:Middle Name<br />
-
+            </MudStack>
+            <MudStack Row>
                 <code>{mi}</code>:Middle Initial<br />
+            </MudStack>
+            <MudStack Row>
                 <code>{ln}</code>:Last Name<br />
+            </MudStack>
+            <MudStack Row>
                 <code>{li}</code>:Last Initial<br />
-
+            </MudStack>
+            <MudStack Row>
                 <code>{AlphaNum[:u/l]}</code>:Random letter or number (optional force uppercase/lowercase)<br />
+            </MudStack>
+            <MudStack Row>
                 <code>{Alpha[:u/l]}</code>:Random letter (optional force uppercase/lowercase)<br />
+            </MudStack>
+            <MudStack Row>
                 <code>{Num}</code>:Random number<br />
 
             </MudStack>
@@ -40,7 +52,8 @@
 
 
 
-            <MudTextField Label="Username Format" @bind-Value=DirectoryTemplate.UsernameFormula>
+            <MudTextField Label="Username Format"
+                          @bind-Value=DirectoryTemplate.UsernameFormula>
 
 
 
@@ -49,7 +62,8 @@
 
 
 
-            <MudTextField Label="Display Name Format" @bind-Value=DirectoryTemplate.DisplayNameFormula>
+            <MudTextField Label="Display Name Format"
+                          @bind-Value=DirectoryTemplate.DisplayNameFormula>
 
 
 
@@ -59,7 +73,9 @@
 
 
 
-            <MudTextField Label="Password" Placeholder="{AlphaNum}{Alpha:U}{Alpha:L}{Num}{Num}{Num}" @bind-Value=DirectoryTemplate.PasswordFormula>
+            <MudTextField Label="Password"
+                          Placeholder="{AlphaNum}{Alpha:U}{Alpha:L}{Num}{Num}{Num}"
+                          @bind-Value=DirectoryTemplate.PasswordFormula>
 
 
 
@@ -120,11 +136,10 @@
         @if (SelectedOU != null)
         {
 
-            <BLAZAM.Server.Shared.UI.OU.OUTreeView Label=@(SettingsLocalization["OU"]+": "+ SelectedOU?.CanonicalName) StartRootExpanded=false @bind-SelectedOU=@SelectedOU @bind-StartingSelectedOU=@SelectedOU>
-                @*  <NodeContent Context="ouContext">
-            @ouContext.Name
-            </NodeContent>*@
-            </BLAZAM.Server.Shared.UI.OU.OUTreeView>
+            <OUTreeView Label=@(SettingsLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
+                    StartRootExpanded=false
+                    @bind-SelectedOU=@SelectedOU
+                    @bind-StartingSelectedOU=@SelectedOU />
 
 
         }
@@ -136,14 +151,18 @@
             <MudText>@group</MudText>
         }
 
-        <ADAutoComplete Label="@SettingsLocalization["Groups"]" Multiple @bind-SelectedResult="@SelectedGroup" />
-        <MudFab Icon=@Icons.Material.Filled.Add Color="Color.Primary" OnClick="@(()=>{TemplateGroups.Add(SelectedGroup);})" />
-        
+        <ADAutoComplete Label="@SettingsLocalization["Groups"]"
+                            Multiple
+                        @bind-SelectedResult="@SelectedGroup" />
+        <MudFab Icon=@Icons.Material.Filled.Add
+                Color="Color.Primary"
+                OnClick="@(()=>{TemplateGroups.Add(SelectedGroup);})" />
 
 
-    </MudStack>
 
-    @{
+        </MudStack>
+
+        @{
         string buttonText = "";
         @if (DirectoryTemplate.Id == 0)
         {
@@ -235,9 +254,11 @@
     IDirectoryEntryAdapter SelectedGroup;
     List<IDirectoryEntryAdapter> TemplateGroups = new();
 
-    async Task<IEnumerable<string>> SearchCategories(string searchTerm)
+    async Task<IEnumerable<string>> SearchCategories(string? searchTerm)
     {
-        return Context.DirectoryTemplates.Select(t => t.Category).Distinct().Where(s => s.Contains(searchTerm) || s.Equals(searchTerm));
+        var categories = Context.DirectoryTemplates.Select(t => t.Category).Distinct();
+        if (searchTerm.IsNullOrEmpty()) return categories;
+        return categories.Where(s => s.Contains(searchTerm) || s.Equals(searchTerm));
     }
 
 

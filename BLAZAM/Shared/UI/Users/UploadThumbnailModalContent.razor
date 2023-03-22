@@ -8,17 +8,18 @@
     <MudText>
         @SettingsLocalization["Upload Thumbnail Photo"]
     </MudText>
-
     <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
         <ButtonTemplate>
             <MudButton HtmlTag="label"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.CloudUpload">
+                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       for="@context">
                 Upload Files
             </MudButton>
         </ButtonTemplate>
     </MudFileUpload>
+    
 
 
     <MudButton Color=Color.Primary OnClick="SaveChanges">@UserLocalization["Save Photo"]</MudButton>
