@@ -21,67 +21,10 @@
     <MudLayout>
         <AuthorizeView Context="authContext">
             <Authorized>
-                <MudAppBar Color=Color.Primary Elevation="1">
-                    @if (!DrawerOpen)
-                    {
-                        <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
-
-                    }
-
-                    <MudIconButton Icon="@Icons.Material.Filled.Menu"
-                                   Color="Color.Inherit"
-                                   Edge="Edge.Start"
-                                   OnClick="@((e) => {DrawerOpen=!DrawerOpen; })" />
-
-                    @if (setHeader != null)
-                    {
-                        @setHeader.ChildContent
-
-                    }
-                    else
-                    {
-                        <SearchPageHeader Text="Search" />
-                    }
-
-                    <MudSpacer />
-
-                    <MudMenu>
-                        <ActivatorContent>
-                            @{
-                                var avatarBgColor = GenerateAvatarColor(UserStateService?.CurrentUsername);
-                            }
-                            <MudAvatar Elevation="4" Style="@avatarBgColor">@UserStateService.CurrentUsername.FirstOrDefault()</MudAvatar>
-
-                        </ActivatorContent>
-                        <ChildContent>
-
-                            <MudNavGroup Title="Themes">
-                                @foreach (var theme in ApplicationTheme.Themes)
-                                {
-                                    <MudMenuItem OnClick=@(()=>{SetUserTheme(theme);})>
-                                        @theme.Name
-                                    </MudMenuItem>
-                                }
-
-
-                            </MudNavGroup>
-                            @if (UserStateService.CurrentUserState?.Impersonator == null)
-                            {
-                                <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/logout",true);})" Icon="@Icons.Material.Filled.Logout">
-                                    @AppLocalization["Sign Out"]
-                                </MudMenuItem>
-                            }
-                            else
-                            {
-                                <MudMenuItem Href="/unimpersonate" Icon="@Icons.Material.Filled.PersonOff">
-
-                                    @AppLocalization["Stop It"]
-                                </MudMenuItem>
-                            }
-                        </ChildContent>
-                    </MudMenu>
-                </MudAppBar>
-
+                <CascadingValue Value="this">
+                    
+                    <MainAppBar />
+                </CascadingValue>
 
                 @if (Program.InDebugMode)
                 {
@@ -169,7 +112,7 @@
     bool _drawerOpen = true;
     bool _devDrawerOpen = false;
 
-    private bool DrawerOpen
+    public bool DrawerOpen
     {
         get => _drawerOpen; set
         {
@@ -181,7 +124,7 @@
         }
     }
 
-    SetHeader? setHeader;
+    public SetHeader? setHeader;
     public void SetHeader(SetHeader? setHeader)
     {
         this.setHeader = (setHeader);
@@ -207,7 +150,7 @@
 
     public void Update() => StateHasChanged();
 
-    void SetUserTheme(ApplicationTheme theme)
+    public void SetUserTheme(ApplicationTheme theme)
     {
         try
         {
@@ -221,13 +164,5 @@
         }
     }
 
-    string GenerateAvatarColor(string username)
-    {
-        if (username.IsNullOrEmpty()) return "background-color:#0c13a7";
-        var usernameHash = username.GetHashCode();
-        byte[] usernameHashBytes = usernameHash.ToByteArray(3);
-        string hexColor = "background-color:#";
-        hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
-        return hexColor;
-    }
+
 } 

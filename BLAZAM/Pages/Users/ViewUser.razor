@@ -95,8 +95,8 @@
                 </SetSubHeader>
             }
 
-
-            <Row>
+            
+            <MudElement  Class="d-flex flex-wrap gap-4">
 
                 <AppModal Color="Color.Dark" Title="Upload Thumbnail..." @ref=@UploadThumbnailModal>
                     <UploadThumbnailModalContent ModelChanged=@(()=>{InvokeAsync(StateHasChanged);}) DirectoryModel="User" />
@@ -519,7 +519,7 @@
                     
                 }
 
-            </Row>
+            </MudElement>
 
 
 

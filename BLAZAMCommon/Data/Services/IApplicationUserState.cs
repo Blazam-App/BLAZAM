@@ -15,8 +15,9 @@ namespace BLAZAM.Common.Data.Services
         bool IsSuperAdmin { get; }
         DateTime LastAccessed { get; set; }
         ClaimsPrincipal User { get; set; }
-        UserSettings? UserSettings { get; }
+        AppUser? UserSettings { get; }
         AuthenticationTicket Ticket { get; set; }
+        List<NotificationMessage> Messages { get; set; }
 
         bool Equals(object? obj);
         bool HasRole(string searchUsers);

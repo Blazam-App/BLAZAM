@@ -39,7 +39,7 @@ namespace BLAZAM.Common.Data.Database
         DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
         DbSet<SystemAuditLog> SystemAuditLog { get; set; }
         DbSet<UserAuditLog> UserAuditLog { get; set; }
-        DbSet<UserSettings> UserSettings { get; set; }
+        DbSet<AppUser> UserSettings { get; set; }
 
 
         DatabaseConnectionString? ConnectionString { get; }

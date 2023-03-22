@@ -39,10 +39,11 @@ namespace BLAZAM.Server.Data.Services
         /// </summary>
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
 
+        public List<NotificationMessage> Messages { get; set; } = new List<NotificationMessage>();
 
         public AuthenticationTicket Ticket { get; set; }
 
-        public UserSettings? userSettings { get; set; }
+        public AppUser? userSettings { get; set; }
         private readonly AppDatabaseFactory _dbFactory;
 
         public ApplicationUserState(AppDatabaseFactory factory)
@@ -60,7 +61,7 @@ namespace BLAZAM.Server.Data.Services
         /// Changes made to the returned object are not saved
         /// until <see cref="SaveUserSettings()"/> is called
         /// </remarks>
-        public UserSettings? UserSettings
+        public AppUser? UserSettings
         {
             get
             {
@@ -73,7 +74,7 @@ namespace BLAZAM.Server.Data.Services
                         userSettings = context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
                         if (userSettings == null)
                         {
-                            userSettings = new UserSettings();
+                            userSettings = new AppUser();
                             userSettings.UserGUID = User.FindFirstValue(ClaimTypes.Sid);
                             userSettings.Username = User.Identity?.Name;
                             context.UserSettings.Add(userSettings);

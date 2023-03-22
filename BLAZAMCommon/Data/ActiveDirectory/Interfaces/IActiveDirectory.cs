@@ -13,7 +13,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         IApplicationUserStateService UserStateService { get; }
         IDatabaseContext? Context { get; }
         AppDatabaseFactory Factory { get; }
-        bool Pingable { get; }
+        //bool Pingable { get; }
         bool PortOpen { get; }
         DirectoryConnectionStatus Status { get; }
         DirectoryEntry? AppRootDirectoryEntry { get; }

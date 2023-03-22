@@ -3,12 +3,14 @@
 @attribute [Authorize(Roles=UserRoles.SuperAdmin)]
 
 <AppPageTitle>Templates</AppPageTitle>
+<SetHeader>
+</SetHeader>
 <h3>Templates</h3>
 <SetHeader @ref=Header>
 
     
             <MudStack Row>
-                    <div TextOverflow="TextOverflow.Wrap">
+                    <div >
                         Templates
 
                     </div>
@@ -16,45 +18,14 @@
                     <MudSelectList T="string"
                                    Values="TemplateCategories"
                                    @bind-Value="@SelectedCategory" />
-                    @*<DropdownList TItem="string" TValue="string"
-                                  Data="@this.TemplateCategories"
-                                  TextField="@((item)=>item)"
-                                  ValueField="@((item)=>item)"
-                                  @bind-SelectedValue="@SelectedCategory"
-                                  Color="Color.Primary"
-                                  MaxMenuHeight="200px">
-                        @if (SelectedCategory == null)
-                        {
-                            @("Choose a category")
-                        }
-                        else
-                        {
-                            @SelectedCategory
-                        }
-                    </DropdownList>*@
+                  
 
                     <MudSelectList
                         T="@DirectoryTemplate"
                         Values="Templates"
                         @bind-Value="@SelectedTemplate"
                         />
-                    @*<DropdownList TItem="DirectoryTemplate" TValue="DirectoryTemplate"
-                                  Data="@this.Templates"
-                                  TextField="@((item)=>item.Name)"
-                                  ValueField="@((item)=>item)"
-                                  @bind-SelectedValue="@SelectedTemplate"
-                                  Color="Color.Primary"
-                                  MaxMenuHeight="200px">
-                        @if (SelectedTemplate == null)
-                        {
-                            @("Choose a template")
-                        }
-                        else
-                        {
-                            @SelectedTemplate.Name
-                        }
-                    </DropdownList>*@
-
+               
                     <MudButton  Color=Color.Secondary  OnClick="@(()=>{SelectedTemplate = new();})" StartIcon="@Icons.Material.Filled.AddCard"/>
                     @if (SelectedCategory != null && SelectedCategory != "All")
                     {

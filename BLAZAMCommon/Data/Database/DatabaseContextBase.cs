@@ -15,7 +15,7 @@ using Microsoft.VisualStudio.Services.WebApi;
 
 namespace BLAZAM.Common.Data.Database
 {
-    public class DatabaseContext : DbContext, IDatabaseContext
+    public class DatabaseContextBase : DbContext, IDatabaseContext
     {
         /// <summary>
         /// The connection string as set in the ASP Net Core appsettings.json
@@ -68,13 +68,13 @@ namespace BLAZAM.Common.Data.Database
         /// <summary>
         /// Constructor for building migrations
         /// </summary>
-        public DatabaseContext()
+        public DatabaseContextBase()
         {
             ConnectionString = new("");
         }
 
        
-        public DatabaseContext(DatabaseConnectionString databaseConnectionString) : base()
+        public DatabaseContextBase(DatabaseConnectionString databaseConnectionString) : base()
         {
             ConnectionString = databaseConnectionString;
             _dbType = "SQL";
@@ -89,7 +89,7 @@ namespace BLAZAM.Common.Data.Database
         /// <inheritdoc/>
         /// </summary>
         /// <param name="options"><inheritdoc/></param>
-        public DatabaseContext(DbContextOptions options) : base(options)
+        public DatabaseContextBase(DbContextOptions options) : base(options)
         {
         }
 
@@ -99,8 +99,10 @@ namespace BLAZAM.Common.Data.Database
         public virtual DbSet<AuthenticationSettings> AuthenticationSettings { get; set; }
         public virtual DbSet<EmailSettings> EmailSettings { get; set; }
         public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
-        public virtual DbSet<UserSettings> UserSettings { get; set; }
 
+        //User Tables
+        public virtual DbSet<AppUser> UserSettings { get; set; }
+        public virtual DbSet<NotificationMessage> UserNotifications { get; set; }
 
 
         //Audit Logs
@@ -595,7 +597,7 @@ namespace BLAZAM.Common.Data.Database
             });
 
 
-            modelBuilder.Entity<UserSettings>(entity =>
+            modelBuilder.Entity<AppUser>(entity =>
             {
                 entity.HasIndex(e => e.UserGUID).IsUnique();
             });

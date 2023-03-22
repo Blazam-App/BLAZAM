@@ -6,6 +6,7 @@ using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Common.Models.Database;
+using BLAZAM.Common.Models.Database.User;
 using BLAZAM.Server.Data.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Buffers.Text;
@@ -92,17 +93,17 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         public IADComputerSearcher Computers { get; }
 
         public IDatabaseContext? Context { get; private set; }
-        public bool Pingable
-        {
-            get
-            {
-                if (ConnectionSettings != null)
+        //public bool Pingable
+        //{
+        //    get
+        //    {
+        //        if (ConnectionSettings != null)
 
-                    if (ConnectionSettings.ServerAddress != null && ConnectionSettings.ServerAddress != "")
-                        return NetworkTools.PingHost(ConnectionSettings.ServerAddress);
-                return false;
-            }
-        }
+        //            if (ConnectionSettings.ServerAddress != null && ConnectionSettings.ServerAddress != "")
+        //                return NetworkTools.PingHost(ConnectionSettings.ServerAddress);
+        //        return false;
+        //    }
+        //}
         public bool PortOpen
         {
             get
@@ -237,14 +238,43 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                                         AppRootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, Encryption.DecryptObject<string>(ad.Password), _authType);
                                         RootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/"+ad.FQDN.FqdnToDN(), ad.Username, Encryption.DecryptObject<string>(ad.Password), _authType);
                                         //var nativeEntry = DirectoryEntry.NativeObject;
-                                        var search = new ADSearch() { ObjectTypeFilter=ActiveDirectoryObjectType.User, SearchRoot = RootDirectoryEntry, SamAccountName = ad.Username, ExactMatch = true };
+                                        //Perform Auth check
+                                        var search = new ADSearch() {
+                                            ObjectTypeFilter=ActiveDirectoryObjectType.User,
+                                            SearchRoot = RootDirectoryEntry,
+                                            Fields = new()
+                                            {
+                                                SamAccountName = ad.Username
+                                            },
+                                            ExactMatch = true 
+                                        };
                                         var results = search.Search<ADUser,IADUser>();
-                                 
-                                        using (var authTest = new DirectorySearcher(AppRootDirectoryEntry, "(sAMAccountName=" + ad.Username + ")"))
+                                        try
                                         {
+                                            if (AppRootDirectoryEntry.Parent == null)
+                                            {
+                                                UserStateService.BroadcastNotification(new NotificationMessage()
+                                                {
+                                                    Level = NotificationLevel.Error,
+                                                    Message = "The configured BaseDN is not valid. Please correct your settings.",
+                                                    Title = "Active Directory Error"
+                                                });
+                                                Status = DirectoryConnectionStatus.BadConfiguration; return;
+                                            }
+                                        }catch(Exception ex)
+                                        {
+                                            UserStateService.BroadcastNotification(new NotificationMessage()
+                                            {
+                                                Level = NotificationLevel.Error,
+                                                Message = "The configured BaseDN is not valid. Please correct your settings.",
+                                                Title = "Active Directory Error"
+                                            });
+                                            Status = DirectoryConnectionStatus.BadConfiguration; return;
+
+                                        }
+
                                             try
                                             {
-                                                var result = Users.FindUsersByString(ad.Username);
                                                 if (results.Count > 0)
                                                     Status = DirectoryConnectionStatus.OK;
                                                 else
@@ -262,7 +292,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                                                         break;
                                                 }
                                             }
-                                        }
+                                        
 
                                         return;
                                     }
@@ -278,18 +308,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                                     Status = DirectoryConnectionStatus.ServerDown;
                                 }
                             }
-                            else
-                                Status = DirectoryConnectionStatus.Unconfigured;
                         }
-                        else
-                            Status = DirectoryConnectionStatus.Unconfigured;
                     }
                 }
-                else
-                {
                     Status = DirectoryConnectionStatus.Unconfigured;
 
-                }
+                
             }
             catch (Exception)
             {
@@ -405,7 +429,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         {
             var searcher = new ADSearch();
             searcher.SearchRoot = RootDirectoryEntry;
-            searcher.SID = sid;
+            searcher.Fields.SID = sid;
             var result = searcher.Search().FirstOrDefault();
             return result;
         }

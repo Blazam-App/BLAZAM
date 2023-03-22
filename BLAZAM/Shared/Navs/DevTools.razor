@@ -10,7 +10,7 @@
         <MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>
             {SnackBarService.Success("Test Notification " + Guid.NewGuid(),"Test");
             })">Test Notification</MudButton>
-        <MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>{NotificationBroadcast.Success("Test Broadcast " + Guid.NewGuid(),"Test");})">Test Broadcast</MudButton>
+        <MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>{SnackbarBroadcastService.Success("Test Broadcast " + Guid.NewGuid(),"Test");})">Test Broadcast</MudButton>
 
         <MudCard Class="mud-theme-dark">
             <MudCardHeader>
@@ -89,7 +89,6 @@
             <Row>
                 <Row>ActiveDirectory Status: @DirectoryStatus</Row>
                 <Row>ActiveDirectory Server: @Directory.ConnectionSettings?.ServerAddress</Row>
-                <Row>ActiveDirectory Server Pingable: @DirectoryPingable</Row>
 
                 <Row>ActiveDirectory Server Port: @Directory.ConnectionSettings?.ServerPort</Row>
                 <Row>ActiveDirectory Server Port Open: @DirectoryPortOpen</Row>
@@ -102,7 +101,6 @@
 
 @code {
     string DirectoryStatus = "";
-    bool DirectoryPingable;
     bool DirectoryPortOpen;
     bool collapseVisible = false;
     Timer t;
@@ -111,7 +109,6 @@
         base.OnInitialized();
         t = new Timer((obj) =>
         {
-            DirectoryPingable = Directory.Pingable;
             DirectoryPortOpen = Directory.PortOpen;
             DirectoryStatus = Enum.GetName(typeof(DirectoryConnectionStatus), Directory.Status);
             InvokeAsync(StateHasChanged);

@@ -38,7 +38,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Group,
                 EnabledOnly = false,
-                DN = dn,
+                Fields = new()
+                {
+                    DN = dn
+                },
                 ExactMatch = true
 
             }.Search<ADGroup, IADGroup>();
@@ -66,7 +69,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             return new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Group,
-                SID= groupSID,
+                Fields = new()
+                {
+                    SID = groupSID
+                },
                 ExactMatch = true
 
             }.Search<ADGroup, IADGroup>().FirstOrDefault();

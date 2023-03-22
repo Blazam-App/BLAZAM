@@ -42,7 +42,7 @@ namespace BLAZAM.Server.Pages.API
             }
             else
             {
-                userSettings = new UserSettings
+                userSettings = new AppUser
                 {
                     UserGUID = User.Identity.Name,
                     APIToken = Token

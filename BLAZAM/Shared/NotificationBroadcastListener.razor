@@ -1,14 +1,15 @@
-﻿@inherits AppComponentBase
+﻿@using BLAZAM.Common.Models.Database.User;
+@inherits AppComponentBase
 @code {
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         ApplicationUpdate.OnUpdateStarted += UpdateStarted;
         ApplicationUpdate.OnUpdateFailed += UpdateFailed;
-        NotificationBroadcast.OnInfoBroadcast += InfoBroadcast;
-        NotificationBroadcast.OnErrorBroadcast += ErrorBroadcast;
-        NotificationBroadcast.OnSuccessBroadcast += SuccessBroadcast;
-        NotificationBroadcast.OnWarningBroadcast += WarningBroadcast;
+        SnackbarBroadcastService.OnInfoBroadcast += InfoBroadcast;
+        SnackbarBroadcastService.OnErrorBroadcast += ErrorBroadcast;
+        SnackbarBroadcastService.OnSuccessBroadcast += SuccessBroadcast;
+        SnackbarBroadcastService.OnWarningBroadcast += WarningBroadcast;
     }
 
     void UpdateStarted()

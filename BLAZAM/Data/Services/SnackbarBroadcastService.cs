@@ -1,8 +1,17 @@
-﻿namespace BLAZAM.Server.Data.Services
-{
-    public static class NotificationBroadcast
-    {
+﻿using BLAZAM.Common.Models.Database.User;
 
+namespace BLAZAM.Server.Data.Services
+{
+    /// <summary>
+    /// Use this service to send snackbar messages to all currrently 
+    /// logged in users.
+    /// </summary>
+    /// <remarks>
+    /// Triggers each circuit's <see cref="AppSnackBarService"/>
+    /// </remarks>
+    public static class SnackbarBroadcastService
+    {
+       
         public static AppEvent<NotificationMessage>? OnInfoBroadcast { get; set; }
 
         public static AppEvent<NotificationMessage>? OnSuccessBroadcast { get; set; }
@@ -27,11 +36,5 @@
         {
             OnWarningBroadcast?.Invoke(new NotificationMessage { Title = title, Message = message });
         }
-    }
-
-    public class NotificationMessage
-    {
-        public string? Title { get; internal set; }
-        public string? Message { get; internal set; }
     }
 }

@@ -1,0 +1,128 @@
+﻿@inject IStringLocalizer<AppLocalization> AppLocalization
+@inject IApplicationUserStateService UserStateService
+@inject NavigationManager Nav
+@using BLAZAM.Server.Shared.UI.Themes;
+
+
+<MudAppBar Color=Color.Primary Elevation="1">
+    @if (!mainLayout.DrawerOpen)
+    {
+        <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+
+    }
+
+    <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                   Color="Color.Inherit"
+                   Edge="Edge.Start"
+                   OnClick="@((e) => {mainLayout.DrawerOpen=!mainLayout.DrawerOpen; })" />
+
+    @if (mainLayout.setHeader != null)
+    {
+        @mainLayout.setHeader.ChildContent
+
+    }
+    else
+    {
+        <SearchPageHeader Text="Search" />
+    }
+
+    <MudSpacer />
+    @{
+        var messages = UserStateService.CurrentUserState?.Messages.Count;
+
+    }
+    @if (messages > 0)
+    {
+        <MudPopover Open=@NotificationsOpen TransformOrigin="Origin.TopRight" AnchorOrigin="Origin.BottomRight">
+            <MudStack Row>
+            <MudListSubheader>Notifications</MudListSubheader>
+            <AppCloseButton OnClick=@(()=>{NotificationsOpen=false;}) />
+
+        </MudStack>
+
+        @foreach (var notification in UserStateService.CurrentUserState?.Messages)
+            {
+
+                <MudAlert OnClick=@(()=>{
+                    if(notification.Link!=null)
+                        Nav.NavigateTo(notification.Link.ToString());
+                }) ShowCloseIcon=notification.Dismissable>
+                    @if (!notification.Title.IsNullOrEmpty())
+                    {
+                        <MudText Typo="Typo.h6">@notification.Title</MudText>
+                    }
+                    @notification.Message
+                </MudAlert>
+            }
+
+
+        </MudPopover>
+    }
+    <MudMenu>
+        <ActivatorContent>
+            @{
+                var avatarBgColor = GenerateAvatarColor(UserStateService.CurrentUsername);
+            }
+            @if (messages > 0)
+            {
+                <MudBadge Color=Color.Tertiary Content="UserStateService.CurrentUserState.Messages.Count">
+                    <MudAvatar Elevation="4" Style="@avatarBgColor">@UserStateService.CurrentUsername.FirstOrDefault()</MudAvatar>
+
+                </MudBadge>
+            }
+            else
+            {
+                <MudAvatar Elevation="4" Style="@avatarBgColor">@UserStateService.CurrentUsername.FirstOrDefault()</MudAvatar>
+
+            }
+
+        </ActivatorContent>
+        <ChildContent>
+
+            @if (messages > 0)
+            {
+                <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})">Notifications</MudMenuItem>
+            }
+            <MudNavGroup Title="Themes">
+                @foreach (var theme in ApplicationTheme.Themes)
+                {
+                    <MudMenuItem OnClick=@(()=>{mainLayout.SetUserTheme(theme);})>
+                        @theme.Name
+                    </MudMenuItem>
+                }
+
+
+            </MudNavGroup>
+            @if (UserStateService.CurrentUserState?.Impersonator == null)
+            {
+                <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/logout",true);})" Icon="@Icons.Material.Filled.Logout">
+                    @AppLocalization["Sign Out"]
+                </MudMenuItem>
+            }
+            else
+            {
+                <MudMenuItem Href="/unimpersonate" Icon="@Icons.Material.Filled.PersonOff">
+
+                    @AppLocalization["Stop It"]
+                </MudMenuItem>
+            }
+        </ChildContent>
+    </MudMenu>
+</MudAppBar>
+
+
+@code {
+    bool NotificationsOpen;
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+    string GenerateAvatarColor(string username)
+    {
+        if (username.IsNullOrEmpty()) return "background-color:#0c13a7";
+        var usernameHash = username.GetHashCode();
+        byte[] usernameHashBytes = usernameHash.ToByteArray(3);
+        string hexColor = "background-color:#";
+        hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
+        return hexColor;
+    }
+  
+}

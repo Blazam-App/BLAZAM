@@ -42,7 +42,7 @@ namespace BLAZAM.Server.Data.Services
         public async Task<bool> Confirm(string message, string? title = null)
 
         {
-            return await _dialog.ShowMessageBox(title, message)==true;
+            return await _dialog.ShowMessageBox(title, message,"OK",null,"Cancel")==true;
 
 
         }

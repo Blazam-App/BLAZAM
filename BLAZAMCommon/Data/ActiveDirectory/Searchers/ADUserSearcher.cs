@@ -1,20 +1,21 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.ActiveDirectory.Models;
+using System.Security.Cryptography;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 {
     public class ADUserSearcher : ADSearcher, IADUserSearcher
     {
-        
+
         public ADUserSearcher(IActiveDirectory directory) : base(directory)
         {
         }
 
         public async Task<List<IADUser>> FindUsersByStringAsync(string searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
-        { 
+        {
             return await Task.Run(() =>
             {
-                return FindUsersByString(searchTerm, ignoreDisabledUsers,exactMatch);
+                return FindUsersByString(searchTerm, ignoreDisabledUsers, exactMatch);
             });
         }
 
@@ -25,9 +26,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
                 GeneralSearchTerm = searchTerm,
-                ExactMatch= exactMatch
+                ExactMatch = exactMatch
 
-            }.Search<ADUser, IADUser>();            
+            }.Search<ADUser, IADUser>();
         }
         public IADUser? FindUserByUsername(string searchTerm, bool? ignoreDisabledUsers = true)
         {
@@ -35,7 +36,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
-                SamAccountName = searchTerm,
+                Fields = new()
+                {
+                    SamAccountName = searchTerm
+                },
                 ExactMatch = true
 
             }.Search<ADUser, IADUser>().FirstOrDefault();
@@ -56,7 +60,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
-                LockoutTime = 1
+                Fields = new()
+                {
+                    LockoutTime = 1
+                }
 
             }.Search<ADUser, IADUser>();
 
@@ -77,26 +84,21 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         public List<IADUser>? FindNewUsers(bool? ignoreDisabledUsers = true)
         {
-            
+
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
 
             var tstamp = threeMonthsAgo.ToString("yyyyMMddHHmmss.fZ");
-            return new ADSearch()
+            var results = new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
-                Created = tstamp
+                Fields = new()
+                {
+                    Created = tstamp }
 
-            }.Search<ADUser, IADUser>().OrderByDescending(u => u.Created).ToList();
-           /*
-           
-            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
-         
-            var tstamp = threeMonthsAgo.ToString("yyyyMMddHHmmss.fZ");
-            string UserSearchFieldsQuery = "(whenCreated>="+tstamp+")";
+            }.Search<ADUser, IADUser>();
+            return results.OrderByDescending(u => u.Created).ToList();
 
-            return new List<IADUser>(ConvertTo<ADUser>(SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User, 1000, ignoreDisabledUsers)).OrderByDescending(u => u.Created));
-            */
         }
 
         public async Task<List<IADUser>> FindChangedPasswordUsersAsync(bool? ignoreDisabledUsers = true)
@@ -126,7 +128,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             });
         }
 
-        public List<IADUser>? FindChangedUsers(bool? ignoreDisabledUsers = true,int daysBackToSearch=90)
+        public List<IADUser>? FindChangedUsers(bool? ignoreDisabledUsers = true, int daysBackToSearch = 90)
         {
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(daysBackToSearch);
 
@@ -138,12 +140,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         }
         public IADUser? FindUserBySID(string? sid)
         {
-            if(sid== null) return null; 
+            if (sid == null) return null;
             return new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = false,
-                SID = sid,
+                Fields = new() { SID = sid },
                 ExactMatch = true
 
             }.Search<ADUser, IADUser>().FirstOrDefault();
@@ -156,7 +158,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
-                CN = searchTerm,
+                Fields = new() { CN = searchTerm },
                 ExactMatch = exactMatch
 
             }.Search<ADUser, IADUser>().FirstOrDefault();

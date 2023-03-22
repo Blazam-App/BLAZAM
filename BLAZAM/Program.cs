@@ -290,7 +290,7 @@ namespace BLAZAM
 
             //Inject the database as a service
 
-            DatabaseContext.Configuration = builder.Configuration;
+            DatabaseContextBase.Configuration = builder.Configuration;
 
             builder.Services.AddSingleton<AppDatabaseFactory>();
 
@@ -325,10 +325,10 @@ namespace BLAZAM
 
 
             //Provide an ApplicationManager as a service
-            builder.Services.AddScoped<ApplicationManager>();
+            builder.Services.AddSingleton<ApplicationManager>();
 
             //Provide a PermissionHandler as a service
-            builder.Services.AddScoped<LoginPermissionApplicator>();
+            builder.Services.AddSingleton<LoginPermissionApplicator>();
 
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();
