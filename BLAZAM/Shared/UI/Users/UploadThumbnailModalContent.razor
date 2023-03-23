@@ -14,15 +14,16 @@
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.CloudUpload"
-                       for="@context">
+                       for="@context"
+                       Disabled=LoadingData>
                 Upload Files
             </MudButton>
         </ButtonTemplate>
     </MudFileUpload>
-    
 
 
-    <MudButton Color=Color.Primary OnClick="SaveChanges">@UserLocalization["Save Photo"]</MudButton>
+
+    <MudButton Disabled=LoadingData Color=Color.Primary OnClick="SaveChanges">@UserLocalization["Save Photo"]</MudButton>
 </div>
 @code {
     byte[]? newThumbnail;
@@ -36,7 +37,7 @@
     }
     private async void LoadIcon(IBrowserFile e)
     {
-        
+
         using (var stream = e.OpenReadStream(5000000))
         {
             using (var memoryStream = new MemoryStream())

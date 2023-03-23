@@ -10,37 +10,22 @@
                 Template
             </TabContent>
             <ChildContent>
-                <LoadingIndicator Visible=@(Templates==null)>
-                    @*
-                    <DropdownList TItem="string" TValue="string"
-                    Data="@TemplateCategories"
-                    TextField="@((item)=>item)"
-                    ValueField="@((item)=>item)"
-                    @bind-SelectedValue="@SelectedCategory"
-                    Color="Color.Primary"
-                    MaxMenuHeight="200px">
-                    @if (SelectedCategory == null)
-                    {
-                    @("Choose a category")
-                    }
-                    else
-                    {
-                    @SelectedCategory
-                    }
-                    </DropdownList>
-                    <ListView TItem="DirectoryTemplate"
-                    Data="@Templates"
-                    Mode="ListGroupMode.Selectable"
-                    @bind-SelectedItem=@SelectedTemplate
-                    TextField="(item)=>item.Name"
-                    ValueField="(item)=>item.Name">
+                <MudSelectList Values="TemplateCategories"
+                               @bind-Value=SelectedCategory />
 
-                    </ListView>*@
-                </LoadingIndicator>
+                <MudPaper Width="300px">
+                    <MudList Clickable="true">
+                        @foreach (var template in Templates)
+                        {
+                            <MudListItem Text="@template.Name" Value="template" />
+                        }
+                    </MudList>
+                </MudPaper>
 
-                <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true;selectedStep=0;})">Custom</MudButton>
 
-                <MudButton Color=Color.Success OnClick="@(()=>{selectedStep=0;})">Next</MudButton>
+                <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true;selectedStep=1;})">Custom</MudButton>
+
+                <MudButton Color=Color.Success OnClick="@(()=>{selectedStep=1;})">Next</MudButton>
             </ChildContent>
 
         </MudTabPanel>
@@ -52,13 +37,13 @@
                 </TabContent>
                 <ChildContent>
 
-                
-                        <NewUserNameEntry @bind-NewUserName=@newUserName />
+
+                    <NewUserNameEntry @bind-NewUserName=@newUserName />
                     <MudButton Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
-                        <MudButton Color="Color.Primary" OnClick="CreateTemplateUser">Next</MudButton>
+                    <MudButton Color="Color.Primary" OnClick="CreateTemplateUser">Next</MudButton>
 
 
-                   
+
                 </ChildContent>
 
             </MudTabPanel>
@@ -86,21 +71,21 @@
                     OU
                 </TabContent>
                 <ChildContent>
-                        <OUTreeView SelectedOUChanged="OUSelected">
-                           @* <NodeContent>
-                                @context.Name
-                            </NodeContent>*@
-                        </OUTreeView>
-                        
-
-                            <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@customUserDisplayName" />
+                    <OUTreeView SelectedOUChanged="OUSelected">
+                        @* <NodeContent>
+                    @context.Name
+                    </NodeContent>*@
+                    </OUTreeView>
 
 
-                        
+                    <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@customUserDisplayName" />
+
+
+
                     <MudButton Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
                     <MudButton Color=Color.Success OnClick="@(()=>{CreateCustomUser();selectedStep=0;})">Next</MudButton>
 
-                    
+
                 </ChildContent>
 
             </MudTabPanel>
@@ -109,7 +94,7 @@
                     Details
                 </TabContent>
                 <ChildContent>
-                    <ViewUser User="@newUser"/>
+                    <ViewUser User="@newUser" />
                     <MudButton Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
                     <MudButton Color=Color.Success OnClick="@(()=>{selectedStep=0;})">Next</MudButton>
                 </ChildContent>
@@ -122,20 +107,20 @@
                 Confirm
             </TabContent>
             <ChildContent>
-                <ConfirmNewUser User="@newUser" DirectoryTemplate="SelectedTemplate" Confirmed="UserCreated"/>
+                <ConfirmNewUser User="@newUser" DirectoryTemplate="SelectedTemplate" Confirmed="UserCreated" />
 
             </ChildContent>
 
         </MudTabPanel>
     </MudTabs>
     <MudText>@($"Active Index: {selectedStep}")</MudText>
-       
-
-</Row>
 
 
+    </Row>
 
-@code {
+
+
+    @code {
 
 
     int selectedStep;

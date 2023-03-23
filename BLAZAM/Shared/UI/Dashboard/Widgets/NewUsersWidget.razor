@@ -1,22 +1,25 @@
 ﻿@inherits Widget
 @attribute [Authorize]
-<div Background="Background.Secondary" >
 
     <h3>Users created in the last 90 days</h3>
+    <MudDataGrid Items="@NewUsers"
+                 T="IADUser"
+                      Virtualize
+                      RowClass="cursor-pointer"
+                 RowClick=@GoToUser
+                 SortMode="SortMode.Single">
+        <Columns>
+            <PropertyColumn Property="x => x.SamAccountName" Title="Username" />
+            <PropertyColumn Property="x => x.DisplayName" Title="Display Name" />
+            <PropertyColumn Property="x => x.OU.ToPrettyOu()" Title="OU" />
+            <PropertyColumn Property="x => x.Created" Title="Creation Date" />
 
-    <div Overflow="Overflow.Auto" Style="max-height:350px;">
-        @foreach (var user in NewUsers)
-        {
-
-            <div Background="Background.Secondary"  Style="cursor:pointer" @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
-
-
-               <UserListItem User="user"/>
-            </div>
-
-        }
-    </div>
-</div>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="IADUser" />
+        </PagerContent>
+    </MudDataGrid>
+ 
 @code {
     List<IADUser> NewUsers = new();
 
@@ -28,5 +31,9 @@
         NewUsers = (await Directory.Users.FindNewUsersAsync(false)).Where(u => u.CanRead).ToList();
         LoadingData = false;
         InvokeAsync(StateHasChanged);
+    }
+    void GoToUser(DataGridRowClickEventArgs<IADUser> args)
+    {
+        Nav.NavigateTo(args.Item.SearchUri);
     }
 }

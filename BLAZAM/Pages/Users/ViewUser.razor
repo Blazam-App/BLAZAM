@@ -1,4 +1,7 @@
 ﻿@inherits DirectoryModelComponent
+@{
+    string _fieldMudStackClasses = "flex-wrap gap-10";
+}
 @if (User?.NewEntry == true)
 {
     EditMode = true;
@@ -13,7 +16,7 @@
 
             <MudStack Row Class="mud-width-full">
 
-                <MudStack Row>
+            <MudStack Row>
                 @{
                         var displayNameTooltipText = "";
                         if (!User.NewEntry)
@@ -38,11 +41,11 @@
                 {
                     <MudIcon Icon=@("fa-lock")>Account Locked</MudIcon>
                 }
-                <MudSpacer/>
+                <MudSpacer />
                 <MudMenu Class="align-self-end" StartIcon="@Icons.Material.Filled.Settings">
 
                     <MudMenuItem>
-                        <MudSwitch Label="Account Enabled" @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />
+                        <MudSwitch Color=Color.Success Label="Account Enabled" @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />
 
                     </MudMenuItem>
 
@@ -129,44 +132,61 @@
         User.CanReadField(ActiveDirectoryFields.DisplayName)
         )
         {
-            <Section Title=@UserLocalization["Name"]>
+            <MudGrid>
+                <MudItem xs="12" md="3">
+                    <Section FullWidth=false>
 
-                @if (User?.ThumbnailPhoto != null)
-                {
-                    <MudElement Style="width:fit-content;height:fit-content" Class="mx-auto my-auto">
-                        <Base64Image Data="User.ThumbnailPhoto.ReizeRawImage(150)" />
-                    </MudElement>
-                    <MudIcon OnClick=RemoveThumbnail Border=Border.RoundedCircle Background=Background.Dark Display=Display.Block Position=Position.Absolute style="width:20px;height:20px;padding:2px;top:-10px;left:-10px" Color=Color.Error Name="@("fa-solid fa-times")" />
+                        <MudElement Style="width:fit-content;height:fit-content" Class="mx-auto my-auto d-block">
+                            @if (User?.ThumbnailPhoto != null)
+                            {
+                                <Base64Image Style="max-height:150px;max-width:150px;" Data="User.ThumbnailPhoto.ReizeRawImage(150)" />
+                            }
+                            else
+                            {
+                                <MudIcon Style="height:150px;width:150px;" Icon="@Icons.Material.Filled.Person"/>
+                            }
+                        </MudElement>
+                        <MudButton OnClick=RemoveThumbnail
+                               Style="position:absolute !important;width:20px;height:20px;padding:2px;top:-10px;left:-10px"
+                               Color=Color.Error
+                               StartIcon="@Icons.Material.Filled.Delete" />
 
-                }
-                <MudStack Row Class="d-flex flex-wrap">
-
-                @if (User.CanReadField(ActiveDirectoryFields.GivenName))
-                    {
-                        <MudTextField Label="@UserLocalization["First Name"]" @bind-Value="@User.GivenName" Disabled=!User.NewEntry />
-                    }
-                    @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
-                    {
-                        <MudTextField Label="@UserLocalization["Middle Name"]" @bind-Value="@User.MiddleName" Disabled=!User.NewEntry />
-                    }
-                    @if (User.CanReadField(ActiveDirectoryFields.SN))
-                    {
-                        <MudTextField Label="@UserLocalization["Last Name"]" @bind-Value="@User.Surname" Disabled=!User.NewEntry />
-                    }
-                    @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
-                    {
-                        <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@User.DisplayName" Disabled=!User.NewEntry />
-                    }
+                    </Section>
+                </MudItem>
+                <MudItem xs=12 md="9">
+                    <Section FullWidth=false Title=@UserLocalization["Name"]>
 
 
-                </MudStack>
-                @if (EditMode && !User.NewEntry)
-                {
-                    <MudText>
-                        To Modify the user's name click the Gear button and choose "Rename..."
-                    </MudText>
-                }
-            </Section>
+                        <MudStack Row Class="@_fieldMudStackClasses">
+
+                        @if (User.CanReadField(ActiveDirectoryFields.GivenName))
+                            {
+                                <MudTextField Label="@UserLocalization["First Name"]" @bind-Value="@User.GivenName" Disabled=!User.NewEntry />
+                            }
+                            @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
+                            {
+                                <MudTextField Label="@UserLocalization["Middle Name"]" @bind-Value="@User.MiddleName" Disabled=!User.NewEntry />
+                            }
+                            @if (User.CanReadField(ActiveDirectoryFields.SN))
+                            {
+                                <MudTextField Label="@UserLocalization["Last Name"]" @bind-Value="@User.Surname" Disabled=!User.NewEntry />
+                            }
+                            @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
+                            {
+                                <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@User.DisplayName" Disabled=!User.NewEntry />
+                            }
+
+
+                        </MudStack>
+                        @if (EditMode && !User.NewEntry)
+                        {
+                            <MudText>
+                                To Modify the user's name click the Gear button and choose "Rename..."
+                            </MudText>
+                        }
+                    </Section>
+                </MudItem>
+            </MudGrid>
         }
 
 
@@ -177,19 +197,16 @@
         {
             <Section Title="@UserLocalization["Account"]">
 
-                <MudStack Row Class="d-flex flex-wrap">
+                <MudStack Row Class="@_fieldMudStackClasses">
 
                 @if (User.CanReadField(ActiveDirectoryFields.SAMAccountName))
                     {
 
 
-                        <MudTextField Adornment=Adornment.End
-                              AdornmentIcon="@Icons.Material.Filled.ContentCopy"
-                              OnAdornmentClick=@(()=>{CopyToClipboard(User.SamAccountName);})
-                              Label="@UserLocalization["Username"]"
+                        <MudTextField Label="@UserLocalization["Username"]"
                               @bind-Value="@User.SamAccountName"
                               Disabled=!User.NewEntry />
-
+                        <MudButton StartIcon="@Icons.Material.Filled.ContentCopy" OnClick="@(()=>{CopyToClipboard(User.SamAccountName);})" />
 
 
                     }
@@ -202,10 +219,11 @@
 
                     @if (User.CanReadField(ActiveDirectoryFields.Mail))
                     {
-                        <MudTextField Adornment=Adornment.End
-                              AdornmentIcon="@Icons.Material.Filled.ContentCopy"
-                              OnAdornmentClick=@(()=>{CopyToClipboard(User.Email);})
-                              Label="@UserLocalization["Email Address"]" @bind-Value="@User.Email" Disabled=!User.NewEntry />
+                        <MudTextField Label="@UserLocalization["Email Address"]"
+                              @bind-Value="@User.Email"
+                              Disabled=!User.NewEntry />
+                        <MudButton StartIcon="@Icons.Material.Filled.ContentCopy" OnClick="@(()=>{CopyToClipboard(User.Email);})" />
+
                     }
                     @if (User.CanReadField(ActiveDirectoryFields.AccountExpires))
                     {
@@ -234,7 +252,7 @@
         )
         {
             <Section Title=@UserLocalization["Organization"]>
-                <MudStack Row Class="d-flex flex-wrap">
+                <MudStack Row Class="@_fieldMudStackClasses">
 
                 @if (User.CanReadField(ActiveDirectoryFields.Description))
                     {
@@ -303,7 +321,7 @@
         )
         {
             <Section Title=@UserLocalization["Contact Info"]>
-                <MudStack Row Class="d-flex flex-wrap">
+                <MudStack Row Class="@_fieldMudStackClasses">
 
                 @if (User.CanReadField(ActiveDirectoryFields.HomePhone))
                     {
@@ -372,16 +390,17 @@
         )
         {
             <Section Title=@UserLocalization["Profile"]>
-                <MudStack Row Class="d-flex flex-wrap">
+                <MudStack Row Class="@_fieldMudStackClasses">
 
                 @if (User.CanReadField(ActiveDirectoryFields.HomeDirectory))
                     {
 
 
-                        <MudTextField Adornment=Adornment.End
-                              AdornmentIcon="@Icons.Material.Filled.ContentCopy"
-                              OnAdornmentClick=@(()=>{CopyToClipboard(User.HomeDirectory);}) Label="@UserLocalization["Home Directory"]" @bind-Value="@User.HomeDirectory" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
+                        <MudTextField Label="@UserLocalization["Home Directory"]"
+                              @bind-Value="@User.HomeDirectory"
+                              Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
 
+                        <MudButton StartIcon="@Icons.Material.Filled.ContentCopy" OnClick="@(()=>{CopyToClipboard(User.HomeDirectory);})" />
 
 
 
@@ -606,7 +625,7 @@
     }
     async Task RemoveThumbnail()
     {
-        if (await MessageService.Confirm("Are you sure you want to delete the thumbnail photo for" + User.DisplayName + "?", "Delete Thumbnail"))
+        if (await MessageService.Confirm("Are you sure you want to delete the thumbnail photo for " + User.DisplayName + "?", "Delete Thumbnail"))
         {
             User.ThumbnailPhoto = null;
             SnackBarService.Warning(User.DisplayName + " will have their thumbnail deleted on save.", "Thumbnail Deletion Pending");

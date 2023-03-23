@@ -4,9 +4,11 @@
         base64 = Convert.ToBase64String(Data);
 
 }
-<MudImage Style="max-height:100%;max-width:100%;"  Source=@("data:image/png;base64,"+@base64)/>
+<MudImage Style="@Style"  Src=@("data:image/png;base64,"+@base64)/>
 
 @code {
     [Parameter]
     public byte[]? Data { get; set; }
+    [Parameter]
+    public string? Style{ get; set; }
 }
