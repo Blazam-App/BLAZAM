@@ -24,7 +24,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         ADSettings? ConnectionSettings { get; }
         AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
         IADComputerSearcher Computers { get; }
-        IEncryptionService Encryption { get; }
         IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid);
         IDirectoryEntryAdapter? GetDirectoryModelBySid(byte[] sid);
 

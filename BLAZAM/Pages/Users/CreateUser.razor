@@ -71,12 +71,7 @@
                     OU
                 </TabContent>
                 <ChildContent>
-                    <OUTreeView SelectedOUChanged="OUSelected">
-                        @* <NodeContent>
-                    @context.Name
-                    </NodeContent>*@
-                    </OUTreeView>
-
+                    <OUTreeView SelectedOUChanged="OUSelected"/>
 
                     <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@customUserDisplayName" />
 

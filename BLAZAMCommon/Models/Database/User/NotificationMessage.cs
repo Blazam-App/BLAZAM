@@ -1,11 +1,26 @@
 ﻿namespace BLAZAM.Common.Models.Database.User
 {
+
     public enum NotificationLevel { Info, Success, Warning, Error }
+    /// <summary>
+    /// A notification message for the web user. These are
+    /// placed under the user's notifications panel
+    /// </summary>
     public class NotificationMessage
     {
         public int Id { get; set; }
+
+        /// <summary>
+        /// The severity level of this notification
+        /// </summary>
         public NotificationLevel Level { get; set; }
+        /// <summary>
+        /// The title of the notificaiton
+        /// </summary>
         public string? Title { get; set; }
+        /// <summary>
+        /// The message of the notificatioon
+        /// </summary>
         public string? Message { get; set; }
         public Uri? Link { get; set; }
         /// <summary>

@@ -22,7 +22,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 {
     public class ActiveDirectoryContext : IDisposable, IActiveDirectory
     {
-        public IEncryptionService Encryption { get; }
+        IEncryptionService Encryption { get; }
         public static ActiveDirectoryContext Instance;
 
         IADUser? _keepAliveUser { get; set; }
@@ -58,11 +58,19 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                 _authType
                 );
         }
+        /// <summary>
+        /// Gets the root entry for deleted objects in Active Directory
+        /// </summary>
+        /// <returns></returns>
         public DirectoryEntry GetDeleteObjectsEntry() => new DirectoryEntry("LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.FQDN.FqdnToDN(),
                 ConnectionSettings?.Username,
                 Encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 (AuthenticationTypes.FastBind | AuthenticationTypes.Secure));
 
+        /// <summary>
+        /// Gets all deleted entries from Active Directory
+        /// </summary>
+        /// <returns></returns>
         public List<IDirectoryEntryAdapter> GetDeletedObjects()
         {
             List<IDirectoryEntryAdapter> found = new List<IDirectoryEntryAdapter>();
@@ -87,9 +95,24 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 
         private Timer t;
 
+        /// <summary>
+        /// Provides User search functions
+        /// </summary>
         public IADUserSearcher Users { get; }
+
+        /// <summary>
+        /// Provides Group search functions
+        /// </summary>
         public IADGroupSearcher Groups { get; }
+
+        /// <summary>
+        /// Provides OU search functions
+        /// </summary>
         public IADOUSearcher OUs { get; }
+
+        /// <summary>
+        /// Provides Computer search functions
+        /// </summary>
         public IADComputerSearcher Computers { get; }
 
         public IDatabaseContext? Context { get; private set; }
@@ -104,6 +127,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         //        return false;
         //    }
         //}
+        /// <summary>
+        /// Checks whether the configured Active Directory port is open for connections
+        /// </summary>
         public bool PortOpen
         {
             get
@@ -117,7 +143,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         }
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
 
-
+        /// <summary>
+        /// The current status of the Active Directory connection
+        /// </summary>
         public DirectoryConnectionStatus Status
         {
             get => _status; set
@@ -127,7 +155,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                 OnStatusChanged?.Invoke(_status);
             }
         }
+        /// <summary>
+        /// Called when the connection state of the Active Directory server has
+        /// changed
+        /// </summary>
         public AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
+        /// <summary>
+        /// Called when a new user login matches an Active Directory user
+        /// </summary>
         public AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
         public AppDatabaseFactory? Factory { get; private set; }
         public ADSettings? ConnectionSettings { get; private set; }
@@ -199,7 +234,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             });
 
         }
-
+        /// <summary>
+        /// Attempts a connection to the Active Directory server
+        /// </summary>
         public void Connect()
         {
             Status = DirectoryConnectionStatus.Connecting;
@@ -326,7 +363,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         {
             t.Dispose();
         }
-
+        /// <summary>
+        /// Authenticates a <see cref="LoginRequest"/> to verify
+        /// the provided credentials
+        /// </summary>
+        /// <param name="loginReq"></param>
+        /// <returns>The matched user if the credentials are valid, otherwise null.</returns>
         public IADUser? Authenticate(LoginRequest loginReq)
         {
             if (loginReq.Username.Contains("\\"))
@@ -374,7 +416,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             }
             return null;
         }
-
+        /// <summary>
+        /// Restores a delete Active Directory entry
+        /// </summary>
+        /// <param name="model">The entry to be restored</param>
+        /// <param name="newOU">The OU to restore to</param>
+        /// <returns></returns>
+        /// <exception cref="ApplicationException"></exception>
         public bool RestoreTombstone(IDirectoryEntryAdapter model, IADOrganizationalUnit newOU)
         {
             if (!model.IsDeleted) throw new ApplicationException(model.CanonicalName + " is not deleted");

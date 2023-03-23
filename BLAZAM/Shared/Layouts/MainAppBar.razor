@@ -112,9 +112,17 @@
 
 
 @code {
+    /// <summary>
+    /// Indicates whether the notification panel is open
+    /// </summary>
     bool NotificationsOpen;
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
+    /// <summary>
+    /// Generate a repeatable hex color based on the given username
+    /// </summary>
+    /// <param name="username"></param>
+    /// <returns>A background-color style string</returns>
     string GenerateAvatarColor(string username)
     {
         if (username.IsNullOrEmpty()) return "background-color:#0c13a7";

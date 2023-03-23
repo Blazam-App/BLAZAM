@@ -86,18 +86,13 @@
 </style>
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     [Parameter]
     public HeaderPosition SectionHeaderPosition { get; set; } = HeaderPosition.TopLeft;
 
     [Parameter]
     public string Title { get; set; }
 
-    //[Parameter]
-    //public IFluentSpacing Margin { get; set; }
-
-    //[Parameter]
-    //public IFluentSpacing Padding { get; set; }
 
     /// <summary>
     /// Color for the text
@@ -105,20 +100,16 @@
     [Parameter]
     public Color TextColor { get; set; } = Color.Secondary;
 
-
+    /// <summary>
+    /// If set to false, width will fit content
+    /// </summary>
     [Parameter]
     public bool FullWidth { get; set; } = true;
 
-    //[Parameter]
-    //public Color BackgroundColor { get; set; } = MudBlazor.ThemeManager.ThemePaletteColor.Surface;
+
     string HeadingSizeString { get { return "h4"; } }
 
-    //[Parameter]
-    //public IFluentBorder Border { get; set; } = Blazorise.Border.Rounded.Is1.Dark.OnAll;
-
-    //[Parameter]
-    //public HeadingSize HeadingSize { get; set; } = HeadingSize.Is4;
-
+   
     [Parameter]
     public RenderFragment ChildContent { get; set; }
 

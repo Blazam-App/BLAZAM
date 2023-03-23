@@ -9,12 +9,18 @@
     </MessageContent>
 </MudMessageBox>
 @code {
-#nullable disable warnings
+    #nullable disable warnings
+
     [Inject]
     protected AppSnackBarService NotificationService { get; set; }
+    /// <summary>
+    /// The modal's  databse connection
+    /// </summary>
     [Parameter]
     public IDatabaseContext? Context { get; set; }
-
+    /// <summary>
+    /// If set to false, will prevent this modal from closing via the UI
+    /// </summary>
     [Parameter]
     public bool AllowClose { get; set; } = true;
 
@@ -22,9 +28,14 @@
     [Parameter]
     public Color Color { get; set; } = Color.Default;
 
+    /// <summary>
+    /// The modal content. By default, there is no content
+    /// </summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-
+    /// <summary>
+    /// A reference to this modal
+    /// </summary>
     [CascadingParameter]
     protected MudMessageBox? Modal { get; set; }
 
@@ -32,7 +43,9 @@
     public EventCallback<MudMessageBox>? ModalChanged { get; set; }
 
     bool _isShown = false;
-
+    /// <summary>
+    /// Indicates whether this modal is currently shown
+    /// </summary>
     [Parameter]
     public bool IsShown
     {
@@ -54,12 +67,18 @@
     //        args.Cancel=true;
     //    }
     //}
+    /// <summary>
+    /// Show this modal
+    /// </summary>
     public void Show()
     {
 
         IsShown = true;
         Modal?.Show();
     }
+    /// <summary>
+    /// Hide this modal
+    /// </summary>
     public void Hide()
     {
         IsShown = false;

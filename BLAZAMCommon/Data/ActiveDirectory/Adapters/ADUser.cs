@@ -28,7 +28,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     ContextType.Domain,
                     DirectorySettings.FQDN,
                     DirectorySettings.Username,
-                    Directory.Encryption.DecryptObject<string>(DirectorySettings.Password)))
+                    Encryption.Instance.DecryptObject<string>(DirectorySettings.Password)))
                 {
                     UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
                     if (up != null)

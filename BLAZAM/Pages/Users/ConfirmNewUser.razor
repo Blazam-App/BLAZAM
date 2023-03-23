@@ -6,27 +6,15 @@
 
     <MudTextField Label="@UserLocalization["First Name"]" @bind-Value="@User.GivenName" Disabled=true />
 
-
-
     <MudTextField Label="@UserLocalization["Middle Name"]" @bind-Value="@User.MiddleName" Disabled=true />
-
-
 
     <MudTextField Label="@UserLocalization["Last Name"]" @bind-Value="@User.Surname" Disabled=true />
 
-
-
     <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@User.DisplayName" Disabled=true />
-
-
 
     <MudTextField Label="@UserLocalization["Username"]" @bind-Value="@User.SamAccountName" Disabled=true />
 
-
-
     <MudTextField Label="@UserLocalization["Password"]" Value="@User.NewPassword.ToPlainText()" Disabled=true />
-
-
 
     <MudTextField Label="@UserLocalization["Email Address"]" @bind-Value="@User.Email" Disabled=true />
 
@@ -41,48 +29,23 @@
     <Section Title=@UserLocalization["Organization"]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.EmployeeId))
         {
-            
-
                 <MudTextField Label="@UserLocalization["Employee Id"]" @bind-Value="@User.EmployeeId" Disabled=true />
-
-
-            
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.Department))
         {
-            
-
                 <MudTextField Label="@UserLocalization["Department"]" @bind-Value="@User.Department" Disabled=true />
-
-
-            
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.Company))
         {
-            
-
                 <MudTextField Label="@UserLocalization["Company"]" @bind-Value="@User.Company" Disabled=true />
-
-
-            
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.Title))
         {
-            
-
-                <MudTextField Label="@UserLocalization["Job Title"]" @bind-Value="@User.Title" Disabled=true />
-
-
-            
+            <MudTextField Label="@UserLocalization["Job Title"]" @bind-Value="@User.Title" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice))
         {
-            
-
                 <MudTextField Label="@UserLocalization["Office"]" @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=true />
-
-
-            
         }
     </Section>
 }
@@ -99,77 +62,37 @@
 
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone))
         {
-            
-
                 <MudTextField Label="@UserLocalization["Home Phone"]" @bind-Value="@User.HomePhone" Disabled=true />
-
-
-            
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.StreetAddress))
         {
-            
-
                 <MudTextField Label="@UserLocalization["Street Address"]" @bind-Value="@User.StreetAddress" Disabled=true />
-
-
-            
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.Street))
         {
-            
-
                 <MudTextField Label="@UserLocalization["Street"]" @bind-Value="@User.Street" Disabled=true />
-
-
-            
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.City))
         {
-            
-
                 <MudTextField Label="@UserLocalization["City"]" @bind-Value="@User.City" Disabled=true />
-
-
-            
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.State))
         {
-            
-
                 <MudTextField Label="@UserLocalization["State"]" @bind-Value="@User.State" Disabled=true />
-
-
-            
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.PostalCode))
         {
-            
-
                 <MudTextField Label="@UserLocalization["Zip Code"]" @bind-Value="@User.Zip" Disabled=true />
-
-
-            
         }
     </Section>
 }
 @if (InDirectoryTemplate(ActiveDirectoryFields.Description))
 {
-    
-
         <MudTextField Label="@UserLocalization["Description"]" @bind-Value="@User.Description" Disabled=true />
-
-
-    
 }
 @if (InDirectoryTemplate(ActiveDirectoryFields.Site))
 {
-    
-
         <MudTextField Label="@UserLocalization["Site"]" @bind-Value="@User.Site" Disabled=true />
-
-
-    
 }
 @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory) ||
           InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
@@ -180,39 +103,19 @@
     <Section Title=@UserLocalization["Profile"]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
         {
-            
-                <MudTextField Label="@UserLocalization["Home Directory"]" @bind-Value="@User.HomeDirectory" Disabled=true />
-
-
-            
+            <MudTextField Label="@UserLocalization["Home Directory"]" @bind-Value="@User.HomeDirectory" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDrive))
         {
-            
-
-
                 <HomeDriveSelect Label="@UserLocalization["Home Drive"]" @bind-SelectedValue="@User.HomeDrive" Disabled=true />
-
-
-            
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.ScriptPath))
         {
-            
-
                 <MudTextField Label="@UserLocalization["Script Path"]" @bind-Value="@User.ScriptPath" Disabled=true />
-
-
-            
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.ProfilePath))
         {
-            
-
                 <MudTextField Label="@UserLocalization["Profile Path"]" @bind-Value="@User.ProfilePath" Disabled=true />
-
-
-            
         }
     </Section>
 }
@@ -229,9 +132,7 @@
             {
                 if (g.CanRead)
                 {
-                    <Column ColumnSize="ColumnSize.Is6.OnDesktop">
                         <AssignedGroup AllowUnassign=false AllowNavigation=false Group=g Member="User" OnGroupMembershipChange="@((change)=>{InvokeAsync(StateHasChanged);})" />
-                    </Column>
                 }
                 else
                 {
@@ -241,11 +142,10 @@
 
             if (deniedRead)
             {
-                <Column ColumnSize="ColumnSize.Is6.OnDesktop">
+                <MudText>
                     The user is in more groups you don't have access to
-                </Column>
+            </MudText>
             }
-
         }
 
     </Row>
@@ -259,12 +159,21 @@
 
     [Parameter]
     public EventCallback<IADUser> Confirmed { get; set; }
-
+    /// <summary>
+    /// Checks if the given field is in the template, whether editable or not
+    /// </summary>
+    /// <param name="field"></param>
+    /// <returns></returns>
     bool InDirectoryTemplate(ActiveDirectoryField field)
     {
         if (DirectoryTemplate == null) return true;
         return DirectoryTemplate?.FieldValues.Any(f => f.Field.FieldName == field.FieldName) == true;
     }
+    /// <summary>
+    /// Triggered when the user confirms the creation of this
+    /// Active Directory User
+    /// </summary>
+    /// <returns></returns>
     async Task ConfirmUser()
     {
         try
