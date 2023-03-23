@@ -17,7 +17,8 @@ namespace BLAZAM.Common.Data.Services
         ClaimsPrincipal User { get; set; }
         AppUser? UserSettings { get; }
         AuthenticationTicket Ticket { get; set; }
-        List<NotificationMessage> Messages { get; set; }
+        IList<NotificationMessage> Messages { get; set; }
+        IApplicationUserSessionCache Cache { get; set; }
 
         bool Equals(object? obj);
         bool HasRole(string searchUsers);

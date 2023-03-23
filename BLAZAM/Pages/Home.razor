@@ -20,33 +20,33 @@
 <MudDropContainer @ref=widgetContainer T="Widget" Items="widgets" ItemsSelector="@((item,dropzone) => item.Slot == dropzone)" ItemDropped="ItemDropped" Class="d-flex flex-wrap flex-grow-1">
     <ChildContent>
 
-        <MudPaper Class="ma-4 flex-grow-1">
-            <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
-                <MudDropZone AllowReorder T="Widget" Identifier="slot1" Class="flex-grow-1" />
+        <MudList Clickable="true" Class="d-flex flex-column ma-4 flex-grow-1 mud-height-full">
+            <MudDropZone AllowReorder T="Widget" Identifier="slot1" Class="flex-grow-1" />
             </MudList>
-        </MudPaper>
-        <MudPaper Class="ma-4 flex-grow-1">
-            <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
-                <MudDropZone AllowReorder T="Widget" Identifier="slot2" Class="flex-grow-1" />
+            <MudList Clickable="true" Class="d-flex flex-column ma-4 flex-grow-1 mud-height-full">
+            <MudDropZone AllowReorder T="Widget" Identifier="slot2" Class="flex-grow-1" />
             </MudList>
-        </MudPaper>
-        <MudPaper Class="ma-4 flex-grow-1">
-            <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
-                <MudDropZone AllowReorder T="Widget" Identifier="slot3" Class="flex-grow-1" />
+            <MudList Clickable="true" Class="d-flex flex-column ma-4 flex-grow-1 mud-height-full">
+            <MudDropZone AllowReorder T="Widget" Identifier="slot3" Class="flex-grow-1" />
             </MudList>
-        </MudPaper>
-        }
-    </ChildContent>
-    <ItemRenderer>
-        <MudCard Shadow="Shadow.Default" Margin="Margin.Is3.OnY" Background="Background.Secondary">
+
+        </ChildContent>
+        <ItemRenderer>
+            <MudCard Elevation="3">
+            <MudCardHeader>
+                @context.Name
+                <AppCloseButton OnClick=@(()=>{RemoveWidget(context);}) Style="right:10px;top:15px; position:absolute;" />
+
+            </MudCardHeader>
+            
+
             <DynamicComponent Type="@context.GetType()" />
-            <AppCloseButton OnClick=@(()=>{RemoveWidget(context);}) Position="Position.Absolute" style="right:10px;top:15px" />
         </MudCard>
     </ItemRenderer>
 </MudDropContainer>
 
 
-@code {
+            @code {
     MarkupString? MOTD;
     MudDropContainer<Widget>? widgetContainer;
     List<Widget> widgets = new List<Widget>();

@@ -15,7 +15,8 @@ namespace BLAZAM.Server.Shared.UI.Dashboard.Widgets
                 if (applicationUser.IsSuperAdmin || applicationUser.DirectoryUser.CanUnlock)
                     widgets.Add(new LockedOutUsers() { Slot = "slot1" });
                 if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers))
-                    widgets.Add(new NewUsersWidget() { Slot = "slot2" });
+    
+                    widgets.Add(new NewUsersWidget() { Slot = "slot2",Name = "Users created in the last 90 days" });
                 if (applicationUser.IsSuperAdmin)
                     widgets.Add(new ChangedPasswordsWidget() { Slot = "slot1" });
             }

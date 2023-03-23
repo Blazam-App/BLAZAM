@@ -1,33 +1,40 @@
 ﻿@inherits Widget
 @attribute [Authorize]
 
-    <h3>Users created in the last 90 days</h3>
-    <MudDataGrid Items="@NewUsers"
-                 T="IADUser"
-                      Virtualize
-                      RowClass="cursor-pointer"
-                 RowClick=@GoToUser
-                 SortMode="SortMode.Single">
-        <Columns>
-            <PropertyColumn Property="x => x.SamAccountName" Title="Username" />
-            <PropertyColumn Property="x => x.DisplayName" Title="Display Name" />
-            <PropertyColumn Property="x => x.OU.ToPrettyOu()" Title="OU" />
-            <PropertyColumn Property="x => x.Created" Title="Creation Date" />
+<MudDataGrid Items="@NewUsers"
+              Dense
+              Filterable
+             FilterMode="DataGridFilterMode.Simple"
+             Loading=LoadingData
+              Square
+             ColumnResizeMode="ResizeMode.Column"
+             T="IADUser"
+              Virtualize
+             RowClass="cursor-pointer"
+             RowClick=@GoToUser
+             Class="py-0"
+             SortMode="SortMode.Single">
+    <Columns>
+        <PropertyColumn Property="x => x.DisplayName??x.CanonicalName" Title="Display Name" />
+        <PropertyColumn Property="x => x.OU.ToPrettyOu()" Title="OU" />
+        <PropertyColumn Property="x => x.Created" Title="Creation Date" />
 
-        </Columns>
-        <PagerContent>
-            <MudDataGridPager T="IADUser" />
-        </PagerContent>
-    </MudDataGrid>
- 
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="IADUser" />
+    </PagerContent>
+</MudDataGrid>
+
 @code {
-    List<IADUser> NewUsers = new();
+    List<IADUser> NewUsers
+    {
+        get => UserStateService.CurrentUserState.Cache.Get<List<IADUser>>(this.GetType());
+        set => UserStateService.CurrentUserState.Cache.Set(this.GetType(), value);
+    }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
-        Name = "New Users";
         NewUsers = (await Directory.Users.FindNewUsersAsync(false)).Where(u => u.CanRead).ToList();
         LoadingData = false;
         InvokeAsync(StateHasChanged);

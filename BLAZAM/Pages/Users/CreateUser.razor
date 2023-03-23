@@ -14,7 +14,7 @@
                                @bind-Value=SelectedCategory />
 
                 <MudPaper Width="300px">
-                    <MudList Clickable="true">
+                    <MudList SelectedItemChanged=@((item)=>{SelectedTemplate = item.Value as DirectoryTemplate;}) Clickable="true">
                         @foreach (var template in Templates)
                         {
                             <MudListItem Text="@template.Name" Value="template" />

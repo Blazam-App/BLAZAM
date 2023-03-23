@@ -51,118 +51,114 @@
 
 
 
+            <MudElement Class="d-flex flex-wrap gap-5">
+                <MudTextField Label="Username Format"
+                              @bind-Value=DirectoryTemplate.UsernameFormula />
 
-            <MudTextField Label="Username Format"
-                          @bind-Value=DirectoryTemplate.UsernameFormula>
+                <MudTextField Label="Display Name Format"
+                              @bind-Value=DirectoryTemplate.DisplayNameFormula />
 
+                <MudTextField Label="Password"
+                              Placeholder="{AlphaNum}{Alpha:U}{Alpha:L}{Num}{Num}{Num}"
+                              @bind-Value=DirectoryTemplate.PasswordFormula />
 
-
-            </MudTextField>
-
-
-
-
-            <MudTextField Label="Display Name Format"
-                          @bind-Value=DirectoryTemplate.DisplayNameFormula>
-
-
-
-            </MudTextField>
-
-
-
-
-
-            <MudTextField Label="Password"
-                          Placeholder="{AlphaNum}{Alpha:U}{Alpha:L}{Num}{Num}{Num}"
-                          @bind-Value=DirectoryTemplate.PasswordFormula>
-
-
-
-            </MudTextField>
-
-
-
-
+            </MudElement>
 
         </Section>
         <Section Title="Fields">
 
-            Fields left blank will be editable by the user on creation.
-            Fields with values will not be editable.
 
-            <MudExpansionPanel Text="Add Field">
+            <MudDrawerContainer Class="mud-height-full" Style="min-height:200px">
+                <MudDrawer @bind-Open="@open" Elevation="0" Variant="@DrawerVariant.Persistent">
+                    <MudNavMenu>
+                        <MudStack>
+                            @foreach (var field in fields.OrderBy(f => f.DisplayName))
+                            {
+                                @if (field.FieldName != "samaccountname" &&
+                               field.FieldName != "userPrincipalName" &&
 
-                @foreach (var field in fields.OrderBy(f => f.DisplayName))
-                {
-                    @if (field.FieldName != "samaccountname" &&
-                   field.FieldName != "userPrincipalName" &&
+                               field.FieldName != "sn" &&
+                               field.FieldName != "givenname" &&
+                               field.FieldName != "middleName" &&
+                               field.FieldName != "displayName" &&
+                               field.FieldName != "cn" &&
+                               field.FieldName != "site" &&
+                               field.FieldName != "distinguishedName" &&
+                               field.FieldName != "memberOf" &&
+                               field.FieldName != "objectSID" &&
+                               !DirectoryTemplate.FieldValues.Any(f => f.Field.Equals(field)) &&
+                               field.IsActionAppropriateForObject(DirectoryTemplate.ObjectType))
+                                {
+                                    <MudButton OnClick=@(()=>{
+                                       DirectoryTemplate.FieldValues.Add(new(){ Field=field});
+                                       })>@field.DisplayName</MudButton>
 
-                   field.FieldName != "sn" &&
-                   field.FieldName != "givenname" &&
-                   field.FieldName != "middleName" &&
-                   field.FieldName != "displayName" &&
-                   field.FieldName != "cn" &&
-                   field.FieldName != "site" &&
-                   field.FieldName != "distinguishedName" &&
-                   field.FieldName != "memberOf" &&
-                   field.FieldName != "objectSID" &&
-                   !DirectoryTemplate.FieldValues.Any(f => f.Field.Equals(field)) &&
-                   field.IsActionAppropriateForObject(DirectoryTemplate.ObjectType))
-                    {
-                        <MudMenuItem OnClick=@(()=>{DirectoryTemplate.FieldValues.Add(new(){ Field=field});}) Color="Color.Secondary">@field.DisplayName</MudMenuItem>
+                                }
 
-                    }
+                            }
+                        </MudStack>
 
-                }
+                    </MudNavMenu>
+                </MudDrawer>
+                <div class="d-flex justify-center align-center mud-height-full">
+                    <MudStack>
+                        Fields left blank will be editable by the user on creation.
+                        Fields with values will not be editable.
+                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{open=!open;})">Persistent drawer</MudButton>
 
-            </MudExpansionPanel>
+                        @foreach (var field in DirectoryTemplate.FieldValues.OrderBy(fv => fv.Field.DisplayName))
+                        {
+
+                            <MudStack Row>
 
 
-            @foreach (var field in DirectoryTemplate.FieldValues.OrderBy(fv => fv.Field.DisplayName))
-            {
+                            <MudTextField Label="@field.Field.DisplayName" @bind-Value=field.Value />
 
-                <Row>
+                            <AppCloseButton OnClick=@(()=>{DirectoryTemplate.FieldValues.Remove(field);InvokeAsync(StateHasChanged);}) />
+                        </MudStack>
 
+                        }
+                    </MudStack>
+                </div>
+            </MudDrawerContainer>
 
-                    <MudTextField Label="@field.Field.DisplayName" @bind-Value=field.Value />
-
-                    <AppCloseButton OnClick=@(()=>{DirectoryTemplate.FieldValues.Remove(field);InvokeAsync(StateHasChanged);}) />
-                </Row>
-
-            }
         </Section>
 
-        @if (SelectedOU != null)
-        {
+        <Section Title="Organizational Unit">
 
-            <OUTreeView Label=@(SettingsLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
-                    StartRootExpanded=false
-                    @bind-SelectedOU=@SelectedOU
-                    @bind-StartingSelectedOU=@SelectedOU />
+            @if (SelectedOU != null)
+            {
 
-
-        }
-
+                <OUTreeView Label=@(SettingsLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
+                        StartRootExpanded=false
+                        @bind-SelectedOU=@SelectedOU
+                        @bind-StartingSelectedOU=@SelectedOU />
 
 
-        @foreach (var group in TemplateGroups)
-        {
-            <MudText>@group</MudText>
-        }
+            }
 
-        <ADAutoComplete Label="@SettingsLocalization["Groups"]"
-                            Multiple
-                        @bind-SelectedResult="@SelectedGroup" />
-        <MudFab Icon=@Icons.Material.Filled.Add
-                Color="Color.Primary"
-                OnClick="@(()=>{TemplateGroups.Add(SelectedGroup);})" />
+        </Section>
+        <Section Title="Assigned Groups">
 
 
+            @foreach (var group in TemplateGroups)
+            {
+                <MudText>@group</MudText>
+            }
+            <MudStack Row>
+                <ADAutoComplete Label="@SettingsLocalization["Groups"]"
+                                    Multiple
+                                @bind-SelectedResult="@SelectedGroup" />
+                <MudFab Size="Size.Small" Icon=@Icons.Material.Filled.Add
+                        Color="Color.Primary"
+                        OnClick="@(()=>{TemplateGroups.Add(SelectedGroup);})" />
+                </MudStack>
 
-        </MudStack>
+                </Section>
 
-        @{
+                </MudStack>
+
+                @{
         string buttonText = "";
         @if (DirectoryTemplate.Id == 0)
         {
@@ -184,7 +180,7 @@
 
 @code {
     string groupText;
-
+    bool open;
 #nullable disable warnings
     bool ouCollapseVisible = true;
     //Validations? validations;

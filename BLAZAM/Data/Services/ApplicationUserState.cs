@@ -39,7 +39,9 @@ namespace BLAZAM.Server.Data.Services
         /// </summary>
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
 
-        public List<NotificationMessage> Messages { get; set; } = new List<NotificationMessage>();
+        public IList<NotificationMessage> Messages { get; set; } = new List<NotificationMessage>();
+
+        public IApplicationUserSessionCache Cache { get; set; } = new ApplicationUserSessionCache();
 
         public AuthenticationTicket Ticket { get; set; }
 
@@ -141,7 +143,7 @@ namespace BLAZAM.Server.Data.Services
             }
         }
 
-    
+
         public override int GetHashCode()
         {
             return User.FindFirstValue(ClaimTypes.Actor).GetHashCode();
