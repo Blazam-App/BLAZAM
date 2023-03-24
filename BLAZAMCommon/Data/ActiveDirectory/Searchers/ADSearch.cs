@@ -171,8 +171,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                         FilterQuery += $"(cn=*{Fields.CN}*)";
                     if (!Fields.Changed.IsNullOrEmpty())
                         FilterQuery += $"(whenChanged>={Fields.Changed})";
-                    if (!Fields.Created.IsNullOrEmpty())
-                        FilterQuery += $"(whenCreated>={Fields.Created})";
+                    if (Fields.Created!=null)
+                        FilterQuery += $"(whenCreated>={Fields.Created.Value.ToString("yyyyMMddHHmmss.fZ")})";
                     if (!Fields.SamAccountName.IsNullOrEmpty())
                         FilterQuery += $"(samaccountname=*{Fields.SamAccountName}*)";
                     if (Fields.LockoutTime != null)

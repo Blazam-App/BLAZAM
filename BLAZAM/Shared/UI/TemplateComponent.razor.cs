@@ -1,12 +1,14 @@
 ﻿using BLAZAM.Common.Models.Database.Templates;
 using BLAZAM.Server.Shared.UI.Settings;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
 using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Server.Shared.UI
 {
     public class TemplateComponent : ValidatedForm
     {
+        protected MudTabs? Tabs;
         private IEnumerable<DirectoryTemplate> templates = new List<DirectoryTemplate>();
         private string? selectedCategory;
         private DirectoryTemplate selectedTemplate;

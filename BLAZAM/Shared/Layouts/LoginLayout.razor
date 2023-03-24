@@ -30,17 +30,17 @@
 
                     @if (monitor.DirectoryConnected == ServiceConnectionState.Connecting)
                     {
-                        <Row>
+                        <MudStack>
                             <MudText>Please wait or use admin login...</MudText>
                             <Loader/>
-                        </Row>
+                        </MudStack>
                     }
                     @if (monitor.DirectoryConnected == ServiceConnectionState.Down)
                     {
-                        <Row>
+                        <MudStack>
                             <MudText Color="Color.Error">Active Directry connection unavailable.</MudText>
                             <MudText Color="Color.Error">Local Admin login only!</MudText>
-                        </Row>
+                        </MudStack>
                     }
 
                 </div>

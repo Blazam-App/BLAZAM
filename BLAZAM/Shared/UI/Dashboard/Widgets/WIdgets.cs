@@ -16,7 +16,16 @@ namespace BLAZAM.Server.Shared.UI.Dashboard.Widgets
                     widgets.Add(new LockedOutUsers() { Slot = "slot1" });
                 if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchUsers))
     
-                    widgets.Add(new NewUsersWidget() { Slot = "slot2",Name = "Users created in the last 90 days" });
+                    widgets.Add(new NewUsersWidget() { Slot = "slot1",Name = "Users created in the last 90 days" }); 
+                if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchOUs))
+    
+                    widgets.Add(new NewOUsWidget() { Slot = "slot1",Name = "OU's created in the last 90 days" });
+                if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchGroups))
+    
+                    widgets.Add(new NewGroupsWidget() { Slot = "slot2",Name = "Groups created in the last 90 days" });
+                if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchComputers))
+    
+                    widgets.Add(new NewComputersWidget() { Slot = "slot2",Name = "Copmuters created in the last 90 days" });
                 if (applicationUser.IsSuperAdmin)
                     widgets.Add(new ChangedPasswordsWidget() { Slot = "slot1" });
             }

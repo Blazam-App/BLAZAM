@@ -3,8 +3,8 @@
 @attribute [Authorize]
 <AppPageTitle>Create User</AppPageTitle>
 
-<Row>
-    <MudTabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="selectedStep">
+    <MudTabs @ref=Tabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="selectedStep">
+
         <MudTabPanel>
             <TabContent>
                 Template
@@ -14,7 +14,7 @@
                                @bind-Value=SelectedCategory />
 
                 <MudPaper Width="300px">
-                    <MudList SelectedItemChanged=@((item)=>{SelectedTemplate = item.Value as DirectoryTemplate;}) Clickable="true">
+                    <MudList SelectedItemChanged=@SetTemplate Clickable="true">
                         @foreach (var template in Templates)
                         {
                             <MudListItem Text="@template.Name" Value="template" />
@@ -29,73 +29,69 @@
             </ChildContent>
 
         </MudTabPanel>
-        @if (!custom)
-        {
-            <MudTabPanel>
-                <TabContent>
-                    Name
-                </TabContent>
-                <ChildContent>
+
+        <MudTabPanel Disabled=@(custom!=false)>
+            <TabContent>
+                Name
+            </TabContent>
+            <ChildContent>
 
 
-                    <NewUserNameEntry @bind-NewUserName=@newUserName />
-                    <MudButton Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
-                    <MudButton Color="Color.Primary" OnClick="CreateTemplateUser">Next</MudButton>
-
-
-
-                </ChildContent>
-
-            </MudTabPanel>
-            @if (SelectedTemplate != null && SelectedTemplate.HasEmptyFields())
-            {
-                <MudTabPanel>
-                    <TabContent>
-                        Fields
-                    </TabContent>
-                    <ChildContent>
-                        <NewTemplateUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
-                        <MudButton Disabled=LoadingData Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
-                        <MudButton Color=Color.Success OnClick="@(()=>{selectedStep=0;})">Next</MudButton>
-
-                    </ChildContent>
-
-                </MudTabPanel>
-            }
-
-        }
-        else
-        {
-            <MudTabPanel>
-                <TabContent>
-                    OU
-                </TabContent>
-                <ChildContent>
-                    <OUTreeView SelectedOUChanged="OUSelected"/>
-
-                    <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@customUserDisplayName" />
+                <NewUserNameEntry @bind-NewUserName=@newUserName />
+                <MudButton Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
+                <MudButton Color="Color.Primary" OnClick="CreateTemplateUser">Next</MudButton>
 
 
 
-                    <MudButton Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
-                    <MudButton Color=Color.Success OnClick="@(()=>{CreateCustomUser();selectedStep=0;})">Next</MudButton>
+            </ChildContent>
+
+        </MudTabPanel>
+
+        <MudTabPanel Class=@(custom==true?"d-none":"")>
+            <TabContent>
+                Fields
+            </TabContent>
+            <ChildContent>
+                <NewTemplateUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
+                <MudButton Disabled=LoadingData Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
+                <MudButton Color=Color.Success OnClick="@(()=>{selectedStep=5;})">Next</MudButton>
+
+            </ChildContent>
+
+        </MudTabPanel>
+        
 
 
-                </ChildContent>
+        <MudTabPanel Class=@(custom==false?"d-none":"")>
+            <TabContent>
+                OU
+            </TabContent>
+            <ChildContent>
+                <OUTreeView SelectedOUChanged="OUSelected" />
 
-            </MudTabPanel>
-            <MudTabPanel>
-                <TabContent>
-                    Details
-                </TabContent>
-                <ChildContent>
-                    <ViewUser User="@newUser" />
-                    <MudButton Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
-                    <MudButton Color=Color.Success OnClick="@(()=>{selectedStep=0;})">Next</MudButton>
-                </ChildContent>
+                <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@customUserDisplayName" />
 
-            </MudTabPanel>
-        }
+
+
+                <MudButton Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
+                <MudButton Color=Color.Success OnClick="@(()=>{CreateCustomUser();selectedStep=4;})">Next</MudButton>
+
+
+            </ChildContent>
+
+        </MudTabPanel>
+        <MudTabPanel Class=@(custom==false?"d-none":"")>
+            <TabContent>
+                Details
+            </TabContent>
+            <ChildContent>
+                <ViewUser User="@newUser" />
+                <MudButton Color=Color.Primary OnClick="@(()=>{selectedStep=3;})">Back</MudButton>
+                <MudButton Color=Color.Success OnClick="@(()=>{selectedStep=5;})">Next</MudButton>
+            </ChildContent>
+
+        </MudTabPanel>
+
 
         <MudTabPanel>
             <TabContent>
@@ -108,10 +104,8 @@
 
         </MudTabPanel>
     </MudTabs>
-    <MudText>@($"Active Index: {selectedStep}")</MudText>
 
 
-    </Row>
 
 
 
@@ -129,7 +123,7 @@
 
 
     string? customUserDisplayName;
-    bool custom = false;
+    bool? custom = false;
 
     NewUserName newUserName = new NewUserName();
     bool collapseVisible = false;
@@ -142,26 +136,7 @@
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
     }
-    /*
-    bool AllowStep(StepNavigationContext context)
-    {
-        switch (context.NextStepName)
-        {
-            case "stepTemplate":
-                return true;
-            case "stepOU":
-                return custom;
-            case "stepName":
-                return SelectedTemplate != null;
-            case "stepFields":
-            case "stepDetails":
-            case "stepConfirm":
 
-                return newUser != null;
-        }
-        return false;
-    }
-    */
     async void OUSelected(IADOrganizationalUnit ou)
     {
         if (selectedOU == null)
@@ -238,12 +213,12 @@
         });
         if (SelectedTemplate.HasEmptyFields())
         {
-            selectedStep = 0;
+            selectedStep = 2;
         }
         else
         {
             //Go to confirm step
-            selectedStep = 0;
+            selectedStep = 5;
 
         }
         LoadingData = true;
@@ -253,5 +228,11 @@
     async Task UserCreated(IADUser user)
     {
         AuditLogger.User.Created(user);
+    }
+    async Task SetTemplate(MudListItem selectedTemplate)
+    {
+        SelectedTemplate = selectedTemplate.Value as DirectoryTemplate; 
+        custom = false; 
+        InvokeAsync(StateHasChanged); 
     }
 }

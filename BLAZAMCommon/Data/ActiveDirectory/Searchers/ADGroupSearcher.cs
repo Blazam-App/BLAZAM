@@ -62,6 +62,32 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         }
 
+        public async Task<List<IADGroup>> FindNewGroupsAsync()
+        {
+            return await Task.Run(() =>
+            {
+                return FindNewGroups();
+            });
+        }
+
+        public List<IADGroup>? FindNewGroups()
+        {
+
+            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
+            var results = new ADSearch()
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.Group,
+                Fields = new()
+                {
+                    Created = threeMonthsAgo
+                }
+
+            }.Search<ADGroup, IADGroup>();
+            return results.OrderByDescending(u => u.Created).ToList();
+
+        }
+
+
         public IADGroup? FindGroupBySID(byte[] groupSID)=>FindGroupBySID(groupSID.ToSidString());
 
         public IADGroup? FindGroupBySID(string groupSID)

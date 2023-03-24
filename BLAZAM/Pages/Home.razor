@@ -10,7 +10,7 @@
 
 @if (MOTD.HasValue && MOTD.Value.ToString() != "")
 {
-    <MudAlert Elevation="1">
+    <MudAlert Elevation="3">
 
 
         @MOTD.Value
@@ -26,27 +26,24 @@
             <MudList Clickable="true" Class="d-flex flex-column ma-4 flex-grow-1 mud-height-full">
             <MudDropZone AllowReorder T="Widget" Identifier="slot2" Class="flex-grow-1" />
             </MudList>
-            <MudList Clickable="true" Class="d-flex flex-column ma-4 flex-grow-1 mud-height-full">
-            <MudDropZone AllowReorder T="Widget" Identifier="slot3" Class="flex-grow-1" />
-            </MudList>
-
+         
         </ChildContent>
         <ItemRenderer>
-            <MudCard Elevation="3">
+            <MudCard Class="my-5" Elevation="3">
             <MudCardHeader>
                 @context.Name
                 <AppCloseButton OnClick=@(()=>{RemoveWidget(context);}) Style="right:10px;top:15px; position:absolute;" />
 
             </MudCardHeader>
-            
+
 
             <DynamicComponent Type="@context.GetType()" />
-        </MudCard>
-    </ItemRenderer>
-</MudDropContainer>
+            </MudCard>
+        </ItemRenderer>
+        </MudDropContainer>
 
 
-            @code {
+        @code {
     MarkupString? MOTD;
     MudDropContainer<Widget>? widgetContainer;
     List<Widget> widgets = new List<Widget>();
@@ -74,6 +71,7 @@
     async Task RemoveWidget(Widget widget)
     {
         widgets.Remove(widget);
+        widgetContainer.Refresh();
         await InvokeAsync(StateHasChanged);
 
     }

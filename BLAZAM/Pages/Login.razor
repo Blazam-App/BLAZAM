@@ -23,39 +23,39 @@
 
     </MudElement>
     <form class="login-form" method="post" action="/signin">
-        <MudContainer Style="max-width:300px;">
-        @if (!Program.InDemoMode || DemoCustomLogin)
-        {
+        <MudContainer Style="max-width:300px;" Class="py-4">
+            @if (!Program.InDemoMode || DemoCustomLogin)
+            {
 
 
 
                 <MudTextField Class="justify-center" AutoFocus Label="Username" name="username" @bind-Value=LoginRequest.Username />
 
-            <MudTextField  Class="justify-center" Label="Password" name="password" InputType="InputType.Password" @bind-Value=LoginRequest.Password />
-            <MudTextField Class="d-none" name="ReturnUrl" Value="@redirectUrl" />
+                <MudTextField Class="justify-center" Label="Password" name="password" InputType="InputType.Password" @bind-Value=LoginRequest.Password />
+                <MudTextField Class="d-none" name="ReturnUrl" Value="@redirectUrl" />
 
-            <MudButton Class="my-5" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</MudButton>
+                <MudButton Class="my-5" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</MudButton>
 
-            <br />
+                <br />
 
-        }
-        else if (Program.InDemoMode)
-        {
-            <MudContainer Class="d-none" IsHidden=true>
+            }
+            else if (Program.InDemoMode)
+            {
+                <MudContainer Class="d-none">
 
-                <MudTextField name="username" Value=@("demo") hidden />
-                <MudTextField name="password" InputType="InputType.Password" Value=@("demo") hidden />
-                <MudTextField hidden name="ReturnUrl" Value="@redirectUrl" />
-            </MudContainer>
+                    <MudTextField name="username" Value=@("demo") hidden />
+                    <MudTextField name="password" InputType="InputType.Password" Value=@("demo") hidden />
+                    <MudTextField name="ReturnUrl" Value="@redirectUrl" />
+                </MudContainer>
 
-            <MudButtonGroup>
-                <MudButton ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
-                <MudMenu Color="Color.Primary">
-                    <MudMenuItem OnClick=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</MudMenuItem>
-                </MudMenu>
-            </MudButtonGroup>
+                <MudButtonGroup  Color=Color.Primary Variant="Variant.Outlined">
+                    <MudButton ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                        <MudMenuItem OnClick=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</MudMenuItem>
+                    </MudMenu>
+                </MudButtonGroup>
 
-        }
+            }
         </MudContainer>
     </form>
 

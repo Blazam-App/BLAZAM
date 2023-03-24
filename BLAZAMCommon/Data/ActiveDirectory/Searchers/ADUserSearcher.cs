@@ -86,15 +86,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         {
 
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
-
-            var tstamp = threeMonthsAgo.ToString("yyyyMMddHHmmss.fZ");
             var results = new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
                 Fields = new()
                 {
-                    Created = tstamp }
+                    Created = threeMonthsAgo
+                }
 
             }.Search<ADUser, IADUser>();
             return results.OrderByDescending(u => u.Created).ToList();
