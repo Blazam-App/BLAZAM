@@ -13,6 +13,19 @@ namespace BLAZAM.Common.Extensions
 {
     public static class StringHelpers
     {
+        public static int GetAppHashCode(this string input)
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hash = 17;
+                foreach (char c in input)
+                {
+                    hash = hash * 23 + c;
+                }
+                return hash;
+            }
+        }
+
         public static bool IsNullOrEmpty(this string? str)
         {
             return str == null || str.Length < 1;

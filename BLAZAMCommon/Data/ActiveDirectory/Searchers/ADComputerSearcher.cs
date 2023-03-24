@@ -31,18 +31,18 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         }
 
-        public async Task<List<IADComputer>> FindNewComputersAsync(bool ignoreDisabledComputers = false)
+        public async Task<List<IADComputer>> FindNewComputersAsync(int maxAgeInDays = 14,bool ignoreDisabledComputers = false)
         {
             return await Task.Run(() =>
             {
-                return FindNewComputers(ignoreDisabledComputers);
+                return FindNewComputers(maxAgeInDays,ignoreDisabledComputers);
             });
         }
 
-        public List<IADComputer> FindNewComputers(bool ignoreDisabledComputers = false)
+        public List<IADComputer> FindNewComputers(int maxAgeInDays = 14 , bool ignoreDisabledComputers = false)
         {
 
-            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
+            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
             var results = new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Computer,

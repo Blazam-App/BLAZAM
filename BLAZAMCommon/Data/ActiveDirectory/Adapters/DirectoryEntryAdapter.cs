@@ -7,22 +7,17 @@ using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.VisualStudio.Services.Common;
-using System.Collections.Generic;
 using System.Data;
 using System.DirectoryServices;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {
 
     public class DirectoryEntryAdapter : IDirectoryEntryAdapter
     {
-        /// <summary>
-        /// The base uri to reach this directory model's search result page
-        /// </summary>
+        /// <inheritdoc/>
         public virtual string SearchUri
         {
             get
@@ -31,11 +26,16 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
         }
 
-
+        /// <inheritdoc/>
         public AppEvent? OnModelChanged { get; set; }
 
+        /// <inheritdoc/>
         public AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
+
+        /// <inheritdoc/>
         public AppEvent? OnModelCommited { get; set; }
+
+        /// <inheritdoc/>
         public virtual List<AuditChangeLog> Changes
         {
             get
@@ -81,17 +81,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
             }
         }
-
+        /// <inheritdoc/>
         public Dictionary<string, object> NewEntryProperties { get; set; } = new();
 
         protected IActiveDirectory Directory;
 
-        public bool IsNewDirectoryEntry(IADOrganizationalUnit ou)
-        {
-            directoryEntry = new DirectoryEntry(ou.DN);
-            return false;
-        }
 
+
+        /// <inheritdoc/>
         public bool Invoke(string method, object?[]? args = null)
         {
             try
@@ -112,7 +109,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
             return false;
         }
-
+        /// <inheritdoc/>
         public DirectoryEntry? DirectoryEntry
         {
             get
@@ -124,7 +121,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 directoryEntry = value;
             }
         }
-
+        /// <inheritdoc/>
         public ActiveDirectoryObjectType ObjectType
         {
             get
@@ -152,7 +149,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 return ActiveDirectoryObjectType.OU;
             }
         }
-
+        /// <inheritdoc/>
         public Type ModelType
         {
             get
@@ -219,7 +216,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 var cn = GetStringProperty("cn");
                 if (cn != null)
                 {
-                    if (IsDeleted && cn.Contains("DEL:"))
+                    if (cn.Contains("DEL:"))
                         return cn.Substring(0, cn.IndexOf("DEL:")).Replace("\n", "");
                     return cn;
                 }
@@ -245,7 +242,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
 
         }
-
+        /// <inheritdoc/>
         public virtual DateTime? Created
         {
             get
@@ -258,17 +255,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
 
         }
-        /// <summary>
-        /// If this object is deleted, this was the last <see cref="IADOrganizationalUnit"/> it was under
-        /// </summary>
+
+        /// <inheritdoc/>
         public virtual IADOrganizationalUnit? LastKnownParent
         {
             get
             {
                 var parentDN = GetStringProperty("lastknownparent");
-                if (parentDN != null)
-                    return Directory.OUs.FindOuByDN(parentDN);
-                return null;
+                return parentDN != null ? Directory.OUs.FindOuByDN(parentDN) : null;
             }
 
         }
@@ -281,15 +275,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
 
         }
+        /// <inheritdoc/>
         public virtual DateTime? LastChanged
         {
             get
             {
                 var timeUTC = GetProperty<DateTime?>("whenChanged");
-                if (timeUTC != null)
-                    return DateTime.Parse(timeUTC.Value.ToString("MM/dd/yyyy HH:mm:ssZ"));
-                else
-                    return null;
+                return timeUTC != null ? DateTime.Parse(timeUTC.Value.ToString("MM/dd/yyyy HH:mm:ssZ")) : null;
             }
             set
             {
@@ -315,7 +307,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             return DN;
         }
-
+        /// <inheritdoc/>
         public virtual List<string>? Classes
         {
             get
@@ -422,7 +414,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
             return false;
         }
-
+        /// <inheritdoc/>
         public virtual bool CanRead
         {
             get
@@ -443,7 +435,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
 
         }
-
+        /// <inheritdoc/>
         public virtual bool CanEdit
         {
             get
@@ -466,11 +458,11 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         }
 
 
-
+        /// <inheritdoc/>
         public virtual bool CanRename { get => HasActionPermission(ActionAccessFlags.Rename); }
-
+        /// <inheritdoc/>
         public virtual bool CanMove { get => HasActionPermission(ActionAccessFlags.Move); }
-
+        /// <inheritdoc/>
         public virtual bool CanCreate { get => HasActionPermission(ActionAccessFlags.Create); }
 
 
@@ -488,11 +480,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                )))
                );
         }
-
+        /// <inheritdoc/>
         public virtual bool CanDelete { get => HasActionPermission(ActionAccessFlags.Delete); }
+
+        /// <inheritdoc/>
         public virtual bool HasUnsavedChanges { get; set; } = false;
         protected ADSettings? DirectorySettings { get; private set; }
 
+        /// <inheritdoc/>
         public virtual bool CanReadField(ActiveDirectoryField field)
         {
             return HasPermission(p => p.Where(pm =>
@@ -509,6 +504,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         }
 
+        /// <inheritdoc/>
         public virtual bool CanEditField(ActiveDirectoryField field)
         {
             return HasPermission(p => p.Where(pm =>
@@ -526,6 +522,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         }
 
+        /// <inheritdoc/>
         protected virtual async Task Parse(DirectoryEntry? directoryEntry, SearchResult? searchResult, IActiveDirectory directory)
         {
             Directory = directory;
@@ -543,12 +540,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
             UserStateService = directory.UserStateService;
             DbFactory = directory.Factory;
-           
-                DirectorySettings = await DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefaultAsync();
-            
+
+            DirectorySettings = await DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefaultAsync();
+
 
         }
 
+        /// <inheritdoc/>
         public virtual async Task Parse(DirectoryEntry result, IActiveDirectory directory) => await Parse(result, null, directory);
 
 
@@ -557,7 +555,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             //Not utilized
         }
 
+        /// <inheritdoc/>
         public virtual async Task Parse(SearchResult result, IActiveDirectory directory) => await Parse(null, result, directory);
+
+        /// <inheritdoc/>
         public virtual async Task<DirectoryChangeResult> CommitChangesAsync()
         {
             return await Task.Run(() =>
@@ -566,6 +567,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             });
         }
 
+        /// <inheritdoc/>
         public virtual DirectoryChangeResult CommitChanges()
         {
             try
@@ -635,6 +637,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         }
 
+        /// <inheritdoc/>
         public virtual void Delete()
         {
             try
@@ -659,9 +662,11 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             catch (UnauthorizedAccessException ex)
             {
                 throw new ApplicationException("The application directory user does not " +
-                    "have permission to delete entries",ex);
+                    "have permission to delete entries", ex);
             }
         }
+
+        /// <inheritdoc/>
         public virtual void DiscardChanges()
         {
             DirectoryEntry = null;
@@ -689,9 +694,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
         }
         /// <summary>
-        /// Retrieves the requested property value from either the cached SearchResult
+        /// Retrieves the requested property value from either the cached <see cref="SearchResult"/>
         /// or by actively polling Active Directory for the entire object.
-        /// The object is cached for future calls.
+        /// The value is cached for future calls.
         /// </summary>
         /// <typeparam name="T">The value type of the requested attribute</typeparam>
         /// <param name="propertyName">The requested attribute</param>
@@ -811,7 +816,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
         }
         /// <summary>
-        /// Sets an attribute value. Note that this change is uncommited, CommitChanges()
+        /// Sets an attribute value. Note that this change is uncommited, <see cref="CommitChanges"/>
         /// must be called afterwards for the change to persist.
         /// </summary>
         /// <param name="propertyName"></param>
@@ -851,6 +856,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
             }
         }
+
+        /// <inheritdoc/>
         public virtual bool Rename(string newName)
         {
             DirectoryEntry?.Rename("cn=" + newName);

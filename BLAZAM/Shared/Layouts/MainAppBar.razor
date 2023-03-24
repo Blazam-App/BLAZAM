@@ -1,6 +1,7 @@
 ﻿@inject IStringLocalizer<AppLocalization> AppLocalization
 @inject IApplicationUserStateService UserStateService
 @inject NavigationManager Nav
+@using BLAZAM.Common.Extensions;
 @using BLAZAM.Server.Shared.UI.Themes;
 
 
@@ -126,7 +127,7 @@
     string GenerateAvatarColor(string username)
     {
         if (username.IsNullOrEmpty()) return "background-color:#0c13a7";
-        var usernameHash = username.GetHashCode();
+        int usernameHash = username.GetAppHashCode();
         byte[] usernameHashBytes = usernameHash.ToByteArray(3);
         string hexColor = "background-color:#";
         hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());

@@ -59,18 +59,18 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
 
 
-        public async Task<List<IADOrganizationalUnit>> FindNewOUsAsync()
+        public async Task<List<IADOrganizationalUnit>> FindNewOUsAsync(int maxAgeInDays = 14)
         {
             return await Task.Run(() =>
             {
-                return FindNewOUs();
+                return FindNewOUs(maxAgeInDays);
             });
         }
 
-        public List<IADOrganizationalUnit> FindNewOUs()
+        public List<IADOrganizationalUnit> FindNewOUs(int maxAgeInDays = 14)
         {
 
-            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
+            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
             var results = new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.OU,

@@ -62,18 +62,18 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         }
 
-        public async Task<List<IADGroup>> FindNewGroupsAsync()
+        public async Task<List<IADGroup>> FindNewGroupsAsync(int maxAgeInDays = 14)
         {
             return await Task.Run(() =>
             {
-                return FindNewGroups();
+                return FindNewGroups(maxAgeInDays);
             });
         }
 
-        public List<IADGroup>? FindNewGroups()
+        public List<IADGroup>? FindNewGroups(int maxAgeInDays = 14)
         {
 
-            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
+            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
             var results = new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Group,

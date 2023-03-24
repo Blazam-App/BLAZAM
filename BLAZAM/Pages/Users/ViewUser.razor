@@ -39,7 +39,7 @@
 
                 @if (User.LockedOut)
                 {
-                    <MudIcon Icon=@("fa-lock")>Account Locked</MudIcon>
+                    <MudIconButton OnClick=Unlock Icon=@Icons.Material.Filled.Lock/>
                 }
                 <MudSpacer />
                 <MudMenu Class="align-self-end" StartIcon="@Icons.Material.Filled.Settings">
@@ -98,8 +98,7 @@
         </SetSubHeader>
     }
 
-
-    <MudElement Class="d-flex flex-wrap gap-4">
+    <FlexContainer>
 
         <AppModal Color="Color.Dark" Title="Upload Thumbnail..." @ref=@UploadThumbnailModal>
             <UploadThumbnailModalContent ModelChanged=@(()=>{InvokeAsync(StateHasChanged);}) DirectoryModel="User" />
@@ -480,8 +479,7 @@
 
         }
 
-    </MudElement>
-
+    </FlexContainer>
 
 
 </EditForm>

@@ -11,10 +11,9 @@
 
     @if (Program.InDemoMode)
     {
-        <Alert Visible Background=Background.Info>
-        <AlertMessage Display="Display.InlineBlock">Try searching Moore, Howard, Evans, Manny...</AlertMessage>
-        <AppCloseButton Display="Display.InlineBlock" Float="Float.End" />
-        </Alert>
+        <MudAlert>
+          Try searching Moore, Howard, Evans, Manny...
+        </MudAlert>
     }
 
 
@@ -36,9 +35,9 @@
                 {
 
 
-                    <div Class="cursor-pointer" @onclick=@(()=>{SubmitSearch(u.CanonicalName);}) Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
-                        <MudText Typo ="Typo.h1" Margin="Margin.Is2.FromBottom">@u.ObjectType</MudText>
-                        <MudText Typo ="Typo.h1" Margin="Margin.Is2.FromBottom">@u.CanonicalName</MudText>
+                    <div Class="cursor-pointer" @onclick=@(()=>{SubmitSearch(u.CanonicalName);}) >
+                        <MudText Typo="Typo.h1">@u.ObjectType</MudText>
+                        <MudText Typo="Typo.h1">@u.CanonicalName</MudText>
                         <small>@u.SamAccountName</small>
                     </div>
 
@@ -46,8 +45,8 @@
                 }
             </ItemContent>
             <Placeholder>
-                <div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
-                    <MudText Typo ="Typo.h1" Margin="Margin.Is2.FromBottom">Loading...</MudText>
+                <div >
+                    <MudText Typo="Typo.h1" >Loading...</MudText>
                     <small>Loading...</small>
                 </div>
 
@@ -70,7 +69,7 @@
                         <ViewGroup @bind-SavingChanges="SavingChanges" Group="(IADGroup)result" />
                         break;
                     case ActiveDirectoryObjectType.Computer:
-                        <ViewComputer @bind-SavingChanges="SavingChanges"  Computer="(IADComputer)result" />
+                        <ViewComputer @bind-SavingChanges="SavingChanges" Computer="(IADComputer)result" />
                         break;
                     case ActiveDirectoryObjectType.OU:
                         <ViewOU @bind-SavingChanges="SavingChanges" OU="(IADOrganizationalUnit)result" />
@@ -226,7 +225,10 @@
     public async Task InvokeSearch()
     {
         // Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
-
+        if (Searcher == null)
+            Searcher = new ADSearch();
+        SearchService.SearchTerm = SearchTermParameter;
+        Searcher.GeneralSearchTerm = SearchTermParameter;
         Searcher.EnabledOnly = !SearchService.IncludeDisabled;
         Searcher.GeneralSearchTerm = SearchService.SearchTerm;
         Searcher.ObjectTypeFilter = SearchService.SeachObjectType;

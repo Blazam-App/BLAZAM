@@ -12,7 +12,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        NewUsers = (await Directory.Users.FindNewUsersAsync(false)).Where(u => u.CanRead).ToList();
+        NewUsers = (await Directory.Users.FindNewUsersAsync()).Where(u => u.CanRead).ToList();
         LoadingData = false;
         InvokeAsync(StateHasChanged);
     }

@@ -12,7 +12,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        NewComputers = (await Directory.Computers.FindNewComputersAsync(false)).Where(u => u.CanRead).ToList();
+        NewComputers = (await Directory.Computers.FindNewComputersAsync()).Where(u => u.CanRead).ToList();
         LoadingData = false;
         InvokeAsync(StateHasChanged);
     }

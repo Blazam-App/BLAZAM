@@ -1,34 +1,49 @@
 ﻿@inherits Widget
 @attribute [Authorize]
-<div Background="Background.Secondary" >
-    <h3>Locked Out Users</h3>
-    <div Overflow="Overflow.Auto" Style="max-height:350px;">
+<MudDataGrid T="IADUser"
+             Items="@LockedUsers"
+              Dense
+              Filterable
+             RowsPerPage="5"
+             FilterMode="DataGridFilterMode.Simple"
+             Loading=@LoadingData
+              Square
+             ColumnResizeMode="ResizeMode.Column"
+              Virtualize
+             RowClass="cursor-pointer"
+             RowClick=@GoTo
+             Class="py-0"
+             SortMode="SortMode.Single">
+    <Columns>
+        <PropertyColumn Property="x => x.CanonicalName" Title="Name" />
+        <PropertyColumn Property="x => x.OU.ToPrettyOu()" Title="OU" />
+        <PropertyColumn Property="x => x.LockoutTime" Title="Locked Out" />
 
-        @foreach (var user in LockedUsers)
-        {
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="IADUser" />
+    </PagerContent>
+</MudDataGrid>
 
-            <MudCard Background="Background.Light" Color="Color.Dark" Style="cursor:pointer" @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
-
-                @user.DisplayName <br>
-                @user.SamAccountName <br>
-                @DirectoryTools.PrettifyOu(user.OU) <br>
-                @user.LockoutTime <br>
-            </MudCard>
-        }
-    </div>
-</div>
 @code {
-    List<IADUser> LockedUsers = new();
+    List<IADUser> LockedUsers
+    {
+        get => UserStateService.CurrentUserState.Cache.Get<List<IADUser>>(this.GetType());
+        set => UserStateService.CurrentUserState.Cache.Set(this.GetType(), value);
+    }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
         Name = "Locked Out Users";
-        LockedUsers = (await Directory.Users.FindLockedOutUsersAsync()).OrderByDescending(u=>u.LockoutTime).Where(u=>u.CanRead).ToList();
+        LockedUsers = (await Directory.Users.FindLockedOutUsersAsync()).OrderByDescending(u => u.LockoutTime).Where(u => u.CanRead).ToList();
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
     }
-    
+    async Task GoTo(DataGridRowClickEventArgs<IADUser> args)
+    {
+        Nav.NavigateTo(args.Item.SearchUri);
+    }
 
 }

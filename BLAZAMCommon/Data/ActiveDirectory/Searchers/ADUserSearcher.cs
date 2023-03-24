@@ -74,18 +74,18 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         }
 
 
-        public async Task<List<IADUser>> FindNewUsersAsync(bool? ignoreDisabledUsers = true)
+        public async Task<List<IADUser>> FindNewUsersAsync(int maxAgeInDays = 14,bool? ignoreDisabledUsers = true)
         {
             return await Task.Run(() =>
             {
-                return FindNewUsers(ignoreDisabledUsers);
+                return FindNewUsers(maxAgeInDays,ignoreDisabledUsers);
             });
         }
 
-        public List<IADUser>? FindNewUsers(bool? ignoreDisabledUsers = true)
+        public List<IADUser>? FindNewUsers(int maxAgeInDays = 14, bool? ignoreDisabledUsers = true)
         {
 
-            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
+            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
             var results = new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
