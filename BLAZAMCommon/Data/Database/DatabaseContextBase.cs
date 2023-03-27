@@ -73,7 +73,7 @@ namespace BLAZAM.Common.Data.Database
             ConnectionString = new("");
         }
 
-       
+
         public DatabaseContextBase(DatabaseConnectionString databaseConnectionString) : base()
         {
             ConnectionString = databaseConnectionString;
@@ -302,7 +302,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 17,
                     FieldName = "mail",
                     DisplayName = "E-Mail Address",
-                   // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User, ActiveDirectory.ActiveDirectoryObjectType.Group }
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User, ActiveDirectory.ActiveDirectoryObjectType.Group }
                 },
 
                 new ActiveDirectoryField
@@ -374,7 +374,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 23,
                     FieldName = "title",
                     DisplayName = "Title",
-                   // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -382,7 +382,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 24,
                     FieldName = "userPrincipalName",
                     DisplayName = "User Principal Name",
-                   // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -390,15 +390,15 @@ namespace BLAZAM.Common.Data.Database
                     Id = 25,
                     FieldName = "telephoneNumber",
                     DisplayName = "Telephone Number",
-                   // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
                 {
                     Id = 26,
-                    FieldName = "street",
-                    DisplayName = "Street",
-                   // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    FieldName = "postOfficeBox",
+                    DisplayName = "PO Box",
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -428,7 +428,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 29,
                     FieldName = "department",
                     DisplayName = "Department",
-                   // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -436,7 +436,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 30,
                     FieldName = "middleName",
                     DisplayName = "Middle Name",
-//ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -452,7 +452,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 32,
                     FieldName = "operatingSystemVersion",
                     DisplayName = "OS",
-                   // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.Computer }
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.Computer }
                 },
 
                 new ActiveDirectoryField
@@ -465,7 +465,17 @@ namespace BLAZAM.Common.Data.Database
                     //    ActiveDirectory.ActiveDirectoryObjectType.User,
                     //    ActiveDirectory.ActiveDirectoryObjectType.Computer
                     //}
-                }
+                },
+                    new ActiveDirectoryField
+                    {
+                        Id = 34,
+                        FieldName = "manager",
+                        DisplayName = "Manager"
+                        //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
+                        //{
+                        //    ActiveDirectory.ActiveDirectoryObjectType.User,
+                        //}
+                    }
 
 
             );

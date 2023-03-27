@@ -58,7 +58,6 @@
         var result = Searcher.Results[0];
         if (result.CanRead)
         {
-            <LoadingIndicator ZIndex=100 Visible=@SavingChanges>
 
                 @switch (result.ObjectType)
                 {
@@ -75,7 +74,6 @@
                         <ViewOU @bind-SavingChanges="SavingChanges" OU="(IADOrganizationalUnit)result" />
                         break;
                 }
-            </LoadingIndicator>
         }
         else
         {
@@ -86,9 +84,7 @@
     }
     else if (LoadingData)
     {
-        <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
             <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
-        </LoadingIndicator>
     }
     else
     {
@@ -167,10 +163,10 @@
         Searcher.ResultsCollected += ((batch) =>
              {
                  results.AddRange(batch);
-                 InvokeAsync(StateHasChanged);
+                 //InvokeAsync(StateHasChanged);
              });
 
-        await PerformSearch();
+        //await PerformSearch();
         await InvokeAsync(StateHasChanged);
 
     }
@@ -227,6 +223,8 @@
         // Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
         if (Searcher == null)
             Searcher = new ADSearch();
+        else
+            Searcher.CancelSeaches();
         SearchService.SearchTerm = SearchTermParameter;
         Searcher.GeneralSearchTerm = SearchTermParameter;
         Searcher.EnabledOnly = !SearchService.IncludeDisabled;

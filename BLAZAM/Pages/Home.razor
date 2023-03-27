@@ -5,34 +5,50 @@
 @using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 @using BLAZAM.Server.Data.Services.Email;
 
-
+@{
+    string testValue="";
+    Type valueType =testValue.GetType();
+}
 <AppPageTitle>Home</AppPageTitle>
 
 @if (MOTD.HasValue && MOTD.Value.ToString() != "")
 {
-    <MudAlert Elevation="3">
+    <MudAlert ShowCloseIcon Elevation="3">
 
 
         @MOTD.Value
 
     </MudAlert>
 }
-<MudDropContainer @ref=widgetContainer T="Widget" Items="widgets" ItemsSelector="@((item,dropzone) => item.Slot == dropzone)" ItemDropped="ItemDropped" Class="d-flex flex-wrap flex-grow-1">
+<MudDropContainer @ref=widgetContainer
+    T="Widget" Items="widgets"
+    ItemsSelector="@((item,dropzone) => item.Slot == dropzone)"
+    ItemDropped="ItemDropped" 
+    Class="d-flex flex-wrap flex-grow-1 mud-width-full">
     <ChildContent>
+        <FlexContainer Spacing="4" Class="mx-auto">
 
-        <MudList Clickable="true" Class="d-flex flex-column ma-4 flex-grow-1 mud-height-full">
-            <MudDropZone AllowReorder T="Widget" Identifier="slot1" Class="flex-grow-1" />
+            <MudList Clickable="true"
+                     Class="d-flex flex-column ma-0 mx-auto">
+                <MudDropZone AllowReorder
+                             T="Widget"
+                             Identifier="slot1"
+                             Class="flex-grow-1" />
             </MudList>
-            <MudList Clickable="true" Class="d-flex flex-column ma-4 flex-grow-1 mud-height-full">
-            <MudDropZone AllowReorder T="Widget" Identifier="slot2" Class="flex-grow-1" />
+            <MudList Clickable="true"
+                     Class="d-flex flex-column ma-0 mx-auto">
+                <MudDropZone AllowReorder
+                             T="Widget"
+                             Identifier="slot2"
+                             Class="flex-grow-1" />
             </MudList>
-         
+        </FlexContainer>
         </ChildContent>
         <ItemRenderer>
-            <MudCard Class="my-5" Elevation="3">
+            <MudCard Class="my-5 " Elevation="3">
             <MudCardHeader>
-                <MudText Typo="Typo.h6"> @context.Name</MudText>
-                <AppCloseButton OnClick=@(()=>{RemoveWidget(context);}) Style="right:10px;top:15px; position:absolute;" />
+            <MudText Typo="Typo.h6"> @context.Name</MudText>
+            <AppCloseButton OnClick=@(()=>{RemoveWidget(context);}) Style="right:10px;top:15px; position:absolute;" />
 
             </MudCardHeader>
 
@@ -43,7 +59,7 @@
         </MudDropContainer>
 
 
-        @code {
+            @code {
     MarkupString? MOTD;
     MudDropContainer<Widget>? widgetContainer;
     List<Widget> widgets = new List<Widget>();

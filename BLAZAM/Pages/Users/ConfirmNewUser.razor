@@ -52,7 +52,7 @@
 
 @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone) ||
           InDirectoryTemplate(ActiveDirectoryFields.StreetAddress) ||
-          InDirectoryTemplate(ActiveDirectoryFields.Street) ||
+          InDirectoryTemplate(ActiveDirectoryFields.POBox) ||
           InDirectoryTemplate(ActiveDirectoryFields.City) ||
           InDirectoryTemplate(ActiveDirectoryFields.State) ||
           InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
@@ -68,9 +68,9 @@
         {
                 <MudTextField Label="@UserLocalization["Street Address"]" @bind-Value="@User.StreetAddress" Disabled=true />
         }
-        @if (InDirectoryTemplate(ActiveDirectoryFields.Street))
+        @if (InDirectoryTemplate(ActiveDirectoryFields.POBox))
         {
-                <MudTextField Label="@UserLocalization["Street"]" @bind-Value="@User.Street" Disabled=true />
+                <MudTextField Label="@UserLocalization["PO Box"]" @bind-Value="@User.POBox" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.City))
         {

@@ -242,7 +242,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             set
             {
                 base.SamAccountName = value;
-                if (UserPrincipalName == null)
+                if (UserPrincipalName.IsNullOrEmpty())
                     UserPrincipalName = value + "@" + DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.FQDN;
 
                 else
@@ -345,15 +345,15 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 SetProperty(ActiveDirectoryFields.StreetAddress.FieldName, value);
             }
         }
-        public string? Street
+        public string? POBox
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.Street.FieldName);
+                return GetStringProperty(ActiveDirectoryFields.POBox.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.Street.FieldName, value);
+                SetProperty(ActiveDirectoryFields.POBox.FieldName, value);
             }
         }
         public string? City

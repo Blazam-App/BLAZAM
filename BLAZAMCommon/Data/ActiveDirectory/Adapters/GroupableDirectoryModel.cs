@@ -262,13 +262,16 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             get
             {
-                var com = GetProperty<object>("accountExpires")?.AdsValueToDateTime();
-                if (com == ADS_NULL_TIME || com == DateTime.MinValue) com = null;
-                return com;
+                var com = GetProperty<object>("accountExpires");
+                   var time = com?.AdsValueToDateTime()?.ToLocalTime();
+                if (time == null || time == ADS_NULL_TIME || time == DateTime.MinValue) time = null;
+                return time;
             }
             set
             {
-                SetProperty("accountExpires", value.DateTimeToAdsValue());
+               
+
+                SetProperty("accountExpires", value?.ToUniversalTime().ToFileTime().ToString());
             }
         }
 

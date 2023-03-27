@@ -1,0 +1,126 @@
+﻿@inherits MudField
+@typeparam T
+@{
+    var type = typeof(T);
+    if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+    {
+        type = Nullable.GetUnderlyingType(type);
+
+    }
+}
+@switch (type.Name)
+{
+    case "int":
+    case "double":
+    case "long":
+    case "float":
+        <MudNumericField HelperText="@HelperText" 
+            T=T 
+            HideSpinButtons="true" 
+            @bind-Value="@Value" 
+            Clearable=@Clearable />
+        break;
+
+    case "String":
+        <MudTextField Label="@Label" T=T
+              HelperText="@HelperText"
+              Clearable=@Clearable
+              Value=Value
+              ValueChanged="@((changed)=>{Value =changed;})"
+              Disabled=@Disabled
+              InputType="@InputType" />
+        break;
+    case "Boolean":
+    <MudStack>
+        <MudSwitch Color=@Color
+             
+                   HelperText="@HelperText"
+            Label=@Label 
+            @bind-Checked=@Value 
+            Disabled=@Disabled />
+            <MudText  Typo="Typo.caption">@HelperText</MudText>
+        </MudStack>
+        break;
+    case "DateTime":
+        <MudDatePicker Clearable=@Clearable
+               HelperText="@HelperText"
+            Label="@Label"
+            Date="@dateValue"
+            DateChanged=@((date) =>{dateValue = date;}) 
+            Disabled=@Disabled />
+
+        break;
+    default:
+
+        throw new ApplicationException("The input type: " + type.Name + " could not be matched with a MudInput component");
+
+}
+
+
+@code {
+    private T? objValue;
+
+    [Parameter]
+    public Func<T, T> ValueTransformer { get; set; }
+
+    private T? initializedValue;
+    [Parameter]
+    public T? Value
+    {
+        get => objValue;
+        set
+        {
+            if (objValue?.Equals(value) == true || (objValue == null && value == null)) return;
+            if (objValue != null && ValueTransformer != null)
+                value = ValueTransformer.Invoke(value);
+            objValue = value;
+            if (!value.Equals(initializedValue))
+                ValueChanged.InvokeAsync(value);
+
+        }
+    }
+
+    [Parameter]
+    public EventCallback<T?> ValueChanged { get; set; }
+
+    [Parameter]
+    public Color Color { get; set; }
+
+
+    /// <summary>
+    /// Show clear button.
+    /// </summary>
+    [Parameter]
+    public bool Clearable { get; set; }
+
+    private DateTime? dateValue
+    {
+        get
+        {
+            if (Value is DateTime time)
+                if (time != DateTime.MinValue)
+                    return time;
+            return null;
+        }
+        set
+        {
+
+            if (value is T tValue)
+                Value = tValue;
+            else if (value is null)
+                Value = default;
+        }
+    }
+
+    [Parameter]
+    public InputType InputType { get; set; }
+
+
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        initializedValue = Value;
+    }
+}

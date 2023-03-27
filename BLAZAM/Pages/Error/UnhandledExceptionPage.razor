@@ -1,5 +1,6 @@
 @inject EmailService email
 @inject AppDatabaseFactory factory
+@inject NavigationManager Nav
 <PageTitle>Error</PageTitle>
 
 
@@ -7,34 +8,38 @@
 
 
 
-<MudCard>
-    <MudCardBody>
+<MudAlert Elevation="5"
+    Square
+    ShowCloseIcon 
+    
+    CloseIconClicked=@(()=>{Nav.NavigateTo(Nav.Uri,true);}) 
+    Class="mud-alert-outlined-error" 
+    ContentAlignment="HorizontalAlignment.Center">
+    <MudContainer>
+    <MudText Typo="Typo.h4">
         Something terrible has happened...
 
-    </MudCardBody>
-</MudCard>
+    </MudText>
 
 @if (Program.InDebugMode)
 {
 
-    <MudCard>
-        <MudCardHeader>
+    <MudCard Square Class="mud-border-error mx-auto">
+        <MudCardHeader Class="mud-error">
             @Error.Source : @Error.GetType()
         </MudCardHeader>
-        <MudCardBody>
+        <MudPaper Square>
             Error Message: @Error.Message
-        </MudCardBody>
-        <MudCardBody TextOverflow="TextOverflow.NoWrap" Overflow="Overflow.Scroll">
+        </MudPaper Square>
+            <MudPaper Class="overflow-auto mud-typography-nowrap">
             Stack Trace: <br>
             @((MarkupString)_error.StackTrace.Replace("\n","<br><br>"))
-        </MudCardBody>
+        </MudPaper>
     </MudCard>
-
-
-
-
-
 }
+    </MudContainer>
+
+</MudAlert>
 
 
 

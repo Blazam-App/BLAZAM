@@ -1,5 +1,6 @@
 ﻿
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data.ActiveDirectory.Searchers;
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.VisualStudio.Services.Common;
 
@@ -31,7 +32,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 List<AuditChangeLog> changes = base.Changes;
                 if (MembersToAdd.Count > 0 || MembersToRemove.Count > 0)
                 {
-                    var members = Members;
+                    var members = MembersAsStrings;
                     members.AddRange(MembersToAdd.Select(gm => gm.Member.DN));
                     MembersToRemove.ForEach(gm => { 
                         members.Remove(gm.Member.DN);
@@ -39,7 +40,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     changes.Add(new AuditChangeLog()
                     {
                         Field = "member",
-                        OldValue = Members,
+                        OldValue = MembersAsStrings,
                         NewValue = members
                     });
                 }
@@ -51,7 +52,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         public override DirectoryChangeResult CommitChanges()
         {
             DirectoryChangeResult dcr = new DirectoryChangeResult();
-            var newMembers = new List<string>(Members);
+            var newMembers = new List<string>(MembersAsStrings);
             if (MembersToAdd.Count > 0)
             {
 
@@ -131,11 +132,30 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 return temp;
             }
         }
-        
-        public List<string> Members {
-            get{
+        public List<string> MembersAsStrings
+        {
+            get
+            {
                 var temp = GetStringListProperty("member");
                 return temp;
+            }
+        }
+
+        public List<IGroupableDirectoryAdapter> Members {
+            get{
+                var temp = MembersAsStrings;
+                ADSearch search = new ADSearch();
+                
+                List<IGroupableDirectoryAdapter> members = new List<IGroupableDirectoryAdapter>();
+                temp.ForEach(t => {
+                    search.Fields.DN = t;
+                    var member = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>()?.FirstOrDefault();
+                    if(member != null)
+                    {
+                        members.Add(member);
+                    }
+                });
+                return members;
             }
 }
         

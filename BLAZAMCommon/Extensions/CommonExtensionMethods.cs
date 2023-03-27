@@ -286,13 +286,15 @@ namespace BLAZAM.Common.Extensions
             if (value == null) return null;
             try
             {
-
-                long? fileTime = value?.ToFileTimeUtc();
+                
+                long? fileTime = value?.ToUniversalTime().ToFileTimeUtc();
                 if (fileTime == null) return null;
                 object fto = 0;
                 IADsLargeInteger largeInt = new ADsLargeInteger();
+
                 largeInt.HighPart = (int)(fileTime >> 32);
-                largeInt.LowPart = (int)(fileTime & 0xffffffff);
+                largeInt.LowPart = (int)(fileTime & 0xFFFFFFFF);
+
                 return largeInt;
             }
             catch
@@ -300,6 +302,9 @@ namespace BLAZAM.Common.Extensions
                 return null;
             }
         }
+        //133241760000000000
+        //31029034
+        //1743527936
         public static DateTime? AdsValueToDateTime(this object value)
         {
             //read file time 133213804065419619
@@ -307,12 +312,32 @@ namespace BLAZAM.Common.Extensions
             {
                 if (value == null) return DateTime.MinValue;
 
-                IADsLargeInteger? v = value as IADsLargeInteger;
 
-                if (null == v) return DateTime.MinValue;
+                Int64? longInt = null;
+                try
+                {
+                    longInt = Int64.Parse(value.ToString());
+                }
+                catch (Exception)
+                {
 
-                long dV = ((long)v.HighPart << 32) + v.LowPart;
-                return DateTime.FromFileTime(dV);
+                }
+                if (longInt != null)
+                   return DateTime.FromFileTimeUtc(longInt.Value);
+                else
+                {
+
+
+
+                    IADsLargeInteger? v = value as IADsLargeInteger;
+
+                    if (null == v) return DateTime.MinValue;
+
+                    long dV = ((long)v.HighPart << 32) + v.LowPart;
+
+
+                    return DateTime.FromFileTimeUtc(dV);
+                }
             }
             catch
             {

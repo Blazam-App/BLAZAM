@@ -21,7 +21,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         string? ScriptPath { get; set; }
         string? Site { get; set; }
         string? State { get; set; }
-        string? Street { get; set; }
+        string? POBox { get; set; }
         string? StreetAddress { get; set; }
         string? Surname { get; set; }
         string? TelephoneNumber { get; set; }

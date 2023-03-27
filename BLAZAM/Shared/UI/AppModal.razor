@@ -1,5 +1,7 @@
 ﻿@inherits MudMessageBox
-<MudMessageBox OnCancel="OnClosing" Title=@Title @ref="Modal">
+<MudMessageBox OnCancel="OnClosing" Title=@Title @ref="Modal" YesText="@YesText" OnYes="@((val)=>{
+OnYes.InvokeAsync(val);
+})">
     <MessageContent>
         <MudText Color="Color">
             <CascadingValue Value="Modal">
@@ -23,7 +25,6 @@
     /// </summary>
     [Parameter]
     public bool AllowClose { get; set; } = true;
-
 
     [Parameter]
     public Color Color { get; set; } = Color.Default;
@@ -60,21 +61,15 @@
     [Parameter]
     public EventCallback<bool> IsShownChanged { get; set; }
 
-    //async Task ModalClosing(ModalClosingEventArgs args)
-    //{
-    //    if (!AllowClose)
-    //    {
-    //        args.Cancel=true;
-    //    }
-    //}
+   
     /// <summary>
     /// Show this modal
     /// </summary>
-    public void Show()
+    public async Task<bool?> Show()
     {
-
+       
         IsShown = true;
-        Modal?.Show();
+        return await Modal?.Show();
     }
     /// <summary>
     /// Hide this modal
@@ -91,6 +86,8 @@
         {
             Modal.Show();
         }
+        else
+        OnCancel.InvokeAsync(modalResult);
     }
 
 }

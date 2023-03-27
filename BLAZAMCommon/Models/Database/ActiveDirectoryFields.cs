@@ -9,36 +9,6 @@ namespace BLAZAM.Common.Models.Database
 
 
 
-        public static List<ActiveDirectoryField> Fields = new List<ActiveDirectoryField>() {
-#pragma warning disable CS8604 // Possible null reference argument.
-            SN,
-            GivenName,
-            PhysicalDeliveryOffice,
-            EmployeeId,
-            HomeDirectory,
-            ScriptPath,
-            ProfilePath,
-            HomePhone,
-            StreetAddress,
-            City,
-            State,
-            PostalCode,
-            Site,
-            Name,
-            SAMAccountName,
-            ObjectSID,
-            Mail,
-            Description,
-            DisplayName,
-            DistinguishedName,
-            MemberOf,
-            Pager,
-            OperatingSystem,
-            CanonicalName,
-            AccountExpires
-#pragma warning restore CS8604 // Possible null reference argument.
-
-        };
 #pragma warning disable CA2211 // Non-constant fields should not be visible
         public static ActiveDirectoryField SN = new ActiveDirectoryField() { Id = 1, FieldName = "sn", DisplayName ="Last Name"};
         public static ActiveDirectoryField GivenName = new ActiveDirectoryField() { Id = 2, FieldName = "givenname", DisplayName ="First Name" };
@@ -49,7 +19,7 @@ namespace BLAZAM.Common.Models.Database
         public static ActiveDirectoryField ProfilePath = new ActiveDirectoryField() { Id = 7, FieldName = "profilePath", DisplayName ="Profile Path"};
         public static ActiveDirectoryField HomePhone = new ActiveDirectoryField() { Id = 8, FieldName = "homePhone", DisplayName ="Home Phone Number" };
         public static ActiveDirectoryField StreetAddress = new ActiveDirectoryField() { Id = 9, FieldName = "streetAddress", DisplayName ="Street Address"};
-        public static ActiveDirectoryField City = new ActiveDirectoryField() { Id = 10, FieldName = "city", DisplayName ="City"};
+        public static ActiveDirectoryField City = new ActiveDirectoryField() { Id = 10, FieldName = "l", DisplayName ="City"};
         public static ActiveDirectoryField State = new ActiveDirectoryField() { Id = 11, FieldName = "st", DisplayName ="State"};
         public static ActiveDirectoryField PostalCode = new ActiveDirectoryField() { Id = 12, FieldName = "postalCode", DisplayName ="Zip Code"};
         public static ActiveDirectoryField Site = new ActiveDirectoryField() { Id = 13, FieldName = "site", DisplayName ="Site" };
@@ -65,7 +35,7 @@ namespace BLAZAM.Common.Models.Database
         public static ActiveDirectoryField Title = new ActiveDirectoryField() { Id = 23, FieldName = "title", DisplayName ="Title"};
         public static ActiveDirectoryField UserPrincipalName = new ActiveDirectoryField() { Id = 24, FieldName = "userPrincipalName", DisplayName ="User Principal Name" };
         public static ActiveDirectoryField TelephoneNumber = new ActiveDirectoryField() { Id = 25, FieldName = "telephoneNumber", DisplayName ="Telephone Number" };
-        public static ActiveDirectoryField Street = new ActiveDirectoryField() { Id = 26, FieldName = "street", DisplayName ="Street"};
+        public static ActiveDirectoryField POBox = new ActiveDirectoryField() { Id = 26, FieldName = "postOfficeBox", DisplayName ="PO Box"};
         public static ActiveDirectoryField CanonicalName = new ActiveDirectoryField() { Id = 27, FieldName = "cn", DisplayName = "Canonical Name" };
         public static ActiveDirectoryField HomeDrive = new ActiveDirectoryField() { Id = 28, FieldName = "homeDrive", DisplayName ="Home Drive" };
         public static ActiveDirectoryField Department = new ActiveDirectoryField() { Id = 29, FieldName = "department",DisplayName="Department" };
@@ -73,6 +43,7 @@ namespace BLAZAM.Common.Models.Database
         public static ActiveDirectoryField Pager = new ActiveDirectoryField() { Id = 31, FieldName = "pager",DisplayName="Pager" };
         public static ActiveDirectoryField OperatingSystem = new ActiveDirectoryField() { Id = 32, FieldName = "operatingSystemVersion", DisplayName="OS" };
         public static ActiveDirectoryField AccountExpires = new ActiveDirectoryField() { Id = 33, FieldName = "accountExpires", DisplayName="Account Expiration" };
+        public static ActiveDirectoryField Manager = new ActiveDirectoryField() { Id = 34, FieldName = "manager", DisplayName="Manager" };
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 
 

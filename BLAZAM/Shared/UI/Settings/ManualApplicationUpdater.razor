@@ -33,23 +33,27 @@
             {
                 case UpdateStage.Downloading:
                     <MudText>Downloading Update...</MudText>
-                    <Progress Value="@DownladProgress?.FilePercentage">
-                        @(DownladProgress?.CompletedBytes / 1024 / 1024)MB
-                    </Progress>
+                    @if (DownladProgress != null)
+                    {
+
+                        <MudProgressLinear Value="@DownladProgress.FilePercentage">
+                            @(DownladProgress?.CompletedBytes / 1024 / 1024)MB
+                        </MudProgressLinear>
+                    }
                     <MudButton Color=Color.Error OnClick=@(()=>{ LatestAvailableVersion.Cancel(); })>Cancel</MudButton>
                     break;
                 case UpdateStage.Staging:
                     <MudText>Staging update, please wait a moment...</MudText>
-                    <Progress Animated Striped />
+                    <MudProgressLinear Animated Striped />
                     break;
                 case UpdateStage.BackingUp:
                     <MudText>Backing up current version, please wait a moment...</MudText>
-                    <Progress Animated Striped />
+                    <MudProgressLinear Animated Striped />
 
                     break;
                 case UpdateStage.Applying:
                     <MudText>Applying update, please wait a moment...</MudText>
-                    <Progress Animated Striped />
+                    <MudProgressLinear Animated Striped />
 
                     break;
                 case UpdateStage.None:

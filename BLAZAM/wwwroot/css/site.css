@@ -125,3 +125,9 @@ a, .btn-link {
     height: min-content;
     margin-top: auto !important;
 }
+.w-min{
+    width:min-content !important;
+}
+.w-max{
+    width:max-content !important;
+}

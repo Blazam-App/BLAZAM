@@ -92,8 +92,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         /// <typeparam name="TObject">The object type to convert search results to</typeparam>
         /// <typeparam name="TInterface">The interface type to case converted search results to</typeparam>
         /// <returns>A list of search results converted and casted to supplied types</returns>
-        public List<TInterface> Search<TObject, TInterface>() where TObject : TInterface, IDirectoryEntryAdapter, new()
+        public List<TInterface> Search<TObject, TInterface>(CancellationTokenSource? cancellationTokenSource=null) where TObject : TInterface, IDirectoryEntryAdapter, new()
         {
+            if (cancellationTokenSource != null) tokenSource = cancellationTokenSource;
+            else tokenSource = new();
             if (tokenSource?.IsCancellationRequested == true) return default;
             DateTime startTime = NewMethod();
             DirectorySearcher searcher;
@@ -226,7 +228,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
 
         }
-
+        public void CancelSeaches()
+        {
+            tokenSource.Cancel();
+        }
         private DateTime NewMethod()
         {
             var startTime = DateTime.Now;
@@ -239,6 +244,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         private void PerformSearch<TObject, TInterface>(DateTime startTime, DirectorySearcher searcher, int pageSize) where TObject : IDirectoryEntryAdapter, TInterface, new()
         {
+            
             bool moreResults = true;
             SearchState = SearchState.Collecting;
             SearchResultCollection lastResults;

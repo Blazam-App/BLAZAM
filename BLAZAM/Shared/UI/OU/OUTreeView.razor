@@ -15,7 +15,9 @@
                             <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@context.HasChildren()" />
                             <MudIcon Icon="@Icons.Material.Filled.Folder" Class="ml-0 mr-2" Color="@Color.Default" />
                             <MudText>@context.CanonicalName</MudText>
-                            @EndAdornment?.Invoke(context)
+
+                                @EndAdornment?.Invoke(context)
+
                         </MudBadge>
                     }
                     else
@@ -23,7 +25,7 @@
                         <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@context.HasChildren()" />
                         <MudIcon Icon="@Icons.Material.Filled.Folder" Class="ml-0 mr-2" Color="@Color.Default" />
                         <MudText>@context.CanonicalName</MudText>
-                        @EndAdornment?.Invoke(context)
+                            @EndAdornment?.Invoke(context)
                     }
                 </Content>
             </MudTreeViewItem>
@@ -138,12 +140,12 @@
         if (!SelectedOU.Equals(TopLevel))
         {
             IADOrganizationalUnit? openThis = TopLevel;
-            while (openThis != null) 
+            while (openThis != null)
             {
                 openThis = openThis.Children.Where(c => SelectedOU.DN.Contains(c.DN) && !SelectedOU.DN.Equals(c.DN)).FirstOrDefault();
                 if (openThis != null)
                     newExpandedNodes.Add(openThis);
-            } 
+            }
         }
         ExpandedNodes = newExpandedNodes;
         InvokeAsync(StateHasChanged);

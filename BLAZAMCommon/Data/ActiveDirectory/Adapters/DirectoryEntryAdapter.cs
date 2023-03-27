@@ -7,6 +7,7 @@ using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using System.Data;
 using System.DirectoryServices;
 using System.Linq;
@@ -85,6 +86,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         public Dictionary<string, object> NewEntryProperties { get; set; } = new();
 
         protected IActiveDirectory Directory;
+        private bool hasUnsavedChanges = false;
 
 
 
@@ -484,7 +486,11 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         public virtual bool CanDelete { get => HasActionPermission(ActionAccessFlags.Delete); }
 
         /// <inheritdoc/>
-        public virtual bool HasUnsavedChanges { get; set; } = false;
+        public virtual bool HasUnsavedChanges
+        {
+            get => hasUnsavedChanges;
+            set => hasUnsavedChanges = value;
+        }
         protected ADSettings? DirectorySettings { get; private set; }
 
         /// <inheritdoc/>
@@ -575,46 +581,60 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
                 if (!NewEntry)
                 {
+                    //Existing Active Directory Entry
                     if (DirectoryEntry == null)
                     {
-                        Loggers.ActiveDirectryLogger.Error("The directory entry for a new " +
+                        Loggers.ActiveDirectryLogger.Error("The directory entry for an existing " +
                             " entry is somehow missing on commit.");
                         throw new ApplicationException("DirectoryEntry is null");
                     }
                     foreach (var p in NewEntryProperties)
                     {
-                        if (p.Value == null || (p.Value is string strValue && strValue.IsNullOrEmpty())) continue;
-                        if (!DirectoryEntry.Properties.Contains(p.Key) || DirectoryEntry.Properties[p.Key].Value?.Equals(p.Value) != true)
-                            DirectoryEntry.Properties[p.Key].Value = p.Value;
-                    }
-                    foreach (PropertyValueCollection property in DirectoryEntry.Properties)
-                    {
-                        var value = property.Value;
-                        if (value is string val && val == "")
+
+
+                        if (!DirectoryEntry.Properties.Contains(p.Key)
+                            || DirectoryEntry.Properties[p.Key].Value?.Equals(p.Value) != true)
                         {
-                            DirectoryEntry.Properties[property.PropertyName].Clear();
+                            if (p.Value == null
+                        || (p.Value is string strValue && strValue.IsNullOrEmpty())
+                        || (p.Value is DateTime dateValue && dateValue == DateTime.MinValue))
+                            {
+                                DirectoryEntry.Properties[p.Key].Clear();
+
+                            }
+                            else
+                            {
+                                DirectoryEntry.Properties[p.Key].Value = p.Value;
+
+                            }
                         }
                     }
 
+                    DirectoryEntry.CommitChanges();
 
                 }
                 else
                 {
+                    DirectoryEntry.CommitChanges();
+
                     if (DirectoryEntry == null)
                     {
-                        Loggers.ActiveDirectryLogger.Error("The directory entry for " + DN +
+                        Loggers.ActiveDirectryLogger.Error("The directory entry for new entry " + DN +
                             " is somehow missing on commit.");
                         throw new ApplicationException("DirectoryEntry is null");
                     }
                     foreach (var p in NewEntryProperties)
                     {
-                        if (p.Value == null || (p.Value is string strValue && strValue.IsNullOrEmpty())) continue;
+                        if (p.Value == null
+                            || (p.Value is string strValue && strValue.IsNullOrEmpty())
+                            || (p.Value is DateTime dateValue && dateValue == DateTime.MinValue)) continue;
                         DirectoryEntry.Properties[p.Key].Value = p.Value;
+                        DirectoryEntry.CommitChanges();
+
                     }
                 }
 
 
-                DirectoryEntry.CommitChanges();
 
 
                 foreach (var action in CommitActions)
@@ -772,13 +792,20 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             try
             {
-                return GetValue<string>(propertyName)?.ToString();
+                return GetValue<string>(propertyName).ToString();
+
 
             }
             catch (ArgumentOutOfRangeException)
             {
-                return null;
+                return "";
             }
+            catch (Exception)
+            {
+
+                return "";
+            }
+
         }
 
         protected virtual List<string>? GetStringListProperty(string propertyName)

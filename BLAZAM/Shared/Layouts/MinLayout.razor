@@ -5,7 +5,10 @@
 
 <PageTitle>Loading</PageTitle>
     <MudLayout>
-            <ErrorMenu />
+    <CascadingValue Value="this">
+
+        <MainAppBar />
+    </CascadingValue>
         <MudContainer Fixed>
             @if (PageHeader != null)
             {
@@ -13,12 +16,10 @@
             }
         </MudContainer>
         <MudMainContent>
-            <MudCard>
-                <MudCardBody>
+            <MudContainer MaxWidth="MaxWidth.Large" Class="pt-5">
                     @Body
 
-                </MudCardBody>
-            </MudCard>
+        </MudContainer>
         </MudMainContent>
 
         <MudContainer Fixed>

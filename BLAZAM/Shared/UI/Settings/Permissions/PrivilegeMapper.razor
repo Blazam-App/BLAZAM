@@ -4,24 +4,31 @@
 
 
     <MudGrid>
-        <MudItem xs="3">
-            <BLAZAM.Server.Shared.UI.OU.OUTreeView @bind-SelectedOU="SelectedNode">
+        <MudItem xs="12" sm="3" md="4">
+            <OUTreeView StartRootExpanded @bind-SelectedOU="SelectedNode">
                 <EndAdornment>
                     @if (@context.DirectPermissionMappings.Count() > 0)
                     {
-                        <MudBadge Overlap Color="Color.Secondary" Content="@context.DirectPermissionMappings.Count()" Class="mx-6 my-4"></MudBadge>
+                        <MudBadge Overlap
+                            
+                            Color="Color.Secondary"
+                        Content="@context.DirectPermissionMappings.Count()"
+                        Class="ml-6 my-4 mud-theme-secondary"/>
 
                     }
                     @if (@context.OffspringPermissionMappings.Count() > 0)
                     {
-                        <MudBadge Color="Color.Primary" Content="@context.OffspringPermissionMappings.Count()" Class="mx-6 my-4"></MudBadge>
+                        <MudBadge Overlap
+                        Color="Color.Tertiary"
+                        Content="@context.OffspringPermissionMappings.Count()" 
+                        Class="ml-6 mr-6 my-0 mud-theme-tertiary"/>
 
                     }
                 </EndAdornment>
-            </BLAZAM.Server.Shared.UI.OU.OUTreeView>
+            </OUTreeView>
         </MudItem>
-        <MudItem xs="9">
-            <OUPrivilegeEditor OU="SelectedNode" />
+        <MudItem xs="12" sm="9"  md="8">
+            <OUPrivilegeEditor MappingsChanged="@MappingsChanged" OU="SelectedNode" />
         </MudItem>
     </MudGrid>
 </MudCard>
@@ -67,7 +74,10 @@
 
     }
 
-
+    async Task MappingsChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
 
     void test()
     {

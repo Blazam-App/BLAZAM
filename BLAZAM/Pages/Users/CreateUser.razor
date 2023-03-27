@@ -23,14 +23,14 @@
                 </MudPaper>
 
 
-                <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true;selectedStep=1;})">Custom</MudButton>
+                <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true;selectedStep=3;})">Custom</MudButton>
 
                 <MudButton Color=Color.Success OnClick="@(()=>{selectedStep=1;})">Next</MudButton>
             </ChildContent>
 
         </MudTabPanel>
 
-        <MudTabPanel Disabled=@(custom!=false)>
+    <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled=@( SelectedTemplate==null)>
             <TabContent>
                 Name
             </TabContent>
@@ -47,7 +47,7 @@
 
         </MudTabPanel>
 
-        <MudTabPanel Class=@(custom==true?"d-none":"")>
+    <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null)">
             <TabContent>
                 Fields
             </TabContent>
@@ -59,10 +59,10 @@
             </ChildContent>
 
         </MudTabPanel>
-        
 
 
-        <MudTabPanel Class=@(custom==false?"d-none":"")>
+
+    <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(custom==false)">
             <TabContent>
                 OU
             </TabContent>
@@ -80,7 +80,7 @@
             </ChildContent>
 
         </MudTabPanel>
-        <MudTabPanel Class=@(custom==false?"d-none":"")>
+    <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(customUser==null)">
             <TabContent>
                 Details
             </TabContent>
@@ -93,7 +93,7 @@
         </MudTabPanel>
 
 
-        <MudTabPanel>
+        <MudTabPanel Disabled=@(customUser==null && newUser==null)>
             <TabContent>
                 Confirm
             </TabContent>

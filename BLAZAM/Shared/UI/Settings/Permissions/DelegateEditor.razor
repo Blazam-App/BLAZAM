@@ -8,42 +8,36 @@
     <p> Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) will be allowed to log in to the applicaiton.</p>
     <p> The acceess allowed to each delegate is controlled by the mapped access level.</p>
     <ListGroup>
-        <Row>
-            <Column ColumnSize="ColumnSize.Is10.OnTablet">
-                <MudTextField  Display=Display.InlineFlex Placeholder="Filter Delegates" @bind-Value="@GroupFilter" />
-
-            </Column>
-
-            <Column ColumnSize="ColumnSize.Is2.OnTablet">
-                <MudButton Color=Color.Secondary Float=Float.End Display=Display.InlineFlex OnClick="(()=>{trashModal.Show();})"><MudIcon Icon=IconName.Delete /></MudButton>
-
-            </Column>
-        </Row>
-        @if (AllLevels.Count > 0)
+        <MudStack Row>
+            <MudTextField Display=Display.InlineFlex Placeholder="Filter Delegates" @bind-Value="@GroupFilter" />
+            <MudSpacer />
+            <MudButton Color=Color.Secondary OnClick="(()=>{trashModal.Show();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
+        </MudStack>
+        @if (AllDelegates.Count > 0)
         {
 
-            @foreach (var pl in AllLevels.Where(l => l.DeletedAt == null).Where(l =>
+            @foreach (var pl in AllDelegates.Where(l => l.DeletedAt == null).Where(l =>
            Directory.GetDirectoryModelBySid(l.DelegateSid).CanonicalName
            .StartsWith(GroupFilter, StringComparison.OrdinalIgnoreCase) ||
            Directory.GetDirectoryModelBySid(l.DelegateSid).CanonicalName
            .Contains(GroupFilter, StringComparison.OrdinalIgnoreCase)))
             {
-                <BLAZAM.Server.Shared.UI.Settings.Permissions.PriviligeLevelListItem Level="pl" Context="Context" />
+                <BLAZAM.Server.Shared.UI.Settings.Permissions.PriviligeLevelListItem Level="pl" Context="Context" DelegateDeleted="DelegatesChanged" />
             }
         }
         <ListGroupItem Name="AddUserGroup">
 
-            <MudButton Background="Background.Success"  OnClick="@ShowAddGroup">
+            <MudButton Background="Background.Success" OnClick="@ShowAddGroup">
                 @SettingsLocalization["Create New Delegation Target"]
             </MudButton>
         </ListGroupItem>
 
     </ListGroup>
     <AppModal @ref=@trashModal Title="Deleted Delegates">
-        @foreach (var deleg in AllLevels.Where(l => l.DeletedAt != null))
+        @foreach (var deleg in AllDelegates.Where(l => l.DeletedAt != null))
         {
             var model = @Directory.GetDirectoryModelBySid(deleg.DelegateSid);
-            <Row>
+            <MudContainer>
                 <Column>
                     <Strong>@model.ObjectType</Strong><br />
                     <MudText>@model.CanonicalName</MudText>
@@ -53,10 +47,18 @@
                     <MudButton Float="Float.End" Color="Color.Primary" OnClick="(()=>{RestoreDelegate(deleg);})">Restore</MudButton>
                 </Column>
 
-            </Row>
+            </MudContainer>
         }
     </AppModal>
-    <AddPrivilegeLevelModal @ref=@addGroupModal Context="Context" DelegateAdded="GroupAdded" />
+    <AppModal @ref=@addGroupModal Title="Add Delegate" YesText="Add"
+              OnCancel=@(()=>{
+              string test= "";
+              })
+              OnYes="@((val)=>{
+
+})">
+        <AddPrivilegeLevelModalContent @ref=addDelegateContent />
+    </AppModal>
 
 </LoadingIndicator>
 
@@ -75,9 +77,10 @@
             InvokeAsync(StateHasChanged);
         }
     }
+    AddPrivilegeLevelModalContent? addDelegateContent;
     AppModal? trashModal;
-    AddPrivilegeLevelModal addGroupModal;
-    List<PermissionDelegate> AllLevels { get; set; } = new List<PermissionDelegate>();
+    AppModal? addGroupModal;
+    List<PermissionDelegate> AllDelegates { get; set; } = new List<PermissionDelegate>();
     DbSet<PermissionDelegate> settings;
     protected override async Task OnInitializedAsync()
     {
@@ -85,19 +88,19 @@
 
 
         settings = Context.PermissionDelegate;
-        RefreshLevels();
+        RefreshDelegates();
 
         await InvokeAsync(StateHasChanged);
 
     }
 
-    private async Task RefreshLevels()
+    private async Task RefreshDelegates()
     {
         LoadingData = true;
         await InvokeAsync(StateHasChanged);
 
-        AllLevels.Clear();
-        AllLevels = await settings.ToListAsync();
+        AllDelegates.Clear();
+        AllDelegates = await settings.ToListAsync();
         LoadingData = false;
 
         await InvokeAsync(StateHasChanged);
@@ -105,7 +108,17 @@
     }
     private async void ShowAddGroup()
     {
-        addGroupModal.Show();
+        bool? result = await addGroupModal.Show();
+        if (result == true)
+        {
+            if (await addDelegateContent.AddGroup())
+            {
+                SnackBarService.Success("Delegate added");
+                DelegatesChanged();
+
+            }
+
+        }
 
     }
     async Task RestoreDelegate(PermissionDelegate delegateToRestore)
@@ -113,14 +126,15 @@
         delegateToRestore.DeletedAt = null;
         await Context.SaveChangesAsync();
         SnackBarService.Success("Delegate restored");
-        if (AllLevels.Where(l => l.DeletedAt != null).Count() < 1)
+        if (AllDelegates.Where(l => l.DeletedAt != null).Count() < 1)
         {
             trashModal.Hide();
         }
     }
-    private async void GroupAdded()
+    private async void DelegatesChanged()
     {
-        await RefreshLevels();
+
+        await RefreshDelegates();
 
         await InvokeAsync(StateHasChanged);
     }
