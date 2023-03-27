@@ -3,7 +3,9 @@
 
     <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
                     @bind-SelectedResult=@selectedDelegate
-                    CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
+                    CustomResultsFilter="@((result)=>{
+return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group;
+})" />
 
 
 

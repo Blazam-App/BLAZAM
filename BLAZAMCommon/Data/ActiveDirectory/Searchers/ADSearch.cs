@@ -164,7 +164,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                 if (!FilterQuery.IsNullOrEmpty() && ExactMatch)
                     FilterQuery = FilterQuery.Replace("*", "");
 
-                if (FilterQuery == null && GeneralSearchTerm == null)
+                if (GeneralSearchTerm == null)
                 {
                     FilterQuery = "";
                     //FilterQuery = "(&(";
@@ -205,7 +205,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                 SearchTime = DateTime.Now - startTime;
 
                 OnSearchCompleted?.Invoke();
-
 
 
                 return Results.Cast<TInterface>().ToList();

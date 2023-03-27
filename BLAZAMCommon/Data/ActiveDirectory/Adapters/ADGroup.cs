@@ -148,12 +148,15 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 
                 List<IGroupableDirectoryAdapter> members = new List<IGroupableDirectoryAdapter>();
                 temp.ForEach(t => {
+                    search.Results.Clear();
                     search.Fields.DN = t;
                     var member = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>()?.FirstOrDefault();
                     if(member != null)
                     {
                         members.Add(member);
                     }
+                    member = null;
+
                 });
                 return members;
             }

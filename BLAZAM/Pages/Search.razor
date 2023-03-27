@@ -232,11 +232,11 @@
         Searcher.ObjectTypeFilter = SearchService.SeachObjectType;
         Searcher.ExactMatch = true;
 
-        await Searcher.SearchAsync<ADUser, IADUser>();
+        await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         if (Searcher.Results.Count < 1)
         {
             Searcher.ExactMatch = false;
-            await Searcher.SearchAsync<ADUser, IADUser>();
+            await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
 
         }
     }

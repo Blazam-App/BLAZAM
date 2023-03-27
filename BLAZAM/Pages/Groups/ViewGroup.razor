@@ -114,19 +114,21 @@
     @if (Group.HasMembers)
     {
         <Section Title="Members">
-                <MudDataGrid Items="@Group.Members" Filterable="false" SortMode="@SortMode.None" Groupable="false">
-                    <Columns>
-                        <PropertyColumn Property="x => x.ObjectType" />
-                        <PropertyColumn Property="x => x.CanonicalName" />
-                            <TemplateColumn >
-                                <CellTemplate Context="cellContext">
+            <MudDataGrid Items="@Group.Members" Filterable="false" SortMode="@SortMode.None" Groupable="false">
+                <Columns>
+                    <PropertyColumn Property="x => x.ObjectType" Title="Type" />
+                    <TemplateColumn Context="templateContext">
+                        <HeaderTemplate>
+                            Name
+                        </HeaderTemplate>
+                        <CellTemplate Context="cellContext">
                             <MudLink Href="@cellContext.Item.SearchUri">
                                 @cellContext.Item.CanonicalName
-                                    </MudLink>
-                                </CellTemplate>
-                            </TemplateColumn>
-                    </Columns>
-                </MudDataGrid>
+                            </MudLink>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
         </Section>
     }
     @*

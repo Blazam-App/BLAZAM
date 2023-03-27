@@ -15,11 +15,18 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         const int ADS_UF_DONT_EXPIRE_PASSWD = 0x10000;
         const Int32 ACCOUNT_ENABLE_MASK = 0xFFFFFFD;
 
-        DateTime ADS_NULL_TIME = DateTime.ParseExact("12/31/1600 7:00:00 PM", "MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+        DateTime ADS_NULL_TIME
+        {
+            get
+            {
+                var ads_null_time = DateTime.ParseExact("01/01/1601 12:00:00 AM", "MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                return DateTime.SpecifyKind(ads_null_time, DateTimeKind.Utc);
+            }
+        }
 
         protected List<GroupMembership> ToAssignTo = new List<GroupMembership>();
         protected List<GroupMembership> ToUnassignFrom = new List<GroupMembership>();
-       
+
 
         public virtual bool CanAssign
         {
@@ -80,12 +87,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
                 }
                 var temp = new List<IADGroup>(_memberOf);
-                
-                temp.AddRange(ToAssignTo.Select(gm=>gm.Group).ToList());
+
+                temp.AddRange(ToAssignTo.Select(gm => gm.Group).ToList());
                 ToUnassignFrom.ForEach(g => temp.Remove(g.Group));
                 return temp;
             }
-           
+
         }
 
         public virtual string? DisplayName
@@ -127,7 +134,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         public virtual bool CanEnable { get => HasActionPermission(ActionAccessFlags.Enable); }
 
         public virtual bool CanDisable { get => HasActionPermission(ActionAccessFlags.Disable); }
-       
+
         public virtual bool CanUnlock { get => HasActionPermission(ActionAccessFlags.Unlock); }
 
         public virtual DateTime? LockoutTime
@@ -145,7 +152,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
 
                 var date = LockoutTime;
-                return date != ADS_NULL_TIME && date != DateTime.MinValue;
+                bool matches = !date.Equals(ADS_NULL_TIME )&& !date.Equals(DateTime.MinValue);
+                return matches;
             }
             set
             {
@@ -185,13 +193,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 }
                 else if (!value && Disabled)
                 {
-                    
+
                     UAC = (UAC & ACCOUNT_ENABLE_MASK);
 
                 }
             }
         }
-      
+
         protected Int32 UAC
         {
             get
@@ -242,7 +250,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 return false;
             }
         }
-      
+
         /// <summary>
         /// Checks that the user has some kind of read access for disabled objects of
         /// this type in any place on the OU tree.
@@ -251,25 +259,25 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             get
             {
-                if (UserStateService.CurrentUserState?.IsSuperAdmin==true) return true;
+                if (UserStateService.CurrentUserState?.IsSuperAdmin == true) return true;
                 return UserStateService.CurrentUserState.DirectoryUser.PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == ObjectType && om.AllowDisabled)));
 
             }
         }
 
-        public bool Enabled { get => !Disabled; set => Disabled=!value; }
+        public bool Enabled { get => !Disabled; set => Disabled = !value; }
         public virtual DateTime? ExpireTime
         {
             get
             {
                 var com = GetProperty<object>("accountExpires");
-                   var time = com?.AdsValueToDateTime()?.ToLocalTime();
+                var time = com?.AdsValueToDateTime()?.ToLocalTime();
                 if (time == null || time == ADS_NULL_TIME || time == DateTime.MinValue) time = null;
                 return time;
             }
             set
             {
-               
+
 
                 SetProperty("accountExpires", value?.ToUniversalTime().ToFileTime().ToString());
             }
@@ -280,7 +288,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             get
             {
                 List<AuditChangeLog> changes = base.Changes;
-                if(ToAssignTo.Count>0 || ToUnassignFrom.Count > 0)
+                if (ToAssignTo.Count > 0 || ToUnassignFrom.Count > 0)
                 {
                     changes.Add(new AuditChangeLog()
                     {
@@ -289,7 +297,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                         NewValue = MemberOf.Select(m => m.CanonicalName).ToList()
                     });
                 }
-             
+
                 return changes;
 
             }
@@ -297,18 +305,20 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         public override DirectoryChangeResult CommitChanges()
         {
-            DirectoryChangeResult  dcr = new DirectoryChangeResult();
-            ToAssignTo.ForEach(g => {
+            DirectoryChangeResult dcr = new DirectoryChangeResult();
+            ToAssignTo.ForEach(g =>
+            {
                 g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
                 dcr.AssignedGroups.Add(g.Group);
 
             });
-            ToUnassignFrom.ForEach(g => {
+            ToUnassignFrom.ForEach(g =>
+            {
                 g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
                 dcr.UnassignedGroups.Add(g.Group);
             });
-            dcr =base.CommitChanges();
-            
+            dcr = base.CommitChanges();
+
             return dcr;
         }
 
@@ -343,7 +353,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         }
 
-    
+
 
 
     }
