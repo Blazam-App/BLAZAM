@@ -1,6 +1,6 @@
 ﻿namespace BLAZAM.Common.Models.Database.User
 {
-    public class UserSettings : AppDbSetBase
+    public class AppUser : AppDbSetBase
     {
         public string UserGUID { get; set; }
         public string? APIToken { get; set; }
@@ -8,6 +8,8 @@
         public bool SearchDisabledUsers { get; set; }
         public bool SearchDisabledComputers { get; set; }
         public string? Username { get; set; }
+        public List<NotificationMessage> Messages { get; set; }
+        public byte[]? ProfilePicture { get; set; }
     }
     
 }

@@ -10,5 +10,7 @@
         Task<List<IADOrganizationalUnit>> FindOuByStringAsync(string searchTerm);
         List<IADComputer> FindSubComputerByDN(string searchBaseDN);
         List<IADGroup> FindSubGroupsByDN(string searchBaseDN);
+        List<IADOrganizationalUnit> FindNewOUs(int maxAgeInDays = 14);
+        Task<List<IADOrganizationalUnit>> FindNewOUsAsync(int maxAgeInDays = 14);
     }
 }

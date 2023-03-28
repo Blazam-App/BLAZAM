@@ -1,19 +1,4 @@
-﻿using Microsoft.VisualStudio.Services.Common;
-using Microsoft.VisualStudio.Services.WebApi;
-using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Contracts;
-using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
-using System.Text.Json;
-using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using System.Reflection;
-using System.Net;
-using System.Net.Http.Formatting;
-using System.Collections.Generic;
-using System.Collections;
-using Microsoft.TeamFoundation.Build.WebApi;
-using Microsoft.AspNetCore.Components;
-using Blazorise;
+﻿
 using Octokit;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common;

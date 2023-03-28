@@ -15,7 +15,7 @@ using Microsoft.VisualStudio.Services.WebApi;
 
 namespace BLAZAM.Common.Data.Database
 {
-    public class DatabaseContext : DbContext, IDatabaseContext
+    public class DatabaseContextBase : DbContext, IDatabaseContext
     {
         /// <summary>
         /// The connection string as set in the ASP Net Core appsettings.json
@@ -68,13 +68,13 @@ namespace BLAZAM.Common.Data.Database
         /// <summary>
         /// Constructor for building migrations
         /// </summary>
-        public DatabaseContext()
+        public DatabaseContextBase()
         {
             ConnectionString = new("");
         }
 
-       
-        public DatabaseContext(DatabaseConnectionString databaseConnectionString) : base()
+
+        public DatabaseContextBase(DatabaseConnectionString databaseConnectionString) : base()
         {
             ConnectionString = databaseConnectionString;
             _dbType = "SQL";
@@ -89,7 +89,7 @@ namespace BLAZAM.Common.Data.Database
         /// <inheritdoc/>
         /// </summary>
         /// <param name="options"><inheritdoc/></param>
-        public DatabaseContext(DbContextOptions options) : base(options)
+        public DatabaseContextBase(DbContextOptions options) : base(options)
         {
         }
 
@@ -99,8 +99,10 @@ namespace BLAZAM.Common.Data.Database
         public virtual DbSet<AuthenticationSettings> AuthenticationSettings { get; set; }
         public virtual DbSet<EmailSettings> EmailSettings { get; set; }
         public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
-        public virtual DbSet<UserSettings> UserSettings { get; set; }
 
+        //User Tables
+        public virtual DbSet<AppUser> UserSettings { get; set; }
+        public virtual DbSet<NotificationMessage> UserNotifications { get; set; }
 
 
         //Audit Logs
@@ -155,7 +157,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 1,
                     FieldName = "sn",
                     DisplayName = "Last Name",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -163,7 +165,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 2,
                     FieldName = "givenname",
                     DisplayName = "First Name",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -171,7 +173,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 3,
                     FieldName = "physicalDeliveryOfficeName",
                     DisplayName = "Office",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -179,7 +181,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 4,
                     FieldName = "employeeId",
                     DisplayName = "Employee ID",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -187,7 +189,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 5,
                     FieldName = "homeDirectory",
                     DisplayName = "Home Directory",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -195,7 +197,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 6,
                     FieldName = "scriptPath",
                     DisplayName = "Logon Script Path",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -203,7 +205,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 7,
                     FieldName = "profilePath",
                     DisplayName = "Profile Path",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -211,7 +213,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 8,
                     FieldName = "homePhone",
                     DisplayName = "Home Phone Number",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -219,7 +221,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 9,
                     FieldName = "streetAddress",
                     DisplayName = "Street Address",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -227,7 +229,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 10,
                     FieldName = "city",
                     DisplayName = "City",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -235,7 +237,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 11,
                     FieldName = "st",
                     DisplayName = "State",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -243,7 +245,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 12,
                     FieldName = "postalCode",
                     DisplayName = "Zip Code",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -251,13 +253,13 @@ namespace BLAZAM.Common.Data.Database
                     Id = 13,
                     FieldName = "site",
                     DisplayName = "Site",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    {
-                        ActiveDirectory.ActiveDirectoryObjectType.User,
-                        ActiveDirectory.ActiveDirectoryObjectType.Group,
-                        ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                        ActiveDirectory.ActiveDirectoryObjectType.OU
-                    }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
+                    //{
+                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.OU
+                    //}
                 },
 
                 new ActiveDirectoryField
@@ -265,7 +267,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 14,
                     FieldName = "name",
                     DisplayName = "Name",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -273,12 +275,12 @@ namespace BLAZAM.Common.Data.Database
                     Id = 15,
                     FieldName = "samaccountname",
                     DisplayName = "Username",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    {
-                        ActiveDirectory.ActiveDirectoryObjectType.User,
-                        ActiveDirectory.ActiveDirectoryObjectType.Group,
-                        ActiveDirectory.ActiveDirectoryObjectType.Computer
-                    }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
+                    //{
+                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer
+                    //}
                 },
 
                 new ActiveDirectoryField
@@ -286,13 +288,13 @@ namespace BLAZAM.Common.Data.Database
                     Id = 16,
                     FieldName = "objectSID",
                     DisplayName = "SID",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    {
-                        ActiveDirectory.ActiveDirectoryObjectType.User,
-                        ActiveDirectory.ActiveDirectoryObjectType.Group,
-                        ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                        ActiveDirectory.ActiveDirectoryObjectType.OU
-                    }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
+                    //{
+                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.OU
+                    //}
                 },
 
                 new ActiveDirectoryField
@@ -300,7 +302,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 17,
                     FieldName = "mail",
                     DisplayName = "E-Mail Address",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User, ActiveDirectory.ActiveDirectoryObjectType.Group }
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User, ActiveDirectory.ActiveDirectoryObjectType.Group }
                 },
 
                 new ActiveDirectoryField
@@ -308,13 +310,13 @@ namespace BLAZAM.Common.Data.Database
                     Id = 18,
                     FieldName = "description",
                     DisplayName = "Description",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    {
-                        ActiveDirectory.ActiveDirectoryObjectType.User,
-                        ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                        ActiveDirectory.ActiveDirectoryObjectType.Group,
-                        ActiveDirectory.ActiveDirectoryObjectType.OU
-                    }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
+                    //{
+                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.OU
+                    //}
                 },
 
                 new ActiveDirectoryField
@@ -322,13 +324,13 @@ namespace BLAZAM.Common.Data.Database
                     Id = 19,
                     FieldName = "displayName",
                     DisplayName = "Display Name",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    {
-                        ActiveDirectory.ActiveDirectoryObjectType.User,
-                        ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                        ActiveDirectory.ActiveDirectoryObjectType.Group,
-                        ActiveDirectory.ActiveDirectoryObjectType.OU
-                    }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
+                    //{
+                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.OU
+                    //}
                 },
 
                 new ActiveDirectoryField
@@ -336,13 +338,13 @@ namespace BLAZAM.Common.Data.Database
                     Id = 20,
                     FieldName = "distinguishedName",
                     DisplayName = "Distinguished Name",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    {
-                        ActiveDirectory.ActiveDirectoryObjectType.User,
-                        ActiveDirectory.ActiveDirectoryObjectType.Group,
-                        ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                        ActiveDirectory.ActiveDirectoryObjectType.OU
-                    }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
+                    //{
+                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.OU
+                    //}
                 },
 
                 new ActiveDirectoryField
@@ -350,12 +352,12 @@ namespace BLAZAM.Common.Data.Database
                     Id = 21,
                     FieldName = "memberOf",
                     DisplayName = "Member Of",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    {
-                        ActiveDirectory.ActiveDirectoryObjectType.User,
-                        ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                        ActiveDirectory.ActiveDirectoryObjectType.Group
-                    }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
+                    //{
+                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Group
+                    //}
                 },
 
                 new ActiveDirectoryField
@@ -363,7 +365,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 22,
                     FieldName = "company",
                     DisplayName = "Company",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
 
@@ -372,7 +374,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 23,
                     FieldName = "title",
                     DisplayName = "Title",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -380,7 +382,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 24,
                     FieldName = "userPrincipalName",
                     DisplayName = "User Principal Name",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -388,15 +390,15 @@ namespace BLAZAM.Common.Data.Database
                     Id = 25,
                     FieldName = "telephoneNumber",
                     DisplayName = "Telephone Number",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
                 {
                     Id = 26,
-                    FieldName = "street",
-                    DisplayName = "Street",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    FieldName = "postOfficeBox",
+                    DisplayName = "PO Box",
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -404,13 +406,13 @@ namespace BLAZAM.Common.Data.Database
                     Id = 27,
                     FieldName = "cn",
                     DisplayName = "Canonical Name",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    {
-                        ActiveDirectory.ActiveDirectoryObjectType.User,
-                        ActiveDirectory.ActiveDirectoryObjectType.Group,
-                        ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                        ActiveDirectory.ActiveDirectoryObjectType.OU
-                    }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
+                    //{
+                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.OU
+                    //}
                 },
 
                 new ActiveDirectoryField
@@ -418,7 +420,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 28,
                     FieldName = "homeDrive",
                     DisplayName = "Home Drive",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -426,7 +428,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 29,
                     FieldName = "department",
                     DisplayName = "Department",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -434,7 +436,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 30,
                     FieldName = "middleName",
                     DisplayName = "Middle Name",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -442,7 +444,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 31,
                     FieldName = "pager",
                     DisplayName = "Pager",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
                 },
 
                 new ActiveDirectoryField
@@ -450,7 +452,7 @@ namespace BLAZAM.Common.Data.Database
                     Id = 32,
                     FieldName = "operatingSystemVersion",
                     DisplayName = "OS",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.Computer }
+                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.Computer }
                 },
 
                 new ActiveDirectoryField
@@ -458,12 +460,22 @@ namespace BLAZAM.Common.Data.Database
                     Id = 33,
                     FieldName = "accountExpires",
                     DisplayName = "Account Expiration",
-                    ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
+                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
+                    //{
+                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
+                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer
+                    //}
+                },
+                    new ActiveDirectoryField
                     {
-                        ActiveDirectory.ActiveDirectoryObjectType.User,
-                        ActiveDirectory.ActiveDirectoryObjectType.Computer
+                        Id = 34,
+                        FieldName = "manager",
+                        DisplayName = "Manager"
+                        //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
+                        //{
+                        //    ActiveDirectory.ActiveDirectoryObjectType.User,
+                        //}
                     }
-                }
 
 
             );
@@ -551,9 +563,9 @@ namespace BLAZAM.Common.Data.Database
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 if (Database.IsMySql())
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "AppSettingsId = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
                 else
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AppSettingsId] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
             });
 
             modelBuilder.Entity<ADSettings>(entity =>
@@ -561,9 +573,9 @@ namespace BLAZAM.Common.Data.Database
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 if (Database.IsMySql())
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "ADSettingsId = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
                 else
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[ADSettingsId] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
 
             });
             modelBuilder.Entity<AuthenticationSettings>(entity =>
@@ -571,10 +583,10 @@ namespace BLAZAM.Common.Data.Database
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 if (Database.IsMySql())
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "AuthenticationSettingsId = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
 
                 else
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AuthenticationSettingsId] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
                 entity.HasData(new AuthenticationSettings
                 {
                     Id = 1,
@@ -587,15 +599,15 @@ namespace BLAZAM.Common.Data.Database
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 if (Database.IsMySql())
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "EmailSettingsId = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
 
                 else
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[EmailSettingsId] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
 
             });
 
 
-            modelBuilder.Entity<UserSettings>(entity =>
+            modelBuilder.Entity<AppUser>(entity =>
             {
                 entity.HasIndex(e => e.UserGUID).IsUnique();
             });
@@ -628,7 +640,7 @@ namespace BLAZAM.Common.Data.Database
                 try
                 {
                     //Handle SQLite
-                    if (ConnectionString.FileBased)
+                    if (Database.IsSqlite())
                     {
                         if (ConnectionString.File.Writable)
                         {

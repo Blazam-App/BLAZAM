@@ -1,20 +1,33 @@
-﻿<Div Position="Position.Relative" Style="width:0px;height:65px;" Margin="Margin.IsAuto.OnX">
+﻿@inherits AppComponentBase
+<MudElement Style="width:0px;height:65px;" Class="mx-auto relative">
 
-    <Div Padding=Padding.Is3.OnX Position=Position.Fixed style="right:21px;margin-right: auto;max-width: 300px;bottom: 56px;margin-left: auto;z-index: 5;" Border=Border.Secondary Background="Background.Light" TextColor="TextColor.Dark">
-        <Row Margin=Margin.IsAuto.OnX TextAlignment="TextAlignment.Center">
+    <MudStack Style="right:21px;max-width: 300px;bottom: 30px;z-index: 5;" Class="mx-auto p-3 fixed">
+
+        <MudStack Row Class="mx-auto">
+
+            <MudTooltip Text="@AppLocalization["Discard Changes"]">
+
+            <MudFab Color=Color.Error
+                    Icon="@Icons.Material.Outlined.Undo"
+                    OnClick="@(()=>{DiscardChanges.InvokeAsync();})" />
+            </MudTooltip>
+
+
+            <MudTooltip Text="@AppLocalization["Save Changes"]">
+                <MudFab Color=Color.Success
+                        Icon="@Icons.Material.Filled.SaveAlt"
+                        OnClick="@(()=>{SaveChanges.InvokeAsync();})" />
+            </MudTooltip>
+
+        </MudStack>
+
+        <MudChip Color=Color.Info>
             Unsaved Changes
-        </Row>
-        <Row>
-            <Button Style="width:max-content" Margin=Margin.IsAuto.OnX Color="Color.Success" Clicked="@(()=>{SaveChanges.InvokeAsync();})">Save Changes</Button>
-        </Row>
-        <Row>
-            <Button Style="width:max-content" Margin=Margin.IsAuto.OnX Color="Color.Warning" Clicked="@(()=>{DiscardChanges.InvokeAsync();})">DiscardChanges</Button>
-        </Row>
+        </MudChip>
+        </MudStack>
+        </MudElement>
 
-    </Div>
-</Div>
-
-@code {
+        @code {
     [Parameter]
     public EventCallback SaveChanges { get; set; }
     [Parameter]

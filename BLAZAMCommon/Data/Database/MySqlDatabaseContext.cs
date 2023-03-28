@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Common.Data.Database
 {
-    public class MySqlDatabaseContext:DatabaseContext
+    public class MySqlDatabaseContext:DatabaseContextBase
     {
        /// <inheritdoc/>
         public MySqlDatabaseContext():base()

@@ -1,60 +1,53 @@
 ﻿@inherits SettingsComponents
 
 
-<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
-    <Heading>@SettingsLocalization["Update Settings"]</Heading>
-    <Form @onsubmit="Save">
+    <MudText Typo="Typo.h4">@SettingsLocalization["Update Settings"]</MudText>
+    <MudForm @onsubmit="Save">
 
-        <Validations Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
 
             @if (settings != null)
             {
 
-                <SettingsField>
-                    <FieldLabel>@SettingsLocalization["Update Branch"]</FieldLabel>
-                    <FieldBody>
-                        <SelectList Data="@updateBranches"
-                                TValue="string"
-                                TItem="string"
-                                TextField="item=>item"
-                                ValueField="item=>item"
-                                @bind-SelectedValue=@settings.UpdateBranch />
-                    </FieldBody>
+                <SettingsField Label="@SettingsLocalization["Update Branch"]">
+
+                    <MudSelect @bind-Value=@settings.UpdateBranch>
+                        @foreach (var val in updateBranches)
+                        {
+                            <MudSelectItem Value="@val">@val</MudSelectItem>
+                        }
+                    </MudSelect>
+
+
 
                 </SettingsField>
 
 
-                <SettingsField>
+        <SettingsField Label="@SettingsLocalization["Update"]">
 
-                    <FieldLabel>
-                        @SettingsLocalization["Update"]
-                    </FieldLabel>
-                    <FieldBody>
+             
 
-                        <ManualApplicationUpdater />
+                    <ManualApplicationUpdater />
 
-                    </FieldBody>
+
                 </SettingsField>
 
 
-                <SettingsField>
-                    <FieldLabel>@SettingsLocalization["Allow Auto Update"]</FieldLabel>
-                    <FieldBody>
-                        <Switch TValue="bool" @bind-Checked=@(settings.AutoUpdate) />
-                    </FieldBody>
+                <SettingsField Label="@SettingsLocalization["Allow Auto Update"]">
+
+                    <MudSwitch @bind-Checked=@(settings.AutoUpdate) />
+
                 </SettingsField>
 
 
                 @if (settings?.AutoUpdate == true)
                 {
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["Auto Update Time"]</FieldLabel>
-                        <FieldHelp>The time of each day to automatically apply an update.</FieldHelp>
-                        <FieldBody>
-                            <TimePicker TValue="TimeSpan" @bind-Time="@settings.AutoUpdateTime">
+                    <SettingsField Label="@SettingsLocalization["Auto Update Time"]">
 
-                            </TimePicker>
-                        </FieldBody>
+                        <MudTimePicker HelperText="The time of each day to automatically apply an update."
+                              
+                               @bind-Time="@settings.AutoUpdateTime" />
+
+
                     </SettingsField>
 
 
@@ -62,14 +55,12 @@
 
 
                 <SettingsField>
-                    <FieldBody>
-                        <Button Disabled="saveDisabled" Type="ButtonType.Submit" Color="Color.Success">Save Changes</Button>
-                    </FieldBody>
+
+                    <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
                 </SettingsField>
             }
-        </Validations>
-    </Form>
-</LoadingIndicator>
+    </MudForm>
 @code {
     AppSettings? settings = new AppSettings();
     List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev };
@@ -87,25 +78,6 @@
 
     }
 
-
-    private async void UploadIcon(FileUploadEventArgs e)
-    {
-        if (Context == null) throw new ApplicationException("Unable to retrieve database settings table: AppSettings");
-        if (settings == null) throw new ApplicationException("App Settings is null");
-        using (var stream = e.File.OpenReadStream(5000000))
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                await stream.CopyToAsync(memoryStream);
-                settings.AppIcon = memoryStream.ToArray();
-            }
-        }
-        AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
-        await Context.SaveChangesAsync();
-        await InvokeAsync(StateHasChanged);
-
-
-    }
 
 
 

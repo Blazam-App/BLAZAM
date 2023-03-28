@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using BLAZAM.Common.Data.Validators;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -44,7 +45,7 @@ namespace BLAZAM.Common.Models.Database
         /// </summary>
         public bool ForceHTTPS { get; set; }
 
-
+        [ValidFQDN]
         public string? AppFQDN { get; set; }
 
         /// <summary>
@@ -54,6 +55,7 @@ namespace BLAZAM.Common.Models.Database
         /// This has no effect on the developer Analytics, that is hard-coded.
         /// </remarks>
         public string? AnalyticsId { get; set; }
+        [ValidWebUrl]
         public string? UserHelpdeskURL { get; set; }
         public byte[]? AppIcon { get; set; }
 
@@ -99,7 +101,7 @@ namespace BLAZAM.Common.Models.Database
         /// <summary>
         /// The time of day the administrator wants the application to perform the <see cref="AutoUpdate"/>, if enabled.
         /// </summary>
-        public TimeSpan AutoUpdateTime { get; set; } = TimeSpan.FromHours(2);
+        public TimeSpan? AutoUpdateTime { get; set; } = TimeSpan.FromHours(2);
 
 
         /// <summary>

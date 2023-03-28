@@ -5,142 +5,60 @@
 @using BLAZAM.Server.Data.Services.Email;
 @inherits AppComponentBase
 @{
-
+    //string userRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchUsers;
+    //string groupRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchGroups;
+    //string computerRole = UserRoles.SuperAdmin + ", " + UserRoles.Computers;
+    //string ouRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchOUs;
+    string createRole = UserRoles.SuperAdmin + ", " + UserRoles.CreateUsers + ", " + UserRoles.CreateGroups + ", " + UserRoles.CreateOUs;
+    //string createUser = UserRoles.SuperAdmin + ", " + UserRoles.CreateUsers;
+    //string createGroup = UserRoles.SuperAdmin + ", " + UserRoles.CreateGroups;
+    //string createOU = UserRoles.SuperAdmin + ", " + UserRoles.CreateOUs;
 }
-<Bar Mode="BarMode.VerticalInline"
-     CollapseMode="BarCollapseMode.Small"
-     Breakpoint="Breakpoint.Desktop"
-     NavigationBreakpoint="Breakpoint.Tablet"
-     ThemeContrast="ThemeContrast.Dark">
-    <BarBrand>
-        <BarItem>
-            <BarLink TextColor=TextColor.Light To="/home">
-                <Image class="app-icon" src="@StaticAssets.ApplicationIconUri" />
-                <Div Margin=Margin.Is2.OnX TextAlignment="TextAlignment.Center">
-                    @DatabaseCache.ApplicationSettings?.AppAbbreviation
-                </Div>
-            </BarLink>
-        </BarItem>
-    </BarBrand>
-    <BarToggler />
-
-    <BarMenu>
-        <BarStart>
-            <BarItem>
-                <BarLink To="/home">
-                    <BarIcon IconName="IconName.Dashboard" />
-                    @AppLocalization["Home"]
-                </BarLink>
-            </BarItem>
-            @{
-               //string userRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchUsers;
-                //string groupRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchGroups;
-                //string computerRole = UserRoles.SuperAdmin + ", " + UserRoles.Computers;
-                //string ouRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchOUs;
-                string createRole = UserRoles.SuperAdmin + ", " + UserRoles.CreateUsers + ", " + UserRoles.CreateGroups + ", " + UserRoles.CreateOUs;
-                //string createUser = UserRoles.SuperAdmin + ", " + UserRoles.CreateUsers;
-                //string createGroup = UserRoles.SuperAdmin + ", " + UserRoles.CreateGroups;
-                //string createOU = UserRoles.SuperAdmin + ", " + UserRoles.CreateOUs;
-            }
-
-            <BarItem Disabled="@(Monitor.DirectoryConnected != ServiceConnectionState.Up)">
-                <AuthorizeView Context="createContext" Roles=@createRole>
-                    <BarDropdown>
-                        <BarDropdownToggle>
-
-                            <BarIcon IconName="IconName.PlusCircle" />
-                            @AppLocalization["Create"]
-                        </BarDropdownToggle>
-                        <BarDropdownMenu>
-
-                            <BarDropdownItem To="/users/create" Match="Match.Prefix"><Icon Name="IconName.UserPlus" />@AppLocalization["Create User"]</BarDropdownItem>
-                            <BarDropdownItem To="/groups/create" Match="Match.Prefix"><Icon Name="IconName.PlusCircle" />@AppLocalization["Create Group"]</BarDropdownItem>
-                            <BarDropdownItem To="/computers/create" Match="Match.Prefix"><Icon Name="IconName.PlusCircle" />@AppLocalization["Create Computer"]</BarDropdownItem>
-                            <BarDropdownItem To="/ou/create" Match="Match.Prefix"><Icon Name="IconName.FolderPlus" />@AppLocalization["Create OU"]</BarDropdownItem>
 
 
 
 
-                        </BarDropdownMenu>
-                    </BarDropdown>
+<MudPaper Width="180px" Elevation="0" Class="py-3 mud-theme-dark">
+    <MudNavMenu Color="Color.Success" Bordered="true">
+        <MudStack Row>
+            <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+            <MudText Align="Align.Center" Class="align-middle"> @DatabaseCache.ApplicationSettings?.AppAbbreviation</MudText>
+
+        </MudStack>
+        <MudNavLink Href="/home" Icon="@Icons.Material.Filled.Dashboard">@AppLocalization["Home"]</MudNavLink>
+        <AuthorizeView Context="createContext" Roles=@createRole>
+            <MudNavGroup Icon="@Icons.Material.Filled.Create" Title="@AppLocalization["Create"]" Expanded="false" Disabled=@(Monitor.DirectoryConnected != ServiceConnectionState.Up)>
+                <MudNavLink Href="/users/create">@AppLocalization["Create User"]</MudNavLink>
+                <MudNavLink Href="/groups/create">@AppLocalization["Create Group"]</MudNavLink>
+                <MudNavLink Href="/ou/create">@AppLocalization["Create OU"]</MudNavLink>
+            </MudNavGroup>
+        </AuthorizeView>
+        <AuthorizeView Roles=@UserRoles.SuperAdmin>
+            <MudNavLink Href="/recyclebin"
+                        Icon="@Icons.Material.Filled.DeleteOutline"
+                        Disabled=@(Monitor.DirectoryConnected != ServiceConnectionState.Up)>
+                @AppLocalization["Recycle Bin"]
+            </MudNavLink>
+
+            <MudNavGroup Title="@AppLocalization["Configure"]" Icon="@Icons.Material.Filled.Handyman" Expanded="false">
+                <MudNavLink Href="/settings">@AppLocalization["Settings"]</MudNavLink>
+                <MudNavLink Href="/permissions">@AppLocalization["Permissions"]</MudNavLink>
+                <MudNavLink Href="/templates">@AppLocalization["Templates"]</MudNavLink>
+                <MudNavLink Href="/audit">@AppLocalization["Audit"]</MudNavLink>
+            </MudNavGroup>
+        </AuthorizeView>
+
+
+        
+    </MudNavMenu>
+</MudPaper>
 
 
 
-                    
-                </AuthorizeView>
-            </BarItem>
 
 
+<ScheduledUpdateAnnouncer />
 
-            <AuthorizeView Roles=@UserRoles.SuperAdmin>
-                <BarItem>
-                    <BarLink To="/recyclebin">
-                        <BarIcon IconName=@("fa-solid fa-trash") />
-                        @AppLocalization["Recycle Bin"]
-                    </BarLink>
-                </BarItem>
-                <BarItem>
-                    <BarDropdown>
-                        <BarDropdownToggle>
-                            <BarIcon IconName="IconName.Wrench" />
-                            @AppLocalization["Configure"]
-                        </BarDropdownToggle>
-                        <BarDropdownMenu>
-                            <BarDropdownItem To="/settings">@AppLocalization["Settings"]</BarDropdownItem>
-
-                            <BarDropdownItem To="/permissions">@AppLocalization["Permissions"]</BarDropdownItem>
-                            <BarDropdownItem To="/templates">@AppLocalization["Templates"]</BarDropdownItem>
-
-
-                            <BarDropdownItem To="/audit">@AppLocalization["Audit"]</BarDropdownItem>
-                        </BarDropdownMenu>
-                    </BarDropdown>
-                </BarItem>
-            </AuthorizeView>
-
-            <BarItem>
-                <BarDropdown>
-                    <BarDropdownToggle>
-                        <BarIcon IconName=@("fa-solid fa-id-card-clip") />
-                        @UserStateService.CurrentUsername
-                    </BarDropdownToggle>
-                    <BarDropdownMenu>
-                        <BarDropdown>
-                            <BarDropdownToggle>Theme</BarDropdownToggle>
-                            <BarDropdownMenu>
-                                @foreach (var theme in ApplicationTheme.Themes)
-                                {
-                                    <BarDropdownItem Clicked=@(()=>{SetUserTheme(theme);})> @theme.Name</BarDropdownItem>
-                                }
-
-                            </BarDropdownMenu>
-                        </BarDropdown>
-                        @if (UserStateService.CurrentUserState?.Impersonator == null)
-                        {
-                            <BarDropdownItem To="/logout">
-                                <BarIcon IconName="@("fa-right-from-bracket")" />
-                                @AppLocalization["Sign Out"]
-                            </BarDropdownItem>
-                        }
-                        else
-                        {
-                            <BarDropdownItem To="/unimpersonate">
-                                <BarIcon IconName=@("fa-user-slash") />
-                                @AppLocalization["Stop It"]
-                            </BarDropdownItem>
-                        }
-
-                    </BarDropdownMenu>
-                </BarDropdown>
-            </BarItem>
-
-        </BarStart>
-        <BarEnd>
-            <ScheduledUpdateAnnouncer />
-
-        </BarEnd>
-    </BarMenu>
-</Bar>
 
 @code {
     private bool collapseNavMenu = true;
@@ -159,18 +77,8 @@
 
 
     }
-    void SetUserTheme(ApplicationTheme theme)
-    {
-        try
-        {
-            UserStateService.CurrentUserState.UserSettings.Theme = theme.Name;
-            UserStateService.CurrentUserState.SaveUserSettings();
-            Refresh();
-        }catch(Exception ex)
-        {
-            NotificationService.Error(ex.Message);
-        }
-    }
+
+
 
     private void ToggleNavMenu()
     {

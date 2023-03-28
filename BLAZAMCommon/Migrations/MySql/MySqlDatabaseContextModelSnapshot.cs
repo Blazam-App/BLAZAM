@@ -99,7 +99,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.ToTable("ActiveDirectorySettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "ADSettingsId = 1");
+                            t.HasCheckConstraint("CK_Table_Column", "Id = 1");
                         });
                 });
 
@@ -275,8 +275,8 @@ namespace BLAZAM.Common.Migrations.MySql
                         new
                         {
                             Id = 26,
-                            DisplayName = "Street",
-                            FieldName = "street"
+                            DisplayName = "PO Box",
+                            FieldName = "postOfficeBox"
                         },
                         new
                         {
@@ -319,6 +319,12 @@ namespace BLAZAM.Common.Migrations.MySql
                             Id = 33,
                             DisplayName = "Account Expiration",
                             FieldName = "accountExpires"
+                        },
+                        new
+                        {
+                            Id = 34,
+                            DisplayName = "Manager",
+                            FieldName = "manager"
                         });
                 });
 
@@ -343,7 +349,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<bool>("AutoUpdate")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<TimeSpan>("AutoUpdateTime")
+                    b.Property<TimeSpan?>("AutoUpdateTime")
                         .HasColumnType("time(6)");
 
                     b.Property<bool>("ForceHTTPS")
@@ -369,7 +375,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.ToTable("AppSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "AppSettingsId = 1")
+                            t.HasCheckConstraint("CK_Table_Column", "Id = 1")
                                 .HasName("CK_Table_Column1");
                         });
                 });
@@ -704,7 +710,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.ToTable("AuthenticationSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "AuthenticationSettingsId = 1")
+                            t.HasCheckConstraint("CK_Table_Column", "Id = 1")
                                 .HasName("CK_Table_Column2");
                         });
 
@@ -762,7 +768,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.ToTable("EmailSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "EmailSettingsId = 1")
+                            t.HasCheckConstraint("CK_Table_Column", "Id = 1")
                                 .HasName("CK_Table_Column3");
                         });
                 });
@@ -1152,7 +1158,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("DirectoryTemplateGroups");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.UserSettings", b =>
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.AppUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1160,6 +1166,9 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.Property<string>("APIToken")
                         .HasColumnType("longtext");
+
+                    b.Property<byte[]>("ProfilePicture")
+                        .HasColumnType("longblob");
 
                     b.Property<bool>("SearchDisabledComputers")
                         .HasColumnType("tinyint(1)");
@@ -1183,6 +1192,40 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsUnique();
 
                     b.ToTable("UserSettings");
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.NotificationMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Dismissable")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("Expires")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Link")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("UserNotifications");
                 });
 
             modelBuilder.Entity("PermissionDelegatePermissionMapping", b =>
@@ -1263,7 +1306,7 @@ namespace BLAZAM.Common.Migrations.MySql
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Common.Models.Database.ActiveDirectoryField", "Field")
-                        .WithMany("FieldAccessMappings")
+                        .WithMany()
                         .HasForeignKey("ActiveDirectoryFieldId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1312,6 +1355,13 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasForeignKey("DirectoryTemplateId");
                 });
 
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.NotificationMessage", b =>
+                {
+                    b.HasOne("BLAZAM.Common.Models.Database.User.AppUser", null)
+                        .WithMany("Messages")
+                        .HasForeignKey("AppUserId");
+                });
+
             modelBuilder.Entity("PermissionDelegatePermissionMapping", b =>
                 {
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.PermissionDelegate", null)
@@ -1325,11 +1375,6 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasForeignKey("PermissionsMapsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryField", b =>
-                {
-                    b.Navigation("FieldAccessMappings");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.AccessLevel", b =>
@@ -1352,6 +1397,11 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("AssignedGroupSids");
 
                     b.Navigation("FieldValues");
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.AppUser", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

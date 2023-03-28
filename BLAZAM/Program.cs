@@ -6,9 +6,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Newtonsoft.Json;
 using System.Globalization;
-using Blazorise;
-using Blazorise.Icons.FontAwesome;
-using Blazorise.Bootstrap5;
 using BLAZAM.Server.Middleware;
 using BLAZAM.Server.Data.Services;
 using BLAZAM.Server.Data.Services.Duo;
@@ -32,7 +29,6 @@ using Serilog;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Serilog.Events;
-using Blazorise.RichTextEdit;
 using BLAZAM.Server.Pages.Error;
 using System.Diagnostics;
 using System.Reflection;
@@ -41,6 +37,9 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding;
 using BLAZAM.Common.Data;
 using Microsoft.AspNetCore.Components.Authorization;
+using MudBlazor.Services;
+using Google.Apis.Services;
+using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 
 namespace BLAZAM
 {
@@ -291,7 +290,7 @@ namespace BLAZAM
 
             //Inject the database as a service
 
-            DatabaseContext.Configuration = builder.Configuration;
+            DatabaseContextBase.Configuration = builder.Configuration;
 
             builder.Services.AddSingleton<AppDatabaseFactory>();
 
@@ -326,10 +325,10 @@ namespace BLAZAM
 
 
             //Provide an ApplicationManager as a service
-            builder.Services.AddScoped<ApplicationManager>();
+            builder.Services.AddSingleton<ApplicationManager>();
 
             //Provide a PermissionHandler as a service
-            builder.Services.AddScoped<LoginPermissionApplicator>();
+            builder.Services.AddSingleton<LoginPermissionApplicator>();
 
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();
@@ -368,17 +367,33 @@ namespace BLAZAM
 
             //Add Blazorize UI framework
 
-            builder.Services.AddBlazorise(options =>
-            {
-                options.Immediate = true;
+            //builder.Services.AddBlazorise(options =>
+            //{
+            //    options.Immediate = true;
 
-            })
-                .AddBootstrap5Providers()
-                .AddFontAwesomeIcons()
-                .AddLogging();
+            //})
+            //    .AddBootstrap5Providers()
+            //    .AddFontAwesomeIcons()
+            //    .AddLogging();
 
 
-            builder.Services.AddBlazoriseRichTextEdit();
+            //builder.Services.AddBlazoriseRichMudTextField ();
+
+
+
+            builder.Services.AddMudServices(configuration => {
+                configuration.SnackbarConfiguration.HideTransitionDuration = 250;
+                configuration.SnackbarConfiguration.ShowTransitionDuration = 250;
+                
+            });
+
+
+
+
+            builder.Services.AddScoped<AppSnackBarService>();
+
+            builder.Services.AddScoped<AppDialogService>();
+
 
 
             builder.Host.UseWindowsService();

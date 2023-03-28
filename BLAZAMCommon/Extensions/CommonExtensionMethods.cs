@@ -29,11 +29,26 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace BLAZAM.Common.Extensions
 {
     public static class CommonExtensions
     {
+
+        public static async Task<byte[]?> ToByteArrayAsync(this IBrowserFile file, int maxReadBytes = 5000000)
+        {
+            byte[] fileBytes;
+            using (var stream = file.OpenReadStream(5000000))
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await stream.CopyToAsync(memoryStream);
+                    fileBytes = memoryStream.ToArray();
+                }
+            }
+            return fileBytes;
+        }
         public static string GetValueChangesString(this List<AuditChangeLog> changes, Func<AuditChangeLog, object?> valueSelector)
         {
             var values = "";
@@ -217,69 +232,7 @@ namespace BLAZAM.Common.Extensions
         }
 
 
-        public static bool IsUrlLocalToHost(this string url)
-        {
-            if (url.StartsWith("https://localhost")) return true;
-            if (url == "") return true;
-            return url[0] == '/' && (url.Length == 1 ||
-                    url[1] != '/' && url[1] != '\\') ||   // "/" or "/foo" but not "//" or "/\"
-                    url.Length > 1 &&
-                     url[0] == '~' && url[1] == '/';   // "~/" or "~/foo"
-        }
 
-        public static string ToPlainText(this SecureString? secureString)
-        {
-            if (secureString == null) return string.Empty;
-            IntPtr bstrPtr = Marshal.SecureStringToBSTR(secureString);
-            try
-            {
-                var plainText = Marshal.PtrToStringBSTR(bstrPtr);
-                if (plainText == null)
-                    plainText = string.Empty;
-                return plainText;
-
-            }
-            finally
-            {
-                Marshal.ZeroFreeBSTR(bstrPtr);
-            }
-        }
-        public static SecureString ToSecureString(this string plainText)
-        {
-            return new NetworkCredential("", plainText).SecurePassword;
-        }
-
-        public static string? ToPrettyOu(this string? ou)
-        {
-            if (ou == null) return null;
-            var ouComponents = Regex.Matches(ou, @"OU=([^,]*)")
-                .Select(m => m.Groups[1].Value)
-                .ToList();
-            ouComponents.Reverse();
-            return string.Join("/", ouComponents);
-        }
-        public static string FqdnToDN(this string fqdn)
-        {
-            // Split the FQDN into its domain components
-            string[] domainComponents = fqdn.Split('.');
-
-
-
-            // Build the DN by appending each reversed domain component as a RDN (relative distinguished name)
-            StringBuilder dnBuilder = new StringBuilder();
-            foreach (string dc in domainComponents)
-            {
-                dnBuilder.Append("DC=");
-                dnBuilder.Append(dc);
-                dnBuilder.Append(",");
-            }
-
-            // Remove the last comma
-            dnBuilder.Length--;
-
-            // Return the DN
-            return dnBuilder.ToString();
-        }
         public static string ToHex(this System.Drawing.Color color)
         {
             string rtn = string.Empty;
@@ -306,16 +259,30 @@ namespace BLAZAM.Common.Extensions
 
         }
 
-
-        public static byte[] ReizeRawImage(this byte[] rawImage, int maxDimension)
+        /// <summary>
+        /// Resizes a raw byte array, assumed to be an image, to the maximum dimension provided
+        /// </summary>
+        /// <param name="rawImage"></param>
+        /// <param name="maxDimension"></param>
+        /// <param name="cropToSquare"></param>
+        /// <returns></returns>
+        public static byte[] ReizeRawImage(this byte[] rawImage, int maxDimension, bool cropToSquare = false)
         {
             using (var image = Image.Load(rawImage))
             {
                 if (image.Height > image.Width)
+                {
+                    if (cropToSquare)
+                        image.Mutate(x => x.Crop(image.Width, image.Width));
                     image.Mutate(x => x.Resize(0, maxDimension));
-                else
-                    image.Mutate(x => x.Resize(maxDimension, 0));
 
+                }
+                else
+                {
+                    if (cropToSquare)
+                        image.Mutate(x => x.Crop(image.Height, image.Height));
+                    image.Mutate(x => x.Resize(maxDimension, 0));
+                }
                 using (var ms = new MemoryStream())
                 {
                     image.SaveAsPng(ms);
@@ -349,12 +316,14 @@ namespace BLAZAM.Common.Extensions
             try
             {
 
-                long? fileTime = value?.ToFileTimeUtc();
+                long? fileTime = value?.ToUniversalTime().ToFileTimeUtc();
                 if (fileTime == null) return null;
                 object fto = 0;
                 IADsLargeInteger largeInt = new ADsLargeInteger();
+
                 largeInt.HighPart = (int)(fileTime >> 32);
-                largeInt.LowPart = (int)(fileTime & 0xffffffff);
+                largeInt.LowPart = (int)(fileTime & 0xFFFFFFFF);
+
                 return largeInt;
             }
             catch
@@ -362,19 +331,42 @@ namespace BLAZAM.Common.Extensions
                 return null;
             }
         }
+        //133241760000000000
+        //31029034
+        //1743527936
         public static DateTime? AdsValueToDateTime(this object value)
         {
             //read file time 133213804065419619
             try
             {
-                if (value == null) return DateTime.MinValue;
+                if (value == null) return null;
 
-                IADsLargeInteger? v = value as IADsLargeInteger;
 
-                if (null == v) return DateTime.MinValue;
+                Int64? longInt = null;
+                try
+                {
+                    longInt = Int64.Parse(value.ToString());
+                }
+                catch (Exception)
+                {
 
-                long dV = ((long)v.HighPart << 32) + v.LowPart;
-                return DateTime.FromFileTime(dV);
+                }
+                if (longInt != null)
+                    return DateTime.FromFileTimeUtc(longInt.Value);
+                else
+                {
+
+
+
+                    IADsLargeInteger? v = value as IADsLargeInteger;
+
+                    if (null == v) return DateTime.MinValue;
+
+                    long dV = ((long)v.HighPart << 32) + v.LowPart;
+
+
+                    return DateTime.FromFileTimeUtc(dV);
+                }
             }
             catch
             {

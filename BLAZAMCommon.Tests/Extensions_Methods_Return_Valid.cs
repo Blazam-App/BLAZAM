@@ -1,4 +1,5 @@
 using BLAZAM.Common.Extensions;
+using System.Globalization;
 using static BLAZAM.Common.Extensions.CommonExtensions;
 
 namespace BLAZAM.Tests
@@ -47,21 +48,51 @@ namespace BLAZAM.Tests
 
             Assert.True(result, "The fqdn " + test + " should return a DN of " + valid);
         }
-        //3/17/2023 12:00:00 AM
-        /*
+
+        [Fact]
+        public void DateTimeToAdsAndBack_ReturnsValid()
+        {
+            var valid = new ADsLargeInteger();
+            valid.HighPart = 31021155;
+            valid.LowPart = 1790853120;
+
+            string dateString = "3/25/2023 12:00:00 AM";
+            string format = "M/d/yyyy h:mm:ss tt";
+            DateTime? test = DateTime.ParseExact(dateString, format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal).ToUniversalTime();
+
+            //DateTime? test = DateTime.Parse("4/25/2023 12:00:00 AM");
+            var converted = test.DateTimeToAdsValue();
+            var deconverted = converted.AdsValueToDateTime();
+            bool result = deconverted.Equals(test);
+
+            Assert.True(result, "The conversion of COM large integers to DateTime is not returning the correct DateTime");
+        }
+
+
+        //4/25/2023 12:00:00 AM
+
         [Fact]
         public void DateTimeToAdsValue_ReturnsValid()
         {
             var valid = new ADsLargeInteger();
             valid.HighPart = 31021155;
             valid.LowPart = 1790853120;
-            DateTime? test = DateTime.Parse("3/17/2023 12:00:00 AM");
+
+            string dateString = "3/25/2023 12:00:00 AM";
+            string format = "M/d/yyyy h:mm:ss tt";
+            DateTime? test = DateTime.ParseExact(dateString, format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+
+            //DateTime? test = DateTime.Parse("4/25/2023 12:00:00 AM");
             var converted = test.DateTimeToAdsValue();
             bool result = converted.Equals(valid);
 
             Assert.True(result, "The conversion of COM large integers to DateTime is not returning the correct DateTime");
         }
 
+      
+        //133241760000000000
+        //31029034
+        //1743527936
         [Fact]
         public void AdsValueToDateTime_ReturnsValid()
         {
@@ -74,6 +105,6 @@ namespace BLAZAM.Tests
             
             Assert.True(result, "The conversion of COM large integers to DateTime is not returning the correct DateTime");
         }
-        */
+        
     }
 }

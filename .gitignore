@@ -367,3 +367,4 @@ FodyWeavers.xsd
 /BLAZAM/Writable/Security/TokenKey.key
 /BLAZAM/appsettings.json
 /Setup/BLAZAM.msi
+/BLAZAM/database.db

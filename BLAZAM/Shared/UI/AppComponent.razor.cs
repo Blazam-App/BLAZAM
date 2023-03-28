@@ -1,7 +1,6 @@
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using Microsoft.EntityFrameworkCore;
 using BLAZAM.Server.Background;
 using BLAZAM.Server.Shared.ResourceFiles;
 using BLAZAM.Server.Data.Services.Update;
@@ -10,10 +9,11 @@ using BLAZAM.Common;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-using Blazorise;
 using Microsoft.Extensions.Localization;
 using BLAZAM.Server.Data.Services.Email;
 using BLAZAM.Common.Data;
+using MudBlazor;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace BLAZAM.Server.Shared.UI
 {
@@ -40,8 +40,7 @@ namespace BLAZAM.Server.Shared.UI
         [Inject]
         protected IActiveDirectory Directory { get; set; }
 
-        [Inject]
-        protected IPageProgressService PageProgress { get; set; }
+      //TODO add page progress service
 
         [Inject]
         protected IJSRuntime JS { get; set; }
@@ -53,7 +52,7 @@ namespace BLAZAM.Server.Shared.UI
         protected AuditLogger AuditLogger { get; set; }
 
         [Inject]
-        protected IMessageService MessageService { get; set; }
+        protected AppDialogService MessageService { get; set; }
 
         [Inject]
         protected UpdateService UpdateService { get; set; }
@@ -68,7 +67,7 @@ namespace BLAZAM.Server.Shared.UI
         protected IEncryptionService EncryptionService { get; set; }
 
         [Inject]
-        protected INotificationService NotificationService { get; set; }
+        protected AppSnackBarService SnackBarService { get; set; }
 
         protected bool LoadingData { get; set; } = true;
         protected IDatabaseContext? Context;
@@ -129,7 +128,7 @@ namespace BLAZAM.Server.Shared.UI
         public async Task CopyToClipboard(string? text)
         {
             await JS.InvokeVoidAsync("navigator.clipboard.writeText", text);
-            await NotificationService.Info("\"" + text + "\" copied to clipboard.");
+            SnackBarService.Info("\"" + text + "\" copied to clipboard.");
         }
 
         /// <summary>

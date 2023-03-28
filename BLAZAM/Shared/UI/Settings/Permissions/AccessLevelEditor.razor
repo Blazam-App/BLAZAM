@@ -1,10 +1,9 @@
 @inherits AppComponentBase
 
-<Heading Size="HeadingSize.Is3">
+<MudText Typo ="Typo.h6" Size="HeadingSize.Is3">
     @SettingsLocalization["Access Levels"]
-</Heading>
+</MudText>
 <p> Access levels are a template of permissions that can be applied to specific OU's for specific delegates.</p>
-<LoadingIndicator Visible=LoadingData>
 
     @if (CurrentAccessLevels != null)
     {
@@ -14,23 +13,13 @@
             <ShowAccessLevel Model="ap" />
         }
     }
-    <Accordion>
 
-        <Collapse Visible="@addCollapseVisible">
-            <CollapseHeader>
-                <Heading Size="HeadingSize.Is5">
-                    <Button Background=Background.Success TextColor=TextColor.Light Clicked="@(()=>addCollapseVisible = !addCollapseVisible)">@SettingsLocalization["Add New Access Level"]</Button>
-                </Heading>
-            </CollapseHeader>
-            <CollapseBody>
+        <MudExpansionPanel Text="@SettingsLocalization["Add New Access Level"]">
 
                 <EditAccessLevel LevelsChanged="Update" />
 
 
-            </CollapseBody>
-        </Collapse>
-    </Accordion>
-</LoadingIndicator>
+        </MudExpansionPanel>
 
 @code {
     bool addCollapseVisible;

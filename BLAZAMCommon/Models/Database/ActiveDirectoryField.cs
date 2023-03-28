@@ -8,7 +8,7 @@ namespace BLAZAM.Common.Models.Database
     {
 
         public string FieldName { get; set; }
-        public List<ActiveDirectoryObjectType> ObjectTypes { get; set; }
+        //public List<ActiveDirectoryObjectType> ObjectTypes { get; set; }
         public string DisplayName { get; internal set; }
 
         public override string? ToString()

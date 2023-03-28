@@ -1,18 +1,5 @@
 
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using Microsoft.EntityFrameworkCore;
-using BLAZAM.Server.Background;
-using BLAZAM.Server.Shared.ResourceFiles;
-using BLAZAM.Server.Data.Services.Update;
-using BLAZAM.Server.Data.Services;
-using BLAZAM.Common;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-using Blazorise;
-using Microsoft.Extensions.Localization;
-using BLAZAM.Server.Data.Services.Email;
 
 namespace BLAZAM.Server.Shared.UI
 {
@@ -27,17 +14,16 @@ namespace BLAZAM.Server.Shared.UI
         protected string BaseUri = "/settings";
 
         [Parameter]
-        public string selectedTab { get; set; } = "app";
+        public int ActiveTab { get; set; } = 0;
 
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            selectedTab = selectedTab ?? "app";
         }
-        protected Task OnSelectedTabChanged(string name)
+        protected Task OnSelectedTabChanged(int index)
         {
-            selectedTab = name;
-            Nav.NavigateTo(BaseUri + "/" + name);
+            ActiveTab = index;
+            Nav.NavigateTo(BaseUri + "/" + index);
             return Task.CompletedTask;
         }
     }

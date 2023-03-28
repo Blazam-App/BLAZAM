@@ -1,46 +1,44 @@
 ﻿@inherits AppModalContent
 
 
-<Row Background="Background.Light" TextColor="TextColor.Dark">
-    <Field>
-        <FieldLabel>Group Name</FieldLabel>
-        <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.Group"
+<Row Background="Background.Light" Color="Color.Dark">
+    
+            <ADAutoComplete Label="Group Name" SearchObjectType="ActiveDirectoryObjectType.Group"
             @bind-SelectedResult=@Group/>
-    </Field>
-    <Field>
-        <FieldLabel>Copy Memberships From</FieldLabel>
-        <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.All"
+    
+    
+            <ADAutoComplete Label="Copy Memberships From" SearchObjectType="ActiveDirectoryObjectType.All"
                         @bind-SelectedResult=@copyFrom
                         CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
 
-    </Field>
+    
     @if (CopyFrom != null)
     {
         var existingGroups = DirectoryModel.MemberOf;
-        <Paragraph>Will be added to...</Paragraph>
+        <MudText>Will be added to...</MudText>
 
         foreach (var group in CopyFrom.MemberOf)
         {
-            <Card>
-                <CardHeader>
+            <MudCard>
+                <MudCardHeader>
 
                     @if (existingGroups.Contains(group))
                     {
-                        <Icon Name=@("fa-check") />
+                        <MudIcon Icon=@("fa-check") />
                     }
                     else
                     {
-                        <Icon Name=@("fa-plus") />
+                        <MudIcon Icon=@("fa-plus") />
                     }
                     @group.GroupName
 
-                </CardHeader>
-            </Card>
+                </MudCardHeader>
+            </MudCard>
         }
     }
 </Row>
 <Row>
-    <Button Color="Color.Primary" Clicked="AssignToGroup">Add</Button>
+    <MudButton Color="Color.Primary" OnClick="AssignToGroup">Add</MudButton>
 
 </Row>
 
@@ -67,7 +65,7 @@
         if (Group is IADGroup group)
         {
             DirectoryModel.AssignTo(group);
-            await NotificationService.Warning(DirectoryModel.CanonicalName + " has been assigned to " + group.GroupName + " but changes must be saved.", "Assignment Pending");
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been assigned to " + group.GroupName + " but changes must be saved.", "Assignment Pending");
             await ModelChanged.InvokeAsync();
 
             Close();
@@ -80,7 +78,7 @@
                 DirectoryModel.AssignTo(g);
 
             }
-            await NotificationService.Warning(DirectoryModel.CanonicalName + " has been assigned to the selected groups but changes must be saved.", "Assignment Pending");
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been assigned to the selected groups but changes must be saved.", "Assignment Pending");
             await ModelChanged.InvokeAsync();
 
             Close();

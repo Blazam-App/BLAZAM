@@ -145,7 +145,7 @@ namespace BLAZAM.Common.Models.Database.Templates
 
         public override string? ToString()
         {
-            return Name.ToString();
+            return Name?.ToString();
         }
 
         public object Clone()

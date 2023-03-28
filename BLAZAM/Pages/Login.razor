@@ -7,69 +7,61 @@
 @{
     var redirectUrl = Nav.Uri;
 }
-<Heading Padding="Padding.Is4.FromBottom">
+<MudContainer Class="py-5">
+
+    <MudText Typo="Typo.h3">
 
 
-    @DatabaseCache.ApplicationSettings?.AppName
+        @DatabaseCache.ApplicationSettings?.AppName
 
-</Heading>
-
-
-
-<Div class="brand-icon">
-    <Image Source="@StaticAssets.ApplicationIconUri" />
-
-</Div>
-
-@if (!Program.InDemoMode || DemoCustomLogin)
-{
-    <Form Class="login-form" method="post" action="/signin" TextAlignment="TextAlignment.Center" >
-
-        <Field>
-            <FieldBody>
-                <TextEdit Autofocus TextAlignment="TextAlignment.Center" Placeholder="Username" name="username" @bind-Text=LoginRequest.Username>
-                    <Feedback>
-                        <ValidationError />
-                    </Feedback>
-                </TextEdit>
-            </FieldBody>
-        </Field>
-        <Field>
-            <FieldBody>
-                <TextEdit TextAlignment="TextAlignment.Center" Placeholder="Password" name="password" Role="TextRole.Password" @bind-Text=LoginRequest.Password>
-                    <Feedback>
-                        <ValidationError />
-                    </Feedback>
-                </TextEdit>
-            </FieldBody>
-                </Field>        
-                <TextEdit Visibility=Visibility.Invisible name="ReturnUrl" Text="@redirectUrl" />
+    </MudText>
 
 
-        <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</Button><br />
-    </Form>
 
-}
-@if (Program.InDemoMode)
-{
-    <Form Class="login-form" method="post" action="/signin" TextAlignment="TextAlignment.Center">
+    <MudElement Class="brand-icon">
+        <MudImage Src="@StaticAssets.ApplicationIconUri" />
 
-        <TextEdit Autofocus TextAlignment="TextAlignment.Center" name="username" Text="demo" Display="Display.None" />
-        <TextEdit TextAlignment="TextAlignment.Center" name="password" Role="TextRole.Password" Text="demo" Display="Display.None" />
-        <TextEdit Visibility=Visibility.Invisible name="ReturnUrl" Text="@redirectUrl" />
+    </MudElement>
+    <form class="login-form" method="post" action="/signin">
+        <MudContainer Style="max-width:300px;" Class="py-4">
+            @if (!Program.InDemoMode || DemoCustomLogin)
+            {
 
-        <Dropdown Margin=Margin.IsAuto.OnX.Is2.FromTop>
-        <Button Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</Button>
-        <DropdownToggle Color="Color.Primary" Split />
-            <DropdownMenu>
-                <DropdownItem Clicked=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</DropdownItem>
-            </DropdownMenu>
-        </Dropdown>
 
-    </Form>
 
-}
-<Copyright Margin=Margin.IsAuto.OnX Padding="Padding.Is5.FromTop" />
+                <MudTextField Class="justify-center" AutoFocus Label="Username" name="username" @bind-Value=LoginRequest.Username />
+
+                <MudTextField Class="justify-center" Label="Password" name="password" InputType="InputType.Password" @bind-Value=LoginRequest.Password />
+                <MudTextField Class="d-none" name="ReturnUrl" Value="@redirectUrl" />
+
+                <MudButton Class="my-5" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</MudButton>
+
+                <br />
+
+            }
+            else if (Program.InDemoMode)
+            {
+                <MudContainer Class="d-none">
+
+                    <MudTextField name="username" Value=@("demo") hidden />
+                    <MudTextField name="password" InputType="InputType.Password" Value=@("demo") hidden />
+                    <MudTextField name="ReturnUrl" Value="@redirectUrl" />
+                </MudContainer>
+
+                <MudButtonGroup  Color=Color.Primary Variant="Variant.Outlined">
+                    <MudButton Class="my-6" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                        <MudMenuItem OnClick=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</MudMenuItem>
+                    </MudMenu>
+                </MudButtonGroup>
+
+            }
+        </MudContainer>
+    </form>
+
+    <Copyright Class="mx-auto" />
+</MudContainer>
+
 <style>
     .brand-icon {
         position: fixed;
@@ -90,6 +82,7 @@
 </style>
 
 @code {
+    
     bool DemoCustomLogin = false;
     LoginRequest LoginRequest = new();
     protected override async Task OnInitializedAsync()

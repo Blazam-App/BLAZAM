@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Common.Data.Database
 {
-    public class SqliteDatabaseContext:DatabaseContext
+    public class SqliteDatabaseContext:DatabaseContextBase
     {
         /// <inheritdoc/>
 

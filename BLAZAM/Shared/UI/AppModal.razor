@@ -1,71 +1,93 @@
-﻿@inherits BaseComponent
-<Modal Closing="ModalClosing" FocusTrap="FocusTrap" RenderMode="ModalRenderMode.LazyLoad"   @ref="Modal" TextColor="TextColor">
-    <ModalContent Centered>
-        <ModalHeader Background="Background.Dark" TextColor="TextColor.Light">
-            <ModalTitle>@Title</ModalTitle>
-            <AppCloseButton TextColor="TextColor.Light" />
-        </ModalHeader>
-        <ModalBody Background="Background.Light" TextColor="TextColor.Dark">
-            @ChildContent
-        </ModalBody>
-    </ModalContent>
-</Modal>
+﻿@inherits MudMessageBox
+<MudMessageBox OnCancel="OnClosing" Title=@Title @ref="Modal" YesText="@YesText" OnYes="@((val)=>{
+OnYes.InvokeAsync(val);
+})">
+    <MessageContent>
+        <MudText Color="Color">
+            <CascadingValue Value="Modal">
+                @ChildContent
+            </CascadingValue>
+        </MudText>
+    </MessageContent>
+</MudMessageBox>
 @code {
     #nullable disable warnings
+
     [Inject]
-    protected INotificationService NotificationService{ get; set; }
+    protected AppSnackBarService NotificationService { get; set; }
+    /// <summary>
+    /// The modal's  databse connection
+    /// </summary>
     [Parameter]
     public IDatabaseContext? Context { get; set; }
-
-
-    [Parameter]
-    public string? Title{ get; set; }
-
+    /// <summary>
+    /// If set to false, will prevent this modal from closing via the UI
+    /// </summary>
     [Parameter]
     public bool AllowClose { get; set; } = true;
-    
-    [Parameter]
-    public bool FocusTrap{ get; set; } = false;
 
     [Parameter]
-    public RenderFragment? ChildContent{ get; set; }
+    public Color Color { get; set; } = Color.Default;
 
+    /// <summary>
+    /// The modal content. By default, there is no content
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    /// <summary>
+    /// A reference to this modal
+    /// </summary>
     [CascadingParameter]
-    protected Modal? Modal { get; set; }
+    protected MudMessageBox? Modal { get; set; }
 
     [Parameter]
-    public EventCallback<Modal>? ModalChanged { get; set; }
+    public EventCallback<MudMessageBox>? ModalChanged { get; set; }
 
     bool _isShown = false;
-
+    /// <summary>
+    /// Indicates whether this modal is currently shown
+    /// </summary>
     [Parameter]
-    public bool IsShown { get=>_isShown; set
+    public bool IsShown
+    {
+        get => _isShown; set
         {
-            if(value==_isShown)return;
+            if (value == _isShown) return;
             _isShown = value;
             IsShownChanged.InvokeAsync(value);
-        } }
+        }
+    }
 
     [Parameter]
     public EventCallback<bool> IsShownChanged { get; set; }
 
-    async Task ModalClosing(ModalClosingEventArgs args)
+   
+    /// <summary>
+    /// Show this modal
+    /// </summary>
+    public async Task<bool?> Show()
     {
-        if (!AllowClose)
-        {
-            args.Cancel=true;
-        }
-    }
-    public void Show()
-    {
+       
         IsShown = true;
-        Modal?.Show();
+        return await Modal?.Show();
     }
+    /// <summary>
+    /// Hide this modal
+    /// </summary>
     public void Hide()
     {
         IsShown = false;
 
-        Modal?.Close(CloseReason.UserClosing);
+        Modal?.Close();
+    }
+    private async Task OnClosing(bool modalResult)
+    {
+        if (!AllowClose)
+        {
+            Modal.Show();
+        }
+        else
+        OnCancel.InvokeAsync(modalResult);
     }
 
 }

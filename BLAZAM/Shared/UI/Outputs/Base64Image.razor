@@ -1,12 +1,16 @@
-﻿@{
+﻿@inherits MudImage
+@{
     var base64 = "";
     if(Data!=null)
         base64 = Convert.ToBase64String(Data);
 
 }
-<Image Style="max-height:100%;max-width:100%;"  Source=@("data:image/png;base64,"+@base64)/>
+<MudImage  Elevation="@Elevation" Class="@Class" Style="@Style"  Src=@("data:image/png;base64,"+@base64)/>
 
-@code {
+@code{
+    /// <summary>
+    /// The raw byte array of the image to be displayed.
+    /// </summary>
     [Parameter]
     public byte[]? Data { get; set; }
 }

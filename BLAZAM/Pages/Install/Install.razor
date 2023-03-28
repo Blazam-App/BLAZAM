@@ -1,74 +1,65 @@
 ﻿@page "/install"
 @page "/install/{selectedStep}"
-@layout MinLayout
+@layout InstallLayout
 @inherits AppComponentBase
 
 
 <PageTitle>Install - Blazam</PageTitle>
-<Steps SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged" NavigationAllowed="NavigationAllowed">
-    <Items>
-        <Step Completed=@(_step>1) Name="1">@SettingsLocalization["Database"]</Step>
-        <Step Completed=@(_step>2) Name="2">@SettingsLocalization["Authentication"]</Step>
-        <Step Completed=@(_step>3) Name="3">@SettingsLocalization["Directory"]</Step>
-        @*<Step Completed=@(_step>4) Name="4">@SettingsLocalization["Permissions"]</Step>*@
-        <Step Name="step4">
-            <Marker>
-                <Icon Name="IconName.Flag" />
-            </Marker>
-            <Caption>
-                Finish
-            </Caption>
-        </Step>
-    </Items>
-    <Content>
-        <StepPanel Name="0">
 
-            <Card>
-                <CardHeader>
-                    Checking Installation
-                </CardHeader>
-                <CardBody>
-                    Please wait while the installation status of the application is checked...
-                </CardBody>
-            </Card>
+@if (completedSteps == 0)
+{
+    <MudCard>
+        <MudCardHeader>
+            Checking Installation
+        </MudCardHeader>
+        <MudCardContent>
+            Please wait while the installation status of the application is checked...
 
-        </StepPanel>
-        <StepPanel Name="1">
-            @if (_step > 0)
+        </MudCardContent>
+    </MudCard>
+}
+else
+{
+    <MudTabs Centered Elevation="1" ActivePanelIndex="@selectedStep" ActivePanelIndexChanged="@OnSelectedStepChanged">
+    <MudTabPanel Disabled=@(completedSteps<1) 
+        Icon="@(completedSteps>1?Icons.Material.Filled.CheckCircle:null)" 
+        ToolTip="Database" 
+        Text="1">
+            @if (completedSteps > 0)
             {
-                <InstallDatabase Completed=@(_step>1) StepCompleted="UpdateStatuses" />
+                <InstallDatabase Completed=@(completedSteps>1) StepCompleted="UpdateStatuses" />
             }
-        </StepPanel>
-        <StepPanel Name="2">
-            @if (_step > 1)
+        </MudTabPanel>
+        <MudTabPanel Disabled=@(completedSteps<2)
+            Text="2" 
+            ToolTip="Authentication" 
+            Icon="@(completedSteps>2?Icons.Material.Filled.CheckCircle:null)">
+            @if (completedSteps > 1)
             {
                 <Authentication StepCompleted="UpdateStatuses" />
             }
 
-        </StepPanel>
-
-        <StepPanel Name="3">
-            @if (_step > 2)
+        </MudTabPanel>
+        <MudTabPanel Disabled=@(completedSteps<3) 
+            Text="3"
+            ToolTip="Active Directory"
+            Icon="@(completedSteps>3?Icons.Material.Filled.CheckCircle:null)">
+            @if (completedSteps > 2)
             {
                 <ADirectory StepCompleted="UpdateStatuses" />
             }
-        </StepPanel>
-        @*
-        <StepPanel Name="4">
-
-        @if (_step > 3)
-        {
-        <Permissions StepCompleted="ShowLastStep" />
-        }
-
-        </StepPanel>
-        *@
-        <StepPanel Name="4">
+        </MudTabPanel>
+        <MudTabPanel Disabled=@(completedSteps<4) 
+            Icon="@Icons.Material.Filled.FlagCircle"
+            ToolTip="Finish">
             <h2>Installation Complete</h2>
-            <Button @onclick="FinalizeInstall" Color="Color.Success">Finalize Install</Button>
-        </StepPanel>
-    </Content>
-</Steps>
+            <MudButton @onclick="FinalizeInstall" Color="Color.Success">Finalize Install</MudButton>
+        </MudTabPanel>
+
+    </MudTabs>
+}
+
+
 
 
 
@@ -78,9 +69,18 @@
 
 
 @code {
-    int _step = 0;
+    int _completedSteps = 0;
+    int completedSteps
+    {
+        get => _completedSteps; set
+        {
+            _completedSteps = value;
+            selectedStep = value-1;
+
+        }
+    }
     [Parameter]
-    public string selectedStep { get; set; } = "0";
+    public int selectedStep { get; set; } = 0;
 
     protected override void OnInitialized()
     {
@@ -97,6 +97,7 @@
 
 
     }
+    /*
     private bool NavigationAllowed(StepNavigationContext context)
     {
         if (context.NextStepIndex > _step)
@@ -106,11 +107,11 @@
 
         return true;
     }
+    */
     async void UpdateStatuses()
     {
         Context = DbFactory.CreateDbContext();
-        _step = 1;
-        selectedStep = "1";
+        completedSteps = 1;
         if (Context != null)
         {
             if (Context.Status == ServiceConnectionState.Up)
@@ -118,8 +119,7 @@
 
                 if (!Context.Database.GetPendingMigrations().Any())
                 {
-                    _step = 2;
-                    selectedStep = "2";
+                    completedSteps = 2;
 
                     await InvokeAsync(StateHasChanged);
 
@@ -127,8 +127,7 @@
                     {
                         if (Context.AuthenticationSettings.FirstOrDefault() != null && Context.AuthenticationSettings.FirstOrDefault()?.AdminPassword != "password")
                         {
-                            _step = 3;
-                            selectedStep = "3";
+                            completedSteps = 3;
 
                             await InvokeAsync(StateHasChanged);
 
@@ -138,8 +137,7 @@
                             {
                                 if (Directory.Status == DirectoryConnectionStatus.OK)
                                 {
-                                    _step = 4;
-                                    selectedStep = "4";
+                                    completedSteps = 4;
 
                                     await InvokeAsync(StateHasChanged);
                                     //check permissions
@@ -178,16 +176,15 @@
         }
     }
 
-    private Task OnSelectedStepChanged(string name)
+    private Task OnSelectedStepChanged(int index)
     {
-        selectedStep = name;
+        selectedStep = index;
 
         return Task.CompletedTask;
     }
     private void ShowLastStep()
     {
-        selectedStep = "6";
-        _step = 6;
+        _completedSteps = 6;
         UpdateStatuses();
     }
     private void RecheckWritable()
@@ -214,7 +211,7 @@
         }
         catch
         {
-            await NotificationService.Error("Sorry, ran into an error while finalizing install");
+            SnackBarService.Error("Sorry, ran into an error while finalizing install");
 
         }
 

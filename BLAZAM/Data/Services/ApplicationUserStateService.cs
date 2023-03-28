@@ -1,6 +1,7 @@
 ﻿using BLAZAM.Common;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Common.Models.Database.User;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -205,5 +206,14 @@ namespace BLAZAM.Server.Data.Services
         }
 
         public void RemoveUserState(ClaimsPrincipal currentUser) => RemoveUserState(GetUserState(currentUser));
+
+        public void BroadcastNotification(NotificationMessage notificationMessage)
+        {
+           foreach(var user in UserStates)
+            {
+                if(!user.Messages.Contains(notificationMessage))
+                user.Messages.Add(notificationMessage);
+            }
+        }
     }
 }

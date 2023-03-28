@@ -38,7 +38,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Group,
                 EnabledOnly = false,
-                DN = dn,
+                Fields = new()
+                {
+                    DN = dn
+                },
                 ExactMatch = true
 
             }.Search<ADGroup, IADGroup>();
@@ -59,6 +62,32 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         }
 
+        public async Task<List<IADGroup>> FindNewGroupsAsync(int maxAgeInDays = 14)
+        {
+            return await Task.Run(() =>
+            {
+                return FindNewGroups(maxAgeInDays);
+            });
+        }
+
+        public List<IADGroup>? FindNewGroups(int maxAgeInDays = 14)
+        {
+
+            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
+            var results = new ADSearch()
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.Group,
+                Fields = new()
+                {
+                    Created = threeMonthsAgo
+                }
+
+            }.Search<ADGroup, IADGroup>();
+            return results.OrderByDescending(u => u.Created).ToList();
+
+        }
+
+
         public IADGroup? FindGroupBySID(byte[] groupSID)=>FindGroupBySID(groupSID.ToSidString());
 
         public IADGroup? FindGroupBySID(string groupSID)
@@ -66,7 +95,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             return new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Group,
-                SID= groupSID,
+                Fields = new()
+                {
+                    SID = groupSID
+                },
                 ExactMatch = true
 
             }.Search<ADGroup, IADGroup>().FirstOrDefault();

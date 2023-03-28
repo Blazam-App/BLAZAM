@@ -1,0 +1,14 @@
+@inherits MudIcon
+<MudButton Class="@(Class+" rounded-circle")"
+         Color="@Color"
+         Size=@Size
+         IconClass="ma-0"
+         Style=@(Style+"width:min-content;height:min-content;min-width:0")
+         Tag=@Tag
+         
+         StartIcon="@Icons.Material.Filled.Close" @onclick=@OnClick />
+
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+}

@@ -17,6 +17,7 @@ namespace BLAZAM.Common.Models.Database.User
         public Widget WidgetID { get; set; }
         public int Slot { get; set; }
         public int Order { get; set; }
+        public AppUser User { get; set; }
 
     }
 }

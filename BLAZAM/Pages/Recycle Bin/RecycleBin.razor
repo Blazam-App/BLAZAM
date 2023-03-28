@@ -4,28 +4,40 @@
 
 <AppPageTitle>Recycle Bin</AppPageTitle>
 
-<h3>Recycle Bin</h3>
-    <DataGrid TItem="IDirectoryEntryAdapter"
-          Data="deletedObjects"
-          Responsive
-     Virtualize>
-        <DataGridCommandColumn />
-        <DataGridColumn Field="@nameof(IDirectoryEntryAdapter.ObjectType)" Caption="Type"/>
-        <DataGridColumn Field="@nameof(IDirectoryEntryAdapter.CanonicalName)" Caption="Canonical Name"/>
-        <DataGridColumn Field="@nameof(IDirectoryEntryAdapter.LastChanged)" Caption="Deleted At" />
-        <DataGridColumn>
-            <DisplayTemplate>
-            <Button Color="Color.Primary" Clicked="@(()=>{ Directory.RestoreTombstone(context,context.LastKnownParent); })">Restore</Button>
+<MudDataGrid T="IDirectoryEntryAdapter"
+              Virtualize
+             ColumnResizeMode="ResizeMode.Container"
+             Class=""
+             
+              Hideable
+              Square
+             Items="@deletedObjects"
+             Filterable="false"
+             SortMode="@SortMode.Multiple"
+             Groupable="false">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Recycle Bin</MudText>
+        <MudSpacer />
+        <MudButton Color="Color.Primary" Variant="@Variant.Outlined" OnClick="@(()=>{RestoreSelected();})">Restore Selected</MudButton>
 
-            </DisplayTemplate>
+    </ToolBarContent>
+    <Columns>
+        <SelectColumn T="IDirectoryEntryAdapter" ShowInFooter=false ShowInHeader=true  />
+        <PropertyColumn Property="x => x.ObjectType" Title="Type"/>
+        <PropertyColumn Property="x => x.CanonicalName" Title="Name"/>
+        <PropertyColumn Property="x => x.LastKnownParent.OU.ToPrettyOu()" Title="Last OU"/>
+        <PropertyColumn Property="x => x.LastChanged" Title="Deleted"/>
+        <TemplateColumn CellClass="d-flex justify-end" Title="Restore">
+            <CellTemplate>
+                <MudStack Row>
+                    <MudButton Color="Color.Primary" Variant="@Variant.Outlined" OnClick="@(()=>{Restore(context.Item);})">Restore</MudButton>
 
-
-        </DataGridColumn>
-
-    </DataGrid>
-    
-
-
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+        
+    </Columns>
+</MudDataGrid>
 
 @code {
     List<IDirectoryEntryAdapter> deletedObjects = new();
@@ -37,5 +49,25 @@
         deletedObjects = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
 
         await InvokeAsync(StateHasChanged);
+    }
+    async Task Restore(IDirectoryEntryAdapter entryToRestore)
+    {
+        if (await MessageService.Confirm("Are you sure you want to restore " + entryToRestore.CanonicalName + " to " + entryToRestore.LastKnownParent.CanonicalName, "Restore?"))
+        {
+            if (Directory.RestoreTombstone(entryToRestore, entryToRestore.LastKnownParent))
+            {
+                SnackBarService.Success(entryToRestore.CanonicalName + " restored successfully");
+            }
+            else
+            {
+                SnackBarService.Error(entryToRestore.CanonicalName + " could not be restored");
+
+            }
+
+        }
+    }
+    async Task RestoreSelected()
+    {
+        
     }
 }

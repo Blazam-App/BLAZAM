@@ -1,25 +1,20 @@
 @inherits AppComponentBase
-<Div Padding="Padding.Is3.OnX">
-
-    <Row Style="height:1.5em">
-        <Column TextAlignment="TextAlignment.Start">
-            <Copyright Margin="Margin.Is0" />
-        </Column>
-        <Column Style="cursor:pointer" TextAlignment="TextAlignment.End">
+<MudElement Class="relative mud-width-full">
+    <MudToolBar Style="height:1.5em;bottom:0px;" Class="px-3 mud-width-full fixed">
+            <Copyright />
             @if (AutoUpdateService.IsUpdatedScheduled)
             {
-                <Tooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/app");}) TextColor="TextColor.Muted" Float=Float.End Style="width:max-content" Fade Text="An automatic update is scheduled. Click for details">
+                <MudTooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/app");}) Class="mud-theme-info" Float=Float.End Style="width:max-content" Fade Text="An automatic update is scheduled. Click for details">
 
-                    <Icon Name=@("fa-solid fa-circle-up") />
-                </Tooltip>
+                    <MudIcon Icon=@("fa-solid fa-circle-up") />
+                </MudTooltip>
             }
-
-            <Tooltip Margin="Margin.Is1.OnX" TextColor="TextColor.Muted" Float=Float.End Style="width:max-content" Fade FadeDuration=500 Trigger=TooltipTrigger.Click Text="@Program.Version.Version">
+            <MudSpacer/>
+    <MudTooltip Class="mud-theme-info" Style="width:max-content" Text="@Program.Version.Version">
 
                 Version: @Program.Version.ShortVersion
-            </Tooltip>
+            </MudTooltip>
 
 
-        </Column>
-    </Row>
-</Div>
+    </MudToolBar>
+</MudElement>

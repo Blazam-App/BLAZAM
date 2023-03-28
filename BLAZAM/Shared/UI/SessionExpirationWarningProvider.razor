@@ -1,4 +1,4 @@
-@inject IMessageService MessageService
+@inject AppDialogService MessageService
 @inject IApplicationUserStateService UserStateService
 @inject NavigationManager Nav
 @inject IJSRuntime JSRuntime
@@ -32,19 +32,19 @@
                 InvokeAsync(StateHasChanged);
             });
         }
-        <Div Background="Background.Light" TextColor="TextColor.Dark">
+        <div Background="Background.Light" Color="Color.Dark">
             <Row>
-                <Field>
-                    <FieldLabel>
+                
+                    <MudText>
                         Session expires in @formattedTimeLeft
-                    </FieldLabel>
-                </Field>
+                    </MudText>
+                
             </Row>
             <Row>
-                <Button Color="Color.Primary" Clicked=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>Refresh Session</Button>
+                <MudButton Color="Color.Primary" OnClick=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>Refresh Session</MudButton>
 
             </Row>
-        </Div>
+        </div>
     }
 
     </AppModal>
@@ -52,18 +52,18 @@
 
     @if (ExpiredModal?.IsShown == true)
     {
-        <Div Background="Background.Light" TextColor="TextColor.Dark">
+        <div Background="Background.Light" Color="Color.Dark">
             <Row>
-                <Field>
-                    <FieldLabel>Your session has expired.</FieldLabel>
+                
+                    <MudText>Your session has expired.</MudText>
                    
-                </Field>
+                
             </Row>
             <Row>
-                <Button Color="Color.Primary" Clicked=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>Log In</Button>
+                <MudButton Color="Color.Primary" OnClick=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>Log In</MudButton>
 
             </Row>
-        </Div>
+        </div>
     }
 
 </AppModal>
