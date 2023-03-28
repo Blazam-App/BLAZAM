@@ -1,7 +1,5 @@
 @using BLAZAM.Server.Shared.UI.Themes;
-@inject IStringLocalizer<AppLocalization> AppLocalization
-@inject IApplicationUserStateService UserStateService
-@inject NavigationManager Nav
+@inherits AppComponentBase
 @{
     var messages = UserStateService.CurrentUserState?.Messages.Count;
 
@@ -54,16 +52,7 @@
         }
         else
         {
-            @if (UserStateService.CurrentUserState.UserSettings?.ProfilePicture != null)
-            {
-                <Base64Image Data="@UserStateService.CurrentUserState.UserSettings?.ProfilePicture" />
-
-            }
-            else
-            {
-                <MudAvatar Elevation="4" Style="@avatarBgColor">@UserStateService.CurrentUsername?.FirstOrDefault()</MudAvatar>
-
-            }
+           <CurrentUserAvatarIcon/>
 
         }
 
@@ -104,7 +93,9 @@
     </ChildContent>
 </MudMenu>
 <AppModal @ref=profileModal Title="Profile Settings">
-    <MudFileUpload T="IBrowserFile" FilesChanged="UploadProfilePicture">
+    <MudFileUpload T="IBrowserFile"
+        FilesChanged="UploadProfilePicture"
+     >
         <ButtonTemplate>
             <MudButton HtmlTag="label"
                        Variant="Variant.Filled"
@@ -141,9 +132,10 @@
     async Task UploadProfilePicture(IBrowserFile profilePictureFile)
     {
         var rawBytes = await profilePictureFile.ToByteArrayAsync();
+
         if (rawBytes != null)
         {
-            UserStateService.CurrentUserState.UserSettings.ProfilePicture = rawBytes;
+            UserStateService.CurrentUserState.UserSettings.ProfilePicture = rawBytes.ReizeRawImage(100,true);
             await UserStateService.CurrentUserState.SaveUserSettings();
         }
     }

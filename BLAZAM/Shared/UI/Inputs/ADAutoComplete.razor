@@ -110,7 +110,7 @@
             if (_searchDisabled == value)
                 return;
             _searchDisabled = value;
-            SearchDisabledChanged.InvokeAsync(value);
+           // SearchDisabledChanged.InvokeAsync(value);
         }
     }
 
@@ -167,24 +167,7 @@
 
     public List<IDirectoryEntryAdapter> _selectedResults;
 
-    //[Parameter]
-    //public List<IDirectoryEntryAdapter> SelectedResults
-    //{
-    //    get => _selectedResults; set
-    //    {
-    //        if (_selectedResults == value) return;
-    //        _selectedResults = value;
-    //        SearchResults = value; //quesitnoable neccessity
-    //        SelectedResultsChanged.InvokeAsync(value);
-    //        SelectedResultNames = value.Select(g => g.CanonicalName).ToList();
-
-    //        InvokeAsync(StateHasChanged);
-    //    }
-    //}
-
-    //[Parameter]
-    //public EventCallback<List<IDirectoryEntryAdapter>> SelectedResultsChanged { get; set; }
-
+   
     List<string> SelectedResultNames = new();
 
 
@@ -240,7 +223,6 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        SearchDisabled = (bool)UserStateService.CurrentUserState?.UserSettings?.SearchDisabledUsers;
     }
 
 

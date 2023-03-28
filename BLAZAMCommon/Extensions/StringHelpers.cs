@@ -30,6 +30,7 @@ namespace BLAZAM.Common.Extensions
         {
             return str == null || str.Length < 1;
         }
+
         public static bool IsUrlLocalToHost(this string url)
         {
             if (url.StartsWith("https://localhost")) return true;

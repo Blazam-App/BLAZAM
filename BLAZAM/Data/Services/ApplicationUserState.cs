@@ -22,6 +22,8 @@ namespace BLAZAM.Server.Data.Services
     /// </value>
     public class ApplicationUserState : IApplicationUserState
     {
+
+        public AppEvent<AppUser> OnSettingsChange { get; set; }
         /// <summary>
         /// The web user who is currently logged in
         /// </summary>
@@ -81,13 +83,13 @@ namespace BLAZAM.Server.Data.Services
                             userSettings.Username = User.Identity?.Name;
                             context.UserSettings.Add(userSettings);
                             context.SaveChanges();
+                           
                         }
                     }
                     catch
                     {
-
+                        
                     }
-                    return null;
                 }
                 return userSettings;
             }
@@ -107,8 +109,11 @@ namespace BLAZAM.Server.Data.Services
                     dbUserSettings.Theme = this.UserSettings?.Theme;
                     dbUserSettings.SearchDisabledUsers = this.UserSettings.SearchDisabledUsers;
                     dbUserSettings.SearchDisabledComputers = this.UserSettings.SearchDisabledComputers;
+                    OnSettingsChange?.Invoke(dbUserSettings);
+
                     return (await context.SaveChangesAsync()) > 0;
                 }
+
             }
             catch
             {
@@ -127,17 +132,31 @@ namespace BLAZAM.Server.Data.Services
             }
         }
         /// <summary>
-        /// Returns the combined names of the user, and if applicable, the impersonators username
-        /// with the structure "{username}[ impersonated by {impersonatorName}]"
+        /// Returns the name of the user
         /// </summary>
-        public string AuditUsername
+        public string? Username
         {
             get
             {
-                string auditUsername = User.Identity.Name;
+                string? auditUsername = User.Identity?.Name;
+              
+                return auditUsername;
+            }
+        }
+
+        
+        /// <summary>
+        /// Returns the combined names of the user, and if applicable, the impersonators username
+        /// with the structure "{username}[ impersonated by {impersonatorName}]"
+        /// </summary>
+        public string? AuditUsername
+        {
+            get
+            {
+                string? auditUsername = Username;
                 if (Impersonator != null)
                 {
-                    auditUsername += " impersonated by " + Impersonator.Identity.Name;
+                    auditUsername += " impersonated by " + Impersonator?.Identity?.Name;
                 }
                 return auditUsername;
             }

@@ -18,7 +18,7 @@
                          Icon="@Icons.Material.Filled.Folder"
                          Class="minw-max w-100"
                          CanExpand=context.HasChildren()
-                            EndText="@EndText.Invoke(context)">
+                            EndText="@EndText?.Invoke(context)">
             @*<Content>
                 @{
                     string itemIcon = Icons.Material.Filled.Folder;

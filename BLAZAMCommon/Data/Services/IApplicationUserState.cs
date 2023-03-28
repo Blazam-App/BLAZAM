@@ -10,6 +10,7 @@ namespace BLAZAM.Common.Data.Services
     public interface IApplicationUserState
     {
         string AuditUsername { get; }
+        string Username { get; }
         IADUser? DirectoryUser { get; set; }
         ClaimsPrincipal? Impersonator { get; set; }
         bool IsSuperAdmin { get; }
@@ -19,6 +20,7 @@ namespace BLAZAM.Common.Data.Services
         AuthenticationTicket Ticket { get; set; }
         IList<NotificationMessage> Messages { get; set; }
         IApplicationUserSessionCache Cache { get; set; }
+        AppEvent<AppUser> OnSettingsChange { get; set; }
 
         bool Equals(object? obj);
         bool HasRole(string searchUsers);

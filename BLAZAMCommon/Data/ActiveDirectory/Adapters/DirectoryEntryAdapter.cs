@@ -123,6 +123,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 directoryEntry = value;
             }
         }
+        public void EnsureDirectoryEntry()
+        {
+            if(DirectoryEntry is null)
+            {
+                if(SearchResult is null)throw new ArgumentNullException(nameof(SearchResult));
+                DirectoryEntry = SearchResult.GetDirectoryEntry();
+            }
+        }
         /// <inheritdoc/>
         public ActiveDirectoryObjectType ObjectType
         {

@@ -109,8 +109,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                     //TODO Ensure bbroken
                     //Make sure this is not  usable
                    //VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset),
-                    Filter = "(&(|(objectClass=user)(objectClass=group)(objectCategory=computer)(objectClass=organizationalUnit)))"
+                    Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)))"
                 };
+                if (EnabledOnly!=true)
+                {
+                    searcher.Filter = searcher.Filter.Replace("(!userAccountControl:1.2.840.113556.1.4.803:=2)", "");
+                }
                 if (SearchDeleted)
                     searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + "(isDeleted=TRUE)" + ")";
 

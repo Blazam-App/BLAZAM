@@ -9,13 +9,6 @@ namespace BLAZAM.Server.Shared.UI.Outputs
     /// </summary>
     public partial class Base64Image
     {
-        /// <summary>
-        /// The raw byte array of the image to be displayed.
-        /// </summary>
-        [Parameter]
-        public byte[]? Data { get; set; }
 
-        [Parameter]
-        public string? Style { get; set; }
     }
 }

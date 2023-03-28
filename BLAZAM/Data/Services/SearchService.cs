@@ -58,7 +58,7 @@ namespace BLAZAM.Server.Data.Services
         {
             if (searchTerm != null)
                 SearchTerm = searchTerm;
-
+                
 
             _nav.NavigateTo("/search/" + SearchTerm);
 

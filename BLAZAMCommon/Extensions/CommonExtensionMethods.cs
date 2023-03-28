@@ -35,7 +35,7 @@ namespace BLAZAM.Common.Extensions
 {
     public static class CommonExtensions
     {
-       
+
         public static async Task<byte[]?> ToByteArrayAsync(this IBrowserFile file, int maxReadBytes = 5000000)
         {
             byte[] fileBytes;
@@ -232,7 +232,7 @@ namespace BLAZAM.Common.Extensions
         }
 
 
-      
+
         public static string ToHex(this System.Drawing.Color color)
         {
             string rtn = string.Empty;
@@ -259,16 +259,30 @@ namespace BLAZAM.Common.Extensions
 
         }
 
-
-        public static byte[] ReizeRawImage(this byte[] rawImage, int maxDimension)
+        /// <summary>
+        /// Resizes a raw byte array, assumed to be an image, to the maximum dimension provided
+        /// </summary>
+        /// <param name="rawImage"></param>
+        /// <param name="maxDimension"></param>
+        /// <param name="cropToSquare"></param>
+        /// <returns></returns>
+        public static byte[] ReizeRawImage(this byte[] rawImage, int maxDimension, bool cropToSquare = false)
         {
             using (var image = Image.Load(rawImage))
             {
                 if (image.Height > image.Width)
+                {
+                    if (cropToSquare)
+                        image.Mutate(x => x.Crop(image.Width, image.Width));
                     image.Mutate(x => x.Resize(0, maxDimension));
-                else
-                    image.Mutate(x => x.Resize(maxDimension, 0));
 
+                }
+                else
+                {
+                    if (cropToSquare)
+                        image.Mutate(x => x.Crop(image.Height, image.Height));
+                    image.Mutate(x => x.Resize(maxDimension, 0));
+                }
                 using (var ms = new MemoryStream())
                 {
                     image.SaveAsPng(ms);
@@ -301,7 +315,7 @@ namespace BLAZAM.Common.Extensions
             if (value == null) return null;
             try
             {
-                
+
                 long? fileTime = value?.ToUniversalTime().ToFileTimeUtc();
                 if (fileTime == null) return null;
                 object fto = 0;
@@ -338,7 +352,7 @@ namespace BLAZAM.Common.Extensions
 
                 }
                 if (longInt != null)
-                   return DateTime.FromFileTimeUtc(longInt.Value);
+                    return DateTime.FromFileTimeUtc(longInt.Value);
                 else
                 {
 

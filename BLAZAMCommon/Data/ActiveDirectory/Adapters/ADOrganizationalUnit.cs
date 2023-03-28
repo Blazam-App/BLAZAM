@@ -164,6 +164,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         /// <returns>An uncommited organizational unit</returns>
         public IADOrganizationalUnit CreateOU(string containerName)
         {
+            EnsureDirectoryEntry();
             IADOrganizationalUnit newOU = new ADOrganizationalUnit();
 
             newOU.Parse(DirectoryEntry.Children.Add("OU=" + containerName.Trim(), "OrganizationalUnit"), Directory);

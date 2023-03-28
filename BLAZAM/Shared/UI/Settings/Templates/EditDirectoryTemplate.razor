@@ -126,16 +126,17 @@
 
         <Section Title="Organizational Unit">
 
-            @if (SelectedOU != null)
+       @*     @if (SelectedOU != null)
             {
-
+*@
                 <OUTreeView Label=@(SettingsLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
+                
                         StartRootExpanded=false
                         @bind-SelectedOU=@SelectedOU
                         @bind-StartingSelectedOU=@SelectedOU />
 
 
-            }
+            @*}*@
 
         </Section>
         <Section Title="Assigned Groups">
@@ -172,7 +173,7 @@
     <MudButton Disabled=SaveDisabled Color="Color.Success" ButtonType="ButtonType.Submit">@buttonText</MudButton>
     @if (DirectoryTemplate.Id == 0)
     {
-        <MudButton Color="Color.Warning" OnClick="@(()=>{ DirectoryTemplate=null;})">Cancel</MudButton>
+        <MudButton Color="Color.Warning" OnClick="@(()=>{ DirectoryTemplate=new();})">Cancel</MudButton>
 
     }
 </EditForm>
@@ -230,10 +231,10 @@
         if (matching != null)
             DirectoryTemplate = matching;
         SelectedOU = (await Directory.OUs.FindOuByStringAsync(DirectoryTemplate.ParentOU)).FirstOrDefault();
-        if (SelectedOU == null)
-        {
-            SelectedOU = await Directory.OUs.GetApplicationRootOU();
-        }
+        //if (SelectedOU == null)
+        //{
+        //    SelectedOU = await Directory.OUs.GetApplicationRootOU();
+        //}
         fields = await Context.ActiveDirectoryFields.ToListAsync();
 
         await RefreshGroups();
