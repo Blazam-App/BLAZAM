@@ -97,7 +97,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.ToTable("ActiveDirectorySettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "[ADSettingsId] = 1");
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
                         });
                 });
 
@@ -273,8 +273,8 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         new
                         {
                             Id = 26,
-                            DisplayName = "Street",
-                            FieldName = "street"
+                            DisplayName = "PO Box",
+                            FieldName = "postOfficeBox"
                         },
                         new
                         {
@@ -317,6 +317,12 @@ namespace BLAZAM.Common.Migrations.Sqlite
                             Id = 33,
                             DisplayName = "Account Expiration",
                             FieldName = "accountExpires"
+                        },
+                        new
+                        {
+                            Id = 34,
+                            DisplayName = "Manager",
+                            FieldName = "manager"
                         });
                 });
 
@@ -341,7 +347,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<bool>("AutoUpdate")
                         .HasColumnType("INTEGER");
 
-                    b.Property<TimeSpan>("AutoUpdateTime")
+                    b.Property<TimeSpan?>("AutoUpdateTime")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("ForceHTTPS")
@@ -367,7 +373,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.ToTable("AppSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "[AppSettingsId] = 1");
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
                         });
                 });
 
@@ -701,7 +707,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.ToTable("AuthenticationSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "[AuthenticationSettingsId] = 1");
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
                         });
 
                     b.HasData(
@@ -758,7 +764,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.ToTable("EmailSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "[EmailSettingsId] = 1");
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
                         });
                 });
 
@@ -1147,7 +1153,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.ToTable("DirectoryTemplateGroups");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.UserSettings", b =>
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.AppUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1155,6 +1161,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.Property<string>("APIToken")
                         .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("ProfilePicture")
+                        .HasColumnType("BLOB");
 
                     b.Property<bool>("SearchDisabledComputers")
                         .HasColumnType("INTEGER");
@@ -1178,6 +1187,40 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .IsUnique();
 
                     b.ToTable("UserSettings");
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.NotificationMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Dismissable")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("Expires")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Link")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("UserNotifications");
                 });
 
             modelBuilder.Entity("PermissionDelegatePermissionMapping", b =>
@@ -1258,7 +1301,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Common.Models.Database.ActiveDirectoryField", "Field")
-                        .WithMany("FieldAccessMappings")
+                        .WithMany()
                         .HasForeignKey("ActiveDirectoryFieldId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1307,6 +1350,13 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasForeignKey("DirectoryTemplateId");
                 });
 
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.NotificationMessage", b =>
+                {
+                    b.HasOne("BLAZAM.Common.Models.Database.User.AppUser", null)
+                        .WithMany("Messages")
+                        .HasForeignKey("AppUserId");
+                });
+
             modelBuilder.Entity("PermissionDelegatePermissionMapping", b =>
                 {
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.PermissionDelegate", null)
@@ -1320,11 +1370,6 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasForeignKey("PermissionsMapsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryField", b =>
-                {
-                    b.Navigation("FieldAccessMappings");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.AccessLevel", b =>
@@ -1347,6 +1392,11 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Navigation("AssignedGroupSids");
 
                     b.Navigation("FieldValues");
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.AppUser", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

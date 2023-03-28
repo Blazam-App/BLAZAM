@@ -1,0 +1,150 @@
+@using BLAZAM.Server.Shared.UI.Themes;
+@inject IStringLocalizer<AppLocalization> AppLocalization
+@inject IApplicationUserStateService UserStateService
+@inject NavigationManager Nav
+@{
+    var messages = UserStateService.CurrentUserState?.Messages.Count;
+
+}
+@if (messages > 0)
+{
+    <MudPopover Open=@NotificationsOpen TransformOrigin="Origin.TopRight" AnchorOrigin="Origin.BottomRight">
+        <MudStack Row>
+        <MudListSubheader>Notifications</MudListSubheader>
+        <AppCloseButton OnClick=@(()=>{NotificationsOpen=false;}) />
+
+    </MudStack>
+
+    @foreach (var notification in UserStateService.CurrentUserState?.Messages)
+        {
+
+            <MudAlert OnClick=@(()=>{
+              if(notification.Link!=null)
+              Nav.NavigateTo(notification.Link.ToString());
+              }) ShowCloseIcon=notification.Dismissable>
+                @if (!notification.Title.IsNullOrEmpty())
+                {
+                    <MudText Typo="Typo.h6">@notification.Title</MudText>
+                }
+                @notification.Message
+            </MudAlert>
+        }
+
+
+    </MudPopover>
+}
+
+<MudMenu>
+    <ActivatorContent>
+        @{
+            var avatarBgColor = GenerateAvatarColor(UserStateService.CurrentUsername);
+        }
+        @if (messages > 0)
+        {
+            <MudBadge Color=Color.Tertiary Content="UserStateService.CurrentUserState.Messages.Count">
+                @if(UserStateService.CurrentUserState.UserSettings?.ProfilePicture!=null)
+                {
+                    <Base64Image Data="@UserStateService.CurrentUserState.UserSettings?.ProfilePicture" />
+                }else{
+            <MudAvatar Elevation="4" Style="@avatarBgColor">@UserStateService.CurrentUsername?.FirstOrDefault()</MudAvatar>
+
+                }
+
+            </MudBadge>
+        }
+        else
+        {
+            @if (UserStateService.CurrentUserState.UserSettings?.ProfilePicture != null)
+            {
+                <Base64Image Data="@UserStateService.CurrentUserState.UserSettings?.ProfilePicture" />
+
+            }
+            else
+            {
+                <MudAvatar Elevation="4" Style="@avatarBgColor">@UserStateService.CurrentUsername?.FirstOrDefault()</MudAvatar>
+
+            }
+
+        }
+
+    </ActivatorContent>
+    <ChildContent>
+
+        @if (messages > 0)
+        {
+            <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})">Notifications</MudMenuItem>
+        }
+
+        <MudNavGroup Title="Themes">
+            @foreach (var theme in ApplicationTheme.Themes)
+            {
+                <MudMenuItem OnClick=@(()=>{mainLayout.SetUserTheme(theme);})>
+                    @theme.Name
+                </MudMenuItem>
+            }
+
+
+        </MudNavGroup>
+        <MudMenuItem OnClick="@(()=>{profileModal.Show();})" Icon="@Icons.Material.Filled.Settings">
+            @AppLocalization["Profile Settings"]
+        </MudMenuItem>
+        @if (UserStateService.CurrentUserState?.Impersonator == null)
+        {
+            <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/logout",true);})" Icon="@Icons.Material.Filled.Logout">
+                @AppLocalization["Sign Out"]
+            </MudMenuItem>
+        }
+        else
+        {
+            <MudMenuItem Href="/unimpersonate" Icon="@Icons.Material.Filled.PersonOff">
+
+                @AppLocalization["Stop It"]
+            </MudMenuItem>
+        }
+    </ChildContent>
+</MudMenu>
+<AppModal @ref=profileModal Title="Profile Settings">
+    <MudFileUpload T="IBrowserFile" FilesChanged="UploadProfilePicture">
+        <ButtonTemplate>
+            <MudButton HtmlTag="label"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       for="@context">
+                Upload Files
+            </MudButton>
+        </ButtonTemplate>
+    </MudFileUpload>
+</AppModal>
+@code {
+    AppModal? profileModal;
+    /// <summary>
+    /// Indicates whether the notification panel is open
+    /// </summary>
+    bool NotificationsOpen;
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+    /// <summary>
+    /// Generate a repeatable hex color based on the given username
+    /// </summary>
+    /// <param name="username"></param>
+    /// <returns>A background-color style string</returns>
+    string GenerateAvatarColor(string username)
+    {
+        if (username.IsNullOrEmpty()) return "background-color:#0c13a7";
+        int usernameHash = username.GetAppHashCode();
+        byte[] usernameHashBytes = usernameHash.ToByteArray(3);
+        string hexColor = "background-color:#";
+        hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
+        return hexColor;
+    }
+    async Task UploadProfilePicture(IBrowserFile profilePictureFile)
+    {
+        var rawBytes = await profilePictureFile.ToByteArrayAsync();
+        if (rawBytes != null)
+        {
+            UserStateService.CurrentUserState.UserSettings.ProfilePicture = rawBytes;
+            await UserStateService.CurrentUserState.SaveUserSettings();
+        }
+    }
+}

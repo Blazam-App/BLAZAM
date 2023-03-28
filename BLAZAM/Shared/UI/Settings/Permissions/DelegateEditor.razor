@@ -4,12 +4,11 @@
 
 @inherits AppComponentBase
 <h3>Delegates</h3>
-<LoadingIndicator Visible=LoadingData>
     <p> Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) will be allowed to log in to the applicaiton.</p>
     <p> The acceess allowed to each delegate is controlled by the mapped access level.</p>
-    <ListGroup>
+
         <MudStack Row>
-            <MudTextField Display=Display.InlineFlex Placeholder="Filter Delegates" @bind-Value="@GroupFilter" />
+            <MudTextField Display=Display.InlineFlex Placeholder="Filter Delegates" @bind-Value="@DelegateFilter" />
             <MudSpacer />
             <MudButton Color=Color.Secondary OnClick="(()=>{trashModal.Show();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
         </MudStack>
@@ -18,62 +17,48 @@
 
             @foreach (var pl in AllDelegates.Where(l => l.DeletedAt == null).Where(l =>
            Directory.GetDirectoryModelBySid(l.DelegateSid).CanonicalName
-           .StartsWith(GroupFilter, StringComparison.OrdinalIgnoreCase) ||
+           .StartsWith(DelegateFilter, StringComparison.OrdinalIgnoreCase) ||
            Directory.GetDirectoryModelBySid(l.DelegateSid).CanonicalName
-           .Contains(GroupFilter, StringComparison.OrdinalIgnoreCase)))
+           .Contains(DelegateFilter, StringComparison.OrdinalIgnoreCase)))
             {
-                <BLAZAM.Server.Shared.UI.Settings.Permissions.PriviligeLevelListItem Level="pl" Context="Context" DelegateDeleted="DelegatesChanged" />
+                <DelegateListItem Level="pl" Context="Context" DelegateDeleted="DelegatesChanged" />
             }
         }
-        <ListGroupItem Name="AddUserGroup">
 
             <MudButton Background="Background.Success" OnClick="@ShowAddGroup">
                 @SettingsLocalization["Create New Delegation Target"]
             </MudButton>
-        </ListGroupItem>
 
-    </ListGroup>
     <AppModal @ref=@trashModal Title="Deleted Delegates">
         @foreach (var deleg in AllDelegates.Where(l => l.DeletedAt != null))
         {
             var model = @Directory.GetDirectoryModelBySid(deleg.DelegateSid);
             <MudContainer>
-                <Column>
-                    <Strong>@model.ObjectType</Strong><br />
+                    <b>@model.ObjectType</b><br />
                     <MudText>@model.CanonicalName</MudText>
                     <MudText>@deleg.DeletedAt</MudText>
-                </Column>
-                <Column>
                     <MudButton Float="Float.End" Color="Color.Primary" OnClick="(()=>{RestoreDelegate(deleg);})">Restore</MudButton>
-                </Column>
 
             </MudContainer>
         }
     </AppModal>
-    <AppModal @ref=@addGroupModal Title="Add Delegate" YesText="Add"
-              OnCancel=@(()=>{
-              string test= "";
-              })
-              OnYes="@((val)=>{
-
-})">
+    <AppModal @ref=@addGroupModal Title="Add Delegate" YesText="Add">
         <AddPrivilegeLevelModalContent @ref=addDelegateContent />
     </AppModal>
 
-</LoadingIndicator>
 
 @{
 
 }
 @code {
 #nullable disable warnings
-    string _groupFilter = "";
-    string GroupFilter
+    string _DelegateFilter = "";
+    string DelegateFilter
     {
-        get => _groupFilter; set
+        get => _DelegateFilter; set
         {
-            if (_groupFilter == value) return;
-            _groupFilter = value;
+            if (_DelegateFilter == value) return;
+            _DelegateFilter = value;
             InvokeAsync(StateHasChanged);
         }
     }

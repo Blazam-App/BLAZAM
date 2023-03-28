@@ -29,11 +29,26 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace BLAZAM.Common.Extensions
 {
     public static class CommonExtensions
     {
+       
+        public static async Task<byte[]?> ToByteArrayAsync(this IBrowserFile file, int maxReadBytes = 5000000)
+        {
+            byte[] fileBytes;
+            using (var stream = file.OpenReadStream(5000000))
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await stream.CopyToAsync(memoryStream);
+                    fileBytes = memoryStream.ToArray();
+                }
+            }
+            return fileBytes;
+        }
         public static string GetValueChangesString(this List<AuditChangeLog> changes, Func<AuditChangeLog, object?> valueSelector)
         {
             var values = "";

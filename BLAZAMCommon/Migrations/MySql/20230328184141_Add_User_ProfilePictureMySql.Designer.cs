@@ -3,6 +3,7 @@ using System;
 using BLAZAM.Common.Data.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Common.Migrations.MySql
 {
     [DbContext(typeof(MySqlDatabaseContext))]
-    partial class MySqlDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230328184141_Add_User_ProfilePictureMySql")]
+    partial class AddUserProfilePictureMySql
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

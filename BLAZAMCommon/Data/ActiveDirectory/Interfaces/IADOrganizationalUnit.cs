@@ -19,6 +19,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         IQueryable<PermissionMapping> OffspringPermissionMappings { get; }
         IEnumerable<IADOrganizationalUnit> Children { get; }
         IQueryable<IADUser> ChildUsers { get; }
+        bool IsLoadingChildren { get; set; }
+
         IADUser CreateUser(string containerName);
         IADOrganizationalUnit CreateOU(string containerName);
         Task<IEnumerable<IADOrganizationalUnit>> GetChildrenAsync();

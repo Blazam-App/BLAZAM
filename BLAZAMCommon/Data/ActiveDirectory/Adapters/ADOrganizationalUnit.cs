@@ -43,9 +43,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             get
             {
-
+                IsLoadingChildren = true;
                 if (childrenCache == null)
                     childrenCache = Directory.OUs.FindSubOusByDN(DN).OrderBy(ou=>ou.CanonicalName).AsQueryable();
+                
+                IsLoadingChildren = false;
+
                 return childrenCache;
             }
         }
@@ -133,6 +136,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 return DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
             }
         }
+
+        public bool IsLoadingChildren { get; set; }
+
         /// <summary>
         /// Creates a new group under this OU. Note that the returned Directory object
         /// must execute CommitChanges() to actually create the object in Active

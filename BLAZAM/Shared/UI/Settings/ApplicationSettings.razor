@@ -122,14 +122,16 @@
 
     private async void LoadIcon(IBrowserFile e)
     {
+        byte[] fileBytes;
         using (var stream = e.OpenReadStream(5000000))
         {
             using (var memoryStream = new MemoryStream())
             {
                 await stream.CopyToAsync(memoryStream);
-                settings.AppIcon = memoryStream.ToArray();
+                fileBytes = memoryStream.ToArray();
             }
         }
+        settings.AppIcon = await e.ToByteArrayAsync(5000000);
         await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
 

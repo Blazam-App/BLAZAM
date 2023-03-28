@@ -32,38 +32,9 @@
     }
 
     <MudSpacer />
-    @{
-        var messages = UserStateService.CurrentUserState?.Messages.Count;
-
-    }
-    @if (messages > 0)
-    {
-        <MudPopover Open=@NotificationsOpen TransformOrigin="Origin.TopRight" AnchorOrigin="Origin.BottomRight">
-            <MudStack Row>
-            <MudListSubheader>Notifications</MudListSubheader>
-            <AppCloseButton OnClick=@(()=>{NotificationsOpen=false;}) />
-
-        </MudStack>
-
-        @foreach (var notification in UserStateService.CurrentUserState?.Messages)
-            {
-
-                <MudAlert OnClick=@(()=>{
-                  if(notification.Link!=null)
-                  Nav.NavigateTo(notification.Link.ToString());
-                  }) ShowCloseIcon=notification.Dismissable>
-                    @if (!notification.Title.IsNullOrEmpty())
-                    {
-                        <MudText Typo="Typo.h6">@notification.Title</MudText>
-                    }
-                    @notification.Message
-                </MudAlert>
-            }
-
-
-        </MudPopover>
-    }
-    <MudMenu>
+  
+    <AppUserButton/>
+    @*<MudMenu>
         <ActivatorContent>
             @{
                 var avatarBgColor = GenerateAvatarColor(UserStateService.CurrentUsername);
@@ -112,30 +83,30 @@
                 </MudMenuItem>
             }
         </ChildContent>
-    </MudMenu>
+    </MudMenu>*@
 </MudAppBar>
 
 
 @code {
-    /// <summary>
-    /// Indicates whether the notification panel is open
-    /// </summary>
-    bool NotificationsOpen;
+    ///// <summary>
+    ///// Indicates whether the notification panel is open
+    ///// </summary>
+    //bool NotificationsOpen;
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
-    /// <summary>
-    /// Generate a repeatable hex color based on the given username
-    /// </summary>
-    /// <param name="username"></param>
-    /// <returns>A background-color style string</returns>
-    string GenerateAvatarColor(string username)
-    {
-        if (username.IsNullOrEmpty()) return "background-color:#0c13a7";
-        int usernameHash = username.GetAppHashCode();
-        byte[] usernameHashBytes = usernameHash.ToByteArray(3);
-        string hexColor = "background-color:#";
-        hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
-        return hexColor;
-    }
+    ///// <summary>
+    ///// Generate a repeatable hex color based on the given username
+    ///// </summary>
+    ///// <param name="username"></param>
+    ///// <returns>A background-color style string</returns>
+    //string GenerateAvatarColor(string username)
+    //{
+    //    if (username.IsNullOrEmpty()) return "background-color:#0c13a7";
+    //    int usernameHash = username.GetAppHashCode();
+    //    byte[] usernameHashBytes = usernameHash.ToByteArray(3);
+    //    string hexColor = "background-color:#";
+    //    hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
+    //    return hexColor;
+    //}
 
 }

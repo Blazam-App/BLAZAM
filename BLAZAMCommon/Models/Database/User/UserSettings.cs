@@ -9,6 +9,7 @@
         public bool SearchDisabledComputers { get; set; }
         public string? Username { get; set; }
         public List<NotificationMessage> Messages { get; set; }
+        public byte[]? ProfilePicture { get; set; }
     }
     
 }

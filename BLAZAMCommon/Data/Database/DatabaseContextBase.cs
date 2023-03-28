@@ -563,9 +563,9 @@ namespace BLAZAM.Common.Data.Database
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 if (Database.IsMySql())
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "AppSettingsId = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
                 else
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AppSettingsId] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
             });
 
             modelBuilder.Entity<ADSettings>(entity =>
@@ -573,9 +573,9 @@ namespace BLAZAM.Common.Data.Database
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 if (Database.IsMySql())
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "ADSettingsId = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
                 else
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[ADSettingsId] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
 
             });
             modelBuilder.Entity<AuthenticationSettings>(entity =>
@@ -583,10 +583,10 @@ namespace BLAZAM.Common.Data.Database
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 if (Database.IsMySql())
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "AuthenticationSettingsId = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
 
                 else
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[AuthenticationSettingsId] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
                 entity.HasData(new AuthenticationSettings
                 {
                     Id = 1,
@@ -599,10 +599,10 @@ namespace BLAZAM.Common.Data.Database
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 if (Database.IsMySql())
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "EmailSettingsId = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
 
                 else
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[EmailSettingsId] = 1"));
+                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
 
             });
 
