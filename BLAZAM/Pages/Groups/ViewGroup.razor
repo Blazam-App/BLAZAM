@@ -114,7 +114,7 @@
     @if (Group.HasMembers)
     {
         <Section Title="Members">
-            <MudDataGrid Items="@Group.Members" Filterable="false" SortMode="@SortMode.None" Groupable="false">
+            <MudDataGrid Elevation=0 Items="@Group.Members.Where(m=>m.CanRead)" Filterable="false" SortMode="@SortMode.None" Groupable="false">
                 <Columns>
                     <PropertyColumn Property="x => x.ObjectType" Title="Type" />
                     <TemplateColumn Context="templateContext">
@@ -130,87 +130,16 @@
                 </Columns>
             </MudDataGrid>
         </Section>
+        if (Group.Members.Where(m => !m.CanRead).Count() > 0)
+        {
+            <MudAlert Class="mud-alert-filled-info">
+                The user is in more groups you don't have access to
+            </MudAlert>
+        }
     }
-    @*
-    @if (Group.HasMembers)
-    {
-    <Section Title="Members">
-    <div>
-    <ListGroup Margin=Margin.Is3.OnX Background="Background.Light" Color="Color.Dark">
-    @if (Group.UserMembers.Count > 0)
-    {
-    <ListGroupItem Background="Background.Dark">
-    Users
-    </ListGroupItem>
-    }
-    @foreach (var user in Group.UserMembers)
-    {
-    var linkAdd = "/users/search/" + user.SamAccountName;
-    <ListGroupItem Background="Background.Light" Color="Color.Dark" Padding="Padding.Is0.OnY.Is3.OnX" Style="height:1.5em">
-    <GroupMember Member=user Group="Group" To="@linkAdd" OnGroupMembershipChange="@((change)=>{
-    InvokeAsync(StateHasChanged);
-    })" />
-    </ListGroupItem>
-    }
-    @if (Group.GroupMembers.Count > 0)
-    {
-    <ListGroupItem Background="Background.Dark">
-    Groups
-    </ListGroupItem>
-    }
-    @foreach (var group in Group.GroupMembers)
-    {
-    string linkAdd = "/groups/search/" + group.SamAccountName;
-    <ListGroupItem Background="Background.Light" Color="Color.Dark" Padding="Padding.Is0.OnY.Is3.OnX" Style="height:1.5em">
-    <GroupMember Member=group Group=Group To=@linkAdd OnGroupMembershipChange="@((change)=>{InvokeAsync(StateHasChanged);})" />
-    </ListGroupItem>
-    }
-    </ListGroup>
-    </div>
-    </Section>
-    }
-
-    @if (Group.CanReadField(ActiveDirectoryFields.MemberOf))
-    {
 
 
 
-    <MudFieldBody ColumnSize="ColumnSize.Is12">
-    <Row>
-    @if (Group.IsAGroupMember)
-    {
-    var deniedRead = false;
-    @foreach (ADGroup g in Group.MemberOf.Where(g => g.CanRead))
-    {
-    if (g.CanRead)
-    {
-    <Column ColumnSize="ColumnSize.Is6.OnDesktop">
-    <AssignedGroup Group=g Member="Group" OnGroupMembershipChange="@((change)=>{InvokeAsync(StateHasChanged);})" />
-    </Column>
-    }
-    else
-    {
-    deniedRead = true;
-    }
-    }
-
-    if (deniedRead)
-    {
-    <Column ColumnSize="ColumnSize.Is6.OnDesktop">
-    The user is in more groups you don't have access to
-    </Column>
-    }
-
-    }
-    else
-    {
-    <PageProgress Visible />
-    }
-    </Row>
-
-
-    }
-    *@
 
     @if (Group.HasUnsavedChanges)
     {

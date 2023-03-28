@@ -310,7 +310,7 @@ namespace BLAZAM.Common.Extensions
             //read file time 133213804065419619
             try
             {
-                if (value == null) return DateTime.MinValue;
+                if (value == null) return null;
 
 
                 Int64? longInt = null;

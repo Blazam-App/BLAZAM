@@ -9,6 +9,7 @@ namespace BLAZAM.Server.Data.Services
         private readonly IApplicationUserStateService _userStateService;
         private readonly NavigationManager _nav;
         private bool includeDisabled = false;
+        private string? searchTerm;
 
         public bool IncludeDisabled
         {
@@ -19,11 +20,15 @@ namespace BLAZAM.Server.Data.Services
                 DisabledOptionChanged();
             }
         }
-        public string? SearchTerm { get; set; }
+        public string? SearchTerm
+        {
+            get => searchTerm;
+            set => searchTerm = value;
+        }
 
         public ActiveDirectoryObjectType SeachObjectType { get; set; } = ActiveDirectoryObjectType.All;
 
-        public SearchService(IApplicationUserStateService userStateService,NavigationManager nav)
+        public SearchService(IApplicationUserStateService userStateService, NavigationManager nav)
         {
             _userStateService = userStateService;
             _nav = nav;

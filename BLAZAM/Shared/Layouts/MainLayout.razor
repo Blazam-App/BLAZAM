@@ -18,7 +18,7 @@
 }
 <PageTitle>@DatabaseCache.ApplicationSettings.AppAbbreviation</PageTitle>
 <CascadingValue Value="this">
-    <MudLayout>
+    <MudLayout Style="min-height:98vh;">
         <AuthorizeView Context="authContext">
             <Authorized>
                 <CascadingValue Value="this">
@@ -50,7 +50,7 @@
 
 
 
-                <MudMainContent>
+                <MudMainContent Class="mud-height-full">
                     @if (setSubHeader != null)
                     {
                         <MudAppBar Color=Color.Primary Style="top:64px;" Elevation="1">
@@ -60,7 +60,7 @@
                     }
 
 
-                    <MudContainer Style="@topMarginForContent" MaxWidth="MaxWidth.Large" Class="pt-5">
+                    <MudContainer Style="@topMarginForContent" MaxWidth="MaxWidth.Large" Class="pt-5 mud-height-full">
     
 
                         @Body

@@ -152,7 +152,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
 
                 var date = LockoutTime;
-                bool matches = !date.Equals(ADS_NULL_TIME )&& !date.Equals(DateTime.MinValue);
+                bool matches = date != null && !date.Equals(ADS_NULL_TIME) && !date.Equals(DateTime.MinValue);
                 return matches;
             }
             set

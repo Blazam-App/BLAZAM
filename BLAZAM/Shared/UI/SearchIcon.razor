@@ -1,21 +1,21 @@
-<div Margin="Margin.IsAuto" Width=Width.Is100 Height=Height.Is100 TextAlignment="TextAlignment.Center" Display="Display.Table">
-    <div Display="Display.TableCell" VerticalAlignment="VerticalAlignment.Middle">
-        <div>
-            <MudIcon Style="font-size:4em;opacity:20%" Name=Name />
-            <div Style="width:0px;height:0px;" Position="Position.Relative" Margin="Margin.IsAuto.OnX">
-                <MudIcon Style="font-size:12em;opacity:20%;position: absolute;left: -78px;top:-109px;" Name=@("fa-solid fa-magnifying-glass") />
-            </div>
-
-        </div>
-        <MudText Typo ="Typo.h1" style="margin-top:85px;" Class="mud-theme-info">@Text</MudText>
+<MudElement Style="display:table" Class="mt-16 mud-width-full mud-height-full mx-auto" >
+    <MudElement  Class="w-min" Style="text-align:center; display:table-cell">
+       
+            <MudIcon Style="font-size:4em;opacity:20%" Icon=@Icon/>
+            <MudElement Style="width:0px;height:0px;" Class="relative ma-auto">
+                <MudIcon Style="font-size:12em;opacity:20%;position: absolute;left: -78px;top:-109px;" Icon=@Icons.Material.Filled.Search/>
+            </MudElement>
+      
+        <MudText Typo ="Typo.h4">@Text</MudText>
         <MudText Color="Color.Default">@Subtext</MudText>
+        <MudProgressLinear Indeterminate />
 
-    </div>
-</div>
+    </MudElement>
+</MudElement>
 
 @code{
     [Parameter]
-    public string? Name  { get; set; }
+    public string? Icon { get; set; }
     [Parameter]
     public string? Text  { get; set; }
     [Parameter]

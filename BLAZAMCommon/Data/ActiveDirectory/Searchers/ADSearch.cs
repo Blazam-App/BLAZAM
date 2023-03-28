@@ -106,7 +106,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                 var pageSize = 40;
                 searcher = new DirectorySearcher(SearchRoot)
                 {
-                    VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset),
+                    //TODO Ensure bbroken
+                    //Make sure this is not  usable
+                   //VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset),
                     Filter = "(&(|(objectClass=user)(objectClass=group)(objectCategory=computer)(objectClass=organizationalUnit)))"
                 };
                 if (SearchDeleted)
@@ -117,7 +119,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                     case ActiveDirectoryObjectType.All:
                     case null:
                         if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(distinguishedName=" + GeneralSearchTerm + ")(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(proxyAddresses=*" + GeneralSearchTerm + "*))";
+                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(distinguishedName=" + GeneralSearchTerm + ")(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(proxyAddresses=*" + GeneralSearchTerm + "*)(ou=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*))";
                         break;
 
                     case ActiveDirectoryObjectType.Group:
@@ -151,7 +153,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                         searcher.VirtualListView = null;
                         searcher.Filter = "(&(objectCategory=organizationalUnit))";
                         if (GeneralSearchTerm != null)
-                            FilterQuery = "(|(distinguishedName=" + GeneralSearchTerm + ")(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*))";
+                            FilterQuery = "(|(distinguishedName=" + GeneralSearchTerm + ")(ou=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*))";
 
                         break;
                 }
@@ -207,6 +209,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                 OnSearchCompleted?.Invoke();
 
 
+                //return Results;
                 return Results.Cast<TInterface>().ToList();
 
                 // return result;

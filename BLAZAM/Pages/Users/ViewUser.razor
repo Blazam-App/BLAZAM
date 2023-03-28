@@ -210,15 +210,16 @@
                         <MudItem xs="12" md="3">
                             <Section FullWidth=false>
 
-                                <MudCard Elevation="2" 
-                                    Style="width:fit-content;height:fit-content"
-                                Class="relative mx-auto my-auto d-block p-1" 
-                                @onmouseenter=@(()=>{showRemoveThumbnail=true;})
+                                <MudCard Elevation="2"
+                                     Style="width:fit-content;height:fit-content"
+                                     Class="relative mx-auto my-auto d-block p-1"
+                                     @onmouseenter=@(()=>{showRemoveThumbnail=true;})
                                      @onmouseleave=@(()=>{showRemoveThumbnail=false;})>
                                     @if (User?.ThumbnailPhoto != null)
                                     {
-                                        <Base64Image Style="max-height:150px;max-width:150px;" Data="User.ThumbnailPhoto.ReizeRawImage(150)"  />
-                                        @if(showRemoveThumbnail){
+                                        <Base64Image Style="max-height:150px;max-width:150px;" Data="User.ThumbnailPhoto.ReizeRawImage(150)" />
+                                        @if (showRemoveThumbnail)
+                                        {
 
                                             <MudIconButton OnClick=RemoveThumbnail
                                                Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;left:10px"
@@ -232,12 +233,13 @@
                                         <MudIcon Style="height:150px;width:150px;" Icon="@Icons.Material.Filled.Person" />
 
                                     }
-                                       @if(showRemoveThumbnail){
-                                    <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.Show();})
+                                    @if (showRemoveThumbnail)
+                                    {
+                                        <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.Show();})
                                                Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
                                                Color=Color.Primary
                                                Icon="@Icons.Material.Filled.Upload" />
-                                       }
+                                    }
                                 </MudCard>
 
                                 <MudStack Row>
@@ -256,16 +258,19 @@
                                     <MudText Style="text-align:end;" Typo="Typo.caption">@User.LastChanged?.ToShortDateString()</MudText>
                                 </MudTooltip>
                             </MudStack>
-                            <MudStack Row>
-                                <MudText Typo="Typo.subtitle2">Locked Out Time:</MudText>
-                                <MudSpacer />
-                                <MudTooltip Text="@User.LockoutTime?.TimeOfDay.ToString()">
+                            @if (User.LockedOut)
+                                {
+                                    <MudStack Row>
+                                    <MudText Typo="Typo.subtitle2">Locked Out Time:</MudText>
+                                    <MudSpacer />
+                                    <MudTooltip Text="@User.LockoutTime?.TimeOfDay.ToString()">
 
-                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.LockoutTime?.ToShortDateString()</MudText>
-                                </MudTooltip>
+                                        <MudText Style="text-align:end;" Typo="Typo.caption">@User.LockoutTime?.ToShortDateString()</MudText>
+                                    </MudTooltip>
 
-                            </MudStack>
-                            <MudStack Row>
+                                </MudStack>
+                                }
+                                <MudStack Row>
                                 <MudText Typo="Typo.subtitle2">OU:</MudText>
                                 <MudSpacer />
 
@@ -596,38 +601,23 @@
                 @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
                 {
 
-
-                    <MudStack Row>
-                    @if (User.IsAGroupMember)
+                    <MudList Clickable="true">
+                        @foreach (ADGroup g in User.MemberOf.Where(group => group.CanRead))
                         {
-                            var deniedRead = false;
-                            <MudStack>
-
-                                @foreach (ADGroup g in User.MemberOf.Where(group => group.CanRead))
-                                {
-                                    if (g.CanRead)
-                                    {
-                                        <BLAZAM.Server.Shared.UI.Groups.AssignedGroup Group=g Member="User" OnGroupMembershipChange="@((change)=>{InvokeAsync(StateHasChanged);})" />
-
-                                    }
-                                    else
-                                    {
-                                        deniedRead = true;
-                                    }
-                                }
-                            </MudStack>
-
-                            if (deniedRead)
+                            if (g.CanRead)
                             {
-                                <MudText>
-                                    The user is in more groups you don't have access to
-                                </MudText>
+                                <MudListItem Text="@g.CanonicalName" OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})" />
+
                             }
 
                         }
-
-                    </MudStack>
-
+                        @if (User.MemberOf.Where(group => !group.CanRead).Count() > 0)
+                        {
+                            <MudListItem Text="The user is in more groups you don't have access to" />
+                        }
+                      
+                    </MudList>
+                    
 
                 }
 
