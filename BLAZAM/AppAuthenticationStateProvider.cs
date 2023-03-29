@@ -136,17 +136,22 @@ namespace BLAZAM
         /// </summary>
         /// <param name="loginReq">The authentication details and options for login</param>
         /// <returns>A fully processed AuthenticationState with all Claims and application permissions applied.</returns>
-        public async Task<AuthenticationState?> Login(LoginRequest loginReq)
+        public async Task<LoginResult> Login(LoginRequest loginReq)
         {
+            LoginResult loginResult = new(loginReq);
             _newUserState = new(_factory);
-            if (loginReq != null && loginReq.Username != null && loginReq.Username != "")
-            {
-                AuthenticationState? result = null;
+            if (loginReq == null) return loginResult.NoData();
+                if(loginReq.Username.IsNullOrEmpty()) return loginResult.NoUsername();
+
+            AuthenticationState? result = null;
 
                 //Set the current user from the HttpContext which gets it from the user's browser cookie
                 CurrentUser = _httpContextAccessor?.HttpContext?.User;
                 //Block impersonation logins from non superadmins
-                if (loginReq.Impersonation && CurrentUser != null && !CurrentUser.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin)) return new AuthenticationState(this.CurrentUser);
+                if (loginReq.Impersonation 
+                    && CurrentUser != null 
+                    && !CurrentUser.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin))
+                    return loginResult.UnauthorizedImpersonation();
                 //If the user is impersonating then we want to remember who we were before
                 if (loginReq.Impersonation)
                 {
@@ -191,11 +196,10 @@ namespace BLAZAM
 
                 //Return the authenticationstate
                 if (result != null)
-                    return result;
+                    return loginResult.Success(result);
                 else
-                    return null;
-            }
-            return null;
+                    return loginResult.UnknownFailure();
+          
 
         }
 

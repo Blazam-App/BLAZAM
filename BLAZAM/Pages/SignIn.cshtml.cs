@@ -47,16 +47,17 @@ namespace BLAZAM.Server.Pages
         {
 
             var result = await Auth.Login(req);
-            if (result != null)
+            if (result != null && result.Status==LoginResultStatus.OK)
             {
-                await HttpContext.SignInAsync(result.User);
-                await AuditLogger.Logon.Login(result.User);
+                await HttpContext.SignInAsync(result.AuthenticationState.User);
+                await AuditLogger.Logon.Login(result.AuthenticationState.User);
                 //return Redirect(req.ReturnUrl);
             }
             //Nav.NavigateTo("/signin?returnUrl="+req.ReturnUrl, true);
             //return (IActionResult)Results.Ok();
             //return Redirect("/signin?returnUrl="+req.ReturnUrl);
-            return Redirect(req.ReturnUrl);
+            return new ObjectResult(result.Status);
+            //return Redirect(req.ReturnUrl);
         }
 
 

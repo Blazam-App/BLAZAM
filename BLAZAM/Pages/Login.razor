@@ -3,6 +3,7 @@
 @using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 @using BLAZAM.Server.Data.Services.Email;
 @inherits ValidatedForm
+@inject IJSRuntime JSRuntime
 @layout LoginLayout
 @{
     var redirectUrl = Nav.Uri;
@@ -22,20 +23,19 @@
         <MudImage Src="@StaticAssets.ApplicationIconUri" />
 
     </MudElement>
-    <form class="login-form" method="post" action="/signin">
-        <MudContainer Style="max-width:300px;" Class="py-4">
+    <form onsubmit="@AttemptSignIn" class="login-form" method="post" action="/signin" id="login-form">
+        <MudContainer  Style="max-width:300px;" Class="py-4">
             @if (!Program.InDemoMode || DemoCustomLogin)
             {
 
 
 
-                <MudTextField Class="justify-center" AutoFocus Label="Username" name="username" @bind-Value=LoginRequest.Username />
+                <MudTextField Disabled=@attemptingSignIn Class="justify-center" AutoFocus Label="Username" name="Username" @bind-Value=LoginRequest.Username />
 
-                <MudTextField Class="justify-center" Label="Password" name="password" InputType="InputType.Password" @bind-Value=LoginRequest.Password />
+                <MudTextField Disabled=@attemptingSignIn Class="justify-center" Label="Password" name="Password" InputType="InputType.Password" @bind-Value=LoginRequest.Password />
                 <MudTextField Class="d-none" name="ReturnUrl" Value="@redirectUrl" />
-
-                <MudButton Class="my-5" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</MudButton>
-
+                    <MudButton OnClick=@(()=>{attemptingSignIn=true;})  Class="my-5" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</MudButton>
+                     
                 <br />
 
             }
@@ -48,15 +48,21 @@
                     <MudTextField name="ReturnUrl" Value="@redirectUrl" />
                 </MudContainer>
 
-                <MudButtonGroup  Color=Color.Primary Variant="Variant.Outlined">
-                    <MudButton Class="my-6" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
+                <MudButtonGroup Color=Color.Primary Variant="Variant.Outlined">
+                 
+
+                        <MudButton OnClick=@(()=>{attemptingSignIn=true;}) Disabled=@attemptingSignIn Class="my-6" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
+                
                     <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
-                        <MudMenuItem OnClick=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</MudMenuItem>
+                            <MudMenuItem OnClick=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</MudMenuItem>
                     </MudMenu>
                 </MudButtonGroup>
 
             }
         </MudContainer>
+       <MudOverlay Visible="attemptingSignIn" DarkBackground="true" Absolute="true">
+            <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+        </MudOverlay>
     </form>
 
     <Copyright Class="mx-auto" />
@@ -82,7 +88,8 @@
 </style>
 
 @code {
-    
+    bool attemptingSignIn = false;
+
     bool DemoCustomLogin = false;
     LoginRequest LoginRequest = new();
     protected override async Task OnInitializedAsync()
@@ -100,6 +107,44 @@
 
 
     }
+    async void AttemptSignIn()
+    {
+        var authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn",null);
+        if (!authenticationResult.IsNullOrEmpty())
+        {
+            int resultCode = int.Parse(authenticationResult);
 
+            switch ((LoginResultStatus)resultCode)
+            {
+
+                case LoginResultStatus.NoUsername:
+                    SnackBarService.Info("Username is missing");
+
+                    break;
+                case LoginResultStatus.NoPassword:
+                    SnackBarService.Info("Password is missing");
+
+                    break;
+                case LoginResultStatus.NoData:
+                    SnackBarService.Info("Login request is missing");
+
+                    break;
+                case LoginResultStatus.BadCredentials:
+                    SnackBarService.Warning("Username or password not correct");
+
+                    break;
+                case LoginResultStatus.UnauthorizedImpersonation:
+                    SnackBarService.Info("Username is missing");
+
+                    break;
+                case LoginResultStatus.UnknownFailure:
+                    SnackBarService.Info("Unknown error while attempting to log in");
+
+                    break;
+            }
+            attemptingSignIn = false;
+            InvokeAsync(StateHasChanged);
+        }
+    }
 
 }
