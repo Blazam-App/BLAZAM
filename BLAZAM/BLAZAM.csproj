@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.7.2</AssemblyVersion>
-		<Version>2023.03.28.2315</Version>
+		<Version>2023.03.29.1234</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -155,6 +155,6 @@
 	  </None>
 	</ItemGroup>
 <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-  <Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)&#xD;&#xA;powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\BuildDocumentation.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />
+  <Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />
 </Target>	
 </Project>

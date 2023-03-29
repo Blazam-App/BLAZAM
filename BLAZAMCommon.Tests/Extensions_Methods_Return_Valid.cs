@@ -74,9 +74,7 @@ namespace BLAZAM.Tests
         [Fact]
         public void DateTimeToAdsValue_ReturnsValid()
         {
-            var valid = new ADsLargeInteger();
-            valid.HighPart = 31021155;
-            valid.LowPart = 1790853120;
+            long expected = 133241760000000000;
 
             string dateString = "3/25/2023 12:00:00 AM";
             string format = "M/d/yyyy h:mm:ss tt";
@@ -84,7 +82,7 @@ namespace BLAZAM.Tests
 
             //DateTime? test = DateTime.Parse("4/25/2023 12:00:00 AM");
             var converted = test.DateTimeToAdsValue();
-            bool result = converted.Equals(valid);
+            bool result = converted.Equals(expected);
 
             Assert.True(result, "The conversion of COM large integers to DateTime is not returning the correct DateTime");
         }

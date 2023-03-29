@@ -310,7 +310,7 @@ namespace BLAZAM.Common.Extensions
             public int HighPart { get; set; }
             public int LowPart { get; set; }
         }
-        public static IADsLargeInteger? DateTimeToAdsValue(this DateTime? value)
+        public static long? DateTimeToAdsValue(this DateTime? value)
         {
             if (value == null) return null;
             try
@@ -318,13 +318,14 @@ namespace BLAZAM.Common.Extensions
 
                 long? fileTime = value?.ToUniversalTime().ToFileTimeUtc();
                 if (fileTime == null) return null;
-                object fto = 0;
-                IADsLargeInteger largeInt = new ADsLargeInteger();
+                return fileTime;
+                //object fto = 0;
+                //IADsLargeInteger largeInt = new ADsLargeInteger();
 
-                largeInt.HighPart = (int)(fileTime >> 32);
-                largeInt.LowPart = (int)(fileTime & 0xFFFFFFFF);
+                //largeInt.HighPart = (int)(fileTime >> 32);
+                //largeInt.LowPart = (int)(fileTime & 0xFFFFFFFF);
 
-                return largeInt;
+                //return largeInt;
             }
             catch
             {
