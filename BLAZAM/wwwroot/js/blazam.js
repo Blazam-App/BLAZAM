@@ -41,9 +41,16 @@ window.checkForExpiredSession = async () => {
 window.attemptSignIn = async () => {
     //TODO get form data accurately
     var form = document.querySelector("form");
-    var formData = new FormData(form);
-    var data = Array.from(new FormData(form));
+    var formData = new FormData();
+
+    for (var x = 0; x < form.length; x++) {
+        console.log(form[x].name);
+        console.log(form[x].value);
+        formData.append(form[x].name,form[x].value)
+    }
+    var data = Array.from(formData);
     var xhr = new XMLHttpRequest();
+    console.log(data);
     var response = await new Promise((resolve, reject) => {
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -54,7 +61,7 @@ window.attemptSignIn = async () => {
         };
 
         xhr.open('POST', '/signin');
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+       // xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
         xhr.send(formData);
     });

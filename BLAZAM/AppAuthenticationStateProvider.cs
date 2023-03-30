@@ -198,7 +198,7 @@ namespace BLAZAM
                 if (result != null)
                     return loginResult.Success(result);
                 else
-                    return loginResult.UnknownFailure();
+                    return loginResult.BadCredentials();
           
 
         }

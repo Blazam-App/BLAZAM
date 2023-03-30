@@ -6,7 +6,6 @@
 @inject IJSRuntime JSRuntime
 @layout LoginLayout
 @{
-    var redirectUrl = Nav.Uri;
 }
 <MudContainer Class="py-5">
 
@@ -89,12 +88,14 @@
 
 @code {
     bool attemptingSignIn = false;
+    string redirectUrl;
 
     bool DemoCustomLogin = false;
     LoginRequest LoginRequest = new();
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        redirectUrl = Nav.Uri;
         if (Monitor.AppReady != ServiceConnectionState.Up)
             Monitor.OnAppReadyChanged += AppReadyChanged;
         Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
@@ -126,7 +127,7 @@
 
                     break;
                 case LoginResultStatus.NoData:
-                    SnackBarService.Info("Login request is missing");
+                    SnackBarService.Warning("Login request is missing");
 
                     break;
                 case LoginResultStatus.BadCredentials:
@@ -134,12 +135,15 @@
 
                     break;
                 case LoginResultStatus.UnauthorizedImpersonation:
-                    SnackBarService.Info("Username is missing");
+                    SnackBarService.Warning("Unauthorized Impersonation Attemptt");
 
                     break;
                 case LoginResultStatus.UnknownFailure:
-                    SnackBarService.Info("Unknown error while attempting to log in");
+                    SnackBarService.Error("Unknown error while attempting to log in");
 
+                    break;
+                case LoginResultStatus.OK:
+                    Nav.NavigateTo(redirectUrl);
                     break;
             }
             attemptingSignIn = false;
