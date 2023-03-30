@@ -45,7 +45,7 @@ namespace BLAZAM.Server.Data.Services
 
         public IApplicationUserSessionCache Cache { get; set; } = new ApplicationUserSessionCache();
 
-        public AuthenticationTicket Ticket { get; set; }
+        public AuthenticationTicket? Ticket { get; set; }
 
         public AppUser? userSettings { get; set; }
         private readonly AppDatabaseFactory _dbFactory;
@@ -162,10 +162,11 @@ namespace BLAZAM.Server.Data.Services
             }
         }
 
+        public string LastUri { get; set; }
 
         public override int GetHashCode()
         {
-            return User.FindFirstValue(ClaimTypes.Actor).GetHashCode();
+            return User.GetHashCode();
         }
         public override bool Equals(object? obj)
         {

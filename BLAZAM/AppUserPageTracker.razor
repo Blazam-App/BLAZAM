@@ -1,0 +1,23 @@
+@inject NavigationManager Nav
+@inject IApplicationUserStateService UserStateService
+
+@{
+    try
+    {
+        if (Nav.Uri != _lastUri)
+        {
+            UserStateService.CurrentUserState.LastUri = Nav.Uri;
+            _lastUri = Nav.Uri;
+        }
+
+    }
+    catch
+    {
+        
+    }
+}
+
+
+@code{
+    string _lastUri;
+}

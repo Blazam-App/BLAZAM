@@ -3,15 +3,11 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BLAZAM
 {
-    public enum LoginResultStatus { OK,BadCredentials,UnauthorizedImpersonation, NoData,NoUsername, NoPassword, UnknownFailure }
+    public enum LoginResultStatus { OK,BadCredentials,UnauthorizedImpersonation, NoData,NoUsername, NoPassword, UnknownFailure,
+        DeniedLogin
+    }
     public class LoginResult
     {
-        private LoginRequest loginReq;
-
-        public LoginResult(LoginRequest loginReq)
-        {
-            this.loginReq = loginReq;
-        }
 
 
 
@@ -62,6 +58,13 @@ namespace BLAZAM
         {
             Status = LoginResultStatus.OK;
             AuthenticationState = result;
+            return this;
+        }
+
+        internal LoginResult DeniedLogin()
+        {
+            Status = LoginResultStatus.DeniedLogin;
+
             return this;
         }
 

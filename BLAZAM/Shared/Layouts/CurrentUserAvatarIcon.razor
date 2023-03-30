@@ -44,10 +44,11 @@ else
     void GetCurrentUser()
     {
         CurrentUserState = UserStateService.CurrentUserState;
-        CurrentUserState.OnSettingsChange = ((settings) =>
-        {
-            InvokeAsync(StateHasChanged);
-        });
+        if (CurrentUserState != null)
+            CurrentUserState.OnSettingsChange = ((settings) =>
+                {
+                    InvokeAsync(StateHasChanged);
+                });
     }
 
 }

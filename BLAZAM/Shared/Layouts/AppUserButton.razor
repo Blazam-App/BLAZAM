@@ -64,16 +64,7 @@
             <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})">Notifications</MudMenuItem>
         }
 
-        <MudNavGroup Title="Themes">
-            @foreach (var theme in ApplicationTheme.Themes)
-            {
-                <MudMenuItem OnClick=@(()=>{mainLayout.SetUserTheme(theme);})>
-                    @theme.Name
-                </MudMenuItem>
-            }
-
-
-        </MudNavGroup>
+        
         <MudMenuItem OnClick="@(()=>{profileModal.Show();})" Icon="@Icons.Material.Filled.Settings">
             @AppLocalization["Profile Settings"]
         </MudMenuItem>
@@ -93,19 +84,9 @@
     </ChildContent>
 </MudMenu>
 <AppModal @ref=profileModal Title="Profile Settings">
-    <MudFileUpload T="IBrowserFile"
-        FilesChanged="UploadProfilePicture"
-     >
-        <ButtonTemplate>
-            <MudButton HtmlTag="label"
-                       Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.CloudUpload"
-                       for="@context">
-                Upload Files
-            </MudButton>
-        </ButtonTemplate>
-    </MudFileUpload>
+    <CascadingValue Value="mainLayout">
+  <BLAZAM.Server.Shared.UI.Modals.AppUserProfileModalContent />
+    </CascadingValue>
 </AppModal>
 @code {
     AppModal? profileModal;
@@ -129,14 +110,5 @@
         hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
         return hexColor;
     }
-    async Task UploadProfilePicture(IBrowserFile profilePictureFile)
-    {
-        var rawBytes = await profilePictureFile.ToByteArrayAsync();
-
-        if (rawBytes != null)
-        {
-            UserStateService.CurrentUserState.UserSettings.ProfilePicture = rawBytes.ReizeRawImage(100,true);
-            await UserStateService.CurrentUserState.SaveUserSettings();
-        }
-    }
+  
 }

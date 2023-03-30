@@ -58,6 +58,7 @@
                 </MudButtonGroup>
 
             }
+            
         </MudContainer>
        <MudOverlay Visible="attemptingSignIn" DarkBackground="true" Absolute="true">
             <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
@@ -110,10 +111,16 @@
     }
     async void AttemptSignIn()
     {
-        var authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn",null);
+        string? authenticationResult;
+        if (ValidateInput(out authenticationResult))
+            authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn",null);
+
+
+
         if (!authenticationResult.IsNullOrEmpty())
         {
             int resultCode = int.Parse(authenticationResult);
+            attemptingSignIn = false;
 
             switch ((LoginResultStatus)resultCode)
             {
@@ -135,7 +142,11 @@
 
                     break;
                 case LoginResultStatus.UnauthorizedImpersonation:
-                    SnackBarService.Warning("Unauthorized Impersonation Attemptt");
+                    SnackBarService.Error("Unauthorized Impersonation Attempt");
+
+                    break;
+                case LoginResultStatus.DeniedLogin:
+                    SnackBarService.Error("You are not authorized to login");
 
                     break;
                 case LoginResultStatus.UnknownFailure:
@@ -143,12 +154,24 @@
 
                     break;
                 case LoginResultStatus.OK:
+                    attemptingSignIn = true;
                     Nav.NavigateTo(redirectUrl,true);
                     break;
             }
-            attemptingSignIn = false;
             InvokeAsync(StateHasChanged);
         }
+    }
+    bool ValidateInput(out string? validationResult)
+    {
+        validationResult = null;
+        if (LoginRequest.Valid || (Program.InDemoMode && !DemoCustomLogin)) return true;
+      
+            
+            if (LoginRequest.Password.IsNullOrEmpty())
+                validationResult = ((int)LoginResultStatus.NoPassword).ToString();
+        if (LoginRequest.Username.IsNullOrEmpty())
+            validationResult = ((int)LoginResultStatus.NoUsername).ToString();
+        return false;
     }
 
 }

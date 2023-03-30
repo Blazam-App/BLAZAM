@@ -17,11 +17,11 @@ namespace BLAZAM.Common.Data.Services
         DateTime LastAccessed { get; set; }
         ClaimsPrincipal User { get; set; }
         AppUser? UserSettings { get; }
-        AuthenticationTicket Ticket { get; set; }
+        AuthenticationTicket? Ticket { get; set; }
         IList<NotificationMessage> Messages { get; set; }
         IApplicationUserSessionCache Cache { get; set; }
         AppEvent<AppUser> OnSettingsChange { get; set; }
-
+        string LastUri { get; set; }
         bool Equals(object? obj);
         bool HasRole(string searchUsers);
         Task<bool> SaveUserSettings();

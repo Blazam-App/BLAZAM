@@ -21,34 +21,27 @@
             <Row>App Ready Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.AppReady)</Row>
             <Row>Error Message: @Oops.ErrorMessage</Row>
         </MudCard>
-        <MudCard Class="mud-theme-dark">
-            <MudCardHeader>
-                User State Service
-            </MudCardHeader>
-            <Row>User States: @UserStateService.UserStates.Count</Row>
-            @foreach (var state in UserStateService.UserStates)
-            {
-                <MudCard Class="mud-theme-dark">
-                    <Row>Username: @state.User?.Identity?.Name</Row>
-                    <Row>Authenticated: @state.User?.Identity?.IsAuthenticated</Row>
-                    <Row>Auth Type: @state.User?.Identity?.AuthenticationType</Row>
-                    <Row>Last Access: @state.LastAccessed</Row>
-                    <Row>Ticket Expiration: @(state.Ticket?.Properties.ExpiresUtc)</Row>
-                        <Row>Is Super Admin: @state.IsSuperAdmin</Row>
-                        <Row>Directory Entry Exists: @(state.DirectoryUser != null)</Row>
-                        @if (state.DirectoryUser != null)
-                    {
-                        <Row>Has User Priv: @state.DirectoryUser.HasUserPrivilege</Row>
-                        <Row>Has Group Priv: @state.DirectoryUser.HasGroupPrivilege</Row>
-                        <Row>Has OU Priv: @state.DirectoryUser.HasOUPrivilege</Row>
-                        <Row>Has Computer Priv: @state.DirectoryUser.HasComputerPrivilege</Row>
+            <MudDataGrid Items="@UserStateService.UserStates">
+                <Columns>
+                <PropertyColumn Title="Username" Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
 
-                    }
-                </MudCard>
+                <PropertyColumn Title="Auth Type" Property="x => x.User.Identity==null || x.User.Identity.AuthenticationType==null?null:x.User.Identity.AuthenticationType.ToString()" />
+                    <PropertyColumn Title="Authenticated" Property="x => x.User.Identity==null?null:x.User.Identity.IsAuthenticated.ToString()" />
+
+                <PropertyColumn Title="Last URI" Property="x => x.LastUri" />
+                <PropertyColumn Title="Super Admin" Property="x => x.IsSuperAdmin" />
+                <PropertyColumn Title="Last Access Time" Property="x => x.LastAccessed" />
+                    <PropertyColumn Title="Session Expiration Time" Property="x => x.Ticket==null?null:x.Ticket.Properties.ExpiresUtc" />
 
 
-            }
-        </MudCard>
+                <PropertyColumn Title="AD Username" Property="x => x.DirectoryUser==null?null:x.DirectoryUser.SamAccountName" />
+
+                <PropertyColumn Title="Has User Priv" Property="x => x.DirectoryUser==null?null:x.DirectoryUser.HasUserPrivilege.ToString()" />
+                <PropertyColumn Title="Has Group Priv" Property="x => x.DirectoryUser==null?null:x.DirectoryUser.HasGroupPrivilege.ToString()" />
+                <PropertyColumn Title="Has OU Priv" Property="x => x.DirectoryUser==null?null:x.DirectoryUser.HasOUPrivilege.ToString()" />
+                <PropertyColumn Title="Has Computer Priv" Property="x => x.DirectoryUser==null?null:x.DirectoryUser.HasComputerPrivilege.ToString()" />
+                </Columns>
+            </MudDataGrid>
 
 
         <MudCard Class="mud-theme-dark">
