@@ -39,7 +39,6 @@ window.checkForExpiredSession = async () => {
 };
 
 window.attemptSignIn = async () => {
-    //TODO get form data accurately
     var form = document.querySelector("form");
     var formData = new FormData();
 
@@ -66,4 +65,10 @@ window.attemptSignIn = async () => {
         xhr.send(formData);
     });
     return response;
+};
+
+window.playAudio = async (path) => {
+    var audio = new Audio(path);
+    audio.play();
+
 };

@@ -1,25 +1,127 @@
 @inherits AppComponentBase
 
+<Audio Src="/audio/messagePop.mp3" @bind-Playing=@playingPop />
+<Audio Src="/audio/bell.wav" @bind-Playing=@playingBell />
 @if (Viewers.ContainsKey(thisUri) && Viewers[thisUri].Count > 1)
 {
     var otherViewers = Viewers[thisUri].Where(us => !us.Equals(currentUserState));
-    <MudMenu  AnchorOrigin="@Origin.BottomLeft" TransformOrigin=Origin.TopRight Icon="@Icons.Material.Filled.People">
-        <MudMenuItem IconSize=Size.Small Icon="@Icons.Material.Filled.ChatBubble" OnClick="@(()=>{chatOpen=true;})">
-                Start Chat
-        </MudMenuItem>
-        <MudText>Other Viewers:</MudText>
-        @foreach (var user in otherViewers)
-        {
-            <MudText>@user.Username</MudText>
 
+    @if (ChatMessages[thisUri].Count > 0)
+    {
+        if (unreadMessages > 0)
+        {
+            <MudBadge Content="@unreadMessages" Color="Color.Error" Overlap=true>
+                <MudIconButton OnClick="@(()=>{chatOpen=!chatOpen;})"
+                   Icon="@Icons.Material.Filled.MarkUnreadChatAlt" />
+            </MudBadge>
         }
-    </MudMenu>
+        else
+        {
+            <MudIconButton OnClick="@(()=>{chatOpen=!chatOpen;})"
+               Icon="@Icons.Material.Filled.Chat" />
+        }
+    }
+
+    <MudBadge Color="Color.Info" Content="@otherViewers.Count()" Overlap=true>
+        <MudMenu AnchorOrigin="@Origin.BottomLeft"
+             TransformOrigin=Origin.TopRight
+             Icon="@Icons.Material.Filled.People">
+            @if (ChatMessages[thisUri].Count < 1)
+            {
+                <MudMenuItem IconSize=Size.Small
+                     Icon="@Icons.Material.Filled.ChatBubble"
+                     OnClick="@(()=>{chatOpen=true;})">
+                    Start Chat
+                </MudMenuItem>
+            }
+            <MudText>Other Viewers:</MudText>
+            @foreach (var user in otherViewers)
+            {
+                <MudText>@user.Username</MudText>
+
+            }
+        </MudMenu>
+    </MudBadge>
+   
 }
 
-<PageChat IsOpen=@chatOpen CurrentUserState=currentUserState PageUri="thisUri" />
+<MudPopover Style="width:300px" Open="@chatOpen" Fixed="true" Class="px-1 pt-4">
+    <MudContainer class="d-flex flex-column">
+        <MudText Typo="Typo.h6">Chat</MudText>
 
+        <MudStack Style="height:300px;" Class="overflow-y-auto">
+            @foreach (var message in ChatMessages[thisUri])
+            {
+                if (!message.SeenBy.Contains(currentUserState.UserSettings))
+                    message.SeenBy.Add(currentUserState.UserSettings);
+                if (message.User.Username != currentUserState.Username)
+                {
+                    <MudStack Class="w-100">
+                        <MudStack Row="true">
+                            <MudChip Size=Size.Small Color="Color.Secondary">@message.User.Username</MudChip>
+                            <MudText Class="align-middle">@message.Message</MudText>
+                        </MudStack>
+                        <MudText Class=@("w-max") Typo="Typo.caption">@message.Timestamp.ToLocalTime().ToString()</MudText>
+
+                    </MudStack>
+                }
+                else
+                {
+                    <MudStack Justify="Justify.FlexEnd" Class="w-100">
+                        <MudStack Justify="Justify.FlexEnd" Row="true">
+                            <MudText Class="align-middle">@message.Message</MudText>
+
+                            <MudChip Size=Size.Small
+                             Color="Color.Tertiary">
+                                @message.User.Username
+                            </MudChip>
+
+                        </MudStack>
+                        <MudText Class=@("w-max align-end") Typo="Typo.caption">@message.Timestamp.ToLocalTime().ToString()</MudText>
+
+                    </MudStack>
+
+                }
+
+            }
+        </MudStack>
+        <MudStack Row=true>
+
+            <MudTextField @ref=messageTextField
+                          AutoFocus=true
+                          autocomplete="off"
+                          Adornment=Adornment.Start
+                          AdornmentIcon="@Icons.Material.Filled.Message"
+                          Immediate="true"
+                          OnKeyUp=@((args)=>{if(args.Key.ToLower()=="enter") PostMessage();})
+                          T="string"
+                          @bind-Text=@draftMessage />
+
+            <MudIconButton OnClick=@PostMessage
+                           Icon="@Icons.Material.Filled.Send"
+                           ButtonType="ButtonType.Submit" Class="align-middle" />
+
+        </MudStack>
+        <MudButton OnClick="@(()=>{chatOpen=!chatOpen;})"
+                   Class="ml-auto mr-n3 mb-1"
+                   Color="Color.Error">
+            Close
+        </MudButton>
+
+    </MudContainer>
+</MudPopover>
 
 @code {
+    int unreadMessages
+    {
+        get
+        {
+            return ChatMessages[thisUri].Where(
+                cm => cm.User != currentUserState.UserSettings 
+                && !cm.SeenBy.Contains(currentUserState.UserSettings
+                )).Count();
+        }
+    }
     bool chatOpen;
     string thisUri;
     IApplicationUserState currentUserState;
@@ -33,11 +135,24 @@
     delegate void CallbackEvent();
     static CallbackEvent ViewersChanged;
 
+    MudTextField<string>? messageTextField;
+    string? draftMessage;
+    bool playingPop;
+    bool playingBell;
+    /// <summary>
+    /// A single system wide singleton static dictionary of every
+    /// viewer on every page this component is placed
+    /// </summary>
+    static Dictionary<string, List<ChatMessage>> ChatMessages = new Dictionary<string, List<ChatMessage>>();
+    delegate void ChatMessageCallbackEvent(ChatMessage message);
+    static ChatMessageCallbackEvent OnMessagePosted;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         thisUri = Nav.ToBaseRelativePath(Nav.Uri);
+
+        //Setup other viewers button listeners
         ViewersChanged += (() =>
        {
            InvokeAsync(StateHasChanged);
@@ -52,6 +167,32 @@
                 RemoveThisViewer();
             }
         });
+
+
+        //Setup chat message listeners
+
+        OnMessagePosted += ((ChatMessage message) =>
+       {
+           if (message.User != currentUserState.UserSettings)
+           {
+               if (chatOpen && !playingPop)
+               {
+                   playingPop = true;
+
+               }
+               else if (!chatOpen && !playingBell)
+               {
+                   playingBell = true;
+               }
+
+               InvokeAsync(StateHasChanged);
+           }
+       });
+        if (!ChatMessages.ContainsKey(thisUri))
+        {
+
+            ChatMessages.Add(thisUri, new());
+        }
 
     }
 
@@ -82,5 +223,20 @@
 
         }
     }
+    private async Task PostMessage()
+    {
+        if (!draftMessage.IsNullOrEmpty())
+        {
+            await Task.Delay(5);
+            var message = new ChatMessage() { User = currentUserState.UserSettings, Message = draftMessage };
+            ChatMessages[thisUri].Add(message);
 
+            OnMessagePosted?.Invoke(message);
+            draftMessage = "";
+            //messageTextField.Value = "";
+            messageTextField.Clear();
+            await InvokeAsync(StateHasChanged);
+
+        }
+    }
 }
