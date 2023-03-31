@@ -1,0 +1,86 @@
+@inherits AppComponentBase
+
+@if (Viewers.ContainsKey(thisUri) && Viewers[thisUri].Count > 1)
+{
+    var otherViewers = Viewers[thisUri].Where(us => !us.Equals(currentUserState));
+    <MudMenu  AnchorOrigin="@Origin.BottomLeft" TransformOrigin=Origin.TopRight Icon="@Icons.Material.Filled.People">
+        <MudMenuItem IconSize=Size.Small Icon="@Icons.Material.Filled.ChatBubble" OnClick="@(()=>{chatOpen=true;})">
+                Start Chat
+        </MudMenuItem>
+        <MudText>Other Viewers:</MudText>
+        @foreach (var user in otherViewers)
+        {
+            <MudText>@user.Username</MudText>
+
+        }
+    </MudMenu>
+}
+
+<PageChat IsOpen=@chatOpen CurrentUserState=currentUserState PageUri="thisUri" />
+
+
+@code {
+    bool chatOpen;
+    string thisUri;
+    IApplicationUserState currentUserState;
+
+    /// <summary>
+    /// A single system wide singleton static dictionary of every
+    /// viewer on every page this component is placed
+    /// </summary>
+    static Dictionary<string, List<IApplicationUserState>> Viewers = new Dictionary<string, List<IApplicationUserState>>();
+
+    delegate void CallbackEvent();
+    static CallbackEvent ViewersChanged;
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        thisUri = Nav.ToBaseRelativePath(Nav.Uri);
+        ViewersChanged += (() =>
+       {
+           InvokeAsync(StateHasChanged);
+
+       });
+        currentUserState = UserStateService.CurrentUserState;
+        AddThisViewer();
+        Nav.LocationChanged += ((state, args) =>
+        {
+            if (Nav.ToBaseRelativePath(args.Location) != thisUri)
+            {
+                RemoveThisViewer();
+            }
+        });
+
+    }
+
+
+
+    private void AddThisViewer()
+    {
+        if (!Viewers.ContainsKey(thisUri))
+            Viewers.Add(thisUri, new());
+
+        if (!Viewers[thisUri].Contains(currentUserState))
+        {
+            Viewers[thisUri].Add(currentUserState);
+            ViewersChanged?.Invoke();
+        }
+    }
+
+
+    private void RemoveThisViewer()
+    {
+        if (!Viewers.ContainsKey(thisUri))
+            return;
+
+        if (Viewers[thisUri].Contains(currentUserState))
+        {
+            Viewers[thisUri].Remove(currentUserState);
+            ViewersChanged.Invoke();
+
+        }
+    }
+
+}

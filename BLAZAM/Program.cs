@@ -296,7 +296,7 @@ namespace BLAZAM
 
             //builder.Services.AddDbContextFactory<DatabaseContext>();
 
-
+            builder.Services.AddScoped<AppNavigationManager>();
 
 
             //Provide an Http client as a service with custom construction via api service class

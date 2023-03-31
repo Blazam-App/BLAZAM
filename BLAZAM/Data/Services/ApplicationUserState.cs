@@ -83,12 +83,12 @@ namespace BLAZAM.Server.Data.Services
                             userSettings.Username = User.Identity?.Name;
                             context.UserSettings.Add(userSettings);
                             context.SaveChanges();
-                           
+
                         }
                     }
                     catch
                     {
-                        
+
                     }
                 }
                 return userSettings;
@@ -139,12 +139,26 @@ namespace BLAZAM.Server.Data.Services
             get
             {
                 string? auditUsername = User.Identity?.Name;
-              
+
                 return auditUsername;
             }
         }
 
-        
+        public bool IsAuthenticated
+        {
+            get
+            {
+                try
+                {
+                    return User.Identity.IsAuthenticated;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
         /// <summary>
         /// Returns the combined names of the user, and if applicable, the impersonators username
         /// with the structure "{username}[ impersonated by {impersonatorName}]"

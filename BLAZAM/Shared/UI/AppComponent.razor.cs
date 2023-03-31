@@ -112,10 +112,10 @@ namespace BLAZAM.Server.Shared.UI
 
         protected void Refresh()
         {
-            Nav.NavigateTo(Nav.Uri, true);
+            Nav.NavigateTo(Nav.Uri, false);
         }
 
-        protected void Refresh(bool forceReload)
+        protected void Refresh(bool forceReload=false)
         {
             Nav.NavigateTo(Nav.Uri, forceReload);
         }

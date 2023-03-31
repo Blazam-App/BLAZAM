@@ -115,6 +115,9 @@ a, .btn-link {
     background: lightgrey;
     color: var(--bs-body);
 }
+.align-end{
+    align-self:end;
+}
 .align-middle{
     height:min-content;
     margin-top:auto !important;

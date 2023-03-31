@@ -1,0 +1,103 @@
+@inherits AppComponentBase
+
+<MudPopover Style="width:300px" Open="@IsOpen" Fixed="true" Class="px-1 pt-4">
+    <MudContainer class="d-flex flex-column">
+        <MudText Typo="Typo.h6">Chat</MudText>
+
+        <MudStack Style="height:300px;" Class="overflow-y-auto">
+            @foreach (var message in ChatMessages[PageUri])
+            {
+                Justify justify;
+                string timestampCSSClass = "";
+                if (message.User.Username != CurrentUserState.Username)
+                {
+                    <MudStack Class="w-100">
+                        <MudStack Row="true">
+                            <MudChip Color="Color.Primary">@message.User.Username</MudChip>
+                            <MudText>@message.Message</MudText>
+                        </MudStack>
+                        <MudText Class=@("w-max") Typo="Typo.caption">@message.Timestamp.ToLocalTime().ToString()</MudText>
+
+                    </MudStack>
+                }
+                else
+                {
+                    <MudStack Justify="Justify.FlexEnd" Class="w-100">
+                        <MudStack Justify="Justify.FlexEnd" Row="true">
+                            <MudText>@message.Message</MudText>
+                            <MudChip Color="Color.Secondary">@message.User.Username</MudChip>
+
+                        </MudStack>
+                        <MudText Class=@("w-max align-end") Typo="Typo.caption">@message.Timestamp.ToLocalTime().ToString()</MudText>
+
+                    </MudStack>
+
+                }
+
+            }
+        </MudStack>
+        <MudStack Row=true>
+            <form @onsubmit="@PostMessage">
+            <MudTextField Label="Send Message" T="string" @bind-Text=@draftMessage />
+            <MudIconButton Icon="@Icons.Material.Filled.Send" ButtonType="ButtonType.Submit" />
+            </form>
+        </MudStack>
+        <MudButton OnClick="@(()=>{IsOpen=!IsOpen;})" Class="ml-auto mr-n3 mb-1" Color="Color.Error">Close</MudButton>
+
+    </MudContainer>
+</MudPopover>
+<Audio Src="/audio/messagePop.mp3" Playing=@playingPop />
+@code {
+
+
+    string? draftMessage;
+    bool playingPop;
+    /// <summary>
+    /// A single system wide singleton static dictionary of every
+    /// viewer on every page this component is placed
+    /// </summary>
+    static Dictionary<string, List<ChatMessage>> ChatMessages = new Dictionary<string, List<ChatMessage>>();
+    delegate void CallbackEvent();
+    static CallbackEvent OnMessagePosted;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+
+        OnMessagePosted += (() =>
+        {
+            if (IsOpen && !playingPop)
+                playingPop = true;
+            InvokeAsync(StateHasChanged);
+        });
+        if (!ChatMessages.ContainsKey(PageUri))
+        {
+
+            ChatMessages.Add(PageUri, new());
+        }
+    }
+    [Parameter]
+    public bool IsOpen { get; set; } = false;
+    [Parameter]
+    public string PageUri { get; set; }
+
+    [Parameter]
+    public IApplicationUserState CurrentUserState { get; set; }
+
+
+    private async Task PostMessage()
+    {
+        if (!draftMessage.IsNullOrEmpty())
+        {
+            await Task.Delay(5);
+            var message = new ChatMessage() { User = CurrentUserState.UserSettings, Message = draftMessage };
+            ChatMessages[PageUri].Add(message);
+
+            OnMessagePosted?.Invoke();
+            draftMessage = "";
+
+            await InvokeAsync(StateHasChanged);
+
+        }
+    }
+}

@@ -22,6 +22,8 @@ namespace BLAZAM.Common.Data.Services
         IApplicationUserSessionCache Cache { get; set; }
         AppEvent<AppUser> OnSettingsChange { get; set; }
         string LastUri { get; set; }
+        bool IsAuthenticated { get; }
+
         bool Equals(object? obj);
         bool HasRole(string searchUsers);
         Task<bool> SaveUserSettings();
