@@ -1,19 +1,21 @@
 ﻿@inherits DirectoryModelComponent
 
-<Div Padding="Padding.Is3">
+<div Padding="Padding.Is3">
     <EditForm Model="User">
 
 
         <Row>
 
-
-            @if (IsAdmin)
-            {
-                <Div>
+            @{
+                string adminEnabledHelperText ="";
+                if (IsAdmin)
+                {
+                    adminEnabledHelperText = "Field unlocked because you are admin.";
+                    <div>
                     All fields are editabl becuase you are an admin.
-                </Div>
+                </div>
             }
-
+            }
 
             @if (InDirectoryTemplate(ActiveDirectoryFields.Mail) ||
             InDirectoryTemplate(ActiveDirectoryFields.EmployeeId) ||
@@ -26,107 +28,69 @@
                 <Section Title=@UserLocalization["Organization"]>
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Mail))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Email Address"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="User.Email" />
+                        
+                           
+                                <MudTextField Label="@UserLocalization["Email Address"]" HelperText="@adminEnabledHelperText" @bind-Value="User.Email" />
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Mail))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                            
+                            
+                        
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.EmployeeId))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Employee Id"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.EmployeeId" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.EmployeeId)) />
+                        
+                           
+                                <MudTextField Label="@UserLocalization["Employee Id"]"  @bind-Value="@User.EmployeeId" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.EmployeeId)) />
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.EmployeeId))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                            
+                           
+                        
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Department))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Department"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.Department" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Department)) />
+                        
+                           
+                                <MudTextField Label="@UserLocalization["Department"]"  @bind-Value="@User.Department" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Department)) />
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Department))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                           
+                        
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Company))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Company"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.Company" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Company)) />
+                        
+                           
+                                <MudTextField Label="@UserLocalization["Company"]"  @bind-Value="@User.Company" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Company)) />
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Company))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
+                            
 
-                        </Field>
+                        
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Title))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Job Title"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.Title" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Title)) />
+                        
+                           
+                                <MudTextField Label="@UserLocalization["Job Title"]" @bind-Value="@User.Title" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Title)) />
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Title))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                            
+                          
+                        
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Office"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.PhysicalDeliveryOfficeName" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
+                        
+                           
+                                <MudTextField Label="@UserLocalization["Office"]"  @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.PhysicalDeliveryOffice))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                            
+                         
+                        
                     }
                 </Section>
             }
 
             @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone) ||
             InDirectoryTemplate(ActiveDirectoryFields.StreetAddress) ||
-            InDirectoryTemplate(ActiveDirectoryFields.Street) ||
+            InDirectoryTemplate(ActiveDirectoryFields.POBox) ||
             InDirectoryTemplate(ActiveDirectoryFields.City) ||
             InDirectoryTemplate(ActiveDirectoryFields.State) ||
             InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
@@ -136,133 +100,85 @@
 
                     @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Home Phone"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.HomePhone" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomePhone)) />
+                        
+                           
+                                <MudTextField Label="@UserLocalization["Home Phone"]"  @bind-Value="@User.HomePhone" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomePhone)) />
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomePhone))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                            
+                           
+                        
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.StreetAddress))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Street Address"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.StreetAddress" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.StreetAddress)) />
+                        
+                           
+                                <MudTextField Label="@UserLocalization["Street Address"]" @bind-Value="@User.StreetAddress" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.StreetAddress)) />
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.StreetAddress))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                            
+                           
+                        
                     }
-                    @if (InDirectoryTemplate(ActiveDirectoryFields.Street))
+                    @if (InDirectoryTemplate(ActiveDirectoryFields.POBox))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Street"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.Street" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Street)) />
+                        
+                           
+                                <MudTextField Label="@UserLocalization["Street"]" @bind-Value="@User.POBox" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.POBox)) />
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Street))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                            
+                           
+                        
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.City))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["City"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.City" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.City)) />
+                        
+                           
+                                <MudTextField Label="@UserLocalization["City"]"  @bind-Value="@User.City" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.City)) />
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.City))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                            
+                          
+                        
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.State))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["State"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.State" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.State)) />
+                        
+                           
+                                <MudTextField Label="@UserLocalization["State"]"  @bind-Value="@User.State" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.State)) />
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.State))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                            
+                           
+                        
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.PostalCode))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Zip Code"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.Zip" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.PostalCode)) />
+                        
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.PostalCode))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                                <MudTextField Label="@UserLocalization["Zip Code"]" @bind-Value="@User.Zip" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.PostalCode)) />
+
+                            
+                           
+                        
                     }
                 </Section>
             }
             @if (InDirectoryTemplate(ActiveDirectoryFields.Description))
             {
-                <Field Horizontal>
-                    <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                        @UserLocalization["Description"]
-                    </FieldLabel>
-                    <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                        <TextEdit @bind-Text=@User.Description Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Description)) />
+                
+                   
+                        <MudTextField Label="@UserLocalization["Description"]" @bind-Value=@User.Description Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Description)) />
 
-                    </FieldBody>
-                    @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Description))
-                    {
-                        <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                    }
-                </Field>
+                    
+                    
+                
             }
             @if (InDirectoryTemplate(ActiveDirectoryFields.Site))
             {
-                <Field Horizontal>
-                    <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                        @UserLocalization["Site"]
-                    </FieldLabel>
-                    <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                        <TextEdit @bind-Text="@User.Site" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Site)) />
+                
+                   
+                        <MudTextField Label="@UserLocalization["Site"]" @bind-Value="@User.Site" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Site)) />
 
-                    </FieldBody>
-                    @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Site))
-                    {
-                        <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                    }
-                </Field>
+                    
+                   
+                
             }
             @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory) ||
             InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
@@ -273,68 +189,44 @@
                 <Section Title=@UserLocalization["Profile"]>
                     @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Home Directory"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.HomeDirectory" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomeDirectory)) />
+                        
+                           
+                                <MudTextField Label="@UserLocalization["Home Directory"]" @bind-Value="@User.HomeDirectory" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomeDirectory)) />
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomeDirectory))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                            
+                          
+                        
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDrive))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Home Drive"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
+                        
+                           
 
-                                <HomeDriveSelect @bind-SelectedValue="@User.HomeDrive" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomeDrive)) />
+                                <HomeDriveSelect Label="@UserLocalization["Home Drive"]" @bind-SelectedValue="@User.HomeDrive" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomeDrive)) />
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomeDrive))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                            
+                           
+                        
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.ScriptPath))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Script Path"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.ScriptPath" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.ScriptPath)) />
+                        
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.ScriptPath))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                                <MudTextField Label="@UserLocalization["Script Path"]" @bind-Value="@User.ScriptPath" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.ScriptPath)) />
+
+                            
+                           
+                        
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.ProfilePath))
                     {
-                        <Field Horizontal>
-                            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                                @UserLocalization["Profile Path"]
-                            </FieldLabel>
-                            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                                <TextEdit @bind-Text="@User.ProfilePath" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.ProfilePath)) />
+                        
 
-                            </FieldBody>
-                            @if (IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.ProfilePath))
-                            {
-                                <FieldHelp>Field unlocked because you are admin.</FieldHelp>
-                            }
-                        </Field>
+                                <MudTextField Label="@UserLocalization["Profile Path"]" @bind-Value="@User.ProfilePath" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.ProfilePath)) />
+
+                            
+                            
+                        
                     }
                 </Section>
             }
@@ -348,7 +240,7 @@
 
 
     </EditForm>
-</Div>
+</div>
 
 
 

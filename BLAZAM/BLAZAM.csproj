@@ -5,8 +5,8 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
-		<AssemblyVersion>0.7.0</AssemblyVersion>
-		<Version>2023.03.14.2256</Version>
+		<AssemblyVersion>0.7.2</AssemblyVersion>
+		<Version>2023.04.01.0209</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -41,20 +41,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blazorise" Version="1.2.0" />
-		<PackageReference Include="Blazorise.Bootstrap" Version="1.2.0" />
-		<PackageReference Include="Blazorise.Bootstrap5" Version="1.2.0" />
-		<PackageReference Include="Blazorise.Components" Version="1.2.0" />
-		<PackageReference Include="Blazorise.Cropper" Version="1.2.0" />
-		<PackageReference Include="Blazorise.DataGrid" Version="1.2.0" />
-		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.0" />
-		<PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.0" />
-		<PackageReference Include="Blazorise.RichTextEdit" Version="1.2.0" />
-		<PackageReference Include="Blazorise.TreeView" Version="1.1.7" />
 		<PackageReference Include="BlazorTemplater" Version="1.5.1" />
 		<PackageReference Include="Cassia" Version="2.0.0.60" />
 		<PackageReference Include="Core.System.Configuration.Install" Version="1.1.0" />
 		<PackageReference Include="DuoUniversal" Version="1.2.0" />
+		<PackageReference Include="Google.Apis.Auth" Version="1.60.0" />
 		<PackageReference Include="MailKit" Version="3.5.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.13" />
@@ -79,6 +70,8 @@
 		<PackageReference Include="Microsoft.VisualStudio.Services.Client" Version="16.170.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Services.Release.Client" Version="16.170.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.11" />
+		<PackageReference Include="MudBlazor" Version="6.2.0" />
+		<PackageReference Include="MudBlazor.ThemeManager" Version="1.0.7" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Include="Octokit" Version="5.0.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
@@ -162,6 +155,6 @@
 	  </None>
 	</ItemGroup>
 <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-  <Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)&#xD;&#xA;powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\BuildDocumentation.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />
+  <Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />
 </Target>	
 </Project>

@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.IdentityModel.Tokens;
@@ -27,7 +28,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     ContextType.Domain,
                     DirectorySettings.FQDN,
                     DirectorySettings.Username,
-                    Directory.Encryption.DecryptObject<string>(DirectorySettings.Password)))
+                    Encryption.Instance.DecryptObject<string>(DirectorySettings.Password)))
                 {
                     UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
                     if (up != null)
@@ -241,7 +242,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             set
             {
                 base.SamAccountName = value;
-                if (UserPrincipalName == null)
+                if (UserPrincipalName.IsNullOrEmpty())
                     UserPrincipalName = value + "@" + DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.FQDN;
 
                 else
@@ -344,15 +345,15 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 SetProperty(ActiveDirectoryFields.StreetAddress.FieldName, value);
             }
         }
-        public string? Street
+        public string? POBox
         {
             get
             {
-                return GetStringProperty(ActiveDirectoryFields.Street.FieldName);
+                return GetStringProperty(ActiveDirectoryFields.POBox.FieldName);
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.Street.FieldName, value);
+                SetProperty(ActiveDirectoryFields.POBox.FieldName, value);
             }
         }
         public string? City
@@ -402,7 +403,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         public List<PermissionDelegate> PermissionDelegates { get; set; } = new List<PermissionDelegate>();
 
-        public List<PermissionMap> PermissionMappings { get; set; } = new List<PermissionMap>();
+        public List<PermissionMapping> PermissionMappings { get; set; } = new List<PermissionMapping>();
 
         public bool HasUserPrivilege
         {
@@ -481,7 +482,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                             a => a.ObjectMap.Any(
                                 o => o.ObjectType == objectType && o.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level) &&
                                 a.ActionMap.Any(am => am.ObjectType == objectType &&
-                                am.ObjectAction.ActionAccessFlagId == ActionAccessFlags.Create.ActionAccessFlagId)
+                                am.ObjectAction.Id == ActionAccessFlags.Create.Id)
                             )
                         );
         }

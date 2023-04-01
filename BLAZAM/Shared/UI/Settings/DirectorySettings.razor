@@ -2,171 +2,138 @@
 @inherits SettingsComponents
 
 
-<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
 
-        <Heading>@SettingsLocalization["Active Directory Settings"]</Heading>
+<MudText Typo="Typo.h4">@SettingsLocalization["Active Directory Settings"]</MudText>
 
-        @* <Column ColumnSize="ColumnSize.Is4.OnDesktop">
-        <ActiveDirectoryStatusPanel />
-        </Column>*@
-        <Column ColumnSize="ColumnSize.Is12.OnDesktop">
-            <Form @onsubmit="Save">
-                <Validations @ref="Validation" Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
+<MudForm @onsubmit="Save">
 
-                    <Validation>
-                        <SettingsField>
-                            <FieldLabel>@SettingsLocalization["Server"]</FieldLabel>
-                            <FieldHelp>Can be your domain name in most environments</FieldHelp>
-                            <FieldBody>
-                                @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin")
-                                {
+    <SettingsField Label="@SettingsLocalization["Server"]">
 
-                                    <TextEdit Text="Private" Disabled>
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
-                                }
-                                else
-                                {
 
-                                    <TextEdit @bind-Text="@settings.ServerAddress">
-                                        <Feedback>
-                                            <ValidationError />
-                                        </Feedback>
-                                    </TextEdit>
+        @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin" && Program.InstallationCompleted)
+        {
 
-                                }
-                            </FieldBody>
-                        </SettingsField>
-                    </Validation>
+            <MudTextField Label="@SettingsLocalization["Server"]"
+                      HelperText="Can be your domain name in most environments"
+                      Value=@("Private")
+                            Disabled />
+        }
+        else
+        {
 
-                    <Validation>
-                        <SettingsField>
-                            <FieldLabel>
-                                @SettingsLocalization["Port"]
-                            </FieldLabel>
-                            <FieldHelp>
-                                The default port of 389 is the recommended port to use.
-                                <Tooltip Display="Display.InlineBlock" Multiline Style="max-width:300px" Text="The application will automatically use an SSL
-                                            connection if the server's CA Certificate is a trusted CA on this web server. Using port 636 can work,
-                                            but may lead to unexpected behaviour of other services that listen to Active Directory changes.">
-                                    <Icon Name="IconName.QuestionCircle" TextColor="TextColor.Info" />
-                                </Tooltip>
-                            </FieldHelp>
-                            <FieldBody>
-                                @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin")
-                                {
-                                    <NumericEdit Margin=Margin.IsAuto.OnY Value="0" Disabled>
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </NumericEdit>
-                                }
-                                else
-                                {
-
-                                    <NumericEdit Margin=Margin.IsAuto.OnY @bind-Value="@settings.ServerPort">
-                                        <Feedback>
-                                            <ValidationError />
-                                        </Feedback>
-                                    </NumericEdit>
-
-                                }
-
-                            </FieldBody>
+            <MudTextField Label="@SettingsLocalization["Server"]"
+                      HelperText="Can be your domain name in most environments"
+                      @bind-Value="@settings.ServerAddress">
 
 
 
-                        </SettingsField>
+            </MudTextField>
 
-                    </Validation>
+        }
 
+    </SettingsField>
+    <SettingsField Label="@SettingsLocalization["Port"]">
 
-                    <Validation>
-                        <SettingsField>
-                            <FieldLabel>@SettingsLocalization["Username"]</FieldLabel>
-                            <FieldBody>
-                                <TextEdit name="username" @bind-Text="@settings.Username">
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
-                            </FieldBody>
-                        </SettingsField>
+        @{
+            string helperText = "The default port of 389 is the recommended port to use.";
+        }
 
-                    </Validation>
+        @*
+        TODO Add this as a popover
+        <MudTooltip Display="Display.InlineBlock" Multiline Style="max-width:300px" Text="The application will automatically use an SSL
+        connection if the server's CA Certificate is a trusted CA on this web server. Using port 636 can work,
+        but may lead to unexpected behaviour of other services that listen to Active Directory changes.">
+        <MudIcon Icon="IconName.QuestionCircle" Color="Color.Info" />
+        </MudTooltip>*@
 
-
-                    <Validation>
-                        <SettingsField>
-                            <FieldLabel>@SettingsLocalization["Password"]</FieldLabel>
-                            <FieldBody>
-                                <TextEdit name="password" Role="TextRole.Password" @bind-Text="@settings.Password">
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
-                            </FieldBody>
-                        </SettingsField>
-
-                    </Validation>
+        @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin" && Program.InstallationCompleted)
+        {
+            <MudNumericField HelperText="@helperText"
+                         Label="@SettingsLocalization["Port"]"
+                         HideSpinButtons="true"
+                         Value="0"
+                                  Disabled />
 
 
-                    <Validation>
-                        <SettingsField>
-                            <FieldLabel>@SettingsLocalization["UseTLS"]</FieldLabel>
-                            <FieldBody>
-                                <Switch TValue="bool" @bind-Checked="@settings.UseTLS" />
-                            </FieldBody>
-                        </SettingsField>
+        }
+        else
+        {
 
-                    </Validation>
-
-
-                    <Validation>
-                        <SettingsField>
-                            <FieldLabel>@SettingsLocalization["FQDN"]</FieldLabel>
-                            <FieldBody>
-                                <TextEdit name="fqdn" @bind-Text="@settings.FQDN">
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
-                            </FieldBody>
-                        </SettingsField>
-
-                    </Validation>
+            <MudNumericField HelperText="@helperText"
+                         Label="@SettingsLocalization["Port"]"
+                         HideSpinButtons="true"
+                         @bind-Value="@settings.ServerPort" />
 
 
-                    <Validation>
-                        <SettingsField>
-                            <FieldLabel>@SettingsLocalization["BaseDN"]</FieldLabel>
-                            <FieldBody>
-                                <TextEdit name="baseDN" @bind-Text="@settings.ApplicationBaseDN">
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
-                            </FieldBody>
-                        </SettingsField>
 
-                    </Validation>
 
-                    <SettingsField>
-                        <FieldBody>
-                            <Button Disabled="saveDisabled" Type="ButtonType.Submit" Color="Color.Success">Save Changes</Button>
-                        </FieldBody>
-                    </SettingsField>
-                </Validations>
-            </Form>
-        </Column>
-</LoadingIndicator>
+        }
+
+
+
+
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@SettingsLocalization["Username"]">
+
+        <MudTextField Label="@SettingsLocalization["Username"]" name="username" @bind-Value="@settings.Username">
+
+
+
+        </MudTextField>
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@SettingsLocalization["Password"]">
+
+        <MudTextField Label="@SettingsLocalization["Password"]" name="password" InputType="InputType.Password" @bind-Value="@settings.Password">
+
+
+
+        </MudTextField>
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@SettingsLocalization["UseTLS"]">
+
+        <MudSwitch Label="@SettingsLocalization["UseTLS"]" @bind-Checked="@settings.UseTLS" />
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@SettingsLocalization["FQDN"]">
+
+        <MudTextField Label="@SettingsLocalization["FQDN"]" name="fqdn" @bind-Value="@settings.FQDN" />
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@SettingsLocalization["Base DN"]">
+
+        <MudTextField Label="@SettingsLocalization["Base DN"]" name="baseDN" @bind-Value="@settings.ApplicationBaseDN" />
+
+    </SettingsField>
+
+
+    <SettingsField>
+
+        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+    </SettingsField>
+</MudForm>
 @code {
 
 #nullable disable warnings
     ADSettings settings = new ADSettings();
-    Validations? Validation;
     bool _insert;
 
     string passwordInDb;
@@ -184,7 +151,7 @@
         }
         else
         {
-            settings.ADSettingsId = 1;
+            settings.Id = 1;
             _insert = true;
         }
         LoadingData = false;
@@ -193,21 +160,21 @@
     }
     protected override async void Save()
     {
-        if (await Validation.ValidateAll())
+        //if (await Validation.ValidateAll())
+        //{
+        if (!settings.Password.Equals(passwordInDb))
         {
-            if (!settings.Password.Equals(passwordInDb))
-            {
-                settings.Password = EncryptionService.EncryptObject(settings.Password);
-                passwordInDb = settings.Password;
-            }
-            if (_insert)
-            {
-                Context.ActiveDirectorySettings.Add(settings);
-                _insert = false;
-            }
-            AuditLogger.System.SettingsChanged("Active Directory", settings.GetChanges(originalSettings));
-            base.Save();
+            settings.Password = EncryptionService.EncryptObject(settings.Password);
+            passwordInDb = settings.Password;
         }
+        if (_insert)
+        {
+            Context.ActiveDirectorySettings.Add(settings);
+            _insert = false;
+        }
+        AuditLogger.System.SettingsChanged("Active Directory", settings.GetChanges(originalSettings));
+        base.Save();
+        //}
 
     }
 

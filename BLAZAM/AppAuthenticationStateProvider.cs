@@ -14,6 +14,8 @@ using System.Security.Claims;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using BLAZAM.Common.Extensions;
 
 namespace BLAZAM
 {
@@ -51,8 +53,46 @@ namespace BLAZAM
         private readonly IApplicationUserStateService _userStateService;
 
 
+        public static Action<CookieAuthenticationOptions> ApplyAuthenticationCookieOptions()
+        {
+            return options =>
+            {
+
+                options.Events.OnSigningIn = async (context) =>
+                {
+                    var sessionTimeout = context.HttpContext.SessionTimeout();
+                    Console.WriteLine(context.Principal?.Identity?.Name + " validated: " + sessionTimeout.ToString());
+                    if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                    {
+                        var currentUtc = DateTimeOffset.UtcNow;
+                        context.Properties.IssuedUtc = currentUtc;
+                        context.Properties.ExpiresUtc = currentUtc.AddMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
+                    }
+                };
+                options.Events.OnValidatePrincipal = async (context) =>
+                {
+                    var sessionTimeout = context.HttpContext.SessionTimeout();
+                    Console.WriteLine(context.Principal?.Identity?.Name + " validated: " + sessionTimeout.ToString());
+                    if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                    {
+                        var currentUtc = DateTimeOffset.UtcNow;
+                        context.Properties.IssuedUtc = currentUtc;
+                        context.Properties.ExpiresUtc = currentUtc.AddMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
+                    }
+                };
+                options.LoginPath = new PathString("/login");
+                options.LogoutPath = new PathString("/logout");
+                if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
+                //else
+                //  options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
+
+                options.SlidingExpiration = true;
+            };
+        }
+
         private ClaimsPrincipal? CurrentUser;
-        private readonly ApplicationUserState _newUserState = new();
+        private ApplicationUserState _newUserState;
 
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
@@ -78,7 +118,18 @@ namespace BLAZAM
 
             return new ClaimsPrincipal(identity);
         }
+        private ClaimsPrincipal GetDemoUser()
+        {
 
+            var identity = new ClaimsIdentity(new[]
+            {
+                    new Claim(ClaimTypes. Sid, "2"),
+                    new Claim(ClaimTypes.Name, "Demo"),
+                    new Claim(ClaimTypes.Role, UserRoles.SuperAdmin ),
+                    new Claim(ClaimTypes.Actor,"2")
+                }, AppAuthenticationTypes.LocalAuthentication);
+            return new ClaimsPrincipal(identity);
+        }
         private ClaimsPrincipal GetLocalAdmin(string name = "admin")
         {
 
@@ -96,43 +147,54 @@ namespace BLAZAM
         /// </summary>
         /// <param name="loginReq">The authentication details and options for login</param>
         /// <returns>A fully processed AuthenticationState with all Claims and application permissions applied.</returns>
-        public async Task<AuthenticationState?> Login(LoginRequest loginReq)
+        public async Task<LoginResult> Login(LoginRequest loginReq)
         {
+            LoginResult loginResult = new();
+            _newUserState = new(_factory);
+            
 
-            if (loginReq != null && loginReq.Username != null && loginReq.Username != "")
+            AuthenticationState? result = null;
+
+            //Set the current user from the HttpContext which gets it from the user's browser cookie
+            CurrentUser = _httpContextAccessor?.HttpContext?.User;
+            //Block impersonation logins from non superadmins
+            if (loginReq.Impersonation
+                && CurrentUser != null
+                && !CurrentUser.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin))
+                return loginResult.UnauthorizedImpersonation();
+            //If the user is impersonating then we want to remember who we were before
+            if (loginReq.Impersonation)
             {
-                AuthenticationState? result = null;
+                //Prepare the UserState for the StateService to include the impersonator identity so
+                //we can undo the impersonation later
+                _newUserState.Impersonator = CurrentUser;
+                //Attach the impersonator to the login request so it can be used for later processing
+                loginReq.ImpersonatorClaims = CurrentUser;
+            }
+            else
+            {
+                if (loginReq == null) return loginResult.NoData();
+                if (loginReq.Username.IsNullOrEmpty()) return loginResult.NoUsername();
+            }
+            //Pull the authentication settings from the database so we can check admin credentials
+            var settings = _factory.CreateDbContext().AuthenticationSettings.FirstOrDefault();
+            //Check admin credentials
+            if (settings != null && loginReq.Username.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
+                if (loginReq.Password == adminPass)
+                    result = await SetUser(this.GetLocalAdmin());
 
-                //Set the current user from the HttpContext which gets it from the user's browser cookie
-                CurrentUser = _httpContextAccessor?.HttpContext?.User;
-                //Block impersonation logins from non superadmins
-                if (loginReq.Impersonation && CurrentUser != null && !CurrentUser.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin)) return new AuthenticationState(this.CurrentUser);
-                //If the user is impersonating then we want to remember who we were before
-                if (loginReq.Impersonation)
-                {
-                    //Prepare the UserState for the StateService to include the impersonator identity so
-                    //we can undo the impersonation later
-                    _newUserState.Impersonator = CurrentUser;
-                    //Attach the impersonator to the login request so it can be used for later processing
-                    loginReq.ImpersonatorClaims = CurrentUser;
-                }
-                //Pull the authentication settings from the database so we can check admin credentials
-                var settings = _factory.CreateDbContext().AuthenticationSettings.FirstOrDefault();
-                //Check admin credentials
-                if (settings != null && loginReq.Username.Equals("admin", StringComparison.OrdinalIgnoreCase))
-                {
-                    var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
-                    if (loginReq.Password == adminPass)
-                        result = await SetUser(this.GetLocalAdmin());
+            }
+            //Check if we're in demo mode and this is a demo login
+            else if (Program.InDemoMode && settings != null && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
+            {
+                result = await SetUser(this.GetDemoUser());
 
-                }
-                //Check if we're in demo mode and this is a demo login
-                else if (Program.InDemoMode && settings != null && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
-                {
-                    result = await SetUser(this.GetLocalAdmin("Demo"));
-
-                }
-                else
+            }
+            else
+            {
+                try
                 {
                     //Login username is not "admin" or "demo" or we're not in demo mode, so we'll try active directory
                     var userClaim = await AttemptADLogin(loginReq);
@@ -141,21 +203,25 @@ namespace BLAZAM
                         //Set the user in the authentication provider
                         result = await SetUser(userClaim);
                 }
-                if (result?.User != null)
-                    //User claim processing is done so we can set the UserState with the new identity
-                    _newUserState.User = result.User;
-
-                //Pass this state to the State Service for statefulness if it's populated
-                if (_newUserState.User != null)
-                    _userStateService.SetUserState(_newUserState);
-
-                //Return the authenticationstate
-                if (result != null)
-                    return result;
-                else
-                    return null;
+                catch (DeniedLoginException)
+                {
+                    return loginResult.DeniedLogin();
+                }
             }
-            return null;
+            if (result?.User != null)
+                //User claim processing is done so we can set the UserState with the new identity
+                _newUserState.User = result.User;
+
+            //Pass this state to the State Service for statefulness if it's populated
+            if (_newUserState.User != null)
+                _userStateService.SetUserState(_newUserState);
+
+            //Return the authenticationstate
+            if (result != null)
+                return loginResult.Success(result);
+            else
+                return loginResult.BadCredentials();
+
 
         }
 
@@ -278,53 +344,54 @@ namespace BLAZAM
 
             var userRoles = TransformUserRoles(user);
             //TransformUserRoles returns an empty list if the user has no login rights
-            if (userRoles.Count > 0)
-            {
-                //Build the base of the ClaimIdentity
-                List<Claim> claims = new()
+            if (userRoles.Count < 1)
+                throw new DeniedLoginException();
+
+            //Build the base of the ClaimIdentity
+            List<Claim> claims = new()
                 {
                             new Claim(ClaimTypes.Sid, user.SID.ToSidString()),
 
                         };
-                if (user.DisplayName != null)
-                {
-                    claims.Add(new Claim(ClaimTypes.Name, user.DisplayName));
-                }
-                else
-                {
-                    claims.Add(new Claim(ClaimTypes.Name, user.SamAccountName));
-
-                }
-                if (user.GivenName != null)
-                    claims.Add(new Claim(ClaimTypes.GivenName, user.GivenName));
-                if (user.Surname != null)
-                    claims.Add(new Claim(ClaimTypes.Surname, user.Surname));
-
-
-
-                if (loginReq.Impersonation)
-                {
-                    //Handle Impersonated login
-                    claims.Add(new Claim(ClaimTypes.UserData, "impersonated"));
-                    //Set the impersonators SID to the actor claim type so we know who to unimpersonate back to
-                    claims.Add(new Claim(ClaimTypes.Actor, loginReq.ImpersonatorClaims.FindFirstValue(ClaimTypes.Sid)));
-
-                }
-                else
-                {
-                    //This sign in is not impersonated, so we use the users SID we got from Active Directory above
-                    claims.Add(new Claim(ClaimTypes.Actor, user.SID.ToSidString()));
-
-                }
-
-                //All Claims transformations are complete create the new signed in user's identity
-                identity = new ClaimsIdentity(claims, AppAuthenticationTypes.ActiveDirectoryAuthentication);
-                //Inject the appended transformations for [Authorized()] usage
-                userRoles.ForEach(ur =>
-                {
-                    identity.AddClaim(ur);
-                });
+            if (user.DisplayName != null)
+            {
+                claims.Add(new Claim(ClaimTypes.Name, user.DisplayName));
             }
+            else
+            {
+                claims.Add(new Claim(ClaimTypes.Name, user.SamAccountName));
+
+            }
+            if (user.GivenName != null)
+                claims.Add(new Claim(ClaimTypes.GivenName, user.GivenName));
+            if (user.Surname != null)
+                claims.Add(new Claim(ClaimTypes.Surname, user.Surname));
+
+
+
+            if (loginReq.Impersonation)
+            {
+                //Handle Impersonated login
+                claims.Add(new Claim(ClaimTypes.UserData, "impersonated"));
+                //Set the impersonators SID to the actor claim type so we know who to unimpersonate back to
+                claims.Add(new Claim(ClaimTypes.Actor, loginReq.ImpersonatorClaims.FindFirstValue(ClaimTypes.Sid)));
+
+            }
+            else
+            {
+                //This sign in is not impersonated, so we use the users SID we got from Active Directory above
+                claims.Add(new Claim(ClaimTypes.Actor, user.SID.ToSidString()));
+
+            }
+
+            //All Claims transformations are complete create the new signed in user's identity
+            identity = new ClaimsIdentity(claims, AppAuthenticationTypes.ActiveDirectoryAuthentication);
+            //Inject the appended transformations for [Authorized()] usage
+            userRoles.ForEach(ur =>
+            {
+                identity.AddClaim(ur);
+            });
+
             return identity;
 
         }
@@ -337,7 +404,7 @@ namespace BLAZAM
         /// <returns>A list of Claim Roles that the user has been privileged</returns>
         private List<Claim> TransformUserRoles(IADUser user)
         {
-            
+
             List<Claim> userRoles = new();
 
             if (user.PermissionDelegates.Any(p => p.IsSuperAdmin))
@@ -373,7 +440,7 @@ namespace BLAZAM
                 }
                 if (user.HasComputerPrivilege)
                 {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.Computers));
+                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchComputers));
                 }
             }
             return userRoles;

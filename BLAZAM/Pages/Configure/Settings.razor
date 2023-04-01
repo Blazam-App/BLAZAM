@@ -1,55 +1,84 @@
 ﻿@page "/settings"
-@page "/settings/{selectedTab}"
+@page "/settings/{ActiveTab}"
 @layout MainLayout
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 @inherits TabbedAppComponentBase
 
 <AppPageTitle>Settings</AppPageTitle>
+<SetHeader>
+</SetHeader>
 <AuthorizeView>
-    <SetHeader>
-        <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
-        <Items>
-            <Tab Name="app">@SettingsLocalization["Application"]</Tab>
-            <Tab Name="auth">@SettingsLocalization["Authentication"]</Tab>
-            <Tab Name="dir">@SettingsLocalization["Active Directory"]</Tab>
-            <Tab Name="email">@SettingsLocalization["Email"]</Tab>
-            <Tab Name="update">@SettingsLocalization["Update"]</Tab>
-            <Tab Name="system">@SettingsLocalization["System"]</Tab>
-        </Items>
-    </Tabs>
-    </SetHeader>
-    <Tabs SelectedTab="@selectedTab" TextColor="TextColor.Light">
-        
-        <Content>
-            <TabPanel Name="app" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-                <BLAZAM.Server.Shared.UI.Settings.ApplicationSettings />
+        <MudTabs ActivePanelIndex="@ActiveTab">
+            <MudTabPanel>
+                <ChildContent>
+                    <BLAZAM.Server.Shared.UI.Settings.ApplicationSettings />
 
-            </TabPanel>
-            <TabPanel Name="auth" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
+                </ChildContent>
+                <TabContent>
+                    @SettingsLocalization["Application"]
+                </TabContent>
+            </MudTabPanel>
+            <MudTabPanel>
+                <ChildContent>
                 <BLAZAM.Server.Shared.UI.Settings.AuthenticationSetting />
 
-            </TabPanel>
-            <TabPanel Name="dir" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
+                </ChildContent>
+                <TabContent>
+                    @SettingsLocalization["Authentication"]
+                </TabContent>
+
+
+            </MudTabPanel>
+            <MudTabPanel>
+                <ChildContent>
                 <BLAZAM.Server.Shared.UI.Settings.DirectorySettings />
 
-            </TabPanel>
-            <TabPanel Name="email" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
+                </ChildContent>
+                <TabContent>
+                    @SettingsLocalization["Active Director"]
+                </TabContent>
+
+
+            </MudTabPanel>
+            <MudTabPanel >
+                <ChildContent>
                 <BLAZAM.Server.Shared.UI.Settings.EmailSettings />
 
-            </TabPanel>
-            <TabPanel Name="update" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
+                </ChildContent>
+                <TabContent>
+                    @SettingsLocalization["Email"]
+                </TabContent>
+
+
+            </MudTabPanel>
+            <MudTabPanel>
+                <ChildContent>
                 <BLAZAM.Server.Shared.UI.Settings.UpdateSettings />
 
-            </TabPanel>
-            <TabPanel Name="system" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-                <BLAZAM.Server.Shared.UI.Settings.SystemSettings />
+                </ChildContent>
+                <TabContent>
+                    @SettingsLocalization["Update"]
+                </TabContent>
 
-            </TabPanel>
-        </Content>
-    </Tabs>
+
+            </MudTabPanel>
+            <MudTabPanel>
+                <ChildContent>
+                    <BLAZAM.Server.Shared.UI.Settings.SystemSettings />
+
+                </ChildContent>
+                <TabContent>
+                    @SettingsLocalization["System"]
+                </TabContent>
+
+
+            </MudTabPanel>
+
+        </MudTabs>
+
 </AuthorizeView>
 
 @code {
-  
+
 }

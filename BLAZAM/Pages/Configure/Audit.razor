@@ -1,5 +1,5 @@
 ﻿@page "/audit"
-@page "/audit/{selectedTab}"
+@page "/audit/{ActiveTab}"
 
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 @inherits TabbedAppComponentBase
@@ -13,63 +13,105 @@
 <h3>Audit</h3>
 
 
-<SetSubHeader>
-    <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
-        <Items>
-            <Tab Name="user">@SettingsLocalization["User"]</Tab>
-            <Tab Name="system">@SettingsLocalization["System"]</Tab>
 
-        </Items>
-    </Tabs>
-</SetSubHeader>
-<Tabs SelectedTab="@selectedTab">
+<MudTabs @bind-ActivePanelIndex="@ActiveTab">
+    <MudTabPanel>
+        <ChildContent>
+            <MudDataGrid Virtualize
+                         ColumnResizeMode="ResizeMode.Container"
+                              Hideable
+                         Items="@auditEntries.Where(ae=>ae.Action!="Login" && ae.Action!="Logout").OrderByDescending(ae=>ae.Timestamp)"
+                         Filterable="false"
+                         SortMode="@SortMode.Multiple"
+                         Groupable="false">
+                <Columns>
+                    <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" />
+                    <PropertyColumn Property="x => x.Username" />
+                    <PropertyColumn Property="x => x.IpAddress" />
+                    <PropertyColumn Property="x => x.Action" />
+                    <PropertyColumn Property="x => x.Target" />
+                    <PropertyColumn Property="x => x.BeforeAction" />
+                    <PropertyColumn Property="x => x.AfterAction" />
 
-    <Content>
-        <TabPanel Name="user">
-            <DataGrid TItem="CommonAuditLog"
-                      Data="@auditEntries.OrderByDescending(ae=>ae.Timestamp)"
-                        Responsive
-                        Virtualize>
-                <DataGridCommandColumn />
-                <DataGridColumn Field="@nameof(CommonAuditLog.Timestamp)" Caption="Timestamp" Filterable />
-                <DataGridColumn Field="@nameof(CommonAuditLog.Username)" Caption="Username" Filterable />
-                <DataGridColumn Field="@nameof(CommonAuditLog.IpAddress)" Caption="IP" Filterable />
-                <DataGridColumn Field="@nameof(CommonAuditLog.Action)" Caption="Action" Filterable />
-                <DataGridColumn Field="@nameof(CommonAuditLog.Target)" Caption="Target" Filterable />
-                <DataGridColumn Field="@nameof(CommonAuditLog.BeforeAction)" Caption="Before" Filterable />
-                <DataGridColumn Field="@nameof(CommonAuditLog.AfterAction)" Caption="After" Filterable />
-
-            </DataGrid>
-        </TabPanel>
-        <TabPanel Name="system">
-            <DataGrid TItem="SystemAuditLog"
-                      Data="@systemAuditEntries.OrderByDescending(ae=>ae.Timestamp)"
-                        Responsive
-                        Virtualize>
-                <DataGridCommandColumn />
-                <DataGridColumn Field="@nameof(SystemAuditLog.Timestamp)" Caption="Timestamp" Filterable />
-                <DataGridColumn Field="@nameof(SystemAuditLog.Username)" Caption="Username" Filterable />
-                <DataGridColumn Field="@nameof(SystemAuditLog.IpAddress)" Caption="IP" Filterable />
-                <DataGridColumn Field="@nameof(SystemAuditLog.Action)" Caption="Action" Filterable />
-                <DataGridColumn Field="@nameof(SystemAuditLog.Target)" Caption="Target" Filterable />
-                <DataGridColumn Field="@nameof(SystemAuditLog.BeforeAction)" Caption="Before" Filterable />
-                <DataGridColumn Field="@nameof(SystemAuditLog.AfterAction)" Caption="After" Filterable />
-
-            </DataGrid>
-        </TabPanel>
-       
-
-    </Content>
-</Tabs>
+                </Columns>
+                </MudDataGrid>
 
 
-@code {
+
+
+            </ChildContent>
+            <TabContent>
+                @SettingsLocalization["Main"]
+            </TabContent>
+            </MudTabPanel>
+            <MudTabPanel>
+            <ChildContent>
+
+                <MudChart ChartType="ChartType.Line"
+                      ChartSeries="@LoginSeries"
+                      XAxisLabels="@auditEntries.Where(ae=>ae.Action=="Login" || ae.Action=="Logout").DistinctBy(ae=>ae.Timestamp.ToLocalTime().Date).Select(ae=>ae.Timestamp.ToLocalTime().ToString("M/d/yyyy")).ToArray()"
+                      Width="100%"
+                      Height="350px"
+                      ChartOptions="@LoginChartOptions"></MudChart>
+
+                <MudFab Icon="@Icons.Material.Filled.ShowChart" OnClick="ToggleLineMode" />
+                <MudDataGrid Virtualize ColumnResizeMode="ResizeMode.Container" Hideable Items="@auditEntries.Where(ae=>ae.Action=="Login" || ae.Action=="Logout").OrderByDescending(ae=>ae.Timestamp)" Filterable="false" SortMode="@SortMode.Multiple" Groupable="false">
+                <Columns>
+                    <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" />
+                    <PropertyColumn Property="x => x.Username" />
+                    <PropertyColumn Property="x => x.IpAddress" />
+                    <PropertyColumn Property="x => x.Action" />
+
+                </Columns>
+                </MudDataGrid>
+
+
+
+
+            </ChildContent>
+            <TabContent>
+                @SettingsLocalization["Logins"]
+            </TabContent>
+            </MudTabPanel>
+            <MudTabPanel>
+            <ChildContent>
+                <MudDataGrid Virtualize ColumnResizeMode="ResizeMode.Container" Hideable Items="@systemAuditEntries.OrderByDescending(ae=>ae.Timestamp)" Filterable="false" SortMode="@SortMode.Multiple" Groupable="false">
+                <Columns>
+                    <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" />
+                    <PropertyColumn Property="x => x.Username" />
+                    <PropertyColumn Property="x => x.IpAddress" />
+                    <PropertyColumn Property="x => x.Action" />
+                    <PropertyColumn Property="x => x.Target" />
+                    <PropertyColumn Property="x => x.BeforeAction" />
+                    <PropertyColumn Property="x => x.AfterAction" />
+
+                </Columns>
+                </MudDataGrid>
+
+
+
+            </ChildContent>
+            <TabContent>
+                @SettingsLocalization["System"]
+            </TabContent>
+
+
+            </MudTabPanel>
+
+            </MudTabs>
+
+
+            @code {
     List<CommonAuditLog> auditEntries = new();
     List<SystemAuditLog> systemAuditEntries = new();
-
+    List<ChartSeries> LoginSeries = new();
+    InterpolationOption _chartInterpolation = InterpolationOption.Straight;
+    ChartOptions LoginChartOptions;
+    ChartSeries loginChart = new() { Name = "Daily Logins" };
+    ChartSeries uniqueUsersChart = new() { Name = "Daily Users" };
     protected override async Task OnInitializedAsync()
     {
-        if (selectedTab == null) selectedTab = "user";
+        LoginChartOptions = new() { InterpolationOption = _chartInterpolation };
 
         await base.OnInitializedAsync();
         BaseUri = "/audit";
@@ -82,6 +124,33 @@
             auditEntries.AddRange(context.ComputerAuditLog.ToList<CommonAuditLog>());
 
             systemAuditEntries = await context.SystemAuditLog.ToListAsync();
+
+
+            loginChart.Data = auditEntries.Where(ae => ae.Action == "Login")
+            .GroupBy(ae => ae.Timestamp.Date)
+            .ToList()
+            .Select(g => Convert.ToDouble(g.Count()))
+            .ToArray();
+
+            uniqueUsersChart.Data = auditEntries.Where(ae => ae.Action == "Login")
+            .GroupBy(ae => ae.Timestamp.Date)
+            .ToList()
+            .Select(g => Convert.ToDouble(g.DistinctBy(g => g.Username).Count()))
+            .ToArray();
+            LoginSeries.Add(loginChart);
+            LoginSeries.Add(uniqueUsersChart);
         }
+
+       
+    }
+    public async Task ToggleLineMode(MouseEventArgs args)
+    {
+
+        if (LoginChartOptions.InterpolationOption == InterpolationOption.Straight)
+            LoginChartOptions.InterpolationOption = InterpolationOption.Periodic;
+        else
+            LoginChartOptions.InterpolationOption = InterpolationOption.Straight;
+
+        await InvokeAsync(StateHasChanged);
     }
 }

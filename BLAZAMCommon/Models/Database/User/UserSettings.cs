@@ -1,14 +1,15 @@
 ﻿namespace BLAZAM.Common.Models.Database.User
 {
-    public class UserSettings
+    public class AppUser : AppDbSetBase
     {
-        public int UserSettingsId { get; set; }
         public string UserGUID { get; set; }
         public string? APIToken { get; set; }
         public string? Theme { get; set; }
         public bool SearchDisabledUsers { get; set; }
         public bool SearchDisabledComputers { get; set; }
         public string? Username { get; set; }
+        public List<NotificationMessage> Messages { get; set; }
+        public byte[]? ProfilePicture { get; set; }
     }
     
 }

@@ -9,7 +9,7 @@
          ThemeContrast="ThemeContrast.Dark"
          Padding="Padding.Is2.OnX"
          Background="Background.Dark"
-         TextColor="TextColor.Light"
+         
          VerticalAlignment="VerticalAlignment.Middle">
         <BarBrand Width=Width.Is100>
             <Row>
@@ -22,7 +22,7 @@
 
                         </Column>
                         <Column ColumnSize="ColumnSize.Is8.OnTablet">
-                            <Small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(OU.OU) </Small>
+                            <small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(OU.OU) </small>
 
                         </Column>
                     </Row>
@@ -33,27 +33,27 @@
 
                     <Dropdown>
                         <DropdownToggle Color="Color.Primary">
-                            <Icon Name=@("fa-gear") />
+                            <MudIcon Icon=@("fa-gear") />
                         </DropdownToggle>
                         <DropdownMenu>
                            
                             @if (OU.CanEdit)
                             {
-                                <DropdownItem Clicked="ToggleEditMode">Edit...</DropdownItem>
+                                <MudMenuItem OnClick="ToggleEditMode">Edit...</MudMenuItem>
                             }
                            
                             @if (OU.CanRename)
                             {
-                                <DropdownItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</DropdownItem>
+                                <MudMenuItem OnClick="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
 
                             }
                             @if (OU.CanMove)
                             {
-                                <DropdownItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</DropdownItem>
+                                <MudMenuItem OnClick="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
                             }
                             @if (OU.CanDelete)
                             {
-                                <DropdownItem Clicked="@DeleteOU">Delete...</DropdownItem>
+                                <MudMenuItem OnClick="@DeleteOU">Delete...</MudMenuItem>
                             }
                         </DropdownMenu>
                     </Dropdown>
@@ -68,7 +68,7 @@
 
 
 
-<AppModal TextColor="TextColor.Dark" Title="Move To" @ref=@MoveToModal>
+<AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
     @if (MoveToModal?.IsShown==true)
     {
         <BLAZAM.Server.Shared.UI.OU.MoveToOUModalContent DirectoryModel="OU" />
@@ -83,17 +83,17 @@
 
 
 @if(OU!=null){
-    <Card>
-        <CardHeader>
+    <MudCard>
+        <MudCardHeader>
             @OU.CanonicalName
-        </CardHeader>
-        <CardBody>
+        </MudCardHeader>
+        <MudCardBody>
         @foreach(var childOU in OU.Children)
         {
             <ViewOU OU=childOU/>
         }
-    </CardBody>
-    </Card>
+    </MudCardBody>
+    </MudCard>
 }
 
 @if (OU.HasUnsavedChanges)
@@ -113,7 +113,7 @@
         {
             OU.CommitChanges();
             EditMode = false;
-            await NotificationService.Success("The changes made to this ou have been saved.", "Changes Saved");
+            SnackBarService.Success("The changes made to this ou have been saved.", "Changes Saved");
             await InvokeAsync(StateHasChanged);
 
         }
@@ -137,7 +137,7 @@
             try
             {
                 OU.Delete();
-                await NotificationService.Success(OU.CanonicalName + " has been deleted.", "OU Deleted");
+                SnackBarService.Success(OU.CanonicalName + " has been deleted.", "OU Deleted");
 
                 OU = null;
                 Nav.NavigateTo("/ou/search");
@@ -145,7 +145,7 @@
             }
             catch (ApplicationException ex)
             {
-                await NotificationService.Error(ex.Message);
+                SnackBarService.Error(ex.Message);
             }
        
             await InvokeAsync(StateHasChanged);

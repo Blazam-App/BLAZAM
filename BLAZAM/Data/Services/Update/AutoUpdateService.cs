@@ -3,7 +3,6 @@ using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Server.Data.Services.Email;
 using BLAZAM.Server.Shared.Email;
-using Blazorise;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 
@@ -93,9 +92,9 @@ namespace BLAZAM.Server.Data.Services.Update
                     Loggers.UpdateLogger.Information("Checking for automatic update");
 
                     var latestUpdate = await updateService.GetLatestUpdate();
-                    if (latestUpdate.Version.CompareTo(Program.Version) > 0)
+                    if (latestUpdate.Version.CompareTo(Program.Version) > 0 && appSettings.AutoUpdateTime!=null)
                     {
-                        ScheduleUpdate(appSettings.AutoUpdateTime, latestUpdate);
+                        ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
                     }
                     else
                     {
@@ -119,6 +118,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
         public void ScheduleUpdate(TimeSpan updateTimeOfDay, ApplicationUpdate updateToInstall)
         {
+
             bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall ;
             if (ScheduledUpdate != updateToInstall)
             {

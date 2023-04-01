@@ -1,12 +1,12 @@
-﻿@inherits Select<string>
-<Select TValue="string" SelectedValue="SelectedValue" Disabled=Disabled>
-    <SelectItem Value="String.Empty"></SelectItem>
+﻿@inherits MudSelect<string>
+<MudSelect Label="@Label" T="string" Value="@Value" Disabled=@Disabled>
+    <MudSelectItem Value="String.Empty"></MudSelectItem>
     @for (var i = 'D'; i <= 'Z'; i++)
     {
         var driveLetter = (i.ToString() + ":");
-        <SelectItem Value=@driveLetter>@driveLetter</SelectItem>
+        <MudSelectItem Value=@driveLetter>@driveLetter</MudSelectItem>
     }
-</Select>
+</MudSelect>
 
 @code {
 

@@ -59,9 +59,9 @@ namespace BLAZAM.Server.Data
         {
             if (obj is ApplicationVersion other)
             {
-                if (AssemblyVersion.CompareTo(other.AssemblyVersion) < 0)
+                if (AssemblyVersion.CompareTo(other.AssemblyVersion) != 0)
                 {
-                    return 1;
+                    return AssemblyVersion.CompareTo(other.AssemblyVersion);
                 }
                 else
                 {
@@ -71,7 +71,7 @@ namespace BLAZAM.Server.Data
                         return 0;
                 }
             }
-            return -1;
+            return 1;
         }
     }
 }

@@ -5,104 +5,86 @@
 
 <AppPageTitle>@Group?.CanonicalName</AppPageTitle>
 
-<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
 
 
-    <Div Padding="Padding.Is3">
+<EditForm Model="Group">
+    <SetSubHeader>
 
-        <EditForm Model="Group">
-            <SetSubHeader>
-                <Bar Mode="BarMode.Horizontal"
-                     CollapseMode="BarCollapseMode.Small"
-                     Breakpoint="Breakpoint.Desktop"
-                     NavigationBreakpoint="Breakpoint.Tablet"
-                     ThemeContrast="ThemeContrast.Dark"
-                     Padding="Padding.Is2"
-                     Background="Background.Dark"
-                     TextColor="TextColor.Light"
-                     VerticalAlignment="VerticalAlignment.Middle">
-                    <BarBrand Width=Width.Is100>
-                        <Row>
-                            <Column ColumnSize="ColumnSize.Is11.OnTablet.Is10">
+        <MudGrid>
+            <MudItem md="10" sm="11">
 
-                                <Row>
-                                    <Column ColumnSize="ColumnSize.Is4.OnTablet">
-                                        @Group.CanonicalName
+                <MudGrid>
+                    <MudItem md="4">
+                        @Group.CanonicalName
 
 
-                                    </Column>
-                                    <Column ColumnSize="ColumnSize.Is8.OnTablet">
-                                        <Small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(Group.OU) </Small>
+                    </MudItem>
+                    <MudItem md="8">
+                        <small>@DirectoryTools.PrettifyOu(Group.OU) </small>
 
-                                    </Column>
-                                </Row>
-                            </Column>
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
 
 
-                            <Column Float=Float.End ColumnSize="ColumnSize.Is1.OnTablet.Is2">
+            <MudItem sm="1" md="2">
 
-                                <Dropdown>
-                                    <DropdownToggle Color="Color.Primary">
-                                        <Icon Name=@("fa-gear") />
-                                    </DropdownToggle>
-                                    <DropdownMenu>
+                <MudMenu StartIcon="@Icons.Material.Filled.Settings">
 
-                                        @if (Group.CanEdit)
-                                        {
-                                            <DropdownItem Clicked="ToggleEditMode">Edit...</DropdownItem>
-                                        }
-                                        <DropdownItem Clicked="@(()=>{AssignMemberModal?.Show();})">Add Group Member...</DropdownItem>
-                                        @if (Group.CanAssign)
-                                        {
-                                            RefreshGroupGroupsAsync();
-                                            <DropdownItem Clicked="@(()=>{AssignToModal?.Show();})">Assign To...</DropdownItem>
-                                        }
 
-                                        @if (Group.CanRename)
-                                        {
-                                            <DropdownItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</DropdownItem>
+                    @if (Group.CanEdit)
+                    {
+                        <MudMenuItem OnClick="ToggleEditMode">Edit...</MudMenuItem>
+                    }
+                    <MudMenuItem OnClick="@(()=>{AssignMemberModal?.Show();})">Add Group Member...</MudMenuItem>
+                    @if (Group.CanAssign)
+                    {
+                        RefreshGroupGroupsAsync();
+                        <MudMenuItem OnClick="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
+                    }
 
-                                        }
-                                        @if (Group.CanMove)
-                                        {
-                                            <DropdownItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</DropdownItem>
-                                        }
-                                        @if (Group.CanDelete)
-                                        {
-                                            <DropdownItem Clicked="@DeleteGroup">Delete...</DropdownItem>
-                                        }
-                                    </DropdownMenu>
-                                </Dropdown>
-                            </Column>
-                        </Row>
+                    @if (Group.CanRename)
+                    {
+                        <MudMenuItem OnClick="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
 
-                    </BarBrand>
-
-                </Bar>
-
-            </SetSubHeader>
+                    }
+                    @if (Group.CanMove)
+                    {
+                        <MudMenuItem OnClick="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
+                    }
+                    @if (Group.CanDelete)
+                    {
+                        <MudMenuItem OnClick="@DeleteGroup">Delete...</MudMenuItem>
+                    }
+                </MudMenu>
+            </MudItem>
+        </MudGrid>
 
 
 
-            <AppModal TextColor="TextColor.Dark" Title="Assign To" @ref=@AssignToModal>
-                <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignToModal?.Hide(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
-            </AppModal>
-            <AppModal TextColor="TextColor.Dark" Title="Assign To" @ref=@AssignMemberModal>
-                <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal?.Hide();InvokeAsync(StateHasChanged);}) Group="Group" />
-            </AppModal>
-            <AppModal TextColor="TextColor.Dark" Title="Move To" @ref=@MoveToModal>
-                @if (MoveToModal?.IsShown == true)
-                {
-                    <MoveToOUModalContent DirectoryModel="Group" />
-                }
-            </AppModal>
+    </SetSubHeader>
 
-            <AppModal TextColor="TextColor.Dark" Title="Rename Group" @ref=@RenameModal>
-                @if (RenameModal?.IsShown == true)
-                {
-                    <RenameGroupModalContent Group="Group" />
-                }
-            </AppModal>
+
+
+    <AppModal Title="Assign To" @ref=@AssignToModal>
+        <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignToModal?.Hide(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
+    </AppModal>
+    <AppModal Title="Assign To" @ref=@AssignMemberModal>
+        <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal?.Hide();InvokeAsync(StateHasChanged);}) Group="Group" />
+    </AppModal>
+    <AppModal Title="Move To" @ref=@MoveToModal>
+        @if (MoveToModal?.IsShown == true)
+        {
+            <MoveToOUModalContent DirectoryModel="Group" />
+        }
+    </AppModal>
+
+    <AppModal Title="Rename Group" @ref=@RenameModal>
+        @if (RenameModal?.IsShown == true)
+        {
+            <RenameGroupModalContent Group="Group" />
+        }
+    </AppModal>
 
 
 
@@ -110,132 +92,62 @@
 
 
 
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @ULoc["Group Name"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@Group.CanonicalName" Disabled />
 
-                </FieldBody>
-            </Field>
+    <MudTextField Label="@ULoc["Group Name"]" @bind-Value="@Group.CanonicalName" Disabled />
 
 
 
 
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @ULoc["Account Name"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@Group.SamAccountName" Disabled />
-
-                </FieldBody>
-            </Field>
-
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @ULoc["Email Address"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
-
-                </FieldBody>
-            </Field>
-
-            @if (Group.HasMembers)
-            {
-                <Section Title="Members">
-                    <Div>
-                        <ListGroup Margin=Margin.Is3.OnX Background="Background.Light" TextColor="TextColor.Dark">
-                            @if (Group.UserMembers.Count > 0)
-                            {
-                                <ListGroupItem Background="Background.Dark" TextColor="TextColor.Light">
-                                    Users
-                                </ListGroupItem>
-                            }
-                            @foreach (var user in Group.UserMembers)
-                            {
-                                var linkAdd = "/users/search/" + user.SamAccountName;
-                                <ListGroupItem Background="Background.Light" TextColor="TextColor.Dark" Padding="Padding.Is0.OnY.Is3.OnX" Style="height:1.5em">
-                                    <GroupMember Member=user Group="Group" To="@linkAdd" OnGroupMembershipChange="@((change)=>{
-InvokeAsync(StateHasChanged);
-})" />
-                                </ListGroupItem>
-                            }
-                            @if (Group.GroupMembers.Count > 0)
-                            {
-                                <ListGroupItem Background="Background.Dark" TextColor="TextColor.Light">
-                                    Groups
-                                </ListGroupItem>
-                            }
-                            @foreach (var group in Group.GroupMembers)
-                            {
-                                string linkAdd = "/groups/search/" + group.SamAccountName;
-                                <ListGroupItem Background="Background.Light" TextColor="TextColor.Dark" Padding="Padding.Is0.OnY.Is3.OnX" Style="height:1.5em">
-                                    <GroupMember Member=group Group=Group To=@linkAdd OnGroupMembershipChange="@((change)=>{InvokeAsync(StateHasChanged);})" />
-                                </ListGroupItem>
-                            }
-                        </ListGroup>
-                    </Div>
-                </Section>
-            }
-
-            @if (Group.CanReadField(ActiveDirectoryFields.MemberOf))
-            {
-
-                <Field ColumnSize="ColumnSize.Is12" Horizontal>
-
-                <FieldBody ColumnSize="ColumnSize.Is12">
-                    <Row>
-                        @if (Group.IsAGroupMember)
-                            {
-                                var deniedRead = false;
-                                @foreach (ADGroup g in Group.MemberOf.Where(g => g.CanRead))
-                                {
-                                    if (g.CanRead)
-                                    {
-                                        <Column ColumnSize="ColumnSize.Is6.OnDesktop">
-                                            <AssignedGroup Group=g Member="Group" OnGroupMembershipChange="@((change)=>{InvokeAsync(StateHasChanged);})" />
-                                        </Column>
-                                    }
-                                    else
-                                    {
-                                        deniedRead = true;
-                                    }
-                                }
-
-                                if (deniedRead)
-                                {
-                                    <Column ColumnSize="ColumnSize.Is6.OnDesktop">
-                                        The user is in more groups you don't have access to
-                                    </Column>
-                                }
-
-                            }
-                            else
-                            {
-                                <PageProgress Visible />
-                            }
-                        </Row>
-                    </FieldBody>
-                </Field>
-            }
 
 
-            @if (Group.HasUnsavedChanges)
-            {
-                <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
-            }
 
 
-        </EditForm>
-
-    </Div>
+    <MudTextField Label="@ULoc["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
 
 
-</LoadingIndicator>
 
+
+
+    <MudTextField Label="@ULoc["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
+
+
+    @if (Group.HasMembers)
+    {
+        <Section Title="Members">
+            <MudDataGrid Elevation=0 Items="@Group.Members.Where(m=>m.CanRead)" Filterable="false" SortMode="@SortMode.None" Groupable="false">
+                <Columns>
+                    <PropertyColumn Property="x => x.ObjectType" Title="Type" />
+                    <TemplateColumn Context="templateContext">
+                        <HeaderTemplate>
+                            Name
+                        </HeaderTemplate>
+                        <CellTemplate Context="cellContext">
+                            <MudLink Href="@cellContext.Item.SearchUri">
+                                @cellContext.Item.CanonicalName
+                            </MudLink>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
+        </Section>
+        if (Group.Members.Where(m => !m.CanRead).Count() > 0)
+        {
+            <MudAlert Class="mud-alert-filled-info">
+                The user is in more groups you don't have access to
+            </MudAlert>
+        }
+    }
+
+
+
+
+    @if (Group.HasUnsavedChanges)
+    {
+        <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
+    }
+
+
+</EditForm>
 
 
 @code {
@@ -275,7 +187,7 @@ InvokeAsync(StateHasChanged);
             await AuditLogger.Group.Changed(Group, changes);
 
             EditMode = false;
-            await NotificationService.Success("The changes made to this group have been saved.", "Changes Saved");
+            SnackBarService.Success("The changes made to this group have been saved.", "Changes Saved");
             await InvokeAsync(StateHasChanged);
 
         }
@@ -288,7 +200,7 @@ InvokeAsync(StateHasChanged);
             try
             {
                 Group.Delete();
-                await NotificationService.Success(Group.CanonicalName + " has been deleted.", "Group Deleted");
+                SnackBarService.Success(Group.CanonicalName + " has been deleted.", "Group Deleted");
 
                 Group = null;
                 Nav.NavigateTo("/groups/search");
@@ -296,7 +208,7 @@ InvokeAsync(StateHasChanged);
             }
             catch (ApplicationException ex)
             {
-                await NotificationService.Error(ex.Message);
+                SnackBarService.Error(ex.Message);
             }
             await InvokeAsync(StateHasChanged);
         }

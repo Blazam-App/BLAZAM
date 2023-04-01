@@ -11,10 +11,9 @@
 
     @if (Program.InDemoMode)
     {
-        <Alert Visible Background=Background.Info>
-        <AlertMessage Display="Display.InlineBlock">Try searching Moore, Howard, Evans, Manny...</AlertMessage>
-        <AppCloseButton Display="Display.InlineBlock" Float="Float.End" />
-        </Alert>
+        <MudAlert>
+            Try searching Moore, Howard, Evans, Manny...
+        </MudAlert>
     }
 
 
@@ -36,20 +35,20 @@
                 {
 
 
-                    <Div Class="cursor-pointer" @onclick=@(()=>{SubmitSearch(u.CanonicalName);}) Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
-                        <Heading Margin="Margin.Is2.FromBottom">@u.ObjectType</Heading>
-                        <Heading Margin="Margin.Is2.FromBottom">@u.CanonicalName</Heading>
-                        <Small>@u.SamAccountName</Small>
-                    </Div>
+                    <div Class="cursor-pointer" @onclick=@(()=>{SubmitSearch(u.CanonicalName);})>
+                        <MudText Typo="Typo.h1">@u.ObjectType</MudText>
+                        <MudText Typo="Typo.h1">@u.CanonicalName</MudText>
+                        <small>@u.SamAccountName</small>
+                    </div>
 
 
                 }
             </ItemContent>
             <Placeholder>
-                <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
-                    <Heading Margin="Margin.Is2.FromBottom">Loading...</Heading>
-                    <Small>Loading...</Small>
-                </Div>
+                <div>
+                    <MudText Typo="Typo.h1">Loading...</MudText>
+                    <small>Loading...</small>
+                </div>
 
             </Placeholder>
         </Virtualize>
@@ -59,41 +58,44 @@
         var result = Searcher.Results[0];
         if (result.CanRead)
         {
-            <LoadingIndicator ZIndex=100 Visible=@SavingChanges>
 
-                @switch (result.ObjectType)
-                {
-                    case ActiveDirectoryObjectType.User:
-                        <ViewUser @bind-SavingChanges="SavingChanges" User="(IADUser)result" />
-                        break;
-                    case ActiveDirectoryObjectType.Group:
-                        <ViewGroup @bind-SavingChanges="SavingChanges" Group="(IADGroup)result" />
-                        break;
-                    case ActiveDirectoryObjectType.Computer:
-                        <ViewComputer @bind-SavingChanges="SavingChanges"  Computer="(IADComputer)result" />
-                        break;
-                    case ActiveDirectoryObjectType.OU:
-                        <ViewOU @bind-SavingChanges="SavingChanges" OU="(IADOrganizationalUnit)result" />
-                        break;
-                }
-            </LoadingIndicator>
+            @switch (result.ObjectType)
+            {
+                case ActiveDirectoryObjectType.User:
+                    <ViewUser @bind-SavingChanges="SavingChanges" User="(IADUser)result" />
+                    break;
+                case ActiveDirectoryObjectType.Group:
+                    <ViewGroup @bind-SavingChanges="SavingChanges" Group="(IADGroup)result" />
+                    break;
+                case ActiveDirectoryObjectType.Computer:
+                    <ViewComputer @bind-SavingChanges="SavingChanges" Computer="(IADComputer)result" />
+                    break;
+                case ActiveDirectoryObjectType.OU:
+                    <ViewOU @bind-SavingChanges="SavingChanges" OU="(IADOrganizationalUnit)result" />
+                    break;
+            }
         }
         else
         {
-            <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
+            <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
 
         }
 
     }
+  
     else if (LoadingData)
     {
-        <LoadingIndicator Height="Height.Is100" Visible=LoadingData>
-            <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
-        </LoadingIndicator>
+        <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
+    }
+      else if (Searcher.Results.Count == 0)
+    {
+        <MudAlert Class="mud-alert-filled-info">
+            No results were found.
+        </MudAlert>
     }
     else
     {
-        <SearchIcon Name="@SearchIcon" Text="@ModelsTypeName" />
+        <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
 
     }
 </AuthorizeView>
@@ -104,7 +106,7 @@
 
     bool SavingChanges = false;
     string ModelsTypeName = "Search";
-    protected string SearchIcon { get; set; } = "fa-solid fa-building";
+    protected string SearchIcon { get; set; } = "";
     string? _searchTermParameter;
     /// <summary>
     /// The search term that comes from the URI
@@ -118,7 +120,7 @@
             LoadingData = true;
             Searcher?.Results.Clear();
             _searchTermParameter = value;
-            SearchService.SearchTerm = value;
+            //SearchService.SearchTerm = value;
             PerformSearch();
             //Searcher.GeneralSearchTerm = value;
             if (_searchTermParameter.IsNullOrEmpty())
@@ -148,7 +150,7 @@
     /// <returns></returns>
     protected override async Task OnInitializedAsync()
     {
-
+        await base.OnInitializedAsync();
         Searcher = new ADSearch();
         SearchService.SearchTerm = SearchTermParameter;
         Searcher.GeneralSearchTerm = SearchTermParameter;
@@ -168,10 +170,10 @@
         Searcher.ResultsCollected += ((batch) =>
              {
                  results.AddRange(batch);
-                 InvokeAsync(StateHasChanged);
+                 //InvokeAsync(StateHasChanged);
              });
 
-        await PerformSearch();
+        //await PerformSearch();
         await InvokeAsync(StateHasChanged);
 
     }
@@ -204,16 +206,10 @@
 
         LoadingData = true;
         await InvokeAsync(StateHasChanged);
-        if (!SearchTermParameter.IsNullOrEmpty() && SearchTermParameter.Length > 2)
-        {
+        if (!SearchTermParameter.IsNullOrEmpty() && SearchTermParameter.Length > 0)
             await InvokeSearch();
-
-        }
         else
-        {
             Searcher.Results.Clear();
-        }
-
         LoadingData = false;
 
         await InvokeAsync(StateHasChanged);
@@ -226,17 +222,24 @@
     public async Task InvokeSearch()
     {
         // Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
-
+        if (Searcher == null)
+            Searcher = new ADSearch();
+        else
+            Searcher.CancelSeaches();
+        SearchService.SearchTerm = SearchTermParameter;
         Searcher.EnabledOnly = !SearchService.IncludeDisabled;
         Searcher.GeneralSearchTerm = SearchService.SearchTerm;
         Searcher.ObjectTypeFilter = SearchService.SeachObjectType;
         Searcher.ExactMatch = true;
 
-        await Searcher.SearchAsync<ADUser, IADUser>();
+        await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
+
+        await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
+        //search.Wait();
         if (Searcher.Results.Count < 1)
         {
             Searcher.ExactMatch = false;
-            await Searcher.SearchAsync<ADUser, IADUser>();
+            await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
 
         }
     }

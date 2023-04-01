@@ -2,175 +2,92 @@
 
 
 
-<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
 
-        <Heading>@SettingsLocalization["Email Settings"]</Heading>
-        <Form @onsubmit="Save">
+<MudText Typo="Typo.h4">@SettingsLocalization["Email Settings"]</MudText>
+<MudForm @onsubmit="Save">
 
-            <Validations Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
-                <SettingsField>
-                    <FieldLabel>@SettingsLocalization["Email Enabled"]</FieldLabel>
-                    <FieldBody>
-                        <Switch @bind-Checked="settings.Enabled" />
-                    </FieldBody>
-                </SettingsField>
+    <SettingsField Label="@SettingsLocalization["Email Enabled"]">
+        <MudSwitch @bind-Checked="settings.Enabled" />
+    </SettingsField>
 
 
-                <Validation>
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["Admin bcc"]</FieldLabel>
+    <SettingsField Label="@SettingsLocalization["Admin bcc"]">
+        <MudTextField Label="@SettingsLocalization["Admin bcc"]" HelperText="Addresses to blind copy all application emails that are sent." @bind-Value="settings.AdminBcc" />
+    </SettingsField>
 
-                        <FieldHelp>
-                            Addresses to blind copy all application emails that are sent.
-                        </FieldHelp>
-                        <FieldBody>
+    <SettingsField Label="@SettingsLocalization["SMTP Server"]">
+        <MudTextField Label="@SettingsLocalization["SMTP Server"]" @bind-Value="settings.SMTPServer" />
+    </SettingsField>
 
-                            <TextEdit @bind-Text="settings.AdminBcc">
-                                <Feedback>
-                                    <ValidationError />
-                                </Feedback>
-                            </TextEdit>
-                        </FieldBody>
+    <SettingsField Label="@SettingsLocalization["SMTP Port"]">
 
 
-                    </SettingsField>
-                </Validation>
+        <MudNumericField Label="@SettingsLocalization["SMTP Port"]" T="int" HideSpinButtons="true" @bind-Value="settings.SMTPPort" />
 
-                <Validation>
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["SMTP Server"]</FieldLabel>
-                        <FieldBody>
+    </SettingsField>
 
-                            <TextEdit @bind-Text="settings.SMTPServer">
-                                <Feedback>
-                                    <ValidationError />
-                                </Feedback>
-                            </TextEdit>
-                        </FieldBody>
-                    </SettingsField>
-                </Validation>
-                <Validation>
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["SMTP Port"]</FieldLabel>
-                        <FieldBody>
+    <SettingsField Label="@SettingsLocalization["Use TLS"]">
 
-                            <NumericEdit @bind-Value="settings.SMTPPort">
-                                <Feedback>
-                                    <ValidationError />
-                                </Feedback>
-                            </NumericEdit>
-                        </FieldBody>
-                    </SettingsField>
-                </Validation>
-                <SettingsField>
-                    <FieldLabel>@SettingsLocalization["Use TLS"]</FieldLabel>
-                    <FieldBody>
-                        <Switch TValue="bool" @bind-Checked="settings.UseTLS" />
-                    </FieldBody>
-                </SettingsField>
+        <MudSwitch Label="@SettingsLocalization["Enabled"]" @bind-Checked="settings.UseTLS" />
 
-                <SettingsField>
-                    <FieldLabel>@SettingsLocalization["Use SMTP Authentication"]</FieldLabel>
-                    <FieldBody>
-                        <Switch TValue="bool" @bind-Checked="settings.UseSMTPAuth" />
-                    </FieldBody>
-                </SettingsField>
+    </SettingsField>
 
-                @if (settings.UseSMTPAuth)
-                {
-                    <Validation>
-                        <SettingsField>
-                            <FieldLabel>@SettingsLocalization["SMTP Username"]</FieldLabel>
-                            <FieldBody>
-                                <TextEdit @bind-Text="settings.SMTPUsername">
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
-                            </FieldBody>
-                        </SettingsField>
-                    </Validation>
-                    <Validation>
-                        <SettingsField>
-                            <FieldLabel>@SettingsLocalization["SMTP Password"]</FieldLabel>
-                            <FieldBody>
+    <SettingsField Label="@SettingsLocalization["Use SMTP Authentication"]">
 
-                                <TextEdit @bind-Text="settings.SMTPPassword">
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
-                            </FieldBody>
-                        </SettingsField>
-                    </Validation>
-                }
-                <Validation>
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["From Address"]</FieldLabel>
-                        <FieldBody>
+        <MudSwitch Label="@SettingsLocalization["Enabled"]" @bind-Checked="settings.UseSMTPAuth" />
 
-                            <TextEdit @bind-Text="settings.FromAddress">
-                                <Feedback>
-                                    <ValidationError />
-                                </Feedback>
-                            </TextEdit>
-                        </FieldBody>
-                    </SettingsField>
-                </Validation>
-                <Validation>
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["From Display Name"]</FieldLabel>
-                        <FieldBody>
+    </SettingsField>
 
-                            <TextEdit @bind-Text="settings.FromName">
-                                <Feedback>
-                                    <ValidationError />
-                                </Feedback>
-                            </TextEdit>
-                        </FieldBody>
-                    </SettingsField>
-                </Validation>
-                <Validation>
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["Reply-To Address"]</FieldLabel>
-                        <FieldBody>
+    @if (settings.UseSMTPAuth)
+    {
+        <SettingsField Label="@SettingsLocalization["SMTP Username"]">
 
-                            <TextEdit @bind-Text="settings.ReplyToAddress">
-                                <Feedback>
-                                    <ValidationError />
-                                </Feedback>
-                            </TextEdit>
-                        </FieldBody>
-                    </SettingsField>
-                </Validation>
-                <Validation>
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["Reply-To Display Name"]</FieldLabel>
-                        <FieldBody>
+            <MudTextField Label="@SettingsLocalization["SMTP Username"]" @bind-Value="settings.SMTPUsername" />
+        </SettingsField>
 
-                            <TextEdit @bind-Text="settings.ReplyToName">
-                                <Feedback>
-                                    <ValidationError />
-                                </Feedback>
-                            </TextEdit>
-                        </FieldBody>
-                    </SettingsField>
-                </Validation>
-                <Validations Model="testRecipient" StatusChanged="OnValidation">
-                    <Validation Validator="ValidationRule.IsEmail">
-                        <TextEdit Disabled=@(!settings.Enabled) @bind-Text=testRecipient />
-                        <Button Disabled=@(!settings.Enabled && !settings.Valid()) @onclick="SendTestEmail" Color="Color.Success">Send Test Email</Button>
-                    </Validation>
-                </Validations>
+        <SettingsField Label="@SettingsLocalization["SMTP Password"]">
 
-                <SettingsField>
-                    <FieldBody>
-                        <Button Disabled="saveDisabled" Type="ButtonType.Submit" Color="Color.Success">Save Changes</Button>
-                    </FieldBody>
-                </SettingsField>
-            </Validations>
-        </Form>
-</LoadingIndicator>
+
+            <MudTextField Label="@SettingsLocalization["SMTP Password"]" @bind-Value="settings.SMTPPassword" />
+
+        </SettingsField>
+    }
+    <SettingsField Label="@SettingsLocalization["From Address"]">
+
+
+        <MudTextField Label="@SettingsLocalization["From Address"]" @bind-Value="settings.FromAddress" />
+    </SettingsField>
+    <SettingsField Label="@SettingsLocalization["From Display Name"]">
+
+
+        <MudTextField Label="@SettingsLocalization["From Display Name"]" @bind-Value="settings.FromName" />
+
+    </SettingsField>
+
+    <SettingsField Label="@SettingsLocalization["Reply-To Address"]">
+
+
+        <MudTextField Label="@SettingsLocalization["Reply-To Address"]" @bind-Value="settings.ReplyToAddress" />
+
+    </SettingsField>
+
+    <SettingsField Label="@SettingsLocalization["Reply-To Display Name"]">
+
+
+        <MudTextField Label="@SettingsLocalization["Reply-To Display Name"]" @bind-Value="settings.ReplyToName" />
+
+    </SettingsField>
+
+    <MudTextField Label="@SettingsLocalization["Test Recipient"]" Disabled=@(!settings.Enabled) @bind-Value=testRecipient />
+
+    <MudButton Disabled=@(!settings.Enabled && !settings.Valid()) @onclick="SendTestEmail" Color="Color.Success">Send Test Email</MudButton>
+
+    <SettingsField>
+
+        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+    </SettingsField>
+</MudForm>
 @code {
 #nullable disable warnings
     BLAZAM.Common.Models.Database.EmailSettings settings = new BLAZAM.Common.Models.Database.EmailSettings();
@@ -208,7 +125,7 @@
     }
     protected override void Save()
     {
-        if (settings.EmailSettingsId == 0 && Context!=null)
+        if (settings.Id == 0 && Context != null)
         {
             Context.EmailSettings.Add(settings);
         }

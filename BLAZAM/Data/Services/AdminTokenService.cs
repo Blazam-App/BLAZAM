@@ -1,5 +1,4 @@
-﻿using Blazorise;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace BLAZAM.Server.Data.Services
 {
@@ -15,7 +14,6 @@ namespace BLAZAM.Server.Data.Services
     /// </summary>
     public class AdminTokenService
     {
-        private readonly IMessageService _messageService;
         private readonly ApplicationManager _applicationManager;
         private readonly ILogger<AdminTokenService> _logger;
 
@@ -35,9 +33,8 @@ namespace BLAZAM.Server.Data.Services
             }
         }
 
-        public AdminTokenService(ILogger<AdminTokenService> logger, ApplicationManager applicationManager, IMessageService messageService)
+        public AdminTokenService(ILogger<AdminTokenService> logger, ApplicationManager applicationManager)
         {
-            _messageService = messageService;
             _applicationManager = applicationManager;
             _logger = logger;
         }

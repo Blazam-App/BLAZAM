@@ -1,26 +1,16 @@
 @inherits AppComponentBase
 
-@if (Model.AccessLevelId > 0)
+@if (Model.Id > 0)
 {
-    <Accordion>
-
-        <Collapse Visible="@collapseVisible">
-            <CollapseHeader>
-                <Heading Size="HeadingSize.Is5">
-                    <Button Clicked="@(()=>collapseVisible = !collapseVisible)">@Model.Name</Button>
-                </Heading>
-            </CollapseHeader>
-            <CollapseBody>
-
-                <EditAccessLevel Model=Model />
-
-            </CollapseBody>
-        </Collapse>
-    </Accordion>
-}else{
+    <MudExpansionPanel Text="@Model.Name">
+        <EditAccessLevel Model=Model />
+    </MudExpansionPanel>
+}
+else
+{
     <EditAccessLevel Model=Model />
 
-    }
+}
 
 
 @code {
@@ -29,5 +19,5 @@
     [Parameter]
     public AccessLevel Model { get; set; }
 
-  
+
 }

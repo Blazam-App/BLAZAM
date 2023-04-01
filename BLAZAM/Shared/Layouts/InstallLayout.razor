@@ -2,18 +2,19 @@
 
 <PageTitle>BLAZAM</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
-       <InstallMenu/>
-    </div>
+<MudLayout>
+    <MudAppBar Color=Color.Primary Elevation="1">
+        <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+        <MudSpacer />
 
-    <main>
-        <div class="top-row px-4 auth">
-          
-        </div>
+        <MudText Typo="Typo.h5" Class="ml-3">Blazam</MudText>
+    </MudAppBar>
 
-        <article class="content px-4">
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Medium">
+
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+

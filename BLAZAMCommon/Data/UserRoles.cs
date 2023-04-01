@@ -12,7 +12,6 @@ namespace BLAZAM.Common.Data
         public const string SearchOUs = "SearchOUs";
         public const string SearchComputers = "SearchComputers";
         public const string CreateOUs = "CreateOUs";
-        public const string Computers = "Computers";
         public const string SuperAdmin = "SuperAdmin";
     }
 }

@@ -4,6 +4,7 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Exceptions;
+using BLAZAM.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32.SafeHandles;
 using Serilog;

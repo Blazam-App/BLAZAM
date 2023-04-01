@@ -4,29 +4,25 @@
 
 
 <PageTitle>Loading</PageTitle>
-<Layout Sider>
-    <LayoutSider>
-        <LayoutSiderContent>
-            <ErrorMenu />
-        </LayoutSiderContent>
-    </LayoutSider>
-    <Layout>
-        <LayoutHeader Fixed>
+    <MudLayout>
+    <CascadingValue Value="this">
+
+        <MainAppBar />
+    </CascadingValue>
+        <MudContainer Fixed>
             @if (PageHeader != null)
             {
                 @PageHeader
             }
-        </LayoutHeader>
-        <LayoutContent>
-            <Card>
-                <CardBody>
+        </MudContainer>
+        <MudMainContent>
+            <MudContainer MaxWidth="MaxWidth.Large" Class="pt-5">
                     @Body
 
-                </CardBody>
-            </Card>
-        </LayoutContent>
+        </MudContainer>
+        </MudMainContent>
 
-        <LayoutFooter>
+        <MudContainer Fixed>
             @if (Program.InstallationCompleted)
             {
                 <DirectoryConnectingIndicator />
@@ -34,9 +30,8 @@
             }
             <AppFooter />
 
-        </LayoutFooter>
-    </Layout>
-</Layout>
+        </MudContainer>
+    </MudLayout>
 
 @code {
     [Parameter]

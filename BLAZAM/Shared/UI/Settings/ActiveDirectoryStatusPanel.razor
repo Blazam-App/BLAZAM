@@ -1,10 +1,10 @@
 ﻿@using System.DirectoryServices;
 @inherits AppComponentBase
-<Card>
-    <CardHeader>
+<MudCard>
+    <MudCardHeader>
         Active Directory Connection Status
-    </CardHeader>
-    <CardBody>
+    </MudCardHeader>
+    <MudCardBody>
 
         <Row>
             <Column>
@@ -39,9 +39,9 @@
 
             </Column>
         </Row>
-    </CardBody>
+    </MudCardBody>
     <Progress Value="100" Animated Striped Visibility=@showProgress />
-    </Card>
+    </MudCard>
     @{
 
 
@@ -56,7 +56,7 @@
     bool _encryptedStatus;
     bool _portStatus;
     bool _credStatus;
-    Blazorise.Visibility showProgress = Visibility.Visible;
+    bool showProgress = true;
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -79,7 +79,7 @@
                 {
                     if (Directory.Status == DirectoryConnectionStatus.Connecting)
                     {
-                        showProgress = Visibility.Default;
+                        showProgress = true;
                         await InvokeAsync(StateHasChanged);
 
                     }
@@ -95,7 +95,7 @@
                             {
                                 _encryptedStatus = true;
                             }
-                            showProgress = Visibility.Invisible;
+                            showProgress = false;
 
                             await InvokeAsync(DirectoryConnected.InvokeAsync);
 
@@ -113,13 +113,13 @@
 
                     if (Directory.Status == DirectoryConnectionStatus.Connecting)
                     {
-                        showProgress = Visibility.Default;
+                        showProgress = true;
 
                     }
                     else
                     {
 
-                        showProgress = Visibility.Invisible;
+                        showProgress =false;
                     }
 
                     await InvokeAsync(StateHasChanged);

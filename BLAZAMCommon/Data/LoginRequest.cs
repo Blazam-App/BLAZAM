@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security;
 using System.Security.Claims;
+using BLAZAM.Common.Extensions;
 
 namespace BLAZAM.Common.Data
 {

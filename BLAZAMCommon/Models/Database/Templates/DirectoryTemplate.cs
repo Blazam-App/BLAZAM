@@ -13,10 +13,9 @@ namespace BLAZAM.Common.Models.Database.Templates
 
     //Sets the name column to be unique
     [Index(nameof(Name), IsUnique = true)]
-    public class DirectoryTemplate : ICloneable
+    public class DirectoryTemplate : AppDbSetBase, ICloneable
     {
 
-        public int DirectoryTemplateId { get; set; }
         [Required]
         public string Name { get; set; }
 
@@ -146,7 +145,7 @@ namespace BLAZAM.Common.Models.Database.Templates
 
         public override string? ToString()
         {
-            return Name.ToString();
+            return Name?.ToString();
         }
 
         public object Clone()
@@ -155,7 +154,7 @@ namespace BLAZAM.Common.Models.Database.Templates
             {
                 AssignedGroupSids = AssignedGroupSids,
                 Category = Category,
-                DirectoryTemplateId = 0,
+                Id = 0,
                 DisplayNameFormula = DisplayNameFormula,
                 //FieldValues = FieldValues,
                 ObjectType = ObjectType,

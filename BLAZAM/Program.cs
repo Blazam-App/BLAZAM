@@ -4,11 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Hosting.WindowsServices;
-using Newtonsoft.Json;
 using System.Globalization;
-using Blazorise;
-using Blazorise.Icons.FontAwesome;
-using Blazorise.Bootstrap5;
 using BLAZAM.Server.Middleware;
 using BLAZAM.Server.Data.Services;
 using BLAZAM.Server.Data.Services.Duo;
@@ -17,28 +13,16 @@ using BLAZAM.Common.Data.ActiveDirectory;
 using BLAZAM.Common;
 using BLAZAM.Server.Data;
 using BLAZAM.Common.Data.Database;
-using Microsoft.Extensions.Localization;
-using BLAZAM.Server.Shared.ResourceFiles;
-using BLAZAM.Common.Data.ActiveDirectory.Models;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-using Microsoft.AspNetCore.Components.Server.Circuits;
 using BLAZAM.Server.Data.Services.Email;
 using BLAZAM.Server.Data.Services.Update;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using BLAZAM.Server;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Logging;
-using Serilog.Events;
-using Blazorise.RichTextEdit;
 using BLAZAM.Server.Pages.Error;
 using System.Diagnostics;
-using System.Reflection;
-using BLAZAM.Common.Models.Database;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Scaffolding;
+using BLAZAM.Common.Data;
+using MudBlazor.Services;
 
 namespace BLAZAM
 {
@@ -61,6 +45,7 @@ namespace BLAZAM
         /// eg: C:\inetpub\blazam\writable\
         /// </returns>
         internal static SystemDirectory WritablePath => new SystemDirectory(Program.TempDirectory + @"writable\");
+
         /// <summary>
         /// The temporary file directry
         /// </summary>
@@ -68,16 +53,19 @@ namespace BLAZAM
         /// eg: C:\Users\user\appdata\temp\
         /// </returns>
         internal static SystemDirectory TempDirectory { get; private set; }
+
         public static SystemDirectory AppDataDirectory { get; private set; }
 
         /// <summary>
         /// The process of the running application
         /// </summary>
         public static Process ApplicationProcess { get; private set; }
+
         /// <summary>
         /// The running Blazam version
         /// </summary>
         internal static ApplicationVersion Version { get; } = new ApplicationVersion();
+
         /// <summary>
         /// A collection of active listening address's with port
         /// </summary>
@@ -163,8 +151,7 @@ namespace BLAZAM
         /// </summary>
         public static bool Writable { get; private set; }
 
-
-
+        
         /// <summary>
         /// The main injection point for the web application.
         /// It all starts here.
@@ -249,29 +236,9 @@ namespace BLAZAM
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            var test = builder.Services.AddAuthentication(
+            builder.Services.AddAuthentication(
                 CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-
-                    options.Events.OnCheckSlidingExpiration = async (context) =>
-                    {
-                        if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
-                            context.Options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
-                        var shouldRenew = context.ShouldRenew;
-                    };
-                    options.Events.OnSigningIn = async (context) =>
-                    {
-                        //Use session timeout from settings in database
-                        if (DatabaseCache.AuthenticationSettings.SessionTimeout != null)
-                            context.Options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
-
-                    };
-                    options.LoginPath = new PathString("/login");
-                    options.LogoutPath = new PathString("/logout");
-                    options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
-                    options.SlidingExpiration = true;
-                });
+                .AddCookie(AppAuthenticationStateProvider.ApplyAuthenticationCookieOptions());
 
 
             /*
@@ -310,13 +277,13 @@ namespace BLAZAM
 
             //Inject the database as a service
 
-            DatabaseContext.Configuration = builder.Configuration;
-            
+            DatabaseContextBase.Configuration = builder.Configuration;
+
             builder.Services.AddSingleton<AppDatabaseFactory>();
 
             //builder.Services.AddDbContextFactory<DatabaseContext>();
 
-
+            builder.Services.AddScoped<AppNavigationManager>();
 
 
             //Provide an Http client as a service with custom construction via api service class
@@ -345,10 +312,10 @@ namespace BLAZAM
 
 
             //Provide an ApplicationManager as a service
-            builder.Services.AddScoped<ApplicationManager>();
+            builder.Services.AddSingleton<ApplicationManager>();
 
             //Provide a PermissionHandler as a service
-            builder.Services.AddScoped<LoginPermissionApplicator>();
+            builder.Services.AddSingleton<LoginPermissionApplicator>();
 
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();
@@ -385,23 +352,23 @@ namespace BLAZAM
 
 
 
-
-            //builder.Services.AddBlazoredSessionStorage(); 
-            //builder.Services.AddScoped<LoginRedirector>();
-
-            //Add Blazorize UI framework
-
-            builder.Services.AddBlazorise(options =>
-                {
-                    options.Immediate = true;
-
-                })
-                .AddBootstrap5Providers()
-                .AddFontAwesomeIcons()
-                .AddLogging();
+          
 
 
-            builder.Services.AddBlazoriseRichTextEdit();
+
+            builder.Services.AddMudServices(configuration => {
+                configuration.SnackbarConfiguration.HideTransitionDuration = 250;
+                configuration.SnackbarConfiguration.ShowTransitionDuration = 250;
+                
+            });
+
+
+
+
+            builder.Services.AddScoped<AppSnackBarService>();
+
+            builder.Services.AddScoped<AppDialogService>();
+
 
 
             builder.Host.UseWindowsService();
@@ -431,7 +398,6 @@ namespace BLAZAM
             else
             {
                 AppInstance.Environment.EnvironmentName = "Development";
-                AppInstance.UseDeveloperExceptionPage();
                 AppInstance.UseDeveloperExceptionPage();
             }
 
@@ -486,6 +452,8 @@ namespace BLAZAM
 
         }
 
+       
+
         public static bool IsDevelopment
         {
             get
@@ -531,7 +499,7 @@ namespace BLAZAM
                     using (var scope = AppInstance.Services.CreateScope())
                     {
                         var context = scope.ServiceProvider.GetRequiredService<AppDatabaseFactory>().CreateDbContext();
-                        if (context != null && context.Status == DatabaseContext.DatabaseStatus.OK)
+                        if (context != null && context.Status == ServiceConnectionState.Up)
                             if (context.IsSeeded() || force)
                                 if (context.Database.GetPendingMigrations().Count() > 0)
                                     context.Database.Migrate();

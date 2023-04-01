@@ -1,0 +1,18 @@
+﻿<MudElement Class=@("d-flex " + (Wrap==true?"flex-wrap ":"") + "gap-"+Spacing +" "+Class)>
+    @ChildContent
+</MudElement>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public bool Wrap { get; set; } = true;
+
+
+    [Parameter]
+    public string Class{ get; set; }
+
+    [Parameter]
+    public int Spacing { get; set; } = 4;
+}

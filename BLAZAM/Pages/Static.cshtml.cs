@@ -1,4 +1,5 @@
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;

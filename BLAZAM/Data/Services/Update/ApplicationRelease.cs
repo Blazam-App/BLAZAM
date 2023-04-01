@@ -28,7 +28,12 @@ namespace BLAZAM.Server.Data.Services.Update
         }
 
         public string Branch { get; set; }
-        
+        public string? ReleaseNotes => GitHubRelease.Body;
+
+        public bool? PreviewRelease => GitHubRelease.Prerelease;
+
+        public DateTimeOffset? ReleaseTime => GitHubRelease.PublishedAt;
+
         public ApplicationVersion Version { get; set; }
         public Release? GitHubRelease { get; internal set; }
         private ReleaseAsset? ReleaseAsset => GitHubRelease?.Assets.FirstOrDefault();

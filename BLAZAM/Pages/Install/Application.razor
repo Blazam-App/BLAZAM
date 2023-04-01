@@ -1,39 +1,47 @@
-
 @using Microsoft.EntityFrameworkCore
 @layout InstallLayout
-@inject NavigationManager NavManager
-@inject AppDatabaseFactory DbFactory
+@inherits AppComponentBase
 @{
- 
+
 }
-<h3>Application</h3>
+<EditForm Model="settings" OnValidSubmit="Submit">
+    <MudText Typo="Typo.h3">Application</MudText>
 
 
-    <h5>Please configure the required application settings</h5>
-    <label>Application Name</label><br />
-<input type="text" @bind="appName" />
-<br />
+    <MudText Typo="Typo.h5">Please configure the required application settings</MudText>
+    <SettingsField>
+        <FieldLabel>
+            @SettingsLocalization["Application Name"]
+        </FieldLabel>
+        <ChildContent>
+            <MudTextField Label="@SettingsLocalization["Application Name"]" @bind-Value="settings.AppName" />
+        </ChildContent>
+    </SettingsField>
 
-  <button @onclick="Submit" type="button" class="btn btn-primary">Save</button>
+    <MudButton @onclick="Submit" ButtonType="ButtonType.Button">Save</MudButton>
 
-
+</EditForm>
 @code {
 #nullable disable warnings
     [Parameter]
     public EventCallback StepCompleted { get; set; }
+    AppSettings settings;
 
-    string appName;
-    string appFQDN;
-     IDatabaseContext context;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        settings = await Context.AppSettings.FirstOrDefaultAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+
+
     private async void Submit()
     {
-        context = DbFactory.CreateDbContext();
-        context.AppSettings.Add(new AppSettings
-            {
-                AppFQDN = appFQDN,
-                AppName = appName,
-    });
-        await context.SaveChangesAsync();
+        if (settings.Id == 0)
+            Context.AppSettings.Add(settings);
+        await Context.SaveChangesAsync();
         await StepCompleted.InvokeAsync();
 
     }

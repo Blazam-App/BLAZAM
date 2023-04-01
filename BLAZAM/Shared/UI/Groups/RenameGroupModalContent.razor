@@ -1,18 +1,15 @@
 ﻿@inherits AppModalContent
-<Div Background="Background.Light" TextColor="TextColor.Dark">
+<div Background="Background.Light" Color="Color.Dark">
     <Section Title=@UserLocalization["Name"]>
 
         @if (Group.CanEditField(ActiveDirectoryFields.SAMAccountName))
         {
-            <Field Horizontal>
-                <FieldLabel>
-                    @UserLocalization["Group Name"]
-                </FieldLabel>
-                <FieldBody>
-                    <TextEdit @bind-Text="@GroupName" />
+            
 
-                </FieldBody>
-            </Field>
+                    <MudTextField Label="@UserLocalization["Group Name"]" @bind-Value="@GroupName" />
+
+                
+            
         }
 
       
@@ -20,19 +17,16 @@
 
     @if (Group.CanEditField(ActiveDirectoryFields.Mail))
     {
-        <Field Horizontal>
-            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                @UserLocalization["Email Address"]
-            </FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                <TextEdit @bind-Text="@Group.Email" />
+        
 
-            </FieldBody>
-        </Field>
+                <MudTextField Label="@UserLocalization["Email Address"]" @bind-Value="@Group.Email" />
+
+            
+        
     }
 
-    <Button Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Changes"]</Button>
-</Div>
+    <MudButton Color=Color.Primary OnClick="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
+</div>
 @code {
     #nullable disable warnings
     string GroupName;
@@ -47,20 +41,20 @@
     async Task SaveChanges()
     {
         if(GroupName.IsNullOrEmpty()){
-            await NotificationService.Warning("You must provide a group name", "Group name");
+            SnackBarService.Warning("You must provide a group name", "Group name");
             GroupName = Group.CanonicalName;
         }
         //Group.CommitChanges();
         try{
             Group.Rename(GroupName);
-            await NotificationService.Success("The group has been renamed.", "Group renamed");
+            SnackBarService.Success("The group has been renamed.", "Group renamed");
             Close();
         }
         catch(Exception ex)
         {
             Loggers.ActiveDirectryLogger.Error("Error attempting to rename a group");
             Loggers.ActiveDirectryLogger.Error(ex.Message,ex);
-            await NotificationService.Error("The group could not be renamed.", "Group renamed");
+            SnackBarService.Error("The group could not be renamed.", "Group renamed");
         }
 
     }

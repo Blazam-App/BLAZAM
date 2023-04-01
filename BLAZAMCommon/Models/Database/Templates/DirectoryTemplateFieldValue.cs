@@ -1,8 +1,7 @@
 ﻿namespace BLAZAM.Common.Models.Database.Templates
 {
-    public class DirectoryTemplateFieldValue : ICloneable
+    public class DirectoryTemplateFieldValue : AppDbSetBase, ICloneable
     {
-        public int DirectoryTemplateFieldValueId { get; set; }
         public ActiveDirectoryField Field { get; set; }
         public string Value { get; set; } = "";
 

@@ -22,31 +22,54 @@
     }
 
 }
-<Heading Size="HeadingSize.Is3">Database</Heading>
+<MudText Typo="Typo.h3">Database</MudText>
 @if (!Completed && Monitor.DatabaseUpdatePending)
 {
-    <Div>
-        <Heading Size="HeadingSize.Is5">The database is ready to install.</Heading>
-        <Heading Size="HeadingSize.Is5">Type</Heading><Text>@Context.ConnectionString?.DatabaseType</Text>
-        <Heading Size="HeadingSize.Is5">Server</Heading><Text>@Context.ConnectionString?.ServerAddress</Text>
-        <Heading Size="HeadingSize.Is5">Port</Heading><Text>@Context.ConnectionString?.ServerPort</Text>
-        <Heading Size="HeadingSize.Is5">Database</Heading><Text>@Context.ConnectionString?.Database</Text>
-        <Divider />
-        <Help>
+    <MudContainer>
+        <MudText Class="mb-5" Typo="Typo.h4">The database is ready to install.</MudText>
+        <MudStack Row=true>
+            <MudText Style="width:140px;" Typo="Typo.h5">Type</MudText>
+            <MudText>@Context.ConnectionString?.DatabaseType</MudText>
+        </MudStack>
+
+        <MudStack Row=true>
+            <MudText Style="width:140px;" Typo="Typo.h5">Server</MudText>
+            <MudText>@Context.ConnectionString?.ServerAddress</MudText>
+        </MudStack>
+
+        <MudStack Row=true>
+            <MudText Style="width:140px;" Typo="Typo.h5">Port</MudText>
+            <MudText>@Context.ConnectionString?.ServerPort</MudText>
+        </MudStack>
+
+        <MudStack Row=true>
+            <MudText Style="width:140px;" Typo="Typo.h5">Database</MudText>
+            <MudText>@Context.ConnectionString?.Database</MudText>
+        </MudStack>
+
+
+        <MudDivider Class="my-5" />
+        <MudText>
             Make sure the settings above are as intended. The application should be provided a
             dedicated database. If you are using SQLite as your database option you don't need to worry about this.
-        </Help>
-        <Progress Max="100" Value="@progressValue" Animated Striped />
-        <br />
-        <Button Color="Color.Primary" @onclick="InstallDB">Install</Button>
-    </Div>
+        </MudText>
+        @if (progressValue > 0)
+            {
+                <MudProgressLinear Value="@progressValue"
+                                          Indeterminate />
+            }
+        <MudContainer Style="width:fit-content">
+            <MudButton Class="mx-auto" Variant="Variant.Filled" Color="Color.Primary" @onclick="InstallDB">Install</MudButton>
+        </MudContainer>
+
+    </MudContainer>
+
 }
 
 else
 {
-    <Div>
-        <Heading Size="HeadingSize.Is6">Installed</Heading>
-    </Div>
+    <MudText Typo="Typo.h4">Installed</MudText>
+
 }
 
 @code {
@@ -54,7 +77,7 @@ else
     public bool Completed { get; set; }
     [Parameter]
     public EventCallback StepCompleted { get; set; }
-    int? progressValue = 0;
+    double progressValue = 0;
     protected void InstallDB()
     {
         Task.Run(async () =>
@@ -72,7 +95,7 @@ else
                 }
                 progressValue = 0;
             }
-            catch(Exception  ex)
+            catch (Exception ex)
             {
                 MessageService.Error(ex.Message, ex.GetType().FullName);
             }

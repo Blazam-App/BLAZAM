@@ -1,35 +1,27 @@
 ﻿@inherits AppModal
-<Modal @ref="Modal">
-    <ModalContent Centered>
-        <ModalHeader>
+<MudMessageBox @ref="Modal">
             <ModalTitle>Add Delegate</ModalTitle>
             <AppCloseButton />
-        </ModalHeader>
-        <ModalBody>
             <Row>
-                <Field>
-                    <FieldLabel>User or Group</FieldLabel>
-                    <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.All"
+                
+                        <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
                                     @bind-SelectedResult=@selectedDelegate
                                     CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
 
 
-                </Field>
-                <Field>
-                    <FieldLabel>Super User</FieldLabel>
-                    <FieldHelp>Will have complete and total acceess to the application if enabled</FieldHelp>
-                    <Switch TValue="bool" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=Program.InDemoMode />
-                </Field>
+                
+                
+                    <MudSwitch Label="Super User" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=Program.InDemoMode />
+                    <MudText>Will have complete and total acceess to the application if enabled</MudText>
+                
             </Row>
             <Row>
-                <Button Color="Color.Primary" Clicked="AddGroup">Add</Button>
+                <MudButton Color="Color.Primary" OnClick="AddGroup">Add</MudButton>
 
             </Row>
 
 
-        </ModalBody>
-    </ModalContent>
-</Modal>
+</MudMessageBox>
 @code {
 
     IDirectoryEntryAdapter? selectedDelegate;
@@ -47,7 +39,7 @@
             Context.PermissionDelegate.Add(NewPermissionDelegate);
             await Context.SaveChangesAsync();
             NewPermissionDelegate = new PermissionDelegate();
-            await Modal?.Hide();
+            Modal?.Close();
             await DelegateAdded.InvokeAsync();
         }
         catch (DbUpdateException ex)
@@ -58,9 +50,9 @@
                     var confilctingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
                     if (confilctingDelegate != null)
                         if (confilctingDelegate.DeletedAt == null)
-                            await NotificationService.Error("That delegate already exists.");
+                            NotificationService.Error("That delegate already exists.");
                         else
-                            await NotificationService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
+                            NotificationService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
 
                     break;
             }
@@ -70,7 +62,7 @@
 
             Loggers.ActiveDirectryLogger.Error("Error attempting to add delegate " + selectedDelegate.CanonicalName);
             Loggers.ActiveDirectryLogger.Error(ex.Message, ex);
-            await NotificationService.Error("An unexpected error has occured.");
+            NotificationService.Error("An unexpected error has occured.");
         }
 
     }

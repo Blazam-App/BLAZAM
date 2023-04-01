@@ -12,6 +12,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         List<IADGroup> GetGroupMembers(IADGroup group);
         List<IADUser> GetDirectUserMembers(IADGroup group, bool ignoreDisabledUsers = true);
         bool IsAMemberOf(IADGroup? group, IGroupableDirectoryAdapter? user, bool v, bool ignoreDisabledUsers = true);
-       // List<IGroupableDirectoryModel> GetMembers (IADGroup aDGroup);
+        Task<List<IADGroup>> FindNewGroupsAsync(int maxAgeInDays = 14);
+        List<IADGroup>? FindNewGroups(int maxAgeInDays = 14);
+        // List<IGroupableDirectoryModel> GetMembers (IADGroup aDGroup);
     }
 }

@@ -1,5 +1,5 @@
-﻿using Blazorise;
-using Blazorise.Utilities;
+﻿
+using BLAZAM.Common.Extensions;
 using System.Text.RegularExpressions;
 
 namespace BLAZAM.Server.Shared.UI
@@ -21,7 +21,14 @@ namespace BLAZAM.Server.Shared.UI
         //     True if they are equal.
         public static bool IsEqual(string value, string compare)
         {
-            return ValidationRule.IsEqual(value, compare);
+            try
+            {
+                return value.Equals(compare);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         //
@@ -42,7 +49,7 @@ namespace BLAZAM.Server.Shared.UI
         //     True if string length is in the range.
         public static bool IsLength(string value, int min, int max)
         {
-            return ValidationRule.IsLength(value, min, max);
+            return value.Length>min && value.Length<max;
         }
 
         //
@@ -59,9 +66,9 @@ namespace BLAZAM.Server.Shared.UI
         // Returns:
         //     True if string length is long enough and has at least
         //     one leter, number, and special character.
-        public static bool IsValidPassword(string value, int min=6)
+        public static bool IsValidPassword(string value, int min = 6)
         {
-            Regex regex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{"+min+",}$");
+            Regex regex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{" + min + ",}$");
             return regex.Match(value).Success;
         }
         //
@@ -72,7 +79,7 @@ namespace BLAZAM.Server.Shared.UI
         //   value:
         public static bool IsEmpty(string value)
         {
-            return ValidationRule.IsEmpty(value);
+            return value.IsNullOrEmpty();
         }
 
         //
@@ -83,7 +90,7 @@ namespace BLAZAM.Server.Shared.UI
         //   value:
         public static bool IsNotEmpty(string value)
         {
-            return ValidationRule.IsNotEmpty(value);
+            return !value.IsNullOrEmpty();
         }
 
         //
@@ -94,9 +101,25 @@ namespace BLAZAM.Server.Shared.UI
         //   value:
         public static bool IsEmail(string value)
         {
-            return ValidationRule.IsEmail(value);
+            if (value.IsNullOrEmpty())
+                return false;
+
+            try
+            {
+                return Regex.IsMatch(value,
+                        @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
+                        + @"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?
+                    [0-9]{1,2}|25[0-5]|2[0-4][0-9])\."
+                        + @"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?
+                    [0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+                        + @"([a-zA-Z]+[\w -]+\.)+[a-zA-Z]{2,4})$");
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
-        
+
         //
         // Summary:
         //     Check if the string is an email.
@@ -121,7 +144,16 @@ namespace BLAZAM.Server.Shared.UI
         //   value:
         public static bool IsAlpha(string value)
         {
-            return ValidationRule.IsAlpha(value);
+            if (string.IsNullOrEmpty(value))
+                return false;
+
+            foreach (char c in value)
+            {
+                if (!char.IsLetter(c))
+                    return false;
+            }
+
+            return true;
         }
 
         //
@@ -132,7 +164,16 @@ namespace BLAZAM.Server.Shared.UI
         //   value:
         public static bool IsAlphanumeric(string value)
         {
-            return ValidationRule.IsAlphanumeric(value);
+            if (string.IsNullOrEmpty(value))
+                return false;
+
+            foreach (char c in value)
+            {
+                if (!char.IsLetter(c)&& !char.IsNumber(c))
+                    return false;
+            }
+
+            return true;
         }
 
         //
@@ -143,7 +184,16 @@ namespace BLAZAM.Server.Shared.UI
         //   value:
         public static bool IsAlphanumericWithUnderscore(string value)
         {
-            return ValidationRule.IsAlphanumericWithUnderscore(value);
+            if (string.IsNullOrEmpty(value))
+                return false;
+
+            foreach (char c in value)
+            {
+                if (!char.IsLetter(c) && !char.IsNumber(c) && c!='_')
+                    return false;
+            }
+
+            return true;
         }
 
         //
@@ -154,7 +204,16 @@ namespace BLAZAM.Server.Shared.UI
         //   value:
         public static bool IsUppercase(string value)
         {
-            return ValidationRule.IsUppercase(value);
+            if (string.IsNullOrEmpty(value))
+                return false;
+
+            foreach (char c in value)
+            {
+                if (!char.IsUpper(c))
+                    return false;
+            }
+
+            return true;
         }
 
         //
@@ -165,168 +224,19 @@ namespace BLAZAM.Server.Shared.UI
         //   value:
         public static bool IsLowercase(string value)
         {
-            return ValidationRule.IsLowercase(value);
-        }
+            if (string.IsNullOrEmpty(value))
+                return false;
 
-        //
-        // Summary:
-        //     Check if the string is null or empty.
-        //
-        // Parameters:
-        //   e:
-        public static void IsEmpty(ValidatorEventArgs e)
-        {
-            ValidationRule.IsEmpty(e);
-        }
+            foreach (char c in value)
+            {
+                if (!char.IsLower(c))
+                    return false;
+            }
 
-        //
-        // Summary:
-        //     Check if the string is not null or empty.
-        //
-        // Parameters:
-        //   e:
-        public static void IsNotEmpty(ValidatorEventArgs e)
-        {
-            ValidationRule.IsNotEmpty(e);
-        }
-
-        //
-        // Summary:
-        //     Check if the string is an email.
-        //
-        // Parameters:
-        //   e:
-        public static void IsEmail(ValidatorEventArgs e)
-        {
-            ValidationRule.IsEmail(e);
-        }
-        //
-        // Summary:
-        //     Check if the string is an email.
-        //
-        // Parameters:
-        //   e:
-        public static void IsFqdn(ValidatorEventArgs e)
-        {
-            e.Status = (IsFqdn(e.Value as string) ? ValidationStatus.Success : ValidationStatus.Error);
-        }
-
-        //
-        // Summary:
-        //     Check if the string contains only letters (a-zA-Z).
-        //
-        // Parameters:
-        //   e:
-        public static void IsAlpha(ValidatorEventArgs e)
-        {
-            ValidationRule.IsAlpha(e);
-        }
-
-        //
-        // Summary:
-        //     Check if the string contains only letters and numbers.
-        //
-        // Parameters:
-        //   e:
-        public static void IsAlphanumeric(ValidatorEventArgs e)
-        {
-            ValidationRule.IsAlphanumeric(e);
-        }
-
-        //
-        // Summary:
-        //     Check if the string contains only letters, numbers and underscore.
-        //
-        // Parameters:
-        //   e:
-        public static void IsAlphanumericWithUnderscore(ValidatorEventArgs e)
-        {
-            ValidationRule.IsAlphanumericWithUnderscore(e);
-        }
-
-        //
-        // Summary:
-        //     Check if the string is uppercase.
-        //
-        // Parameters:
-        //   e:
-        public static void IsUppercase(ValidatorEventArgs e)
-        {
-            ValidationRule.IsUppercase(e);
-        }
-        //
-        // Summary:
-        //     Checks if the given string meets minimum password complexity.
-        //
-        // Parameters:
-        //   value:
-        //     String to check for the range.
-        //
-        //   min:
-        //     Minimum length allowed.
-        //
-        // Returns:
-        //     True if string length is long enough and has at least
-        //     one leter, number, and special character.
-        public static void IsValidPassword(ValidatorEventArgs e)
-        {
-            e.Status = (IsValidPassword(e.Value as string) ? ValidationStatus.Success : ValidationStatus.Error);
-        }
-        //
-        // Summary:
-        //     Check if the string is lowercase.
-        //
-        // Parameters:
-        //   e:
-        public static void IsLowercase(ValidatorEventArgs e)
-        {
-            ValidationRule.IsLowercase(e);
+            return true;
         }
 
 
-        //
-        // Summary:
-        //     Always validated.
-        //
-        // Parameters:
-        //   e:
-        public static void Always(ValidatorEventArgs e)
-        {
-            e.Status = ValidationStatus.Success;
-        }
 
-        //
-        // Summary:
-        //     Empty validator.
-        //
-        // Parameters:
-        //   e:
-        public static void None(ValidatorEventArgs e)
-        {
-            ValidationRule.None(e);
-        }
-
-        //
-        // Summary:
-        //     Checks if the boolean based input is checked.
-        //
-        // Parameters:
-        //   e:
-        public static void IsChecked(ValidatorEventArgs e)
-        {
-            ValidationRule.IsChecked(e);
-        }
-
-        //
-        // Summary:
-        //     Checks if the selection based input has a valid value selected. Valid values
-        //     are anything except for null, string.Empty, or 0.
-        //
-        // Parameters:
-        //   e:
-        public static void IsSelected(ValidatorEventArgs e)
-        {
-            ValidationRule.IsSelected(e);
-        }
     }
 }

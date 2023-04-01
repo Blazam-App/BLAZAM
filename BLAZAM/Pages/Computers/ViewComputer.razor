@@ -14,7 +14,7 @@
                  ThemeContrast="ThemeContrast.Dark"
                  Padding="Padding.Is2.OnX"
                  Background="Background.Dark"
-                 TextColor="TextColor.Light"
+                 
                  VerticalAlignment="VerticalAlignment.Middle">
                 <BarBrand Width=Width.Is100>
                     <Row>
@@ -27,7 +27,7 @@
 
                                 </Column>
                                 <Column ColumnSize="ColumnSize.Is8.OnTablet">
-                                    <Small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(Computer.OU) </Small>
+                                    <small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(Computer.OU) </small>
 
                                 </Column>
                             </Row>
@@ -38,67 +38,67 @@
                             @switch (Computer.Online)
                             {
                                 case true:
-                                    <Tooltip Text="Online">
-                                        <Icon TextColor="TextColor.Success" Name=@("fa-solid fa-circle-up") />
-                                    </Tooltip>
+                                    <MudTooltip Text="Online">
+                                        <MudIcon Color="Color.Success" Name=@("fa-solid fa-circle-up") />
+                                    </MudTooltip>
                                     break;
                                 case false:
-                                    <Tooltip Text="Offline">
-                                        <Icon TextColor="TextColor.Danger" Name=@("fa-solid fa-circle-down") />
-                                    </Tooltip>
+                                    <MudTooltip Text="Offline">
+                                        <MudIcon Color="Color.Error" Name=@("fa-solid fa-circle-down") />
+                                    </MudTooltip>
                                     break;
                                 case null:
-                                    <Tooltip Text="Checking">
-                                        <Icon TextColor="TextColor.Warning" Name=@("fa-solid fa-circle-question") />
-                                    </Tooltip>
+                                    <MudTooltip Text="Checking">
+                                        <MudIcon Color="Color.Warning" Name=@("fa-solid fa-circle-question") />
+                                    </MudTooltip>
                                     break;
                             }
                             @if (Computer.LockedOut)
                             {
-                                <Icon Name=@("fa-lock")>Account Locked</Icon>
+                                <MudIcon Icon=@("fa-lock")>Account Locked</MudIcon>
                             }
                         </Column>
                         <Column Float=Float.End ColumnSize="ColumnSize.Is1.OnTablet.Is2">
 
                             <Dropdown>
                                 <DropdownToggle Color="Color.Primary">
-                                    <Icon Name=@("fa-gear") />
+                                    <MudIcon Icon=@("fa-gear") />
                                 </DropdownToggle>
                                 <DropdownMenu>
-                                    <DropdownItem>
-                                        <Switch @bind-Checked=@(Computer.Enabled) Disabled=@((Computer.Disabled && !Computer.CanEnable)||(Computer.Enabled && !Computer.CanDisable))>Account Enabled</Switch>
+                                    <MudMenuItem>
+                                        <MudSwitch Label="Account Enabled" @bind-Checked=@(Computer.Enabled) Disabled=@((Computer.Disabled && !Computer.CanEnable)||(Computer.Enabled && !Computer.CanDisable))/>
 
-                                    </DropdownItem>
+                                    </MudMenuItem>
                                     <DropdownDivider />
                                     @if (Computer.CanEdit)
                                     {
-                                        <DropdownItem Clicked="ToggleEditMode">Edit...</DropdownItem>
+                                        <MudMenuItem OnClick="ToggleEditMode">Edit...</MudMenuItem>
                                     }
                                     @if (Computer.LockedOut && Computer.CanUnlock)
                                     {
-                                        <DropdownItem Clicked="Unlock">Unlock...</DropdownItem>
+                                        <MudMenuItem OnClick="Unlock">Unlock...</MudMenuItem>
                                     }
                                     @if (Computer.CanAssign)
                                     {
                                         RefreshComputerGroups();
-                                        <DropdownItem Clicked="@(()=>{AssignToModal?.Show();})">Assign To...</DropdownItem>
+                                        <MudMenuItem OnClick="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
                                     }
                                     @if (Computer.CanDisable)
                                     {
-                                        <DropdownItem Clicked="@(()=>{ChangePasswordModal?.Show();})">Change Password...</DropdownItem>
+                                        <MudMenuItem OnClick="@(()=>{ChangePasswordModal?.Show();})">Change Password...</MudMenuItem>
                                     }
                                     @if (Computer.CanRename)
                                     {
-                                        <DropdownItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</DropdownItem>
+                                        <MudMenuItem OnClick="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
 
                                     }
                                     @if (Computer.CanMove)
                                     {
-                                        <DropdownItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</DropdownItem>
+                                        <MudMenuItem OnClick="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
                                     }
                                     @if (Computer.CanDelete)
                                     {
-                                        <DropdownItem Clicked="@DeleteComputer">Delete...</DropdownItem>
+                                        <MudMenuItem OnClick="@DeleteComputer">Delete...</MudMenuItem>
                                     }
                                 </DropdownMenu>
                             </Dropdown>
@@ -112,18 +112,18 @@
 
         </SetSubHeader>
 
-        <Card Shadow="Shadow.Default">
+        <MudCard Shadow="Shadow.Default">
 
            
 
-            <CardHeader>
+            <MudCardHeader>
                 @Computer.SamAccountName
-            </CardHeader>
-            <CardBody>
+            </MudCardHeader>
+            <MudCardBody>
                 <LoadingIndicator Visible=@(drives==null)>
                     @if (drives != null && drives.Count > 0)
                     {
-
+@*
                         <DataGrid TItem="IADComputerDrive"
                               Data="drives"
                                 Responsive>
@@ -141,7 +141,7 @@
                                         switch (fieldContext.PercentUsed)
                                         {
                                             case > 85:
-                                                bg = Color.Danger;
+                                                bg = Color.Error;
                                                 break;
                                             case > 75:
                                                 bg = Color.Warning;
@@ -150,18 +150,18 @@
                                         }
                                         var percentString = (int)fieldContext.PercentUsed + "%";
                                     }
-                                    <Tooltip Text="@percentString">
+                                    <MudTooltip Text="@percentString">
                                         <Progress Color=bg Value="(int)fieldContext.PercentUsed">
                                             @percentString
                                         </Progress>
-                                    </Tooltip>
+                                    </MudTooltip>
                                 </DisplayTemplate>
                             </DataGridColumn>
                             <DataGridColumn Field="@nameof(IADComputerDrive.FileSystem)" Caption="File System" />
                             <DataGridColumn Field="@nameof(IADComputerDrive.Serial)" Caption="Serial" />
 
 
-                        </DataGrid>
+                        </DataGrid>*@
                     }
 
                 </LoadingIndicator>
@@ -169,8 +169,8 @@
 
 
 
-            </CardBody>
-        </Card>
+            </MudCardBody>
+        </MudCard>
 
 
         @if (Computer.HasUnsavedChanges)
@@ -247,7 +247,7 @@
             try
             {
                 Computer.Delete();
-                await NotificationService.Success(Computer.CanonicalName + " has been deleted.", "Computer Deleted");
+                SnackBarService.Success(Computer.CanonicalName + " has been deleted.", "Computer Deleted");
 
                 Computer = null;
                 Nav.NavigateTo("/users/search");
@@ -255,7 +255,7 @@
             }
             catch (ApplicationException ex)
             {
-                await NotificationService.Error(ex.Message);
+                SnackBarService.Error(ex.Message);
             }
             await InvokeAsync(StateHasChanged);
         }
@@ -266,7 +266,7 @@
         {
             await Computer.CommitChangesAsync();
             EditMode = false;
-            await NotificationService.Success("The changes made to this computer have been saved.", "Changes Saved");
+            SnackBarService.Success("The changes made to this computer have been saved.", "Changes Saved");
             await InvokeAsync(StateHasChanged);
 
         }

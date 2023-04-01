@@ -35,7 +35,7 @@ jobs:
       - name: Show Version
         run: echo $env.ASSEMBLY_VERSION
       - name: Compress files
-        run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-stable-v${{ env.ASSEMBLY_VERSION }}.zip
+        run: Compress-Archive -Path bin\Publish\* -DestinationPath blazam-v${{ env.ASSEMBLY_VERSION }}.zip
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -43,9 +43,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         
         with:
-          tag_name: Stable-v${{ env.ASSEMBLY_VERSION }}
+          tag_name: v${{ env.ASSEMBLY_VERSION }}
           release_name: Stable - v${{ env.ASSEMBLY_VERSION }}
-          body: Automated release created by GitHub Actions
+          body: ""
           draft: true
           prerelease: true
       - name: Upload Release Asset
@@ -55,6 +55,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: blazam-stable-v${{ env.ASSEMBLY_VERSION }}.zip
-          asset_name: blazam-stable-v${{ env.ASSEMBLY_VERSION }}.zip
+          asset_path: blazam-v${{ env.ASSEMBLY_VERSION }}.zip
+          asset_name: blazam-v${{ env.ASSEMBLY_VERSION }}.zip
           asset_content_type: application/zip

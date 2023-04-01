@@ -5,53 +5,65 @@
 @using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 @using BLAZAM.Server.Data.Services.Email;
 
-
+@{
+    string testValue="";
+    Type valueType =testValue.GetType();
+}
 <AppPageTitle>Home</AppPageTitle>
 
-@if (MOTD.HasValue && MOTD.Value.ToString()!="")
+@if (MOTD.HasValue && MOTD.Value.ToString() != "")
 {
-    <Alert Background="Background.Light" TextColor="TextColor.Dark" Visible>
+    <MudAlert ShowCloseIcon Elevation="3">
 
-    <AlertMessage>
+
         @MOTD.Value
 
-    </AlertMessage>
-</Alert>
+    </MudAlert>
 }
-<DropContainer @ref=widgetContainer TItem="Widget" @bind-Items="widgets" ItemsFilter="@((item, dropZone) => item.Slot == dropZone)" ItemDropped="@ItemDropped" Flex="Flex.Wrap.Grow.Is1">
+<MudDropContainer @ref=widgetContainer
+    T="Widget" Items="widgets"
+    ItemsSelector="@((item,dropzone) => item.Slot == dropzone)"
+    ItemDropped="ItemDropped" 
+    Class="d-flex flex-wrap flex-grow-1 mud-width-full">
     <ChildContent>
-        <DropZone TItem="Widget" Name="slot1" AllowReorder Border="Border.Rounded" Background="Background.Light" Margin="Margin.Is3" Flex="Flex.Grow.Is1" />
-        <DropZone TItem="Widget" Name="slot2" AllowReorder Border="Border.Rounded" Background="Background.Light" Margin="Margin.Is3" Flex="Flex.Grow.Is1" />
-        <DropZone TItem="Widget" Name="slot3" AllowReorder Border="Border.Rounded" Background="Background.Light" Margin="Margin.Is3" Flex="Flex.Grow.Is1" />
+        <FlexContainer Spacing="4" Class="mx-auto">
 
-    </ChildContent>
-    <ItemTemplate>
-        <Card Shadow="Shadow.Default" Margin="Margin.Is3.OnY" Background="Background.Secondary" TextColor="TextColor.Light">
-            <CardBody>
-                <DynamicComponent Type="@context.GetType()" />
-                <AppCloseButton Clicked=@(()=>{RemoveWidget(context);}) Position="Position.Absolute" style="right:10px;top:15px" />
-            </CardBody>
-        </Card>
-    </ItemTemplate>
-    </DropContainer>
+            <MudList Clickable="true"
+                     Class="d-flex flex-column ma-0 mx-auto">
+                <MudDropZone AllowReorder
+                             T="Widget"
+                             Identifier="slot1"
+                             Class="flex-grow-1" />
+            </MudList>
+            <MudList Clickable="true"
+                     Class="d-flex flex-column ma-0 mx-auto">
+                <MudDropZone AllowReorder
+                             T="Widget"
+                             Identifier="slot2"
+                             Class="flex-grow-1" />
+            </MudList>
+        </FlexContainer>
+        </ChildContent>
+        <ItemRenderer>
+            <MudCard Class="my-5 " Elevation="3">
+            <MudCardHeader>
+            <MudText Typo="Typo.h6"> @context.Name</MudText>
+            <AppCloseButton OnClick=@(()=>{RemoveWidget(context);}) Style="right:10px;top:15px; position:absolute;" />
+
+            </MudCardHeader>
 
 
+            <DynamicComponent Type="@context.GetType()" />
+            </MudCard>
+        </ItemRenderer>
+        </MudDropContainer>
 
 
-
-
-
-
-
-
-    @code {
+            @code {
     MarkupString? MOTD;
-    DropContainer<Widget>? widgetContainer;
+    MudDropContainer<Widget>? widgetContainer;
     List<Widget> widgets = new List<Widget>();
-    private Task ItemDropped(DraggableDroppedEventArgs<AppComponentBase> dropItem)
-    {
-        return Task.CompletedTask;
-    }
+
 
     protected override Task OnInitializedAsync()
     {
@@ -62,21 +74,22 @@
         }
         catch
         {
-            
+
         }
         return base.OnInitializedAsync();
     }
 
-    private Task ItemDropped(DraggableDroppedEventArgs<Widget> dropItem)
+    private Task ItemDropped(MudItemDropInfo<Widget> dropItem)
     {
-        dropItem.Item.Slot = dropItem.DropZoneName;
+        dropItem.Item.Slot = dropItem.DropzoneIdentifier;
         return Task.CompletedTask;
     }
     async Task RemoveWidget(Widget widget)
     {
         widgets.Remove(widget);
-        await InvokeAsync(StateHasChanged);
         widgetContainer.Refresh();
+        await InvokeAsync(StateHasChanged);
+
     }
 
 }

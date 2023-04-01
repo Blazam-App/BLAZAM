@@ -1,111 +1,137 @@
 @inherits AppComponentBase
 
 
-<Code>
+<code>
     Working Directory: @Program.RootDirectory
-</Code>
-<Code>
+</code>
+<code>
     PID: @Program.ApplicationProcess.Id
-</Code>
+</code>
 @if (AutoUpdateService.IsUpdatedScheduled)
 {
-    <Alert>
-        <AlertMessage>@SettingsLocalization["Update Scheduled"]</AlertMessage>
-        <AlertDescription>
+    <MudAlert Class="mud-alert-filled-info">
+        <MudText Typo="Typo.h6">@SettingsLocalization["Update Scheduled"]</MudText>
+        <MudText>
             The application will be updated to version @AutoUpdateService.ScheduledUpdate.Version at @AutoUpdateService.ScheduledUpdateTime
-        </AlertDescription>
-    </Alert>
+        </MudText>
+    </MudAlert>
 }
 @if (LoadingData)
 {
-    <Paragraph>Checking for update..</Paragraph>
+    <MudText>Checking for update..</MudText>
 
 }
 
-<LoadingIndicator Visible=LoadingData>
-    <Button Color="Color.Primary" Clicked=@GetLatestUpdate>Refresh Latest Update</Button>
+<MudButton Color="Color.Primary" OnClick=@GetLatestUpdate>Refresh Latest Update</MudButton>
 
-    @{
-        if (LatestAvailableVersion != null)
+@{
+    if (LatestAvailableVersion != null)
+    {
+        var value = updateStage;
+        switch (updateStage)
         {
-            var value = updateStage;
-            switch (updateStage)
-            {
-                case UpdateStage.Downloading:
-                    <Paragraph>Downloading Update...</Paragraph>
-                    <Progress Value="@DownladProgress?.FilePercentage">
+            case UpdateStage.Downloading:
+                <MudText>Downloading Update...</MudText>
+                @if (DownladProgress != null)
+                {
+
+                    <MudProgressLinear Value="@DownladProgress.FilePercentage">
                         @(DownladProgress?.CompletedBytes / 1024 / 1024)MB
-                    </Progress>
-                    <Button Color=Color.Danger Clicked=@(()=>{ LatestAvailableVersion.Cancel(); })>Cancel</Button>
-                    break;
-                case UpdateStage.Staging:
-                    <Paragraph>Staging update, please wait a moment...</Paragraph>
-                    <Progress Animated Striped />
-                    break;
-                case UpdateStage.BackingUp:
-                    <Paragraph>Backing up current version, please wait a moment...</Paragraph>
-                    <Progress Animated Striped />
+                    </MudProgressLinear>
+                }
+                <MudButton Color=Color.Error OnClick=@(()=>{ LatestAvailableVersion.Cancel(); })>Cancel</MudButton>
+                break;
+            case UpdateStage.Staging:
+                <MudText>Staging update, please wait a moment...</MudText>
+                <MudProgressLinear Animated Striped />
+                break;
+            case UpdateStage.BackingUp:
+                <MudText>Backing up current version, please wait a moment...</MudText>
+                <MudProgressLinear Animated Striped />
 
-                    break;
-                case UpdateStage.Applying:
-                    <Paragraph>Applying update, please wait a moment...</Paragraph>
-                    <Progress Animated Striped />
+                break;
+            case UpdateStage.Applying:
+                <MudText>Applying update, please wait a moment...</MudText>
+                <MudProgressLinear Animated Striped />
 
-                    break;
-                case UpdateStage.None:
-                default:
-                    if ((LatestAvailableVersion != null && LatestAvailableVersion.Newer) || Program.InDebugMode)
+                break;
+            case UpdateStage.None:
+            default:
+                if ((LatestAvailableVersion != null && LatestAvailableVersion.Newer) || Program.InDebugMode)
+                {
+                    if (Program.InDebugMode && !LatestAvailableVersion.Newer)
                     {
-                        if (Program.InDebugMode && !LatestAvailableVersion.Newer)
-                        {
-                            <h4>
-                                Downgrade Available (Debug Mode)
-                                <Icon Display="Display.InlineBlock" Name="IconName.QuestionCircle" Clicked=@(()=>{CopyToClipboard(LatestAvailableVersion.UpdateCommand);}) />
+                        <h4>
+                            Downgrade Available (Debug Mode)
+                            <MudIconButton Icon="@Icons.Material.Filled.QuestionMark" OnClick=@(()=>{CopyToClipboard(LatestAvailableVersion.UpdateCommand);}) />
 
-                            </h4>
-                        }
-                        else
-                        {
-
-                            <h4>Update Available</h4>
-
-                        }
-                        <Paragraph>Current Version: @Program.Version</Paragraph>
-
-
-
-
-                        <Paragraph>Available Version: @LatestAvailableVersion.Version</Paragraph>
-                        <Paragraph>Update Branch: @LatestAvailableVersion.Branch</Paragraph>
-                        <Button Color=Color.Success Clicked="ApplyUpdate">Apply Update</Button>
-                        <Button Disabled=@(AutoUpdateService.IsUpdatedScheduled) Clicked=TestAutoUpdate Color="Color.Success">Test Auto Update</Button>
-                        @if (AutoUpdateService.IsUpdatedScheduled)
-                        {
-                            <Button Clicked=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Danger">Cancel Auto Update</Button>
-                        }
+                        </h4>
                     }
                     else
                     {
-                        <Paragraph>Application is up to date</Paragraph>
+
+                        <h4>Update Available</h4>
 
                     }
-                    break;
+                    <MudStack Row=true Class="w-100">
 
-            }
+                        <MudCard Class="mud-theme-primary">
+                            <MudCardHeader Class="pb-0">Current Version</MudCardHeader>
+                            <MudCardContent>
+                                <MudText>@Program.Version</MudText>
+
+                            </MudCardContent>
+                        </MudCard>
+
+                        <MudIcon class="align-middle" Icon="@Icons.Material.Filled.ArrowRightAlt" Size="Size.Large" />
+
+                        <MudCard Class="mud-theme-info">
+                            <MudCardHeader Class="pb-0">
+
+                                <ChildContent>
+                                    Available Version
+                                </ChildContent>
+                                <CardHeaderActions>
+                                    <MudMenu Size=Size.Small Icon="@Icons.Material.Filled.MoreVert">
+                                        <MudMenuItem OnClick="ShowReleaseNotes">View Release Notes</MudMenuItem>
+                                    </MudMenu>
+                                </CardHeaderActions>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                @LatestAvailableVersion.Branch<br />
+                                <MudText>@LatestAvailableVersion.Version</MudText>
+
+                                @LatestAvailableVersion.Release.ReleaseTime?.ToLocalTime().DateTime<br />
+                                <MudButton Disabled=@(AutoUpdateService.IsUpdatedScheduled) OnClick=TestAutoUpdate Color="Color.Success">Test Auto Update</MudButton><br />
+                                <MudButton Color=Color.Success OnClick="ApplyUpdate">Apply Update</MudButton>
+
+
+                            </MudCardContent>
+                        </MudCard>
+
+                    </MudStack>
+                    @if (AutoUpdateService.IsUpdatedScheduled)
+                    {
+                        <MudButton OnClick=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Error">Cancel Auto Update</MudButton>
+                    }
+                }
+                else
+                {
+                    <MudText>Application is up to date</MudText>
+
+                }
+                break;
+
         }
     }
-</LoadingIndicator>
+}
 
 @if (Monitor.DatabaseUpdatePending)
 {
-    <Paragraph>A database update needs to be applied</Paragraph>
-    <Button Color=Color.Primary Clicked="UpdateDB">Update</Button>
+    <MudText>A database update needs to be applied</MudText>
+    <MudButton Color=Color.Primary OnClick="UpdateDB">Update</MudButton>
 }
-else
-{
 
-    <Paragraph>Database is up to date.</Paragraph>
-}
 
 @code {
     ApplicationUpdate? LatestAvailableVersion { get; set; }
@@ -130,14 +156,14 @@ else
         }
         catch (Exception ex)
         {
-            NotificationService.Error(ex.Message);
+            SnackBarService.Error(ex.Message);
         }
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
     }
     async Task ApplyUpdate()
     {
-        await NotificationService.Info("Update started. Downloading update...");
+        SnackBarService.Info("Update started. Downloading update...");
 
         updateStage = UpdateStage.Downloading;
         LatestAvailableVersion.DownloadPercentageChanged += UpdateDownloadPercentage;
@@ -147,40 +173,14 @@ else
             DownladProgress = null;
             LatestAvailableVersion.DownloadPercentageChanged -= UpdateDownloadPercentage;
 
-            //await NotificationService.Success("Update downloaded successfully. Preparing for update...");
 
-            //if (await MessageService.Confirm("The update has been downloaded. Would you like to Stage the update?"))
-            //{
             updateStage = UpdateStage.Staging;
 
             await InvokeAsync(StateHasChanged);
             if (await LatestAvailableVersion.Stage())
             {
 
-                /*
-                                    if (await MessageService.Confirm(
-                                        "The update has been staged. Would you like to backup the current version?",
-                                        "Backup?",
-                                        options =>
-                                        {
-                                            options.CancelButtonText = "No";
-                                            options.OkButtonText = "Yes";
-                                        }
-                                    ))
-                                    {
-                                        updateStage = UpdateStage.BackingUp;
 
-                                        await InvokeAsync(StateHasChanged);
-                                        if (!await LatestAvailableVersion.Backup())
-                                        {
-
-
-                                            await NotificationService.Error("Backup failed.");
-                                            return;
-
-                                        }
-                                    }
-                */
                 if (await MessageService.Confirm("Would you like to apply the update?"))
                 {
                     updateStage = UpdateStage.Applying;
@@ -191,7 +191,7 @@ else
                     var output = await LatestAvailableVersion.Apply();
                     if (output != null)
                     {
-                        await NotificationService.Success("Update started successfully. The web application will restart and update momentarily.");
+                        SnackBarService.Success("Update started successfully. The web application will restart and update momentarily.");
 
                     }
                     if (Program.InDebugMode)
@@ -208,12 +208,12 @@ else
                 updateStage = UpdateStage.None;
 
                 await InvokeAsync(StateHasChanged);
-                //}
+
             }
         }
         else
         {
-            await NotificationService.Error("Update failed.");
+            SnackBarService.Error("Update failed.");
             updateStage = UpdateStage.None;
 
         }
@@ -245,6 +245,11 @@ else
             await InvokeAsync(StateHasChanged);
 
         });
+    }
+
+    async Task ShowReleaseNotes()
+    {
+        MessageService.Info(LatestAvailableVersion.Release.ReleaseNotes, LatestAvailableVersion.Version + " Release Notes");
     }
 
 }

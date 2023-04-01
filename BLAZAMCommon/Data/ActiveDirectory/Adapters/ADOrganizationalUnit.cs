@@ -2,6 +2,7 @@
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Services.Graph;
+using System.Diagnostics.Contracts;
 using System.DirectoryServices;
 using System.Reflection.PortableExecutable;
 
@@ -14,11 +15,22 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         private IQueryable<IADComputer>? childComputerCache;
         private IQueryable<IADGroup>? childGroupCache;
 
-     
-        public async Task<bool> HasChildrenAsync()
+        /// <summary>
+        /// Indicates whether this OU is expanded
+        /// in the ui withing a tree view
+        /// </summary>
+        public bool IsExpanded { get; set; }
+
+        public  bool HasChildren()
+        {
+
+            return Children.Any();
+
+        }
+            public async Task<bool> HasChildrenAsync()
         {
             return await Task.Run(() => {
-                return Children.Any();
+                return HasChildren();
             });
         }
         public async Task<IEnumerable<IADOrganizationalUnit>> GetChildrenAsync()
@@ -31,9 +43,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             get
             {
-
+                IsLoadingChildren = true;
                 if (childrenCache == null)
                     childrenCache = Directory.OUs.FindSubOusByDN(DN).OrderBy(ou=>ou.CanonicalName).AsQueryable();
+                
+                IsLoadingChildren = false;
+
                 return childrenCache;
             }
         }
@@ -86,14 +101,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 SetProperty("name", value);
             }
         }
-        public List<PermissionMap> InheritedPermissionMappings
+        public List<PermissionMapping> InheritedPermissionMappings
         {
             get
             {
                 return this.AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
             }
         }
-        public List<PermissionMap> DirectPermissionMappings
+        public List<PermissionMapping> DirectPermissionMappings
         {
             get
             {
@@ -102,7 +117,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         }
 
 
-        public IQueryable<PermissionMap> AppliedPermissionMappings
+        public IQueryable<PermissionMapping> AppliedPermissionMappings
         {
             get
             {
@@ -112,7 +127,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
         }
 
-        public IQueryable<PermissionMap> OffspringPermissionMappings
+        public IQueryable<PermissionMapping> OffspringPermissionMappings
         {
             get
             {
@@ -121,6 +136,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 return DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
             }
         }
+
+        public bool IsLoadingChildren { get; set; }
+
         /// <summary>
         /// Creates a new group under this OU. Note that the returned Directory object
         /// must execute CommitChanges() to actually create the object in Active
@@ -146,6 +164,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         /// <returns>An uncommited organizational unit</returns>
         public IADOrganizationalUnit CreateOU(string containerName)
         {
+            EnsureDirectoryEntry();
             IADOrganizationalUnit newOU = new ADOrganizationalUnit();
 
             newOU.Parse(DirectoryEntry.Children.Add("OU=" + containerName.Trim(), "OrganizationalUnit"), Directory);

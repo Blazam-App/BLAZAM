@@ -8,8 +8,14 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Common.Data.Database
 {
-    public class SqliteDatabaseContext:DatabaseContext
+    public class SqliteDatabaseContext:DatabaseContextBase
     {
+        /// <inheritdoc/>
+
+        public SqliteDatabaseContext():base()
+        {
+        }
+
         public SqliteDatabaseContext(DatabaseConnectionString databaseConnectionString) : base(databaseConnectionString)
         {
         }
@@ -24,12 +30,16 @@ namespace BLAZAM.Common.Data.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            if (ConnectionString == null)
+            {
+                ConnectionString = new DatabaseConnectionString("test");
 
+            }
             optionsBuilder.UseSqlite(
                          ConnectionString.Value).EnableSensitiveDataLogging()
                           .LogTo(Loggers.DatabaseLogger.Information);
         }
 
-        
+
     }
 }

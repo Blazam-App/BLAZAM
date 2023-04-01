@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Common.Data;
+using BLAZAM.Common.Extensions;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;

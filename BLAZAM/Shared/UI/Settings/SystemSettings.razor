@@ -1,37 +1,37 @@
 @inherits SettingsComponents
 @using System.IO.Compression;
-    <Heading>@SettingsLocalization["System Settings"]</Heading>
-    <Form @onsubmit="Save">
+@using BLAZAM.Common.Extensions;
+    <MudText Typo ="Typo.h1">@SettingsLocalization["System Settings"]</MudText>
+    <MudForm @onsubmit="Save">
     @if (settings != null)
     {
         <SettingsField>
-            <FieldLabel>@SettingsLocalization["Google Analytics ID"]</FieldLabel>
-            <FieldBody>
-                <TextEdit @bind-Text="@settings.AnalyticsId" />
-            </FieldBody>
+
+                <MudTextField Label="@SettingsLocalization["Google Analytics ID"]" @bind-Value="@settings.AnalyticsId" />
+            
         </SettingsField>
         <SettingsField>
-            <FieldBody>
-                <Button Color="Color.Danger" Clicked=RestartApplication>Restart Web Application</Button>
+            
+                <MudButton Color="Color.Error" OnClick=RestartApplication>Restart Web Application</MudButton>
 
-            </FieldBody>
+            
         </SettingsField>
     }
     
     <SettingsField>
-        <FieldBody>
-            <Blazorise.Link To="/download/logs" Target="Target.Blank">
-            <Button Color="Color.Primary">Download Logs</Button>
-            </Blazorise.Link>
+        
+            <MudLink Href="/download/logs" Target="Target.Blank">
+            <MudButton Color="Color.Primary">Download Logs</MudButton>
+            </MudLink>
 
-        </FieldBody>
+        
     </SettingsField>
         <SettingsField>
-            <FieldBody>
-                <Button Type="ButtonType.Submit" Color="Color.Success">Save Changes</Button>
-            </FieldBody>
+            
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+            
         </SettingsField>
-    </Form>
+    </MudForm>
 @code {
 #nullable disable warnings
     AppSettings? settings = new AppSettings();
@@ -55,7 +55,7 @@
         {
             if (Program.InDemoMode && !UserStateService.CurrentUsername.Equals("admin", StringComparison.OrdinalIgnoreCase))
             {
-                await NotificationService.Warning("Restarting the application is not allowed in the demo");
+                SnackBarService.Warning("Restarting the application is not allowed in the demo");
                 return;
             }
             applicationManager.Restart();

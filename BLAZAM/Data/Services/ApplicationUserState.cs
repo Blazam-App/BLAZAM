@@ -3,7 +3,7 @@ using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Models.Database.User;
-using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -21,6 +21,8 @@ namespace BLAZAM.Server.Data.Services
     /// </value>
     public class ApplicationUserState : IApplicationUserState
     {
+
+        public AppEvent<AppUser> OnSettingsChange { get; set; }
         /// <summary>
         /// The web user who is currently logged in
         /// </summary>
@@ -37,7 +39,24 @@ namespace BLAZAM.Server.Data.Services
         /// The last request time for this web user
         /// </summary>
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
-        private UserSettings? userSettings;
+
+        public IList<NotificationMessage> Messages { get; set; } = new List<NotificationMessage>();
+
+        public IApplicationUserSessionCache Cache { get; set; } = new ApplicationUserSessionCache();
+
+        public AuthenticationTicket? Ticket { get; set; }
+
+        public AppUser? userSettings { get; set; }
+        private readonly AppDatabaseFactory _dbFactory;
+
+        public ApplicationUserState(AppDatabaseFactory factory)
+        {
+            _dbFactory = factory;
+        }
+
+
+
+
         /// <summary>
         /// Provides access to the user's settings in the database
         /// </summary>
@@ -45,7 +64,7 @@ namespace BLAZAM.Server.Data.Services
         /// Changes made to the returned object are not saved
         /// until <see cref="SaveUserSettings()"/> is called
         /// </remarks>
-        public UserSettings? UserSettings
+        public AppUser? UserSettings
         {
             get
             {
@@ -54,22 +73,22 @@ namespace BLAZAM.Server.Data.Services
                 {
                     try
                     {
-                        using var context = DbFactory.CreateDbContext();
+                        using var context = _dbFactory.CreateDbContext();
                         userSettings = context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
                         if (userSettings == null)
                         {
-                            userSettings = new UserSettings();
+                            userSettings = new AppUser();
                             userSettings.UserGUID = User.FindFirstValue(ClaimTypes.Sid);
                             userSettings.Username = User.Identity?.Name;
                             context.UserSettings.Add(userSettings);
                             context.SaveChanges();
+
                         }
                     }
                     catch
                     {
 
                     }
-                    return null;
                 }
                 return userSettings;
             }
@@ -82,15 +101,18 @@ namespace BLAZAM.Server.Data.Services
         {
             try
             {
-                using var context = await DbFactory.CreateDbContextAsync();
+                using var context = await _dbFactory.CreateDbContextAsync();
                 var dbUserSettings = await context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefaultAsync();
                 if (dbUserSettings != null)
                 {
                     dbUserSettings.Theme = this.UserSettings?.Theme;
                     dbUserSettings.SearchDisabledUsers = this.UserSettings.SearchDisabledUsers;
                     dbUserSettings.SearchDisabledComputers = this.UserSettings.SearchDisabledComputers;
+                    OnSettingsChange?.Invoke(dbUserSettings);
+
                     return (await context.SaveChangesAsync()) > 0;
                 }
+
             }
             catch
             {
@@ -109,28 +131,55 @@ namespace BLAZAM.Server.Data.Services
             }
         }
         /// <summary>
-        /// Returns the combined names of the user, and if applicable, the impersonators username
-        /// with the structure "{username}[ impersonated by {impersonatorName}]"
+        /// Returns the name of the user
         /// </summary>
-        public string AuditUsername
+        public string? Username
         {
             get
             {
-                string auditUsername = User.Identity.Name;
+                string? auditUsername = User.Identity?.Name;
+
+                return auditUsername;
+            }
+        }
+
+        public bool IsAuthenticated
+        {
+            get
+            {
+                try
+                {
+                    return User.Identity.IsAuthenticated;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the combined names of the user, and if applicable, the impersonators username
+        /// with the structure "{username}[ impersonated by {impersonatorName}]"
+        /// </summary>
+        public string? AuditUsername
+        {
+            get
+            {
+                string? auditUsername = Username;
                 if (Impersonator != null)
                 {
-                    auditUsername += " impersonated by " + Impersonator.Identity.Name;
+                    auditUsername += " impersonated by " + Impersonator?.Identity?.Name;
                 }
                 return auditUsername;
             }
         }
 
-        public AppDatabaseFactory DbFactory { get; set; }
-
+        public string LastUri { get; set; }
 
         public override int GetHashCode()
         {
-            return User.FindFirstValue(ClaimTypes.Actor).GetHashCode();
+            return User.GetHashCode();
         }
         public override bool Equals(object? obj)
         {

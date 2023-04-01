@@ -21,7 +21,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         string? ScriptPath { get; set; }
         string? Site { get; set; }
         string? State { get; set; }
-        string? Street { get; set; }
+        string? POBox { get; set; }
         string? StreetAddress { get; set; }
         string? Surname { get; set; }
         string? TelephoneNumber { get; set; }
@@ -29,7 +29,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         string? UserPrincipalName { get; set; }
         string? Zip { get; set; }
         List<PermissionDelegate> PermissionDelegates { get; set; }
-        List<PermissionMap> PermissionMappings { get; set; }
+        List<PermissionMapping> PermissionMappings { get; set; }
         bool HasComputerPrivilege { get; }
         bool HasOUPrivilege { get; }
         bool HasGroupPrivilege { get; }

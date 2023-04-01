@@ -2,8 +2,8 @@
 using BLAZAM.Common.Data.ActiveDirectory.Models;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Models.Database.Audit;
-using Blazorise;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Services.TestManagement.TestPlanning.WebApi;
 
@@ -179,7 +179,7 @@ namespace BLAZAM.Server.Data.Services
 
         public async Task<bool> Login(System.Security.Claims.ClaimsPrincipal user)
         {
-            CurrentUser = new ApplicationUserState() { User = user };
+            CurrentUser = new ApplicationUserState(Factory) { User = user };
             return await Log("Login");
         }
         public async Task<bool> Logout() => await Log("Logout");

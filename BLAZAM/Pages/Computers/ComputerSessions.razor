@@ -1,7 +1,8 @@
 @inherits AppComponentBase
 @if (sessionsErrorMessage == null)
 {
-    <DataGrid TItem="IRemoteSession"
+
+  @*  <DataGrid TItem="IRemoteSession"
           Data="@sessions"
           Responsive>
         <DataGridColumn Context="fieldContext" Field="@nameof(IRemoteSession.User)" Caption="Username">
@@ -35,18 +36,18 @@
             <DisplayTemplate>
                 @if (fieldContext.ConnectionState.ToString() == "Active")
                 {
-                    <Button Color="Color.Warning" Clicked=@(()=>{DisconnectSession(fieldContext);})>Disconnect</Button>
+                    <MudButton Color="Color.Warning" OnClick=@(()=>{DisconnectSession(fieldContext);})>Disconnect</MudButton>
                 }
-                <Button Color="Color.Danger" Clicked=@(()=>{LogoffSession(fieldContext);})>Logoff</Button>
+                <MudButton Color="Color.Error" OnClick=@(()=>{LogoffSession(fieldContext);})>Logoff</MudButton>
             </DisplayTemplate>
         </DataGridColumn>
-    </DataGrid>
+    </DataGrid>*@
 }
 else
 {
-    <Div>
+    <div>
         @sessionsErrorMessage
-    </Div>
+    </div>
 }
 
 
