@@ -10,10 +10,11 @@
         <BLAZAM.Server.Shared.UI.Settings.ActiveDirectoryStatusPanel DirectoryConnected="ShowNext"/>
         <br/>
         <br/>
-        <Button Color="Color.Success" @onclick="Refresh" Disabled="@disableNext">Proceed</Button>
+        <MudButton Color="Color.Success" @onclick="Refresh" Disabled="@disableNext">Proceed</MudButton>
     </div>
 
 @code {
+#nullable disable warnings
     [Parameter]
     public EventCallback StepCompleted { get; set; }
 

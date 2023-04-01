@@ -1,4 +1,5 @@
 using BLAZAM.Common.Data;
+using BLAZAM.Common.Extensions;
 using BLAZAM.Server.Background;
 using BLAZAM.Server.Data;
 using BLAZAM.Server.Data.Services;
@@ -20,11 +21,8 @@ namespace BLAZAM.Server.Pages
             AuditLogger = logger;
         }
 
-        public bool _authenticating { get; set; }
-        public bool _directoryAvailable { get; set; }
-        public string _username { get; set; }
-        public string _password { get; set; }
-        public string RedirectUri { get; private set; }
+
+        public string RedirectUri { get; set; }
         public AppAuthenticationStateProvider Auth { get; }
         public NavigationManager Nav { get; private set; }
         public ConnMonitor Monitor { get; private set; }
@@ -33,36 +31,31 @@ namespace BLAZAM.Server.Pages
         public void OnGet(string returnUrl="")
         {
             ViewData["Layout"] = "_Layout";
-            if (IsUrlLocalToHost(returnUrl))
+            if (returnUrl.IsUrlLocalToHost())
             {
                 RedirectUri = returnUrl;
             }
         }
 
-        public static bool IsUrlLocalToHost(string url)
-        {
-            return ((url[0] == '/' && (url.Length == 1 ||
-                    (url[1] != '/' && url[1] != '\\'))) ||   // "/" or "/foo" but not "//" or "/\"
-                    (url.Length > 1 &&
-                     url[0] == '~' && url[1] == '/'));   // "~/" or "~/foo"
-        }
-
-        [HttpPost]
+      
+        /// <summary>
+        /// The authentication endpoint for web clients
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
         public async Task<IActionResult> OnPost([FromFormAttribute]LoginRequest req)
         {
-
-            var result = await Auth.Login(req);
-            if (result != null)
-            {
-                await HttpContext.SignInAsync(result.User);
-                AuditLogger.Logon.Login(result.User);
-                //return Redirect(req.ReturnUrl);
-            }
-            Response.Headers.Add("Refresh", "0.5");
-            //Nav.NavigateTo(req.ReturnUrl, true);
-            //return (IActionResult)Results.Ok();
-                return Redirect(req.ReturnUrl);
-
+          
+                var result = await Auth.Login(req);
+                if (result != null && result.Status == LoginResultStatus.OK)
+                {
+                    await HttpContext.SignInAsync(result.AuthenticationState.User);
+                    await AuditLogger.Logon.Login(result.AuthenticationState.User);
+                }
+           
+           
+            
+            return new ObjectResult(result.Status);
         }
 
 

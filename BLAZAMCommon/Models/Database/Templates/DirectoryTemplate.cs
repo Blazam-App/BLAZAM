@@ -13,10 +13,9 @@ namespace BLAZAM.Common.Models.Database.Templates
 
     //Sets the name column to be unique
     [Index(nameof(Name), IsUnique = true)]
-    public class DirectoryTemplate : ICloneable
+    public class DirectoryTemplate : AppDbSetBase, ICloneable
     {
 
-        public int DirectoryTemplateId { get; set; }
         [Required]
         public string Name { get; set; }
 
@@ -43,8 +42,8 @@ namespace BLAZAM.Common.Models.Database.Templates
         public string ParentOU { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-        public List<DirectoryTemplateGroup>? AssignedGroupSids { get; set; } = new();
-        public List<DirectoryTemplateFieldValue>? FieldValues { get; set; } = new();
+        public List<DirectoryTemplateGroup> AssignedGroupSids { get; set; } = new();
+        public List<DirectoryTemplateFieldValue> FieldValues { get; set; } = new();
 
 
 
@@ -146,7 +145,7 @@ namespace BLAZAM.Common.Models.Database.Templates
 
         public override string? ToString()
         {
-            return Name.ToString();
+            return Name?.ToString();
         }
 
         public object Clone()
@@ -155,7 +154,7 @@ namespace BLAZAM.Common.Models.Database.Templates
             {
                 AssignedGroupSids = AssignedGroupSids,
                 Category = Category,
-                DirectoryTemplateId = 0,
+                Id = 0,
                 DisplayNameFormula = DisplayNameFormula,
                 //FieldValues = FieldValues,
                 ObjectType = ObjectType,

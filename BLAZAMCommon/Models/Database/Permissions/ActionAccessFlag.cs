@@ -1,16 +1,20 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory;
+using Microsoft.Azure.DevOps.Licensing.WebApi;
 
 namespace BLAZAM.Common.Models.Database.Permissions
 {
-    public class ActionAccessFlag
+    public class ActionAccessFlag : AppDbSetBase
     {
-        public int ActionAccessFlagId { get; set; }
         public string Name { get; set; }
 
         public override bool Equals(object? obj)
         {
             return obj is ActionAccessFlag flag &&
                    Name == flag.Name;
+        }
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
         }
 
         public bool IsActionAppropriateForObject(ActiveDirectoryObjectType type)

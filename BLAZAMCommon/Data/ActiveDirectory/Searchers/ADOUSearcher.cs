@@ -7,7 +7,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
     public class ADOUSearcher : ADSearcher, IADOUSearcher
     {
 
-        protected ADSearch NewSearch { get { return new ADSearch() {   ObjectTypeFilter=ActiveDirectoryObjectType.OU} ; } }
+        protected ADSearch NewSearch { get { return new ADSearch() { ObjectTypeFilter = ActiveDirectoryObjectType.OU }; } }
 
         public async Task<IADOrganizationalUnit> GetApplicationRootOU()
         {
@@ -27,8 +27,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             var search = NewSearch;
             search.GeneralSearchTerm = searchTerm;
             return await search.SearchAsync<ADOrganizationalUnit, IADOrganizationalUnit>();
-          //  return await Task.Run(() =>
-           // {
+            //  return await Task.Run(() =>
+            // {
             //    return FindOuByString(searchTerm);
             //});
         }
@@ -37,10 +37,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         {
             var search = NewSearch;
             search.GeneralSearchTerm = searchTerm;
-            var temp= search.Search<ADOrganizationalUnit, IADOrganizationalUnit>();
+            var temp = search.Search<ADOrganizationalUnit, IADOrganizationalUnit>();
             return temp;
-           // string GroupSearchFieldsQuery = "(|(distinguishedName=" + searchTerm + ")(samaccountname=*" + searchTerm + "*)(displayName=*" + searchTerm + "*)(name=*" + searchTerm + "*))";
-           // return new List<IADOrganizationalUnit>(ConvertTo<ADOrganizationalUnit>(SearchObjects(GroupSearchFieldsQuery, ActiveDirectoryObjectType.OU, 25)));
+            // string GroupSearchFieldsQuery = "(|(distinguishedName=" + searchTerm + ")(samaccountname=*" + searchTerm + "*)(displayName=*" + searchTerm + "*)(name=*" + searchTerm + "*))";
+            // return new List<IADOrganizationalUnit>(ConvertTo<ADOrganizationalUnit>(SearchObjects(GroupSearchFieldsQuery, ActiveDirectoryObjectType.OU, 25)));
         }
 
         public IADOrganizationalUnit? FindOuByDN(string searchTerm)
@@ -57,5 +57,31 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         public List<IADGroup> FindSubGroupsByDN(string searchBaseDN) => new List<IADGroup>(ConvertTo<ADGroup>(SearchObjects(searchBaseDN, "", ActiveDirectoryObjectType.Group, 1000, true, SearchScope.OneLevel)));
 
+
+
+        public async Task<List<IADOrganizationalUnit>> FindNewOUsAsync(int maxAgeInDays = 14)
+        {
+            return await Task.Run(() =>
+            {
+                return FindNewOUs(maxAgeInDays);
+            });
+        }
+
+        public List<IADOrganizationalUnit> FindNewOUs(int maxAgeInDays = 14)
+        {
+
+            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
+            var results = new ADSearch()
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.OU,
+                Fields = new()
+                {
+                    Created = threeMonthsAgo
+                }
+
+            }.Search<ADOrganizationalUnit, IADOrganizationalUnit>();
+            return results.OrderByDescending(u => u.Created).ToList();
+
+        }
     }
 }

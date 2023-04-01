@@ -13,6 +13,7 @@ namespace BLAZAM
     {
         public SystemDirectory(string path) : base(path)
         {
+
         }
 
         public List<SystemDirectory> SubDirectories
@@ -70,7 +71,7 @@ namespace BLAZAM
             }
         }
 
-        public string Name => System.IO.Path.GetDirectoryName(Path);
+        public string? Name => System.IO.Path.GetDirectoryName(Path);
 
 
         /// <summary>
@@ -113,7 +114,24 @@ namespace BLAZAM
             }
             return false;
         }
+        public bool Writable
+        {
+            get
+            {
+                string randomFileName = Path + "\\" + Guid.NewGuid().ToString()+".txt";
+                try
+                {
+                    File.WriteAllText(randomFileName, "test");
+                }catch (Exception e)
+                {
 
+                    Loggers.SystemLogger.Error(e.Message);
+                    return false;
+                }
+                File.Delete(randomFileName);
+                return true;
+            }
+        }
         public void Delete(bool recursive = false)
         {
             Directory.Delete(Path, recursive);

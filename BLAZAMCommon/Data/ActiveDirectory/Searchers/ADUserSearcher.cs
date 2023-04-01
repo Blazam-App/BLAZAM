@@ -1,11 +1,12 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.ActiveDirectory.Models;
+using System.Security.Cryptography;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 {
     public class ADUserSearcher : ADSearcher, IADUserSearcher
     {
-        
+
         public ADUserSearcher(IActiveDirectory directory) : base(directory)
         {
         }
@@ -14,7 +15,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         {
             return await Task.Run(() =>
             {
-                return FindUsersByString(searchTerm, ignoreDisabledUsers,exactMatch);
+                return FindUsersByString(searchTerm, ignoreDisabledUsers, exactMatch);
             });
         }
 
@@ -25,9 +26,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
                 GeneralSearchTerm = searchTerm,
-                ExactMatch= exactMatch
+                ExactMatch = exactMatch
 
-            }.Search<ADUser, IADUser>();            
+            }.Search<ADUser, IADUser>();
         }
         public IADUser? FindUserByUsername(string searchTerm, bool? ignoreDisabledUsers = true)
         {
@@ -35,7 +36,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
-                SamAccountName = searchTerm,
+                Fields = new()
+                {
+                    SamAccountName = searchTerm
+                },
                 ExactMatch = true
 
             }.Search<ADUser, IADUser>().FirstOrDefault();
@@ -52,6 +56,16 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         public List<IADUser>? FindLockedOutUsers(bool? ignoreDisabledUsers = true)
         {
+            return new ADSearch()
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.User,
+                EnabledOnly = ignoreDisabledUsers,
+                Fields = new()
+                {
+                    LockoutTime = 1
+                }
+
+            }.Search<ADUser, IADUser>();
 
             string UserSearchFieldsQuery = "(lockoutTime>=1)";
 
@@ -60,22 +74,29 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         }
 
 
-        public async Task<List<IADUser>> FindNewUsersAsync(bool? ignoreDisabledUsers = true)
+        public async Task<List<IADUser>> FindNewUsersAsync(int maxAgeInDays = 14,bool? ignoreDisabledUsers = true)
         {
             return await Task.Run(() =>
             {
-                return FindNewUsers(ignoreDisabledUsers);
+                return FindNewUsers(maxAgeInDays,ignoreDisabledUsers);
             });
         }
 
-        public List<IADUser>? FindNewUsers(bool? ignoreDisabledUsers = true)
+        public List<IADUser>? FindNewUsers(int maxAgeInDays = 14, bool? ignoreDisabledUsers = true)
         {
-            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
-         
-            var tstamp = threeMonthsAgo.ToString("yyyyMMddHHmmss.fZ");
-            string UserSearchFieldsQuery = "(whenCreated>="+tstamp+")";
 
-            return new List<IADUser>(ConvertTo<ADUser>(SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User, 1000, ignoreDisabledUsers)).OrderByDescending(u => u.Created));
+            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
+            var results = new ADSearch()
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.User,
+                EnabledOnly = ignoreDisabledUsers,
+                Fields = new()
+                {
+                    Created = threeMonthsAgo
+                }
+
+            }.Search<ADUser, IADUser>();
+            return results.OrderByDescending(u => u.Created).ToList();
 
         }
 
@@ -106,7 +127,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             });
         }
 
-        public List<IADUser>? FindChangedUsers(bool? ignoreDisabledUsers = true,int daysBackToSearch=90)
+        public List<IADUser>? FindChangedUsers(bool? ignoreDisabledUsers = true, int daysBackToSearch = 90)
         {
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(daysBackToSearch);
 
@@ -116,25 +137,27 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             return new List<IADUser>(ConvertTo<ADUser>(SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User, 1000, ignoreDisabledUsers)).OrderByDescending(u => u.LastChanged));
 
         }
-        public IADUser? FindUserBySID(string sid)
+        public IADUser? FindUserBySID(string? sid)
         {
+            if (sid == null) return null;
             return new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = false,
-                SID = sid,
+                Fields = new() { SID = sid },
                 ExactMatch = true
 
             }.Search<ADUser, IADUser>().FirstOrDefault();
         }
 
-        public IADUser? FindUsersByContainerName(string searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
+        public IADUser? FindUsersByContainerName(string? searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
         {
+
             return new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
-                CN = searchTerm,
+                Fields = new() { CN = searchTerm },
                 ExactMatch = exactMatch
 
             }.Search<ADUser, IADUser>().FirstOrDefault();

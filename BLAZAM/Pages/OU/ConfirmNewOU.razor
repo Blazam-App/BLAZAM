@@ -1,22 +1,22 @@
 @inherits AppComponentBase
+<AppPageTitle>Confirm OU Creation</AppPageTitle>
+
 @if (OU != null)
 {
-    <Card>
-        <CardHeader>
+    <MudCard>
             @OU.ADSPath
-        </CardHeader>
         
-    </Card>
-    <Button Color=Color.Success Clicked="CommitChanges">Create...</Button>
+    </MudCard>
+    <MudButton Color=Color.Success OnClick="CommitChanges">Create...</MudButton>
 }
 @code {
 
+#nullable disable warnings
+
+    
 
     [Parameter]
-    public IFluentColumnWithSize FieldColumnSize { get; set; } = ColumnSize.Is6.OnWidescreen.Is4.OnFullHD;
-
-    [Parameter]
-    public EventCallback<IADUser> Confirmed { get; set; }
+    public EventCallback<IADOrganizationalUnit> Confirmed { get; set; }
 
     [Parameter]
     public IADOrganizationalUnit OU { get; set; }
@@ -26,8 +26,8 @@
         if (await MessageService.Confirm("Are you sure you want to create this OU?", "Create OU"))
         {
             OU.CommitChanges();
-            NotificationService.Success("OU created");
-
+            SnackBarService.Success("OU created");
+            await Confirmed.InvokeAsync(OU);
             Nav.NavigateTo("/ou/create",true);
         }
     }

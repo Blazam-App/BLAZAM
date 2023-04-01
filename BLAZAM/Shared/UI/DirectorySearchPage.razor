@@ -33,7 +33,7 @@
     }
 
 
-    public ADSearch Searcher { get; set; }
+    public ADSearch Searcher { get; set; } = default;
 
 
 
@@ -85,7 +85,7 @@
 
     }
 
-    protected virtual List<IDirectoryModel> results { get; set; } = new List<IDirectoryModel>();
+    protected virtual List<IDirectoryEntryAdapter> results { get; set; } = new List<IDirectoryEntryAdapter>();
     protected string BaseSearchUri = "";
 
     /// <summary>
@@ -112,7 +112,7 @@
 
         //Search();
 
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
     protected async Task Search()

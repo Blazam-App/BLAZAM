@@ -1,55 +1,32 @@
-﻿@inherits BaseComponent
-<Modal @ref="Modal" TextColor="TextColor">
-    <ModalContent Centered>
-        <ModalHeader Background="Background.Dark" TextColor="TextColor.Light">
-            <ModalTitle>@Title</ModalTitle>
-            <AppCloseButton TextColor="TextColor.Light" />
-        </ModalHeader>
-        <ModalBody Background="Background.Light" TextColor="TextColor.Dark">
-            @ChildContent
-        </ModalBody>
-    </ModalContent>
-</Modal>
-@code {
-
-    [Parameter]
-    public DatabaseContext Context { get; set; }
-
-    [Parameter]
-    public string Title{ get; set; }
-
-    [Parameter]
-    public RenderFragment ChildContent{ get; set; }
-
-    [CascadingParameter]
-    protected Modal? Modal { get; set; }
-
-    [Parameter]
-    public EventCallback<Modal> ModalChanged { get; set; }
-
-    bool _isShown = false;
-
-    [Parameter]
-    public bool IsShown { get=>_isShown; set
+﻿@inherits MudDialog
+<MudDialog @ref="Modal">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            @*<MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1" />*@
+            @Title
+            <AppCloseButton Style="float:right;" OnClick="Hide"/>
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <CascadingValue Value="this">
+            <MudContainer Class="pa-4">
+                    @ChildContent
+            </MudContainer>
+        </CascadingValue>
+    </DialogContent>
+    <DialogActions>
+        @if (!CancelText.IsNullOrEmpty())
         {
-            if(value==_isShown)return;
-            _isShown = value;
-            IsShownChanged.InvokeAsync(value);
-        } }
+            <MudButton OnClick="@(()=>{OnCancel.Invoke();})">@CancelText</MudButton>
 
-    [Parameter]
-    public EventCallback<bool> IsShownChanged { get; set; }
+        }
+        @{
+            var yesDisabled = !YesEnabled.Invoke();
+        }
+        <MudButton Disabled=@yesDisabled Color="Color.Primary" OnClick="@(()=>{OnYes.Invoke();})">@YesText</MudButton>
+    </DialogActions>
+</MudDialog>
 
-    public void Show()
-    {
-        IsShown = true;
-        Modal.Show();
-    }
-    public void Hide()
-    {
-        IsShown = false;
 
-        Modal.Close(CloseReason.UserClosing);
-    }
 
-}
+

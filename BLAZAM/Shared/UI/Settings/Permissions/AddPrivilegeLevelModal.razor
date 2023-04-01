@@ -1,43 +1,69 @@
 ﻿@inherits AppModal
-<Modal @ref="Modal">
-    <ModalContent Centered>
-        <ModalHeader>
-            <ModalTitle>Add User Group</ModalTitle>
+<MudDialog @ref="Modal">
+            <MudText>Add Delegate</MudText>
             <AppCloseButton />
-        </ModalHeader>
-        <ModalBody>
             <Row>
-                <Field>
-                    <FieldLabel>Group Name</FieldLabel>
-                    <ADGroupAutoComplete SelectedGroup="selectedGroup" />
-                </Field>
-                <Field>
-                    <FieldLabel>Super User</FieldLabel>
-                    <Switch TValue="bool" @bind-Checked="@NewPrivilegeLevel.IsSuperAdmin" Disabled=Program.InDemoMode/>
-                </Field>
+                
+                        <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
+                                    @bind-SelectedResult=@selectedDelegate
+                                    CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
+
+
+                
+                
+                    <MudSwitch Label="Super User" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=Program.InDemoMode />
+                    <MudText>Will have complete and total acceess to the application if enabled</MudText>
+                
             </Row>
             <Row>
-                <Button Color="Color.Primary" Clicked="AddGroup">Add</Button>
+                <MudButton Color="Color.Primary" OnClick="AddGroup">Add</MudButton>
 
             </Row>
 
 
-        </ModalBody>
-    </ModalContent>
-</Modal>
+</MudDialog>
 @code {
-    IADGroup selectedGroup;
-    [Parameter]
-    public EventCallback GroupAdded { get; set; }
 
-    PrivilegeLevel NewPrivilegeLevel = new PrivilegeLevel();
+    IDirectoryEntryAdapter? selectedDelegate;
+    [Parameter]
+    public EventCallback DelegateAdded { get; set; }
+
+    PermissionDelegate NewPermissionDelegate = new PermissionDelegate();
     private async void AddGroup()
     {
-        NewPrivilegeLevel.GroupSID = selectedGroup.SID;
-        Context.PrivilegeLevel.Add(NewPrivilegeLevel);
-        await Context.SaveChangesAsync();
-        NewPrivilegeLevel = new PrivilegeLevel();
-        await Modal?.Hide();
-        GroupAdded.InvokeAsync();
+        try
+        {
+            if (Context == null) return;
+
+            NewPermissionDelegate.DelegateSid = selectedDelegate.SID;
+            Context.PermissionDelegate.Add(NewPermissionDelegate);
+            await Context.SaveChangesAsync();
+            NewPermissionDelegate = new PermissionDelegate();
+            Modal?.Close();
+            await DelegateAdded.InvokeAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            switch (ex.InnerException?.HResult)
+            {
+                case -2146232060:
+                    var confilctingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
+                    if (confilctingDelegate != null)
+                        if (confilctingDelegate.DeletedAt == null)
+                            NotificationService.Error("That delegate already exists.");
+                        else
+                            NotificationService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
+
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+
+            Loggers.ActiveDirectryLogger.Error("Error attempting to add delegate " + selectedDelegate.CanonicalName);
+            Loggers.ActiveDirectryLogger.Error(ex.Message, ex);
+            NotificationService.Error("An unexpected error has occured.");
+        }
+
     }
 }

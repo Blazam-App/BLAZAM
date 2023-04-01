@@ -2,8 +2,10 @@
 using BLAZAM.Common.Data.ActiveDirectory.Models;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Models.Database.Audit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Services.TestManagement.TestPlanning.WebApi;
 
 namespace BLAZAM.Server.Data.Services
 {
@@ -11,63 +13,66 @@ namespace BLAZAM.Server.Data.Services
     {
 
         //User Actions
-        public static string User_Searched = "User Searched";
-        public static string User_Enabled = "User Enabled";
-        public static string User_Disabled = "User Disabled";
-        public static string User_Assigned = "User Assigned";
-        public static string User_Unassigned = "User Unassigned";
-        public static string User_Unlocked = "User Unlocked";
-        public static string User_Created = "User Created";
-        public static string User_Deleted = "User Deleted";
-        public static string User_Moved = "User Moved";
-        public static string User_Edited = "User Edited";
+        public const string Password_Changed = "Password Changed";
+
+
+        public const string User_Searched = "User Searched";
+        public const string User_Enabled = "User Enabled";
+        public const string User_Disabled = "User Disabled";
+        public const string User_Assigned = "User Assigned";
+        public const string User_Unassigned = "User Unassigned";
+        public const string User_Unlocked = "User Unlocked";
+        public const string User_Created = "User Created";
+        public const string User_Deleted = "User Deleted";
+        public const string User_Moved = "User Moved";
+        public const string User_Edited = "User Edited";
 
         //Computer Actions
-        public static string Computer_Searched = "Computer Searched";
-        public static string Computer_Enabled = "Computer Enabled";
-        public static string Computer_Disabled = "Computer Disabled";
-        public static string Computer_Assigned = "Computer Assigned";
-        public static string Computer_Unassigned = "Computer Unassigned";
-        public static string Computer_Unlocked = "Computer Unlocked";
-        public static string Computer_Created = "Computer Created";
-        public static string Computer_Deleted = "Computer Deleted";
-        public static string Computer_Moved = "Computer Moved";
-        public static string Computer_Edited = "Computer Edited";
+        public const string Computer_Searched = "Computer Searched";
+        public const string Computer_Enabled = "Computer Enabled";
+        public const string Computer_Disabled = "Computer Disabled";
+        public const string Computer_Assigned = "Computer Assigned";
+        public const string Computer_Unassigned = "Computer Unassigned";
+        public const string Computer_Unlocked = "Computer Unlocked";
+        public const string Computer_Created = "Computer Created";
+        public const string Computer_Deleted = "Computer Deleted";
+        public const string Computer_Moved = "Computer Moved";
+        public const string Computer_Edited = "Computer Edited";
 
 
         //Group Actions
-        public static string Group_Searched = "Group Searched";
-        public static string Group_Assigned = "Group Assigned";
-        public static string Group_Unassigned = "Group Unassigned";
-        public static string Group_Created = "Group Created";
-        public static string Group_Deleted = "Group Deleted";
-        public static string Group_Moved = "Group Moved";
-        public static string Group_Edited = "Group Edited";
+        public const string Group_Searched = "Group Searched";
+        public const string Group_Assigned = "Group Assigned";
+        public const string Group_Unassigned = "Group Unassigned";
+        public const string Group_Created = "Group Created";
+        public const string Group_Deleted = "Group Deleted";
+        public const string Group_Moved = "Group Moved";
+        public const string Group_Edited = "Group Edited";
 
 
         //OU Actions
-        public static string OU_Searched = "OU Searched";
-        public static string OU_Created = "OU Created";
-        public static string OU_Deleted = "OU Deleted";
-        public static string OU_Moved = "OU Moved";
-        public static string OU_Edited = "OU Edited";
+        public const string OU_Searched = "OU Searched";
+        public const string OU_Created = "OU Created";
+        public const string OU_Deleted = "OU Deleted";
+        public const string OU_Moved = "OU Moved";
+        public const string OU_Edited = "OU Edited";
 
         //Settings Actions
-        public static string Settings_Edited = "Settings Edited";
+        public const string Settings_Edited = "Settings Edited";
 
         //Permissions Actions
-        public static string Permission_Group_Added = "Group Added";
-        public static string Permission_Level_Added = "Level Added";
-        public static string Permission_Mapping_Added = "Mapping Added";
-        public static string Permission_Group_Edited = "Group Edited";
-        public static string Permission_Level_Edited = "Level Edited";
-        public static string Permission_Mapping_Edited = "Mapping Edited";
-        public static string Permission_Group_Deleted = "Group Deleted";
-        public static string Permission_Level_Deleted = "Level Deleted";
-        public static string Permission_Mapping_Deleted = "Mapping Deleted";
+        public const string Permission_Group_Added = "Group Added";
+        public const string Permission_Level_Added = "Level Added";
+        public const string Permission_Mapping_Added = "Mapping Added";
+        public const string Permission_Group_Edited = "Group Edited";
+        public const string Permission_Level_Edited = "Level Edited";
+        public const string Permission_Mapping_Edited = "Mapping Edited";
+        public const string Permission_Group_Deleted = "Group Deleted";
+        public const string Permission_Level_Deleted = "Level Deleted";
+        public const string Permission_Mapping_Deleted = "Mapping Deleted";
 
     }
-    public class AuditLogger : IDisposable
+    public class AuditLogger
     {
 
 
@@ -78,7 +83,7 @@ namespace BLAZAM.Server.Data.Services
         public OUAudit OU;
         public LogonAudit Logon;
 
-        public AuditLogger(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService)
+        public AuditLogger(AppDatabaseFactory factory, IApplicationUserStateService userStateService)
         {
             System = new SystemAudit(factory);
             User = new UserAudit(factory, userStateService);
@@ -88,51 +93,40 @@ namespace BLAZAM.Server.Data.Services
             Logon = new LogonAudit(factory, userStateService);
         }
 
-        public void Dispose()
-        {
-            System = null;
-            User = null;
-            Group = null;
-            Computer = null;
-            Logon = null;
-            OU = null;
-        }
+
     }
 
-    public class OUAudit : CommonAudit
+    public class OUAudit : DirectoryAudit
     {
-        public OUAudit(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public OUAudit(AppDatabaseFactory factory,
+            IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
-        public async Task<bool> Searched(IADOrganizationalUnit searchedOU) => await Log(AuditActions.Group_Searched, searchedOU);
 
-        private async Task<bool> Log(string action, IADOrganizationalUnit searchedOU)
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedOU)
+            => await Log<OUAuditLog>(c => c.OUAuditLog,
+                AuditActions.Group_Searched,
+                searchedOU);
+
+        public override async Task<bool> Created(IDirectoryEntryAdapter newOU)
+
         {
-
-            try
+            var oldValues = "";
+            var newValues = "";
+            foreach (var c in newOU.NewEntryProperties)
             {
-                using (var context = await Factory.CreateDbContextAsync())
-                {
-                    context.OUAuditLog.Add(new OUAuditLog
-                    {
-                        Action = action,
-                        Target = searchedOU.OU
-
-                    });
-                    context.SaveChanges();
-                    return true;
-                }
+                newValues += c.Key + "=" + c.Value;
             }
-            catch
-            {
-                return false;
-            }
+            await Log<OUAuditLog>(c => c.OUAuditLog, AuditActions.OU_Created, newOU, oldValues, newValues);
+            return true;
         }
+
     }
 
-    public class ComputerAudit : CommonAudit
+    public class ComputerAudit : DirectoryAudit
     {
-        public ComputerAudit(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public ComputerAudit(AppDatabaseFactory factory,
+            IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
         public async Task<bool> Searched(IADComputer searchedComputer) => await Log(AuditActions.Computer_Searched, searchedComputer);
@@ -142,18 +136,16 @@ namespace BLAZAM.Server.Data.Services
 
             try
             {
-                using (var context = await Factory.CreateDbContextAsync())
+                using var context = await Factory.CreateDbContextAsync();
+                context.ComputerAuditLog.Add(new ComputerAuditLog
                 {
-                    context.ComputerAuditLog.Add(new ComputerAuditLog
-                    {
-                        Action = action,
-                        Target = searchedComputer.CanonicalName,
-                        Username = UserStateService?.CurrentUsername
+                    Action = action,
+                    Target = searchedComputer.CanonicalName,
+                    Username = UserStateService?.CurrentUsername
 
-                    });
-                    context.SaveChanges();
-                    return true;
-                }
+                });
+                context.SaveChanges();
+                return true;
             }
             catch
             {
@@ -162,61 +154,35 @@ namespace BLAZAM.Server.Data.Services
         }
     }
 
-    public class GroupAudit : CommonAudit
+    public class GroupAudit : DirectoryAudit
     {
-        public GroupAudit(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public GroupAudit(AppDatabaseFactory factory,
+            IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
-        public async Task<bool> Searched(IADGroup searchedGroup) => await Log(AuditActions.Group_Searched, searchedGroup);
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedGroup) => await Log<GroupAuditLog>(c => c.GroupAuditLog, AuditActions.Group_Searched, searchedGroup);
 
-        public async Task<bool> Changed(IADGroup changedGroup, List<DirectoryModelChange> changes)
+        public override async Task<bool> Changed(IDirectoryEntryAdapter changedGroup, List<AuditChangeLog> changes)
         {
-            var oldValues = "";
-            var newValues = "";
-            foreach (var c in changes)
-            {
-                oldValues += c.Field + "=" + c.OldValue;
-                newValues += c.Field + "=" + c.NewValue;
-            }
-            await Log("Group Changed", changedGroup, oldValues, newValues);
+
+            await Log<GroupAuditLog>(c => c.GroupAuditLog,
+                AuditActions.Group_Edited,
+                changedGroup,
+                changes.GetValueChangesString(c => c.OldValue),
+                changes.GetValueChangesString(c => c.NewValue));
             return true;
-        }
-
-        private async Task<bool> Log(string action, IADGroup searchedGroup, string? beforeAction = null, string? afterAction = null)
-        {
-
-            try
-            {
-                using (var context = await Factory.CreateDbContextAsync())
-                {
-                    context.GroupAuditLog.Add(new GroupAuditLog
-                    {
-                        Action = action,
-                        Target = searchedGroup.GroupName,
-                        BeforeAction=beforeAction,
-                        AfterAction = afterAction,
-                        Username = CurrentUser.AuditUsername
-
-                    });
-                    context.SaveChanges();
-                    return true;
-                }
-            }
-            catch
-            {
-                return false;
-            }
         }
     }
     public class LogonAudit : CommonAudit
     {
-        public LogonAudit(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public LogonAudit(AppDatabaseFactory factory,
+            IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
 
         public async Task<bool> Login(System.Security.Claims.ClaimsPrincipal user)
         {
-            CurrentUser = new ApplicationUserState() { User=user};
+            CurrentUser = new ApplicationUserState(Factory) { User = user };
             return await Log("Login");
         }
         public async Task<bool> Logout() => await Log("Logout");
@@ -226,16 +192,14 @@ namespace BLAZAM.Server.Data.Services
 
             try
             {
-                using (var context = await Factory.CreateDbContextAsync())
+                using var context = await Factory.CreateDbContextAsync();
+                context.LogonAuditLog.Add(new LogonAuditLog
                 {
-                    context.LogonAuditLog.Add(new LogonAuditLog
-                    {
-                        Action = action,
-                        Username = CurrentUser.AuditUsername
-                    });
-                    context.SaveChanges();
-                    return true;
-                }
+                    Action = action,
+                    Username = CurrentUser.AuditUsername
+                });
+                context.SaveChanges();
+                return true;
             }
             catch
             {
@@ -244,100 +208,155 @@ namespace BLAZAM.Server.Data.Services
         }
     }
 
-    public class UserAudit : CommonAudit
+    public class UserAudit : DirectoryAudit
     {
-        public UserAudit(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public UserAudit(AppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
 
-        public async Task<bool> Searched(IADUser searchedUser) => await Log(AuditActions.User_Searched, searchedUser);
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedUser) => await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.User_Searched, searchedUser);
 
-        public async Task<bool> Changed(IADUser changedUser,List<DirectoryModelChange> changes)
+        public async Task<bool> PasswordChanged(IDirectoryEntryAdapter searchedUser,bool requirePasswordChanged=false) => await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.Password_Changed, searchedUser,null,"requirePasswordChange="+requirePasswordChanged);
+
+
+        public override async Task<bool> Created(IDirectoryEntryAdapter newUser)
         {
             var oldValues = "";
             var newValues = "";
-            foreach (var c in changes)
+            foreach (var c in newUser.NewEntryProperties)
             {
-                oldValues += c.Field + "=" + c.OldValue;
-                newValues += c.Field + "=" + c.NewValue;
+                newValues += c.Key + "=" + c.Value;
             }
-            await Log("User Changed",changedUser,oldValues, newValues);
+            await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.User_Created, newUser, oldValues, newValues);
             return true;
         }
 
-        private async Task<bool> Log(string action, IADUser user,string? beforeAction = null, string? afterAction = null)
+        public override async Task<bool> Changed(IDirectoryEntryAdapter changedUser, List<AuditChangeLog> changes)
         {
-
-            try
-            {
-                using (var context = await Factory.CreateDbContextAsync())
-                {
-
-                    context.UserAuditLog.Add(new UserAuditLog
-                    {
-                        Action = action,
-                        Target = user.SamAccountName,
-                        Username = CurrentUser.AuditUsername,
-                        BeforeAction = beforeAction,
-                        AfterAction = afterAction
-                    });
-                    context.SaveChanges();
-                    return true;
-                }
-            }
-            catch
-            {
-                return false;
-            }
+            await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.User_Edited, changedUser, changes.GetValueChangesString(c => c.OldValue), changes.GetValueChangesString(c => c.NewValue));
+            return true;
         }
 
-    }
 
+
+    }
     public class CommonAudit : BaseAudit
     {
-        public CommonAudit(IDbContextFactory<DatabaseContext> factory, IApplicationUserStateService userStateService) : base(factory)
+        protected IApplicationUserStateService UserStateService { get; private set; }
+        protected IApplicationUserState? CurrentUser { get; set; }
+        public CommonAudit(AppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory)
         {
             UserStateService = userStateService;
             CurrentUser = UserStateService.CurrentUserState;
 
         }
+    }
+    public class DirectoryAudit : CommonAudit
+    {
+        public DirectoryAudit(AppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        {
+        }
 
-        protected IApplicationUserStateService UserStateService { get; private set; }
-        protected IApplicationUserState? CurrentUser { get; set; }
+        public virtual Task<bool> Changed(IDirectoryEntryAdapter changedUser, List<AuditChangeLog> changes)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<bool> Created(IDirectoryEntryAdapter newUser)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<bool> Searched(IDirectoryEntryAdapter searchedUser)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T">The Log Entry Type to insert</typeparam>
+        /// <param name="auditTable"></param>
+        /// <param name="action"></param>
+        /// <param name="relatedEntry"></param>
+        /// <param name="beforeAction"></param>
+        /// <param name="afterAction"></param>
+        /// <returns></returns>
+        protected virtual async Task<bool> Log<T>(
+            Func<IDatabaseContext,
+            DbSet<T>> auditTable,
+            string action,
+            IDirectoryEntryAdapter relatedEntry,
+            string? beforeAction = null,
+            string? afterAction = null) where T : class, ICommonAuditLog, new()
+        {
+
+            try
+            {
+                using var context = await Factory.CreateDbContextAsync();
+                var table = auditTable.Invoke(context);
+                var auditEntry = new T()
+                {
+                    Action = action,
+                    Target = relatedEntry.CanonicalName,
+                    BeforeAction = beforeAction,
+                    AfterAction = afterAction,
+                    Username = CurrentUser.AuditUsername
+                };
+                table.Add(auditEntry);
+                context.SaveChanges();
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 
     public class SystemAudit : BaseAudit
     {
-         
-        public SystemAudit(IDbContextFactory<DatabaseContext> factory) : base(factory)
+
+        public SystemAudit(AppDatabaseFactory factory) : base(factory)
         {
         }
         public async Task<bool> LogMessage(string message)
         {
-            
-           return await Log(message);
+
+            return await Log(message);
+        }
+
+        public async Task<bool> SettingsChanged(string category, List<AuditChangeLog> changes)
+        {
+
+            return await Log("Settings_Changed",
+                changes.GetValueChangesString(c => c.OldValue),
+                changes.GetValueChangesString(c => c.NewValue)
+                );
         }
 
 
-
-        private async Task<bool> Log(string action)
+        private async Task<bool> Log(string action,
+            string? beforeAction = null,
+            string? afterAction = null)
         {
             try
             {
-                using (var context = await Factory.CreateDbContextAsync())
+                using var context = await Factory.CreateDbContextAsync();
+                context.SystemAuditLog.Add(new SystemAuditLog
                 {
-                    context.SystemAuditLog.Add(new SystemAuditLog
-                    {
-                        Action = action,
-                        Username = "System",
-                         Timestamp= DateTime.Now,
+                    Action = action,
+                    Username = "System",
+                    BeforeAction = beforeAction,
+                    AfterAction = afterAction,
+                    Timestamp = DateTime.Now,
 
 
 
-                    }) ;
-                    context.SaveChanges();
-                    return true;
-                }
+                });
+                context.SaveChanges();
+                return true;
+
             }
             catch
             {
@@ -348,9 +367,9 @@ namespace BLAZAM.Server.Data.Services
 
     public class BaseAudit
     {
-        protected IDbContextFactory<DatabaseContext> Factory { get; set; }
+        protected AppDatabaseFactory Factory { get; set; }
 
-        public BaseAudit(IDbContextFactory<DatabaseContext> factory)
+        public BaseAudit(AppDatabaseFactory factory)
         {
             Factory = factory;
         }

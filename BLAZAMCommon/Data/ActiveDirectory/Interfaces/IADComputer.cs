@@ -2,7 +2,7 @@
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 {
-    public interface IADComputer : IGroupableDirectoryModel
+    public interface IADComputer : IGroupableDirectoryAdapter
     {
         string? OperatingSystem { get; set; }
         bool? Online { get; }

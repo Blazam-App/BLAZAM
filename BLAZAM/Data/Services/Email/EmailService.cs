@@ -1,23 +1,14 @@
 ﻿using BLAZAM.Common;
+using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Server.Pages;
 using BLAZAM.Server.Shared.Email;
 using BLAZAM.Server.Shared.Layouts;
-using BLAZAM.Server.Shared.ResourceFiles;
-using Blazorise;
-using Blazorise.Extensions;
-using Blazorise.Themes;
-using Blazorise.Utilities;
 using BlazorTemplater;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.VisualStudio.Web.CodeGeneration.Templating;
 using MimeKit;
 using MimeKit.Text;
 using MimeKit.Utils;
@@ -27,10 +18,10 @@ namespace BLAZAM.Server.Data.Services.Email
     public class EmailService
     {
         public static EmailService? Instance { get; set; }
-        private IDbContextFactory<DatabaseContext> Factory { get; set; }
+        private AppDatabaseFactory Factory { get; set; }
 
 
-        public EmailService(IDbContextFactory<DatabaseContext> factory)
+        public EmailService(AppDatabaseFactory factory)
         {
             Instance = this;
             Factory = factory;
@@ -130,7 +121,7 @@ namespace BLAZAM.Server.Data.Services.Email
 
             var email = new MimeMessage();
             EmailSettings? settings = GetSettings();
-            if (settings.Valid())
+            if (settings != null && settings.Valid())
             {
                 if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty()) email.From.Add(MailboxAddress.Parse(settings.SMTPUsername));
                 else email.From.Add(MailboxAddress.Parse(settings.FromAddress));

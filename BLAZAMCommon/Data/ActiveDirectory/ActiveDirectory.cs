@@ -3,31 +3,43 @@ using BLAZAM.Common.Data.ActiveDirectory.Models;
 using BLAZAM.Common.Data.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Common.Models.Database;
+using BLAZAM.Common.Models.Database.User;
 using BLAZAM.Server.Data.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Buffers.Text;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Net;
-using System.Net.WebSockets;
-using System.Runtime.CompilerServices;
-using System.Security;
 using System.Security.Claims;
 
 namespace BLAZAM.Common.Data.ActiveDirectory
 {
     public class ActiveDirectoryContext : IDisposable, IActiveDirectory
     {
-        public IEncryptionService Encryption { get; }
+        IEncryptionService _encryption;
+
         public static ActiveDirectoryContext Instance;
 
-        IADUser? _keepAliveUser { get; set; }
 
         private AuthenticationTypes _authType;
+
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DirectoryEntry? AppRootDirectoryEntry { get; private set; }
+
+        /// <summary>
+        /// The domain directory entry root
+        /// </summary>
+        /// <remarks>
+        /// Caution should be used when providing this to the UI
+        /// </remarks>
         public DirectoryEntry RootDirectoryEntry { get; private set; }
+
 
         public DirectoryEntry GetDirectoryEntry(string? baseDN = null)
         {
@@ -41,18 +53,26 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             return new DirectoryEntry(
                 "LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + baseDN,
                 ConnectionSettings?.Username,
-                 Encryption.DecryptObject<string>(ConnectionSettings?.Password),
+                 _encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 _authType
                 );
         }
-        public DirectoryEntry GetDeleteObjectsEntry() => new DirectoryEntry("LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.ApplicationBaseDN,
+        /// <summary>
+        /// Gets the root entry for deleted objects in Active Directory
+        /// </summary>
+        /// <returns></returns>
+        public DirectoryEntry GetDeleteObjectsEntry() => new DirectoryEntry("LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + "CN=Deleted Objects," + ConnectionSettings?.FQDN.FqdnToDN(),
                 ConnectionSettings?.Username,
-                Encryption.DecryptObject<string>(ConnectionSettings?.Password),
+                _encryption.DecryptObject<string>(ConnectionSettings?.Password),
                 (AuthenticationTypes.FastBind | AuthenticationTypes.Secure));
 
-        public List<IDirectoryModel> GetDeletedObjects()
+        /// <summary>
+        /// Gets all deleted entries from Active Directory
+        /// </summary>
+        /// <returns></returns>
+        public List<IDirectoryEntryAdapter> GetDeletedObjects()
         {
-            List<IDirectoryModel> found = new List<IDirectoryModel>();
+            List<IDirectoryEntryAdapter> found = new List<IDirectoryEntryAdapter>();
             var entry = GetDeleteObjectsEntry();
 
             DirectorySearcher searcher = new DirectorySearcher(entry);
@@ -63,7 +83,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 
             foreach (SearchResult result in results)
             {
-                var model = new DirectoryModel();
+                var model = new DirectoryEntryAdapter();
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 model.Parse(result, this);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -71,25 +91,34 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             }
             return found;
         }
-        private Timer t;
 
+        private Timer _timer;
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public IADUserSearcher Users { get; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public IADGroupSearcher Groups { get; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public IADOUSearcher OUs { get; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public IADComputerSearcher Computers { get; }
 
-        public DatabaseContext? Context { get; private set; }
-        public bool Pingable
-        {
-            get
-            {
-                if (ConnectionSettings != null)
-
-                    if (ConnectionSettings.ServerAddress != null && ConnectionSettings.ServerAddress != "")
-                        return NetworkTools.PingHost(ConnectionSettings.ServerAddress);
-                return false;
-            }
-        }
+        public IDatabaseContext? Context { get; private set; }
+       
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public bool PortOpen
         {
             get
@@ -103,7 +132,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         }
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
 
-
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DirectoryConnectionStatus Status
         {
             get => _status; set
@@ -113,9 +144,18 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                 OnStatusChanged?.Invoke(_status);
             }
         }
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
+
+        /// <summary>
+        /// Called when a new user login matches an Active Directory user
+        /// </summary>
         public AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
-        public IDbContextFactory<DatabaseContext>? Factory { get; private set; }
+
+        public AppDatabaseFactory? Factory { get; private set; }
+
         public ADSettings? ConnectionSettings { get; private set; }
 
         public IApplicationUserStateService? UserStateService { get; set; }
@@ -130,20 +170,18 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         /// </summary>
         /// <param name="context"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
-        public ActiveDirectoryContext(IDbContextFactory<DatabaseContext> factory,
+        public ActiveDirectoryContext(AppDatabaseFactory factory,
             IApplicationUserStateService userStateService,
             WmiFactoryService wmiFactory,
             IEncryptionService encryptionService)
         {
-            Encryption = encryptionService;
+            _encryption = encryptionService;
             Instance = this;
             Factory = factory;
             UserStateService = userStateService;
             UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             ConnectAsync();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            t = new Timer(KeepAlive, null, 30000, 30000);
+            _timer = new Timer(KeepAlive, null, 30000, 30000);
 
             Users = new ADUserSearcher(this);
             Groups = new ADGroupSearcher(this);
@@ -151,20 +189,19 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             Computers = new ADComputerSearcher(this, wmiFactory);
         }
 
-       
+
 
         private void PopulateUserStateDirectoryUser(IApplicationUserState value)
         {
             if (value != null && value.User != null & value.User?.Identity?.AuthenticationType == AppAuthenticationTypes.ActiveDirectoryAuthentication && value.DirectoryUser == null)
             {
                 value.DirectoryUser = Users.FindUserBySID(value.User.FindFirstValue(ClaimTypes.Sid));
-                    OnNewLoginUser?.Invoke(value);
+                OnNewLoginUser?.Invoke(value);
             }
         }
 
         private async void KeepAlive(object? state)
         {
-            _keepAliveUser = null;
             if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
             {
                 await ConnectAsync();
@@ -172,7 +209,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             else if (Status == DirectoryConnectionStatus.OK)
             {
                 //Throw away query used to keep connection alive
-                _keepAliveUser = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
+                _ = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
             }
         }
 
@@ -187,7 +224,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             });
 
         }
-
+        /// <summary>
+        /// Attempts a connection to the Active Directory server
+        /// </summary>
         public void Connect()
         {
             Status = DirectoryConnectionStatus.Connecting;
@@ -197,7 +236,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                 Context = Factory.CreateDbContext();
 
 
-                if (Context.Status == DatabaseContext.ConnectionStatus.OK)
+                if (Context.Status == ServiceConnectionState.Up)
                 {
                     if (Status != DirectoryConnectionStatus.OK)
                     {
@@ -218,40 +257,71 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 
                             if (ad != null && ad.FQDN != null && ad.Username != null)
                             {
-                                if (NetworkTools.IsPortOpen(ad.ServerAddress,ad.ServerPort))
+                                if (NetworkTools.IsPortOpen(ad.ServerAddress, ad.ServerPort))
                                 {
                                     try
                                     {
 
-                                        AppRootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, Encryption.DecryptObject<string>(ad.Password), _authType);
-                                        RootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/"+ad.FQDN.FqdnToDN(), ad.Username, Encryption.DecryptObject<string>(ad.Password), _authType);
+                                        AppRootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, _encryption.DecryptObject<string>(ad.Password), _authType);
+                                        RootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(), ad.Username, _encryption.DecryptObject<string>(ad.Password), _authType);
                                         //var nativeEntry = DirectoryEntry.NativeObject;
-                                        var search = new ADSearch() { ObjectTypeFilter=ActiveDirectoryObjectType.User, SearchRoot = RootDirectoryEntry, SamAccountName = ad.Username, ExactMatch = true };
-                                        var results = search.Search<ADUser,IADUser>();
-                                 
-                                        using (var authTest = new DirectorySearcher(AppRootDirectoryEntry, "(sAMAccountName=" + ad.Username + ")"))
+                                        //Perform Auth check
+                                        var search = new ADSearch()
                                         {
-                                            try
+                                            ObjectTypeFilter = ActiveDirectoryObjectType.User,
+                                            SearchRoot = RootDirectoryEntry,
+                                            Fields = new()
                                             {
-                                                var result = Users.FindUsersByString(ad.Username);
-                                                if (results.Count > 0)
-                                                    Status = DirectoryConnectionStatus.OK;
-                                                else
-                                                    Status = DirectoryConnectionStatus.BadConfiguration;
-                                            }
-                                            catch (Exception ex)
+                                                SamAccountName = ad.Username
+                                            },
+                                            ExactMatch = true
+                                        };
+                                        var results = search.Search<ADUser, IADUser>();
+                                        try
+                                        {
+                                            if (AppRootDirectoryEntry.Parent == null)
                                             {
-                                                switch (ex.HResult)
+                                                UserStateService.BroadcastNotification(new NotificationMessage()
                                                 {
-                                                    case -2147016646:
-                                                        Status = DirectoryConnectionStatus.EncryptionError;
-                                                        break;
-                                                    case -2147023570:
-                                                        Status = DirectoryConnectionStatus.BadCredentials;
-                                                        break;
-                                                }
+                                                    Level = NotificationLevel.Error,
+                                                    Message = "The configured BaseDN is not valid. Please correct your settings.",
+                                                    Title = "Active Directory Error"
+                                                });
+                                                Status = DirectoryConnectionStatus.BadConfiguration; return;
                                             }
                                         }
+                                        catch (Exception ex)
+                                        {
+                                            UserStateService.BroadcastNotification(new NotificationMessage()
+                                            {
+                                                Level = NotificationLevel.Error,
+                                                Message = "The configured BaseDN is not valid. Please correct your settings.",
+                                                Title = "Active Directory Error"
+                                            });
+                                            Status = DirectoryConnectionStatus.BadConfiguration; return;
+
+                                        }
+
+                                        try
+                                        {
+                                            if (results.Count > 0)
+                                                Status = DirectoryConnectionStatus.OK;
+                                            else
+                                                Status = DirectoryConnectionStatus.BadConfiguration;
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            switch (ex.HResult)
+                                            {
+                                                case -2147016646:
+                                                    Status = DirectoryConnectionStatus.EncryptionError;
+                                                    break;
+                                                case -2147023570:
+                                                    Status = DirectoryConnectionStatus.BadCredentials;
+                                                    break;
+                                            }
+                                        }
+
 
                                         return;
                                     }
@@ -267,18 +337,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                                     Status = DirectoryConnectionStatus.ServerDown;
                                 }
                             }
-                            else
-                                Status = DirectoryConnectionStatus.Unconfigured;
                         }
-                        else
-                            Status = DirectoryConnectionStatus.Unconfigured;
                     }
                 }
-                else
-                {
-                    Status = DirectoryConnectionStatus.Unconfigured;
+                Status = DirectoryConnectionStatus.Unconfigured;
 
-                }
+
             }
             catch (Exception)
             {
@@ -289,9 +353,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 
         public void Dispose()
         {
-            t.Dispose();
+            _timer.Dispose();
         }
-
+        /// <summary>
+        /// Authenticates a <see cref="LoginRequest"/> to verify
+        /// the provided credentials
+        /// </summary>
+        /// <param name="loginReq"></param>
+        /// <returns>The matched user if the credentials are valid, otherwise null.</returns>
         public IADUser? Authenticate(LoginRequest loginReq)
         {
             if (loginReq.Username.Contains("\\"))
@@ -317,7 +386,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                                 connection.AuthType = AuthType.Basic;
                                 connection.SessionOptions.ProtocolVersion = 3;
                                 connection.SessionOptions.SecureSocketLayer = ConnectionSettings.UseTLS;
-                               
+
                                 connection.Credential = new NetworkCredential(loginReq.Username, loginReq.SecurePassword);
                                 connection.Bind();
 
@@ -339,8 +408,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             }
             return null;
         }
-
-        public bool RestoreTombstone(IDirectoryModel model, IADOrganizationalUnit newOU)
+        /// <summary>
+        /// Restores a delete Active Directory entry
+        /// </summary>
+        /// <param name="model">The entry to be restored</param>
+        /// <param name="newOU">The OU to restore to</param>
+        /// <returns></returns>
+        /// <exception cref="ApplicationException"></exception>
+        public bool RestoreTombstone(IDirectoryEntryAdapter model, IADOrganizationalUnit newOU)
         {
             if (!model.IsDeleted) throw new ApplicationException(model.CanonicalName + " is not deleted");
 
@@ -352,7 +427,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                 {
                     Domain = ConnectionSettings.FQDN,
                     UserName = ConnectionSettings.Username,
-                    SecurePassword = Encryption.DecryptObject<string>(ConnectionSettings.Password).ToSecureString()
+                    SecurePassword = _encryption.DecryptObject<string>(ConnectionSettings.Password).ToSecureString()
                 },
                 AuthType.Negotiate);
 
@@ -379,12 +454,24 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                         return true;
                     }
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
+                    Loggers.ActiveDirectryLogger.Error("Error attempting to restore " + model.CanonicalName);
+                    Loggers.ActiveDirectryLogger.Error(ex.Message, ex);
                 }
             }
             return false;
 
+        }
+
+        public IDirectoryEntryAdapter? GetDirectoryModelBySid(byte[] sid) => GetDirectoryModelBySid(sid.ToSidString());
+        public IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid)
+        {
+            var searcher = new ADSearch();
+            searcher.SearchRoot = RootDirectoryEntry;
+            searcher.Fields.SID = sid;
+            var result = searcher.Search().FirstOrDefault();
+            return result;
         }
     }
 }

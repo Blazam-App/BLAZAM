@@ -1,47 +1,45 @@
-﻿
-<Div Border="Border" Padding=Padding Margin=Margin Class=@("section")>
+﻿<MudPaper Elevation=2 Class=@((FullWidth?"mud-width-full":"") + " section px-4 py-3") Style="overflow:hidden; position:relative;">
     @if (SectionHeaderPosition == HeaderPosition.TopLeft || SectionHeaderPosition == HeaderPosition.TopRight)
     {
-        <Div Class="section-title-container">
+        <MudElement Class="section-title-container">
 
-            <Div Background=BackgroundColor Class="section-title">
-                <div class="section-title-text @HeadingSizeString text-@TextColor.Name">@Title</div>
-               
-            </Div>
-        </Div>
+            <MudElement Class="section-title">
+                <MudText Color="TextColor" Class="section-title-text">@Title</MudText>
+
+            </MudElement>
+        </MudElement>
 
     }
-    <Row Width="Width.Is100" Class="section-content">
+    <MudElement Class="section-content">
         @ChildContent
-    </Row>
+    </MudElement>
 
     @if (SectionHeaderPosition == HeaderPosition.BottomLeft || SectionHeaderPosition == HeaderPosition.BottomRight)
     {
-        <Div Class="section-title-container">
+        <MudElement Class="section-title-container">
 
-            <Div Class="section-title">
-                <div class="section-title-text @HeadingSizeString text-@TextColor.Name">@Title</div>
-            </Div>
-        </Div>
+            <MudElement Class="section-title">
+                <MudText Color="TextColor" class="section-title-text">@Title</MudText>
+            </MudElement>
+        </MudElement>
 
     }
-</Div>
+</MudPaper>
 @{
     string borderColor = "";
     string hspacing = "";
     string hmargin = "";
     string vspacing = "";
     string vmargin = "";
-    Tooltip tooltip;
     @if (SectionHeaderPosition == HeaderPosition.TopLeft || SectionHeaderPosition == HeaderPosition.TopRight)
     {
-        vspacing = " top: -25px";
-        vmargin = "margin-bottom: -35px";
+        //vspacing = " top: -25px";
+       // vmargin = "margin-bottom: -35px";
     }
     else
     {
-        vspacing = " bottom: -22px";
-        vmargin = "margin-top: -50px";
+       // vspacing = " bottom: -22px";
+       // vmargin = "margin-top: -50px";
     }
 
 
@@ -73,48 +71,45 @@
     @vmargin;
     @hspacing;
     @hmargin;
-        padding: 10px;
+        /*padding: 10px;*/
         max-width: fit-content;
     }
 
     .section-title-text {
+        font-weight: bold;
         /*  margin-left: 10px; */
     }
 
     .section-content {
-        padding: 10px;
+        /*padding: 10px;*/
     }
 </style>
 
 @code {
+    #nullable disable warnings
     [Parameter]
     public HeaderPosition SectionHeaderPosition { get; set; } = HeaderPosition.TopLeft;
 
     [Parameter]
     public string Title { get; set; }
 
-    [Parameter]
-    public IFluentSpacing Margin { get; set; }
-
-    [Parameter]
-    public IFluentSpacing Padding { get; set; }
 
     /// <summary>
     /// Color for the text
     /// </summary>
     [Parameter]
-    public TextColor TextColor { get; set; } = TextColor.Secondary;
+    public Color TextColor { get; set; } = Color.Secondary;
 
+    /// <summary>
+    /// If set to false, width will fit content
+    /// </summary>
     [Parameter]
-    public Background BackgroundColor { get; set; } = Background.Light;
+    public bool FullWidth { get; set; } = true;
 
-    [Parameter]
-    public IFluentBorder Border { get; set; } = Blazorise.Border.Rounded.Is1.Dark.OnAll;
 
-    string HeadingSizeString { get { return "h" + HeadingSize.ToString(); } }
-    [Parameter]
-    public HeadingSize HeadingSize { get; set; } = HeadingSize.Is4;
+    string HeadingSizeString { get { return "h4"; } }
 
+   
     [Parameter]
     public RenderFragment ChildContent { get; set; }
 

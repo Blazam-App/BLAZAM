@@ -1,138 +1,86 @@
 ﻿@using BLAZAM.Server.Shared.Layouts;
-@using BLAZAM.Server.Shared.UI.Themes;
 @using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 @using BLAZAM.Server.Data.Services.Email;
 @using System.Diagnostics;
+@using BLAZAM.Server.Shared.UI.Themes;
+@using Microsoft.AspNetCore.Authentication.Cookies;
+@using Microsoft.Extensions.Options;
 @inject IHttpContextAccessor context
 @inject IApplicationUserStateService userStateService
-<Blazorise.ThemeProvider Theme="@activeTheme.Theme">
-    <CascadingAuthenticationState>
-        @if (Debugger.IsAttached)
-        {
+@*<Blazorise.ThemeProvider Theme="@activeTheme.Theme">*@
+<CascadingAuthenticationState>
 
 
-                    <Router AppAssembly="@typeof(App).Assembly">
-                        <Found Context="routeData">
-                    @{
-                        var test = routeData;
-                    }
-                            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                                <Authorizing>
-                                    Authorizing...
-                                </Authorizing>
-                                <NotAuthorized>
-                                    @if (!context.User.Identity.IsAuthenticated)
-                                    {
-                                var test2 = test;
+
+    <ErrorBoundary>
+
+        <ChildContent>
+            <Router AppAssembly="@typeof(App).Assembly">
+                <Found Context="routeData">
+                    <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                        <Authorizing>
+                            Authorizing...
+                        </Authorizing>
+                        <NotAuthorized>
+                            @if (!context.User.Identity?.IsAuthenticated == true)
+                            {
                                 <PageTitle>Login</PageTitle>
-                                        <LayoutView Layout="@typeof(LoginLayout)">
-                                            <BLAZAM.Server.Pages.Login />
-                                        </LayoutView>
-                                        @*<RedirectToLogin />*@
-                                    }
-                                    else
-                                    {
-                                        @if (context != null)
-                                        {
+                                <LayoutView Layout="@typeof(LoginLayout)">
+                                    <BLAZAM.Server.Pages.Login />
+                                </LayoutView>
+                                @*<RedirectToLogin />*@
+                            }
+                            else
+                            {
+                                @if (context != null)
+                                {
 
-                                        }
-                                <BLAZAM.Server.Pages.Error._403 />
+                                }
+                                <p>You are not authorized to access this resource.</p>
+                            }
+                        </NotAuthorized>
 
-                                    }
-                                </NotAuthorized>
-
-                            </AuthorizeRouteView>
-                            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-                        </Found>
-                        <NotFound>
-                            <PageTitle>Not found</PageTitle>
-                            <LayoutView Layout="@typeof(MainLayout)">
-                                <BLAZAM.Server.Pages.Error._404 />
-                            </LayoutView>
-                        </NotFound>
-                    </Router>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        }else
-        {
-
-
-            <ErrorBoundary>
-
-                <ChildContent>
-                    <Router AppAssembly="@typeof(App).Assembly">
-                        <Found Context="routeData">
-                            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                                <Authorizing>
-                                    Authorizing...
-                                </Authorizing>
-                                <NotAuthorized>
-                                    @if (!context.User.Identity.IsAuthenticated)
-                                    {
-                                        <PageTitle>Login</PageTitle>
-                                        <LayoutView Layout="@typeof(LoginLayout)">
-                                            <BLAZAM.Server.Pages.Login />
-                                        </LayoutView>
-                                        @*<RedirectToLogin />*@
-                                    }
-                                    else
-                                    {
-                                        @if (context != null)
-                                        {
-
-                                        }
-                                        <p>You are not authorized to access this resource.</p>
-                                    }
-                                </NotAuthorized>
-
-                            </AuthorizeRouteView>
-                            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-                        </Found>
-                        <NotFound>
-                            <PageTitle>Not found</PageTitle>
-                            <LayoutView Layout="@typeof(MainLayout)">
-                                <BLAZAM.Server.Pages.Error._404 />
-                            </LayoutView>
-                        </NotFound>
-                    </Router>
-                </ChildContent>
-                <ErrorContent>
-                    <LayoutView Layout="@typeof(MinLayout)">
-
-                        <UnhandledExceptionPage Error="@context" />
-
+                    </AuthorizeRouteView>
+                    <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+                </Found>
+                <NotFound>
+                    <AppPageTitle>Not found</AppPageTitle>
+                    <LayoutView Layout="@typeof(MainLayout)">
+                        <_404 />
                     </LayoutView>
-                </ErrorContent>
-            </ErrorBoundary>
+                </NotFound>
+            </Router>
+        </ChildContent>
+        <ErrorContent>
+            <LayoutView Layout="@typeof(MinLayout)">
+
+                <UnhandledExceptionPage Error="@context" />
+
+            </LayoutView>
+        </ErrorContent>
+    </ErrorBoundary>
 
 
 
 
-        }
-  
-       
-    </CascadingAuthenticationState>
-    <PageProgressProvider />
-    <NotificationProvider Location="NotificationLocation.Start" />
-    <MessageProvider />
 
-</Blazorise.ThemeProvider>
+</CascadingAuthenticationState>
+@*  <PageProgressProvider />
+    <NotificationProvider Location="NotificationLocation.Start" />*@
+
+<MudPageProgressProvider />
+<MudThemeProvider Theme="@activeTheme.Theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<SessionExpirationWarningProvider />
+@*</Blazorise.ThemeProvider>*@
+
+
 @code {
-    ApplicationTheme activeTheme;
+
+
+    ApplicationTheme activeTheme = new LightTheme();
     protected override void OnInitialized()
     {
         base.OnInitialized();

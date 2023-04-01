@@ -1,43 +1,43 @@
 ﻿@inherits DirectoryModelComponent
 
-<Card Background="Background.Light" TextColor="TextColor.Dark">
+<MudCard Background="Background.Light" Color="Color.Dark">
     @if (Group != null)
     {
         var linkAdd = "/groups/search/" + Group.GroupName;
-        <CardHeader>
-            <Paragraph Style="cursor:pointer;" Display=Display.InlineBlock onclick="@(()=>{
+        <MudCardHeader>
+            <MudText Style="cursor:pointer;" Display=Display.InlineBlock onclick="@(()=>{
             if(AllowNavigation)
              Nav.NavigateTo(Group.SearchUri);
             })">
                 @Group.GroupName
 
-            </Paragraph>
+            </MudText>
             @if (AllowUnassign)
             {
-                <Button Float=Float.End Color="Color.Danger" Clicked="RemoveFromGroup"><Icon Name="@("fa-times")" /></Button>
+                <MudButton Float=Float.End Color="Color.Error" OnClick="RemoveFromGroup"><MudIcon Icon="@("fa-times")" /></MudButton>
             }
-        </CardHeader>
+        </MudCardHeader>
     }
 
     else
     {
-        <CardHeader>
+        <MudCardHeader>
             <Accordion>
                 <Collapse Visible="@collapse1Visible">
                     <CollapseHeader>
-                        <Heading Size="HeadingSize.Is5">
+                        <MudText Typo ="Typo.h1" Size="HeadingSize.Is5">
 
-                            <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)">
+                            <MudButton OnClick="@(()=>collapse1Visible = !collapse1Visible)">
                                 @Group.GroupName
                                 @if (AllowUnassign)
                                 {
-                                    <Button Color="Color.Danger" Clicked="RemoveFromGroup"><Icon Name="@("fa-times")" /></Button>
+                                    <MudButton Color="Color.Error" OnClick="RemoveFromGroup"><MudIcon Icon="@("fa-times")" /></MudButton>
 
                                 }
 
-                            </Button>
+                            </MudButton>
 
-                        </Heading>
+                        </MudText>
 
                     </CollapseHeader>
                     <CollapseBody>
@@ -70,13 +70,14 @@
                 </Collapse>
 
             </Accordion>
-        </CardHeader>
+        </MudCardHeader>
 
     }
-</Card>
+</MudCard>
 
 @code {
-   
+
+#nullable disable warnings
     bool collapse1Visible = false;
 
     [Parameter]
@@ -87,7 +88,7 @@
 
 
     [Parameter]
-    public IGroupableDirectoryModel Member { get; set; }
+    public IGroupableDirectoryAdapter Member { get; set; }
 
     [Parameter]
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
@@ -95,9 +96,9 @@
     {
 
         Member.UnassignFrom(Group);
-        NotificationService.Warning(Member.CanonicalName + " removed from " + Group.CanonicalName + ". Don't forget to save your changes.", "Sucess");
+        SnackBarService.Warning(Member.CanonicalName + " removed from " + Group.CanonicalName + ". Don't forget to save your changes.", "Sucess");
 
-        OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group));
+        await OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group));
 
     }
 

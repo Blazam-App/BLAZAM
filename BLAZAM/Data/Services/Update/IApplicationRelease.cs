@@ -2,9 +2,12 @@
 {
     internal interface IApplicationRelease
     {
-        public string DownloadURL { get; set; }
-        public long ExpectedSize { get; set; }
+        public string? DownloadURL { get; }
+        public long? ExpectedSize { get; }
         public string Branch { get; set; }
         public ApplicationVersion Version { get; set; }
+        string? ReleaseNotes { get; }
+        bool? PreviewRelease { get; }
+        DateTimeOffset? ReleaseTime { get; }
     }
 }

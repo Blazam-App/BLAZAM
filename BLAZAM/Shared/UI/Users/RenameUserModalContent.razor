@@ -1,100 +1,81 @@
 ﻿@inherits AppModalContent
-<LoadingIndicator Visible=LoadingData>
-
-    <Div Background="Background.Light" TextColor="TextColor.Dark">
         <Section Title=@UserLocalization["Name"]>
 
 
             @if (User.CanReadField(ActiveDirectoryFields.GivenName))
             {
-                <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-                <FieldLabel>
-                    @UserLocalization["First Name"]
-                </FieldLabel>
-                <FieldBody>
-                    <TextEdit @bind-Text="@_privateUserInstance.GivenName" />
+                
+                
+                        <MudTextField Label="@UserLocalization["First Name"]" @bind-Value="@_privateUserInstance.GivenName" />
 
-                </FieldBody>
-                </Field>
+                
+                
             }
             @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
             {
-                <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-                <FieldLabel>
-                    @UserLocalization["Middle Name"]
-                </FieldLabel>
-                <FieldBody>
-                    <TextEdit @bind-Text="@_privateUserInstance.MiddleName" />
+                
+                
+                        <MudTextField Label="@UserLocalization["Middle Name"]" @bind-Value="@_privateUserInstance.MiddleName" />
 
-                </FieldBody>
-                </Field>
+                
+                
             }
             @if (User.CanReadField(ActiveDirectoryFields.SN))
             {
-                <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-                <FieldLabel>
-                    @UserLocalization["Last Name"]
-                </FieldLabel>
-                <FieldBody>
-                    <TextEdit @bind-Text="@_privateUserInstance.Surname" />
+                
+                
+                        <MudTextField Label="@UserLocalization["Last Name"]" @bind-Value="@_privateUserInstance.Surname" />
 
-                </FieldBody>
-                </Field>
+                
+                
             }
             @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
             {
-                <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-                <FieldLabel>
-                    @UserLocalization["Display Name"]
-                </FieldLabel>
-                <FieldBody>
-                    <TextEdit Text="@_privateUserInstance.DisplayName" TextChanged="DisplayNameChanged" />
+                
+                
+                    <MudTextField T="string" Label="@UserLocalization["Display Name"]" Text="@_privateUserInstance.DisplayName" TextChanged="DisplayNameChanged" />
 
-                </FieldBody>
-                </Field>
+                
+                
             }
 
         </Section>
         @if (User.CanEditField(ActiveDirectoryFields.SAMAccountName))
         {
-            <Field Horizontal>
-            <FieldLabel>
-                @UserLocalization["Username"]
-            </FieldLabel>
-            <FieldBody>
-                <TextEdit @bind-Text="@_privateUserInstance.SamAccountName" />
+            
+            
+                    <MudTextField Label="@UserLocalization["Username"]" @bind-Value="@_privateUserInstance.SamAccountName" />
 
-            </FieldBody>
-        </Field>
+            
+        
         }
         @if (User.CanEditField(ActiveDirectoryFields.Mail))
         {
-            <Field Horizontal>
-            <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                @UserLocalization["Email Address"]
-            </FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                <TextEdit @bind-Text="@_privateUserInstance.Email" />
+            
+           
+                    <MudTextField Label="@UserLocalization["Email Address"]" @bind-Value="@_privateUserInstance.Email" />
 
-            </FieldBody>
-        </Field>
+            
+        
         }
-        <Button Disabled=saveDisabled Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Changes"]</Button>
-    </Div>
-</LoadingIndicator>
-
 @code {
+
+    #nullable disable warnings
     private IADUser _privateUserInstance;
 
     [Parameter]
-    public EventCallback<IDirectoryModel> DirectoryModelRenamed { get; set; }
+    public EventCallback<IDirectoryEntryAdapter> DirectoryModelRenamed { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
         _privateUserInstance = Directory.Users.FindUserBySID(User.SID.ToSidString());
-        saveDisabled = false;
+        SaveDisabled = false;
+        Modal.OnYes += SaveChanges;
+        Modal.YesText = UserLocalization["Rename User"];
+        Modal.Title = "Rename User";
+
         await InvokeAsync(StateHasChanged);
     }
 
@@ -104,11 +85,11 @@
         _privateUserInstance.DisplayName = newName;
 
     }
-    async Task SaveChanges()
+    async void SaveChanges()
     {
         if (Directory.Users.FindUsersByContainerName(_privateUserInstance.DisplayName, false, false) == null)
         {
-            saveDisabled = true;
+            SaveDisabled = true;
             LoadingData = true;
             _privateUserInstance.Rename(_privateUserInstance.DisplayName);
             await _privateUserInstance.CommitChangesAsync();
@@ -118,11 +99,11 @@
         }
         else
         {
-            NotificationService.Error("That name already exists. Please choose a different Display Name", "Name Exists");
+            SnackBarService.Error("That name already exists. Please choose a different Display Name", "Name Exists");
         }
         LoadingData = false;
 
-        saveDisabled = false;
+        SaveDisabled = false;
     }
 
 }

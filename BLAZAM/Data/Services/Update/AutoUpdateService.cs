@@ -3,7 +3,6 @@ using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Server.Data.Services.Email;
 using BLAZAM.Server.Shared.Email;
-using Blazorise;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +16,7 @@ namespace BLAZAM.Server.Data.Services.Update
         public AppEvent OnAutoUpdateFailed { get; set; }
 
         private readonly EmailService email;
-        private readonly IDbContextFactory<DatabaseContext> factory;
+        private readonly AppDatabaseFactory factory;
         private UpdateService updateService;
         private Timer? updateCheckTimer;
         private Timer? autoUpdateApplyTimer = null;
@@ -27,7 +26,7 @@ namespace BLAZAM.Server.Data.Services.Update
         public ApplicationUpdate? ScheduledUpdate { get; set; }
         //private AuditLogger Audit;
 
-        public AutoUpdateService(IDbContextFactory<DatabaseContext> factory, UpdateService updateService, EmailService emailService)
+        public AutoUpdateService(AppDatabaseFactory factory, UpdateService updateService, EmailService emailService)
         {
             this.email = emailService;
             this.factory = factory;
@@ -53,7 +52,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Loggers.UpdateLogger.Debug("Deleting unknown file: " + file);
+                    Loggers.UpdateLogger.Debug("Deleting unknown file: " + file,ex);
                     file.Delete();
                 }
 
@@ -93,9 +92,9 @@ namespace BLAZAM.Server.Data.Services.Update
                     Loggers.UpdateLogger.Information("Checking for automatic update");
 
                     var latestUpdate = await updateService.GetLatestUpdate();
-                    if (latestUpdate.Version.CompareTo(Program.Version) > 0)
+                    if (latestUpdate.Version.CompareTo(Program.Version) > 0 && appSettings.AutoUpdateTime!=null)
                     {
-                        ScheduleUpdate(appSettings.AutoUpdateTime, latestUpdate);
+                        ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
                     }
                     else
                     {
@@ -119,6 +118,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
         public void ScheduleUpdate(TimeSpan updateTimeOfDay, ApplicationUpdate updateToInstall)
         {
+
             bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall ;
             if (ScheduledUpdate != updateToInstall)
             {
@@ -148,6 +148,7 @@ namespace BLAZAM.Server.Data.Services.Update
 
                     try
                     {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                         email.SendMessage(
                             "Update Schedueled",
                             "admin@blazam.org",
@@ -155,6 +156,7 @@ namespace BLAZAM.Server.Data.Services.Update
                             (MarkupString)("The application has schedueled an update to version "
                             + ScheduledUpdate.Version + " at " + ScheduledUpdateTime
                             ));
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     }
                     catch (Exception ex)
                     {

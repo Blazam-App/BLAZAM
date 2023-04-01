@@ -1,22 +1,76 @@
 ﻿@page "/permissions"
+@page "/permissions/{ActiveTab}"
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
-@inherits AppComponentBase
+@inherits TabbedAppComponentBase
+
+<AppPageTitle>Permissions</AppPageTitle>
 <AuthorizeView Roles=@UserRoles.SuperAdmin>
 
-    <h2>Permissions</h2>
-    @if (Monitor.DirectoryConnected == ConnectionState.Up)
-    {
-        <BLAZAM.Server.Shared.UI.Settings.Permissions.PrivilegeLevelEditor />
-    }
-    <BLAZAM.Server.Shared.UI.Settings.Permissions.AccessLevelEditor />
-    @if (Monitor.DirectoryConnected == ConnectionState.Up)
-    {
-        <BLAZAM.Server.Shared.UI.Settings.Permissions.ImpersonateUser />
-        <BLAZAM.Server.Shared.UI.Settings.Permissions.PrivilegeMapper />
+    <SetHeader>
+    </SetHeader>
 
-    }
+
+
+
+    <MudTabs ActivePanelIndex="@ActiveTab">
+        <MudTabPanel>
+            <ChildContent>
+
+
+                @if (Monitor.DirectoryConnected == ServiceConnectionState.Up)
+                {
+                    <BLAZAM.Server.Shared.UI.Settings.Permissions.DelegateEditor />
+                }
+
+
+            </ChildContent>
+            <TabContent>
+                @SettingsLocalization["Delegates"]
+            </TabContent>
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
+
+
+                <BLAZAM.Server.Shared.UI.Settings.Permissions.AccessLevelEditor />
+
+
+            </ChildContent>
+            <TabContent>
+                @SettingsLocalization["Access Levels"]
+            </TabContent>
+
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
+
+                @if (Monitor.DirectoryConnected == ServiceConnectionState.Up)
+                {
+                    <BLAZAM.Server.Shared.UI.Settings.Permissions.ImpersonateUser />
+                    <BLAZAM.Server.Shared.UI.Settings.Permissions.PermissionMapper />
+
+                }
+
+
+            </ChildContent>
+            <TabContent>
+                @SettingsLocalization["Mappings"]
+            </TabContent>
+
+        </MudTabPanel>
+       
+    </MudTabs>
+
+
+    
 </AuthorizeView>
-@code {
 
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        BaseUri = "/permissions";
+    }
 }

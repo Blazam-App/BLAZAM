@@ -1,9 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Net;
+﻿using System.Net;
 
 namespace BLAZAM.Common.Models.Database.Audit
 {
-    public class CommonAuditLog
+    public class CommonAuditLog : AppDbSetBase, ICommonAuditLog
     {
         public int Id { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;

@@ -8,13 +8,28 @@
     <DevTools />
 }
 
+<PageTitle>Oops</PageTitle>
 <h3>@Loc["Oops"]</h3>
-<h6>@ErrorMessage</h6>
-<p>@Loc["Please report to"] yourself</p>
+
+@if(Exception is null)
+{
+    <h6>@ErrorMessage</h6>
+    <p>@DetailsMessage</p>
+    <p>@HelpMessage</p>
+}
+else
+{
+    <h6>@Exception.GetType().Name</h6>
+    <p>@Exception.Message</p>
+    <p>@Exception.InnerException?.Message</p>
+    <p>@Exception.HelpLink</p>
+}
+
+<p>@Loc["Please report to"] your system administrator</p>
 @code {
 
-    public static string ErrorMessage {get;set;}
-    public static string DetailsMessage {get;set;}
-    public static string HelpMessage {get;set;}
-
+    public static string? ErrorMessage {get;set;}
+    public static string? DetailsMessage {get;set;}
+    public static string? HelpMessage {get;set;}
+    public static Exception Exception{ get; set; }
 }

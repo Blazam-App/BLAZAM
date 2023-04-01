@@ -4,7 +4,7 @@ using System.Security;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 {
-    public interface IADUser : IGroupableDirectoryModel
+    public interface IADUser : IGroupableDirectoryAdapter
     {
         string? City { get; set; }
         string? Company { get; set; }
@@ -21,15 +21,15 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         string? ScriptPath { get; set; }
         string? Site { get; set; }
         string? State { get; set; }
-        string? Street { get; set; }
+        string? POBox { get; set; }
         string? StreetAddress { get; set; }
         string? Surname { get; set; }
         string? TelephoneNumber { get; set; }
         string? Title { get; set; }
         string? UserPrincipalName { get; set; }
         string? Zip { get; set; }
-        List<PrivilegeLevel> PrivilegeLevels { get; set; }
-        List<PrivilegeMap> PermissionMappings { get; set; }
+        List<PermissionDelegate> PermissionDelegates { get; set; }
+        List<PermissionMapping> PermissionMappings { get; set; }
         bool HasComputerPrivilege { get; }
         bool HasOUPrivilege { get; }
         bool HasGroupPrivilege { get; }
@@ -38,11 +38,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         bool HasCreateGroupPrivilege { get; }
         bool HasCreateOUPrivilege { get; }
         byte[]? ThumbnailPhoto { get; set; }
-        DateTime? ExpireTime { get; set; }
         SecureString NewPassword { get; set; }
 
-        bool SetPassword(string password);
-        bool SetPassword(SecureString password);
-        void StagePasswordChange(SecureString newPassword);
+        bool SetPassword(SecureString password, bool requireChange);
+        void StagePasswordChange(SecureString newPassword, bool requireChange);
     }
 }

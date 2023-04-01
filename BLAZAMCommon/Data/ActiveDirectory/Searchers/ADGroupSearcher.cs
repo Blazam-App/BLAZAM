@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.ActiveDirectory.Models;
+using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Helpers;
 using static Microsoft.VisualStudio.Services.Graph.GraphResourceIds;
 
@@ -37,7 +38,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Group,
                 EnabledOnly = false,
-                DN = dn,
+                Fields = new()
+                {
+                    DN = dn
+                },
                 ExactMatch = true
 
             }.Search<ADGroup, IADGroup>();
@@ -58,6 +62,32 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         }
 
+        public async Task<List<IADGroup>> FindNewGroupsAsync(int maxAgeInDays = 14)
+        {
+            return await Task.Run(() =>
+            {
+                return FindNewGroups(maxAgeInDays);
+            });
+        }
+
+        public List<IADGroup>? FindNewGroups(int maxAgeInDays = 14)
+        {
+
+            var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
+            var results = new ADSearch()
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.Group,
+                Fields = new()
+                {
+                    Created = threeMonthsAgo
+                }
+
+            }.Search<ADGroup, IADGroup>();
+            return results.OrderByDescending(u => u.Created).ToList();
+
+        }
+
+
         public IADGroup? FindGroupBySID(byte[] groupSID)=>FindGroupBySID(groupSID.ToSidString());
 
         public IADGroup? FindGroupBySID(string groupSID)
@@ -65,7 +95,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             return new ADSearch()
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Group,
-                SID= groupSID,
+                Fields = new()
+                {
+                    SID = groupSID
+                },
                 ExactMatch = true
 
             }.Search<ADGroup, IADGroup>().FirstOrDefault();
@@ -132,7 +165,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         }
 
-        public bool IsAMemberOf(IADGroup? group, IGroupableDirectoryModel? userOrGroup, bool v, bool ignoreDisabledUsers = true)
+        public bool IsAMemberOf(IADGroup? group, IGroupableDirectoryAdapter? userOrGroup, bool v, bool ignoreDisabledUsers = true)
         {
 
             string UserSearchFieldsQuery = "(&(memberOf:1.2.840.113556.1.4.1941:=" + group.DN + ")(distinguishedName=" + userOrGroup.DN + "))";

@@ -1,109 +1,85 @@
-﻿@using BLAZAM.Server.Pages;
-@using Microsoft.EntityFrameworkCore;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
-@inject IDbContextFactory<DatabaseContext> DbFactory
-@inherits ValidatedForm
+﻿@inherits SettingsComponents
 
 
-<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
-    <Row Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-        <Heading>@SettingsLocalization["Update Settings"]</Heading>
-        <Form @onsubmit="Save">
-
-            <Validations Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
-
-                <Validation>
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["Allow Auto Update"]</FieldLabel>
-                        <FieldBody>
-                            <Switch TValue="bool" @bind-Checked="@settings.AutoUpdate" />
-                        </FieldBody>
-                    </SettingsField>
-
-                </Validation>
+    <MudText Typo="Typo.h4">@SettingsLocalization["Update Settings"]</MudText>
+    <MudForm @onsubmit="Save">
 
 
-                @if (settings.AutoUpdate)
+            @if (settings != null)
+            {
+
+                <SettingsField Label="@SettingsLocalization["Update Branch"]">
+
+                    <MudSelect @bind-Value=@settings.UpdateBranch>
+                        @foreach (var val in updateBranches)
+                        {
+                            <MudSelectItem Value="@val">@val</MudSelectItem>
+                        }
+                    </MudSelect>
+
+
+
+                </SettingsField>
+
+
+        <SettingsField Label="@SettingsLocalization["Update"]">
+
+             
+
+                    <ManualApplicationUpdater />
+
+
+                </SettingsField>
+
+
+                <SettingsField Label="@SettingsLocalization["Allow Auto Update"]">
+
+                    <MudSwitch @bind-Checked=@(settings.AutoUpdate) />
+
+                </SettingsField>
+
+
+                @if (settings?.AutoUpdate == true)
                 {
+                    <SettingsField Label="@SettingsLocalization["Auto Update Time"]">
 
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["Auto Update Time"]</FieldLabel>
-                        <FieldHelp>The time of each day to automatically apply an update.</FieldHelp>
-                        <FieldBody>
-                            <TimePicker TValue="TimeSpan" @bind-Time="@settings.AutoUpdateTime">
+                        <MudTimePicker HelperText="The time of each day to automatically apply an update."
+                              
+                               @bind-Time="@settings.AutoUpdateTime" />
 
-                            </TimePicker>
-                        </FieldBody>
+
                     </SettingsField>
 
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["Update Branch"]</FieldLabel>
-                        <FieldHelp>Choosing the Dev branch may result in application breakage</FieldHelp>
-                        <FieldBody>
-                            <Select TValue="string" @bind-SelectedValue="@settings.UpdateBranch">
-                                <SelectItem Value=@("Stable")>Stable</SelectItem>
-                                <SelectItem Value=@("Nightly")>Nightly</SelectItem>
-                                <SelectItem Value=@("Dev")>Dev</SelectItem>
-                            </Select>
-                        </FieldBody>
-                    </SettingsField>
+
                 }
 
 
                 <SettingsField>
 
-                    <FieldLabel>
-                        @SettingsLocalization["Update"]
-                    </FieldLabel>
-                    <FieldBody>
+                    <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
 
-                        <ManualApplicationUpdater />
-
-                    </FieldBody>
                 </SettingsField>
-                
-
-                <SettingsField>
-                    <FieldBody>
-                        <Button Disabled="saveDisabled" Type="ButtonType.Submit" Color="Color.Success">Save Changes</Button>
-                    </FieldBody>
-                </SettingsField>
-            </Validations>
-        </Form>
-    </Row>
-</LoadingIndicator>
+            }
+    </MudForm>
 @code {
-    AppSettings settings = new AppSettings();
-
+    AppSettings? settings = new AppSettings();
+    List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev };
     protected override async Task OnInitializedAsync()
     {
-        Task.Run(() =>
+        await base.OnInitializedAsync();
+        if (Context != null)
         {
-            settings = Context.AppSettings.FirstOrDefault();
-            LoadingData = false;
-            InvokeAsync(StateHasChanged);
-        });
-    }
+            originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
+            settings = await Context.AppSettings.FirstOrDefaultAsync();
 
-
-    private async void LoadIcon(FileUploadEventArgs e)
-    {
-        //TODO Try and capture the moment the file upload starts
-        using (var stream = e.File.OpenReadStream(5000000))
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                await stream.CopyToAsync(memoryStream);
-                settings.AppIcon = memoryStream.ToArray();
-            }
         }
-        await Context.SaveChangesAsync();
+        LoadingData = false;
         await InvokeAsync(StateHasChanged);
 
-
     }
+
 
 
 
 }
+

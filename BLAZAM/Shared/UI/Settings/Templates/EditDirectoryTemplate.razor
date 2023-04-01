@@ -1,110 +1,77 @@
 ﻿@using System.Text.RegularExpressions;
+@using BLAZAM.Common.Extensions;
 @inherits ValidatedForm
 
-<Validations StatusChanged="OnValidation" Mode="ValidationMode.Auto" @ref=validations>
-    <EditForm OnSubmit="SaveTemplate" Model="DirectoryTemplate">
-        <Row Width="Width.Is100" Margin="Margin.Is2">
-            <Validation>
-                <Field>
-                    <FieldLabel>@SettingsLocalization["Template Name"]</FieldLabel>
-                    <FieldBody>
-                        <TextEdit @bind-Text=DirectoryTemplate.Name>
-                            <Feedback>
-                                <ValidationError />
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
-                </Field>
+<EditForm OnValidSubmit="SaveTemplate" Model="DirectoryTemplate">
+    <MudStack>
 
-            </Validation>
-            <Field>
-                <FieldLabel>@SettingsLocalization["Template Category"]</FieldLabel>
-                <FieldBody>
-                    <Autocomplete FreeTyping
-                                  @bind-Search=DirectoryTemplate.Category
-                                  TItem=string
-                                  TValue="string"
-                                  Data="Context.DirectoryTemplates.Select(t=>t.Category).Distinct()" />
-                </FieldBody>
-            </Field>
-            <Card>
-                Variables:
-                <Row Width="Width.Is100">
-                    <Column ColumnSize="ColumnSize.Is6.OnTablet">
-                        <Code>{fn}</Code>:First Name<br />
-                        <Code>{fi}</Code>:First Initial<br />
-                        <Code>{mn}</Code>:Middle Name<br />
-                    </Column>
-                    <Column ColumnSize="ColumnSize.Is6.OnTablet">
 
-                        <Code>{mi}</Code>:Middle Initial<br />
-                        <Code>{ln}</Code>:Last Name<br />
-                        <Code>{li}</Code>:Last Initial<br />
-                    </Column>
-                    <Column ColumnSize="ColumnSize.Is6.OnTablet">
+        <MudTextField Label="@SettingsLocalization["Template Name"]"
+                      @bind-Value=DirectoryTemplate.Name />
 
-                        <Code>{AlphaNum[:u/l]}</Code>:Random letter or number (optional force uppercase/lowercase)<br />
-                        <Code>{Alpha[:u/l]}</Code>:Random letter (optional force uppercase/lowercase)<br />
-                        <Code>{Num}</Code>:Random number<br />
-                    </Column>
-
-                </Row>
-            </Card>
-            <Section Padding=Padding.Is0 Title="Account and Name">
-                
-                   
-                    <Validation>
-                        <Field ColumnSize="ColumnSize.Is6.OnTablet">
-                            <FieldLabel>Username Format</FieldLabel>
-                            <FieldBody>
-                                <TextEdit @bind-Text=DirectoryTemplate.UsernameFormula>
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
-                            </FieldBody>
-                        </Field>
-                    </Validation>
-                    <Validation>
-                        <Field>
-                            <FieldLabel>Display Name Format</FieldLabel>
-                            <FieldBody>
-                                <TextEdit @bind-Text=DirectoryTemplate.DisplayNameFormula>
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
-                            </FieldBody>
-                        </Field>
-                    </Validation>
-
-                    <Field>
-                        <FieldLabel>Password</FieldLabel>
-                        <FieldBody>
-                            <TextEdit Placeholder="{AlphaNum}{Alpha:U}{Alpha:L}{Num}{Num}{Num}" @bind-Text=DirectoryTemplate.PasswordFormula>
-                                <Feedback>
-                                    <ValidationError />
-                                </Feedback>
-                            </TextEdit>
-                        </FieldBody>
-                    </Field>
+        <MudAutocomplete CoerceValue SearchFunc="SearchCategories"
+                         @bind-Value=DirectoryTemplate.Category
+                         Label="@SettingsLocalization["Template Category"]" />
 
 
 
-            </Section>
-            <Section Padding=Padding.Is0 Title="Fields">
-                <Column ColumnSize="ColumnSize.Is8">
-                    <Help Display="Display.InlineFlex">
-                        Fields left blank will be editable by the user on creation.
-                        Fields with values will not be editable.
-                    </Help>
-                </Column>
-                <Column ColumnSize="ColumnSize.Is4">
-                    <Dropdown Display="Display.InlineFlex">
-                        <DropdownToggle Color="Color.Primary">
-                            Add Field
-                        </DropdownToggle>
-                        <DropdownMenu>
+        <MudCard>
+            Variables:
+            <MudStack Row=true>
+                <code>{fn}</code>:First Name<br />
+            </MudStack>
+            <MudStack Row=true>
+
+                <code>{fi}</code>:First Initial<br />
+            </MudStack>
+            <MudStack Row=true>
+                <code>{mn}</code>:Middle Name<br />
+            </MudStack>
+            <MudStack Row=true>
+                <code>{mi}</code>:Middle Initial<br />
+            </MudStack>
+            <MudStack Row=true>
+                <code>{ln}</code>:Last Name<br />
+            </MudStack>
+            <MudStack Row=true>
+                <code>{li}</code>:Last Initial<br />
+            </MudStack>
+            <MudStack Row=true>
+                <code>{AlphaNum[:u/l]}</code>:Random letter or number (optional force uppercase/lowercase)<br />
+            </MudStack>
+            <MudStack Row=true>
+                <code>{Alpha[:u/l]}</code>:Random letter (optional force uppercase/lowercase)<br />
+            </MudStack>
+            <MudStack Row=true>
+                <code>{Num}</code>:Random number<br />
+
+            </MudStack>
+        </MudCard>
+        <Section Title="Account and Name">
+
+
+
+            <MudElement Class="d-flex flex-wrap gap-5">
+                <MudTextField Label="Username Format"
+                              @bind-Value=DirectoryTemplate.UsernameFormula />
+
+                <MudTextField Label="Display Name Format"
+                              @bind-Value=DirectoryTemplate.DisplayNameFormula />
+
+                <MudTextField Label="Password"
+                              Placeholder="{AlphaNum}{Alpha:U}{Alpha:L}{Num}{Num}{Num}"
+                              @bind-Value=DirectoryTemplate.PasswordFormula />
+
+            </MudElement>
+
+        </Section>
+        <Section Title="Fields">
+
+
+            <MudDrawerContainer Class="mud-height-full" Style="min-height:200px">
+                <MudDrawer @bind-Open="@open" Elevation="0" Variant="@DrawerVariant.Persistent">
+                    <MudNavMenu>
+                        <MudStack>
                             @foreach (var field in fields.OrderBy(f => f.DisplayName))
                             {
                                 @if (field.FieldName != "samaccountname" &&
@@ -122,84 +89,102 @@
                                !DirectoryTemplate.FieldValues.Any(f => f.Field.Equals(field)) &&
                                field.IsActionAppropriateForObject(DirectoryTemplate.ObjectType))
                                 {
-                                    <DropdownItem Clicked=@(()=>{DirectoryTemplate.FieldValues.Add(new(){ Field=field});}) Color="Color.Secondary">@field.DisplayName</DropdownItem>
+                                    <MudButton OnClick=@(()=>{
+                                       DirectoryTemplate.FieldValues.Add(new(){ Field=field});
+                                       })>@field.DisplayName</MudButton>
 
                                 }
 
                             }
+                        </MudStack>
 
-                        </DropdownMenu>
-                    </Dropdown>
-                </Column>
+                    </MudNavMenu>
+                </MudDrawer>
+                <div class="d-flex justify-center align-center mud-height-full">
+                    <MudStack>
+                        Fields left blank will be editable by the user on creation.
+                        Fields with values will not be editable.
+                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{open=!open;})">Persistent drawer</MudButton>
+
+                        @foreach (var field in DirectoryTemplate.FieldValues.OrderBy(fv => fv.Field.DisplayName))
+                        {
+
+                            <MudStack Row=true>
 
 
-                @foreach (var field in DirectoryTemplate.FieldValues.OrderBy(fv => fv.Field.DisplayName))
-                {
-                    <Field>
-                        <FieldLabel>@field.Field.DisplayName</FieldLabel>
-                        <Row>
-                            <Column ColumnSize="ColumnSize.Is11">
+                            <MudTextField Label="@field.Field.DisplayName" @bind-Value=field.Value />
 
-                                <FieldBody>
-                                    <TextEdit @bind-Text=field.Value />
-                                </FieldBody>
-                            </Column>
-                            <Column ColumnSize="ColumnSize.Is1">
-                                <AppCloseButton Clicked=@(()=>{DirectoryTemplate.FieldValues.Remove(field);InvokeAsync(StateHasChanged);}) />
-                            </Column>
-                        </Row>
-                    </Field>
-                }
-            </Section>
-            <Field>
-                <FieldLabel>@SettingsLocalization["OU"]: @SelectedOU?.CanonicalName</FieldLabel>
-                @if (SelectedOU != null)
-                {
-                    <FieldBody>
-                        <BLAZAM.Server.Shared.UI.OU.OUTreeView StartRootExpanded=false @bind-SelectedOU=@SelectedOU @bind-StartingSelectedOU=@SelectedOU>
-                            <NodeContent Context="ouContext">
-                                @ouContext.Name
-                            </NodeContent>
-                        </BLAZAM.Server.Shared.UI.OU.OUTreeView>
+                            <AppCloseButton OnClick=@(()=>{DirectoryTemplate.FieldValues.Remove(field);InvokeAsync(StateHasChanged);}) />
+                        </MudStack>
 
-                    </FieldBody>
-                }
+                        }
+                    </MudStack>
+                </div>
+            </MudDrawerContainer>
 
-            </Field>
-            <Field>
-                <FieldLabel>@SettingsLocalization["Groups"]</FieldLabel>
+        </Section>
 
-                <FieldBody>
-                    <ADAutoComplete Multiple @bind-SelectedResults="@SelectedGroups" />
+        <Section Title="Organizational Unit">
 
-                </FieldBody>
-            </Field>
-        </Row>
-
-        @{
-            string buttonText = "";
-            @if (DirectoryTemplate.DirectoryTemplateId == 0)
+       @*     @if (SelectedOU != null)
             {
-                buttonText = "Add this template";
-            }
-            else
+*@
+                <OUTreeView Label=@(SettingsLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
+                
+                        StartRootExpanded=false
+                        @bind-SelectedOU=@SelectedOU
+                        @bind-StartingSelectedOU=@SelectedOU />
+
+
+            @*}*@
+
+        </Section>
+        <Section Title="Assigned Groups">
+
+
+            @foreach (var group in TemplateGroups)
             {
-                buttonText = "Save this template";
+                <MudText>@group</MudText>
             }
-        }
-        <Button Disabled=saveDisabled Color="Color.Success" Type="ButtonType.Submit">@buttonText</Button>
-        @if (DirectoryTemplate.DirectoryTemplateId == 0)
+            <MudStack Row=true>
+                <ADAutoComplete Label="@SettingsLocalization["Groups"]"
+                                    Multiple
+                                @bind-SelectedResult="@SelectedGroup" />
+                <MudFab Size="Size.Small" Icon=@Icons.Material.Filled.Add
+                        Color="Color.Primary"
+                        OnClick="@(()=>{TemplateGroups.Add(SelectedGroup);})" />
+                </MudStack>
+
+                </Section>
+
+                </MudStack>
+
+                @{
+        string buttonText = "";
+        @if (DirectoryTemplate.Id == 0)
         {
-            <Button Color="Color.Warning" Clicked="@(()=>{ DirectoryTemplate=null;})">Cancel</Button>
-
+            buttonText = "Add this template";
         }
-    </EditForm>
-</Validations>
+        else
+        {
+            buttonText = "Save this template";
+        }
+    }
+    <MudButton Disabled=SaveDisabled Color="Color.Success" ButtonType="ButtonType.Submit">@buttonText</MudButton>
+    @if (DirectoryTemplate.Id == 0)
+    {
+        <MudButton Color="Color.Warning" OnClick="@(()=>{ DirectoryTemplate=new();})">Cancel</MudButton>
+
+    }
+</EditForm>
 
 
 @code {
+    string groupText;
+    bool open;
+#nullable disable warnings
     bool ouCollapseVisible = true;
-    Validations? validations;
+    //Validations? validations;
     List<ActiveDirectoryField> fields = new();
 
     List<TemplateVariable> usernameVariables = new List<TemplateVariable>()
@@ -242,18 +227,18 @@
     async Task LoadData()
     {
         if (Context == null) await OnInitializedAsync();
-        var matching = await Context.DirectoryTemplates.Where(dt => dt.DirectoryTemplateId == DirectoryTemplate.DirectoryTemplateId).FirstOrDefaultAsync();
+        var matching = await Context.DirectoryTemplates.Where(dt => dt.Id == DirectoryTemplate.Id).FirstOrDefaultAsync();
         if (matching != null)
             DirectoryTemplate = matching;
         SelectedOU = (await Directory.OUs.FindOuByStringAsync(DirectoryTemplate.ParentOU)).FirstOrDefault();
-        if (SelectedOU == null)
-        {
-            SelectedOU = await Directory.OUs.GetApplicationRootOU();
-        }
+        //if (SelectedOU == null)
+        //{
+        //    SelectedOU = await Directory.OUs.GetApplicationRootOU();
+        //}
         fields = await Context.ActiveDirectoryFields.ToListAsync();
 
         await RefreshGroups();
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
 
     }
 
@@ -263,28 +248,38 @@
     IADOrganizationalUnit SelectedOU;
 
 
-    List<IDirectoryModel> SelectedGroups = new();
+    IDirectoryEntryAdapter SelectedGroup;
+    List<IDirectoryEntryAdapter> TemplateGroups = new();
+
+    async Task<IEnumerable<string>> SearchCategories(string? searchTerm)
+    {
+        var categories = Context.DirectoryTemplates.Select(t => t.Category).Distinct();
+        if (searchTerm.IsNullOrEmpty()) return categories;
+        return categories.Where(s => s.Contains(searchTerm) || s.Equals(searchTerm));
+    }
+
 
     async Task RefreshGroups()
     {
-        SelectedGroups.Clear();
+        TemplateGroups.Clear();
         if (DirectoryTemplate != null)
         {
             foreach (var sid in DirectoryTemplate.AssignedGroupSids)
             {
                 var temp = Directory.Groups.FindGroupBySID(sid.GroupSid);
-                if(temp!=null)
-                    SelectedGroups.Add(temp);
+                if (temp != null)
+                    TemplateGroups.Add(temp);
             }
         }
     }
     async Task SaveTemplate()
     {
-
+        if (Context == null) throw new ApplicationException("Database not available");
 
         DirectoryTemplate.ParentOU = SelectedOU.DN;
         DirectoryTemplate.AssignedGroupSids.Clear();
-        foreach (var group in SelectedGroups)
+
+        foreach (var group in TemplateGroups)
         {
             var existing = Context.DirectoryTemplateGroups.Where(g => g.GroupSid == group.SID.ToSidString()).FirstOrDefault();
             if (existing == null)
@@ -292,6 +287,7 @@
             DirectoryTemplate.AssignedGroupSids.Add(existing);
         }
         List<DirectoryTemplateFieldValue> replaceValues = new();
+
         foreach (var field in DirectoryTemplate.FieldValues)
         {
             var trackedField = Context.ActiveDirectoryFields.Where(f => f.Equals(field.Field)).FirstOrDefault();
@@ -307,7 +303,7 @@
         }
         DirectoryTemplate.FieldValues = replaceValues;
 
-        if (DirectoryTemplate.DirectoryTemplateId == 0)
+        if (DirectoryTemplate.Id == 0)
         {
             try
             {
@@ -316,7 +312,7 @@
                 var result = await Context.SaveChangesAsync();
                 if (result > 0)
                 {
-                    NotificationService.Success(null, DirectoryTemplate.Name + " was added.");
+                    SnackBarService.Success("", DirectoryTemplate.Name + " was added.");
                     // DirectoryTemplate = new();
 
                 }
@@ -326,7 +322,7 @@
                 switch (ex.InnerException?.HResult)
                 {
                     case -2146232060:
-                        NotificationService.Error("Each template must be uniquely named.", "Duplicate Template Name");
+                        SnackBarService.Error("Each template must be uniquely named.", "Duplicate Template Name");
 
                         break;
                 }
@@ -334,6 +330,8 @@
             catch (SqlException ex)
             {
 
+                Loggers.DatabaseLogger.Error("Error attempting to save creation template " + _template.Name);
+                Loggers.DatabaseLogger.Error(ex.Message, ex);
             }
         }
         else
@@ -341,11 +339,11 @@
             var result = await Context.SaveChangesAsync();
             if (result > 0)
             {
-                NotificationService.Success("Template changes saved");
+                SnackBarService.Success("Template changes saved");
             }
             else
             {
-                NotificationService.Warning("No changes");
+                SnackBarService.Warning("No changes");
 
             }
         }
@@ -354,7 +352,7 @@
 
     class TemplateVariable
     {
-        public string DisplayName { get; set; }
-        public string Value { get; set; }
+        public string? DisplayName { get; set; }
+        public string? Value { get; set; }
     }
 }

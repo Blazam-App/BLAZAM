@@ -3,38 +3,31 @@
 
 <Section Title=@UserLocalization["Name"]>
 
-        <Field Horizontal>
-            <FieldLabel>
-                @UserLocalization["First Name"]
-            </FieldLabel>
-            <FieldBody>
-            <TextEdit @bind-Text="@NewUserName.GivenName" />
+        
+            
+            <MudTextField Label="@UserLocalization["First Name"]" @bind-Value="@NewUserName.GivenName" />
 
-            </FieldBody>
-        </Field>
-        <Field Horizontal>
-            <FieldLabel>
-                @UserLocalization["Middle Name"]
-            </FieldLabel>
-            <FieldBody>
-            <TextEdit @bind-Text="@NewUserName.MiddleName" />
+            
+        
+        
 
-            </FieldBody>
-        </Field>
-        <Field Horizontal>
-            <FieldLabel>
-                @UserLocalization["Last Name"]
-            </FieldLabel>
-            <FieldBody>
-            <TextEdit @bind-Text="@NewUserName.Surname" />
+                <MudTextField Label="@UserLocalization["Middle Name"]" @bind-Value="@NewUserName.MiddleName" />
 
-            </FieldBody>
-        </Field>
+            
+        
+        
+
+                <MudTextField Label="@UserLocalization["Last Name"]" @bind-Value="@NewUserName.Surname" />
+
+            
+        
   
 </Section>
 </EditForm>
 
 @code {
+
+#nullable disable warnings
     NewUserName newUserName;
 
     [Parameter]

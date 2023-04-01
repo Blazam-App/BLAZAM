@@ -6,7 +6,7 @@ namespace BLAZAM.Server.Data
     public class ApplicationVersion : IComparable
     {
         public Version AssemblyVersion { get; private set; }
-        public string BuildNumber { get; private set; }
+        public string? BuildNumber { get; private set; }
         public string Version { get => AssemblyVersion.ToString() + "." + BuildNumber; }
         public string ShortVersion { get => AssemblyVersion.ToString(); }
         /// <summary>
@@ -16,13 +16,12 @@ namespace BLAZAM.Server.Data
         /// <param name="shortVersion"></param>
         public ApplicationVersion()
         {
-            string[] assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString().Split(".");
-           
+            string[]? assemblyVersion = (Assembly.GetExecutingAssembly().GetName().Version?.ToString().Split(".")) ?? throw new ApplicationException("The assembly version of the running app could not be read.");
             AssemblyVersion = new Version(int.Parse(assemblyVersion[0]), int.Parse(assemblyVersion[1]), int.Parse(assemblyVersion[2]));
 
             BuildNumber = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
         }
-        public ApplicationVersion(Version assemblyVersion, string buildNumber)
+        public ApplicationVersion(Version assemblyVersion, string? buildNumber)
         {
 
             AssemblyVersion = assemblyVersion;
@@ -33,14 +32,17 @@ namespace BLAZAM.Server.Data
         {
             string[] versionFragments = fullVersionString.Split('.');
             AssemblyVersion = new Version(versionFragments[0] + "." + versionFragments[1] + "." + versionFragments[2]);
-            string buildNumber = "";
-            for (int x = 3; x < versionFragments.Length; x++)
+            if (versionFragments.Length > 3)
             {
-                buildNumber += versionFragments[x];
-                if (x + 1 != versionFragments.Length)
-                    buildNumber += ".";
+                string buildNumber = "";
+                for (int x = 3; x < versionFragments.Length; x++)
+                {
+                    buildNumber += versionFragments[x];
+                    if (x + 1 != versionFragments.Length)
+                        buildNumber += ".";
+                }
+                BuildNumber = buildNumber;
             }
-            BuildNumber = buildNumber;
         }
 
         public override int GetHashCode()
@@ -55,16 +57,21 @@ namespace BLAZAM.Server.Data
 
         public int CompareTo(object? obj)
         {
-            if(obj is ApplicationVersion other)
+            if (obj is ApplicationVersion other)
             {
-                if (AssemblyVersion.CompareTo(other.AssemblyVersion) < 0)
+                if (AssemblyVersion.CompareTo(other.AssemblyVersion) != 0)
                 {
-                    return 1;
+                    return AssemblyVersion.CompareTo(other.AssemblyVersion);
                 }
                 else
-                    return BuildNumber.CompareTo(other.BuildNumber);
+                {
+                    if (BuildNumber != null && other.BuildNumber != null)
+                        return BuildNumber.CompareTo(other.BuildNumber);
+                    else
+                        return 0;
+                }
             }
-            return -1;
+            return 1;
         }
     }
 }

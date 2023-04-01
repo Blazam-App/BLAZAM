@@ -1,13 +1,13 @@
 @inherits AppComponentBase
-@if (Monitor.DirectoryConnected == ConnectionState.Connecting)
+@if (Monitor.DirectoryConnected == ServiceConnectionState.Connecting)
 {
-    <Div Padding="Padding.Is3.OnX">
+    <div Padding="Padding.Is3.OnX">
 
         <Row>
             Connecting to Active Directory... Some features are disabled...
             <Progress Animated=true Value="100" />
         </Row>
-    </Div>
+    </div>
 }
 
 @code {

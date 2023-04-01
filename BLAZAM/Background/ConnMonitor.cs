@@ -1,5 +1,7 @@
-﻿using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+﻿using BLAZAM.Common.Data;
+using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Server.Data.Services;
 using BLAZAM.Server.Pages.Error;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,41 +10,75 @@ namespace BLAZAM.Server.Background
     public class ConnMonitor
     {
 
-        public DatabaseMonitor DatabaseMonitor;
-        public DirectoryMonitor DirectoryMonitor;
-        private IDbContextFactory<DatabaseContext> _factory;
-        private DatabaseContext _context;
-        public AppEvent<ConnectionState>? OnAppReadyChanged { get; set; }
-        public AppEvent<ConnectionState>? OnDirectoryConnectionChanged { get; set; }
+        public readonly DatabaseMonitor DatabaseMonitor;
+        public readonly DirectoryMonitor DirectoryMonitor;
+        private readonly IEncryptionService _encryption;
+        private readonly AppDatabaseFactory _factory;
+        private readonly IDatabaseContext _context;
+        public AppEvent<ServiceConnectionState>? OnAppReadyChanged { get; set; }
+        public AppEvent<ServiceConnectionState>? OnDirectoryConnectionChanged { get; set; }
 
         public bool RedirectToHttps { get; set; }
-        public ConnectionState? DatabaseConnected { get => DatabaseMonitor.Connected; }
-        public ConnectionState? DirectoryConnected { get => DirectoryMonitor.Connected; }
-        public ConnectionState AppReady { get; protected set; } = ConnectionState.Connecting;
+        public ServiceConnectionState? DatabaseConnected { get => DatabaseMonitor.Status; }
+        public ServiceConnectionState? DirectoryConnected { get => DirectoryMonitor.Status; }
+        private bool _failedMigration;
+        /// <summary>
+        /// Indicated whether the application is ready to serve users.
+        /// </summary>
+        /// 
+        public ServiceConnectionState AppReady
+        {
+            get { return _failedMigration==true?ServiceConnectionState.Down:_appReady; } protected set
+            {
+                if (_appReady == value) return;
+                _appReady = value;
+                OnAppReadyChanged?.Invoke(value);
+
+
+            }
+        }
         public bool DatabaseUpdatePending { get; private set; }
 
         private Timer? _timer;
         bool _monitoring;
+        private ServiceConnectionState _appReady = ServiceConnectionState.Connecting;
 
-        public ConnMonitor(IDbContextFactory<DatabaseContext> DbFactory, IActiveDirectory directory)
+        public ConnMonitor(AppDatabaseFactory DbFactory, IActiveDirectory directory, IEncryptionService encryption)
         {
+            _encryption = encryption;
             _factory = DbFactory;
             _context = DbFactory.CreateDbContext();
             DatabaseMonitor = new DatabaseMonitor(_context);
-            DirectoryMonitor = new DirectoryMonitor(DbFactory, directory);
-            DatabaseMonitor.OnConnectedChanged += ((ConnectionState newStatus) =>
+            DirectoryMonitor = new DirectoryMonitor(directory);
+            DatabaseMonitor.OnConnectedChanged += ((ServiceConnectionState newStatus) =>
             {
+                if (_encryption.Status == ServiceConnectionState.Down)
+                {
+                    Oops.ErrorMessage = "EncryptionKey missing or invalid in appsettings.json";
+                    AppReady = ServiceConnectionState.Down;
+                    return;
+                }
                 if (AppReady != newStatus)
                 {
                     OnAppReadyChanged?.Invoke(newStatus);
                     AppReady = newStatus;
+                    if(newStatus== ServiceConnectionState.Down && DatabaseContextBase.DownReason!=null)
+                    {
+                        Oops.ErrorMessage = DatabaseContextBase.DownReason.GetType().FullName;
+                        Oops.HelpMessage = DatabaseContextBase.DownReason.Message;
+                    }
                 }
 
 
             });
-            DirectoryMonitor.OnConnectedChanged += ((ConnectionState newStatus) =>
+            DirectoryMonitor.OnConnectedChanged += ((ServiceConnectionState newStatus) =>
             {
                 OnDirectoryConnectionChanged?.Invoke(newStatus);
+            });
+
+            DatabaseContextBase.OnMigrationFailed += (() => {
+                Oops.Exception = DatabaseContextBase.DownReason;
+                _failedMigration = true;
             });
             MonitorDatabaseValues();
         }
@@ -70,7 +106,7 @@ namespace BLAZAM.Server.Background
                     try
                     {
                         RedirectToHttps = _context.AppSettings.First().ForceHTTPS;
-                       
+
                     }
                     catch (Exception)
                     {
@@ -89,7 +125,7 @@ namespace BLAZAM.Server.Background
                     {
 
                     }
-                  
+
 
                 }
             });

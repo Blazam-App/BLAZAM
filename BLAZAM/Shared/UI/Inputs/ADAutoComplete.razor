@@ -1,80 +1,109 @@
 ﻿@inherits AutoCompleteComponentBase
-<Div Display="Display">
-    <Autocomplete TItem="IDirectoryModel"
-                  TValue="IDirectoryModel"
-                  Data="@SearchResults"
-                  @bind-Search="SearchTerm"
-                  ReadData="@GetResults"
-                  TextField="@(( item ) => item.SamAccountName)"
-                  ValueField="@(( item ) => item)"
-                  @bind-SelectedValue="@SelectedResult"
-                  @bind-SelectedValues=@SelectedResults
-                  @bind-SelectedTexts=SelectedResultNames
-                  Placeholder="Search..."
-                  MinLength="1"
-                  Multiple=Multiple
-                  Style=""
-                    FreeTyping>
-        <ItemContent>
-            <Div Padding="Padding.Is0" TextWeight="TextWeight.Bold">
-                <Div Flex="Flex.InlineFlex">
-                    @context?.Value?.ObjectType
+<MudAutocomplete Class="@Class"
+                 Disabled=@Disabled
+                 T="IDirectoryEntryAdapter"
+                 Label="@Label"
+                 @bind-Value="SelectedResult"
+                 @bind-Text=@SearchTerm
+                 SearchFuncWithCancel="@GetResults"
+                 DebounceInterval=500
+                 ResetValueOnEmptyText="true"
+                 Validation="@Validation"
+                 CoerceText="@AllowCustomInput" CoerceValue="false"
+                      Clearable
+                 ToStringFunc="item=>item?.CanonicalName"
+                 AdornmentColor="Color.Secondary"
+                 ProgressIndicatorColor="Color.Secondary"
+                 Adornment="Adornment.Start"
+                 AdornmentIcon="@Icons.Material.Filled.Search"
+                 Variant="@Variant">
+    <ItemTemplate>
+        <MudText Typo="Typo.h5">
+            @context?.ObjectType
 
-                </Div>
-                @if (context?.Value != null && context.Value is IGroupableDirectoryModel gdm)
+            @if (context != null && context is IGroupableDirectoryAdapter gdm)
+            {
+                if (gdm.LockedOut)
                 {
-                    if (gdm.LockedOut)
-                    {
 
-                        <Badge Flex=Flex.InlineFlex Float=Float.End Background="Background.Warning">Locked</Badge>
+                    <MudBadge Color="Color.Warning">Locked</MudBadge>
 
-                    }
-                    if (!gdm.Enabled)
-                    {
-
-                        <Badge Flex=Flex.InlineFlex Float=Float.End Background="Background.Danger">Disabled</Badge>
-
-                    }
                 }
+                if (!gdm.Enabled)
+                {
+
+                    <MudBadge Color="Color.Error">Disabled</MudBadge>
+
+                }
+            }
 
 
 
 
-            </Div>
-            <Div Padding="Padding.Is0" TextWeight="TextWeight.Bold">
-                <Small>
-                    @context?.Value?.CanonicalName
-                </Small>
+        </MudText>
+        <MudText Typo="Typo.h6">
+            <small>
+                @context?.CanonicalName
+            </small>
 
-            </Div>
-            <Div Padding="Padding.Is0">
-                <Small>
-                    @context.Text
-                </Small>
-            </Div>
-        </ItemContent>
-        <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
-    </Autocomplete>
-</Div>
+        </MudText>
+        <MudText>
+            <small>
+                @context
+            </small>
+        </MudText>
+    </ItemTemplate>
+    <NoItemsTemplate>
+        @if (SearchTerm.IsNullOrEmpty())
+        {
+            <MudText>
+
+                Start typing to search...
+            </MudText>
+
+        }
+        else
+        {
+            <MudText>
+                Sorry no result were found 😒
+            </MudText>
+
+        }
+
+    </NoItemsTemplate>
+</MudAutocomplete>
 
 
 
 @code {
-
+    #nullable disable warnings
+    [Parameter]
+    public Func<object> Validation{ get; set; }
+    [Parameter]
+    public string? Label { get; set; }
+    [Parameter]
+    public Variant Variant { get; set; }
+    [Parameter]
+    public string? Class { get; set; }
     [Parameter]
     public bool Multiple { get; set; }
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public bool AllowCustomInput { get; set; }
 
 
     [Parameter]
-    public Func<IDirectoryModel,bool>CustomResultsFilter{ get; set; }
-
+    public Func<IDirectoryEntryAdapter, bool> CustomResultsFilter { get; set; }
+    @*
     [Parameter]
-    public IFluentDisplay Display { get; set; }
+    public IFluentDisplay Display { get; set; }*@
 
     [CascadingParameter]
     public SearchService SearchParameters { get; set; }
 
-    IEnumerable<IDirectoryModel> _searchResults = new List<IDirectoryModel>();
+    IEnumerable<IDirectoryEntryAdapter> _searchResults = new List<IDirectoryEntryAdapter>();
     bool _searchDisabled;
     [Parameter]
     public bool SearchDisabled
@@ -85,7 +114,7 @@
             if (_searchDisabled == value)
                 return;
             _searchDisabled = value;
-            SearchDisabledChanged.InvokeAsync(value);
+            // SearchDisabledChanged.InvokeAsync(value);
         }
     }
 
@@ -99,7 +128,7 @@
 
 
     [Parameter]
-    public IEnumerable<IDirectoryModel> SearchResults
+    public IEnumerable<IDirectoryEntryAdapter> SearchResults
     {
         get => _searchResults;
         set
@@ -113,18 +142,18 @@
 
 
     [Parameter]
-    public EventCallback<IEnumerable<IDirectoryModel>> SearchResultsChanged { get; set; }
+    public EventCallback<IEnumerable<IDirectoryEntryAdapter>> SearchResultsChanged { get; set; }
 
-    public IDirectoryModel _selectedResult;
+    public IDirectoryEntryAdapter _selectedResult;
     [Parameter]
-    public IDirectoryModel SelectedResult
+    public IDirectoryEntryAdapter SelectedResult
     {
         get => _selectedResult;
         set
         {
             if (_selectedResult == value)
                 return;
-            SearchResults = new List<IDirectoryModel>
+            SearchResults = new List<IDirectoryEntryAdapter>
                 {
                     value
                 };
@@ -134,66 +163,54 @@
     }
 
     [Parameter]
-    public EventCallback<IDirectoryModel> SelectedResultChanged { get; set; }
+    public EventCallback<IDirectoryEntryAdapter> SelectedResultChanged { get; set; }
 
 
 
 
 
-    public List<IDirectoryModel> _selectedResults;
+    public List<IDirectoryEntryAdapter> _selectedResults;
 
-    [Parameter]
-    public List<IDirectoryModel> SelectedResults
-    {
-        get => _selectedResults; set
-        {
-            if (_selectedResults == value) return;
-            _selectedResults = value;
-            SearchResults = value; //quesitnoable neccessity
-            SelectedResultsChanged.InvokeAsync(value);
-            SelectedResultNames = value.Select(g => g.CanonicalName).ToList();
-
-            InvokeAsync(StateHasChanged);
-        }
-    }
-
-    [Parameter]
-    public EventCallback<List<IDirectoryModel>> SelectedResultsChanged { get; set; }
 
     List<string> SelectedResultNames = new();
 
 
 
 
-    private async Task GetResults(AutocompleteReadDataEventArgs autocompleteReadDataEventArgs)
+    private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText, CancellationToken token)
     {
-        if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
+        if (!token.IsCancellationRequested)
         {
 
 
             var search = new ADSearch();
 
             search.ObjectTypeFilter = SearchObjectType;
-            search.GeneralSearchTerm = autocompleteReadDataEventArgs.SearchValue.Replace(" ", "*");
+            search.GeneralSearchTerm = searchText.Replace(" ", "*");
             search.EnabledOnly = !SearchDisabled;
             search.MaxResults = 10;
             var temp = await search.SearchAsync();
 
-            if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
+            if (!token.IsCancellationRequested)
             {
                 SearchResults = temp;
 
                 if (CustomResultsFilter != null)
                 {
-                    List<IDirectoryModel> filteredResults = new();
-                    foreach(var result in SearchResults){
+                    List<IDirectoryEntryAdapter> filteredResults = new();
+                    foreach (var result in SearchResults)
+                    {
                         if (CustomResultsFilter.Invoke(result))
                             filteredResults.Add(result);
                     }
-                    SearchResults = filteredResults;
+                    if (!token.IsCancellationRequested)
+                    {
+                        SearchResults = filteredResults;
+                    }
                 }
+                return SearchResults;
+
             }
-            return;
 
             /*
                         var temp = (await Directory.Users.FindUsersByStringAsync(autocompleteReadDataEventArgs.SearchValue.Replace(" ", "*"), enabledUsersOnly)).Where(u => u.CanRead);
@@ -203,12 +220,13 @@
                         }
                         */
         }
+        return new List<IDirectoryEntryAdapter>();
+
     }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        SearchDisabled = (bool)UserStateService.CurrentUserState?.UserSettings?.SearchDisabledUsers;
     }
 
 

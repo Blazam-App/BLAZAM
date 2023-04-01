@@ -20,13 +20,8 @@
         get => _group; set
         {
             if (_group == value) return;
-            
             _group = value;
 
-            if (_group != null)
-
-                if (!_group.NewEntry)
-                    AuditLogger.Group.Searched(_group);
         }
     }
 
@@ -42,7 +37,7 @@
             _groups = value;
             if (_groups != null)
             {
-               
+
                 RefreshGroupGroups();
             }
         }
@@ -65,16 +60,34 @@
             {
                 if (!_user.NewEntry)
                     AuditLogger.User.Searched(_user);
-                RefreshUserGroups();
+                RefreshGroupGroupsAsync();
             }
 
         }
     }
-    protected List<IADGroup> memberOfGroups;
+    protected List<IADGroup> memberOfGroups = new();
 
     [Parameter]
     public IADOrganizationalUnit OU { get; set; }
 
+    bool _savingChanges = false;
+    /// <summary>
+    /// Indicates whether changes to the model are being saved right now.
+    /// </summary>
+    [Parameter]
+    public bool SavingChanges
+    {
+        get => _savingChanges;
+        set
+        {
+            if (value == _savingChanges) return;
+            _savingChanges = value;
+            SavingChangesChanged.InvokeAsync(value);
+
+        }
+    }
+    [Parameter]
+    public EventCallback<bool> SavingChangesChanged { get; set; }
 
 
 
@@ -86,7 +99,7 @@
     /// <returns></returns>
     protected override async Task OnInitializedAsync()
     {
-        base.OnInitializedAsync();
+        await base.OnInitializedAsync();
         if (_searchTerm == null || _searchTerm == "")
         {
             LoadingData = false;
@@ -102,55 +115,57 @@
 
     protected async Task RefreshUserGroups()
     {
-        await Task.Run(() =>
-        {
-            LoadingData = true;
-            InvokeAsync(StateHasChanged);
-            if (User != null)
-                memberOfGroups = User.MemberOf;
 
-            LoadingData = false;
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        if (User != null)
+            memberOfGroups = User.MemberOf;
 
-            InvokeAsync(StateHasChanged);
+        LoadingData = false;
 
-        });
+        await InvokeAsync(StateHasChanged);
+
+
+    }
+    protected async Task RefreshGroupGroupsAsync()
+    {
+
+        await RefreshGroupGroups();
+
+
     }
     protected async Task RefreshGroupGroups()
     {
-        await Task.Run(() =>
-        {
-            LoadingData = true;
-            InvokeAsync(StateHasChanged);
 
-            if (Group != null)
-                memberOfGroups = Group.MemberOf;
-            LoadingData = false;
-            InvokeAsync(StateHasChanged);
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
 
-        });
+        if (Group != null)
+            memberOfGroups = Group.MemberOf;
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
+
     }
     protected async Task RefreshComputerGroups()
     {
-        await Task.Run(() =>
-        {
-            LoadingData = true;
-            InvokeAsync(StateHasChanged);
 
-            if (Computer != null)
-                memberOfGroups = Computer.MemberOf;
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (Computer != null)
+            memberOfGroups = Computer.MemberOf;
 
 
-            LoadingData = false;
+        LoadingData = false;
 
-            InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
 
-        });
+
     }
 
-    [Parameter]
-    public IFluentColumnWithSize FieldColumnSize { get; set; } = ColumnSize.Is6.OnWidescreen.Is4.OnFullHD;
 
-    protected async Task ToggleEditMode()
+    protected void ToggleEditMode()
     {
         EditMode = !EditMode;
     }

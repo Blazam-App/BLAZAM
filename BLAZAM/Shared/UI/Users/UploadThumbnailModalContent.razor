@@ -1,35 +1,47 @@
 ﻿@inherits AppModalContent
-@using Blazorise.Cropper
-<Div Background="Background.Light" TextColor="TextColor.Dark">
-    @if(newThumbnail!=null)
+<div Background="Background.Light" Color="Color.Dark">
+    @if (newThumbnail != null)
     {
         <Base64Image Data="newThumbnail" />
 
     }
-    <FieldLabel ColumnSize="ColumnSize.Is2.OnDesktop">
+    <MudText>
         @SettingsLocalization["Upload Thumbnail Photo"]
-    </FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is8">
+    </MudText>
+    <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
+        <ButtonTemplate>
+            <MudButton HtmlTag="label"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       for="@context"
+                       Disabled=LoadingData>
+                Upload Files
+            </MudButton>
+        </ButtonTemplate>
+    </MudFileUpload>
 
-        <Blazorise.FilePicker Upload="LoadIcon" />
 
-    </FieldBody>
-    <Button Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Photo"]</Button>
-</Div>
+
+</div>
 @code {
-    byte[] newThumbnail;
+    byte[]? newThumbnail;
     [Parameter]
     public IADUser DirectoryModel { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        Modal.OnYes += SaveChanges;
+        Modal.YesText = UserLocalization["Save Photo"];
+        Modal.Title = "Change Thumbnail";
+        Modal.YesEnabled = ValidateModal;
         await InvokeAsync(StateHasChanged);
     }
-    private async void LoadIcon(FileUploadEventArgs e)
+    private async void LoadIcon(IBrowserFile e)
     {
-        //TODO Try and capture the moment the file upload starts
-        using (var stream = e.File.OpenReadStream(5000000))
+
+        using (var stream = e.OpenReadStream(5000000))
         {
             using (var memoryStream = new MemoryStream())
             {
@@ -44,22 +56,26 @@
     }
 
 
-    async Task SaveChanges()
+    async void SaveChanges()
     {
         //User.CommitChanges();
-        try{
+        try
+        {
             DirectoryModel.ThumbnailPhoto = newThumbnail;
 
-            NotificationService.Warning("Thumbnail changed for " + DirectoryModel.DisplayName + " but changes need to be saved.", "Thumbnail Changed");
+            SnackBarService.Warning("Thumbnail changed for " + DirectoryModel.DisplayName + " but changes need to be saved.", "Thumbnail Changed");
         }
         catch
         {
-            NotificationService.Error("Unable to set thumbnail for " + DirectoryModel.DisplayName, "Change Failed");
+            SnackBarService.Error("Unable to set thumbnail for " + DirectoryModel.DisplayName, "Change Failed");
 
         }
         Close();
 
     }
-    
+    protected override bool ValidateModal()
+    {
+        return newThumbnail != null;
+    }
 
 }

@@ -1,0 +1,126 @@
+﻿@page "/groups/create"
+@inherits TabbedAppComponentBase
+@attribute [Authorize]
+<AppPageTitle>Create Group</AppPageTitle>
+
+<Row>
+    <MudTabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="selectedStep">
+        <MudTabPanel>
+            <ChildContent>
+                <MudText>
+                    
+
+                        <OUTreeView Label="Parent Organizational Unit"
+                                    SelectedOUChanged="OUSelected">
+                           @* <NodeContent>
+                                @context.Name
+                            </NodeContent>*@
+                        </OUTreeView>
+
+
+
+
+
+                    <MudTextField Label="Group Name" @bind-Value=@newGroupName />
+
+
+                    
+                    <MudButton Disabled=@(parentOU==null || newGroupName.IsNullOrEmpty())
+                    Color="Color.Primary"
+                               OnClick="CreateNewGroup">Next</MudButton>
+                </MudText>
+            </ChildContent>
+            <TabContent>
+                Create
+            </TabContent>
+        </MudTabPanel>
+        <MudTabPanel Disabled=@(newGroup==null || newGroupName.IsNullOrEmpty())>
+            <ChildContent>
+                <MudText>
+
+                    <GroupMembersDataGrid Group="newGroup" />
+
+
+
+
+                    <MudButton Color="Color.Primary" OnClick="@(()=>{selectedStep=2;})">Next</MudButton>
+                </MudText>
+            </ChildContent>
+            <TabContent>
+                Assign
+            </TabContent>
+        </MudTabPanel>
+        <MudTabPanel Disabled=@(newGroup==null || newGroupName.IsNullOrEmpty())>
+            <ChildContent>
+                <MudText>
+                    <ConfirmNewGroup Group="@newGroup" Confirmed="GroupCreated" />
+                    
+                </MudText>
+            </ChildContent>
+            <TabContent>
+                Confirm
+            </TabContent>
+        </MudTabPanel>
+    </MudTabs>
+   
+
+</Row>
+
+
+
+@code {
+
+
+    int selectedStep;
+
+   
+
+
+
+    bool custom = false;
+
+    string newGroupName;
+    bool collapseVisible = false;
+    List<DirectoryTemplate> templates;
+    IADOrganizationalUnit? parentOU;
+    IADGroup? newGroup;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        templates = await Context?.DirectoryTemplates.ToListAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+    async void OUSelected(IADOrganizationalUnit ou)
+    {
+        if (parentOU == null)
+        {
+            parentOU = ou;
+            return;
+        }
+        parentOU = ou;
+
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    async void CreateNewGroup()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        newGroup = parentOU.CreateGroup(newGroupName);
+
+
+
+        selectedStep = 1;
+
+
+        LoadingData = true;
+
+        await InvokeAsync(StateHasChanged);
+    }
+    async Task GroupCreated(IADGroup ou)
+    {
+        AuditLogger.Group.Created(ou);
+    }
+}

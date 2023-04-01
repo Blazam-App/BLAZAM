@@ -1,87 +1,91 @@
 @inherits AppComponentBase
-<Form @onsubmit="(()=>{SearchService.Search();})">
+@attribute [Authorize]
 
-    <Bar Mode="BarMode.Horizontal"
-         CollapseMode="BarCollapseMode.Small"
-         Breakpoint="Breakpoint.Desktop"
-         NavigationBreakpoint="Breakpoint.Tablet"
-         ThemeContrast="ThemeContrast.Dark"
-         Padding="Padding.Is2.OnX"
-         Background="Background.Dark"
-         TextColor="TextColor.Dark"
-         VerticalAlignment="VerticalAlignment.Middle">
-        <BarBrand Padding=Padding.Is0.OnY Width="Width.Is100">
-            <Div Style="font-size:0.8em;align-self: center;">
+<MudForm Style="width:100%" Class="mx-2" @onsubmit="(()=>{SearchService.Search();})">
 
-                    <Addons Width="Width.Is100">
-                        <Addon AddonType="AddonType.Start">
-                            <DropdownList Color=Color.Primary
-                                          @bind-SelectedValue=@SearchService.SeachObjectType
-                                          TItem="ActiveDirectoryObjectType?"
-                                          TValue=ActiveDirectoryObjectType?
-                                          TextField="item=>item.ToString()"
-                                          ValueField="item=>item"
-                                          Data="ObjectTypes">
-                            @SearchService.SeachObjectType
-                            </DropdownList>
-                        </Addon>
-                    <Addon AddonType="AddonType.Body" >
-                        <Div Style="width: 1%;flex: 1 1 auto;">
-                            <ADAutoComplete SearchObjectType="@SearchService.SeachObjectType" SearchDisabled=@SearchService.IncludeDisabled @bind-SearchTerm="@SearchService.SearchTerm" />
-                            </Div>
-                        </Addon>
+    <AuthorizeView Context="authContext">
 
-                        @if (UserStateService?.CurrentUserState?.IsSuperAdmin == true || UserStateService?.CurrentUserState?.DirectoryUser?.CanSearchDisabled == true)
-                        {
-                        var buttonColor = Color.Danger;
-                        if (!SearchService.IncludeDisabled)
-                        {
-                            buttonColor = Color.Success;
-                        }
-                        <Addon AddonType="AddonType.Body">
+        <MudStack Row="true">
 
-                              
-                                <Button Type="ButtonType.Button" Clicked=@(async()=>{
-                                SearchService.IncludeDisabled= !SearchService.IncludeDisabled;
-                                    await InvokeAsync(StateHasChanged);
-                                    }) Color=buttonColor>
-                                    Enabled Only
-                                </Button>
+            <MudMenu Color=Color.Secondary StartIcon="@Icons.Material.Filled.TypeSpecimen" Label="@SearchService.SeachObjectType.ToString()">
+                <CascadingAuthenticationState>
 
-                                 
-                               
+                    <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.All; })>@AppLocalization["All"]</MudMenuItem>
+                    <AuthorizeView Roles="@(UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
+                        
+                        <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.User; })>@AppLocalization["User"]</MudMenuItem>
+                    </AuthorizeView>
 
-                            </Addon>
+                    <AuthorizeView Roles="@(UserRoles.SearchGroups+","+UserRoles.SuperAdmin)">
+                        <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Group; })>@AppLocalization["Group"]</MudMenuItem>
 
-                        }
-                        <Addon AddonType="AddonType.End">
+                    </AuthorizeView>
+                    <AuthorizeView Roles="@(UserRoles.SearchOUs+","+UserRoles.SuperAdmin)">
+                        <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.OU; })>@AppLocalization["OU"]</MudMenuItem>
 
-                            @if (Searcher?.SearchState == SearchState.Collecting)
-                            {
-                                <Button Float="Float.End" Type="ButtonType.Button" Clicked=@(()=>{
-                                    disableCancel = true;
-                                    Searcher.Cancel();
-                                    }) Color="Color.Primary" Disabled=@disableCancel>
-                                    Cancel
-                                </Button>
+                    </AuthorizeView>
+                    <AuthorizeView Roles="@(UserRoles.SearchComputers+","+UserRoles.SuperAdmin)">
+                        <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Computer; })>@AppLocalization["Computer"]</MudMenuItem>
 
-                            }
-                            else
-                            {
-                                <Button Float="Float.End" Type="ButtonType.Submit" Color="Color.Primary">Search</Button>
+                    </AuthorizeView>
+                </CascadingAuthenticationState>
 
-                            }
+            </MudMenu>
+            <MudPaper Class=" mud-overlay-light" Style="width:100%;height:min-content;">
+                <ADAutoComplete Class="mt-0"
+                                Variant="Variant.Filled"
+                                Label="Search Directory"
+                                SearchObjectType="@SearchService.SeachObjectType"
+                                SearchDisabled=@SearchService.IncludeDisabled
+                                @bind-SearchTerm="@SearchService.SearchTerm" />
+            </MudPaper>
+            @if (UserStateService?.CurrentUserState?.IsSuperAdmin == true || UserStateService?.CurrentUserState?.DirectoryUser?.CanSearchDisabled == true)
+            {
+                var buttonColor = Color.Error;
+                if (!SearchService.IncludeDisabled)
 
-                        </Addon>
-                    </Addons>
-            </Div>
-        </BarBrand>
-    </Bar>
+                {
+                    buttonColor = Color.Success;
+                }
+                <MudButton Class="d-flex" ButtonType="ButtonType.Button" OnClick=@(async()=>{
+                       SearchService.IncludeDisabled= !SearchService.IncludeDisabled;
+                       await InvokeAsync(StateHasChanged);
+                       }) Color=buttonColor>
+                    Enabled Only
+                </MudButton>
 
-</Form>
+
+
+
+
+            }
+
+            @if (Searcher?.SearchState == SearchState.Collecting)
+            {
+                <MudFab Style="min-width: 56px !important;" Class="d-flex" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Cancel" OnClick=@(()=>{
+                    disableCancel = true;
+                    Searcher.Cancel();
+                    }) />
+
+
+
+            }
+            else
+            {
+                <MudFab Style="min-width: 56px !important;" Class="d-flex" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick=@(()=>{SearchService.Search();}) />
+
+
+            }
+
+
+
+        </MudStack>
+
+    </AuthorizeView>
+</MudForm>
 
 @code {
-    List<ActiveDirectoryObjectType?> ObjectTypes = new List<ActiveDirectoryObjectType?> { ActiveDirectoryObjectType.All, ActiveDirectoryObjectType.User, ActiveDirectoryObjectType.Group, ActiveDirectoryObjectType.OU, ActiveDirectoryObjectType.Computer };
+    List<ActiveDirectoryObjectType> ObjectTypes = new() { ActiveDirectoryObjectType.All, ActiveDirectoryObjectType.User, ActiveDirectoryObjectType.Group, ActiveDirectoryObjectType.OU, ActiveDirectoryObjectType.Computer };
 
 
     public ADSearch Searcher { get; set; } = new ADSearch();
@@ -93,7 +97,7 @@
     public EventCallback OnSubmit { get; set; }
 
     [Parameter]
-    public string Text { get; set; }
+    public string? Text { get; set; }
 
     bool disableCancel = false;
 

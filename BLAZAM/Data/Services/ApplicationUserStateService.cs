@@ -1,6 +1,7 @@
 ﻿using BLAZAM.Common;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Common.Models.Database.User;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -19,9 +20,11 @@ namespace BLAZAM.Server.Data.Services
     /// </summary>
     public class ApplicationUserStateService : IApplicationUserStateService
     {
+        public static IApplicationUserStateService Instance { get; private set; }
+
         private IHttpContextAccessor HttpContextAccessor { get; set; }
 
-        private IDbContextFactory<DatabaseContext> Factory;
+        private  AppDatabaseFactory Factory;
 
         private int? Timeout { get; set; }
 
@@ -29,7 +32,7 @@ namespace BLAZAM.Server.Data.Services
         /// <summary>
         /// Called when a new UserState is added to the cache.
         /// </summary>
-        public AppEvent<IApplicationUserState> UserStateAdded { get; set; }
+        public  AppEvent<IApplicationUserState> UserStateAdded { get; set; }
 
 
         /// <summary>
@@ -44,8 +47,13 @@ namespace BLAZAM.Server.Data.Services
         /// <summary>
         /// A cached list of user states for logged in users. This allows easy, cached access to the users permissions and DirectryEntry
         /// </summary>
-        public IList<IApplicationUserState> UserStates { get; private set; } = new List<IApplicationUserState>();
+        public  IList<IApplicationUserState> UserStates { get; private set; } = new List<IApplicationUserState>();
+
+
+
         private Timer t;
+
+
         /// <summary>
         /// A service to provide stateful user session data storage for runtime. Caches all logged in users.
         /// Raises a UserStateAdded event when a new state is added to the cache for processing in other modules.
@@ -53,9 +61,9 @@ namespace BLAZAM.Server.Data.Services
         /// <param name="httpContextAccessor">An HTTP Context Accessor to get the current ClaimsPrincipal of the current session.
         /// This Principal is persisted via the browser authentication cookie</param>
         /// <param name="factory">Database Context Factory for accessing the Authentication Setting - SessionTimeout</param>
-        public ApplicationUserStateService(IHttpContextAccessor httpContextAccessor, IDbContextFactory<DatabaseContext> factory)
+        public ApplicationUserStateService(IHttpContextAccessor httpContextAccessor, AppDatabaseFactory factory)
         {
-
+            Instance = this;
             HttpContextAccessor = httpContextAccessor;
             Factory = factory;
             t = new Timer(Tick, UserStates, 60000, 60000);
@@ -106,7 +114,7 @@ namespace BLAZAM.Server.Data.Services
             }
         }
 
-        public string CurrentUsername
+        public string? CurrentUsername
         {
             get
             {
@@ -115,11 +123,11 @@ namespace BLAZAM.Server.Data.Services
                     var cu = CurrentUserState;
                     if (cu != null)
                     {
-                        if (cu.User.FindFirstValue(ClaimTypes.UserData) != null)
-                        {
-                            return cu.Impersonator.Identity.Name;
-                        }
-                        return cu.User.Identity.Name;
+                        //if (cu.User.FindFirstValue(ClaimTypes.UserData) != null)
+                        //{
+                        //    return cu.Impersonator?.Identity?.Name;
+                        //}
+                        return cu.User?.Identity?.Name;
                     }
                 }
                 catch
@@ -137,13 +145,13 @@ namespace BLAZAM.Server.Data.Services
         /// </summary>
         /// <param name="userClaim">The users ClaimsPrincipal to match against.</param>
         /// <returns></returns>
-        public IApplicationUserState? GetUserState(ClaimsPrincipal userClaim)
+        public  IApplicationUserState? GetUserState(ClaimsPrincipal userClaim)
         {
             //Null check
             if (userClaim == null) return null;
 
             //Prepare empty application user state in case we don't find or make one
-            IApplicationUserState existingState;
+            IApplicationUserState? existingState;
 
             //Search existing user stated for matching principals
             existingState = UserStates.Where(s => s.User.FindFirstValue(ClaimTypes.Sid) == userClaim.FindFirstValue(ClaimTypes.Sid)
@@ -155,7 +163,7 @@ namespace BLAZAM.Server.Data.Services
 
                 //if (!userClaim.Identity.IsAuthenticated) return null;
                 //Create a new cached state since the one we're looking for appears to be missing
-                existingState = new ApplicationUserState { User = userClaim };
+                existingState = new ApplicationUserState(Factory) { User = userClaim, };
                 AddUserState(existingState);
 
             }
@@ -166,9 +174,8 @@ namespace BLAZAM.Server.Data.Services
 
             return existingState;
         }
-        private void AddUserState(IApplicationUserState state)
+        private  void AddUserState(IApplicationUserState state)
         {
-            state.DbFactory = Factory;
             UserStates.Add(state);
             //Invoke event so Active Directory can populate DirectoryUser if required
             UserStateAdded?.Invoke(state);
@@ -190,7 +197,8 @@ namespace BLAZAM.Server.Data.Services
                 if (state != null)
                     if (UserStates.Count > 0 && UserStates.Contains(state))
                         UserStates.Remove(state);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Loggers.SystemLogger.Error("Error trying to remove user state", ex);
             }
@@ -198,5 +206,14 @@ namespace BLAZAM.Server.Data.Services
         }
 
         public void RemoveUserState(ClaimsPrincipal currentUser) => RemoveUserState(GetUserState(currentUser));
+
+        public void BroadcastNotification(NotificationMessage notificationMessage)
+        {
+           foreach(var user in UserStates)
+            {
+                if(!user.Messages.Contains(notificationMessage))
+                user.Messages.Add(notificationMessage);
+            }
+        }
     }
 }

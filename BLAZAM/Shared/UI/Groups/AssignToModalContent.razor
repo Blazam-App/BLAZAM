@@ -1,52 +1,44 @@
 ﻿@inherits AppModalContent
 
 
-<Row Background="Background.Light" TextColor="TextColor.Dark">
-    <Field>
-        <FieldLabel>Group Name</FieldLabel>
-        <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.Group"
+    <ADAutoComplete Label="Group Name" SearchObjectType="ActiveDirectoryObjectType.Group"
             @bind-SelectedResult=@Group/>
-    </Field>
-    <Field>
-        <FieldLabel>Copy Memberships From</FieldLabel>
-        <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.All"
+    
+    
+            <ADAutoComplete  Label="Copy Memberships From" SearchObjectType="ActiveDirectoryObjectType.All"
                         @bind-SelectedResult=@copyFrom
-                        CustomResultsFilter="(result)=>result is IGroupableDirectoryModel" />
+                        CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
 
-    </Field>
+    
     @if (CopyFrom != null)
     {
         var existingGroups = DirectoryModel.MemberOf;
-        <Paragraph>Will be added to...</Paragraph>
+        <MudText>Will be added to...</MudText>
 
         foreach (var group in CopyFrom.MemberOf)
         {
-            <Card>
-                <CardHeader>
+            <MudCard>
+                <MudCardHeader>
 
                     @if (existingGroups.Contains(group))
                     {
-                        <Icon Name=@("fa-check") />
+                        <MudIcon Icon=@("fa-check") />
                     }
                     else
                     {
-                        <Icon Name=@("fa-plus") />
+                        <MudIcon Icon=@("fa-plus") />
                     }
                     @group.GroupName
 
-                </CardHeader>
-            </Card>
+                </MudCardHeader>
+            </MudCard>
         }
     }
-</Row>
-<Row>
-    <Button Color="Color.Primary" Clicked="AssignToGroup">Add</Button>
-
-</Row>
 
 
 @code {
 
+    #nullable disable warnings
     [Parameter]
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
 
@@ -54,20 +46,31 @@
     /// The directry entry that we are assigning
     /// </summary>
     [Parameter]
-    public IGroupableDirectoryModel DirectoryModel { get; set; }
+    public IGroupableDirectoryAdapter DirectoryModel { get; set; }
 
-    IDirectoryModel copyFrom;
-    public IGroupableDirectoryModel CopyFrom { get => (IGroupableDirectoryModel)copyFrom; set => copyFrom = value; }
 
-    IDirectoryModel Group { get; set; }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Modal.OnYes += AssignToGroup;
+        Modal.YesText = UserLocalization["Assign"];
+        Modal.Title = "Assign To";
+        Modal.YesEnabled = ValidateModal;
+    }
 
-    async Task AssignToGroup()
+
+    IDirectoryEntryAdapter copyFrom;
+    public IGroupableDirectoryAdapter CopyFrom { get => (IGroupableDirectoryAdapter)copyFrom; set => copyFrom = value; }
+
+    new IDirectoryEntryAdapter Group { get; set; }
+
+    async void AssignToGroup()
     {
         if (Group is IADGroup group)
         {
             DirectoryModel.AssignTo(group);
-            NotificationService.Warning(DirectoryModel.CanonicalName + " has been assigned to " + group.GroupName + " but changes must be saved.", "Assignment Pending");
-            ModelChanged.InvokeAsync();
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been assigned to " + group.GroupName + " but changes must be saved.", "Assignment Pending");
+            await ModelChanged.InvokeAsync();
 
             Close();
 
@@ -79,10 +82,15 @@
                 DirectoryModel.AssignTo(g);
 
             }
-            NotificationService.Warning(DirectoryModel.CanonicalName+" has been assigned to the selected groups but changes must be saved.", "Assignment Pending");
-            ModelChanged.InvokeAsync();
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been assigned to the selected groups but changes must be saved.", "Assignment Pending");
+            await ModelChanged.InvokeAsync();
 
             Close();
         }
+    }
+
+    protected override bool ValidateModal()
+    {
+        return (CopyFrom != null || Group != null);
     }
 }

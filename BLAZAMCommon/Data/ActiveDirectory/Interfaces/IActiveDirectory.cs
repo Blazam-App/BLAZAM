@@ -7,25 +7,70 @@ using BLAZAM.Server.Data.Services;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 {
-
+    /// <summary>
+    /// Provides a connection to an Active Directory Domain
+    /// </summary>
     public interface IActiveDirectory
     {
-        IApplicationUserStateService? UserStateService { get; }
-        DatabaseContext? Context { get; }
-        IDbContextFactory<DatabaseContext>? Factory { get; }
-        bool Pingable { get; }
-        bool PortOpen { get; }
-        DirectoryConnectionStatus Status { get; }
-        DirectoryEntry? AppRootDirectoryEntry { get; }
-        IADOUSearcher? OUs { get; }
-        IADGroupSearcher? Groups { get; }
-        IADUserSearcher? Users { get; }
-        AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
-        ADSettings? ConnectionSettings { get; }
-        AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
-        IADComputerSearcher? Computers { get; }
-        IEncryptionService Encryption { get; }
+        IApplicationUserStateService UserStateService { get; }
+        IDatabaseContext? Context { get; }
+        AppDatabaseFactory Factory { get; }
 
+        /// <summary>
+        /// Checks whether the configured Active Directory port is open for connections
+        /// </summary>
+        bool PortOpen { get; }
+
+        /// <summary>
+        /// The current status of the Active Directory connection
+        /// </summary>
+        DirectoryConnectionStatus Status { get; }
+
+        /// <summary>
+        /// The application scoped directory entry root
+        /// </summary>
+        DirectoryEntry? AppRootDirectoryEntry { get; }
+
+        /// <summary>
+        /// Provides OU search functions
+        /// </summary>
+        IADOUSearcher OUs { get; }
+
+        /// <summary>
+        /// Provides Group search functions
+        /// </summary>
+        IADGroupSearcher Groups { get; }
+
+        /// <summary>
+        /// Provides User search functions
+        /// </summary>
+        IADUserSearcher Users { get; }
+
+        /// <summary>
+        /// Provides Computer search functions
+        /// </summary>
+        IADComputerSearcher Computers { get; }
+
+        /// <summary>
+        /// Called when the connection state of the Active Directory server has
+        /// changed
+        /// </summary>
+        AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
+        
+        ADSettings? ConnectionSettings { get; }
+
+        /// <summary>
+        /// Called when a new user login matches an Active Directory user
+        /// </summary>
+        AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
+
+        
+        IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid);
+        
+        IDirectoryEntryAdapter? GetDirectoryModelBySid(byte[] sid);
+
+
+        
         /// <summary>
         /// Authenticates a login request's credentials against the configured
         /// Activer Directory connection in the application settings database.
@@ -46,7 +91,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         Task ConnectAsync();
         void Dispose();
         DirectoryEntry GetDeleteObjectsEntry();
+        /// <summary>
+        /// Retuns the directory entry of the given Base distiguished
+        /// name. If no base is provided,  the application scope BaseDN setting
+        /// will be used
+        /// </summary>
+        /// <param name="baseDN"></param>
+        /// <returns></returns>
         DirectoryEntry GetDirectoryEntry(string? baseDN = null);
-        bool RestoreTombstone(IDirectoryModel model, IADOrganizationalUnit newOU);
+        bool RestoreTombstone(IDirectoryEntryAdapter model, IADOrganizationalUnit newOU);
     }
 }

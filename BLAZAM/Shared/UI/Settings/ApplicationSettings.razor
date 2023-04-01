@@ -1,149 +1,111 @@
-﻿@using BLAZAM.Server.Pages;
-@using Microsoft.EntityFrameworkCore;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
-@inject IDbContextFactory<DatabaseContext> DbFactory
-@inherits ValidatedForm
+﻿@inherits SettingsComponents
 
 
-<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
-    <Row Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-        <Heading>@SettingsLocalization["Application Settings"]</Heading>
-        <Form @onsubmit="Save">
-
-            <Validations Mode="ValidationMode.Auto" Model="@settings" StatusChanged="OnValidation">
-
-                <Validation>
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["Application Name"]</FieldLabel>
-                        <FieldBody>
-                            <TextEdit Placeholder="Give you're application a display name" @bind-Text="@settings.AppName">
-                                <Feedback>
-                                    <ValidationError />
-                                    <ValidationNone>
-                                        You must give the Web Application a personalized name.
-                                    </ValidationNone>
-                                </Feedback>
-                            </TextEdit>
-                        </FieldBody>
-                    </SettingsField>
-                </Validation>
-
-                <Validation>
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["Homepage Message"]</FieldLabel>
-                        <FieldBody>
-                            <MemoEdit Placeholder="Place a custom welcome message for your users on the dashboard" @bind-Text="@settings.MOTD">
-                                <Feedback>
-                                    <ValidationError />
-                                </Feedback>
-                            </MemoEdit>
-                        </FieldBody>
-                    </SettingsField>
-
-                </Validation>
-
-                <Validation>
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["Force Https"]</FieldLabel>
-                        <FieldBody>
-                            <Switch TValue="bool" @bind-Checked="@settings.ForceHTTPS" />
-                        </FieldBody>
-                    </SettingsField>
-
-                </Validation>
-                <Validation>
-                    <SettingsField>
-                        <FieldLabel>
-                            @SettingsLocalization["User Helpdesk URL"]
-                            <Tooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
-                                <Badge Background="Background.Warning" Pill>!</Badge>
-                            </Tooltip>
-                        </FieldLabel>
-                        <FieldBody>
-                            <TextEdit Placeholder="If not provided, support links will be disabled" @bind-Text="@settings.UserHelpdeskURL">
-                                <Feedback>
-                                    <ValidationError />
-                                </Feedback>
-                            </TextEdit>
-                        </FieldBody>
-                    </SettingsField>
-
-                </Validation>
+<MudText Typo="Typo.h4">@SettingsLocalization["Application Settings"]</MudText>
+<EditForm @ref=@EditForm Context="editContext" OnValidSubmit="Save" Model="settings">
 
 
-                <SettingsField>
+    <SettingsField Label="@SettingsLocalization["Application Name"]">
 
-                    <FieldLabel>
-                        @SettingsLocalization["Branding Icon"]
-                        @if (settings != null && settings.AppIcon != null && settings.AppIcon.Length > 0)
-                        {
-                            <Image Class="app-icon" Source="@StaticAssets.ApplicationIconUri" />
-                            <Tooltip Text="Remove custom icon">
-                                <AppCloseButton Clicked="@(()=>{settings.AppIcon=null;})" />
-                            </Tooltip>
-                        }
-                    </FieldLabel>
-                    <FieldBody>
-                        <Blazorise.FilePicker AutoReset Upload="LoadIcon" />
-                    </FieldBody>
-                    </SettingsField>
+            <MudTextField Class="mt-0" Label=@SettingsLocalization["Application Name"] @bind-Value="@settings.AppName" />
+
+    </SettingsField>
+
+    <SettingsField Label="@SettingsLocalization["Homepage Message"]">
+
+
+            <MudTextField Label="@SettingsLocalization["Homepage Message"]" T="string" Variant="Variant.Text" @bind-Text="@settings.MOTD" Lines="5" Placeholder="Place a custom welcome message for your users on the dashboard" />
+
+    </SettingsField>
+
+
+    <SettingsField Label="@SettingsLocalization["Force Https"]">
+
+            <MudSwitch Label="@SettingsLocalization["Enabled"]" TValue="bool" @bind-Checked="@settings.ForceHTTPS" />
+
+    </SettingsField>
+
+    <SettingsField Label="@SettingsLocalization["User Helpdesk URL"]">
+
+            <MudTextField Label="@SettingsLocalization["User Helpdesk URL"]" Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
+                <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
+                    <MudBadge>!</MudBadge>
+                </MudTooltip>
+
+
+            </MudTextField>
+
+    </SettingsField>
 
 
 
-                    <Validation Validator="AppValidationRule.IsFqdn">
-                    <SettingsField>
-                        <FieldLabel>@SettingsLocalization["Website FQDN"]</FieldLabel>
-                        <FieldHelp>Enter the fqdn of the published website. (eg: blazam.mydomain.company)</FieldHelp>
-                        <FieldBody>
-                            <TextEdit Placeholder="Enter the web address" @bind-Text="@settings.AppFQDN">
-                                <Feedback>
-                                    <ValidationError />
-                                    <ValidationNone>
-                                        You must give the Web Application a FQDN to use auto updates.
-                                    </ValidationNone>
-                                </Feedback>
-                            </TextEdit>
-                        </FieldBody>
-                    </SettingsField>
-                    </Validation>
+    <SettingsField Label="@SettingsLocalization["Branding Icon"]">
 
-                    <SettingsField>
-                    <FieldBody>
-                        <Button Disabled="saveDisabled" Type="ButtonType.Submit" Color="Color.Success">Save Changes</Button>
-                    </FieldBody>
-                    </SettingsField>
+            <MudContainer>
+
+                @if (settings != null && settings.AppIcon != null && settings.AppIcon.Length > 0)
+                {
+                    <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+                    <MudTooltip Text="Remove custom icon">
+                        <AppCloseButton OnClick="@(()=>{settings.AppIcon=null;})" />
+                    </MudTooltip>
+                }
+            </MudContainer>
+            <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
+                <ButtonTemplate>
+                    <MudButton HtmlTag="label"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.CloudUpload">
+                        Upload Icon
+                    </MudButton>
+                </ButtonTemplate>
+            </MudFileUpload>
+    </SettingsField>
 
 
-                    </Validations>
-                    </Form>
-                    </Row>
-                    </LoadingIndicator>
-                    @code {
+
+    <SettingsField Label="@SettingsLocalization["Website FQDN"]">
+
+            <MudTextField Label="@SettingsLocalization["Website FQDN"]" For=@(()=> settings.AppFQDN) ErrorText="Must be a valid domain name" HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
+
+    </SettingsField>
+
+    <SettingsField>
+        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+    </SettingsField>
+
+
+</EditForm>
+<MudOverlay Visible="LoadingData" DarkBackground="true" Absolute="true">
+    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
+@code {
     AppSettings settings = new AppSettings();
 
     protected override async Task OnInitializedAsync()
     {
-        Task.Run(() =>
-        {
-            settings = Context.AppSettings.FirstOrDefault();
-            LoadingData = false;
-            InvokeAsync(StateHasChanged);
-        });
+        originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
+
+        settings = await Context.AppSettings.FirstOrDefaultAsync();
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
     }
 
 
-    private async void LoadIcon(FileUploadEventArgs e)
+    private async void LoadIcon(IBrowserFile e)
     {
-        //TODO Try and capture the moment the file upload starts
-        using (var stream = e.File.OpenReadStream(5000000))
+        byte[] fileBytes;
+        using (var stream = e.OpenReadStream(5000000))
         {
             using (var memoryStream = new MemoryStream())
             {
                 await stream.CopyToAsync(memoryStream);
-                settings.AppIcon = memoryStream.ToArray();
+                fileBytes = memoryStream.ToArray();
             }
         }
+        settings.AppIcon = await e.ToByteArrayAsync(5000000);
         await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
 
@@ -152,6 +114,7 @@
 
     protected override void Save()
     {
+        AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
         base.Save();
     }
 

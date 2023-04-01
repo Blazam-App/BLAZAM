@@ -14,15 +14,14 @@ namespace BLAZAM.Server.Pages.API
     {
         public JwtSecurityTokenHandler JwtTokenHandler { get; private set; }
         public string Token { get; private set; }
-        public DatabaseContext Context { get; private set; }
+        public  IDatabaseContext Context { get; private set; }
 
       
-        public TokenModel(DatabaseContext context)
+        public TokenModel(IDatabaseContext context)
         {
             Context = context;
         }
 
-        [Authorize]
         public JsonResult OnGet()
         {
             JwtTokenHandler = new JwtSecurityTokenHandler();
@@ -43,7 +42,7 @@ namespace BLAZAM.Server.Pages.API
             }
             else
             {
-                userSettings = new UserSettings
+                userSettings = new AppUser
                 {
                     UserGUID = User.Identity.Name,
                     APIToken = Token

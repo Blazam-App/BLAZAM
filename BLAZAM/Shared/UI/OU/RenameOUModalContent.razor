@@ -1,41 +1,46 @@
 ﻿@inherits AppModalContent
-<Div Background="Background.Light" TextColor="TextColor.Dark">
+<div Background="Background.Light" Color="Color.Dark">
 <Section Title=@UserLocalization["OU"]>
 
 
     @if (OU.CanReadField(ActiveDirectoryFields.CanonicalName))
     {
-        <Field Horizontal ColumnSize="ColumnSize.Is6.OnWidescreen.Is4.OnFullHD">
-            <FieldLabel>
-                @UserLocalization["Name"]
-            </FieldLabel>
-            <FieldBody>
-                <TextEdit @bind-Text="@OU.CanonicalName" />
+        
+            
+                    <MudTextField Label="@UserLocalization["Name"]" @bind-Value="@OU.CanonicalName" />
 
-            </FieldBody>
-        </Field>
+            
+        
     }
     
     
 </Section>
 
 
-    <Button Color=Color.Primary Clicked="SaveChanges">@UserLocalization["Save Changes"]</Button>
-</Div>
+    <MudButton Color=Color.Primary OnClick="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
+</div>
 @code {
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
+        Modal.OnYes += SaveChanges;
+        Modal.YesText = UserLocalization["Save Changes"];
+        Modal.Title = UserLocalization["Rename OU"];
+        Modal.YesEnabled = ValidateModal;
     }
 
-    
-        async Task SaveChanges()
+
+    async void SaveChanges()
     {
-        NotificationService.Warning("The ou has been renamed but changes must be saved.", "OU renamed");
+        SnackBarService.Warning("The ou has been renamed but changes must be saved.", "OU renamed");
         Close();
 
+    }
+    protected override bool ValidateModal()
+    {
+        return !OU.CanonicalName.IsNullOrEmpty();
     }
 
 }

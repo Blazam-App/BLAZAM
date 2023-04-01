@@ -2,18 +2,23 @@
 
 namespace BLAZAM.Common.Models.Database.Permissions
 {
-    public class ActionAccessMapping
+    public class ActionAccessMapping : AppDbSetBase
     {
-        public int ActionAccessMappingId { get; set; }
         public ActiveDirectoryObjectType ObjectType { get; set; }
         /// <summary>
         /// Allow/Deny flag. Has a value of true when action is allowed.
         /// Has a value of false when action is denied.
         /// </summary>
         public bool AllowOrDeny { get; set; }
+        /// <summary>
+        /// The action the is being allowed or denied by
+        /// <see cref="AllowOrDeny"/>
+        /// </summary>
         public ActionAccessFlag ObjectAction { get; set; }
-        public List<AccessLevel> AccessLevels { get; set; }
-
+        public override int GetHashCode()
+        {
+            return (ObjectType.ToString()+ ObjectAction.Name).GetHashCode();
+        }
         public override bool Equals(object? obj)
         {
             if (obj is ActionAccessMapping mapping)

@@ -3,36 +3,51 @@
 
 
 @code {
-    protected bool saveDisabled = true;
-
-
-    protected virtual Task OnValidation(ValidationsStatusChangedEventArgs eventArgs)
+    bool _saveDisabled = false;
+    protected bool SaveDisabled
     {
-        saveDisabled = eventArgs.Status == ValidationStatus.Error;
-
-        return Task.CompletedTask;
+        get
+        {
+            return _saveDisabled;
+        }
+        set => _saveDisabled = value;
     }
+
+    protected EditForm? EditForm { get; set; }
+    //protected virtual Task OnValidation(ValidationsStatusChangedEventArgs eventArgs)
+    //{
+    //    SaveDisabled = eventArgs.Status == ValidationStatus.Error;
+
+    //    return Task.CompletedTask;
+    //}
 
     protected virtual async void Save()
     {
-        try
+        if (Context != null)
         {
-            if(Program.InDemoMode && !UserStateService.CurrentUsername.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            try
             {
-                NotificationService.Warning("Settings changes are not allowed in the demo");
-                return;
+                if (Program.InDemoMode && Program.InstallationCompleted && !UserStateService.CurrentUsername.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    SnackBarService.Warning("Settings changes are not allowed in the demo");
+                    return;
+
+                }
+                await Context.SaveChangesAsync();
+                SnackBarService.Success("Settings have been saved");
+            }
+            catch (Exception ex)
+            {
+                SnackBarService.Error(ex.Message);
 
             }
-            await Context.SaveChangesAsync();
-            NotificationService.Success("Settings have been saved");
+            await InvokeAsync(StateHasChanged);
         }
-        catch (Exception ex)
+        else
         {
-            NotificationService.Error(ex.Message);
-            
-        }
-        await InvokeAsync(StateHasChanged);
+            SnackBarService.Success("Database not available");
 
+        }
     }
-  
+
 }

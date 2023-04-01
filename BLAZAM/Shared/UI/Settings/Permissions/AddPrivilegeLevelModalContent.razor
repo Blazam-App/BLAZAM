@@ -1,0 +1,76 @@
+﻿@inherits AppModalContent
+<MudStack Row=true>
+
+    <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
+                    @bind-SelectedResult=@selectedDelegate
+                    CustomResultsFilter="@((result)=>{
+return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group;
+})" />
+
+
+
+
+    <DynamicMudInput HelperText="Will have complete and total acceess to the application if enabled"
+                     Label="Super User"
+                     @bind-Value="@NewPermissionDelegate.IsSuperAdmin"
+                     Disabled=Program.InDemoMode />
+
+</MudStack>
+<MudStack Row=true>
+    <MudButton Color="Color.Primary" OnClick="AddGroup">Add</MudButton>
+
+</MudStack>
+
+
+@code {
+
+    IDirectoryEntryAdapter? selectedDelegate;
+    [Parameter]
+    public EventCallback DelegateAdded { get; set; }
+
+    PermissionDelegate NewPermissionDelegate = new PermissionDelegate();
+    public async Task<bool> AddGroup()
+    {
+        try
+        {
+            if (Context == null) return false;
+
+            NewPermissionDelegate.DelegateSid = selectedDelegate.SID;
+            Context.PermissionDelegate.Add(NewPermissionDelegate);
+            await Context.SaveChangesAsync();
+            NewPermissionDelegate = new PermissionDelegate();
+            Modal?.Close();
+            await DelegateAdded.InvokeAsync();
+            return true;
+        }
+        catch (DbUpdateException ex)
+        {
+            switch (ex.InnerException?.HResult)
+            {
+                case -2146232060:
+                    var confilctingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
+                    if (confilctingDelegate != null)
+                        if (confilctingDelegate.DeletedAt == null)
+                            SnackBarService.Error("That delegate already exists.");
+                        else
+                            SnackBarService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
+
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+
+            Loggers.ActiveDirectryLogger.Error("Error attempting to add delegate " + selectedDelegate.CanonicalName);
+            Loggers.ActiveDirectryLogger.Error(ex.Message, ex);
+            SnackBarService.Error("An unexpected error has occured.");
+        }
+
+        return false;
+    }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+}

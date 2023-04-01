@@ -1,0 +1,127 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+@using BLAZAM.Server.Data.Services.Email;
+
+@inherits AppComponentBase
+<h3>Delegates</h3>
+    <p> Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) will be allowed to log in to the applicaiton.</p>
+    <p> The acceess allowed to each delegate is controlled by the mapped access level.</p>
+
+        <MudStack Row=true>
+            <MudTextField Display=Display.InlineFlex Placeholder="Filter Delegates" @bind-Value="@DelegateFilter" />
+            <MudSpacer />
+            <MudButton Color=Color.Secondary OnClick="(()=>{trashModal.Show();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
+        </MudStack>
+        @if (AllDelegates.Count > 0)
+        {
+
+            @foreach (var pl in AllDelegates.Where(l => l.DeletedAt == null).Where(l =>
+           Directory.GetDirectoryModelBySid(l.DelegateSid).CanonicalName
+           .StartsWith(DelegateFilter, StringComparison.OrdinalIgnoreCase) ||
+           Directory.GetDirectoryModelBySid(l.DelegateSid).CanonicalName
+           .Contains(DelegateFilter, StringComparison.OrdinalIgnoreCase)))
+            {
+                <DelegateListItem Level="pl" Context="Context" DelegateDeleted="DelegatesChanged" />
+            }
+        }
+
+            <MudButton Background="Background.Success" OnClick="@ShowAddGroup">
+                @SettingsLocalization["Create New Delegation Target"]
+            </MudButton>
+
+    <AppModal @ref=@trashModal Title="Deleted Delegates">
+        @foreach (var deleg in AllDelegates.Where(l => l.DeletedAt != null))
+        {
+            var model = @Directory.GetDirectoryModelBySid(deleg.DelegateSid);
+            <MudContainer>
+                    <b>@model.ObjectType</b><br />
+                    <MudText>@model.CanonicalName</MudText>
+                    <MudText>@deleg.DeletedAt</MudText>
+                    <MudButton Float="Float.End" Color="Color.Primary" OnClick="(()=>{RestoreDelegate(deleg);})">Restore</MudButton>
+
+            </MudContainer>
+        }
+    </AppModal>
+    <AppModal @ref=@addGroupModal Title="Add Delegate" YesText="Add">
+        <AddPrivilegeLevelModalContent @ref=addDelegateContent />
+    </AppModal>
+
+
+@{
+
+}
+@code {
+#nullable disable warnings
+    string _DelegateFilter = "";
+    string DelegateFilter
+    {
+        get => _DelegateFilter; set
+        {
+            if (_DelegateFilter == value) return;
+            _DelegateFilter = value;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+    AddPrivilegeLevelModalContent? addDelegateContent;
+    AppModal? trashModal;
+    AppModal? addGroupModal;
+    List<PermissionDelegate> AllDelegates { get; set; } = new List<PermissionDelegate>();
+    DbSet<PermissionDelegate> settings;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+
+        settings = Context.PermissionDelegate;
+        RefreshDelegates();
+
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    private async Task RefreshDelegates()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+
+        AllDelegates.Clear();
+        AllDelegates = await settings.ToListAsync();
+        LoadingData = false;
+
+        await InvokeAsync(StateHasChanged);
+
+    }
+    private async void ShowAddGroup()
+    {
+        var result =  await addGroupModal.Show().Result;
+        if (!result.Canceled)
+        {
+            if (await addDelegateContent.AddGroup())
+            {
+                SnackBarService.Success("Delegate added");
+                DelegatesChanged();
+
+            }
+
+        }
+
+    }
+    async Task RestoreDelegate(PermissionDelegate delegateToRestore)
+    {
+        delegateToRestore.DeletedAt = null;
+        await Context.SaveChangesAsync();
+        SnackBarService.Success("Delegate restored");
+        if (AllDelegates.Where(l => l.DeletedAt != null).Count() < 1)
+        {
+            trashModal.Hide();
+        }
+    }
+    private async void DelegatesChanged()
+    {
+
+        await RefreshDelegates();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder.Extensions;
+﻿using BLAZAM.Common.Extensions;
+using Microsoft.AspNetCore.Builder.Extensions;
 using System.Drawing;
 
 namespace BLAZAM.Server.Shared.UI.Themes
@@ -9,19 +10,21 @@ namespace BLAZAM.Server.Shared.UI.Themes
         {
             _name = "Dark";
 
-            _textLight = Color.Gray.ToHex();
-            _textDark = Color.WhiteSmoke.ToHex();
-            _light = "#050807";
+            _textPrimary = "#c9c6c6";
+            _textSecondary = "#c5cbd3";
+
+            _light = "#383b40";
             _dark = "#202226";
             _primary = "#a9a09f";
-            _secondary = "#007389";
+            _secondary = "#183042";
             _info = "#1b8f7e";
             _success = "#5fad00";
             _warning = "#ffc270";
-            _danger = "#f60066";
+            error = "#f60066";
             _body = _light;
             _muted = Color.DarkGray.ToHex();
-          
+            _white= Color.WhiteSmoke.ToHex();
+
         }
     }
 }

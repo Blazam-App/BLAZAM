@@ -7,9 +7,9 @@
     @if (timeLeft.TotalMinutes <= 60)
     {
 
-        <Div>
+        <div>
             Auto-update scheduled! The application will shutdown and update in @timeLeft.Minutes:@timeLeft.Seconds
-        </Div>
+        </div>
 
         Task.Delay(400).ContinueWith((s) => { InvokeAsync(StateHasChanged); });
     }

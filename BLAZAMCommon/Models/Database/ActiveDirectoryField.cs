@@ -1,20 +1,24 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory;
 using BLAZAM.Common.Models.Database.Permissions;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Common.Models.Database
 {
-    public class ActiveDirectoryField
+    public class ActiveDirectoryField : AppDbSetBase
     {
-        public int ActiveDirectoryFieldId { get; set; }
+
         public string FieldName { get; set; }
-        public virtual ICollection<FieldAccessMapping> FieldAccessMappings { get; set; }
+        //public List<ActiveDirectoryObjectType> ObjectTypes { get; set; }
         public string DisplayName { get; internal set; }
 
         public override string? ToString()
         {
             return FieldName;
         }
-
+        public override int GetHashCode()
+        {
+            return FieldName.GetHashCode();
+        }
         public override bool Equals(object? obj)
         {
             if (obj is ActiveDirectoryField)

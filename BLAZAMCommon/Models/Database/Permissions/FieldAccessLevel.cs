@@ -1,8 +1,7 @@
 ﻿namespace BLAZAM.Common.Models.Database.Permissions
 {
-    public class FieldAccessLevel
+    public class FieldAccessLevel : AppDbSetBase
     {
-        public int FieldAccessLevelId { get; set; }
         public string Name { get; set; }
         public int Level { get; internal set; }
         public virtual ICollection<FieldAccessMapping> FieldAccessMappings { get; set; }

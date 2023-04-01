@@ -18,13 +18,7 @@ namespace BLAZAM.Server.Pages
         public string ExceptionMessage { get; private set; }
         public string? DetailsMessage { get; private set; }
 
-        private readonly ILogger<ErrorModel> _logger;
 
-        public ErrorModel(ILogger<ErrorModel> logger)
-        {
-            _logger = logger;
-            
-        }
 
         public void OnGet()
         {
@@ -35,10 +29,11 @@ namespace BLAZAM.Server.Pages
             {
                 var exception = exceptionHandlerPathFeature?.Error;
 
-               
+                if (exception != null)
+                {
                     ExceptionMessage = exception.Message;
                     DetailsMessage = exception.InnerException?.Message;
-                
+                }
             }
            
         }

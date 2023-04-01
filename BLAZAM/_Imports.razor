@@ -1,6 +1,7 @@
 ﻿@using Newtonsoft.Json
 @using System.Net.Http
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Authentication;
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
@@ -29,7 +30,6 @@
 @using BLAZAM.Server.Shared.UI.Inputs
 @using BLAZAM.Server.Shared.ResourceFiles;
 @using BLAZAM.Server.Shared.UI.Outputs
-@using BLAZAM.Server.Shared.UI.Themes
 @using BLAZAM.Server.Data
 @using BLAZAM.Server.Data.Services.Update;
 
@@ -37,6 +37,8 @@
 @using BLAZAM.Server.Pages.Error;
 
 @using BLAZAM.Common
+@using BLAZAM.Common.Extensions
+
 @using BLAZAM.Common.Helpers
 @using BLAZAM.Common.Data
 @using BLAZAM.Common.Data.FileSystem;
@@ -55,14 +57,8 @@
 @using BLAZAM.Common.Models.Database.Templates
 @using BLAZAM.Common.Models.Database.Permissions
 
+@using MudBlazor
 
-@using Blazorise
-@using Blazorise.Extensions
-@using Blazorise.Components
-@using Blazorise.TreeView
-@using Blazorise.LoadingIndicator
-@using Blazorise.Snackbar
-@using Blazorise.DataGrid
 
 @using Microsoft.Extensions.Localization;
 @using BLAZAM.Server.Data.Services.Email;

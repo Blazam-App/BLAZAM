@@ -1,0 +1,35 @@
+﻿<audio muted src=@Src />
+@code {
+    [Inject]
+    IJSRuntime JSRuntime { get; set; }
+
+    bool _playing;
+    [Parameter]
+    public bool Playing
+    {
+        get => _playing; set
+        {
+            if (_playing == value) return;
+            _playing = value;
+            if (_playing)
+            {
+
+                JSRuntime.InvokeVoidAsync("playAudio", new object[] { Src });
+                Playing = false;
+
+
+            }
+            InvokeAsync(StateHasChanged);
+            PlayingChanged.InvokeAsync(_playing);
+        }
+    }
+    [Parameter]
+    public EventCallback<bool> PlayingChanged { get; set; }
+    [Parameter]
+    public bool Loop { get; set; }
+    [Parameter]
+    public string Src { get; set; }
+
+
+
+}

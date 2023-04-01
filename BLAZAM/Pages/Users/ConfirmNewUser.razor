@@ -1,366 +1,191 @@
 @inherits DirectoryModelComponent
+<AppPageTitle>Confirm User Creation</AppPageTitle>
 
 
 
-<Field Horizontal ColumnSize="FieldColumnSize">
-    <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-        @UserLocalization["First Name"]
-    </FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-        <TextEdit @bind-Text="@User.GivenName" Disabled=true />
 
-    </FieldBody>
-</Field>
+    <MudTextField Label="@UserLocalization["First Name"]" @bind-Value="@User.GivenName" Disabled=true />
 
-<Field Horizontal ColumnSize="FieldColumnSize">
-    <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-        @UserLocalization["Middle Name"]
-    </FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-        <TextEdit @bind-Text="@User.MiddleName" Disabled=true />
+    <MudTextField Label="@UserLocalization["Middle Name"]" @bind-Value="@User.MiddleName" Disabled=true />
 
-    </FieldBody>
-</Field>
+    <MudTextField Label="@UserLocalization["Last Name"]" @bind-Value="@User.Surname" Disabled=true />
 
-<Field Horizontal ColumnSize="FieldColumnSize">
-    <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-        @UserLocalization["Last Name"]
-    </FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-        <TextEdit @bind-Text="@User.Surname" Disabled=true />
+    <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@User.DisplayName" Disabled=true />
 
-    </FieldBody>
-</Field>
+    <MudTextField Label="@UserLocalization["Username"]" @bind-Value="@User.SamAccountName" Disabled=true />
 
-<Field Horizontal ColumnSize="FieldColumnSize">
-    <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-        @UserLocalization["Display Name"]
-    </FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-        <TextEdit @bind-Text="@User.DisplayName" Disabled=true />
+    <MudTextField Label="@UserLocalization["Password"]" Value="@User.NewPassword.ToPlainText()" Disabled=true />
 
-    </FieldBody>
-</Field>
+    <MudTextField Label="@UserLocalization["Email Address"]" @bind-Value="@User.Email" Disabled=true />
 
-<Field Horizontal ColumnSize="FieldColumnSize">
-    <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-        @UserLocalization["Username"]
-    </FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-        <TextEdit @bind-Text="@User.SamAccountName" Disabled=true />
-    </FieldBody>
-</Field>
-<Field Horizontal ColumnSize="FieldColumnSize">
-    <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-        @UserLocalization["Password"]
-    </FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-        <TextEdit Text="@User.NewPassword.ToPlainText()" Disabled=true />
-    </FieldBody>
-</Field>
-<Field Horizontal ColumnSize="FieldColumnSize">
-    <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-        @UserLocalization["Email Address"]
-    </FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-        <TextEdit @bind-Text="@User.Email" Disabled=true />
 
-    </FieldBody>
-</Field>
 @if (InDirectoryTemplate(ActiveDirectoryFields.EmployeeId) ||
-  InDirectoryTemplate(ActiveDirectoryFields.Department) ||
-  InDirectoryTemplate(ActiveDirectoryFields.Company) ||
-  InDirectoryTemplate(ActiveDirectoryFields.Title) ||
-  InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
-  )
+ InDirectoryTemplate(ActiveDirectoryFields.Department) ||
+ InDirectoryTemplate(ActiveDirectoryFields.Company) ||
+ InDirectoryTemplate(ActiveDirectoryFields.Title) ||
+ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
+ )
 {
     <Section Title=@UserLocalization["Organization"]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.EmployeeId))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["Employee Id"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.EmployeeId" Disabled=true />
-
-                </FieldBody>
-            </Field>
+                <MudTextField Label="@UserLocalization["Employee Id"]" @bind-Value="@User.EmployeeId" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.Department))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["Department"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.Department" Disabled=true />
-
-                </FieldBody>
-            </Field>
+                <MudTextField Label="@UserLocalization["Department"]" @bind-Value="@User.Department" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.Company))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["Company"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.Company" Disabled=true />
-
-                </FieldBody>
-            </Field>
+                <MudTextField Label="@UserLocalization["Company"]" @bind-Value="@User.Company" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.Title))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["Job Title"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.Title" Disabled=true />
-
-                </FieldBody>
-            </Field>
+            <MudTextField Label="@UserLocalization["Job Title"]" @bind-Value="@User.Title" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["Office"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.PhysicalDeliveryOfficeName" Disabled=true />
-
-                </FieldBody>
-            </Field>
+                <MudTextField Label="@UserLocalization["Office"]" @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=true />
         }
     </Section>
 }
 
 @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone) ||
-           InDirectoryTemplate(ActiveDirectoryFields.StreetAddress) ||
-           InDirectoryTemplate(ActiveDirectoryFields.Street) ||
-           InDirectoryTemplate(ActiveDirectoryFields.City) ||
-           InDirectoryTemplate(ActiveDirectoryFields.State) ||
-           InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
-           )
+          InDirectoryTemplate(ActiveDirectoryFields.StreetAddress) ||
+          InDirectoryTemplate(ActiveDirectoryFields.POBox) ||
+          InDirectoryTemplate(ActiveDirectoryFields.City) ||
+          InDirectoryTemplate(ActiveDirectoryFields.State) ||
+          InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
+          )
 {
     <Section Title=@UserLocalization["Contact Info"]>
 
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["Home Phone"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.HomePhone" Disabled=true />
-
-                </FieldBody>
-            </Field>
+                <MudTextField Label="@UserLocalization["Home Phone"]" @bind-Value="@User.HomePhone" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.StreetAddress))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["Street Address"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.StreetAddress" Disabled=true />
-
-                </FieldBody>
-            </Field>
+                <MudTextField Label="@UserLocalization["Street Address"]" @bind-Value="@User.StreetAddress" Disabled=true />
         }
-        @if (InDirectoryTemplate(ActiveDirectoryFields.Street))
+        @if (InDirectoryTemplate(ActiveDirectoryFields.POBox))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["Street"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.Street" Disabled=true />
-
-                </FieldBody>
-            </Field>
+                <MudTextField Label="@UserLocalization["PO Box"]" @bind-Value="@User.POBox" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.City))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["City"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.City" Disabled=true />
-
-                </FieldBody>
-            </Field>
+                <MudTextField Label="@UserLocalization["City"]" @bind-Value="@User.City" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.State))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["State"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.State" Disabled=true />
-
-                </FieldBody>
-            </Field>
+                <MudTextField Label="@UserLocalization["State"]" @bind-Value="@User.State" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.PostalCode))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["Zip Code"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.Zip" Disabled=true />
-
-                </FieldBody>
-            </Field>
+                <MudTextField Label="@UserLocalization["Zip Code"]" @bind-Value="@User.Zip" Disabled=true />
         }
     </Section>
 }
 @if (InDirectoryTemplate(ActiveDirectoryFields.Description))
 {
-    <Field Horizontal>
-        <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-            @UserLocalization["Description"]
-        </FieldLabel>
-        <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-            <TextEdit @bind-Text="@User.Description" Disabled=true />
-
-        </FieldBody>
-    </Field>
+        <MudTextField Label="@UserLocalization["Description"]" @bind-Value="@User.Description" Disabled=true />
 }
 @if (InDirectoryTemplate(ActiveDirectoryFields.Site))
 {
-    <Field Horizontal>
-        <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-            @UserLocalization["Site"]
-        </FieldLabel>
-        <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-            <TextEdit @bind-Text="@User.Site" Disabled=true />
-
-        </FieldBody>
-    </Field>
+        <MudTextField Label="@UserLocalization["Site"]" @bind-Value="@User.Site" Disabled=true />
 }
 @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory) ||
-           InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
-           InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
-           InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
-           )
+          InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
+          InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
+          InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
+          )
 {
     <Section Title=@UserLocalization["Profile"]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["Home Directory"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.HomeDirectory" Disabled=true />
-
-                </FieldBody>
-            </Field>
+            <MudTextField Label="@UserLocalization["Home Directory"]" @bind-Value="@User.HomeDirectory" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDrive))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["Home Drive"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-
-                    <HomeDriveSelect @bind-SelectedValue="@User.HomeDrive" Disabled=true />
-
-                </FieldBody>
-            </Field>
+                <HomeDriveSelect Label="@UserLocalization["Home Drive"]" @bind-SelectedValue="@User.HomeDrive" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.ScriptPath))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["Script Path"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.ScriptPath" Disabled=true />
-
-                </FieldBody>
-            </Field>
+                <MudTextField Label="@UserLocalization["Script Path"]" @bind-Value="@User.ScriptPath" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.ProfilePath))
         {
-            <Field Horizontal>
-                <FieldLabel ColumnSize="ColumnSize.Is4.OnTablet">
-                    @UserLocalization["Profile Path"]
-                </FieldLabel>
-                <FieldBody ColumnSize="ColumnSize.Is8.OnTablet">
-                    <TextEdit @bind-Text="@User.ProfilePath" Disabled=true />
-
-                </FieldBody>
-            </Field>
+                <MudTextField Label="@UserLocalization["Profile Path"]" @bind-Value="@User.ProfilePath" Disabled=true />
         }
     </Section>
 }
 
 
-<Field ColumnSize="ColumnSize.Is12" Horizontal>
 
-    <FieldBody ColumnSize="ColumnSize.Is12">
-        <Row>
-            @if (User.IsAGroupMember)
+
+
+    <Row>
+        @if (User.IsAGroupMember)
+        {
+            var deniedRead = false;
+            @foreach (ADGroup g in User.MemberOf.Where(g => g.CanRead))
             {
-                var deniedRead = false;
-                @foreach (ADGroup g in User.MemberOf.Where(g => g.CanRead))
+                if (g.CanRead)
                 {
-                    if (g.CanRead)
-                    {
-                        <Column ColumnSize="ColumnSize.Is6.OnDesktop">
-                            <AssignedGroup AllowUnassign=false AllowNavigation=false Group=g Member="User" OnGroupMembershipChange="@((change)=>{InvokeAsync(StateHasChanged);})" />
-                        </Column>
-                    }
-                    else
-                    {
-                        deniedRead = true;
-                    }
+                        <AssignedGroup AllowUnassign=false AllowNavigation=false Group=g Member="User" OnGroupMembershipChange="@((change)=>{InvokeAsync(StateHasChanged);})" />
                 }
-
-                if (deniedRead)
+                else
                 {
-                    <Column ColumnSize="ColumnSize.Is6.OnDesktop">
-                        The user is in more groups you don't have access to
-                    </Column>
+                    deniedRead = true;
                 }
-
             }
-           
-        </Row>
-    </FieldBody>
-</Field>
-<Button Color="Color.Success" Clicked="ConfirmUser">Create User</Button>
+
+            if (deniedRead)
+            {
+                <MudText>
+                    The user is in more groups you don't have access to
+            </MudText>
+            }
+        }
+
+    </Row>
+
+
+<MudButton Color="Color.Success" OnClick="ConfirmUser">Create User</MudButton>
 
 @code {
     [Parameter]
-    public DirectoryTemplate DirectoryTemplate { get; set; }
+    public DirectoryTemplate? DirectoryTemplate { get; set; }
 
     [Parameter]
     public EventCallback<IADUser> Confirmed { get; set; }
-
+    /// <summary>
+    /// Checks if the given field is in the template, whether editable or not
+    /// </summary>
+    /// <param name="field"></param>
+    /// <returns></returns>
     bool InDirectoryTemplate(ActiveDirectoryField field)
     {
         if (DirectoryTemplate == null) return true;
-        return DirectoryTemplate.FieldValues.Any(f => f.Field.FieldName == field.FieldName);
+        return DirectoryTemplate?.FieldValues.Any(f => f.Field.FieldName == field.FieldName) == true;
     }
-    async Task ConfirmUser(){
-        try{
-            User.CommitChanges();
-            NotificationService.Success("User has been created");
-            Nav.NavigateTo("/users/search/" + User.SamAccountName);
-        }catch(ApplicationException ex)
+    /// <summary>
+    /// Triggered when the user confirms the creation of this
+    /// Active Directory User
+    /// </summary>
+    /// <returns></returns>
+    async Task ConfirmUser()
+    {
+        try
         {
-            MessageService.Error(ex.Message);
+            User.CommitChanges();
+            SnackBarService.Success("User has been created");
+            await Confirmed.InvokeAsync(User);
+            Nav.NavigateTo("/search/" + User.SamAccountName);
+        }
+        catch (ApplicationException ex)
+        {
+            await MessageService.Error(ex.Message);
         }
     }
 }

@@ -1,20 +1,22 @@
 ﻿using BLAZAM.Common.Models.Database.Templates;
 using BLAZAM.Server.Shared.UI.Settings;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
 using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Server.Shared.UI
 {
     public class TemplateComponent : ValidatedForm
     {
-        private List<DirectoryTemplate> templates = new();
+        protected MudTabs? Tabs;
+        private IEnumerable<DirectoryTemplate> templates = new List<DirectoryTemplate>();
         private string? selectedCategory;
         private DirectoryTemplate selectedTemplate;
 
         protected SetHeader? Header { get; set; }
 
 
-        protected List<DirectoryTemplate> Templates
+        protected IEnumerable<DirectoryTemplate> Templates
         {
             get
             {
@@ -26,14 +28,14 @@ namespace BLAZAM.Server.Shared.UI
             }
             set => templates = value;
         }
-        protected List<string?> TemplateCategories { get; private set; }
+        protected IEnumerable<string?> TemplateCategories { get; private set; }
         protected DirectoryTemplate SelectedTemplate
         {
             get => selectedTemplate; set
             {
 
                 selectedTemplate = value;
-                Header?.OnRefreshRequested.Invoke();
+                Header?.OnRefreshRequested?.Invoke();
 
             }
 
@@ -44,7 +46,7 @@ namespace BLAZAM.Server.Shared.UI
             set
             {
                 selectedCategory = value;
-                Header?.OnRefreshRequested.Invoke();
+                Header?.OnRefreshRequested?.Invoke();
             }
         }
         protected override async Task OnInitializedAsync()
@@ -55,6 +57,7 @@ namespace BLAZAM.Server.Shared.UI
 
         protected async Task FetchTemplates()
         {
+            if(Context==null) return;
             var temp = await Context.DirectoryTemplates.OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
             if (temp != null)
                 Templates = temp;
@@ -62,11 +65,11 @@ namespace BLAZAM.Server.Shared.UI
             if (cats != null)
             {
                 TemplateCategories = cats;
-                TemplateCategories.Insert(0, "All");
-                SelectedCategory = TemplateCategories[0];
+                TemplateCategories = TemplateCategories.Prepend("All");
+                SelectedCategory = TemplateCategories.FirstOrDefault();
             }
             await InvokeAsync(StateHasChanged);
-            Header?.OnRefreshRequested.Invoke();
+            Header?.OnRefreshRequested?.Invoke();
         }
 
     }
