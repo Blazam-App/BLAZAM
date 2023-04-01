@@ -5,6 +5,7 @@ using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Security;
 using System.Security.AccessControl;
@@ -24,11 +25,20 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
                 if (SamAccountName == null) throw new ApplicationException("samaccount name not found!");
                 if (DirectorySettings == null) throw new ApplicationException("Directory settings not found when trying to change directory user password");
+                //using (PrincipalContext pContext = new PrincipalContext(
+                //    ContextType.Domain,
+                //    DirectorySettings.FQDN,
+                //    DirectorySettings.Username,
+                //    Encryption.Instance.DecryptObject<string>(DirectorySettings.Password)))
+                //{
+
                 using (PrincipalContext pContext = new PrincipalContext(
-                    ContextType.Domain,
-                    DirectorySettings.FQDN,
-                    DirectorySettings.Username,
-                    Encryption.Instance.DecryptObject<string>(DirectorySettings.Password)))
+                   ContextType.Domain,
+                   DirectorySettings.ServerAddress+":"+DirectorySettings.ServerPort,
+                   DirectorySettings.ApplicationBaseDN,
+                   ContextOptions.Negotiate | ContextOptions.SecureSocketLayer,
+                   DirectorySettings.Username,
+                   Encryption.Instance.DecryptObject<string>(DirectorySettings.Password)))
                 {
                     UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
                     if (up != null)

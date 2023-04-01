@@ -31,6 +31,7 @@
         </FieldLabel>
         <ChildContent>
             <MudTextField Label="Password"
+                AutoFocus=true
                           HelperText="Must be 6 characters or longer containing at least one letter,numer and special character."
                           InputType="InputType.Password"
                           @bind-Value=settings.AdminPassword />
@@ -56,11 +57,9 @@
     [Parameter]
     public EventCallback StepCompleted { get; set; }
 
-    private string errorText = "";
-    private string showError = "d-none";
     public string adminPassword = "";
     string confirmedPassword;
-    AuthenticationSettings settings;
+    AuthenticationSettings settings=new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -84,8 +83,8 @@
         }
         catch (Exception ex)
         {
-            errorText = ex.Message + " " + ex.InnerException?.Message;
-            showError = "";
+            MessageService.Error(ex.Message + " " + ex.InnerException?.Message);
+            
 
         }
         await InvokeAsync(StateHasChanged);

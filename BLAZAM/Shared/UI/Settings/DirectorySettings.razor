@@ -13,7 +13,8 @@
         @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin" && Program.InstallationCompleted)
         {
 
-            <MudTextField Label="@SettingsLocalization["Server"]"
+            <MudTextField  Label="@SettingsLocalization["Server"]"
+                      AutoFocus=true
                       HelperText="Can be your domain name in most environments"
                       Value=@("Private")
                             Disabled />

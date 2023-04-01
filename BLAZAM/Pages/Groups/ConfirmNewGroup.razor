@@ -1,0 +1,34 @@
+@inherits AppComponentBase
+<AppPageTitle>Confirm Group Creation</AppPageTitle>
+
+@if (Group != null)
+{
+    <MudCard>
+        @Group.ADSPath
+        
+    </MudCard>
+    <MudButton Color=Color.Success OnClick="CommitChanges">Create...</MudButton>
+}
+@code {
+
+#nullable disable warnings
+
+    
+
+    [Parameter]
+    public EventCallback<IADGroup> Confirmed { get; set; }
+
+    [Parameter]
+    public IADGroup Group { get; set; }
+
+    async Task CommitChanges()
+    {
+        if (await MessageService.Confirm("Are you sure you want to create this OU?", "Create OU"))
+        {
+            Group.CommitChanges();
+            SnackBarService.Success("Group created");
+            await Confirmed.InvokeAsync(Group);
+            Nav.NavigateTo("/groups/create",true);
+        }
+    }
+}

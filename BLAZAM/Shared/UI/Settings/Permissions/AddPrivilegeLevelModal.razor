@@ -1,6 +1,6 @@
 ﻿@inherits AppModal
-<MudMessageBox @ref="Modal">
-            <ModalTitle>Add Delegate</ModalTitle>
+<MudDialog @ref="Modal">
+            <MudText>Add Delegate</MudText>
             <AppCloseButton />
             <Row>
                 
@@ -21,7 +21,7 @@
             </Row>
 
 
-</MudMessageBox>
+</MudDialog>
 @code {
 
     IDirectoryEntryAdapter? selectedDelegate;

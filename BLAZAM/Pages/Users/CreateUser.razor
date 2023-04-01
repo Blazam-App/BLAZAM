@@ -10,6 +10,8 @@
                 Template
             </TabContent>
             <ChildContent>
+                @if (Templates != null && Templates.Count() > 0)
+            {
                 <MudSelectList Values="TemplateCategories"
                                @bind-Value=SelectedCategory />
 
@@ -21,11 +23,20 @@
                         }
                     </MudList>
                 </MudPaper>
+            }
+            else
+            {
+                <MudPaper Width="300px">
+                    <MudText>There are no templates available</MudText>
+                    <AuthorizeView Roles="@UserRoles.SuperAdmin">
+                        <MudLink Href="/templates">Create One</MudLink>
 
+                    </AuthorizeView>
+                </MudPaper>
+            }
+            <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true;})">Custom</MudButton>
 
-                <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true;selectedStep=3;})">Custom</MudButton>
-
-                <MudButton Color=Color.Success OnClick="@(()=>{selectedStep=1;})">Next</MudButton>
+            <MudButton Disabled=@(SelectedTemplate is null && custom!=true) Color=Color.Success OnClick="@(()=>{if(custom==true)selectedStep=3;else selectedStep=1;})">Next</MudButton>
             </ChildContent>
 
         </MudTabPanel>
@@ -74,7 +85,7 @@
 
 
                 <MudButton Color=Color.Primary OnClick="@(()=>{selectedStep=0;})">Back</MudButton>
-                <MudButton Color=Color.Success OnClick="@(()=>{CreateCustomUser();selectedStep=4;})">Next</MudButton>
+            <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()&& selectedOU!=null) Color=Color.Success OnClick="@(()=>{CreateCustomUser();selectedStep=4;})">Next</MudButton>
 
 
             </ChildContent>

@@ -13,6 +13,9 @@ namespace BLAZAM.Server.Data.Services
     {
 
         //User Actions
+        public const string Password_Changed = "Password Changed";
+
+
         public const string User_Searched = "User Searched";
         public const string User_Enabled = "User Enabled";
         public const string User_Disabled = "User Disabled";
@@ -212,6 +215,9 @@ namespace BLAZAM.Server.Data.Services
         }
 
         public override async Task<bool> Searched(IDirectoryEntryAdapter searchedUser) => await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.User_Searched, searchedUser);
+
+        public async Task<bool> PasswordChanged(IDirectoryEntryAdapter searchedUser,bool requirePasswordChanged=false) => await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.Password_Changed, searchedUser,null,"requirePasswordChange="+requirePasswordChanged);
+
 
         public override async Task<bool> Created(IDirectoryEntryAdapter newUser)
         {

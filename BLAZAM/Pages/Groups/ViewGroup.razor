@@ -114,26 +114,13 @@
     @if (Group.HasMembers)
     {
         <Section Title="Members">
-            <MudDataGrid Elevation=0 Items="@Group.Members.Where(m=>m.CanRead)" Filterable="false" SortMode="@SortMode.None" Groupable="false">
-                <Columns>
-                    <PropertyColumn Property="x => x.ObjectType" Title="Type" />
-                    <TemplateColumn Context="templateContext">
-                        <HeaderTemplate>
-                            Name
-                        </HeaderTemplate>
-                        <CellTemplate Context="cellContext">
-                            <MudLink Href="@cellContext.Item.SearchUri">
-                                @cellContext.Item.CanonicalName
-                            </MudLink>
-                        </CellTemplate>
-                    </TemplateColumn>
-                </Columns>
-            </MudDataGrid>
+            <GroupMembersDataGrid Group="Group"/>
+            
         </Section>
         if (Group.Members.Where(m => !m.CanRead).Count() > 0)
         {
             <MudAlert Class="mud-alert-filled-info">
-                The user is in more groups you don't have access to
+                The group has more members you don't have access to
             </MudAlert>
         }
     }

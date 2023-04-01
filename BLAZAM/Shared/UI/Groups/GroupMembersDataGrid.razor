@@ -1,0 +1,21 @@
+<MudDataGrid Elevation=0 Items="@Group.Members.Where(m=>m.CanRead)" Filterable="false" SortMode="@SortMode.None" Groupable="false">
+    <Columns>
+        <PropertyColumn Property="x => x.ObjectType" Title="Type" />
+        <TemplateColumn Context="templateContext">
+            <HeaderTemplate>
+                Name
+            </HeaderTemplate>
+            <CellTemplate Context="cellContext">
+                <MudLink Href="@cellContext.Item.SearchUri">
+                    @cellContext.Item.CanonicalName
+                </MudLink>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+
+@code{
+    [Parameter]
+    public IADGroup Group{ get; set; }
+}

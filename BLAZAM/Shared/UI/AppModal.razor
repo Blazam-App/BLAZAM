@@ -1,93 +1,32 @@
-﻿@inherits MudMessageBox
-<MudMessageBox OnCancel="OnClosing" Title=@Title @ref="Modal" YesText="@YesText" OnYes="@((val)=>{
-OnYes.InvokeAsync(val);
-})">
-    <MessageContent>
-        <MudText Color="Color">
-            <CascadingValue Value="Modal">
-                @ChildContent
-            </CascadingValue>
+﻿@inherits MudDialog
+<MudDialog @ref="Modal">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            @*<MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1" />*@
+            @Title
+            <AppCloseButton Style="float:right;" OnClick="Hide"/>
         </MudText>
-    </MessageContent>
-</MudMessageBox>
-@code {
-    #nullable disable warnings
-
-    [Inject]
-    protected AppSnackBarService NotificationService { get; set; }
-    /// <summary>
-    /// The modal's  databse connection
-    /// </summary>
-    [Parameter]
-    public IDatabaseContext? Context { get; set; }
-    /// <summary>
-    /// If set to false, will prevent this modal from closing via the UI
-    /// </summary>
-    [Parameter]
-    public bool AllowClose { get; set; } = true;
-
-    [Parameter]
-    public Color Color { get; set; } = Color.Default;
-
-    /// <summary>
-    /// The modal content. By default, there is no content
-    /// </summary>
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
-    /// <summary>
-    /// A reference to this modal
-    /// </summary>
-    [CascadingParameter]
-    protected MudMessageBox? Modal { get; set; }
-
-    [Parameter]
-    public EventCallback<MudMessageBox>? ModalChanged { get; set; }
-
-    bool _isShown = false;
-    /// <summary>
-    /// Indicates whether this modal is currently shown
-    /// </summary>
-    [Parameter]
-    public bool IsShown
-    {
-        get => _isShown; set
+    </TitleContent>
+    <DialogContent>
+        <CascadingValue Value="this">
+            <MudContainer Class="pa-4">
+                    @ChildContent
+            </MudContainer>
+        </CascadingValue>
+    </DialogContent>
+    <DialogActions>
+        @if (!CancelText.IsNullOrEmpty())
         {
-            if (value == _isShown) return;
-            _isShown = value;
-            IsShownChanged.InvokeAsync(value);
+            <MudButton OnClick="@(()=>{OnCancel.Invoke();})">@CancelText</MudButton>
+
         }
-    }
-
-    [Parameter]
-    public EventCallback<bool> IsShownChanged { get; set; }
-
-   
-    /// <summary>
-    /// Show this modal
-    /// </summary>
-    public async Task<bool?> Show()
-    {
-       
-        IsShown = true;
-        return await Modal?.Show();
-    }
-    /// <summary>
-    /// Hide this modal
-    /// </summary>
-    public void Hide()
-    {
-        IsShown = false;
-
-        Modal?.Close();
-    }
-    private async Task OnClosing(bool modalResult)
-    {
-        if (!AllowClose)
-        {
-            Modal.Show();
+        @{
+            var yesDisabled = !YesEnabled.Invoke();
         }
-        else
-        OnCancel.InvokeAsync(modalResult);
-    }
+        <MudButton Disabled=@yesDisabled Color="Color.Primary" OnClick="@(()=>{OnYes.Invoke();})">@YesText</MudButton>
+    </DialogActions>
+</MudDialog>
 
-}
+
+
+

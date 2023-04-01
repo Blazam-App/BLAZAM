@@ -41,27 +41,30 @@
                 {
                     <MudIconButton OnClick=Unlock Icon=@Icons.Material.Filled.Lock />
                 }
-                <MudHidden Breakpoint="Breakpoint.Md" Invert>
+                <MudHidden Breakpoint="Breakpoint.Sm" Invert>
                 <MudToolBar Style="height:32px" DisableGutters Dense>
                     @if ((User.Enabled && User.CanDisable) || (User.Disabled && User.CanEnable))
 
-                    {
-                    <MudToggleIconButton @bind-Toggled="@User.Enabled"
-                                         Icon="@Icons.Material.Filled.Person"
+                        {
+                            <MudToggleIconButton @bind-Toggled="@User.Enabled"
+                                         Icon="@Icons.Material.Filled.PersonOff"
+                                         Color="Color.Error"
                                          Title="Enable"
-                                         ToggledIcon="@Icons.Material.Filled.PersonOff"
+                                         ToggledIcon="@Icons.Material.Filled.Person"
+                                         ToggledColor="Color.Success"
                                          ToggledTitle="Disable" />
-                    }
-                    @*<DynamicMudInput Color=Color.Success Label="Account Enabled" @bind-Value=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />*@
-                    @*<MudSwitch Color=Color.Success Label="Account Enabled" @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />*@
+                        }
+                        @*<DynamicMudInput Color=Color.Success Label="Account Enabled" @bind-Value=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />*@
+                        @*<MudSwitch Color=Color.Success Label="Account Enabled" @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />*@
 
 
-                    @if (User.CanEdit)
+                        @if (User.CanEdit)
                         {
                             <MudToggleIconButton @bind-Toggled="@EditMode"
                                          Icon="@Icons.Material.Filled.Edit"
                                          Title="Edit"
                                          ToggledIcon="@Icons.Material.Filled.EditOff"
+                                         ToggledColor="Color.Error"
                                          ToggledTitle="End Edit" />
 
                         }
@@ -106,6 +109,7 @@
                         @if (User.CanDelete)
                         {
                             <MudIconButton OnClick="@DeleteUser"
+                                   Color="Color.Error"
                                    Icon="@Icons.Material.Filled.Delete"
                                            aria-label="change password" />
 
@@ -114,55 +118,58 @@
                 </MudHidden>
                 <MudSpacer />
                 <PageSpecificChat />
-                <MudMenu Class="align-self-end" StartIcon="@Icons.Material.Filled.Settings">
-                    @if ((User.Enabled && User.CanDisable) || (User.Disabled && User.CanEnable))
-                    {
-                        <MudMenuItem>
-                            <MudSwitch Color=Color.Success Label="Account Enabled" @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />
+                <MudHidden Breakpoint="Breakpoint.Sm">
 
-                    </MudMenuItem>
-                    }
-                    @if (User.CanEdit)
-                    {
-                        <MudMenuItem OnClick="ToggleEditMode">Edit...</MudMenuItem>
-                    }
-                    @if (User.LockedOut && User.CanUnlock)
-                    {
-                        <MudMenuItem OnClick="Unlock">Unlock...</MudMenuItem>
-                    }
-                    @if (User.CanAssign)
-                    {
-                        RefreshUserGroups();
-                        <MudMenuItem OnClick="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
-                    }
-                    @if (User.CanDisable)
-                    {
-                        <MudMenuItem OnClick="@(()=>{ChangePasswordModal?.Show();})">Change Password...</MudMenuItem>
-                    }
-                    @if (User.CanRename)
-                    {
-                        <MudMenuItem OnClick="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
-                        @if (User.ThumbnailPhoto == null)
+                    <MudMenu Class="align-self-end" StartIcon="@Icons.Material.Filled.Settings">
+                        @if ((User.Enabled && User.CanDisable) || (User.Disabled && User.CanEnable))
                         {
-                            <MudMenuItem OnClick="@(()=>{UploadThumbnailModal?.Show();})">Upload Photo...</MudMenuItem>
+                            <MudMenuItem>
+                                <MudSwitch Color=Color.Success Label="Account Enabled" @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />
+
+                            </MudMenuItem>
+                        }
+                        @if (User.CanEdit)
+                        {
+                            <MudMenuItem OnClick="ToggleEditMode">Edit...</MudMenuItem>
+                        }
+                        @if (User.LockedOut && User.CanUnlock)
+                        {
+                            <MudMenuItem OnClick="Unlock">Unlock...</MudMenuItem>
+                        }
+                        @if (User.CanAssign)
+                        {
+                            RefreshUserGroups();
+                            <MudMenuItem OnClick="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
+                        }
+                        @if (User.CanDisable)
+                        {
+                            <MudMenuItem OnClick="@(()=>{ChangePasswordModal?.Show();})">Change Password...</MudMenuItem>
+                        }
+                        @if (User.CanRename)
+                        {
+                            <MudMenuItem OnClick="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
+                            @if (User.ThumbnailPhoto == null)
+                            {
+                                <MudMenuItem OnClick="@(()=>{UploadThumbnailModal?.Show();})">Upload Photo...</MudMenuItem>
+
+                            }
+                            else
+                            {
+                                <MudMenuItem OnClick="@(()=>{UploadThumbnailModal?.Show();})">Replace Photo...</MudMenuItem>
+
+                            }
 
                         }
-                        else
+                        @if (User.CanMove)
                         {
-                            <MudMenuItem OnClick="@(()=>{UploadThumbnailModal?.Show();})">Replace Photo...</MudMenuItem>
-
+                            <MudMenuItem OnClick="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
                         }
-
-                    }
-                    @if (User.CanMove)
-                    {
-                        <MudMenuItem OnClick="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
-                    }
-                    @if (User.CanDelete)
-                    {
-                        <MudMenuItem OnClick="@DeleteUser">Delete...</MudMenuItem>
-                    }
-                </MudMenu>
+                        @if (User.CanDelete)
+                        {
+                            <MudMenuItem OnClick="@DeleteUser">Delete...</MudMenuItem>
+                        }
+                    </MudMenu>
+                </MudHidden>
             </MudStack>
 
 
@@ -196,7 +203,7 @@
                         <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) User="User" />
                     }
                 </AppModal>
-                <AppModal Title="Change Password" @ref=@ChangePasswordModal>
+                <AppModal @ref=@ChangePasswordModal>
                     @if (ChangePasswordModal?.IsShown == true)
                     {
                         <ChangeUserPasswordModalContent User="User" />
@@ -288,7 +295,7 @@
                                     <MudStack>
                                         <MudText Typo="Typo.subtitle2">Groups</MudText>
 
-                                        <MudList Dense=true Clickable="true">
+                                        <MudList Dense=true Clickable="true" Style="max-height:200px; overflow-y:auto;">
                                             @foreach (ADGroup g in User.MemberOf.Where(group => group.CanRead))
                                             {
                                                 if (g.CanRead)

@@ -17,6 +17,11 @@ namespace BLAZAM.Common.Data.Database
 {
     public class DatabaseContextBase : DbContext, IDatabaseContext
     {
+
+        public static AppEvent OnMigrationApplied { get; set; }
+        public static AppEvent OnMigrationFailed { get; set; }
+
+
         /// <summary>
         /// The connection string as set in the ASP Net Core appsettings.json
         /// <para>This should be set before any attempts to connect.</para>
@@ -48,6 +53,7 @@ namespace BLAZAM.Common.Data.Database
         }
         static IEnumerable<string> _appliedMigrations;
         private string _dbType;
+        
 
         public virtual IEnumerable<string> AppliedMigrations
         {
@@ -623,7 +629,7 @@ namespace BLAZAM.Common.Data.Database
 
 
 
-        public DatabaseException DownReason { get; set; }
+        public static DatabaseException DownReason { get; set; }
 
 
 
@@ -741,6 +747,37 @@ namespace BLAZAM.Common.Data.Database
             }
             return ServiceConnectionState.Down;
 
+        }
+
+
+        /// <summary>
+        ///     Applies any pending migrations for the context to the database. Will create the database
+        ///     if it does not already exist.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///        If the migration fails, the <see cref="Status"/> will be set to <see cref="ServiceConnectionState.Down"/>
+        ///        </para>
+        ///     <para>
+        ///         See <see href="https://aka.ms/efcore-docs-migrations">Database migrations</see> for more information and examples.
+        ///     </para>
+        /// </remarks>
+        /// <param name="databaseFacade">The <see cref="DatabaseFacade" /> for the context.</param>
+
+        public virtual bool Migrate()
+        {
+            try
+            {
+                Database.Migrate();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
+                DownReason = new DatabaseException(ex.Message,ex);
+                OnMigrationFailed?.Invoke();
+                return false;
+            }
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
-﻿@page "/ou/create"
+﻿@page "/groups/create"
 @inherits TabbedAppComponentBase
 @attribute [Authorize]
-<AppPageTitle>Create OU</AppPageTitle>
+<AppPageTitle>Create Group</AppPageTitle>
 
 <Row>
     <MudTabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="selectedStep">
@@ -17,25 +17,44 @@
                             </NodeContent>*@
                         </OUTreeView>
 
-                    
+
+
+
+
+                    <MudTextField Label="Group Name" @bind-Value=@newGroupName />
+
 
                     
-
-                        <MudTextField Label="Organizational Unit Name" @bind-Value=@newOUName />
-
-
-                    
-                    <MudButton Disabled=@(newOU==null || newOUName.IsNullOrEmpty()) Color="Color.Primary" OnClick="CreateNewOU">Next</MudButton>
+                    <MudButton Disabled=@(parentOU==null || newGroupName.IsNullOrEmpty())
+                    Color="Color.Primary"
+                               OnClick="CreateNewGroup">Next</MudButton>
                 </MudText>
             </ChildContent>
             <TabContent>
                 Create
             </TabContent>
         </MudTabPanel>
-        <MudTabPanel Disabled=@(newOU==null || newOUName.IsNullOrEmpty())>
+        <MudTabPanel Disabled=@(newGroup==null || newGroupName.IsNullOrEmpty())>
             <ChildContent>
                 <MudText>
-                    <ConfirmNewOU OU="@newOU" Confirmed="OUCreated" />
+
+                    <GroupMembersDataGrid Group="newGroup" />
+
+
+
+
+                    <MudButton Color="Color.Primary" OnClick="@(()=>{selectedStep=2;})">Next</MudButton>
+                </MudText>
+            </ChildContent>
+            <TabContent>
+                Assign
+            </TabContent>
+        </MudTabPanel>
+        <MudTabPanel Disabled=@(newGroup==null || newGroupName.IsNullOrEmpty())>
+            <ChildContent>
+                <MudText>
+                    <ConfirmNewGroup Group="@newGroup" Confirmed="GroupCreated" />
+                    
                 </MudText>
             </ChildContent>
             <TabContent>
@@ -43,7 +62,6 @@
             </TabContent>
         </MudTabPanel>
     </MudTabs>
-    <MudText>@($"Active Index: {selectedStep}")</MudText>
    
 
 </Row>
@@ -61,11 +79,11 @@
 
     bool custom = false;
 
-    string newOUName;
+    string newGroupName;
     bool collapseVisible = false;
     List<DirectoryTemplate> templates;
     IADOrganizationalUnit? parentOU;
-    IADOrganizationalUnit? newOU;
+    IADGroup? newGroup;
 
     protected override async Task OnInitializedAsync()
     {
@@ -73,20 +91,6 @@
         templates = await Context?.DirectoryTemplates.ToListAsync();
         await InvokeAsync(StateHasChanged);
     }
-    /*
-    bool AllowStep(StepNavigationContext context)
-    {
-        switch (context.NextStepName)
-        {
-            case "stepConfigure":
-                return true;
-            case "stepConfirm":
-
-                return newOU != null;
-        }
-        return false;
-    }
-    */
     async void OUSelected(IADOrganizationalUnit ou)
     {
         if (parentOU == null)
@@ -100,11 +104,11 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    async void CreateNewOU()
+    async void CreateNewGroup()
     {
         LoadingData = true;
         await InvokeAsync(StateHasChanged);
-        newOU = parentOU.CreateOU(newOUName);
+        newGroup = parentOU.CreateGroup(newGroupName);
 
 
 
@@ -115,8 +119,8 @@
 
         await InvokeAsync(StateHasChanged);
     }
-    async Task OUCreated(IADOrganizationalUnit ou)
+    async Task GroupCreated(IADGroup ou)
     {
-        AuditLogger.OU.Created(ou);
+        AuditLogger.Group.Created(ou);
     }
 }
