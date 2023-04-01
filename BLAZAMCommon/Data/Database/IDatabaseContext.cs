@@ -43,8 +43,8 @@ namespace BLAZAM.Common.Data.Database
 
 
         DatabaseConnectionString? ConnectionString { get; }
-        DatabaseException DownReason { get; set; }
         ServiceConnectionState Status { get; }
 
+        bool Migrate();
     }
 }

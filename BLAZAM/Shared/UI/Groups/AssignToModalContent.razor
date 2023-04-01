@@ -1,13 +1,11 @@
 ﻿@inherits AppModalContent
 
 
-<Row Background="Background.Light" Color="Color.Dark">
-    
-            <ADAutoComplete Label="Group Name" SearchObjectType="ActiveDirectoryObjectType.Group"
+    <ADAutoComplete Label="Group Name" SearchObjectType="ActiveDirectoryObjectType.Group"
             @bind-SelectedResult=@Group/>
     
     
-            <ADAutoComplete Label="Copy Memberships From" SearchObjectType="ActiveDirectoryObjectType.All"
+            <ADAutoComplete  Label="Copy Memberships From" SearchObjectType="ActiveDirectoryObjectType.All"
                         @bind-SelectedResult=@copyFrom
                         CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
 
@@ -36,16 +34,11 @@
             </MudCard>
         }
     }
-</Row>
-<Row>
-    <MudButton Color="Color.Primary" OnClick="AssignToGroup">Add</MudButton>
-
-</Row>
 
 
 @code {
 
-#nullable disable warnings
+    #nullable disable warnings
     [Parameter]
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
 
@@ -55,12 +48,23 @@
     [Parameter]
     public IGroupableDirectoryAdapter DirectoryModel { get; set; }
 
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Modal.OnYes += AssignToGroup;
+        Modal.YesText = UserLocalization["Assign"];
+        Modal.Title = "Assign To";
+        Modal.YesEnabled = ValidateModal;
+    }
+
+
     IDirectoryEntryAdapter copyFrom;
     public IGroupableDirectoryAdapter CopyFrom { get => (IGroupableDirectoryAdapter)copyFrom; set => copyFrom = value; }
 
     new IDirectoryEntryAdapter Group { get; set; }
 
-    async Task AssignToGroup()
+    async void AssignToGroup()
     {
         if (Group is IADGroup group)
         {
@@ -83,5 +87,10 @@
 
             Close();
         }
+    }
+
+    protected override bool ValidateModal()
+    {
+        return (CopyFrom != null || Group != null);
     }
 }

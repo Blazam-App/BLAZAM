@@ -139,21 +139,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         public bool IsLoadingChildren { get; set; }
 
-        /// <summary>
-        /// Creates a new group under this OU. Note that the returned Directory object
-        /// must execute CommitChanges() to actually create the object in Active
-        /// Directory.
-        /// </summary>
-        /// <param name="containerName"></param>
-        /// <returns>An uncommited group</returns>
-        public IADGroup CreateGroup(string containerName)
-        {
-            IADGroup newOU = new ADGroup();
-
-            newOU.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim(), "group"), Directory);
-            newOU.NewEntry = true;
-            return newOU;
-        }
+     
 
         /// <summary>
         /// Creates a new OU under this OU. Note that the returned Directory object
@@ -187,6 +173,25 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             newUser.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim(), "user"),Directory);
             newUser.NewEntry = true;
             return newUser;
+
+        }
+
+        /// <summary>
+        /// Creates a new group under this OU. Note that the returned Directory object
+        /// must execute CommitChanges() to actually create the object in Active
+        /// Directory.
+        /// </summary>
+        /// <param name="containerName"></param>
+        /// <returns>An uncommited group</returns>
+        public IADGroup CreateGroup(string containerName)
+        {
+
+            IADGroup newGroup = new ADGroup();
+            if (DirectoryEntry == null)
+                DirectoryEntry = searchResult.GetDirectoryEntry();
+            newGroup.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim(), "group"), Directory);
+            newGroup.NewEntry = true;
+            return newGroup;
 
         }
         public override int GetHashCode()

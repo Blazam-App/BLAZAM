@@ -1,7 +1,4 @@
 ﻿@inherits AppModalContent
-<LoadingIndicator Visible=LoadingData>
-
-    <div Background="Background.Light" Color="Color.Dark">
         <Section Title=@UserLocalization["Name"]>
 
 
@@ -61,13 +58,9 @@
             
         
         }
-        <MudButton Disabled=SaveDisabled Color=Color.Primary OnClick="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
-    </div>
-</LoadingIndicator>
-
 @code {
 
-#nullable disable warnings
+    #nullable disable warnings
     private IADUser _privateUserInstance;
 
     [Parameter]
@@ -79,6 +72,10 @@
         await InvokeAsync(StateHasChanged);
         _privateUserInstance = Directory.Users.FindUserBySID(User.SID.ToSidString());
         SaveDisabled = false;
+        Modal.OnYes += SaveChanges;
+        Modal.YesText = UserLocalization["Rename User"];
+        Modal.Title = "Rename User";
+
         await InvokeAsync(StateHasChanged);
     }
 
@@ -88,7 +85,7 @@
         _privateUserInstance.DisplayName = newName;
 
     }
-    async Task SaveChanges()
+    async void SaveChanges()
     {
         if (Directory.Users.FindUsersByContainerName(_privateUserInstance.DisplayName, false, false) == null)
         {

@@ -1,6 +1,6 @@
 ﻿@page "/templates"
 @inherits TemplateComponent
-@attribute [Authorize(Roles=UserRoles.SuperAdmin)]
+@attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 <AppPageTitle>Templates</AppPageTitle>
 <SetHeader>
@@ -8,43 +8,52 @@
 <h3>Templates</h3>
 <SetHeader @ref=Header>
 
-    
-            <MudStack Row=true>
-                    <div >
-                        Templates
 
-                    </div>
+    <MudStack Row=true>
+        <div>
+            Templates
 
-                    <MudSelectList T="string"
-                                   Values="TemplateCategories"
-                                   @bind-Value="@SelectedCategory" />
-                  
+        </div>
 
-                    <MudSelectList
-                        T="@DirectoryTemplate"
-                        Values="@Templates"
-                        @bind-Value="@SelectedTemplate"
-                        />
-               
-                    <MudButton  Color=Color.Secondary  OnClick="@(()=>{SelectedTemplate = new();})" StartIcon="@Icons.Material.Filled.AddCard"/>
-                    @if (SelectedCategory != null && SelectedCategory != "All")
-                    {
-                        <MudButton OnClick=@(()=>{RenameModal.Show();}) Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.ChangeCircle"/>
-                    }
-                    @if (SelectedTemplate != null)
-                    {
-                        <MudButton OnClick=@(()=>{DuplicateTemplate(SelectedTemplate);}) Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.FileCopy" />
-                    }
+        <MudSelectList T="string"
+                       Values="TemplateCategories"
+                       @bind-Value="@SelectedCategory" />
 
 
-            </MudStack>
-     
+        <MudSelectList T="@DirectoryTemplate"
+                       Values="@Templates"
+                       @bind-Value="@SelectedTemplate" />
+        @if (Templates?.Count() > 0)
+        {
+            <MudButton Color=Color.Secondary OnClick="@(()=>{SelectedTemplate = new();})" StartIcon="@Icons.Material.Filled.AddCard" />
+
+        }else{
+            <MudTooltip Arrow=true IsVisible=@(Templates?.Count()<1) Text="Create your first template">
+
+                <MudButton Color=Color.Secondary OnClick="@(()=>{SelectedTemplate = new();})" StartIcon="@Icons.Material.Filled.AddCard" />
+
+            </MudTooltip>
+
+        }
+
+        @if (SelectedCategory != null && SelectedCategory != "All")
+        {
+            <MudButton OnClick=@(()=>{RenameModal.Show();}) Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.ChangeCircle" />
+        }
+        @if (SelectedTemplate != null)
+        {
+            <MudButton OnClick=@(()=>{DuplicateTemplate(SelectedTemplate);}) Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.FileCopy" />
+        }
+
+
+    </MudStack>
+
     <AppModal @ref=RenameModal Title="Rename Category">
-        
-            
-                <MudTextField Label="New Name"  @bind-Value=newCategoryName />
-            
-        
+
+
+        <MudTextField Label="New Name" @bind-Value=newCategoryName />
+
+
         <MudButton Color="Color.Primary" OnClick="RenameSelectedCategory">Save</MudButton>
     </AppModal>
 </SetHeader>

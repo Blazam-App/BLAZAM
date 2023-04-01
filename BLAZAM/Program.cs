@@ -495,14 +495,15 @@ namespace BLAZAM
 
             return await Task.Run(() => {
                 try
-                {
+                { 
                     using (var scope = AppInstance.Services.CreateScope())
                     {
                         var context = scope.ServiceProvider.GetRequiredService<AppDatabaseFactory>().CreateDbContext();
                         if (context != null && context.Status == ServiceConnectionState.Up)
                             if (context.IsSeeded() || force)
                                 if (context.Database.GetPendingMigrations().Count() > 0)
-                                    context.Database.Migrate();
+                                    context.Migrate();
+                                    //context.Database.Migrate();
 
                     }
                     return true;

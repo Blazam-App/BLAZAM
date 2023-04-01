@@ -8,6 +8,7 @@
                  SearchFuncWithCancel="@GetResults"
                  DebounceInterval=500
                  ResetValueOnEmptyText="true"
+                 Validation="@Validation"
                  CoerceText="@AllowCustomInput" CoerceValue="false"
                       Clearable
                  ToStringFunc="item=>item?.CanonicalName"
@@ -75,8 +76,9 @@
 
 
 @code {
-#nullable disable warnings
-
+    #nullable disable warnings
+    [Parameter]
+    public Func<object> Validation{ get; set; }
     [Parameter]
     public string? Label { get; set; }
     [Parameter]

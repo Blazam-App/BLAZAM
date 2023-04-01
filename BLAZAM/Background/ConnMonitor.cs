@@ -21,14 +21,14 @@ namespace BLAZAM.Server.Background
         public bool RedirectToHttps { get; set; }
         public ServiceConnectionState? DatabaseConnected { get => DatabaseMonitor.Status; }
         public ServiceConnectionState? DirectoryConnected { get => DirectoryMonitor.Status; }
-
+        private bool _failedMigration;
         /// <summary>
         /// Indicated whether the application is ready to serve users.
         /// </summary>
         /// 
         public ServiceConnectionState AppReady
         {
-            get => _appReady; protected set
+            get { return _failedMigration==true?ServiceConnectionState.Down:_appReady; } protected set
             {
                 if (_appReady == value) return;
                 _appReady = value;
@@ -62,10 +62,10 @@ namespace BLAZAM.Server.Background
                 {
                     OnAppReadyChanged?.Invoke(newStatus);
                     AppReady = newStatus;
-                    if(newStatus== ServiceConnectionState.Down && _context.DownReason!=null)
+                    if(newStatus== ServiceConnectionState.Down && DatabaseContextBase.DownReason!=null)
                     {
-                        Oops.ErrorMessage = _context.DownReason.GetType().FullName;
-                        Oops.HelpMessage = _context.DownReason.Message;
+                        Oops.ErrorMessage = DatabaseContextBase.DownReason.GetType().FullName;
+                        Oops.HelpMessage = DatabaseContextBase.DownReason.Message;
                     }
                 }
 
@@ -74,6 +74,11 @@ namespace BLAZAM.Server.Background
             DirectoryMonitor.OnConnectedChanged += ((ServiceConnectionState newStatus) =>
             {
                 OnDirectoryConnectionChanged?.Invoke(newStatus);
+            });
+
+            DatabaseContextBase.OnMigrationFailed += (() => {
+                Oops.Exception = DatabaseContextBase.DownReason;
+                _failedMigration = true;
             });
             MonitorDatabaseValues();
         }

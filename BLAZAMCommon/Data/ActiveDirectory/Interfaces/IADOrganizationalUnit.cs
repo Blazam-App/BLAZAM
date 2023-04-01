@@ -21,6 +21,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         IQueryable<IADUser> ChildUsers { get; }
         bool IsLoadingChildren { get; set; }
 
+        IADGroup CreateGroup(string containerName);
         IADUser CreateUser(string containerName);
         IADOrganizationalUnit CreateOU(string containerName);
         Task<IEnumerable<IADOrganizationalUnit>> GetChildrenAsync();

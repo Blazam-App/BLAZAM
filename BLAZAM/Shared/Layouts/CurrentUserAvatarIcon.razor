@@ -27,7 +27,7 @@ else
     {
         get
         {
-            if (CurrentUserState?.Username.IsNullOrEmpty() == true) return "background-color:#0c13a7";
+            if (CurrentUserState == null) return "background-color:#0c13a7";
             int usernameHash = CurrentUserState.Username.GetAppHashCode();
             byte[] usernameHashBytes = usernameHash.ToByteArray(3);
             string hexColor = "background-color:#";

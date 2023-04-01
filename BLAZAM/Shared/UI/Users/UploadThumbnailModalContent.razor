@@ -23,7 +23,6 @@
 
 
 
-    <MudButton Disabled=LoadingData Color=Color.Primary OnClick="SaveChanges">@UserLocalization["Save Photo"]</MudButton>
 </div>
 @code {
     byte[]? newThumbnail;
@@ -33,6 +32,10 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        Modal.OnYes += SaveChanges;
+        Modal.YesText = UserLocalization["Save Photo"];
+        Modal.Title = "Change Thumbnail";
+        Modal.YesEnabled = ValidateModal;
         await InvokeAsync(StateHasChanged);
     }
     private async void LoadIcon(IBrowserFile e)
@@ -53,7 +56,7 @@
     }
 
 
-    async Task SaveChanges()
+    async void SaveChanges()
     {
         //User.CommitChanges();
         try
@@ -70,6 +73,9 @@
         Close();
 
     }
-
+    protected override bool ValidateModal()
+    {
+        return newThumbnail != null;
+    }
 
 }

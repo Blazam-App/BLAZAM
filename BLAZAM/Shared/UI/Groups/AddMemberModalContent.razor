@@ -46,7 +46,14 @@
     [Parameter]
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
 
-
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Modal.OnYes += AssignToGroup;
+        Modal.YesText = UserLocalization["Assign"];
+        Modal.Title = "Assign Member";
+        Modal.YesEnabled = ValidateModal;
+    }
 
     IDirectoryEntryAdapter? copyFrom;
 
@@ -54,7 +61,7 @@
 
     IDirectoryEntryAdapter Entry { get; set; }
 
-    async Task AssignToGroup()
+    async void AssignToGroup()
     {
         if (Entry is IGroupableDirectoryAdapter groupableEntry)
         {
@@ -69,7 +76,7 @@
             foreach (var member in CopyFrom.UserMembers)
             {
                 Group.AssignMember(member);
-               
+
             }
             SnackBarService.Warning("The selected members have been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
             await ModelChanged.InvokeAsync();
@@ -77,4 +84,9 @@
             Close();
         }
     }
+    protected override bool ValidateModal()
+    {
+        return (Entry != null && CopyFrom != null);   
+    }
+
 }

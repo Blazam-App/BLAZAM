@@ -93,8 +93,8 @@
     }
     private async void ShowAddGroup()
     {
-        bool? result = await addGroupModal.Show();
-        if (result == true)
+        var result =  await addGroupModal.Show().Result;
+        if (!result.Canceled)
         {
             if (await addDelegateContent.AddGroup())
             {

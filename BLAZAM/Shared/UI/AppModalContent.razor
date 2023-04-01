@@ -2,7 +2,8 @@
 
 @code {
     #nullable disable warnings
-    [CascadingParameter] protected MudMessageBox Modal { get; set; }
+
+    [CascadingParameter] protected AppModal Modal { get; set; }
     [Parameter]
     public EventCallback ModelChanged { get; set; }
     /// <summary>
@@ -13,9 +14,23 @@
         InvokeAsync(StateHasChanged);
 
     }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        Modal?.RefreshView();
+
+    }
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        
     }
+
+    protected virtual bool ValidateModal()
+    {
+        throw new NotImplementedException("The ValidateModal method has not been overridden!");
+    }
+
+
 }
