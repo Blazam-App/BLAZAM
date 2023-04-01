@@ -1,5 +1,5 @@
 ﻿@inherits AppModalContent
-<MudStack Row>
+<MudStack Row=true>
 
     <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
                     @bind-SelectedResult=@selectedDelegate
@@ -16,7 +16,7 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
                      Disabled=Program.InDemoMode />
 
 </MudStack>
-<MudStack Row>
+<MudStack Row=true>
     <MudButton Color="Color.Primary" OnClick="AddGroup">Add</MudButton>
 
 </MudStack>

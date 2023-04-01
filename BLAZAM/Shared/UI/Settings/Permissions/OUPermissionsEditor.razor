@@ -24,8 +24,10 @@
     @if (NewMapping != null)
     {
         <PermissionMapEditor MappingsChanged="@(()=>{RefreshData();})" Map="NewMapping" />
-    }
+    }else
+    {
     <MudButton OnClick="AddNewMapping" Color="Color.Success">Add new mapping</MudButton>
+    }
 </MudCard>
 
 

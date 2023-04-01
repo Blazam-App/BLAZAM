@@ -16,7 +16,7 @@
 
             <MudStack Row Class="mud-width-full">
 
-            <MudStack Row>
+            <MudStack Row=true>
                 @{
                         var displayNameTooltipText = "";
                         if (!User.NewEntry)
@@ -43,13 +43,15 @@
                 }
                 <MudHidden Breakpoint="Breakpoint.Md" Invert>
                 <MudToolBar Style="height:32px" DisableGutters Dense>
+                    @if ((User.Enabled && User.CanDisable) || (User.Disabled && User.CanEnable))
 
+                    {
                     <MudToggleIconButton @bind-Toggled="@User.Enabled"
                                          Icon="@Icons.Material.Filled.Person"
                                          Title="Enable"
                                          ToggledIcon="@Icons.Material.Filled.PersonOff"
                                          ToggledTitle="Disable" />
-
+                    }
                     @*<DynamicMudInput Color=Color.Success Label="Account Enabled" @bind-Value=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />*@
                     @*<MudSwitch Color=Color.Success Label="Account Enabled" @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />*@
 
@@ -111,14 +113,15 @@
                     </MudToolBar>
                 </MudHidden>
                 <MudSpacer />
-                <PageSpecificChat/>
+                <PageSpecificChat />
                 <MudMenu Class="align-self-end" StartIcon="@Icons.Material.Filled.Settings">
-
-                    <MudMenuItem>
-                        <MudSwitch Color=Color.Success Label="Account Enabled" @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />
+                    @if ((User.Enabled && User.CanDisable) || (User.Disabled && User.CanEnable))
+                    {
+                        <MudMenuItem>
+                            <MudSwitch Color=Color.Success Label="Account Enabled" @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />
 
                     </MudMenuItem>
-
+                    }
                     @if (User.CanEdit)
                     {
                         <MudMenuItem OnClick="ToggleEditMode">Edit...</MudMenuItem>
@@ -243,50 +246,80 @@
                                     }
                                 </MudCard>
 
-                                <MudStack Row>
-                                <MudText Typo="Typo.subtitle2">Created:</MudText>
-                                <MudSpacer />
-                                <MudTooltip Text="@User.Created?.TimeOfDay.ToString()">
-                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.Created?.ToShortDateString()</MudText>
-                                </MudTooltip>
-                            </MudStack>
-                            <MudStack Row>
-
-                                <MudText Typo="Typo.subtitle2">Last Change:</MudText>
-                                <MudSpacer />
-                                <MudTooltip Text="@User.LastChanged?.TimeOfDay.ToString()">
-
-                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.LastChanged?.ToShortDateString()</MudText>
-                                </MudTooltip>
-                            </MudStack>
-                            @if (User.LockedOut)
-                                {
-                                    <MudStack Row>
-                                    <MudText Typo="Typo.subtitle2">Locked Out Time:</MudText>
+                                <MudStack Row=true>
+                                    <MudText Typo="Typo.subtitle2">Created:</MudText>
                                     <MudSpacer />
-                                    <MudTooltip Text="@User.LockoutTime?.TimeOfDay.ToString()">
-
-                                        <MudText Style="text-align:end;" Typo="Typo.caption">@User.LockoutTime?.ToShortDateString()</MudText>
+                                    <MudTooltip Text="@User.Created?.TimeOfDay.ToString()">
+                                        <MudText Style="text-align:end;" Typo="Typo.caption">@User.Created?.ToShortDateString()</MudText>
                                     </MudTooltip>
-
                                 </MudStack>
+                                <MudStack Row=true>
+
+                                    <MudText Typo="Typo.subtitle2">Last Change:</MudText>
+                                    <MudSpacer />
+                                    <MudTooltip Text="@User.LastChanged?.TimeOfDay.ToString()">
+
+                                        <MudText Style="text-align:end;" Typo="Typo.caption">@User.LastChanged?.ToShortDateString()</MudText>
+                                    </MudTooltip>
+                                </MudStack>
+                                @if (User.LockedOut)
+                                {
+                                    <MudStack Row=true>
+                                        <MudText Typo="Typo.subtitle2">Locked Out Time:</MudText>
+                                        <MudSpacer />
+                                        <MudTooltip Text="@User.LockoutTime?.TimeOfDay.ToString()">
+
+                                            <MudText Style="text-align:end;" Typo="Typo.caption">@User.LockoutTime?.ToShortDateString()</MudText>
+                                        </MudTooltip>
+
+                                    </MudStack>
                                 }
-                                <MudStack Row>
-                                <MudText Typo="Typo.subtitle2">OU:</MudText>
-                                <MudSpacer />
+                                <MudStack Row=true>
+                                    <MudText Typo="Typo.subtitle2">OU:</MudText>
+                                    <MudSpacer />
 
-                                <MudText Style="text-align:end;" Typo="Typo.caption">@User.OU.ToPrettyOu()</MudText>
-                            </MudStack>
-
-                        </Section>
-                    </MudItem>
-                    <MudItem xs=12 md="9">
-                        <MudStack>
-
-                            <Section FullWidth=false Title=@UserLocalization["Name"]>
+                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.OU.ToPrettyOu()</MudText>
+                                </MudStack>
 
 
-                                <MudStack Row Class="@_fieldMudStackClasses">
+
+                                @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
+                                {
+                                    <MudStack>
+                                        <MudText Typo="Typo.subtitle2">Groups</MudText>
+
+                                        <MudList Dense=true Clickable="true">
+                                            @foreach (ADGroup g in User.MemberOf.Where(group => group.CanRead))
+                                            {
+                                                if (g.CanRead)
+                                                {
+                                                    <MudListItem Text="@g.CanonicalName" OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})" />
+
+                                                }
+
+                                            }
+                                            @if (User.MemberOf.Where(group => !group.CanRead).Count() > 0)
+                                            {
+                                                <MudListItem Text="The user is in more groups you don't have access to" />
+                                            }
+
+                                        </MudList>
+                                    </MudStack>
+
+
+
+                                }
+
+
+                            </Section>
+                        </MudItem>
+                        <MudItem xs=12 md="9">
+                            <MudStack>
+
+                                <Section FullWidth=false Title=@UserLocalization["Name"]>
+
+
+                                    <MudStack Row Class="@_fieldMudStackClasses">
 
                                     @if (User.CanReadField(ActiveDirectoryFields.GivenName))
                                         {
@@ -599,28 +632,7 @@
 
 
 
-                @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
-                {
 
-                    <MudList Clickable="true">
-                        @foreach (ADGroup g in User.MemberOf.Where(group => group.CanRead))
-                        {
-                            if (g.CanRead)
-                            {
-                                <MudListItem Text="@g.CanonicalName" OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})" />
-
-                            }
-
-                        }
-                        @if (User.MemberOf.Where(group => !group.CanRead).Count() > 0)
-                        {
-                            <MudListItem Text="The user is in more groups you don't have access to" />
-                        }
-                      
-                    </MudList>
-                    
-
-                }
 
             </FlexContainer>
         </CascadingValue>

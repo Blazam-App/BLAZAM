@@ -4,7 +4,7 @@
 {
 
 
-    <MudForm @onsubmit="@Save">
+    <EditForm Model="Map" OnValidSubmit="@Save">
 
         @if (!ReadOnly)
         {
@@ -13,7 +13,7 @@
                    Values=@_permissionDelegates
                    Placeholder=@SettingsLocalization["Choose or Search..."]
                    T="PermissionDelegate"
-                   ToStringFunc="item=>Directory.Groups.FindGroupBySID(item?.DelegateSid)?.GroupName"
+                   ToStringFunc="item=>Directory.GetDirectoryModelBySid(item?.DelegateSid)?.CanonicalName"
                    Label="@SettingsLocalization["Delegates"]"
                               MultiSelection
                    @bind-Text=@selectedPermissionDelegateNames
@@ -52,7 +52,7 @@
             }
             </MudStack>
         }
-    </MudForm>
+    </EditForm>
 
 }
 @code {

@@ -27,22 +27,22 @@
 {
     <MudContainer>
         <MudText Class="mb-5" Typo="Typo.h4">The database is ready to install.</MudText>
-        <MudStack Row>
+        <MudStack Row=true>
             <MudText Style="width:140px;" Typo="Typo.h5">Type</MudText>
             <MudText>@Context.ConnectionString?.DatabaseType</MudText>
         </MudStack>
 
-        <MudStack Row>
+        <MudStack Row=true>
             <MudText Style="width:140px;" Typo="Typo.h5">Server</MudText>
             <MudText>@Context.ConnectionString?.ServerAddress</MudText>
         </MudStack>
 
-        <MudStack Row>
+        <MudStack Row=true>
             <MudText Style="width:140px;" Typo="Typo.h5">Port</MudText>
             <MudText>@Context.ConnectionString?.ServerPort</MudText>
         </MudStack>
 
-        <MudStack Row>
+        <MudStack Row=true>
             <MudText Style="width:140px;" Typo="Typo.h5">Database</MudText>
             <MudText>@Context.ConnectionString?.Database</MudText>
         </MudStack>

@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Hosting.WindowsServices;
-using Newtonsoft.Json;
 using System.Globalization;
 using BLAZAM.Server.Middleware;
 using BLAZAM.Server.Data.Services;
@@ -14,32 +13,16 @@ using BLAZAM.Common.Data.ActiveDirectory;
 using BLAZAM.Common;
 using BLAZAM.Server.Data;
 using BLAZAM.Common.Data.Database;
-using Microsoft.Extensions.Localization;
-using BLAZAM.Server.Shared.ResourceFiles;
-using BLAZAM.Common.Data.ActiveDirectory.Models;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-using Microsoft.AspNetCore.Components.Server.Circuits;
 using BLAZAM.Server.Data.Services.Email;
 using BLAZAM.Server.Data.Services.Update;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using BLAZAM.Server;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Logging;
-using Serilog.Events;
 using BLAZAM.Server.Pages.Error;
 using System.Diagnostics;
-using System.Reflection;
-using BLAZAM.Common.Models.Database;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Scaffolding;
 using BLAZAM.Common.Data;
-using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor.Services;
-using Google.Apis.Services;
-using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 
 namespace BLAZAM
 {
@@ -62,6 +45,7 @@ namespace BLAZAM
         /// eg: C:\inetpub\blazam\writable\
         /// </returns>
         internal static SystemDirectory WritablePath => new SystemDirectory(Program.TempDirectory + @"writable\");
+
         /// <summary>
         /// The temporary file directry
         /// </summary>
@@ -69,16 +53,19 @@ namespace BLAZAM
         /// eg: C:\Users\user\appdata\temp\
         /// </returns>
         internal static SystemDirectory TempDirectory { get; private set; }
+
         public static SystemDirectory AppDataDirectory { get; private set; }
 
         /// <summary>
         /// The process of the running application
         /// </summary>
         public static Process ApplicationProcess { get; private set; }
+
         /// <summary>
         /// The running Blazam version
         /// </summary>
         internal static ApplicationVersion Version { get; } = new ApplicationVersion();
+
         /// <summary>
         /// A collection of active listening address's with port
         /// </summary>
@@ -164,7 +151,7 @@ namespace BLAZAM
         /// </summary>
         public static bool Writable { get; private set; }
 
-
+        
         /// <summary>
         /// The main injection point for the web application.
         /// It all starts here.
@@ -365,19 +352,7 @@ namespace BLAZAM
 
 
 
-            //Add Blazorize UI framework
-
-            //builder.Services.AddBlazorise(options =>
-            //{
-            //    options.Immediate = true;
-
-            //})
-            //    .AddBootstrap5Providers()
-            //    .AddFontAwesomeIcons()
-            //    .AddLogging();
-
-
-            //builder.Services.AddBlazoriseRichMudTextField ();
+          
 
 
 

@@ -29,7 +29,7 @@
         <PropertyColumn Property="x => x.LastChanged" Title="Deleted"/>
         <TemplateColumn CellClass="d-flex justify-end" Title="Restore">
             <CellTemplate>
-                <MudStack Row>
+                <MudStack Row=true>
                     <MudButton Color="Color.Primary" Variant="@Variant.Outlined" OnClick="@(()=>{Restore(context.Item);})">Restore</MudButton>
 
                 </MudStack>

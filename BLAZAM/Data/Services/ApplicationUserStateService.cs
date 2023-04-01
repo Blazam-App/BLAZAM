@@ -123,10 +123,10 @@ namespace BLAZAM.Server.Data.Services
                     var cu = CurrentUserState;
                     if (cu != null)
                     {
-                        if (cu.User.FindFirstValue(ClaimTypes.UserData) != null)
-                        {
-                            return cu.Impersonator?.Identity?.Name;
-                        }
+                        //if (cu.User.FindFirstValue(ClaimTypes.UserData) != null)
+                        //{
+                        //    return cu.Impersonator?.Identity?.Name;
+                        //}
                         return cu.User?.Identity?.Name;
                     }
                 }

@@ -21,62 +21,61 @@
     <MudLayout Style="min-height:98vh;">
         <AuthorizeView Context="authContext">
             <Authorized>
-                <CascadingValue Value="this">
-                    
-                    <MainAppBar />
-                </CascadingValue>
+                    <CascadingValue Value="this">
+                        <MainAppBar />
+                    </CascadingValue>
 
-                @if (Program.InDebugMode)
-                {
-
-                    <AuthorizeView Context="authorizedContext" Roles=@UserRoles.SuperAdmin>
-                        <MudDrawer Width="450px" @bind-Open=@_devDrawerOpen Anchor=Anchor.End Elevation="2" Class="mud-theme-dark">
-                            <MudDrawerContainer>
-                                <DevTools />
-                            </MudDrawerContainer>
-                        </MudDrawer>
-
-                    </AuthorizeView>
-                }
-
-
-                <MudDrawer Width="185px" @bind-Open=@DrawerOpen Elevation="3" Class="mud-theme-dark">
-                    <MudDrawerContainer>
-                        <NavMenu />
-                        <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
-                                   OnClick="@(()=>{_devDrawerOpen=!_devDrawerOpen;InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
-                    </MudDrawerContainer>
-                </MudDrawer>
-
-
-
-                <MudMainContent Class="mud-height-full">
-                    @if (setSubHeader != null)
+                    @if (Program.InDebugMode)
                     {
-                        <MudAppBar Color=Color.Primary Style="top:64px;" Elevation="1">
-                            @setSubHeader?.ChildContent
-                        </MudAppBar>
-                        topMarginForContent = "margin-top:64px;";
+
+                        <AuthorizeView Context="authorizedContext" Roles=@UserRoles.SuperAdmin>
+                            <MudDrawer Width="450px" @bind-Open=@_devDrawerOpen Anchor=Anchor.End Elevation="2" Class="mud-theme-dark">
+                                <MudDrawerContainer>
+                                    <DevTools />
+                                </MudDrawerContainer>
+                            </MudDrawer>
+
+                        </AuthorizeView>
                     }
 
 
-                    <MudContainer Style="@topMarginForContent" MaxWidth="MaxWidth.Large" Class="pt-5 mud-height-full">
-    
+                    <MudDrawer Width="185px" @bind-Open=@DrawerOpen Elevation="3" Class="mud-theme-dark">
+                        <MudDrawerContainer>
+                            <NavMenu />
+                            <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
+                                       OnClick="@(()=>{_devDrawerOpen=!_devDrawerOpen;InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
+                        </MudDrawerContainer>
+                    </MudDrawer>
 
-                        @Body
 
-                        <AppUserPageTracker />
 
-                    </MudContainer>
-                    <MudElement>
-                        <DirectoryConnectingIndicator />
-                        
-                        <AppFooter />
+                    <MudMainContent Class="mud-height-full">
+                        @if (setSubHeader != null)
+                        {
+                            <MudAppBar Color=Color.Primary Style="top:64px;" Elevation="1">
+                                @setSubHeader?.ChildContent
+                            </MudAppBar>
+                            topMarginForContent = "margin-top:64px;";
+                        }
 
-                    </MudElement>
-                </MudMainContent>
 
-                <NotificationBroadcastListener />
+                        <MudContainer Style="@topMarginForContent" MaxWidth="MaxWidth.Large" Class="pt-5 mud-height-full">
+
+
+                            @Body
+
+                            <AppUserPageTracker />
+
+                        </MudContainer>
+                        <MudElement>
+                            <DirectoryConnectingIndicator />
+
+                            <AppFooter />
+
+                        </MudElement>
+                    </MudMainContent>
+
+                    <NotificationBroadcastListener />
             </Authorized>
             <NotAuthorized>
                 <MudMainContent Style="height: 100vh;overflow: auto;">

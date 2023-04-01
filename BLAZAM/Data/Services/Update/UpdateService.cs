@@ -62,7 +62,8 @@ namespace BLAZAM.Server.Data.Services.Update
                     {
                         Branch = SelectedBranch,
                         GitHubRelease = latestRelease,
-                        Version = latestVer
+                        Version = latestVer,
+                        
                     };
                     return new ApplicationUpdate { Release = release };
 

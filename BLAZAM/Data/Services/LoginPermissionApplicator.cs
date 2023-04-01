@@ -20,8 +20,8 @@ namespace BLAZAM.Server.Data.Services
 
         private async void LoadPermissionsForNewLoginUser(IApplicationUserState value)
         {
-            if(value.DirectoryUser!=null)
-            await LoadPermissions(value.DirectoryUser);
+            if (value.DirectoryUser != null)
+                await LoadPermissions(value.DirectoryUser);
 
         }
 
@@ -30,21 +30,24 @@ namespace BLAZAM.Server.Data.Services
         {
             using (var Context = await Factory.CreateDbContextAsync())
             {
-                var cursor = await Context.PermissionDelegate.Include(pl=>pl.PermissionsMaps).ToListAsync();
-                foreach(var l in cursor) { 
-                
-                    
-                    var permissiondelegate = ActiveDirectoryContext.Instance.Groups.FindGroupBySID(l.DelegateSid);
+                var cursor = await Context.PermissionDelegate.Include(pl => pl.PermissionsMaps).ToListAsync();
+                foreach (var l in cursor)
+                {
+
+
+                    var permissiondelegate = ActiveDirectoryContext.Instance.GetDirectoryModelBySid(l.DelegateSid);
                     if (permissiondelegate != null)
                     {
-                        if (user.IsAMemberOf(permissiondelegate)||user.Equals(permissiondelegate))
+                        if (user.Equals(permissiondelegate)
+                            || (permissiondelegate is IADGroup delegateGroup && user.IsAMemberOf(delegateGroup))
+                            )
                         {
                             user.PermissionDelegates.Add(l);
                             user.PermissionMappings.AddRange(l.PermissionsMaps);
                         }
                     }
                 }
-               
+
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory.Models;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,10 @@ namespace BLAZAM.Common.Extensions
 {
     public static class StringHelpers
     {
+        public static MarkupString ToMarkupString(this string input)
+        {
+            return (MarkupString)input.Replace("\r\n","<br>").Replace("\n","<br>");
+        }
         public static int GetAppHashCode(this string input)
         {
             unchecked // Overflow is fine, just wrap
@@ -70,7 +75,7 @@ namespace BLAZAM.Common.Extensions
                 .Select(m => m.Groups[1].Value)
                 .ToList();
             ouComponents.Reverse();
-            return string.Join("/", ouComponents);
+            return "/"+string.Join("/", ouComponents);
         }
         public static string FqdnToDN(this string fqdn)
         {

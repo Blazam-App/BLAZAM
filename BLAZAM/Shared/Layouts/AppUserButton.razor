@@ -7,7 +7,7 @@
 @if (messages > 0)
 {
     <MudPopover Open=@NotificationsOpen TransformOrigin="Origin.TopRight" AnchorOrigin="Origin.BottomRight">
-        <MudStack Row>
+        <MudStack Row=true>
         <MudListSubheader>Notifications</MudListSubheader>
         <AppCloseButton OnClick=@(()=>{NotificationsOpen=false;}) />
 
@@ -76,7 +76,7 @@
         }
         else
         {
-            <MudMenuItem Href="/unimpersonate" Icon="@Icons.Material.Filled.PersonOff">
+            <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/unimpersonate",true);})" Icon="@Icons.Material.Filled.PersonOff">
 
                 @AppLocalization["Stop It"]
             </MudMenuItem>

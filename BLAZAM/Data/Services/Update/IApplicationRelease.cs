@@ -6,5 +6,8 @@
         public long? ExpectedSize { get; }
         public string Branch { get; set; }
         public ApplicationVersion Version { get; set; }
+        string? ReleaseNotes { get; }
+        bool? PreviewRelease { get; }
+        DateTimeOffset? ReleaseTime { get; }
     }
 }

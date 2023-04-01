@@ -151,8 +151,7 @@ namespace BLAZAM
         {
             LoginResult loginResult = new();
             _newUserState = new(_factory);
-            if (loginReq == null) return loginResult.NoData();
-            if (loginReq.Username.IsNullOrEmpty()) return loginResult.NoUsername();
+            
 
             AuthenticationState? result = null;
 
@@ -171,6 +170,11 @@ namespace BLAZAM
                 _newUserState.Impersonator = CurrentUser;
                 //Attach the impersonator to the login request so it can be used for later processing
                 loginReq.ImpersonatorClaims = CurrentUser;
+            }
+            else
+            {
+                if (loginReq == null) return loginResult.NoData();
+                if (loginReq.Username.IsNullOrEmpty()) return loginResult.NoUsername();
             }
             //Pull the authentication settings from the database so we can check admin credentials
             var settings = _factory.CreateDbContext().AuthenticationSettings.FirstOrDefault();
@@ -436,7 +440,7 @@ namespace BLAZAM
                 }
                 if (user.HasComputerPrivilege)
                 {
-                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.Computers));
+                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchComputers));
                 }
             }
             return userRoles;

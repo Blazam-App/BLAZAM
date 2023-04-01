@@ -17,32 +17,32 @@
 
         <MudCard>
             Variables:
-            <MudStack Row>
+            <MudStack Row=true>
                 <code>{fn}</code>:First Name<br />
             </MudStack>
-            <MudStack Row>
+            <MudStack Row=true>
 
                 <code>{fi}</code>:First Initial<br />
             </MudStack>
-            <MudStack Row>
+            <MudStack Row=true>
                 <code>{mn}</code>:Middle Name<br />
             </MudStack>
-            <MudStack Row>
+            <MudStack Row=true>
                 <code>{mi}</code>:Middle Initial<br />
             </MudStack>
-            <MudStack Row>
+            <MudStack Row=true>
                 <code>{ln}</code>:Last Name<br />
             </MudStack>
-            <MudStack Row>
+            <MudStack Row=true>
                 <code>{li}</code>:Last Initial<br />
             </MudStack>
-            <MudStack Row>
+            <MudStack Row=true>
                 <code>{AlphaNum[:u/l]}</code>:Random letter or number (optional force uppercase/lowercase)<br />
             </MudStack>
-            <MudStack Row>
+            <MudStack Row=true>
                 <code>{Alpha[:u/l]}</code>:Random letter (optional force uppercase/lowercase)<br />
             </MudStack>
-            <MudStack Row>
+            <MudStack Row=true>
                 <code>{Num}</code>:Random number<br />
 
             </MudStack>
@@ -109,7 +109,7 @@
                         @foreach (var field in DirectoryTemplate.FieldValues.OrderBy(fv => fv.Field.DisplayName))
                         {
 
-                            <MudStack Row>
+                            <MudStack Row=true>
 
 
                             <MudTextField Label="@field.Field.DisplayName" @bind-Value=field.Value />
@@ -146,7 +146,7 @@
             {
                 <MudText>@group</MudText>
             }
-            <MudStack Row>
+            <MudStack Row=true>
                 <ADAutoComplete Label="@SettingsLocalization["Groups"]"
                                     Multiple
                                 @bind-SelectedResult="@SelectedGroup" />

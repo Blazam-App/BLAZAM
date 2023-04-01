@@ -10,12 +10,12 @@
 
         <SettingsField Label="@SettingsLocalization["Admin Password"]">
 
-            <MudTextField InputType="InputType.Password" @bind-Value="newAdminPassword" />
+            <MudTextField Label="@SettingsLocalization["Admin Password"]" InputType="InputType.Password" @bind-Value="newAdminPassword" />
         </SettingsField>
 
         <SettingsField Label="@SettingsLocalization["Session Timeout"]">
 
-            <MudNumericField HelperText="Time in minute" TValue="int?" @bind-Value="@settings.SessionTimeout" />
+            <MudNumericField Label="@SettingsLocalization["Session Timeout"]" HelperText="Time in minute" TValue="int?" @bind-Value="@settings.SessionTimeout" />
 
         </SettingsField>
 
@@ -23,17 +23,17 @@
         <br />
         <SettingsField Label="Duo ClientID">
 
-                <MudTextField InputType="InputType.Password" @bind-Value="@settings.DuoClientId"/>
+            <MudTextField Label="Duo ClientID" InputType="InputType.Password" @bind-Value="@settings.DuoClientId" />
 
         </SettingsField>
         <SettingsField Label="Duo ClientSecret">
 
-                <MudTextField InputType="InputType.Password" @bind-Value="@settings.DuoClientSecret"/>
+            <MudTextField Label="Duo ClientSecret" InputType="InputType.Password" @bind-Value="@settings.DuoClientSecret" />
 
         </SettingsField>
         <SettingsField Label="Duo ApiHost">
 
-                <MudTextField InputType="InputType.Password" @bind-Value="@settings.DuoApiHost"/>
+            <MudTextField Label="Duo ApiHost" InputType="InputType.Password" @bind-Value="@settings.DuoApiHost" />
 
         </SettingsField>
         <SettingsField>
