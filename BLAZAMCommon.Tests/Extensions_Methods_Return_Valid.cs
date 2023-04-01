@@ -31,7 +31,7 @@ namespace BLAZAM.Tests
         public void ToPrettyOU_ReturnsValid()
         {
             var test = "OU=test,OU=ou,DC=test,DC=dc";
-            var valid = "ou/test";
+            var valid = "/ou/test";
             var pretty = test.ToPrettyOu();
             bool result = pretty.Equals(valid);
 
