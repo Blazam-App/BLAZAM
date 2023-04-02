@@ -54,9 +54,11 @@ namespace BLAZAM.Server.Shared.UI
         public string CancelText { get; set; }
 
 
+
+
         public Func<bool> YesEnabled { get; set; } = (() => { return true; });
 
-
+       
 
         [Parameter]
         public string Title { get; set; }
@@ -105,7 +107,13 @@ namespace BLAZAM.Server.Shared.UI
             IsShown = false;
             Modal?.Close();
         }
-
+        private void YesClicked()
+        {
+            if (OnYes != null)
+                OnYes?.Invoke();
+            else
+                Hide();
+        }
 
     }
 }

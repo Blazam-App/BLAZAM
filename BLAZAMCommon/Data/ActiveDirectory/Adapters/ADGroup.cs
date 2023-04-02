@@ -155,8 +155,18 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     {
                         members.Add(member);
                     }
-                    member = null;
 
+                });
+                var tempRemoval = new List<IGroupableDirectoryAdapter>(members);
+                tempRemoval.ForEach(m => {
+                    if (MembersToRemove.Select(gm=>gm.Member).Contains(m))
+                    {
+                        members.Remove(m);
+                    }
+                });
+                MembersToAdd.ForEach(m => {
+                    if (!members.Contains(m.Member))
+                        members.Add(m.Member);
                 });
                 return members;
             }

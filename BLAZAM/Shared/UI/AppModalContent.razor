@@ -10,7 +10,7 @@
     /// Closes the containing modal
     /// </summary>
     protected void Close(){
-        Modal.Close();
+        Modal.Hide();
         InvokeAsync(StateHasChanged);
 
     }
@@ -18,18 +18,21 @@
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
-        Modal?.RefreshView();
-
+        ValidateModal();
     }
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
 
-    protected virtual bool ValidateModal()
+    protected virtual bool IsValid => true;
+    private bool _lastIsValid;
+    protected bool ValidateModal()
     {
-        throw new NotImplementedException("The ValidateModal method has not been overridden!");
+        if (_lastIsValid != IsValid)
+        {
+            _lastIsValid = IsValid;
+            Modal?.RefreshView();
+        }
+        return IsValid;
+        //throw new NotImplementedException("The ValidateModal method has not been overridden!");
     }
 
 

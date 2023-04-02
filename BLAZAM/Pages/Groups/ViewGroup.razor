@@ -111,19 +111,12 @@
     <MudTextField Label="@ULoc["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
 
 
-    @if (Group.HasMembers)
-    {
-        <Section Title="Members">
-            <GroupMembersDataGrid Group="Group"/>
+    <Section Style="min-height:200px;" Title="Members">
+        <GroupMembersDataGrid Group="Group"/>
             
-        </Section>
-        if (Group.Members.Where(m => !m.CanRead).Count() > 0)
-        {
-            <MudAlert Class="mud-alert-filled-info">
-                The group has more members you don't have access to
-            </MudAlert>
-        }
-    }
+    </Section>
+       
+   
 
 
 
@@ -141,7 +134,6 @@
     AppModal? AssignMemberModal;
 
 
-    List<IGroupableDirectoryAdapter> Members = new();
 
 
 

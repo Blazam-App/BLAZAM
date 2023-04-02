@@ -116,8 +116,11 @@ namespace BLAZAM.Common.Extensions
                 archive.AddToZip(sdi, basePath);
             }
         }
-
-
+       
+        public static bool IsNullOrEmpty(this ICollection collection)
+        {
+            return (collection == null || collection.Count < 1);
+        }
         public static List<AuditChangeLog> GetChanges(this object changed, object original)
         {
             // Check if both objects are null or same reference

@@ -73,9 +73,7 @@
         Close();
 
     }
-    protected override bool ValidateModal()
-    {
-        return newThumbnail != null;
-    }
+    protected override bool IsValid => newThumbnail != null;
+
 
 }

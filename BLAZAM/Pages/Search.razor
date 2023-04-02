@@ -75,12 +75,12 @@
                     break;
             }
         }
-        else
+@*        else
         {
             <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
 
         }
-
+*@
     }
   
     else if (LoadingData)
@@ -93,11 +93,11 @@
             No results were found.
         </MudAlert>
     }
-    else
+   @* else
     {
         <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
 
-    }
+    }*@
 </AuthorizeView>
 @code {
 
@@ -118,20 +118,20 @@
         {
             if (_searchTermParameter == value) return;
             LoadingData = true;
-            Searcher?.Results.Clear();
+            Searcher?.Cancel();
             _searchTermParameter = value;
             //SearchService.SearchTerm = value;
             PerformSearch();
             //Searcher.GeneralSearchTerm = value;
             if (_searchTermParameter.IsNullOrEmpty())
                 LoadingData = false;
-            InvokeAsync(StateHasChanged);
+            //InvokeAsync(StateHasChanged);
 
         }
     }
 
 
-    public ADSearch Searcher { get; set; } = default;
+    public ADSearch Searcher { get; set; } = new ADSearch();
 
 
     [CascadingParameter]
@@ -174,7 +174,7 @@
              });
 
         //await PerformSearch();
-        await InvokeAsync(StateHasChanged);
+       // await InvokeAsync(StateHasChanged);
 
     }
 
@@ -195,7 +195,7 @@
 
         //Search();
 
-        await InvokeAsync(StateHasChanged);
+        //await InvokeAsync(StateHasChanged);
     }
 
 
@@ -232,7 +232,7 @@
         Searcher.ObjectTypeFilter = SearchService.SeachObjectType;
         Searcher.ExactMatch = true;
 
-        await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
+        //await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
 
         await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         //search.Wait();

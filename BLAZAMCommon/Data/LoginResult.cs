@@ -1,7 +1,7 @@
 ﻿using BLAZAM.Common.Data;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace BLAZAM
+namespace BLAZAM.Common.Data
 {
     public enum LoginResultStatus { OK,BadCredentials,UnauthorizedImpersonation, NoData,NoUsername, NoPassword, UnknownFailure,
         DeniedLogin
@@ -61,7 +61,7 @@ namespace BLAZAM
             return this;
         }
 
-        internal LoginResult DeniedLogin()
+        public LoginResult DeniedLogin()
         {
             Status = LoginResultStatus.DeniedLogin;
 

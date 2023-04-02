@@ -38,9 +38,8 @@
         Close();
 
     }
-    protected override bool ValidateModal()
-    {
-        return !OU.CanonicalName.IsNullOrEmpty();
-    }
+    protected override bool IsValid=> !OU.CanonicalName.IsNullOrEmpty();
+        
+    
 
 }

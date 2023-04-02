@@ -23,7 +23,7 @@
         @{
             var yesDisabled = !YesEnabled.Invoke();
         }
-        <MudButton Disabled=@yesDisabled Color="Color.Primary" OnClick="@(()=>{OnYes.Invoke();})">@YesText</MudButton>
+        <MudButton Disabled=@yesDisabled Color="Color.Primary" OnClick="@YesClicked">@YesText</MudButton>
     </DialogActions>
 </MudDialog>
 

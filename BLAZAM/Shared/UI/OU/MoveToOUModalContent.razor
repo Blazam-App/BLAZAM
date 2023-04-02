@@ -33,7 +33,7 @@
 
         Modal.YesEnabled = ValidateModal;
     }
-
+    
     async void MoveTo()
     {
         if (await MessageService.Confirm("Are you sure you want to move this " + DirectoryModel.ObjectType.ToString().ToLower() + " to " + SelectedOU.CanonicalName + ". All other unsaved changes will be discarded.", "Confirm move"))
@@ -51,9 +51,7 @@
         }
 
     }
-    protected override bool ValidateModal()
-    {
-        return SelectedOU != null;
-    }
+    protected override bool IsValid => SelectedOU != null;
+
 
 }

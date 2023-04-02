@@ -1,8 +1,7 @@
-
 using Microsoft.AspNetCore.Components.Routing;
 
 
-namespace BLAZAM.Server
+namespace BLAZAM.Server.Shared.Layouts
 {
     public partial class AppUserPageTracker
     {

@@ -131,9 +131,12 @@
     <MudText>A database update needs to be applied</MudText>
     <MudButton Color=Color.Primary OnClick="UpdateDB">Update</MudButton>
 }
-
+<AppModal Title=@(LatestAvailableVersion?.Version+" Release Notes") @ref="@_releaseNotesModal">
+<ReleaseNotesModalContent Update="LatestAvailableVersion"/>
+</AppModal>
 
 @code {
+    AppModal? _releaseNotesModal;
     ApplicationUpdate? LatestAvailableVersion { get; set; }
 
     UpdateStage updateStage = UpdateStage.None;
@@ -249,7 +252,8 @@
 
     async Task ShowReleaseNotes()
     {
-        MessageService.Info(LatestAvailableVersion.Release.ReleaseNotes, LatestAvailableVersion.Version + " Release Notes");
+        _releaseNotesModal.Show();
+        //MessageService.Info(LatestAvailableVersion.Release.ReleaseNotes, LatestAvailableVersion.Version + " Release Notes");
     }
 
 }

@@ -1,9 +1,9 @@
 ﻿using System.Runtime.Serialization;
 
-namespace BLAZAM
+namespace BLAZAM.Common.Exceptions
 {
     [Serializable]
-    internal class DeniedLoginException : ApplicationException
+    public class DeniedLoginException : ApplicationException
     {
         public DeniedLoginException()
         {

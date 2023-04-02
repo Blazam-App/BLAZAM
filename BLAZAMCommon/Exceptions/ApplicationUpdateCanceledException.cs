@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace BLAZAM.Server.Data.Services.Update
+namespace BLAZAM.Common.Exceptions
 {
     [Serializable]
     public class ApplicationUpdateCanceledException : ApplicationException

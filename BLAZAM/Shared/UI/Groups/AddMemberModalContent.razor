@@ -84,9 +84,6 @@
             Close();
         }
     }
-    protected override bool ValidateModal()
-    {
-        return (Entry != null && CopyFrom != null);   
-    }
+    protected override bool IsValid => (Entry != null && CopyFrom != null);
 
 }

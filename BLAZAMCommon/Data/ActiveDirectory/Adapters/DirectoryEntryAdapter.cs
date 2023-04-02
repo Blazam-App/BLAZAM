@@ -125,9 +125,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         }
         public void EnsureDirectoryEntry()
         {
-            if(DirectoryEntry is null)
+            if (DirectoryEntry is null)
             {
-                if(SearchResult is null)throw new ArgumentNullException(nameof(SearchResult));
+                if (SearchResult is null) throw new ArgumentNullException(nameof(SearchResult));
                 DirectoryEntry = SearchResult.GetDirectoryEntry();
             }
         }
@@ -497,7 +497,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         public virtual bool HasUnsavedChanges
         {
             get => hasUnsavedChanges;
-            set => hasUnsavedChanges = value;
+
+            set
+            {
+                hasUnsavedChanges = value;
+                OnModelChanged?.Invoke();
+            }
         }
         protected ADSettings? DirectorySettings { get; private set; }
 

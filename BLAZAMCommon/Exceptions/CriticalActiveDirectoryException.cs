@@ -1,6 +1,6 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory;
 
-namespace BLAZAM.Server.Errors.ActiveDirectory
+namespace BLAZAM.Common.Exceptions
 {
     public class CriticalActiveDirectoryException: ApplicationException
     {

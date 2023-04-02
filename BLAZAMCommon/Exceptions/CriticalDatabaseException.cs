@@ -1,7 +1,7 @@
 ﻿
 using BLAZAM.Common.Data.Database;
 
-namespace BLAZAM.Server.Errors.Database
+namespace BLAZAM.Common.Exceptions
 {
     public class CriticalDatabaseException: ApplicationException
     {

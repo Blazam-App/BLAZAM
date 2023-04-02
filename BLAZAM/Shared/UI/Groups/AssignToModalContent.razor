@@ -89,8 +89,6 @@
         }
     }
 
-    protected override bool ValidateModal()
-    {
-        return (CopyFrom != null || Group != null);
-    }
+    protected override bool IsValid => (CopyFrom != null || Group != null);
+
 }

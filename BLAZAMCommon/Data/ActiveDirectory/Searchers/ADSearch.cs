@@ -321,6 +321,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
         public void Cancel()
         {
+            Results.Clear();
             tokenSource.Cancel();
         }
         private void AddResults<T, I>(SearchResultCollection lastResults) where T : I, IDirectoryEntryAdapter, new()
