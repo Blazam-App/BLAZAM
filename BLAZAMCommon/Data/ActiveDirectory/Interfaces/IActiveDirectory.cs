@@ -3,7 +3,6 @@ using System.DirectoryServices;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Server.Data.Services;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 {

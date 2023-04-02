@@ -40,21 +40,38 @@ namespace BLAZAM.Server.Data.Services
         /// </summary>
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
 
-        public IList<NotificationMessage> Messages { get; set; } = new List<NotificationMessage>();
+
+        public IList<UserNotification>? Messages
+        {
+            get
+            {
+                if (!User.Identity.IsAuthenticated) return null;
+
+                return userSettings.Messages.Where(m => !m.IsRead).ToList();
+            }
+        }
+
 
         public IApplicationUserSessionCache Cache { get; set; } = new ApplicationUserSessionCache();
 
         public AuthenticationTicket? Ticket { get; set; }
 
+
         public AppUser? userSettings { get; set; }
+
+        private readonly INotificationPublisher _notificationPublisher;
         private readonly AppDatabaseFactory _dbFactory;
 
-        public ApplicationUserState(AppDatabaseFactory factory)
+        public ApplicationUserState(AppDatabaseFactory factory, INotificationPublisher notificationPublisher)
         {
+            _notificationPublisher = notificationPublisher;
             _dbFactory = factory;
+            _notificationPublisher.OnNotificationPublished += ((notifications) =>
+            {
+                //TODO check if sent to current user
+                GetUserSettingFromDB(null);
+            });
         }
-
-
 
 
         /// <summary>
@@ -71,28 +88,37 @@ namespace BLAZAM.Server.Data.Services
                 if (!User.Identity.IsAuthenticated) return null;
                 if (userSettings == null)
                 {
-                    try
-                    {
-                        using var context = _dbFactory.CreateDbContext();
-                        userSettings = context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
-                        if (userSettings == null)
-                        {
-                            userSettings = new AppUser();
-                            userSettings.UserGUID = User.FindFirstValue(ClaimTypes.Sid);
-                            userSettings.Username = User.Identity?.Name;
-                            context.UserSettings.Add(userSettings);
-                            context.SaveChanges();
 
-                        }
-                    }
-                    catch
-                    {
-
-                    }
+                    GetUserSettingFromDB(null);
                 }
                 return userSettings;
             }
         }
+
+        private void GetUserSettingFromDB(object? state)
+        {
+            try
+            {
+                if (User == null) return;
+                using var context = _dbFactory.CreateDbContext();
+                
+                userSettings = context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
+                if (userSettings == null)
+                {
+                    userSettings = new AppUser();
+                    userSettings.UserGUID = User.FindFirstValue(ClaimTypes.Sid);
+                    userSettings.Username = User.Identity?.Name;
+                    context.UserSettings.Add(userSettings);
+                    context.SaveChanges();
+
+                }
+            }
+            catch
+            {
+
+            }
+        }
+
         /// <summary>
         /// Saves the current state of the <see cref="UserSettings"/> to the database
         /// </summary>

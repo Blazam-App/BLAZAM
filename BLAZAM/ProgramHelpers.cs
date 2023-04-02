@@ -181,6 +181,10 @@ namespace BLAZAM.Server
             //This serivice runs a Timer, and so singleton
             builder.Services.AddSingleton<ConnMonitor>();
 
+
+            //Provide notification publishing as a service
+            builder.Services.AddSingleton<INotificationPublisher,NotificationPublisher>();
+
             //Provide UserStates as a service
             //This service is a "hack" for Blazor Server not having, in a real sense, sessions
             //It allows data to persist between refreshes/reloading page navigations per logged

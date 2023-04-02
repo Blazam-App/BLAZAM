@@ -7,9 +7,6 @@ using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.User;
-using BLAZAM.Server.Data.Services;
-using Microsoft.EntityFrameworkCore;
-using System.Buffers.Text;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Net;
@@ -20,7 +17,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
     public class ActiveDirectoryContext : IDisposable, IActiveDirectory
     {
         IEncryptionService _encryption;
-
+        private INotificationPublisher _notificationPublisher;
         public static ActiveDirectoryContext Instance;
 
 
@@ -173,9 +170,11 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         public ActiveDirectoryContext(AppDatabaseFactory factory,
             IApplicationUserStateService userStateService,
             WmiFactoryService wmiFactory,
-            IEncryptionService encryptionService)
+            IEncryptionService encryptionService,
+            INotificationPublisher notificationPublisher)
         {
             _encryption = encryptionService;
+            _notificationPublisher=notificationPublisher;
             Instance = this;
             Factory = factory;
             UserStateService = userStateService;
@@ -281,7 +280,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                                         {
                                             if (AppRootDirectoryEntry.Parent == null)
                                             {
-                                                UserStateService.BroadcastNotification(new NotificationMessage()
+                                                _notificationPublisher.PublishNotification(new NotificationMessage()
                                                 {
                                                     Level = NotificationLevel.Error,
                                                     Message = "The configured BaseDN is not valid. Please correct your settings.",
@@ -292,7 +291,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                                         }
                                         catch (Exception ex)
                                         {
-                                            UserStateService.BroadcastNotification(new NotificationMessage()
+                                            _notificationPublisher.PublishNotification(new NotificationMessage()
                                             {
                                                 Level = NotificationLevel.Error,
                                                 Message = "The configured BaseDN is not valid. Please correct your settings.",

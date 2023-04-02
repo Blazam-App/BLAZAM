@@ -90,7 +90,7 @@ namespace BLAZAM
         }
 
         private ClaimsPrincipal? CurrentUser;
-        private ApplicationUserState _newUserState;
+        private IApplicationUserState _newUserState;
 
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
@@ -148,7 +148,7 @@ namespace BLAZAM
         public async Task<LoginResult> Login(LoginRequest loginReq)
         {
             LoginResult loginResult = new();
-            _newUserState = new(_factory);
+            _newUserState = _userStateService.CreateUserState(null);
             
 
             AuthenticationState? result = null;

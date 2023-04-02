@@ -1,7 +1,7 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Server.Data.Services;
+using BLAZAM.Common.Data.Services;
 using BLAZAM.Server.Pages.Error;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,3 +1,4 @@
+@using BLAZAM.Common.Models.Database.User;
 @using BLAZAM.Server.Shared.UI.Themes;
 @inherits AppComponentBase
 @{
@@ -17,14 +18,15 @@
         {
 
             <MudAlert OnClick=@(()=>{
-              if(notification.Link!=null)
-              Nav.NavigateTo(notification.Link.ToString());
-              }) ShowCloseIcon=notification.Dismissable>
-                @if (!notification.Title.IsNullOrEmpty())
+              if(notification.Notification.Link!=null)
+              Nav.NavigateTo(notification.Notification.Link.ToString());
+              }) ShowCloseIcon=notification.Notification.Dismissable
+              CloseIconClicked="@(()=>{MarkRead(notification);})">
+                @if (!notification.Notification.Title.IsNullOrEmpty())
                 {
-                    <MudText Typo="Typo.h6">@notification.Title</MudText>
+                    <MudText Typo="Typo.h6">@notification.Notification.Title</MudText>
                 }
-                @notification.Message
+                @notification.Notification.Message
             </MudAlert>
         }
 
@@ -96,6 +98,14 @@
     bool NotificationsOpen;
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NotificationPublisher.OnNotificationPublished += ((notifications) => { InvokeAsync(StateHasChanged); });
+    }
+
+
     /// <summary>
     /// Generate a repeatable hex color based on the given username
     /// </summary>
@@ -110,5 +120,11 @@
         hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
         return hexColor;
     }
-  
+    async Task MarkRead(UserNotification notification)
+    {
+        var inDBNotification = Context.UserNotifications.Where(n => n.Id == notification.Id).FirstOrDefault();
+        
+        inDBNotification.IsRead = true;
+        Context.SaveChanges();
+    }
 }

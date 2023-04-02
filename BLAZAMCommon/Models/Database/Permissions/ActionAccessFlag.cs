@@ -1,8 +1,8 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory;
-using Microsoft.Azure.DevOps.Licensing.WebApi;
 
 namespace BLAZAM.Common.Models.Database.Permissions
 {
+   
     public class ActionAccessFlag : AppDbSetBase
     {
         public string Name { get; set; }

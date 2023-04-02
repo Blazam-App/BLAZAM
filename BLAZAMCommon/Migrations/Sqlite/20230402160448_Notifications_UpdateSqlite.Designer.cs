@@ -3,6 +3,7 @@ using System;
 using BLAZAM.Common.Data.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Common.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDatabaseContext))]
-    partial class SqliteDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230402160448_Notifications_UpdateSqlite")]
+    partial class NotificationsUpdateSqlite
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.2");
@@ -1218,10 +1221,10 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("NotificationMessages");
+                    b.ToTable("NotificationMessage");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.UserNotification", b =>
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.UserNotifications", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1372,7 +1375,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasForeignKey("DirectoryTemplateId");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.UserNotification", b =>
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.UserNotifications", b =>
                 {
                     b.HasOne("BLAZAM.Common.Models.Database.User.NotificationMessage", "Notification")
                         .WithMany()

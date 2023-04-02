@@ -64,6 +64,9 @@ namespace BLAZAM.Server.Shared.UI
         protected EmailService EmailService { get; set; }
 
         [Inject]
+        protected INotificationPublisher NotificationPublisher { get; set; }
+
+        [Inject]
         protected IEncryptionService EncryptionService { get; set; }
 
         [Inject]

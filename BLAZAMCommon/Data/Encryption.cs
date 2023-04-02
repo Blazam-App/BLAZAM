@@ -1,8 +1,6 @@
 ﻿using BLAZAM.Common.Extensions;
-using BLAZAM.Server.Data.Services;
 using Microsoft.VisualStudio.Services.Common;
 using Newtonsoft.Json;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 

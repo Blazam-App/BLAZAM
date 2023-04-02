@@ -10,7 +10,7 @@ namespace BLAZAM.Common.Data.Services
          AppEvent<IApplicationUserState> UserStateAdded { get; set; }
          IList<IApplicationUserState> UserStates { get; }
 
-        void BroadcastNotification(NotificationMessage notificationMessage);
+        IApplicationUserState? CreateUserState(ClaimsPrincipal user);
         IApplicationUserState? GetUserState(ClaimsPrincipal userClaim);
 
         // IApplicationUserState? GetUserState(ClaimsPrincipal userClaim);

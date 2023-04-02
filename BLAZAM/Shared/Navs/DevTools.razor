@@ -1,3 +1,4 @@
+@using BLAZAM.Common.Models.Database.User;
 @inherits AppComponentBase
 @inject IHttpContextAccessor ca
 
@@ -11,6 +12,7 @@
             {SnackBarService.Success("Test Notification " + Guid.NewGuid(),"Test");
             })">Test Notification</MudButton>
         <MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>{SnackbarBroadcastService.Success("Test Broadcast " + Guid.NewGuid(),"Test");})">Test Broadcast</MudButton>
+        <MudButton Color="Color.Primary" style="height:35px;" OnClick=TestNotificationBroadcast>Test Notification Broadcast</MudButton>
 
         <MudCard Class="mud-theme-dark">
             <MudCardHeader>
@@ -111,4 +113,15 @@
     public bool DrawerOpen { get; set; }
     [Parameter]
     public string Style { get; set; }
+
+
+    async Task TestNotificationBroadcast()
+    {
+        NotificationPublisher.PublishNotification(new NotificationMessage()
+            {
+                Level = NotificationLevel.Info,
+                Message = "This is a test notification",
+                Title = "Test"
+            });
+    }
 }
