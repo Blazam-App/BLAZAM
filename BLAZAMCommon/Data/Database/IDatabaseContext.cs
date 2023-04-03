@@ -46,6 +46,7 @@ namespace BLAZAM.Common.Data.Database
         ServiceConnectionState Status { get; }
         DbSet<NotificationMessage> NotificationMessages { get; set; }
         DbSet<UserNotification> UserNotifications { get; set; }
+        bool SeedMismatch { get; }
 
         bool Migrate();
     }

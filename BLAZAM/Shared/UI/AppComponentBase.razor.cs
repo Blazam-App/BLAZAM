@@ -12,9 +12,6 @@ using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using Microsoft.Extensions.Localization;
 using BLAZAM.Server.Data.Services.Email;
 using BLAZAM.Common.Data;
-using MudBlazor;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
-using BLAZAM.Server.Data;
 
 namespace BLAZAM.Server.Shared.UI
 {
@@ -39,7 +36,9 @@ namespace BLAZAM.Server.Shared.UI
         protected ConnMonitor Monitor { get; set; }
 
         [Inject]
-        protected IActiveDirectory Directory { get; set; }
+        protected IActiveDirectoryContextFactory DirectoryFactory { get; set; }
+        [Inject]
+        protected IActiveDirectoryContext Directory { get; set; }
 
       //TODO add page progress service
 
@@ -93,7 +92,14 @@ namespace BLAZAM.Server.Shared.UI
             {
                 Loggers.DatabaseLogger.Error("Failed to connect to database", ex);
             }
-
+            try
+            {
+                Directory = DirectoryFactory.CreateActiveDirectoryContext(CurrentUser);
+            }
+            catch (Exception ex)
+            {
+                Loggers.DatabaseLogger.Error("Failed to connect to database", ex);
+            }
             Monitor.OnDirectoryConnectionChanged += (ServiceConnectionState status) =>
             {
                 InvokeAsync(StateHasChanged);

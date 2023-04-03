@@ -18,7 +18,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             return TopLevel;
         }
 
-        public ADOUSearcher(IActiveDirectory directory) : base(directory)
+        public ADOUSearcher(IActiveDirectoryContext directory) : base(directory)
         {
         }
 

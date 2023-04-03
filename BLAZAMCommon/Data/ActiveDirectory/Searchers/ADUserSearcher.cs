@@ -7,7 +7,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
     public class ADUserSearcher : ADSearcher, IADUserSearcher
     {
 
-        public ADUserSearcher(IActiveDirectory directory) : base(directory)
+        public ADUserSearcher(IActiveDirectoryContext directory) : base(directory)
         {
         }
 

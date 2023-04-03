@@ -9,9 +9,9 @@ namespace BLAZAM.Server.Background
 {
     public class DirectoryMonitor : ConnectionMonitor
     {
-        private IActiveDirectory _directry;
+        private IActiveDirectoryContext _directry;
 
-        public DirectoryMonitor( IActiveDirectory directry)
+        public DirectoryMonitor( IActiveDirectoryContext directry)
         {
 
             _directry = directry;

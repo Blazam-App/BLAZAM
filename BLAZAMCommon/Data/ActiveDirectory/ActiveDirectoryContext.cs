@@ -14,10 +14,11 @@ using System.Security.Claims;
 
 namespace BLAZAM.Common.Data.ActiveDirectory
 {
-    public class ActiveDirectoryContext : IDisposable, IActiveDirectory
+    public class ActiveDirectoryContext : IDisposable, IActiveDirectoryContext
     {
-        public ICurrentUserStateService CurrentUser { get; private set; }
+        public ICurrentUserStateService? CurrentUser { get; set; }
 
+        private WmiFactoryService _wmiFactory;
         IEncryptionService _encryption;
         private INotificationPublisher _notificationPublisher;
         public static ActiveDirectoryContext Instance;
@@ -173,10 +174,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             IApplicationUserStateService userStateService,
             WmiFactoryService wmiFactory,
             IEncryptionService encryptionService,
-            INotificationPublisher notificationPublisher,
-            ICurrentUserStateService currentUserStateService)
+            INotificationPublisher notificationPublisher
+            )
         {
-            CurrentUser = currentUserStateService;
+            _wmiFactory= wmiFactory;
             _encryption = encryptionService;
             _notificationPublisher=notificationPublisher;
             Instance = this;
@@ -192,7 +193,26 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             Computers = new ADComputerSearcher(this, wmiFactory);
         }
 
+        public ActiveDirectoryContext(ActiveDirectoryContext activeDirectoryContextSeed)
+        {
+            _encryption = activeDirectoryContextSeed._encryption;
+            _notificationPublisher = activeDirectoryContextSeed._notificationPublisher;
+            Instance = this;
+            Factory = activeDirectoryContextSeed.Factory;
+            UserStateService = activeDirectoryContextSeed.UserStateService;
+            ConnectionSettings = activeDirectoryContextSeed.ConnectionSettings;
+            RootDirectoryEntry = activeDirectoryContextSeed.RootDirectoryEntry;
+            AppRootDirectoryEntry = activeDirectoryContextSeed.AppRootDirectoryEntry;
 
+           // UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
+            ConnectAsync();
+           // _timer = new Timer(KeepAlive, null, 30000, 30000);
+
+            Users = new ADUserSearcher(this);
+            Groups = new ADGroupSearcher(this);
+            OUs = new ADOUSearcher(this);
+            Computers = new ADComputerSearcher(this, activeDirectoryContextSeed._wmiFactory);
+        }
 
         private void PopulateUserStateDirectoryUser(IApplicationUserState value)
         {

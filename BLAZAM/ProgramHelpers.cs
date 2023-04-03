@@ -150,8 +150,10 @@ namespace BLAZAM.Server
 
             //Provide a primary Active Directory connection as a service
             //We run this as a singleton so each user connection doesn't have to wait for connection verification to happen
-            builder.Services.AddSingleton<IActiveDirectory, ActiveDirectoryContext>();
+            builder.Services.AddSingleton<IActiveDirectoryContext, ActiveDirectoryContext>();
 
+            //Provide a per-user Active Directory connection as a service
+            builder.Services.AddSingleton<IActiveDirectoryContextFactory, ActiveDirectoryContextFactory>();
 
 
             //Provide an ApplicationManager as a service

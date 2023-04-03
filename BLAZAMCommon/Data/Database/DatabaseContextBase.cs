@@ -794,20 +794,9 @@ namespace BLAZAM.Common.Data.Database
         /// returns false.</returns>
         public virtual bool IsSeeded()
         {
-            try
-            {
-                if (AppSettings.FirstOrDefault()?.InstallationCompleted == true)
-                    return true;
-            }
-            catch
-            {
+           
 
-            }
-
-            var appliedMigs = Database.GetAppliedMigrations();
-            //var migs = this.Database.GetPendingMigrations();
-
-            if (appliedMigs.Count() > 0) return true;
+            if (AppliedMigrations.Count() > 0) return true;
             try
             {
                 if (AuthenticationSettings.FirstOrDefault() == null)
@@ -817,6 +806,30 @@ namespace BLAZAM.Common.Data.Database
             catch
             {
                 return false;
+            }
+        }
+
+
+        /// <summary>
+        /// Checks if there is an applied and pending seed, indicating the migration
+        /// chain has been reseeded and the database needs to be wiped and reinstalled
+        /// </summary>
+        /// <remarks>If the database cannot connect this returns false</remarks>
+        /// <returns>Returns true if the seed migration has been applied, otherwise
+        /// returns false.</returns>
+        public virtual bool SeedMismatch
+        {
+            get
+            {
+                if(!IsSeeded()) return false;
+                var seedMismatch = false;
+                PendingMigrations.ForEach(am => {
+                    if (am.Contains("seed", StringComparison.OrdinalIgnoreCase))
+                    {
+                        seedMismatch= true;
+                    }
+                });
+                return seedMismatch;
             }
         }
 

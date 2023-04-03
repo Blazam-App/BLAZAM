@@ -39,7 +39,7 @@
                                 SearchDisabled=@SearchService.IncludeDisabled
                                 @bind-SearchTerm="@SearchService.SearchTerm" />
             </MudPaper>
-            @if (UserStateService?.CurrentUserState?.IsSuperAdmin == true || UserStateService?.CurrentUserState?.DirectoryUser?.CanSearchDisabled == true)
+            @if (CurrentUser.State?.IsSuperAdmin == true || CurrentUser.State?.DirectoryUser?.CanSearchDisabled == true)
             {
                 var buttonColor = Color.Error;
                 if (!SearchService.IncludeDisabled)

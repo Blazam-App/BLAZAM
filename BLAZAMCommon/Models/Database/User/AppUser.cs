@@ -8,7 +8,7 @@
         public bool SearchDisabledUsers { get; set; }
         public bool SearchDisabledComputers { get; set; }
         public string? Username { get; set; }
-        public List<UserNotification> Messages { get; set; }
+        public List<UserNotification> Messages { get; set; } = new();
         public byte[]? ProfilePicture { get; set; }
     }
     

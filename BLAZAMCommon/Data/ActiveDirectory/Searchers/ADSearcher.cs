@@ -8,9 +8,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
     public class ADSearcher
     {
 
-        protected IActiveDirectory Directory;
+        protected IActiveDirectoryContext Directory;
 
-        public ADSearcher(IActiveDirectory directory)
+        public ADSearcher(IActiveDirectoryContext directory)
         {
             Directory = directory;
         }

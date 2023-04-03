@@ -9,7 +9,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
     /// <summary>
     /// Provides a connection to an Active Directory Domain
     /// </summary>
-    public interface IActiveDirectory
+    public interface IActiveDirectoryContext
     {
         IApplicationUserStateService UserStateService { get; }
         IDatabaseContext? Context { get; }
