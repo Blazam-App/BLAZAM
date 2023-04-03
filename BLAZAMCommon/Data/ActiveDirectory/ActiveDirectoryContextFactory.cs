@@ -16,7 +16,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         WmiFactoryService wmiFactory;
         IEncryptionService encryptionService;
         INotificationPublisher notificationPublisher;
-        ICurrentUserStateService currentUserStateService;
         ActiveDirectoryContext activeDirectoryContextSeed;
 
         public ActiveDirectoryContextFactory(AppDatabaseFactory factory, IApplicationUserStateService userStateService, WmiFactoryService wmiFactory, IEncryptionService encryptionService, INotificationPublisher notificationPublisher)
@@ -26,14 +25,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             this.wmiFactory = wmiFactory;
             this.encryptionService = encryptionService;
             this.notificationPublisher = notificationPublisher;
-            this.currentUserStateService = currentUserStateService;
             this.activeDirectoryContextSeed = new ActiveDirectoryContext(factory, userStateService, wmiFactory, encryptionService, notificationPublisher);
         }
 
-        public IActiveDirectoryContext CreateActiveDirectoryContext(ICurrentUserStateService currentUserStateService = null)
+        public IActiveDirectoryContext CreateActiveDirectoryContext(ICurrentUserStateService? currentUserStateService = null)
         {
             var context = new ActiveDirectoryContext(activeDirectoryContextSeed);
-            context.CurrentUser = currentUserStateService;
+            context.CurrentUser = currentUserStateService?.State;
             return context;
 
         }

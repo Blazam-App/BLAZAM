@@ -16,7 +16,15 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 {
     public class ActiveDirectoryContext : IDisposable, IActiveDirectoryContext
     {
-        public ICurrentUserStateService? CurrentUser { get; set; }
+        public IApplicationUserState? CurrentUser
+        {
+            get
+            {
+                if (currentUser != null) return currentUser;
+                return UserStateService.CurrentUserState;
+            }
+            set => currentUser = value;
+        }
 
         private WmiFactoryService _wmiFactory;
         IEncryptionService _encryption;
@@ -115,7 +123,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         public IADComputerSearcher Computers { get; }
 
         public IDatabaseContext? Context { get; private set; }
-       
+
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
@@ -131,6 +139,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             }
         }
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
+        private IApplicationUserState? currentUser;
 
         /// <summary>
         /// <inheritdoc/>
@@ -158,7 +167,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 
         public ADSettings? ConnectionSettings { get; private set; }
 
-        public IApplicationUserStateService? UserStateService { get; set; }
+        public IApplicationUserStateService UserStateService { get; set; }
 
         /// <summary>
         /// Initializes the applications Active Directory connection. It takes the information
@@ -177,9 +186,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             INotificationPublisher notificationPublisher
             )
         {
-            _wmiFactory= wmiFactory;
+            _wmiFactory = wmiFactory;
             _encryption = encryptionService;
-            _notificationPublisher=notificationPublisher;
+            _notificationPublisher = notificationPublisher;
             Instance = this;
             Factory = factory;
             UserStateService = userStateService;
@@ -204,9 +213,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             RootDirectoryEntry = activeDirectoryContextSeed.RootDirectoryEntry;
             AppRootDirectoryEntry = activeDirectoryContextSeed.AppRootDirectoryEntry;
 
-           // UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
+            // UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
             ConnectAsync();
-           // _timer = new Timer(KeepAlive, null, 30000, 30000);
+            // _timer = new Timer(KeepAlive, null, 30000, 30000);
 
             Users = new ADUserSearcher(this);
             Groups = new ADGroupSearcher(this);

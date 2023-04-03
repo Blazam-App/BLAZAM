@@ -69,8 +69,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         private DirectoryEntry? directoryEntry;
         public SearchResult? searchResult;
         protected AppDatabaseFactory DbFactory;
-        protected IApplicationUserStateService UserStateService { get; set; }
-        protected ICurrentUserStateService CurrentUser { get; set; }
+        //protected IApplicationUserStateService UserStateService { get; set; }
+        protected IApplicationUserState? CurrentUser { get; set; }
 
         bool _newEntry = false;
         public bool NewEntry
@@ -378,18 +378,16 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         /// <returns></returns>
         protected virtual bool HasPermission(Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null)
         {
-            var currentUserState = CurrentUser?.State;
-            if (currentUserState == null)
-                currentUserState = UserStateService.CurrentUserState;
+            if (CurrentUser == null) return false;
 
-                if (currentUserState.IsSuperAdmin) return true;
+                if (CurrentUser.IsSuperAdmin) return true;
                 if (DN == null)
                 {
                     Loggers.ActiveDirectryLogger.Error("The directory object " + ADSPath
                         + " did not load a distinguished name.");
                     return false;
                 }
-                var baseSearch = currentUserState.DirectoryUser?.PermissionMappings
+                var baseSearch = CurrentUser.DirectoryUser?.PermissionMappings
                     .Where(pm => DN.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length);
 
                 if (baseSearch == null)
@@ -559,7 +557,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 DirectoryEntry.Disposed += DirectoryEntry_Disposed;
             }
             CurrentUser=Directory.CurrentUser;
-            UserStateService = directory.UserStateService;
+            //UserStateService = directory.UserStateService;
             DbFactory = directory.Factory;
 
             DirectorySettings = await DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefaultAsync();
