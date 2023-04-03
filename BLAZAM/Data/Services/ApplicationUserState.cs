@@ -70,7 +70,8 @@ namespace BLAZAM.Server.Data.Services
             _notificationPublisher.OnNotificationPublished += ((notifications) =>
             {
                 //TODO check if sent to current user
-                GetUserSettingFromDB(null);
+                if (notifications.Select(n => n.User).Contains(UserSettings))
+                    GetUserSettingFromDB(null);
             });
         }
 
@@ -95,14 +96,14 @@ namespace BLAZAM.Server.Data.Services
                 return userSettings;
             }
         }
-        
+
         private void GetUserSettingFromDB(object? state)
         {
             try
             {
                 if (User == null) return;
                 using var context = _dbFactory.CreateDbContext();
-                
+
                 userSettings = context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
                 if (userSettings == null)
                 {

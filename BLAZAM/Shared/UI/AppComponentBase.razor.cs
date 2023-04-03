@@ -40,7 +40,6 @@ namespace BLAZAM.Server.Shared.UI
         [Inject]
         protected IActiveDirectoryContext Directory { get; set; }
 
-      //TODO add page progress service
 
         [Inject]
         protected IJSRuntime JS { get; set; }

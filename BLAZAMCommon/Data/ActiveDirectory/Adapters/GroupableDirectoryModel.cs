@@ -186,7 +186,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
             set
             {
-                //TODO disable/enable user
                 if (value && !Disabled)
                 {
                     UAC = (UAC | ADS_UF_ACCOUNTDISABLE);

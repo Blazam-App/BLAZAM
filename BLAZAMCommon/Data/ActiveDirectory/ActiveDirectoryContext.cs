@@ -21,6 +21,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             get
             {
                 if (currentUser != null) return currentUser;
+                //Todo After I can prove that the above line is reliable, the below line should be removed because it can lead to a potential elevated priviledge exploit
                 return UserStateService.CurrentUserState;
             }
             set => currentUser = value;

@@ -69,7 +69,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         private DirectoryEntry? directoryEntry;
         public SearchResult? searchResult;
         protected AppDatabaseFactory DbFactory;
-        //protected IApplicationUserStateService UserStateService { get; set; }
         protected IApplicationUserState? CurrentUser { get; set; }
 
         bool _newEntry = false;
@@ -557,7 +556,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 DirectoryEntry.Disposed += DirectoryEntry_Disposed;
             }
             CurrentUser=Directory.CurrentUser;
-            //UserStateService = directory.UserStateService;
             DbFactory = directory.Factory;
 
             DirectorySettings = await DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefaultAsync();
