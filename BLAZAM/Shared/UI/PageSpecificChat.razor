@@ -158,7 +158,7 @@
            InvokeAsync(StateHasChanged);
 
        });
-        currentUserState = UserStateService.CurrentUserState;
+        currentUserState = CurrentUser.State;
         AddThisViewer();
         Nav.LocationChanged += ((state, args) =>
         {

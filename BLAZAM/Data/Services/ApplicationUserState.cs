@@ -46,8 +46,9 @@ namespace BLAZAM.Server.Data.Services
             get
             {
                 if (!User.Identity.IsAuthenticated) return null;
-
-                return userSettings.Messages.Where(m => !m.IsRead).ToList();
+                if ((DateTime.Now - lastDataRefresh).TotalSeconds > 1)
+                    GetUserSettingFromDB(null);
+                return userSettings?.Messages.Where(m => !m.IsRead).ToList();
             }
         }
 
@@ -56,7 +57,7 @@ namespace BLAZAM.Server.Data.Services
 
         public AuthenticationTicket? Ticket { get; set; }
 
-
+        public DateTime lastDataRefresh;
         public AppUser? userSettings { get; set; }
 
         private readonly INotificationPublisher _notificationPublisher;
@@ -94,7 +95,7 @@ namespace BLAZAM.Server.Data.Services
                 return userSettings;
             }
         }
-
+        
         private void GetUserSettingFromDB(object? state)
         {
             try
@@ -112,6 +113,7 @@ namespace BLAZAM.Server.Data.Services
                     context.SaveChanges();
 
                 }
+                lastDataRefresh = DateTime.Now;
             }
             catch
             {

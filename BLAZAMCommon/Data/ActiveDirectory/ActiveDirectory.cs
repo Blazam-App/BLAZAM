@@ -16,6 +16,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 {
     public class ActiveDirectoryContext : IDisposable, IActiveDirectory
     {
+        public ICurrentUserStateService CurrentUser { get; private set; }
+
         IEncryptionService _encryption;
         private INotificationPublisher _notificationPublisher;
         public static ActiveDirectoryContext Instance;
@@ -171,8 +173,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             IApplicationUserStateService userStateService,
             WmiFactoryService wmiFactory,
             IEncryptionService encryptionService,
-            INotificationPublisher notificationPublisher)
+            INotificationPublisher notificationPublisher,
+            ICurrentUserStateService currentUserStateService)
         {
+            CurrentUser = currentUserStateService;
             _encryption = encryptionService;
             _notificationPublisher=notificationPublisher;
             Instance = this;

@@ -10,7 +10,7 @@ namespace BLAZAM.Server.Pages
 {
     public class LogOutModel : PageModel
     {
-        public LogOutModel(AppAuthenticationStateProvider auth, NavigationManager _nav, AuditLogger logger,IApplicationUserStateService uss)
+        public LogOutModel(AppAuthenticationStateProvider auth, NavigationManager _nav, AuditLogger logger,ICurrentUserStateService uss)
         {
             Auth = auth;
             Nav = _nav;
@@ -26,11 +26,11 @@ namespace BLAZAM.Server.Pages
         public AppAuthenticationStateProvider Auth { get; }
         public NavigationManager Nav { get; private set; }
         public AuditLogger AuditLogger { get; private set; }
-        public IApplicationUserStateService UserStateService { get; private set; }
+        public ICurrentUserStateService UserStateService { get; private set; }
 
         public async Task<IActionResult> OnGet()
         {
-            var state = UserStateService.CurrentUserState;
+            var state = UserStateService.State;
             if (state.User.Identity.IsAuthenticated)
             {
                 await AuditLogger.Logon.Logout();

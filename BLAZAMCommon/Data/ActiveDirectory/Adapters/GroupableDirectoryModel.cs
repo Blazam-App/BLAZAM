@@ -259,8 +259,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             get
             {
-                if (UserStateService.CurrentUserState?.IsSuperAdmin == true) return true;
-                return UserStateService.CurrentUserState.DirectoryUser.PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == ObjectType && om.AllowDisabled)));
+                if (CurrentUser.State?.IsSuperAdmin == true) return true;
+                return CurrentUser.State.DirectoryUser.PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == ObjectType && om.AllowDisabled)));
 
             }
         }

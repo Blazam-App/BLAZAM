@@ -14,6 +14,7 @@ using BLAZAM.Server.Data.Services.Email;
 using BLAZAM.Common.Data;
 using MudBlazor;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using BLAZAM.Server.Data;
 
 namespace BLAZAM.Server.Shared.UI
 {
@@ -47,6 +48,9 @@ namespace BLAZAM.Server.Shared.UI
 
         [Inject]
         public IApplicationUserStateService UserStateService { get; set; }
+
+        [Inject]
+        public ICurrentUserStateService CurrentUser { get; set; }
 
         [Inject]
         protected AuditLogger AuditLogger { get; set; }
@@ -137,6 +141,6 @@ namespace BLAZAM.Server.Shared.UI
         /// <summary>
         /// True if the current web user is a super admin
         /// </summary>
-        public bool IsAdmin { get => UserStateService.CurrentUserState?.IsSuperAdmin == true; }
+        public bool IsAdmin { get => CurrentUser.State?.IsSuperAdmin == true; }
     }
 }

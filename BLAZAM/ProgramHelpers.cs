@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Localization;
 using MudBlazor.Services;
 using System.Globalization;
 using MudBlazor;
+using BLAZAM.Server.Data;
 
 namespace BLAZAM.Server
 {
@@ -168,6 +169,10 @@ namespace BLAZAM.Server
 
             //Add web user application search as a service
             builder.Services.AddScoped<SearchService>();
+
+
+
+            builder.Services.AddScoped<ICurrentUserStateService,CurrentUserStateService>();
 
 
             //Provide DuoSecurity service

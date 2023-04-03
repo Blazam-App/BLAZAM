@@ -70,6 +70,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         public SearchResult? searchResult;
         protected AppDatabaseFactory DbFactory;
         protected IApplicationUserStateService UserStateService { get; set; }
+        protected ICurrentUserStateService CurrentUser { get; set; }
 
         bool _newEntry = false;
         public bool NewEntry
@@ -377,17 +378,17 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         /// <returns></returns>
         protected virtual bool HasPermission(Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null)
         {
-            if (UserStateService.CurrentUserState != null)
+            if (CurrentUser.State != null)
             {
 
-                if (UserStateService.CurrentUserState.IsSuperAdmin) return true;
+                if (CurrentUser.State.IsSuperAdmin) return true;
                 if (DN == null)
                 {
                     Loggers.ActiveDirectryLogger.Error("The directory object " + ADSPath
                         + " did not load a distinguished name.");
                     return false;
                 }
-                var baseSearch = UserStateService.CurrentUserState?.DirectoryUser?.PermissionMappings
+                var baseSearch = CurrentUser.State?.DirectoryUser?.PermissionMappings
                     .Where(pm => DN.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length);
 
                 if (baseSearch == null)
@@ -556,8 +557,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 DirectoryEntry.UsePropertyCache = true;
                 DirectoryEntry.Disposed += DirectoryEntry_Disposed;
             }
-
-            UserStateService = directory.UserStateService;
+            CurrentUser=Directory.CurrentUser;
+            //UserStateService = directory.UserStateService;
             DbFactory = directory.Factory;
 
             DirectorySettings = await DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefaultAsync();

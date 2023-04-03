@@ -43,7 +43,7 @@ else
     }
     void GetCurrentUser()
     {
-        CurrentUserState = UserStateService.CurrentUserState;
+        CurrentUserState = CurrentUser.State;
         if (CurrentUserState != null)
             CurrentUserState.OnSettingsChange = ((settings) =>
                 {

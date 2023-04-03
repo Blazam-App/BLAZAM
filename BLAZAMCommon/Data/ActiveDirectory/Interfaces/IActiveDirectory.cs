@@ -62,8 +62,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         /// Called when a new user login matches an Active Directory user
         /// </summary>
         AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
+        ICurrentUserStateService CurrentUser { get; }
 
-        
         IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid);
         
         IDirectoryEntryAdapter? GetDirectoryModelBySid(byte[] sid);

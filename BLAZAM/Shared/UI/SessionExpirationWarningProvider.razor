@@ -1,6 +1,4 @@
-@inject AppDialogService MessageService
-@inject IApplicationUserStateService UserStateService
-@inject NavigationManager Nav
+@inherits AppComponentBase
 @inject IJSRuntime JSRuntime
 
 
@@ -80,9 +78,9 @@
     }
     private async void CheckExpiration(object? obj)
     {
-        if (UserStateService.CurrentUserState?.Ticket != null)
+        if (CurrentUser.State?.Ticket != null)
         {
-            _ticket = UserStateService.CurrentUserState?.Ticket;
+            _ticket = CurrentUser.State?.Ticket;
             if (_ticket.Properties.ExpiresUtc - DateTime.UtcNow < TimeSpan.FromMinutes(2) && ExpirationWarningModal?.IsShown == false)
             {
                 ExpirationWarningModal.Show();

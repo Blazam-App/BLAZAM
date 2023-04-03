@@ -261,7 +261,7 @@
 
     bool InDirectoryTemplate(ActiveDirectoryField field)
     {
-        return DirectoryTemplate.FieldValues.Any(f => f.Field.FieldName == field.FieldName && (f.Value.IsNullOrEmpty() || UserStateService.CurrentUserState?.IsSuperAdmin == true));
+        return DirectoryTemplate.FieldValues.Any(f => f.Field.FieldName == field.FieldName && (f.Value.IsNullOrEmpty() || CurrentUser.State?.IsSuperAdmin == true));
     }
     bool IsEditableTemplatField(ActiveDirectoryField field)
     {
