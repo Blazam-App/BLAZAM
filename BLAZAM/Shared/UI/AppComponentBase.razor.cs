@@ -37,7 +37,7 @@ namespace BLAZAM.Server.Shared.UI
 
         [Inject]
         protected IActiveDirectoryContextFactory DirectoryFactory { get; set; }
-        [Inject]
+        
         protected IActiveDirectoryContext Directory { get; set; }
 
 

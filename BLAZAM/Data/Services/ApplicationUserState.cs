@@ -69,7 +69,6 @@ namespace BLAZAM.Server.Data.Services
             _dbFactory = factory;
             _notificationPublisher.OnNotificationPublished += ((notifications) =>
             {
-                //TODO check if sent to current user
                 if (notifications.Select(n => n.User).Contains(UserSettings))
                     GetUserSettingFromDB(null);
             });
