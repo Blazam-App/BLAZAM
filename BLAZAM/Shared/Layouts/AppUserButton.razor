@@ -41,7 +41,7 @@
         }
         @if (messages > 0)
         {
-            <MudBadge Color=Color.Tertiary Content="CurrentUser.State.Messages.Count">
+            <MudBadge Color=Color.Error Overlap=true Content="CurrentUser.State.Messages.Count">
                 @if (CurrentUser.State.UserSettings?.ProfilePicture != null)
                 {
                     <Base64Image Data="@CurrentUser.State.UserSettings?.ProfilePicture" />
