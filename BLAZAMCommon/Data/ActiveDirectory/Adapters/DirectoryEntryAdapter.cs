@@ -69,7 +69,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         private DirectoryEntry? directoryEntry;
         public SearchResult? searchResult;
         protected AppDatabaseFactory DbFactory;
-        protected IApplicationUserStateService UserStateService { get; set; }
+        protected IApplicationUserState? CurrentUser { get; set; }
 
         bool _newEntry = false;
         public bool NewEntry
@@ -85,7 +85,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         /// <inheritdoc/>
         public Dictionary<string, object> NewEntryProperties { get; set; } = new();
 
-        protected IActiveDirectory Directory;
+        protected IActiveDirectoryContext Directory;
         private bool hasUnsavedChanges = false;
 
 
@@ -377,17 +377,16 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         /// <returns></returns>
         protected virtual bool HasPermission(Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null)
         {
-            if (UserStateService.CurrentUserState != null)
-            {
+            if (CurrentUser == null) return false;
 
-                if (UserStateService.CurrentUserState.IsSuperAdmin) return true;
+                if (CurrentUser.IsSuperAdmin) return true;
                 if (DN == null)
                 {
                     Loggers.ActiveDirectryLogger.Error("The directory object " + ADSPath
                         + " did not load a distinguished name.");
                     return false;
                 }
-                var baseSearch = UserStateService.CurrentUserState?.DirectoryUser?.PermissionMappings
+                var baseSearch = CurrentUser.DirectoryUser?.PermissionMappings
                     .Where(pm => DN.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length);
 
                 if (baseSearch == null)
@@ -421,7 +420,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 {
                     return possibleReads?.Count > 0;
                 }
-            }
+            
             return false;
         }
         /// <inheritdoc/>
@@ -542,7 +541,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         }
 
         /// <inheritdoc/>
-        protected virtual async Task Parse(DirectoryEntry? directoryEntry, SearchResult? searchResult, IActiveDirectory directory)
+        protected virtual async Task Parse(DirectoryEntry? directoryEntry, SearchResult? searchResult, IActiveDirectoryContext directory)
         {
             Directory = directory;
 
@@ -556,8 +555,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 DirectoryEntry.UsePropertyCache = true;
                 DirectoryEntry.Disposed += DirectoryEntry_Disposed;
             }
-
-            UserStateService = directory.UserStateService;
+            CurrentUser=Directory.CurrentUser;
             DbFactory = directory.Factory;
 
             DirectorySettings = await DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefaultAsync();
@@ -566,7 +564,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         }
 
         /// <inheritdoc/>
-        public virtual async Task Parse(DirectoryEntry result, IActiveDirectory directory) => await Parse(result, null, directory);
+        public virtual async Task Parse(DirectoryEntry result, IActiveDirectoryContext directory) => await Parse(result, null, directory);
 
 
         private void DirectoryEntry_Disposed(object? sender, EventArgs e)
@@ -575,7 +573,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         }
 
         /// <inheritdoc/>
-        public virtual async Task Parse(SearchResult result, IActiveDirectory directory) => await Parse(null, result, directory);
+        public virtual async Task Parse(SearchResult result, IActiveDirectoryContext directory) => await Parse(null, result, directory);
 
         /// <inheritdoc/>
         public virtual async Task<DirectoryChangeResult> CommitChangesAsync()

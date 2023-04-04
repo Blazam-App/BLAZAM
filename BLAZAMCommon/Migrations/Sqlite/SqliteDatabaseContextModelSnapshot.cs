@@ -1195,8 +1195,8 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("AppUserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Dismissable")
                         .HasColumnType("INTEGER");
@@ -1218,7 +1218,29 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId");
+                    b.ToTable("NotificationMessages");
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.UserNotification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NotificationId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotificationId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserNotifications");
                 });
@@ -1350,11 +1372,23 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasForeignKey("DirectoryTemplateId");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.NotificationMessage", b =>
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.UserNotification", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.User.AppUser", null)
+                    b.HasOne("BLAZAM.Common.Models.Database.User.NotificationMessage", "Notification")
+                        .WithMany()
+                        .HasForeignKey("NotificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BLAZAM.Common.Models.Database.User.AppUser", "User")
                         .WithMany("Messages")
-                        .HasForeignKey("AppUserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Notification");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PermissionDelegatePermissionMapping", b =>

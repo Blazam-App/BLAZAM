@@ -28,8 +28,8 @@
 @code {
     List<IADUser> LockedUsers
     {
-        get => UserStateService.CurrentUserState?.Cache.Get<List<IADUser>>(this.GetType());
-        set => UserStateService.CurrentUserState?.Cache.Set(this.GetType(), value);
+        get => CurrentUser.State?.Cache.Get<List<IADUser>>(this.GetType());
+        set => CurrentUser.State?.Cache.Set(this.GetType(), value);
     }
 
     protected override async Task OnInitializedAsync()

@@ -7,9 +7,6 @@ using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.User;
-using BLAZAM.Server.Data.Services;
-using Microsoft.EntityFrameworkCore;
-using System.Buffers.Text;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Net;
@@ -17,10 +14,21 @@ using System.Security.Claims;
 
 namespace BLAZAM.Common.Data.ActiveDirectory
 {
-    public class ActiveDirectoryContext : IDisposable, IActiveDirectory
+    public class ActiveDirectoryContext : IDisposable, IActiveDirectoryContext
     {
-        IEncryptionService _encryption;
+        public IApplicationUserState? CurrentUser
+        {
+            get
+            {
+                if (currentUser != null) return currentUser;
+                throw new ApplicationException("Current User State was not provided to this directory entry");
+            }
+            set => currentUser = value;
+        }
 
+        private WmiFactoryService _wmiFactory;
+        IEncryptionService _encryption;
+        private INotificationPublisher _notificationPublisher;
         public static ActiveDirectoryContext Instance;
 
 
@@ -115,7 +123,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         public IADComputerSearcher Computers { get; }
 
         public IDatabaseContext? Context { get; private set; }
-       
+
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
@@ -131,6 +139,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             }
         }
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
+        private IApplicationUserState? currentUser;
 
         /// <summary>
         /// <inheritdoc/>
@@ -158,7 +167,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 
         public ADSettings? ConnectionSettings { get; private set; }
 
-        public IApplicationUserStateService? UserStateService { get; set; }
+        public IApplicationUserStateService UserStateService { get; set; }
 
         /// <summary>
         /// Initializes the applications Active Directory connection. It takes the information
@@ -173,9 +182,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory
         public ActiveDirectoryContext(AppDatabaseFactory factory,
             IApplicationUserStateService userStateService,
             WmiFactoryService wmiFactory,
-            IEncryptionService encryptionService)
+            IEncryptionService encryptionService,
+            INotificationPublisher notificationPublisher
+            )
         {
+            _wmiFactory = wmiFactory;
             _encryption = encryptionService;
+            _notificationPublisher = notificationPublisher;
             Instance = this;
             Factory = factory;
             UserStateService = userStateService;
@@ -189,7 +202,26 @@ namespace BLAZAM.Common.Data.ActiveDirectory
             Computers = new ADComputerSearcher(this, wmiFactory);
         }
 
+        public ActiveDirectoryContext(ActiveDirectoryContext activeDirectoryContextSeed)
+        {
+            _encryption = activeDirectoryContextSeed._encryption;
+            _notificationPublisher = activeDirectoryContextSeed._notificationPublisher;
+            Instance = this;
+            Factory = activeDirectoryContextSeed.Factory;
+            UserStateService = activeDirectoryContextSeed.UserStateService;
+            ConnectionSettings = activeDirectoryContextSeed.ConnectionSettings;
+            RootDirectoryEntry = activeDirectoryContextSeed.RootDirectoryEntry;
+            AppRootDirectoryEntry = activeDirectoryContextSeed.AppRootDirectoryEntry;
 
+            // UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
+            ConnectAsync();
+            // _timer = new Timer(KeepAlive, null, 30000, 30000);
+
+            Users = new ADUserSearcher(this);
+            Groups = new ADGroupSearcher(this);
+            OUs = new ADOUSearcher(this);
+            Computers = new ADComputerSearcher(this, activeDirectoryContextSeed._wmiFactory);
+        }
 
         private void PopulateUserStateDirectoryUser(IApplicationUserState value)
         {
@@ -281,7 +313,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                                         {
                                             if (AppRootDirectoryEntry.Parent == null)
                                             {
-                                                UserStateService.BroadcastNotification(new NotificationMessage()
+                                                _notificationPublisher.PublishNotification(new NotificationMessage()
                                                 {
                                                     Level = NotificationLevel.Error,
                                                     Message = "The configured BaseDN is not valid. Please correct your settings.",
@@ -292,7 +324,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                                         }
                                         catch (Exception ex)
                                         {
-                                            UserStateService.BroadcastNotification(new NotificationMessage()
+                                            _notificationPublisher.PublishNotification(new NotificationMessage()
                                             {
                                                 Level = NotificationLevel.Error,
                                                 Message = "The configured BaseDN is not valid. Please correct your settings.",

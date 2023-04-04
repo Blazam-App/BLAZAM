@@ -12,8 +12,6 @@ using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using Microsoft.Extensions.Localization;
 using BLAZAM.Server.Data.Services.Email;
 using BLAZAM.Common.Data;
-using MudBlazor;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace BLAZAM.Server.Shared.UI
 {
@@ -38,15 +36,19 @@ namespace BLAZAM.Server.Shared.UI
         protected ConnMonitor Monitor { get; set; }
 
         [Inject]
-        protected IActiveDirectory Directory { get; set; }
+        protected IActiveDirectoryContextFactory DirectoryFactory { get; set; }
+        
+        protected IActiveDirectoryContext Directory { get; set; }
 
-      //TODO add page progress service
 
         [Inject]
         protected IJSRuntime JS { get; set; }
 
         [Inject]
         public IApplicationUserStateService UserStateService { get; set; }
+
+        [Inject]
+        public ICurrentUserStateService CurrentUser { get; set; }
 
         [Inject]
         protected AuditLogger AuditLogger { get; set; }
@@ -62,6 +64,9 @@ namespace BLAZAM.Server.Shared.UI
 
         [Inject]
         protected EmailService EmailService { get; set; }
+
+        [Inject]
+        protected INotificationPublisher NotificationPublisher { get; set; }
 
         [Inject]
         protected IEncryptionService EncryptionService { get; set; }
@@ -86,7 +91,14 @@ namespace BLAZAM.Server.Shared.UI
             {
                 Loggers.DatabaseLogger.Error("Failed to connect to database", ex);
             }
-
+            try
+            {
+                Directory = DirectoryFactory.CreateActiveDirectoryContext(CurrentUser);
+            }
+            catch (Exception ex)
+            {
+                Loggers.DatabaseLogger.Error("Failed to connect to database", ex);
+            }
             Monitor.OnDirectoryConnectionChanged += (ServiceConnectionState status) =>
             {
                 InvokeAsync(StateHasChanged);
@@ -134,6 +146,6 @@ namespace BLAZAM.Server.Shared.UI
         /// <summary>
         /// True if the current web user is a super admin
         /// </summary>
-        public bool IsAdmin { get => UserStateService.CurrentUserState?.IsSuperAdmin == true; }
+        public bool IsAdmin { get => CurrentUser.State?.IsSuperAdmin == true; }
     }
 }

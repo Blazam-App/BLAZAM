@@ -116,12 +116,12 @@ namespace BLAZAM.Tests.Mocks
             throw new NotImplementedException();
         }
 
-        public Task Parse(DirectoryEntry result, IActiveDirectory directory)
+        public Task Parse(DirectoryEntry result, IActiveDirectoryContext directory)
         {
             throw new NotImplementedException();
         }
 
-        public Task Parse(SearchResult result, IActiveDirectory directory)
+        public Task Parse(SearchResult result, IActiveDirectoryContext directory)
         {
             throw new NotImplementedException();
         }

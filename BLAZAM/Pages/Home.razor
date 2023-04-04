@@ -67,7 +67,7 @@
 
     protected override Task OnInitializedAsync()
     {
-        widgets = new List<Widget>(Widgets.Available(UserStateService.CurrentUserState));
+        widgets = new List<Widget>(Widgets.Available(CurrentUser.State));
         try
         {
             MOTD = (MarkupString)Context.AppSettings.FirstOrDefault().MOTD;

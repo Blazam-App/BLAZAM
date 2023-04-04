@@ -186,7 +186,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
             set
             {
-                //TODO disable/enable user
                 if (value && !Disabled)
                 {
                     UAC = (UAC | ADS_UF_ACCOUNTDISABLE);
@@ -259,8 +258,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             get
             {
-                if (UserStateService.CurrentUserState?.IsSuperAdmin == true) return true;
-                return UserStateService.CurrentUserState.DirectoryUser.PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == ObjectType && om.AllowDisabled)));
+                if (CurrentUser?.IsSuperAdmin == true) return true;
+                return CurrentUser?.DirectoryUser?.PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == ObjectType && om.AllowDisabled)))==true;
 
             }
         }

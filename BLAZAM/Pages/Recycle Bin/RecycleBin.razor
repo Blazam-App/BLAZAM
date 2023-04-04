@@ -25,7 +25,7 @@
         <SelectColumn T="IDirectoryEntryAdapter" ShowInFooter=false ShowInHeader=true  />
         <PropertyColumn Property="x => x.ObjectType" Title="Type"/>
         <PropertyColumn Property="x => x.CanonicalName" Title="Name"/>
-        <PropertyColumn Property="x => x.LastKnownParent.OU.ToPrettyOu()" Title="Last OU"/>
+        <PropertyColumn Property="x => x.LastKnownParent" Title="Last OU"/>
         <PropertyColumn Property="x => x.LastChanged" Title="Deleted"/>
         <TemplateColumn CellClass="d-flex justify-end" Title="Restore">
             <CellTemplate>

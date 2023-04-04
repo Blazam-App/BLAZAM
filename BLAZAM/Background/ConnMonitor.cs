@@ -1,7 +1,7 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Server.Data.Services;
+using BLAZAM.Common.Data.Services;
 using BLAZAM.Server.Pages.Error;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,7 +43,7 @@ namespace BLAZAM.Server.Background
         bool _monitoring;
         private ServiceConnectionState _appReady = ServiceConnectionState.Connecting;
 
-        public ConnMonitor(AppDatabaseFactory DbFactory, IActiveDirectory directory, IEncryptionService encryption)
+        public ConnMonitor(AppDatabaseFactory DbFactory, IActiveDirectoryContext directory, IEncryptionService encryption)
         {
             _encryption = encryption;
             _factory = DbFactory;

@@ -5,8 +5,8 @@
 @code {
     List<IADOrganizationalUnit> NewOUs
     {
-        get => UserStateService.CurrentUserState.Cache.Get<List<IADOrganizationalUnit>>(this.GetType());
-        set => UserStateService.CurrentUserState.Cache.Set(this.GetType(), value);
+        get => CurrentUser.State.Cache.Get<List<IADOrganizationalUnit>>(this.GetType());
+        set => CurrentUser.State.Cache.Set(this.GetType(), value);
     }
 
     protected override async Task OnInitializedAsync()

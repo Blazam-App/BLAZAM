@@ -18,7 +18,7 @@ namespace BLAZAM.Server.Shared.Layouts
             {
                 if (Nav.Uri != _lastUri)
                 {
-                    UserStateService.CurrentUserState.LastUri = Nav.ToBaseRelativePath(Nav.Uri);
+                    CurrentUser.State.LastUri = Nav.ToBaseRelativePath(Nav.Uri);
                     _lastUri = Nav.Uri;
                 }
 

@@ -53,14 +53,14 @@ namespace BLAZAM
         /// <returns>
         /// eg: C:\Users\user\appdata\temp\
         /// </returns>
-        internal static SystemDirectory TempDirectory { get;  set; }
+        internal static SystemDirectory TempDirectory { get; set; }
 
-        public static SystemDirectory AppDataDirectory { get;  set; }
+        public static SystemDirectory AppDataDirectory { get; set; }
 
         /// <summary>
         /// The process of the running application
         /// </summary>
-        public static Process ApplicationProcess { get;  set; }
+        public static Process ApplicationProcess { get; set; }
 
         /// <summary>
         /// The running Blazam version
@@ -146,13 +146,13 @@ namespace BLAZAM
         /// A static reference to the asp net 
         /// core application configuration
         /// </summary>
-        public static ConfigurationManager? Configuration { get;  set; }
+        public static ConfigurationManager? Configuration { get; set; }
         /// <summary>
         /// Indicates whether the Account running the website can wrrite to the writable path
         /// </summary>
         public static bool Writable { get; private set; }
 
-        
+
         /// <summary>
         /// The main injection point for the web application.
         /// It all starts here.
@@ -216,7 +216,7 @@ namespace BLAZAM
 
 
 
-
+            AppInstance.UseMiddleware<UserStateMiddleware>();
             AppInstance.UseMiddleware<HttpsRedirectionMiddleware>();
             AppInstance.UseMiddleware<ApplicationStatusRedirectMiddleware>();
             AppInstance.UseStaticFiles();
@@ -304,7 +304,7 @@ namespace BLAZAM
                 Oops.ErrorMessage = "Applicatin Directory Error";
                 Oops.DetailsMessage = "The application does not have write permission to the 'writable' directory.";
             }
-            catch (DirectoryNotFoundException )
+            catch (DirectoryNotFoundException)
             {
                 Writable = false;
 
@@ -317,20 +317,32 @@ namespace BLAZAM
         internal static async Task<bool> ApplyDatabaseMigrations(bool force = false)
         {
 
-            return await Task.Run(() => {
+            return await Task.Run(() =>
+            {
                 try
-                { 
+                {
                     using (var scope = AppInstance.Services.CreateScope())
                     {
                         var context = scope.ServiceProvider.GetRequiredService<AppDatabaseFactory>().CreateDbContext();
                         if (context != null && context.Status == ServiceConnectionState.Up)
                             if (context.IsSeeded() || force)
-                                if (context.Database.GetPendingMigrations().Count() > 0)
-                                    context.Migrate();
-                                    //context.Database.Migrate();
+                                if (!context.SeedMismatch)
+                                {
+                                    if (context.Database.GetPendingMigrations().Count() > 0)
+                                        context.Migrate();
+                                }
+                                else
+                                {
+                                    throw new DatabaseException("Database incompatible with current application version.");
+                                }
+                        //context.Database.Migrate();
 
                     }
                     return true;
+                }
+                catch(DatabaseException ex)
+                {
+                    throw ex;
                 }
                 catch (Exception ex)
                 {
@@ -339,7 +351,7 @@ namespace BLAZAM
                     return false;
                 }
             });
-           
+
         }
 
     }

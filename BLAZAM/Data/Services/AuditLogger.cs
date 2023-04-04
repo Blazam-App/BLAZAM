@@ -182,7 +182,7 @@ namespace BLAZAM.Server.Data.Services
 
         public async Task<bool> Login(System.Security.Claims.ClaimsPrincipal user)
         {
-            CurrentUser = new ApplicationUserState(Factory) { User = user };
+            CurrentUser = UserStateService.CreateUserState(user);
             return await Log("Login");
         }
         public async Task<bool> Logout() => await Log("Logout");

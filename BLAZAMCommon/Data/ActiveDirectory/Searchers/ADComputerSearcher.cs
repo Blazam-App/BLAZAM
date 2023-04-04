@@ -8,7 +8,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
     {
         public WmiFactoryService WmiFactory { get; set; }
 
-        public ADComputerSearcher(IActiveDirectory directory, WmiFactoryService wmiFactory) : base(directory)
+        public ADComputerSearcher(IActiveDirectoryContext directory, WmiFactoryService wmiFactory) : base(directory)
         {
             WmiFactory = wmiFactory;
         }

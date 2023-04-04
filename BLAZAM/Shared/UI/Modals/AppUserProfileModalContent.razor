@@ -36,8 +36,8 @@
 
         if (rawBytes != null)
         {
-            UserStateService.CurrentUserState.UserSettings.ProfilePicture = rawBytes.ReizeRawImage(100, true);
-            await UserStateService.CurrentUserState.SaveUserSettings();
+            CurrentUser.State.UserSettings.ProfilePicture = rawBytes.ReizeRawImage(100, true);
+            await CurrentUser.State.SaveUserSettings();
         }
     }
 }

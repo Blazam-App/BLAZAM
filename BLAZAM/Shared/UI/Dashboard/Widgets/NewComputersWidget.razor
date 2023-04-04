@@ -5,8 +5,8 @@
 @code {
     List<IADComputer> NewComputers
     {
-        get => UserStateService.CurrentUserState.Cache.Get<List<IADComputer>>(this.GetType());
-        set => UserStateService.CurrentUserState.Cache.Set(this.GetType(), value);
+        get => CurrentUser.State.Cache.Get<List<IADComputer>>(this.GetType());
+        set => CurrentUser.State.Cache.Set(this.GetType(), value);
     }
 
     protected override async Task OnInitializedAsync()

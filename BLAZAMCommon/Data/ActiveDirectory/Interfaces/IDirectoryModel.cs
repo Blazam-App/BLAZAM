@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory.Models;
+using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Models.Database;
 using System.DirectoryServices;
 
@@ -119,8 +120,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         /// <param name="result"></param>
         /// <param name="directory"></param>
         /// <returns></returns>
-        Task Parse(DirectoryEntry result, IActiveDirectory directory);
-        Task Parse(SearchResult result, IActiveDirectory directory);
+        Task Parse(DirectoryEntry result, IActiveDirectoryContext directory);
+        Task Parse(SearchResult result, IActiveDirectoryContext directory);
         bool MoveTo(IADOrganizationalUnit parentOUToMoveTo);
         Task<IADOrganizationalUnit?> GetParent();
 

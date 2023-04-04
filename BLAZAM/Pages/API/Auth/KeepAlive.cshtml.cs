@@ -13,16 +13,18 @@ namespace BLAZAM.Server.Pages.API.Auth
         public IActionResult OnGet()
         {
 
-            var test = HttpContext.SessionTimeout();
-                if (HttpContext.User.Identity.IsAuthenticated)
+            var response = new Dictionary<string, string>();
+                if (HttpContext.User.Identity?.IsAuthenticated==true)
                     HttpContext.SlideCookieExpiration(ApplicationUserStateService.Instance.GetUserState(HttpContext.User));
                 else
                 {
-                    var redirectResponse = new Dictionary<string, string>() { { "expired", "true" } };
-                    return new JsonResult(redirectResponse);
+                     response.Add("expired", "true");
+                    return new JsonResult(response);
                 }
-            
-            return new OkResult();
+                     response.Add("expired", "false");
+            return new JsonResult(response);
+
+            //return new OkResult();
         
         }
 

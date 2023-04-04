@@ -3,14 +3,13 @@ using System.DirectoryServices;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Server.Data.Services;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 {
     /// <summary>
     /// Provides a connection to an Active Directory Domain
     /// </summary>
-    public interface IActiveDirectory
+    public interface IActiveDirectoryContext
     {
         IApplicationUserStateService UserStateService { get; }
         IDatabaseContext? Context { get; }
@@ -63,8 +62,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         /// Called when a new user login matches an Active Directory user
         /// </summary>
         AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
+        IApplicationUserState? CurrentUser { get; }
 
-        
         IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid);
         
         IDirectoryEntryAdapter? GetDirectoryModelBySid(byte[] sid);

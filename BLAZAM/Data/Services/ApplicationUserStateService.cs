@@ -20,11 +20,13 @@ namespace BLAZAM.Server.Data.Services
     /// </summary>
     public class ApplicationUserStateService : IApplicationUserStateService
     {
+        private INotificationPublisher _notificationPublisher;
+
         public static IApplicationUserStateService Instance { get; private set; }
 
-        private IHttpContextAccessor HttpContextAccessor { get; set; }
+        private IHttpContextAccessor _httpContextAccessor { get; set; }
 
-        private  AppDatabaseFactory Factory;
+        private  AppDatabaseFactory _factory;
 
         private int? Timeout { get; set; }
 
@@ -61,11 +63,13 @@ namespace BLAZAM.Server.Data.Services
         /// <param name="httpContextAccessor">An HTTP Context Accessor to get the current ClaimsPrincipal of the current session.
         /// This Principal is persisted via the browser authentication cookie</param>
         /// <param name="factory">Database Context Factory for accessing the Authentication Setting - SessionTimeout</param>
-        public ApplicationUserStateService(IHttpContextAccessor httpContextAccessor, AppDatabaseFactory factory)
+        public ApplicationUserStateService(IHttpContextAccessor httpContextAccessor, AppDatabaseFactory factory,
+            INotificationPublisher notificationPublisher)
         {
+            _notificationPublisher = notificationPublisher;
             Instance = this;
-            HttpContextAccessor = httpContextAccessor;
-            Factory = factory;
+            _httpContextAccessor = httpContextAccessor;
+            _factory = factory;
             t = new Timer(Tick, UserStates, 60000, 60000);
             Task.Run(async () =>
             {
@@ -104,7 +108,7 @@ namespace BLAZAM.Server.Data.Services
             {
                 try
                 {
-                    return GetUserState(HttpContextAccessor.HttpContext?.User);
+                    return GetUserState(_httpContextAccessor.HttpContext?.User);
                 }
                 catch (Exception ex)
                 {
@@ -163,7 +167,7 @@ namespace BLAZAM.Server.Data.Services
 
                 //if (!userClaim.Identity.IsAuthenticated) return null;
                 //Create a new cached state since the one we're looking for appears to be missing
-                existingState = new ApplicationUserState(Factory) { User = userClaim, };
+                existingState = CreateUserState(userClaim);
                 AddUserState(existingState);
 
             }
@@ -207,13 +211,9 @@ namespace BLAZAM.Server.Data.Services
 
         public void RemoveUserState(ClaimsPrincipal currentUser) => RemoveUserState(GetUserState(currentUser));
 
-        public void BroadcastNotification(NotificationMessage notificationMessage)
+        public IApplicationUserState? CreateUserState(ClaimsPrincipal user)
         {
-           foreach(var user in UserStates)
-            {
-                if(!user.Messages.Contains(notificationMessage))
-                user.Messages.Add(notificationMessage);
-            }
+            return new ApplicationUserState(_factory,_notificationPublisher) { User = user };
         }
     }
 }

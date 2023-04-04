@@ -28,6 +28,8 @@
         /// </summary>
         public DateTime? Expires { get; set; }
 
+        public DateTime? Created { get; set; }
+
         public bool Dismissable { get; set; } = true;
 
         /// <summary>

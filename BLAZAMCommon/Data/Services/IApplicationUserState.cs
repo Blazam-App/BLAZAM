@@ -18,7 +18,7 @@ namespace BLAZAM.Common.Data.Services
         ClaimsPrincipal User { get; set; }
         AppUser? UserSettings { get; }
         AuthenticationTicket? Ticket { get; set; }
-        IList<NotificationMessage> Messages { get; set; }
+        IList<UserNotification> Messages { get; }
         IApplicationUserSessionCache Cache { get; set; }
         AppEvent<AppUser> OnSettingsChange { get; set; }
         string LastUri { get; set; }

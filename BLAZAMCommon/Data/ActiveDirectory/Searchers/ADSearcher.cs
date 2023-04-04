@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Common.Data.Services;
 using System.DirectoryServices;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
@@ -7,8 +8,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
     public class ADSearcher
     {
 
-        protected IActiveDirectory Directory;
-        public ADSearcher(IActiveDirectory directory)
+        protected IActiveDirectoryContext Directory;
+
+        public ADSearcher(IActiveDirectoryContext directory)
         {
             Directory = directory;
         }

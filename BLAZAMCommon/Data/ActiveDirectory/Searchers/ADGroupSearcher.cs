@@ -13,7 +13,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         /// </summary>
         private static Dictionary<string, IADGroup> GroupSIDCache = new Dictionary<string, IADGroup>();
 
-        public ADGroupSearcher(IActiveDirectory directory) : base(directory)
+        public ADGroupSearcher(IActiveDirectoryContext directory) : base(directory)
         {
         }
 

@@ -9,9 +9,9 @@ namespace BLAZAM.Server.Data.Services
     public class LoginPermissionApplicator
     {
         protected AppDatabaseFactory Factory { get; set; }
-        protected IActiveDirectory Directory { get; set; }
+        protected IActiveDirectoryContext Directory { get; set; }
 
-        public LoginPermissionApplicator(AppDatabaseFactory factory, IActiveDirectory directory)
+        public LoginPermissionApplicator(AppDatabaseFactory factory, IActiveDirectoryContext directory)
         {
             Factory = factory;
             Directory = directory;
@@ -20,8 +20,8 @@ namespace BLAZAM.Server.Data.Services
 
         private async void LoadPermissionsForNewLoginUser(IApplicationUserState value)
         {
-            if (value.DirectoryUser != null)
-                await LoadPermissions(value.DirectoryUser);
+            if(value.DirectoryUser!=null)
+            await LoadPermissions(value.DirectoryUser);
 
         }
 
@@ -30,24 +30,21 @@ namespace BLAZAM.Server.Data.Services
         {
             using (var Context = await Factory.CreateDbContextAsync())
             {
-                var cursor = await Context.PermissionDelegate.Include(pl => pl.PermissionsMaps).ToListAsync();
-                foreach (var l in cursor)
-                {
-
-
-                    var permissiondelegate = ActiveDirectoryContext.Instance.GetDirectoryModelBySid(l.DelegateSid);
+                var cursor = await Context.PermissionDelegate.Include(pl=>pl.PermissionsMaps).ToListAsync();
+                foreach(var l in cursor) { 
+                
+                    
+                    var permissiondelegate = ActiveDirectoryContext.Instance.Groups.FindGroupBySID(l.DelegateSid);
                     if (permissiondelegate != null)
                     {
-                        if (user.Equals(permissiondelegate)
-                            || (permissiondelegate is IADGroup delegateGroup && user.IsAMemberOf(delegateGroup))
-                            )
+                        if (user.IsAMemberOf(permissiondelegate)||user.Equals(permissiondelegate))
                         {
                             user.PermissionDelegates.Add(l);
                             user.PermissionMappings.AddRange(l.PermissionsMaps);
                         }
                     }
                 }
-
+               
             }
         }
     }

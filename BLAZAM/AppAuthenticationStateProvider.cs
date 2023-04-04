@@ -24,7 +24,7 @@ namespace BLAZAM
     public class AppAuthenticationStateProvider : AuthenticationStateProvider
     {
         public AppAuthenticationStateProvider(AppDatabaseFactory factory,
-            IActiveDirectory directoy,
+            IActiveDirectoryContext directoy,
             LoginPermissionApplicator permissionHandler,
             IApplicationUserStateService userStateService,
             IHttpContextAccessor ca,
@@ -44,7 +44,7 @@ namespace BLAZAM
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IDuoClientProvider _duoClientProvider;
         private readonly IEncryptionService _encryption;
-        private readonly IActiveDirectory _directory;
+        private readonly IActiveDirectoryContext _directory;
         private readonly AppDatabaseFactory _factory;
         private readonly LoginPermissionApplicator _permissionHandler;
 
@@ -90,7 +90,7 @@ namespace BLAZAM
         }
 
         private ClaimsPrincipal? CurrentUser;
-        private ApplicationUserState _newUserState;
+        private IApplicationUserState _newUserState;
 
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
@@ -148,7 +148,7 @@ namespace BLAZAM
         public async Task<LoginResult> Login(LoginRequest loginReq)
         {
             LoginResult loginResult = new();
-            _newUserState = new(_factory);
+            _newUserState = _userStateService.CreateUserState(null);
             
 
             AuthenticationState? result = null;

@@ -1,9 +1,8 @@
 ﻿@inherits LayoutComponentBase
 @using BLAZAM.Server.Background;
-@using BLAZAM.Server.Data;
 @using BLAZAM.Server.Shared.UI.Themes;
 @inject NavigationManager Nav
-@inject IActiveDirectory directory
+@inject IActiveDirectoryContext directory
 @inject IApplicationUserStateService UserStateService
 @inject AppDatabaseFactory DbFactory
 @inject AppSnackBarService SnackBarService
@@ -91,11 +90,11 @@
 
 @using System.Security.Claims;
 @inject IJSRuntime JSRuntime
-@inject IApplicationUserStateService UserStateService
+@inject ICurrentUserStateService CurrentUser
 
 
 @{
-    if (UserStateService.CurrentUserState.User.FindFirst(ClaimTypes.Sid) != null)
+    if (CurrentUser.State.User.FindFirst(ClaimTypes.Sid) != null)
     {
         JSRuntime.InvokeVoidAsync("updateCookieExpiration");
 
@@ -155,8 +154,8 @@
     {
         try
         {
-            UserStateService.CurrentUserState.UserSettings.Theme = theme.Name;
-            UserStateService.CurrentUserState.SaveUserSettings();
+            CurrentUser.State.UserSettings.Theme = theme.Name;
+            CurrentUser.State.SaveUserSettings();
             Nav.NavigateTo(Nav.Uri, true);
         }
         catch (Exception ex)

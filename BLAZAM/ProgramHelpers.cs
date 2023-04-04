@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Localization;
 using MudBlazor.Services;
 using System.Globalization;
 using MudBlazor;
+using BLAZAM.Server.Data;
 
 namespace BLAZAM.Server
 {
@@ -149,8 +150,10 @@ namespace BLAZAM.Server
 
             //Provide a primary Active Directory connection as a service
             //We run this as a singleton so each user connection doesn't have to wait for connection verification to happen
-            builder.Services.AddSingleton<IActiveDirectory, ActiveDirectoryContext>();
+            builder.Services.AddSingleton<IActiveDirectoryContext, ActiveDirectoryContext>();
 
+            //Provide a per-user Active Directory connection as a service
+            builder.Services.AddSingleton<IActiveDirectoryContextFactory, ActiveDirectoryContextFactory>();
 
 
             //Provide an ApplicationManager as a service
@@ -170,6 +173,10 @@ namespace BLAZAM.Server
             builder.Services.AddScoped<SearchService>();
 
 
+
+            builder.Services.AddScoped<ICurrentUserStateService,CurrentUserStateService>();
+
+
             //Provide DuoSecurity service
             builder.Services.AddSingleton<IDuoClientProvider, DuoClientProvider>();
 
@@ -180,6 +187,10 @@ namespace BLAZAM.Server
             //Provide database and active directory monitoring service
             //This serivice runs a Timer, and so singleton
             builder.Services.AddSingleton<ConnMonitor>();
+
+
+            //Provide notification publishing as a service
+            builder.Services.AddSingleton<INotificationPublisher,NotificationPublisher>();
 
             //Provide UserStates as a service
             //This service is a "hack" for Blazor Server not having, in a real sense, sessions
