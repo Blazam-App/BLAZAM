@@ -8,18 +8,19 @@ namespace BLAZAM.Server.Data.Services
         private readonly IApplicationUserStateService _applicationUserStateService;
 
         private Timer? _retryTimer;
+        private IApplicationUserState state;
 
 
 
         /// <summary>
         /// The current user's session state
         /// </summary>
-        public IApplicationUserState State { get; set; }
+        public IApplicationUserState State { get => state; set => state = value; }
 
         /// <summary>
         /// The current user's username
         /// </summary>
-        public string Username => State?.Username;
+        public string Username => State.Username;
 
         public CurrentUserStateService(IApplicationUserStateService applicationUserStateService)
         {

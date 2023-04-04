@@ -216,7 +216,7 @@ namespace BLAZAM
 
 
 
-
+            AppInstance.UseMiddleware<UserStateMiddleware>();
             AppInstance.UseMiddleware<HttpsRedirectionMiddleware>();
             AppInstance.UseMiddleware<ApplicationStatusRedirectMiddleware>();
             AppInstance.UseStaticFiles();
