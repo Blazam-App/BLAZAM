@@ -11,9 +11,9 @@
                 if (IsAdmin)
                 {
                     adminEnabledHelperText = "Field unlocked because you are admin.";
-                    <div>
-                    All fields are editabl becuase you are an admin.
-                </div>
+                    <MudAlert Class="mud-alert-info">
+                    All fields are editable becausse you are an admin.
+                </MudAlert>
             }
             }
 
@@ -202,7 +202,7 @@
                         
                            
 
-                                <HomeDriveSelect Label="@UserLocalization["Home Drive"]" @bind-SelectedValue="@User.HomeDrive" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomeDrive)) />
+                                <HomeDriveSelect Label="@UserLocalization["Home Drive"]" @bind-Value="@User.HomeDrive" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomeDrive)) />
 
                             
                            
@@ -268,7 +268,7 @@
 
 
 
-        return DirectoryTemplate.FieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Value.IsNullOrEmpty());
+        return DirectoryTemplate.FieldValues.Any(f => f.Field.FieldName == field.FieldName && (f.Value.IsNullOrEmpty() ||f.Editable));
     }
 
 
