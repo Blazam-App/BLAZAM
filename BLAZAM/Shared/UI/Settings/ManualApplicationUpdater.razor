@@ -1,12 +1,15 @@
 @inherits AppComponentBase
 
+@if (Program.InDebugMode)
+{
 
-<code>
-    Working Directory: @Program.RootDirectory
-</code>
-<code>
-    PID: @Program.ApplicationProcess.Id
-</code>
+    <code>
+        Working Directory: @Program.RootDirectory
+    </code>
+    <code>
+        PID: @Program.ApplicationProcess.Id
+    </code>
+}
 @if (AutoUpdateService.IsUpdatedScheduled)
 {
     <MudAlert Class="mud-alert-filled-info">
@@ -22,7 +25,7 @@
 
 }
 
-<MudButton Color="Color.Primary" OnClick=@GetLatestUpdate>Refresh Latest Update</MudButton>
+<MudIconButton Color="Color.Primary" OnClick=@GetLatestUpdate Icon="@Icons.Material.Filled.Refresh"/>
 
 @{
     if (LatestAvailableVersion != null)
@@ -149,7 +152,7 @@
         await base.OnInitializedAsync();
         GetLatestUpdate();
     }
-    async Task GetLatestUpdate()
+    public async Task GetLatestUpdate()
     {
         LoadingData = true;
         await InvokeAsync(StateHasChanged);

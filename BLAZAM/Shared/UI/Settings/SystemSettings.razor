@@ -1,37 +1,37 @@
 @inherits SettingsComponents
 @using System.IO.Compression;
 @using BLAZAM.Common.Extensions;
-    <MudText Typo ="Typo.h1">@SettingsLocalization["System Settings"]</MudText>
-    <MudForm @onsubmit="Save">
+<MudText Typo="Typo.h4">@SettingsLocalization["System Settings"]</MudText>
+<MudForm @onsubmit="Save">
     @if (settings != null)
     {
-        <SettingsField>
+        <SettingsField Label="@SettingsLocalization["Google Analytics ID"]">
 
-                <MudTextField Label="@SettingsLocalization["Google Analytics ID"]" @bind-Value="@settings.AnalyticsId" />
-            
+            <MudTextField Label="@SettingsLocalization["Google Analytics ID"]" @bind-Value="@settings.AnalyticsId" />
+
         </SettingsField>
         <SettingsField>
-            
-                <MudButton Color="Color.Error" OnClick=RestartApplication>Restart Web Application</MudButton>
 
-            
+            <MudButton Color="Color.Error" Variant=Variant.Outlined OnClick=RestartApplication>Restart Web Application</MudButton>
+
+
         </SettingsField>
     }
-    
-    <SettingsField>
-        
-            <MudLink Href="/download/logs" Target="Target.Blank">
-            <MudButton Color="Color.Primary">Download Logs</MudButton>
-            </MudLink>
 
-        
+    <SettingsField>
+
+        <MudLink Href="/download/logs" Target="Target.Blank">
+            <MudButton Variant=Variant.Outlined Color="Color.Primary">Download Logs</MudButton>
+        </MudLink>
+
+
     </SettingsField>
-        <SettingsField>
-            
-                <MudButton ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
-            
-        </SettingsField>
-    </MudForm>
+    <SettingsField>
+
+        <MudButton ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+    </SettingsField>
+</MudForm>
 @code {
 #nullable disable warnings
     AppSettings? settings = new AppSettings();
