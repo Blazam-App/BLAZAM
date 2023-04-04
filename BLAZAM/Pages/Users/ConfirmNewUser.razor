@@ -1,22 +1,25 @@
 @inherits DirectoryModelComponent
+@inject IJSRuntime JSRuntime
 <AppPageTitle>Confirm User Creation</AppPageTitle>
 
 
 
 
-    <MudTextField Label="@UserLocalization["First Name"]" @bind-Value="@User.GivenName" Disabled=true />
+    <MudTextField Label="@UserLocalization["OU"]" Value="@User.OU.ToPrettyOu()" Disabled=true />
 
-    <MudTextField Label="@UserLocalization["Middle Name"]" @bind-Value="@User.MiddleName" Disabled=true />
+    <MudTextField Label="@UserLocalization["First Name"]" Value="@User.GivenName" Disabled=true />
 
-    <MudTextField Label="@UserLocalization["Last Name"]" @bind-Value="@User.Surname" Disabled=true />
+    <MudTextField Label="@UserLocalization["Middle Name"]" Value="@User.MiddleName" Disabled=true />
 
-    <MudTextField Label="@UserLocalization["Display Name"]" @bind-Value="@User.DisplayName" Disabled=true />
+    <MudTextField Label="@UserLocalization["Last Name"]" Value="@User.Surname" Disabled=true />
 
-    <MudTextField Label="@UserLocalization["Username"]" @bind-Value="@User.SamAccountName" Disabled=true />
+    <MudTextField Label="@UserLocalization["Display Name"]" Value="@User.DisplayName" Disabled=true />
+
+    <MudTextField Label="@UserLocalization["Username"]" Value="@User.SamAccountName" Disabled=true />
 
     <MudTextField Label="@UserLocalization["Password"]" Value="@User.NewPassword.ToPlainText()" Disabled=true />
 
-    <MudTextField Label="@UserLocalization["Email Address"]" @bind-Value="@User.Email" Disabled=true />
+    <MudTextField Label="@UserLocalization["Email Address"]" Value="@User.Email" Disabled=true />
 
 
 @if (InDirectoryTemplate(ActiveDirectoryFields.EmployeeId) ||
@@ -107,7 +110,7 @@
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDrive))
         {
-                <HomeDriveSelect Label="@UserLocalization["Home Drive"]" @bind-SelectedValue="@User.HomeDrive" Disabled=true />
+                <HomeDriveSelect Label="@UserLocalization["Home Drive"]" @bind-Value="@User.HomeDrive" Disabled=true />
         }
         @if (InDirectoryTemplate(ActiveDirectoryFields.ScriptPath))
         {
@@ -152,6 +155,7 @@
 
 
 <MudButton Color="Color.Success" OnClick="ConfirmUser">Create User</MudButton>
+<MudButton StartIcon="@Icons.Material.Filled.Print" Color="Color.Info" OnClick="Print">Print</MudButton>
 
 @code {
     [Parameter]
@@ -187,5 +191,10 @@
         {
             await MessageService.Error(ex.Message);
         }
+    }
+
+    async Task Print()
+    {
+        JSRuntime.InvokeVoidAsync("printPage",null);
     }
 }

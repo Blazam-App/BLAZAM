@@ -41,7 +41,7 @@
                 {
                     <MudIconButton OnClick=Unlock Icon=@Icons.Material.Filled.Lock />
                 }
-                <MudHidden Breakpoint="Breakpoint.Sm" Invert>
+                <MudHidden Breakpoint="Breakpoint.Sm">
                 <MudToolBar Style="height:32px" DisableGutters Dense>
                     @if ((User.Enabled && User.CanDisable) || (User.Disabled && User.CanEnable))
 
@@ -118,7 +118,7 @@
                 </MudHidden>
                 <MudSpacer />
                 <PageSpecificChat />
-                <MudHidden Breakpoint="Breakpoint.Sm">
+                <MudHidden Breakpoint="Breakpoint.Sm" Invert=true>
 
                     <MudMenu Class="align-self-end" StartIcon="@Icons.Material.Filled.Settings">
                         @if ((User.Enabled && User.CanDisable) || (User.Disabled && User.CanEnable))
@@ -609,7 +609,7 @@
                             {
 
 
-                                <HomeDriveSelect Label="@UserLocalization["Home Drive"]" @bind-SelectedValue="@User.HomeDrive" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDrive)) />
+                                <HomeDriveSelect Label="@UserLocalization["Home Drive"]" @bind-Value="@User.HomeDrive" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDrive)) />
 
 
 

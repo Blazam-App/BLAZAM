@@ -1124,6 +1124,9 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("AllowCustomGroups")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
 
@@ -1169,8 +1172,14 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<int?>("DirectoryTemplateId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Editable")
+                        .HasColumnType("bit");
+
                     b.Property<int>("FieldId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Required")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Value")
                         .IsRequired()

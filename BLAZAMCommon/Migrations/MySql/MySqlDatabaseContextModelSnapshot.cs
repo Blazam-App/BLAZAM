@@ -1079,6 +1079,9 @@ namespace BLAZAM.Common.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<bool>("AllowCustomGroups")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Category")
                         .HasColumnType("longtext");
 
@@ -1122,8 +1125,14 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int?>("DirectoryTemplateId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Editable")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int>("FieldId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Required")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Value")
                         .IsRequired()

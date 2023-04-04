@@ -53,3 +53,8 @@ window.playAudio = async (path) => {
     audio.play();
 
 };
+
+window.printPage = async () => {
+    window.print();
+
+};

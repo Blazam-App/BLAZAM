@@ -37,6 +37,9 @@
                 <code>{li}</code>:Last Initial<br />
             </MudStack>
             <MudStack Row=true>
+                <code>{username}</code>:Username<br />
+            </MudStack>
+            <MudStack Row=true>
                 <code>{AlphaNum[:u/l]}</code>:Random letter or number (optional force uppercase/lowercase)<br />
             </MudStack>
             <MudStack Row=true>
@@ -66,12 +69,21 @@
 
         </Section>
         <Section Title="Fields">
-
+            <MudCard>
+                Variables:
+                <MudStack Row=true>
+                   All above in addition to
+                </MudStack>
+                
+                <MudStack Row=true>
+                    <code>{username}</code>:Username<br />
+                </MudStack>
+                
+            </MudCard>
 
             <MudDrawerContainer Class="mud-height-full" Style="min-height:200px">
                 <MudDrawer @bind-Open="@open" Elevation="0" Variant="@DrawerVariant.Persistent">
-                    <MudNavMenu>
-                        <MudStack>
+                    <MudStack Class="my-0 py-0">
                             @foreach (var field in fields.OrderBy(f => f.DisplayName))
                             {
                                 @if (field.FieldName != "samaccountname" &&
@@ -89,35 +101,63 @@
                                !DirectoryTemplate.FieldValues.Any(f => f.Field.Equals(field)) &&
                                field.IsActionAppropriateForObject(DirectoryTemplate.ObjectType))
                                 {
-                                    <MudButton OnClick=@(()=>{
+                                    <MudButton Class="my-0" OnClick=@(()=>{
                                        DirectoryTemplate.FieldValues.Add(new(){ Field=field});
-                                       })>@field.DisplayName</MudButton>
+                                       })> <MudText>@field.DisplayName</MudText></MudButton>
 
                                 }
 
                             }
-                        </MudStack>
-
-                    </MudNavMenu>
+                    </MudStack>
                 </MudDrawer>
                 <div class="d-flex justify-center align-center mud-height-full">
                     <MudStack>
-                        Fields left blank will be editable by the user on creation.
-                        Fields with values will not be editable.
-                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{open=!open;})">Persistent drawer</MudButton>
+                        <MudDataGrid Items="@DirectoryTemplate.FieldValues.OrderBy(fv => fv.Field.DisplayName)"
+                                     Dense=true
+                        Striped=true
+                        Bordered=true
+                        Hover=true>
+                           
+                            <ToolBarContent>
+                                <MudText Typo="Typo.h6">Fields</MudText>
+                                <MudSpacer />
+                                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{open=!open;})">Toggle Fields</MudButton>
 
-                        @foreach (var field in DirectoryTemplate.FieldValues.OrderBy(fv => fv.Field.DisplayName))
-                        {
+                            </ToolBarContent>
+                            <Columns>
+                                <TemplateColumn Title="Name">
+                                    <CellTemplate Context="cellContext">
+                                        <MudText>@cellContext.Item.Field.DisplayName</MudText>
 
-                            <MudStack Row=true>
+                                    </CellTemplate>
+                                </TemplateColumn>
+                                <TemplateColumn Title="Value">
+                                    <CellTemplate Context="cellContext">
+                                        <MudTextField @bind-Value=cellContext.Item.Value />
 
+                                    </CellTemplate>
+                                </TemplateColumn>
+                                <TemplateColumn Title="Editable">
+                                    <CellTemplate Context="cellContext">
+                                        <MudCheckBox Label="Editable" @bind-Checked=cellContext.Item.Editable />
 
-                            <MudTextField Label="@field.Field.DisplayName" @bind-Value=field.Value />
+                                    </CellTemplate>
+                                </TemplateColumn>
+                                <TemplateColumn Title="Required">
+                                    <CellTemplate Context="cellContext">
+                                        <MudCheckBox Label="Required" @bind-Checked=cellContext.Item.Required Disabled=@cellContext.Item.Editable />
 
-                            <AppCloseButton OnClick=@(()=>{DirectoryTemplate.FieldValues.Remove(field);InvokeAsync(StateHasChanged);}) />
-                        </MudStack>
+                                    </CellTemplate>
+                                </TemplateColumn>
+                                <TemplateColumn>
+                                    <CellTemplate Context="cellContext">
+                                        <AppCloseButton OnClick=@(()=>{DirectoryTemplate.FieldValues.Remove(cellContext.Item);InvokeAsync(StateHasChanged);}) />
 
-                        }
+                                    </CellTemplate>
+                                </TemplateColumn>
+                            </Columns>
+                        </MudDataGrid>
+
                     </MudStack>
                 </div>
             </MudDrawerContainer>
@@ -126,11 +166,10 @@
 
         <Section Title="Organizational Unit">
 
-       @*     @if (SelectedOU != null)
+            @*     @if (SelectedOU != null)
             {
-*@
-                <OUTreeView Label=@(SettingsLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
-                
+            *@
+            <OUTreeView Label=@(SettingsLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
                         StartRootExpanded=false
                         @bind-SelectedOU=@SelectedOU
                         @bind-StartingSelectedOU=@SelectedOU />
