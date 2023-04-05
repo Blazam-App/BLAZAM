@@ -1,15 +1,21 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory;
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace BLAZAM.Common.Models.Database
 {
+    public enum ActiveDirectoryFieldType { Text,Date,RawData};
     public class ActiveDirectoryField : AppDbSetBase
     {
+
 
         public string FieldName { get; set; }
         //public List<ActiveDirectoryObjectType> ObjectTypes { get; set; }
         public string DisplayName { get; internal set; }
+        public ActiveDirectoryFieldType FieldType { get; set; }= ActiveDirectoryFieldType.Text;
+
+       
 
         public override string? ToString()
         {
