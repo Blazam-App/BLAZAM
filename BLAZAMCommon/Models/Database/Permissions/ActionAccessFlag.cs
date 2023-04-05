@@ -2,11 +2,13 @@
 
 namespace BLAZAM.Common.Models.Database.Permissions
 {
-   
+   public enum ActiveDirectoryObjectAction { Move,Delete,Create,Unassign,Assign,Enable,Disable,Rename,
+        Unlock
+    }
     public class ActionAccessFlag : AppDbSetBase
     {
         public string Name { get; set; }
-
+        public ActiveDirectoryObjectAction Action { get; set; }
         public override bool Equals(object? obj)
         {
             return obj is ActionAccessFlag flag &&

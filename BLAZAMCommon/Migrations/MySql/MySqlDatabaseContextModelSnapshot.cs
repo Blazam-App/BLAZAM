@@ -117,6 +117,9 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int>("FieldType")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("ActiveDirectoryFields");
@@ -124,207 +127,610 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = 100001,
                             DisplayName = "Last Name",
-                            FieldName = "sn"
+                            FieldName = "sn",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 2,
+                            Id = 100002,
                             DisplayName = "First Name",
-                            FieldName = "givenname"
+                            FieldName = "givenname",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 3,
+                            Id = 100003,
                             DisplayName = "Office",
-                            FieldName = "physicalDeliveryOfficeName"
+                            FieldName = "physicalDeliveryOfficeName",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 4,
+                            Id = 100004,
                             DisplayName = "Employee ID",
-                            FieldName = "employeeId"
+                            FieldName = "employeeId",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 5,
+                            Id = 100005,
                             DisplayName = "Home Directory",
-                            FieldName = "homeDirectory"
+                            FieldName = "homeDirectory",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 6,
+                            Id = 100006,
                             DisplayName = "Logon Script Path",
-                            FieldName = "scriptPath"
+                            FieldName = "scriptPath",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 7,
+                            Id = 100007,
                             DisplayName = "Profile Path",
-                            FieldName = "profilePath"
+                            FieldName = "profilePath",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 8,
+                            Id = 100008,
                             DisplayName = "Home Phone Number",
-                            FieldName = "homePhone"
+                            FieldName = "homePhone",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 9,
+                            Id = 100009,
                             DisplayName = "Street Address",
-                            FieldName = "streetAddress"
+                            FieldName = "streetAddress",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 10,
+                            Id = 100010,
                             DisplayName = "City",
-                            FieldName = "city"
+                            FieldName = "city",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 11,
+                            Id = 100011,
                             DisplayName = "State",
-                            FieldName = "st"
+                            FieldName = "st",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 12,
+                            Id = 100012,
                             DisplayName = "Zip Code",
-                            FieldName = "postalCode"
+                            FieldName = "postalCode",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 13,
+                            Id = 100013,
                             DisplayName = "Site",
-                            FieldName = "site"
+                            FieldName = "site",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 14,
+                            Id = 100014,
                             DisplayName = "Name",
-                            FieldName = "name"
+                            FieldName = "name",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 15,
+                            Id = 100015,
                             DisplayName = "Username",
-                            FieldName = "samaccountname"
+                            FieldName = "samaccountname",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 16,
+                            Id = 100016,
                             DisplayName = "SID",
-                            FieldName = "objectSID"
+                            FieldName = "objectSID",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 17,
+                            Id = 100017,
                             DisplayName = "E-Mail Address",
-                            FieldName = "mail"
+                            FieldName = "mail",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 18,
+                            Id = 100018,
                             DisplayName = "Description",
-                            FieldName = "description"
+                            FieldName = "description",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 19,
+                            Id = 100019,
                             DisplayName = "Display Name",
-                            FieldName = "displayName"
+                            FieldName = "displayName",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 20,
+                            Id = 100020,
                             DisplayName = "Distinguished Name",
-                            FieldName = "distinguishedName"
+                            FieldName = "distinguishedName",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 21,
+                            Id = 100021,
                             DisplayName = "Member Of",
-                            FieldName = "memberOf"
+                            FieldName = "memberOf",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 22,
+                            Id = 100022,
                             DisplayName = "Company",
-                            FieldName = "company"
+                            FieldName = "company",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 23,
+                            Id = 100023,
                             DisplayName = "Title",
-                            FieldName = "title"
+                            FieldName = "title",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 24,
+                            Id = 100024,
                             DisplayName = "User Principal Name",
-                            FieldName = "userPrincipalName"
+                            FieldName = "userPrincipalName",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 25,
+                            Id = 100025,
                             DisplayName = "Telephone Number",
-                            FieldName = "telephoneNumber"
+                            FieldName = "telephoneNumber",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 26,
+                            Id = 100026,
                             DisplayName = "PO Box",
-                            FieldName = "postOfficeBox"
+                            FieldName = "postOfficeBox",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 27,
+                            Id = 100027,
                             DisplayName = "Canonical Name",
-                            FieldName = "cn"
+                            FieldName = "cn",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 28,
+                            Id = 100028,
                             DisplayName = "Home Drive",
-                            FieldName = "homeDrive"
+                            FieldName = "homeDrive",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 29,
+                            Id = 100029,
                             DisplayName = "Department",
-                            FieldName = "department"
+                            FieldName = "department",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 30,
+                            Id = 100030,
                             DisplayName = "Middle Name",
-                            FieldName = "middleName"
+                            FieldName = "middleName",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 31,
+                            Id = 100031,
                             DisplayName = "Pager",
-                            FieldName = "pager"
+                            FieldName = "pager",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 32,
+                            Id = 100032,
                             DisplayName = "OS",
-                            FieldName = "operatingSystemVersion"
+                            FieldName = "operatingSystemVersion",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 33,
+                            Id = 100033,
                             DisplayName = "Account Expiration",
-                            FieldName = "accountExpires"
+                            FieldName = "accountExpires",
+                            FieldType = 0
                         },
                         new
                         {
-                            Id = 34,
+                            Id = 100034,
                             DisplayName = "Manager",
-                            FieldName = "manager"
+                            FieldName = "manager",
+                            FieldType = 0
+                        });
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryFieldObjectType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ActiveDirectoryFieldId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ObjectType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActiveDirectoryFieldId");
+
+                    b.ToTable("ActiveDirectoryFieldObjectMappings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 100001,
+                            ActiveDirectoryFieldId = 100001,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100002,
+                            ActiveDirectoryFieldId = 100002,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100003,
+                            ActiveDirectoryFieldId = 100003,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100004,
+                            ActiveDirectoryFieldId = 100004,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100005,
+                            ActiveDirectoryFieldId = 100005,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100006,
+                            ActiveDirectoryFieldId = 100006,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100007,
+                            ActiveDirectoryFieldId = 100007,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100008,
+                            ActiveDirectoryFieldId = 100008,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100009,
+                            ActiveDirectoryFieldId = 100009,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100010,
+                            ActiveDirectoryFieldId = 100010,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100011,
+                            ActiveDirectoryFieldId = 100011,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100012,
+                            ActiveDirectoryFieldId = 100012,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100013,
+                            ActiveDirectoryFieldId = 100013,
+                            ObjectType = 1
+                        },
+                        new
+                        {
+                            Id = 100014,
+                            ActiveDirectoryFieldId = 100013,
+                            ObjectType = 2
+                        },
+                        new
+                        {
+                            Id = 100015,
+                            ActiveDirectoryFieldId = 100013,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100016,
+                            ActiveDirectoryFieldId = 100013,
+                            ObjectType = 3
+                        },
+                        new
+                        {
+                            Id = 100017,
+                            ActiveDirectoryFieldId = 100014,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100018,
+                            ActiveDirectoryFieldId = 100015,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100019,
+                            ActiveDirectoryFieldId = 100015,
+                            ObjectType = 1
+                        },
+                        new
+                        {
+                            Id = 100020,
+                            ActiveDirectoryFieldId = 100015,
+                            ObjectType = 2
+                        },
+                        new
+                        {
+                            Id = 100021,
+                            ActiveDirectoryFieldId = 100016,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100022,
+                            ActiveDirectoryFieldId = 100016,
+                            ObjectType = 1
+                        },
+                        new
+                        {
+                            Id = 100023,
+                            ActiveDirectoryFieldId = 100016,
+                            ObjectType = 2
+                        },
+                        new
+                        {
+                            Id = 100024,
+                            ActiveDirectoryFieldId = 100016,
+                            ObjectType = 3
+                        },
+                        new
+                        {
+                            Id = 100025,
+                            ActiveDirectoryFieldId = 100017,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100026,
+                            ActiveDirectoryFieldId = 100017,
+                            ObjectType = 1
+                        },
+                        new
+                        {
+                            Id = 100027,
+                            ActiveDirectoryFieldId = 100018,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100028,
+                            ActiveDirectoryFieldId = 100018,
+                            ObjectType = 1
+                        },
+                        new
+                        {
+                            Id = 100029,
+                            ActiveDirectoryFieldId = 100018,
+                            ObjectType = 2
+                        },
+                        new
+                        {
+                            Id = 100030,
+                            ActiveDirectoryFieldId = 100018,
+                            ObjectType = 3
+                        },
+                        new
+                        {
+                            Id = 100031,
+                            ActiveDirectoryFieldId = 100019,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100032,
+                            ActiveDirectoryFieldId = 100019,
+                            ObjectType = 1
+                        },
+                        new
+                        {
+                            Id = 100033,
+                            ActiveDirectoryFieldId = 100019,
+                            ObjectType = 2
+                        },
+                        new
+                        {
+                            Id = 100034,
+                            ActiveDirectoryFieldId = 100019,
+                            ObjectType = 3
+                        },
+                        new
+                        {
+                            Id = 100035,
+                            ActiveDirectoryFieldId = 100020,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100036,
+                            ActiveDirectoryFieldId = 100020,
+                            ObjectType = 1
+                        },
+                        new
+                        {
+                            Id = 100037,
+                            ActiveDirectoryFieldId = 100020,
+                            ObjectType = 2
+                        },
+                        new
+                        {
+                            Id = 100038,
+                            ActiveDirectoryFieldId = 100020,
+                            ObjectType = 3
+                        },
+                        new
+                        {
+                            Id = 100039,
+                            ActiveDirectoryFieldId = 100021,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100040,
+                            ActiveDirectoryFieldId = 100021,
+                            ObjectType = 1
+                        },
+                        new
+                        {
+                            Id = 100041,
+                            ActiveDirectoryFieldId = 100021,
+                            ObjectType = 2
+                        },
+                        new
+                        {
+                            Id = 100042,
+                            ActiveDirectoryFieldId = 100022,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100043,
+                            ActiveDirectoryFieldId = 100023,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100044,
+                            ActiveDirectoryFieldId = 100024,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100045,
+                            ActiveDirectoryFieldId = 100025,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100046,
+                            ActiveDirectoryFieldId = 100026,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100047,
+                            ActiveDirectoryFieldId = 100027,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100048,
+                            ActiveDirectoryFieldId = 100027,
+                            ObjectType = 1
+                        },
+                        new
+                        {
+                            Id = 100049,
+                            ActiveDirectoryFieldId = 100027,
+                            ObjectType = 2
+                        },
+                        new
+                        {
+                            Id = 100050,
+                            ActiveDirectoryFieldId = 100027,
+                            ObjectType = 3
+                        },
+                        new
+                        {
+                            Id = 100051,
+                            ActiveDirectoryFieldId = 100028,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100052,
+                            ActiveDirectoryFieldId = 100029,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100053,
+                            ActiveDirectoryFieldId = 100030,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100054,
+                            ActiveDirectoryFieldId = 100031,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100055,
+                            ActiveDirectoryFieldId = 100032,
+                            ObjectType = 2
+                        },
+                        new
+                        {
+                            Id = 100056,
+                            ActiveDirectoryFieldId = 100033,
+                            ObjectType = 0
+                        },
+                        new
+                        {
+                            Id = 100057,
+                            ActiveDirectoryFieldId = 100033,
+                            ObjectType = 2
+                        },
+                        new
+                        {
+                            Id = 100058,
+                            ActiveDirectoryFieldId = 100034,
+                            ObjectType = 0
                         });
                 });
 
@@ -835,6 +1241,9 @@ namespace BLAZAM.Common.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("Action")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -847,46 +1256,55 @@ namespace BLAZAM.Common.Migrations.MySql
                         new
                         {
                             Id = 1,
+                            Action = 4,
                             Name = "Assign"
                         },
                         new
                         {
                             Id = 2,
+                            Action = 3,
                             Name = "UnAssign"
                         },
                         new
                         {
                             Id = 3,
+                            Action = 8,
                             Name = "Unlock"
                         },
                         new
                         {
                             Id = 4,
+                            Action = 5,
                             Name = "Enable"
                         },
                         new
                         {
                             Id = 5,
+                            Action = 6,
                             Name = "Disable"
                         },
                         new
                         {
                             Id = 6,
+                            Action = 7,
                             Name = "Rename"
                         },
                         new
                         {
                             Id = 7,
+                            Action = 0,
                             Name = "Move"
                         },
                         new
                         {
                             Id = 8,
+                            Action = 2,
                             Name = "Create"
                         },
                         new
                         {
                             Id = 9,
+                            Action = 1,
                             Name = "Delete"
                         });
                 });
@@ -1319,6 +1737,15 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryFieldObjectType", b =>
+                {
+                    b.HasOne("BLAZAM.Common.Models.Database.ActiveDirectoryField", null)
+                        .WithMany("ObjectTypes")
+                        .HasForeignKey("ActiveDirectoryFieldId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.AccessLevel", null)
@@ -1418,6 +1845,11 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasForeignKey("PermissionsMapsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryField", b =>
+                {
+                    b.Navigation("ObjectTypes");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.AccessLevel", b =>

@@ -1,0 +1,43 @@
+@inherits AppModalContent
+<EditForm Model="newField" OnValidSubmit="Test">
+<MudTextField T=string @bind-Value=newField.DisplayName Label="Display Name" />
+<MudTextField T=string @bind-Value=newField.FieldName Label="Field Name" />
+<MudSelect Label="Field Type" T="ActiveDirectoryFieldType">
+    @foreach(var fieldType in Enum.GetValues<ActiveDirectoryFieldType>())
+    {
+        <MudSelectItem Value="@fieldType">@fieldType.ToString()</MudSelectItem>
+    }
+</MudSelect>
+@foreach (var objectType in assignedObjectTypes)
+{
+    <MudCheckBox Label="@objectType.Key" @bind-Checked=assignedObjectTypes[objectType.Key] />
+
+}
+<MudButton ButtonType=ButtonType.Submit >Test</MudButton>
+</EditForm>
+@code{
+    private ActiveDirectoryField newField = new();
+
+    private bool userField;
+    private bool groupField;
+    private bool computerField;
+    private bool ouField;
+
+    private Dictionary<string, bool> assignedObjectTypes = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        foreach(var objectType in Enum.GetValues<ActiveDirectoryObjectType>().Where(ot=>ot!=ActiveDirectoryObjectType.All))
+        {
+            assignedObjectTypes.Add(objectType.ToString(), false);
+        }
+    }
+    [Parameter]
+    public EventCallback<ActiveDirectoryField> FieldCreated { get; set; }
+
+    async Task Test()
+    {
+        
+    }
+}

@@ -2,6 +2,7 @@
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Common.Models.Database
 {
@@ -9,12 +10,15 @@ namespace BLAZAM.Common.Models.Database
     public class ActiveDirectoryField : AppDbSetBase
     {
 
-
+        [Required]
         public string FieldName { get; set; }
-        //public List<ActiveDirectoryObjectType> ObjectTypes { get; set; }
-        public string DisplayName { get; internal set; }
+        [Required]
+        public string DisplayName { get; set; }
+
         public ActiveDirectoryFieldType FieldType { get; set; }= ActiveDirectoryFieldType.Text;
 
+        [Required]
+        public List<ActiveDirectoryFieldObjectType> ObjectTypes { get; set; }
        
 
         public override string? ToString()
@@ -23,6 +27,7 @@ namespace BLAZAM.Common.Models.Database
         }
         public override int GetHashCode()
         {
+            if (FieldName == null) return Id.GetHashCode();
             return FieldName.GetHashCode();
         }
         public override bool Equals(object? obj)

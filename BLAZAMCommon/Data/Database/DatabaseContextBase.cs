@@ -1,4 +1,5 @@
-﻿using BLAZAM.Common.Helpers;
+﻿using BLAZAM.Common.Data.ActiveDirectory;
+using BLAZAM.Common.Helpers;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.Audit;
 using BLAZAM.Common.Models.Database.Permissions;
@@ -53,7 +54,7 @@ namespace BLAZAM.Common.Data.Database
         }
         static IEnumerable<string> _appliedMigrations;
         private string _dbType;
-        
+
 
         public virtual IEnumerable<string> AppliedMigrations
         {
@@ -127,6 +128,7 @@ namespace BLAZAM.Common.Data.Database
 
         //Permissions
         public virtual DbSet<ActiveDirectoryField> ActiveDirectoryFields { get; set; }
+        public virtual DbSet<ActiveDirectoryFieldObjectType> ActiveDirectoryFieldObjectMappings { get; set; }
         public virtual DbSet<AccessLevel> AccessLevels { get; set; }
         public virtual DbSet<ObjectAccessMapping> AccessLevelObjectMapping { get; set; }
         public virtual DbSet<FieldAccessMapping> AccessLevelFieldMapping { get; set; }
@@ -161,335 +163,716 @@ namespace BLAZAM.Common.Data.Database
 
                 new ActiveDirectoryField
                 {
-                    Id = 1,
+                    Id = 100001,
                     FieldName = "sn",
-                    DisplayName = "Last Name",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Last Name"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 2,
+                    Id = 100002,
                     FieldName = "givenname",
-                    DisplayName = "First Name",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "First Name"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 3,
+                    Id = 100003,
                     FieldName = "physicalDeliveryOfficeName",
-                    DisplayName = "Office",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Office"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 4,
+                    Id = 100004,
                     FieldName = "employeeId",
-                    DisplayName = "Employee ID",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Employee ID"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 5,
+                    Id = 100005,
                     FieldName = "homeDirectory",
-                    DisplayName = "Home Directory",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Home Directory"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 6,
+                    Id = 100006,
                     FieldName = "scriptPath",
-                    DisplayName = "Logon Script Path",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Logon Script Path"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 7,
+                    Id = 100007,
                     FieldName = "profilePath",
-                    DisplayName = "Profile Path",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Profile Path"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 8,
+                    Id = 100008,
                     FieldName = "homePhone",
-                    DisplayName = "Home Phone Number",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Home Phone Number"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 9,
+                    Id = 100009,
                     FieldName = "streetAddress",
-                    DisplayName = "Street Address",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Street Address"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 10,
+                    Id = 100010,
                     FieldName = "city",
-                    DisplayName = "City",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "City"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 11,
+                    Id = 100011,
                     FieldName = "st",
-                    DisplayName = "State",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "State"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 12,
+                    Id = 100012,
                     FieldName = "postalCode",
-                    DisplayName = "Zip Code",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Zip Code"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 13,
+                    Id = 100013,
                     FieldName = "site",
-                    DisplayName = "Site",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    //{
-                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.OU
-                    //}
+                    DisplayName = "Site"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 14,
+                    Id = 100014,
                     FieldName = "name",
-                    DisplayName = "Name",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Name"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 15,
+                    Id = 100015,
                     FieldName = "samaccountname",
-                    DisplayName = "Username",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    //{
-                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer
-                    //}
+                    DisplayName = "Username"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 16,
+                    Id = 100016,
                     FieldName = "objectSID",
-                    DisplayName = "SID",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    //{
-                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.OU
-                    //}
+                    DisplayName = "SID"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 17,
+                    Id = 100017,
                     FieldName = "mail",
-                    DisplayName = "E-Mail Address",
-                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User, ActiveDirectory.ActiveDirectoryObjectType.Group }
+                    DisplayName = "E-Mail Address"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 18,
+                    Id = 100018,
                     FieldName = "description",
-                    DisplayName = "Description",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    //{
-                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.OU
-                    //}
+                    DisplayName = "Description"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 19,
+                    Id = 100019,
                     FieldName = "displayName",
-                    DisplayName = "Display Name",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    //{
-                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.OU
-                    //}
+                    DisplayName = "Display Name"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 20,
+                    Id = 100020,
                     FieldName = "distinguishedName",
-                    DisplayName = "Distinguished Name",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    //{
-                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.OU
-                    //}
+                    DisplayName = "Distinguished Name"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 21,
+                    Id = 100021,
                     FieldName = "memberOf",
-                    DisplayName = "Member Of",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    //{
-                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Group
-                    //}
+                    DisplayName = "Member Of"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 22,
+                    Id = 100022,
                     FieldName = "company",
-                    DisplayName = "Company",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Company"
                 },
 
 
                 new ActiveDirectoryField
                 {
-                    Id = 23,
+                    Id = 100023,
                     FieldName = "title",
-                    DisplayName = "Title",
-                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Title"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 24,
+                    Id = 100024,
                     FieldName = "userPrincipalName",
-                    DisplayName = "User Principal Name",
-                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "User Principal Name"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 25,
+                    Id = 100025,
                     FieldName = "telephoneNumber",
-                    DisplayName = "Telephone Number",
-                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Telephone Number"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 26,
+                    Id = 100026,
                     FieldName = "postOfficeBox",
-                    DisplayName = "PO Box",
-                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "PO Box"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 27,
+                    Id = 100027,
                     FieldName = "cn",
-                    DisplayName = "Canonical Name",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    //{
-                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Group,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.OU
-                    //}
+                    DisplayName = "Canonical Name"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 28,
+                    Id = 100028,
                     FieldName = "homeDrive",
-                    DisplayName = "Home Drive",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Home Drive"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 29,
+                    Id = 100029,
                     FieldName = "department",
-                    DisplayName = "Department",
-                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Department"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 30,
+                    Id = 100030,
                     FieldName = "middleName",
-                    DisplayName = "Middle Name",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Middle Name"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 31,
+                    Id = 100031,
                     FieldName = "pager",
-                    DisplayName = "Pager",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.User }
+                    DisplayName = "Pager"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 32,
+                    Id = 100032,
                     FieldName = "operatingSystemVersion",
-                    DisplayName = "OS",
-                    // ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType> { ActiveDirectory.ActiveDirectoryObjectType.Computer }
+                    DisplayName = "OS"
                 },
 
                 new ActiveDirectoryField
                 {
-                    Id = 33,
+                    Id = 100033,
                     FieldName = "accountExpires",
-                    DisplayName = "Account Expiration",
-                    //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                    //{
-                    //    ActiveDirectory.ActiveDirectoryObjectType.User,
-                    //    ActiveDirectory.ActiveDirectoryObjectType.Computer
-                    //}
+                    DisplayName = "Account Expiration"
                 },
                     new ActiveDirectoryField
                     {
-                        Id = 34,
+                        Id = 100034,
                         FieldName = "manager",
                         DisplayName = "Manager"
-                        //ObjectTypes = new List<ActiveDirectory.ActiveDirectoryObjectType>
-                        //{
-                        //    ActiveDirectory.ActiveDirectoryObjectType.User,
-                        //}
                     }
 
 
             );
 
 
+            modelBuilder.Entity<ActiveDirectoryField>()
+         .HasMany(x => x.ObjectTypes);
+            modelBuilder.Entity<ActiveDirectoryField>()
+         .Navigation(x => x.ObjectTypes).AutoInclude();
 
 
+            modelBuilder.Entity<ActiveDirectoryFieldObjectType>().HasData(
+
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100001,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100001
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100002,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100002
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100003,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100003
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100004,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100004
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100005,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100005
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100006,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100006
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100007,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100007
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100008,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100008
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100009,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100009
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100010,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100010
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100011,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100011
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100012,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100012
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100013,
+                   ObjectType = ActiveDirectoryObjectType.Group,
+                   ActiveDirectoryFieldId = 100013
+
+               },
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100014,
+                   ObjectType = ActiveDirectoryObjectType.Computer,
+                   ActiveDirectoryFieldId = 100013
+
+
+               },
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100015,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100013
+
+
+               },
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100016,
+                   ObjectType = ActiveDirectoryObjectType.OU,
+                   ActiveDirectoryFieldId = 100013
+
+               },
+
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100017,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100014
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100018,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100015
+
+               },
+                 new ActiveDirectoryFieldObjectType
+                 {
+                     Id = 100019,
+                     ObjectType = ActiveDirectoryObjectType.Group,
+                     ActiveDirectoryFieldId = 100015
+
+                 },
+                   new ActiveDirectoryFieldObjectType
+                   {
+                       Id = 100020,
+                       ObjectType = ActiveDirectoryObjectType.Computer,
+                       ActiveDirectoryFieldId = 100015
+
+                   },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100021,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100016
+
+               },
+
+                new ActiveDirectoryFieldObjectType
+                {
+                    Id = 100022,
+                    ObjectType = ActiveDirectoryObjectType.Group,
+                    ActiveDirectoryFieldId = 100016
+
+                },
+
+                 new ActiveDirectoryFieldObjectType
+                 {
+                     Id = 100023,
+                     ObjectType = ActiveDirectoryObjectType.Computer,
+                     ActiveDirectoryFieldId = 100016
+
+                 },
+
+                  new ActiveDirectoryFieldObjectType
+                  {
+                      Id = 100024,
+                      ObjectType = ActiveDirectoryObjectType.OU,
+                      ActiveDirectoryFieldId = 100016
+
+                  },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100025,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100017
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100026,
+                   ObjectType = ActiveDirectoryObjectType.Group,
+                   ActiveDirectoryFieldId = 100017
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100027,
+
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100018
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100028,
+
+                   ObjectType = ActiveDirectoryObjectType.Group,
+                   ActiveDirectoryFieldId = 100018
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100029,
+
+                   ObjectType = ActiveDirectoryObjectType.Computer,
+                   ActiveDirectoryFieldId = 100018
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100030,
+
+                   ObjectType = ActiveDirectoryObjectType.OU,
+                   ActiveDirectoryFieldId = 100018
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100031,
+
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100019
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100032,
+
+                   ObjectType = ActiveDirectoryObjectType.Group,
+                   ActiveDirectoryFieldId = 100019
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100033,
+
+                   ObjectType = ActiveDirectoryObjectType.Computer,
+                   ActiveDirectoryFieldId = 100019
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100034,
+
+                   ObjectType = ActiveDirectoryObjectType.OU,
+                   ActiveDirectoryFieldId = 100019
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100035,
+
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100020
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100036,
+
+                   ObjectType = ActiveDirectoryObjectType.Group,
+                   ActiveDirectoryFieldId = 100020
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100037,
+
+                   ObjectType = ActiveDirectoryObjectType.Computer,
+                   ActiveDirectoryFieldId = 100020
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100038,
+
+                   ObjectType = ActiveDirectoryObjectType.OU,
+                   ActiveDirectoryFieldId = 100020
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100039,
+
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100021
+
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100040,
+
+                   ObjectType = ActiveDirectoryObjectType.Group,
+                   ActiveDirectoryFieldId = 100021
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100041,
+
+                   ObjectType = ActiveDirectoryObjectType.Computer,
+                   ActiveDirectoryFieldId = 100021
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100042,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100022
+               },
+
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100043,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100023
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100044,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100024
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100045,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100025
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100046,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100026
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100047,
+
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100027
+
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100048,
+
+                   ObjectType = ActiveDirectoryObjectType.Group,
+                   ActiveDirectoryFieldId = 100027
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100049,
+
+                   ObjectType = ActiveDirectoryObjectType.Computer,
+                   ActiveDirectoryFieldId = 100027
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100050,
+
+                   ObjectType = ActiveDirectoryObjectType.OU,
+                   ActiveDirectoryFieldId = 100027
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100051,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100028
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100052,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100029
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100053,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100030
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100054,
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100031
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100055,
+                   ObjectType = ActiveDirectoryObjectType.Computer,
+                   ActiveDirectoryFieldId = 100032
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100056,
+
+                   ObjectType = ActiveDirectoryObjectType.User,
+                   ActiveDirectoryFieldId = 100033
+
+               },
+
+               new ActiveDirectoryFieldObjectType
+               {
+                   Id = 100057,
+                   ObjectType = ActiveDirectoryObjectType.Computer,
+                   ActiveDirectoryFieldId = 100033
+
+               },
+                new ActiveDirectoryFieldObjectType
+                {
+                    Id = 100058,
+                    ObjectType = ActiveDirectoryObjectType.User,
+                    ActiveDirectoryFieldId = 100034
+                }
+
+
+           );
 
 
             modelBuilder.Entity<AccessLevel>(entity =>
@@ -535,15 +918,15 @@ namespace BLAZAM.Common.Data.Database
                 entity.Navigation(e => e.Field).AutoInclude();
             });
             modelBuilder.Entity<ActionAccessFlag>().HasData(
-                  new ActionAccessFlag() { Id = 1, Name = "Assign" },
-                  new ActionAccessFlag() { Id = 2, Name = "UnAssign" },
-                  new ActionAccessFlag() { Id = 3, Name = "Unlock" },
-                  new ActionAccessFlag() { Id = 4, Name = "Enable" },
-                  new ActionAccessFlag() { Id = 5, Name = "Disable" },
-                  new ActionAccessFlag() { Id = 6, Name = "Rename" },
-                  new ActionAccessFlag() { Id = 7, Name = "Move" },
-                  new ActionAccessFlag() { Id = 8, Name = "Create" },
-                  new ActionAccessFlag() { Id = 9, Name = "Delete" }
+                  new ActionAccessFlag() { Id = 1, Name = "Assign",Action = ActiveDirectoryObjectAction.Assign },
+                  new ActionAccessFlag() { Id = 2, Name = "UnAssign", Action = ActiveDirectoryObjectAction.Unassign },
+                  new ActionAccessFlag() { Id = 3, Name = "Unlock" , Action = ActiveDirectoryObjectAction.Unlock },
+                  new ActionAccessFlag() { Id = 4, Name = "Enable", Action = ActiveDirectoryObjectAction.Enable },
+                  new ActionAccessFlag() { Id = 5, Name = "Disable", Action = ActiveDirectoryObjectAction.Disable },
+                  new ActionAccessFlag() { Id = 6, Name = "Rename", Action = ActiveDirectoryObjectAction.Rename },
+                  new ActionAccessFlag() { Id = 7, Name = "Move", Action = ActiveDirectoryObjectAction.Move },
+                  new ActionAccessFlag() { Id = 8, Name = "Create", Action = ActiveDirectoryObjectAction.Create },
+                  new ActionAccessFlag() { Id = 9, Name = "Delete", Action = ActiveDirectoryObjectAction.Delete }
 
             );
             modelBuilder.Entity<ActionAccessMapping>(entity =>
@@ -780,7 +1163,7 @@ namespace BLAZAM.Common.Data.Database
             catch (Exception ex)
             {
                 Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
-                DownReason = new DatabaseException(ex.Message,ex);
+                DownReason = new DatabaseException(ex.Message, ex);
                 OnMigrationFailed?.Invoke();
                 return false;
             }
@@ -794,7 +1177,7 @@ namespace BLAZAM.Common.Data.Database
         /// returns false.</returns>
         public virtual bool IsSeeded()
         {
-           
+
 
             if (AppliedMigrations.Count() > 0) return true;
             try
@@ -821,12 +1204,13 @@ namespace BLAZAM.Common.Data.Database
         {
             get
             {
-                if(!IsSeeded()) return false;
+                if (!IsSeeded()) return false;
                 var seedMismatch = false;
-                PendingMigrations.ForEach(am => {
+                PendingMigrations.ForEach(am =>
+                {
                     if (am.Contains("seed", StringComparison.OrdinalIgnoreCase))
                     {
-                        seedMismatch= true;
+                        seedMismatch = true;
                     }
                 });
                 return seedMismatch;
