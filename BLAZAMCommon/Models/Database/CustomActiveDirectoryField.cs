@@ -6,11 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Common.Models.Database
 {
-    public enum ActiveDirectoryFieldType { Text,Date,RawData,
-        DriveLetter,
-        List
-    }
-    public class ActiveDirectoryField : AppDbSetBase, IActiveDirectoryField
+    public class CustomActiveDirectoryField : AppDbSetBase, IActiveDirectoryField
     {
 
         [Required]
@@ -20,7 +16,8 @@ namespace BLAZAM.Common.Models.Database
 
         public ActiveDirectoryFieldType FieldType { get; set; } = ActiveDirectoryFieldType.Text;
 
-   
+        [Required]
+        public List<ActiveDirectoryFieldObjectType> ObjectTypes { get; set; }
 
 
         public override string? ToString()

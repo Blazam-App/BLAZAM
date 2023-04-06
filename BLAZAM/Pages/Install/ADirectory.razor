@@ -7,10 +7,10 @@
     <div>
     <BLAZAM.Server.Shared.UI.Settings.DirectorySettings />
 
-        <BLAZAM.Server.Shared.UI.Settings.ActiveDirectoryStatusPanel DirectoryConnected="ShowNext"/>
+        <BLAZAM.Server.Shared.UI.Settings.ActiveDirectoryStatusPanel DirectoryConnected="@(()=>{disableNext=false;})"/>
         <br/>
         <br/>
-        <MudButton Color="Color.Success" @onclick="Refresh" Disabled="@disableNext">Proceed</MudButton>
+        <MudButton Color="Color.Success" @onclick="ShowNext" Disabled="@disableNext">Proceed</MudButton>
     </div>
 
 @code {
@@ -48,6 +48,7 @@
     private void ShowNext()
     {
         disableNext = false;
+        StepCompleted.InvokeAsync();
         InvokeAsync(StateHasChanged);
     }
 

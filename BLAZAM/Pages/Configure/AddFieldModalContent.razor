@@ -16,7 +16,7 @@
 <MudButton ButtonType=ButtonType.Submit >Test</MudButton>
 </EditForm>
 @code{
-    private ActiveDirectoryField newField = new();
+    private CustomActiveDirectoryField newField = new();
 
     private bool userField;
     private bool groupField;
@@ -34,10 +34,12 @@
         }
     }
     [Parameter]
-    public EventCallback<ActiveDirectoryField> FieldCreated { get; set; }
+    public EventCallback<CustomActiveDirectoryField> FieldCreated { get; set; }
 
     async Task Test()
     {
-        
+        Context.CustomActiveDirectoryFields.Add(newField);
+        await Context.SaveChangesAsync();
+
     }
 }

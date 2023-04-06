@@ -241,7 +241,7 @@
     public AccessLevel WorkingModel { get; set; } = new AccessLevel();
 
     IEnumerable<ActiveDirectoryField> fields = new List<ActiveDirectoryField>();
-    IEnumerable<ActionAccessFlag> actions = new List<ActionAccessFlag>();
+    IEnumerable<ObjectAction> actions = new List<ObjectAction>();
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -292,7 +292,7 @@
         }
         StateHasChanged();
     }
-    private void AddActionAccess(ActionAccessFlag action, ActiveDirectoryObjectType type)
+    private void AddActionAccess(ObjectAction action, ActiveDirectoryObjectType type)
     {
         var proposedAddition = new ActionAccessMapping()
             {

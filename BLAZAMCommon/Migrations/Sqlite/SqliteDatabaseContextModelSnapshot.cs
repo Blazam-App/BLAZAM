@@ -125,238 +125,238 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.HasData(
                         new
                         {
-                            Id = 100001,
+                            Id = 1,
                             DisplayName = "Last Name",
                             FieldName = "sn",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100002,
+                            Id = 2,
                             DisplayName = "First Name",
                             FieldName = "givenname",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100003,
+                            Id = 3,
                             DisplayName = "Office",
                             FieldName = "physicalDeliveryOfficeName",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100004,
+                            Id = 4,
                             DisplayName = "Employee ID",
                             FieldName = "employeeId",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100005,
+                            Id = 5,
                             DisplayName = "Home Directory",
                             FieldName = "homeDirectory",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100006,
+                            Id = 6,
                             DisplayName = "Logon Script Path",
                             FieldName = "scriptPath",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100007,
+                            Id = 7,
                             DisplayName = "Profile Path",
                             FieldName = "profilePath",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100008,
+                            Id = 8,
                             DisplayName = "Home Phone Number",
                             FieldName = "homePhone",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100009,
+                            Id = 9,
                             DisplayName = "Street Address",
                             FieldName = "streetAddress",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100010,
+                            Id = 10,
                             DisplayName = "City",
                             FieldName = "city",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100011,
+                            Id = 11,
                             DisplayName = "State",
                             FieldName = "st",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100012,
+                            Id = 12,
                             DisplayName = "Zip Code",
                             FieldName = "postalCode",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100013,
+                            Id = 13,
                             DisplayName = "Site",
                             FieldName = "site",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100014,
+                            Id = 14,
                             DisplayName = "Name",
                             FieldName = "name",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100015,
+                            Id = 15,
                             DisplayName = "Username",
                             FieldName = "samaccountname",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100016,
+                            Id = 16,
                             DisplayName = "SID",
                             FieldName = "objectSID",
-                            FieldType = 0
+                            FieldType = 2
                         },
                         new
                         {
-                            Id = 100017,
+                            Id = 17,
                             DisplayName = "E-Mail Address",
                             FieldName = "mail",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100018,
+                            Id = 18,
                             DisplayName = "Description",
                             FieldName = "description",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100019,
+                            Id = 19,
                             DisplayName = "Display Name",
                             FieldName = "displayName",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100020,
+                            Id = 20,
                             DisplayName = "Distinguished Name",
                             FieldName = "distinguishedName",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100021,
+                            Id = 21,
                             DisplayName = "Member Of",
                             FieldName = "memberOf",
-                            FieldType = 0
+                            FieldType = 4
                         },
                         new
                         {
-                            Id = 100022,
+                            Id = 22,
                             DisplayName = "Company",
                             FieldName = "company",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100023,
+                            Id = 23,
                             DisplayName = "Title",
                             FieldName = "title",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100024,
+                            Id = 24,
                             DisplayName = "User Principal Name",
                             FieldName = "userPrincipalName",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100025,
+                            Id = 25,
                             DisplayName = "Telephone Number",
                             FieldName = "telephoneNumber",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100026,
+                            Id = 26,
                             DisplayName = "PO Box",
                             FieldName = "postOfficeBox",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100027,
+                            Id = 27,
                             DisplayName = "Canonical Name",
                             FieldName = "cn",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100028,
+                            Id = 28,
                             DisplayName = "Home Drive",
                             FieldName = "homeDrive",
-                            FieldType = 0
+                            FieldType = 3
                         },
                         new
                         {
-                            Id = 100029,
+                            Id = 29,
                             DisplayName = "Department",
                             FieldName = "department",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100030,
+                            Id = 30,
                             DisplayName = "Middle Name",
                             FieldName = "middleName",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100031,
+                            Id = 31,
                             DisplayName = "Pager",
                             FieldName = "pager",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100032,
+                            Id = 32,
                             DisplayName = "OS",
                             FieldName = "operatingSystemVersion",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100033,
+                            Id = 33,
                             DisplayName = "Account Expiration",
                             FieldName = "accountExpires",
-                            FieldType = 0
+                            FieldType = 1
                         },
                         new
                         {
-                            Id = 100034,
+                            Id = 34,
                             DisplayName = "Manager",
                             FieldName = "manager",
                             FieldType = 0
@@ -372,364 +372,17 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<int>("ActiveDirectoryFieldId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("CustomActiveDirectoryFieldId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("ObjectType")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActiveDirectoryFieldId");
+                    b.HasIndex("CustomActiveDirectoryFieldId");
 
                     b.ToTable("ActiveDirectoryFieldObjectMappings");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 100001,
-                            ActiveDirectoryFieldId = 100001,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100002,
-                            ActiveDirectoryFieldId = 100002,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100003,
-                            ActiveDirectoryFieldId = 100003,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100004,
-                            ActiveDirectoryFieldId = 100004,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100005,
-                            ActiveDirectoryFieldId = 100005,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100006,
-                            ActiveDirectoryFieldId = 100006,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100007,
-                            ActiveDirectoryFieldId = 100007,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100008,
-                            ActiveDirectoryFieldId = 100008,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100009,
-                            ActiveDirectoryFieldId = 100009,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100010,
-                            ActiveDirectoryFieldId = 100010,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100011,
-                            ActiveDirectoryFieldId = 100011,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100012,
-                            ActiveDirectoryFieldId = 100012,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100013,
-                            ActiveDirectoryFieldId = 100013,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100014,
-                            ActiveDirectoryFieldId = 100013,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100015,
-                            ActiveDirectoryFieldId = 100013,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100016,
-                            ActiveDirectoryFieldId = 100013,
-                            ObjectType = 3
-                        },
-                        new
-                        {
-                            Id = 100017,
-                            ActiveDirectoryFieldId = 100014,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100018,
-                            ActiveDirectoryFieldId = 100015,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100019,
-                            ActiveDirectoryFieldId = 100015,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100020,
-                            ActiveDirectoryFieldId = 100015,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100021,
-                            ActiveDirectoryFieldId = 100016,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100022,
-                            ActiveDirectoryFieldId = 100016,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100023,
-                            ActiveDirectoryFieldId = 100016,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100024,
-                            ActiveDirectoryFieldId = 100016,
-                            ObjectType = 3
-                        },
-                        new
-                        {
-                            Id = 100025,
-                            ActiveDirectoryFieldId = 100017,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100026,
-                            ActiveDirectoryFieldId = 100017,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100027,
-                            ActiveDirectoryFieldId = 100018,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100028,
-                            ActiveDirectoryFieldId = 100018,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100029,
-                            ActiveDirectoryFieldId = 100018,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100030,
-                            ActiveDirectoryFieldId = 100018,
-                            ObjectType = 3
-                        },
-                        new
-                        {
-                            Id = 100031,
-                            ActiveDirectoryFieldId = 100019,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100032,
-                            ActiveDirectoryFieldId = 100019,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100033,
-                            ActiveDirectoryFieldId = 100019,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100034,
-                            ActiveDirectoryFieldId = 100019,
-                            ObjectType = 3
-                        },
-                        new
-                        {
-                            Id = 100035,
-                            ActiveDirectoryFieldId = 100020,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100036,
-                            ActiveDirectoryFieldId = 100020,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100037,
-                            ActiveDirectoryFieldId = 100020,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100038,
-                            ActiveDirectoryFieldId = 100020,
-                            ObjectType = 3
-                        },
-                        new
-                        {
-                            Id = 100039,
-                            ActiveDirectoryFieldId = 100021,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100040,
-                            ActiveDirectoryFieldId = 100021,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100041,
-                            ActiveDirectoryFieldId = 100021,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100042,
-                            ActiveDirectoryFieldId = 100022,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100043,
-                            ActiveDirectoryFieldId = 100023,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100044,
-                            ActiveDirectoryFieldId = 100024,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100045,
-                            ActiveDirectoryFieldId = 100025,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100046,
-                            ActiveDirectoryFieldId = 100026,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100047,
-                            ActiveDirectoryFieldId = 100027,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100048,
-                            ActiveDirectoryFieldId = 100027,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100049,
-                            ActiveDirectoryFieldId = 100027,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100050,
-                            ActiveDirectoryFieldId = 100027,
-                            ObjectType = 3
-                        },
-                        new
-                        {
-                            Id = 100051,
-                            ActiveDirectoryFieldId = 100028,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100052,
-                            ActiveDirectoryFieldId = 100029,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100053,
-                            ActiveDirectoryFieldId = 100030,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100054,
-                            ActiveDirectoryFieldId = 100031,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100055,
-                            ActiveDirectoryFieldId = 100032,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100056,
-                            ActiveDirectoryFieldId = 100033,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100057,
-                            ActiveDirectoryFieldId = 100033,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100058,
-                            ActiveDirectoryFieldId = 100034,
-                            ObjectType = 0
-                        });
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.AppSettings", b =>
@@ -1124,6 +777,28 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         });
                 });
 
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("FieldType")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CustomActiveDirectoryFields");
+                });
+
             modelBuilder.Entity("BLAZAM.Common.Models.Database.EmailSettings", b =>
                 {
                     b.Property<int>("Id")
@@ -1227,80 +902,6 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         {
                             Id = 1,
                             Name = "Deny All"
-                        });
-                });
-
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessFlag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Action")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ObjectActionFlag");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Action = 4,
-                            Name = "Assign"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Action = 3,
-                            Name = "UnAssign"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Action = 8,
-                            Name = "Unlock"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Action = 5,
-                            Name = "Enable"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Action = 6,
-                            Name = "Disable"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Action = 7,
-                            Name = "Rename"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Action = 0,
-                            Name = "Move"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Action = 2,
-                            Name = "Create"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Action = 1,
-                            Name = "Delete"
                         });
                 });
 
@@ -1442,6 +1043,80 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.HasIndex("ObjectAccessLevelId");
 
                     b.ToTable("AccessLevelObjectMapping");
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Action")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ObjectActionFlag");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Action = 4,
+                            Name = "Assign"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Action = 3,
+                            Name = "UnAssign"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Action = 8,
+                            Name = "Unlock"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Action = 5,
+                            Name = "Enable"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Action = 6,
+                            Name = "Disable"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Action = 7,
+                            Name = "Rename"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Action = 0,
+                            Name = "Move"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Action = 2,
+                            Name = "Create"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Action = 1,
+                            Name = "Delete"
+                        });
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.PermissionDelegate", b =>
@@ -1734,11 +1409,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryFieldObjectType", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.ActiveDirectoryField", null)
+                    b.HasOne("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", null)
                         .WithMany("ObjectTypes")
-                        .HasForeignKey("ActiveDirectoryFieldId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomActiveDirectoryFieldId");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessMapping", b =>
@@ -1747,7 +1420,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .WithMany("ActionMap")
                         .HasForeignKey("AccessLevelId");
 
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.ActionAccessFlag", "ObjectAction")
+                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.ObjectAction", "ObjectAction")
                         .WithMany()
                         .HasForeignKey("ObjectActionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1765,7 +1438,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .IsRequired();
 
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", "FieldAccessLevel")
-                        .WithMany("FieldAccessMappings")
+                        .WithMany()
                         .HasForeignKey("FieldAccessLevelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1842,7 +1515,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryField", b =>
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", b =>
                 {
                     b.Navigation("ObjectTypes");
                 });
@@ -1850,11 +1523,6 @@ namespace BLAZAM.Common.Migrations.Sqlite
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.AccessLevel", b =>
                 {
                     b.Navigation("ActionMap");
-                });
-
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", b =>
-                {
-                    b.Navigation("FieldAccessMappings");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessLevel", b =>

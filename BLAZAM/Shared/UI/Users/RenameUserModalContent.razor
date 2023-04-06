@@ -72,7 +72,7 @@
         await InvokeAsync(StateHasChanged);
         _privateUserInstance = Directory.Users.FindUserBySID(User.SID.ToSidString());
         SaveDisabled = false;
-        Modal.OnYes += SaveChanges;
+        Modal.OnYes = SaveChanges;
         Modal.YesText = UserLocalization["Rename User"];
         Modal.Title = "Rename User";
 

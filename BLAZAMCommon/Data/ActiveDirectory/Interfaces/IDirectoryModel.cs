@@ -140,5 +140,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         void Delete();
         string? ToString();
         bool Rename(string newName);
+        void EnsureDirectoryEntry();
     }
 }

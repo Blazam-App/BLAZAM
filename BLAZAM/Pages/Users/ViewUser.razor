@@ -194,7 +194,7 @@
                 <AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
                     @if (MoveToModal?.IsShown == true)
                     {
-                        <MoveToOUModalContent ModelChanged=@(()=>{Nav.NavigateTo(Nav.Uri,true);}) DirectoryModel="User" />
+                        <MoveToOUModalContent ModelChanged=@(()=>{InvokeAsync(StateHasChanged);}) DirectoryModel="User" />
                     }
                 </AppModal>
                 <AppModal Title="Rename User" @ref=@RenameModal>
@@ -296,11 +296,19 @@
                                         <MudText Typo="Typo.subtitle2">Groups</MudText>
 
                                         <MudList Dense=true Clickable="true" Style="max-height:200px; overflow-y:auto;">
-                                            @foreach (ADGroup g in User.MemberOf.Where(group => group.CanRead))
+                                            @foreach (ADGroup g in User.MemberOf.Where(group => group.CanRead).OrderBy(g=>g.CanonicalName))
                                             {
                                                 if (g.CanRead)
                                                 {
-                                                    <MudListItem Text="@g.CanonicalName" OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})" />
+                                                    <MudListItem>
+                                                        <ChildContent>
+                                                            <MudStack Row=true>
+                                                            <MudLink OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})">@g.CanonicalName</MudLink>
+                                                            <MudSpacer/>
+                                                                <MudIconButton OnClick="@(()=>{User.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
+                                                            </MudStack>
+                                                        </ChildContent>
+                                                    </MudListItem>
 
                                                 }
 
@@ -659,7 +667,7 @@
 
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     SetSubHeader? subHeader;
     string Password;
     string ConfirmPassword;
@@ -672,13 +680,14 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        User.OnModelChanged += RefreshHeader;
+        User.OnModelChanged += RefreshUserViews;
         User.OnDirectoryModelRenamed += Renamed;
     }
 
-    void RefreshHeader()
+    void RefreshUserViews()
     {
         subHeader?.Refresh();
+        InvokeAsync(StateHasChanged);
     }
 
 
@@ -692,21 +701,8 @@
             return false;
         }
     }
-    /*
-        protected async Task RefreshUserGroups()
-        {
-            await Task.Run(() =>
-            {
-            if (User != null)
-            memberOfGroups = User.MemberOf;
 
-        LoadingData = false;
 
-        InvokeAsync(StateHasChanged);
-
-    });
-    }
-    */
     DateTime? SetExpireTime(DateTime? time)
     {
         DateTime? expireTime = null;
@@ -714,6 +710,8 @@
             expireTime = time.Value.AddDays(1);
         return expireTime;
     }
+
+
     async void SaveChanges()
     {
         if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))

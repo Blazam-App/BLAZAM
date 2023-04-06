@@ -35,13 +35,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 return HasPermission(p => p.Where(pm =>
                pm.AccessLevels.Any(al => al.ActionMap.Any(om =>
                om.ObjectType == ObjectType &&
-               om.ObjectAction.Name == ActionAccessFlags.Assign.Name &&
+               om.ObjectAction.Name == ObjectActions.Assign.Name &&
                om.AllowOrDeny
                ))),
                p => p.Where(pm =>
                pm.AccessLevels.Any(al => al.ActionMap.Any(om =>
                om.ObjectType == ObjectType &&
-               om.ObjectAction.Name == ActionAccessFlags.Assign.Name &&
+               om.ObjectAction.Name == ObjectActions.Assign.Name &&
                !om.AllowOrDeny
                )))
                );
@@ -131,11 +131,11 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
         }
 
-        public virtual bool CanEnable { get => HasActionPermission(ActionAccessFlags.Enable); }
+        public virtual bool CanEnable { get => HasActionPermission(ObjectActions.Enable); }
 
-        public virtual bool CanDisable { get => HasActionPermission(ActionAccessFlags.Disable); }
+        public virtual bool CanDisable { get => HasActionPermission(ObjectActions.Disable); }
 
-        public virtual bool CanUnlock { get => HasActionPermission(ActionAccessFlags.Unlock); }
+        public virtual bool CanUnlock { get => HasActionPermission(ObjectActions.Unlock); }
 
         public virtual DateTime? LockoutTime
         {

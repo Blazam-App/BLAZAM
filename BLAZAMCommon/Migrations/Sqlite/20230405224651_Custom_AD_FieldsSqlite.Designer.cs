@@ -8,27 +8,25 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BLAZAM.Common.Migrations.MySql
+namespace BLAZAM.Common.Migrations.Sqlite
 {
-    [DbContext(typeof(MySqlDatabaseContext))]
-    [Migration("20230405135144_Custom_AD_FieldsMySql")]
-    partial class CustomADFieldsMySql
+    [DbContext(typeof(SqliteDatabaseContext))]
+    [Migration("20230405224651_Custom_AD_FieldsSqlite")]
+    partial class CustomADFieldsSqlite
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.2");
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
                 {
                     b.Property<int>("AccessLevelsId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("FieldMapId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("AccessLevelsId", "FieldMapId");
 
@@ -40,10 +38,10 @@ namespace BLAZAM.Common.Migrations.MySql
             modelBuilder.Entity("AccessLevelObjectAccessMapping", b =>
                 {
                     b.Property<int>("AccessLevelsId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ObjectMapId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("AccessLevelsId", "ObjectMapId");
 
@@ -55,10 +53,10 @@ namespace BLAZAM.Common.Migrations.MySql
             modelBuilder.Entity("AccessLevelPermissionMapping", b =>
                 {
                     b.Property<int>("AccessLevelsId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("PermissionMapsId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("AccessLevelsId", "PermissionMapsId");
 
@@ -70,39 +68,39 @@ namespace BLAZAM.Common.Migrations.MySql
             modelBuilder.Entity("BLAZAM.Common.Models.Database.ADSettings", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ApplicationBaseDN")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("FQDN")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ServerAddress")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("ServerPort")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("UseTLS")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.ToTable("ActiveDirectorySettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "Id = 1");
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
                         });
                 });
 
@@ -110,18 +108,18 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("FieldName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("FieldType")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -130,238 +128,238 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.HasData(
                         new
                         {
-                            Id = 100001,
+                            Id = 1,
                             DisplayName = "Last Name",
                             FieldName = "sn",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100002,
+                            Id = 2,
                             DisplayName = "First Name",
                             FieldName = "givenname",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100003,
+                            Id = 3,
                             DisplayName = "Office",
                             FieldName = "physicalDeliveryOfficeName",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100004,
+                            Id = 4,
                             DisplayName = "Employee ID",
                             FieldName = "employeeId",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100005,
+                            Id = 5,
                             DisplayName = "Home Directory",
                             FieldName = "homeDirectory",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100006,
+                            Id = 6,
                             DisplayName = "Logon Script Path",
                             FieldName = "scriptPath",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100007,
+                            Id = 7,
                             DisplayName = "Profile Path",
                             FieldName = "profilePath",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100008,
+                            Id = 8,
                             DisplayName = "Home Phone Number",
                             FieldName = "homePhone",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100009,
+                            Id = 9,
                             DisplayName = "Street Address",
                             FieldName = "streetAddress",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100010,
+                            Id = 10,
                             DisplayName = "City",
                             FieldName = "city",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100011,
+                            Id = 11,
                             DisplayName = "State",
                             FieldName = "st",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100012,
+                            Id = 12,
                             DisplayName = "Zip Code",
                             FieldName = "postalCode",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100013,
+                            Id = 13,
                             DisplayName = "Site",
                             FieldName = "site",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100014,
+                            Id = 14,
                             DisplayName = "Name",
                             FieldName = "name",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100015,
+                            Id = 15,
                             DisplayName = "Username",
                             FieldName = "samaccountname",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100016,
+                            Id = 16,
                             DisplayName = "SID",
                             FieldName = "objectSID",
-                            FieldType = 0
+                            FieldType = 2
                         },
                         new
                         {
-                            Id = 100017,
+                            Id = 17,
                             DisplayName = "E-Mail Address",
                             FieldName = "mail",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100018,
+                            Id = 18,
                             DisplayName = "Description",
                             FieldName = "description",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100019,
+                            Id = 19,
                             DisplayName = "Display Name",
                             FieldName = "displayName",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100020,
+                            Id = 20,
                             DisplayName = "Distinguished Name",
                             FieldName = "distinguishedName",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100021,
+                            Id = 21,
                             DisplayName = "Member Of",
                             FieldName = "memberOf",
-                            FieldType = 0
+                            FieldType = 4
                         },
                         new
                         {
-                            Id = 100022,
+                            Id = 22,
                             DisplayName = "Company",
                             FieldName = "company",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100023,
+                            Id = 23,
                             DisplayName = "Title",
                             FieldName = "title",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100024,
+                            Id = 24,
                             DisplayName = "User Principal Name",
                             FieldName = "userPrincipalName",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100025,
+                            Id = 25,
                             DisplayName = "Telephone Number",
                             FieldName = "telephoneNumber",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100026,
+                            Id = 26,
                             DisplayName = "PO Box",
                             FieldName = "postOfficeBox",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100027,
+                            Id = 27,
                             DisplayName = "Canonical Name",
                             FieldName = "cn",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100028,
+                            Id = 28,
                             DisplayName = "Home Drive",
                             FieldName = "homeDrive",
-                            FieldType = 0
+                            FieldType = 3
                         },
                         new
                         {
-                            Id = 100029,
+                            Id = 29,
                             DisplayName = "Department",
                             FieldName = "department",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100030,
+                            Id = 30,
                             DisplayName = "Middle Name",
                             FieldName = "middleName",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100031,
+                            Id = 31,
                             DisplayName = "Pager",
                             FieldName = "pager",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100032,
+                            Id = 32,
                             DisplayName = "OS",
                             FieldName = "operatingSystemVersion",
                             FieldType = 0
                         },
                         new
                         {
-                            Id = 100033,
+                            Id = 33,
                             DisplayName = "Account Expiration",
                             FieldName = "accountExpires",
-                            FieldType = 0
+                            FieldType = 1
                         },
                         new
                         {
-                            Id = 100034,
+                            Id = 34,
                             DisplayName = "Manager",
                             FieldName = "manager",
                             FieldType = 0
@@ -372,420 +370,72 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ActiveDirectoryFieldId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CustomActiveDirectoryFieldId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ObjectType")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActiveDirectoryFieldId");
+                    b.HasIndex("CustomActiveDirectoryFieldId");
 
                     b.ToTable("ActiveDirectoryFieldObjectMappings");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 100001,
-                            ActiveDirectoryFieldId = 100001,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100002,
-                            ActiveDirectoryFieldId = 100002,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100003,
-                            ActiveDirectoryFieldId = 100003,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100004,
-                            ActiveDirectoryFieldId = 100004,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100005,
-                            ActiveDirectoryFieldId = 100005,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100006,
-                            ActiveDirectoryFieldId = 100006,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100007,
-                            ActiveDirectoryFieldId = 100007,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100008,
-                            ActiveDirectoryFieldId = 100008,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100009,
-                            ActiveDirectoryFieldId = 100009,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100010,
-                            ActiveDirectoryFieldId = 100010,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100011,
-                            ActiveDirectoryFieldId = 100011,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100012,
-                            ActiveDirectoryFieldId = 100012,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100013,
-                            ActiveDirectoryFieldId = 100013,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100014,
-                            ActiveDirectoryFieldId = 100013,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100015,
-                            ActiveDirectoryFieldId = 100013,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100016,
-                            ActiveDirectoryFieldId = 100013,
-                            ObjectType = 3
-                        },
-                        new
-                        {
-                            Id = 100017,
-                            ActiveDirectoryFieldId = 100014,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100018,
-                            ActiveDirectoryFieldId = 100015,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100019,
-                            ActiveDirectoryFieldId = 100015,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100020,
-                            ActiveDirectoryFieldId = 100015,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100021,
-                            ActiveDirectoryFieldId = 100016,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100022,
-                            ActiveDirectoryFieldId = 100016,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100023,
-                            ActiveDirectoryFieldId = 100016,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100024,
-                            ActiveDirectoryFieldId = 100016,
-                            ObjectType = 3
-                        },
-                        new
-                        {
-                            Id = 100025,
-                            ActiveDirectoryFieldId = 100017,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100026,
-                            ActiveDirectoryFieldId = 100017,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100027,
-                            ActiveDirectoryFieldId = 100018,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100028,
-                            ActiveDirectoryFieldId = 100018,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100029,
-                            ActiveDirectoryFieldId = 100018,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100030,
-                            ActiveDirectoryFieldId = 100018,
-                            ObjectType = 3
-                        },
-                        new
-                        {
-                            Id = 100031,
-                            ActiveDirectoryFieldId = 100019,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100032,
-                            ActiveDirectoryFieldId = 100019,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100033,
-                            ActiveDirectoryFieldId = 100019,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100034,
-                            ActiveDirectoryFieldId = 100019,
-                            ObjectType = 3
-                        },
-                        new
-                        {
-                            Id = 100035,
-                            ActiveDirectoryFieldId = 100020,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100036,
-                            ActiveDirectoryFieldId = 100020,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100037,
-                            ActiveDirectoryFieldId = 100020,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100038,
-                            ActiveDirectoryFieldId = 100020,
-                            ObjectType = 3
-                        },
-                        new
-                        {
-                            Id = 100039,
-                            ActiveDirectoryFieldId = 100021,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100040,
-                            ActiveDirectoryFieldId = 100021,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100041,
-                            ActiveDirectoryFieldId = 100021,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100042,
-                            ActiveDirectoryFieldId = 100022,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100043,
-                            ActiveDirectoryFieldId = 100023,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100044,
-                            ActiveDirectoryFieldId = 100024,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100045,
-                            ActiveDirectoryFieldId = 100025,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100046,
-                            ActiveDirectoryFieldId = 100026,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100047,
-                            ActiveDirectoryFieldId = 100027,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100048,
-                            ActiveDirectoryFieldId = 100027,
-                            ObjectType = 1
-                        },
-                        new
-                        {
-                            Id = 100049,
-                            ActiveDirectoryFieldId = 100027,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100050,
-                            ActiveDirectoryFieldId = 100027,
-                            ObjectType = 3
-                        },
-                        new
-                        {
-                            Id = 100051,
-                            ActiveDirectoryFieldId = 100028,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100052,
-                            ActiveDirectoryFieldId = 100029,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100053,
-                            ActiveDirectoryFieldId = 100030,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100054,
-                            ActiveDirectoryFieldId = 100031,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100055,
-                            ActiveDirectoryFieldId = 100032,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100056,
-                            ActiveDirectoryFieldId = 100033,
-                            ObjectType = 0
-                        },
-                        new
-                        {
-                            Id = 100057,
-                            ActiveDirectoryFieldId = 100033,
-                            ObjectType = 2
-                        },
-                        new
-                        {
-                            Id = 100058,
-                            ActiveDirectoryFieldId = 100034,
-                            ObjectType = 0
-                        });
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.AppSettings", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("AnalyticsId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AppFQDN")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<byte[]>("AppIcon")
-                        .HasColumnType("longblob");
+                        .HasColumnType("BLOB");
 
                     b.Property<string>("AppName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("AutoUpdate")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<TimeSpan?>("AutoUpdateTime")
-                        .HasColumnType("time(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("ForceHTTPS")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("InstallationCompleted")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("LastUpdateCheck")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("MOTD")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("UpdateBranch")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("UserHelpdeskURL")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.ToTable("AppSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "Id = 1")
-                                .HasName("CK_Table_Column1");
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
                         });
                 });
 
@@ -793,30 +443,30 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AfterAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("BeforeAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("IpAddress")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Target")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -827,30 +477,30 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AfterAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("BeforeAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("IpAddress")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Target")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -861,30 +511,30 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AfterAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("BeforeAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("IpAddress")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Target")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -895,30 +545,30 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AfterAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("BeforeAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("IpAddress")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Target")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -929,30 +579,30 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AfterAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("BeforeAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("IpAddress")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Target")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -963,30 +613,30 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AfterAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("BeforeAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("IpAddress")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Target")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -997,30 +647,30 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AfterAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("BeforeAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("IpAddress")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Target")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -1031,30 +681,30 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AfterAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("BeforeAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("IpAddress")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Target")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -1065,30 +715,30 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AfterAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("BeforeAction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("IpAddress")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Target")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -1098,29 +748,28 @@ namespace BLAZAM.Common.Migrations.MySql
             modelBuilder.Entity("BLAZAM.Common.Models.Database.AuthenticationSettings", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("AdminPassword")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DuoApiHost")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DuoClientId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DuoClientSecret")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("SessionTimeout")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.ToTable("AuthenticationSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "Id = 1")
-                                .HasName("CK_Table_Column2");
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
                         });
 
                     b.HasData(
@@ -1131,54 +780,75 @@ namespace BLAZAM.Common.Migrations.MySql
                         });
                 });
 
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("FieldType")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CustomActiveDirectoryFields");
+                });
+
             modelBuilder.Entity("BLAZAM.Common.Models.Database.EmailSettings", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("AdminBcc")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Enabled")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("FromAddress")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("FromName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ReplyToAddress")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ReplyToName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("SMTPPassword")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("SMTPPort")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("SMTPServer")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("SMTPUsername")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("UseSMTPAuth")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("UseTLS")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.ToTable("EmailSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "Id = 1")
-                                .HasName("CK_Table_Column3");
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
                         });
                 });
 
@@ -1186,27 +856,27 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("BCC")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("CC")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Subject")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("TemplateName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -1217,14 +887,14 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -1238,18 +908,158 @@ namespace BLAZAM.Common.Migrations.MySql
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessFlag", b =>
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessMapping", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
-                    b.Property<int>("Action")
-                        .HasColumnType("int");
+                    b.Property<int?>("AccessLevelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("AllowOrDeny")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ObjectActionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ObjectType")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccessLevelId");
+
+                    b.HasIndex("ObjectActionId");
+
+                    b.ToTable("ActionAccessMapping");
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FieldAccessLevel");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Level = 10,
+                            Name = "Deny"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Level = 100,
+                            Name = "Read"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Level = 1000,
+                            Name = "Edit"
+                        });
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessMapping", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ActiveDirectoryFieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FieldAccessLevelId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActiveDirectoryFieldId");
+
+                    b.HasIndex("FieldAccessLevelId");
+
+                    b.ToTable("AccessLevelFieldMapping");
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessLevel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ObjectAccessLevel");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Level = 10,
+                            Name = "Deny"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Level = 1000,
+                            Name = "Read"
+                        });
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessMapping", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("AllowDisabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ObjectAccessLevelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ObjectType")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ObjectAccessLevelId");
+
+                    b.ToTable("AccessLevelObjectMapping");
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Action")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -1312,161 +1122,21 @@ namespace BLAZAM.Common.Migrations.MySql
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessMapping", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AccessLevelId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("AllowOrDeny")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("ObjectActionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ObjectType")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccessLevelId");
-
-                    b.HasIndex("ObjectActionId");
-
-                    b.ToTable("ActionAccessMapping");
-                });
-
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FieldAccessLevel");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Level = 10,
-                            Name = "Deny"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Level = 100,
-                            Name = "Read"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Level = 1000,
-                            Name = "Edit"
-                        });
-                });
-
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessMapping", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("ActiveDirectoryFieldId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FieldAccessLevelId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActiveDirectoryFieldId");
-
-                    b.HasIndex("FieldAccessLevelId");
-
-                    b.ToTable("AccessLevelFieldMapping");
-                });
-
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessLevel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ObjectAccessLevel");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Level = 10,
-                            Name = "Deny"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Level = 1000,
-                            Name = "Read"
-                        });
-                });
-
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessMapping", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<bool>("AllowDisabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("ObjectAccessLevelId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ObjectType")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ObjectAccessLevelId");
-
-                    b.ToTable("AccessLevelObjectMapping");
-                });
-
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.PermissionDelegate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<byte[]>("DelegateSid")
                         .IsRequired()
-                        .HasColumnType("varbinary(3072)");
+                        .HasColumnType("BLOB");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("IsSuperAdmin")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -1480,14 +1150,14 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("OU")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -1498,36 +1168,36 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("AllowCustomGroups")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Category")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DisplayNameFormula")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("ObjectType")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ParentOU")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PasswordFormula")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("UsernameFormula")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -1541,23 +1211,23 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("DirectoryTemplateId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("Editable")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("FieldId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("Required")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -1572,14 +1242,14 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("DirectoryTemplateId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("GroupSid")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -1592,29 +1262,29 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("APIToken")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<byte[]>("ProfilePicture")
-                        .HasColumnType("longblob");
+                        .HasColumnType("BLOB");
 
                     b.Property<bool>("SearchDisabledComputers")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("SearchDisabledUsers")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Theme")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("UserGUID")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Username")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -1628,28 +1298,28 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("Created")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Dismissable")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("Expires")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Level")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Link")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Message")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -1660,16 +1330,16 @@ namespace BLAZAM.Common.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsRead")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("NotificationId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -1683,10 +1353,10 @@ namespace BLAZAM.Common.Migrations.MySql
             modelBuilder.Entity("PermissionDelegatePermissionMapping", b =>
                 {
                     b.Property<int>("PermissionDelegatesId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("PermissionsMapsId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("PermissionDelegatesId", "PermissionsMapsId");
 
@@ -1742,11 +1412,9 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryFieldObjectType", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.ActiveDirectoryField", null)
+                    b.HasOne("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", null)
                         .WithMany("ObjectTypes")
-                        .HasForeignKey("ActiveDirectoryFieldId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomActiveDirectoryFieldId");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessMapping", b =>
@@ -1755,7 +1423,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         .WithMany("ActionMap")
                         .HasForeignKey("AccessLevelId");
 
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.ActionAccessFlag", "ObjectAction")
+                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.ObjectAction", "ObjectAction")
                         .WithMany()
                         .HasForeignKey("ObjectActionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1773,7 +1441,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired();
 
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", "FieldAccessLevel")
-                        .WithMany("FieldAccessMappings")
+                        .WithMany()
                         .HasForeignKey("FieldAccessLevelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1850,7 +1518,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryField", b =>
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", b =>
                 {
                     b.Navigation("ObjectTypes");
                 });
@@ -1858,11 +1526,6 @@ namespace BLAZAM.Common.Migrations.MySql
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.AccessLevel", b =>
                 {
                     b.Navigation("ActionMap");
-                });
-
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", b =>
-                {
-                    b.Navigation("FieldAccessMappings");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessLevel", b =>
