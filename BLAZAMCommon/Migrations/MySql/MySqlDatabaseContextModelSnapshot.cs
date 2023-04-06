@@ -787,6 +787,9 @@ namespace BLAZAM.Common.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -1037,6 +1040,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<bool>("AllowDisabled")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("ObjectAccessLevelId")
                         .HasColumnType("int");
 
@@ -1177,6 +1183,9 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.Property<string>("Category")
                         .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("DisplayNameFormula")
                         .IsRequired()

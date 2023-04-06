@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Common.Models.Database
 {
-    public class CustomActiveDirectoryField : AppDbSetBase, IActiveDirectoryField
+    public class CustomActiveDirectoryField : RecoverableAppDbSetBase, IActiveDirectoryField
     {
 
         [Required]

@@ -16,23 +16,27 @@
         </TemplateColumn>
         <PropertyColumn Property="x => x.DisplayName" />
         <PropertyColumn Property="x => x.FieldName" />
-        
-        @foreach (var objectType in Enum.GetValues<ActiveDirectoryObjectType>().Where(en=>en!=ActiveDirectoryObjectType.All))
+
+        @foreach (var objectType in Enum.GetValues<ActiveDirectoryObjectType>().Where(en => en != ActiveDirectoryObjectType.All))
         {
-            
+
             <TemplateColumn Title="@objectType.ToString()" Sortable="false">
-                
+
                 <CellTemplate>
                     <MudCheckBox Size="@Size.Small" Disabled="@(context.Item.Id>100000)" Checked="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)" />
                 </CellTemplate>
             </TemplateColumn>
         }
-       
+        <TemplateColumn CellClass="d-flex justify-end" Title="Edit" Sortable="false">
+            <CellTemplate>
+                <MudIconButton Disabled=@(context.Item.Id>100000) Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(()=>{Delete(context.Item);})" />
+            </CellTemplate>
+        </TemplateColumn>
     </Columns>
 </MudDataGrid>
 
 <AppModal @ref=addFieldModal Title="Add Field">
-    <AddFieldModalContent FieldCreated="FieldCreated"/>
+    <AddFieldModalContent FieldCreated="FieldCreated" />
 </AppModal>
 @code {
     AppModal? addFieldModal;
@@ -40,10 +44,33 @@
     protected override async void OnInitialized()
     {
         base.OnInitialized();
+        RefreshData();
+    }
+    async Task RefreshData()
+    {
+        LoadingData=true;
+        await InvokeAsync(StateHasChanged);
         ADFields = await Context.CustomActiveDirectoryFields.ToListAsync();
+        LoadingData=false;
+        await InvokeAsync(StateHasChanged);
+
+
     }
     async Task FieldCreated(CustomActiveDirectoryField newField)
     {
-        
+        RefreshData();
+    }
+    async Task Delete(CustomActiveDirectoryField field)
+    {
+        if (await MessageService.Confirm("Are you sure you want to delete " + field.DisplayName + "?", "Delete " + field.DisplayName + "?"))
+        {
+            field.DeletedAt = DateTime.UtcNow;
+            if (await Context.SaveChangesAsync() == 1)
+                SnackBarService.Success(field.DisplayName + " deleted");
+            else
+                SnackBarService.Warning(field.DisplayName + " could not be deleted");
+
+        }
+
     }
 }

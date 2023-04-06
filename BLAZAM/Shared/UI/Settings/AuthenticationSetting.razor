@@ -3,7 +3,6 @@
 
 
 
-<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
     <MudText Typo="Typo.h4">@SettingsLocalization["Authentication Settings"]</MudText>
     <MudForm @onsubmit=Save>
 
@@ -45,7 +44,6 @@
 
 
     </MudForm>
-</LoadingIndicator>
 @code {
 #nullable disable warnings
     AuthenticationSettings settings = new AuthenticationSettings();

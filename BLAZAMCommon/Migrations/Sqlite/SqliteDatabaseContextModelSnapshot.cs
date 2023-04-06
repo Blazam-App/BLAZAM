@@ -783,6 +783,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -1032,6 +1035,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<bool>("AllowDisabled")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("ObjectAccessLevelId")
                         .HasColumnType("INTEGER");
 
@@ -1171,6 +1177,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Category")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DisplayNameFormula")

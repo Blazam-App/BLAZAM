@@ -444,7 +444,7 @@ namespace BLAZAM.Common.Data.Database
          .Navigation(x => x.ObjectTypes).AutoInclude();
 
 
-           
+
 
             modelBuilder.Entity<AccessLevel>(entity =>
             {
@@ -489,9 +489,9 @@ namespace BLAZAM.Common.Data.Database
                 entity.Navigation(e => e.Field).AutoInclude();
             });
             modelBuilder.Entity<ObjectAction>().HasData(
-                  new ObjectAction() { Id = 1, Name = "Assign",Action = ActiveDirectoryObjectAction.Assign },
+                  new ObjectAction() { Id = 1, Name = "Assign", Action = ActiveDirectoryObjectAction.Assign },
                   new ObjectAction() { Id = 2, Name = "UnAssign", Action = ActiveDirectoryObjectAction.Unassign },
-                  new ObjectAction() { Id = 3, Name = "Unlock" , Action = ActiveDirectoryObjectAction.Unlock },
+                  new ObjectAction() { Id = 3, Name = "Unlock", Action = ActiveDirectoryObjectAction.Unlock },
                   new ObjectAction() { Id = 4, Name = "Enable", Action = ActiveDirectoryObjectAction.Enable },
                   new ObjectAction() { Id = 5, Name = "Disable", Action = ActiveDirectoryObjectAction.Disable },
                   new ObjectAction() { Id = 6, Name = "Rename", Action = ActiveDirectoryObjectAction.Rename },
@@ -610,8 +610,8 @@ namespace BLAZAM.Common.Data.Database
                     {
                         if (ConnectionString.File.Writable)
                         {
-                            ConnectionString.File.EnsureCreated();
-                            return ServiceConnectionState.Up;
+                            if (ConnectionString.File.Exists)
+                                return ServiceConnectionState.Up;
                         }
                         else
                         {

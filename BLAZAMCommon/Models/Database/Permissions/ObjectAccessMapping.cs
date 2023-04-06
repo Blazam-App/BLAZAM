@@ -2,7 +2,7 @@
 
 namespace BLAZAM.Common.Models.Database.Permissions
 {
-    public class ObjectAccessMapping : AppDbSetBase
+    public class ObjectAccessMapping : RecoverableAppDbSetBase
     {
         public ActiveDirectoryObjectType ObjectType { get; set; }
         public int ObjectAccessLevelId { get; set; }

@@ -66,6 +66,7 @@ namespace BLAZAM.Common.Models.Database
                         case "homeDirectory":
                         case "homeDrive":
                         case "homePhone":
+                        case "manager":
                         case "mail":
                         case "memberOf":
                         case "middleName":
@@ -96,6 +97,7 @@ namespace BLAZAM.Common.Models.Database
                         case "distinguishedName":
                         case "memberOf":
                         case "objectSID":
+                        case "operatingSystemVersion":
                         case "samaccountname":
                         case "site":
                             return true;
