@@ -25,7 +25,7 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        Modal.OnYes += SaveChanges;
+        Modal.OnYes = SaveChanges;
         Modal.YesText = UserLocalization["Save Changes"];
         Modal.Title = UserLocalization["Rename OU"];
         Modal.YesEnabled = ValidateModal;

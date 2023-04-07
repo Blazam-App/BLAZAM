@@ -30,7 +30,7 @@ namespace BLAZAM.Common.Data.Database
         DbSet<GroupAuditLog> GroupAuditLog { get; set; }
         DbSet<LogonAuditLog> LogonAuditLog { get; set; }
         DbSet<ObjectAccessLevel> ObjectAccessLevel { get; set; }
-        DbSet<ActionAccessFlag> ObjectActionFlag { get; set; }
+        DbSet<ObjectAction> ObjectActionFlag { get; set; }
         DbSet<OUAuditLog> OUAuditLog { get; set; }
         DbSet<PermissionDelegate> PermissionDelegate { get; set; }
         DbSet<PermissionMapping> PermissionMap { get; set; }
@@ -47,6 +47,7 @@ namespace BLAZAM.Common.Data.Database
         DbSet<NotificationMessage> NotificationMessages { get; set; }
         DbSet<UserNotification> UserNotifications { get; set; }
         bool SeedMismatch { get; }
+        DbSet<CustomActiveDirectoryField> CustomActiveDirectoryFields { get; set; }
 
         bool Migrate();
     }

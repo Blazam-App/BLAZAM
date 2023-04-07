@@ -13,7 +13,7 @@ namespace BLAZAM.Common.Models.Database.Templates
 
     //Sets the name column to be unique
     [Index(nameof(Name), IsUnique = true)]
-    public class DirectoryTemplate : AppDbSetBase, ICloneable
+    public class DirectoryTemplate : RecoverableAppDbSetBase, ICloneable
     {
 
         [Required]

@@ -1,0 +1,144 @@
+﻿@page "/fields"
+@using System.Collections.ObjectModel;
+@inherits AppComponentBase
+@attribute [Authorize(Roles = UserRoles.SuperAdmin)]
+<h3>Fields</h3>
+<MudDataGrid @ref=fieldGrid 
+    T="CustomActiveDirectoryField"
+    ServerData="RefreshData" 
+    ReadOnly=false 
+     CommittedItemChanges=SaveChanges
+    FixedHeader=true
+    EditTrigger="DataGridEditTrigger.Manual">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Fields</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="@(()=>{addFieldModal.Show();})" />
+    </ToolBarContent>
+    
+    <Columns>
+
+        <TemplateColumn CellClass="d-flex justify-end" Title="Edit" Sortable="false">
+            <CellTemplate>
+                <MudIconButton Disabled=@(context.Item.Id>100000) Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItem" />
+            </CellTemplate>
+        </TemplateColumn>
+
+        <PropertyColumn Sortable="true"
+                        Property="x => x.DisplayName"
+                        Title=@SettingsLocalization["Display Name"] />
+
+        <PropertyColumn Sortable="true"
+                        Property="x => x.FieldName"
+                        Title=@SettingsLocalization["Field Name"] />
+
+        <TemplateColumn Title=@SettingsLocalization["Field Type"]
+                        Sortable="true">
+            <EditTemplate>
+                <FieldTypeSelect Variant="@Variant.Outlined" @bind-Value=context.Item.FieldType />
+
+            </EditTemplate>
+            <CellTemplate>
+                <MudText>@context.Item.FieldType</MudText>
+
+            </CellTemplate>
+        </TemplateColumn>
+        @foreach (var objectType in Enum.GetValues<ActiveDirectoryObjectType>().Where(en => en != ActiveDirectoryObjectType.All))
+        {
+
+            <TemplateColumn Title="@objectType.ToString()" Sortable="false">
+                <EditTemplate>
+                    <MudCheckBox T="bool"
+                             
+                             Label="@objectType.ToString()"
+                             Size="@Size.Small"
+                             Checked="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)"
+                             CheckedChanged="@((val)=>{
+ToggleObjectType(context.Item,objectType,val);
+})" />
+                </EditTemplate>
+                <CellTemplate>
+                    <MudCheckBox Size="@Size.Small" ReadOnly=true Checked="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)" />
+                </CellTemplate>
+            </TemplateColumn>
+        }
+        <TemplateColumn CellClass="d-flex justify-end" Title=@AppLocalization["Delete"] Sortable="false">
+            <CellTemplate>
+                <MudIconButton Disabled=@(context.Item.Id>100000) Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(()=>{Delete(context.Item);})" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+<AppModal @ref=addFieldModal Title="Add Field">
+    <AddFieldModalContent FieldCreated="FieldCreated" />
+</AppModal>
+@code {
+    MudDataGrid<CustomActiveDirectoryField>? fieldGrid;
+    AppModal? addFieldModal;
+    List<CustomActiveDirectoryField> ADFields { get; set; }
+    protected override async void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+    async Task<GridData<CustomActiveDirectoryField>> RefreshData(GridState<CustomActiveDirectoryField> currentState)
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        ADFields = await Context.CustomActiveDirectoryFields.Where(x => x.DeletedAt == null).ToListAsync();
+        LoadingData = false;
+        var data = new GridData<CustomActiveDirectoryField>();
+        data.Items = ADFields;
+        data.TotalItems = ADFields.Count;
+        return data;
+
+    }
+    async Task FieldCreated(CustomActiveDirectoryField newField)
+    {
+        fieldGrid.ReloadServerData();
+
+    }
+    async Task Delete(CustomActiveDirectoryField field)
+    {
+        if (await MessageService.Confirm("Are you sure you want to delete " + field.DisplayName + "?", "Delete " + field.DisplayName + "?"))
+        {
+            field.DeletedAt = DateTime.UtcNow;
+            if (await Context.SaveChangesAsync() > 0)
+            {
+                fieldGrid.ReloadServerData();
+
+                SnackBarService.Success(field.DisplayName + " deleted");
+            }
+            else
+                SnackBarService.Warning(field.DisplayName + " could not be deleted");
+
+        }
+
+    }
+    async Task SaveChanges()
+    {
+        if(await Context.SaveChangesAsync() > 0)
+        {
+            SnackBarService.Success("Field Updated");
+        }
+        SnackBarService.Success("Field could nt be updated");
+
+    }
+    async Task ToggleObjectType(CustomActiveDirectoryField field, ActiveDirectoryObjectType objectType, bool newValue)
+    {
+            //Handle remove to list
+            if (!newValue && field.ObjectTypes.Any(ot => ot.ObjectType.Equals(objectType)))
+            {
+                field.ObjectTypes.Remove(field.ObjectTypes.First(ot => ot.ObjectType.Equals(objectType)));
+            }
+            //Handle add to list
+            if (newValue && !field.ObjectTypes.Any(ot => ot.ObjectType.Equals(objectType)))
+            {
+                field.ObjectTypes.Add(new ActiveDirectoryFieldObjectType() { ActiveDirectoryFieldId = field.Id, ObjectType = objectType });
+            }
+
+
+        }
+     
+    }
+}

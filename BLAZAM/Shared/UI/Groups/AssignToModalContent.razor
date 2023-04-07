@@ -52,7 +52,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Modal.OnYes += AssignToGroup;
+        Modal.OnYes = AssignToGroup;
         Modal.YesText = UserLocalization["Assign"];
         Modal.Title = "Assign To";
         Modal.YesEnabled = ValidateModal;

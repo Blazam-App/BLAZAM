@@ -115,6 +115,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("FieldType")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.ToTable("ActiveDirectoryFields");
@@ -124,206 +127,262 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         {
                             Id = 1,
                             DisplayName = "Last Name",
-                            FieldName = "sn"
+                            FieldName = "sn",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 2,
                             DisplayName = "First Name",
-                            FieldName = "givenname"
+                            FieldName = "givenname",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 3,
                             DisplayName = "Office",
-                            FieldName = "physicalDeliveryOfficeName"
+                            FieldName = "physicalDeliveryOfficeName",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 4,
                             DisplayName = "Employee ID",
-                            FieldName = "employeeId"
+                            FieldName = "employeeId",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 5,
                             DisplayName = "Home Directory",
-                            FieldName = "homeDirectory"
+                            FieldName = "homeDirectory",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 6,
                             DisplayName = "Logon Script Path",
-                            FieldName = "scriptPath"
+                            FieldName = "scriptPath",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 7,
                             DisplayName = "Profile Path",
-                            FieldName = "profilePath"
+                            FieldName = "profilePath",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 8,
                             DisplayName = "Home Phone Number",
-                            FieldName = "homePhone"
+                            FieldName = "homePhone",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 9,
                             DisplayName = "Street Address",
-                            FieldName = "streetAddress"
+                            FieldName = "streetAddress",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 10,
                             DisplayName = "City",
-                            FieldName = "city"
+                            FieldName = "city",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 11,
                             DisplayName = "State",
-                            FieldName = "st"
+                            FieldName = "st",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 12,
                             DisplayName = "Zip Code",
-                            FieldName = "postalCode"
+                            FieldName = "postalCode",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 13,
                             DisplayName = "Site",
-                            FieldName = "site"
+                            FieldName = "site",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 14,
                             DisplayName = "Name",
-                            FieldName = "name"
+                            FieldName = "name",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 15,
                             DisplayName = "Username",
-                            FieldName = "samaccountname"
+                            FieldName = "samaccountname",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 16,
                             DisplayName = "SID",
-                            FieldName = "objectSID"
+                            FieldName = "objectSID",
+                            FieldType = 2
                         },
                         new
                         {
                             Id = 17,
                             DisplayName = "E-Mail Address",
-                            FieldName = "mail"
+                            FieldName = "mail",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 18,
                             DisplayName = "Description",
-                            FieldName = "description"
+                            FieldName = "description",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 19,
                             DisplayName = "Display Name",
-                            FieldName = "displayName"
+                            FieldName = "displayName",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 20,
                             DisplayName = "Distinguished Name",
-                            FieldName = "distinguishedName"
+                            FieldName = "distinguishedName",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 21,
                             DisplayName = "Member Of",
-                            FieldName = "memberOf"
+                            FieldName = "memberOf",
+                            FieldType = 4
                         },
                         new
                         {
                             Id = 22,
                             DisplayName = "Company",
-                            FieldName = "company"
+                            FieldName = "company",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 23,
                             DisplayName = "Title",
-                            FieldName = "title"
+                            FieldName = "title",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 24,
                             DisplayName = "User Principal Name",
-                            FieldName = "userPrincipalName"
+                            FieldName = "userPrincipalName",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 25,
                             DisplayName = "Telephone Number",
-                            FieldName = "telephoneNumber"
+                            FieldName = "telephoneNumber",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 26,
                             DisplayName = "PO Box",
-                            FieldName = "postOfficeBox"
+                            FieldName = "postOfficeBox",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 27,
                             DisplayName = "Canonical Name",
-                            FieldName = "cn"
+                            FieldName = "cn",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 28,
                             DisplayName = "Home Drive",
-                            FieldName = "homeDrive"
+                            FieldName = "homeDrive",
+                            FieldType = 3
                         },
                         new
                         {
                             Id = 29,
                             DisplayName = "Department",
-                            FieldName = "department"
+                            FieldName = "department",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 30,
                             DisplayName = "Middle Name",
-                            FieldName = "middleName"
+                            FieldName = "middleName",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 31,
                             DisplayName = "Pager",
-                            FieldName = "pager"
+                            FieldName = "pager",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 32,
                             DisplayName = "OS",
-                            FieldName = "operatingSystemVersion"
+                            FieldName = "operatingSystemVersion",
+                            FieldType = 0
                         },
                         new
                         {
                             Id = 33,
                             DisplayName = "Account Expiration",
-                            FieldName = "accountExpires"
+                            FieldName = "accountExpires",
+                            FieldType = 1
                         },
                         new
                         {
                             Id = 34,
                             DisplayName = "Manager",
-                            FieldName = "manager"
+                            FieldName = "manager",
+                            FieldType = 0
                         });
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryFieldObjectType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ActiveDirectoryFieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CustomActiveDirectoryFieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ObjectType")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomActiveDirectoryFieldId");
+
+                    b.ToTable("ActiveDirectoryFieldObjectMappings");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.AppSettings", b =>
@@ -718,6 +777,31 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         });
                 });
 
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("FieldType")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CustomActiveDirectoryFields");
+                });
+
             modelBuilder.Entity("BLAZAM.Common.Models.Database.EmailSettings", b =>
                 {
                     b.Property<int>("Id")
@@ -821,68 +905,6 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         {
                             Id = 1,
                             Name = "Deny All"
-                        });
-                });
-
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessFlag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ObjectActionFlag");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Assign"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "UnAssign"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Unlock"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Enable"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Disable"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Rename"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Move"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Create"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "Delete"
                         });
                 });
 
@@ -1013,6 +1035,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<bool>("AllowDisabled")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("ObjectAccessLevelId")
                         .HasColumnType("INTEGER");
 
@@ -1024,6 +1049,80 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.HasIndex("ObjectAccessLevelId");
 
                     b.ToTable("AccessLevelObjectMapping");
+                });
+
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Action")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ObjectActionFlag");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Action = 4,
+                            Name = "Assign"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Action = 3,
+                            Name = "UnAssign"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Action = 8,
+                            Name = "Unlock"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Action = 5,
+                            Name = "Enable"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Action = 6,
+                            Name = "Disable"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Action = 7,
+                            Name = "Rename"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Action = 0,
+                            Name = "Move"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Action = 2,
+                            Name = "Create"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Action = 1,
+                            Name = "Delete"
+                        });
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.PermissionDelegate", b =>
@@ -1078,6 +1177,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Category")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DisplayNameFormula")
@@ -1314,13 +1416,20 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryFieldObjectType", b =>
+                {
+                    b.HasOne("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", null)
+                        .WithMany("ObjectTypes")
+                        .HasForeignKey("CustomActiveDirectoryFieldId");
+                });
+
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.AccessLevel", null)
                         .WithMany("ActionMap")
                         .HasForeignKey("AccessLevelId");
 
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.ActionAccessFlag", "ObjectAction")
+                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.ObjectAction", "ObjectAction")
                         .WithMany()
                         .HasForeignKey("ObjectActionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1338,7 +1447,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .IsRequired();
 
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", "FieldAccessLevel")
-                        .WithMany("FieldAccessMappings")
+                        .WithMany()
                         .HasForeignKey("FieldAccessLevelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1415,14 +1524,14 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", b =>
+                {
+                    b.Navigation("ObjectTypes");
+                });
+
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.AccessLevel", b =>
                 {
                     b.Navigation("ActionMap");
-                });
-
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", b =>
-                {
-                    b.Navigation("FieldAccessMappings");
                 });
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessLevel", b =>

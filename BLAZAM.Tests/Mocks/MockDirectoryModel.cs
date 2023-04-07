@@ -96,6 +96,11 @@ namespace BLAZAM.Tests.Mocks
             throw new NotImplementedException();
         }
 
+        public void EnsureDirectoryEntry()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IADOrganizationalUnit?> GetParent()
         {
             throw new NotImplementedException();

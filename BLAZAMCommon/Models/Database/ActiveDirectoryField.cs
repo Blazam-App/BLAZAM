@@ -1,15 +1,27 @@
 ﻿using BLAZAM.Common.Data.ActiveDirectory;
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
+using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Common.Models.Database
 {
-    public class ActiveDirectoryField : AppDbSetBase
+    public enum ActiveDirectoryFieldType { Text,Date,RawData,
+        DriveLetter,
+        List
+    }
+    public class ActiveDirectoryField : AppDbSetBase, IActiveDirectoryField
     {
 
+        [Required]
         public string FieldName { get; set; }
-        //public List<ActiveDirectoryObjectType> ObjectTypes { get; set; }
-        public string DisplayName { get; internal set; }
+        [Required]
+        public string DisplayName { get; set; }
+
+        public ActiveDirectoryFieldType FieldType { get; set; } = ActiveDirectoryFieldType.Text;
+
+   
+
 
         public override string? ToString()
         {
@@ -17,6 +29,7 @@ namespace BLAZAM.Common.Models.Database
         }
         public override int GetHashCode()
         {
+            if (FieldName == null) return Id.GetHashCode();
             return FieldName.GetHashCode();
         }
         public override bool Equals(object? obj)
@@ -33,7 +46,7 @@ namespace BLAZAM.Common.Models.Database
             }
             return false;
         }
-        public bool IsActionAppropriateForObject( ActiveDirectoryObjectType objectType)
+        public bool IsActionAppropriateForObject(ActiveDirectoryObjectType objectType)
         {
 
             switch (objectType)
@@ -53,6 +66,7 @@ namespace BLAZAM.Common.Models.Database
                         case "homeDirectory":
                         case "homeDrive":
                         case "homePhone":
+                        case "manager":
                         case "mail":
                         case "memberOf":
                         case "middleName":
@@ -83,6 +97,7 @@ namespace BLAZAM.Common.Models.Database
                         case "distinguishedName":
                         case "memberOf":
                         case "objectSID":
+                        case "operatingSystemVersion":
                         case "samaccountname":
                         case "site":
                             return true;
@@ -115,8 +130,8 @@ namespace BLAZAM.Common.Models.Database
                         case "objectSID":
                         case "site":
                             return true;
-                        
-                            
+
+
                     }
                     break;
 

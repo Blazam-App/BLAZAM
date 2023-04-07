@@ -3,7 +3,6 @@
 
 
 
-<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
     <MudText Typo="Typo.h4">@SettingsLocalization["Authentication Settings"]</MudText>
     <MudForm @onsubmit=Save>
 
@@ -15,10 +14,10 @@
 
         <SettingsField Label="@SettingsLocalization["Session Timeout"]">
 
-            <MudNumericField Label="@SettingsLocalization["Session Timeout"]" HelperText="Time in minute" TValue="int?" @bind-Value="@settings.SessionTimeout" />
+            <MudNumericField Label="@SettingsLocalization["Session Timeout"]" HelperText="Time in minute" T="int?" @bind-Value="@settings.SessionTimeout" />
 
         </SettingsField>
-
+        @*
         <MudText>Duo Security MFA (optional)</MudText>
         <br />
         <SettingsField Label="Duo ClientID">
@@ -35,7 +34,7 @@
 
             <MudTextField Label="Duo ApiHost" InputType="InputType.Password" @bind-Value="@settings.DuoApiHost" />
 
-        </SettingsField>
+        </SettingsField>*@
         <SettingsField>
 
             <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
@@ -45,7 +44,6 @@
 
 
     </MudForm>
-</LoadingIndicator>
 @code {
 #nullable disable warnings
     AuthenticationSettings settings = new AuthenticationSettings();

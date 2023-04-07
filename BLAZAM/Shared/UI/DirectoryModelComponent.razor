@@ -42,7 +42,7 @@
             }
         }
     }
-
+    protected IList<CustomActiveDirectoryField> CustomFields{ get; set; }
 
     [Parameter]
     public IADComputer Computer
@@ -106,16 +106,18 @@
 
         }
         if(Group!=null)
-        Group.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
+            Group.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
         if (User != null)
             User.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
-            
+
         if(Computer!=null)
             Computer.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
         if (OU != null)
             OU.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
+
+        CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
         await InvokeAsync(StateHasChanged);
 
     }

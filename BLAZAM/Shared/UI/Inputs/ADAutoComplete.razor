@@ -10,7 +10,8 @@
                  ResetValueOnEmptyText="true"
                  Validation="@Validation"
                  CoerceText="@AllowCustomInput" CoerceValue="false"
-                      Clearable
+                 Clearable=true
+                 Dense=true
                  ToStringFunc="item=>item?.CanonicalName"
                  AdornmentColor="Color.Secondary"
                  ProgressIndicatorColor="Color.Secondary"
@@ -18,40 +19,42 @@
                  AdornmentIcon="@Icons.Material.Filled.Search"
                  Variant="@Variant">
     <ItemTemplate>
-        <MudText Typo="Typo.h5">
-            @context?.ObjectType
+        <MudGrid>
+            <MudItem sm="12" md="2">
+                <MudText Class="align-middle" Typo="Typo.button">
+                    @context?.ObjectType
 
-            @if (context != null && context is IGroupableDirectoryAdapter gdm)
-            {
-                if (gdm.LockedOut)
-                {
+                    @if (context != null && context is IGroupableDirectoryAdapter gdm)
+                    {
+                        if (gdm.LockedOut)
+                        {
 
-                    <MudBadge Color="Color.Warning">Locked</MudBadge>
+                            <MudBadge Overlap=true Color="Color.Warning">Locked</MudBadge>
 
-                }
-                if (!gdm.Enabled)
-                {
+                        }
+                        if (!gdm.Enabled)
+                        {
 
-                    <MudBadge Color="Color.Error">Disabled</MudBadge>
+                            <MudBadge Overlap=true Color="Color.Error">Disabled</MudBadge>
 
-                }
-            }
+                        }
+                    }
+                </MudText>
+            </MudItem>
+
+            <MudItem sm="12" md="10">
+                <MudText Typo="Typo.subtitle2">
+                    @context?.CanonicalName
 
 
+                </MudText>
+                <MudText Typo="Typo.caption">
+                    @context
+                </MudText>
+            </MudItem>
+        </MudGrid>
 
 
-        </MudText>
-        <MudText Typo="Typo.h6">
-            <small>
-                @context?.CanonicalName
-            </small>
-
-        </MudText>
-        <MudText>
-            <small>
-                @context
-            </small>
-        </MudText>
     </ItemTemplate>
     <NoItemsTemplate>
         @if (SearchTerm.IsNullOrEmpty())
@@ -76,9 +79,9 @@
 
 
 @code {
-    #nullable disable warnings
+#nullable disable warnings
     [Parameter]
-    public Func<object> Validation{ get; set; }
+    public Func<object> Validation { get; set; }
     [Parameter]
     public string? Label { get; set; }
     [Parameter]
