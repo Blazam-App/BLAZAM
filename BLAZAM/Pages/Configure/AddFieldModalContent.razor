@@ -1,19 +1,14 @@
 @inherits AppModalContent
-<EditForm Model="newField" OnValidSubmit="Test">
+<EditForm Model="newField" OnValidSubmit="Add">
 <MudTextField T=string @bind-Value=newField.DisplayName Label="Display Name" />
 <MudTextField T=string @bind-Value=newField.FieldName Label="Field Name" />
-<MudSelect Label="Field Type" T="ActiveDirectoryFieldType">
-    @foreach(var fieldType in Enum.GetValues<ActiveDirectoryFieldType>())
-    {
-        <MudSelectItem Value="@fieldType">@fieldType.ToString()</MudSelectItem>
-    }
-</MudSelect>
+<FieldTypeSelect @bind-Value=newField.FieldType />
+
 @foreach (var objectType in assignedObjectTypes)
 {
     <MudCheckBox Label="@objectType.Key" @bind-Checked=assignedObjectTypes[objectType.Key] />
 
 }
-<MudButton ButtonType=ButtonType.Submit >Test</MudButton>
 </EditForm>
 @code{
     private CustomActiveDirectoryField newField = new();
@@ -28,6 +23,8 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        Modal.OnYes = Add;
+        Modal.YesText = AppLocalization["Add"];
         foreach(var objectType in Enum.GetValues<ActiveDirectoryObjectType>().Where(ot=>ot!=ActiveDirectoryObjectType.All))
         {
             assignedObjectTypes.Add(objectType.ToString(), false);
@@ -36,10 +33,24 @@
     [Parameter]
     public EventCallback<CustomActiveDirectoryField> FieldCreated { get; set; }
 
-    async Task Test()
+    async void Add()
     {
-        Context.CustomActiveDirectoryFields.Add(newField);
-        await Context.SaveChangesAsync();
+        if (Context != null)
+        {
+            try
+            {
+                Context.CustomActiveDirectoryFields.Add(newField);
+                await Context.SaveChangesAsync();
+                Close();
 
+                SnackBarService.Success("Field created");
+                FieldCreated.InvokeAsync(newField);
+                await InvokeAsync(StateHasChanged);
+            }
+            catch(Exception ex)
+            {
+                SnackBarService.Error(ex.Message);
+            }
+        }
     }
 }

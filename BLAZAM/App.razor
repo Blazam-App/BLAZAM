@@ -13,7 +13,7 @@
 
 
     <ErrorBoundary>
-
+    
         <ChildContent>
             <Router AppAssembly="@typeof(App).Assembly">
                 <Found Context="routeData">
@@ -65,17 +65,12 @@
 
 
 </CascadingAuthenticationState>
-@*  <PageProgressProvider />
-    <NotificationProvider Location="NotificationLocation.Start" />*@
 
-<MudPageProgressProvider />
 <MudThemeProvider Theme="@activeTheme.Theme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <SessionExpirationWarningProvider />
-@*</Blazorise.ThemeProvider>*@
-
 
 @code {
 

@@ -141,6 +141,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             get
             {
+                return GetDateTimeProperty("lockoutTime");
                 var com = GetProperty<object>("lockoutTime");
                 return com.AdsValueToDateTime();
             }

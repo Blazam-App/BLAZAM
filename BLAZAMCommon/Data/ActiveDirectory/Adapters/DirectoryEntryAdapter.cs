@@ -2,6 +2,7 @@
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.Permissions;
@@ -444,6 +445,16 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
 
         }
+
+        public virtual bool CanReadAnyCustomFields
+        {
+            get
+            {
+                //TODO  implement logic
+                return true;
+            }
+
+        }
         /// <inheritdoc/>
         public virtual bool CanEdit
         {
@@ -719,6 +730,31 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             DirectoryEntry = SearchResult?.GetDirectoryEntry();
         }
 
+        public virtual T? GetCustomProperty<T>(string propertyName)
+        {
+            try
+            {
+                return GetProperty<T>(propertyName);
+            }
+            catch
+            {
+                return default(T);
+            }
+        }
+
+        public virtual DateTime? GetDateTimeProperty(string propertyName)
+        {
+            try
+            {
+                var com = GetProperty<object>(propertyName);
+                return com.AdsValueToDateTime().Value;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         protected virtual T? GetProperty<T>(string propertyName)
         {
             try
@@ -858,6 +894,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 return null;
             }
         }
+        public virtual void SetCustomProperty(string propertyName, object? value) => SetProperty(propertyName, value);  
         /// <summary>
         /// Sets an attribute value. Note that this change is uncommited, <see cref="CommitChanges"/>
         /// must be called afterwards for the change to persist.
