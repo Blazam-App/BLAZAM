@@ -109,6 +109,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         void DiscardChanges();
         bool CanEditField(ActiveDirectoryField field);
         bool CanReadField(ActiveDirectoryField field);
+        bool CanReadAnyCustomFields { get;  }
 
         new void Dispose();
 
@@ -140,5 +141,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         void Delete();
         string? ToString();
         bool Rename(string newName);
+        void EnsureDirectoryEntry();
+        T? GetCustomProperty<T>(string propertyName);
+        DateTime? GetDateTimeProperty(string propertyName);
+        void SetCustomProperty(string propertyName, object? value);
     }
 }

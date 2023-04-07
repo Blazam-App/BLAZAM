@@ -74,7 +74,7 @@
             if (objValue != null && ValueTransformer != null)
                 value = ValueTransformer.Invoke(value);
             objValue = value;
-            if (!value.Equals(initializedValue))
+            //if (!value.Equals(initializedValue))
                 ValueChanged.InvokeAsync(value);
 
         }

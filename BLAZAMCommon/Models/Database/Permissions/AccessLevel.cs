@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Common.Models.Database.Permissions
 {
-    public class AccessLevel : AppDbSetBase, IComparable<AccessLevel>
+    public class AccessLevel : RecoverableAppDbSetBase, IComparable<AccessLevel>
     {
         [Required]
         public string Name { get; set; }
@@ -11,7 +11,6 @@ namespace BLAZAM.Common.Models.Database.Permissions
         public List<ActionAccessMapping> ActionMap { get; set; } = new();
         public List<FieldAccessMapping> FieldMap { get; set; } = new();
         public List<PermissionMapping> PermissionMaps { get; set; }
-        public DateTime? DeletedAt { get; set; }
 
 
 

@@ -6,11 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Common.Models.Database
 {
-    public enum ActiveDirectoryFieldType { Text,Date,RawData,
-        DriveLetter,
-        List
-    }
-    public class ActiveDirectoryField : AppDbSetBase, IActiveDirectoryField
+    public class CustomActiveDirectoryField : RecoverableAppDbSetBase, IActiveDirectoryField
     {
 
         [Required]
@@ -20,7 +16,8 @@ namespace BLAZAM.Common.Models.Database
 
         public ActiveDirectoryFieldType FieldType { get; set; } = ActiveDirectoryFieldType.Text;
 
-   
+        [Required]
+        public List<ActiveDirectoryFieldObjectType> ObjectTypes { get; set; }
 
 
         public override string? ToString()
@@ -66,7 +63,6 @@ namespace BLAZAM.Common.Models.Database
                         case "homeDirectory":
                         case "homeDrive":
                         case "homePhone":
-                        case "manager":
                         case "mail":
                         case "memberOf":
                         case "middleName":
@@ -97,7 +93,6 @@ namespace BLAZAM.Common.Models.Database
                         case "distinguishedName":
                         case "memberOf":
                         case "objectSID":
-                        case "operatingSystemVersion":
                         case "samaccountname":
                         case "site":
                             return true;

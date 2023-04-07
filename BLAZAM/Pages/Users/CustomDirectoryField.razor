@@ -1,0 +1,36 @@
+@switch (Field.FieldType)
+{
+    case ActiveDirectoryFieldType.Text:
+        <DynamicMudInput T="string"
+                 Disabled=@Disabled
+                 Label="@Field.DisplayName"
+                 Value="Entry.GetCustomProperty<string>(Field.FieldName)"
+                 ValueChanged="@((val)=>{SetValue(val);})" />
+        break;
+    case ActiveDirectoryFieldType.Date:
+        <DynamicMudInput T="DateTime?"
+                 Disabled=@Disabled
+                 Label="@Field.DisplayName"
+                 Value="Entry.GetDateTimeProperty(Field.FieldName)"
+                 ValueChanged="@((val)=>{SetValue(val);})" />
+        break;
+
+
+
+}
+
+@code {
+    [Parameter]
+    public IDirectoryEntryAdapter Entry { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public CustomActiveDirectoryField Field { get; set; }
+
+    void SetValue(object? newValue)
+    {
+        Entry.SetCustomProperty(Field.FieldName, newValue);
+    }
+}

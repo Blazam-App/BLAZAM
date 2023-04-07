@@ -32,7 +32,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Modal.OnYes += SaveChanges;
+        Modal.OnYes = SaveChanges;
         Modal.YesText = UserLocalization["Save Photo"];
         Modal.Title = "Change Thumbnail";
         Modal.YesEnabled = ValidateModal;

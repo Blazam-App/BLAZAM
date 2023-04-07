@@ -27,16 +27,16 @@
     {
         await base.OnInitializedAsync();
         StartingOU = await DirectoryModel.GetParent();
-        Modal.OnYes += MoveTo;
+        Modal.OnYes = MoveTo;
         Modal.YesText = UserLocalization["Move"];
         Modal.Title = "Move To";
 
         Modal.YesEnabled = ValidateModal;
     }
-    
+
     async void MoveTo()
     {
-        if (await MessageService.Confirm("Are you sure you want to move this " + DirectoryModel.ObjectType.ToString().ToLower() + " to " + SelectedOU.CanonicalName + ". All other unsaved changes will be discarded.", "Confirm move"))
+        if (await MessageService.Confirm("Are you sure you want to move this " + DirectoryModel.ObjectType.ToString().ToLower() + " to " + SelectedOU.CanonicalName + ". This will take effect immediately. Unsaved changes will remain.", "Confirm move"))
         {
 
 
@@ -45,6 +45,7 @@
                 SnackBarService.Success(DirectoryModel.CanonicalName + " has been moved to " + SelectedOU.CanonicalName, "Moved");
                 await ModelChanged.InvokeAsync();
                 Close();
+                return;
             }
             SnackBarService.Error(DirectoryModel.CanonicalName + " was not able to be moved to " + SelectedOU.CanonicalName, "Move failed");
 

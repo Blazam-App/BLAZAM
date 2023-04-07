@@ -1,0 +1,28 @@
+@inherits AppComponentBase
+<MudSelect Variant=Variant.Outlined Disabled=@Disabled @bind-Value=@Value Label=@SettingsLocalization["Field Type"] T="ActiveDirectoryFieldType">
+    @foreach (var fieldType in Enum.GetValues<ActiveDirectoryFieldType>())
+    {
+        <MudSelectItem Value="@fieldType">@fieldType.ToString()</MudSelectItem>
+    }
+</MudSelect>
+@code{
+
+    [Parameter]
+    public Variant Variant{ get; set; }
+
+    [Parameter]
+    public bool Disabled{ get; set; }
+
+    private ActiveDirectoryFieldType value;
+
+    [Parameter]
+    public ActiveDirectoryFieldType  Value{ get=>value; set
+        {
+            if (this.value == value) return;
+            this.value = value;
+            ValueChanged.InvokeAsync(value);
+        } }
+    [Parameter]
+
+    public EventCallback<ActiveDirectoryFieldType> ValueChanged{ get; set; }
+}

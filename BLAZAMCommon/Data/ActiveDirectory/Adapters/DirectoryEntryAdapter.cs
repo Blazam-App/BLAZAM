@@ -2,6 +2,7 @@
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.Permissions;
@@ -127,8 +128,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             if (DirectoryEntry is null)
             {
-                if (SearchResult is null) throw new ArgumentNullException(nameof(SearchResult));
-                DirectoryEntry = SearchResult.GetDirectoryEntry();
+                FetchDirectoryEntry();
             }
         }
         /// <inheritdoc/>
@@ -343,6 +343,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         public virtual bool MoveTo(IADOrganizationalUnit parentOUToMoveTo)
         {
+            parentOUToMoveTo.EnsureDirectoryEntry();
             if (parentOUToMoveTo.DirectoryEntry != null)
             {
                 DirectoryEntry?.MoveTo(parentOUToMoveTo.DirectoryEntry);
@@ -379,48 +380,48 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         {
             if (CurrentUser == null) return false;
 
-                if (CurrentUser.IsSuperAdmin) return true;
-                if (DN == null)
-                {
-                    Loggers.ActiveDirectryLogger.Error("The directory object " + ADSPath
-                        + " did not load a distinguished name.");
-                    return false;
-                }
-                var baseSearch = CurrentUser.DirectoryUser?.PermissionMappings
-                    .Where(pm => DN.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length);
+            if (CurrentUser.IsSuperAdmin) return true;
+            if (DN == null)
+            {
+                Loggers.ActiveDirectryLogger.Error("The directory object " + ADSPath
+                    + " did not load a distinguished name.");
+                return false;
+            }
+            var baseSearch = CurrentUser.DirectoryUser?.PermissionMappings
+                .Where(pm => DN.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length);
 
-                if (baseSearch == null)
-                {
-                    Loggers.ActiveDirectryLogger.Error("The active user state for " + DN + " could not" +
-                        "be found in the application cache.");
-                    return false;
-                }
-                var possibleReads = allowSelector.Invoke(baseSearch).ToList();
-                if (denySelector != null)
-                {
-                    var possibleDenys = denySelector.Invoke(baseSearch).ToList();
+            if (baseSearch == null)
+            {
+                Loggers.ActiveDirectryLogger.Error("The active user state for " + DN + " could not" +
+                    "be found in the application cache.");
+                return false;
+            }
+            var possibleReads = allowSelector.Invoke(baseSearch).ToList();
+            if (denySelector != null)
+            {
+                var possibleDenys = denySelector.Invoke(baseSearch).ToList();
 
-                    if (possibleReads != null && possibleReads.Count > 0)
+                if (possibleReads != null && possibleReads.Count > 0)
+                {
+                    if (possibleDenys != null && possibleDenys.Count > 0)
                     {
-                        if (possibleDenys != null && possibleDenys.Count > 0)
+                        foreach (var d in possibleDenys)
                         {
-                            foreach (var d in possibleDenys)
-                            {
-                                if (d.OU.Length > possibleReads.OrderByDescending(r => r.OU.Length).First().OU.Length)
-                                    return false;
-                            }
-                        }
-                        else
-                        {
-                            return true;
+                            if (d.OU.Length > possibleReads.OrderByDescending(r => r.OU.Length).First().OU.Length)
+                                return false;
                         }
                     }
+                    else
+                    {
+                        return true;
+                    }
                 }
-                else
-                {
-                    return possibleReads?.Count > 0;
-                }
-            
+            }
+            else
+            {
+                return possibleReads?.Count > 0;
+            }
+
             return false;
         }
         /// <inheritdoc/>
@@ -441,6 +442,16 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 om.ObjectAccessLevel.Level == ObjectAccessLevels.Deny.Level
                 )))
                 );
+            }
+
+        }
+
+        public virtual bool CanReadAnyCustomFields
+        {
+            get
+            {
+                //TODO  implement logic
+                return true;
             }
 
         }
@@ -468,14 +479,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
 
         /// <inheritdoc/>
-        public virtual bool CanRename { get => HasActionPermission(ActionAccessFlags.Rename); }
+        public virtual bool CanRename { get => HasActionPermission(ObjectActions.Rename); }
         /// <inheritdoc/>
-        public virtual bool CanMove { get => HasActionPermission(ActionAccessFlags.Move); }
+        public virtual bool CanMove { get => HasActionPermission(ObjectActions.Move); }
         /// <inheritdoc/>
-        public virtual bool CanCreate { get => HasActionPermission(ActionAccessFlags.Create); }
+        public virtual bool CanCreate { get => HasActionPermission(ObjectActions.Create); }
 
 
-        protected virtual bool HasActionPermission(ActionAccessFlag action)
+        protected virtual bool HasActionPermission(ObjectAction action)
         {
             return HasPermission(p => p.Where(pm =>
                pm.AccessLevels.Any(al => al.ActionMap.Any(am =>
@@ -490,7 +501,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                );
         }
         /// <inheritdoc/>
-        public virtual bool CanDelete { get => HasActionPermission(ActionAccessFlags.Delete); }
+        public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }
 
         /// <inheritdoc/>
         public virtual bool HasUnsavedChanges
@@ -555,7 +566,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 DirectoryEntry.UsePropertyCache = true;
                 DirectoryEntry.Disposed += DirectoryEntry_Disposed;
             }
-            CurrentUser=Directory.CurrentUser;
+            CurrentUser = Directory.CurrentUser;
             DbFactory = directory.Factory;
 
             DirectorySettings = await DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefaultAsync();
@@ -704,7 +715,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             HasUnsavedChanges = false;
             NewEntryProperties = new();
             if (SearchResult != null)
-                DirectoryEntry = SearchResult?.GetDirectoryEntry();
+                FetchDirectoryEntry();
             else
                 DirectoryEntry?.RefreshCache();
 
@@ -712,6 +723,37 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         }
 
+        private void FetchDirectoryEntry()
+        {
+            if (SearchResult is null) throw new ArgumentNullException(nameof(SearchResult));
+
+            DirectoryEntry = SearchResult?.GetDirectoryEntry();
+        }
+
+        public virtual T? GetCustomProperty<T>(string propertyName)
+        {
+            try
+            {
+                return GetProperty<T>(propertyName);
+            }
+            catch
+            {
+                return default(T);
+            }
+        }
+
+        public virtual DateTime? GetDateTimeProperty(string propertyName)
+        {
+            try
+            {
+                var com = GetProperty<object>(propertyName);
+                return com.AdsValueToDateTime().Value;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         protected virtual T? GetProperty<T>(string propertyName)
         {
@@ -757,8 +799,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     return (T?)SearchResult?.Properties[propertyName][0];
                 else
                 {
-                    DirectoryEntry = SearchResult?.GetDirectoryEntry();
-
+                    FetchDirectoryEntry();
                 }
             }
             try
@@ -853,6 +894,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 return null;
             }
         }
+        public virtual void SetCustomProperty(string propertyName, object? value) => SetProperty(propertyName, value);  
         /// <summary>
         /// Sets an attribute value. Note that this change is uncommited, <see cref="CommitChanges"/>
         /// must be called afterwards for the change to persist.
@@ -866,7 +908,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             {
                 if (!NewEntry)
                 {
-                    var oldValue = DirectoryEntry?.Properties[propertyName]?.Value;
+                    
                     if (value == null || (value is string strValue && strValue == ""))
                     {
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
@@ -875,23 +917,39 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     }
                     else
                     {
-                        NewEntryProperties[propertyName] = value;
+                        SetNewProperty(propertyName, value);
                     }
-                    //Changes.Add(new AuditChangeLog { Field = propertyName, OldValue = oldValue, NewValue = value });
+                    
                 }
                 else
                 {
 #pragma warning disable CS8601 // Possible null reference assignment.
-                    NewEntryProperties[propertyName] = value;
+                    SetNewProperty(propertyName, value);
 #pragma warning restore CS8601 // Possible null reference assignment.
                 }
-                HasUnsavedChanges = true;
-                OnModelChanged?.Invoke();
+                
 
             }
             catch (ArgumentOutOfRangeException)
             {
 
+            }
+        }
+
+        private void SetNewProperty(string propertyName, object? value)
+        {
+            if (!value.Equals(DirectoryEntry?.Properties[propertyName]?.Value))
+            {
+                NewEntryProperties[propertyName] = value;
+
+                HasUnsavedChanges = true;
+                OnModelChanged?.Invoke();
+            }
+            else if (NewEntryProperties.ContainsKey(propertyName))
+            {
+                NewEntryProperties.Remove(propertyName);
+                if (NewEntryProperties.Count < 1)
+                    HasUnsavedChanges = false;
             }
         }
 

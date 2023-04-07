@@ -171,6 +171,9 @@ namespace BLAZAM
                 Args = args
             });
 
+            if (builder.Configuration is null)
+                throw new ApplicationException("The appsettings.json configuration file was not loaded");
+
             builder.IntializeProperties();
 
             CheckWritablePathPermissions();

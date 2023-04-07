@@ -25,21 +25,23 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
                 if (SamAccountName == null) throw new ApplicationException("samaccount name not found!");
                 if (DirectorySettings == null) throw new ApplicationException("Directory settings not found when trying to change directory user password");
-                //using (PrincipalContext pContext = new PrincipalContext(
-                //    ContextType.Domain,
-                //    DirectorySettings.FQDN,
-                //    DirectorySettings.Username,
-                //    Encryption.Instance.DecryptObject<string>(DirectorySettings.Password)))
-                //{
 
+                //The following works only when Blazam is running on a domain joined computer
                 using (PrincipalContext pContext = new PrincipalContext(
-                   ContextType.Domain,
-                   DirectorySettings.ServerAddress+":"+DirectorySettings.ServerPort,
-                   DirectorySettings.ApplicationBaseDN,
-                   ContextOptions.Negotiate | ContextOptions.SecureSocketLayer,
-                   DirectorySettings.Username,
-                   Encryption.Instance.DecryptObject<string>(DirectorySettings.Password)))
+                    ContextType.Domain,
+                    DirectorySettings.FQDN,
+                    DirectorySettings.Username,
+                    Encryption.Instance.DecryptObject<string>(DirectorySettings.Password)))
                 {
+
+                    //using (PrincipalContext pContext = new PrincipalContext(
+                    //   ContextType.Domain,
+                    //   DirectorySettings.ServerAddress+":"+DirectorySettings.ServerPort,
+                    //   DirectorySettings.ApplicationBaseDN,
+                    //   ContextOptions.Negotiate | ContextOptions.SecureSocketLayer,
+                    //   DirectorySettings.Username,
+                    //   Encryption.Instance.DecryptObject<string>(DirectorySettings.Password)))
+                    //{
                     UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
                     if (up != null)
                     {
@@ -492,7 +494,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                             a => a.ObjectMap.Any(
                                 o => o.ObjectType == objectType && o.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level) &&
                                 a.ActionMap.Any(am => am.ObjectType == objectType &&
-                                am.ObjectAction.Id == ActionAccessFlags.Create.Id)
+                                am.ObjectAction.Id == ObjectActions.Create.Id)
                             )
                         );
         }
