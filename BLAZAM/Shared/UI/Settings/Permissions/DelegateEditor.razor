@@ -94,8 +94,7 @@
     private async void ShowAddGroup()
     {
         var result =  await addGroupModal.Show().Result;
-        if (!result.Canceled)
-        {
+     
             if (await addDelegateContent.AddGroup())
             {
                 SnackBarService.Success("Delegate added");
@@ -103,7 +102,7 @@
 
             }
 
-        }
+        
 
     }
     async Task RestoreDelegate(PermissionDelegate delegateToRestore)
