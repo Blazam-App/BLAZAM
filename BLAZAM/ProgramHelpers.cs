@@ -160,10 +160,14 @@ namespace BLAZAM.Server
             builder.Services.AddSingleton<ApplicationManager>();
 
             //Provide a PermissionHandler as a service
-            builder.Services.AddSingleton<LoginPermissionApplicator>();
+            builder.Services.AddSingleton<PermissionApplicator>();
+            
+            builder.Services.AddSingleton<UserSeederService>();
 
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();
+
+
 
 
             //Add custom Auth
@@ -176,6 +180,8 @@ namespace BLAZAM.Server
 
             builder.Services.AddScoped<ICurrentUserStateService,CurrentUserStateService>();
 
+
+            builder.Services.AddScoped<UserActiveDirectoryService>();
 
             //Provide DuoSecurity service
             builder.Services.AddSingleton<IDuoClientProvider, DuoClientProvider>();

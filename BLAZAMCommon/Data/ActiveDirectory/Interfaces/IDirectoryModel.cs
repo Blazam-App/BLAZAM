@@ -24,7 +24,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         /// </remarks>
         DateTime? LastChanged { get; set; }
         byte[]? SID { get; set; }
-        
+
         /// <summary>
         /// The objectClass value
         /// </summary>
@@ -39,6 +39,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         /// true for super admins.
         /// </remarks>
         bool CanRead { get; }
+
+        /// <summary>
+        /// The type of Active Directory entry that this is
+        /// </summary>
         ActiveDirectoryObjectType ObjectType { get; }
 
         /// <summary>
@@ -60,16 +64,70 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         /// true for super admins.
         /// </remarks>
         bool CanRename { get; }
+
+        /// <summary>
+        /// Indicates whether the current web application user
+        /// can create this <see cref="ActiveDirectoryObjectType"/>
+        /// </summary>
+        /// <remarks>
+        /// Checks against permissions set in database. Always
+        /// true for super admins.
+        /// </remarks>
         bool CanCreate { get; }
+
+        /// <summary>
+        /// Indicates whether the current web application user
+        /// can delete this directory entry
+        /// </summary>
+        /// <remarks>
+        /// Checks against permissions set in database. Always
+        /// true for super admins.
+        /// </remarks>
         bool CanDelete { get; }
+
+        /// <summary>
+        /// The .NET underlying object for this entry
+        /// </summary>
         DirectoryEntry? DirectoryEntry { get; set; }
+
+        /// <summary>
+        /// The full Active Directory Services path including LDAP server name
+        /// </summary>
         string? ADSPath { get; set; }
+
+        /// <summary>
+        /// Indicates whether the current web application user
+        /// can edit any fields for this directory entry
+        /// </summary>
+        /// <remarks>
+        /// Checks against permissions set in database. Always
+        /// true for super admins.
+        /// </remarks>
         bool CanEdit { get; }
+
+        /// <summary>
+        /// Indicates whether the current web application user
+        /// can read any custom fields for this directory entry
+        /// </summary>
+        /// <remarks>
+        /// Checks against permissions set in database. Always
+        /// true for super admins.
+        /// </remarks>
+        bool CanReadAnyCustomFields { get; }
+
 
         /// <summary>
         /// The parent OU distinguished name as a string
         /// </summary>
         string? OU { get; }
+
+        /// <summary>
+        /// Indicates whether there have been uncommitted
+        /// changes to this entry
+        /// </summary>
+        /// <remarks>
+        /// Compares the current state to the initial state
+        /// </remarks>
         bool HasUnsavedChanges { get; }
 
         /// <summary>
@@ -84,7 +142,15 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         /// entry.
         /// </summary>
         string SearchUri { get; }
+
+        /// <summary>
+        /// Called when pending changes to this entry are commited
+        /// </summary>
         AppEvent? OnModelCommited { get; set; }
+
+        /// <summary>
+        /// Called when any changes occur to this entry
+        /// </summary>
         AppEvent? OnModelChanged { get; set; }
 
         /// <summary>
@@ -98,18 +164,65 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         /// </summary>
         IADOrganizationalUnit? LastKnownParent { get; }
 
+        /// <summary>
+        /// Indicates this entry is in the Active Directory Recycle Bin
+        /// </summary>
         bool IsDeleted { get; }
 
-
+        /// <summary>
+        /// A list of changelogs made to this entry for auditting purposes
+        /// </summary>
+        /// <remarks>
+        /// Must be collected prior to executing <see cref="CommitChanges"/>
+        /// </remarks>
         List<AuditChangeLog> Changes { get; }
-        AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
 
+        /// <summary>
+        /// Called when this entry is renamed
+        /// </summary>
+        AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
+        AppEvent? OnModelDeleted { get; set; }
+
+        /// <summary>
+        /// Sends all staged changes to the Active Directory server
+        /// </summary>
+        /// <returns></returns>
         DirectoryChangeResult CommitChanges();
+        /// <summary>
+        /// Sends all staged changes to the Active Directory server asynchronously
+        /// </summary>
+        /// <returns></returns>
         Task<DirectoryChangeResult> CommitChangesAsync();
+
+        /// <summary>
+        /// Resets the current entry state to it's inital state
+        /// </summary>
         void DiscardChanges();
-        bool CanEditField(ActiveDirectoryField field);
-        bool CanReadField(ActiveDirectoryField field);
-        bool CanReadAnyCustomFields { get;  }
+
+        /// <summary>
+        /// Indicates whether the current web application user
+        /// can modify the specified field
+        /// </summary>
+        /// <remarks>
+        /// Checks against permissions set in database. Always
+        /// true for super admins.
+        /// </remarks>
+        /// <param name="field">The field to test</param>
+        /// <returns>True if the current user can modify the field, otherwise false</returns>
+        bool CanEditField(IActiveDirectoryField field);
+
+        /// <summary>
+        /// Indicates whether the current web application user
+        /// can read the specified field
+        /// </summary>
+        /// <remarks>
+        /// Checks against permissions set in database. Always
+        /// true for super admins.
+        /// </remarks>
+        /// <param name="field">The field to test</param>
+        /// <returns>True if the current user can read the field, otherwise false</returns>
+        bool CanReadField(IActiveDirectoryField field);
+
 
         new void Dispose();
 

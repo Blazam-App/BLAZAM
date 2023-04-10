@@ -8,7 +8,6 @@
               Virtualize
              ColumnResizeMode="ResizeMode.Container"
              Class=""
-             
               Hideable
               Square
              Items="@deletedObjects"
@@ -22,11 +21,16 @@
 
     </ToolBarContent>
     <Columns>
-        <SelectColumn T="IDirectoryEntryAdapter" ShowInFooter=false ShowInHeader=true  />
-        <PropertyColumn Property="x => x.ObjectType" Title="Type"/>
-        <PropertyColumn Property="x => x.CanonicalName" Title="Name"/>
-        <PropertyColumn Property="x => x.LastKnownParent" Title="Last OU"/>
-        <PropertyColumn Property="x => x.LastChanged" Title="Deleted"/>
+        <SelectColumn T="IDirectoryEntryAdapter" ShowInFooter=false ShowInHeader=true />
+        <TemplateColumn Title="Type">
+            <CellTemplate>
+                <MudIcon Icon="@context.Item.TypeIcon()" />@context.Item.ObjectType
+
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.CanonicalName" Title="Name" />
+        <PropertyColumn Property="x => x.LastKnownParent" Title="Last OU" />
+        <PropertyColumn Property="x => x.LastChanged" Title="Deleted" />
         <TemplateColumn CellClass="d-flex justify-end" Title="Restore">
             <CellTemplate>
                 <MudStack Row=true>
@@ -35,7 +39,7 @@
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
-        
+
     </Columns>
 </MudDataGrid>
 
@@ -44,6 +48,12 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        GetDeletedEntries();
+    }
+    async Task GetDeletedEntries()
+    {
+
+
         var search = new ADSearch() { SearchRoot = Directory.GetDeleteObjectsEntry() };
         search.SearchDeleted = true;
         deletedObjects = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
@@ -57,6 +67,7 @@
             if (Directory.RestoreTombstone(entryToRestore, entryToRestore.LastKnownParent))
             {
                 SnackBarService.Success(entryToRestore.CanonicalName + " restored successfully");
+                GetDeletedEntries();
             }
             else
             {
@@ -68,6 +79,6 @@
     }
     async Task RestoreSelected()
     {
-        
+
     }
 }

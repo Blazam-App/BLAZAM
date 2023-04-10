@@ -2,7 +2,6 @@
 <MudDialog @ref="Modal">
             <MudText>Add Delegate</MudText>
             <AppCloseButton />
-            <Row>
                 
                         <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
                                     @bind-SelectedResult=@selectedDelegate
@@ -13,16 +12,13 @@
                 
                     <MudSwitch Label="Super User" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=Program.InDemoMode />
                     <MudText>Will have complete and total acceess to the application if enabled</MudText>
-                
-            </Row>
-            <Row>
-                <MudButton Color="Color.Primary" OnClick="AddGroup">Add</MudButton>
+          
 
-            </Row>
 
 
 </MudDialog>
 @code {
+
 
     IDirectoryEntryAdapter? selectedDelegate;
     [Parameter]

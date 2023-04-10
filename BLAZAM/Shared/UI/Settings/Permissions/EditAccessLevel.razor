@@ -1,205 +1,223 @@
 @inherits ValidatedForm
 
 
-<Row>
-    <Row>
+
+<MudStack Row=true>
+    <MudTextField Label="@SettingsLocalization["Name"]" @bind-Value=WorkingModel.Name />
 
 
-        <MudTextField Label="@SettingsLocalization["Name"]" @bind-Value=WorkingModel.Name>
-
-
-
-
-        </MudTextField>
-
-
-
-
-
-        <MudText>
+    <MudItem>
+        <MudText Class="w-100 align-center">
             @SettingsLocalization["Assign Objects"]
         </MudText>
-        @foreach (var adObjectType in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
-        {
-            if ((ActiveDirectoryObjectType)adObjectType != ActiveDirectoryObjectType.All)
+
+        <MudButtonGroup Color=Color.Success Variant="Variant.Outlined">
+            @foreach (var adObjectType in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
             {
-                //Prepare data to show object access addbutons
-                var existingAccess = WorkingModel.ObjectMap.Where(m => m.ObjectType == (ActiveDirectoryObjectType)adObjectType).FirstOrDefault();
-                bool buttonDisabled = true;
-                if (existingAccess == null)
+                if ((ActiveDirectoryObjectType)adObjectType != ActiveDirectoryObjectType.All)
                 {
-                    buttonDisabled = false;
+                    //Prepare data to show object access addbutons
+                    var existingAccess = WorkingModel.ObjectMap.Where(m => m.ObjectType == (ActiveDirectoryObjectType)adObjectType).FirstOrDefault();
+                    bool buttonDisabled = true;
+                    if (existingAccess == null)
+                    {
+                        buttonDisabled = false;
+                    }
+                    var name = Enum.GetName(typeof(ActiveDirectoryObjectType), adObjectType);
+
+                    <MudButton Disabled=buttonDisabled
+                       OnClick="()=>AddObjectTypeAccess(adObjectType)">
+                        @SettingsLocalization[name]
+                    </MudButton>
+
                 }
-                var name = Enum.GetName(typeof(ActiveDirectoryObjectType), adObjectType);
-
-                <MudButton Width=Width.Is100 Disabled=buttonDisabled Color=Color.Success OnClick="()=>AddObjectTypeAccess(adObjectType)">@SettingsLocalization[name]</MudButton>
-
             }
-        }
+        </MudButtonGroup>
+    </MudItem>
 
-    </Row>
-    @if (WorkingModel.ObjectMap.Count > 0)
-    {
-
-
-        <Row>
-            <h3>Assign Object Permissions</h3>
-
-        </Row>
-    }
+</MudStack>
+<FlexContainer>
     @foreach (var objectMap in WorkingModel.ObjectMap)
     {
         //Prepare data to show object access fields
+        var name = objectMap.ObjectType.ToString();
 
-        var name = Enum.GetName(typeof(ActiveDirectoryObjectType), objectMap.ObjectType);
-
-
-
-        <MudSelect T="int" ValueChanged="(int value)=>SetObjectMapAccess(objectMap,value)" Value="objectMap.ObjectAccessLevelId">
-
-            @foreach (ObjectAccessLevel levelValue in ObjectAccessLevels.Levels)
-            {
-                <MudSelectItem Value="levelValue.Id">@SettingsLocalization[levelValue.Name]</MudSelectItem>
-
-            }
-        </MudSelect>
-        @if (objectMap.ObjectType == ActiveDirectoryObjectType.User && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
-        {
-            <MudSwitch Label="@SettingsLocalization["Allow Disabled User Access"]" @bind-Checked=objectMap.AllowDisabled />
-        }
-
-        <AppCloseButton OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
+        // var name = Enum.GetName(typeof(ActiveDirectoryObjectType), objectMap.ObjectType);
 
 
-        @if (objectMap.ObjectAccessLevelId != 0 && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
-        {
-
-            <h4>@name Actions</h4>
-
-
-            @foreach (var action in actions.OrderBy(f => f.Name))
-            {
-                if (action.IsActionAppropriateForObject(objectMap.ObjectType))
-                {
-                    if (!WorkingModel.ActionMap.Any(a => a.ObjectAction == action))
-                    {
-
-
-
-                        <MudButton Color=Color.Secondary OnClick="()=>AddActionAccess(action,objectMap.ObjectType)">@SettingsLocalization[@action.Name+" "+@name]</MudButton>
-                    }
-                }
-            }
-
-            @if (WorkingModel.ActionMap.Any())
-            {
-                foreach (var actionMap in WorkingModel.ActionMap.ToList())
-                {
-                    string? nmae = Enum.GetName(typeof(ActiveDirectoryObjectType), actionMap.ObjectType);
-
-
-                    <MudText>@SettingsLocalization[actionMap.ObjectAction.Name+" "+nmae]</MudText>
-                    <MudRadioGroup T="bool" @bind-Value=actionMap.AllowOrDeny>
-                        <MudRadio T="bool" Tag="false">@SettingsLocalization["Deny"]</MudRadio>
-                        <MudRadio T="bool" Tag="true">@SettingsLocalization["Allow"]</MudRadio>
-                        <AppCloseButton OnClick="()=>RemoveActionAccess(actionMap)" />
-
-                    </MudRadioGroup>
-
-
-                }
-            }
-        }
-
-    }
-
-    @if (ShowFields)
-    {
-        <h4>Fields</h4>
-
-
-
-        @foreach (var field in fields.OrderBy(f => f.FieldName))
-        {
-
-            if (ShowField(field))
-            {
-                var existingFieldAccess = WorkingModel.FieldMap.Where(m => m.Field.FieldName == field.FieldName).FirstOrDefault();
-                if (existingFieldAccess == null)
-                {
-                    <MudButton Color=Color.Secondary OnClick="()=>AddFieldAccess(field)">@SettingsLocalization[field.FieldName]</MudButton>
-                }
-            }
-        }
-        <MudDataGrid T="FieldAccessMapping"
-                 MultiSelection="true"
-                 Items="@WorkingModel.FieldMap.OrderBy(f => f.Field.FieldName)"
-                 Filterable="true" 
-                 Hideable="true">
-            <ToolBarContent>
-                <MudText Typo="Typo.h6">Periodic Elements</MudText>
+        <MudCard Class="mud-container-maxwidth-sm mx-auto" Elevation="3">
+            <MudCardHeader>
+                <MudText Typo="Typo.h4">@name</MudText>
                 <MudSpacer />
+                <MudSelect T="int" ValueChanged="(int value)=>SetObjectMapAccess(objectMap,value)" Value="objectMap.ObjectAccessLevelId">
 
-            </ToolBarContent>
-           
-            <Columns>
-                <SelectColumn T="FieldAccessMapping" />
-                <PropertyColumn Property="x => x.Field.FieldName" Title="Field" />
-                <TemplateColumn>
-                    <HeaderTemplate>
-                        <MudSelect T="int" ValueChanged="@((value)=>{SetAllFieldAccessLevelsTo(value);})">
-                            @foreach (FieldAccessLevel levelValue in FieldAccessLevels.Levels)
-                            {
-                                <MudSelectItem Value="levelValue.Id">@SettingsLocalization[levelValue.Name]</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </HeaderTemplate>
-                    <CellTemplate>
-                        <MudSelect T="int" @bind-Value="context.Item.FieldAccessLevelId">
-                            @foreach (FieldAccessLevel levelValue in FieldAccessLevels.Levels)
-                            {
-                                <MudSelectItem Value="levelValue.Id">@SettingsLocalization[levelValue.Name]</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </CellTemplate>
-                </TemplateColumn>
-                <TemplateColumn>
-                    <CellTemplate>
-                        <AppCloseButton OnClick="()=>RemoveFieldAccess(context.Item)" />
+                    @foreach (ObjectAccessLevel levelValue in ObjectAccessLevels.Levels)
+                    {
+                        <MudSelectItem Value="levelValue.Id">@SettingsLocalization[levelValue.Name]</MudSelectItem>
 
-                    </CellTemplate>
-                </TemplateColumn>
-            </Columns>
+                    }
+                </MudSelect>
+                <AppCloseButton OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
 
-        </MudDataGrid>
-
-        foreach (var field in WorkingModel.FieldMap.OrderBy(f => f.Field.FieldName))
-        {
+            </MudCardHeader>
+            <MudCardContent>
 
 
 
-            <MudSelect Label="@field.Field.FieldName" T="int" @bind-Value="field.FieldAccessLevelId">
-                @foreach (FieldAccessLevel levelValue in FieldAccessLevels.Levels)
+                @if (objectMap.ObjectType == ActiveDirectoryObjectType.User && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
+                {
+                    <MudSwitch Label="@SettingsLocalization["Allow Disabled User Access"]" @bind-Checked=objectMap.AllowDisabled />
+                }
+
+
+
+                @if (objectMap.ObjectAccessLevelId != 0 && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
                 {
 
-                    <MudSelectItem Value="levelValue.Id">@SettingsLocalization[levelValue.Name]</MudSelectItem>
+
+
+
+
+                    <MudDataGrid Items="@WorkingModel.ActionMap.Where(am=>am.ObjectType==objectMap.ObjectType)"
+                         Elevation="0">
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6">
+                                @name Actions
+                            </MudText>
+                            <MudSpacer />
+                            <MudMenu MaxHeight="200" Color="Color.Success" Icon="@Icons.Material.Outlined.Add">
+                                @foreach (var action in actions.OrderBy(f => f.Name))
+                                {
+                                    if (action.IsActionAppropriateForObject(objectMap.ObjectType))
+                                    {
+                                        if (!WorkingModel.ActionMap.Any(a => a.ObjectAction == action))
+                                        {
+
+
+
+                                            <MudMenuItem OnClick="()=>AddActionAccess(action,objectMap.ObjectType)">@SettingsLocalization[@action.Name]</MudMenuItem>
+                                        }
+                                    }
+                                }
+
+                            </MudMenu>
+                        </ToolBarContent>
+                        <Columns>
+                            <PropertyColumn Property="x => x.ObjectAction.Name" Title="Action" />
+                            <TemplateColumn Title="Access">
+                                <CellTemplate>
+                                    <MudRadioGroup T="bool" @bind-SelectedOption=context.Item.AllowOrDeny>
+                                        <MudRadio T="bool" Option="false">@SettingsLocalization["Deny"]</MudRadio>
+                                        <MudRadio T="bool" Option="true">@SettingsLocalization["Allow"]</MudRadio>
+
+                                    </MudRadioGroup>
+                                </CellTemplate>
+                            </TemplateColumn>
+                            <TemplateColumn Title="Remove">
+                                <CellTemplate>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                           Color="Color.Error"
+                                           OnClick="@(()=>{RemoveActionAccess(context.Item);})" />
+                                </CellTemplate>
+                            </TemplateColumn>
+                        </Columns>
+                    </MudDataGrid>
+
+
+
+
+                    <MudDataGrid T="FieldAccessMapping"
+                         Elevation="0"
+                         Items="@WorkingModel.FieldMap.Where(am=>am.ObjectType==objectMap.ObjectType)">
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6">
+                                @name Fields
+                            </MudText>
+                            <MudSpacer />
+                            <MudMenu MaxHeight="200" Color="Color.Success" Icon="@Icons.Material.Outlined.Add">
+                                @foreach (var field in fields.OrderBy(f => f.DisplayName))
+                                {
+
+                                    if (ShowField(field, objectMap.ObjectType))
+                                    {
+                                        var existingFieldAccess = WorkingModel.FieldMap.Where(m => m.Field == field || m.CustomField == field).FirstOrDefault();
+                                        if (existingFieldAccess == null)
+                                        {
+
+                                            <MudMenuItem OnClick="()=>AddFieldAccess(field)">@SettingsLocalization[field.DisplayName]</MudMenuItem>
+
+
+                                        }
+                                    }
+                                }
+
+
+                            </MudMenu>
+                        </ToolBarContent>
+
+                        <Columns>
+                            <TemplateColumn Title="Field">
+                                <CellTemplate>
+
+                                    @if (context.Item?.Field != null)
+                                    {
+                                        <MudTooltip Text="@context.Item.Field.FieldName">
+                                            <MudText>@context.Item.Field.DisplayName</MudText>
+                                        </MudTooltip>
+                                    }
+                                    else if (context.Item?.CustomField != null)
+                                    {
+                                        <MudTooltip Text="@context.Item.CustomField.FieldName">
+
+                                            <MudText>@context.Item.CustomField.DisplayName</MudText>
+                                        </MudTooltip>
+
+                                    }
+
+                                </CellTemplate>
+                            </TemplateColumn>
+                            <TemplateColumn Title="Access">
+                              
+                                <CellTemplate>
+                                    <MudSelect T="int" @bind-Value="context.Item.FieldAccessLevelId">
+                                        @foreach (FieldAccessLevel levelValue in FieldAccessLevels.Levels)
+                                        {
+                                            <MudSelectItem Value="levelValue.Id">@SettingsLocalization[levelValue.Name]</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </CellTemplate>
+                            </TemplateColumn>
+
+                            <TemplateColumn Title="Remove">
+                                <CellTemplate>
+                                    <AppCloseButton OnClick="()=>RemoveFieldAccess(context.Item)" />
+
+                                </CellTemplate>
+                            </TemplateColumn>
+                        </Columns>
+
+                    </MudDataGrid>
+
 
                 }
-            </MudSelect>
-            <AppCloseButton OnClick="()=>RemoveFieldAccess(field)" />
+                else
+                {
 
+                    <MudText Style="width:471px;">Change @name access to Allow to set permissions</MudText>
+                }
+            </MudCardContent>
+        </MudCard>
 
-
-        }
     }
-</Row>
+
+</FlexContainer>
 
 @{
     string buttonLabel = SettingsLocalization["Create Access Level"];
     if (Model.Id > 0)
         buttonLabel = SettingsLocalization["Update Access Level"];
 }
-<MudButton Color=Color.Success Margin=Margin.IsAuto.OnX Disabled=SaveDisabled OnClick="CreateAccessLevel">@buttonLabel</MudButton>
+<MudButton Color=Color.Success Margin=Margin.IsAuto.OnX Disabled=SaveDisabled OnClick="SaveAccessLevel">@buttonLabel</MudButton>
 @if (WorkingModel.Id != 0)
 {
     <MudButton Color=Color.Error Margin=Margin.IsAuto.OnX OnClick="DeleteAccessLevel">@SettingsLocalization["Delete Access Level"]</MudButton>
@@ -240,14 +258,16 @@
 
     public AccessLevel WorkingModel { get; set; } = new AccessLevel();
 
-    IEnumerable<ActiveDirectoryField> fields = new List<ActiveDirectoryField>();
+    List<IActiveDirectoryField> fields = new List<IActiveDirectoryField>();
     IEnumerable<ObjectAction> actions = new List<ObjectAction>();
     protected override void OnInitialized()
     {
         base.OnInitialized();
         Context = DbFactory.CreateDbContext();
 
-        fields = Context.ActiveDirectoryFields.AsEnumerable();
+        fields = Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToList();
+        fields.AddRange(Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToList());
+
         actions = Context.ObjectActionFlag.AsEnumerable();
         if (Model.Id > 0)
         {
@@ -262,7 +282,7 @@
 
     }
 
-    private void CreateAccessLevel()
+    private async void SaveAccessLevel()
     {
         if (Context == null) return;
 
@@ -272,11 +292,22 @@
             Context.AccessLevels.Add(WorkingModel);
             addition = true;
         }
-        Context.SaveChanges();
+
+        await Context.SaveChangesAsync();
+
+        if (addition)
+            SnackBarService.Success(WorkingModel.Name + " has been created");
+        else
+            SnackBarService.Success(WorkingModel.Name + " has been updated");
+
+
         if (addition)
             WorkingModel = new();
         LevelsChanged.InvokeAsync();
-        StateHasChanged();
+
+        ProgramEvents.InvokePermissionsChanged();
+        InvokeAsync(StateHasChanged);
+
     }
 
     private void AddObjectTypeAccess(object objectTypeIndex)
@@ -297,7 +328,8 @@
         var proposedAddition = new ActionAccessMapping()
             {
                 ObjectType = type,
-                ObjectAction = action
+                ObjectAction = action,
+                AllowOrDeny = true
             };
         if (WorkingModel.ActionMap == null)
             WorkingModel.ActionMap = new List<ActionAccessMapping>();
@@ -311,15 +343,24 @@
 
         StateHasChanged();
     }
-    private void AddFieldAccess(ActiveDirectoryField fieldToAdd)
+    private void AddFieldAccess(IActiveDirectoryField fieldToAdd)
     {
-
-        WorkingModel.FieldMap.Add(new FieldAccessMapping()
-            {
-                Field = fieldToAdd,
-                FieldAccessLevelId = FieldAccessLevels.Deny.Id
-            });
-
+        if (fieldToAdd is ActiveDirectoryField adField)
+        {
+            WorkingModel.FieldMap.Add(new FieldAccessMapping()
+                {
+                    Field = adField,
+                    FieldAccessLevelId = FieldAccessLevels.Read.Id,
+                });
+        }
+        else if (fieldToAdd is CustomActiveDirectoryField customField)
+        {
+            WorkingModel.FieldMap.Add(new FieldAccessMapping()
+                {
+                    CustomField = customField,
+                    FieldAccessLevelId = FieldAccessLevels.Deny.Id
+                });
+        }
         StateHasChanged();
     }
     private void RemoveFieldAccess(FieldAccessMapping fieldToRemove)
@@ -333,7 +374,7 @@
     {
         WorkingModel.ObjectMap.Remove(accessToRemove);
 
-        InvokeAsync(StateHasChanged);
+        StateHasChanged();
     }
     Task OnCheckedValueChanged(ObjectAccessLevel nl)
     {
@@ -351,16 +392,22 @@
     {
         WorkingModel.DeletedAt = DateTime.UtcNow;
         await Context.SaveChangesAsync();
+        SnackBarService.Success(WorkingModel.Name + " has been deleted");
         InvokeAsync(StateHasChanged);
     }
-    private bool ShowField(ActiveDirectoryField field)
+    /// <summary>
+    /// Fields that are either off limits or controled via action permissions
+    /// </summary>
+    private List<string> excludedFields = new() { "objectSID", "site", "givenname", "sn", "middleName", "cn", "displayName" };
+
+    private bool ShowField(IActiveDirectoryField field, ActiveDirectoryObjectType objectType)
     {
         foreach (var map in WorkingModel.ObjectMap)
         {
             if (map.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
             {
-
-                return field.IsActionAppropriateForObject(map.ObjectType);
+                if (!excludedFields.Contains(field.FieldName))
+                    return field.IsActionAppropriateForObject(objectType);
             }
         }
         return false;

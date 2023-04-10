@@ -1,4 +1,5 @@
-﻿@inject IStringLocalizer<AppLocalization> Loc
+﻿@using BLAZAM.Server.Pages.Users
+@inject IStringLocalizer<AppLocalization> Loc
 @inject IStringLocalizer<UserLocalization> ULoc
 @inherits DirectoryModelComponent
 
@@ -88,28 +89,20 @@
 
 
 
+    <Section Style="min-height:200px;" Title="Group Details">
+        <MudTextField Label="@ULoc["Group Name"]" @bind-Value="@Group.CanonicalName" Disabled />
+
+        <MudTextField Label="@ULoc["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
 
 
+        <MudTextField Label="@ULoc["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
+    </Section>
 
 
+   <Section Style="min-height:200px;" Title="Member Of">
+                                    <MemberOfList Model="Group" />
 
-    <MudTextField Label="@ULoc["Group Name"]" @bind-Value="@Group.CanonicalName" Disabled />
-
-
-
-
-
-
-
-
-    <MudTextField Label="@ULoc["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
-
-
-
-
-
-    <MudTextField Label="@ULoc["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
-
+    </Section>
 
     <Section Style="min-height:200px;" Title="Members">
         <GroupMembersDataGrid Group="Group"/>

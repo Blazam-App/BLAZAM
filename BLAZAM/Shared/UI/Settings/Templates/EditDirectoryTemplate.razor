@@ -72,52 +72,57 @@
             <MudCard>
                 Variables:
                 <MudStack Row=true>
-                   All above in addition to
+                    All above in addition to
                 </MudStack>
-                
+
                 <MudStack Row=true>
                     <code>{username}</code>:Username<br />
                 </MudStack>
-                
+
             </MudCard>
 
             <MudDrawerContainer Class="mud-height-full" Style="min-height:200px">
                 <MudDrawer @bind-Open="@open" Elevation="0" Variant="@DrawerVariant.Persistent">
                     <MudStack Class="my-0 py-0">
-                            @foreach (var field in fields.OrderBy(f => f.DisplayName))
+                        @foreach (var field in fields.OrderBy(f => f.DisplayName))
+                        {
+                            @if (field.FieldName != "samaccountname" &&
+                           field.FieldName != "userPrincipalName" &&
+
+                           field.FieldName != "sn" &&
+                           field.FieldName != "givenname" &&
+                           field.FieldName != "middleName" &&
+                           field.FieldName != "displayName" &&
+                           field.FieldName != "cn" &&
+                           field.FieldName != "site" &&
+                           field.FieldName != "distinguishedName" &&
+                           field.FieldName != "memberOf" &&
+                           field.FieldName != "objectSID" &&
+                           !DirectoryTemplate.FieldValues.Any(f => f.Field?.Equals(field) == true) &&
+                           !DirectoryTemplate.FieldValues.Any(f => f.CustomField?.Equals(field) == true) &&
+                           field.IsActionAppropriateForObject(DirectoryTemplate.ObjectType))
                             {
-                                @if (field.FieldName != "samaccountname" &&
-                               field.FieldName != "userPrincipalName" &&
-
-                               field.FieldName != "sn" &&
-                               field.FieldName != "givenname" &&
-                               field.FieldName != "middleName" &&
-                               field.FieldName != "displayName" &&
-                               field.FieldName != "cn" &&
-                               field.FieldName != "site" &&
-                               field.FieldName != "distinguishedName" &&
-                               field.FieldName != "memberOf" &&
-                               field.FieldName != "objectSID" &&
-                               !DirectoryTemplate.FieldValues.Any(f => f.Field.Equals(field)) &&
-                               field.IsActionAppropriateForObject(DirectoryTemplate.ObjectType))
-                                {
-                                    <MudButton Class="my-0" OnClick=@(()=>{
-                                       DirectoryTemplate.FieldValues.Add(new(){ Field=field});
-                                       })> <MudText>@field.DisplayName</MudText></MudButton>
-
-                                }
+                                <MudButton Class="my-0" OnClick=@(()=>{
+                                   if(field is ActiveDirectoryField adField){
+                                   DirectoryTemplate.FieldValues.Add(new(){ Field=adField});
+                                   }else if(field is CustomActiveDirectoryField customField){
+                                   DirectoryTemplate.FieldValues.Add(new(){ CustomField=customField});
+                                   }
+                                   })> <MudText>@field.DisplayName</MudText></MudButton>
 
                             }
+
+                        }
                     </MudStack>
                 </MudDrawer>
                 <div class="d-flex justify-center align-center mud-height-full">
                     <MudStack>
-                        <MudDataGrid Items="@DirectoryTemplate.FieldValues.OrderBy(fv => fv.Field.DisplayName)"
+                        <MudDataGrid Items="@DirectoryTemplate.FieldValues.OrderBy(fv => fv.FieldDisplayName)"
                                      Dense=true
-                        Striped=true
-                        Bordered=true
-                        Hover=true>
-                           
+                                     Striped=true
+                                     Bordered=true
+                                     Hover=true>
+
                             <ToolBarContent>
                                 <MudText Typo="Typo.h6">Fields</MudText>
                                 <MudSpacer />
@@ -127,7 +132,7 @@
                             <Columns>
                                 <TemplateColumn Title="Name">
                                     <CellTemplate Context="cellContext">
-                                        <MudText>@cellContext.Item.Field.DisplayName</MudText>
+                                        <MudText>@cellContext.Item.FieldDisplayName</MudText>
 
                                     </CellTemplate>
                                 </TemplateColumn>
@@ -145,13 +150,13 @@
                                 </TemplateColumn>
                                 <TemplateColumn Title="Required">
                                     <CellTemplate Context="cellContext">
-                                        <MudCheckBox Label="Required" @bind-Checked=cellContext.Item.Required Disabled=@cellContext.Item.Editable />
+                                        <MudCheckBox Label="Required" @bind-Checked=cellContext.Item.Required Disabled=@(!cellContext.Item.Editable) />
 
                                     </CellTemplate>
                                 </TemplateColumn>
                                 <TemplateColumn>
                                     <CellTemplate Context="cellContext">
-                                        <AppCloseButton OnClick=@(()=>{DirectoryTemplate.FieldValues.Remove(cellContext.Item);InvokeAsync(StateHasChanged);}) />
+                                        <AppCloseButton OnClick=@(()=>{RemoveField(cellContext.Item);}) />
 
                                     </CellTemplate>
                                 </TemplateColumn>
@@ -187,18 +192,18 @@
             }
             <MudStack Row=true>
                 <ADAutoComplete Label="@SettingsLocalization["Groups"]"
-                                    Multiple
+                                Multiple=true
                                 @bind-SelectedResult="@SelectedGroup" />
                 <MudFab Size="Size.Small" Icon=@Icons.Material.Filled.Add
                         Color="Color.Primary"
                         OnClick="@(()=>{TemplateGroups.Add(SelectedGroup);})" />
-                </MudStack>
+            </MudStack>
 
-                </Section>
+        </Section>
 
-                </MudStack>
+    </MudStack>
 
-                @{
+    @{
         string buttonText = "";
         @if (DirectoryTemplate.Id == 0)
         {
@@ -224,7 +229,7 @@
 #nullable disable warnings
     bool ouCollapseVisible = true;
     //Validations? validations;
-    List<ActiveDirectoryField> fields = new();
+    List<IActiveDirectoryField> fields = new();
 
     List<TemplateVariable> usernameVariables = new List<TemplateVariable>()
     {
@@ -268,13 +273,14 @@
         if (Context == null) await OnInitializedAsync();
         var matching = await Context.DirectoryTemplates.Where(dt => dt.Id == DirectoryTemplate.Id).FirstOrDefaultAsync();
         if (matching != null)
-            DirectoryTemplate = matching;
+            _template = matching;
         SelectedOU = (await Directory.OUs.FindOuByStringAsync(DirectoryTemplate.ParentOU)).FirstOrDefault();
         //if (SelectedOU == null)
         //{
         //    SelectedOU = await Directory.OUs.GetApplicationRootOU();
         //}
-        fields = await Context.ActiveDirectoryFields.ToListAsync();
+        fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
+        fields.AddRange(await Context.CustomActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync());
 
         await RefreshGroups();
         await InvokeAsync(StateHasChanged);
@@ -297,6 +303,12 @@
         return categories.Where(s => s.Contains(searchTerm) || s.Equals(searchTerm));
     }
 
+    async Task RemoveField(DirectoryTemplateFieldValue field)
+    {
+        DirectoryTemplate.FieldValues.Remove(field);
+        await InvokeAsync(StateHasChanged);
+
+    }
 
     async Task RefreshGroups()
     {
@@ -325,22 +337,23 @@
                 existing = new DirectoryTemplateGroup() { GroupSid = group.SID.ToSidString() };
             DirectoryTemplate.AssignedGroupSids.Add(existing);
         }
-        List<DirectoryTemplateFieldValue> replaceValues = new();
+        //List<DirectoryTemplateFieldValue> replaceValues = new();
 
-        foreach (var field in DirectoryTemplate.FieldValues)
-        {
-            var trackedField = Context.ActiveDirectoryFields.Where(f => f.Equals(field.Field)).FirstOrDefault();
-            if (trackedField != null)
-            {
-                var replaceWith = new DirectoryTemplateFieldValue
-                    {
-                        Field = trackedField,
-                        Value = field.Value
-                    };
-                replaceValues.Add(replaceWith);
-            }
-        }
-        DirectoryTemplate.FieldValues = replaceValues;
+        //foreach (var field in DirectoryTemplate.FieldValues)
+        //{
+        //    var trackedField = Context.ActiveDirectoryFields.Where(f => f.Equals(field.Field)).FirstOrDefault();
+        //    if (trackedField != null)
+        //    {
+        //        var replaceWith = new DirectoryTemplateFieldValue
+        //            {
+        //                Field = trackedField,
+        //                Value = field.Value,
+        //                 CustomField = field.CustomField
+        //            };
+        //        replaceValues.Add(replaceWith);
+        //    }
+        //}
+        //DirectoryTemplate.FieldValues = replaceValues;
 
         if (DirectoryTemplate.Id == 0)
         {

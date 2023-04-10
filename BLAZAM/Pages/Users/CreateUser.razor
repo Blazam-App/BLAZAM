@@ -1,6 +1,6 @@
 ﻿@page "/users/create"
 @inherits TemplateComponent
-@attribute [Authorize]
+@attribute [Authorize(Roles = UserRoles.CreateUsers)]
 <AppPageTitle>Create User</AppPageTitle>
 
 <MudTabs PanelClass="mx-auto mud-container mud-container-maxwidth-sm" @ref=Tabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="SelectedStep" Centered=true>
@@ -64,13 +64,26 @@
         </TabContent>
         <ChildContent>
             <NewTemplateUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
-            <MudButton Disabled=LoadingData Color=Color.Primary OnClick="@(()=>{SelectedStep=0;})">Back</MudButton>
-            <MudButton Color=Color.Success OnClick="@(()=>{SelectedStep=5;})">Next</MudButton>
+            <MudButton Disabled=LoadingData Color=Color.Primary OnClick="@(()=>{SelectedStep=1;})">Back</MudButton>
+            <MudButton Color=Color.Success OnClick="@(()=>{SelectedStep=3;})">Next</MudButton>
 
         </ChildContent>
 
     </MudTabPanel>
 
+    <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null && SelectedTemplate?.AllowCustomGroups==true)">
+        <TabContent>
+            Groups
+        </TabContent>
+        <ChildContent>
+            <MemberOfList Model="@newUser"/>
+            
+            <MudButton Disabled=LoadingData Color=Color.Primary OnClick="@(()=>{SelectedStep=2;})">Back</MudButton>
+            <MudButton Color=Color.Success OnClick="@(()=>{SelectedStep=6;})">Next</MudButton>
+
+        </ChildContent>
+
+    </MudTabPanel>
 
 
     <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(custom==false)">
@@ -85,7 +98,7 @@
 
 
             <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=0;})">Back</MudButton>
-            <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()&& selectedOU!=null) Color=Color.Success OnClick="@(()=>{CreateCustomUser();selectedStep=4;})">Next</MudButton>
+            <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()&& selectedOU!=null) Color=Color.Success OnClick="@(()=>{CreateCustomUser();selectedStep=5;})">Next</MudButton>
 
 
         </ChildContent>
@@ -97,8 +110,8 @@
         </TabContent>
         <ChildContent>
             <ViewUser User="@customUser" />
-            <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=3;})">Back</MudButton>
-            <MudButton Color=Color.Success OnClick="@(()=>{SelectedStep=5;})">Next</MudButton>
+            <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=4;})">Back</MudButton>
+            <MudButton Color=Color.Success OnClick="@(()=>{SelectedStep=6;})">Next</MudButton>
         </ChildContent>
 
     </MudTabPanel>
@@ -243,7 +256,7 @@
             SelectedStep = 5;
 
         }
-        LoadingData = true;
+        LoadingData = false;
 
         await InvokeAsync(StateHasChanged);
     }

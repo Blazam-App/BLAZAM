@@ -4,6 +4,9 @@ namespace BLAZAM.Common.Models.Database.Permissions
 {
     public class ActionAccessMapping : AppDbSetBase
     {
+        /// <summary>
+        /// The object type that this action applies to
+        /// </summary>
         public ActiveDirectoryObjectType ObjectType { get; set; }
         /// <summary>
         /// Allow/Deny flag. Has a value of true when action is allowed.

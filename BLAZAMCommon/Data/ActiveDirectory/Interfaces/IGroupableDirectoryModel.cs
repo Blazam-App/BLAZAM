@@ -14,6 +14,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         /// </summary>
         bool CanAssign { get; }
         /// <summary>
+        /// Indicates whether the current web user can unassign to/from this <see cref="IGroupableDirectoryAdapter"/>
+        /// </summary>
+        bool CanUnassign { get; }
+        /// <summary>
         /// Indicates whether the current web user can enable this <see cref="IGroupableDirectoryAdapter"/>
         /// </summary>
         bool CanEnable { get; }

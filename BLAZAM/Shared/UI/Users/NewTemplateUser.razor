@@ -7,14 +7,14 @@
         <Row>
 
             @{
-                string adminEnabledHelperText ="";
+                string adminEnabledHelperText = "";
                 if (IsAdmin)
                 {
                     adminEnabledHelperText = "Field unlocked because you are admin.";
                     <MudAlert Class="mud-alert-info">
-                    All fields are editable becausse you are an admin.
-                </MudAlert>
-            }
+                        All fields are editable becausse you are an admin.
+                    </MudAlert>
+                }
             }
 
             @if (InDirectoryTemplate(ActiveDirectoryFields.Mail) ||
@@ -28,62 +28,62 @@
                 <Section Title=@UserLocalization["Organization"]>
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Mail))
                     {
-                        
-                           
-                                <MudTextField Label="@UserLocalization["Email Address"]" HelperText="@adminEnabledHelperText" @bind-Value="User.Email" />
 
-                            
-                            
-                        
+
+                        <MudTextField Label="@UserLocalization["Email Address"]" HelperText="@adminEnabledHelperText" @bind-Value="User.Email" />
+
+
+
+
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.EmployeeId))
                     {
-                        
-                           
-                                <MudTextField Label="@UserLocalization["Employee Id"]"  @bind-Value="@User.EmployeeId" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.EmployeeId)) />
 
-                            
-                           
-                        
+
+                        <MudTextField Label="@UserLocalization["Employee Id"]" @bind-Value="@User.EmployeeId" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.EmployeeId)) />
+
+
+
+
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Department))
                     {
-                        
-                           
-                                <MudTextField Label="@UserLocalization["Department"]"  @bind-Value="@User.Department" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Department)) />
 
-                           
-                        
+
+                        <MudTextField Label="@UserLocalization["Department"]" @bind-Value="@User.Department" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Department)) />
+
+
+
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Company))
                     {
-                        
-                           
-                                <MudTextField Label="@UserLocalization["Company"]"  @bind-Value="@User.Company" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Company)) />
 
-                            
 
-                        
+                        <MudTextField Label="@UserLocalization["Company"]" @bind-Value="@User.Company" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Company)) />
+
+
+
+
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Title))
                     {
-                        
-                           
-                                <MudTextField Label="@UserLocalization["Job Title"]" @bind-Value="@User.Title" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Title)) />
 
-                            
-                          
-                        
+
+                        <MudTextField Label="@UserLocalization["Job Title"]" @bind-Value="@User.Title" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Title)) />
+
+
+
+
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice))
                     {
-                        
-                           
-                                <MudTextField Label="@UserLocalization["Office"]"  @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
 
-                            
-                         
-                        
+
+                        <MudTextField Label="@UserLocalization["Office"]" @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
+
+
+
+
                     }
                 </Section>
             }
@@ -100,85 +100,85 @@
 
                     @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone))
                     {
-                        
-                           
-                                <MudTextField Label="@UserLocalization["Home Phone"]"  @bind-Value="@User.HomePhone" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomePhone)) />
 
-                            
-                           
-                        
+
+                        <MudTextField Label="@UserLocalization["Home Phone"]" @bind-Value="@User.HomePhone" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomePhone)) />
+
+
+
+
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.StreetAddress))
                     {
-                        
-                           
-                                <MudTextField Label="@UserLocalization["Street Address"]" @bind-Value="@User.StreetAddress" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.StreetAddress)) />
 
-                            
-                           
-                        
+
+                        <MudTextField Label="@UserLocalization["Street Address"]" @bind-Value="@User.StreetAddress" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.StreetAddress)) />
+
+
+
+
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.POBox))
                     {
-                        
-                           
-                                <MudTextField Label="@UserLocalization["Street"]" @bind-Value="@User.POBox" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.POBox)) />
 
-                            
-                           
-                        
+
+                        <MudTextField Label="@UserLocalization["Street"]" @bind-Value="@User.POBox" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.POBox)) />
+
+
+
+
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.City))
                     {
-                        
-                           
-                                <MudTextField Label="@UserLocalization["City"]"  @bind-Value="@User.City" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.City)) />
 
-                            
-                          
-                        
+
+                        <MudTextField Label="@UserLocalization["City"]" @bind-Value="@User.City" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.City)) />
+
+
+
+
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.State))
                     {
-                        
-                           
-                                <MudTextField Label="@UserLocalization["State"]"  @bind-Value="@User.State" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.State)) />
 
-                            
-                           
-                        
+
+                        <MudTextField Label="@UserLocalization["State"]" @bind-Value="@User.State" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.State)) />
+
+
+
+
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.PostalCode))
                     {
-                        
 
-                                <MudTextField Label="@UserLocalization["Zip Code"]" @bind-Value="@User.Zip" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.PostalCode)) />
 
-                            
-                           
-                        
+                        <MudTextField Label="@UserLocalization["Zip Code"]" @bind-Value="@User.Zip" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.PostalCode)) />
+
+
+
+
                     }
                 </Section>
             }
             @if (InDirectoryTemplate(ActiveDirectoryFields.Description))
             {
-                
-                   
-                        <MudTextField Label="@UserLocalization["Description"]" @bind-Value=@User.Description Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Description)) />
 
-                    
-                    
-                
+
+                <MudTextField Label="@UserLocalization["Description"]" @bind-Value=@User.Description Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Description)) />
+
+
+
+
             }
             @if (InDirectoryTemplate(ActiveDirectoryFields.Site))
             {
-                
-                   
-                        <MudTextField Label="@UserLocalization["Site"]" @bind-Value="@User.Site" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Site)) />
 
-                    
-                   
-                
+
+                <MudTextField Label="@UserLocalization["Site"]" @bind-Value="@User.Site" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Site)) />
+
+
+
+
             }
             @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory) ||
             InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
@@ -189,50 +189,57 @@
                 <Section Title=@UserLocalization["Profile"]>
                     @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
                     {
-                        
-                           
-                                <MudTextField Label="@UserLocalization["Home Directory"]" @bind-Value="@User.HomeDirectory" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomeDirectory)) />
 
-                            
-                          
-                        
+
+                        <MudTextField Label="@UserLocalization["Home Directory"]" @bind-Value="@User.HomeDirectory" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomeDirectory)) />
+
+
+
+
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDrive))
                     {
-                        
-                           
 
-                                <HomeDriveSelect Label="@UserLocalization["Home Drive"]" @bind-Value="@User.HomeDrive" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomeDrive)) />
 
-                            
-                           
-                        
+
+                        <HomeDriveSelect Label="@UserLocalization["Home Drive"]" @bind-Value="@User.HomeDrive" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomeDrive)) />
+
+
+
+
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.ScriptPath))
                     {
-                        
 
-                                <MudTextField Label="@UserLocalization["Script Path"]" @bind-Value="@User.ScriptPath" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.ScriptPath)) />
 
-                            
-                           
-                        
+                        <MudTextField Label="@UserLocalization["Script Path"]" @bind-Value="@User.ScriptPath" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.ScriptPath)) />
+
+
+
+
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.ProfilePath))
                     {
-                        
 
-                                <MudTextField Label="@UserLocalization["Profile Path"]" @bind-Value="@User.ProfilePath" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.ProfilePath)) />
 
-                            
-                            
-                        
+                        <MudTextField Label="@UserLocalization["Profile Path"]" @bind-Value="@User.ProfilePath" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.ProfilePath)) />
+
+
+
+
                     }
                 </Section>
             }
+            @if (User.CanReadAnyCustomFields)
+            {
+                <Section Title=@UserLocalization["Additonal Fields"]>
+                    @foreach (var field in DirectoryTemplate.FieldValues.Where(f => f.CustomField != null))
+                    {
+                        <MudTextField Label="@field.FieldDisplayName" @bind-Value="@User.NewEntryProperties[field.CustomField.FieldName]" Disabled=@(!IsAdmin && !IsEditableTemplatField(field.CustomField)) />
 
-
-
+                    }
+                </Section>
+            }
 
 
 
@@ -259,16 +266,18 @@
 
 
 
-    bool InDirectoryTemplate(ActiveDirectoryField field)
+    bool InDirectoryTemplate(IActiveDirectoryField field)
     {
         return DirectoryTemplate.FieldValues.Any(f => f.Field.FieldName == field.FieldName && (f.Value.IsNullOrEmpty() || CurrentUser.State?.IsSuperAdmin == true));
     }
-    bool IsEditableTemplatField(ActiveDirectoryField field)
+    bool IsEditableTemplatField(IActiveDirectoryField field)
     {
 
 
-
-        return DirectoryTemplate.FieldValues.Any(f => f.Field.FieldName == field.FieldName && (f.Value.IsNullOrEmpty() ||f.Editable));
+        if (field is ActiveDirectoryField)
+            return DirectoryTemplate.FieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Editable);
+        else
+            return DirectoryTemplate.FieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Editable);
     }
 
 

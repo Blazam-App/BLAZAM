@@ -2,6 +2,7 @@
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.ActiveDirectory.Searchers;
 using BLAZAM.Common.Models.Database.Permissions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.VisualStudio.Services.Common;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Models
@@ -108,6 +109,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 return temp;
             }
         }
+
+   
+
         List<IADGroup> _groupMembersCache;
         public List<IADGroup> GroupMembers
         {
@@ -140,7 +144,17 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                 return temp;
             }
         }
-
+        public IEnumerable<IGroupableDirectoryAdapter> NestedMembers
+        {
+            get
+            {
+                ADSearch search = new ADSearch();
+                search.Fields.NestedMemberOf = this;
+                var result = search.Search<GroupableDirectoryAdapter,IGroupableDirectoryAdapter>();
+                return result;
+                return Directory.Groups.GetAllNestedMembers(this);
+            }
+        }
         public List<IGroupableDirectoryAdapter> Members {
             get{
                 var temp = MembersAsStrings;
@@ -182,6 +196,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
 
         }
+        
         public void AssignMember(IGroupableDirectoryAdapter member)
         {
 

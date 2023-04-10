@@ -68,11 +68,11 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         public string LdapQuery { get; private set; }
         public bool SearchDeleted { get; set; } = false;
 
-        public async Task<List<I>> SearchAsync<T, I>() where T : I, IDirectoryEntryAdapter, new()
+        public async Task<List<I>> SearchAsync<T, I>(CancellationToken? token=null) where T : I, IDirectoryEntryAdapter, new()
         {
             return await Task.Run(() =>
             {
-                return Search<T, I>();
+                return Search<T, I>(token);
             });
         }
 
@@ -92,11 +92,11 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         /// <typeparam name="TObject">The object type to convert search results to</typeparam>
         /// <typeparam name="TInterface">The interface type to case converted search results to</typeparam>
         /// <returns>A list of search results converted and casted to supplied types</returns>
-        public List<TInterface> Search<TObject, TInterface>(CancellationTokenSource? cancellationTokenSource=null) where TObject : TInterface, IDirectoryEntryAdapter, new()
+        public List<TInterface> Search<TObject, TInterface>(CancellationToken? token=null) where TObject : TInterface, IDirectoryEntryAdapter, new()
         {
-            if (cancellationTokenSource != null) tokenSource = cancellationTokenSource;
-            else tokenSource = new();
-            if (tokenSource?.IsCancellationRequested == true) return default;
+            if (token != null) cancellationToken = token;
+            else cancellationToken = new CancellationToken();
+            if (cancellationToken?.IsCancellationRequested == true) return default;
             DateTime startTime = NewMethod();
             DirectorySearcher searcher;
             try
@@ -191,21 +191,24 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                         FilterQuery += $"(memberOf=*{Fields.DN})*";
                     if (!Fields.SID.IsNullOrEmpty())
                         FilterQuery += $"(objectSid={Fields.SID})";
-
+                    if (Fields.NestedMemberOf!=null)
+                        FilterQuery += $"(memberOf:1.2.840.113556.1.4.1941:={Fields.NestedMemberOf.DN})";
 
 
 
                     //FilterQuery += ")";
 
                 }
-                if (tokenSource?.IsCancellationRequested == true) return default;
+                if (cancellationToken?.IsCancellationRequested == true) return default;
 
                 PrepareSearcher(searcher);
-                if (tokenSource?.IsCancellationRequested == true) return default;
+                if (cancellationToken?.IsCancellationRequested == true) return default;
 
                 SearchTime = DateTime.Now - startTime;
 
                 PerformSearch<TObject, TInterface>(startTime, searcher, pageSize);
+
+                if (cancellationToken?.IsCancellationRequested == true) return default;
 
                 SearchState = SearchState.Completed;
                 SearchTime = DateTime.Now - startTime;
@@ -234,16 +237,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
 
         }
-        public void CancelSeaches()
-        {
-            tokenSource.Cancel();
-        }
+     
         private DateTime NewMethod()
         {
             var startTime = DateTime.Now;
             SearchState = SearchState.Started;
             OnSearchStarted?.Invoke();
-            tokenSource = new();
+            cancellationToken = new();
             Results.Clear();
             return startTime;
         }
@@ -256,10 +256,10 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             SearchResultCollection lastResults;
             try
             {
-                if (tokenSource?.IsCancellationRequested == true) return;
+                if (cancellationToken?.IsCancellationRequested == true) return;
 
                 lastResults = searcher.FindAll();
-                if (tokenSource?.IsCancellationRequested == true) return;
+                if (cancellationToken?.IsCancellationRequested == true) return;
 
                 var count = lastResults.Count;
             }
@@ -282,12 +282,12 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
             if (lastResults.Count < pageSize)
                 moreResults = false;
 
-            while (moreResults && !tokenSource.IsCancellationRequested)
+            while (moreResults && cancellationToken?.IsCancellationRequested!=true)
             {
                 if (searcher.VirtualListView != null)
                     searcher.VirtualListView.Offset += pageSize;
-                else
-                    throw new ApplicationException("The searcher lost it's VirtualListView in the middle of searching!");
+                //else
+                //    throw new ApplicationException("The searcher lost it's VirtualListView in the middle of searching!");
                 lastResults = searcher.FindAll();
                 AddResults<TObject, TInterface>(lastResults);
                 if (lastResults.Count < pageSize)
@@ -295,7 +295,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
                 SearchTime = DateTime.Now - startTime;
 
             }
-            if (tokenSource?.IsCancellationRequested == true) return;
+            if (cancellationToken?.IsCancellationRequested == true) return;
 
         }
 
@@ -322,7 +322,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         public void Cancel()
         {
             Results.Clear();
-            tokenSource.Cancel();
+            cancellationToken = new CancellationToken(true);
+
         }
         private void AddResults<T, I>(SearchResultCollection lastResults) where T : I, IDirectoryEntryAdapter, new()
         {

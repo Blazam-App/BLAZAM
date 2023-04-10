@@ -1,5 +1,12 @@
 ﻿namespace BLAZAM.Common.Models.Database
 {
+    /// <summary>
+    /// Base class that all Database Model classes should inherit
+    /// </summary>
+    /// <remarks>
+    /// Provides an <see cref="Id"/> as well as <see cref="Equals(object?)"/> and
+    /// <see cref="GetHashCode"/>
+    /// </remarks>
     public class AppDbSetBase : IEquatable<AppDbSetBase?>
     {
         public int Id { get; set; }

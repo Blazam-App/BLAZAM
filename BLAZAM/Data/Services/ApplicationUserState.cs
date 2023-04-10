@@ -41,11 +41,13 @@ namespace BLAZAM.Server.Data.Services
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
 
 
-        public IList<UserNotification>? Messages
+
+
+        public IList<UserNotification> Messages
         {
             get
             {
-                if (!User.Identity.IsAuthenticated) return null;
+                if (!User.Identity.IsAuthenticated) return default;
                 if ((DateTime.Now - lastDataRefresh).TotalSeconds > 1)
                     GetUserSettingFromDB(null);
                 return userSettings?.Messages.Where(m => !m.IsRead).ToList();
@@ -65,6 +67,7 @@ namespace BLAZAM.Server.Data.Services
 
         public ApplicationUserState(AppDatabaseFactory factory, INotificationPublisher notificationPublisher)
         {
+            
             _notificationPublisher = notificationPublisher;
             _dbFactory = factory;
             _notificationPublisher.OnNotificationPublished += ((notifications) =>
@@ -134,6 +137,8 @@ namespace BLAZAM.Server.Data.Services
                 if (dbUserSettings != null)
                 {
                     dbUserSettings.Theme = this.UserSettings?.Theme;
+                    dbUserSettings.DarkMode = this.UserSettings?.DarkMode==true;
+                    dbUserSettings.ProfilePicture = this.UserSettings?.ProfilePicture;
                     dbUserSettings.SearchDisabledUsers = this.UserSettings.SearchDisabledUsers;
                     dbUserSettings.SearchDisabledComputers = this.UserSettings.SearchDisabledComputers;
                     OnSettingsChange?.Invoke(dbUserSettings);
@@ -227,5 +232,7 @@ namespace BLAZAM.Server.Data.Services
         {
             return User.HasClaim(ClaimTypes.Role, userRole);
         }
+
+  
     }
 }

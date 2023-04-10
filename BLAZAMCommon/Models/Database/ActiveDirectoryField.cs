@@ -10,28 +10,42 @@ namespace BLAZAM.Common.Models.Database
         DriveLetter,
         List
     }
+    /// <summary>
+    /// Represents a built-in standard Active Directory attribute
+    /// </summary>
     public class ActiveDirectoryField : AppDbSetBase, IActiveDirectoryField
     {
 
+        /// <inheritdoc/>
         [Required]
         public string FieldName { get; set; }
+
+
+        /// <inheritdoc/>
         [Required]
         public string DisplayName { get; set; }
 
+
+        /// <inheritdoc/>
         public ActiveDirectoryFieldType FieldType { get; set; } = ActiveDirectoryFieldType.Text;
 
-   
 
 
+
+        /// <inheritdoc/>
         public override string? ToString()
         {
-            return FieldName;
+            return DisplayName;
         }
+
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             if (FieldName == null) return Id.GetHashCode();
             return FieldName.GetHashCode();
         }
+
+        /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
             if (obj is ActiveDirectoryField)
@@ -46,6 +60,7 @@ namespace BLAZAM.Common.Models.Database
             }
             return false;
         }
+        /// <inheritdoc/>
         public bool IsActionAppropriateForObject(ActiveDirectoryObjectType objectType)
         {
 
@@ -54,7 +69,7 @@ namespace BLAZAM.Common.Models.Database
                 case ActiveDirectoryObjectType.User:
                     switch (FieldName)
                     {
-                        case "city":
+                        case "l":
                         case "cn":
                         case "company":
                         case "depatment":
@@ -84,6 +99,7 @@ namespace BLAZAM.Common.Models.Database
                         case "streetAddress":
                         case "telephoneNumber":
                         case "title":
+                        case "thumbnail":
                         case "userPrincipalName":
                             return true;
                     }

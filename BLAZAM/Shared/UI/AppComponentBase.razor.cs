@@ -52,6 +52,9 @@ namespace BLAZAM.Server.Shared.UI
 
         [Inject]
         protected AuditLogger AuditLogger { get; set; }
+        
+        [Inject]
+        private UserSeederService UserSeeder { get; set; }
 
         [Inject]
         protected AppDialogService MessageService { get; set; }
@@ -72,7 +75,10 @@ namespace BLAZAM.Server.Shared.UI
         protected IEncryptionService EncryptionService { get; set; }
 
         [Inject]
-        protected AppSnackBarService SnackBarService { get; set; }
+        protected AppSnackBarService SnackBarService { get; set; } 
+        
+        [Inject]
+        private UserActiveDirectoryService userActiveDirectoryService { get; set; }
 
         protected bool LoadingData { get; set; } = true;
         protected IDatabaseContext? Context;
@@ -83,6 +89,8 @@ namespace BLAZAM.Server.Shared.UI
 
         protected override void OnInitialized()
         {
+            base.OnInitialized();
+
             try
             {
                 Context = DbFactory.CreateDbContext();
@@ -93,7 +101,8 @@ namespace BLAZAM.Server.Shared.UI
             }
             try
             {
-                Directory = DirectoryFactory.CreateActiveDirectoryContext(CurrentUser);
+
+                Directory = userActiveDirectoryService.Context;
             }
             catch (Exception ex)
             {
@@ -103,7 +112,6 @@ namespace BLAZAM.Server.Shared.UI
             {
                 InvokeAsync(StateHasChanged);
             };
-            base.OnInitialized();
         }
 
         protected override async Task OnInitializedAsync()
@@ -119,6 +127,19 @@ namespace BLAZAM.Server.Shared.UI
                 {
                     Loggers.DatabaseLogger.Error("Failed to connect to database", ex);
                 }
+                try
+                {
+
+                    Directory = userActiveDirectoryService.Context;
+                }
+                catch (Exception ex)
+                {
+                    Loggers.DatabaseLogger.Error("Failed to connect to database", ex);
+                }
+                Monitor.OnDirectoryConnectionChanged += (ServiceConnectionState status) =>
+                {
+                    InvokeAsync(StateHasChanged);
+                };
             }
         }
 

@@ -6,9 +6,8 @@
     /// A notification message for the web user. These are
     /// placed under the user's notifications panel
     /// </summary>
-    public class NotificationMessage
+    public class NotificationMessage:AppDbSetBase
     {
-        public int Id { get; set; }
 
         /// <summary>
         /// The severity level of this notification
@@ -22,13 +21,14 @@
         /// The message of the notificatioon
         /// </summary>
         public string? Message { get; set; }
+
         public Uri? Link { get; set; }
         /// <summary>
         /// If  set, the message will be deleted after this <see cref="DateTime"/>
         /// </summary>
         public DateTime? Expires { get; set; }
 
-        public DateTime? Created { get; set; }
+        public DateTime Created { get; set; } = DateTime.Now;
 
         public bool Dismissable { get; set; } = true;
 

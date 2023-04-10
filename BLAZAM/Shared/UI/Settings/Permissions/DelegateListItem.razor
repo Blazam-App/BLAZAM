@@ -57,7 +57,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Group = Directory.GetDirectoryModelBySid(Level.DelegateSid);
+        Group = Directory.FindEntryBySID(Level.DelegateSid);
     }
 
     bool collapse1Visible = false;

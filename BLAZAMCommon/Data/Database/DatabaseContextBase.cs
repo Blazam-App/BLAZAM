@@ -237,7 +237,7 @@ namespace BLAZAM.Common.Data.Database
                 new ActiveDirectoryField
                 {
                     Id = 10,
-                    FieldName = "city",
+                    FieldName = "l",
                     DisplayName = "City",
                     FieldType = ActiveDirectoryFieldType.Text
                 },
@@ -426,13 +426,20 @@ namespace BLAZAM.Common.Data.Database
                     DisplayName = "Account Expiration",
                     FieldType = ActiveDirectoryFieldType.Date
                 },
-                    new ActiveDirectoryField
-                    {
-                        Id = 34,
-                        FieldName = "manager",
-                        DisplayName = "Manager",
-                        FieldType = ActiveDirectoryFieldType.Text
-                    }
+                new ActiveDirectoryField
+                {
+                    Id = 34,
+                    FieldName = "manager",
+                    DisplayName = "Manager",
+                    FieldType = ActiveDirectoryFieldType.Text
+                },
+                new ActiveDirectoryField
+                {
+                    Id = 35,
+                    FieldName = "thumbnail",
+                    DisplayName = "Photo",
+                    FieldType = ActiveDirectoryFieldType.RawData
+                }
 
 
             );
@@ -463,6 +470,7 @@ namespace BLAZAM.Common.Data.Database
             );
             modelBuilder.Entity<FieldAccessMapping>(entity =>
             {
+                entity.Navigation(e => e.CustomField).AutoInclude();
                 entity.Navigation(e => e.Field).AutoInclude();
                 entity.Navigation(e => e.FieldAccessLevel).AutoInclude();
             });

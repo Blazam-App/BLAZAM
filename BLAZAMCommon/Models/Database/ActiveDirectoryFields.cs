@@ -44,6 +44,7 @@ namespace BLAZAM.Common.Models.Database
         public static ActiveDirectoryField OperatingSystem = new ActiveDirectoryField() { Id = 32, FieldName = "operatingSystemVersion", DisplayName="OS", FieldType = ActiveDirectoryFieldType.Text };
         public static ActiveDirectoryField AccountExpires = new ActiveDirectoryField() { Id = 33, FieldName = "accountExpires", DisplayName="Account Expiration", FieldType = ActiveDirectoryFieldType.Date };
         public static ActiveDirectoryField Manager = new ActiveDirectoryField() { Id = 34, FieldName = "manager", DisplayName="Manager", FieldType = ActiveDirectoryFieldType.Text };
+        public static ActiveDirectoryField Thumbnail = new ActiveDirectoryField() { Id = 35, FieldName = "thumbnail", DisplayName="Photo", FieldType = ActiveDirectoryFieldType.RawData };
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 
 

@@ -46,13 +46,14 @@
                     @if ((User.Enabled && User.CanDisable) || (User.Disabled && User.CanEnable))
 
                         {
-                            <MudToggleIconButton @bind-Toggled="@User.Enabled"
-                                         Icon="@Icons.Material.Filled.PersonOff"
-                                         Color="Color.Error"
-                                         Title="Enable"
-                                         ToggledIcon="@Icons.Material.Filled.Person"
-                                         ToggledColor="Color.Success"
-                                         ToggledTitle="Disable" />
+                            <MudTooltip Text="@UserLocalization[User.Enabled==true?"Disable":"Enable"]">
+
+                                <MudToggleIconButton @bind-Toggled="@User.Enabled"
+                                             Icon="@Icons.Material.Filled.PersonOff"
+                                             Color="Color.Error"
+                                             ToggledIcon="@Icons.Material.Filled.Person"
+                                             ToggledColor="Color.Success"/>
+                            </MudTooltip>
                         }
                         @*<DynamicMudInput Color=Color.Success Label="Account Enabled" @bind-Value=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />*@
                         @*<MudSwitch Color=Color.Success Label="Account Enabled" @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />*@
@@ -60,59 +61,71 @@
 
                         @if (User.CanEdit)
                         {
-                            <MudToggleIconButton @bind-Toggled="@EditMode"
-                                         Icon="@Icons.Material.Filled.Edit"
-                                         Title="Edit"
-                                         ToggledIcon="@Icons.Material.Filled.EditOff"
-                                         ToggledColor="Color.Error"
-                                         ToggledTitle="End Edit" />
+                            <MudTooltip Text="@UserLocalization["Edit"]">
 
+                                <MudToggleIconButton @bind-Toggled="@EditMode"
+                                             Icon="@Icons.Material.Filled.Edit"
+                                             ToggledIcon="@Icons.Material.Filled.EditOff"
+                                             ToggledColor="Color.Error"
+                                             ToggledTitle="End Edit" />
+                            </MudTooltip>
                         }
                         @if (User.LockedOut && User.CanUnlock)
                         {
-                            <MudIconButton OnClick="Unlock"
-                                   Icon="@Icons.Material.Filled.LockOpen"
-                                           aria-label="unlock" />
+                            <MudTooltip Text="@UserLocalization["Unlock"]">
 
+                                <MudIconButton OnClick="Unlock"
+                                       Icon="@Icons.Material.Filled.LockOpen"
+                                               aria-label="unlock" />
+                            </MudTooltip>
                         }
                         @if (User.CanAssign)
                         {
                             RefreshUserGroups();
-                            <MudIconButton OnClick="@(()=>{AssignToModal?.Show();})"
-                                   Icon="@Icons.Material.Filled.GroupAdd"
-                                           aria-label="assign to" />
+                            <MudTooltip Text="@UserLocalization["Assign To"]">
 
+                                <MudIconButton OnClick="@(()=>{AssignToModal?.Show();})"
+                                       Icon="@Icons.Material.Filled.GroupAdd"
+                                               aria-label="assign to" />
+                            </MudTooltip>
 
                         }
                         @if (User.CanDisable)
                         {
-                            <MudIconButton OnClick="@(()=>{ChangePasswordModal?.Show();})"
-                                   Icon="@Icons.Material.Filled.Password"
-                                           aria-label="change password" />
-
+                            <MudTooltip Text="@UserLocalization["Change Password"]">
+                                <MudIconButton OnClick="@(()=>{ChangePasswordModal?.Show();})"
+                                       Icon="@Icons.Material.Filled.Password"
+                                               aria-label="change password" />
+                            </MudTooltip>
                         }
                         @if (User.CanRename)
                         {
-                            <MudIconButton OnClick="@(()=>{RenameModal?.Show();})"
-                                   Icon="@Icons.Material.Filled.DriveFileRenameOutline"
-                                           aria-label="rename" />
+                            <MudTooltip Text="@UserLocalization["Rename"]">
 
+                                <MudIconButton OnClick="@(()=>{RenameModal?.Show();})"
+                                       Icon="@Icons.Material.Filled.DriveFileRenameOutline"
+                                               aria-label="rename" />
 
+                            </MudTooltip>
                         }
                         @if (User.CanMove)
                         {
-                            <MudIconButton OnClick="@(()=>{MoveToModal?.Show();})"
-                                   Icon="@Icons.Material.Filled.DriveFileMove"
-                                           aria-label="move" />
+                            <MudTooltip Text="@UserLocalization["Move"]">
 
+                                <MudIconButton OnClick="@(()=>{MoveToModal?.Show();})"
+                                       Icon="@Icons.Material.Filled.DriveFileMove"
+                                               aria-label="move" />
+                            </MudTooltip>
                         }
                         @if (User.CanDelete)
                         {
-                            <MudIconButton OnClick="@DeleteUser"
-                                   Color="Color.Error"
-                                   Icon="@Icons.Material.Filled.Delete"
-                                           aria-label="change password" />
+                            <MudTooltip Text="@UserLocalization["Delete"]">
 
+                                <MudIconButton OnClick="@DeleteUser"
+                                       Color="Color.Error"
+                                       Icon="@Icons.Material.Filled.Delete"
+                                               aria-label="change password" />
+                            </MudTooltip>
                         }
                     </MudToolBar>
                 </MudHidden>
@@ -203,246 +216,223 @@
                         <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) User="User" />
                     }
                 </AppModal>
-                <AppModal @ref=@ChangePasswordModal>
+                <AppModal Title="Set Password" @ref=@ChangePasswordModal>
                     @if (ChangePasswordModal?.IsShown == true)
                     {
                         <ChangeUserPasswordModalContent User="User" />
                     }
                 </AppModal>
 
-                @if (User.CanReadField(ActiveDirectoryFields.GivenName) ||
+                @*  @if (User.CanReadField(ActiveDirectoryFields.GivenName) ||
                 User.CanReadField(ActiveDirectoryFields.MiddleName) ||
                 User.CanReadField(ActiveDirectoryFields.SN) ||
                 User.CanReadField(ActiveDirectoryFields.DisplayName)
                 )
-                {
+                {*@
 
-                    <MudGrid>
-                        <MudItem xs="12" md="3">
-                            <Section FullWidth=false>
+                <MudGrid>
+                    <MudItem xs="12" md="3">
+                        <Section FullWidth=false>
 
-                                <MudCard Elevation="2"
+                            <MudCard Elevation="2"
                                      Style="width:fit-content;height:fit-content"
                                      Class="relative mx-auto my-auto d-block p-1"
                                      @onmouseenter=@(()=>{showRemoveThumbnail=true;})
                                      @onmouseleave=@(()=>{showRemoveThumbnail=false;})>
-                                    @if (User?.ThumbnailPhoto != null)
+                                @if (User?.ThumbnailPhoto != null)
+                                {
+                                    <Base64Image Style="max-height:150px;max-width:150px;" Data="User.ThumbnailPhoto.ReizeRawImage(150)" />
+                                    @if (showRemoveThumbnail && User.CanEditField(ActiveDirectoryFields.Thumbnail))
                                     {
-                                        <Base64Image Style="max-height:150px;max-width:150px;" Data="User.ThumbnailPhoto.ReizeRawImage(150)" />
-                                        @if (showRemoveThumbnail)
-                                        {
 
-                                            <MudIconButton OnClick=RemoveThumbnail
+                                        <MudIconButton OnClick=RemoveThumbnail
                                                Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;left:10px"
                                                Color=Color.Error
                                                Icon="@Icons.Material.Filled.Delete" />
-                                        }
-
                                     }
-                                    else
-                                    {
-                                        <MudIcon Style="height:150px;width:150px;" Icon="@Icons.Material.Filled.Person" />
 
-                                    }
-                                    @if (showRemoveThumbnail)
-                                    {
-                                        <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.Show();})
+                                }
+                                else
+                                {
+                                    <MudIcon Style="height:150px;width:150px;" Icon="@Icons.Material.Filled.Person" />
+
+                                }
+                                @if (showRemoveThumbnail && User.CanEditField(ActiveDirectoryFields.Thumbnail))
+                                {
+                                    <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.Show();})
                                                Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
                                                Color=Color.Primary
                                                Icon="@Icons.Material.Filled.Upload" />
-                                    }
-                                </MudCard>
-
-                                <MudStack Row=true>
-                                    <MudText Typo="Typo.subtitle2">Created:</MudText>
-                                    <MudSpacer />
-                                    <MudTooltip Text="@User.Created?.TimeOfDay.ToString()">
-                                        <MudText Style="text-align:end;" Typo="Typo.caption">@User.Created?.ToShortDateString()</MudText>
-                                    </MudTooltip>
-                                </MudStack>
-                                <MudStack Row=true>
-
-                                    <MudText Typo="Typo.subtitle2">Last Change:</MudText>
-                                    <MudSpacer />
-                                    <MudTooltip Text="@User.LastChanged?.TimeOfDay.ToString()">
-
-                                        <MudText Style="text-align:end;" Typo="Typo.caption">@User.LastChanged?.ToShortDateString()</MudText>
-                                    </MudTooltip>
-                                </MudStack>
-                                @if (User.LockedOut)
-                                {
-                                    <MudStack Row=true>
-                                        <MudText Typo="Typo.subtitle2">Locked Out Time:</MudText>
-                                        <MudSpacer />
-                                        <MudTooltip Text="@User.LockoutTime?.TimeOfDay.ToString()">
-
-                                            <MudText Style="text-align:end;" Typo="Typo.caption">@User.LockoutTime?.ToShortDateString()</MudText>
-                                        </MudTooltip>
-
-                                    </MudStack>
                                 }
-                                <MudStack Row=true>
-                                    <MudText Typo="Typo.subtitle2">OU:</MudText>
-                                    <MudSpacer />
+                            </MudCard>
 
-                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.OU.ToPrettyOu()</MudText>
+                            <MudStack Row=true>
+                                <MudText Typo="Typo.subtitle2">Created:</MudText>
+                                <MudSpacer />
+                                <MudTooltip Text="@User.Created?.TimeOfDay.ToString()">
+                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.Created?.ToShortDateString()</MudText>
+                                </MudTooltip>
+                            </MudStack>
+                            <MudStack Row=true>
+
+                                <MudText Typo="Typo.subtitle2">Last Change:</MudText>
+                                <MudSpacer />
+                                <MudTooltip Text="@User.LastChanged?.TimeOfDay.ToString()">
+
+                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.LastChanged?.ToShortDateString()</MudText>
+                                </MudTooltip>
+                            </MudStack>
+                            @if (User.LockedOut)
+                            {
+                                <MudStack Row=true>
+                                    <MudText Typo="Typo.subtitle2">Locked Out Time:</MudText>
+                                    <MudSpacer />
+                                    <MudTooltip Text="@User.LockoutTime?.TimeOfDay.ToString()">
+
+                                        <MudText Style="text-align:end;" Typo="Typo.caption">@User.LockoutTime?.ToShortDateString()</MudText>
+                                    </MudTooltip>
+
+                                </MudStack>
+                            }
+                            <MudStack Row=true>
+                                <MudText Typo="Typo.subtitle2">OU:</MudText>
+                                <MudSpacer />
+
+                                <MudText Style="text-align:end;" Typo="Typo.caption">@User.OU.ToPrettyOu()</MudText>
+                            </MudStack>
+
+
+
+                            @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
+                            {
+                                <MudStack>
+                                    <MudText Typo="Typo.subtitle2">Groups</MudText>
+                                    <MemberOfList Model="User" />
+
                                 </MudStack>
 
 
 
-                                @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
+                            }
+
+
+                        </Section>
+                    </MudItem>
+                    <MudItem xs=12 md="9">
+                        <MudStack>
+
+                            <Section FullWidth=false Title=@UserLocalization["Name"]>
+
+
+                                <MudStack Row Class="@_fieldMudStackClasses">
+
+                                    @*@if (User.CanReadField(ActiveDirectoryFields.GivenName))
+                                    {*@
+
+                                    <DynamicMudInput T=string Label="@UserLocalization["First Name"]" @bind-Value="@User.GivenName" Disabled=!User.NewEntry />
+                                    @*  }
+                                    @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
+                                    {*@
+                                    <DynamicMudInput T=string Label="@UserLocalization["Middle Name"]" @bind-Value="@User.MiddleName" Disabled=!User.NewEntry />
+                                    @*  }
+                                    @if (User.CanReadField(ActiveDirectoryFields.SN))
+                                    {*@
+                                    <DynamicMudInput T=string Label="@UserLocalization["Last Name"]" @bind-Value="@User.Surname" Disabled=!User.NewEntry />
+                                    @* }
+                                    @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
+                                    {*@
+                                    <DynamicMudInput T=string Label="@UserLocalization["Display Name"]" @bind-Value="@User.DisplayName" Disabled=!User.NewEntry />
+                                    @* }*@
+
+
+                                </MudStack>
+                                @if (EditMode && !User.NewEntry)
                                 {
-                                    <MudStack>
-                                        <MudText Typo="Typo.subtitle2">Groups</MudText>
-
-                                        <MudList Dense=true Clickable="true" Style="max-height:200px; overflow-y:auto;">
-                                            @foreach (ADGroup g in User.MemberOf.Where(group => group.CanRead).OrderBy(g => g.CanonicalName))
-                                            {
-                                                if (g.CanRead)
-                                                {
-                                                    <MudListItem>
-                                                        <ChildContent>
-                                                            <MudStack Row=true>
-                                                                <MudLink OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})">@g.CanonicalName</MudLink>
-                                                                <MudSpacer />
-                                                                <MudIconButton OnClick="@(()=>{User.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
-                                                            </MudStack>
-                                                        </ChildContent>
-                                                    </MudListItem>
-
-                                                }
-
-                                            }
-                                            @if (User.MemberOf.Where(group => !group.CanRead).Count() > 0)
-                                            {
-                                                <MudListItem Text="The user is in more groups you don't have access to" />
-                                            }
-
-                                        </MudList>
-                                    </MudStack>
-
-
-
+                                    <MudText>
+                                        To Modify the user's name click the Gear button and choose "Rename..."
+                                    </MudText>
                                 }
-
-
                             </Section>
-                        </MudItem>
-                        <MudItem xs=12 md="9">
-                            <MudStack>
 
-                                <Section FullWidth=false Title=@UserLocalization["Name"]>
 
+
+
+
+
+                            @if (User.CanReadField(ActiveDirectoryFields.SAMAccountName) ||
+                            User.CanReadField(ActiveDirectoryFields.Mail) ||
+                            User.CanReadField(ActiveDirectoryFields.AccountExpires))
+                            {
+                                <Section Title="@UserLocalization["Account"]">
 
                                     <MudStack Row Class="@_fieldMudStackClasses">
 
-                                    @if (User.CanReadField(ActiveDirectoryFields.GivenName))
+
+                                    @if (User.CanReadField(ActiveDirectoryFields.SAMAccountName))
                                         {
 
-                                            <DynamicMudInput T=string Label="@UserLocalization["First Name"]" @bind-Value="@User.GivenName" Disabled=!User.NewEntry />
-                                        }
-                                        @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
-                                        {
-                                            <DynamicMudInput T=string Label="@UserLocalization["Middle Name"]" @bind-Value="@User.MiddleName" Disabled=!User.NewEntry />
-                                        }
-                                        @if (User.CanReadField(ActiveDirectoryFields.SN))
-                                        {
-                                            <DynamicMudInput T=string Label="@UserLocalization["Last Name"]" @bind-Value="@User.Surname" Disabled=!User.NewEntry />
-                                        }
-                                        @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
-                                        {
-                                            <DynamicMudInput T=string Label="@UserLocalization["Display Name"]" @bind-Value="@User.DisplayName" Disabled=!User.NewEntry />
-                                        }
 
-
-                                    </MudStack>
-                                    @if (EditMode && !User.NewEntry)
-                                    {
-                                        <MudText>
-                                            To Modify the user's name click the Gear button and choose "Rename..."
-                                        </MudText>
-                                    }
-                                </Section>
-
-
-
-
-
-
-                                @if (User.CanReadField(ActiveDirectoryFields.SAMAccountName) ||
-                               User.CanReadField(ActiveDirectoryFields.Mail) ||
-                               User.CanReadField(ActiveDirectoryFields.AccountExpires))
-                                {
-                                    <Section Title="@UserLocalization["Account"]">
-
-                                        <MudStack Row Class="@_fieldMudStackClasses">
-
-
-                                        @if (User.CanReadField(ActiveDirectoryFields.SAMAccountName))
-                                            {
-
-
-                                                <DynamicMudInput T=string Label="@UserLocalization["Username"]"
+                                            <DynamicMudInput T=string Label="@UserLocalization["Username"]"
                                                      @bind-Value="@User.SamAccountName"
                                                      Disabled=!User.NewEntry />
-                                                <MudButton StartIcon="@Icons.Material.Filled.ContentCopy" OnClick="@(()=>{CopyToClipboard(User.SamAccountName);})" />
+                                            <MudButton StartIcon="@Icons.Material.Filled.ContentCopy" OnClick="@(()=>{CopyToClipboard(User.SamAccountName);})" />
 
 
-                                            }
+                                        }
 
-                                            @if (User.NewEntry)
-                                            {
-                                                <DynamicMudInput T=string
+                                        @if (User.NewEntry)
+                                        {
+                                            <DynamicMudInput T=string
                                                      Label="@UserLocalization["Password"]"
                                                      @bind-Value="@Password"
                                                      InputType="InputType.Password" />
 
-                                                <DynamicMudInput T=string
+                                            <DynamicMudInput T=string
                                                      Label="@UserLocalization["Confirm Password"]"
                                                      @bind-Value="@ConfirmPassword"
                                                      InputType="InputType.Password" />
-                                            }
+                                        }
 
-                                            @if (User.CanReadField(ActiveDirectoryFields.Mail))
-                                            {
-                                                <DynamicMudInput T=string Label="@UserLocalization["Email Address"]"
+                                        @if (User.CanReadField(ActiveDirectoryFields.Mail))
+                                        {
+                                            <DynamicMudInput T=string Label="@UserLocalization["Email Address"]"
                                                      @bind-Value="@User.Email"
                                                      Disabled=!User.NewEntry />
 
-                                                <MudButton StartIcon="@Icons.Material.Filled.ContentCopy"
+                                            <MudButton StartIcon="@Icons.Material.Filled.ContentCopy"
                                                OnClick="@(()=>{CopyToClipboard(User.Email);})" />
 
-                                            }
-                                            @if (User.CanReadField(ActiveDirectoryFields.AccountExpires))
-                                            {
-                                                <DynamicMudInput T=DateTime?
-                                                                      Clearable
+                                        }
+                                        @if (User.CanReadField(ActiveDirectoryFields.AccountExpires))
+                                        {
+                                            <DynamicMudInput T=DateTime?
+                                                                  Clearable
                                                      Label="@UserLocalization["Account Expiration"]"
                                                      @bind-Value="@User.ExpireTime"
                                                      Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.AccountExpires)) />
 
 
-                                            }
-                                        </MudStack>
-                                        @if (EditMode && !User.NewEntry)
-                                        {
-
-
-                                            <MudText>
-                                                To Modify the user's accounts click the Gear button and choose "Rename..."
-                                            </MudText>
-
                                         }
+                                    </MudStack>
+                                    @if (EditMode && !User.NewEntry)
+                                    {
 
-                                    </Section>
-                                }
+
+                                        <MudText>
+                                            To Modify the user's accounts click the Gear button and choose "Rename..."
+                                        </MudText>
+
+                                    }
+
+                                </Section>
+                            }
 
 
-                            </MudStack>
+                        </MudStack>
 
-                        </MudItem>
-                    </MudGrid>
-                }
+                    </MudItem>
+                </MudGrid>
+                @*}*@
 
 
 
@@ -647,10 +637,19 @@
                 @if (User.CanReadAnyCustomFields)
                 {
                     <Section Title="Additional Field">
-                        @foreach (var field in CustomFields)
+                        @if (CustomFields != null)
                         {
-                           <CustomDirectoryField Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="User" Field="@field"/>
+
+                            @foreach (var field in CustomFields)
+                            {
+                                @if (User.CanReadField(field))
+                                {
+                                    <CustomDirectoryField Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="User" Field="@field" />
+
+                                }
+                            }
                         }
+
                     </Section>
                 }
 
@@ -776,7 +775,7 @@
                 User.Delete();
                 SnackBarService.Success(User.DisplayName + " has been deleted.", "User Deleted");
                 //User = null;
-                Nav.NavigateTo("/users/search");
+                //Nav.NavigateTo("/users/search");
             }
             catch (ApplicationException ex)
             {
@@ -800,6 +799,7 @@
     {
         if (renamedUser is IADUser user)
         {
+
             Nav.NavigateTo(user.SearchUri);
         }
 

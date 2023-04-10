@@ -6,21 +6,21 @@
 
     <EditForm Model="Map" OnValidSubmit="@Save">
 
-        @if (!ReadOnly)
+        @if (!ReadOnly && _permissionDelegates!=null)
         {
 
-            <MudSelectList Validation="@(_permissionDelegates.Count>0)"
+            <MudSelectList Validation="@(_permissionDelegates?.Count>0)"
                    Values=@_permissionDelegates
                    Placeholder=@SettingsLocalization["Choose or Search..."]
                    T="PermissionDelegate"
-                   ToStringFunc="item=>Directory.GetDirectoryModelBySid(item?.DelegateSid)?.CanonicalName"
+                   ToStringFunc=DelegateToString
                    Label="@SettingsLocalization["Delegates"]"
                               MultiSelection
                    @bind-Text=@selectedPermissionDelegateNames
                    @bind-SelectedValues=@Map.PermissionDelegates />
 
 
-            <MudSelectList Validation="@(_permissionDelegates.Count>0)"
+            <MudSelectList Validation="@(_permissionDelegates?.Count>0)"
                    Values=@_accessLevels
                    Placeholder=@SettingsLocalization["Choose or Search..."]
                    T="AccessLevel"
@@ -36,20 +36,20 @@
         else
         {
             <MudStack>
-            @if (selectedPermissionDelegateNames != null)
-            {
-                @foreach (var pd in selectedPermissionDelegateNames.Split(SELECTION_DELIMITER))
+                @if (selectedPermissionDelegateNames != null)
                 {
-                    <MudButton Disabled Color="Color.Secondary">@pd</MudButton>
+                    @foreach (var pd in selectedPermissionDelegateNames.Split(SELECTION_DELIMITER))
+                    {
+                        <MudButton Disabled Color="Color.Secondary">@pd</MudButton>
+                    }
                 }
-            }
-            @if (_accessLevels != null)
-            {
-                @foreach (var al in _accessLevels)
+                @if (_accessLevels != null)
                 {
-                    <MudButton Disabled  Color="Color.Secondary">@al.Name</MudButton>
+                    @foreach (var al in _accessLevels)
+                    {
+                        <MudButton Disabled Color="Color.Secondary">@al.Name</MudButton>
+                    }
                 }
-            }
             </MudStack>
         }
     </EditForm>
@@ -106,7 +106,7 @@
             {
                 if (Map.Id != 0)
                 {
-                    Map = Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Map.Id).FirstOrDefault();
+                    _map = Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Map.Id).FirstOrDefault();
                 }
                 _accessLevels = await Context.AccessLevels.ToListAsync();
                 _permissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin).ToListAsync();
@@ -126,7 +126,7 @@
                     selectedAccessLevelNames = concatenatd;
                     concatenatd = "";
                     Map.PermissionDelegates.Select(
-                         a => Directory.GetDirectoryModelBySid(a.DelegateSid).CanonicalName)
+                         a => Directory.FindEntryBySID(a.DelegateSid).CanonicalName)
                          .ToList().ForEach(s =>
                          {
                              concatenatd += s + ", ";
@@ -160,6 +160,14 @@
         SnackBarService.Success("Mapping deleted");
         await MappingsChanged.InvokeAsync();
 
+    }
+
+    string DelegateToString(PermissionDelegate deleg)
+    {
+        if (deleg.DelegateSid != null)
+            return Directory.FindEntryBySID(deleg?.DelegateSid)?.CanonicalName;
+        else
+            return "Loading...";
     }
     new async Task Save()
     {

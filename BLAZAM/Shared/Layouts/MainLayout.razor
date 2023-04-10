@@ -1,6 +1,5 @@
 ﻿@inherits LayoutComponentBase
-@using BLAZAM.Server.Background;
-@using BLAZAM.Server.Shared.UI.Themes;
+
 @inject NavigationManager Nav
 @inject IActiveDirectoryContext directory
 @inject IApplicationUserStateService UserStateService
@@ -16,61 +15,66 @@
     <MudLayout Style="min-height:98vh;">
         <AuthorizeView Context="authContext">
             <Authorized>
-                    <CascadingValue Value="this">
-                        <MainAppBar />
-                    </CascadingValue>
+                <CascadingValue Value="this">
+                    <MainAppBar />
+                </CascadingValue>
 
-                    @if (Program.InDebugMode)
-                    {
+                @if (Program.InDebugMode)
+                {
 
-                        <AuthorizeView Context="authorizedContext" Roles=@UserRoles.SuperAdmin>
-                            <MudDrawer Width="450px" @bind-Open=@_devDrawerOpen Anchor=Anchor.End Elevation="2" Class="mud-theme-dark">
-                                <MudDrawerContainer>
-                                    <DevTools />
-                                </MudDrawerContainer>
-                            </MudDrawer>
+                    <AuthorizeView Context="authorizedContext" Roles=@UserRoles.SuperAdmin>
+                        <MudDrawer Width="450px" @bind-Open=@_devDrawerOpen Anchor=Anchor.End Elevation="2" Class="mud-theme-dark">
+                            <MudDrawerContainer>
+                                <DevTools />
+                            </MudDrawerContainer>
+                        </MudDrawer>
 
+                    </AuthorizeView>
+                }
+
+
+                <MudDrawer Width="185px" @bind-Open=@DrawerOpen Elevation="3">
+                    <MudDrawerContainer Style="width:100%;height:100%;">
+                        <NavMenu />
+                        <AuthorizeView Roles="@UserRoles.SuperAdmin">
+                            <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
+                                       OnClick="@(()=>{_devDrawerOpen=!_devDrawerOpen;InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
+
+                            <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
+                                       OnClick="@(()=>{dataBrowser.Show();})">Data Browser</MudButton>
                         </AuthorizeView>
+                    </MudDrawerContainer>
+                </MudDrawer>
+
+
+
+                <MudMainContent Class="mud-height-full">
+                    @if (setSubHeader != null)
+                    {
+                        <MudAppBar Color=Color.Primary Style="top:64px;" Elevation="1">
+                            @setSubHeader?.ChildContent
+                        </MudAppBar>
+                        topMarginForContent = "margin-top:64px;";
                     }
 
 
-                    <MudDrawer Width="185px" @bind-Open=@DrawerOpen Elevation="3" Class="mud-theme-dark">
-                        <MudDrawerContainer>
-                            <NavMenu />
-                            <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
-                                       OnClick="@(()=>{_devDrawerOpen=!_devDrawerOpen;InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
-                        </MudDrawerContainer>
-                    </MudDrawer>
+                    <MudContainer Style="@topMarginForContent" MaxWidth="MaxWidth.Large" Class="pt-5 mud-height-full">
 
 
+                        @Body
 
-                    <MudMainContent Class="mud-height-full">
-                        @if (setSubHeader != null)
-                        {
-                            <MudAppBar Color=Color.Primary Style="top:64px;" Elevation="1">
-                                @setSubHeader?.ChildContent
-                            </MudAppBar>
-                            topMarginForContent = "margin-top:64px;";
-                        }
+                        <AppUserPageTracker />
 
+                    </MudContainer>
+                    <MudElement>
+                        <DirectoryConnectingIndicator />
 
-                        <MudContainer Style="@topMarginForContent" MaxWidth="MaxWidth.Large" Class="pt-5 mud-height-full">
+                        <AppFooter />
 
+                    </MudElement>
+                </MudMainContent>
 
-                            @Body
-
-                            <AppUserPageTracker />
-
-                        </MudContainer>
-                        <MudElement>
-                            <DirectoryConnectingIndicator />
-
-                            <AppFooter />
-
-                        </MudElement>
-                    </MudMainContent>
-
-                    <NotificationBroadcastListener />
+                <NotificationBroadcastListener />
             </Authorized>
             <NotAuthorized>
                 <MudMainContent Style="height: 100vh;overflow: auto;">
@@ -94,7 +98,7 @@
 
 
 @{
-    if (CurrentUser.State.User.FindFirst(ClaimTypes.Sid) != null)
+    if (CurrentUser.State.IsAuthenticated && CurrentUser.State.User.FindFirst(ClaimTypes.Sid) != null && !Nav.Uri.Contains("/logout"))
     {
         JSRuntime.InvokeVoidAsync("updateCookieExpiration");
 
@@ -102,8 +106,7 @@
 }
 
 @code {
-
-
+    AppModal? dataBrowser;
 
     bool _drawerOpen = true;
     bool _devDrawerOpen = false;
@@ -163,6 +166,22 @@
             SnackBarService.Error(ex.Message);
         }
     }
-
+    /// <summary>
+    /// Changes the current users theme, and refeshes the current page.
+    /// </summary>
+    /// <param name="theme"></param>
+    public void SetDarkMode(bool darkMode)
+    {
+        try
+        {
+            CurrentUser.State.UserSettings.DarkMode = darkMode;
+            CurrentUser.State.SaveUserSettings();
+            Nav.NavigateTo(Nav.Uri, true);
+        }
+        catch (Exception ex)
+        {
+            SnackBarService.Error(ex.Message);
+        }
+    }
 
 } 

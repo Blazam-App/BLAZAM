@@ -55,47 +55,56 @@
     }
     else if (Searcher.Results.Count == 1)
     {
+
         var result = Searcher.Results[0];
         if (result.CanRead)
         {
+            result.OnModelDeleted = (() => { InvokeAsync(StateHasChanged); });
 
-            @switch (result.ObjectType)
+            @if (result.IsDeleted)
             {
-                case ActiveDirectoryObjectType.User:
-                    <ViewUser @bind-SavingChanges="SavingChanges" User="(IADUser)result" />
-                    break;
-                case ActiveDirectoryObjectType.Group:
-                    <ViewGroup @bind-SavingChanges="SavingChanges" Group="(IADGroup)result" />
-                    break;
-                case ActiveDirectoryObjectType.Computer:
-                    <ViewComputer @bind-SavingChanges="SavingChanges" Computer="(IADComputer)result" />
-                    break;
-                case ActiveDirectoryObjectType.OU:
-                    <ViewOU @bind-SavingChanges="SavingChanges" OU="(IADOrganizationalUnit)result" />
-                    break;
+                <MudText>Deleted</MudText>
+            }
+            else
+            {
+                @switch (result.ObjectType)
+                {
+                    case ActiveDirectoryObjectType.User:
+                        <ViewUser @bind-SavingChanges="SavingChanges" User="(IADUser)result" />
+                        break;
+                    case ActiveDirectoryObjectType.Group:
+                        <ViewGroup @bind-SavingChanges="SavingChanges" Group="(IADGroup)result" />
+                        break;
+                    case ActiveDirectoryObjectType.Computer:
+                        <ViewComputer @bind-SavingChanges="SavingChanges" Computer="(IADComputer)result" />
+                        break;
+                    case ActiveDirectoryObjectType.OU:
+                        <ViewOU @bind-SavingChanges="SavingChanges" OU="(IADOrganizationalUnit)result" />
+                        break;
+                }
             }
         }
-@*        else
-        {
-            <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
+        @*        else
+    {
+    <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
 
-        }
-*@
     }
-  
+    *@
+    }
+
     else if (LoadingData)
     {
         <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
     }
-      else if (Searcher.Results.Count == 0)
+    else if (Searcher.Results.Count == 0)
     {
         <MudAlert Class="mud-alert-filled-info">
             No results were found.
         </MudAlert>
     }
-   @* else
+    @* else
     {
-        <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
+    <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
 
     }*@
 </AuthorizeView>
@@ -174,7 +183,7 @@
              });
 
         //await PerformSearch();
-       // await InvokeAsync(StateHasChanged);
+        // await InvokeAsync(StateHasChanged);
 
     }
 
@@ -225,7 +234,7 @@
         if (Searcher == null)
             Searcher = new ADSearch();
         else
-            Searcher.CancelSeaches();
+            Searcher.Cancel();
         SearchService.SearchTerm = SearchTermParameter;
         Searcher.EnabledOnly = !SearchService.IncludeDisabled;
         Searcher.GeneralSearchTerm = SearchService.SearchTerm;
@@ -233,13 +242,13 @@
         Searcher.ExactMatch = true;
 
         //await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
-
+        //Try exact  match search first
         await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         //search.Wait();
         if (Searcher.Results.Count < 1)
         {
             Searcher.ExactMatch = false;
-            await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
+            results = await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
 
         }
     }

@@ -2,25 +2,26 @@
 
 <Audio Src="/audio/messagePop.mp3" @bind-Playing=@playingPop />
 <Audio Src="/audio/bell.wav" @bind-Playing=@playingBell />
+@if (ChatMessages[thisUri].Count > 0)
+{
+    if (unreadMessages > 0)
+    {
+        <MudBadge Content="@unreadMessages" Color="Color.Error" Overlap=true>
+            <MudIconButton OnClick="@(()=>{chatOpen=!chatOpen;})"
+                   Icon="@Icons.Material.Filled.MarkUnreadChatAlt" />
+        </MudBadge>
+    }
+    else
+    {
+        <MudIconButton OnClick="@(()=>{chatOpen=!chatOpen;})"
+               Icon="@Icons.Material.Filled.Chat" />
+    }
+}
 @if (Viewers.ContainsKey(thisUri) && Viewers[thisUri].Count > 1)
 {
     var otherViewers = Viewers[thisUri].Where(us => !us.Equals(currentUserState));
 
-    @if (ChatMessages[thisUri].Count > 0)
-    {
-        if (unreadMessages > 0)
-        {
-            <MudBadge Content="@unreadMessages" Color="Color.Error" Overlap=true>
-                <MudIconButton OnClick="@(()=>{chatOpen=!chatOpen;})"
-                   Icon="@Icons.Material.Filled.MarkUnreadChatAlt" />
-            </MudBadge>
-        }
-        else
-        {
-            <MudIconButton OnClick="@(()=>{chatOpen=!chatOpen;})"
-               Icon="@Icons.Material.Filled.Chat" />
-        }
-    }
+   
 
     <MudBadge Color="Color.Info" Content="@otherViewers.Count()" Overlap=true>
         <MudMenu AnchorOrigin="@Origin.BottomLeft"

@@ -27,26 +27,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         protected List<GroupMembership> ToAssignTo = new List<GroupMembership>();
         protected List<GroupMembership> ToUnassignFrom = new List<GroupMembership>();
 
-
-        public virtual bool CanAssign
-        {
-            get
-            {
-                return HasPermission(p => p.Where(pm =>
-               pm.AccessLevels.Any(al => al.ActionMap.Any(om =>
-               om.ObjectType == ObjectType &&
-               om.ObjectAction.Name == ObjectActions.Assign.Name &&
-               om.AllowOrDeny
-               ))),
-               p => p.Where(pm =>
-               pm.AccessLevels.Any(al => al.ActionMap.Any(om =>
-               om.ObjectType == ObjectType &&
-               om.ObjectAction.Name == ObjectActions.Assign.Name &&
-               !om.AllowOrDeny
-               )))
-               );
-            }
-        }
+        public virtual bool CanAssign => HasActionPermission(ObjectActions.Assign);
+       
+        public virtual bool CanUnassign => HasActionPermission(ObjectActions.UnAssign);
 
         private bool? _isAMember;
 

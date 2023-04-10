@@ -1,8 +1,11 @@
-﻿namespace BLAZAM.Common.Models.Database.Templates
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace BLAZAM.Common.Models.Database.Templates
 {
     public class DirectoryTemplateFieldValue : AppDbSetBase, ICloneable
     {
-        public ActiveDirectoryField Field { get; set; }
+        public ActiveDirectoryField? Field { get; set; }
+        public CustomActiveDirectoryField? CustomField { get; set; }
         public string Value { get; set; } = "";
 
         /// <summary>
@@ -16,6 +19,8 @@
         /// </summary>
         public bool Required { get; set; }
 
+        [NotMapped]
+        public string FieldDisplayName => Field != null ? Field?.DisplayName : CustomField?.DisplayName;
 
         public object Clone()
         {
@@ -23,6 +28,7 @@
             {
 
                 Field = Field,
+                CustomField = CustomField,
                 Value = Value,
                 Editable = Editable,
                 Required = Required
@@ -32,7 +38,17 @@
 
         public override string? ToString()
         {
-            return Field.ToString() + "=" + Value;
+            if(Field != null) return Field.ToString() + "=" + Value;
+            return CustomField.ToString() + "=" + Value;
+        }
+        public override bool Equals(object? obj)
+        {
+            if(!base.Equals(obj)) return false;
+            if(obj is DirectoryTemplateFieldValue other)
+            {
+                return other.FieldDisplayName == FieldDisplayName && other.Value == Value;
+            }
+            return false;
         }
     }
 }

@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.7.5</AssemblyVersion>
-		<Version>2023.04.07.0141</Version>
+		<Version>2023.04.10.2058</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -17,6 +17,10 @@
 	  <Content Remove="Data\Permissions\**" />
 	  <EmbeddedResource Remove="Data\Permissions\**" />
 	  <None Remove="Data\Permissions\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Remove="Pages\Users\MemberOfList.razor" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -157,5 +161,14 @@
 	</ItemGroup>
 <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />
-</Target>	
+</Target>
+<ItemGroup>
+  <UpToDateCheckInput Remove="Pages\Users\MemberOfList.razor" />
+</ItemGroup>
+<ItemGroup>
+  <_ContentIncludedByDefault Remove="Pages\Users\MemberOfList.razor" />
+</ItemGroup>
+<ItemGroup>
+  <None Include="Shared\UI\Groups\MemberOfList.razor" />
+</ItemGroup>	
 </Project>

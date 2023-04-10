@@ -4,28 +4,66 @@ using System.Drawing;
 
 namespace BLAZAM.Server.Shared.UI.Themes
 {
-    public class LightTheme : ApplicationTheme
+    public class BlueTheme : ApplicationTheme
     {
-        public LightTheme()
+        public BlueTheme()
         {
 
-            _name = "Light";
 
 
-            _textPrimary = "#050505";
-            _textSecondary = Color.SlateGray.ToHex();
+            _name = "Blue";
 
-            _light = Color.WhiteSmoke.ToHex();
-            _dark = "#001529";
-            _primary = "#2261d3";
-            _secondary = "#0c13a7";
-            _info = "#46a9ef";
-            _success = Color.ForestGreen.ToHex();
-            _warning = Color.Gold.ToHex();
-            error = Color.Red.ToHex();
-            _body = Color.LightGray.ToHex();
-            _muted = Color.DarkGray.ToHex();
-            _white = Color.White.ToHex();
+
+            pallete = new()
+            {
+                TextPrimary = "#050505",
+                TextSecondary = Color.SlateGray.ToHex(),
+                ActionDefault = "#9aafc3",
+                HoverOpacity = 0,
+                Surface = Color.WhiteSmoke.ToHex(),
+                DarkContrastText = Color.WhiteSmoke.ToHex(),
+                AppbarBackground = "#2261d3",
+                DrawerBackground = "#001529",
+                DrawerText = Color.WhiteSmoke.ToHex(),
+                Background = "#efefef",
+                //_textDark = "#001529",
+                Dark = "#001529",
+                Primary = "#2261d3",
+                Secondary = "#0c13a7",
+                Info = "#46a9ef",
+                Success = Color.ForestGreen.ToHex(),
+                Warning = Color.Gold.ToHex(),
+                Error = Color.Red.ToHex(),
+                //_body = Color.LightGray.ToHex(),
+                TextDisabled = Color.DarkGray.ToHex(),
+                White = Color.White.ToHex(),
+            };
+
+            darkPallete = new()
+            {
+                TextPrimary = "#c7c7c7",
+                TextSecondary = "#7e95a7",
+                ActionDefault = "#7b9ab1",
+                DarkContrastText = "#383b40",
+                Surface = "#545960",
+                Background = "#383b40",
+                // _textDark = "#202226",
+                Dark = "#0f141e",
+                Primary = "#132a40",
+                 AppbarBackground = "#132a40",
+                DrawerBackground = "#0f141e",
+                 DrawerText = "#c7c7c7",
+                Secondary = "#183042",
+                Info = "#1b8f7e",
+                Success = "#5fad00",
+                Warning = "#ffc270",
+                Error = "#f60066",
+                //_body = _light,
+                TextDisabled = Color.DarkGray.ToHex(),
+                White = Color.WhiteSmoke.ToHex(),
+                HoverOpacity = 0.25,
+            };
+
         }
     }
 }

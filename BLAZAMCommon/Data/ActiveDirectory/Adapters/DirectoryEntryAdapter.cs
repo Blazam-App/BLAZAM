@@ -8,6 +8,7 @@ using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.Permissions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.TeamFoundation.Work.WebApi.Exceptions;
 using Newtonsoft.Json.Linq;
 using System.Data;
 using System.DirectoryServices;
@@ -38,6 +39,9 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         public AppEvent? OnModelCommited { get; set; }
 
         /// <inheritdoc/>
+        public AppEvent? OnModelDeleted{ get; set; }
+
+        /// <inheritdoc/>
         public virtual List<AuditChangeLog> Changes
         {
             get
@@ -66,9 +70,15 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
             }
         }
+        /// <summary>
+        /// Actions to perform during <see cref="CommitChanges"/>
+        /// </summary>
         protected List<Func<bool>> CommitActions { get; set; } = new();
+
         private DirectoryEntry? directoryEntry;
-        public SearchResult? searchResult;
+
+        protected SearchResult? searchResult;
+
         protected AppDatabaseFactory DbFactory;
         protected IApplicationUserState? CurrentUser { get; set; }
 
@@ -276,13 +286,15 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             }
 
         }
+        private bool _isDeleted = false;
         public virtual bool IsDeleted
         {
             get
             {
 
-                return GetProperty<bool>("isdeleted");
+                return GetProperty<bool>("isdeleted")||_isDeleted;
             }
+            private set { _isDeleted = value; }
 
         }
         /// <inheritdoc/>
@@ -396,32 +408,37 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     "be found in the application cache.");
                 return false;
             }
-            var possibleReads = allowSelector.Invoke(baseSearch).ToList();
-            if (denySelector != null)
+            try
             {
-                var possibleDenys = denySelector.Invoke(baseSearch).ToList();
-
-                if (possibleReads != null && possibleReads.Count > 0)
+                var possibleReads = allowSelector.Invoke(baseSearch).ToList();
+                if (denySelector != null)
                 {
-                    if (possibleDenys != null && possibleDenys.Count > 0)
+                    var possibleDenys = denySelector.Invoke(baseSearch).ToList();
+
+                    if (possibleReads != null && possibleReads.Count > 0)
                     {
-                        foreach (var d in possibleDenys)
+                        if (possibleDenys != null && possibleDenys.Count > 0)
                         {
-                            if (d.OU.Length > possibleReads.OrderByDescending(r => r.OU.Length).First().OU.Length)
-                                return false;
+                            foreach (var d in possibleDenys)
+                            {
+                                if (d.OU.Length > possibleReads.OrderByDescending(r => r.OU.Length).First().OU.Length)
+                                    return false;
+                            }
+                        }
+                        else
+                        {
+                            return true;
                         }
                     }
-                    else
-                    {
-                        return true;
-                    }
                 }
-            }
-            else
+                else
+                {
+                    return possibleReads?.Count > 0;
+                }
+            }catch(Exception ex)
             {
-                return possibleReads?.Count > 0;
+                Loggers.SystemLogger.Error(ex.Message);
             }
-
             return false;
         }
         /// <inheritdoc/>
@@ -446,12 +463,16 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
 
         }
 
+        /// <inheritdoc/>
         public virtual bool CanReadAnyCustomFields
         {
             get
             {
-                //TODO  implement logic
-                return true;
+                return HasPermission(p => p.Where(pm =>
+             pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
+             om.CustomField != null &&
+             om.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level
+             ))));
             }
 
         }
@@ -517,37 +538,77 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
         protected ADSettings? DirectorySettings { get; private set; }
 
         /// <inheritdoc/>
-        public virtual bool CanReadField(ActiveDirectoryField field)
+        public virtual bool CanReadField(IActiveDirectoryField field)
         {
-            return HasPermission(p => p.Where(pm =>
-               pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
-               om.Field.FieldName == field.FieldName &&
-               om.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level
-               ))),
-               p => p.Where(pm =>
-               pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
-               om.Field.FieldName == field.FieldName &&
-               om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level
-               )))
-               );
+            if(field is ActiveDirectoryField)
+            {
+                return HasPermission(p => p.Where(pm =>
+              pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
+              om.Field?.FieldName == field.FieldName &&
+              om.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level
+              ))),
+              p => p.Where(pm =>
+              pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
+              om.Field?.FieldName == field.FieldName &&
+              om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level
+              )))
+              );
+            }
+            else if(field is CustomActiveDirectoryField)
+            {
+                return HasPermission(p => p.Where(pm =>
+              pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
+              om.CustomField?.FieldName == field.FieldName &&
+              om.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level
+              ))),
+              p => p.Where(pm =>
+              pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
+              om.CustomField?.FieldName == field.FieldName &&
+              om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level
+              )))
+              );
+            }
+            throw new ApplicationException("The field provided is invalid");
+           
 
         }
 
         /// <inheritdoc/>
-        public virtual bool CanEditField(ActiveDirectoryField field)
+        public virtual bool CanEditField(IActiveDirectoryField field)
         {
-            return HasPermission(p => p.Where(pm =>
-               pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
-               om.Field.FieldName == field.FieldName &&
-               om.FieldAccessLevel.Level > FieldAccessLevels.Read.Level
-               ))),
-               p => p.Where(pm =>
-               pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
-               om.Field.FieldName == field.FieldName &&
-               om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level
-               )))
-               );
+            if (field is ActiveDirectoryField)
+            {
+                return HasPermission(p => p.Where(pm =>
+                   pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
+                   om.Field?.FieldName == field.FieldName &&
+                   om.FieldAccessLevel.Level > FieldAccessLevels.Read.Level
+                   ))),
+                   p => p.Where(pm =>
+                   pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
+                   om.Field?.FieldName == field.FieldName &&
+                   om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level
+                   )))
+                   );
 
+            }
+            else if (field is CustomActiveDirectoryField)
+            {
+                return HasPermission(p => p.Where(pm =>
+                    pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
+                    om.CustomField?.FieldName == field.FieldName &&
+                    om.FieldAccessLevel.Level > FieldAccessLevels.Read.Level
+                    ))),
+                    p => p.Where(pm =>
+                    pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
+                    om.CustomField?.FieldName == field.FieldName &&
+                    om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level
+                    )))
+                    );
+
+            }
+            throw new ApplicationException("The field provided is invalid");
+
+           
 
         }
 
@@ -621,7 +682,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                         || (p.Value is string strValue && strValue.IsNullOrEmpty())
                         || (p.Value is DateTime dateValue && dateValue == DateTime.MinValue))
                             {
-                                DirectoryEntry.Properties[p.Key].Clear();
+                                
+                                    DirectoryEntry.Properties[p.Key].Clear();
 
                             }
                             else
@@ -693,6 +755,8 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     case ActiveDirectoryObjectType.Group:
                     case ActiveDirectoryObjectType.Computer:
                         DirectoryEntry?.Parent.Children.Remove(DirectoryEntry);
+                        IsDeleted = true;
+                        OnModelDeleted?.Invoke();
                         break;
                     default:
                         throw new ApplicationException("Deleting objects other than users is not supported yet.");
@@ -913,6 +977,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
                     {
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
                         NewEntryProperties[propertyName] = null;
+                        HasUnsavedChanges = true;
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
                     }
                     else

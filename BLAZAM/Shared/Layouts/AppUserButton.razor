@@ -34,7 +34,7 @@
     </MudPopover>
 }
 
-<MudMenu>
+<MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
     <ActivatorContent>
         @{
             var avatarBgColor = GenerateAvatarColor(CurrentUser.State.Username);
@@ -62,7 +62,9 @@
 
     </ActivatorContent>
     <ChildContent>
-
+        <MudText Typo=Typo.caption Class="my-1" Style="text-align:center">
+            @CurrentUser.Username
+        </MudText>
         @if (messages > 0)
         {
             <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})">Notifications</MudMenuItem>

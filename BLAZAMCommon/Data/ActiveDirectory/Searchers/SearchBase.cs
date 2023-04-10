@@ -27,6 +27,6 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
         /// <summary>
         /// Allows for cancelling the search
         /// </summary>
-        protected CancellationTokenSource tokenSource { get; set; } = new CancellationTokenSource();
+        protected CancellationToken? cancellationToken { get; set; } = new CancellationToken();
     }
 }

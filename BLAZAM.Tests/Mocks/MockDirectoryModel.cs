@@ -61,12 +61,14 @@ namespace BLAZAM.Tests.Mocks
 
         public AppEvent<IDirectoryEntryAdapter> OnDirectoryModelRenamed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public bool CanEditField(ActiveDirectoryField field)
+        public bool CanReadAnyCustomFields => throw new NotImplementedException();
+
+        public bool CanEditField(IActiveDirectoryField field)
         {
             throw new NotImplementedException();
         }
 
-        public bool CanReadField(ActiveDirectoryField field)
+        public bool CanReadField(IActiveDirectoryField field)
         {
             throw new NotImplementedException();
         }
@@ -97,6 +99,16 @@ namespace BLAZAM.Tests.Mocks
         }
 
         public void EnsureDirectoryEntry()
+        {
+            throw new NotImplementedException();
+        }
+
+        public T? GetCustomProperty<T>(string propertyName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTime? GetDateTimeProperty(string propertyName)
         {
             throw new NotImplementedException();
         }
@@ -132,6 +144,11 @@ namespace BLAZAM.Tests.Mocks
         }
 
         public bool Rename(string newName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetCustomProperty(string propertyName, object? value)
         {
             throw new NotImplementedException();
         }

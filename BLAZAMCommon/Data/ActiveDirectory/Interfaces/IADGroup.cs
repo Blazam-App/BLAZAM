@@ -10,6 +10,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
         List<IADGroup> GroupMembers { get; }
         List<IGroupableDirectoryAdapter> Members { get;}
         List<string> MembersAsStrings { get; }
+        IEnumerable<IGroupableDirectoryAdapter> NestedMembers { get;  }
 
         void AssignMember(IGroupableDirectoryAdapter member);
         void UnassignMember(IGroupableDirectoryAdapter member);

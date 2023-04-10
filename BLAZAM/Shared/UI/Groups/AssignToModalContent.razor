@@ -1,44 +1,63 @@
 ﻿@inherits AppModalContent
 
 
-    <ADAutoComplete Label="Group Name" SearchObjectType="ActiveDirectoryObjectType.Group"
-            @bind-SelectedResult=@Group/>
-    
-    
-            <ADAutoComplete  Label="Copy Memberships From" SearchObjectType="ActiveDirectoryObjectType.All"
-                        @bind-SelectedResult=@copyFrom
-                        CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
+<ADAutoComplete Label="Group Name" SearchObjectType="ActiveDirectoryObjectType.Group"
+                @bind-SelectedResult=@Group />
 
-    
-    @if (CopyFrom != null)
+
+<ADAutoComplete Label="Copy Memberships From" SearchObjectType="ActiveDirectoryObjectType.All"
+                @bind-SelectedResult=@copyFrom
+                CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
+
+
+@if (CopyFrom != null)
+{
+    var existingGroups = DirectoryModel.MemberOf;
+
+    if (CopyFrom.MemberOf.Any(g => existingGroups.Contains(g)))
     {
-        var existingGroups = DirectoryModel.MemberOf;
-        <MudText>Will be added to...</MudText>
-
-        foreach (var group in CopyFrom.MemberOf)
-        {
-            <MudCard>
-                <MudCardHeader>
-
-                    @if (existingGroups.Contains(group))
-                    {
-                        <MudIcon Icon=@("fa-check") />
-                    }
-                    else
-                    {
-                        <MudIcon Icon=@("fa-plus") />
-                    }
+        <MudText>Already a member of...</MudText>
+        <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
+            @foreach (var group in CopyFrom.MemberOf.Where(g => existingGroups.Contains(g)))
+            {
+                <MudListItem>
+            
+                        <MudIcon Color=Color.Success Icon=@Icons.Material.Filled.PlaylistAddCheck />
+                    
+                   
                     @group.GroupName
 
-                </MudCardHeader>
-            </MudCard>
-        }
+                </MudListItem>
+            }
+        </MudList>
     }
+    if (CopyFrom.MemberOf.Any(g => !existingGroups.Contains(g)))
+    {
+        <MudText>Will be added to...</MudText>
+        <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
+
+            @foreach (var group in CopyFrom.MemberOf.Where(g => !existingGroups.Contains(g)))
+            {
+                <MudListItem>
+
+
+                
+                        <MudIcon Color=Color.Info Icon="@Icons.Material.Filled.PlaylistAdd" />
+                    
+                    @group.GroupName
+
+                </MudListItem>
+
+            }
+        </MudList>
+
+    }
+}
 
 
 @code {
 
-    #nullable disable warnings
+#nullable disable warnings
     [Parameter]
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
 

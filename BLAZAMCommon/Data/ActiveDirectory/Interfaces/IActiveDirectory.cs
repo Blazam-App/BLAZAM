@@ -66,7 +66,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Interfaces
 
         IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid);
         
-        IDirectoryEntryAdapter? GetDirectoryModelBySid(byte[] sid);
+        IDirectoryEntryAdapter? FindEntryBySID(byte[] sid);
 
 
         

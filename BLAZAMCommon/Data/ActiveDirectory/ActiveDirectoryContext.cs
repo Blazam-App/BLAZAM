@@ -277,14 +277,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 
                         if (ad != null)
                         {
-                            //_authType = AuthenticationTypes.Secure;
-                            _authType = AuthenticationTypes.Secure | AuthenticationTypes.Signing;
+                            _authType = AuthenticationTypes.Secure;
+                            //_authType = AuthenticationTypes.Secure | AuthenticationTypes.Signing;
                             if (ad.UseTLS)
                             {
-                                //_authType = AuthenticationTypes.Encryption;
-                                _authType = (AuthenticationTypes.Encryption | AuthenticationTypes.Secure);
+                                //_authType = (AuthenticationTypes.Encryption | AuthenticationTypes.Secure);
 
-                                //_authType = (AuthenticationTypes.SecureSocketsLayer|AuthenticationTypes.Secure);
+                                _authType = (AuthenticationTypes.SecureSocketsLayer|AuthenticationTypes.Secure);
                             }
 
                             if (ad != null && ad.FQDN != null && ad.Username != null)
@@ -481,7 +480,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                 try
                 {
                     ModifyResponse response = (ModifyResponse)connection.SendRequest(request);
-                    if (response.ResultCode != ResultCode.Success)
+                    if (response.ResultCode == ResultCode.Success)
                     {
                         return true;
                     }
@@ -496,7 +495,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory
 
         }
 
-        public IDirectoryEntryAdapter? GetDirectoryModelBySid(byte[] sid) => GetDirectoryModelBySid(sid.ToSidString());
+        public IDirectoryEntryAdapter? FindEntryBySID(byte[] sid) => GetDirectoryModelBySid(sid.ToSidString());
         public IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid)
         {
             var searcher = new ADSearch();

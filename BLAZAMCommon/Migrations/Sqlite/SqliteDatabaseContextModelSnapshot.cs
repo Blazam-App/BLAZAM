@@ -190,7 +190,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         {
                             Id = 10,
                             DisplayName = "City",
-                            FieldName = "city",
+                            FieldName = "l",
                             FieldType = 0
                         },
                         new
@@ -360,6 +360,13 @@ namespace BLAZAM.Common.Migrations.Sqlite
                             DisplayName = "Manager",
                             FieldName = "manager",
                             FieldType = 0
+                        },
+                        new
+                        {
+                            Id = 35,
+                            DisplayName = "Photo",
+                            FieldName = "thumbnail",
+                            FieldType = 2
                         });
                 });
 
@@ -748,6 +755,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("AdminPassword")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DuoApiHost")
@@ -773,7 +781,8 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         new
                         {
                             Id = 1,
-                            AdminPassword = "password"
+                            AdminPassword = "password",
+                            SessionTimeout = 900
                         });
                 });
 
@@ -979,17 +988,25 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ActiveDirectoryFieldId")
+                    b.Property<int?>("CustomFieldId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("FieldAccessLevelId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("FieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ObjectType")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ActiveDirectoryFieldId");
+                    b.HasIndex("CustomFieldId");
 
                     b.HasIndex("FieldAccessLevelId");
+
+                    b.HasIndex("FieldId");
 
                     b.ToTable("AccessLevelFieldMapping");
                 });
@@ -1219,13 +1236,16 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("CustomFieldId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("DirectoryTemplateId")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("Editable")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("FieldId")
+                    b.Property<int?>("FieldId")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("Required")
@@ -1236,6 +1256,8 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomFieldId");
 
                     b.HasIndex("DirectoryTemplateId");
 
@@ -1273,6 +1295,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<string>("APIToken")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("DarkMode")
+                        .HasColumnType("INTEGER");
+
                     b.Property<byte[]>("ProfilePicture")
                         .HasColumnType("BLOB");
 
@@ -1306,7 +1331,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("Created")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Dismissable")
@@ -1440,17 +1465,21 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessMapping", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.ActiveDirectoryField", "Field")
+                    b.HasOne("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", "CustomField")
                         .WithMany()
-                        .HasForeignKey("ActiveDirectoryFieldId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomFieldId");
 
                     b.HasOne("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", "FieldAccessLevel")
                         .WithMany()
                         .HasForeignKey("FieldAccessLevelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("BLAZAM.Common.Models.Database.ActiveDirectoryField", "Field")
+                        .WithMany()
+                        .HasForeignKey("FieldId");
+
+                    b.Navigation("CustomField");
 
                     b.Navigation("Field");
 
@@ -1470,15 +1499,19 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
             modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplateFieldValue", b =>
                 {
+                    b.HasOne("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", "CustomField")
+                        .WithMany()
+                        .HasForeignKey("CustomFieldId");
+
                     b.HasOne("BLAZAM.Common.Models.Database.Templates.DirectoryTemplate", null)
                         .WithMany("FieldValues")
                         .HasForeignKey("DirectoryTemplateId");
 
                     b.HasOne("BLAZAM.Common.Models.Database.ActiveDirectoryField", "Field")
                         .WithMany()
-                        .HasForeignKey("FieldId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FieldId");
+
+                    b.Navigation("CustomField");
 
                     b.Navigation("Field");
                 });

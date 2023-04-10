@@ -5,21 +5,14 @@
 @using BLAZAM.Server.Data.Services.Email;
 @inherits AppComponentBase
 @{
-    //string userRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchUsers;
-    //string groupRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchGroups;
-    //string computerRole = UserRoles.SuperAdmin + ", " + UserRoles.Computers;
-    //string ouRole = UserRoles.SuperAdmin + ", " + UserRoles.SearchOUs;
+
     string createRole = UserRoles.SuperAdmin + ", " + UserRoles.CreateUsers + ", " + UserRoles.CreateGroups + ", " + UserRoles.CreateOUs;
-    //string createUser = UserRoles.SuperAdmin + ", " + UserRoles.CreateUsers;
-    //string createGroup = UserRoles.SuperAdmin + ", " + UserRoles.CreateGroups;
-    //string createOU = UserRoles.SuperAdmin + ", " + UserRoles.CreateOUs;
 }
 
 
 
 
-<MudPaper Width="180px" Elevation="0" Class="py-3 mud-theme-dark">
-    <MudNavMenu Color="Color.Success" Bordered="true">
+    <MudNavMenu Color="Color.Success" Bordered="true" Style="width:180px;" Class="py-3">
         <MudStack Row=true>
             <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
             <MudText Align="Align.Center" Class="align-middle"> @DatabaseCache.ApplicationSettings?.AppAbbreviation</MudText>
@@ -28,9 +21,15 @@
         <MudNavLink Href="/home" Icon="@Icons.Material.Filled.Dashboard">@AppLocalization["Home"]</MudNavLink>
         <AuthorizeView Context="createContext" Roles=@createRole>
             <MudNavGroup Icon="@Icons.Material.Filled.Create" Title="@AppLocalization["Create"]" Expanded="false" Disabled=@(Monitor.DirectoryConnected != ServiceConnectionState.Up)>
-                <MudNavLink Href="/users/create">@AppLocalization["Create User"]</MudNavLink>
-                <MudNavLink Href="/groups/create">@AppLocalization["Create Group"]</MudNavLink>
-                <MudNavLink Href="/ou/create">@AppLocalization["Create OU"]</MudNavLink>
+                <AuthorizeView Roles="@UserRoles.CreateUsers">
+                    <MudNavLink Href="/users/create">@AppLocalization["Create User"]</MudNavLink>
+                </AuthorizeView>
+                <AuthorizeView Roles="@UserRoles.CreateGroups">
+                    <MudNavLink Href="/groups/create">@AppLocalization["Create Group"]</MudNavLink>
+                </AuthorizeView>
+                <AuthorizeView Roles="@UserRoles.CreateOUs">
+                    <MudNavLink Href="/ou/create">@AppLocalization["Create OU"]</MudNavLink>
+                </AuthorizeView>
             </MudNavGroup>
         </AuthorizeView>
         <AuthorizeView Roles=@UserRoles.SuperAdmin>
@@ -50,9 +49,8 @@
         </AuthorizeView>
 
 
-        
+
     </MudNavMenu>
-</MudPaper>
 
 
 

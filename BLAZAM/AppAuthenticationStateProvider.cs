@@ -14,6 +14,7 @@ using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using BLAZAM.Common.Extensions;
+using BLAZAM.Server.Helpers;
 
 namespace BLAZAM
 {
@@ -25,7 +26,7 @@ namespace BLAZAM
     {
         public AppAuthenticationStateProvider(AppDatabaseFactory factory,
             IActiveDirectoryContext directoy,
-            LoginPermissionApplicator permissionHandler,
+            PermissionApplicator permissionHandler,
             IApplicationUserStateService userStateService,
             IHttpContextAccessor ca,
             IDuoClientProvider dcp,
@@ -46,7 +47,7 @@ namespace BLAZAM
         private readonly IEncryptionService _encryption;
         private readonly IActiveDirectoryContext _directory;
         private readonly AppDatabaseFactory _factory;
-        private readonly LoginPermissionApplicator _permissionHandler;
+        private readonly PermissionApplicator _permissionHandler;
 
         private readonly IApplicationUserStateService _userStateService;
 
@@ -106,6 +107,7 @@ namespace BLAZAM
         /// <returns>An unauthenticated annonymous User ClaimsPrincipal</returns>
         private ClaimsPrincipal GetAnonymous()
         {
+
             var identity = new ClaimsIdentity(new[]
            {
                     new Claim(ClaimTypes.Sid, "0"),
@@ -118,26 +120,28 @@ namespace BLAZAM
         }
         private ClaimsPrincipal GetDemoUser()
         {
-
-            var identity = new ClaimsIdentity(new[]
+            List<Claim> claims = new List<Claim>
             {
-                    new Claim(ClaimTypes. Sid, "2"),
-                    new Claim(ClaimTypes.Name, "Demo"),
-                    new Claim(ClaimTypes.Role, UserRoles.SuperAdmin ),
-                    new Claim(ClaimTypes.Actor,"2")
-                }, AppAuthenticationTypes.LocalAuthentication);
+                new Claim(ClaimTypes.Sid, "2"),
+                new Claim(ClaimTypes.Name, "Demo"),
+                new Claim(ClaimTypes.Actor, "2")
+            };
+            claims.AddSuperAdmin();
+            claims.AddAllRoles();
+            var identity = new ClaimsIdentity(claims.ToArray(), AppAuthenticationTypes.LocalAuthentication);
             return new ClaimsPrincipal(identity);
         }
         private ClaimsPrincipal GetLocalAdmin(string name = "admin")
         {
-
-            var identity = new ClaimsIdentity(new[]
+            List<Claim> claims = new List<Claim>
             {
-                    new Claim(ClaimTypes. Sid, "1"),
+                 new Claim(ClaimTypes. Sid, "1"),
                     new Claim(ClaimTypes.Name, name),
-                    new Claim(ClaimTypes.Role, UserRoles.SuperAdmin ),
                     new Claim(ClaimTypes.Actor,"1")
-                }, AppAuthenticationTypes.LocalAuthentication);
+            };
+            claims.AddSuperAdmin();
+            claims.AddAllRoles();
+            var identity = new ClaimsIdentity(claims.ToArray(), AppAuthenticationTypes.LocalAuthentication);
             return new ClaimsPrincipal(identity);
         }
         /// <summary>
@@ -339,7 +343,6 @@ namespace BLAZAM
             _newUserState.DirectoryUser = user;
             //Load privilege levels for user
             await _permissionHandler.LoadPermissions(user);
-
             var userRoles = TransformUserRoles(user);
             //TransformUserRoles returns an empty list if the user has no login rights
             if (userRoles.Count < 1)
@@ -407,8 +410,9 @@ namespace BLAZAM
 
             if (user.PermissionDelegates.Any(p => p.IsSuperAdmin))
             {
-                userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SuperAdmin));
-
+                userRoles.AddSuperAdmin();
+                userRoles.AddAllRoles();
+               
             }
             else
             {

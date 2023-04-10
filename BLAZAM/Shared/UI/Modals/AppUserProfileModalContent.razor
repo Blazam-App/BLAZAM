@@ -25,6 +25,7 @@
 
 
 </MudNavGroup>
+<MudSwitch Checked="@CurrentUser.State.UserSettings.DarkMode" CheckedChanged=@((state)=>{mainLayout.SetDarkMode(state);}) Color="Color.Primary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode" />
 
 @code {
     [CascadingParameter]

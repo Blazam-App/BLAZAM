@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
+﻿using BLAZAM.Common.Data.ActiveDirectory.Models;
+
+namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 {
     public class ADSearchFields
     {
@@ -25,5 +27,6 @@
         public string? CN { get; set; }
 
         public string? MemberOf { get; set; }
+        public ADGroup? NestedMemberOf { get; internal set; }
     }
 }

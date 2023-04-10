@@ -7,6 +7,7 @@
 @using Microsoft.Extensions.Options;
 @inject IHttpContextAccessor context
 @inject IApplicationUserStateService userStateService
+@inject ICurrentUserStateService  currentUser
 @*<Blazorise.ThemeProvider Theme="@activeTheme.Theme">*@
 <CascadingAuthenticationState>
 
@@ -66,32 +67,32 @@
 
 </CascadingAuthenticationState>
 
-<MudThemeProvider Theme="@activeTheme.Theme" />
+<MudThemeProvider IsDarkMode="@darkMode" Theme="@activeTheme.Theme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <SessionExpirationWarningProvider />
 
 @code {
-
-
-    ApplicationTheme activeTheme = new LightTheme();
+    bool darkMode = false;
+    ApplicationTheme activeTheme = new BlueTheme();
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        var userTheme = userStateService.CurrentUserState?.UserSettings?.Theme;
+        var userTheme = currentUser.State.UserSettings?.Theme;
         switch (userTheme)
         {
-            case "Light":
+            case "Blue":
             default:
-                activeTheme = new LightTheme();
+                activeTheme = new BlueTheme();
                 break;
-            case "Dark":
-                activeTheme = new DarkTheme();
+            case "Red":
+                activeTheme = new RedTheme();
                 break;
 
 
         }
+        darkMode = currentUser.State.UserSettings?.DarkMode==true;
     }
 
 }

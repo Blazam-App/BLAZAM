@@ -28,7 +28,7 @@
                     }
                     <MudTooltip Text="@cellContext.Item.ObjectType.ToString()">
                         <MudIcon Icon="@icon" />
-                        </MudTooltip>
+                    </MudTooltip>
 
                 </CellTemplate>
             </TemplateColumn>
@@ -57,9 +57,11 @@
                     Remove Member
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
-                    <MudButton Color="Color.Error" OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(StateHasChanged);})">
-                        Remove
-                    </MudButton>
+                    <MudTooltip ShowOnHover=@(!cellContext.Item.CanUnassign) Text="You don't have permission to remove this group member">
+                        <MudButton Disabled=@(!cellContext.Item.CanUnassign) Color="Color.Error" OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(StateHasChanged);})">
+                            Remove
+                        </MudButton>
+                    </MudTooltip>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>

@@ -170,7 +170,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Models
             IADUser newUser = new ADUser();
             if (DirectoryEntry == null)
                 DirectoryEntry = searchResult.GetDirectoryEntry();
-            newUser.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim(), "user"),Directory);
+            newUser.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim().Replace(",","\\,"), "user"),Directory);
             newUser.NewEntry = true;
             return newUser;
 

@@ -16,10 +16,6 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
                      Disabled=Program.InDemoMode />
 
 </MudStack>
-<MudStack Row=true>
-    <MudButton Color="Color.Primary" OnClick="AddGroup">Add</MudButton>
-
-</MudStack>
 
 
 @code {
@@ -29,35 +25,30 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
     public EventCallback DelegateAdded { get; set; }
 
     PermissionDelegate NewPermissionDelegate = new PermissionDelegate();
-    public async Task<bool> AddGroup()
+    public async void AddGroup()
     {
         try
         {
-            if (Context == null) return false;
-
+            if (Context == null) return;
+            if (Context.PermissionDelegate.Any(pd => pd.DelegateSid == selectedDelegate.SID))
+            {
+                var confilctingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
+                if (confilctingDelegate != null)
+                    if (confilctingDelegate.DeletedAt == null)
+                        SnackBarService.Error("That delegate already exists.");
+                    else
+                        SnackBarService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
+                return;
+            }
             NewPermissionDelegate.DelegateSid = selectedDelegate.SID;
             Context.PermissionDelegate.Add(NewPermissionDelegate);
             await Context.SaveChangesAsync();
             NewPermissionDelegate = new PermissionDelegate();
-            Modal?.Close();
+            Modal?.Hide();
             await DelegateAdded.InvokeAsync();
-            return true;
+            return;
         }
-        catch (DbUpdateException ex)
-        {
-            switch (ex.InnerException?.HResult)
-            {
-                case -2146232060:
-                    var confilctingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
-                    if (confilctingDelegate != null)
-                        if (confilctingDelegate.DeletedAt == null)
-                            SnackBarService.Error("That delegate already exists.");
-                        else
-                            SnackBarService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
-
-                    break;
-            }
-        }
+        
         catch (Exception ex)
         {
 
@@ -65,12 +56,11 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
             Loggers.ActiveDirectryLogger.Error(ex.Message, ex);
             SnackBarService.Error("An unexpected error has occured.");
         }
-
-        return false;
     }
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        Modal.OnYes = AddGroup;
     }
 
 }

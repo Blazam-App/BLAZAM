@@ -61,7 +61,7 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
          
 
         }
-
+        
         public async Task<List<IADGroup>> FindNewGroupsAsync(int maxAgeInDays = 14)
         {
             return await Task.Run(() =>
@@ -84,6 +84,14 @@ namespace BLAZAM.Common.Data.ActiveDirectory.Searchers
 
             }.Search<ADGroup, IADGroup>();
             return results.OrderByDescending(u => u.Created).ToList();
+
+        }
+
+
+        public List<IGroupableDirectoryAdapter>? GetAllNestedMembers(IADGroup group)
+        {
+            string UserSearchFieldsQuery = "(&(memberOf:1.2.840.113556.1.4.1941:=" + group.DN + "))";
+            return ConvertTo<GroupableDirectoryAdapter>(SearchObjects(UserSearchFieldsQuery,ActiveDirectoryObjectType.User)).Cast<IGroupableDirectoryAdapter>().ToList();
 
         }
 
