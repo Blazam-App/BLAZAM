@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 
-namespace BLAZAM.Server.Data
+namespace BLAZAM.Update
 {
     public class ApplicationVersion : IComparable
     {
@@ -14,12 +14,12 @@ namespace BLAZAM.Server.Data
         /// current application version.
         /// </summary>
         /// <param name="shortVersion"></param>
-        public ApplicationVersion()
+        public ApplicationVersion(Assembly executingAssembly)
         {
-            string[]? assemblyVersion = (Assembly.GetExecutingAssembly().GetName().Version?.ToString().Split(".")) ?? throw new ApplicationException("The assembly version of the running app could not be read.");
+            string[]? assemblyVersion = (executingAssembly.GetName().Version?.ToString().Split(".")) ?? throw new ApplicationException("The assembly version of the running app could not be read.");
             AssemblyVersion = new Version(int.Parse(assemblyVersion[0]), int.Parse(assemblyVersion[1]), int.Parse(assemblyVersion[2]));
 
-            BuildNumber = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+            BuildNumber = FileVersionInfo.GetVersionInfo(executingAssembly.Location).ProductVersion;
         }
         public ApplicationVersion(Version assemblyVersion, string? buildNumber)
         {

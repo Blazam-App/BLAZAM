@@ -1,20 +1,14 @@
 ﻿using Octokit;
 
-namespace BLAZAM.Server.Data.Services.Update
+namespace BLAZAM.Update
 {
-    internal class ApplicationReleaseBranches
-    {
-        public const string Stable = "Stable"; 
-        public const string Nightly = "Nightly"; 
-        public const string Dev = "Dev"; 
-    }
-    internal class ApplicationRelease : IApplicationRelease
+    public class ApplicationRelease : IApplicationRelease
     {
         public string? DownloadURL
         {
             get
             {
-                 return ReleaseAsset?.BrowserDownloadUrl;
+                return ReleaseAsset?.BrowserDownloadUrl;
 
             }
         }
@@ -23,7 +17,7 @@ namespace BLAZAM.Server.Data.Services.Update
         {
             get
             {
-                  return ReleaseAsset?.Size;
+                return ReleaseAsset?.Size;
             }
         }
 

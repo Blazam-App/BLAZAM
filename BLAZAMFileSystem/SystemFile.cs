@@ -2,7 +2,7 @@
 using System.Security.AccessControl;
 using System.Security.Principal;
 
-namespace BLAZAM
+namespace BLAZAM.FileSystem
 {
     public class SystemFile : FileSystemBase
     {
@@ -14,7 +14,7 @@ namespace BLAZAM
 
         public string Name => System.IO.Path.GetFileNameWithoutExtension(Path);
         public string Extension => System.IO.Path.GetExtension(Path);
-        public SystemDirectory ParentDirectory =>new SystemDirectory(System.IO.Path.GetDirectoryName(Path));
+        public SystemDirectory ParentDirectory => new SystemDirectory(System.IO.Path.GetDirectoryName(Path));
 
         public async Task<byte[]> ReadAllBytesAsync()
         {

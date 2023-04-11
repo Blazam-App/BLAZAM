@@ -1,6 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
-
-namespace BLAZAM
+﻿
+namespace BLAZAM.FileSystem
 {
     public class FileSystemBase
     {
@@ -8,7 +7,7 @@ namespace BLAZAM
         {
             path = path.Replace("%temp%", System.IO.Path.GetTempPath());
             Path = System.IO.Path.GetFullPath(path);
-            if (Path.IsNullOrEmpty())
+            if (Path==null || Path=="")
                 Path = path;
         }
 

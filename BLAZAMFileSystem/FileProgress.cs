@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLAZAM.Common.Data.FileSystem
+namespace BLAZAM.FileSystem
 {
     public class FileProgress
     {

@@ -1,5 +1,5 @@
 ﻿using BLAZAM.Server.Data;
-using BLAZAM.Server.Data.Services.Update;
+using BLAZAM.Update;
 using System;
 using System.Collections.Generic;
 using System.Linq;

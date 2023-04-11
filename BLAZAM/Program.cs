@@ -15,7 +15,6 @@ using BLAZAM.Server.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using BLAZAM.Server.Data.Services.Email;
-using BLAZAM.Server.Data.Services.Update;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
@@ -24,6 +23,9 @@ using System.Diagnostics;
 using BLAZAM.Common.Data;
 using MudBlazor.Services;
 using BLAZAM.Server;
+using BLAZAM.FileSystem;
+using BLAZAM.Update;
+using System.Reflection;
 
 namespace BLAZAM
 {
@@ -65,7 +67,7 @@ namespace BLAZAM
         /// <summary>
         /// The running Blazam version
         /// </summary>
-        internal static ApplicationVersion Version { get; } = new ApplicationVersion();
+        internal static ApplicationVersion Version { get; } = new ApplicationVersion(Assembly.GetExecutingAssembly());
 
         /// <summary>
         /// A collection of active listening address's with port

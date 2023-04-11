@@ -4,6 +4,7 @@ using System.Net;
 using System.Management;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+using BLAZAM.Logger;
 
 namespace BLAZAM.Common.Data.ActiveDirectory.Models
 {

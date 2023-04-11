@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Services.Zeus;
+﻿using BLAZAM.FileSystem;
+using Microsoft.VisualStudio.Services.Zeus;
 using System;
 using System.Collections.Generic;
 using System.Linq;

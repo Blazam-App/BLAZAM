@@ -4,14 +4,15 @@ using BLAZAM.Common.Data.ActiveDirectory.Models;
 using Microsoft.VisualStudio.Services.Common.CommandLine;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Build.Framework;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common;
-using BLAZAM.Common.Data.FileSystem;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Exceptions;
+using BLAZAM.Update.Exceptions;
+using BLAZAM.FileSystem;
+using BLAZAM.Logger;
 
-namespace BLAZAM.Server.Data.Services.Update
+namespace BLAZAM.Update
 {
     public enum UpdateStage { None, Downloading, Downloaded, Staging, Staged, BackingUp, Prepared, Applying, Applied };
 
@@ -42,8 +43,7 @@ namespace BLAZAM.Server.Data.Services.Update
         /// <returns>
         /// eg: C:\user\appdata\local\temp\BLAZAM\update\
         ///</returns>
-        private static SystemDirectory UpdateTempDirectory
-            => new SystemDirectory(Program.TempDirectory + "update\\");
+        private static SystemDirectory UpdateTempDirectory { get; set; }
 
         public static SystemDirectory StagingDirectory =>
             new SystemDirectory(UpdateTempDirectory + "staged\\");
@@ -53,14 +53,7 @@ namespace BLAZAM.Server.Data.Services.Update
         /// </summary>
         public SystemDirectory UpdateStagingDirectory { get => new SystemDirectory(StagingDirectory + Version.Version); }
 
-        /// <summary>
-        /// The local path within the staging directory from which
-        /// to mirror to the application root path 
-        /// </summary>
-        /// <returns>
-        /// eg: C:\inetpub\blazam\Writable\Update\Staging\0.5.4.2023.1.22.2245\_BLAZAM
-        /// </returns>
-        public SystemDirectory UpdateSourcePath { get => UpdateStagingDirectory; }
+
 
         /// <summary>
         /// The local path to the directory containing the downloaded update zip file
@@ -74,11 +67,11 @@ namespace BLAZAM.Server.Data.Services.Update
         }
         public SystemDirectory BackupPath
         {
-            get => new SystemDirectory(UpdateTempDirectory + "backup\\" + Program.Version + "\\");
+            get => new SystemDirectory(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
         }
         public SystemDirectory BackupDirectory
         {
-            get => new SystemDirectory(UpdateTempDirectory + "backup\\" + Program.Version + "\\");
+            get => new SystemDirectory(UpdateTempDirectory + "backup\\" + _runningVersion + "\\");
         }
 
         /// <summary>
@@ -104,12 +97,12 @@ namespace BLAZAM.Server.Data.Services.Update
         {
             get
             {
-                var testPath = new SystemFile(Program.RootDirectory + @"bin\Debug\net6.0\updater\update.ps1");
+                var testPath = new SystemFile(_applicationRootDirectory + @"bin\Debug\net6.0\updater\update.ps1");
 
 
                 if (!testPath.Exists)
                 {
-                    testPath = new SystemFile(Program.RootDirectory + @"updater\update.ps1");
+                    testPath = new SystemFile(_applicationRootDirectory + @"updater\update.ps1");
                 }
                 return testPath;
             }
@@ -118,9 +111,9 @@ namespace BLAZAM.Server.Data.Services.Update
         {
             get
             {
-                return " -UpdateSourcePath '" + UpdateSourcePath + "' -ProcessId " + Program.ApplicationProcess.Id + " -ApplicationDirectory '" + Program.RootDirectory + "'" +
-                   " -Username " + DatabaseCache.ActiveDirectorySettings?.Username + 
-                   " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN + 
+                return " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory + "'" +
+                   " -Username " + DatabaseCache.ActiveDirectorySettings?.Username +
+                   " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN +
                    " -Password '" + Encryption.Instance.DecryptObject<string>(DatabaseCache.ActiveDirectorySettings?.Password) + "'";
             }
         }
@@ -128,25 +121,37 @@ namespace BLAZAM.Server.Data.Services.Update
 
         public AppEvent<FileProgress?> DownloadPercentageChanged { get; set; }
 
-        bool downloaded = false;
-        bool staged = false;
-        bool backedUp = false;
+        bool _downloaded = false;
+        bool _staged = false;
+        bool _backedUp = false;
+        ApplicationVersion _runningVersion;
+        Process _runningProcess;
+        SystemDirectory _applicationRootDirectory;
+
+        public ApplicationUpdate(ApplicationInfo applicationInfo)
+        {
+           UpdateTempDirectory= new SystemDirectory(applicationInfo.TempDirectory + "update\\");
+            _runningProcess = applicationInfo.RunningProcess;
+            _runningVersion = applicationInfo.RunningVersion;
+            _applicationRootDirectory = applicationInfo.ApplicationRoot;
+        }
+
 
         public bool Newer
         {
-            get { return Version.CompareTo(Program.Version) > 0; }
+            get { return Version.CompareTo(_runningVersion) > 0; }
         }
 
-        internal IApplicationRelease Release { get; set; }
+        public IApplicationRelease Release { get; set; }
 
         public async Task<bool> Prepare()
         {
             try
             {
                 //Confirm the update is downloaded and staged before applying
-                if (!downloaded)
+                if (!_downloaded)
                     await Download();
-                if (!staged)
+                if (!_staged)
                     await Stage();
 #if !DEBUG
                 if (!backedUp)
@@ -174,8 +179,8 @@ namespace BLAZAM.Server.Data.Services.Update
 
             //Update the updater first
             Loggers.UpdateLogger.Debug("Copying updater script");
-            Loggers.UpdateLogger.Debug("Source: " + UpdateSourcePath + "\\updater\\*");
-            Loggers.UpdateLogger.Debug("Dest: " + Program.RootDirectory + "updater\\");
+            Loggers.UpdateLogger.Debug("Source: " + UpdateStagingDirectory + "\\updater\\*");
+            Loggers.UpdateLogger.Debug("Dest: " + _applicationRootDirectory + "updater\\");
             Loggers.UpdateLogger.Debug("Update command: " + UpdateCommand);
 
             WindowsImpersonation.Run(() =>
@@ -184,7 +189,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 {
                     Loggers.UpdateLogger.Information("Updating updater");
 
-                    File.Copy(UpdateSourcePath + "\\updater\\*", Program.RootDirectory + "updater\\", true);
+                    File.Copy(UpdateStagingDirectory + "\\updater\\*", _applicationRootDirectory + "updater\\", true);
                     Loggers.UpdateLogger.Information("Updater updated");
 
                     return true;
@@ -208,7 +213,6 @@ namespace BLAZAM.Server.Data.Services.Update
             }
             else
             {
-                Loggers.UpdateLogger.Information("Attempting backup of current version to: " + BackupPath);
 
                 return "Couldn't start update process!";
             }
@@ -251,7 +255,7 @@ namespace BLAZAM.Server.Data.Services.Update
         {
             Loggers.UpdateLogger.Information("Attempting backup of current version to: " + BackupPath);
 
-            var result = await Task.Run(() => { return Program.RootDirectory.CopyTo(BackupDirectory); });
+            var result = await Task.Run(() => { return _applicationRootDirectory.CopyTo(BackupDirectory); });
 
             Loggers.UpdateLogger.Debug("Backup result: " + result.ToString());
 
@@ -335,7 +339,7 @@ namespace BLAZAM.Server.Data.Services.Update
                     {
                         var zip = new ZipArchive(streamToReadFrom);
                         zip.ExtractToDirectory(UpdateStagingDirectory.Path, true);
-                        staged = true;
+                        _staged = true;
                         Loggers.UpdateLogger.Debug(UpdateFile + " unzipped successfully to " + UpdateStagingDirectory);
 
                         return true;
@@ -406,9 +410,9 @@ namespace BLAZAM.Server.Data.Services.Update
                                 }
                             }
 
-                            downloaded = true;
+                            _downloaded = true;
 
-                           
+
                         }
                     }
                 }

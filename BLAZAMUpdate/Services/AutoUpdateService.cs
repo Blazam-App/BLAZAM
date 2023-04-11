@@ -1,12 +1,11 @@
 ﻿using BLAZAM.Common;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Models.Database;
-using BLAZAM.Server.Data.Services.Email;
-using BLAZAM.Server.Shared.Email;
+using BLAZAM.Logger;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 
-namespace BLAZAM.Server.Data.Services.Update
+namespace BLAZAM.Update.Services
 {
     public class AutoUpdateService
     {
@@ -15,7 +14,10 @@ namespace BLAZAM.Server.Data.Services.Update
         public AppEvent OnAutoUpdateStarted { get; set; }
         public AppEvent OnAutoUpdateFailed { get; set; }
 
-        private readonly EmailService email;
+        private readonly ApplicationInfo _applicationInfo;
+
+        //TODO use event listener to send email
+        //private readonly EmailService email;
         private readonly AppDatabaseFactory factory;
         private UpdateService updateService;
         private Timer? updateCheckTimer;
@@ -26,9 +28,10 @@ namespace BLAZAM.Server.Data.Services.Update
         public ApplicationUpdate? ScheduledUpdate { get; set; }
         //private AuditLogger Audit;
 
-        public AutoUpdateService(AppDatabaseFactory factory, UpdateService updateService, EmailService emailService)
+        public AutoUpdateService(AppDatabaseFactory factory, UpdateService updateService,ApplicationInfo applicationInfo)
         {
-            this.email = emailService;
+            _applicationInfo = applicationInfo;
+            //email = emailService;
             this.factory = factory;
             //Audit = auditLogger;
             this.updateService = updateService;
@@ -44,7 +47,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 try
                 {
                     var fileVersion = new ApplicationVersion(file.Name);
-                    if (fileVersion.CompareTo(Program.Version) < 0 && file.SinceLastModified > TimeSpan.FromDays(1))
+                    if (fileVersion.CompareTo(_applicationInfo.RunningVersion) < 0 && file.SinceLastModified > TimeSpan.FromDays(1))
                     {
                         Loggers.UpdateLogger.Debug("Deleting old update file: " + file);
                         file.Delete();
@@ -52,7 +55,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Loggers.UpdateLogger.Debug("Deleting unknown file: " + file,ex);
+                    Loggers.UpdateLogger.Debug("Deleting unknown file: " + file, ex);
                     file.Delete();
                 }
 
@@ -92,7 +95,7 @@ namespace BLAZAM.Server.Data.Services.Update
                     Loggers.UpdateLogger.Information("Checking for automatic update");
 
                     var latestUpdate = await updateService.GetLatestUpdate();
-                    if (latestUpdate.Version.CompareTo(Program.Version) > 0 && appSettings.AutoUpdateTime!=null)
+                    if (latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdateTime != null)
                     {
                         ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
                     }
@@ -119,7 +122,7 @@ namespace BLAZAM.Server.Data.Services.Update
         public void ScheduleUpdate(TimeSpan updateTimeOfDay, ApplicationUpdate updateToInstall)
         {
 
-            bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall ;
+            bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall;
             if (ScheduledUpdate != updateToInstall)
             {
                 Loggers.UpdateLogger.Information("New update found: " + updateToInstall.Version);
@@ -136,7 +139,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 }
 
 
-                TimeSpan timeUntilUpdate = (ScheduledUpdateTime - now);
+                TimeSpan timeUntilUpdate = ScheduledUpdateTime - now;
 
                 ScheduledUpdate = updateToInstall;
 
@@ -145,24 +148,24 @@ namespace BLAZAM.Server.Data.Services.Update
                 if (justScheduled)
                 {
                     Loggers.UpdateLogger.Debug("Update just scheduled, so sending notification email to admins");
+//TODO move to email event logic
+//                    try
+//                    {
+//#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+//                        email.SendMessage(
+//                            "Update Schedueled",
+//                            "admin@blazam.org",
+//                            (MarkupString)"Update Scheduled",
+//                            (MarkupString)("The application has schedueled an update to version "
+//                            + ScheduledUpdate.Version + " at " + ScheduledUpdateTime
+//                            ));
+//#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+//                    }
+//                    catch (Exception ex)
+//                    {
+//                        Loggers.UpdateLogger.Error("Error while sending auto update scheduled email", ex);
 
-                    try
-                    {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                        email.SendMessage(
-                            "Update Schedueled",
-                            "admin@blazam.org",
-                            (MarkupString)"Update Scheduled",
-                            (MarkupString)("The application has schedueled an update to version "
-                            + ScheduledUpdate.Version + " at " + ScheduledUpdateTime
-                            ));
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.UpdateLogger.Error("Error while sending auto update scheduled email", ex);
-
-                    }
+//                    }
                 }
 
                 OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
@@ -179,7 +182,7 @@ namespace BLAZAM.Server.Data.Services.Update
                 if (settings.AutoUpdate)
                 {
                     Loggers.UpdateLogger.Information("Applying auto-update");
-                    Loggers.UpdateLogger.Information("Current Version: " + Program.Version);
+                    Loggers.UpdateLogger.Information("Current Version: " + _applicationInfo.RunningVersion);
                     Loggers.UpdateLogger.Information("Update Version: " + ScheduledUpdate.Version);
 
                     autoUpdateApplyTimer = null;
@@ -191,7 +194,7 @@ namespace BLAZAM.Server.Data.Services.Update
                         var result = await latestUpdate.Apply();
                         if (result != null)
                         {
-                            Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot. Response: "+result);
+                            Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot. Response: " + result);
 
                         }
                     }

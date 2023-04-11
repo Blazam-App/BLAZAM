@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace BLAZAM.Common.Exceptions
+namespace BLAZAM.Update.Exceptions
 {
     [Serializable]
     public class ApplicationUpdateException : ApplicationException

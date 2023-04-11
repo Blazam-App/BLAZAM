@@ -1,4 +1,4 @@
-﻿namespace BLAZAM.Server.Data.Services.Update
+﻿namespace BLAZAM.Update
 {
     public class WorkflowRun
     {

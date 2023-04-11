@@ -1,10 +1,10 @@
 ﻿
 using Octokit;
-using BLAZAM.Common.Data.Database;
 using BLAZAM.Common;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using BLAZAM.Update.Exceptions;
+using BLAZAM.Logger;
 
-namespace BLAZAM.Server.Data.Services.Update
+namespace BLAZAM.Update.Services
 {
     public class UpdateService : UpdateServiceBase
     {
@@ -12,23 +12,24 @@ namespace BLAZAM.Server.Data.Services.Update
         public string? SelectedBranch { get; set; }
 
         protected readonly IHttpClientFactory httpClientFactory;
+        private readonly ApplicationInfo _applicationInfo;
 
-        public UpdateService(IHttpClientFactory _clientFactory)
+        public UpdateService(IHttpClientFactory _clientFactory,ApplicationInfo applicationInfo)
         {
             httpClientFactory = _clientFactory;
             _updateCheckTimer = new Timer(CheckForUpdate, null, TimeSpan.FromSeconds(20), TimeSpan.FromHours(1));
-
+            _applicationInfo = applicationInfo;
         }
 
         public async Task<ApplicationUpdate?> GetLatestUpdate()
         {
             try
             {
-                var dbBranch = DatabaseCache.ApplicationSettings?.UpdateBranch;
-                if (dbBranch != null)
-                {
-                    SelectedBranch = dbBranch;
-                }
+                //var dbBranch = DatabaseCache.ApplicationSettings?.UpdateBranch;
+                //if (dbBranch != null)
+                //{
+                //    SelectedBranch = dbBranch;
+                //}
 
                 Octokit.Release? latestRelease = null;
                 ApplicationVersion? latestVer = null;
@@ -63,14 +64,14 @@ namespace BLAZAM.Server.Data.Services.Update
                         Branch = SelectedBranch,
                         GitHubRelease = latestRelease,
                         Version = latestVer,
-                        
+
                     };
-                    return new ApplicationUpdate { Release = release };
+                    return new ApplicationUpdate(_applicationInfo) { Release = release };
 
                 }
 
             }
-            catch(Octokit.RateLimitExceededException ex)
+            catch (Octokit.RateLimitExceededException ex)
             {
                 throw ex;
             }
@@ -88,10 +89,10 @@ namespace BLAZAM.Server.Data.Services.Update
             {
                 await GetLatestUpdate();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Loggers.UpdateLogger.Error("Error while checking for latest update");
-                Loggers.UpdateLogger.Error(ex.Message,ex);
+                Loggers.UpdateLogger.Error(ex.Message, ex);
 
             }
         }

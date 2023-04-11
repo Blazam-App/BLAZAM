@@ -1,6 +1,8 @@
-﻿namespace BLAZAM.Server.Data.Services.Update
+﻿
+
+namespace BLAZAM.Update
 {
-    internal interface IApplicationRelease
+    public interface IApplicationRelease
     {
         public string? DownloadURL { get; }
         public long? ExpectedSize { get; }

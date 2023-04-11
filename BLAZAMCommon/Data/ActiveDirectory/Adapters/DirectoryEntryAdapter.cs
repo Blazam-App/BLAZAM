@@ -6,6 +6,7 @@ using BLAZAM.Common.Extensions;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Common.Models.Database;
 using BLAZAM.Common.Models.Database.Permissions;
+using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.TeamFoundation.Work.WebApi.Exceptions;

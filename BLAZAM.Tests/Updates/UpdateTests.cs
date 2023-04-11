@@ -1,5 +1,6 @@
-﻿using BLAZAM.Server.Data.Services.Update;
+﻿
 using BLAZAM.Tests.Mocks;
+using BLAZAM.Update;
 using System;
 using System.Collections.Generic;
 using System.Linq;

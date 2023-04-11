@@ -5,7 +5,6 @@ using BLAZAM.Common.Data.Services;
 using BLAZAM.Server.Background;
 using BLAZAM.Server.Data.Services.Duo;
 using BLAZAM.Server.Data.Services.Email;
-using BLAZAM.Server.Data.Services.Update;
 using BLAZAM.Server.Data.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
@@ -13,6 +12,8 @@ using MudBlazor.Services;
 using System.Globalization;
 using MudBlazor;
 using BLAZAM.Server.Data;
+using BLAZAM.Update.Services;
+using BLAZAM.Update;
 
 namespace BLAZAM.Server
 {
@@ -64,7 +65,7 @@ namespace BLAZAM.Server
             //This can obviously only be changed on app restart
 
 
-
+            builder.Services.AddSingleton<ApplicationInfo>();
 
 
             //Add the httpcontext to services so we can detect the users login status

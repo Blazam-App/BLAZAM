@@ -1,13 +1,8 @@
-﻿using BLAZAM.Common;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace BLAZAM
+using Serilog;
+
+namespace BLAZAM.FileSystem
 {
     public class SystemDirectory : FileSystemBase
     {
@@ -118,14 +113,15 @@ namespace BLAZAM
         {
             get
             {
-                string randomFileName = Path + "\\" + Guid.NewGuid().ToString()+".txt";
+                string randomFileName = Path + "\\" + Guid.NewGuid().ToString() + ".txt";
                 try
                 {
                     File.WriteAllText(randomFileName, "test");
-                }catch (Exception e)
+                }
+                catch (Exception e)
                 {
-
-                    Loggers.SystemLogger.Error(e.Message);
+                    //TODO break up loggers to each library
+                    //Loggers.SystemLogger.Error(e.Message);
                     return false;
                 }
                 File.Delete(randomFileName);

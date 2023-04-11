@@ -5,6 +5,7 @@ using BLAZAM.Common.Models.Database.Audit;
 using BLAZAM.Common.Models.Database.Permissions;
 using BLAZAM.Common.Models.Database.Templates;
 using BLAZAM.Common.Models.Database.User;
+using BLAZAM.Logger;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;

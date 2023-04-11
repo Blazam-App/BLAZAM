@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Extensions;
-using Serilog;
+﻿using Serilog;
 using Serilog.Events;
 using System;
 using System.Collections.Generic;
@@ -8,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLAZAM.Common
+namespace BLAZAM.Logger
 {
-    public static class Loggers_Moved
+    public static class Loggers
     {
         private static string LogPath;
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -65,15 +64,6 @@ namespace BLAZAM.Common
 
                .CreateLogger();
         }
-
-        public static MemoryStream GenerateZip()
-        {
-            MemoryStream memoryStream = new MemoryStream();
-            ZipArchive zip = new ZipArchive(memoryStream,ZipArchiveMode.Create);
-            // Recursively add files and subdirectories to the zip archive
-            zip.AddToZip(new SystemDirectory(LogPath),LogPath);
-          
-            return memoryStream;
-        }
+      
     }
 }

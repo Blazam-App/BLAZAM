@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using BLAZAM.Server.Background;
 using BLAZAM.Server.Shared.ResourceFiles;
-using BLAZAM.Server.Data.Services.Update;
 using BLAZAM.Server.Data.Services;
 using BLAZAM.Common;
 using BLAZAM.Common.Data.Database;
@@ -12,6 +11,7 @@ using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using Microsoft.Extensions.Localization;
 using BLAZAM.Server.Data.Services.Email;
 using BLAZAM.Common.Data;
+using BLAZAM.Update.Services;
 
 namespace BLAZAM.Server.Shared.UI
 {
