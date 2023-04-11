@@ -63,6 +63,8 @@ namespace BLAZAM.Tests.Mocks
 
         public bool CanReadAnyCustomFields => throw new NotImplementedException();
 
+        public AppEvent? OnModelDeleted { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public bool CanEditField(IActiveDirectoryField field)
         {
             throw new NotImplementedException();
