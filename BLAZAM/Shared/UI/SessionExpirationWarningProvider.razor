@@ -2,11 +2,11 @@
 @inject IJSRuntime JSRuntime
 
 
-    <AppModal Title="Your session is about to expire" @ref="ExpirationWarningModal">
+<AppModal Title="Your session is about to expire" @ref="ExpirationWarningModal" AllowClose=false YesText="Refresh Session" OnYes=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>
 
     @if (ExpirationWarningModal?.IsShown == true)
     {
-       
+
         var timeLeft = _ticket.Properties.ExpiresUtc - DateTime.UtcNow;
         if (timeLeft.Value.TotalMilliseconds < 0)
         {
@@ -30,39 +30,20 @@
                 InvokeAsync(StateHasChanged);
             });
         }
-        <div Background="Background.Light" Color="Color.Dark">
-            <Row>
-                
-                    <MudText>
-                        Session expires in @formattedTimeLeft
-                    </MudText>
-                
-            </Row>
-            <Row>
-                <MudButton Color="Color.Primary" OnClick=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>Refresh Session</MudButton>
+        
+                <MudText>
+                    Session expires in @formattedTimeLeft
+                </MudText>
 
-            </Row>
-        </div>
+            
     }
 
-    </AppModal>
-<AppModal Title="Session Expired" @ref="ExpiredModal">
+</AppModal>
+<AppModal Title="Session Expired" @ref="ExpiredModal" YesText="Log In" OnYes="@(()=>{Refresh();})">
 
-    @if (ExpiredModal?.IsShown == true)
-    {
-        <div Background="Background.Light" Color="Color.Dark">
-            <Row>
-                
-                    <MudText>Your session has expired.</MudText>
-                   
-                
-            </Row>
-            <Row>
-                <MudButton Color="Color.Primary" OnClick=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>Log In</MudButton>
 
-            </Row>
-        </div>
-    }
+    <MudText>Your session has expired.</MudText>
+
 
 </AppModal>
 @code {
@@ -81,9 +62,11 @@
         if (CurrentUser.State?.Ticket != null)
         {
             _ticket = CurrentUser.State?.Ticket;
-            if (_ticket.Properties.ExpiresUtc - DateTime.UtcNow < TimeSpan.FromMinutes(2) && ExpirationWarningModal?.IsShown == false)
+            var timeLeft = _ticket.Properties.ExpiresUtc - DateTime.UtcNow;
+            if (timeLeft > TimeSpan.FromSeconds(0) && timeLeft < TimeSpan.FromMinutes(2) && ExpirationWarningModal?.IsShown == false)
             {
-                ExpirationWarningModal.Show();
+                InvokeAsync(() => { ExpirationWarningModal.Show(); });
+
             }
         }
     }

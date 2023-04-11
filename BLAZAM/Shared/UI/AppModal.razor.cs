@@ -26,7 +26,17 @@ namespace BLAZAM.Server.Shared.UI
         /// If set to false, will prevent this modal from closing via the UI
         /// </summary>
         [Parameter]
-        public bool AllowClose { get; set; } = true;
+        public bool AllowClose
+        {
+            get => Options.CloseButton==true; set
+            {
+                if (Options == null)
+                    Options = new();
+                Options.DisableBackdropClick = !value;
+                Options.CloseButton = value;
+                Options.CloseOnEscapeKey = value;
+                    }
+        }
         [Parameter]
         public Color Color { get; set; } = Color.Default;
         /// <summary>
@@ -58,7 +68,7 @@ namespace BLAZAM.Server.Shared.UI
 
         public Func<bool> YesEnabled { get; set; } = (() => { return true; });
 
-       
+
 
         [Parameter]
         public string Title { get; set; }
@@ -72,7 +82,7 @@ namespace BLAZAM.Server.Shared.UI
         [Parameter]
         public bool IsShown
         {
-            get =>  Modal.IsVisible;
+            get => Modal.IsVisible;
             set
             {
                 if (value == Modal.IsVisible)
@@ -85,6 +95,14 @@ namespace BLAZAM.Server.Shared.UI
         [Parameter]
         public EventCallback<bool> IsShownChanged { get; set; }
 
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            if (Options == null)
+                Options = new() ;
+        }
+
         public void RefreshView()
         {
             InvokeAsync(StateHasChanged);
@@ -96,6 +114,7 @@ namespace BLAZAM.Server.Shared.UI
         public IDialogReference? Show()
         {
             IsShown = true;
+
             return Modal?.Show();
         }
 

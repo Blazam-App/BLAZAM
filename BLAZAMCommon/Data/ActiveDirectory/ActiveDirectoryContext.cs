@@ -278,12 +278,17 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                         if (ad != null)
                         {
                             _authType = AuthenticationTypes.Secure;
-                            //_authType = AuthenticationTypes.Secure | AuthenticationTypes.Signing;
                             if (ad.UseTLS)
                             {
-                                //_authType = (AuthenticationTypes.Encryption | AuthenticationTypes.Secure);
+                                _authType = (AuthenticationTypes.Encryption);
+                                //_authType = AuthenticationTypes.Secure | AuthenticationTypes.Signing;
 
+                                //_authType = (AuthenticationTypes.SecureSocketsLayer|AuthenticationTypes.Secure);
+                            }
+                            if(ad.ServerPort == 636)
+                            {
                                 _authType = (AuthenticationTypes.SecureSocketsLayer|AuthenticationTypes.Secure);
+
                             }
 
                             if (ad != null && ad.FQDN != null && ad.Username != null)
@@ -323,12 +328,13 @@ namespace BLAZAM.Common.Data.ActiveDirectory
                                         }
                                         catch (Exception ex)
                                         {
-                                            _notificationPublisher.PublishNotification(new NotificationMessage()
-                                            {
-                                                Level = NotificationLevel.Error,
-                                                Message = "The configured BaseDN is not valid. Please correct your settings.",
-                                                Title = "Active Directory Error"
-                                            });
+                                            if (RootDirectoryEntry != null)
+                                                _notificationPublisher.PublishNotification(new NotificationMessage()
+                                                {
+                                                    Level = NotificationLevel.Error,
+                                                    Message = "The configured BaseDN is not valid. Please correct your settings.",
+                                                    Title = "Active Directory Error"
+                                                });
                                             Status = DirectoryConnectionStatus.BadConfiguration; return;
 
                                         }

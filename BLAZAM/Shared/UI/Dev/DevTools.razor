@@ -2,7 +2,7 @@
 @inherits AppComponentBase
 @inject IHttpContextAccessor ca
 
-<MudPaper  Class="mud-theme-dark py-3" Width="250px" Elevation="0" >
+<MudPaper Class="mud-theme-dark py-3" Width="250px" Elevation="0">
     <MudNavMenu Color="Color.Success" Bordered="true">
 
 
@@ -23,17 +23,26 @@
             <Row>App Ready Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.AppReady)</Row>
             <Row>Error Message: @Oops.ErrorMessage</Row>
         </MudCard>
-            <MudDataGrid Items="@UserStateService.UserStates">
-                <Columns>
+        <MudDataGrid Items="@UserStateService.UserStates">
+            <Columns>
                 <PropertyColumn Title="Username" Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
 
                 <PropertyColumn Title="Auth Type" Property="x => x.User.Identity==null || x.User.Identity.AuthenticationType==null?null:x.User.Identity.AuthenticationType.ToString()" />
-                    <PropertyColumn Title="Authenticated" Property="x => x.User.Identity==null?null:x.User.Identity.IsAuthenticated.ToString()" />
+                <PropertyColumn Title="Authenticated" Property="x => x.User.Identity==null?null:x.User.Identity.IsAuthenticated.ToString()" />
 
                 <PropertyColumn Title="Last URI" Property="x => x.LastUri" />
                 <PropertyColumn Title="Super Admin" Property="x => x.IsSuperAdmin" />
-                <PropertyColumn Title="Last Access Time" Property="x => x.LastAccessed" />
-                    <PropertyColumn Title="Session Expiration Time" Property="x => x.Ticket==null?null:x.Ticket.Properties.ExpiresUtc" />
+                <TemplateColumn Title="Last Access">
+                    <CellTemplate>
+                        <MudText>@context.Item.LastAccessed.ToLocalTime()</MudText>
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="Expires">
+                    <CellTemplate>
+                        @context.Item.Ticket?.Properties.ExpiresUtc?.LocalDateTime
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Title="Session Expiration Time" Property="x => x.Ticket==null?null:(DateTimeOffset.UtcNow-x.Ticket.Properties.ExpiresUtc)" />
 
 
                 <PropertyColumn Title="AD Username" Property="x => x.DirectoryUser==null?null:x.DirectoryUser.SamAccountName" />
@@ -42,8 +51,8 @@
                 <PropertyColumn Title="Has Group Priv" Property="x => x.DirectoryUser==null?null:x.DirectoryUser.HasGroupPrivilege.ToString()" />
                 <PropertyColumn Title="Has OU Priv" Property="x => x.DirectoryUser==null?null:x.DirectoryUser.HasOUPrivilege.ToString()" />
                 <PropertyColumn Title="Has Computer Priv" Property="x => x.DirectoryUser==null?null:x.DirectoryUser.HasComputerPrivilege.ToString()" />
-                </Columns>
-            </MudDataGrid>
+            </Columns>
+        </MudDataGrid>
 
 
         <MudCard Class="mud-theme-dark">
