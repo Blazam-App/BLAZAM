@@ -10,6 +10,8 @@ using MimeKit.Utils;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
+using BLAZAM.Common.Exceptions;
+using BLAZAM.Logger;
 
 namespace BLAZAM.Services.Email
 {
