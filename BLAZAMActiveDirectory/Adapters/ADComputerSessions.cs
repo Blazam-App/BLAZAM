@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using System.ComponentModel;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Logger;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

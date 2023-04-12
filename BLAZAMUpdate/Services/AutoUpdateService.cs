@@ -1,6 +1,6 @@
 ﻿using BLAZAM.Common;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Models.Database;
+using BLAZAM.Common.Data;
+using BLAZAM.Database.Context;
 using BLAZAM.Logger;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +18,7 @@ namespace BLAZAM.Update.Services
 
         //TODO use event listener to send email
         //private readonly EmailService email;
-        private readonly AppDatabaseFactory factory;
+        private readonly IAppDatabaseFactory factory;
         private UpdateService updateService;
         private Timer? updateCheckTimer;
         private Timer? autoUpdateApplyTimer = null;
@@ -28,7 +28,7 @@ namespace BLAZAM.Update.Services
         public ApplicationUpdate? ScheduledUpdate { get; set; }
         //private AuditLogger Audit;
 
-        public AutoUpdateService(AppDatabaseFactory factory, UpdateService updateService,ApplicationInfo applicationInfo)
+        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService,ApplicationInfo applicationInfo)
         {
             _applicationInfo = applicationInfo;
             //email = emailService;
@@ -60,6 +60,7 @@ namespace BLAZAM.Update.Services
                 }
 
             }
+            //TODO Fix the staging cleanup
             /*
              * Disable to test strange behavior, the staging folders are deleted on shutdown
              * during an update

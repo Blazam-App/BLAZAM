@@ -1,7 +1,7 @@
 ﻿
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Helpers;
+using BLAZAM.Helpers;
 using BLAZAM.Database.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Audit;

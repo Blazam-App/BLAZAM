@@ -8,6 +8,7 @@ using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using static Microsoft.VisualStudio.Services.Graph.Constants;
 
 namespace BLAZAM.Server.Data.Services
 {
@@ -38,8 +39,8 @@ namespace BLAZAM.Server.Data.Services
         /// </summary>
         //public IADUser? DirectoryUser { get; set; }
 
-        public List<PermissionDelegate> PermissionDelegates { get; set; }
-        public List<PermissionMapping> PermissionMappings { get; set; }
+        public List<PermissionDelegate> PermissionDelegates { get; set; } = new();
+        public List<PermissionMapping> PermissionMappings { get; set; } = new();
         /// <summary>
         /// The last request time for this web user
         /// </summary>
@@ -68,11 +69,11 @@ namespace BLAZAM.Server.Data.Services
         public AppUser? userSettings { get; set; }
 
         private readonly INotificationPublisher _notificationPublisher;
-        private readonly AppDatabaseFactory _dbFactory;
+        private readonly IAppDatabaseFactory _dbFactory;
 
-        public ApplicationUserState(AppDatabaseFactory factory, INotificationPublisher notificationPublisher)
+        public ApplicationUserState(IAppDatabaseFactory factory, INotificationPublisher notificationPublisher)
         {
-            
+
             _notificationPublisher = notificationPublisher;
             _dbFactory = factory;
             _notificationPublisher.OnNotificationPublished += (notifications) =>
@@ -142,7 +143,7 @@ namespace BLAZAM.Server.Data.Services
                 if (dbUserSettings != null)
                 {
                     dbUserSettings.Theme = this.UserSettings?.Theme;
-                    dbUserSettings.DarkMode = this.UserSettings?.DarkMode==true;
+                    dbUserSettings.DarkMode = this.UserSettings?.DarkMode == true;
                     dbUserSettings.ProfilePicture = this.UserSettings?.ProfilePicture;
                     dbUserSettings.SearchDisabledUsers = this.UserSettings.SearchDisabledUsers;
                     dbUserSettings.SearchDisabledComputers = this.UserSettings.SearchDisabledComputers;
@@ -238,6 +239,56 @@ namespace BLAZAM.Server.Data.Services
             return User.HasClaim(ClaimTypes.Role, userRole);
         }
 
-  
+
+        public bool HasUserPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.User);
+        public bool HasCreateUserPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.User);
+        public bool HasGroupPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Group);
+        public bool HasCreateGroupPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.Group);
+        public bool HasOUPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.OU);
+        public bool HasCreateOUPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.OU);
+        public bool HasComputerPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Computer);
+
+        public bool CanUnlockUsers { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+
+        /// <summary>
+        /// Checks that the user has some kind of read access for disabled objects of
+        /// this type in any place on the OU tree.
+        /// </summary>
+        public bool CanSearchDisabled(ActiveDirectoryObjectType objectType)
+        {
+
+            if (IsSuperAdmin == true) return true;
+
+            return PermissionMappings.Any(pm => pm.AccessLevels.Any(al => al.ObjectMap.Any(om => om.ObjectType == objectType && om.AllowDisabled))) == true;
+
+
+        }
+
+
+        private bool HasObjectReadPermissions(ActiveDirectoryObjectType objectType)
+        {
+            if (IsSuperAdmin == true) return true;
+            return PermissionMappings.Any(
+                       m => m.AccessLevels.Any(
+                           a => a.ObjectMap.Any(
+                               o => o.ObjectType == objectType && o.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level)
+                           )
+                       );
+        }
+        private bool HasObjectCreatePermissions(ActiveDirectoryObjectType objectType)
+        {
+            if (IsSuperAdmin == true) return true;
+
+            return PermissionMappings.Any(
+                        m => m.AccessLevels.Any(
+                            a => a.ObjectMap.Any(
+                                o => o.ObjectType == objectType && o.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level) &&
+                                a.ActionMap.Any(am => am.ObjectType == objectType &&
+                                am.ObjectAction.Id == ObjectActions.Create.Id)
+                            )
+                        );
+        }
+
     }
 }

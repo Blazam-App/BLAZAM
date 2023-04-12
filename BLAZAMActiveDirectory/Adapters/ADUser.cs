@@ -2,15 +2,12 @@
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
-using BLAZAM.Database.Models.Permissions;
-using BLAZAM.Extensions;
+using BLAZAM.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
-using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Security;
 using System.Security.AccessControl;
-using System.Text;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -418,91 +415,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public List<PermissionDelegate> PermissionDelegates { get; set; } = new List<PermissionDelegate>();
 
-        public List<PermissionMapping> PermissionMappings { get; set; } = new List<PermissionMapping>();
-
-        public bool HasUserPrivilege
-        {
-            get
-            {
-                return HasObjectReadPermissions(ObjectType);
-
-            }
-
-        }
-        public bool HasCreateUserPrivilege
-        {
-            get
-            {
-                return HasObjectCreatePermissions(ObjectType);
-
-            }
-
-        }
-        public bool HasGroupPrivilege
-        {
-            get
-            {
-                return HasObjectReadPermissions(ActiveDirectoryObjectType.Group);
-
-            }
-        }
-        public bool HasCreateGroupPrivilege
-        {
-            get
-            {
-                return HasObjectCreatePermissions(ActiveDirectoryObjectType.Group);
-
-            }
-
-        }
-        public bool HasOUPrivilege
-        {
-            get
-            {
-                return HasObjectReadPermissions(ActiveDirectoryObjectType.OU);
-
-            }
-        }
-        public bool HasCreateOUPrivilege
-        {
-            get
-            {
-                return HasObjectCreatePermissions(ActiveDirectoryObjectType.OU);
-
-            }
-
-        }
-        public bool HasComputerPrivilege
-        {
-            get
-            {
-                return HasObjectReadPermissions(ActiveDirectoryObjectType.Computer);
-
-            }
-        }
-
-        private bool HasObjectReadPermissions(ActiveDirectoryObjectType objectType)
-        {
-            return PermissionMappings.Any(
-                       m => m.AccessLevels.Any(
-                           a => a.ObjectMap.Any(
-                               o => o.ObjectType == objectType && o.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level)
-                           )
-                       );
-        }
-        private bool HasObjectCreatePermissions(ActiveDirectoryObjectType objectType)
-        {
-            return PermissionMappings.Any(
-                        m => m.AccessLevels.Any(
-                            a => a.ObjectMap.Any(
-                                o => o.ObjectType == objectType && o.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level) &&
-                                a.ActionMap.Any(am => am.ObjectType == objectType &&
-                                am.ObjectAction.Id == ObjectActions.Create.Id)
-                            )
-                        );
-        }
-
+     
     }
 }

@@ -1,0 +1,203 @@
+@inherits ValidatedForm
+@if (Map != null)
+{
+
+
+    <EditForm Model="Map" OnValidSubmit="@Save">
+
+        @if (!ReadOnly && _permissionDelegates!=null)
+        {
+
+            <MudSelectList Validation="@(_permissionDelegates?.Count>0)"
+                   Values=@_permissionDelegates
+                   Placeholder=@SettingsLocalization["Choose or Search..."]
+                   T="PermissionDelegate"
+                   ToStringFunc=DelegateToString
+                   Label="@SettingsLocalization["Delegates"]"
+                              MultiSelection
+                   @bind-Text=@selectedPermissionDelegateNames
+                   @bind-SelectedValues=@Map.PermissionDelegates />
+
+
+            <MudSelectList Validation="@(_permissionDelegates?.Count>0)"
+                   Values=@_accessLevels
+                   Placeholder=@SettingsLocalization["Choose or Search..."]
+                   T="AccessLevel"
+                   ToStringFunc="item=>item?.Name"
+                   Label="@SettingsLocalization["Access Levels"]"
+                   @bind-Text=@selectedAccessLevelNames
+                              MultiSelection
+                   @bind-SelectedValues=@Map.AccessLevels />
+
+            <MudButton Color=Color.Success Disabled=SaveDisabled ButtonType="ButtonType.Submit">Save Mapping</MudButton>
+            <AppCloseButton OnClick="DeleteMapping" />
+        }
+        else
+        {
+            <MudStack>
+                @if (selectedPermissionDelegateNames != null)
+                {
+                    @foreach (var pd in selectedPermissionDelegateNames.Split(SELECTION_DELIMITER))
+                    {
+                        <MudButton Disabled Color="Color.Secondary">@pd</MudButton>
+                    }
+                }
+                @if (_accessLevels != null)
+                {
+                    @foreach (var al in _accessLevels)
+                    {
+                        <MudButton Disabled Color="Color.Secondary">@al.Name</MudButton>
+                    }
+                }
+            </MudStack>
+        }
+    </EditForm>
+
+}
+@code {
+    const string SELECTION_DELIMITER = ", ";
+#nullable disable warnings
+    PermissionMapping? _map;
+    [Parameter]
+    public PermissionMapping? Map
+    {
+        get => _map; set
+        {
+            if (_map == value) return;
+
+            _map = value;
+
+            RefreshData();
+
+
+        }
+    }
+    [Parameter]
+    public EventCallback MappingsChanged { get; set; }
+    [Parameter]
+    public bool ReadOnly { get; set; } = false;
+
+
+
+    List<AccessLevel> _accessLevels;
+    List<PermissionDelegate> _permissionDelegates;
+    string selectedAccessLevelNames;
+    string selectedPermissionDelegateNames;
+    protected override async Task OnInitializedAsync()
+    {
+        //Wait for a database connection
+        await base.OnInitializedAsync();
+
+        LoadingData = false;
+        await RefreshData();
+    }
+
+    async Task RefreshData()
+    {
+
+        if (!LoadingData)
+        {
+            if (Map == null) return;
+
+            LoadingData = true;
+
+            if (Context != null)
+            {
+                if (Map.Id != 0)
+                {
+                    _map = Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Map.Id).FirstOrDefault();
+                }
+                _accessLevels = await Context.AccessLevels.ToListAsync();
+                _permissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin).ToListAsync();
+                if (Map.Id != 0)
+                {
+                    string concatenatd = "";
+
+                    Map.AccessLevels.Select(a => a.Name).ToList().ForEach(s =>
+                    {
+                        concatenatd += s + SELECTION_DELIMITER;
+
+                    });
+                    if (concatenatd != "")
+
+                        concatenatd = concatenatd.Substring(0, concatenatd.Length - 2);
+
+                    selectedAccessLevelNames = concatenatd;
+                    concatenatd = "";
+                    Map.PermissionDelegates.Select(
+                         a => Directory.FindEntryBySID(a.DelegateSid).CanonicalName)
+                         .ToList().ForEach(s =>
+                         {
+                             concatenatd += s + ", ";
+
+                         });
+                    if (concatenatd != "")
+                        concatenatd = concatenatd.Substring(0, concatenatd.Length - 2);
+
+                    selectedPermissionDelegateNames = concatenatd;
+                }
+            }
+
+        }
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
+    }
+    async Task DeleteMapping()
+    {
+        if (Map.Id == 0)
+        {
+            Map = null;
+        }
+
+        else
+        {
+            Context.PermissionMap.Remove(Map);
+            await Context.SaveChangesAsync();
+        }
+        await InvokeAsync(StateHasChanged);
+        SnackBarService.Success("Mapping deleted");
+        await MappingsChanged.InvokeAsync();
+
+    }
+
+    string DelegateToString(PermissionDelegate deleg)
+    {
+        if (deleg.DelegateSid != null)
+            return Directory.FindEntryBySID(deleg?.DelegateSid)?.CanonicalName;
+        else
+            return "Loading...";
+    }
+    new async Task Save()
+    {
+        if (Map.Id == 0)
+            Context.PermissionMap.Add(Map);
+        var result = Context.SaveChanges();
+        await InvokeAsync(StateHasChanged);
+        SnackBarService.Success("Mapping saved");
+        await MappingsChanged.InvokeAsync();
+    }
+    void ValidateCheck()
+    {
+        /*
+        if (PrivValidation != null && AccValidation!=null && !ReadOnly)
+        {
+            if (Map != null)
+            {
+                if (Map._permissionDelegates == null || Map._permissionDelegates?.Count < 1)
+                    PrivValidation.Status = ValidationStatus.Error;
+                else
+                    PrivValidation.Status = ValidationStatus.Success;
+                if (Map.AccessLevels == null || Map.AccessLevels?.Count < 1)
+                    AccValidation.Status = ValidationStatus.Error;
+                else
+                    AccValidation.Status = ValidationStatus.Success;
+                if (AccValidation.Status == ValidationStatus.Success && PrivValidation.Status == ValidationStatus.Success)
+                    SaveDisabled = false;
+                else
+                    SaveDisabled = true;
+            }
+        }
+        */
+    }
+}

@@ -2,7 +2,7 @@
 
 namespace BLAZAM.Database.Models.User
 {
-    public enum Widget
+    public enum DashboardWidgetType
     {
         NewUsers,
         LockedOutUsers,
@@ -10,7 +10,7 @@ namespace BLAZAM.Database.Models.User
     }
     internal class DashboardWidget : AppDbSetBase
     {
-        public Widget WidgetID { get; set; }
+        public DashboardWidgetType WidgetType { get; set; }
         public int Slot { get; set; }
         public int Order { get; set; }
         public AppUser User { get; set; }

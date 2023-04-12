@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Logger;
 using System.Management;
 
 namespace BLAZAM.ActiveDirectory.Adapters

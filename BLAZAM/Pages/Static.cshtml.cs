@@ -1,5 +1,5 @@
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Extensions;
+using BLAZAM.Database.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +15,7 @@ namespace BLAZAM.Server.Pages
         [BindProperty(SupportsGet = true)]
         public string Data { get; set; }
         public  IDatabaseContext Context { get; private set; }
-        public StaticModel(AppDatabaseFactory factory)
+        public StaticModel(IAppDatabaseFactory factory)
         {
             Context = factory.CreateDbContext();
 

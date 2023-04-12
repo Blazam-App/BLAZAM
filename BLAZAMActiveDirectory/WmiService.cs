@@ -15,7 +15,7 @@ namespace BLAZAM.Common.Data.Services
     public class WmiFactory
     {
 
-        public WmiFactory(AppDatabaseFactory factory)
+        public WmiFactory(IAppDatabaseFactory factory)
         {
             Factory = factory;
         }
@@ -52,7 +52,7 @@ namespace BLAZAM.Common.Data.Services
             throw new WmiConnectionFailure();
         }
 
-        public AppDatabaseFactory Factory { get; }
+        public IAppDatabaseFactory Factory { get; }
     }
 
     [Serializable]

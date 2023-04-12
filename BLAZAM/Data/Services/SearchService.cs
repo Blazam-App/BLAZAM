@@ -1,5 +1,6 @@
-﻿using BLAZAM.Common.Data.ActiveDirectory;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components;
 
 namespace BLAZAM.Server.Data.Services

@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Permissions;
-using BLAZAM.Extensions;
+using BLAZAM.Helpers;
 using System.Data;
 using System.Globalization;
 

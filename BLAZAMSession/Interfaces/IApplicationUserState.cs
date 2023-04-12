@@ -1,4 +1,5 @@
 ﻿
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using Microsoft.AspNetCore.Authentication;
@@ -27,7 +28,16 @@ namespace BLAZAM.Session.Interfaces
         bool IsAuthenticated { get; }
         List<PermissionDelegate> PermissionDelegates { get; set; }
         List<PermissionMapping> PermissionMappings { get; set; }
+        bool HasUserPrivilege { get; }
+        bool HasCreateUserPrivilege { get; }
+        bool HasGroupPrivilege { get; }
+        bool HasCreateGroupPrivilege { get; }
+        bool HasOUPrivilege { get; }
+        bool HasCreateOUPrivilege { get; }
+        bool HasComputerPrivilege { get; }
+        bool CanUnlockUsers { get; set; }
 
+        bool CanSearchDisabled(ActiveDirectoryObjectType objectType);
         bool Equals(object? obj);
         bool HasRole(string searchUsers);
         Task<bool> SaveUserSettings();

@@ -13,7 +13,7 @@ namespace BLAZAM.Server.Background
         public readonly DatabaseMonitor DatabaseMonitor;
         public readonly DirectoryMonitor DirectoryMonitor;
         private readonly IEncryptionService _encryption;
-        private readonly AppDatabaseFactory _factory;
+        private readonly IAppDatabaseFactory _factory;
         private readonly IDatabaseContext _context;
         public AppEvent<ServiceConnectionState>? OnAppReadyChanged { get; set; }
         public AppEvent<ServiceConnectionState>? OnDirectoryConnectionChanged { get; set; }
@@ -43,7 +43,7 @@ namespace BLAZAM.Server.Background
         bool _monitoring;
         private ServiceConnectionState _appReady = ServiceConnectionState.Connecting;
 
-        public ConnMonitor(AppDatabaseFactory DbFactory, IActiveDirectoryContext directory, IEncryptionService encryption)
+        public ConnMonitor(IAppDatabaseFactory DbFactory, IActiveDirectoryContext directory, IEncryptionService encryption)
         {
             _encryption = encryption;
             _factory = DbFactory;

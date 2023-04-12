@@ -4,7 +4,6 @@ using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
-using BLAZAM.Common.Helpers;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.User;
@@ -15,7 +14,7 @@ using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Net;
 using System.Security.Claims;
-using BLAZAM.ActiveDirectory.Helpers;
+using BLAZAM.Helpers;
 
 namespace BLAZAM.ActiveDirectory
 {
@@ -168,7 +167,7 @@ namespace BLAZAM.ActiveDirectory
         /// </summary>
         public AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
 
-        public AppDatabaseFactory? Factory { get; private set; }
+        public IAppDatabaseFactory? Factory { get; private set; }
 
         public ADSettings? ConnectionSettings { get; private set; }
 
@@ -184,27 +183,26 @@ namespace BLAZAM.ActiveDirectory
         /// </summary>
         /// <param name="context"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
-        public ActiveDirectoryContext(AppDatabaseFactory factory,
+        public ActiveDirectoryContext(IAppDatabaseFactory factory,
             IApplicationUserStateService userStateService,
-            WmiFactory wmiFactory,
             IEncryptionService encryptionService,
             INotificationPublisher notificationPublisher
             )
         {
-            _wmiFactory = wmiFactory;
+            //_wmiFactory = wmiFactory;
             _encryption = encryptionService;
             _notificationPublisher = notificationPublisher;
             Instance = this;
             Factory = factory;
             UserStateService = userStateService;
-            UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
+            //UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
             ConnectAsync();
             _timer = new Timer(KeepAlive, null, 30000, 30000);
 
             Users = new ADUserSearcher(this);
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
-            Computers = new ADComputerSearcher(this, wmiFactory);
+            Computers = new ADComputerSearcher(this, _wmiFactory);
         }
 
         public ActiveDirectoryContext(ActiveDirectoryContext activeDirectoryContextSeed)

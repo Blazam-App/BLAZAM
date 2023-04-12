@@ -9,12 +9,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Security.Claims;
-using BLAZAM.Common.Helpers;
+using BLAZAM.Helpers;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using BLAZAM.Common.Extensions;
 using BLAZAM.Server.Helpers;
+using BLAZAM.Database.Context;
+using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM
 {
@@ -24,7 +25,7 @@ namespace BLAZAM
     /// </summary>
     public class AppAuthenticationStateProvider : AuthenticationStateProvider
     {
-        public AppAuthenticationStateProvider(AppDatabaseFactory factory,
+        public AppAuthenticationStateProvider(IAppDatabaseFactory factory,
             IActiveDirectoryContext directoy,
             PermissionApplicator permissionHandler,
             IApplicationUserStateService userStateService,
@@ -46,7 +47,7 @@ namespace BLAZAM
         private readonly IDuoClientProvider _duoClientProvider;
         private readonly IEncryptionService _encryption;
         private readonly IActiveDirectoryContext _directory;
-        private readonly AppDatabaseFactory _factory;
+        private readonly IAppDatabaseFactory _factory;
         private readonly PermissionApplicator _permissionHandler;
 
         private readonly IApplicationUserStateService _userStateService;
@@ -91,7 +92,6 @@ namespace BLAZAM
         }
 
         private ClaimsPrincipal? CurrentUser;
-        private IApplicationUserState _newUserState;
 
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
@@ -152,7 +152,7 @@ namespace BLAZAM
         public async Task<LoginResult> Login(LoginRequest loginReq)
         {
             LoginResult loginResult = new();
-            _newUserState = _userStateService.CreateUserState(null);
+             var newUserState = _userStateService.CreateUserState(null);
             
 
             AuthenticationState? result = null;
@@ -169,7 +169,7 @@ namespace BLAZAM
             {
                 //Prepare the UserState for the StateService to include the impersonator identity so
                 //we can undo the impersonation later
-                _newUserState.Impersonator = CurrentUser;
+                newUserState.Impersonator = CurrentUser;
                 //Attach the impersonator to the login request so it can be used for later processing
                 loginReq.ImpersonatorClaims = CurrentUser;
             }
@@ -199,7 +199,7 @@ namespace BLAZAM
                 try
                 {
                     //Login username is not "admin" or "demo" or we're not in demo mode, so we'll try active directory
-                    var userClaim = await AttemptADLogin(loginReq);
+                    var userClaim = await AttemptADLogin(newUserState, loginReq);
                     //If active directory login/impersonation succeeded the userClaim will be popluated
                     if (userClaim != null && userClaim.Identity?.IsAuthenticated == true)
                         //Set the user in the authentication provider
@@ -212,11 +212,11 @@ namespace BLAZAM
             }
             if (result?.User != null)
                 //User claim processing is done so we can set the UserState with the new identity
-                _newUserState.User = result.User;
+                newUserState.User = result.User;
 
             //Pass this state to the State Service for statefulness if it's populated
-            if (_newUserState.User != null)
-                _userStateService.SetUserState(_newUserState);
+            if (newUserState.User != null)
+                _userStateService.SetUserState(newUserState);
 
             //Return the authenticationstate
             if (result != null)
@@ -235,7 +235,7 @@ namespace BLAZAM
         /// <returns>A fully processed ClaimsPrincipal representing the Web user data applied depending on
         /// database permission tables
         /// </returns>
-        private async Task<ClaimsPrincipal?> AttemptADLogin(LoginRequest loginReq)
+        private async Task<ClaimsPrincipal?> AttemptADLogin(IApplicationUserState loginUser, LoginRequest loginReq)
         {
             IADUser? user;
             if (!loginReq.Impersonation)
@@ -275,7 +275,7 @@ namespace BLAZAM
                 user = _directory.Users.FindUsersByString(loginReq.Username, true, true).FirstOrDefault();
 
 
-            return await CreateDirectoryPrincipal(user, loginReq);
+            return await CreateDirectoryPrincipal(loginUser, user, loginReq);
 
 
         }
@@ -315,14 +315,14 @@ namespace BLAZAM
         /// <param name="loginReq">The parameteres passed from the login attempt</param>
         /// <returns>A fully processed ClaimsPrincipal representing the Web user with data applied depending on
         /// database permission tables</returns>
-        private async Task<ClaimsPrincipal?> CreateDirectoryPrincipal(IADUser? user, LoginRequest loginReq)
+        private async Task<ClaimsPrincipal?> CreateDirectoryPrincipal(IApplicationUserState loginUser, IADUser? user, LoginRequest loginReq)
         {
             ClaimsPrincipal? principal = null;
 
 
             if (user != null)
             {
-                principal = new ClaimsPrincipal(await CreateDirectoryIdentity(user, loginReq));
+                principal = new ClaimsPrincipal(await CreateDirectoryIdentity(loginUser,user, loginReq));
             }
 
             return principal;
@@ -335,15 +335,19 @@ namespace BLAZAM
         /// <param name="loginReq">The parameteres passed from the login attempt</param>
         /// <returns>A fully processed ClaimsIdentity representing the user in Active Directory with data applied depending on
         /// database permission tables</returns>
-        private async Task<ClaimsIdentity?> CreateDirectoryIdentity(IADUser user, LoginRequest loginReq)
+        private async Task<ClaimsIdentity?> CreateDirectoryIdentity(IApplicationUserState loginUser, IADUser user, LoginRequest loginReq)
         {
 
             var identity = new ClaimsIdentity();
 
-            _newUserState.DirectoryUser = user;
+            //TODO Uncomment and store IADUser somewhere in state
+            //_newUserState.DirectoryUser = user;
+            
+            
+            
             //Load privilege levels for user
-            await _permissionHandler.LoadPermissions(user);
-            var userRoles = TransformUserRoles(user);
+            await _permissionHandler.LoadPermissions(loginUser,user);
+            var userRoles = TransformUserRoles(loginUser);
             //TransformUserRoles returns an empty list if the user has no login rights
             if (userRoles.Count < 1)
                 throw new DeniedLoginException();
@@ -403,7 +407,7 @@ namespace BLAZAM
         /// </summary>
         /// <param name="user">The Active Directory user who authenticated</param>
         /// <returns>A list of Claim Roles that the user has been privileged</returns>
-        private List<Claim> TransformUserRoles(IADUser user)
+        private List<Claim> TransformUserRoles(IApplicationUserState user)
         {
 
             List<Claim> userRoles = new();

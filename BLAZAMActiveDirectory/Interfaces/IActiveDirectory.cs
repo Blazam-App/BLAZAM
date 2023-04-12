@@ -14,7 +14,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     {
         IApplicationUserStateService UserStateService { get; }
         IDatabaseContext? Context { get; }
-        AppDatabaseFactory Factory { get; }
+        IAppDatabaseFactory Factory { get; }
 
         /// <summary>
         /// Checks whether the configured Active Directory port is open for connections

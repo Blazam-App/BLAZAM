@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using BLAZAMDatabase.Models;
 
 namespace BLAZAM.Database.Models.Audit
 {

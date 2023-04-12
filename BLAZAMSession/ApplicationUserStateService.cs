@@ -1,9 +1,12 @@
 ﻿using BLAZAM.Common;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
-using BLAZAM.Common.Models.Database.User;
+using BLAZAM.Database.Context;
+using BLAZAM.Logger;
+using BLAZAM.Notifications.Services;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -27,7 +30,7 @@ namespace BLAZAM.Server.Data.Services
 
         private IHttpContextAccessor _httpContextAccessor { get; set; }
 
-        private  AppDatabaseFactory _factory;
+        private  IAppDatabaseFactory _factory;
 
         private int? Timeout { get; set; }
 
@@ -64,7 +67,7 @@ namespace BLAZAM.Server.Data.Services
         /// <param name="httpContextAccessor">An HTTP Context Accessor to get the current ClaimsPrincipal of the current session.
         /// This Principal is persisted via the browser authentication cookie</param>
         /// <param name="factory">Database Context Factory for accessing the Authentication Setting - SessionTimeout</param>
-        public ApplicationUserStateService(IHttpContextAccessor httpContextAccessor, AppDatabaseFactory factory,
+        public ApplicationUserStateService(IHttpContextAccessor httpContextAccessor, IAppDatabaseFactory factory,
             INotificationPublisher notificationPublisher)
         {
             _notificationPublisher = notificationPublisher;
@@ -179,11 +182,11 @@ namespace BLAZAM.Server.Data.Services
 
             return existingState;
         }
-        private  void AddUserState(IApplicationUserState state)
+        private void AddUserState(IApplicationUserState state)
         {
             UserStates.Add(state);
             //Invoke event so Active Directory can populate DirectoryUser if required
-            UserStateAdded?.Invoke(state);
+            //UserStateAdded?.Invoke(state);
         }
         public void SetUserState(IApplicationUserState state)
         {

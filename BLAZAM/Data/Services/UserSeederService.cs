@@ -9,9 +9,9 @@ namespace BLAZAM.Server.Data.Services
     public class UserSeederService
     {
         private readonly IActiveDirectoryContext _activeDirectoryContext;
-        private readonly AppDatabaseFactory _dbFactory;
+        private readonly IAppDatabaseFactory _dbFactory;
 
-        public UserSeederService(AppDatabaseFactory dbFactory, IActiveDirectoryContextFactory adFactory)
+        public UserSeederService(IAppDatabaseFactory dbFactory, IActiveDirectoryContextFactory adFactory)
         {
             _activeDirectoryContext = adFactory.CreateActiveDirectoryContext();
             _dbFactory = dbFactory;

@@ -1,0 +1,13 @@
+﻿@using BLAZAM.Database.Context;
+@using Microsoft.EntityFrameworkCore;
+@using BLAZAM.Server.Data.Services.Email;
+@inject IAppDatabaseFactory factory
+@code {
+#nullable disable warnings
+    protected  IDatabaseContext context;
+    protected override async Task OnInitializedAsync()
+    {
+        context = await factory.CreateDbContextAsync();
+
+    }
+}

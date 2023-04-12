@@ -1,4 +1,5 @@
 ﻿
+using BLAZAM.Common.Data;
 using BLAZAM.Update.Services;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace BLAZAM.Tests.Mocks
         {
             ApplicationRoot = new FileSystem.SystemDirectory("C:\\temp"),
             RunningProcess = Process.GetCurrentProcess(),
-            RunningVersion = new Update.ApplicationVersion("0.0.1"),
+            RunningVersion = new ApplicationVersion("0.0.1"),
              TempDirectory = new FileSystem.SystemDirectory("C:\\temp")
         })
         {

@@ -3,6 +3,7 @@ using Octokit;
 using BLAZAM.Common;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.Logger;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.Update.Services
 {

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 namespace BLAZAM.Database.Context
 {
 
-    public class AppDatabaseFactory
+    public class AppDatabaseFactory : IAppDatabaseFactory
     {
         IConfiguration _configuration;
 

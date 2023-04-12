@@ -1,9 +1,8 @@
 ﻿using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Extensions;
-using BLAZAM.Common.Helpers;
-using static Microsoft.VisualStudio.Services.Graph.GraphResourceIds;
+using BLAZAM.Helpers;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {

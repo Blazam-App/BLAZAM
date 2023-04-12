@@ -28,13 +28,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         string? UserPrincipalName { get; set; }
         string? Zip { get; set; }
       
-        bool HasComputerPrivilege { get; }
-        bool HasOUPrivilege { get; }
-        bool HasGroupPrivilege { get; }
-        bool HasUserPrivilege { get; }
-        bool HasCreateUserPrivilege { get; }
-        bool HasCreateGroupPrivilege { get; }
-        bool HasCreateOUPrivilege { get; }
+      
         byte[]? ThumbnailPhoto { get; set; }
         SecureString NewPassword { get; set; }
 

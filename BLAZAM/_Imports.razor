@@ -12,6 +12,16 @@
 @using Microsoft.Data.SqlClient
 
 @using BLAZAM
+
+@using BLAZAM.ActiveDirectory;
+@using BLAZAM.ActiveDirectory.Interfaces;
+@using BLAZAM.ActiveDirectory.Adapters;
+@using BLAZAM.ActiveDirectory.Exceptions;
+@using BLAZAM.ActiveDirectory.Searchers;
+
+
+
+
 @using BLAZAM.Server.Background
 @using BLAZAM.Server.Shared
 @using BLAZAM.Server.Pages
@@ -34,15 +44,24 @@
 @using BLAZAM.Server.Shared.ResourceFiles;
 @using BLAZAM.Server.Shared.UI.Outputs
 @using BLAZAM.Server.Data
+
+
+@using BLAZAM.Session;
+@using BLAZAM.Session.Interfaces;
+
+
+
+@using System.Security.Claims;
+@using BLAZAM.Notifications.Services;
+
 @using BLAZAM.Update;
 
 @using BLAZAM.Server.Data.Services
 @using BLAZAM.Server.Pages.Error;
 
 @using BLAZAM.Common
-@using BLAZAM.Common.Extensions
 
-@using BLAZAM.Common.Helpers
+@using BLAZAM.Helpers
 @using BLAZAM.Common.Data
 @using BLAZAM.FileSystem;
 @using BLAZAM.Logger;
@@ -50,16 +69,18 @@
 @using BLAZAM.Common.Exceptions
 @using BLAZAM.Common.Data.Database
 @using BLAZAM.Common.Data.Services
-@using BLAZAM.Common.Data.ActiveDirectory
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces
-@using BLAZAM.Common.Data.ActiveDirectory.Models
-@using BLAZAM.Common.Data.ActiveDirectory.Searchers
 
-@using BLAZAM.Common.Models.Database.Audit
-@using BLAZAM.Common.Models.Database
-@using BLAZAM.Common.Models
-@using BLAZAM.Common.Models.Database.Templates
-@using BLAZAM.Common.Models.Database.Permissions
+
+
+@using BLAZAM.Database;
+@using BLAZAM.Database.Context;
+@using BLAZAM.Database.Models;
+@using BLAZAM.Database.Models.Audit;
+@using BLAZAM.Database.Models.Permissions;
+@using BLAZAM.Database.Models.Templates;
+@using BLAZAM.Database.Models.User;
+
+
 
 @using MudBlazor
 

@@ -1,6 +1,6 @@
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Models.Database;
-using BLAZAM.Common.Models.Database.User;
+using BLAZAM.Database.Context;
+using BLAZAM.Database.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

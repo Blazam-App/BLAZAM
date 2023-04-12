@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MudBlazor" Version="6.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
   </ItemGroup>
 

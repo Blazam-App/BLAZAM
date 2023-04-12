@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLAZAM.Session.Helpers
+namespace BLAZAM.Helpers
 {
     public static class SessionHelpers
     {

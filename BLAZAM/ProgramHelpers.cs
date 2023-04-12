@@ -17,6 +17,7 @@ using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory;
 using BLAZAM.Session.Interfaces;
 using BLAZAM.Notifications.Services;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.Server
 {
@@ -126,12 +127,7 @@ namespace BLAZAM.Server
 
             DatabaseContextBase.Configuration = builder.Configuration;
 
-            builder.Services.AddSingleton<AppDatabaseFactory>();
-
-            //builder.Services.AddDbContextFactory<DatabaseContext>();
-
-            builder.Services.AddScoped<AppNavigationManager>();
-
+            builder.Services.AddSingleton<IAppDatabaseFactory,AppDatabaseFactory>();
 
             //Provide an Http client as a service with custom construction via api service class
             builder.Services.AddHttpClient();
@@ -175,7 +171,7 @@ namespace BLAZAM.Server
 
 
             //Add custom Auth
-            builder.Services.AddScoped<AppAuthenticationStateProvider, AppAuthenticationStateProvider>();
+            builder.Services.AddScoped<AppAuthenticationStateProvider>();
 
             //Add web user application search as a service
             builder.Services.AddScoped<SearchService>();

@@ -6,7 +6,7 @@ namespace BLAZAM.Database.Context
     {
         private static bool _started;
 
-        private static AppDatabaseFactory dbContextFactory;
+        private static IAppDatabaseFactory dbContextFactory;
 
         public static byte[] AppIcon
         {
@@ -17,7 +17,7 @@ namespace BLAZAM.Database.Context
                 return appIcon;
             }
         }
-        public static void Start(AppDatabaseFactory factory)
+        public static void Start(IAppDatabaseFactory factory)
         {
             if (!_started)
             {

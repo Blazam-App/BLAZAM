@@ -1,5 +1,4 @@
-﻿using BLAZAMDatabase.Models;
-
+﻿
 namespace BLAZAM.Database.Models.Permissions
 {
     public class FieldAccessLevel : AppDbSetBase

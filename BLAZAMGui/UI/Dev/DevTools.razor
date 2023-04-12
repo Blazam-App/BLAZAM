@@ -1,0 +1,135 @@
+@inherits AppComponentBase
+@inject IHttpContextAccessor ca
+
+<MudPaper Class="mud-theme-dark py-3" Width="250px" Elevation="0">
+    <MudNavMenu Color="Color.Success" Bordered="true">
+
+
+        <MudText Typo="Typo.h6">Dev Tools</MudText>
+
+        <MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>
+            {SnackBarService.Success("Test Notification " + Guid.NewGuid(),"Test");
+            })">Test Notification</MudButton>
+        <MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>{SnackbarBroadcastService.Success("Test Broadcast " + Guid.NewGuid(),"Test");})">Test Broadcast</MudButton>
+        <MudButton Color="Color.Primary" style="height:35px;" OnClick=TestNotificationBroadcast>Test Notification Broadcast</MudButton>
+
+        <MudCard Class="mud-theme-dark">
+            <MudCardHeader>
+                Conn Monitor
+            </MudCardHeader>
+            <Row>Database Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DatabaseConnected)</Row>
+            <Row>ActiveDirectory Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DirectoryConnected)</Row>
+            <Row>App Ready Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.AppReady)</Row>
+            <Row>Error Message: @Oops.ErrorMessage</Row>
+        </MudCard>
+        <MudDataGrid Items="@UserStateService.UserStates">
+            <Columns>
+                <PropertyColumn Title="Username" Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
+
+                <PropertyColumn Title="Auth Type" Property="x => x.User.Identity==null || x.User.Identity.AuthenticationType==null?null:x.User.Identity.AuthenticationType.ToString()" />
+                <PropertyColumn Title="Authenticated" Property="x => x.User.Identity==null?null:x.User.Identity.IsAuthenticated.ToString()" />
+
+                <PropertyColumn Title="Last URI" Property="x => x.LastUri" />
+                <PropertyColumn Title="Super Admin" Property="x => x.IsSuperAdmin" />
+                <TemplateColumn Title="Last Access">
+                    <CellTemplate>
+                        <MudText>@context.Item.LastAccessed.ToLocalTime()</MudText>
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="Expires">
+                    <CellTemplate>
+                        @context.Item.Ticket?.Properties.ExpiresUtc?.LocalDateTime
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Title="Session Expiration Time" Property="x => x.Ticket==null?null:(DateTimeOffset.UtcNow-x.Ticket.Properties.ExpiresUtc)" />
+
+
+               
+
+                <PropertyColumn Title="Has User Priv" Property="x => x.HasUserPrivilege.ToString()" />
+                <PropertyColumn Title="Has Group Priv" Property="x => x.HasGroupPrivilege.ToString()" />
+                <PropertyColumn Title="Has OU Priv" Property="x => x.HasOUPrivilege.ToString()" />
+                <PropertyColumn Title="Has Computer Priv" Property="x => x.HasComputerPrivilege.ToString()" />
+            </Columns>
+        </MudDataGrid>
+
+
+        <MudCard Class="mud-theme-dark">
+            <MudCardHeader>
+                User
+            </MudCardHeader>
+            @{
+                var ids = ca.HttpContext?.User.Identities.ToList();
+            }
+            @if (ids != null)
+            {
+                @foreach (var id in ids)
+                {
+
+                    var claims2 = @ca.HttpContext?.User.Claims.ToList();
+
+                    <Row>Name: @id.Name</Row>
+                    <Row>Authenticated: @id.IsAuthenticated.ToString()</Row>
+                    <Row>Type: @id.AuthenticationType</Row>
+                    @if (claims2 != null)
+                    {
+                        @foreach (var claim in claims2)
+                        {
+                            <Row>@claim.Type: @claim.Value</Row>
+
+                        }
+                    }
+                }
+            }
+        </MudCard>
+
+
+
+        <MudCard Class="mud-theme-dark">
+            <MudCardHeader>
+                Active Directory
+            </MudCardHeader>
+            <Row>
+                <Row>ActiveDirectory Status: @DirectoryStatus</Row>
+                <Row>ActiveDirectory Server: @Directory.ConnectionSettings?.ServerAddress</Row>
+
+                <Row>ActiveDirectory Server Port: @Directory.ConnectionSettings?.ServerPort</Row>
+                <Row>ActiveDirectory Server Port Open: @DirectoryPortOpen</Row>
+
+            </Row>
+        </MudCard>
+
+    </MudNavMenu>
+</MudPaper>
+
+@code {
+    string DirectoryStatus = "";
+    bool DirectoryPortOpen;
+    bool collapseVisible = false;
+    Timer t;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        t = new Timer((obj) =>
+        {
+            DirectoryPortOpen = Directory.PortOpen;
+            DirectoryStatus = Enum.GetName(typeof(DirectoryConnectionStatus), Directory.Status);
+            InvokeAsync(StateHasChanged);
+        }, null, 500, 2000);
+    }
+    [Parameter]
+    public bool DrawerOpen { get; set; }
+    [Parameter]
+    public string Style { get; set; }
+
+
+    async Task TestNotificationBroadcast()
+    {
+        NotificationPublisher.PublishNotification(new NotificationMessage()
+            {
+                Level = NotificationLevel.Info,
+                Message = "This is a test notification",
+                Title = "Test"
+            });
+    }
+}

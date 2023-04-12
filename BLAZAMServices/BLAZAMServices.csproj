@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>BLAZAM.Services</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DuoUniversal" Version="1.2.0" />
+    <PackageReference Include="MailKit" Version="3.6.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BLAZAMActiveDirectory\BLAZAMActiveDirectory.csproj" />
+    <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
+    <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
+  </ItemGroup>
+
+</Project>

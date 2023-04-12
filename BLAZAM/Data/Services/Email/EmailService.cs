@@ -1,7 +1,4 @@
-﻿using BLAZAM.Common;
-using BLAZAM.Common.Extensions;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Models.Database;
+﻿
 using BLAZAM.Server.Pages;
 using BLAZAM.Server.Shared.Email;
 using BLAZAM.Server.Shared.Layouts;
@@ -12,16 +9,19 @@ using Microsoft.AspNetCore.Components;
 using MimeKit;
 using MimeKit.Text;
 using MimeKit.Utils;
+using BLAZAM.Database.Models;
+using BLAZAM.Database.Context;
+using BLAZAM.Helpers;
 
 namespace BLAZAM.Server.Data.Services.Email
 {
     public class EmailService
     {
         public static EmailService? Instance { get; set; }
-        private AppDatabaseFactory Factory { get; set; }
+        private IAppDatabaseFactory Factory { get; set; }
 
 
-        public EmailService(AppDatabaseFactory factory)
+        public EmailService(IAppDatabaseFactory factory)
         {
             Instance = this;
             Factory = factory;

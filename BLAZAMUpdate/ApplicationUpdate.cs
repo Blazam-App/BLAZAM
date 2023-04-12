@@ -1,6 +1,5 @@
 ﻿using Microsoft.TeamFoundation.Build.WebApi;
 using System.IO.Compression;
-using BLAZAM.Common.Data.ActiveDirectory.Models;
 using Microsoft.VisualStudio.Services.Common.CommandLine;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Components;
@@ -11,6 +10,7 @@ using BLAZAM.Common.Exceptions;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.FileSystem;
 using BLAZAM.Logger;
+using BLAZAM.Database.Context;
 
 namespace BLAZAM.Update
 {

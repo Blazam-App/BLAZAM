@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>BLAZAM.Gui</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="UI\Groups\MemberOfList.razor" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.13" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.2" />
+    <PackageReference Include="MudBlazor" Version="6.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
+    <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
+    <ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
+    <ProjectReference Include="..\BLAZAMServices\BLAZAMServices.csproj" />
+    <ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UI\General\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="UI\Groups\MemberOfList.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="UI\FlexContainer.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="UI\PageSpecificChat.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="UI\Section.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
+</Project>

@@ -70,7 +70,7 @@ namespace BLAZAM
         /// </returns>
         internal static List<string> ListeningAddresses { get; private set; } = new List<string>();
 
-        private static AppDatabaseFactory? _programDbFactory;
+        private static IAppDatabaseFactory? _programDbFactory;
 
 
 
@@ -270,8 +270,8 @@ namespace BLAZAM
             //Start the database cache
             using (var scope = AppInstance.Services.CreateScope())
             {
-                _programDbFactory = scope.ServiceProvider.GetRequiredService<AppDatabaseFactory>();
-                DatabaseCache.Start(_programDbFactory, Loggers.DatabaseLogger);
+                _programDbFactory = scope.ServiceProvider.GetRequiredService<IAppDatabaseFactory>();
+                DatabaseCache.Start(_programDbFactory);
             }
         }
 
@@ -321,7 +321,7 @@ namespace BLAZAM
                 {
                     using (var scope = AppInstance.Services.CreateScope())
                     {
-                        var context = scope.ServiceProvider.GetRequiredService<AppDatabaseFactory>().CreateDbContext();
+                        var context = scope.ServiceProvider.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
                         if (context != null && context.Status == ServiceConnectionState.Up)
                             if (context.IsSeeded() || force)
                                 if (!context.SeedMismatch)

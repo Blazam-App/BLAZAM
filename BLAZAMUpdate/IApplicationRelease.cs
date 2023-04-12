@@ -1,5 +1,7 @@
 ﻿
 
+using BLAZAM.Common.Data;
+
 namespace BLAZAM.Update
 {
     public interface IApplicationRelease

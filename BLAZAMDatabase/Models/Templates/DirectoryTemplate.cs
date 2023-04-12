@@ -1,6 +1,4 @@
-﻿using BLAZAM.Common.Data.ActiveDirectory;
-using BLAZAMDatabase.Models;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+﻿using BLAZAM.Common.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;

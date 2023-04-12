@@ -1,8 +1,10 @@
 ﻿
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Audit;
+using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Services.TestManagement.TestPlanning.WebApi;
@@ -83,7 +85,7 @@ namespace BLAZAM.Server.Data.Services
         public OUAudit OU;
         public LogonAudit Logon;
 
-        public AuditLogger(AppDatabaseFactory factory, IApplicationUserStateService userStateService)
+        public AuditLogger(IAppDatabaseFactory factory, IApplicationUserStateService userStateService)
         {
             System = new SystemAudit(factory);
             User = new UserAudit(factory, userStateService);
@@ -98,7 +100,7 @@ namespace BLAZAM.Server.Data.Services
 
     public class OUAudit : DirectoryAudit
     {
-        public OUAudit(AppDatabaseFactory factory,
+        public OUAudit(IAppDatabaseFactory factory,
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
@@ -125,7 +127,7 @@ namespace BLAZAM.Server.Data.Services
 
     public class ComputerAudit : DirectoryAudit
     {
-        public ComputerAudit(AppDatabaseFactory factory,
+        public ComputerAudit(IAppDatabaseFactory factory,
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
@@ -156,7 +158,7 @@ namespace BLAZAM.Server.Data.Services
 
     public class GroupAudit : DirectoryAudit
     {
-        public GroupAudit(AppDatabaseFactory factory,
+        public GroupAudit(IAppDatabaseFactory factory,
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
@@ -175,7 +177,7 @@ namespace BLAZAM.Server.Data.Services
     }
     public class LogonAudit : CommonAudit
     {
-        public LogonAudit(AppDatabaseFactory factory,
+        public LogonAudit(IAppDatabaseFactory factory,
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
@@ -210,7 +212,7 @@ namespace BLAZAM.Server.Data.Services
 
     public class UserAudit : DirectoryAudit
     {
-        public UserAudit(AppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public UserAudit(IAppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
 
@@ -244,7 +246,7 @@ namespace BLAZAM.Server.Data.Services
     {
         protected IApplicationUserStateService UserStateService { get; private set; }
         protected IApplicationUserState? CurrentUser { get; set; }
-        public CommonAudit(AppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory)
+        public CommonAudit(IAppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory)
         {
             UserStateService = userStateService;
             CurrentUser = UserStateService.CurrentUserState;
@@ -253,7 +255,7 @@ namespace BLAZAM.Server.Data.Services
     }
     public class DirectoryAudit : CommonAudit
     {
-        public DirectoryAudit(AppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
+        public DirectoryAudit(IAppDatabaseFactory factory, IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
 
@@ -317,7 +319,7 @@ namespace BLAZAM.Server.Data.Services
     public class SystemAudit : BaseAudit
     {
 
-        public SystemAudit(AppDatabaseFactory factory) : base(factory)
+        public SystemAudit(IAppDatabaseFactory factory) : base(factory)
         {
         }
         public async Task<bool> LogMessage(string message)
@@ -367,9 +369,9 @@ namespace BLAZAM.Server.Data.Services
 
     public class BaseAudit
     {
-        protected AppDatabaseFactory Factory { get; set; }
+        protected IAppDatabaseFactory Factory { get; set; }
 
-        public BaseAudit(AppDatabaseFactory factory)
+        public BaseAudit(IAppDatabaseFactory factory)
         {
             Factory = factory;
         }

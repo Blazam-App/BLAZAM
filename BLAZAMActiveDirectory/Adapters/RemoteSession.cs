@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using Cassia;
 using Serilog;
 using System;

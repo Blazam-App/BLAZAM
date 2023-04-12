@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Services.Common;
+﻿using BLAZAM.Helpers;
+using Microsoft.VisualStudio.Services.Common;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.Text;

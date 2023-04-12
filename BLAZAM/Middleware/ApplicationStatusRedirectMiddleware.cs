@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Database.Context;
 using BLAZAM.Server.Background;
 using BLAZAM.Server.Pages.Error;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,7 @@ namespace BLAZAM.Server.Middleware
             _monitor = monitor;
         }
 
-        public async Task InvokeAsync(HttpContext context, AppDatabaseFactory factory)
+        public async Task InvokeAsync(HttpContext context, IAppDatabaseFactory factory)
         {
             intendedUri = context.Request.Path.ToUriComponent();
             if (!InIgnoreList(intendedUri))

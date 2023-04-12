@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using System.DirectoryServices;
 
 namespace BLAZAM.ActiveDirectory.Searchers

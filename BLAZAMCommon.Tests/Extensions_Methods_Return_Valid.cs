@@ -1,4 +1,6 @@
+using BLAZAM.Helpers;
 using System.Globalization;
+using static BLAZAM.Helpers.CommonHelpers;
 
 namespace BLAZAM.Tests
 {

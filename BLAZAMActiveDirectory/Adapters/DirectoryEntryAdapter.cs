@@ -1,13 +1,9 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Common.Extensions;
-using BLAZAM.Common.Helpers;
+using BLAZAM.Helpers;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
-using BLAZAM.Extensions;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -83,7 +79,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected SearchResult? searchResult;
 
-        protected AppDatabaseFactory DbFactory;
+        protected IAppDatabaseFactory DbFactory;
         protected IApplicationUserState? CurrentUser { get; set; }
 
         bool _newEntry = false;
