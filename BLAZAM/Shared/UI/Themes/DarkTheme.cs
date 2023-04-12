@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Extensions;
-using Microsoft.AspNetCore.Builder.Extensions;
+﻿using Microsoft.AspNetCore.Builder.Extensions;
 using System.Drawing;
 
 namespace BLAZAM.Server.Shared.UI.Themes

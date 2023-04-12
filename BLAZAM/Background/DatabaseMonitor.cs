@@ -1,8 +1,4 @@
-﻿
-
-using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Server.Pages.Error;
+﻿using BLAZAM.Database.Context;
 
 namespace BLAZAM.Server.Background
 {

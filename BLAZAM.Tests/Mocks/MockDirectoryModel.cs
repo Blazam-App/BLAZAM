@@ -1,9 +1,9 @@
-﻿using BLAZAM.Common.Data.ActiveDirectory;
-using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data.ActiveDirectory.Models;
-using BLAZAM.Common.Models.Database;
-using System;
-using System.Collections.Generic;
+﻿
+using BLAZAM.ActiveDirectory;
+using BLAZAM.ActiveDirectory.Adapters;
+using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using System.DirectoryServices;
 using System.Linq;
 using System.Text;

@@ -1,8 +1,10 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Common.Models.Database.User;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
+using BLAZAM.Database.Context;
+using BLAZAM.Database.Models.Permissions;
+using BLAZAM.Database.Models.User;
+using BLAZAM.Notifications.Services;
+using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -159,7 +161,7 @@ namespace BLAZAM.Server.Data.Services
             {
                 if (User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin)) return true;
                 if (DirectoryUser != null)
-                    return DirectoryUser.PermissionDelegates.Any(p => p.IsSuperAdmin);
+                    return PermissionDelegates.Any(p => p.IsSuperAdmin);
                 return false;
             }
         }
@@ -209,6 +211,8 @@ namespace BLAZAM.Server.Data.Services
         }
 
         public string LastUri { get; set; }
+        public List<PermissionDelegate> PermissionDelegates { get; set; }
+        public List<PermissionMapping> PermissionMappings { get; set; }
 
         public override int GetHashCode()
         {

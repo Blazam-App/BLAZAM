@@ -1,8 +1,8 @@
 
 using Microsoft.AspNetCore.Components;
 using BLAZAM.Server.Data.Services;
-using BLAZAM.Common.Data.Database;
 using MudBlazor;
+using BLAZAM.Database.Context;
 
 namespace BLAZAM.Server.Shared.UI
 {

@@ -1,6 +1,7 @@
-﻿using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Common.Models.Database.User;
+﻿
+using BLAZAM.Database.Context;
+using BLAZAM.Database.Models.User;
+using BLAZAM.Notifications.Services;
 
 namespace BLAZAM.Server.Data.Services
 {

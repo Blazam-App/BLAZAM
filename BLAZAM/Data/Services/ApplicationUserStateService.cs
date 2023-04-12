@@ -1,7 +1,7 @@
-﻿using BLAZAM.Common;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Common.Models.Database.User;
+﻿
+using BLAZAM.Database.Context;
+using BLAZAM.Notifications.Services;
+using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;

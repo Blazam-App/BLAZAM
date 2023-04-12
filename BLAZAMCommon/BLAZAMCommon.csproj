@@ -41,6 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BLAZAMExtensions\BLAZAMExtensions.csproj" />
     <ProjectReference Include="..\BLAZAMFileSystem\BLAZAMFileSystem.csproj" />
     <ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
   </ItemGroup>

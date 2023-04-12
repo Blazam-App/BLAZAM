@@ -1,6 +1,4 @@
-﻿using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data.ActiveDirectory;
-using BLAZAM.Common.Data.Database;
+﻿
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Server.Background;
 using BLAZAM.Server.Data.Services.Duo;
@@ -14,6 +12,11 @@ using MudBlazor;
 using BLAZAM.Server.Data;
 using BLAZAM.Update.Services;
 using BLAZAM.Update;
+using BLAZAM.Database.Context;
+using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.ActiveDirectory;
+using BLAZAM.Session.Interfaces;
+using BLAZAM.Notifications.Services;
 
 namespace BLAZAM.Server
 {
@@ -140,7 +143,7 @@ namespace BLAZAM.Server
             builder.Services.AddHttpContextAccessor();
 
             //This probably don't need to be here
-            builder.Services.AddSingleton<WmiFactoryService>();
+            //builder.Services.AddSingleton<WmiFactoryService>();
 
             //Provide updating as a service, may be a little much for one page using it
             builder.Services.AddSingleton<UpdateService>();

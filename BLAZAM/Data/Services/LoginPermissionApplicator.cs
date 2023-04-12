@@ -1,9 +1,8 @@
-﻿using BLAZAM.Common.Data.ActiveDirectory;
-using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Common.Extensions;
-using BLAZAM.Common.Models.Database.Permissions;
+﻿using BLAZAM.ActiveDirectory;
+using BLAZAM.ActiveDirectory.Interfaces;
+
+using BLAZAM.Database.Context;
+using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Server.Data.Services

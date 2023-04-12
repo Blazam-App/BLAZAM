@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.7.5</AssemblyVersion>
-		<Version>2023.04.11.1926</Version>
+		<Version>2023.04.11.2227</Version>
 		<RootNamespace>BLAZAM.Server</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -94,9 +94,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\BLAZAMActiveDirectory\BLAZAMActiveDirectory.csproj" />
 	  <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
+	  <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
+	  <ProjectReference Include="..\BLAZAMExtensions\BLAZAMExtensions.csproj" />
 	  <ProjectReference Include="..\BLAZAMFileSystem\BLAZAMFileSystem.csproj" />
 	  <ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
+	  <ProjectReference Include="..\BLAZAMNotifications\BLAZAMNotifications.csproj" />
+	  <ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
 	  <ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
 	</ItemGroup>
 

@@ -1,9 +1,9 @@
-﻿using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data.ActiveDirectory.Models;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Common.Extensions;
-using BLAZAM.Common.Models.Database.Audit;
+﻿
+using BLAZAM.ActiveDirectory.Adapters;
+using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Database.Context;
+using BLAZAM.Database.Models.Audit;
+using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Services.TestManagement.TestPlanning.WebApi;
 

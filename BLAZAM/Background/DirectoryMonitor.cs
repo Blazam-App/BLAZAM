@@ -1,9 +1,7 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.ActiveDirectory;
-using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data.Database;
+﻿using BLAZAM.ActiveDirectory;
+using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using BLAZAM.Server.Pages.Error;
-using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Server.Background
 {

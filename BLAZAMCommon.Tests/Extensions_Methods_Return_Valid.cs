@@ -1,6 +1,4 @@
-using BLAZAM.Common.Extensions;
 using System.Globalization;
-using static BLAZAM.Common.Extensions.CommonExtensions;
 
 namespace BLAZAM.Tests
 {

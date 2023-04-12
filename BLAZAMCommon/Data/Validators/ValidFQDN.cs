@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Common.Data.Validators
 {
-    internal class ValidFQDN : ValidationAttribute
+    public class ValidFQDN : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {

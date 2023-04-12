@@ -6,15 +6,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using System.Globalization;
 using BLAZAM.Server.Middleware;
-using BLAZAM.Server.Data.Services;
-using BLAZAM.Server.Data.Services.Duo;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Common.Data.ActiveDirectory;
-using BLAZAM.Common;
-using BLAZAM.Server.Data;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-using BLAZAM.Server.Data.Services.Email;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
@@ -26,6 +17,8 @@ using BLAZAM.Server;
 using BLAZAM.FileSystem;
 using BLAZAM.Update;
 using System.Reflection;
+using BLAZAM.Database.Context;
+using BLAZAM.Database.Exceptions;
 
 namespace BLAZAM
 {

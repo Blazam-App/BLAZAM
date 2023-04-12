@@ -1,5 +1,6 @@
-﻿using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.Server.Data.Services
 {

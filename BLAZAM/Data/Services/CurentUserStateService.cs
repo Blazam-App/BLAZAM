@@ -1,4 +1,5 @@
-﻿using BLAZAM.Common.Data.Services;
+﻿
+using BLAZAM.Session.Interfaces;
 using System.Security.Claims;
 
 namespace BLAZAM.Server.Data.Services
