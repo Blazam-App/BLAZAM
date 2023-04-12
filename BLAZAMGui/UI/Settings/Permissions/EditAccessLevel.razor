@@ -305,7 +305,8 @@
             WorkingModel = new();
         LevelsChanged.InvokeAsync();
 
-        ProgramEvents.InvokePermissionsChanged();
+        //TODO update withh common evnt handler
+        //ProgramEvents.InvokePermissionsChanged();
         InvokeAsync(StateHasChanged);
 
     }

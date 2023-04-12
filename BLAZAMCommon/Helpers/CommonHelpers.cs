@@ -265,6 +265,17 @@ namespace BLAZAM.Helpers
         }
 
 
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T>action) 
+        {
+            
+                var enumerator = enumerable.GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    action.Invoke((T)enumerator.Current);
+                }
+            
+        }
+
         #region ADSI Extension Methods
 
 

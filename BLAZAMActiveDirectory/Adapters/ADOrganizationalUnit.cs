@@ -1,7 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models.Permissions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Services.Graph;
 using System.Diagnostics.Contracts;
 using System.DirectoryServices;
 using System.Reflection.PortableExecutable;

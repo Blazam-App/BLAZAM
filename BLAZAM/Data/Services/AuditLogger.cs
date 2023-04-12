@@ -7,7 +7,6 @@ using BLAZAM.Database.Models.Audit;
 using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Services.TestManagement.TestPlanning.WebApi;
 
 namespace BLAZAM.Server.Data.Services
 {

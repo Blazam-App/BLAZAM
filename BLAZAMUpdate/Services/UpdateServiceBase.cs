@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Common;
-using Microsoft.TeamFoundation.Build.WebApi;
 
 
 namespace BLAZAM.Update.Services

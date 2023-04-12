@@ -1,7 +1,8 @@
 
+using BLAZAM.Gui.UI;
 using Microsoft.AspNetCore.Components;
 
-namespace BLAZAM.Server.Shared.UI.Inputs
+namespace BLAZAM.Gui.UI.Inputs
 {
     public class AutoCompleteComponentBase:AppComponentBase
     {

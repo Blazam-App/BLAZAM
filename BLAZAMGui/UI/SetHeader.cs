@@ -1,7 +1,7 @@
-﻿using BLAZAM.Server.Shared.Layouts;
+﻿using BLAZAM.Gui.Layouts;
 using Microsoft.AspNetCore.Components;
 
-namespace BLAZAM.Server.Shared.UI
+namespace BLAZAM.Gui.UI
 {
     public class SetHeader : ComponentBase, IDisposable
     {

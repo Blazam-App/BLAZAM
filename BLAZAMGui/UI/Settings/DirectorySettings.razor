@@ -9,7 +9,7 @@
     <SettingsField Label="@SettingsLocalization["Server"]">
 
 
-        @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin" && Program.InstallationCompleted)
+        @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername != "admin" && ApplicationInfo.InstallationCompleted)
         {
 
             <MudTextField  Label="@SettingsLocalization["Server"]"
@@ -47,7 +47,7 @@
         <MudIcon Icon="IconName.QuestionCircle" Color="Color.Info" />
         </MudTooltip>*@
 
-        @if (Program.InDemoMode && UserStateService.CurrentUsername != "admin" && Program.InstallationCompleted)
+        @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername != "admin" && ApplicationInfo.InstallationCompleted)
         {
             <MudNumericField HelperText="@helperText"
                          Label="@SettingsLocalization["Port"]"

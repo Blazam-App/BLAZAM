@@ -1,6 +1,7 @@
 ﻿
 using BLAZAM.Database.Models.Templates;
-using BLAZAM.Server.Shared.UI.Settings;
+using BLAZAM.Gui.UI;
+using BLAZAM.Gui.UI.Settings;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 using System.ComponentModel.DataAnnotations;

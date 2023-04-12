@@ -1,8 +1,5 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Server.Data.Services;
-using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Components;
+﻿
+using BLAZAM.Gui.UI.Dashboard.Widgets;
 
 namespace BLAZAM.Server.Shared.UI.Dashboard.Widgets
 {

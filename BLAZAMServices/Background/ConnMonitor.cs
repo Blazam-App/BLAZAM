@@ -2,7 +2,6 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
-using BLAZAM.Server.Pages.Error;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Services.Background
@@ -53,9 +52,10 @@ namespace BLAZAM.Services.Background
             DirectoryMonitor = new DirectoryMonitor(directory);
             DatabaseMonitor.OnConnectedChanged += (newStatus) =>
             {
+                //TODO Separate Oops logic from razor page
                 if (_encryption.Status == ServiceConnectionState.Down)
                 {
-                    Oops.ErrorMessage = "EncryptionKey missing or invalid in appsettings.json";
+                    //Oops.ErrorMessage = "EncryptionKey missing or invalid in appsettings.json";
                     AppReady = ServiceConnectionState.Down;
                     return;
                 }
@@ -65,8 +65,8 @@ namespace BLAZAM.Services.Background
                     AppReady = newStatus;
                     if (newStatus == ServiceConnectionState.Down && DatabaseContextBase.DownReason != null)
                     {
-                        Oops.ErrorMessage = DatabaseContextBase.DownReason.GetType().FullName;
-                        Oops.HelpMessage = DatabaseContextBase.DownReason.Message;
+                       // Oops.ErrorMessage = DatabaseContextBase.DownReason.GetType().FullName;
+                        //Oops.HelpMessage = DatabaseContextBase.DownReason.Message;
                     }
                 }
 
@@ -79,7 +79,7 @@ namespace BLAZAM.Services.Background
 
             DatabaseContextBase.OnMigrationFailed += () =>
             {
-                Oops.Exception = DatabaseContextBase.DownReason;
+                //Oops.Exception = DatabaseContextBase.DownReason;
                 _failedMigration = true;
             };
             MonitorDatabaseValues();

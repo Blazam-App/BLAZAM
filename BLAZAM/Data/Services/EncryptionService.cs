@@ -18,6 +18,7 @@ namespace BLAZAM.Server.Data.Services
         public EncryptionService()
         {
             Encryption = new Encryption(Program.Configuration?.GetValue<string>("EncryptionKey"));
+ 
         }
 
 

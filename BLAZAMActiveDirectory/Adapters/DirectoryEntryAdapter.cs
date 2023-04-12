@@ -8,7 +8,6 @@ using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.TeamFoundation.Work.WebApi.Exceptions;
 using Newtonsoft.Json.Linq;
 using System.Data;
 using System.DirectoryServices;

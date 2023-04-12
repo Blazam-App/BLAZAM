@@ -14,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.Services.Common;
 
 namespace BLAZAM.Database.Context
 {

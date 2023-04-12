@@ -27,7 +27,7 @@
 
 
 
-            <MudSwitch Label="Super User Group" Disabled=@(Program.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Level.IsSuperAdmin" />
+            <MudSwitch Label="Super User Group" Disabled=@(ApplicationInfo.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Level.IsSuperAdmin" />
 
 
 

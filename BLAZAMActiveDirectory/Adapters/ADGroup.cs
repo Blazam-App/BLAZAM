@@ -1,8 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.VisualStudio.Services.Common;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

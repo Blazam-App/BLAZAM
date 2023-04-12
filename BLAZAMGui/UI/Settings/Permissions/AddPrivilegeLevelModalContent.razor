@@ -13,7 +13,7 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
     <DynamicMudInput HelperText="Will have complete and total acceess to the application if enabled"
                      Label="Super User"
                      @bind-Value="@NewPermissionDelegate.IsSuperAdmin"
-                     Disabled=Program.InDemoMode />
+                     Disabled=ApplicationInfo.InDemoMode />
 
 </MudStack>
 

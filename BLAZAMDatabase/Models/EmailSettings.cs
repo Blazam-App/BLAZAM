@@ -1,5 +1,4 @@
-﻿using Microsoft.TeamFoundation.Work.WebApi.Exceptions;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Database.Models

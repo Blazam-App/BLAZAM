@@ -1,3 +1,5 @@
+using BLAZAM.Email.Services;
+
 namespace BLAZAM.Gui.UI
 {
     public class AppComponentBase : ComponentBase

@@ -8,7 +8,6 @@ using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using static Microsoft.VisualStudio.Services.Graph.Constants;
 
 namespace BLAZAM.Server.Data.Services
 {

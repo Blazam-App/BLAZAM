@@ -187,6 +187,7 @@ namespace BLAZAM
             //Done with service injection let's build the App
             AppInstance = builder.Build();
 
+            ApplicationInfo.services = AppInstance.Services;
 
             //Perform database auto update
             ApplyDatabaseMigrations();

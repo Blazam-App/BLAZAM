@@ -1,6 +1,7 @@
+using BLAZAM.Gui.UI.Settings;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace BLAZAM.Server.Shared.UI.Settings
+namespace BLAZAM.Gui.UI.Settings
 {
     public partial class SettingsComponents:ValidatedForm
     {

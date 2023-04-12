@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using BLAZAM.Server.Shared.UI.Themes;
+@using System.Security.Claims;
+@inherits LayoutComponentBase
 
 @inject NavigationManager Nav
 @inject IActiveDirectoryContext directory
@@ -19,7 +21,7 @@
                     <MainAppBar />
                 </CascadingValue>
 
-                @if (Program.InDebugMode)
+                @if (ApplicationInfo.inDebugMode)
                 {
 
                     <AuthorizeView Context="authorizedContext" Roles=@UserRoles.SuperAdmin>

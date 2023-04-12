@@ -8,8 +8,6 @@ using BLAZAM.Logger;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.TeamFoundation.Work.WebApi.Exceptions;
-using Microsoft.VisualStudio.Services.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;

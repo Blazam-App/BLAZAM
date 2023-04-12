@@ -1,4 +1,7 @@
 ﻿@using System.Text.RegularExpressions;
+@using BLAZAM.Database.Models.Templates;
+@using Microsoft.Data.SqlClient;
+@using Microsoft.EntityFrameworkCore;
 @inherits ValidatedForm
 
 <EditForm OnValidSubmit="SaveTemplate" Model="DirectoryTemplate">

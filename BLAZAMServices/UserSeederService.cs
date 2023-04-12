@@ -1,5 +1,8 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
+using BLAZAM.Helpers;
+using BLAZAM.Logger;
 
 namespace BLAZAM.Services
 {
@@ -8,14 +11,20 @@ namespace BLAZAM.Services
     /// </summary>
     public class UserSeederService
     {
+        private readonly ApplicationInfo _applicationInfo;
         private readonly IActiveDirectoryContext _activeDirectoryContext;
         private readonly IAppDatabaseFactory _dbFactory;
 
-        public UserSeederService(IAppDatabaseFactory dbFactory, IActiveDirectoryContextFactory adFactory)
+        public UserSeederService(IAppDatabaseFactory dbFactory, 
+            IActiveDirectoryContextFactory adFactory,
+            ApplicationInfo applicationInfo)
         {
+            _applicationInfo = applicationInfo;
             _activeDirectoryContext = adFactory.CreateActiveDirectoryContext();
             _dbFactory = dbFactory;
-            ProgramEvents.PermissionsChanged += SeedUsers;
+            
+            //TODO Move ProgramEvents to Common
+            //ProgramEvents.PermissionsChanged += SeedUsers;
             SeedUsers();
         }
 
@@ -24,7 +33,7 @@ namespace BLAZAM.Services
             try
             {
                 EnsureAdminExists();
-                if (Program.InDemoMode)
+                if (_applicationInfo.InDemoMode)
                     EnsureDemoExists();
                 using var context = _dbFactory.CreateDbContext();
                 if (context.Status != Common.Data.ServiceConnectionState.Up) return;

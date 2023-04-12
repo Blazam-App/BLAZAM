@@ -12,8 +12,12 @@ using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Logger;
+using BLAZAM.EmailMessage;
+using BLAZAM.EmailMessage.Email;
+using BLAZAM.Common.Data;
+using BLAZAM.Static;
 
-namespace BLAZAM.Services.Email
+namespace BLAZAM.Email.Services
 {
     public class EmailService
     {
@@ -32,7 +36,7 @@ namespace BLAZAM.Services.Email
         private ComponentRenderer<TComponent> GetRenderer<TComponent>() where TComponent : IComponent => new ComponentRenderer<TComponent>()
             .AddService(Factory)
             .UseLayout<DefaultEmailLayout>()
-            .AddServiceProvider(Program.AppInstance.Services);
+            .AddServiceProvider(ApplicationInfo.services);
 
 
 

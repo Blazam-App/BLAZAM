@@ -1,6 +1,4 @@
-﻿using Microsoft.TeamFoundation.Build.WebApi;
-using System.IO.Compression;
-using Microsoft.VisualStudio.Services.Common.CommandLine;
+﻿using System.IO.Compression;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using BLAZAM.Common.Data.Database;

@@ -1,5 +1,6 @@
 ﻿@inherits AppComponentBase
 @using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms;
 
 
 @code {
@@ -27,7 +28,7 @@
         {
             try
             {
-                if (Program.InDemoMode && Program.InstallationCompleted && !UserStateService.CurrentUsername.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                if (ApplicationInfo.InDemoMode && ApplicationInfo.InstallationCompleted && !UserStateService.CurrentUsername.Equals("admin", StringComparison.OrdinalIgnoreCase))
                 {
                     SnackBarService.Warning("Settings changes are not allowed in the demo");
                     return;

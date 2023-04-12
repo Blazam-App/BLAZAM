@@ -9,7 +9,6 @@ global using BLAZAM.Logger;
 global using BLAZAM.Notifications.Services;
 global using BLAZAM.Services;
 global using BLAZAM.Services.Background;
-global using BLAZAM.Services.Email;
 global using BLAZAM.Session.Interfaces;
 global using BLAZAM.Update.Services;
 global using Microsoft.AspNetCore.Components;
