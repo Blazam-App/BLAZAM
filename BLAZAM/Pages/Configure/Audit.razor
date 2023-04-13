@@ -1,5 +1,7 @@
 ﻿@page "/audit"
 @page "/audit/{ActiveTab}"
+@using BLAZAM.Database.Models.Audit;
+
 
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 @inherits TabbedAppComponentBase

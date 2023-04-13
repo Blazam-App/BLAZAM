@@ -6,22 +6,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.7.5</AssemblyVersion>
-		<Version>2023.04.11.1736</Version>
-		<RootNamespace>BLAZAM.Server</RootNamespace>
+		<Version>2023.04.13.1856</Version>
+		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <Compile Remove="Data\Permissions\**" />
-	  <Content Remove="Data\Permissions\**" />
-	  <EmbeddedResource Remove="Data\Permissions\**" />
-	  <None Remove="Data\Permissions\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Remove="Pages\Users\MemberOfList.razor" />
-	</ItemGroup>
 
 	<ItemGroup>
 	  <None Remove="nssm.exe" />
@@ -50,7 +39,7 @@
 		<PackageReference Include="Core.System.Configuration.Install" Version="1.1.0" />
 		<PackageReference Include="DuoUniversal" Version="1.2.0" />
 		<PackageReference Include="Google.Apis.Auth" Version="1.60.0" />
-		<PackageReference Include="MailKit" Version="3.5.0" />
+		<PackageReference Include="MailKit" Version="3.6.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.13" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.13" />
@@ -70,15 +59,12 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="7.0.0" />
-		<PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.170.0" />
-		<PackageReference Include="Microsoft.VisualStudio.Services.Client" Version="16.170.0" />
-		<PackageReference Include="Microsoft.VisualStudio.Services.Release.Client" Version="16.170.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.11" />
 		<PackageReference Include="MudBlazor" Version="6.2.0" />
 		<PackageReference Include="MudBlazor.Markdown" Version="0.1.0" />
 		<PackageReference Include="MudBlazor.ThemeManager" Version="1.0.7" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-		<PackageReference Include="Octokit" Version="5.0.0" />
+		<PackageReference Include="Octokit" Version="5.0.3" />
 		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
 		<PackageReference Include="SixLabors.ImageSharp.Web" Version="2.0.2" />
@@ -88,13 +74,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Data\Services\RPC\" />
 		<Folder Include="Exceptions\ActiveDirectory\" />
-		<Folder Include="Shared\UI\General\" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\BLAZAMActiveDirectory\BLAZAMActiveDirectory.csproj" />
 	  <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
+	  <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
+	  <ProjectReference Include="..\BLAZAMFileSystem\BLAZAMFileSystem.csproj" />
+	  <ProjectReference Include="..\BLAZAMGui\BLAZAMGui.csproj" />
+	  <ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
+	  <ProjectReference Include="..\BLAZAMNotifications\BLAZAMNotifications.csproj" />
+	  <ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
+	  <ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -161,14 +153,5 @@
 	</ItemGroup>
 <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />
-</Target>
-<ItemGroup>
-  <UpToDateCheckInput Remove="Pages\Users\MemberOfList.razor" />
-</ItemGroup>
-<ItemGroup>
-  <_ContentIncludedByDefault Remove="Pages\Users\MemberOfList.razor" />
-</ItemGroup>
-<ItemGroup>
-  <None Include="Shared\UI\Groups\MemberOfList.razor" />
-</ItemGroup>	
+</Target>	
 </Project>

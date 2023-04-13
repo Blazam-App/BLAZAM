@@ -1,0 +1,54 @@
+﻿@inherits AppComponentBase
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms;
+
+
+@code {
+    bool _saveDisabled = false;
+    protected bool SaveDisabled
+    {
+        get
+        {
+            return _saveDisabled;
+        }
+        set => _saveDisabled = value;
+    }
+
+    protected EditForm? EditForm { get; set; }
+    //protected virtual Task OnValidation(ValidationsStatusChangedEventArgs eventArgs)
+    //{
+    //    SaveDisabled = eventArgs.Status == ValidationStatus.Error;
+
+    //    return Task.CompletedTask;
+    //}
+
+    protected virtual async void Save()
+    {
+        if (Context != null)
+        {
+            try
+            {
+                if (ApplicationInfo.InDemoMode && ApplicationInfo.InstallationCompleted && !UserStateService.CurrentUsername.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    SnackBarService.Warning("Settings changes are not allowed in the demo");
+                    return;
+
+                }
+                await Context.SaveChangesAsync();
+                SnackBarService.Success("Settings have been saved");
+            }
+            catch (Exception ex)
+            {
+                SnackBarService.Error(ex.Message);
+
+            }
+            await InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            SnackBarService.Success("Database not available");
+
+        }
+    }
+
+}

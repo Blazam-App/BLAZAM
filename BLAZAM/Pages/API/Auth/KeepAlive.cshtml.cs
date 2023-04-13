@@ -1,5 +1,4 @@
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Common.Extensions;
+
 using BLAZAM.Server.Data.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

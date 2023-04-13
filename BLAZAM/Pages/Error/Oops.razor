@@ -1,9 +1,11 @@
 ﻿@page "/oops"
+@using BLAZAM.Gui.UI.Dev
 
 @layout ErrorLayout
+@inject ApplicationInfo ApplicationInfo
 @inject IStringLocalizer<AppLocalization> Loc
 
-@if (Program.IsDevelopment)
+@if (ApplicationInfo.InDebugMode)
 {
     <DevTools />
 }

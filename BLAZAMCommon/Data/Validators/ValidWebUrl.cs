@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Common.Data.Validators
 {
-    internal class ValidWebUrl : ValidationAttribute
+    public class ValidWebUrl : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {

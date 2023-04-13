@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace BLAZAM.Common.Data.Validators
 {
-    internal class ValidAdminPassword : ValidationAttribute
+    public class ValidAdminPassword : ValidationAttribute
     {
         /// <summary>
         /// Checks if the given string meets minimum admin password complexity.

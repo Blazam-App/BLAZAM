@@ -1,15 +1,12 @@
 ﻿@page "/search"
 @page "/search/{SearchTermParameter}"
-@using BLAZAM.Server.Pages.Computers
-@using BLAZAM.Server.Pages.Groups
-@using BLAZAM.Server.Pages.OU
-@using BLAZAM.Server.Pages.Users
+
 @inherits AppComponentBase
 @attribute [Authorize]
 <AuthorizeView Roles="@(UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
 
 
-    @if (Program.InDemoMode)
+    @if (ApplicationInfo.InDemoMode)
     {
         <MudAlert>
             Try searching Moore, Howard, Evans, Manny...
@@ -21,12 +18,8 @@
     @if (Searcher.Results.Count > 1)
     {
         <Row Width="Width.Is100">
-            <Column ColumnSize="ColumnSize.Is6">
                 Results found: @Searcher.Results.Count
-            </Column>
-            <Column ColumnSize="ColumnSize.Is6">
                 Time elapsed: @Searcher.SearchTime
-            </Column>
         </Row>
 
         <Virtualize Items="results" TItem="IDirectoryEntryAdapter" Context="u" OverscanCount="30">

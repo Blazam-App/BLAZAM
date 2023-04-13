@@ -10,7 +10,8 @@ namespace BLAZAM.Tests.Mocks
     {
         public HttpClient CreateClient(string name)
         {
-            return HttpClientFactory.Create();
+            HttpClient client = new HttpClient();
+            return client;
         }
     }
 }

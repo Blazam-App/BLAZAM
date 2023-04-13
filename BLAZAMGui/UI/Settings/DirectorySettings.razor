@@ -1,0 +1,188 @@
+﻿@inherits SettingsComponents
+
+
+
+<MudText Typo="Typo.h4">@SettingsLocalization["Active Directory Settings"]</MudText>
+
+<MudForm @onsubmit="Save">
+
+    <SettingsField Label="@SettingsLocalization["Server"]">
+
+
+        @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername != "admin" && ApplicationInfo.InstallationCompleted)
+        {
+
+            <MudTextField  Label="@SettingsLocalization["Server"]"
+                      AutoFocus=true
+                      HelperText="Can be your domain name in most environments"
+                      Value=@("Private")
+                            Disabled />
+        }
+        else
+        {
+
+            <MudTextField Label="@SettingsLocalization["Server"]"
+                      HelperText="Can be your domain name in most environments"
+                      For="(()=>settings.ServerAddress)"
+                      @bind-Value="@settings.ServerAddress">
+
+
+
+            </MudTextField>
+
+        }
+
+    </SettingsField>
+    <SettingsField Label="@SettingsLocalization["Port"]">
+
+        @{
+            string helperText = "The default port of 389 is the recommended port to use.";
+        }
+
+        @*
+        TODO Add this as a popover
+        <MudTooltip Display="Display.InlineBlock" Multiline Style="max-width:300px" Text="The application will automatically use an SSL
+        connection if the server's CA Certificate is a trusted CA on this web server. Using port 636 can work,
+        but may lead to unexpected behaviour of other services that listen to Active Directory changes.">
+        <MudIcon Icon="IconName.QuestionCircle" Color="Color.Info" />
+        </MudTooltip>*@
+
+        @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername != "admin" && ApplicationInfo.InstallationCompleted)
+        {
+            <MudNumericField HelperText="@helperText"
+                         Label="@SettingsLocalization["Port"]"
+                         HideSpinButtons="true"
+                         Value="0"
+                                  Disabled />
+
+
+        }
+        else
+        {
+
+            <MudNumericField HelperText="@helperText"
+                         Label="@SettingsLocalization["Port"]"
+                         HideSpinButtons="true"
+                         For="(()=>settings.ServerPort)"
+                         @bind-Value="@settings.ServerPort" />
+
+
+
+
+        }
+
+
+
+
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@SettingsLocalization["Username"]">
+
+        
+        <MudTextField For="(()=>settings.Username)" Label="@SettingsLocalization["Username"]" name="username" @bind-Value="@settings.Username">
+
+
+
+        </MudTextField>
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@SettingsLocalization["Password"]">
+
+        <MudTextField For="(()=>settings.Password)" Label="@SettingsLocalization["Password"]" name="password" InputType="InputType.Password" @bind-Value="@settings.Password">
+
+
+
+        </MudTextField>
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@SettingsLocalization["UseTLS"]">
+
+        <MudSwitch For="(()=>settings.UseTLS)" Label="@SettingsLocalization["UseTLS"]" @bind-Checked="@settings.UseTLS" />
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@SettingsLocalization["FQDN"]">
+
+        <MudTextField For="(()=>settings.FQDN)" Label="@SettingsLocalization["FQDN"]" name="fqdn" @bind-Value="@settings.FQDN" />
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@SettingsLocalization["Base DN"]">
+
+        <MudTextField For="(()=>settings.ApplicationBaseDN)" Label="@SettingsLocalization["Base DN"]" name="baseDN" @bind-Value="@settings.ApplicationBaseDN" />
+
+    </SettingsField>
+
+
+    <SettingsField>
+
+        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+    </SettingsField>
+</MudForm>
+@code {
+
+#nullable disable warnings
+    ADSettings settings = new ADSettings();
+    bool _insert;
+
+    string passwordInDb;
+
+    protected override async Task OnInitializedAsync()
+    {
+        originalSettings = await Context.ActiveDirectorySettings.AsNoTracking().FirstOrDefaultAsync();
+
+        var set = await Context.ActiveDirectorySettings.FirstOrDefaultAsync();
+        if (set != null)
+        {
+            settings = set;
+            passwordInDb = settings?.Password;
+
+        }
+        else
+        {
+            settings.Id = 1;
+            _insert = true;
+        }
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
+    }
+    protected override async void Save()
+    {
+        //if (await Validation.ValidateAll())
+        //{
+        if (!settings.Password.Equals(passwordInDb))
+        {
+            settings.Password = EncryptionService.EncryptObject(settings.Password);
+            passwordInDb = settings.Password;
+        }
+        if (_insert)
+        {
+            Context.ActiveDirectorySettings.Add(settings);
+            _insert = false;
+        }
+        AuditLogger.System.SettingsChanged("Active Directory", settings.GetChanges(originalSettings));
+        base.Save();
+        //}
+
+    }
+
+}
+
+
+
+

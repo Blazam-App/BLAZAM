@@ -1,4 +1,5 @@
-﻿using BLAZAM.Common.Extensions;
+﻿
+using BLAZAM.Helpers;
 using Serilog;
 using Serilog.Events;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Common
 {
-    public static class Loggers
+    public static class Loggers_Moved
     {
         private static string LogPath;
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

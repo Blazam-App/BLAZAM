@@ -1,18 +1,26 @@
-﻿using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data.ActiveDirectory;
-using BLAZAM.Common.Data.Database;
+﻿
 using BLAZAM.Common.Data.Services;
-using BLAZAM.Server.Background;
-using BLAZAM.Server.Data.Services.Duo;
-using BLAZAM.Server.Data.Services.Email;
-using BLAZAM.Server.Data.Services.Update;
-using BLAZAM.Server.Data.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using MudBlazor.Services;
 using System.Globalization;
 using MudBlazor;
 using BLAZAM.Server.Data;
+using BLAZAM.Update.Services;
+using BLAZAM.Update;
+using BLAZAM.Database.Context;
+using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.ActiveDirectory;
+using BLAZAM.Session.Interfaces;
+using BLAZAM.Notifications.Services;
+using BLAZAM.Common.Data;
+using BLAZAM.Services.Background;
+using BLAZAM.Email.Services;
+using BLAZAM.Services;
+using BLAZAM.Services.Duo;
+using BLAZAM.Server.Data.Services;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace BLAZAM.Server
 {
@@ -21,18 +29,23 @@ namespace BLAZAM.Server
         public static void IntializeProperties(this WebApplicationBuilder builder)
         {
             //Set DebugMode flag from configuration
-            Program.InDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
-            Program.InDemoMode = builder.Configuration.GetValue<bool>("DemoMode");
+            ApplicationInfo.inDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
+            ApplicationInfo.inDemoMode = builder.Configuration.GetValue<bool>("DemoMode");
 
 
             //Set application directories
-            Program.RootDirectory = new SystemDirectory(builder.Environment.ContentRootPath);
-            Program.TempDirectory = new SystemDirectory(Path.GetTempPath() + "Blazam\\");
+            //Program.RootDirectory = new SystemDirectory(builder.Environment.ContentRootPath);
+            //Program.TempDirectory = new SystemDirectory(Path.GetTempPath() + "Blazam\\");
             Program.AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "Blazam\\");
 
 
             //Store the configuration so other pages/objects can easily access it
             Program.Configuration = builder.Configuration;
+
+
+            ApplicationInfo.runningProcess = Process.GetCurrentProcess();
+            ApplicationInfo.runningVersion = new ApplicationVersion(Assembly.GetExecutingAssembly()) ;
+
         }
 
         public static void InjectServices(this WebApplicationBuilder builder)
@@ -64,7 +77,7 @@ namespace BLAZAM.Server
             //This can obviously only be changed on app restart
 
 
-
+            builder.Services.AddSingleton<ApplicationInfo>();
 
 
             //Add the httpcontext to services so we can detect the users login status
@@ -122,12 +135,7 @@ namespace BLAZAM.Server
 
             DatabaseContextBase.Configuration = builder.Configuration;
 
-            builder.Services.AddSingleton<AppDatabaseFactory>();
-
-            //builder.Services.AddDbContextFactory<DatabaseContext>();
-
-            builder.Services.AddScoped<AppNavigationManager>();
-
+            builder.Services.AddSingleton<IAppDatabaseFactory,AppDatabaseFactory>();
 
             //Provide an Http client as a service with custom construction via api service class
             builder.Services.AddHttpClient();
@@ -139,7 +147,7 @@ namespace BLAZAM.Server
             builder.Services.AddHttpContextAccessor();
 
             //This probably don't need to be here
-            builder.Services.AddSingleton<WmiFactoryService>();
+            //builder.Services.AddSingleton<WmiFactoryService>();
 
             //Provide updating as a service, may be a little much for one page using it
             builder.Services.AddSingleton<UpdateService>();
@@ -171,7 +179,7 @@ namespace BLAZAM.Server
 
 
             //Add custom Auth
-            builder.Services.AddScoped<AppAuthenticationStateProvider, AppAuthenticationStateProvider>();
+            builder.Services.AddScoped<AppAuthenticationStateProvider>();
 
             //Add web user application search as a service
             builder.Services.AddScoped<SearchService>();

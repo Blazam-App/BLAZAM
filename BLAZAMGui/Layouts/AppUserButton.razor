@@ -1,0 +1,138 @@
+@using BLAZAM.Database.Models.User;
+@using BLAZAM.Gui.UI.Themes;
+@inherits AppComponentBase
+@{
+    var messages = CurrentUser.State?.Messages.Count;
+
+}
+@if (messages > 0)
+{
+    <MudPopover Open=@NotificationsOpen TransformOrigin="Origin.TopRight" AnchorOrigin="Origin.BottomRight">
+        <MudStack Row=true>
+            <MudListSubheader>Notifications</MudListSubheader>
+            <AppCloseButton OnClick=@(()=>{NotificationsOpen=false;}) />
+
+        </MudStack>
+
+        @foreach (var notification in CurrentUser.State?.Messages)
+        {
+
+            <MudAlert OnClick=@(()=>{
+              if(notification.Notification.Link!=null)
+              Nav.NavigateTo(notification.Notification.Link.ToString());
+              }) ShowCloseIcon=notification.Notification.Dismissable
+              CloseIconClicked="@(()=>{MarkRead(notification);})">
+                @if (!notification.Notification.Title.IsNullOrEmpty())
+                {
+                    <MudText Typo="Typo.h6">@notification.Notification.Title</MudText>
+                }
+                @notification.Notification.Message
+            </MudAlert>
+        }
+
+
+    </MudPopover>
+}
+
+<MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+    <ActivatorContent>
+        @{
+            var avatarBgColor = GenerateAvatarColor(CurrentUser.State.Username);
+        }
+        @if (messages > 0)
+        {
+            <MudBadge Color=Color.Error Overlap=true Content="CurrentUser.State.Messages.Count">
+                @if (CurrentUser.State.UserSettings?.ProfilePicture != null)
+                {
+                    <Base64Image Data="@CurrentUser.State.UserSettings?.ProfilePicture" />
+                }
+                else
+                {
+                    <MudAvatar Elevation="4" Style="@avatarBgColor">@CurrentUser.State.Username?.FirstOrDefault()</MudAvatar>
+
+                }
+
+            </MudBadge>
+        }
+        else
+        {
+            <CurrentUserAvatarIcon />
+
+        }
+
+    </ActivatorContent>
+    <ChildContent>
+        <MudText Typo=Typo.caption Class="my-1" Style="text-align:center">
+            @CurrentUser.Username
+        </MudText>
+        @if (messages > 0)
+        {
+            <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})">Notifications</MudMenuItem>
+        }
+
+
+        <MudMenuItem OnClick="@(()=>{profileModal.Show();})" Icon="@Icons.Material.Filled.Settings">
+            @AppLocalization["Profile Settings"]
+        </MudMenuItem>
+        @if (CurrentUser.State?.Impersonator == null)
+        {
+            <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/logout",true);})" Icon="@Icons.Material.Filled.Logout">
+                @AppLocalization["Sign Out"]
+            </MudMenuItem>
+        }
+        else
+        {
+            <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/unimpersonate",true);})" Icon="@Icons.Material.Filled.PersonOff">
+
+                @AppLocalization["Stop It"]
+            </MudMenuItem>
+        }
+    </ChildContent>
+</MudMenu>
+<AppModal @ref=profileModal Title="Profile Settings">
+    <CascadingValue Value="mainLayout">
+        <BLAZAM.Server.Shared.UI.Modals.AppUserProfileModalContent />
+    </CascadingValue>
+</AppModal>
+@code {
+    AppModal? profileModal;
+    /// <summary>
+    /// Indicates whether the notification panel is open
+    /// </summary>
+    bool NotificationsOpen;
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NotificationPublisher.OnNotificationPublished += ((notifications) =>
+        {
+            //if (notifications.Select(n => n.User).Contains(CurrentCurrentUser.State?.UserSettings))
+                InvokeAsync(StateHasChanged);
+        });
+    }
+
+
+    /// <summary>
+    /// Generate a repeatable hex color based on the given username
+    /// </summary>
+    /// <param name="username"></param>
+    /// <returns>A background-color style string</returns>
+    string GenerateAvatarColor(string username)
+    {
+        if (username.IsNullOrEmpty()) return "background-color:#0c13a7";
+        int usernameHash = username.GetAppHashCode();
+        byte[] usernameHashBytes = usernameHash.ToByteArray(3);
+        string hexColor = "background-color:#";
+        hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
+        return hexColor;
+    }
+    async Task MarkRead(UserNotification notification)
+    {
+        var inDBNotification = Context.UserNotifications.Where(n => n.Id == notification.Id).FirstOrDefault();
+        inDBNotification.IsRead = true;
+        await Context.SaveChangesAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+}

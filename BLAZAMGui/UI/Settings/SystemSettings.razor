@@ -1,0 +1,70 @@
+@inherits SettingsComponents
+@using System.IO.Compression;
+<MudText Typo="Typo.h4">@SettingsLocalization["System Settings"]</MudText>
+<MudForm @onsubmit="Save">
+    @if (settings != null)
+    {
+        <SettingsField Label="@SettingsLocalization["Google Analytics ID"]">
+
+            <MudTextField Label="@SettingsLocalization["Google Analytics ID"]" @bind-Value="@settings.AnalyticsId" />
+
+        </SettingsField>
+        <SettingsField>
+
+            <MudButton Color="Color.Error" Variant=Variant.Outlined OnClick=RestartApplication>Restart Web Application</MudButton>
+
+
+        </SettingsField>
+    }
+
+    <SettingsField>
+
+        <MudLink Href="/download/logs" Target="Target.Blank">
+            <MudButton Variant=Variant.Outlined Color="Color.Primary">Download Logs</MudButton>
+        </MudLink>
+
+
+    </SettingsField>
+    <SettingsField>
+
+        <MudButton ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+    </SettingsField>
+</MudForm>
+@code {
+#nullable disable warnings
+    AppSettings? settings = new AppSettings();
+
+    protected override async Task OnInitializedAsync()
+    {
+        originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
+
+        settings = Context.AppSettings.FirstOrDefault();
+        LoadingData = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+
+
+    [Inject] ApplicationManager applicationManager { get; set; }
+
+    async Task RestartApplication()
+    {
+        if (await MessageService.Confirm("Are you sure you want to restart the application? All connected users will be disconnected.", "Restart Application"))
+        {
+            if (ApplicationInfo.InDemoMode && !UserStateService.CurrentUsername.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                SnackBarService.Warning("Restarting the application is not allowed in the demo");
+                return;
+            }
+            applicationManager.Restart();
+        }
+    }
+
+    protected override void Save()
+    {
+        AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
+        base.Save();
+    }
+
+}

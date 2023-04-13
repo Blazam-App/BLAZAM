@@ -1,11 +1,5 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Extensions;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BLAZAM.Helpers;
 
 namespace BLAZAM.Tests
 {

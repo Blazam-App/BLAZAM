@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>BLAZAM.Localization</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="Shared\ResourceFiles\AppLocalization.Designer.cs">
+      <DependentUpon>AppLocalization.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Shared\ResourceFiles\SettingsLocalization.Designer.cs">
+      <DependentUpon>SettingsLocalization.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Shared\ResourceFiles\UserLocalization.Designer.cs">
+      <DependentUpon>UserLocalization.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Shared\ResourceFiles\AppLocalization.fr.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Shared\ResourceFiles\AppLocalization.resx">
+      <LastGenOutput>AppLocalization.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Shared\ResourceFiles\SettingsLocalization.resx">
+      <LastGenOutput>SettingsLocalization.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Shared\ResourceFiles\UserLocalization.fr.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Shared\ResourceFiles\UserLocalization.resx">
+      <LastGenOutput>UserLocalization.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

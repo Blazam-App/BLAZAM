@@ -1,7 +1,5 @@
 ﻿@page "/login"
-@using BLAZAM.Common.Data;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
+
 @inherits ValidatedForm
 @inject IJSRuntime JSRuntime
 @layout LoginLayout
@@ -24,7 +22,7 @@
     </MudElement>
     <form onsubmit="@AttemptSignIn" class="login-form" method="post" action="/signin" id="login-form">
         <MudContainer  Style="max-width:300px;" Class="py-4">
-            @if (!Program.InDemoMode || DemoCustomLogin)
+            @if (!ApplicationInfo.InDemoMode || DemoCustomLogin)
             {
 
 
@@ -38,7 +36,7 @@
                 <br />
 
             }
-            else if (Program.InDemoMode)
+            else if (ApplicationInfo.InDemoMode)
             {
                 <MudContainer Class="d-none">
 
@@ -164,7 +162,7 @@
     bool ValidateInput(out string? validationResult)
     {
         validationResult = null;
-        if (LoginRequest.Valid || (Program.InDemoMode && !DemoCustomLogin)) return true;
+        if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !DemoCustomLogin)) return true;
       
             
             if (LoginRequest.Password.IsNullOrEmpty())

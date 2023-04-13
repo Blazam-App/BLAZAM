@@ -1,11 +1,14 @@
 ﻿using BLAZAM.Common.Data.Services;
+using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
 namespace BLAZAM.Server.Middleware
 {
-    // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
+    /// <summary>
+    /// Captures the web browser's authentication cookie to populate the CurrentUserStateService
+    /// </summary>
     public class UserStateMiddleware
     {
         private readonly RequestDelegate _next;
