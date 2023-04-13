@@ -1,8 +1,6 @@
 
-using BLAZAM.Gui.UI;
-using Microsoft.AspNetCore.Components;
 
-namespace BLAZAM.Server.Shared.UI
+namespace BLAZAM.Gui.UI
 {
     public class TabbedAppComponentBase : AppComponentBase
     {

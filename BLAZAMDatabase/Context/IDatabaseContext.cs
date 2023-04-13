@@ -39,14 +39,22 @@ namespace BLAZAM.Database.Context
         DbSet<UserAuditLog> UserAuditLog { get; set; }
         DbSet<AppUser> UserSettings { get; set; }
 
-
+        /// <summary>
+        /// The connection string as set in the ASP Net Core appsettings.json
+        /// <para>This should be set before any attempts to connect.</para>
+        /// <para>Usually in the Program.Main method before injecting the service.</para>
+        /// </summary>
         DatabaseConnectionString? ConnectionString { get; }
+
+        /// <summary>
+        /// Checks the realtime pingabillity and connectivity to the database right now
+        /// </summary>
         ServiceConnectionState Status { get; }
         DbSet<NotificationMessage> NotificationMessages { get; set; }
         DbSet<UserNotification> UserNotifications { get; set; }
         bool SeedMismatch { get; }
         DbSet<CustomActiveDirectoryField> CustomActiveDirectoryFields { get; set; }
 
-        bool Migrate();
+
     }
 }

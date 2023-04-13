@@ -4,6 +4,7 @@ using BLAZAM.Common;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.Logger;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Context;
 
 namespace BLAZAM.Update.Services
 {
@@ -12,11 +13,13 @@ namespace BLAZAM.Update.Services
         public ApplicationUpdate LatestUpdate { get; set; }
         public string? SelectedBranch { get; set; }
 
+        private readonly IAppDatabaseFactory _dbFactory;
         protected readonly IHttpClientFactory httpClientFactory;
         private readonly ApplicationInfo _applicationInfo;
 
-        public UpdateService(IHttpClientFactory _clientFactory,ApplicationInfo applicationInfo)
+        public UpdateService(IHttpClientFactory _clientFactory,ApplicationInfo applicationInfo,IAppDatabaseFactory dbFactory)
         {
+            _dbFactory = dbFactory;
             httpClientFactory = _clientFactory;
             _updateCheckTimer = new Timer(CheckForUpdate, null, TimeSpan.FromSeconds(20), TimeSpan.FromHours(1));
             _applicationInfo = applicationInfo;
@@ -67,7 +70,7 @@ namespace BLAZAM.Update.Services
                         Version = latestVer,
 
                     };
-                    return new ApplicationUpdate(_applicationInfo) { Release = release };
+                    return new ApplicationUpdate(_applicationInfo, _dbFactory) { Release = release };
 
                 }
 

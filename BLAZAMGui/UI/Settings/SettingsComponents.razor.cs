@@ -1,4 +1,3 @@
-using BLAZAM.Gui.UI.Settings;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BLAZAM.Gui.UI.Settings

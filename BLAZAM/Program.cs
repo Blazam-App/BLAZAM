@@ -1,4 +1,3 @@
-using BLAZAM.Server.Background;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,7 +8,6 @@ using BLAZAM.Server.Middleware;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
-using BLAZAM.Server.Pages.Error;
 using System.Diagnostics;
 using BLAZAM.Common.Data;
 using MudBlazor.Services;
@@ -19,6 +17,7 @@ using BLAZAM.Update;
 using System.Reflection;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Exceptions;
+using BLAZAM.Services.Background;
 
 namespace BLAZAM
 {
@@ -26,96 +25,27 @@ namespace BLAZAM
 
     public class Program
     {
-        /// <summary>
-        /// The root directory of the running web application
-        /// </summary>
-        /// <returns>
-        /// eg: C:\inetpub\blazam\
-        /// </returns>
-        /// 
-        internal static SystemDirectory RootDirectory { get; set; }
+      
         /// <summary>
         /// The writable directry
         /// </summary>
         /// <returns>
         /// eg: C:\inetpub\blazam\writable\
         /// </returns>
-        internal static SystemDirectory WritablePath => new SystemDirectory(Program.TempDirectory + @"writable\");
+        internal static SystemDirectory WritablePath => new SystemDirectory(ApplicationInfo.tempDirectory + @"writable\");
 
-        /// <summary>
-        /// The temporary file directry
-        /// </summary>
-        /// <returns>
-        /// eg: C:\Users\user\appdata\temp\
-        /// </returns>
-        internal static SystemDirectory TempDirectory { get; set; }
+    
 
         public static SystemDirectory AppDataDirectory { get; set; }
 
-        /// <summary>
-        /// The process of the running application
-        /// </summary>
-        public static Process ApplicationProcess { get; set; }
 
-        /// <summary>
-        /// The running Blazam version
-        /// </summary>
-        internal static ApplicationVersion Version { get; } = new ApplicationVersion(Assembly.GetExecutingAssembly());
 
-        /// <summary>
-        /// A collection of active listening address's with port
-        /// </summary>
-        /// <returns>
-        /// A list of address strings eg: {"https://localhost:7900/","http://localhost:5900/"}
-        /// </returns>
-        internal static List<string> ListeningAddresses { get; private set; } = new List<string>();
-
+      
         private static IAppDatabaseFactory? _programDbFactory;
 
 
 
-        static bool? installationCompleted = null;
-        /// <summary>
-        /// Indicates the Installation status
-        /// </summary>
-        internal static bool InstallationCompleted
-        {
-            get
-            {
-                using (var context = _programDbFactory?.CreateDbContext())
-                {
-                    if (installationCompleted != true && context != null)
-                    {
-                        if (context.IsSeeded())
-                        {
-                            try
-                            {
-                                var appSettings = context.AppSettings.FirstOrDefault();
-                                if (appSettings != null)
-                                    installationCompleted = appSettings.InstallationCompleted;
-                                else
-                                    installationCompleted = false;
-                            }
-                            catch (Exception ex)
-                            {
-                                Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database.", ex);
-                            }
-                            //if (!context.Seeded()) installationCompleted = false;
-                            //else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
-                        }
-                        else
-                            installationCompleted = false;
 
-
-                    }
-                    return installationCompleted != false;
-                }
-            }
-            set
-            {
-                installationCompleted = value;
-            }
-        }
 
         /// <summary>
         /// Flag for checking if the application is running in Debug Mode.
@@ -157,7 +87,6 @@ namespace BLAZAM
         {
             Console.WriteLine("Working Directory: " + Environment.CurrentDirectory);
 
-            ApplicationProcess = Process.GetCurrentProcess();
 
             //Build the application and allow it to run as a service
             var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
@@ -170,8 +99,6 @@ namespace BLAZAM
                 throw new ApplicationException("The appsettings.json configuration file was not loaded");
 
             builder.IntializeProperties();
-
-            CheckWritablePathPermissions();
 
 
             //Setup host logging so it can catch the earliest logs possible
@@ -189,8 +116,7 @@ namespace BLAZAM
 
             ApplicationInfo.services = AppInstance.Services;
 
-            //Perform database auto update
-            ApplyDatabaseMigrations();
+
 
 
 
@@ -244,7 +170,7 @@ namespace BLAZAM
         {
             Task.Delay(5000).ContinueWith(t =>
             {
-                new AutoLauncher(AppInstance.Services.GetService<IHttpClientFactory>());
+                new AutoLauncher(AppInstance.Services.GetService<IHttpClientFactory>(), AppInstance.Services.GetService<ApplicationInfo>());
             });
         }
 
@@ -259,7 +185,7 @@ namespace BLAZAM
 
                     foreach (var address in addressFeature.Addresses)
                     {
-                        ListeningAddresses.Add(address);
+                        ApplicationInfo.listeningAddresses.Append(address);
                         Loggers.SystemLogger.Debug("Listening on: " + address);
                     }
                 }
@@ -286,72 +212,34 @@ namespace BLAZAM
         }
 
 
-        public static void CheckWritablePathPermissions()
-        {
+        //public static void CheckWritablePathPermissions()
+        //{
 
-            try
-            {
-                //Check permissions
-                File.WriteAllText(WritablePath + @"writetest.test", "writetest");
-                Writable = true;
-                File.Delete(WritablePath + @"writetest.test");
+        //    try
+        //    {
+        //        //Check permissions
+        //        File.WriteAllText(WritablePath + @"writetest.test", "writetest");
+        //        Writable = true;
+        //        File.Delete(WritablePath + @"writetest.test");
 
-            }
-            catch (UnauthorizedAccessException)
-            {
-                Writable = false;
-                Oops.ErrorMessage = "Applicatin Directory Error";
-                Oops.DetailsMessage = "The application does not have write permission to the 'writable' directory.";
-            }
-            catch (DirectoryNotFoundException)
-            {
-                Writable = false;
+        //    }
+        //    catch (UnauthorizedAccessException)
+        //    {
+        //        Writable = false;
+        //        Oops.ErrorMessage = "Applicatin Directory Error";
+        //        Oops.DetailsMessage = "The application does not have write permission to the 'writable' directory.";
+        //    }
+        //    catch (DirectoryNotFoundException)
+        //    {
+        //        Writable = false;
 
-                Oops.ErrorMessage = "Applicatin Directory Error";
-                Oops.DetailsMessage = "The application's 'writable' directory is missing!";
-            }
+        //        Oops.ErrorMessage = "Applicatin Directory Error";
+        //        Oops.DetailsMessage = "The application's 'writable' directory is missing!";
+        //    }
 
-        }
+        //}
 
-        internal static async Task<bool> ApplyDatabaseMigrations(bool force = false)
-        {
-
-            return await Task.Run(() =>
-            {
-                try
-                {
-                    using (var scope = AppInstance.Services.CreateScope())
-                    {
-                        var context = scope.ServiceProvider.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
-                        if (context != null && context.Status == ServiceConnectionState.Up)
-                            if (context.IsSeeded() || force)
-                                if (!context.SeedMismatch)
-                                {
-                                    if (context.Database.GetPendingMigrations().Count() > 0)
-                                        context.Migrate();
-                                }
-                                else
-                                {
-                                    throw new DatabaseException("Database incompatible with current application version.");
-                                }
-                        //context.Database.Migrate();
-
-                    }
-                    return true;
-                }
-                catch(DatabaseException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
-                    throw ex;
-                    return false;
-                }
-            });
-
-        }
+      
 
     }
 }

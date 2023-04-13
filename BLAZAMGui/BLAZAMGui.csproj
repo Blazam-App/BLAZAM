@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="UI\General\**" />
+    <Content Remove="UI\General\**" />
+    <EmbeddedResource Remove="UI\General\**" />
+    <None Remove="UI\General\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="UI\Groups\MemberOfList.razor" />
   </ItemGroup>
 
@@ -34,7 +41,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UI\General\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

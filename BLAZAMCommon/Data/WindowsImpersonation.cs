@@ -61,7 +61,7 @@ namespace BLAZAM.Common.Data
             impersonationUser = user;
         }
 
-        public static T Run<T>(Func<T> task)
+        public T Run<T>(Func<T> task)
         {
 
 
@@ -95,7 +95,7 @@ namespace BLAZAM.Common.Data
             }
             return success;
         }
-        public static async Task<string> RunProcess(string processPath, string arguments)
+        public async Task<string> RunProcess(string processPath, string arguments)
         {
 
             //process.StartInfo.UserName = impersonationUser.Username+"@"+ impersonationUser.FQDN;

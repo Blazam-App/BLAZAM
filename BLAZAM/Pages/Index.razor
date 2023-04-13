@@ -4,6 +4,7 @@
 @inject NavigationManager NavManager
 @inject IAppDatabaseFactory DbFactory
 @inject ConnMonitor tester
+@inject ApplicationInfo ApplicationInfo
 @inject IStringLocalizer<AppLocalization> Localizer
 <h2>
     @Localizer["ApplicationStarting"]
@@ -16,7 +17,7 @@
     {
         while (NavManager.ToBaseRelativePath(NavManager.Uri) == "")
         {
-            if (Program.InstallationCompleted)
+            if (ApplicationInfo.InstallationCompleted)
             {
                 if (tester.AppReady == ServiceConnectionState.Up)
                 {

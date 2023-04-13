@@ -2,7 +2,7 @@
 using BLAZAM.Helpers;
 using System.Text.RegularExpressions;
 
-namespace BLAZAM.Server.Shared.UI
+namespace BLAZAM.Common.Data
 {
     public static class AppValidationRule
     {

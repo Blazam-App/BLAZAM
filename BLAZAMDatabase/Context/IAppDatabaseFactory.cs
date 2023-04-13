@@ -2,6 +2,7 @@
 {
     public interface IAppDatabaseFactory
     {
+        Task<bool> ApplyDatabaseMigrations(bool force = false);
         IDatabaseContext CreateDbContext();
         Task<IDatabaseContext> CreateDbContextAsync();
     }

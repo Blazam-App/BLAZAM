@@ -3,10 +3,12 @@ using System.Drawing.Printing;
 using System.Management;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using System.Security;
+using BLAZAM.ActiveDirectory.Exceptions;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
+using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,22 +17,19 @@ namespace BLAZAM.Common.Data.Services
     public class WmiFactory
     {
 
-        public WmiFactory(IAppDatabaseFactory factory)
+        public WmiFactory(IActiveDirectoryContext directory)
         {
-            Factory = factory;
+            Directory = directory;
         }
 
         public ManagementScope CreateWmiConnection(string hostName)
         {
-            using (var context = Factory.CreateDbContext())
-            {
-                var settings = context.ActiveDirectorySettings.FirstOrDefault();
+           
+                var settings = Directory.ConnectionSettings;
                 if (settings != null) {
-                    SecureString securePassword = new NetworkCredential("", settings.Password).SecurePassword;
                     ConnectionOptions connectionOptions = new ConnectionOptions();
                     connectionOptions.Username = settings.Username+"@"+settings.FQDN;
-                   // connectionOptions.Password = settings.Password;
-                    connectionOptions.SecurePassword = securePassword;
+                    connectionOptions.SecurePassword = Encryption.Instance.DecryptObject<string>(settings.Password).ToSecureString();
                     connectionOptions.Impersonation = ImpersonationLevel.Impersonate;
                     connectionOptions.Timeout = TimeSpan.FromSeconds(5);
                     
@@ -48,30 +47,10 @@ namespace BLAZAM.Common.Data.Services
                     }
                     return managementScope; 
                 }
-            }
+            
             throw new WmiConnectionFailure();
         }
 
-        public IAppDatabaseFactory Factory { get; }
-    }
-
-    [Serializable]
-    internal class WmiConnectionFailure : Exception
-    {
-        public WmiConnectionFailure()
-        {
-        }
-
-        public WmiConnectionFailure(string? message) : base(message)
-        {
-        }
-
-        public WmiConnectionFailure(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected WmiConnectionFailure(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        public IActiveDirectoryContext Directory { get; }
     }
 }

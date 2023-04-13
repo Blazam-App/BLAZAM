@@ -1,6 +1,4 @@
 ﻿using BLAZAM.Common.Data;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.VisualStudio.Services.UserAccountMapping;
 using System.Collections;
 using System.Security.Claims;
 

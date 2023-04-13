@@ -25,7 +25,7 @@ namespace BLAZAM.ActiveDirectory
         {
             this.factory = factory;
             this.userStateService = userStateService;
-            //TODO Create WMI Factory
+            //TODO Create local instantiated WMI Factory
             //this.wmiFactory = wmiFactory;
             this.encryptionService = encryptionService;
             this.notificationPublisher = notificationPublisher;

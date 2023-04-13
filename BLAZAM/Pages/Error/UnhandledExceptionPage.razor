@@ -1,4 +1,6 @@
+@using BLAZAM.Email.Services;
 @inject EmailService email
+@inject ApplicationInfo ApplicationInfo
 @inject IAppDatabaseFactory factory
 @inject NavigationManager Nav
 <PageTitle>Error</PageTitle>
@@ -21,7 +23,7 @@
 
     </MudText>
 
-@if (Program.InDebugMode)
+@if (ApplicationInfo.InDebugMode)
 {
 
     <MudCard Square Class="mud-border-error mx-auto">

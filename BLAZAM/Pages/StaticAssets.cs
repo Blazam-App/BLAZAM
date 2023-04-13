@@ -1,4 +1,5 @@
-﻿using BLAZAM.Database.Context;
+﻿using BLAZAM.Common.Data;
+using BLAZAM.Database.Context;
 
 namespace BLAZAM.Server.Pages
 {
@@ -29,7 +30,7 @@ namespace BLAZAM.Server.Pages
 
         private static byte[]? GetDefaultIcon()
         {
-            var defaultIconFilePath = Path.GetFullPath(Program.RootDirectory + @"static\img\default_logo2.png");
+            var defaultIconFilePath = Path.GetFullPath(ApplicationInfo.applicationRoot + @"static\img\default_logo2.png");
             if (System.IO.File.Exists(defaultIconFilePath))
                 return System.IO.File.ReadAllBytes(defaultIconFilePath);
             return null;

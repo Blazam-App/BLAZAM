@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BLAZAM.Server.Shared.ResourceFiles {
+namespace BLAZAM.Shared.ResourceFiles {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace BLAZAM.Server.Shared.ResourceFiles {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BLAZAM.Server.Shared.ResourceFiles.AppLocalization", typeof(AppLocalization).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BLAZAM.Shared.ResourceFiles.AppLocalization", typeof(AppLocalization).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -183,6 +183,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
         AppEvent? OnModelDeleted { get; set; }
+        IActiveDirectoryContext Directory { get; }
 
         /// <summary>
         /// Sends all staged changes to the Active Directory server

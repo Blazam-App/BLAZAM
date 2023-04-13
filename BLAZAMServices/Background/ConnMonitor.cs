@@ -77,7 +77,7 @@ namespace BLAZAM.Services.Background
                 OnDirectoryConnectionChanged?.Invoke(newStatus);
             };
 
-            DatabaseContextBase.OnMigrationFailed += () =>
+            AppDatabaseFactory.OnMigrationFailed += () =>
             {
                 //Oops.Exception = DatabaseContextBase.DownReason;
                 _failedMigration = true;

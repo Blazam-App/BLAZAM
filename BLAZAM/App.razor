@@ -1,13 +1,7 @@
-﻿@using BLAZAM.Server.Shared.Layouts;
-@using BLAZAM.Server.Data.Services.Email;
-@using System.Diagnostics;
-@using BLAZAM.Server.Shared.UI.Themes;
-@using Microsoft.AspNetCore.Authentication.Cookies;
-@using Microsoft.Extensions.Options;
+﻿
 @inject IHttpContextAccessor context
 @inject IApplicationUserStateService userStateService
 @inject ICurrentUserStateService  currentUser
-@*<Blazorise.ThemeProvider Theme="@activeTheme.Theme">*@
 <CascadingAuthenticationState>
 
 
@@ -22,11 +16,11 @@
                             Authorizing...
                         </Authorizing>
                         <NotAuthorized>
-                            @if (!context.User.Identity?.IsAuthenticated == true)
+                            @if (context.User.Identity?.IsAuthenticated != true)
                             {
                                 <PageTitle>Login</PageTitle>
                                 <LayoutView Layout="@typeof(LoginLayout)">
-                                    <BLAZAM.Server.Pages.Login />
+                                    <Login />
                                 </LayoutView>
                                 @*<RedirectToLogin />*@
                             }
@@ -53,7 +47,6 @@
         </ChildContent>
         <ErrorContent>
             <LayoutView Layout="@typeof(MinLayout)">
-
                 <UnhandledExceptionPage Error="@context" />
 
             </LayoutView>

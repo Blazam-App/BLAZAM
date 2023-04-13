@@ -14,13 +14,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
         ITerminalServer server;
         private bool Polling;
         public List<IRemoteSession> ConnectedSessions = new List<IRemoteSession>();
-
-        string _hostname;
+        IADComputer _host;
 
         public AppEvent ConnectedSessionsChanged { get; set; }
-        public ADComputerSessions(string hostname)
+        public ADComputerSessions(IADComputer host)
         {
-            _hostname = hostname;
+            _host = host;
             RefreshSessions();
 
         }
@@ -41,14 +40,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (!Polling)
             {
 
-                Loggers.ActiveDirectryLogger.Information("Getting sessions for " + _hostname);
+                Loggers.ActiveDirectryLogger.Information("Getting sessions for " + _host);
                 Polling = true;
-
-                var success = WindowsImpersonation.Run(() =>
+                var impersonation = _host.Directory.Impersonation;
+                var success = impersonation.Run(() =>
                {
                    try
                    {
-                       server = manager.GetRemoteServer(_hostname);
+                       server = manager.GetRemoteServer(_host.CanonicalName);
                        try
                        {
                            server.Open();
@@ -61,7 +60,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                    {
                                        if (!session.Server.IsOpen)
                                            session.Server.Open();
-                                       IRemoteSession s = new RemoteSession(session);
+                                       IRemoteSession s = new RemoteSession(session,_host);
                                        s.OnSessionDown += SessionDownEvent;
                                        if (!ConnectedSessions.Contains(s))
                                        {
@@ -74,7 +73,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                            }
                            catch (Win32Exception ex)
                            {
-                               Loggers.ActiveDirectryLogger.Error("Error while collecting sessions for " + _hostname, ex);
+                               Loggers.ActiveDirectryLogger.Error("Error while collecting sessions for " + _host, ex);
                            }
                        }
                        catch
@@ -88,7 +87,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                    }
                    catch (Exception ex)
                    {
-                       Loggers.ActiveDirectryLogger.Error("Error while connecting to TerminalServices on " + _hostname, ex);
+                       Loggers.ActiveDirectryLogger.Error("Error while connecting to TerminalServices on " + _host, ex);
                        return false;
                    }
                });

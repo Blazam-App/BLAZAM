@@ -1,9 +1,5 @@
 ﻿
 using BLAZAM.Common.Data.Services;
-using BLAZAM.Server.Background;
-using BLAZAM.Server.Data.Services.Duo;
-using BLAZAM.Server.Data.Services.Email;
-using BLAZAM.Server.Data.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using MudBlazor.Services;
@@ -18,6 +14,13 @@ using BLAZAM.ActiveDirectory;
 using BLAZAM.Session.Interfaces;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Common.Data;
+using BLAZAM.Services.Background;
+using BLAZAM.Email.Services;
+using BLAZAM.Services;
+using BLAZAM.Services.Duo;
+using BLAZAM.Server.Data.Services;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace BLAZAM.Server
 {
@@ -26,18 +29,23 @@ namespace BLAZAM.Server
         public static void IntializeProperties(this WebApplicationBuilder builder)
         {
             //Set DebugMode flag from configuration
-            Program.InDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
-            Program.InDemoMode = builder.Configuration.GetValue<bool>("DemoMode");
+            ApplicationInfo.inDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
+            ApplicationInfo.inDemoMode = builder.Configuration.GetValue<bool>("DemoMode");
 
 
             //Set application directories
-            Program.RootDirectory = new SystemDirectory(builder.Environment.ContentRootPath);
-            Program.TempDirectory = new SystemDirectory(Path.GetTempPath() + "Blazam\\");
+            //Program.RootDirectory = new SystemDirectory(builder.Environment.ContentRootPath);
+            //Program.TempDirectory = new SystemDirectory(Path.GetTempPath() + "Blazam\\");
             Program.AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "Blazam\\");
 
 
             //Store the configuration so other pages/objects can easily access it
             Program.Configuration = builder.Configuration;
+
+
+            ApplicationInfo.runningProcess = Process.GetCurrentProcess();
+            ApplicationInfo.runningVersion = new ApplicationVersion(Assembly.GetExecutingAssembly()) ;
+
         }
 
         public static void InjectServices(this WebApplicationBuilder builder)

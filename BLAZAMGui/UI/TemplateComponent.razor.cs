@@ -1,12 +1,11 @@
 ﻿
 using BLAZAM.Database.Models.Templates;
-using BLAZAM.Gui.UI;
 using BLAZAM.Gui.UI.Settings;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 using System.ComponentModel.DataAnnotations;
 
-namespace BLAZAM.Server.Shared.UI
+namespace BLAZAM.Gui.UI
 {
     public class TemplateComponent : ValidatedForm
     {

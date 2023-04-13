@@ -95,7 +95,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <inheritdoc/>
         public Dictionary<string, object> NewEntryProperties { get; set; } = new();
 
-        protected IActiveDirectoryContext Directory;
+        public IActiveDirectoryContext Directory { get; private set; }
         private bool hasUnsavedChanges = false;
 
 

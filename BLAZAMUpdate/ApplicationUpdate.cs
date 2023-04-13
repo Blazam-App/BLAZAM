@@ -9,6 +9,7 @@ using BLAZAM.Update.Exceptions;
 using BLAZAM.FileSystem;
 using BLAZAM.Logger;
 using BLAZAM.Database.Context;
+using BLAZAM.Helpers;
 
 namespace BLAZAM.Update
 {
@@ -34,6 +35,8 @@ namespace BLAZAM.Update
         public ApplicationVersion Version { get => Release.Version; }
 
         public string Branch { get => Release.Branch; }
+
+        private IAppDatabaseFactory _dbFactory;
 
         /// <summary>
         /// The application update directory, in temporary files
@@ -126,9 +129,11 @@ namespace BLAZAM.Update
         Process _runningProcess;
         SystemDirectory _applicationRootDirectory;
 
-        public ApplicationUpdate(ApplicationInfo applicationInfo)
+        public ApplicationUpdate(ApplicationInfo applicationInfo, IAppDatabaseFactory dbFactory)
         {
-           UpdateTempDirectory= new SystemDirectory(applicationInfo.TempDirectory + "update\\");
+            _dbFactory = dbFactory;
+
+            UpdateTempDirectory = new SystemDirectory(applicationInfo.TempDirectory + "update\\");
             _runningProcess = applicationInfo.RunningProcess;
             _runningVersion = applicationInfo.RunningVersion;
             _applicationRootDirectory = applicationInfo.ApplicationRoot;
@@ -181,7 +186,17 @@ namespace BLAZAM.Update
             Loggers.UpdateLogger.Debug("Dest: " + _applicationRootDirectory + "updater\\");
             Loggers.UpdateLogger.Debug("Update command: " + UpdateCommand);
 
-            WindowsImpersonation.Run(() =>
+
+            using var context = await _dbFactory.CreateDbContextAsync();
+            var settings = context.ActiveDirectorySettings.FirstOrDefault();
+
+            if (settings == null) throw new ApplicationUpdateException("No credentials are configured for updates");
+
+            var impersonation = settings.CreateWindowsImpersonator();        
+           
+
+
+            impersonation.Run(() =>
             {
                 try
                 {

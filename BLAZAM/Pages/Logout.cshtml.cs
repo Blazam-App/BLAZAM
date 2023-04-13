@@ -1,6 +1,7 @@
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Server.Data;
 using BLAZAM.Server.Data.Services;
+using BLAZAM.Services;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;

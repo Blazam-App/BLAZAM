@@ -172,7 +172,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 CommitActions.Add(() =>
                 {
-                    return WindowsImpersonation.Run(() =>
+                    return Directory.Impersonation.Run(() =>
                     {
                         if (HomeDirectory.IsNullOrEmpty()) return true;
 

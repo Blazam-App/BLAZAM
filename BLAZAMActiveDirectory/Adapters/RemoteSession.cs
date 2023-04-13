@@ -20,7 +20,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (_session == value) return;
                 _session = value;
-                WindowsImpersonation.Run(() =>
+                Host.Directory.Impersonation.Run(() =>
                 {
                     if (!_session.Server.IsOpen)
                         _session.Server.Open();
@@ -90,13 +90,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 });
             }
         }
+
+        public IADComputer Host { get; }
         public AppEvent<IRemoteSession> OnSessionDown { get; set; }
         public AppEvent<IRemoteSession> OnSessionUpdated { get; set; }
 
         Timer t;
-        public RemoteSession(ITerminalServicesSession session)
+        public RemoteSession(ITerminalServicesSession session,IADComputer host)
         {
             Session = session;
+            Host = host;
             t = new Timer(Tick, null, 10000, 10000);
             // Monitor();
 
@@ -178,7 +181,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public void Logoff(bool synchronous = false)
         {
-            WindowsImpersonation.Run(() =>
+            Host.Directory.Impersonation.Run(() =>
             {
                 if (!_session.Server.IsOpen)
                     _session.Server.Open();
@@ -192,7 +195,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public void Disconnect(bool synchronous = false)
         {
-            WindowsImpersonation.Run(() =>
+            Host.Directory.Impersonation.Run(() =>
             {
                 if (!_session.Server.IsOpen)
                     _session.Server.Open();
@@ -213,7 +216,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                WindowsImpersonation.Run(() =>
+                Host.Directory.Impersonation.Run(() =>
                 {
                     if (!_session.Server.IsOpen)
                         _session.Server.Open();

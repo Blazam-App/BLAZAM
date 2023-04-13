@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Threading;
 using Color = System.Drawing.Color;
 
-namespace BLAZAM.Server.Shared.UI.Themes
+namespace BLAZAM.Gui.UI.Themes
 {
 
     public class ApplicationTheme

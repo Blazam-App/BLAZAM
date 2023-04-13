@@ -20,20 +20,13 @@ namespace BLAZAM.Database.Context
     public class DatabaseContextBase : DbContext, IDatabaseContext
     {
 
-        public static AppEvent OnMigrationApplied { get; set; }
-        public static AppEvent OnMigrationFailed { get; set; }
 
 
-        /// <summary>
-        /// The connection string as set in the ASP Net Core appsettings.json
-        /// <para>This should be set before any attempts to connect.</para>
-        /// <para>Usually in the Program.Main method before injecting the service.</para>
-        /// </summary>
+
+       
         public DatabaseConnectionString? ConnectionString { get; set; }
 
-        /// <summary>
-        /// Checks the realtime pingabillity and connectivity to the database right now
-        /// </summary>
+        
         public virtual ServiceConnectionState Status
         {
             get
@@ -93,10 +86,7 @@ namespace BLAZAM.Database.Context
 
 
 
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        /// <param name="options"><inheritdoc/></param>
+       
         public DatabaseContextBase(DbContextOptions options) : base(options)
         {
         }
@@ -719,35 +709,6 @@ namespace BLAZAM.Database.Context
         }
 
 
-        /// <summary>
-        ///     Applies any pending migrations for the context to the database. Will create the database
-        ///     if it does not already exist.
-        /// </summary>
-        /// <remarks>
-        ///     <para>
-        ///        If the migration fails, the <see cref="Status"/> will be set to <see cref="ServiceConnectionState.Down"/>
-        ///        </para>
-        ///     <para>
-        ///         See <see href="https://aka.ms/efcore-docs-migrations">Database migrations</see> for more information and examples.
-        ///     </para>
-        /// </remarks>
-        /// <param name="databaseFacade">The <see cref="DatabaseFacade" /> for the context.</param>
-
-        public virtual bool Migrate()
-        {
-            try
-            {
-                Database.Migrate();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
-                DownReason = new DatabaseException(ex.Message, ex);
-                OnMigrationFailed?.Invoke();
-                return false;
-            }
-        }
 
         /// <summary>
         /// Checks if the database seed migration hase been applied
@@ -771,6 +732,7 @@ namespace BLAZAM.Database.Context
                 return false;
             }
         }
+
 
 
         /// <summary>

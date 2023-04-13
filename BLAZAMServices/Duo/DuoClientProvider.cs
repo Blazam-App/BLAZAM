@@ -9,7 +9,7 @@ namespace BLAZAM.Services.Duo
     {
         public Client GetDuoClient();
     }
-    internal class DuoClientProvider : IDuoClientProvider
+    public class DuoClientProvider : IDuoClientProvider
     {
         public IAppDatabaseFactory DbFactory { get; private set; }
         private string ClientId { get; set; }

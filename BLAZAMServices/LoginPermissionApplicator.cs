@@ -50,7 +50,7 @@ namespace BLAZAM.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        internal async Task LoadPermissions(IApplicationUserState webUser, IADUser directoryUser)
+        public async Task LoadPermissions(IApplicationUserState webUser, IADUser directoryUser)
         {
             using (var Context = await _factory.CreateDbContextAsync())
             {

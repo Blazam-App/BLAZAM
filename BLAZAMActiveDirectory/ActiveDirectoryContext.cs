@@ -173,6 +173,13 @@ namespace BLAZAM.ActiveDirectory
 
         public IApplicationUserStateService UserStateService { get; set; }
 
+        public WindowsImpersonation Impersonation
+        {
+            get
+            {
+                return ConnectionSettings.CreateWindowsImpersonator();
+            }
+        }
         /// <summary>
         /// Initializes the applications Active Directory connection. It takes the information
         /// from the ActiveDirectorySetting table in the database and uses them to configure the
@@ -189,7 +196,7 @@ namespace BLAZAM.ActiveDirectory
             INotificationPublisher notificationPublisher
             )
         {
-            //_wmiFactory = wmiFactory;
+            _wmiFactory = new(this);
             _encryption = encryptionService;
             _notificationPublisher = notificationPublisher;
             Instance = this;
@@ -215,7 +222,7 @@ namespace BLAZAM.ActiveDirectory
             ConnectionSettings = activeDirectoryContextSeed.ConnectionSettings;
             RootDirectoryEntry = activeDirectoryContextSeed.RootDirectoryEntry;
             AppRootDirectoryEntry = activeDirectoryContextSeed.AppRootDirectoryEntry;
-
+            _wmiFactory = activeDirectoryContextSeed._wmiFactory;
             // UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
             ConnectAsync();
             // _timer = new Timer(KeepAlive, null, 30000, 30000);

@@ -4,7 +4,10 @@
             <Copyright />
             @if (AutoUpdateService.IsUpdatedScheduled)
             {
-                <MudTooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/app");}) Class="mud-theme-info" Float=Float.End Style="width:max-content" Fade Text="An automatic update is scheduled. Click for details">
+                <MudTooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/app");})
+                    Class="mud-theme-info"
+                    Style="width:max-content" 
+                    Text="An automatic update is scheduled. Click for details">
 
                     <MudIcon Icon=@("fa-solid fa-circle-up") />
                 </MudTooltip>

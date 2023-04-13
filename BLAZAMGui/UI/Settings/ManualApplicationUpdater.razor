@@ -245,7 +245,7 @@
         {
 
             await InvokeAsync(StateHasChanged);
-            if (await Context.ApplyDatabaseMigrations())
+            if (await DbFactory.ApplyDatabaseMigrations())
             {
             }
 
@@ -256,7 +256,7 @@
 
     async Task ShowReleaseNotes()
     {
-        _releaseNotesModal.Show();
+        _releaseNotesModal?.Show();
         //MessageService.Info(LatestAvailableVersion.Release.ReleaseNotes, LatestAvailableVersion.Version + " Release Notes");
     }
 

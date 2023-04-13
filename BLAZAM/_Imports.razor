@@ -2,14 +2,28 @@
 @using System.Net.Http
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Authentication;
+@using Microsoft.AspNetCore.Authentication.Cookies;
+@using Microsoft.Extensions.Options;
+
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
+
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.Data.SqlClient
+
+
+@using System.Diagnostics;
+@using BLAZAM.Pages
+@using BLAZAM.Pages.Error
+@using BLAZAM.Pages.Users;
+@using BLAZAM.Pages.Computers;
+@using BLAZAM.Pages.Groups;
+@using BLAZAM.Pages.OU;
+@using BLAZAM.Server.Pages
 
 @using BLAZAM
 
@@ -19,22 +33,32 @@
 @using BLAZAM.ActiveDirectory.Exceptions;
 @using BLAZAM.ActiveDirectory.Searchers;
 
+@using BLAZAM.Services.Background;
+@using BLAZAM.Services.Duo;
+@using BLAZAM.Services;
+
+@using BLAZAM.Localization.Shared.ResourceFiles;
 
 
-
-@using BLAZAM.Server.Background
-@using BLAZAM.Server.Shared
-@using BLAZAM.Server.Pages
 @using BLAZAM.Server.Helpers;
 
 
-@using BLAZAM.Server.Shared.UI.Themes;
+@using BLAZAM.Gui.UI.Themes;
 
-@using BLAZAM.Server.Shared.UI
-@using BLAZAM.Server.Shared.UI.Inputs
-@using BLAZAM.Server.Shared.UI.Outputs
 @using BLAZAM.Server.Data
-@using BLAZAM.Server.Shared.ResourceFiles;
+
+@using BLAZAM.Gui.UI;
+@using BLAZAM.Gui.UI.Dashboard.Widgets;
+@using BLAZAM.Gui.UI.Inputs
+@using BLAZAM.Gui.Layouts;
+@using BLAZAM.Gui.UI.Settings;
+@using BLAZAM.Gui.UI.Groups
+@using BLAZAM.Gui.UI.Users.Fields
+@using BLAZAM.Gui.UI.Users
+@using BLAZAM.Gui.UI.OU
+@using BLAZAM.Gui.UI.Outputs
+@using BLAZAM.Gui.UI.Settings.Permissions
+@using BLAZAM.Gui.UI.Settings.Templates
 
 
 @using BLAZAM.Session;
@@ -47,8 +71,6 @@
 
 @using BLAZAM.Update;
 
-@using BLAZAM.Server.Data.Services
-@using BLAZAM.Server.Pages.Error;
 
 @using BLAZAM.Common
 
@@ -77,4 +99,3 @@
 
 
 @using Microsoft.Extensions.Localization;
-@using BLAZAM.Server.Data.Services.Email;

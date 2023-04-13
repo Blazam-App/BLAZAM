@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Builder.Extensions;
 using System.Drawing;
 
-namespace BLAZAM.Server.Shared.UI.Themes
+namespace BLAZAM.Gui.UI.Themes
 {
     public class BlueTheme : ApplicationTheme
     {

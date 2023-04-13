@@ -79,7 +79,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (sessionManager == null)
                 {
-                    sessionManager = new ADComputerSessions(CanonicalName);
+                    sessionManager = new ADComputerSessions(this);
                 }
                 return sessionManager.ConnectedSessions;
             });

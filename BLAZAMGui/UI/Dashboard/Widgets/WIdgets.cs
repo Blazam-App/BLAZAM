@@ -1,7 +1,6 @@
 ﻿
-using BLAZAM.Gui.UI.Dashboard.Widgets;
 
-namespace BLAZAM.Server.Shared.UI.Dashboard.Widgets
+namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
     public class Widgets
     { 

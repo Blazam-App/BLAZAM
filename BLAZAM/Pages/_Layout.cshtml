@@ -1,4 +1,5 @@
 ﻿@using BLAZAM.Common.Data.Database;
+@using BLAZAM.Common.Data;
 @using BLAZAM.Database.Context;
 @using Microsoft.AspNetCore.Components.Web
 @namespace BLAZAM.Server.Pages
@@ -40,7 +41,7 @@
     @RenderBody()
 
     <div id="blazor-error-ui">
-        @if (!Program.InDebugMode)
+        @if (!ApplicationInfo.inDebugMode)
         {
             <strong>An error has occurred. This application may no longer respond until reloaded.</strong>
         }
@@ -63,7 +64,7 @@
 
         gtag('config', 'G-415DR9ZVBH');
         gtag('set', 'user_properties', {
-            app_version: '@Program.Version'
+            app_version: '@ApplicationInfo.runningVersion'
         });
     </script>
 
@@ -79,7 +80,7 @@
 
             gtag('config', '@DatabaseCache.ApplicationSettings.AnalyticsId');
             gtag('set', 'user_properties', {
-                app_version: '@Program.Version'
+                app_version: '@ApplicationInfo.runningVersion'
             });
         </script>
     }

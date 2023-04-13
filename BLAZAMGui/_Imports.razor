@@ -6,12 +6,15 @@
 @using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.EntityFrameworkCore;
+@using Microsoft.AspNetCore.Components.Web.Virtualization
 
 
 @using BLAZAM.ActiveDirectory;
 @using BLAZAM.ActiveDirectory.Interfaces
 @using BLAZAM.ActiveDirectory.Adapters;
 @using BLAZAM.ActiveDirectory.Searchers;
+
+@using BLAZAM.Localization.Shared.ResourceFiles;
 
 
 @using BLAZAM.Common.Data
@@ -21,9 +24,9 @@
 @using BLAZAM.Database.Models.User;
 @using BLAZAM.Database.Models;
 @using BLAZAM.Database.Models.Permissions;
+@using BLAZAM.Database.Models.Templates;
 
 
-@using BLAZAM.Localization.Shared.ResourceFiles
 @using BLAZAM.Logger
 @using BLAZAM.Notifications.Services
 @using BLAZAM.Services
@@ -33,7 +36,6 @@
 
 @using BLAZAM.Helpers
 @using BLAZAM.Server.Data
-
 
 
 @using BLAZAM.Gui.UI.Dev
@@ -46,7 +48,15 @@
 @using BLAZAM.Gui.UI.Settings
 @using BLAZAM.Gui.UI.Settings.Templates
 @using BLAZAM.Gui.UI.Inputs
+@using BLAZAM.Gui.Layouts
 @using BLAZAM.Gui.UI.Outputs
+
+@using BLAZAM.Database.Models.Templates;
+@using BLAZAM.Gui.UI.Settings;
+@using Microsoft.EntityFrameworkCore;
+@using MudBlazor;
+
+@using BLAZAM.Static;
 
 
 @using MudBlazor

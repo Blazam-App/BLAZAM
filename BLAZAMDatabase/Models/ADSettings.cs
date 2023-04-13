@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.Database.Models
 {
@@ -17,5 +18,7 @@ namespace BLAZAM.Database.Models
         [Required]
         public string Password { get; set; }
         public bool UseTLS { get; set; } = false;
+
+       
     }
 }

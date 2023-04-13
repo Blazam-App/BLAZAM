@@ -1,7 +1,6 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Server.Data.Services;
-using BLAZAM.Server.Data.Services.Duo;
 using BLAZAM.Common.Exceptions;
 using DuoUniversal;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -12,12 +11,14 @@ using System.Security.Claims;
 using BLAZAM.Helpers;
 using BLAZAM.Common.Data.Database;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using BLAZAM.Server.Helpers;
 using BLAZAM.Database.Context;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Session.Interfaces;
+using Microsoft.AspNetCore.Http;
+using BLAZAM.Services.Duo;
+using BLAZAM.Server.Helpers;
 
-namespace BLAZAM
+namespace BLAZAM.Services
 {
     /// <summary>
     /// Handles login/impersonate/logout of the browser HTTPContext Identity.
@@ -31,8 +32,10 @@ namespace BLAZAM
             IApplicationUserStateService userStateService,
             IHttpContextAccessor ca,
             IDuoClientProvider dcp,
-            IEncryptionService enc)
+            IEncryptionService enc,
+            ApplicationInfo applicationInfo)
         {
+            _applicationInfo = applicationInfo;
             this._encryption = enc;
             this._directory = directoy;
             this._factory = factory;
@@ -45,6 +48,7 @@ namespace BLAZAM
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IDuoClientProvider _duoClientProvider;
+        private readonly ApplicationInfo _applicationInfo;
         private readonly IEncryptionService _encryption;
         private readonly IActiveDirectoryContext _directory;
         private readonly IAppDatabaseFactory _factory;
@@ -189,7 +193,7 @@ namespace BLAZAM
 
             }
             //Check if we're in demo mode and this is a demo login
-            else if (Program.InDemoMode && settings != null && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
+            else if (_applicationInfo.InDemoMode && settings != null && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
             {
                 result = await SetUser(this.GetDemoUser());
 
