@@ -157,7 +157,7 @@ namespace BLAZAM.Update
                 if (!_staged)
                     await Stage();
 #if !DEBUG
-                if (!backedUp)
+                if (!_backedUp)
                     await Backup();
 #endif
                 //Confirm staging went as expected

@@ -3,18 +3,18 @@
 
 
 
-    <MudText Typo="Typo.h4">@SettingsLocalization["Authentication Settings"]</MudText>
+    <MudText Typo="Typo.h4">@AppLocalization["Authentication Settings"]</MudText>
     <MudForm @onsubmit=Save>
 
 
-        <SettingsField Label="@SettingsLocalization["Admin Password"]">
+        <SettingsField Label="@AppLocalization["Admin Password"]">
 
-            <MudTextField Label="@SettingsLocalization["Admin Password"]" InputType="InputType.Password" @bind-Value="newAdminPassword" />
+            <MudTextField Label="@AppLocalization["Admin Password"]" InputType="InputType.Password" @bind-Value="newAdminPassword" />
         </SettingsField>
 
-        <SettingsField Label="@SettingsLocalization["Session Timeout"]">
+        <SettingsField Label="@AppLocalization["Session Timeout"]">
 
-            <MudNumericField Label="@SettingsLocalization["Session Timeout"]" HelperText="Time in minute" T="int?" @bind-Value="@settings.SessionTimeout" />
+            <MudNumericField Label="@AppLocalization["Session Timeout"]" HelperText="Time in minute" T="int?" @bind-Value="@settings.SessionTimeout" />
 
         </SettingsField>
         @*
@@ -82,7 +82,7 @@
             adminPasswordInDb = settings.AdminPassword;
 
         }
-        AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
+        await AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
         base.Save();
         await InvokeAsync(StateHasChanged);
 

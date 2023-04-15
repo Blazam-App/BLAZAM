@@ -11,7 +11,7 @@ namespace BLAZAM.Notifications.Services
 
         private async Task ShowMessage(MarkupString message, string? title = null, string? yesText = null, string? noText = null, string? cancelText = null)
         {
-            await _dialog.ShowMessageBox(title, message, yesText, noText, cancelText);
+            await _dialog.ShowMessageBox(title, message, yesText, noText, cancelText,DialogOptions);
         }
 
         private async Task ShowMessage(string message, string? title = null)
@@ -27,6 +27,7 @@ namespace BLAZAM.Notifications.Services
 
         public async Task Error(string message, string? title = null)
         {
+            
             await ShowMessage(message, title);
         }
 

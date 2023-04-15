@@ -33,7 +33,7 @@
     }
 
 
-    public ADSearch Searcher { get; set; } = default;
+    public ADSearch Searcher { get; set; } = new();
 
 
 
@@ -68,7 +68,7 @@
 
         Searcher = new ADSearch();
         Searcher.GeneralSearchTerm = SearchTermParameter;
-        base.OnInitializedAsync();
+        await base.OnInitializedAsync();
         SearchDisabledObjects = UserStateService?.CurrentUserState?.UserSettings?.SearchDisabledUsers == true;
 
 

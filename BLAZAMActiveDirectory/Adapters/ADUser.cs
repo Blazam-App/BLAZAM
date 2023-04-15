@@ -11,7 +11,7 @@ using System.Security.AccessControl;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
-    public class ADUser : GroupableDirectoryAdapter, IADUser
+    public class ADUser : AccountDirectoryAdapter, IADUser
     {
 
         public SecureString NewPassword { get; set; }
@@ -260,7 +260,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     UserPrincipalName = value + "@" + DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.FQDN;
 
                 else
-                    UserPrincipalName = value + "@" + UserPrincipalName.Split("@")[1];
+                    UserPrincipalName = value + "@" + UserPrincipalName?.Split("@")[1];
             }
 
         }

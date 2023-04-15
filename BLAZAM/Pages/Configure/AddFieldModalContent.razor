@@ -44,7 +44,7 @@
                 Close();
 
                 SnackBarService.Success("Field created");
-                FieldCreated.InvokeAsync(newField);
+                await FieldCreated.InvokeAsync(newField);
                 await InvokeAsync(StateHasChanged);
             }
             catch(Exception ex)

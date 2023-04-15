@@ -17,7 +17,7 @@
                  AdornmentColor="Color.Secondary"
                  ProgressIndicatorColor="Color.Secondary"
                  Adornment="Adornment.Start"
-                 AdornmentIcon="@Icons.Material.Filled.Search"
+                 AdornmentIcon="@AdornmentIcon"
                  Variant="@Variant">
     <ItemTemplate>
         <FlexContainer Spacing="0">
@@ -26,7 +26,7 @@
                 <MudText Color=Color.Dark Align="Align.Start" Typo="Typo.button">
                     @context?.ObjectType
 
-                    @if (context != null && context is IGroupableDirectoryAdapter gdm)
+                    @if (context != null && context is IAccountDirectoryAdapter gdm)
                     {
                         if (gdm.LockedOut)
                         {
@@ -81,7 +81,7 @@
 
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     [Parameter]
     public Func<object> Validation { get; set; }
     [Parameter]
@@ -90,6 +90,8 @@
     public Variant Variant { get; set; }
     [Parameter]
     public string? Class { get; set; }
+    [Parameter]
+    public string AdornmentIcon { get; set; } = Icons.Material.Filled.Search;
     [Parameter]
     public bool Multiple { get; set; }
     [Parameter]

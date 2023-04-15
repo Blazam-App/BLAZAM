@@ -121,6 +121,6 @@
     }
     async Task GroupCreated(IADGroup ou)
     {
-        AuditLogger.Group.Created(ou);
+        await AuditLogger.Group.Created(ou);
     }
 }

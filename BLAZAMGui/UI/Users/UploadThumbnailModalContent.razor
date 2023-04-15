@@ -7,7 +7,7 @@
 
     }
     <MudText>
-        @SettingsLocalization["Upload Thumbnail Photo"]
+        @AppLocalization["Upload Thumbnail Photo"]
     </MudText>
     <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
         <ButtonTemplate>
@@ -34,7 +34,7 @@
     {
         await base.OnInitializedAsync();
         Modal.OnYes = SaveChanges;
-        Modal.YesText = UserLocalization["Save Photo"];
+        Modal.YesText = AppLocalization["Save Photo"];
         Modal.Title = "Change Thumbnail";
         Modal.YesEnabled = ValidateModal;
         await InvokeAsync(StateHasChanged);

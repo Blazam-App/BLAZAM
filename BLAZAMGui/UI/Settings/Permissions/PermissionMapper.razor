@@ -34,7 +34,7 @@
 @code {
 
 #nullable disable warnings
-    OUTreeView OUTree { get; set; }
+    OUTreeView? OUTree { get; set; }
     IADOrganizationalUnit selectedNode;
     IADOrganizationalUnit SelectedNode
     {
@@ -51,7 +51,7 @@
     HashSet<IADOrganizationalUnit> ApplicationBaseOUs = new HashSet<IADOrganizationalUnit>();
     protected override async Task OnInitializedAsync()
     {
-        base.OnInitializedAsync();
+        await base.OnInitializedAsync();
 
         //ApplicationBaseOUs = Directory.OUs.FindSubOusByDN(null);
         ADOrganizationalUnit TopLevel = new ADOrganizationalUnit();

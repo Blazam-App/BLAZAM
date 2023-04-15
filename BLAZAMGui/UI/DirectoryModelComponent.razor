@@ -2,11 +2,7 @@
 
 @code {
     protected bool EditMode = false;
-    protected AppModal? UploadThumbnailModal { get; set; }
-    protected AppModal? AssignToModal { get; set; }
-    protected AppModal? MoveToModal { get; set; }
-    protected AppModal? RenameModal { get; set; }
-    protected AppModal? ChangePasswordModal { get; set; }
+
     protected string _searchTerm;
 
 
@@ -42,7 +38,7 @@
             }
         }
     }
-    protected IList<CustomActiveDirectoryField> CustomFields{ get; set; }
+    protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = new List<CustomActiveDirectoryField>();
 
     [Parameter]
     public IADComputer Computer
@@ -176,8 +172,5 @@
     }
 
 
-    protected void ToggleEditMode()
-    {
-        EditMode = !EditMode;
-    }
+ 
 }

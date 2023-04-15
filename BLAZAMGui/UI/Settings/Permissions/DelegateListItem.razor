@@ -67,7 +67,7 @@
         Level.DeletedAt = DateTime.UtcNow;
         await Context.SaveChangesAsync();
         SnackBarService.Success("Permission Delegate removed.");
-        DelegateDeleted.InvokeAsync();
+        await DelegateDeleted.InvokeAsync();
     }
     private async void Save()
     {

@@ -17,7 +17,7 @@
 <EditForm Model=settings OnValidSubmit="SubmitForm">
     <SettingsField>
         <FieldLabel>
-            @SettingsLocalization["Username"]
+            @AppLocalization["Username"]
         </FieldLabel>
         <ChildContent>
             <MudTextField Label="Username" Text="admin" T=string Disabled />
@@ -25,7 +25,7 @@
     </SettingsField>
     <SettingsField>
         <FieldLabel>
-            @SettingsLocalization["Password"]
+            @AppLocalization["Password"]
         </FieldLabel>
         <ChildContent>
             <MudTextField Label="Password"
@@ -40,7 +40,7 @@
     </SettingsField>
     <SettingsField>
         <FieldLabel>
-            @SettingsLocalization["Password"]
+            @AppLocalization["Password"]
         </FieldLabel>
         <ChildContent>
             <MudTextField For="@(() => settings.AdminPasswordConfirmed)"
@@ -89,7 +89,7 @@
         }
         catch (Exception ex)
         {
-            MessageService.Error(ex.Message + " " + ex.InnerException?.Message);
+            await MessageService.Error(ex.Message + " " + ex.InnerException?.Message);
 
 
         }

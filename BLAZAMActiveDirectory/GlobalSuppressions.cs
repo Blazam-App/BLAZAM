@@ -6,3 +6,5 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:BLAZAM.Common.Data.Services.WmiFactory.CreateWmiConnection(System.String)~System.Management.ManagementScope")]
+[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter.CommitChanges~BLAZAM.ActiveDirectory.DirectoryChangeResult")]
+[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter.SetNewProperty(System.String,System.Object)")]

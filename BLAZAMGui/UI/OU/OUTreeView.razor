@@ -11,40 +11,39 @@
              Color="Color.Success"
              @bind-SelectedValue="SelectedOU">
     <ItemTemplate>
-        <MudTreeViewItem
-                         Value="@context"
+        <MudTreeViewItem Value="@context"
                          LoadingIconColor="Color.Info"
                          Text="@context.CanonicalName"
                          Icon="@Icons.Material.Filled.Folder"
                          Class="minw-max w-100"
                          CanExpand=context.HasChildren()
-                            EndText="@EndText?.Invoke(context)">
+                         EndText="@EndText?.Invoke(context)">
             @*<Content>
-                @{
-                    string itemIcon = Icons.Material.Filled.Folder;
-                }
-                @if (context.IsExpanded)
-                {
-                    itemIcon = Icons.Material.Filled.FolderOpen;
-                }
-                @if (Badge != null)
-                {
-                    <MudBadge Content="Badge" Overlap="true" Class="mx-6 my-4">
-                        <MudTreeViewItemToggleButton  Loading=@context.IsLoadingChildren @bind-Expanded="@context.IsExpanded" Visible="@context.HasChildren()" />
-                        <MudIcon Icon="@itemIcon" Class="ml-0 mr-2" Color="@Color.Default" />
-                        <MudText>@context.CanonicalName</MudText>
+            @{
+            string itemIcon = Icons.Material.Filled.Folder;
+            }
+            @if (context.IsExpanded)
+            {
+            itemIcon = Icons.Material.Filled.FolderOpen;
+            }
+            @if (Badge != null)
+            {
+            <MudBadge Content="Badge" Overlap="true" Class="mx-6 my-4">
+            <MudTreeViewItemToggleButton  Loading=@context.IsLoadingChildren @bind-Expanded="@context.IsExpanded" Visible="@context.HasChildren()" />
+            <MudIcon Icon="@itemIcon" Class="ml-0 mr-2" Color="@Color.Default" />
+            <MudText>@context.CanonicalName</MudText>
 
-                        @EndAdornment?.Invoke(context)
+            @EndAdornment?.Invoke(context)
 
-                    </MudBadge>
-                }
-                else
-                {
-                    <MudTreeViewItemToggleButton Loading=@context.IsLoadingChildren @bind-Expanded="@context.IsExpanded" Visible="@context.HasChildren()" />
-                    <MudIcon Icon="@itemIcon" Class="ml-0 mr-2" Color="@Color.Default" />
-                    <MudText>@context.CanonicalName</MudText>
-                    @EndAdornment?.Invoke(context)
-                }
+            </MudBadge>
+            }
+            else
+            {
+            <MudTreeViewItemToggleButton Loading=@context.IsLoadingChildren @bind-Expanded="@context.IsExpanded" Visible="@context.HasChildren()" />
+            <MudIcon Icon="@itemIcon" Class="ml-0 mr-2" Color="@Color.Default" />
+            <MudText>@context.CanonicalName</MudText>
+            @EndAdornment?.Invoke(context)
+            }
             </Content>*@
         </MudTreeViewItem>
     </ItemTemplate>
@@ -60,7 +59,7 @@
 
 @code {
 
-    #nullable disable warnings
+#nullable disable warnings
     Dictionary<IADOrganizationalUnit, bool> OULoadingStates = new();
 
     [Parameter]
@@ -69,7 +68,7 @@
     [Parameter]
     public string? Label { get; set; }
     [Parameter]
-    public Func<IADOrganizationalUnit,string>? EndText { get; set; }
+    public Func<IADOrganizationalUnit, string>? EndText { get; set; }
 
 
     [Parameter]
@@ -143,7 +142,7 @@
 
         //await InvokeAsync(StateHasChanged);
 
-        InitializeTreeView();
+        await InitializeTreeView();
 
     }
     async Task InitializeTreeView()
@@ -195,13 +194,17 @@
 
     async Task<HashSet<IADOrganizationalUnit>> GetChildrenAsync(IADOrganizationalUnit parentNode)
     {
-        return GetChildren(parentNode);
+        return await Task.Run(() =>
+            {
+                return GetChildren(parentNode);
+
+            });
     }
 
     HashSet<IADOrganizationalUnit> GetChildren(IADOrganizationalUnit parentNode)
     {
         parentNode.IsLoadingChildren = true;
-         
+
         var children = parentNode.Children.ToHashSet();
 
         parentNode.IsLoadingChildren = false;

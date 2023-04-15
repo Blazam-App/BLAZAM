@@ -42,7 +42,7 @@
         }
         @if (SelectedTemplate != null)
         {
-            <MudButton OnClick=@(()=>{DuplicateTemplate(SelectedTemplate);}) Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.FileCopy" />
+            <MudButton OnClick=@(async()=>{await DuplicateTemplate(SelectedTemplate);}) Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.FileCopy" />
         }
 
 

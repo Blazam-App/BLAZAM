@@ -1,13 +1,13 @@
 ﻿@inherits AppModalContent
 <div Background="Background.Light" Color="Color.Dark">
-<Section Title=@UserLocalization["OU"]>
+<Section Title=@AppLocalization["OU"]>
 
 
     @if (OU.CanReadField(ActiveDirectoryFields.CanonicalName))
     {
         
             
-                    <MudTextField Label="@UserLocalization["Name"]" @bind-Value="@OU.CanonicalName" />
+                    <MudTextField Label="@AppLocalization["Name"]" @bind-Value="@OU.CanonicalName" />
 
             
         
@@ -17,7 +17,7 @@
 </Section>
 
 
-    <MudButton Color=Color.Primary OnClick="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
+    <MudButton Color=Color.Primary OnClick="SaveChanges">@AppLocalization["Save Changes"]</MudButton>
 </div>
 @code {
 
@@ -26,8 +26,8 @@
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
         Modal.OnYes = SaveChanges;
-        Modal.YesText = UserLocalization["Save Changes"];
-        Modal.Title = UserLocalization["Rename OU"];
+        Modal.YesText = AppLocalization["Save Changes"];
+        Modal.Title = AppLocalization["Rename OU"];
         Modal.YesEnabled = ValidateModal;
     }
 

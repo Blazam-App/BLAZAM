@@ -3,12 +3,12 @@
 
 
 <MudStack Row=true>
-    <MudTextField Label="@SettingsLocalization["Name"]" @bind-Value=WorkingModel.Name />
+    <MudTextField Label="@AppLocalization["Name"]" @bind-Value=WorkingModel.Name />
 
 
     <MudItem>
         <MudText Class="w-100 align-center">
-            @SettingsLocalization["Assign Objects"]
+            @AppLocalization["Assign Objects"]
         </MudText>
 
         <MudButtonGroup Color=Color.Success Variant="Variant.Outlined">
@@ -27,7 +27,7 @@
 
                     <MudButton Disabled=buttonDisabled
                        OnClick="()=>AddObjectTypeAccess(adObjectType)">
-                        @SettingsLocalization[name]
+                        @AppLocalization[name]
                     </MudButton>
 
                 }
@@ -53,7 +53,7 @@
 
                     @foreach (ObjectAccessLevel levelValue in ObjectAccessLevels.Levels)
                     {
-                        <MudSelectItem Value="levelValue.Id">@SettingsLocalization[levelValue.Name]</MudSelectItem>
+                        <MudSelectItem Value="levelValue.Id">@AppLocalization[levelValue.Name]</MudSelectItem>
 
                     }
                 </MudSelect>
@@ -66,7 +66,7 @@
 
                 @if (objectMap.ObjectType == ActiveDirectoryObjectType.User && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
                 {
-                    <MudSwitch Label="@SettingsLocalization["Allow Disabled User Access"]" @bind-Checked=objectMap.AllowDisabled />
+                    <MudSwitch Label="@AppLocalization["Allow Disabled User Access"]" @bind-Checked=objectMap.AllowDisabled />
                 }
 
 
@@ -95,7 +95,7 @@
 
 
 
-                                            <MudMenuItem OnClick="()=>AddActionAccess(action,objectMap.ObjectType)">@SettingsLocalization[@action.Name]</MudMenuItem>
+                                            <MudMenuItem OnClick="()=>AddActionAccess(action,objectMap.ObjectType)">@AppLocalization[@action.Name]</MudMenuItem>
                                         }
                                     }
                                 }
@@ -107,8 +107,8 @@
                             <TemplateColumn Title="Access">
                                 <CellTemplate>
                                     <MudRadioGroup T="bool" @bind-SelectedOption=context.Item.AllowOrDeny>
-                                        <MudRadio T="bool" Option="false">@SettingsLocalization["Deny"]</MudRadio>
-                                        <MudRadio T="bool" Option="true">@SettingsLocalization["Allow"]</MudRadio>
+                                        <MudRadio T="bool" Option="false">@AppLocalization["Deny"]</MudRadio>
+                                        <MudRadio T="bool" Option="true">@AppLocalization["Allow"]</MudRadio>
 
                                     </MudRadioGroup>
                                 </CellTemplate>
@@ -144,7 +144,7 @@
                                         if (existingFieldAccess == null)
                                         {
 
-                                            <MudMenuItem OnClick="()=>AddFieldAccess(field)">@SettingsLocalization[field.DisplayName]</MudMenuItem>
+                                            <MudMenuItem OnClick="()=>AddFieldAccess(field)">@AppLocalization[field.DisplayName]</MudMenuItem>
 
 
                                         }
@@ -177,12 +177,12 @@
                                 </CellTemplate>
                             </TemplateColumn>
                             <TemplateColumn Title="Access">
-                              
+
                                 <CellTemplate>
                                     <MudSelect T="int" @bind-Value="context.Item.FieldAccessLevelId">
                                         @foreach (FieldAccessLevel levelValue in FieldAccessLevels.Levels)
                                         {
-                                            <MudSelectItem Value="levelValue.Id">@SettingsLocalization[levelValue.Name]</MudSelectItem>
+                                            <MudSelectItem Value="levelValue.Id">@AppLocalization[levelValue.Name]</MudSelectItem>
                                         }
                                     </MudSelect>
                                 </CellTemplate>
@@ -213,14 +213,14 @@
 </FlexContainer>
 
 @{
-    string buttonLabel = SettingsLocalization["Create Access Level"];
+    string buttonLabel = AppLocalization["Create Access Level"];
     if (Model.Id > 0)
-        buttonLabel = SettingsLocalization["Update Access Level"];
+        buttonLabel = AppLocalization["Update Access Level"];
 }
 <MudButton Color=Color.Success Margin=Margin.IsAuto.OnX Disabled=SaveDisabled OnClick="SaveAccessLevel">@buttonLabel</MudButton>
 @if (WorkingModel.Id != 0)
 {
-    <MudButton Color=Color.Error Margin=Margin.IsAuto.OnX OnClick="DeleteAccessLevel">@SettingsLocalization["Delete Access Level"]</MudButton>
+    <MudButton Color=Color.Error Margin=Margin.IsAuto.OnX OnClick="DeleteAccessLevel">@AppLocalization["Delete Access Level"]</MudButton>
 }
 @code {
 
@@ -232,24 +232,7 @@
         get
         {
             return WorkingModel.ObjectMap.AsQueryable().Any(om => om.ObjectAccessLevelId > ObjectAccessLevels.Deny.Id);
-            foreach (var map in WorkingModel.ObjectMap)
-            {
-                if (map.ObjectAccessLevel != null)
-                {
-                    if (map.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level)
-                    {
-                        return true;
-                    }
-                }
-                if (map.ObjectAccessLevelId != 0)
-                {
-                    if (map.ObjectAccessLevelId > ObjectAccessLevels.Deny.Id)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
+          
         }
     }
 
@@ -303,25 +286,24 @@
 
         if (addition)
             WorkingModel = new();
-        LevelsChanged.InvokeAsync();
+        await LevelsChanged.InvokeAsync();
 
         //TODO update withh common evnt handler
         //ProgramEvents.InvokePermissionsChanged();
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
 
     }
 
     private void AddObjectTypeAccess(object objectTypeIndex)
     {
         var typeEnum = (ActiveDirectoryObjectType)objectTypeIndex;
-        if (typeEnum != null)
-        {
-            WorkingModel.ObjectMap.Add(new ObjectAccessMapping()
-                {
-                    ObjectType = typeEnum,
-                    ObjectAccessLevelId = ObjectAccessLevels.Deny.Id
-                });
-        }
+
+        WorkingModel.ObjectMap.Add(new ObjectAccessMapping()
+            {
+                ObjectType = typeEnum,
+                ObjectAccessLevelId = ObjectAccessLevels.Deny.Id
+            });
+
         StateHasChanged();
     }
     private void AddActionAccess(ObjectAction action, ActiveDirectoryObjectType type)
@@ -416,7 +398,7 @@
 
     }
 
-    async Task SetAllFieldAccessLevelsTo(int value)
+    void SetAllFieldAccessLevelsTo(int value)
     {
         if (value == null) return;
         WorkingModel.FieldMap.ForEach(fm =>

@@ -1,12 +1,12 @@
 ﻿@inherits AppModalContent
 <div Background="Background.Light" Color="Color.Dark">
-    <Section Title=@UserLocalization["Name"]>
+    <Section Title=@AppLocalization["Name"]>
 
         @if (Group.CanEditField(ActiveDirectoryFields.SAMAccountName))
         {
             
 
-                    <MudTextField Label="@UserLocalization["Group Name"]" @bind-Value="@GroupName" />
+                    <MudTextField Label="@AppLocalization["Group Name"]" @bind-Value="@GroupName" />
 
                 
             
@@ -19,13 +19,13 @@
     {
         
 
-                <MudTextField Label="@UserLocalization["Email Address"]" @bind-Value="@Group.Email" />
+                <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@Group.Email" />
 
             
         
     }
 
-    <MudButton Color=Color.Primary OnClick="SaveChanges">@UserLocalization["Save Changes"]</MudButton>
+    <MudButton Color=Color.Primary OnClick="SaveChanges">@AppLocalization["Save Changes"]</MudButton>
 </div>
 @code {
     #nullable disable warnings

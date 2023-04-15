@@ -26,7 +26,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        base.OnInitializedAsync();
+        await base.OnInitializedAsync();
 
         Name = "Disabled Users";
         LockedUsers = (await Directory.Users.FindChangedUsersAsync(false)).Where(u => u.Disabled).ToList();

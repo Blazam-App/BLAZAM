@@ -1,23 +1,23 @@
 ﻿@inherits AppComponentBase
 <EditForm Model="NewUserName">
 
-<Section Title=@UserLocalization["Name"]>
+<Section Title=@AppLocalization["Name"]>
 
         
             
-            <MudTextField Label="@UserLocalization["First Name"]" @bind-Value="@NewUserName.GivenName" />
-
-            
-        
-        
-
-                <MudTextField Label="@UserLocalization["Middle Name"]" @bind-Value="@NewUserName.MiddleName" />
+            <MudTextField Label="@AppLocalization["First Name"]" @bind-Value="@NewUserName.GivenName" />
 
             
         
         
 
-                <MudTextField Label="@UserLocalization["Last Name"]" @bind-Value="@NewUserName.Surname" />
+                <MudTextField Label="@AppLocalization["Middle Name"]" @bind-Value="@NewUserName.MiddleName" />
+
+            
+        
+        
+
+                <MudTextField Label="@AppLocalization["Last Name"]" @bind-Value="@NewUserName.Surname" />
 
             
         

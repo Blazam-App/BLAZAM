@@ -65,6 +65,8 @@ namespace BLAZAM.Tests.Mocks
 
         public AppEvent? OnModelDeleted { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+        public IActiveDirectoryContext Directory => throw new NotImplementedException();
+
         public bool CanEditField(IActiveDirectoryField field)
         {
             throw new NotImplementedException();

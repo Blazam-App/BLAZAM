@@ -34,7 +34,7 @@
         <TemplateColumn CellClass="d-flex justify-end" Title="Restore">
             <CellTemplate>
                 <MudStack Row=true>
-                    <MudButton Color="Color.Primary" Variant="@Variant.Outlined" OnClick="@(()=>{Restore(context.Item);})">Restore</MudButton>
+                    <MudButton Color="Color.Primary" Variant="@Variant.Outlined" OnClick="@(async()=>{await Restore(context.Item);})">Restore</MudButton>
 
                 </MudStack>
             </CellTemplate>

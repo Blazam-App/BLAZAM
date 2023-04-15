@@ -41,5 +41,6 @@ namespace BLAZAM.Session.Interfaces
         bool Equals(object? obj);
         bool HasRole(string searchUsers);
         Task<bool> SaveUserSettings();
+        Task<bool> MarkRead(UserNotification notification);
     }
 }

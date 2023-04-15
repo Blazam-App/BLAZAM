@@ -15,7 +15,7 @@
 @if (AutoUpdateService.IsUpdatedScheduled)
 {
     <MudAlert Class="mud-alert-filled-info">
-        <MudText Typo="Typo.h6">@SettingsLocalization["Update Scheduled"]</MudText>
+        <MudText Typo="Typo.h6">@AppLocalization["Update Scheduled"]</MudText>
         <MudText>
             The application will be updated to version @AutoUpdateService.ScheduledUpdate.Version at @AutoUpdateService.ScheduledUpdateTime
         </MudText>
@@ -79,7 +79,7 @@
                     }
                     <MudStack Row=true Class="w-100">
 
-                        <MudCard Class="mud-theme-primary">
+                        <MudCard Class="mud-theme-success">
                             <MudCardHeader Class="pb-0">Current Version</MudCardHeader>
                             <MudCardContent>
                                 <MudText>@ApplicationInfo.RunningVersion</MudText>
@@ -94,19 +94,22 @@
 
                                 <ChildContent>
                                     Available Version
+                                    <MudIconButton Color="Color.Tertiary" Icon="@Icons.Material.Filled.QuestionMark" OnClick=@ShowReleaseNotes />
+
                                 </ChildContent>
-                                <CardHeaderActions>
-                                    <MudMenu Size=Size.Small Icon="@Icons.Material.Filled.MoreVert">
-                                        <MudMenuItem OnClick="ShowReleaseNotes">View Release Notes</MudMenuItem>
-                                    </MudMenu>
-                                </CardHeaderActions>
+                               
                             </MudCardHeader>
                             <MudCardContent>
                                 @LatestAvailableVersion.Branch<br />
                                 <MudText>@LatestAvailableVersion.Version</MudText>
 
                                 @LatestAvailableVersion.Release.ReleaseTime?.ToLocalTime().DateTime<br />
-                                <MudButton Disabled=@(AutoUpdateService.IsUpdatedScheduled) OnClick=TestAutoUpdate Color="Color.Success">Test Auto Update</MudButton><br />
+                                @if (ApplicationInfo.InDebugMode)
+                                {
+                                    <MudButton Disabled=@(AutoUpdateService.IsUpdatedScheduled) OnClick=TestAutoUpdate Color="Color.Success">Test Auto Update</MudButton>
+
+                                    <br />
+                                }
                                 <MudButton Color=Color.Success OnClick="ApplyUpdate">Apply Update</MudButton>
 
 
@@ -136,7 +139,7 @@
     <MudButton Color=Color.Primary OnClick="UpdateDB">Update</MudButton>
 }
 <AppModal Title=@(LatestAvailableVersion?.Version+" Release Notes") @ref="@_releaseNotesModal">
-<ReleaseNotesModalContent Update="LatestAvailableVersion"/>
+    <ReleaseNotesModalContent Update="LatestAvailableVersion" />
 </AppModal>
 
 @code {

@@ -19,7 +19,7 @@ namespace BLAZAM.Tests.Mocks
             RunningProcess = Process.GetCurrentProcess(),
             RunningVersion = new ApplicationVersion("0.0.1"),
              TempDirectory = new FileSystem.SystemDirectory("C:\\temp")
-        })
+        },null)
         {
 
             SelectedBranch = "Stable";

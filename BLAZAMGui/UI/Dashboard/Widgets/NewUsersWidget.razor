@@ -14,7 +14,7 @@
         await base.OnInitializedAsync();
         NewUsers = (await Directory.Users.FindNewUsersAsync()).Where(u => u.CanRead).ToList();
         LoadingData = false;
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
     void GoTo(DataGridRowClickEventArgs<IADUser> args)
     {

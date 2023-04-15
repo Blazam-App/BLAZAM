@@ -15,7 +15,8 @@
     case "long":
     case "float":
         <MudNumericField HelperText="@HelperText" 
-            T=T 
+            T=T
+                 Immediate=@Immediate
             HideSpinButtons="true" 
             @bind-Value="@Value" 
             Clearable=@Clearable />
@@ -24,6 +25,7 @@
     case "String":
         <MudTextField Label="@Label" T=T
               HelperText="@HelperText"
+              Immediate=@Immediate
               Clearable=@Clearable
               Value=Value
               ValueChanged="@((changed)=>{Value =changed;})"
@@ -34,7 +36,6 @@
     <MudStack>
         <MudSwitch Color=@Color
              
-                   HelperText="@HelperText"
             Label=@Label 
             @bind-Checked=@Value 
             Disabled=@Disabled />
@@ -43,6 +44,7 @@
         break;
     case "DateTime":
         <MudDatePicker Clearable=@Clearable
+
                HelperText="@HelperText"
             Label="@Label"
             Date="@dateValue"
@@ -75,7 +77,7 @@
                 value = ValueTransformer.Invoke(value);
             objValue = value;
             //if (!value.Equals(initializedValue))
-                ValueChanged.InvokeAsync(value);
+            ValueChanged.InvokeAsync(value);
 
         }
     }
@@ -92,6 +94,9 @@
     /// </summary>
     [Parameter]
     public bool Clearable { get; set; }
+
+    [Parameter]
+    public bool Immediate { get; set; } = true;
 
     private DateTime? dateValue
     {

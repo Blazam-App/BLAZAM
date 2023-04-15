@@ -13,33 +13,33 @@
     <ToolBarContent>
         <MudText Typo="Typo.h6">Fields</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="@(()=>{addFieldModal.Show();})" />
+        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="@(()=>{addFieldModal?.Show();})" />
     </ToolBarContent>
     
     <Columns>
 
-        <TemplateColumn CellClass="d-flex justify-end" Title="Edit" Sortable="false">
+        <TemplateColumn Context="cellContext" CellClass="d-flex justify-end" Title="Edit" Sortable="false">
             <CellTemplate>
-                <MudIconButton Disabled=@(context.Item.Id>100000) Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItem" />
+                <MudIconButton Disabled=@(cellContext.Item.Id>100000) Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@cellContext.Actions.StartEditingItemAsync" />
             </CellTemplate>
         </TemplateColumn>
 
         <PropertyColumn Sortable="true"
                         Property="x => x.DisplayName"
-                        Title=@SettingsLocalization["Display Name"] />
+                        Title=@AppLocalization["Display Name"] />
 
         <PropertyColumn Sortable="true"
                         Property="x => x.FieldName"
-                        Title=@SettingsLocalization["Field Name"] />
+                        Title=@AppLocalization["Field Name"] />
 
-        <TemplateColumn Title=@SettingsLocalization["Field Type"]
+        <TemplateColumn Title=@AppLocalization["Field Type"]
                         Sortable="true">
             <EditTemplate>
                 <FieldTypeSelect Variant="@Variant.Outlined" @bind-Value=context.Item.FieldType />
 
             </EditTemplate>
             <CellTemplate>
-                <MudText>@context.Item.FieldType</MudText>
+                <MudText>@context.Item?.FieldType</MudText>
 
             </CellTemplate>
         </TemplateColumn>
@@ -53,18 +53,18 @@
                              Label="@objectType.ToString()"
                              Size="@Size.Small"
                              Checked="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)"
-                             CheckedChanged="@((val)=>{
-ToggleObjectType(context.Item,objectType,val);
+                             CheckedChanged="@(async(val)=>{
+await ToggleObjectType(context.Item,objectType,val);
 })" />
                 </EditTemplate>
                 <CellTemplate>
-                    <MudCheckBox Size="@Size.Small" ReadOnly=true Checked="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)" />
+                    <MudCheckBox Size="@Size.Small" ReadOnly=true Checked="@(context.Item?.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)" />
                 </CellTemplate>
             </TemplateColumn>
         }
         <TemplateColumn CellClass="d-flex justify-end" Title=@AppLocalization["Delete"] Sortable="false">
             <CellTemplate>
-                <MudIconButton Disabled=@(context.Item.Id>100000) Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(()=>{Delete(context.Item);})" />
+                <MudIconButton Disabled=@(context.Item?.Id>100000) Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(()=>{Delete(context.Item);})" />
             </CellTemplate>
         </TemplateColumn>
     </Columns>
@@ -77,10 +77,7 @@ ToggleObjectType(context.Item,objectType,val);
     MudDataGrid<CustomActiveDirectoryField>? fieldGrid;
     AppModal? addFieldModal;
     List<CustomActiveDirectoryField> ADFields { get; set; }
-    protected override async void OnInitialized()
-    {
-        base.OnInitialized();
-    }
+
     async Task<GridData<CustomActiveDirectoryField>> RefreshData(GridState<CustomActiveDirectoryField> currentState)
     {
         LoadingData = true;
@@ -105,7 +102,7 @@ ToggleObjectType(context.Item,objectType,val);
             field.DeletedAt = DateTime.UtcNow;
             if (await Context.SaveChangesAsync() > 0)
             {
-                fieldGrid.ReloadServerData();
+                await fieldGrid.ReloadServerData();
 
                 SnackBarService.Success(field.DisplayName + " deleted");
             }

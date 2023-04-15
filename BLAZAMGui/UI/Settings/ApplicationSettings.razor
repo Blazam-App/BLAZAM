@@ -2,33 +2,33 @@
 @inherits SettingsComponents
 
 
-<MudText Typo="Typo.h4">@SettingsLocalization["Application Settings"]</MudText>
+<MudText Typo="Typo.h4">@AppLocalization["Application Settings"]</MudText>
 <EditForm @ref=@EditForm Context="editContext" OnValidSubmit="Save" Model="settings">
 
 
-    <SettingsField Label="@SettingsLocalization["Application Name"]">
+    <SettingsField Label="@AppLocalization["Application Name"]">
 
-            <MudTextField Class="mt-0" Label=@SettingsLocalization["Application Name"] @bind-Value="@settings.AppName" />
-
-    </SettingsField>
-
-    <SettingsField Label="@SettingsLocalization["Homepage Message"]">
-
-
-            <MudTextField Label="@SettingsLocalization["Homepage Message"]" T="string" Variant="Variant.Text" @bind-Text="@settings.MOTD" Lines="5" Placeholder="Place a custom welcome message for your users on the dashboard" />
+            <MudTextField Class="mt-0" Label=@AppLocalization["Application Name"] @bind-Value="@settings.AppName" />
 
     </SettingsField>
 
+    <SettingsField Label="@AppLocalization["Homepage Message"]">
 
-    <SettingsField Label="@SettingsLocalization["Force Https"]">
 
-            <MudSwitch Label="@SettingsLocalization["Enabled"]" TValue="bool" @bind-Checked="@settings.ForceHTTPS" />
+            <MudTextField Label="@AppLocalization["Homepage Message"]" T="string" Variant="Variant.Text" @bind-Text="@settings.MOTD" Lines="5" Placeholder="Place a custom welcome message for your users on the dashboard" />
 
     </SettingsField>
 
-    <SettingsField Label="@SettingsLocalization["User Helpdesk URL"]">
 
-            <MudTextField Label="@SettingsLocalization["User Helpdesk URL"]" Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
+    <SettingsField Label="@AppLocalization["Force Https"]">
+
+            <MudSwitch Label="@AppLocalization["Enabled"]" TValue="bool" @bind-Checked="@settings.ForceHTTPS" />
+
+    </SettingsField>
+
+    <SettingsField Label="@AppLocalization["User Helpdesk URL"]">
+
+            <MudTextField Label="@AppLocalization["User Helpdesk URL"]" Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
                 <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
                     <MudBadge>!</MudBadge>
                 </MudTooltip>
@@ -40,7 +40,7 @@
 
 
 
-    <SettingsField Label="@SettingsLocalization["Branding Icon"]">
+    <SettingsField Label="@AppLocalization["Branding Icon"]">
 
             <MudContainer>
 
@@ -66,9 +66,9 @@
 
 
 
-    <SettingsField Label="@SettingsLocalization["Website FQDN"]">
+    <SettingsField Label="@AppLocalization["Website FQDN"]">
 
-            <MudTextField Label="@SettingsLocalization["Website FQDN"]" For=@(()=> settings.AppFQDN) ErrorText="Must be a valid domain name" HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
+            <MudTextField Label="@AppLocalization["Website FQDN"]" For=@(()=> settings.AppFQDN) ErrorText="Must be a valid domain name" HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
 
     </SettingsField>
 

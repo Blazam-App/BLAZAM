@@ -1,58 +1,68 @@
 ﻿@inherits AppModalContent
 
+<MudStack Row=true>
+    <MudStack>
+        <ADAutoComplete Class="" Disabled=@(copyFrom!=null) Label="Group Name" SearchObjectType="ActiveDirectoryObjectType.Group"
+                        @bind-SelectedResult=@Group />
 
-<ADAutoComplete Label="Group Name" SearchObjectType="ActiveDirectoryObjectType.Group"
-                @bind-SelectedResult=@Group />
+        <MudText Class="my-3" Align="Align.Center">@AppLocalization["or"]</MudText>
+        <ADAutoComplete Disabled=@(Group!=null) Label="Copy Memberships From" SearchObjectType="ActiveDirectoryObjectType.All"
+                        @bind-SelectedResult=@copyFrom
+                        CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
 
 
-<ADAutoComplete Label="Copy Memberships From" SearchObjectType="ActiveDirectoryObjectType.All"
-                @bind-SelectedResult=@copyFrom
-                CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
-
-
-@if (CopyFrom != null)
-{
-    var existingGroups = DirectoryModel.MemberOf;
-
-    if (CopyFrom.MemberOf.Any(g => existingGroups.Contains(g)))
+    </MudStack>
+    @if (CopyFrom != null)
     {
-        <MudText>Already a member of...</MudText>
-        <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
-            @foreach (var group in CopyFrom.MemberOf.Where(g => existingGroups.Contains(g)))
+        <MudStack>
+
+            @{
+            var existingGroups = DirectoryModel.MemberOf;
+            }
+            @if (CopyFrom.MemberOf.Any(g => existingGroups.Contains(g)))
             {
-                <MudListItem>
-            
+            <MudText>Already a member of...</MudText>
+            <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
+                @foreach (var group in CopyFrom.MemberOf.Where(g => existingGroups.Contains(g)))
+                {
+                    <MudListItem>
+
                         <MudIcon Color=Color.Success Icon=@Icons.Material.Filled.PlaylistAddCheck />
-                    
-                   
-                    @group.GroupName
 
-                </MudListItem>
+
+                        @group.GroupName
+
+                    </MudListItem>
+                }
+            </MudList>
             }
-        </MudList>
-    }
-    if (CopyFrom.MemberOf.Any(g => !existingGroups.Contains(g)))
-    {
-        <MudText>Will be added to...</MudText>
-        <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
-
-            @foreach (var group in CopyFrom.MemberOf.Where(g => !existingGroups.Contains(g)))
+            @if (CopyFrom.MemberOf.Any(g => !existingGroups.Contains(g)))
             {
-                <MudListItem>
+            <MudText>Will be added to...</MudText>
+            <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
+
+                @foreach (var group in CopyFrom.MemberOf.Where(g => !existingGroups.Contains(g)))
+                {
+                    <MudListItem>
 
 
-                
+
                         <MudIcon Color=Color.Info Icon="@Icons.Material.Filled.PlaylistAdd" />
-                    
-                    @group.GroupName
 
-                </MudListItem>
+                        @group.GroupName
+
+                    </MudListItem>
+
+                }
+            </MudList>
 
             }
-        </MudList>
 
+
+        </MudStack>
     }
-}
+</MudStack>
+
 
 
 @code {
@@ -72,7 +82,7 @@
     {
         base.OnInitialized();
         Modal.OnYes = AssignToGroup;
-        Modal.YesText = UserLocalization["Assign"];
+        Modal.YesText = AppLocalization["Assign"];
         Modal.Title = "Assign To";
         Modal.YesEnabled = ValidateModal;
     }

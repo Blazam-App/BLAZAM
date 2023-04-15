@@ -125,7 +125,7 @@
 
     async Task TestNotificationBroadcast()
     {
-        NotificationPublisher.PublishNotification(new NotificationMessage()
+        await NotificationPublisher.PublishNotification(new NotificationMessage()
             {
                 Level = NotificationLevel.Info,
                 Message = "This is a test notification",

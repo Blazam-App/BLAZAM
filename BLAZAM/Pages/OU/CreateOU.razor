@@ -117,6 +117,6 @@
     }
     async Task OUCreated(IADOrganizationalUnit ou)
     {
-        AuditLogger.OU.Created(ou);
+        await AuditLogger.OU.Created(ou);
     }
 }

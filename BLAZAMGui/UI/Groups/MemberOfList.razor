@@ -1,8 +1,12 @@
-@inherits AppComponentBase
+﻿@inherits AppComponentBase
 
 
-<MudList Dense=true Clickable="true" Style="max-height:200px; overflow-y:auto;">
-    @foreach (ADGroup g in Model.MemberOf.Where(group => group.CanRead).OrderBy(g => g.CanonicalName))
+<MudList Disabled=false
+    Dense=true 
+    Clickable="false" 
+    DisableGutters=true 
+    Style="max-height:200px; overflow-y:auto;">
+    @foreach (IADGroup g in Model.MemberOf.Where(group => group.CanRead).OrderBy(g => g.CanonicalName))
     {
         if (g.CanRead)
         {

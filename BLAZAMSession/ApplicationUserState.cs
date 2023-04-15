@@ -54,8 +54,9 @@ namespace BLAZAM.Server.Data.Services
             {
                 if (!User.Identity.IsAuthenticated) return default;
                 if ((DateTime.Now - lastDataRefresh).TotalSeconds > 1)
-                    GetUserSettingFromDB(null);
-                return userSettings?.Messages.Where(m => !m.IsRead).ToList();
+                    GetUserSettingFromDB();
+               return userSettings?.Messages.Where(m => !m.IsRead).ToList();
+               
             }
         }
 
@@ -78,7 +79,7 @@ namespace BLAZAM.Server.Data.Services
             _notificationPublisher.OnNotificationPublished += (notifications) =>
             {
                 if (notifications.Select(n => n.User).Contains(UserSettings))
-                    GetUserSettingFromDB(null);
+                    GetUserSettingFromDB();
             };
         }
 
@@ -98,13 +99,31 @@ namespace BLAZAM.Server.Data.Services
                 if (userSettings == null)
                 {
 
-                    GetUserSettingFromDB(null);
+                    GetUserSettingFromDB();
                 }
                 return userSettings;
             }
         }
+        public async Task<bool>  MarkRead(UserNotification notification)
+        {
+            using var context = await _dbFactory.CreateDbContextAsync();
+            var message = context.UserNotifications.Where(un => un.Id == notification.Id).FirstOrDefault(); ;
+            if (message != null)
+            {
+                message.IsRead = true;
+                var result = await context.SaveChangesAsync();
 
-        private void GetUserSettingFromDB(object? state)
+                if (result == 1)
+                {
+                    GetUserSettingFromDB();
+                    OnSettingsChange?.Invoke(userSettings);
+
+                    return true;
+                }
+            }
+            return false;
+        }
+        private void GetUserSettingFromDB()
         {
             try
             {

@@ -60,10 +60,10 @@ namespace BLAZAM.Helpers
         {
             List<AuditChangeLog> changes = new();
             // Get the properties of the object type
-            PropertyInfo[] properties;
+            PropertyInfo[] properties=new PropertyInfo[0];
             if (changed is not null)
                 properties = changed.GetType().GetProperties();
-            else
+            else if(original is not null)
                 properties = original.GetType().GetProperties();
 
             // Iterate over each property
@@ -206,20 +206,7 @@ namespace BLAZAM.Helpers
 
 
 
-        public static string ToHex(this System.Drawing.Color color)
-        {
-            string rtn = string.Empty;
-            try
-            {
-                rtn = "#" + color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2") + color.A.ToString("X2");
-            }
-            catch
-            {
-                //doing nothing
-            }
-
-            return rtn;
-        }
+     
 
         public static string ToSidString(this byte[] sid)
         {

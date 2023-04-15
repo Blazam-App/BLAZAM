@@ -41,7 +41,7 @@
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
     }
-    async Task GoTo(DataGridRowClickEventArgs<IADUser> args)
+    void GoTo(DataGridRowClickEventArgs<IADUser> args)
     {
         Nav.NavigateTo(args.Item.SearchUri);
     }

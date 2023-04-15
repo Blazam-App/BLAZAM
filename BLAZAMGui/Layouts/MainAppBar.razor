@@ -1,7 +1,6 @@
 ﻿@inject IStringLocalizer<AppLocalization> AppLocalization
 @inject IApplicationUserStateService UserStateService
 @inject NavigationManager Nav
-@using BLAZAM.Gui.UI.Themes;
 
 
 <MudAppBar Color=Color.Default Elevation="1">
@@ -20,9 +19,9 @@
                    OnClick="@((e) => {mainLayout.DrawerOpen=!mainLayout.DrawerOpen; })" />
     }
 
-    @if (mainLayout?.setHeader != null)
+    @if (mainLayout?.Header != null)
     {
-        @mainLayout.setHeader.ChildContent
+        @mainLayout.Header.ChildContent
 
     }
     else

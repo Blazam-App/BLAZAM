@@ -1,5 +1,4 @@
 ﻿@using BLAZAM.Gui.Navs
-@using BLAZAM.Gui.UI.Themes;
 @using System.Security.Claims;
 @inherits LayoutComponentBase
 
@@ -44,7 +43,7 @@
                                        OnClick="@(()=>{_devDrawerOpen=!_devDrawerOpen;InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
 
                             <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
-                                       OnClick="@(()=>{dataBrowser.Show();})">Data Browser</MudButton>
+                                       OnClick="@(()=>{dataBrowser?.Show();})">Data Browser</MudButton>
                         </AuthorizeView>
                     </MudDrawerContainer>
                 </MudDrawer>
@@ -52,10 +51,10 @@
 
 
                 <MudMainContent Class="mud-height-full">
-                    @if (setSubHeader != null)
+                    @if (SubHeader != null)
                     {
                         <MudAppBar Color=Color.Primary Style="top:64px;" Elevation="1">
-                            @setSubHeader?.ChildContent
+                            @SubHeader?.ChildContent
                         </MudAppBar>
                         topMarginForContent = "margin-top:64px;";
                     }
@@ -124,24 +123,24 @@
         }
     }
 
-    public SetHeader? setHeader;
+    public SetHeader? Header;
     public void SetHeader(SetHeader? setHeader)
     {
-        this.setHeader = (setHeader);
+        Header = (setHeader);
         if (setHeader != null)
 
-            this.setHeader.OnRefreshRequested += (() => { InvokeAsync(StateHasChanged); });
+            Header.OnRefreshRequested += (async() => { await  InvokeAsync(StateHasChanged); });
 
         //StateHasChanged();
         InvokeAsync(StateHasChanged);
         //Update();
     }
-    SetSubHeader? setSubHeader;
+    SetSubHeader? SubHeader;
     public void SetSubHeader(SetSubHeader? setSubHeader)
     {
-        this.setSubHeader = (setSubHeader);
+        SubHeader = (setSubHeader);
         if (setSubHeader != null)
-            this.setSubHeader.OnRefreshRequested += (() => { InvokeAsync(StateHasChanged); });
+            SubHeader.OnRefreshRequested += (async() => { await InvokeAsync(StateHasChanged); });
 
         //StateHasChanged();
         InvokeAsync(StateHasChanged);

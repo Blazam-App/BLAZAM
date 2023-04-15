@@ -9,7 +9,7 @@ using BLAZAM.Database.Models;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
-    public class ADComputer : GroupableDirectoryAdapter, IADComputer
+    public class ADComputer : AccountDirectoryAdapter, IADComputer
     {
 
         private ADComputerSessions sessionManager;

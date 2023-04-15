@@ -1,9 +1,8 @@
-﻿
-using System.Security;
+﻿using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
-    public interface IADUser : IGroupableDirectoryAdapter
+    public interface IADUser : IAccountDirectoryAdapter
     {
         string? City { get; set; }
         string? Company { get; set; }

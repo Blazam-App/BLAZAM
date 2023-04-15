@@ -1,16 +1,10 @@
 @inherits AppComponentBase
 
-@{
-    if (CurrentUserState == null)
-    {
-        GetCurrentUser();
 
-    }
-}
 
-@if (CurrentUserState?.UserSettings?.ProfilePicture != null)
+@if (UserState?.UserSettings?.ProfilePicture != null)
 {
-    <Base64Image Elevation="4" Class="  mud-border-secondary border-2 mud-avatar mud-avatar-medium" Data="@CurrentUserState.UserSettings?.ProfilePicture" />
+    <Base64Image Elevation="4" Class="  mud-border-secondary border-2 mud-avatar mud-avatar-medium" Data="@UserState.UserSettings?.ProfilePicture" />
 
 }
 else
@@ -22,13 +16,12 @@ else
 
 
 @code {
-    IApplicationUserState? CurrentUserState;
     string AvatarColor
     {
         get
         {
-            if (CurrentUserState == null) return "background-color:#0c13a7";
-            int usernameHash = CurrentUserState.Username.GetAppHashCode();
+            if (UserState == null) return "background-color:#0c13a7";
+            int usernameHash = UserState.Username.GetAppHashCode();
             byte[] usernameHashBytes = usernameHash.ToByteArray(3);
             string hexColor = "background-color:#";
             hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
@@ -36,19 +29,13 @@ else
 
         }
     }
+    [Parameter]
+    public IApplicationUserState? UserState{ get; set; }
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        GetCurrentUser();
     }
-    void GetCurrentUser()
-    {
-        CurrentUserState = CurrentUser.State;
-        if (CurrentUserState != null)
-            CurrentUserState.OnSettingsChange = ((settings) =>
-                {
-                    InvokeAsync(StateHasChanged);
-                });
-    }
+   
 
 }

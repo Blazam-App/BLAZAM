@@ -28,7 +28,7 @@
                 {
 
 
-                    <div Class="cursor-pointer" @onclick=@(()=>{SubmitSearch(u.CanonicalName);})>
+                    <div Class="cursor-pointer" @onclick=@(()=>{Searcher.Results.Clear();Searcher.Results.Add(u);})>
                         <MudText Typo="Typo.h1">@u.ObjectType</MudText>
                         <MudText Typo="Typo.h1">@u.CanonicalName</MudText>
                         <small>@u.SamAccountName</small>
@@ -63,16 +63,16 @@
                 @switch (result.ObjectType)
                 {
                     case ActiveDirectoryObjectType.User:
-                        <ViewUser @bind-SavingChanges="SavingChanges" User="(IADUser)result" />
+                        <ViewUser DirectoryEntry="result" />
                         break;
                     case ActiveDirectoryObjectType.Group:
-                        <ViewGroup @bind-SavingChanges="SavingChanges" Group="(IADGroup)result" />
+                        <ViewGroup DirectoryEntry="result" />
                         break;
                     case ActiveDirectoryObjectType.Computer:
-                        <ViewComputer @bind-SavingChanges="SavingChanges" Computer="(IADComputer)result" />
+                        <ViewComputer DirectoryEntry="result" />
                         break;
                     case ActiveDirectoryObjectType.OU:
-                        <ViewOU @bind-SavingChanges="SavingChanges" OU="(IADOrganizationalUnit)result" />
+                        <ViewOU  DirectoryEntry="result" />
                         break;
                 }
             }
@@ -106,7 +106,6 @@
     [CascadingParameter]
     public SearchService SearchParameters { get; set; }
 
-    bool SavingChanges = false;
     string ModelsTypeName = "Search";
     protected string SearchIcon { get; set; } = "";
     string? _searchTermParameter;

@@ -8,12 +8,12 @@
     <MudStack>
 
 
-        <MudTextField Label="@SettingsLocalization["Template Name"]"
+        <MudTextField Label="@AppLocalization["Template Name"]"
                       @bind-Value=DirectoryTemplate.Name />
 
         <MudAutocomplete CoerceValue SearchFunc="SearchCategories"
                          @bind-Value=DirectoryTemplate.Category
-                         Label="@SettingsLocalization["Template Category"]" />
+                         Label="@AppLocalization["Template Category"]" />
 
 
 
@@ -158,7 +158,7 @@
                                 </TemplateColumn>
                                 <TemplateColumn>
                                     <CellTemplate Context="cellContext">
-                                        <AppCloseButton OnClick=@(()=>{RemoveField(cellContext.Item);}) />
+                                        <AppCloseButton OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
 
                                     </CellTemplate>
                                 </TemplateColumn>
@@ -176,7 +176,7 @@
             @*     @if (SelectedOU != null)
             {
             *@
-            <OUTreeView Label=@(SettingsLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
+            <OUTreeView Label=@(AppLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
                         StartRootExpanded=false
                         @bind-SelectedOU=@SelectedOU
                         @bind-StartingSelectedOU=@SelectedOU />
@@ -193,7 +193,7 @@
                 <MudText>@group</MudText>
             }
             <MudStack Row=true>
-                <ADAutoComplete Label="@SettingsLocalization["Groups"]"
+                <ADAutoComplete Label="@AppLocalization["Groups"]"
                                 Multiple=true
                                 @bind-SelectedResult="@SelectedGroup" />
                 <MudFab Size="Size.Small" Icon=@Icons.Material.Filled.Add
@@ -300,7 +300,7 @@
 
     async Task<IEnumerable<string>> SearchCategories(string? searchTerm)
     {
-        var categories = Context.DirectoryTemplates.Select(t => t.Category).Distinct();
+        var categories = await Context.DirectoryTemplates.Select(t => t.Category).Distinct().ToListAsync();
         if (searchTerm.IsNullOrEmpty()) return categories;
         return categories.Where(s => s.Contains(searchTerm) || s.Equals(searchTerm));
     }

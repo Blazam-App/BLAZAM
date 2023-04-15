@@ -6,8 +6,10 @@ namespace BLAZAM.Database.Models
 {
     public class AuthenticationSettings : AppDbSetBase
     {
-
-        public int? SessionTimeout { get; set; } = 900;
+        /// <summary>
+        /// Time a session can remain inactive before expiring in minutes
+        /// </summary>
+        public int? SessionTimeout { get; set; } = 15;
         [Required]
         [ValidAdminPassword]
         public string? AdminPassword { get; set; }

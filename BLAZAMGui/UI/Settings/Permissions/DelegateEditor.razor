@@ -24,7 +24,7 @@
 }
 
 <MudButton Background="Background.Success" OnClick="@(()=>{addGroupModal.Show();})">
-    @SettingsLocalization["Create New Delegation Target"]
+    @AppLocalization["Create New Delegation Target"]
 </MudButton>
 
 <AppModal @ref=@trashModal Title="Deleted Delegates">
@@ -32,8 +32,8 @@
     {
         var model = @Directory.FindEntryBySID(deleg.DelegateSid);
         <MudContainer>
-            <b>@model.ObjectType</b><br />
-            <MudText>@model.CanonicalName</MudText>
+            <b>@model?.ObjectType</b><br />
+            <MudText>@model?.CanonicalName</MudText>
             <MudText>@deleg.DeletedAt</MudText>
             <MudButton Float="Float.End" Color="Color.Primary" OnClick="(()=>{RestoreDelegate(deleg);})">Restore</MudButton>
 
@@ -75,7 +75,7 @@
 
 
         settings = Context.PermissionDelegate;
-        RefreshDelegates();
+        await RefreshDelegates();
 
         await InvokeAsync(StateHasChanged);
 

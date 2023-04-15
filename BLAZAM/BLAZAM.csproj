@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.7.5</AssemblyVersion>
-		<Version>2023.04.13.1856</Version>
+		<Version>2023.04.15.1519</Version>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -41,33 +41,33 @@
 		<PackageReference Include="Google.Apis.Auth" Version="1.60.0" />
 		<PackageReference Include="MailKit" Version="3.6.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.13" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.13" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.16" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.16" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.13" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.13" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.16" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.5">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.5" />
 		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="7.0.0" />
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.11" />
-		<PackageReference Include="MudBlazor" Version="6.2.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.13" />
+		<PackageReference Include="MudBlazor" Version="6.2.2" />
 		<PackageReference Include="MudBlazor.Markdown" Version="0.1.0" />
 		<PackageReference Include="MudBlazor.ThemeManager" Version="1.0.7" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-		<PackageReference Include="Octokit" Version="5.0.3" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Octokit" Version="5.0.4" />
 		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
-		<PackageReference Include="SixLabors.ImageSharp.Web" Version="2.0.2" />
+		<PackageReference Include="SixLabors.ImageSharp.Web" Version="3.0.1" />
 		<PackageReference Include="System.DirectoryServices" Version="7.0.1" />
 
 		<PackageReference Include="System.DirectoryServices.AccountManagement" Version="7.0.0" />
@@ -78,14 +78,23 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Include="..\BLAZAMGui\Layouts\UserNotificationPopover.razor" Link="UserNotificationPopover.razor" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <ProjectReference Include="..\BLAZAMActiveDirectory\BLAZAMActiveDirectory.csproj" />
 	  <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
 	  <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
+	  <ProjectReference Include="..\BLAZAMEmailMessage\BLAZAMEmailMessage.csproj" />
+	  <ProjectReference Include="..\BLAZAMEmail\BLAZAMEmail.csproj" />
 	  <ProjectReference Include="..\BLAZAMFileSystem\BLAZAMFileSystem.csproj" />
 	  <ProjectReference Include="..\BLAZAMGui\BLAZAMGui.csproj" />
+	  <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
 	  <ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
 	  <ProjectReference Include="..\BLAZAMNotifications\BLAZAMNotifications.csproj" />
+	  <ProjectReference Include="..\BLAZAMServices\BLAZAMServices.csproj" />
 	  <ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
+	  <ProjectReference Include="..\BLAZAMStatic\BLAZAMStatic.csproj" />
 	  <ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
 	</ItemGroup>
 
@@ -94,21 +103,6 @@
 		  <DesignTime>True</DesignTime>
 		  <AutoGen>True</AutoGen>
 		  <DependentUpon>Resources.resx</DependentUpon>
-		</Compile>
-		<Compile Update="Shared\ResourceFiles\AppLocalization.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>AppLocalization.resx</DependentUpon>
-		</Compile>
-		<Compile Update="Shared\ResourceFiles\SettingsLocalization.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>SettingsLocalization.resx</DependentUpon>
-		</Compile>
-		<Compile Update="Shared\ResourceFiles\UserLocalization.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>UserLocalization.resx</DependentUpon>
 		</Compile>
 	</ItemGroup>
 
@@ -122,24 +116,6 @@
 		<EmbeddedResource Update="Properties\Resources.resx">
 		  <Generator>ResXFileCodeGenerator</Generator>
 		  <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-		<EmbeddedResource Update="Shared\ResourceFiles\AppLocalization.fr.resx">
-			<Generator>PublicResXFileCodeGenerator</Generator>
-		</EmbeddedResource>
-		<EmbeddedResource Update="Shared\ResourceFiles\AppLocalization.resx">
-			<Generator>PublicResXFileCodeGenerator</Generator>
-			<LastGenOutput>AppLocalization.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-		<EmbeddedResource Update="Shared\ResourceFiles\SettingsLocalization.resx">
-			<Generator>PublicResXFileCodeGenerator</Generator>
-			<LastGenOutput>SettingsLocalization.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-		<EmbeddedResource Update="Shared\ResourceFiles\UserLocalization.fr.resx">
-			<Generator>PublicResXFileCodeGenerator</Generator>
-		</EmbeddedResource>
-		<EmbeddedResource Update="Shared\ResourceFiles\UserLocalization.resx">
-			<Generator>PublicResXFileCodeGenerator</Generator>
-			<LastGenOutput>UserLocalization.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 	</ItemGroup>
 

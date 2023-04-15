@@ -6,7 +6,7 @@
 <SettingsField>
     
             <ADAutoComplete Disabled=@attemptingImpersonation 
-                Label="@SettingsLocalization["Impersonate User"]" 
+                Label="@AppLocalization["Impersonate User"]" 
             SearchObjectType="ActiveDirectoryObjectType.User" 
             @bind-SelectedResult=User />
 
@@ -81,7 +81,7 @@
                     Nav.NavigateTo("/home", true);
                     break;
             }
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
         }
     }
 

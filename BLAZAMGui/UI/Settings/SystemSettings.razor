@@ -1,12 +1,12 @@
 @inherits SettingsComponents
 @using System.IO.Compression;
-<MudText Typo="Typo.h4">@SettingsLocalization["System Settings"]</MudText>
+<MudText Typo="Typo.h4">@AppLocalization["System Settings"]</MudText>
 <MudForm @onsubmit="Save">
     @if (settings != null)
     {
-        <SettingsField Label="@SettingsLocalization["Google Analytics ID"]">
+        <SettingsField Label="@AppLocalization["Google Analytics ID"]">
 
-            <MudTextField Label="@SettingsLocalization["Google Analytics ID"]" @bind-Value="@settings.AnalyticsId" />
+            <MudTextField Label="@AppLocalization["Google Analytics ID"]" @bind-Value="@settings.AnalyticsId" />
 
         </SettingsField>
         <SettingsField>
@@ -41,7 +41,7 @@
 
         settings = Context.AppSettings.FirstOrDefault();
         LoadingData = false;
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
 

@@ -1,4 +1,5 @@
 ﻿@page "/login"
+@using BLAZAM.Static;
 
 @inherits ValidatedForm
 @inject IJSRuntime JSRuntime
@@ -156,7 +157,7 @@
                     Nav.NavigateTo(redirectUrl,true);
                     break;
             }
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
         }
     }
     bool ValidateInput(out string? validationResult)

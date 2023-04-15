@@ -28,7 +28,7 @@
         await base.OnInitializedAsync();
         StartingOU = await DirectoryModel.GetParent();
         Modal.OnYes = MoveTo;
-        Modal.YesText = UserLocalization["Move"];
+        Modal.YesText = AppLocalization["Move"];
         Modal.Title = "Move To";
 
         Modal.YesEnabled = ValidateModal;

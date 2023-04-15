@@ -699,7 +699,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 else
                 {
-                    DirectoryEntry.CommitChanges();
+                    DirectoryEntry?.CommitChanges();
 
                     if (DirectoryEntry == null)
                     {
@@ -908,7 +908,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                return GetValue<string>(propertyName).ToString();
+                return GetValue<string>(propertyName)?.ToString();
 
 
             }

@@ -8,14 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helpers\**" />
     <Compile Remove="UI\General\**" />
+    <Content Remove="Helpers\**" />
     <Content Remove="UI\General\**" />
+    <EmbeddedResource Remove="Helpers\**" />
     <EmbeddedResource Remove="UI\General\**" />
+    <None Remove="Helpers\**" />
     <None Remove="UI\General\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="UI\Groups\MemberOfList.razor" />
   </ItemGroup>
 
 
@@ -24,10 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.13" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.2" />
-    <PackageReference Include="MudBlazor" Version="6.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.5" />
+    <PackageReference Include="MudBlazor" Version="6.2.2" />
+    <PackageReference Include="MudBlazor.Markdown" Version="0.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,16 +37,8 @@
     <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
     <ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
     <ProjectReference Include="..\BLAZAMServices\BLAZAMServices.csproj" />
-    <ProjectReference Include="..\BLAZAMStatic\BLAZAMStatic.csproj" />
+    <ProjectReference Include="..\BLAZAMThemes\BLAZAMThemes.csproj" />
     <ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="UI\Groups\MemberOfList.razor" />
   </ItemGroup>
 
   <ItemGroup>

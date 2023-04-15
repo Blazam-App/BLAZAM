@@ -33,7 +33,8 @@ namespace BLAZAM.Tests
             var test = "OU=test,OU=ou,DC=test,DC=dc";
             var valid = "/ou/test";
             var pretty = test.ToPrettyOu();
-            bool result = pretty.Equals(valid);
+
+            bool result = pretty?.Equals(valid) == true;
 
             Assert.True(result, "The pretty ou format returned was not correct. "+ test + " should be formatted as "+ valid);
         }

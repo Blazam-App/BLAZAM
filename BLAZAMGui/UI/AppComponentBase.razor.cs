@@ -1,5 +1,6 @@
 
 using BLAZAM.Email.Services;
+using BLAZAM.Localization;
 
 namespace BLAZAM.Gui.UI
 {
@@ -11,12 +12,7 @@ namespace BLAZAM.Gui.UI
         [Inject]
         protected SearchService SearchService { get; set; }
 
-        [Inject]
-        protected IStringLocalizer<SettingsLocalization> SettingsLocalization { get; set; }
-
-        [Inject]
-        protected IStringLocalizer<UserLocalization> UserLocalization { get; set; }
-
+       
         [Inject]
         protected NavigationManager Nav { get; set; }
 

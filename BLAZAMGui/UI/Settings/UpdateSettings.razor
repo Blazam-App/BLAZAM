@@ -2,14 +2,14 @@
 @inherits SettingsComponents
 
 
-<MudText Typo="Typo.h4">@SettingsLocalization["Update Settings"]</MudText>
+<MudText Typo="Typo.h4">@AppLocalization["Update Settings"]</MudText>
 <MudForm @onsubmit="Save">
 
 
     @if (settings != null)
     {
 
-        <SettingsField Label="@SettingsLocalization["Update Branch"]">
+        <SettingsField Label="@AppLocalization["Update Branch"]">
             <MudSelect @bind-Value=@settings.UpdateBranch HelperText="The stable branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers.">
                 @foreach (var val in updateBranches)
                 {
@@ -22,14 +22,14 @@
         </SettingsField>
 
 
-        <SettingsField Label="@SettingsLocalization["Update"]">
+        <SettingsField Label="@AppLocalization["Update"]">
 
             <FieldLabel>
                 <MudText>
-                    @SettingsLocalization["Update"]
+                    @AppLocalization["Update"]
                 </MudText>
                 <MudIconButton Color="Color.Primary"
-                           OnClick=@(()=>{appUpdateComponent.GetLatestUpdate();})
+                           OnClick=@(async()=>{await appUpdateComponent.GetLatestUpdate();})
                            Icon="@Icons.Material.Filled.Refresh" />
 
             </FieldLabel>
@@ -43,7 +43,7 @@
         </SettingsField>
 
 
-        <SettingsField Label="@SettingsLocalization["Allow Auto Update"]">
+        <SettingsField Label="@AppLocalization["Allow Auto Update"]">
 
             <MudSwitch @bind-Checked=@(settings.AutoUpdate) />
 
@@ -52,7 +52,7 @@
 
         @if (settings?.AutoUpdate == true)
         {
-            <SettingsField Label="@SettingsLocalization["Auto Update Time"]">
+            <SettingsField Label="@AppLocalization["Auto Update Time"]">
 
                 <MudTimePicker HelperText="The time of each day to automatically apply an update."
                        @bind-Time="@settings.AutoUpdateTime" />
@@ -72,7 +72,7 @@
     }
 </MudForm>
 @code {
-    ManualApplicationUpdater appUpdateComponent;
+    ManualApplicationUpdater? appUpdateComponent;
     AppSettings? settings = new AppSettings();
     List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev };
     protected override async Task OnInitializedAsync()
