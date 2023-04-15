@@ -24,7 +24,7 @@ namespace BLAZAM.Tests
         [Fact]
         public void CanEncrypt()
         {
-            var test = "test";
+             var test = "test";
             var result = encryption.EncryptObject(test);
             Assert.NotEqual<string>(test, result);
         }

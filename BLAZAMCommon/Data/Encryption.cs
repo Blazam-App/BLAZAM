@@ -155,8 +155,10 @@ namespace BLAZAM.Common.Data
 
 
                     var encryptedMessage = iv;
-                    for( int i = 0; i < encryptedMessage.Length; i++)
+                    for( int i = 0; i < encryptedBytes.Length; i++)
                     {
+                        //Array.Resize(ref encryptedMessage, encryptedMessage.Length + 1);
+                        //encryptedMessage[encryptedMessage.Length - 1] = encryptedBytes[i];
                         encryptedMessage = encryptedMessage.Append<byte>(encryptedBytes[i]).ToArray<byte>();
                     }
                     return Convert.ToBase64String(encryptedMessage);

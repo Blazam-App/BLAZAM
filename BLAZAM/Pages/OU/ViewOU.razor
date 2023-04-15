@@ -63,17 +63,6 @@
         }
 
     }
-    async void DiscardChanges()
-    {
-        if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
-        {
-            OU.DiscardChanges();
-            EditMode = false;
-            await InvokeAsync(StateHasChanged);
-
-        }
-
-    }
     async Task DeleteOU()
     {
         if (await MessageService.Confirm("Are you sure you want to delete " + OU.CanonicalName + "?", "Delete OU"))

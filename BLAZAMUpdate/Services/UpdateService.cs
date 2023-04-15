@@ -37,9 +37,14 @@ namespace BLAZAM.Update.Services
 
                 Octokit.Release? latestRelease = null;
                 ApplicationVersion? latestVer = null;
-                using var context = await _dbFactory.CreateDbContextAsync();
-                SelectedBranch = context.AppSettings.FirstOrDefault()?.UpdateBranch;
+                try
+                {
+                    using var context = await _dbFactory.CreateDbContextAsync();
+                    SelectedBranch = context.AppSettings.FirstOrDefault()?.UpdateBranch;
+                }catch(Exception ex)
+                {
 
+                }
                 if (SelectedBranch == null) return null;
                 //Create a github client to get api data from repo
                 var client = new GitHubClient(new ProductHeaderValue("BLAZAM-APP"));
