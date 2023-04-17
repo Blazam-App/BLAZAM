@@ -2,7 +2,8 @@
 
 <MudText>@Label</MudText>
 
-<MudTreeView T="IADOrganizationalUnit"
+<MudTreeView 
+    T="IADOrganizationalUnit"
              ServerData="GetChildrenAsync"
              Items="RootOU"
              Dense="true"
@@ -13,6 +14,8 @@
     <ItemTemplate>
         <MudTreeViewItem Value="@context"
                          LoadingIconColor="Color.Info"
+                         @bind-Expanded="@context.IsExpanded"
+                          
                          Text="@context.CanonicalName"
                          Icon="@Icons.Material.Filled.Folder"
                          Class="minw-max w-100"
@@ -58,8 +61,7 @@
 
 
 @code {
-
-#nullable disable warnings
+    #nullable disable warnings
     Dictionary<IADOrganizationalUnit, bool> OULoadingStates = new();
 
     [Parameter]
@@ -148,7 +150,7 @@
     async Task InitializeTreeView()
     {
         //Wait a few milliseconds to trip the async into acutally awaiting
-        await Task.Delay(5);
+        await Task.Delay(500);
 
         //ApplicationBaseOUs = Directory.OUs.FindSubOusByDN(null);
 
@@ -172,20 +174,24 @@
     void OpenToSelected()
     {
         //ExpandedNodes.Clear();
-        var newExpandedNodes = new List<IADOrganizationalUnit>(ExpandedNodes);
+        //var newExpandedNodes = new List<IADOrganizationalUnit>(ExpandedNodes);
         if (StartRootExpanded)
-            newExpandedNodes.Add(TopLevel);
-        if (!SelectedOU.Equals(TopLevel))
         {
-            IADOrganizationalUnit? openThis = TopLevel;
-            while (openThis != null)
+            //newExpandedNodes.Add(TopLevel);
+            if (!SelectedOU.Equals(RootOU))
             {
-                openThis = openThis.Children.Where(c => SelectedOU.DN.Contains(c.DN) && !SelectedOU.DN.Equals(c.DN)).FirstOrDefault();
-                if (openThis != null)
-                    newExpandedNodes.Add(openThis);
+                IADOrganizationalUnit? openThis = RootOU.First();
+                openThis.IsExpanded = true;
+                while (openThis != null)
+                {
+                    openThis = openThis.Children.Where(c => SelectedOU.DN.Contains(c.DN) && !SelectedOU.DN.Equals(c.DN)).FirstOrDefault();
+                    if (openThis != null)
+                        openThis.IsExpanded = true;
+                    //newExpandedNodes.Add(openThis);
+                }
             }
         }
-        ExpandedNodes = newExpandedNodes;
+        //ExpandedNodes = newExpandedNodes;
         //InvokeAsync(StateHasChanged);
 
 

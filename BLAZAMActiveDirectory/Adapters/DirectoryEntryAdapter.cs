@@ -105,9 +105,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                var changedDirectoryEntry = DirectoryEntry?.Invoke(method, args);
+                EnsureDirectoryEntry();
+                if (DirectoryEntry != null)
+                {
+                    var changedDirectoryEntry = DirectoryEntry?.Invoke(method, args);
 
-                return true;
+                    return true;
+                }
+                return false;
 
             }
             catch (TargetInvocationException ex)

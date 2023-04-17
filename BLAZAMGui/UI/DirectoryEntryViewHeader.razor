@@ -15,19 +15,19 @@
 
         @if (groupableEntry != null)
         {
-            <MudText>
+            <MudText Class="align-middle">
                 @groupableEntry.DisplayName
             </MudText>
         }
         else
         {
-            <MudText>
+            <MudText Class="align-middle">
                 @DirectoryEntry.CanonicalName
             </MudText>
         }
 
 
-        <small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(DirectoryEntry.OU) </small>
+        <MudText Typo="Typo.caption" Class="align-middle">@DirectoryTools.PrettifyOu(DirectoryEntry.OU) </MudText>
 
     </MudStack>
 
@@ -37,7 +37,7 @@
         <MudIconButton OnClick=Unlock Icon=@Icons.Material.Filled.Lock />
     }
     <MudHidden Breakpoint="Breakpoint.Xs">
-        <MudToolBar Style="height:32px" DisableGutters Dense>
+        <MudToolBar Class="align-middle" Style="height:32px" DisableGutters Dense>
             @if (accountEntry!=null && ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable)))
 
             {
