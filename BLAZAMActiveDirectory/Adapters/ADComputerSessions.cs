@@ -101,7 +101,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
 
             ConnectedSessions.Clear();
-            ConnectedSessions = null;
 
         }
 

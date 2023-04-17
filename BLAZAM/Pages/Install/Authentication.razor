@@ -68,8 +68,11 @@
     {
         await base.OnInitializedAsync();
         settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
+
         if (settings.AdminPassword == "password")
             settings.AdminPassword = "";
+
+            
         await InvokeAsync(StateHasChanged);
 
     }
@@ -84,7 +87,7 @@
 
             settings.AdminPassword = EncryptionService.EncryptObject(settings.AdminPasswordConfirmed);
             await Context.SaveChangesAsync();
-            StepCompleted.InvokeAsync();
+            await StepCompleted.InvokeAsync();
 
         }
         catch (Exception ex)

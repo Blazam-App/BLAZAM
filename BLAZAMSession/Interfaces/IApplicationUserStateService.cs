@@ -9,7 +9,7 @@ namespace BLAZAM.Session.Interfaces
         AppEvent<IApplicationUserState> UserStateAdded { get; set; }
         IList<IApplicationUserState> UserStates { get; }
 
-        IApplicationUserState? CreateUserState(ClaimsPrincipal user);
+        IApplicationUserState CreateUserState(ClaimsPrincipal user);
         IApplicationUserState? GetUserState(ClaimsPrincipal userClaim);
 
         // IApplicationUserState? GetUserState(ClaimsPrincipal userClaim);

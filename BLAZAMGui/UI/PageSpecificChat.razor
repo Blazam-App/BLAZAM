@@ -236,7 +236,7 @@
             OnMessagePosted?.Invoke(message);
             draftMessage = "";
             //messageTextField.Value = "";
-            messageTextField.Clear();
+            await messageTextField.Clear();
             await InvokeAsync(StateHasChanged);
 
         }

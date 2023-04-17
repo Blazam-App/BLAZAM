@@ -75,8 +75,9 @@ namespace BLAZAM.Services
                 context.UserSettings.Add(new()
                 {
                     Username = user.SamAccountName,
-                    UserGUID = user.SID.ToSidString()
-                });
+                    UserGUID = user.SID.ToSidString(),
+                    Email = user.Email
+                }) ;
             }
             context.SaveChanges();
         }

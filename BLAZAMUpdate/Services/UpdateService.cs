@@ -17,7 +17,7 @@ namespace BLAZAM.Update.Services
         protected readonly IHttpClientFactory httpClientFactory;
         private readonly ApplicationInfo _applicationInfo;
 
-        public UpdateService(IHttpClientFactory _clientFactory,ApplicationInfo applicationInfo,IAppDatabaseFactory dbFactory)
+        public UpdateService(IHttpClientFactory _clientFactory,ApplicationInfo applicationInfo,IAppDatabaseFactory? dbFactory=null)
         {
             _dbFactory = dbFactory;
             httpClientFactory = _clientFactory;

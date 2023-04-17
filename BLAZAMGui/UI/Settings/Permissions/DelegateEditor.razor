@@ -23,7 +23,7 @@
     }
 }
 
-<MudButton Background="Background.Success" OnClick="@(()=>{addGroupModal.Show();})">
+<MudButton Background="Background.Success" OnClick="@(()=>{addGroupModal?.Show();})">
     @AppLocalization["Create New Delegation Target"]
 </MudButton>
 
@@ -35,7 +35,7 @@
             <b>@model?.ObjectType</b><br />
             <MudText>@model?.CanonicalName</MudText>
             <MudText>@deleg.DeletedAt</MudText>
-            <MudButton Float="Float.End" Color="Color.Primary" OnClick="(()=>{RestoreDelegate(deleg);})">Restore</MudButton>
+            <MudButton Float="Float.End" Color="Color.Primary" OnClick="(async()=>{await RestoreDelegate(deleg);})">Restore</MudButton>
 
         </MudContainer>
     }

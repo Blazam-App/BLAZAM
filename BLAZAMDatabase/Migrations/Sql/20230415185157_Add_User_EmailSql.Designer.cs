@@ -4,16 +4,19 @@ using BLAZAM.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BLAZAM.Common.Migrations.Sql
+namespace BLAZAM.Database.Migrations.Sql
 {
     [DbContext(typeof(SqlDatabaseContext))]
-    partial class SqlDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230415185157_Add_User_EmailSql")]
+    partial class Add_User_EmailSql
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

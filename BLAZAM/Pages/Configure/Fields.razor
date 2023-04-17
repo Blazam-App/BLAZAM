@@ -64,7 +64,7 @@ await ToggleObjectType(context.Item,objectType,val);
         }
         <TemplateColumn CellClass="d-flex justify-end" Title=@AppLocalization["Delete"] Sortable="false">
             <CellTemplate>
-                <MudIconButton Disabled=@(context.Item?.Id>100000) Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(()=>{Delete(context.Item);})" />
+                <MudIconButton Disabled=@(context.Item?.Id>100000) Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(async()=>{await Delete(context.Item);})" />
             </CellTemplate>
         </TemplateColumn>
     </Columns>

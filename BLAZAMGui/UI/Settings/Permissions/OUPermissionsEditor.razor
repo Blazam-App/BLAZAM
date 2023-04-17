@@ -19,11 +19,11 @@
     }
     @foreach (var map in appliedMappings)
     {
-        <PermissionMapEditor MappingsChanged="@(()=>{RefreshData();})" Map="map" />
+        <PermissionMapEditor MappingsChanged="@(async()=>{await RefreshData();})" Map="map" />
     }
     @if (NewMapping != null)
     {
-        <PermissionMapEditor MappingsChanged="@(()=>{RefreshData();})" Map="NewMapping" />
+        <PermissionMapEditor MappingsChanged="@(async()=>{await RefreshData();})" Map="NewMapping" />
     }else
     {
     <MudButton OnClick="AddNewMapping" Color="Color.Success">Add new mapping</MudButton>

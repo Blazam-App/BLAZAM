@@ -64,9 +64,7 @@ namespace BLAZAM.Services
 
                 options.Events.OnSigningIn = async (context) =>
                 {
-                    var sessionTimeout = context.HttpContext.SessionTimeout();
-                    //Console.WriteLine(context.Principal?.Identity?.Name + " validated: " + sessionTimeout.ToString());
-                    if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                   if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
                     {
                         var currentUtc = DateTimeOffset.UtcNow;
                         context.Properties.IssuedUtc = currentUtc;
@@ -75,9 +73,7 @@ namespace BLAZAM.Services
                 };
                 options.Events.OnValidatePrincipal = async (context) =>
                 {
-                    var sessionTimeout = context.HttpContext.SessionTimeout();
-                    //Console.WriteLine(context.Principal?.Identity?.Name + " validated: " + sessionTimeout.ToString());
-                    if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                   if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
                     {
                         var currentUtc = DateTimeOffset.UtcNow;
                         context.Properties.IssuedUtc = currentUtc;

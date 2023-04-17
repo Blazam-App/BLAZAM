@@ -63,7 +63,7 @@
             default:
                 if ((LatestAvailableVersion != null && LatestAvailableVersion.Newer) || ApplicationInfo.InDebugMode)
                 {
-                    if (ApplicationInfo.InDebugMode && !LatestAvailableVersion.Newer)
+                    if (ApplicationInfo.InDebugMode && !LatestAvailableVersion?.Newer == true)
                     {
                         <h4>
                             Downgrade Available (Debug Mode)
@@ -97,7 +97,7 @@
                                     <MudIconButton Color="Color.Tertiary" Icon="@Icons.Material.Filled.QuestionMark" OnClick=@ShowReleaseNotes />
 
                                 </ChildContent>
-                               
+
                             </MudCardHeader>
                             <MudCardContent>
                                 @LatestAvailableVersion.Branch<br />
@@ -154,7 +154,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        GetLatestUpdate();
+        await GetLatestUpdate();
     }
     public async Task GetLatestUpdate()
     {
@@ -173,6 +173,12 @@
     }
     async Task ApplyUpdate()
     {
+        if (LatestAvailableVersion == null)
+        {
+            SnackBarService.Error("Couldn't fetch updates.");
+            return;
+        }
+
         SnackBarService.Info("Update started. Downloading update...");
 
         updateStage = UpdateStage.Downloading;
@@ -202,13 +208,13 @@
                     if (output != null)
                     {
                         SnackBarService.Success("Update started successfully. The web application will restart and update momentarily.");
+                        if (ApplicationInfo.InDebugMode)
+                        {
+                            await MessageService.Info(output);
 
+                        }
                     }
-                    if (ApplicationInfo.InDebugMode)
-                    {
-                        await MessageService.Info(output);
 
-                    }
 
 
 
@@ -257,7 +263,7 @@
         });
     }
 
-    async Task ShowReleaseNotes()
+    void ShowReleaseNotes()
     {
         _releaseNotesModal?.Show();
         //MessageService.Info(LatestAvailableVersion.Release.ReleaseNotes, LatestAvailableVersion.Version + " Release Notes");

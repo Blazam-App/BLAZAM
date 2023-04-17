@@ -16,7 +16,7 @@ namespace BLAZAM.Common.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
@@ -64,7 +64,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("AccessLevelPermissionMapping");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.ADSettings", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.ADSettings", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -103,7 +103,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryField", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.ActiveDirectoryField", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -372,7 +372,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryFieldObjectType", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.ActiveDirectoryFieldObjectType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -394,7 +394,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("ActiveDirectoryFieldObjectMappings");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.AppSettings", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.AppSettings", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -446,7 +446,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.ComputerAuditLog", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.ComputerAuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -480,7 +480,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("ComputerAuditLog");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.GroupAuditLog", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.GroupAuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -514,7 +514,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("GroupAuditLog");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.LogonAuditLog", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.LogonAuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -548,7 +548,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("LogonAuditLog");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.OUAuditLog", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.OUAuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -582,7 +582,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("OUAuditLog");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.PermissionsAuditLog", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.PermissionsAuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -616,7 +616,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("PermissionsAuditLog");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.RequestAuditLog", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.RequestAuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -650,7 +650,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("RequestAuditLog");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.SettingsAuditLog", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.SettingsAuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -684,7 +684,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("SettingsAuditLog");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.SystemAuditLog", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.SystemAuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -718,7 +718,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("SystemAuditLog");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Audit.UserAuditLog", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.UserAuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -752,7 +752,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("UserAuditLog");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.AuthenticationSettings", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.AuthenticationSettings", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -786,11 +786,11 @@ namespace BLAZAM.Common.Migrations.MySql
                         {
                             Id = 1,
                             AdminPassword = "password",
-                            SessionTimeout = 900
+                            SessionTimeout = 15
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.CustomActiveDirectoryField", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -815,7 +815,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("CustomActiveDirectoryFields");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.EmailSettings", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.EmailSettings", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -866,7 +866,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.EmailTemplate", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.EmailTemplate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -897,7 +897,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("EmailTemplates");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.AccessLevel", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -922,7 +922,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessMapping", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ActionAccessMapping", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -949,7 +949,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("ActionAccessMapping");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.FieldAccessLevel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -987,7 +987,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessMapping", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.FieldAccessMapping", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1016,7 +1016,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("AccessLevelFieldMapping");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessLevel", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1048,7 +1048,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessMapping", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessMapping", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1073,7 +1073,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("AccessLevelObjectMapping");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAction", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1147,7 +1147,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.PermissionDelegate", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.PermissionDelegate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1171,7 +1171,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("PermissionDelegate");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.PermissionMapping", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.PermissionMapping", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1189,7 +1189,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("PermissionMap");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplate", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1235,7 +1235,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("DirectoryTemplates");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplateFieldValue", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValue", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1271,7 +1271,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("DirectoryTemplateFieldValues");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplateGroup", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1291,7 +1291,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("DirectoryTemplateGroups");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.AppUser", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1302,6 +1302,9 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.Property<bool>("DarkMode")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
 
                     b.Property<byte[]>("ProfilePicture")
                         .HasColumnType("longblob");
@@ -1330,7 +1333,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("UserSettings");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.NotificationMessage", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.User.NotificationMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1362,7 +1365,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("NotificationMessages");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.UserNotification", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.User.UserNotification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1403,13 +1406,13 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.AccessLevel", null)
+                    b.HasOne("BLAZAM.Database.Models.Permissions.AccessLevel", null)
                         .WithMany()
                         .HasForeignKey("AccessLevelsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.FieldAccessMapping", null)
+                    b.HasOne("BLAZAM.Database.Models.Permissions.FieldAccessMapping", null)
                         .WithMany()
                         .HasForeignKey("FieldMapId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1418,13 +1421,13 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("AccessLevelObjectAccessMapping", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.AccessLevel", null)
+                    b.HasOne("BLAZAM.Database.Models.Permissions.AccessLevel", null)
                         .WithMany()
                         .HasForeignKey("AccessLevelsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.ObjectAccessMapping", null)
+                    b.HasOne("BLAZAM.Database.Models.Permissions.ObjectAccessMapping", null)
                         .WithMany()
                         .HasForeignKey("ObjectMapId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1433,33 +1436,33 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("AccessLevelPermissionMapping", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.AccessLevel", null)
+                    b.HasOne("BLAZAM.Database.Models.Permissions.AccessLevel", null)
                         .WithMany()
                         .HasForeignKey("AccessLevelsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.PermissionMapping", null)
+                    b.HasOne("BLAZAM.Database.Models.Permissions.PermissionMapping", null)
                         .WithMany()
                         .HasForeignKey("PermissionMapsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.ActiveDirectoryFieldObjectType", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.ActiveDirectoryFieldObjectType", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", null)
+                    b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", null)
                         .WithMany("ObjectTypes")
                         .HasForeignKey("CustomActiveDirectoryFieldId");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ActionAccessMapping", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ActionAccessMapping", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.AccessLevel", null)
+                    b.HasOne("BLAZAM.Database.Models.Permissions.AccessLevel", null)
                         .WithMany("ActionMap")
                         .HasForeignKey("AccessLevelId");
 
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.ObjectAction", "ObjectAction")
+                    b.HasOne("BLAZAM.Database.Models.Permissions.ObjectAction", "ObjectAction")
                         .WithMany()
                         .HasForeignKey("ObjectActionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1468,19 +1471,19 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("ObjectAction");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.FieldAccessMapping", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.FieldAccessMapping", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", "CustomField")
+                    b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", "CustomField")
                         .WithMany()
                         .HasForeignKey("CustomFieldId");
 
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.FieldAccessLevel", "FieldAccessLevel")
+                    b.HasOne("BLAZAM.Database.Models.Permissions.FieldAccessLevel", "FieldAccessLevel")
                         .WithMany()
                         .HasForeignKey("FieldAccessLevelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BLAZAM.Common.Models.Database.ActiveDirectoryField", "Field")
+                    b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
                         .WithMany()
                         .HasForeignKey("FieldId");
 
@@ -1491,9 +1494,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("FieldAccessLevel");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessMapping", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessMapping", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.ObjectAccessLevel", "ObjectAccessLevel")
+                    b.HasOne("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", "ObjectAccessLevel")
                         .WithMany("ObjectAccessMappings")
                         .HasForeignKey("ObjectAccessLevelId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1502,17 +1505,17 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("ObjectAccessLevel");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplateFieldValue", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValue", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", "CustomField")
+                    b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", "CustomField")
                         .WithMany()
                         .HasForeignKey("CustomFieldId");
 
-                    b.HasOne("BLAZAM.Common.Models.Database.Templates.DirectoryTemplate", null)
+                    b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplate", null)
                         .WithMany("FieldValues")
                         .HasForeignKey("DirectoryTemplateId");
 
-                    b.HasOne("BLAZAM.Common.Models.Database.ActiveDirectoryField", "Field")
+                    b.HasOne("BLAZAM.Database.Models.ActiveDirectoryField", "Field")
                         .WithMany()
                         .HasForeignKey("FieldId");
 
@@ -1521,22 +1524,22 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("Field");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplateGroup", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateGroup", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.Templates.DirectoryTemplate", null)
+                    b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplate", null)
                         .WithMany("AssignedGroupSids")
                         .HasForeignKey("DirectoryTemplateId");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.UserNotification", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.User.UserNotification", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.User.NotificationMessage", "Notification")
+                    b.HasOne("BLAZAM.Database.Models.User.NotificationMessage", "Notification")
                         .WithMany()
                         .HasForeignKey("NotificationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BLAZAM.Common.Models.Database.User.AppUser", "User")
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
                         .WithMany("Messages")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1549,42 +1552,42 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("PermissionDelegatePermissionMapping", b =>
                 {
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.PermissionDelegate", null)
+                    b.HasOne("BLAZAM.Database.Models.Permissions.PermissionDelegate", null)
                         .WithMany()
                         .HasForeignKey("PermissionDelegatesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BLAZAM.Common.Models.Database.Permissions.PermissionMapping", null)
+                    b.HasOne("BLAZAM.Database.Models.Permissions.PermissionMapping", null)
                         .WithMany()
                         .HasForeignKey("PermissionsMapsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.CustomActiveDirectoryField", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.CustomActiveDirectoryField", b =>
                 {
                     b.Navigation("ObjectTypes");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.AccessLevel", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
                 {
                     b.Navigation("ActionMap");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Permissions.ObjectAccessLevel", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
                 {
                     b.Navigation("ObjectAccessMappings");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.Templates.DirectoryTemplate", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
                 {
                     b.Navigation("AssignedGroupSids");
 
                     b.Navigation("FieldValues");
                 });
 
-            modelBuilder.Entity("BLAZAM.Common.Models.Database.User.AppUser", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
                 {
                     b.Navigation("Messages");
                 });

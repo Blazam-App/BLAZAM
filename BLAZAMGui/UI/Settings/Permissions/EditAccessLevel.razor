@@ -376,7 +376,7 @@
         WorkingModel.DeletedAt = DateTime.UtcNow;
         await Context.SaveChangesAsync();
         SnackBarService.Success(WorkingModel.Name + " has been deleted");
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
     /// <summary>
     /// Fields that are either off limits or controled via action permissions

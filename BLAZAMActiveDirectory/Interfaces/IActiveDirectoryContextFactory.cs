@@ -5,6 +5,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 {
     public interface IActiveDirectoryContextFactory
     {
-        IActiveDirectoryContext CreateActiveDirectoryContext(ICurrentUserStateService currentUserStateService = null);
+        IActiveDirectoryContext CreateActiveDirectoryContext(ICurrentUserStateService? currentUserStateService = null);
     }
 }

@@ -122,7 +122,7 @@ namespace BLAZAM.Server.Data.Services
             }
         }
 
-        public string? CurrentUsername
+        public string CurrentUsername
         {
             get
             {
@@ -215,7 +215,7 @@ namespace BLAZAM.Server.Data.Services
 
         public void RemoveUserState(ClaimsPrincipal currentUser) => RemoveUserState(GetUserState(currentUser));
 
-        public IApplicationUserState? CreateUserState(ClaimsPrincipal user)
+        public IApplicationUserState CreateUserState(ClaimsPrincipal user)
         {
             return new ApplicationUserState(_factory,_notificationPublisher) { User = user };
         }

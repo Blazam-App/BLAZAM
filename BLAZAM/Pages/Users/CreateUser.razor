@@ -76,8 +76,8 @@
             Groups
         </TabContent>
         <ChildContent>
-            <MemberOfList Model="@newUser"/>
-            
+            <MemberOfList Model="@newUser" />
+
             <MudButton Disabled=LoadingData Color=Color.Primary OnClick="@(()=>{SelectedStep=2;})">Back</MudButton>
             <MudButton Color=Color.Success OnClick="@(()=>{SelectedStep=6;})">Next</MudButton>
 
@@ -109,7 +109,7 @@
             Details
         </TabContent>
         <ChildContent>
-            <ViewUser User="@customUser" />
+            <ViewUser DirectoryEntry="@customUser" />
             <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=4;})">Back</MudButton>
             <MudButton Color=Color.Success OnClick="@(()=>{SelectedStep=6;})">Next</MudButton>
         </ChildContent>
@@ -243,7 +243,8 @@
         SelectedTemplate.AssignedGroupSids.ForEach(sid =>
         {
             var group = Directory.Groups.FindGroupBySID(sid.GroupSid);
-            newUser.AssignTo(group);
+            if (group != null)
+                newUser.AssignTo(group);
 
         });
         if (SelectedTemplate.HasEmptyFields())
@@ -262,12 +263,12 @@
     }
     async Task UserCreated(IADUser user)
     {
-        AuditLogger.User.Created(user);
+        await AuditLogger.User.Created(user);
     }
     async Task SetTemplate(MudListItem selectedTemplate)
     {
         SelectedTemplate = selectedTemplate.Value as DirectoryTemplate;
         custom = false;
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 }
