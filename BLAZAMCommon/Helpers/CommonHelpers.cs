@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Common.Data;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,6 +15,11 @@ namespace BLAZAM.Helpers
 {
     public static class CommonHelpers
     {
+        public static double Round(this double number , int decimalPlaces = 0)
+        {
+            return Math.Round(number, decimalPlaces);
+        }
+
         public static string GetValueChangesString(this List<AuditChangeLog> changes, Func<AuditChangeLog, object?> valueSelector)
         {
             var values = "";

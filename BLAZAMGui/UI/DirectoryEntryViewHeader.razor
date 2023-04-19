@@ -12,8 +12,7 @@
 <MudStack Row Class="mud-width-full">
 
     <MudStack Row=true>
-
-        @if (groupableEntry != null)
+        @if (groupableEntry != null && DirectoryEntry is not IADComputer)
         {
             <MudText Class="align-middle">
                 @groupableEntry.DisplayName

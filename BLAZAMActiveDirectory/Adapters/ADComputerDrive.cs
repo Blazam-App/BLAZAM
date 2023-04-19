@@ -2,6 +2,7 @@
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
+
     public class ADComputerDrive : IADComputerDrive
     {
         public double FreeSpace { get; internal set; }
@@ -28,7 +29,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public string? FileSystem { get; internal set; }
         public bool Dirty { get; internal set; }
         public string? Serial { get; internal set; }
-        public int DriveType { get; internal set; }
+        public DriveType DriveType { get; internal set; }
         public int MediaType { get; internal set; }
     }
 }

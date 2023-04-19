@@ -98,8 +98,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
         Timer t;
         public RemoteSession(ITerminalServicesSession session,IADComputer host)
         {
-            Session = session;
             Host = host;
+
+            Session = session;
             t = new Timer(Tick, null, 10000, 10000);
             // Monitor();
 
@@ -208,7 +209,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
+        public void SendMessage(string message)
+        {
+            Host.Directory.Impersonation.Run(() =>
+            {
+                if (!_session.Server.IsOpen)
+                    _session.Server.Open();
+                _session.MessageBox(message, "Administrator Message");
+                _session.Server.Close();
+                return true;
+            });
 
+
+
+        }
 
 
 

@@ -48,7 +48,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             FileSystem = fileSystem,
                             Dirty = volumeDirty,
                             Serial = volumeSerial,
-                            DriveType = driveType,
+                            DriveType = (DriveType)driveType,
                             MediaType = mediaType
                         });
                         //Console.WriteLine("Free space: " + freeSpace + " GB");

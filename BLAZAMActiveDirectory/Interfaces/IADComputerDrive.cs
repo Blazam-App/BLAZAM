@@ -5,7 +5,7 @@
         double Capacity { get; }
         string? Description { get; }
         bool Dirty { get; }
-        int DriveType { get; }
+        DriveType DriveType { get; }
         string? FileSystem { get; }
         double FreeSpace { get; }
         string Letter { get; }

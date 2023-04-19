@@ -17,7 +17,14 @@
     <Columns>
         <PropertyColumn Property="x => x.CanonicalName" Title="Name" />
         <PropertyColumn Property="x => x.OU.ToPrettyOu()" Title="OU" />
-        <PropertyColumn Property="x => x.LockoutTime" Title="Locked Out" />
+        <TemplateColumn Title="Locked Out">
+            <CellTemplate>
+                @if (context.Item.LockoutTime != null)
+                {
+                    <MudText>@context.Item.LockoutTime.Value.ToLocalTime()</MudText>
+                }
+            </CellTemplate>
+        </TemplateColumn>
 
     </Columns>
     <PagerContent>

@@ -22,5 +22,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         bool Equals(object? obj);
         int GetHashCode();
         void Logoff(bool synchronous = false);
+        void SendMessage(string message);
     }
 }

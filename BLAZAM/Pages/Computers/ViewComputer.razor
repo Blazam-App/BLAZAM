@@ -4,7 +4,7 @@
 
 
 
-    <EditForm Model="Computer">
+    <EditForm Context="editContext" Model="Computer">
 
         <SetSubHeader>
 
@@ -31,55 +31,30 @@
            
 
             <MudCardHeader>
-                @Computer.SamAccountName
+            @Computer.CanonicalName
             </MudCardHeader>
-           
+           <MudCardContent>
                     @if (drives != null && drives.Count > 0)
-                    {
-@*
-                        <DataGrid TItem="IADComputerDrive"
-                              Data="drives"
-                                Responsive>
-                        <DataGridColumn Field="@nameof(IADComputerDrive.Description)" Caption="Drive Type" />
-                        <DataGridColumn Field="@nameof(IADComputerDrive.Letter)" Caption="Drive Letter" />
-                        <DataGridColumn Context="fieldContext" Field="@nameof(IADComputerDrive.UsedSpace)" Caption="Space Used">
-                            <DisplayTemplate>
-                                @Math.Round(fieldContext.UsedSpace,0) GB / @Math.Round(fieldContext.Capacity,0) GB
-                            </DisplayTemplate>
-                        </DataGridColumn>
-                        <DataGridColumn Context="fieldContext" Field="@nameof(IADComputerDrive.PercentUsed)" Caption="Percent Full">
-                            <DisplayTemplate>
-                                @{
-                                        var bg = Color.Success;
-                                        switch (fieldContext.PercentUsed)
-                                        {
-                                            case > 85:
-                                                bg = Color.Error;
-                                                break;
-                                            case > 75:
-                                                bg = Color.Warning;
-                                                break;
+            {
+                <MudDataGrid Items="drives">
+                    <Columns>
+                        <PropertyColumn Property="x=>x.DriveType"/>
+                        <PropertyColumn Property="x=>x.Letter"/>
+                            <TemplateColumn>
+                                <CellTemplate>
+                                    @(context.Item.PercentUsed.Round(0).ToString()+"%")
+                                </CellTemplate>
+                            </TemplateColumn>
+                        <PropertyColumn Property="x=>x.Capacity.Round(0)"/>
+                        <PropertyColumn Property="x=>x.FileSystem"/>
+                        <PropertyColumn Property="x=>x.Serial"/>
+                    </Columns>
+                </MudDataGrid>
 
-                                        }
-                                        var percentString = (int)fieldContext.PercentUsed + "%";
-                                    }
-                                    <MudTooltip Text="@percentString">
-                                        <Progress Color=bg Value="(int)fieldContext.PercentUsed">
-                                            @percentString
-                                        </Progress>
-                                    </MudTooltip>
-                                </DisplayTemplate>
-                            </DataGridColumn>
-                            <DataGridColumn Field="@nameof(IADComputerDrive.FileSystem)" Caption="File System" />
-                            <DataGridColumn Field="@nameof(IADComputerDrive.Serial)" Caption="Serial" />
-
-
-                        </DataGrid>*@
-                    }
-
+            }
                
                 <ComputerSessions Computer="Computer" />
-
+            </MudCardContent>
 
 
            
@@ -103,18 +78,23 @@
 
 @code {
 
-    List<IADComputerDrive> drives;
+    List<IADComputerDrive> drives=new();
     IADComputer Computer => DirectoryEntry as IADComputer;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
         if (Computer != null)
         {
+            Task.Run(async () =>
+            {
+                drives = await Computer.GetDrivesAsync();
+                if (drives == null)
+                    drives = new();
+                await RefreshEntryComponents();
 
-            drives = await Computer.GetDrivesAsync();
-            if (drives == null)
-                drives = new();
-            await RefreshEntryComponents();
+            });
+
 
 
 
