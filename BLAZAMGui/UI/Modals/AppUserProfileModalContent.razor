@@ -1,5 +1,9 @@
 ﻿@inherits AppModalContent
 @using BLAZAM.Helpers
+   @if (CurrentUser.State.UserSettings.ProfilePicture != null)
+            {
+<Base64Image Data="@CurrentUser.State.UserSettings.ProfilePicture"/>
+            }
 <MudFileUpload T="IBrowserFile"
                FilesChanged="UploadProfilePicture">
     <ButtonTemplate>
@@ -9,11 +13,19 @@
                    Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.CloudUpload"
                    for="@context">
-            Upload Profile Icon
+            @if (CurrentUser.State.UserSettings.ProfilePicture == null)
+            {
+                <MudText>Upload Profile Icon</MudText>
+
+            }
+            else
+            {
+             <MudText>Change Profile Icon</MudText>   
+            }
         </MudButton>
     </ButtonTemplate>
 </MudFileUpload>
-
+<MudTextField T="string" @bind-Text=@CurrentUser.State.UserSettings.Email Label=@AppLocalization["Email"]/>
 <MudNavGroup Title="Themes">
     @foreach (var theme in ApplicationTheme.Themes)
     {
