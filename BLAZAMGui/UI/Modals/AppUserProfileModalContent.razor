@@ -1,8 +1,8 @@
 ﻿@inherits AppModalContent
 @using BLAZAM.Helpers
-   @if (CurrentUser.State.UserSettings.ProfilePicture != null)
+   @if (CurrentUser.State.Preferences.ProfilePicture != null)
             {
-<Base64Image Data="@CurrentUser.State.UserSettings.ProfilePicture"/>
+<Base64Image Data="@CurrentUser.State.Preferences.ProfilePicture"/>
             }
 <MudFileUpload T="IBrowserFile"
                FilesChanged="UploadProfilePicture">
@@ -13,7 +13,7 @@
                    Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.CloudUpload"
                    for="@context">
-            @if (CurrentUser.State.UserSettings.ProfilePicture == null)
+            @if (CurrentUser.State.Preferences.ProfilePicture == null)
             {
                 <MudText>Upload Profile Icon</MudText>
 
@@ -25,7 +25,7 @@
         </MudButton>
     </ButtonTemplate>
 </MudFileUpload>
-<MudTextField T="string" @bind-Text=@CurrentUser.State.UserSettings.Email Label=@AppLocalization["Email"]/>
+<MudTextField T="string" @bind-Text=@CurrentUser.State.Preferences.Email Label=@AppLocalization["Email"]/>
 <MudNavGroup Title="Themes">
     @foreach (var theme in ApplicationTheme.Themes)
     {
@@ -36,7 +36,7 @@
 
 
 </MudNavGroup>
-<MudSwitch Checked="@CurrentUser.State.UserSettings.DarkMode" CheckedChanged=@((state)=>{mainLayout.SetDarkMode(state);}) Color="Color.Primary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode" />
+<MudSwitch Checked="@CurrentUser.State.Preferences.DarkMode" CheckedChanged=@((state)=>{mainLayout.SetDarkMode(state);}) Color="Color.Primary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode" />
 
 @code {
     [CascadingParameter]
@@ -48,7 +48,7 @@
 
         if (rawBytes != null)
         {
-            CurrentUser.State.UserSettings.ProfilePicture = rawBytes.ReizeRawImage(100, true);
+            CurrentUser.State.Preferences.ProfilePicture = rawBytes.ReizeRawImage(100, true);
             await CurrentUser.State.SaveUserSettings();
         }
     }

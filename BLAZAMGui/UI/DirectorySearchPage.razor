@@ -66,7 +66,7 @@
         Searcher = new ADSearch();
         Searcher.GeneralSearchTerm = SearchTermParameter;
         await base.OnInitializedAsync();
-        SearchDisabledObjects = UserStateService?.CurrentUserState?.UserSettings?.SearchDisabledUsers == true;
+        SearchDisabledObjects = UserStateService?.CurrentUserState?.Preferences?.SearchDisabledUsers == true;
 
 
 

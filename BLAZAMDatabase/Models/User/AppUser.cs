@@ -12,6 +12,7 @@ namespace BLAZAM.Database.Models.User
         public bool SearchDisabledComputers { get; set; }
         public string? Username { get; set; }
         public List<UserNotification> Messages { get; set; } = new();
+        public List<UserDashboardWidget> DashboardWidgets { get; set; }= new();
         public byte[]? ProfilePicture { get; set; }
         public string? Email { get; set; }
     }

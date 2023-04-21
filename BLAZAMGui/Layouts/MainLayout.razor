@@ -157,7 +157,7 @@
     {
         try
         {
-            CurrentUser.State.UserSettings.Theme = theme.Name;
+            CurrentUser.State.Preferences.Theme = theme.Name;
             CurrentUser.State.SaveUserSettings();
             Nav.NavigateTo(Nav.Uri, true);
         }
@@ -174,7 +174,7 @@
     {
         try
         {
-            CurrentUser.State.UserSettings.DarkMode = darkMode;
+            CurrentUser.State.Preferences.DarkMode = darkMode;
             CurrentUser.State.SaveUserSettings();
             Nav.NavigateTo(Nav.Uri, true);
         }

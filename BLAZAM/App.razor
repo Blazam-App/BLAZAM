@@ -71,7 +71,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        var userTheme = currentUser.State.UserSettings?.Theme;
+        var userTheme = currentUser.State.Preferences?.Theme;
         switch (userTheme)
         {
             case "Blue":
@@ -84,7 +84,7 @@
 
 
         }
-        darkMode = currentUser.State.UserSettings?.DarkMode==true;
+        darkMode = currentUser.State.Preferences?.DarkMode==true;
     }
 
 }

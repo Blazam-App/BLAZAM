@@ -54,8 +54,8 @@
         <MudStack Style="height:300px;" Class="overflow-y-auto">
             @foreach (var message in ChatMessages[thisUri])
             {
-                if (!message.SeenBy.Contains(currentUserState.UserSettings))
-                    message.SeenBy.Add(currentUserState.UserSettings);
+                if (!message.SeenBy.Contains(currentUserState.Preferences))
+                    message.SeenBy.Add(currentUserState.Preferences);
                 if (message.User.Username != currentUserState.Username)
                 {
                     <MudStack Class="w-100">
@@ -119,8 +119,8 @@
         get
         {
             return ChatMessages[thisUri].Where(
-                cm => cm.User != currentUserState.UserSettings 
-                && !cm.SeenBy.Contains(currentUserState.UserSettings
+                cm => cm.User != currentUserState.Preferences 
+                && !cm.SeenBy.Contains(currentUserState.Preferences
                 )).Count();
         }
     }
@@ -175,7 +175,7 @@
 
         OnMessagePosted += ((ChatMessage message) =>
        {
-           if (message.User != currentUserState.UserSettings)
+           if (message.User != currentUserState.Preferences)
            {
                if (chatOpen && !playingPop)
                {
@@ -230,7 +230,7 @@
         if (!draftMessage.IsNullOrEmpty())
         {
             await Task.Delay(5);
-            var message = new ChatMessage() { User = currentUserState.UserSettings, Message = draftMessage };
+            var message = new ChatMessage() { User = currentUserState.Preferences, Message = draftMessage };
             ChatMessages[thisUri].Add(message);
 
             OnMessagePosted?.Invoke(message);

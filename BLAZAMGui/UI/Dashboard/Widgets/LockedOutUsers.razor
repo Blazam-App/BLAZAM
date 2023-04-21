@@ -43,7 +43,7 @@
     {
         await base.OnInitializedAsync();
 
-        Name = "Locked Out Users";
+        Title = "Locked Out Users";
         LockedUsers = (await Directory.Users.FindLockedOutUsersAsync()).OrderByDescending(u => u.LockoutTime).Where(u => u.CanRead).ToList();
         LoadingData = false;
         await InvokeAsync(StateHasChanged);

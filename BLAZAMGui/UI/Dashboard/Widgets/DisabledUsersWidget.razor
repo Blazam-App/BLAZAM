@@ -28,7 +28,7 @@
     {
         await base.OnInitializedAsync();
 
-        Name = "Disabled Users";
+        Title = "Disabled Users";
         LockedUsers = (await Directory.Users.FindChangedUsersAsync(false)).Where(u => u.Disabled).ToList();
         LoadingData = false;
         await InvokeAsync(StateHasChanged);

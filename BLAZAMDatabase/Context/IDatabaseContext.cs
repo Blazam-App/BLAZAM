@@ -54,7 +54,6 @@ namespace BLAZAM.Database.Context
         DbSet<UserNotification> UserNotifications { get; set; }
         bool SeedMismatch { get; }
         DbSet<CustomActiveDirectoryField> CustomActiveDirectoryFields { get; set; }
-
-
+        DbSet<UserDashboardWidget> UserDashboardWidgets { get; set; }
     }
 }

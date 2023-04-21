@@ -101,6 +101,7 @@ namespace BLAZAM.Database.Context
         //User Tables
         public virtual DbSet<AppUser> UserSettings { get; set; }
         public virtual DbSet<UserNotification> UserNotifications { get; set; }
+        public virtual DbSet<UserDashboardWidget> UserDashboardWidgets{ get; set; }
         public virtual DbSet<NotificationMessage> NotificationMessages { get; set; }
 
 
@@ -571,11 +572,15 @@ namespace BLAZAM.Database.Context
             {
                 entity.HasIndex(e => e.UserGUID).IsUnique();
                 entity.Navigation(e => e.Messages).AutoInclude();
+                entity.Navigation(e => e.DashboardWidgets).AutoInclude();
             });
             modelBuilder.Entity<UserNotification>(entity =>
             {
                 entity.Navigation(e => e.Notification).AutoInclude();
             });
+  
+
+
             modelBuilder.Entity<PermissionDelegate>(entity =>
           {
               entity.HasIndex(e => e.DelegateSid).IsUnique();

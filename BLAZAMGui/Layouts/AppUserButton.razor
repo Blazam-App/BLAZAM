@@ -68,7 +68,7 @@
         base.OnInitialized();
         NotificationPublisher.OnNotificationPublished += ((notifications) =>
         {
-            if (notifications.Select(n => n.User).Contains(UserState.UserSettings))
+            if (notifications.Select(n => n.User).Contains(UserState.Preferences))
             InvokeAsync(StateHasChanged);
         });
         UserState = CurrentUser.State;

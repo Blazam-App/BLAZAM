@@ -3,7 +3,7 @@
 @implements IDisposable
 @if (sessionsErrorMessage == null)
 {
-    <MudDataGrid Items="sessions">
+    <MudDataGrid Elevation=0 Items="sessions">
         <Columns>
             <PropertyColumn Property="x=>x.User" />
             <PropertyColumn Property="x=>x.ConnectionState" />

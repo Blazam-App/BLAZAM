@@ -1422,6 +1422,34 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.ToTable("NotificationMessages");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.User.UserDashboardWidget", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Slot")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WidgetType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserDashboardWidgets");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserNotification", b =>
                 {
                     b.Property<int>("Id")
@@ -1590,6 +1618,17 @@ namespace BLAZAM.Common.Migrations.Sql
                         .HasForeignKey("DirectoryTemplateId");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.User.UserDashboardWidget", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
+                        .WithMany("DashboardWidgets")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserNotification", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.User.NotificationMessage", "Notification")
@@ -1648,6 +1687,8 @@ namespace BLAZAM.Common.Migrations.Sql
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
                 {
+                    b.Navigation("DashboardWidgets");
+
                     b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618

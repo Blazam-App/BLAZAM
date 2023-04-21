@@ -180,10 +180,6 @@
 
 
 
-                            @if (User.CanReadField(ActiveDirectoryFields.SAMAccountName) ||
-                            User.CanReadField(ActiveDirectoryFields.Mail) ||
-                            User.CanReadField(ActiveDirectoryFields.AccountExpires))
-                            {
                                 <Section Title="@AppLocalization["Account"]">
 
                                     <MudStack Row Class="@_fieldMudStackClasses">
@@ -246,7 +242,7 @@
                                     }
 
                                 </Section>
-                            }
+                            
 
 
                         </MudStack>

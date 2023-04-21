@@ -138,3 +138,8 @@ a, .btn-link {
 .minw-max {
     min-width: max-content !important;
 }
+
+
+.w-100{
+    width:100% !important;
+}

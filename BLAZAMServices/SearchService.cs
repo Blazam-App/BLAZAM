@@ -33,7 +33,7 @@ namespace BLAZAM.Services
         {
             _userStateService = userStateService;
             _nav = nav;
-            includeDisabled = _userStateService.CurrentUserState?.UserSettings?.SearchDisabledUsers == true;
+            includeDisabled = _userStateService.CurrentUserState?.Preferences?.SearchDisabledUsers == true;
         }
 
 
@@ -44,7 +44,7 @@ namespace BLAZAM.Services
         {
             try
             {
-                _userStateService.CurrentUserState.UserSettings.SearchDisabledUsers = IncludeDisabled;
+                _userStateService.CurrentUserState.Preferences.SearchDisabledUsers = IncludeDisabled;
                 await _userStateService.CurrentUserState.SaveUserSettings();
             }
             catch

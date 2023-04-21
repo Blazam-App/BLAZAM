@@ -129,7 +129,7 @@ namespace BLAZAM.Server
             //Run as server side blazor with detailed errors controlled by DebugMode configuration
             builder.Services.AddServerSideBlazor()
                 .AddCircuitOptions(options => {
-                    options.DetailedErrors = Program.InDebugMode;
+                    options.DetailedErrors = ApplicationInfo.inDebugMode;
                 });
 
             //Inject the database as a service

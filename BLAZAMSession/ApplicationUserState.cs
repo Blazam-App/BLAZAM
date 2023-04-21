@@ -25,24 +25,17 @@ namespace BLAZAM.Server.Data.Services
     {
 
         public AppEvent<AppUser> OnSettingsChange { get; set; }
-        /// <summary>
-        /// The web user who is currently logged in
-        /// </summary>
+
         public ClaimsPrincipal User { get; set; }
-        /// <summary>
-        /// The user who is impersonating this web user. It is optional, obviously.
-        /// </summary>
+
         public ClaimsPrincipal? Impersonator { get; set; }
-        /// <summary>
-        /// The <see cref="IADUser"/> which also provided the applied permissions.
-        /// </summary>
-        //public IADUser? DirectoryUser { get; set; }
 
         public List<PermissionDelegate> PermissionDelegates { get; set; } = new();
+
+
         public List<PermissionMapping> PermissionMappings { get; set; } = new();
-        /// <summary>
-        /// The last request time for this web user
-        /// </summary>
+
+
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
 
 
@@ -55,8 +48,8 @@ namespace BLAZAM.Server.Data.Services
                 if (!User.Identity.IsAuthenticated) return default;
                 if ((DateTime.Now - lastDataRefresh).TotalSeconds > 1)
                     GetUserSettingFromDB();
-               return userSettings?.Messages.Where(m => !m.IsRead).ToList();
-               
+                return userSettings?.Messages.Where(m => !m.IsRead).ToList();
+
             }
         }
 
@@ -78,20 +71,14 @@ namespace BLAZAM.Server.Data.Services
             _dbFactory = factory;
             _notificationPublisher.OnNotificationPublished += (notifications) =>
             {
-                if (notifications.Select(n => n.User).Contains(UserSettings))
+                if (notifications.Select(n => n.User).Contains(Preferences))
                     GetUserSettingFromDB();
             };
         }
 
 
-        /// <summary>
-        /// Provides access to the user's settings in the database
-        /// </summary>
-        /// <remarks>
-        /// Changes made to the returned object are not saved
-        /// until <see cref="SaveUserSettings()"/> is called
-        /// </remarks>
-        public AppUser? UserSettings
+
+        public AppUser? Preferences
         {
             get
             {
@@ -104,7 +91,9 @@ namespace BLAZAM.Server.Data.Services
                 return userSettings;
             }
         }
-        public async Task<bool>  MarkRead(UserNotification notification)
+
+
+        public async Task<bool> MarkRead(UserNotification notification)
         {
             using var context = await _dbFactory.CreateDbContextAsync();
             var message = context.UserNotifications.Where(un => un.Id == notification.Id).FirstOrDefault(); ;
@@ -140,6 +129,7 @@ namespace BLAZAM.Server.Data.Services
                     context.SaveChanges();
 
                 }
+
                 lastDataRefresh = DateTime.Now;
             }
             catch
@@ -148,10 +138,7 @@ namespace BLAZAM.Server.Data.Services
             }
         }
 
-        /// <summary>
-        /// Saves the current state of the <see cref="UserSettings"/> to the database
-        /// </summary>
-        /// <returns></returns>
+
         public async Task<bool> SaveUserSettings()
         {
             try
@@ -160,15 +147,18 @@ namespace BLAZAM.Server.Data.Services
                 var dbUserSettings = await context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefaultAsync();
                 if (dbUserSettings != null)
                 {
-                    dbUserSettings.Theme = this.UserSettings?.Theme;
-                    dbUserSettings.DarkMode = this.UserSettings?.DarkMode == true;
-                    dbUserSettings.ProfilePicture = this.UserSettings?.ProfilePicture;
-                    dbUserSettings.SearchDisabledUsers = this.UserSettings.SearchDisabledUsers;
-                    dbUserSettings.SearchDisabledComputers = this.UserSettings.SearchDisabledComputers;
+                    dbUserSettings.Theme = this.Preferences?.Theme;
+                    dbUserSettings.DarkMode = this.Preferences?.DarkMode == true;
+                    dbUserSettings.ProfilePicture = this.Preferences?.ProfilePicture;
+                    dbUserSettings.SearchDisabledUsers = this.Preferences.SearchDisabledUsers;
+                    dbUserSettings.SearchDisabledComputers = this.Preferences.SearchDisabledComputers;
+                    SaveDashboardWidgets(dbUserSettings);
                     OnSettingsChange?.Invoke(dbUserSettings);
 
                     return (await context.SaveChangesAsync()) > 0;
                 }
+
+
 
             }
             catch
@@ -177,6 +167,33 @@ namespace BLAZAM.Server.Data.Services
             }
             return false;
         }
+
+        private void SaveDashboardWidgets(AppUser? dbUserSettings)
+        {
+            foreach (var widget in this.Preferences.DashboardWidgets)
+            {
+                var matchingWidgt = dbUserSettings.DashboardWidgets.FirstOrDefault(w => w.WidgetType == widget.WidgetType);
+                if (matchingWidgt != null)
+                {
+                    matchingWidgt.Slot = widget.Slot;
+                    matchingWidgt.Order = widget.Order;
+                }
+                else
+                {
+                    dbUserSettings.DashboardWidgets.Add(widget);
+                }
+            }
+            var widgetsInDB = new List<UserDashboardWidget>(dbUserSettings.DashboardWidgets);
+            foreach (var widget in widgetsInDB)
+            {
+                if (!this.Preferences.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType))
+                {
+                    dbUserSettings.DashboardWidgets.Remove(widget);
+                }
+
+            }
+        }
+
         public bool IsSuperAdmin
         {
             get
@@ -187,9 +204,7 @@ namespace BLAZAM.Server.Data.Services
                 return false;
             }
         }
-        /// <summary>
-        /// Returns the name of the user
-        /// </summary>
+
         public string? Username
         {
             get
@@ -215,10 +230,7 @@ namespace BLAZAM.Server.Data.Services
             }
         }
 
-        /// <summary>
-        /// Returns the combined names of the user, and if applicable, the impersonators username
-        /// with the structure "{username}[ impersonated by {impersonatorName}]"
-        /// </summary>
+
         public string? AuditUsername
         {
             get
