@@ -18,7 +18,8 @@
                 }
             }
 
-            @if (InDirectoryTemplate(ActiveDirectoryFields.Mail) ||
+            @if (InDirectoryTemplate(ActiveDirectoryFields.Description) ||
+            InDirectoryTemplate(ActiveDirectoryFields.Mail) ||
             InDirectoryTemplate(ActiveDirectoryFields.EmployeeId) ||
             InDirectoryTemplate(ActiveDirectoryFields.Department) ||
             InDirectoryTemplate(ActiveDirectoryFields.Company) ||
@@ -27,6 +28,16 @@
             )
             {
                 <Section Title=@AppLocalization["Organization"]>
+                    @if (InDirectoryTemplate(ActiveDirectoryFields.Description))
+                    {
+
+
+                        <MudTextField Label="@AppLocalization["Description"]" @bind-Value=@User.Description Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Description)) />
+
+
+
+
+                    }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Mail))
                     {
 
@@ -161,16 +172,7 @@
                     }
                 </Section>
             }
-            @if (InDirectoryTemplate(ActiveDirectoryFields.Description))
-            {
 
-
-                <MudTextField Label="@AppLocalization["Description"]" @bind-Value=@User.Description Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Description)) />
-
-
-
-
-            }
             @if (InDirectoryTemplate(ActiveDirectoryFields.Site))
             {
 
@@ -234,9 +236,17 @@
             @if (User.CanReadAnyCustomFields)
             {
                 <Section Title=@AppLocalization["Additonal Fields"]>
-                    @foreach (var field in DirectoryTemplate.FieldValues.Where(f => f.CustomField != null))
+                    @foreach (var field in DirectoryTemplate.InheritedFieldValues.Where(f => f.CustomField != null))
                     {
-                        <MudTextField Label="@field.FieldDisplayName" @bind-Value="@User.NewEntryProperties[field.CustomField.FieldName]" Disabled=@(!IsAdmin && !IsEditableTemplatField(field.CustomField)) />
+                        <MudTextField Validation=@(()=>{
+                              if(field.Required && User.NewEntryProperties[field.CustomField.FieldName]!=null
+                              && User.NewEntryProperties[field.CustomField.FieldName].ToString()!="")
+                              return true;
+                              else
+                              return false;
+                              })
+                              Label="@field.FieldDisplayName"
+                              @bind-Value="@User.NewEntryProperties[field.CustomField.FieldName]" Disabled=@(!IsAdmin && !IsEditableTemplatField(field.CustomField)) />
 
                     }
                 </Section>
@@ -269,16 +279,16 @@
 
     bool InDirectoryTemplate(IActiveDirectoryField field)
     {
-        return DirectoryTemplate.FieldValues.Any(f => f.Field.FieldName == field.FieldName && (f.Value.IsNullOrEmpty() || CurrentUser.State?.IsSuperAdmin == true));
+        return DirectoryTemplate.InheritedFieldValues.Any(f => (f.Field != null && f.Field.FieldName == field.FieldName) || (f.CustomField != null && f.CustomField.FieldName == field.FieldName));
     }
     bool IsEditableTemplatField(IActiveDirectoryField field)
     {
 
 
         if (field is ActiveDirectoryField)
-            return DirectoryTemplate.FieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Editable);
+            return DirectoryTemplate.InheritedFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Editable);
         else
-            return DirectoryTemplate.FieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Editable);
+            return DirectoryTemplate.InheritedFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Editable);
     }
 
 

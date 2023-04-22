@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
 namespace BLAZAM.Database.Models.Templates
@@ -15,35 +16,155 @@ namespace BLAZAM.Database.Models.Templates
     public class DirectoryTemplate : RecoverableAppDbSetBase, ICloneable
     {
 
+        public DirectoryTemplate? ParentTemplate { get; set; } = null;
+        public int? ParentTemplateId { get; set; } = null;
+
         [Required]
         public string Name { get; set; }
 
+
         public string? Category { get; set; }
+
+
         [Required]
         public ActiveDirectoryObjectType ObjectType { get; set; }
-        [Required]
+
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public string DisplayNameFormula { get; set; }
-        [Required]
-        public string PasswordFormula { get; set; }
+        public string? DisplayNameFormula { get; set; }
+        [NotMapped]
+        public string EffectiveDisplayNameFormula
+        {
+            get
+            {
+                if (DisplayNameFormula == null)
+                    return ParentTemplate?.EffectiveDisplayNameFormula ?? string.Empty;
+                else
+                    return DisplayNameFormula;
+            }
+            set => DisplayNameFormula = value;
+        }
 
-        [Required]
-        public string UsernameFormula { get; set; }
+        public string? PasswordFormula { get; set; }
+        [NotMapped]
+        public string EffectivePasswordFormula
+        {
+            get
+            {
+                if (PasswordFormula == null)
+                    return ParentTemplate?.EffectivePasswordFormula ?? string.Empty;
+                else
+                    return PasswordFormula;
+            }
+            set => PasswordFormula = value;
+        }
 
+        public string? UsernameFormula { get; set; }
+        [NotMapped]
+        public string EffectiveUsernameFormula
+        {
+            get
+            {
+                if (UsernameFormula == null)
+                    return ParentTemplate?.EffectiveUsernameFormula ?? string.Empty;
+                else
+                    return UsernameFormula;
+            }
+            set => UsernameFormula = value;
+        }
 
-        [Required]
-        public string ParentOU { get; set; }
+        public string? ParentOU { get; set; }
+        [NotMapped]
+        public string EffectiveParentOU
+        {
+            get
+            {
+                if (ParentOU == null)
+                    return ParentTemplate?.EffectiveParentOU ?? string.Empty;
+                else
+                    return EffectiveParentOU;
+            }
+            set => EffectiveParentOU = value;
+        }
+
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         public List<DirectoryTemplateGroup> AssignedGroupSids { get; set; } = new();
-        public List<DirectoryTemplateFieldValue> FieldValues { get; set; } = new();
+        [NotMapped]
+        public List<DirectoryTemplateGroup> InheritedAssignedGroupSids
+        {
+            get
+            {
+                var allAssignedGroupSids = new List<DirectoryTemplateGroup>(AssignedGroupSids);
 
-        public bool AllowCustomGroups { get; set; }
+                if (ParentTemplate != null)
+                {
+                    allAssignedGroupSids.AddRange(ParentTemplate.InheritedAssignedGroupSids);
+                }
+                return allAssignedGroupSids;
+            }
+        }
+
+        public List<DirectoryTemplateFieldValue> FieldValues { get; set; } = new();
+        [NotMapped]
+
+        public List<DirectoryTemplateFieldValue> InheritedFieldValues
+        {
+            get
+            {
+                var allFieldValues = new List<DirectoryTemplateFieldValue>(FieldValues);
+
+                if (ParentTemplate != null)
+                {
+                    foreach (var fieldvalue in ParentTemplate.FieldValues)
+                    {
+                        if (!allFieldValues.Any(fv => (fv.Field != null && fv.Field.Equals(fieldvalue.Field))
+                        || (fv.CustomField != null && fv.CustomField.Equals(fieldvalue.CustomField))))
+                        {
+                            allFieldValues.Add(fieldvalue);
+                        }
+                    }
+                }
+                return allFieldValues;
+            }
+        }
+
+
+
+
+        public bool? AllowCustomGroups { get; set; }
+        [NotMapped]
+        public bool? EffectiveAllowCustomGroups
+        {
+            get
+            {
+                if (AllowCustomGroups == null)
+                    return ParentTemplate?.EffectiveAllowCustomGroups;
+                else
+                    return AllowCustomGroups;
+            }
+            set => AllowCustomGroups = value;
+        }
+
+
+
+
+
+
+        public bool IsValueOverriden(DirectoryTemplateFieldValue fieldValue)
+        {
+            return ParentTemplate != null
+                                         && FieldValues.Contains(fieldValue)
+                                         && ParentTemplate.InheritedFieldValues.Any(fv =>
+                                         (fv.Field != null && fv.Field.Equals(fieldValue.Field))
+                                         || (fv.CustomField != null && fv.CustomField.Equals(fieldValue.CustomField)));
+        }
+
 
 
         public string GenerateUsername(NewUserName newUser)
         {
-            return ReplaceVariables(UsernameFormula, newUser);
+            return ReplaceVariables(EffectiveUsernameFormula, newUser);
 
         }
         public string ReplaceVariablesOld(string toParse, NewUserName newUser)
@@ -69,7 +190,7 @@ namespace BLAZAM.Database.Models.Templates
 
             if (toParse.Contains("{username}"))
             {
-                var username = ReplaceVariables(UsernameFormula, newUser);
+                var username = ReplaceVariables(EffectiveUsernameFormula, newUser);
                 toParse = toParse.Replace("{username}", username);
             }
 
@@ -91,7 +212,7 @@ namespace BLAZAM.Database.Models.Templates
                     case "mi": return newUser?.MiddleName?.Substring(0, 1);
                     case "ln": return newUser?.Surname;
                     case "li": return newUser?.Surname?.Substring(0, 1);
-                    case "username": return ReplaceVariables(UsernameFormula, newUser).Replace(" ", "");
+                    case "username": return ReplaceVariables(EffectiveUsernameFormula, newUser).Replace(" ", "");
                     case "alphanum":
                         var ch = RandomLetterOrDigit();
                         return modifier == "u" ? ch.ToUpper() : ch.ToLower();
@@ -126,15 +247,15 @@ namespace BLAZAM.Database.Models.Templates
         }
         public bool HasEmptyFields()
         {
-            return FieldValues.Any(fv => fv.Value.IsNullOrEmpty());
+            return FieldValues.Any(fv => fv.Editable);
         }
         public string GenerateDisplayName(NewUserName newUser)
         {
-            return ReplaceVariables(DisplayNameFormula, newUser);
+            return ReplaceVariables(EffectiveDisplayNameFormula, newUser);
         }
         public string GeneratePassword()
         {
-            return ReplaceVariables(PasswordFormula);
+            return ReplaceVariables(EffectivePasswordFormula);
         }
 
         public override string? ToString()
@@ -146,6 +267,7 @@ namespace BLAZAM.Database.Models.Templates
         {
             var clone = new DirectoryTemplate
             {
+                ParentTemplate = ParentTemplate,
                 AssignedGroupSids = AssignedGroupSids,
                 Category = Category,
                 Id = 0,

@@ -16,21 +16,25 @@
         </div>
 
         <MudSelectList T="string"
+            Label="Category"
                        Values="TemplateCategories"
                        @bind-Value="@SelectedCategory" />
 
 
         <MudSelectList T="DirectoryTemplate"
+            Label="Template"
                        Values="@Templates"
                        @bind-Value="@SelectedTemplate" />
         @if (Templates?.Count() > 0)
         {
-            <MudButton Color=Color.Secondary OnClick="@(()=>{SelectedTemplate = new();})" StartIcon="@Icons.Material.Filled.AddCard" />
+            <MudButton Color=Color.Tertiary OnClick="@(()=>{
+SelectedTemplate = new();
+})" StartIcon="@Icons.Material.Filled.AddCard" />
 
         }else{
             <MudTooltip Arrow=true IsVisible=@(Templates?.Count()<1) Text="Create your first template">
 
-                <MudButton Color=Color.Secondary OnClick="@(()=>{SelectedTemplate = new();})" StartIcon="@Icons.Material.Filled.AddCard" />
+                <MudButton Color=Color.Tertiary OnClick="@(()=>{SelectedTemplate = new();})" StartIcon="@Icons.Material.Filled.AddCard" />
 
             </MudTooltip>
 

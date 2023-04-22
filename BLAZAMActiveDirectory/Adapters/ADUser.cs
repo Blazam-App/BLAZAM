@@ -6,8 +6,12 @@ using BLAZAM.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices.ActiveDirectory;
+using System.DirectoryServices.Protocols;
+using System.Net;
 using System.Security;
 using System.Security.AccessControl;
+using System.Text;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -33,6 +37,25 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 //   Encryption.Instance.DecryptObject<string>(DirectorySettings.Password)))
                 //{
 
+        //        LdapDirectoryIdentifier directoryIdentifier = new LdapDirectoryIdentifier(DirectorySettings.ServerAddress + ":686");
+        //        NetworkCredential credential = new NetworkCredential(DirectorySettings.Username, Encryption.Instance.DecryptObject<string>(DirectorySettings.Password), DirectorySettings.FQDN);
+
+        //        using (LdapConnection connection = new LdapConnection(directoryIdentifier, credential,AuthType.Negotiate))
+        //        {
+        //            connection.SessionOptions.ProtocolVersion = 3;
+        //            connection.SessionOptions.VerifyServerCertificate =
+        //new             VerifyServerCertificateCallback((con, cer) => true);
+        //            connection.SessionOptions.SecureSocketLayer = true;
+        //            connection.Bind();
+
+        //            var request = new ModifyRequest(this.DN, DirectoryAttributeOperation.Replace, "unicodePwd", Encoding.Unicode.GetBytes($"\"{password.ToPlainText()}\""));
+        //            var response = (ModifyResponse)connection.SendRequest(request);
+
+        //            if (response.ResultCode != ResultCode.Success)
+        //            {
+        //                throw new Exception($"Error resetting password: {response.ResultCode}");
+        //            }
+        //        }
 
                 //TODO set password from outside the domain
                 //The following works only when Blazam is running on a domain joined computer
