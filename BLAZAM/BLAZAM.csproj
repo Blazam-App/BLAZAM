@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.7.5</AssemblyVersion>
-		<Version>2023.04.21.1743</Version>
+		<Version>2023.04.22.2028</Version>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -17,6 +17,7 @@
 	  <None Remove="static\img\default_logo.png" />
 	  <None Remove="static\img\default_logo2.png" />
 	</ItemGroup>
+
 
 	
 

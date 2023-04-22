@@ -487,6 +487,7 @@ namespace BLAZAM.Database.Context
             modelBuilder.Entity<DirectoryTemplateFieldValue>(entity =>
             {
                 entity.Navigation(e => e.Field).AutoInclude();
+                entity.Navigation(e => e.CustomField).AutoInclude();
             });
             modelBuilder.Entity<ObjectAction>().HasData(
                   new ObjectAction() { Id = 1, Name = "Assign", Action = ActiveDirectoryObjectAction.Assign },

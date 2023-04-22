@@ -217,21 +217,24 @@
         if (!newUserName.Surname.IsNullOrEmpty())
             newUser.Surname = newUserName.Surname;
 
-        foreach (var fieldValue in SelectedTemplate.FieldValues)
+        foreach (var fieldValue in SelectedTemplate.InheritedFieldValues)
         {
-            if (fieldValue.Value != null && fieldValue.Value != "")
-            {
+           
+          
 
 
                 try
                 {
+                    if (fieldValue.Field!=null)
                     newUser.NewEntryProperties[fieldValue.Field.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+                    else if (fieldValue.CustomField !=null)
+                        newUser.NewEntryProperties[fieldValue.CustomField.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
                 }
                 catch (Exception ex)
                 {
                     Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field.FieldName + ": " + fieldValue.Value.ToString(), ex);
                 }
-            }
+            
         }
         var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName);
         if (conflictingEntry != null)

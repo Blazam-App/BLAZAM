@@ -1244,7 +1244,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("AllowCustomGroups")
+                    b.Property<bool?>("AllowCustomGroups")
                         .HasColumnType("bit");
 
                     b.Property<string>("Category")
@@ -1254,7 +1254,6 @@ namespace BLAZAM.Common.Migrations.Sql
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DisplayNameFormula")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -1265,21 +1264,23 @@ namespace BLAZAM.Common.Migrations.Sql
                         .HasColumnType("int");
 
                     b.Property<string>("ParentOU")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ParentTemplateId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PasswordFormula")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UsernameFormula")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
+
+                    b.HasIndex("ParentTemplateId");
 
                     b.ToTable("DirectoryTemplates");
                 });
@@ -1590,6 +1591,15 @@ namespace BLAZAM.Common.Migrations.Sql
                         .IsRequired();
 
                     b.Navigation("ObjectAccessLevel");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplate", "ParentTemplate")
+                        .WithMany()
+                        .HasForeignKey("ParentTemplateId");
+
+                    b.Navigation("ParentTemplate");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValue", b =>

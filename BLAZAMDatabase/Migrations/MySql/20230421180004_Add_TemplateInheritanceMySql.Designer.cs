@@ -3,16 +3,19 @@ using System;
 using BLAZAM.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BLAZAM.Common.Migrations.MySql
+namespace BLAZAM.Database.Migrations.MySql
 {
     [DbContext(typeof(MySqlDatabaseContext))]
-    partial class MySqlDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230421180004_Add_TemplateInheritanceMySql")]
+    partial class Add_TemplateInheritanceMySql
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1195,7 +1198,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<bool?>("AllowCustomGroups")
+                    b.Property<bool>("AllowCustomGroups")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Category")
@@ -1205,6 +1208,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("DisplayNameFormula")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
@@ -1215,15 +1219,18 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasColumnType("int");
 
                     b.Property<string>("ParentOU")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int?>("ParentTemplateId")
                         .HasColumnType("int");
 
                     b.Property<string>("PasswordFormula")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("UsernameFormula")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
