@@ -3,11 +3,13 @@
 @using Microsoft.Data.SqlClient;
 @using Microsoft.EntityFrameworkCore;
 @inherits ValidatedForm
-
+@attribute [Authorize]
+@if (DirectoryTemplate!=null){
 <EditForm OnValidSubmit="SaveTemplate" Model="DirectoryTemplate">
     <MudStack>
 
         <MudSelectList T="DirectoryTemplate"
+                       Clearable=true
                        Label="Parent Template"
                        Values="@otherTemplates"
                        Value="@DirectoryTemplate.ParentTemplate"
@@ -61,9 +63,17 @@
 
 
             <MudElement Class="d-flex flex-wrap gap-5">
-                <MudTooltip ShowOnHover=@DirectoryTemplate.UsernameFormula.IsNullOrEmpty() Text="This value is inherited">
+
+
+                @{
+                    var usernameFromTemplate = GetParentOfValue(DirectoryTemplate.EffectiveUsernameFormula, template => template.UsernameFormula); ;
+                }
+
+                <MudTooltip ShowOnHover=@DirectoryTemplate.UsernameFormula.IsNullOrEmpty()
+                            Text=>
                     <MudBadge Visible=@DirectoryTemplate.UsernameFormula.IsNullOrEmpty()
-                              Dot=true
+                              Icon="@Icons.Material.Filled.LowPriority"
+                              OnClick="@(()=>{_usernamePopoverOpen=!_usernamePopoverOpen;})"
                               Overlap=true
                               Color="Color.Info">
 
@@ -71,9 +81,18 @@
                         <MudTextField Label="Username Format"
                                       @bind-Value=DirectoryTemplate.EffectiveUsernameFormula />
                     </MudBadge>
+                    <MudPopover Open="@_usernamePopoverOpen" Fixed="true" Class="px-4 pt-4">
+                        <div class="d-flex flex-column">
+                            <MudText>Inherited from<MudLink  Href=@("/templates/"+usernameFromTemplate.Id)> @usernameFromTemplate</MudLink></MudText>
+                            <MudButton OnClick="@(()=>{_usernamePopoverOpen=false;})" Class="ml-auto mr-n3 mb-1" Color="Color.Error">Close</MudButton>
+                        </div>
+                    </MudPopover>
                 </MudTooltip>
-
-                <MudTooltip ShowOnHover=@DirectoryTemplate.DisplayNameFormula.IsNullOrEmpty() Text="This value is inherited">
+                @{
+                    var displayNameFromTemplateName = GetParentOfValue(DirectoryTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
+                }
+                <MudTooltip ShowOnHover=@DirectoryTemplate.DisplayNameFormula.IsNullOrEmpty()
+                            Text=@("Inherited from "+displayNameFromTemplateName)>
                     <MudBadge Visible=@DirectoryTemplate.DisplayNameFormula.IsNullOrEmpty()
                               Dot=true
                               Overlap=true
@@ -84,8 +103,10 @@
                                       @bind-Value=DirectoryTemplate.EffectiveDisplayNameFormula />
                     </MudBadge>
                 </MudTooltip>
-
-                <MudTooltip ShowOnHover=@DirectoryTemplate.PasswordFormula.IsNullOrEmpty() Text="This value is inherited">
+                @{
+                    var passwordFromTemplateName = GetParentOfValue(DirectoryTemplate.EffectivePasswordFormula, template => template.PasswordFormula); ;
+                }
+                <MudTooltip ShowOnHover=@DirectoryTemplate.PasswordFormula.IsNullOrEmpty() Text=@("Inherited from "+passwordFromTemplateName)>
                     <MudBadge Visible=@DirectoryTemplate.PasswordFormula.IsNullOrEmpty()
                               Dot=true
                               Overlap=true
@@ -171,12 +192,19 @@
                             <Columns>
                                 <TemplateColumn Title="Name">
                                     <CellTemplate Context="cellContext">
-                                        <MudBadge Dot=true
-                                                  Color=Color.Info
-                                                  Visible=@(!DirectoryTemplate.FieldValues.Contains(cellContext.Item))>
-                                            <MudText>@cellContext.Item.FieldDisplayName</MudText>
+                                        @{
+                                            var fromTemplateName = otherTemplates.Where(ot => ot.FieldValues.Contains(cellContext.Item)).Select(ot => ot.Name).FirstOrDefault();
+                                        }
+                                        <MudTooltip ShowOnHover=@(!DirectoryTemplate.FieldValues.Contains(cellContext.Item))
+                                                    Text=@("Inherited from "+fromTemplateName)>
 
-                                        </MudBadge>
+                                            <MudBadge Dot=true
+                                                      Color=Color.Info
+                                                      Visible=@(!DirectoryTemplate.FieldValues.Contains(cellContext.Item))>
+                                                <MudText>@cellContext.Item.FieldDisplayName</MudText>
+
+                                            </MudBadge>
+                                        </MudTooltip>
 
                                     </CellTemplate>
                                 </TemplateColumn>
@@ -211,7 +239,7 @@
                                         @if (DirectoryTemplate.IsValueOverriden(cellContext.Item))
                                         {
                                             <MudIconButton DisableElevation=true
-                                                Color="Color.Dark"
+                                                       Color="Color.Dark"
                                                        Icon="@Icons.Material.Filled.Undo"
                                                        OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
                                         }
@@ -234,8 +262,10 @@
         </Section>
 
         <Section Title="Organizational Unit">
-
-            <MudTooltip ShowOnHover=@DirectoryTemplate.ParentOU.IsNullOrEmpty() Text="This value is inherited">
+            @*  @{
+            var ouTemplateSourceName = GetParentOfValue(DirectoryTemplate.EffectiveParentOU, template => template.ParentOU);
+            }*@
+            <MudTooltip ShowOnHover=@DirectoryTemplate.ParentOU.IsNullOrEmpty() Text=@("Inherited from ")>
                 <MudBadge Visible=@DirectoryTemplate.ParentOU.IsNullOrEmpty()
                           Dot=true
                           Overlap=true
@@ -245,6 +275,15 @@
                                 @bind-SelectedOU=@SelectedOU
                                 @bind-StartingSelectedOU=@SelectedOU />
                 </MudBadge>
+                @if (!DirectoryTemplate.ParentOU.IsNullOrEmpty())
+                {
+                    <MudIconButton DisableElevation=true
+                               Class="d-inline-flex pa-0"
+                               Style="vertical-align:top;"
+                               Color="Color.Dark"
+                               Icon="@Icons.Material.Filled.Undo"
+                               OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;}) />
+                }
             </MudTooltip>
 
 
@@ -253,9 +292,17 @@
         <Section Title="Assigned Groups">
 
 
-            @foreach (var group in TemplateGroups)
+            @foreach (var group in DirectoryTemplate.InheritedAssignedGroupSids)
             {
-                <MudText>@group</MudText>
+                <MudTooltip ShowOnHover=@(!DirectoryTemplate.AssignedGroupSids.Contains(group))
+                        Text=@("Inherited from " + otherTemplates.Where(ot=>ot.AssignedGroupSids.Contains(group)).Select(ot=>ot.Name).FirstOrDefault())>
+                    <MudBadge Dot=true
+                          Color=Color.Info
+                          Visible=@(!DirectoryTemplate.AssignedGroupSids.Contains(group))>
+                        <AssignedTemplateGroup Group="group" />
+
+                    </MudBadge>
+                </MudTooltip>
             }
             <MudStack Row=true>
                 <ADAutoComplete Label="@AppLocalization["Groups"]"
@@ -263,7 +310,7 @@
                                 @bind-SelectedResult="@SelectedGroup" />
                 <MudFab Size="Size.Small" StartIcon=@Icons.Material.Filled.Add
                         Color="Color.Primary"
-                        OnClick="@(()=>{TemplateGroups.Add(SelectedGroup);})" />
+                        OnClick="@(()=>{if(SelectedGroup!=null) AssignGroup(SelectedGroup as IADGroup);})" />
             </MudStack>
 
         </Section>
@@ -287,11 +334,18 @@
         <MudButton Color="Color.Warning" OnClick="@(()=>{ DirectoryTemplate=new();})">Cancel</MudButton>
 
     }
+        @{
+            var test = "test";
+        }
 </EditForm>
-
-@code{
+}
+@code {
     protected string groupText;
     protected bool open;
+    protected bool _usernamePopoverOpen;
+    protected bool _displayNamePopoverOpen;
+    protected bool _passwordPopoverOpen;
+    protected bool _ouPopoverOpen;
 #nullable disable warnings
     protected bool ouCollapseVisible = true;
     //Validations? validations;
@@ -331,7 +385,7 @@
         };
     protected List<string> selectedUsernameFormatValues { get; set; } = new();
     public DirectoryTemplate _template;
-    public List<DirectoryTemplate> otherTemplates;
+    public List<DirectoryTemplate> otherTemplates = new();
     [Parameter]
     public DirectoryTemplate DirectoryTemplate
     {
@@ -348,7 +402,16 @@
 
     [Parameter]
     public EventCallback<DirectoryTemplate> DirectoryTemplateChanged { get; set; }
-
+    protected async Task AssignGroup(IADGroup? group)
+    {
+        var existing = await Context.DirectoryTemplateGroups.Where(g => g.GroupSid == group.SID.ToSidString()).FirstOrDefaultAsync();
+        if (existing == null)
+            existing = new DirectoryTemplateGroup()
+                {
+                    GroupSid = group.SID.ToSidString()
+                };
+        DirectoryTemplate.AssignedGroupSids.Add(existing);
+    }
     protected async Task LoadData()
     {
         if (Context == null)
@@ -365,8 +428,8 @@
         //    SelectedOU = await Directory.OUs.GetApplicationRootOU();
         //}
         fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
-        fields.AddRange(await Context.CustomActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync());
-        await RefreshGroups();
+        fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
+        RefreshGroups();
         await InvokeAsync(StateHasChanged);
     }
 
@@ -383,7 +446,7 @@
             DirectoryTemplate.FieldValues.Add((DirectoryTemplateFieldValue)fieldValue.Clone());
         }
 
-        var fieldToModify = DirectoryTemplate.FieldValues.Where(fv => (fv.Field != null && fv.Field.Equals(fieldValue.Field)) 
+        var fieldToModify = DirectoryTemplate.FieldValues.Where(fv => (fv.Field != null && fv.Field.Equals(fieldValue.Field))
         || (fv.CustomField != null && fv.CustomField.Equals(fieldValue.CustomField))).FirstOrDefault();
         return fieldToModify;
     }
@@ -400,8 +463,19 @@
         fieldToModify.Required = newValue;
     }
 
-    protected async Task ParentTemplateChanged(DirectoryTemplate parent)
+    protected void ParentTemplateChanged(DirectoryTemplate parent)
     {
+        var templateCursor = parent;
+        while (templateCursor.ParentTemplate != null)
+        {
+            templateCursor = templateCursor.ParentTemplate;
+            if (templateCursor.Equals(DirectoryTemplate))
+            {
+                SnackBarService.Warning("Circular inheritance detected!");
+                return;
+            }
+
+        }
         DirectoryTemplate.ParentTemplate = parent;
         DirectoryTemplate.ParentTemplateId = parent.Id;
     }
@@ -409,7 +483,7 @@
     protected IADOrganizationalUnit SelectedOU;
     protected IDirectoryEntryAdapter SelectedGroup;
     protected List<IDirectoryEntryAdapter> TemplateGroups = new();
-    protected async Task<IEnumerable<string>> SearchCategories(string? searchTerm)
+    protected async Task<IEnumerable<string?>> SearchCategories(string? searchTerm)
     {
         var categories = await Context.DirectoryTemplates.Select(t => t.Category).Distinct().ToListAsync();
         if (searchTerm.IsNullOrEmpty())
@@ -423,7 +497,7 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    protected async Task RefreshGroups()
+    protected void RefreshGroups()
     {
         TemplateGroups.Clear();
         if (DirectoryTemplate != null)
@@ -441,20 +515,8 @@
     {
         if (Context == null)
             throw new ApplicationException("Database not available");
-        // DirectoryTemplate.ParentTemplateId = DirectoryTemplate.ParentTemplate?.Id;
         DirectoryTemplate.ParentOU = SelectedOU.DN;
-        //DirectoryTemplate.ParentTemplate = null;
-        DirectoryTemplate.AssignedGroupSids.Clear();
-        foreach (var group in TemplateGroups)
-        {
-            var existing = Context.DirectoryTemplateGroups.Where(g => g.GroupSid == group.SID.ToSidString()).FirstOrDefault();
-            if (existing == null)
-                existing = new DirectoryTemplateGroup()
-                    {
-                        GroupSid = group.SID.ToSidString()
-                    };
-            DirectoryTemplate.AssignedGroupSids.Add(existing);
-        }
+     
 
         if (DirectoryTemplate.Id == 0)
         {
@@ -495,6 +557,18 @@
                 SnackBarService.Warning("No changes");
             }
         }
+    }
+
+    private DirectoryTemplate GetParentOfValue(string value, Func<DirectoryTemplate, string?> valueSelector)
+    {
+        var templateCursor = DirectoryTemplate;
+        while (templateCursor.ParentTemplate != null)
+        {
+            templateCursor = templateCursor.ParentTemplate;
+            if (valueSelector.Invoke(templateCursor) != null && valueSelector.Invoke(templateCursor).Equals(value))
+                return templateCursor;
+        }
+        return null;
     }
 
     public class TemplateVariable

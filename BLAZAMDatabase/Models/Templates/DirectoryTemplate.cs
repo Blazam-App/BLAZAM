@@ -116,7 +116,7 @@ namespace BLAZAM.Database.Models.Templates
 
                 if (ParentTemplate != null)
                 {
-                    foreach (var fieldvalue in ParentTemplate.FieldValues)
+                    foreach (var fieldvalue in ParentTemplate.InheritedFieldValues)
                     {
                         if (!allFieldValues.Any(fv => (fv.Field != null && fv.Field.Equals(fieldvalue.Field))
                         || (fv.CustomField != null && fv.CustomField.Equals(fieldvalue.CustomField))))
