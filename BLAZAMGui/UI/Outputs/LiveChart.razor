@@ -1,0 +1,31 @@
+﻿@inherits LiveChartComponentBase
+@if (!Title.IsNullOrEmpty())
+{
+    <h3>@Title</h3>
+}
+<MudChart ChartType="ChartType.Line"
+          ChartSeries="@DataSeries"
+          XAxisLabels="@Data.DistinctBy(ae=>ae.TimeStamp.ToLocalTime().ToShortTimeString()).Select(ae=>ae.TimeStamp.ToLocalTime().ToShortTimeString()).ToArray()"
+          Width="100%"
+          Height="350px"></MudChart>
+
+@code {
+    [Parameter]
+    public Func<double> PollFunc { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+
+
+    protected override void PollData()
+    {
+        //var point = new KeyValuePair<DateTime,double>(DateTime.Now, PollFunc.Invoke());
+        Data.Add(new()
+            {
+                TimeStamp = DateTime.Now,
+                Value = PollFunc.Invoke()
+            });
+        InvokeAsync(StateHasChanged);
+    }
+}

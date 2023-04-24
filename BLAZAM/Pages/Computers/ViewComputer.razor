@@ -69,8 +69,8 @@
 
                     <Section Title=@AppLocalization["Live Stats"]>
                     <MudStack Row Class="@_fieldMudStackClasses">
-                        <DynamicMudInput T=int Label="@AppLocalization["Processor Usage"]" @bind-Value="@processorUsage" Disabled=@true />
-                        <LiveProcessorUsage Computer="@Computer"/>
+                        <LiveChart SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})"/>
+                        <LiveChart SeriesName="Memory Usage" Title="Live RAM Usage" History="30" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})"/>
                     </MudStack>
 
                     </Section>
@@ -160,7 +160,6 @@
 
 
 @code {
-    int processorUsage;
     List<IADComputerDrive> drives = new();
     IADComputer Computer => DirectoryEntry as IADComputer;
     protected override async Task OnInitializedAsync()
@@ -176,13 +175,6 @@
                 await RefreshEntryComponents();
 
             });
-            Task.Run(async () =>
-           {
-                _= Computer.Processor;
-              
-               await RefreshEntryComponents();
-
-           });
            
 
 

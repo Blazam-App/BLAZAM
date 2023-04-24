@@ -9,6 +9,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         IPHostEntry? IPHostEntry { get; set; }
         AppEvent<bool> OnOnlineChanged { get; set; }
         int Processor { get; }
+        double MemoryUsedPercent { get; }
 
         List<IADComputerDrive> GetDrives();
         Task<List<IADComputerDrive>> GetDrivesAsync();

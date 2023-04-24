@@ -59,6 +59,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public ComputerMemory Memory =>wmiConnection?.Memory ?? new();
         public int Processor => wmiConnection.Processor;
+        public double MemoryUsedPercent => wmiConnection.Memory.PercentUsed;
         public List<IADComputerDrive> GetDrives()
         {
             if (wmiConnection == null) return new();
