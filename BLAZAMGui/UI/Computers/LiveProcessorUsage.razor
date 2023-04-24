@@ -1,0 +1,42 @@
+﻿@inherits AppComponentBase
+<h3>LiveProcessorUsage</h3>
+<MudChart ChartType="ChartType.Line"
+          ChartSeries="@DataSeries"
+          XAxisLabels="@Data.DistinctBy(ae=>ae.Key.ToLocalTime().ToShortTimeString()).Select(ae=>ae.Key.ToLocalTime().ToShortTimeString()).ToArray()"
+          Width="100%"
+          Height="350px"></MudChart>
+
+@code {
+    private Dictionary<DateTime, double> Data = new();
+    List<ChartSeries> DataSeries
+    {
+        get
+        {
+            var series = new List<ChartSeries>();
+        
+                series.Add(new ChartSeries
+                    {
+                        Data = Data.Select(g=>g.Value).ToArray(),
+                        Name = "CPU Usage"
+                    });
+            
+            return series;
+
+        }
+    }
+    [Parameter]
+    public IADComputer Computer { get; set; }
+
+    Timer _pollingTimer;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _pollingTimer = new Timer(Tick, Computer, 500, 1000);
+    }
+
+    protected void Tick(object state)
+    {
+        Data.Add(DateTime.Now, Computer.Processor);
+        InvokeAsync(StateHasChanged);
+    }
+}

@@ -8,6 +8,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         bool? Online { get; }
         IPHostEntry? IPHostEntry { get; set; }
         AppEvent<bool> OnOnlineChanged { get; set; }
+        int Processor { get; }
 
         List<IADComputerDrive> GetDrives();
         Task<List<IADComputerDrive>> GetDrivesAsync();

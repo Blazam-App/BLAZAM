@@ -11,13 +11,16 @@
 @switch (type.Name)
 {
     case "int":
+    case "Int32":
     case "double":
     case "long":
     case "float":
         <MudNumericField HelperText="@HelperText" 
             T=T
+            Label="@Label"
+            
                  Immediate=@Immediate
-            HideSpinButtons="true" 
+            HideSpinButtons="false" 
             @bind-Value="@Value" 
             Clearable=@Clearable />
         break;

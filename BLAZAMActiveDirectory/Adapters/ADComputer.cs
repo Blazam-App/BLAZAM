@@ -57,7 +57,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     OnOnlineChanged?.Invoke((bool)value);
             }
         }
-
+        public ComputerMemory Memory =>wmiConnection?.Memory ?? new();
+        public int Processor => wmiConnection.Processor;
         public List<IADComputerDrive> GetDrives()
         {
             if (wmiConnection == null) return new();
