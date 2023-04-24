@@ -3,25 +3,28 @@
 @using Microsoft.Data.SqlClient;
 @using Microsoft.EntityFrameworkCore;
 @inherits ValidatedForm
+@attribute [Authorize]
+@if (DirectoryTemplate != null)
+{
+    <EditForm OnValidSubmit="SaveTemplate" Model="DirectoryTemplate">
+        <MudStack>
 
-<EditForm OnValidSubmit="SaveTemplate" Model="DirectoryTemplate">
-    <MudStack>
-
-        <MudSelectList T="DirectoryTemplate"
+            <MudSelectList T="DirectoryTemplate"
+                       Clearable=true
                        Label="Parent Template"
                        Values="@otherTemplates"
                        Value="@DirectoryTemplate.ParentTemplate"
                        ValueChanged="@ParentTemplateChanged" />
-        <MudTextField Label="@AppLocalization["Template Name"]"
+            <MudTextField Label="@AppLocalization["Template Name"]"
                       @bind-Value=DirectoryTemplate.Name />
 
-        <MudAutocomplete CoerceValue SearchFunc="SearchCategories"
+            <MudAutocomplete CoerceValue SearchFunc="SearchCategories"
                          @bind-Value=DirectoryTemplate.Category
                          Label="@AppLocalization["Template Category"]" />
 
 
 
-        <MudCard>
+            <MudCard>
             Variables:
             <MudStack Row=true>
                 <code>{fn}</code>:First Name<br />
@@ -55,90 +58,81 @@
                 <code>{Num}</code>:Random number<br />
 
             </MudStack>
-        </MudCard>
-        <Section Title="Account and Name">
+            </MudCard>
+            <Section Title="Account and Name">
 
 
 
             <MudElement Class="d-flex flex-wrap gap-5">
-                <MudTooltip ShowOnHover=@DirectoryTemplate.UsernameFormula.IsNullOrEmpty() Text="This value is inherited">
-                    <MudBadge Visible=@DirectoryTemplate.UsernameFormula.IsNullOrEmpty()
-                              Dot=true
-                              Overlap=true
-                              Color="Color.Info">
 
 
+                @{
+                        var usernameFromTemplate = GetParentOfValue(DirectoryTemplate.EffectiveUsernameFormula, template => template.UsernameFormula); ;
+                    }
+                    <TemplateOverride SourceTemplate="@usernameFromTemplate">
                         <MudTextField Label="Username Format"
-                                      @bind-Value=DirectoryTemplate.EffectiveUsernameFormula />
-                    </MudBadge>
-                </MudTooltip>
+                                  @bind-Value=DirectoryTemplate.EffectiveUsernameFormula />
+                    </TemplateOverride>
 
-                <MudTooltip ShowOnHover=@DirectoryTemplate.DisplayNameFormula.IsNullOrEmpty() Text="This value is inherited">
-                    <MudBadge Visible=@DirectoryTemplate.DisplayNameFormula.IsNullOrEmpty()
-                              Dot=true
-                              Overlap=true
-                              Color="Color.Info">
-
-
+                    @{
+                        var displayNameFromTemplateName = GetParentOfValue(DirectoryTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
+                    }
+                    <TemplateOverride SourceTemplate="@displayNameFromTemplateName">
                         <MudTextField Label="Display Name Format"
-                                      @bind-Value=DirectoryTemplate.EffectiveDisplayNameFormula />
-                    </MudBadge>
-                </MudTooltip>
+                                  @bind-Value=DirectoryTemplate.EffectiveDisplayNameFormula />
+                    </TemplateOverride>
 
-                <MudTooltip ShowOnHover=@DirectoryTemplate.PasswordFormula.IsNullOrEmpty() Text="This value is inherited">
-                    <MudBadge Visible=@DirectoryTemplate.PasswordFormula.IsNullOrEmpty()
-                              Dot=true
-                              Overlap=true
-                              Color="Color.Info">
-
-
+                    @{
+                        var passwordFromTemplateName = GetParentOfValue(DirectoryTemplate.EffectivePasswordFormula, template => template.PasswordFormula); ;
+                    }
+                    <TemplateOverride SourceTemplate="@usernameFromTemplate">
                         <MudTextField Label="Password"
-                                      Placeholder="{AlphaNum}{Alpha:U}{Alpha:L}{Num}{Num}{Num}"
-                                      @bind-Value=DirectoryTemplate.EffectivePasswordFormula />
-                    </MudBadge>
-                </MudTooltip>
+                                  Placeholder="{AlphaNum}{Alpha:U}{Alpha:L}{Num}{Num}{Num}"
+                                  @bind-Value=DirectoryTemplate.EffectivePasswordFormula />
+                    </TemplateOverride>
 
 
 
 
-            </MudElement>
 
-        </Section>
-        <Section Title="Fields">
-            <MudCard>
-                Variables:
-                <MudStack Row=true>
-                    All above in addition to
-                </MudStack>
+                </MudElement>
 
-                <MudStack Row=true>
-                    <code>{username}</code>:Username<br />
-                </MudStack>
+            </Section>
+            <Section Title="Fields">
+                <MudCard>
+                    Variables:
+                    <MudStack Row=true>
+                        All above in addition to
+                    </MudStack>
 
-            </MudCard>
+                    <MudStack Row=true>
+                        <code>{username}</code>:Username<br />
+                    </MudStack>
 
-            <MudDrawerContainer Class="mud-height-full" Style="min-height:200px">
-                <MudDrawer @bind-Open="@open" Elevation="0" Variant="@DrawerVariant.Persistent">
-                    <MudStack Class="my-0 py-0">
-                        @foreach (var field in fields.OrderBy(f => f.DisplayName))
-                        {
-                            @if (field.FieldName != "samaccountname" &&
-                           field.FieldName != "userPrincipalName" &&
+                </MudCard>
 
-                           field.FieldName != "sn" &&
-                           field.FieldName != "givenname" &&
-                           field.FieldName != "middleName" &&
-                           field.FieldName != "displayName" &&
-                           field.FieldName != "cn" &&
-                           field.FieldName != "site" &&
-                           field.FieldName != "distinguishedName" &&
-                           field.FieldName != "memberOf" &&
-                           field.FieldName != "objectSID" &&
-                           !DirectoryTemplate.InheritedFieldValues.Any(f => f.Field?.Equals(field) == true) &&
-                           !DirectoryTemplate.InheritedFieldValues.Any(f => f.CustomField?.Equals(field) == true) &&
-                           field.IsActionAppropriateForObject(DirectoryTemplate.ObjectType))
+                <MudDrawerContainer Class="mud-height-full" Style="min-height:200px">
+                    <MudDrawer @bind-Open="@open" Elevation="0" Variant="@DrawerVariant.Persistent">
+                        <MudStack Class="my-0 py-0">
+                            @foreach (var field in fields.OrderBy(f => f.DisplayName))
                             {
-                                <MudButton Class=" my-0" OnClick=@(()=>{
+                                @if (field.FieldName != "samaccountname" &&
+                               field.FieldName != "userPrincipalName" &&
+
+                               field.FieldName != "sn" &&
+                               field.FieldName != "givenname" &&
+                               field.FieldName != "middleName" &&
+                               field.FieldName != "displayName" &&
+                               field.FieldName != "cn" &&
+                               field.FieldName != "site" &&
+                               field.FieldName != "distinguishedName" &&
+                               field.FieldName != "memberOf" &&
+                               field.FieldName != "objectSID" &&
+                               !DirectoryTemplate.InheritedFieldValues.Any(f => f.Field?.Equals(field) == true) &&
+                               !DirectoryTemplate.InheritedFieldValues.Any(f => f.CustomField?.Equals(field) == true) &&
+                               field.IsActionAppropriateForObject(DirectoryTemplate.ObjectType))
+                                {
+                                    <MudButton Class=" my-0" OnClick=@(()=>{
                                    if(field is ActiveDirectoryField adField){
                                    DirectoryTemplate.FieldValues.Add(new(){ Field=adField});
                                    }else if(field is CustomActiveDirectoryField customField){
@@ -146,152 +140,172 @@
                                    }
                                    })> <MudText Color="Color.Tertiary">@field.DisplayName</MudText></MudButton>
 
+                                }
+
                             }
-
-                        }
-                    </MudStack>
-                </MudDrawer>
+                        </MudStack>
+                    </MudDrawer>
 
 
 
-                <div class="d-flex justify-center align-center mud-height-full">
-                    <MudStack>
-                        <MudDataGrid Items="@DirectoryTemplate.InheritedFieldValues.OrderBy(fv => fv.FieldDisplayName)"
+                    <div class="d-flex justify-center align-center mud-height-full">
+                        <MudStack>
+                            <MudDataGrid Items="@DirectoryTemplate.InheritedFieldValues.OrderBy(fv => fv.FieldDisplayName)"
                                      Dense=true
                                      Striped=true
                                      Bordered=true
                                      Hover=true>
 
-                            <ToolBarContent>
-                                <MudText Typo="Typo.h6">Fields</MudText>
-                                <MudSpacer />
-                                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{open=!open;})">Toggle Fields</MudButton>
+                                <ToolBarContent>
+                                    <MudText Typo="Typo.h6">Fields</MudText>
+                                    <MudSpacer />
+                                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{open=!open;})">Toggle Fields</MudButton>
 
-                            </ToolBarContent>
-                            <Columns>
-                                <TemplateColumn Title="Name">
-                                    <CellTemplate Context="cellContext">
-                                        <MudBadge Dot=true
-                                                  Color=Color.Info
-                                                  Visible=@(!DirectoryTemplate.FieldValues.Contains(cellContext.Item))>
-                                            <MudText>@cellContext.Item.FieldDisplayName</MudText>
+                                </ToolBarContent>
+                                <Columns>
+                                    <TemplateColumn Title="Name">
+                                        <CellTemplate Context="cellContext">
+                                            @{
+                                                var fromTemplateName = otherTemplates.Where(ot => ot.FieldValues.Contains(cellContext.Item)).FirstOrDefault();
+                                            }
+                                            <TemplateOverride SourceTemplate="@fromTemplateName">
+                                                <MudText>@cellContext.Item.FieldDisplayName</MudText>
 
-                                        </MudBadge>
+                                            </TemplateOverride>
 
-                                    </CellTemplate>
-                                </TemplateColumn>
-                                <TemplateColumn Title="Value">
-                                    <CellTemplate Context="cellContext">
-                                        <MudTextField T=string Value=cellContext.Item.Value
+
+                                        </CellTemplate>
+                                    </TemplateColumn>
+                                    <TemplateColumn Title="Value">
+                                        <CellTemplate Context="cellContext">
+                                            <MudTextField T=string Value=cellContext.Item.Value
                                                       ValueChanged=@((newValue)=>{ValueChanged(newValue,cellContext.Item);}) />
 
-                                    </CellTemplate>
-                                </TemplateColumn>
-                                <TemplateColumn Title="Editable">
-                                    <CellTemplate Context="cellContext">
-                                        <MudCheckBox T=bool
+                                        </CellTemplate>
+                                    </TemplateColumn>
+                                    <TemplateColumn Title="Editable">
+                                        <CellTemplate Context="cellContext">
+                                            <MudCheckBox T=bool
                                                      Label="Editable"
                                                      Checked=cellContext.Item.Editable
                                                      CheckedChanged="@((newValue)=>{EditableChanged(newValue,cellContext.Item);})" />
 
-                                    </CellTemplate>
-                                </TemplateColumn>
-                                <TemplateColumn Title="Required">
-                                    <CellTemplate Context="cellContext">
-                                        <MudCheckBox T=bool
+                                        </CellTemplate>
+                                    </TemplateColumn>
+                                    <TemplateColumn Title="Required">
+                                        <CellTemplate Context="cellContext">
+                                            <MudCheckBox T=bool
                                                      Label="Required"
                                                      Checked=cellContext.Item.Required
                                                      CheckedChanged="@((newValue)=>{RequiredChanged(newValue,cellContext.Item);})"
                                                      Disabled=@(!cellContext.Item.Editable) />
 
-                                    </CellTemplate>
-                                </TemplateColumn>
-                                <TemplateColumn>
-                                    <CellTemplate Context="cellContext">
-                                        @if (DirectoryTemplate.IsValueOverriden(cellContext.Item))
-                                        {
-                                            <MudIconButton DisableElevation=true
-                                                Color="Color.Dark"
+                                        </CellTemplate>
+                                    </TemplateColumn>
+                                    <TemplateColumn>
+                                        <CellTemplate Context="cellContext">
+                                            @if (DirectoryTemplate.IsValueOverriden(cellContext.Item))
+                                            {
+                                                <MudIconButton DisableElevation=true
+                                                       Color="Color.Dark"
                                                        Icon="@Icons.Material.Filled.Undo"
                                                        OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
-                                        }
-                                        else
-                                        {
-                                            <AppCloseButton Disabled=@(!DirectoryTemplate.FieldValues.Contains(cellContext.Item))
+                                            }
+                                            else
+                                            {
+                                                <AppCloseButton Disabled=@(!DirectoryTemplate.FieldValues.Contains(cellContext.Item))
                                                         OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
 
-                                        }
+                                            }
 
-                                    </CellTemplate>
-                                </TemplateColumn>
-                            </Columns>
-                        </MudDataGrid>
+                                        </CellTemplate>
+                                    </TemplateColumn>
+                                </Columns>
+                            </MudDataGrid>
 
-                    </MudStack>
-                </div>
-            </MudDrawerContainer>
+                        </MudStack>
+                    </div>
+                </MudDrawerContainer>
 
-        </Section>
+            </Section>
 
-        <Section Title="Organizational Unit">
-
-            <MudTooltip ShowOnHover=@DirectoryTemplate.ParentOU.IsNullOrEmpty() Text="This value is inherited">
-                <MudBadge Visible=@DirectoryTemplate.ParentOU.IsNullOrEmpty()
-                          Dot=true
-                          Overlap=true
-                          Color="Color.Info">
+            <Section Title="Organizational Unit">
+                @{
+                    var ouTemplateSourceName = GetParentOfValue(DirectoryTemplate.EffectiveParentOU, template => template.ParentOU);
+                }
+                <TemplateOverride SourceTemplate="@ouTemplateSourceName">
                     <OUTreeView Label=@(AppLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
-                                StartRootExpanded=false
-                                @bind-SelectedOU=@SelectedOU
-                                @bind-StartingSelectedOU=@SelectedOU />
-                </MudBadge>
-            </MudTooltip>
+                            StartRootExpanded=false
+                            @bind-SelectedOU=@SelectedOU
+                            @bind-StartingSelectedOU=@SelectedOU />
+                    @if (!DirectoryTemplate.ParentOU.IsNullOrEmpty())
+                    {
+                        <MudIconButton DisableElevation=true
+                               Class="d-inline-flex pa-0"
+                               Style="vertical-align:top;"
+                               Color="Color.Dark"
+                               Icon="@Icons.Material.Filled.Undo"
+                               OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;}) />
+                    }
+                </TemplateOverride>
 
 
 
-        </Section>
-        <Section Title="Assigned Groups">
 
 
-            @foreach (var group in TemplateGroups)
-            {
-                <MudText>@group</MudText>
-            }
-            <MudStack Row=true>
-                <ADAutoComplete Label="@AppLocalization["Groups"]"
+            </Section>
+            <Section Title="Assigned Groups">
+
+
+                @foreach (var group in DirectoryTemplate.InheritedAssignedGroupSids)
+                {
+                    
+                        var groupFromTemplate = otherTemplates.Where(ot => ot.AssignedGroupSids.Contains(group)).FirstOrDefault();
+                    <TemplateOverride SourceTemplate="@groupFromTemplate">
+                        <AssignedTemplateGroup Group="group" />
+                    </TemplateOverride>
+                   
+                }
+                <MudStack Row=true>
+                    <ADAutoComplete Label="@AppLocalization["Groups"]"
                                 Multiple=true
                                 @bind-SelectedResult="@SelectedGroup" />
-                <MudFab Size="Size.Small" StartIcon=@Icons.Material.Filled.Add
+                    <MudFab Size="Size.Small" StartIcon=@Icons.Material.Filled.Add
                         Color="Color.Primary"
-                        OnClick="@(()=>{TemplateGroups.Add(SelectedGroup);})" />
-            </MudStack>
+                        OnClick="@(()=>{if(SelectedGroup!=null) AssignGroup(SelectedGroup as IADGroup);})" />
+                </MudStack>
 
-        </Section>
+            </Section>
 
-    </MudStack>
+        </MudStack>
 
-    @{
-        string buttonText = "";
+        @{
+            string buttonText = "";
+            @if (DirectoryTemplate.Id == 0)
+            {
+                buttonText = "Add this template";
+            }
+            else
+            {
+                buttonText = "Save this template";
+            }
+        }
+        <MudButton Disabled=SaveDisabled Color="Color.Success" ButtonType="ButtonType.Submit">@buttonText</MudButton>
         @if (DirectoryTemplate.Id == 0)
         {
-            buttonText = "Add this template";
-        }
-        else
-        {
-            buttonText = "Save this template";
-        }
-    }
-    <MudButton Disabled=SaveDisabled Color="Color.Success" ButtonType="ButtonType.Submit">@buttonText</MudButton>
-    @if (DirectoryTemplate.Id == 0)
-    {
-        <MudButton Color="Color.Warning" OnClick="@(()=>{ DirectoryTemplate=new();})">Cancel</MudButton>
+            <MudButton Color="Color.Warning" OnClick="@(()=>{ DirectoryTemplate=new();})">Cancel</MudButton>
 
-    }
-</EditForm>
+        }
 
-@code{
+    </EditForm>
+}
+@code {
     protected string groupText;
     protected bool open;
+    protected bool _usernamePopoverOpen;
+    protected bool _displayNamePopoverOpen;
+    protected bool _passwordPopoverOpen;
+    protected bool _ouPopoverOpen;
 #nullable disable warnings
     protected bool ouCollapseVisible = true;
     //Validations? validations;
@@ -331,7 +345,7 @@
         };
     protected List<string> selectedUsernameFormatValues { get; set; } = new();
     public DirectoryTemplate _template;
-    public List<DirectoryTemplate> otherTemplates;
+    public List<DirectoryTemplate> otherTemplates = new();
     [Parameter]
     public DirectoryTemplate DirectoryTemplate
     {
@@ -348,7 +362,16 @@
 
     [Parameter]
     public EventCallback<DirectoryTemplate> DirectoryTemplateChanged { get; set; }
-
+    protected async Task AssignGroup(IADGroup? group)
+    {
+        var existing = await Context.DirectoryTemplateGroups.Where(g => g.GroupSid == group.SID.ToSidString()).FirstOrDefaultAsync();
+        if (existing == null)
+            existing = new DirectoryTemplateGroup()
+                {
+                    GroupSid = group.SID.ToSidString()
+                };
+        DirectoryTemplate.AssignedGroupSids.Add(existing);
+    }
     protected async Task LoadData()
     {
         if (Context == null)
@@ -365,8 +388,8 @@
         //    SelectedOU = await Directory.OUs.GetApplicationRootOU();
         //}
         fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
-        fields.AddRange(await Context.CustomActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync());
-        await RefreshGroups();
+        fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
+        RefreshGroups();
         await InvokeAsync(StateHasChanged);
     }
 
@@ -383,7 +406,7 @@
             DirectoryTemplate.FieldValues.Add((DirectoryTemplateFieldValue)fieldValue.Clone());
         }
 
-        var fieldToModify = DirectoryTemplate.FieldValues.Where(fv => (fv.Field != null && fv.Field.Equals(fieldValue.Field)) 
+        var fieldToModify = DirectoryTemplate.FieldValues.Where(fv => (fv.Field != null && fv.Field.Equals(fieldValue.Field))
         || (fv.CustomField != null && fv.CustomField.Equals(fieldValue.CustomField))).FirstOrDefault();
         return fieldToModify;
     }
@@ -400,8 +423,19 @@
         fieldToModify.Required = newValue;
     }
 
-    protected async Task ParentTemplateChanged(DirectoryTemplate parent)
+    protected void ParentTemplateChanged(DirectoryTemplate parent)
     {
+        var templateCursor = parent;
+        while (templateCursor.ParentTemplate != null)
+        {
+            templateCursor = templateCursor.ParentTemplate;
+            if (templateCursor.Equals(DirectoryTemplate))
+            {
+                SnackBarService.Warning("Circular inheritance detected!");
+                return;
+            }
+
+        }
         DirectoryTemplate.ParentTemplate = parent;
         DirectoryTemplate.ParentTemplateId = parent.Id;
     }
@@ -409,7 +443,7 @@
     protected IADOrganizationalUnit SelectedOU;
     protected IDirectoryEntryAdapter SelectedGroup;
     protected List<IDirectoryEntryAdapter> TemplateGroups = new();
-    protected async Task<IEnumerable<string>> SearchCategories(string? searchTerm)
+    protected async Task<IEnumerable<string?>> SearchCategories(string? searchTerm)
     {
         var categories = await Context.DirectoryTemplates.Select(t => t.Category).Distinct().ToListAsync();
         if (searchTerm.IsNullOrEmpty())
@@ -423,7 +457,7 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    protected async Task RefreshGroups()
+    protected void RefreshGroups()
     {
         TemplateGroups.Clear();
         if (DirectoryTemplate != null)
@@ -441,20 +475,8 @@
     {
         if (Context == null)
             throw new ApplicationException("Database not available");
-        // DirectoryTemplate.ParentTemplateId = DirectoryTemplate.ParentTemplate?.Id;
         DirectoryTemplate.ParentOU = SelectedOU.DN;
-        //DirectoryTemplate.ParentTemplate = null;
-        DirectoryTemplate.AssignedGroupSids.Clear();
-        foreach (var group in TemplateGroups)
-        {
-            var existing = Context.DirectoryTemplateGroups.Where(g => g.GroupSid == group.SID.ToSidString()).FirstOrDefault();
-            if (existing == null)
-                existing = new DirectoryTemplateGroup()
-                    {
-                        GroupSid = group.SID.ToSidString()
-                    };
-            DirectoryTemplate.AssignedGroupSids.Add(existing);
-        }
+
 
         if (DirectoryTemplate.Id == 0)
         {
@@ -495,6 +517,18 @@
                 SnackBarService.Warning("No changes");
             }
         }
+    }
+
+    private DirectoryTemplate GetParentOfValue(string value, Func<DirectoryTemplate, string?> valueSelector)
+    {
+        var templateCursor = DirectoryTemplate;
+        while (templateCursor.ParentTemplate != null)
+        {
+            templateCursor = templateCursor.ParentTemplate;
+            if (valueSelector.Invoke(templateCursor) != null && valueSelector.Invoke(templateCursor).Equals(value))
+                return templateCursor;
+        }
+        return null;
     }
 
     public class TemplateVariable

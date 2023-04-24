@@ -17,7 +17,7 @@
                 </CellTemplate>
             </TemplateColumn>
             <PropertyColumn Property="x=>x.IdleTime" />
-            <TemplateColumn>
+            <TemplateColumn Title="Message">
                 <CellTemplate>
                     @if (context.Item.ConnectionState.ToString() == "Active")
                     {
@@ -28,7 +28,7 @@
                     }
                 </CellTemplate>
             </TemplateColumn>
-                <TemplateColumn>
+                <TemplateColumn Tile="Manage">
                     <CellTemplate>
                     @if (context.Item.ConnectionState.ToString() == "Active")
                     {

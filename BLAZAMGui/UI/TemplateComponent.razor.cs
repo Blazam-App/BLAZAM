@@ -16,6 +16,20 @@ namespace BLAZAM.Gui.UI
 
         protected SetHeader? Header { get; set; }
 
+        private int _templateIdParameter;
+        [Parameter]
+        public int TemplateIdParameter
+        {
+            get => _templateIdParameter;
+            set
+            {
+                _templateIdParameter = value;
+                if (value != null)
+                    SelectedTemplate = Templates.Where(t => t.Id == value).FirstOrDefault();
+                else
+                    SelectedTemplate = null;
+            }
+        }
 
         protected IEnumerable<DirectoryTemplate> Templates
         {
@@ -30,7 +44,7 @@ namespace BLAZAM.Gui.UI
             set => templates = value;
         }
         protected IEnumerable<string?> TemplateCategories { get; private set; }
-        protected DirectoryTemplate SelectedTemplate
+        protected DirectoryTemplate? SelectedTemplate
         {
             get => selectedTemplate; set
             {
@@ -68,6 +82,10 @@ namespace BLAZAM.Gui.UI
                 TemplateCategories = cats;
                 TemplateCategories = TemplateCategories.Prepend("All");
                 SelectedCategory = TemplateCategories.FirstOrDefault();
+            }
+            if (TemplateIdParameter != 0)
+            {
+                SelectedTemplate= Templates.Where(t=>t.Id==TemplateIdParameter).FirstOrDefault();
             }
             await InvokeAsync(StateHasChanged);
             Header?.OnRefreshRequested?.Invoke();

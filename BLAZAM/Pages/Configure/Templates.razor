@@ -1,4 +1,5 @@
 ﻿@page "/templates"
+@page "/templates/{TemplateIdParameter:int}"
 @inherits TemplateComponent
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
@@ -14,27 +15,32 @@
             Templates
 
         </div>
-
+        
         <MudSelectList T="string"
-            Label="Category"
+                       Label="Category"
                        Values="TemplateCategories"
                        @bind-Value="@SelectedCategory" />
 
-
         <MudSelectList T="DirectoryTemplate"
-            Label="Template"
+                       Label="Template"
                        Values="@Templates"
-                       @bind-Value="@SelectedTemplate" />
+                       Value="@SelectedTemplate"
+                       ValueChanged="@((selected)=>{
+SelectedTemplate = selected;
+Nav.NavigateTo("/templates/"+selected.Id);
+})" />
         @if (Templates?.Count() > 0)
         {
             <MudButton Color=Color.Tertiary OnClick="@(()=>{
 SelectedTemplate = new();
 })" StartIcon="@Icons.Material.Filled.AddCard" />
 
-        }else{
+        }
+        else
+        {
             <MudTooltip Arrow=true IsVisible=@(Templates?.Count()<1) Text="Create your first template">
 
-                <MudButton Color=Color.Tertiary OnClick="@(()=>{SelectedTemplate = new();})" StartIcon="@Icons.Material.Filled.AddCard" />
+                <MudButton Color=Color.Tertiary OnClick="@(()=>{SelectedTemplate = new();Nav.NavigateTo("/templates");})" StartIcon="@Icons.Material.Filled.AddCard" />
 
             </MudTooltip>
 
@@ -63,6 +69,7 @@ SelectedTemplate = new();
 </SetHeader>
 @if (SelectedTemplate != null)
 {
+    <MudText>Test</MudText>
     <EditDirectoryTemplate DirectoryTemplate=@SelectedTemplate />
 }
 
@@ -70,6 +77,8 @@ SelectedTemplate = new();
 
 
 @code {
+
+
     AppModal? RenameModal;
     string? newCategoryName;
     protected async Task DuplicateTemplate(DirectoryTemplate template)

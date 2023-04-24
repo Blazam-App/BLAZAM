@@ -37,10 +37,8 @@ namespace BLAZAM.Database.Models.Templates
         {
             get
             {
-                if (DisplayNameFormula == null)
-                    return ParentTemplate?.EffectiveDisplayNameFormula ?? string.Empty;
-                else
-                    return DisplayNameFormula;
+                return GetEffectiveValue(t => t.DisplayNameFormula, t => t.EffectiveDisplayNameFormula);
+           
             }
             set => DisplayNameFormula = value;
         }
@@ -51,10 +49,8 @@ namespace BLAZAM.Database.Models.Templates
         {
             get
             {
-                if (PasswordFormula == null)
-                    return ParentTemplate?.EffectivePasswordFormula ?? string.Empty;
-                else
-                    return PasswordFormula;
+                return GetEffectiveValue(t => t.PasswordFormula, t => t.EffectivePasswordFormula);
+             
             }
             set => PasswordFormula = value;
         }
@@ -65,10 +61,8 @@ namespace BLAZAM.Database.Models.Templates
         {
             get
             {
-                if (UsernameFormula == null)
-                    return ParentTemplate?.EffectiveUsernameFormula ?? string.Empty;
-                else
-                    return UsernameFormula;
+                return GetEffectiveValue(t => t.UsernameFormula, t => t.EffectiveUsernameFormula);
+              
             }
             set => UsernameFormula = value;
         }
@@ -79,12 +73,24 @@ namespace BLAZAM.Database.Models.Templates
         {
             get
             {
-                if (ParentOU == null)
-                    return ParentTemplate?.EffectiveParentOU ?? string.Empty;
-                else
-                    return EffectiveParentOU;
+                return GetEffectiveValue(t=>t.ParentOU,t=>t.EffectiveParentOU);
             }
-            set => EffectiveParentOU = value;
+            set => ParentOU = value;
+        }
+
+        private string GetEffectiveValue(Func<DirectoryTemplate,string?>localSelector, Func<DirectoryTemplate, string?> effectiveSelector)
+        {
+            if (localSelector.Invoke(this) == null)
+            {
+                if (ParentTemplate == null) return "";
+               var effectiveValue = effectiveSelector.Invoke(ParentTemplate);
+                if (effectiveValue == null)
+                    return "";
+                else
+                    return effectiveValue;
+            }
+            else
+                return localSelector(this);
         }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -116,7 +122,7 @@ namespace BLAZAM.Database.Models.Templates
 
                 if (ParentTemplate != null)
                 {
-                    foreach (var fieldvalue in ParentTemplate.FieldValues)
+                    foreach (var fieldvalue in ParentTemplate.InheritedFieldValues)
                     {
                         if (!allFieldValues.Any(fv => (fv.Field != null && fv.Field.Equals(fieldvalue.Field))
                         || (fv.CustomField != null && fv.CustomField.Equals(fieldvalue.CustomField))))
@@ -247,7 +253,7 @@ namespace BLAZAM.Database.Models.Templates
         }
         public bool HasEmptyFields()
         {
-            return FieldValues.Any(fv => fv.Editable);
+            return InheritedFieldValues.Any(fv => fv.Editable);
         }
         public string GenerateDisplayName(NewUserName newUser)
         {

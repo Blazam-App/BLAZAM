@@ -30,25 +30,28 @@ namespace BLAZAM.Gui.UI
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            switch (DirectoryEntry.GetType())
+            if (DirectoryEntry != null)
             {
-                case IADUser:
+                switch (DirectoryEntry.GetType())
+                {
+                    case IADUser:
                         await AuditLogger.User.Searched(DirectoryEntry);
-                    break; 
-                case IADGroup:
+                        break;
+                    case IADGroup:
                         await AuditLogger.User.Searched(DirectoryEntry);
-                    break; 
-                case IADComputer:
+                        break;
+                    case IADComputer:
                         await AuditLogger.User.Searched(DirectoryEntry);
-                    break; 
-                case IADOrganizationalUnit:
+                        break;
+                    case IADOrganizationalUnit:
                         await AuditLogger.User.Searched(DirectoryEntry);
-                    break; 
+                        break;
+                }
+
+
+                DirectoryEntry.OnModelChanged += async () => { await RefreshEntryComponents(); };
+                DirectoryEntry.OnDirectoryModelRenamed += Renamed;
             }
-
-
-            DirectoryEntry.OnModelChanged += async () => { await RefreshEntryComponents(); };
-            DirectoryEntry.OnDirectoryModelRenamed += Renamed;
             CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
             LoadingData = false;
         }

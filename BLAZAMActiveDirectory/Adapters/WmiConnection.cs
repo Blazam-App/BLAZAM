@@ -6,6 +6,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     internal class WmiConnection
     {
+        private const string DriveStatsQuery = "SELECT DeviceID,FreeSpace,Size,Description,DriveType,FileSystem,MediaType,VolumeDirty,VolumeSerialNumber FROM Win32_LogicalDisk";
+        private const string TotalMemoryQuery = "SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem";
+        private const string CPUStatsQuery = "SELECT * FROM Win32_PerfFormattedData_PerfOS_Processor WHERE Name='_Total'";
+        private const string IPStatsQuery = "SELECT * FROM Win32_NetworkAdapterConfiguration WHERE IPEnabled = 'TRUE'";
         private ManagementScope managementScope;
 
         public WmiConnection(ManagementScope managementScope)
@@ -13,6 +17,36 @@ namespace BLAZAM.ActiveDirectory.Adapters
             this.managementScope = managementScope;
         }
 
+        public ComputerMemory Memory
+        {
+            get
+            {
+                foreach (var mo in PerformQuery(TotalMemoryQuery))
+                {
+                    double total = Convert.ToDouble(mo["TotalVisibleMemorySize"]);
+                    double free = Convert.ToDouble(mo["FreePhysicalMemory"]);
+                    return new ComputerMemory { Total = total, Free = free };
+                };
+
+                return new ComputerMemory();
+
+            }
+        }
+
+        public int Processor
+        {
+            get
+            {
+                foreach (var mo in PerformQuery(CPUStatsQuery))
+                {
+                    var test = mo;
+                    int percentIdle = Convert.ToInt32(mo["PercentIdleTime"]);
+                    int percentProcessor = Convert.ToInt32(mo["PercentProcessorTime"]);
+                    return percentProcessor;
+                }
+                return 0;
+            }
+        }
 
         public List<IADComputerDrive> Drives
         {
@@ -22,13 +56,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 try
                 {
 
-
-
-                    ObjectQuery query = new ObjectQuery("SELECT DeviceID,FreeSpace,Size,Description,DriveType,FileSystem,MediaType,VolumeDirty,VolumeSerialNumber FROM Win32_LogicalDisk");
-                    ManagementObjectSearcher searcher = new ManagementObjectSearcher(managementScope, query);
-                    ManagementObjectCollection queryCollection = searcher.Get();
-
-                    foreach (ManagementObject mo in queryCollection)
+                    foreach (var mo in PerformQuery(DriveStatsQuery))
                     {
                         string letter = mo["DeviceID"]?.ToString();
                         string description = mo["Description"]?.ToString();
@@ -63,5 +91,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
+        private List<ManagementObject> PerformQuery(string query)
+        {
+            List<ManagementObject> results = new();
+            ObjectQuery objectQuery = new ObjectQuery(query);
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher(managementScope, objectQuery);
+            ManagementObjectCollection queryCollection = searcher.Get();
+            if (queryCollection.Count > 0)
+            {
+                foreach (ManagementObject mo in queryCollection)
+                {
+                    results.Add(mo);
+                }
+            }
+            return results;
+
+        }
     }
 }
