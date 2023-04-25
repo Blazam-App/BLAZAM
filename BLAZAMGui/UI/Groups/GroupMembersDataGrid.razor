@@ -1,0 +1,104 @@
+@inherits AppComponentBase
+@if (!Members.IsNullOrEmpty())
+{
+    <MudDataGrid Elevation=0
+             Items="@Group.Members.Where(m=>m.CanRead)"
+             Filterable="false"
+             Dense=true
+             SortMode="@SortMode.None"
+             Groupable="false">
+        <Columns>
+            <TemplateColumn Context="templateContext">
+                <HeaderTemplate>
+                    Type
+                </HeaderTemplate>
+                <CellTemplate Context="cellContext">
+                    @{
+                        var icon = Icons.Material.Filled.Person;
+                        switch (cellContext.Item.ObjectType)
+                        {
+                            case ActiveDirectoryObjectType.Group:
+                                icon = Icons.Material.Filled.People;
+                                break;
+                            case ActiveDirectoryObjectType.Computer:
+                                icon = Icons.Material.Filled.Computer;
+                                break;
+                        }
+
+                    }
+                    <MudTooltip Text="@cellContext.Item.ObjectType.ToString()">
+                        <MudIcon Icon="@icon" />
+                    </MudTooltip>
+
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Context="templateContext">
+                <HeaderTemplate>
+                    Name
+                </HeaderTemplate>
+                <CellTemplate Context="cellContext">
+                    <MudLink OnClick="@(()=>{Nav.NavigateTo(cellContext.Item.SearchUri);})">
+                        @cellContext.Item.CanonicalName
+                    </MudLink>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Context="templateContext">
+                <HeaderTemplate>
+                    OU
+                </HeaderTemplate>
+                <CellTemplate Context="cellContext">
+                    <MudText>
+                        @cellContext.Item.OU.ToPrettyOu()
+                    </MudText>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Context="templateContext">
+                <HeaderTemplate>
+                    Remove Member
+                </HeaderTemplate>
+                <CellTemplate Context="cellContext">
+                    <MudTooltip ShowOnHover=@(!cellContext.Item.CanUnassign) Text="You don't have permission to remove this group member">
+                        <MudButton Disabled=@(!cellContext.Item.CanUnassign) Color="Color.Error" OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(StateHasChanged);})">
+                            Remove
+                        </MudButton>
+                    </MudTooltip>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+    if (Members.Where(m => !m.CanRead).Count() > 0)
+    {
+        <MudAlert Class="mud-alert-filled-info">
+            The group has more members you don't have access to
+        </MudAlert>
+    }
+}
+else
+{
+    <MudOverlay Visible=true Absolute=true DarkBackground=true>
+        <MudProgressCircular Indeterminate Color=Color.Primary />
+        </MudOverlay>
+}
+
+
+@code {
+    [Parameter]
+    public IADGroup Group { get; set; }
+
+    List<IGroupableDirectoryAdapter> Members = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await Task.Run(() =>
+        {
+            Members = Group.Members;
+            InvokeAsync(StateHasChanged);
+
+        });
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+}

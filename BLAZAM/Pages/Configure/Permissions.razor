@@ -20,25 +20,25 @@
 
                 @if (Monitor.DirectoryConnected == ServiceConnectionState.Up)
                 {
-                    <BLAZAM.Server.Shared.UI.Settings.Permissions.DelegateEditor />
+                    <DelegateEditor />
                 }
 
 
             </ChildContent>
             <TabContent>
-                @SettingsLocalization["Delegates"]
+                @AppLocalization["Delegates"]
             </TabContent>
         </MudTabPanel>
         <MudTabPanel>
             <ChildContent>
 
 
-                <BLAZAM.Server.Shared.UI.Settings.Permissions.AccessLevelEditor />
+                <AccessLevelEditor />
 
 
             </ChildContent>
             <TabContent>
-                @SettingsLocalization["Access Levels"]
+                @AppLocalization["Access Levels"]
             </TabContent>
 
         </MudTabPanel>
@@ -47,15 +47,15 @@
 
                 @if (Monitor.DirectoryConnected == ServiceConnectionState.Up)
                 {
-                    <BLAZAM.Server.Shared.UI.Settings.Permissions.ImpersonateUser />
-                    <BLAZAM.Server.Shared.UI.Settings.Permissions.PermissionMapper />
+                    <ImpersonateUser />
+                    <PermissionMapper />
 
                 }
 
 
             </ChildContent>
             <TabContent>
-                @SettingsLocalization["Mappings"]
+                @AppLocalization["Mappings"]
             </TabContent>
 
         </MudTabPanel>

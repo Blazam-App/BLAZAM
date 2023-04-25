@@ -1,0 +1,576 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Access Levels" xml:space="preserve">
+    <value>액세스 수준</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>계좌</value>
+  </data>
+  <data name="Account Expiration" xml:space="preserve">
+    <value>계정 만료</value>
+  </data>
+  <data name="Account is disabled." xml:space="preserve">
+    <value>계정을 사용할 수 없습니다.</value>
+  </data>
+  <data name="Account is enabled." xml:space="preserve">
+    <value>계정을 사용할 수 있습니다.</value>
+  </data>
+  <data name="Account is locked out." xml:space="preserve">
+    <value>계정이 잠겨 있습니다.</value>
+  </data>
+  <data name="Account is not locked out." xml:space="preserve">
+    <value>계정이 잠겨 있지 않습니다.</value>
+  </data>
+  <data name="Account Name" xml:space="preserve">
+    <value>계정 이름</value>
+  </data>
+  <data name="Active Directory" xml:space="preserve">
+    <value>액티브 디렉토리</value>
+  </data>
+  <data name="Active Directory is not available!" xml:space="preserve">
+    <value>Active Directory를 사용할 수 없습니다!</value>
+  </data>
+  <data name="Active Directory Settings" xml:space="preserve">
+    <value>Active Directory 설정</value>
+  </data>
+  <data name="Add New Access Level" xml:space="preserve">
+    <value>새 액세스 수준 추가</value>
+  </data>
+  <data name="Additonal Fields" xml:space="preserve">
+    <value>Additonal 필드</value>
+  </data>
+  <data name="Admin bcc" xml:space="preserve">
+    <value>관리자 숨은 참조</value>
+  </data>
+  <data name="Admin Password" xml:space="preserve">
+    <value>관리자 암호</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>모두</value>
+  </data>
+  <data name="Allow" xml:space="preserve">
+    <value>허용하다</value>
+  </data>
+  <data name="Allow Auto Update" xml:space="preserve">
+    <value>자동 업데이트 허용</value>
+  </data>
+  <data name="Allow Disabled User Access" xml:space="preserve">
+    <value>비활성화된 사용자 액세스 허용</value>
+  </data>
+  <data name="Application" xml:space="preserve">
+    <value>신청</value>
+  </data>
+  <data name="Application Name" xml:space="preserve">
+    <value>응용 프로그램 이름</value>
+  </data>
+  <data name="Application Settings" xml:space="preserve">
+    <value>응용 프로그램 설정</value>
+  </data>
+  <data name="ApplicationStarting" xml:space="preserve">
+    <value>응용 프로그램이 시작됩니다 ... 기다리세요...</value>
+  </data>
+  <data name="Assign Objects" xml:space="preserve">
+    <value>객체 지정</value>
+  </data>
+  <data name="Assign To" xml:space="preserve">
+    <value>할당 대상</value>
+  </data>
+  <data name="Attempting to connect to Active Directory." xml:space="preserve">
+    <value>Active Directory에 연결을 시도하고 있습니다.</value>
+  </data>
+  <data name="Audit" xml:space="preserve">
+    <value>감사</value>
+  </data>
+  <data name="Authentication" xml:space="preserve">
+    <value>인증</value>
+  </data>
+  <data name="Authentication Settings" xml:space="preserve">
+    <value>인증 설정</value>
+  </data>
+  <data name="Auto Update Time" xml:space="preserve">
+    <value>자동 업데이트 시간</value>
+  </data>
+  <data name="Base DN" xml:space="preserve">
+    <value>기본 DN</value>
+  </data>
+  <data name="BaseDN" xml:space="preserve">
+    <value>기본 DN</value>
+  </data>
+  <data name="Branding Icon" xml:space="preserve">
+    <value>브랜딩 아이콘</value>
+  </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>비밀번호 변경</value>
+  </data>
+  <data name="Choose or Search..." xml:space="preserve">
+    <value>선택 또는 검색...</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>도시</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>회사</value>
+  </data>
+  <data name="Computer" xml:space="preserve">
+    <value>컴퓨터</value>
+  </data>
+  <data name="Configure" xml:space="preserve">
+    <value>구성</value>
+  </data>
+  <data name="Confirm Password" xml:space="preserve">
+    <value>비밀번호 확인</value>
+  </data>
+  <data name="Contact Info" xml:space="preserve">
+    <value>연락처 정보</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>창조하다</value>
+  </data>
+  <data name="Create Group" xml:space="preserve">
+    <value>그룹 만들기</value>
+  </data>
+  <data name="Create New Delegation Target" xml:space="preserve">
+    <value>새 위임 대상 만들기</value>
+  </data>
+  <data name="Create OU" xml:space="preserve">
+    <value>OU 만들기</value>
+  </data>
+  <data name="Create User" xml:space="preserve">
+    <value>사용자 만들기</value>
+  </data>
+  <data name="Custom Login" xml:space="preserve">
+    <value>사용자 지정 로그인</value>
+  </data>
+  <data name="Database server is not reachable!" xml:space="preserve">
+    <value>데이터베이스 서버에 연결할 수 없습니다!</value>
+  </data>
+  <data name="Delegates" xml:space="preserve">
+    <value>대리자</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>삭제하다</value>
+  </data>
+  <data name="Delete Access Level" xml:space="preserve">
+    <value>액세스 수준 삭제</value>
+  </data>
+  <data name="Delgate Name" xml:space="preserve">
+    <value>Delgate 이름</value>
+  </data>
+  <data name="Deny" xml:space="preserve">
+    <value>거절하다</value>
+  </data>
+  <data name="Department" xml:space="preserve">
+    <value>부서</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>묘사</value>
+  </data>
+  <data name="Discard Changes" xml:space="preserve">
+    <value>변경 내용 취소</value>
+  </data>
+  <data name="Display Name" xml:space="preserve">
+    <value>표시 이름</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>편집하다</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>이메일</value>
+  </data>
+  <data name="Email Address" xml:space="preserve">
+    <value>이메일 주소</value>
+  </data>
+  <data name="Email Enabled" xml:space="preserve">
+    <value>이메일 사용</value>
+  </data>
+  <data name="Email Settings" xml:space="preserve">
+    <value>이메일 설정</value>
+  </data>
+  <data name="Employee Id" xml:space="preserve">
+    <value>직원 ID</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>사용</value>
+  </data>
+  <data name="Field Name" xml:space="preserve">
+    <value>필드 이름</value>
+  </data>
+  <data name="Field Type" xml:space="preserve">
+    <value>필드 유형</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>필드</value>
+  </data>
+  <data name="First Name" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="Force Https" xml:space="preserve">
+    <value>Https 강제 적용</value>
+  </data>
+  <data name="FQDN" xml:space="preserve">
+    <value>FQDN을</value>
+  </data>
+  <data name="From Address" xml:space="preserve">
+    <value>보낸 사람 주소</value>
+  </data>
+  <data name="From Display Name" xml:space="preserve">
+    <value>표시 이름에서</value>
+  </data>
+  <data name="Google Analytics ID" xml:space="preserve">
+    <value>Google 애널리틱스 ID</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>그룹</value>
+  </data>
+  <data name="Group Name" xml:space="preserve">
+    <value>그룹 이름</value>
+  </data>
+  <data name="Groups" xml:space="preserve">
+    <value>그룹</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>집</value>
+  </data>
+  <data name="Home Directory" xml:space="preserve">
+    <value>홈 디렉토리</value>
+  </data>
+  <data name="Home Drive" xml:space="preserve">
+    <value>홈 드라이브</value>
+  </data>
+  <data name="Home Phone" xml:space="preserve">
+    <value>집 전화</value>
+  </data>
+  <data name="Homepage Message" xml:space="preserve">
+    <value>홈페이지 메시지</value>
+  </data>
+  <data name="Impersonate User" xml:space="preserve">
+    <value>사용자 가장</value>
+  </data>
+  <data name="Inherited Permissions" xml:space="preserve">
+    <value>상속된 사용 권한</value>
+  </data>
+  <data name="Job Title" xml:space="preserve">
+    <value>직책</value>
+  </data>
+  <data name="Last Name" xml:space="preserve">
+    <value>성</value>
+  </data>
+  <data name="levelValue.Name" xml:space="preserve">
+    <value>levelValue.Name</value>
+  </data>
+  <data name="Log In" xml:space="preserve">
+    <value>로그인</value>
+  </data>
+  <data name="Log In To Demo" xml:space="preserve">
+    <value>데모에 로그인</value>
+  </data>
+  <data name="Logins" xml:space="preserve">
+    <value>로그인</value>
+  </data>
+  <data name="Main" xml:space="preserve">
+    <value>주요한</value>
+  </data>
+  <data name="Mappings" xml:space="preserve">
+    <value>매핑을</value>
+  </data>
+  <data name="Middle Name" xml:space="preserve">
+    <value>중간 이름</value>
+  </data>
+  <data name="Move" xml:space="preserve">
+    <value>움직이다</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="Office" xml:space="preserve">
+    <value>사무실</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>온라인</value>
+  </data>
+  <data name="Oops" xml:space="preserve">
+    <value>이런</value>
+  </data>
+  <data name="Organization" xml:space="preserve">
+    <value>조직</value>
+  </data>
+  <data name="OU" xml:space="preserve">
+    <value>또는</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>암호</value>
+  </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>권한을</value>
+  </data>
+  <data name="Please report to" xml:space="preserve">
+    <value>신고해 주세요</value>
+  </data>
+  <data name="PO Box" xml:space="preserve">
+    <value>사서함</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>항구</value>
+  </data>
+  <data name="Preferences" xml:space="preserve">
+    <value>선호</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>윤곽</value>
+  </data>
+  <data name="Profile Path" xml:space="preserve">
+    <value>프로필 경로</value>
+  </data>
+  <data name="Profile Settings" xml:space="preserve">
+    <value>프로필 설정</value>
+  </data>
+  <data name="Recycle Bin" xml:space="preserve">
+    <value>휴지통</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>이름 바꾸기</value>
+  </data>
+  <data name="Reply-To Address" xml:space="preserve">
+    <value>회신 주소</value>
+  </data>
+  <data name="Reply-To Display Name" xml:space="preserve">
+    <value>회신 표시 이름</value>
+  </data>
+  <data name="Require change" xml:space="preserve">
+    <value>변경 필요</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>구해내다</value>
+  </data>
+  <data name="Save Changes" xml:space="preserve">
+    <value>변경 내용 저장</value>
+  </data>
+  <data name="Script Path" xml:space="preserve">
+    <value>스크립트 경로</value>
+  </data>
+  <data name="Server" xml:space="preserve">
+    <value>서버</value>
+  </data>
+  <data name="Session Timeout" xml:space="preserve">
+    <value>세션 시간 초과</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>설정</value>
+  </data>
+  <data name="Sign Out" xml:space="preserve">
+    <value>로그아웃</value>
+  </data>
+  <data name="Site" xml:space="preserve">
+    <value>사이트</value>
+  </data>
+  <data name="SMTP Password" xml:space="preserve">
+    <value>SMTP 암호</value>
+  </data>
+  <data name="SMTP Port" xml:space="preserve">
+    <value>SMTP 포트</value>
+  </data>
+  <data name="SMTP Server" xml:space="preserve">
+    <value>SMTP 서버</value>
+  </data>
+  <data name="SMTP Username" xml:space="preserve">
+    <value>SMTP 사용자 이름</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>상태</value>
+  </data>
+  <data name="Stop It" xml:space="preserve">
+    <value>중지하세요</value>
+  </data>
+  <data name="Street" xml:space="preserve">
+    <value>거리</value>
+  </data>
+  <data name="Street Address" xml:space="preserve">
+    <value>상세 주소</value>
+  </data>
+  <data name="System" xml:space="preserve">
+    <value>체계</value>
+  </data>
+  <data name="System Settings" xml:space="preserve">
+    <value>환경 설정</value>
+  </data>
+  <data name="Template Category" xml:space="preserve">
+    <value>템플릿 범주</value>
+  </data>
+  <data name="Template Name" xml:space="preserve">
+    <value>템플릿 이름</value>
+  </data>
+  <data name="Templates" xml:space="preserve">
+    <value>템플릿</value>
+  </data>
+  <data name="Test Recipient" xml:space="preserve">
+    <value>테스트 수신자</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>잠금 해제</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>업데이트</value>
+  </data>
+  <data name="Update Branch" xml:space="preserve">
+    <value>분기 업데이트</value>
+  </data>
+  <data name="Update Scheduled" xml:space="preserve">
+    <value>업데이트 예정</value>
+  </data>
+  <data name="Update Settings" xml:space="preserve">
+    <value>설정 업데이트</value>
+  </data>
+  <data name="Upload Thumbnail Photo" xml:space="preserve">
+    <value>썸네일 사진 업로드</value>
+  </data>
+  <data name="Use SMTP Authentication" xml:space="preserve">
+    <value>SMTP 인증 사용</value>
+  </data>
+  <data name="Use SSL" xml:space="preserve">
+    <value>SSL 사용</value>
+  </data>
+  <data name="Use TLS" xml:space="preserve">
+    <value>TLS 사용</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>사용자</value>
+  </data>
+  <data name="User Helpdesk URL" xml:space="preserve">
+    <value>사용자 헬프데스크 URL</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>사용자 이름</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>사용자</value>
+  </data>
+  <data name="UseTLS" xml:space="preserve">
+    <value>TLS 사용</value>
+  </data>
+  <data name="Website FQDN" xml:space="preserve">
+    <value>웹 사이트 FQDN</value>
+  </data>
+  <data name="Website Name" xml:space="preserve">
+    <value>웹 사이트 이름</value>
+  </data>
+  <data name="Zip Code" xml:space="preserve">
+    <value>우편번호</value>
+  </data>
+</root>

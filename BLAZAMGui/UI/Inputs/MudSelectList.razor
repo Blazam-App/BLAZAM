@@ -1,0 +1,51 @@
+@inherits MudSelect<T>
+@typeparam T
+
+<MudSelect T="T"
+           @bind-SelectedValues=@SelectedValues
+           @bind-Text=@Text
+           @bind-Value=@Value
+           FullWidth=@FullWidth
+           Dense=@Dense
+           Variant="@Variant"
+           MultiSelection=@MultiSelection
+           MultiSelectionTextFunc="@MultiSelectionTextFunc"
+           Label="@Label"
+           HelperText="@HelperText"
+           HelperTextOnFocus=@HelperTextOnFocus
+           Placeholder="@Placeholder"
+           Class=@Class
+           Clearable=@Clearable
+           ListClass=@(ListClass+"w-min")
+           Style="@(Style+" min-width:100px;")">
+    @if (Values != null && Values.Count() > 0)
+    {
+        @foreach (var val in Values)
+        {
+            <MudSelectItem Value="@val">
+                <MudText Color="@Color">
+                    @if (ToStringFunc != null)
+                    {
+                        <MudElement>
+                            @ToStringFunc.Invoke(val)
+                        </MudElement>
+                    }
+                    else
+                    {
+                        <MudElement>
+                            @val.ToString()
+                        </MudElement>
+                    }
+                </MudText>
+            </MudSelectItem>
+        }
+    }
+</MudSelect>
+
+
+@code {
+    [Parameter]
+    public Color Color { get; set; }
+
+}
+

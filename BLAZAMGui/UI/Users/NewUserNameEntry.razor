@@ -1,0 +1,44 @@
+﻿@inherits AppComponentBase
+<EditForm Model="NewUserName">
+
+<Section Title=@AppLocalization["Name"]>
+
+        
+            
+            <MudTextField Label="@AppLocalization["First Name"]" @bind-Value="@NewUserName.GivenName" />
+
+            
+        
+        
+
+                <MudTextField Label="@AppLocalization["Middle Name"]" @bind-Value="@NewUserName.MiddleName" />
+
+            
+        
+        
+
+                <MudTextField Label="@AppLocalization["Last Name"]" @bind-Value="@NewUserName.Surname" />
+
+            
+        
+  
+</Section>
+</EditForm>
+
+@code {
+
+#nullable disable warnings
+    NewUserName newUserName;
+
+    [Parameter]
+    public NewUserName NewUserName{ get => newUserName;set
+        {
+            if (value == newUserName) return;
+            newUserName=value;
+            NewUserNameChanged.InvokeAsync(newUserName);
+
+        } }
+
+    [Parameter]
+    public EventCallback<NewUserName> NewUserNameChanged { get; set; }
+}

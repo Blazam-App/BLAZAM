@@ -1,0 +1,56 @@
+﻿@inherits Widget
+@attribute [Authorize]
+<MudDataGrid T="IADUser"
+             Items="@LockedUsers"
+              Dense
+              Filterable
+             RowsPerPage="5"
+             FilterMode="DataGridFilterMode.Simple"
+             Loading=@LoadingData
+              Square
+             ColumnResizeMode="ResizeMode.Column"
+              Virtualize
+             RowClass="cursor-pointer"
+             RowClick=@GoTo
+             Class="py-0"
+             SortMode="SortMode.Single">
+    <Columns>
+        <PropertyColumn Property="x => x.CanonicalName" Title="Name" />
+        <PropertyColumn Property="x => x.OU.ToPrettyOu()" Title="OU" />
+        <TemplateColumn Title="Locked Out">
+            <CellTemplate>
+                @if (context.Item.LockoutTime != null)
+                {
+                    <MudText>@context.Item.LockoutTime.Value.ToLocalTime()</MudText>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="IADUser" />
+    </PagerContent>
+</MudDataGrid>
+
+@code {
+    List<IADUser> LockedUsers
+    {
+        get => CurrentUser.State?.Cache.Get<List<IADUser>>(this.GetType());
+        set => CurrentUser.State?.Cache.Set(this.GetType(), value);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Title = "Locked Out Users";
+        LockedUsers = (await Directory.Users.FindLockedOutUsersAsync()).OrderByDescending(u => u.LockoutTime).Where(u => u.CanRead).ToList();
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+    }
+    void GoTo(DataGridRowClickEventArgs<IADUser> args)
+    {
+        Nav.NavigateTo(args.Item.SearchUri);
+    }
+
+}

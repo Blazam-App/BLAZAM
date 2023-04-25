@@ -1,8 +1,5 @@
-﻿using BLAZAM.Common.Extensions;
-using BLAZAM.Server.Data.Services;
-using Microsoft.VisualStudio.Services.Common;
+﻿using BLAZAM.Helpers;
 using Newtonsoft.Json;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -157,9 +154,13 @@ namespace BLAZAM.Common.Data
                     encryptedBytes = memoryStream.ToArray();
 
 
-                    var encryptedMessage = new byte[0];
-                    iv.ForEach(x => encryptedMessage = encryptedMessage.Append<byte>(x).ToArray<byte>());
-                    encryptedBytes.ForEach(x => encryptedMessage = encryptedMessage.Append<byte>(x).ToArray<byte>());
+                    var encryptedMessage = iv;
+                    for( int i = 0; i < encryptedBytes.Length; i++)
+                    {
+                        //Array.Resize(ref encryptedMessage, encryptedMessage.Length + 1);
+                        //encryptedMessage[encryptedMessage.Length - 1] = encryptedBytes[i];
+                        encryptedMessage = encryptedMessage.Append<byte>(encryptedBytes[i]).ToArray<byte>();
+                    }
                     return Convert.ToBase64String(encryptedMessage);
                     // }
                 }

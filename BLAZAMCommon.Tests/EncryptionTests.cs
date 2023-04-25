@@ -1,11 +1,5 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Extensions;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BLAZAM.Helpers;
 
 namespace BLAZAM.Tests
 {
@@ -30,7 +24,7 @@ namespace BLAZAM.Tests
         [Fact]
         public void CanEncrypt()
         {
-            var test = "test";
+             var test = "test";
             var result = encryption.EncryptObject(test);
             Assert.NotEqual<string>(test, result);
         }
@@ -40,7 +34,7 @@ namespace BLAZAM.Tests
             var test = "0qHlU8ZdxuW4Vp3BiNRJubp0mzxFXRf8+pyaUdSENv4=";
             var expected = "test";
             var result = encryption.DecryptObject<string>(test);
-            Assert.Equal<string>(expected, result);
+            Assert.Equal(expected, result);
         }
 
         [Theory]

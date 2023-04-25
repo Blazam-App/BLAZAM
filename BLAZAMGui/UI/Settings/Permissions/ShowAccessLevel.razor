@@ -1,0 +1,22 @@
+@inherits AppComponentBase
+
+@if (Model.Id > 0)
+{
+    <MudExpansionPanel Text="@Model.Name">
+        <EditAccessLevel Model=Model />
+    </MudExpansionPanel>
+}
+else
+{
+    <EditAccessLevel Model=Model />
+
+}
+
+
+@code {
+#nullable disable warnings
+    [Parameter]
+    public AccessLevel Model { get; set; }
+
+
+}

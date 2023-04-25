@@ -1,5 +1,7 @@
 ﻿@page "/audit"
 @page "/audit/{ActiveTab}"
+@using BLAZAM.Database.Models.Audit;
+
 
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 @inherits TabbedAppComponentBase
@@ -41,7 +43,7 @@
 
             </ChildContent>
             <TabContent>
-                @SettingsLocalization["Main"]
+                @AppLocalization["Main"]
             </TabContent>
             </MudTabPanel>
             <MudTabPanel>
@@ -70,7 +72,7 @@
 
             </ChildContent>
             <TabContent>
-                @SettingsLocalization["Logins"]
+                @AppLocalization["Logins"]
             </TabContent>
             </MudTabPanel>
             <MudTabPanel>
@@ -92,7 +94,7 @@
 
             </ChildContent>
             <TabContent>
-                @SettingsLocalization["System"]
+                @AppLocalization["System"]
             </TabContent>
 
 

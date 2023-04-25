@@ -1,0 +1,82 @@
+@inherits ValidatedForm
+
+<MudCard>
+    <MudCardHeader>
+        @OU?.Name
+    </MudCardHeader>
+    @if (inheritedMappings.Count > 0)
+    {
+        <MudExpansionPanel Text="@AppLocalization["Inherited Permissions"]">
+
+            @foreach (var map in inheritedMappings)
+            {
+                <MudCard>
+                    <PermissionMapEditor  MappingsChanged=@MappingsChanged Map="map" ReadOnly=true />
+                </MudCard>
+            }
+        </MudExpansionPanel>
+
+    }
+    @foreach (var map in appliedMappings)
+    {
+        <PermissionMapEditor MappingsChanged="@(async()=>{await RefreshData();})" Map="map" />
+    }
+    @if (NewMapping != null)
+    {
+        <PermissionMapEditor MappingsChanged="@(async()=>{await RefreshData();})" Map="NewMapping" />
+    }else
+    {
+    <MudButton OnClick="AddNewMapping" Color="Color.Success">Add new mapping</MudButton>
+    }
+</MudCard>
+
+
+@code {
+    #nullable disable warnings
+    bool collapseVisible = false;
+
+    IADOrganizationalUnit _ou;
+    [Parameter]
+    public IADOrganizationalUnit OU
+    {
+        get => _ou; set
+        {
+            if (_ou == value) return;
+            _ou = value;
+            OnOUChanged(_ou);
+
+        }
+    }
+
+    [Parameter]
+    public EventCallback MappingsChanged{ get; set; }
+
+    private PermissionMapping? NewMapping;
+    List<PermissionMapping> appliedMappings { get; set; } = new List<PermissionMapping>();
+    List<PermissionMapping> inheritedMappings { get; set; } = new List<PermissionMapping>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await OnOUChanged(OU);
+    }
+
+    async Task OnOUChanged(IADOrganizationalUnit? newOU)
+    {
+        if (Context != null && newOU != null)
+        {
+            await RefreshData();
+        }
+    }
+    async Task RefreshData()
+    {
+        appliedMappings = OU.DirectPermissionMappings;
+        inheritedMappings = OU.InheritedPermissionMappings;
+        NewMapping = null;
+        await InvokeAsync(StateHasChanged);
+    }
+    void AddNewMapping()
+    {
+        NewMapping = new() { OU = OU.DN };
+    }
+}

@@ -1,6 +1,7 @@
+using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Common.Models.Database;
-using BLAZAM.Common.Models.Database.User;
+using BLAZAM.Database.Context;
+using BLAZAM.Database.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -32,7 +33,7 @@ namespace BLAZAM.Server.Pages.API
             }
 
             var claims = new[] { new Claim(ClaimTypes.Name, user) };
-            var credentials = new SigningCredentials(Program.TokenKey, SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(ApplicationInfo.tokenKey, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken("ExampleServer", "ExampleClients", claims, expires: DateTime.Now.AddSeconds(60), signingCredentials: credentials);
             Token = JwtTokenHandler.WriteToken(token);
             var userSettings = Context.UserSettings.Where(u => u.UserGUID == this.User.Identity.Name).FirstOrDefault();

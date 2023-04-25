@@ -1,0 +1,28 @@
+@inherits AppModalContent
+<MudStack>
+    <MudTextField T=string Label="Message" @bind-Text=messageTextField />
+
+</MudStack>
+
+@code{
+    string messageTextField;
+    [Parameter]
+    public IRemoteSession Session{ get; set; }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Modal.YesText = "Send";
+        Modal.OnYes = SendMessage;
+
+    }
+
+    private async void SendMessage()
+    {
+        Session.SendMessage(messageTextField);
+
+        SnackBarService.Success("Message sent");
+        messageTextField = "";
+        await InvokeAsync(StateHasChanged);
+    }
+}

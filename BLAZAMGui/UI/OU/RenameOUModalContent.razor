@@ -1,0 +1,45 @@
+﻿@inherits AppModalContent
+<div Background="Background.Light" Color="Color.Dark">
+<Section Title=@AppLocalization["OU"]>
+
+
+    @if (OU.CanReadField(ActiveDirectoryFields.CanonicalName))
+    {
+        
+            
+                    <MudTextField Label="@AppLocalization["Name"]" @bind-Value="@OU.CanonicalName" />
+
+            
+        
+    }
+    
+    
+</Section>
+
+
+    <MudButton Color=Color.Primary OnClick="SaveChanges">@AppLocalization["Save Changes"]</MudButton>
+</div>
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+        Modal.OnYes = SaveChanges;
+        Modal.YesText = AppLocalization["Save Changes"];
+        Modal.Title = AppLocalization["Rename OU"];
+        Modal.YesEnabled = ValidateModal;
+    }
+
+
+    async void SaveChanges()
+    {
+        SnackBarService.Warning("The ou has been renamed but changes must be saved.", "OU renamed");
+        Close();
+
+    }
+    protected override bool IsValid=> !OU.CanonicalName.IsNullOrEmpty();
+        
+    
+
+}

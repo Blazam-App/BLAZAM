@@ -62,7 +62,6 @@
     bool custom = false;
 
     string newOUName;
-    bool collapseVisible = false;
     List<DirectoryTemplate> templates;
     IADOrganizationalUnit? parentOU;
     IADOrganizationalUnit? newOU;
@@ -117,6 +116,6 @@
     }
     async Task OUCreated(IADOrganizationalUnit ou)
     {
-        AuditLogger.OU.Created(ou);
+        await AuditLogger.OU.Created(ou);
     }
 }

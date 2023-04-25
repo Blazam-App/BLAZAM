@@ -77,7 +77,6 @@
 
 
 
-    bool custom = false;
 
     string newGroupName;
     bool collapseVisible = false;
@@ -121,6 +120,6 @@
     }
     async Task GroupCreated(IADGroup ou)
     {
-        AuditLogger.Group.Created(ou);
+        await AuditLogger.Group.Created(ou);
     }
 }

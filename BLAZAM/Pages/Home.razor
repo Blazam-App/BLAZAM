@@ -1,9 +1,7 @@
 ﻿@attribute [Authorize]
 @inherits AppComponentBase
 @page "/Home"
-@using BLAZAM.Server.Shared.UI.Dashboard.Widgets;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
+@using BLAZAM.Gui.UI.Dashboard
 
 @{
     string testValue="";
@@ -20,54 +18,14 @@
 
     </MudAlert>
 }
-<MudDropContainer @ref=widgetContainer
-    T="Widget" Items="widgets"
-    ItemsSelector="@((item,dropzone) => item.Slot == dropzone)"
-    ItemDropped="ItemDropped" 
-    Class="d-flex flex-wrap flex-grow-1 mud-width-full">
-    <ChildContent>
-        <FlexContainer Spacing="4" Class="mx-auto">
-
-            <MudList Clickable="true"
-                     Class="d-flex flex-column ma-0 mx-auto">
-                <MudDropZone AllowReorder
-                             T="Widget"
-                             Identifier="slot1"
-                             Class="flex-grow-1" />
-            </MudList>
-            <MudList Clickable="true"
-                     Class="d-flex flex-column ma-0 mx-auto">
-                <MudDropZone AllowReorder
-                             T="Widget"
-                             Identifier="slot2"
-                             Class="flex-grow-1" />
-            </MudList>
-        </FlexContainer>
-        </ChildContent>
-        <ItemRenderer>
-            <MudCard Class="my-5 " Elevation="3">
-            <MudCardHeader>
-            <MudText Typo="Typo.h6"> @context.Name</MudText>
-            <AppCloseButton OnClick=@(()=>{RemoveWidget(context);}) Style="right:10px;top:15px; position:absolute;" />
-
-            </MudCardHeader>
+<CurrentUserDashboardWidgets/>
 
 
-            <DynamicComponent Type="@context.GetType()" />
-            </MudCard>
-        </ItemRenderer>
-        </MudDropContainer>
-
-
-            @code {
+@code {
     MarkupString? MOTD;
-    MudDropContainer<Widget>? widgetContainer;
-    List<Widget> widgets = new List<Widget>();
-
 
     protected override Task OnInitializedAsync()
     {
-        widgets = new List<Widget>(Widgets.Available(UserStateService.CurrentUserState));
         try
         {
             MOTD = (MarkupString)Context.AppSettings.FirstOrDefault().MOTD;
@@ -79,17 +37,6 @@
         return base.OnInitializedAsync();
     }
 
-    private Task ItemDropped(MudItemDropInfo<Widget> dropItem)
-    {
-        dropItem.Item.Slot = dropItem.DropzoneIdentifier;
-        return Task.CompletedTask;
-    }
-    async Task RemoveWidget(Widget widget)
-    {
-        widgets.Remove(widget);
-        widgetContainer.Refresh();
-        await InvokeAsync(StateHasChanged);
-
-    }
+   
 
 }

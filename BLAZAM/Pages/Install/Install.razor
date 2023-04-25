@@ -85,7 +85,7 @@ else
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        if (Program.InstallationCompleted)
+        if (ApplicationInfo.InstallationCompleted)
             Nav.NavigateTo("/");
     }
 
@@ -97,17 +97,7 @@ else
 
 
     }
-    /*
-    private bool NavigationAllowed(StepNavigationContext context)
-    {
-        if (context.NextStepIndex > _step)
-        {
-            return false;
-        }
-
-        return true;
-    }
-    */
+  
     async void UpdateStatuses()
     {
         Context = DbFactory.CreateDbContext();
@@ -140,23 +130,7 @@ else
                                     completedSteps = 4;
 
                                     await InvokeAsync(StateHasChanged);
-                                    //check permissions
-                                    /*
-                                    PermissionDelegate currentSettings = Context.PermissionDelegate.FirstOrDefault();
-                                        if (currentSettings != null)
-                                        {
-
-                                        if (Context.Status == DatabaseContext.ConnectionStatus.OK)
-                                            {
-                                            _step = 5;
-                                            selectedStep = "5";
-
-                                            //NavManager.NavigateTo("/");
-                                }
-
-
-                                }
-                                */
+                                  
                                 }
 
                             }
@@ -187,11 +161,7 @@ else
         _completedSteps = 6;
         UpdateStatuses();
     }
-    private void RecheckWritable()
-    {
-        Program.CheckWritablePathPermissions();
-        UpdateStatuses();
-    }
+
     private async void FinalizeInstall()
     {
         try
@@ -206,7 +176,7 @@ else
             }
             (await Context.AppSettings.FirstOrDefaultAsync()).InstallationCompleted = true;
             var result = await Context.SaveChangesAsync();
-            Program.InstallationCompleted = true;
+            ApplicationInfo.InstallationCompleted = true;
             Nav.NavigateTo("/home", true);
         }
         catch

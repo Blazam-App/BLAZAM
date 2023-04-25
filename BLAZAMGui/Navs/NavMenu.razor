@@ -1,0 +1,78 @@
+﻿@using Microsoft.Extensions.Localization;
+@inherits AppComponentBase
+@{
+
+    string createRole = UserRoles.SuperAdmin + ", " + UserRoles.CreateUsers + ", " + UserRoles.CreateGroups + ", " + UserRoles.CreateOUs;
+}
+
+
+
+
+    <MudNavMenu Color="Color.Success" Bordered="true" Style="width:180px;" Class="py-3">
+        <MudStack Row=true>
+            <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+            <MudText Align="Align.Center" Class="align-middle"> @DatabaseCache.ApplicationSettings?.AppAbbreviation</MudText>
+
+        </MudStack>
+        <MudNavLink Href="/home" Icon="@Icons.Material.Filled.Dashboard">@AppLocalization["Home"]</MudNavLink>
+        <AuthorizeView Context="createContext" Roles=@createRole>
+            <MudNavGroup Icon="@Icons.Material.Filled.Create" Title="@AppLocalization["Create"]" Expanded="false" Disabled=@(Monitor.DirectoryConnected != ServiceConnectionState.Up)>
+                <AuthorizeView Roles="@UserRoles.CreateUsers">
+                    <MudNavLink Href="/users/create">@AppLocalization["Create User"]</MudNavLink>
+                </AuthorizeView>
+                <AuthorizeView Roles="@UserRoles.CreateGroups">
+                    <MudNavLink Href="/groups/create">@AppLocalization["Create Group"]</MudNavLink>
+                </AuthorizeView>
+                <AuthorizeView Roles="@UserRoles.CreateOUs">
+                    <MudNavLink Href="/ou/create">@AppLocalization["Create OU"]</MudNavLink>
+                </AuthorizeView>
+            </MudNavGroup>
+        </AuthorizeView>
+        <AuthorizeView Roles=@UserRoles.SuperAdmin>
+            <MudNavLink Href="/recyclebin"
+                        Icon="@Icons.Material.Filled.DeleteOutline"
+                        Disabled=@(Monitor.DirectoryConnected != ServiceConnectionState.Up)>
+                @AppLocalization["Recycle Bin"]
+            </MudNavLink>
+
+            <MudNavGroup Title="@AppLocalization["Configure"]" Icon="@Icons.Material.Filled.Handyman" Expanded="false">
+                <MudNavLink Href="/settings">@AppLocalization["Settings"]</MudNavLink>
+                <MudNavLink Href="/permissions">@AppLocalization["Permissions"]</MudNavLink>
+                <MudNavLink Href="/fields">@AppLocalization["Fields"]</MudNavLink>
+                <MudNavLink Href="/templates">@AppLocalization["Templates"]</MudNavLink>
+                <MudNavLink Href="/audit">@AppLocalization["Audit"]</MudNavLink>
+            </MudNavGroup>
+        </AuthorizeView>
+
+
+
+    </MudNavMenu>
+
+
+
+
+
+<ScheduledUpdateAnnouncer />
+
+
+@code {
+    private bool collapseNavMenu = true;
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
+        await InvokeAsync(StateHasChanged);
+
+
+    }
+
+
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+}

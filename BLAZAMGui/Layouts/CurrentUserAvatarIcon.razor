@@ -1,0 +1,41 @@
+@inherits AppComponentBase
+
+
+
+@if (UserState?.Preferences?.ProfilePicture != null)
+{
+    <Base64Image Elevation="4" Class="  mud-border-secondary border-2 mud-avatar mud-avatar-medium" Data="@UserState.Preferences?.ProfilePicture" />
+
+}
+else
+{
+    <MudAvatar Elevation="4" Style="@AvatarColor">@UserStateService.CurrentUsername?.FirstOrDefault()</MudAvatar>
+
+}
+
+
+
+@code {
+    string AvatarColor
+    {
+        get
+        {
+            if (UserState == null) return "background-color:#0c13a7";
+            int usernameHash = UserState.Username.GetAppHashCode();
+            byte[] usernameHashBytes = usernameHash.ToByteArray(3);
+            string hexColor = "background-color:#";
+            hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
+            return hexColor;
+
+        }
+    }
+    [Parameter]
+    public IApplicationUserState? UserState{ get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+   
+
+}

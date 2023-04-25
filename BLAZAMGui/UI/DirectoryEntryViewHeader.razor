@@ -1,0 +1,253 @@
+@inherits AppComponentBase
+@{
+
+    IAccountDirectoryAdapter? accountEntry;
+    accountEntry = DirectoryEntry as IAccountDirectoryAdapter;
+
+
+    IGroupableDirectoryAdapter? groupableEntry;
+    groupableEntry = DirectoryEntry as IGroupableDirectoryAdapter;
+
+}
+<MudStack Row Class="mud-width-full">
+
+    <MudStack Row=true>
+        @if (groupableEntry != null && DirectoryEntry is not IADComputer)
+        {
+            <MudText Class="align-middle">
+                @groupableEntry.DisplayName
+            </MudText>
+        }
+        else
+        {
+            <MudText Class="align-middle">
+                @DirectoryEntry.CanonicalName
+            </MudText>
+        }
+
+
+        <MudText Typo="Typo.caption" Class="align-middle">@DirectoryTools.PrettifyOu(DirectoryEntry.OU) </MudText>
+
+    </MudStack>
+
+
+    @if (accountEntry?.LockedOut == true)
+    {
+        <MudIconButton OnClick=Unlock Icon=@Icons.Material.Filled.Lock />
+    }
+    <MudHidden Breakpoint="Breakpoint.Xs">
+        <MudToolBar Class="align-middle" Style="height:32px" DisableGutters Dense>
+            @if (accountEntry!=null && ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable)))
+
+            {
+                <MudTooltip Text="@AppLocalization[accountEntry.Enabled==true?"Disable":"Enable"]">
+
+                    <MudToggleIconButton @bind-Toggled="@accountEntry.Enabled"
+                                     Icon="@Icons.Material.Filled.PersonOff"
+                                     Color="Color.Error"
+                                     ToggledIcon="@Icons.Material.Filled.Person"
+                                     ToggledColor="Color.Success" />
+                </MudTooltip>
+            }
+            @*<DynamicMudInput Color=Color.Success Label="Account Enabled" @bind-Value=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />*@
+            @*<MudSwitch Color=Color.Success Label="Account Enabled" @bind-Checked=@(User.Enabled) Disabled=@((User.Disabled && !User.CanEnable)||(User.Enabled && !User.CanDisable)) />*@
+
+
+            @if (DirectoryEntry.CanEdit)
+            {
+                <MudTooltip Text="@AppLocalization["Edit"]">
+
+                    <MudToggleIconButton ToggledChanged="@((state)=>{ToggleEditMode(state);})"
+                                     Icon="@Icons.Material.Filled.Edit"
+                                     ToggledIcon="@Icons.Material.Filled.EditOff"
+                                     ToggledColor="Color.Error"
+                                     ToggledTitle="End Edit" />
+                </MudTooltip>
+            }
+            @if (accountEntry != null && accountEntry.LockedOut && accountEntry.CanUnlock)
+            {
+                <MudTooltip Text="@AppLocalization["Unlock"]">
+
+                    <MudIconButton OnClick="Unlock"
+                               Icon="@Icons.Material.Filled.LockOpen"
+                                   aria-label="unlock" />
+                </MudTooltip>
+            }
+            @if (groupableEntry?.CanAssign == true)
+            {
+                <MudTooltip Text="@AppLocalization["Assign To"]">
+
+                    <MudIconButton OnClick="@Assign"
+                               Icon="@Icons.Material.Filled.GroupAdd"
+                                   aria-label="assign to" />
+                </MudTooltip>
+
+            }
+            @if (accountEntry?.CanDisable == true)
+            {
+                <MudTooltip Text="@AppLocalization["Change Password"]">
+                    <MudIconButton OnClick="@ResetPassword"
+                               Icon="@Icons.Material.Filled.Password"
+                                   aria-label="change password" />
+                </MudTooltip>
+            }
+            @if (DirectoryEntry.CanRename)
+            {
+                <MudTooltip Text="@AppLocalization["Rename"]">
+
+                    <MudIconButton OnClick="@Rename"
+                               Icon="@Icons.Material.Filled.DriveFileRenameOutline"
+                                   aria-label="rename" />
+
+                </MudTooltip>
+            }
+            @if (DirectoryEntry.CanMove)
+            {
+                <MudTooltip Text="@AppLocalization["Move"]">
+
+                    <MudIconButton OnClick="@Move"
+                               Icon="@Icons.Material.Filled.DriveFileMove"
+                                   aria-label="move" />
+                </MudTooltip>
+            }
+            @if (DirectoryEntry.CanDelete)
+            {
+                <MudTooltip Text="@AppLocalization["Delete"]">
+
+                    <MudIconButton OnClick="@DeleteUser"
+                               Color="Color.Error"
+                               Icon="@Icons.Material.Filled.Delete"
+                                   aria-label="change password" />
+                </MudTooltip>
+            }
+        </MudToolBar>
+    </MudHidden>
+    <MudSpacer />
+    <PageSpecificChat />
+    <MudHidden Breakpoint="Breakpoint.SmAndUp">
+
+        <MudMenu Class="align-self-end" StartIcon="@Icons.Material.Filled.Settings">
+            @if ((accountEntry != null && accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable))
+            {
+                <MudMenuItem>
+                    <MudSwitch Color=Color.Success Label="Account Enabled" @bind-Checked=@(accountEntry.Enabled) Disabled=@((accountEntry.Disabled && !accountEntry.CanEnable)||(accountEntry.Enabled && !accountEntry.CanDisable)) />
+
+                </MudMenuItem>
+            }
+            @if (DirectoryEntry.CanEdit)
+                    {
+            <MudMenuItem OnClick="(()=>{ToggleEditMode(!_editMode);})">Edit...</MudMenuItem>
+            }
+            @if (accountEntry != null && accountEntry.LockedOut && accountEntry.CanUnlock)
+            {
+                <MudMenuItem OnClick="@Unlock">Unlock...</MudMenuItem>
+            }
+            @if (groupableEntry?.CanAssign == true)
+            {
+                <MudMenuItem OnClick="@Assign">Assign To...</MudMenuItem>
+            }
+            @if (accountEntry?.CanDisable == true)
+            {
+                <MudMenuItem OnClick="@ResetPassword">Change Password...</MudMenuItem>
+            }
+            @if (DirectoryEntry.CanRename)
+            {
+                <MudMenuItem OnClick="@(Rename)">Rename...</MudMenuItem>
+                @if (DirectoryEntry is IADUser userEntry)
+                {
+                    if (userEntry.ThumbnailPhoto == null)
+                    {
+                        <MudMenuItem OnClick="@ChangeThumbnail">Upload Photo...</MudMenuItem>
+
+                    }
+                    else
+                    {
+                        <MudMenuItem OnClick="@ChangeThumbnail">Replace Photo...</MudMenuItem>
+
+                    }
+                }
+            }
+            @if (DirectoryEntry.CanMove)
+            {
+                <MudMenuItem OnClick="@Move">Move To...</MudMenuItem>
+            }
+            @if (DirectoryEntry.CanDelete)
+            {
+                <MudMenuItem OnClick="@DeleteUser">Delete...</MudMenuItem>
+            }
+        </MudMenu>
+    </MudHidden>
+</MudStack>
+
+
+
+@code {
+    [Parameter]
+    public IDirectoryEntryAdapter DirectoryEntry { get; set; }
+
+    [Parameter]
+    public EventCallback OnDelete{ get; set; }
+    private async Task DeleteUser()
+    {
+        await OnDelete.InvokeAsync();
+    }
+
+    [Parameter]
+    public EventCallback OnMove{ get; set; }
+
+    private async Task Move()
+    {
+        await OnMove.InvokeAsync();
+    }
+    [Parameter]
+    public EventCallback OnRename{ get; set; }
+    private async Task Rename()
+    {
+       await OnRename.InvokeAsync();
+    }
+    [Parameter]
+    public EventCallback OnChangeThumbnail{ get; set; }
+
+    private async Task ChangeThumbnail()
+    {
+       await OnChangeThumbnail.InvokeAsync();
+    }
+    [Parameter]
+    public EventCallback OnResetPassword{ get; set; }
+    private async Task ResetPassword()
+    {
+        await OnResetPassword.InvokeAsync();
+    }
+    [Parameter]
+    public EventCallback OnAssignTo{ get; set; }
+    private async Task Assign()
+    {
+        await OnAssignTo.InvokeAsync();
+    }
+    [Parameter]
+    public EventCallback OnUnlock{ get; set; }
+    private async Task Unlock()
+    {
+        await OnUnlock.InvokeAsync();
+    }
+    [Parameter]
+    public EventCallback OnEnable{ get; set; }
+    private async Task Enable()
+    {
+        await OnEnable.InvokeAsync();
+    }
+    [Parameter]
+    public EventCallback OnDisable{ get; set; }
+    private async Task Disable()
+    {
+        await OnDisable.InvokeAsync();
+    }
+    private bool _editMode = false;
+    [Parameter]
+    public EventCallback<bool> OnToggleEditMode{ get; set; }
+    private async Task ToggleEditMode(bool editEnabled)
+    {
+        _editMode = editEnabled;
+        await OnToggleEditMode.InvokeAsync(editEnabled);
+    }
+}

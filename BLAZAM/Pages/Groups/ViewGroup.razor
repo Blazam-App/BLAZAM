@@ -1,6 +1,4 @@
-﻿@inject IStringLocalizer<AppLocalization> Loc
-@inject IStringLocalizer<UserLocalization> ULoc
-@inherits DirectoryModelComponent
+﻿@inherits DirectoryEntryViewBase
 
 
 <AppPageTitle>@Group?.CanonicalName</AppPageTitle>
@@ -9,59 +7,15 @@
 
 <EditForm Model="Group">
     <SetSubHeader>
-
-        <MudGrid>
-            <MudItem md="10" sm="11">
-
-                <MudGrid>
-                    <MudItem md="4">
-                        @Group.CanonicalName
-
-
-                    </MudItem>
-                    <MudItem md="8">
-                        <small>@DirectoryTools.PrettifyOu(Group.OU) </small>
-
-                    </MudItem>
-                </MudGrid>
-            </MudItem>
-
-
-            <MudItem sm="1" md="2">
-
-                <MudMenu StartIcon="@Icons.Material.Filled.Settings">
-
-
-                    @if (Group.CanEdit)
-                    {
-                        <MudMenuItem OnClick="ToggleEditMode">Edit...</MudMenuItem>
-                    }
-                    <MudMenuItem OnClick="@(()=>{AssignMemberModal?.Show();})">Add Group Member...</MudMenuItem>
-                    @if (Group.CanAssign)
-                    {
-                        RefreshGroupGroupsAsync();
-                        <MudMenuItem OnClick="@(()=>{AssignToModal?.Show();})">Assign To...</MudMenuItem>
-                    }
-
-                    @if (Group.CanRename)
-                    {
-                        <MudMenuItem OnClick="@(()=>{RenameModal?.Show();})">Rename...</MudMenuItem>
-
-                    }
-                    @if (Group.CanMove)
-                    {
-                        <MudMenuItem OnClick="@(()=>{MoveToModal?.Show();})">Move To...</MudMenuItem>
-                    }
-                    @if (Group.CanDelete)
-                    {
-                        <MudMenuItem OnClick="@DeleteGroup">Delete...</MudMenuItem>
-                    }
-                </MudMenu>
-            </MudItem>
-        </MudGrid>
-
-
-
+        <DirectoryEntryViewHeader DirectoryEntry="@Group"
+                                  OnAssignTo="@(()=>{AssignToModal?.Show();})"
+                                  OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
+                                  OnDelete="@DeleteGroup"
+                                  OnMove="@(()=>{MoveToModal?.Show();})"
+                                  OnRename="@(()=>{RenameModal?.Show();})"
+                                  OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
+                                  OnToggleEditMode="ToggleEditMode" />
+        <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true"/>
     </SetSubHeader>
 
 
@@ -88,42 +42,27 @@
 
 
 
+    <Section Style="min-height:200px;" Title="Group Details">
+        <MudTextField Label="@AppLocalization["Group Name"]" @bind-Value="@Group.CanonicalName" Disabled />
+
+        <MudTextField Label="@AppLocalization["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
 
 
+        <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
+    </Section>
 
 
+   <Section Style="min-height:200px;" Title="Member Of">
+                                    <MemberOfList Model="Group" />
 
-    <MudTextField Label="@ULoc["Group Name"]" @bind-Value="@Group.CanonicalName" Disabled />
+    </Section>
 
-
-
-
-
-
-
-
-    <MudTextField Label="@ULoc["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
-
-
-
-
-
-    <MudTextField Label="@ULoc["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
-
-
-    @if (Group.HasMembers)
-    {
-        <Section Title="Members">
-            <GroupMembersDataGrid Group="Group"/>
+    <Section Style="min-height:200px;" Title="Members">
+        <GroupMembersDataGrid Group="Group"/>
             
-        </Section>
-        if (Group.Members.Where(m => !m.CanRead).Count() > 0)
-        {
-            <MudAlert Class="mud-alert-filled-info">
-                The group has more members you don't have access to
-            </MudAlert>
-        }
-    }
+    </Section>
+       
+   
 
 
 
@@ -141,28 +80,10 @@
     AppModal? AssignMemberModal;
 
 
-    List<IGroupableDirectoryAdapter> Members = new();
 
+    IADGroup Group => DirectoryEntry as IADGroup;
 
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        if (!Group.NewEntry)
-            await AuditLogger.Group.Searched(Group);
-    }
-
-    async void DiscardChanges()
-    {
-        if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
-        {
-            Group.DiscardChanges();
-            EditMode = false;
-            await InvokeAsync(StateHasChanged);
-
-        }
-
-    }
+  
 
     async void SaveChanges()
     {
@@ -189,7 +110,7 @@
                 Group.Delete();
                 SnackBarService.Success(Group.CanonicalName + " has been deleted.", "Group Deleted");
 
-                Group = null;
+                //Group = null;
                 Nav.NavigateTo("/groups/search");
 
             }

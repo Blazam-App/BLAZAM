@@ -1,7 +1,7 @@
-﻿@inject AppDatabaseFactory factory
+﻿@inject IAppDatabaseFactory factory
 @page "/benchmark"
 
-@inject IActiveDirectory Dir
+@inject IActiveDirectoryContext Dir
 
 <h3>Benchmark</h3>
 <p>Number of cycles</p>
@@ -15,7 +15,6 @@
 
 <p>User Bench</p>
 <p>email: @userBench?.SamAccountName</p>
-<PageProgress Visible="Running" />
 @code {
 #nullable disable warnings
     ActiveDirectoryContext ad;
@@ -54,7 +53,7 @@
 
 
     }
-    bool DirectoryTest(IActiveDirectory dir)
+    bool DirectoryTest(IActiveDirectoryContext dir)
     {
 
         bool result = false;
