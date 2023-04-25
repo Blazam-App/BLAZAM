@@ -67,7 +67,7 @@
                     {
                         <h4>
                             Downgrade Available (Debug Mode)
-                            <MudIconButton Icon="@Icons.Material.Filled.QuestionMark" OnClick=@(()=>{CopyToClipboard(LatestAvailableVersion.UpdateCommand);}) />
+                            <MudIconButton Icon="@Icons.Material.Filled.QuestionMark" OnClick=@(async()=>{await CopyToClipboard(LatestAvailableVersion.UpdateCommand);}) />
 
                         </h4>
                     }

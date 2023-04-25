@@ -13,7 +13,7 @@ namespace BLAZAM.Update.Services
         public ApplicationUpdate LatestUpdate { get; set; }
         public string? SelectedBranch { get; set; }
 
-        private readonly IAppDatabaseFactory _dbFactory;
+        private readonly IAppDatabaseFactory? _dbFactory;
         protected readonly IHttpClientFactory httpClientFactory;
         private readonly ApplicationInfo _applicationInfo;
 

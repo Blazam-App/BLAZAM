@@ -151,7 +151,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 search.Fields.NestedMemberOf = this;
                 var result = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
                 return result;
-                return Directory.Groups.GetAllNestedMembers(this);
             }
         }
         public List<IGroupableDirectoryAdapter> Members

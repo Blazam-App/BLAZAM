@@ -53,11 +53,6 @@ namespace BLAZAM
         internal static bool InDebugMode;
 
         /// <summary>
-        /// Flag for checking if the application is running in Demo Mode.
-        /// </summary>
-        internal static bool InDemoMode;
-
-        /// <summary>
         /// Can be used for JWT Token signing
         /// </summary>
         internal static SymmetricSecurityKey? TokenKey;

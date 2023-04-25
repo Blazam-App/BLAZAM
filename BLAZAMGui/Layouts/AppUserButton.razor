@@ -7,7 +7,7 @@
         @{
             var avatarBgColor = GenerateAvatarColor(UserState.Username);
         }
-        @if (UserState.Messages.Count > 0)
+        @if (UserState.Messages?.Count > 0)
         {
             <MudBadge Color=Color.Error Overlap=true Content="@UserState.Messages.Count">
                 <CurrentUserAvatarIcon UserState="@UserState" />

@@ -167,7 +167,7 @@ namespace BLAZAM.ActiveDirectory
         /// </summary>
         public AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
 
-        public IAppDatabaseFactory? Factory { get; private set; }
+        public IAppDatabaseFactory Factory { get; private set; }
 
         public ADSettings? ConnectionSettings { get; private set; }
 

@@ -52,7 +52,8 @@ namespace BLAZAM.Gui.UI
                 DirectoryEntry.OnModelChanged += async () => { await RefreshEntryComponents(); };
                 DirectoryEntry.OnDirectoryModelRenamed += Renamed;
             }
-            CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
+            if(Context!=null) 
+                CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
             LoadingData = false;
         }
 
@@ -72,7 +73,7 @@ namespace BLAZAM.Gui.UI
             }
         }
 
-        protected async void DiscardChanges()
+        protected virtual async void DiscardChanges()
         {
             if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
             {

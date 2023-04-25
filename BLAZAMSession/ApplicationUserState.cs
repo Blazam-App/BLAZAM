@@ -45,7 +45,7 @@ namespace BLAZAM.Server.Data.Services
         {
             get
             {
-                if (!User.Identity.IsAuthenticated) return default;
+                if (User.Identity?.IsAuthenticated != true) return default;
                 if ((DateTime.Now - lastDataRefresh).TotalSeconds > 1)
                     GetUserSettingFromDB();
                 return userSettings?.Messages.Where(m => !m.IsRead).ToList();
@@ -82,7 +82,7 @@ namespace BLAZAM.Server.Data.Services
         {
             get
             {
-                if (!User.Identity.IsAuthenticated) return null;
+                if (User.Identity?.IsAuthenticated!=true) return null;
                 if (userSettings == null)
                 {
 
@@ -150,8 +150,8 @@ namespace BLAZAM.Server.Data.Services
                     dbUserSettings.Theme = this.Preferences?.Theme;
                     dbUserSettings.DarkMode = this.Preferences?.DarkMode == true;
                     dbUserSettings.ProfilePicture = this.Preferences?.ProfilePicture;
-                    dbUserSettings.SearchDisabledUsers = this.Preferences.SearchDisabledUsers;
-                    dbUserSettings.SearchDisabledComputers = this.Preferences.SearchDisabledComputers;
+                    dbUserSettings.SearchDisabledUsers = this.Preferences?.SearchDisabledUsers==true;
+                    dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers==true;
                     SaveDashboardWidgets(dbUserSettings);
                     OnSettingsChange?.Invoke(dbUserSettings);
 
@@ -170,27 +170,30 @@ namespace BLAZAM.Server.Data.Services
 
         private void SaveDashboardWidgets(AppUser? dbUserSettings)
         {
-            foreach (var widget in this.Preferences.DashboardWidgets)
+            if (Preferences != null)
             {
-                var matchingWidgt = dbUserSettings.DashboardWidgets.FirstOrDefault(w => w.WidgetType == widget.WidgetType);
-                if (matchingWidgt != null)
+                foreach (var widget in Preferences.DashboardWidgets)
                 {
-                    matchingWidgt.Slot = widget.Slot;
-                    matchingWidgt.Order = widget.Order;
+                    var matchingWidgt = dbUserSettings?.DashboardWidgets.FirstOrDefault(w => w.WidgetType == widget.WidgetType);
+                    if (matchingWidgt != null)
+                    {
+                        matchingWidgt.Slot = widget.Slot;
+                        matchingWidgt.Order = widget.Order;
+                    }
+                    else
+                    {
+                        dbUserSettings?.DashboardWidgets.Add(widget);
+                    }
                 }
-                else
+                var widgetsInDB = new List<UserDashboardWidget>(dbUserSettings?.DashboardWidgets);
+                foreach (var widget in widgetsInDB)
                 {
-                    dbUserSettings.DashboardWidgets.Add(widget);
-                }
-            }
-            var widgetsInDB = new List<UserDashboardWidget>(dbUserSettings.DashboardWidgets);
-            foreach (var widget in widgetsInDB)
-            {
-                if (!this.Preferences.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType))
-                {
-                    dbUserSettings.DashboardWidgets.Remove(widget);
-                }
+                    if (!this.Preferences.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType))
+                    {
+                        dbUserSettings.DashboardWidgets.Remove(widget);
+                    }
 
+                }
             }
         }
 
@@ -221,7 +224,7 @@ namespace BLAZAM.Server.Data.Services
             {
                 try
                 {
-                    return User.Identity.IsAuthenticated;
+                    return User.Identity?.IsAuthenticated==true;
                 }
                 catch
                 {

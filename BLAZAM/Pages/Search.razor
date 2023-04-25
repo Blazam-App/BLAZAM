@@ -184,19 +184,14 @@
 
     protected virtual List<IDirectoryEntryAdapter> results { get; set; } = new List<IDirectoryEntryAdapter>();
 
-    public async Task SubmitSearch() => await SubmitSearch(null);
-    public async Task SubmitSearch(string? searchTerm = null)
+    public void SubmitSearch() => SubmitSearch(null);
+    public void SubmitSearch(string? searchTerm = null)
     {
         if (searchTerm != null)
             SearchService.SearchTerm = searchTerm;
-
-
         Nav.NavigateTo("/search/" + SearchService.SearchTerm);
 
 
-        //Search();
-
-        //await InvokeAsync(StateHasChanged);
     }
 
 

@@ -47,7 +47,7 @@ namespace BLAZAM.Tests.Updates
         private async void Update_Cleanup_OK(ApplicationUpdate latest)
         {
 
-            latest.CleanStaging();
+            await latest.CleanStaging();
             latest.UpdateFile.Delete();
             Assert.True(!latest.UpdateFile.Exists);
             Assert.True(latest.UpdateStagingDirectory.Files.Count == 0);

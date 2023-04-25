@@ -109,7 +109,7 @@
                 WidgetType = widgetType,
                 Order = order
             });
-        CurrentUser.State.SaveUserSettings();
+        await CurrentUser.State.SaveUserSettings();
         await InvokeAsync(StateHasChanged);
         widgetContainer.Refresh();
 

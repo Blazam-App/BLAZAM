@@ -40,9 +40,8 @@ namespace BLAZAM.Server.Pages
                 case "img":
                     return GetImg(Data);
 
-                    break;
             }
-            return null;
+            return NotFound();
 
         }
 

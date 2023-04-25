@@ -1,13 +1,12 @@
 @page "/install/directory"
 @layout InstallLayout
 @inherits AppComponentBase
-@inject NavigationManager Nav;
 @{
 }
     <div>
-    <BLAZAM.Server.Shared.UI.Settings.DirectorySettings />
+    <DirectorySettings />
 
-        <BLAZAM.Server.Shared.UI.Settings.ActiveDirectoryStatusPanel DirectoryConnected="@(()=>{disableNext=false;})"/>
+        <ActiveDirectoryStatusPanel DirectoryConnected="@(()=>{disableNext=false;})"/>
         <br/>
         <br/>
         <MudButton Color="Color.Success" @onclick="ShowNext" Disabled="@disableNext">Proceed</MudButton>

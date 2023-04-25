@@ -13,7 +13,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
         }
 
-        public async Task<List<IADUser>> FindUsersByStringAsync(string searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
+        public async Task<List<IADUser?>> FindUsersByStringAsync(string searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
         {
             return await Task.Run(() =>
             {
@@ -56,7 +56,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             });
         }
 
-        public List<IADUser>? FindLockedOutUsers(bool? ignoreDisabledUsers = true)
+        public List<IADUser> FindLockedOutUsers(bool? ignoreDisabledUsers = true)
         {
             return new ADSearch()
             {
@@ -69,10 +69,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
             }.Search<ADUser, IADUser>();
 
-            string UserSearchFieldsQuery = "(lockoutTime>=1)";
-
-            return new List<IADUser>(ConvertTo<ADUser>(SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User, 50, ignoreDisabledUsers)));
-
+       
         }
 
 
@@ -84,7 +81,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             });
         }
 
-        public List<IADUser>? FindNewUsers(int maxAgeInDays = 14, bool? ignoreDisabledUsers = true)
+        public List<IADUser> FindNewUsers(int maxAgeInDays = 14, bool? ignoreDisabledUsers = true)
         {
 
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
@@ -110,7 +107,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             });
         }
 
-        public List<IADUser>? FindChangedPasswordUsers(bool? ignoreDisabledUsers = true)
+        public List<IADUser> FindChangedPasswordUsers(bool? ignoreDisabledUsers = true)
         {
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
 
@@ -129,7 +126,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             });
         }
 
-        public List<IADUser>? FindChangedUsers(bool? ignoreDisabledUsers = true, int daysBackToSearch = 90)
+        public List<IADUser> FindChangedUsers(bool? ignoreDisabledUsers = true, int daysBackToSearch = 90)
         {
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(daysBackToSearch);
 

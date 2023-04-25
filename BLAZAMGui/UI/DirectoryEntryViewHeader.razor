@@ -189,7 +189,7 @@
     public EventCallback OnDelete{ get; set; }
     private async Task DeleteUser()
     {
-        OnDelete.InvokeAsync();
+        await OnDelete.InvokeAsync();
     }
 
     [Parameter]
@@ -197,50 +197,50 @@
 
     private async Task Move()
     {
-        OnMove.InvokeAsync();
+        await OnMove.InvokeAsync();
     }
     [Parameter]
     public EventCallback OnRename{ get; set; }
     private async Task Rename()
     {
-        OnRename.InvokeAsync();
+       await OnRename.InvokeAsync();
     }
     [Parameter]
     public EventCallback OnChangeThumbnail{ get; set; }
 
     private async Task ChangeThumbnail()
     {
-        OnChangeThumbnail.InvokeAsync();
+       await OnChangeThumbnail.InvokeAsync();
     }
     [Parameter]
     public EventCallback OnResetPassword{ get; set; }
     private async Task ResetPassword()
     {
-        OnResetPassword.InvokeAsync();
+        await OnResetPassword.InvokeAsync();
     }
     [Parameter]
     public EventCallback OnAssignTo{ get; set; }
     private async Task Assign()
     {
-        OnAssignTo.InvokeAsync();
+        await OnAssignTo.InvokeAsync();
     }
     [Parameter]
     public EventCallback OnUnlock{ get; set; }
     private async Task Unlock()
     {
-        OnUnlock.InvokeAsync();
+        await OnUnlock.InvokeAsync();
     }
     [Parameter]
     public EventCallback OnEnable{ get; set; }
     private async Task Enable()
     {
-        OnEnable.InvokeAsync();
+        await OnEnable.InvokeAsync();
     }
     [Parameter]
     public EventCallback OnDisable{ get; set; }
     private async Task Disable()
     {
-        OnDisable.InvokeAsync();
+        await OnDisable.InvokeAsync();
     }
     private bool _editMode = false;
     [Parameter]
@@ -248,6 +248,6 @@
     private async Task ToggleEditMode(bool editEnabled)
     {
         _editMode = editEnabled;
-        OnToggleEditMode.InvokeAsync(editEnabled);
+        await OnToggleEditMode.InvokeAsync(editEnabled);
     }
 }

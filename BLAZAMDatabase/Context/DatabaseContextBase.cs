@@ -47,7 +47,7 @@ namespace BLAZAM.Database.Context
             }
         }
         static IEnumerable<string> _appliedMigrations;
-        private string _dbType;
+ 
 
 
         public virtual IEnumerable<string> AppliedMigrations
@@ -78,7 +78,7 @@ namespace BLAZAM.Database.Context
         public DatabaseContextBase(DatabaseConnectionString databaseConnectionString) : base()
         {
             ConnectionString = databaseConnectionString;
-            _dbType = "SQL";
+    
         }
 
 

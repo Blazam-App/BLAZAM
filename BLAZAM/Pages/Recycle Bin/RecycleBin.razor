@@ -59,7 +59,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        GetDeletedEntries();
+        await GetDeletedEntries();
     }
     async Task GetDeletedEntries()
     {

@@ -63,12 +63,7 @@
     {
         await base.OnInitializedAsync();
         Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
-
-
-
-
-
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
 
 
     }

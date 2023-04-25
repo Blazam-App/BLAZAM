@@ -1,6 +1,6 @@
 @inherits AppComponentBase
 @{
-    var messages = UserState.Messages.Count;
+    var messages = UserState.Messages?.Count;
 
 }
 @if (messages > 0)

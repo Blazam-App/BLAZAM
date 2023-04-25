@@ -41,18 +41,13 @@
                         <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Computer" />
                     }
                 </AppModal>
-                @*   <AppModal Title="Rename User" @ref=@RenameModal>
+                   <AppModal Title="Rename Computer" @ref=@RenameModal>
                 @if (RenameModal?.IsShown == true)
                 {
-                <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) User="User" />
+                <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Computer="Computer" />
                 }
-                </AppModal>*@
-                @*   <AppModal Title="Set Password" @ref=@ChangePasswordModal>
-                @if (ChangePasswordModal?.IsShown == true)
-                {
-                <ChangeUserPasswordModalContent User="User" />
-                }
-                </AppModal>*@
+                </AppModal>
+           
 
 
 
@@ -161,7 +156,7 @@
 
 @code {
     List<IADComputerDrive> drives = new();
-    IADComputer Computer => DirectoryEntry as IADComputer;
+    IADComputer? Computer => DirectoryEntry as IADComputer;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -171,11 +166,11 @@
             Task.Run(async () =>
             {
                 drives = await Computer.GetDrivesAsync();
-               
+
                 await RefreshEntryComponents();
 
             });
-           
+
 
 
 
@@ -200,8 +195,7 @@
         }
 
     }
-
-    async void DiscardChanges()
+    protected override async void DiscardChanges()
     {
         if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
         {
@@ -210,7 +204,7 @@
             await RefreshEntryComponents();
 
         }
-
+    
     }
     async Task DeleteComputer()
     {

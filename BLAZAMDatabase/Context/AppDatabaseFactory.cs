@@ -58,7 +58,7 @@ namespace BLAZAM.Database.Context
             return false;
         }
 
-        public async Task<IDatabaseContext> CreateDbContextAsync() => await Task.Run(async () => { return CreateDbContext(); });
+        public async Task<IDatabaseContext> CreateDbContextAsync() => await Task.Run(() => { return CreateDbContext(); });
         public IDatabaseContext CreateDbContext()
         {
             var _dbType = _configuration.GetValue<string>("DatabaseType");

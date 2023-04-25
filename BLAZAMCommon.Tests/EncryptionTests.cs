@@ -34,7 +34,7 @@ namespace BLAZAM.Tests
             var test = "0qHlU8ZdxuW4Vp3BiNRJubp0mzxFXRf8+pyaUdSENv4=";
             var expected = "test";
             var result = encryption.DecryptObject<string>(test);
-            Assert.Equal<string>(expected, result);
+            Assert.Equal(expected, result);
         }
 
         [Theory]

@@ -14,21 +14,18 @@ namespace BLAZAM.ActiveDirectory
 {
     public class ActiveDirectoryContextFactory : IActiveDirectoryContextFactory
     {
-        IAppDatabaseFactory factory;
-        IApplicationUserStateService userStateService;
-        WmiFactory wmiFactory;
-        IEncryptionService encryptionService;
-        INotificationPublisher notificationPublisher;
+        //IAppDatabaseFactory _factory;
+        //IApplicationUserStateService _userStateService;
+        //IEncryptionService _encryptionService;
+        //INotificationPublisher _notificationPublisher;
         ActiveDirectoryContext activeDirectoryContextSeed;
 
         public ActiveDirectoryContextFactory(IAppDatabaseFactory factory, IApplicationUserStateService userStateService, IEncryptionService encryptionService, INotificationPublisher notificationPublisher)
         {
-            this.factory = factory;
-            this.userStateService = userStateService;
-            //TODO Create local instantiated WMI Factory
-            //this.wmiFactory = wmiFactory;
-            this.encryptionService = encryptionService;
-            this.notificationPublisher = notificationPublisher;
+           // _factory = factory;
+           //_userStateService = userStateService;
+           // _encryptionService = encryptionService;
+           // _notificationPublisher = notificationPublisher;
             activeDirectoryContextSeed = new ActiveDirectoryContext(factory, userStateService, encryptionService, notificationPublisher);
         }
 

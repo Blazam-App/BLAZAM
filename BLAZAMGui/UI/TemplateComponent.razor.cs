@@ -12,7 +12,7 @@ namespace BLAZAM.Gui.UI
         protected MudTabs? Tabs;
         private IEnumerable<DirectoryTemplate> templates = new List<DirectoryTemplate>();
         private string? selectedCategory;
-        private DirectoryTemplate selectedTemplate;
+        private DirectoryTemplate? selectedTemplate;
 
         protected SetHeader? Header { get; set; }
 
