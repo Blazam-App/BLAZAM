@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using BLAZAM.ActiveDirectory.Adapters;
+using System.Net;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -10,6 +11,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         AppEvent<bool> OnOnlineChanged { get; set; }
         int Processor { get; }
         double MemoryUsedPercent { get; }
+        List<ComputerService> Services { get; }
 
         List<IADComputerDrive> GetDrives();
         Task<List<IADComputerDrive>> GetDrivesAsync();

@@ -64,8 +64,9 @@
 
                     <Section Title=@AppLocalization["Live Stats"]>
                     <MudStack Row Class="@_fieldMudStackClasses">
-                        <LiveChart SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})"/>
+                        <LiveChart  SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})"/>
                         <LiveChart SeriesName="Memory Usage" Title="Live RAM Usage" History="30" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})"/>
+                            <ComputerServices Computer="Computer"/>
                     </MudStack>
 
                     </Section>
@@ -168,6 +169,13 @@
                 drives = await Computer.GetDrivesAsync();
 
                 await RefreshEntryComponents();
+
+            });
+            Task.Run( () =>
+            {
+                var services =  Computer.Services;
+
+                 RefreshEntryComponents();
 
             });
 

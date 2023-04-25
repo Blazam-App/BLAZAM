@@ -57,6 +57,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     OnOnlineChanged?.Invoke((bool)value);
             }
         }
+        public List<ComputerService> Services => wmiConnection.Services;
         public ComputerMemory Memory =>wmiConnection?.Memory ?? new();
         public int Processor => wmiConnection.Processor;
         public double MemoryUsedPercent => wmiConnection.Memory.PercentUsed;
