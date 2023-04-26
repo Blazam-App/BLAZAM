@@ -75,16 +75,7 @@ else
         base.OnInitialized();
         t = new Timer(RefreshServices, null, 1000, 10000);
 
-        foreach (var currentProcess in Process.GetProcesses())
-        {
-            if (currentProcess.ProcessName == "chrome")
-            {
-                var windowCapture = System.Drawing.Graphics.FromHwnd(currentProcess.Handle);
-                windowCapture.CopyFromScreen(0, 0, 1024, 1024, new System.Drawing.Size(1024, 1024));
-                var capture = new System.Drawing.Bitmap(1024, 1024, windowCapture);
-
-            }
-        }
+       
 
     }
 

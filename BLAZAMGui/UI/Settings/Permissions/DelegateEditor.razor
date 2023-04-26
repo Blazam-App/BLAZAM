@@ -12,12 +12,12 @@
 </MudStack>
 @if (AllDelegates.Count > 0)
 {
-
-    @foreach (var pl in AllDelegates.Where(l => l.DeletedAt == null).Where(l =>
+    var delegates = AllDelegates.Where(l => l.DeletedAt == null)@*.Where(l =>
   Directory.FindEntryBySID(l.DelegateSid).CanonicalName
   .StartsWith(DelegateFilter, StringComparison.OrdinalIgnoreCase) ||
   Directory.FindEntryBySID(l.DelegateSid).CanonicalName
-  .Contains(DelegateFilter, StringComparison.OrdinalIgnoreCase)))
+  .Contains(DelegateFilter, StringComparison.OrdinalIgnoreCase))*@;
+    @foreach (var pl in delegates)
     {
         <DelegateListItem Level="pl" Context="Context" DelegateDeleted="DelegatesChanged" />
     }

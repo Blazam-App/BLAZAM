@@ -102,17 +102,17 @@
                             <MudStack Row=true>
                                 <MudText Typo="Typo.subtitle2">Created:</MudText>
                                 <MudSpacer />
-                                <MudTooltip Text="@User.Created?.TimeOfDay.ToString()">
-                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.Created?.ToShortDateString()</MudText>
+                                <MudTooltip Text="@User.Created?.ToLocalTime().TimeOfDay.ToString()">
+                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.Created?.ToLocalTime().ToShortDateString()</MudText>
                                 </MudTooltip>
                             </MudStack>
                             <MudStack Row=true>
 
                                 <MudText Typo="Typo.subtitle2">Last Change:</MudText>
                                 <MudSpacer />
-                                <MudTooltip Text="@User.LastChanged?.TimeOfDay.ToString()">
+                                <MudTooltip Text="@User.LastChanged?.ToLocalTime().TimeOfDay.ToString()">
 
-                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.LastChanged?.ToShortDateString()</MudText>
+                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.LastChanged?.ToLocalTime().ToShortDateString()</MudText>
                                 </MudTooltip>
                             </MudStack>
                             @if (User.LockedOut)
@@ -120,9 +120,9 @@
                                 <MudStack Row=true>
                                     <MudText Typo="Typo.subtitle2">Locked Out Time:</MudText>
                                     <MudSpacer />
-                                    <MudTooltip Text="@User.LockoutTime?.TimeOfDay.ToString()">
+                                    <MudTooltip Text="@User.LockoutTime?.ToLocalTime().TimeOfDay.ToString()">
 
-                                        <MudText Style="text-align:end;" Typo="Typo.caption">@User.LockoutTime?.ToShortDateString()</MudText>
+                                        <MudText Style="text-align:end;" Typo="Typo.caption">@User.LockoutTime?.ToLocalTime().ToShortDateString()</MudText>
                                     </MudTooltip>
 
                                 </MudStack>

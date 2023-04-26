@@ -13,7 +13,7 @@
             <MudListItem>
                 <ChildContent>
                     <MudStack Row=true>
-                        <MudLink OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})">@g.CanonicalName</MudLink>
+                        <MudLink Class="align-middle" OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})">@g.CanonicalName</MudLink>
                         <MudSpacer />
                         <MudIconButton OnClick="@(()=>{Model.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
                     </MudStack>

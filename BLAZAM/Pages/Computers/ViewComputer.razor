@@ -67,6 +67,8 @@
                         <LiveChart  SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})"/>
                         <LiveChart SeriesName="Memory Usage" Title="Live RAM Usage" History="30" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})"/>
                             <ComputerServices Computer="Computer"/>
+                        <ComputerSessionPreview Computer="Computer" />
+
                     </MudStack>
 
                     </Section>

@@ -1,0 +1,84 @@
+﻿@using System.Diagnostics;
+@using System.Drawing;
+@using System.Runtime.InteropServices;
+<h3>ComputerSessionPreview</h3>
+
+<Base64Image Data=@LastCapture></Base64Image>
+@code {
+    Process? _process;
+    // Define a RECT structure for window coordinates
+    [StructLayout(LayoutKind.Sequential)]
+    public struct RECT
+    {
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
+
+        public int Width => Right - Left;
+        public int Height => Bottom - Top;
+    }
+
+    // Define a PrintWindow method using p/invoke
+    [DllImport("user32.dll")]
+    public static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int nFlags);
+
+    // Define a GetWindowRect method using p/invoke
+    [DllImport("user32.dll")]
+    public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+    [Parameter]
+    public IADComputer? Computer { get; set; }
+
+    private Timer _timer;
+    public byte[]? LastCapture;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (_process == null)
+        {
+            _process = Process.Start("notepad");
+            await Task.Delay(500);
+        }
+        _timer = new Timer(GetWindowCapture, _process.MainWindowHandle, 500, 5000);
+        //GetWindowCapture(_process.MainWindowHandle);
+
+
+    }
+    void GetWindowCapture(object? processId)
+    {
+        if (processId == null) return;
+        if (processId is IntPtr hwnd)
+        {
+            if (!Process.GetProcesses().Any(p => p.MainWindowHandle.Equals(hwnd)))
+            {
+                _process = null;
+                return;
+            }
+            // Get the window rectangle of the notepad window
+            RECT rc;
+            GetWindowRect(hwnd, out rc);
+
+            // Create a bitmap with the same size as the window rectangle
+            Bitmap bmp = new Bitmap(rc.Width, rc.Height);
+
+            // Create a graphics object from the bitmap and get its device context handle
+            Graphics gfxBmp = Graphics.FromImage(bmp);
+            IntPtr hdcBitmap = gfxBmp.GetHdc();
+
+            // Call PrintWindow with the window handle and the device context handle
+            PrintWindow(hwnd, hdcBitmap, 0);
+
+            // Release the device context handle and dispose the graphics object
+            gfxBmp.ReleaseHdc(hdcBitmap);
+            gfxBmp.Dispose();
+
+            // Save or use the bitmap as needed
+            ImageConverter ic = new();
+            var bytes = (byte[])ic.ConvertTo(bmp, typeof(byte[]));
+            LastCapture = bytes;
+            InvokeAsync(StateHasChanged);
+        }
+
+    }
+}
