@@ -53,8 +53,8 @@
                              Label="@objectType.ToString()"
                              Size="@Size.Small"
                              Checked="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)"
-                             CheckedChanged="@(async(val)=>{
-await ToggleObjectType(context.Item,objectType,val);
+                             CheckedChanged="@((val)=>{
+ ToggleObjectType(context.Item,objectType,val);
 })" />
                 </EditTemplate>
                 <CellTemplate>
@@ -92,7 +92,7 @@ await ToggleObjectType(context.Item,objectType,val);
     }
     async Task FieldCreated(CustomActiveDirectoryField newField)
     {
-        fieldGrid.ReloadServerData();
+        await fieldGrid?.ReloadServerData();
 
     }
     async Task Delete(CustomActiveDirectoryField field)
@@ -102,7 +102,7 @@ await ToggleObjectType(context.Item,objectType,val);
             field.DeletedAt = DateTime.UtcNow;
             if (await Context.SaveChangesAsync() > 0)
             {
-                await fieldGrid.ReloadServerData();
+                await fieldGrid?.ReloadServerData();
 
                 SnackBarService.Success(field.DisplayName + " deleted");
             }
@@ -121,7 +121,8 @@ await ToggleObjectType(context.Item,objectType,val);
         SnackBarService.Success("Field could nt be updated");
 
     }
-    async Task ToggleObjectType(CustomActiveDirectoryField field, ActiveDirectoryObjectType objectType, bool newValue)
+
+    void ToggleObjectType(CustomActiveDirectoryField field, ActiveDirectoryObjectType objectType, bool newValue)
     {
             //Handle remove to list
             if (!newValue && field.ObjectTypes.Any(ot => ot.ObjectType.Equals(objectType)))

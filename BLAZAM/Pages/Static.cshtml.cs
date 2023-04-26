@@ -18,7 +18,7 @@ namespace BLAZAM.Server.Pages
         public string Data { get; set; }
 
 
-        protected  IDatabaseContext Context { get; private set; }
+        protected IDatabaseContext Context { get; private set; }
 
 
         public StaticModel(IAppDatabaseFactory factory)
@@ -30,18 +30,22 @@ namespace BLAZAM.Server.Pages
 
         public async Task<IActionResult> OnGet()
         {
-
-             var expires = DateTime.UtcNow.AddDays(1);
+            return await Task.Run(() =>
+            {
+                var expires = DateTime.UtcNow.AddDays(1);
                 Response.Headers.Add("Cache-Control", "public,max-age=86400");
                 Response.Headers.Add("Expires", expires.ToString("R"));
-                
-            switch (Method.ToLower())
-            {
-                case "img":
-                    return GetImg(Data);
 
-            }
-            return NotFound();
+                switch (Method.ToLower())
+                {
+                    case "img":
+                        return GetImg(Data);
+
+                }
+                return NotFound();
+            });
+
+     
 
         }
 
@@ -58,6 +62,6 @@ namespace BLAZAM.Server.Pages
 
             return null;
         }
-  
+
     }
 }

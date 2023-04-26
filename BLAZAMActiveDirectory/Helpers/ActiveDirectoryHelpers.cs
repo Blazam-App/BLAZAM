@@ -1,6 +1,8 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
+using BLAZAM.ActiveDirectory.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,7 +16,15 @@ namespace BLAZAM.Helpers
      
           
 
-
+        public static Process? Shadow(this IRemoteSession session,bool withoutPermission = false)
+        {
+            if (session == null) return null;
+            string command = "mstsc.exe";
+            string arguments = "/v:" + session.Server.ServerName + " /shadow:" + session.SessionId;
+            if (withoutPermission) arguments += " /noConsentPrompt";
+            return Process.Start(command, arguments);
+            //Debug.TrackEvent("Shadow (Consent)", properties);
+        }
        
         public static string FqdnToDn(string fqdn)
         {

@@ -2,10 +2,10 @@
 
 
 <MudList Disabled=false
-    Dense=true 
-    Clickable="false" 
-    DisableGutters=true 
-    Style="max-height:200px; overflow-y:auto;">
+         Dense=true
+         Clickable="false"
+         DisableGutters=true
+         Style="max-height:200px; overflow-y:auto;">
     @foreach (IADGroup g in Model.MemberOf.Where(group => group.CanRead).OrderBy(g => g.CanonicalName))
     {
         if (g.CanRead)
@@ -13,13 +13,25 @@
             <MudListItem>
                 <ChildContent>
                     <MudStack Row=true>
-                        <MudLink Class="align-middle" OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})">@g.CanonicalName</MudLink>
+                        @if (EditMode)
+                        {
+                            <MudText Class="align-middle">@g.CanonicalName</MudText>
+
+                        }
+                        else
+                        {
+                            <MudLink Class="align-middle" OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})">@g.CanonicalName</MudLink>
+
+                        }
                         <MudSpacer />
-                        <MudIconButton OnClick="@(()=>{Model.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
+                        @if (EditMode)
+                        {
+                            <MudIconButton OnClick="@(()=>{Model.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
+                        }
                     </MudStack>
                 </ChildContent>
             </MudListItem>
-
+           
         }
 
     }
@@ -29,9 +41,16 @@
     }
 
 </MudList>
+@if (EditMode)
+{
 
+    <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.GroupAdd" OnClick="@(()=>{AssignToClicked.InvokeAsync();})" />
+}
 @code {
-
+    [CascadingParameter]
+    public bool EditMode { get; set; }
     [Parameter]
     public IGroupableDirectoryAdapter Model { get; set; }
+    [Parameter]
+    public EventCallback AssignToClicked { get; set; }
 }

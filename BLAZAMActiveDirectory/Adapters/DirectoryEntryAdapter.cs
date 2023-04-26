@@ -79,7 +79,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected SearchResult? searchResult;
 
         protected IAppDatabaseFactory DbFactory;
-        protected IApplicationUserState? CurrentUser { get; set; }
+        protected IApplicationUserState? CurrentUser => Directory.CurrentUser;
 
         bool _newEntry = false;
         public bool NewEntry
@@ -632,7 +632,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 DirectoryEntry.UsePropertyCache = true;
                 DirectoryEntry.Disposed += DirectoryEntry_Disposed;
             }
-            CurrentUser = Directory.CurrentUser;
             DbFactory = directory.Factory;
 
             DirectorySettings = await DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefaultAsync();
@@ -687,8 +686,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         || p.Value is string strValue && strValue.IsNullOrEmpty()
                         || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
                             {
-
-                                DirectoryEntry.Properties[p.Key].Clear();
+                                
+                                    DirectoryEntry.Properties[p.Key].Clear();
+                                
 
                             }
                             else
@@ -816,7 +816,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
                 var com = GetProperty<object>(propertyName);
-                return com.AdsValueToDateTime().Value;
+                return com?.AdsValueToDateTime();
             }
             catch
             {
@@ -1008,14 +1008,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         private void SetNewProperty(string propertyName, object? value)
         {
-            if (!value.Equals(DirectoryEntry?.Properties[propertyName]?.Value))
+            if (value != null && !value.Equals(DirectoryEntry?.Properties[propertyName]?.Value))
             {
                 NewEntryProperties[propertyName] = value;
 
                 HasUnsavedChanges = true;
                 OnModelChanged?.Invoke();
             }
-            else if (NewEntryProperties.ContainsKey(propertyName))
+            else if (value == null && NewEntryProperties.ContainsKey(propertyName))
             {
                 NewEntryProperties.Remove(propertyName);
                 if (NewEntryProperties.Count < 1)
@@ -1023,7 +1023,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        /// <inheritdoc/>
+
         public virtual bool Rename(string newName)
         {
             DirectoryEntry?.Rename("cn=" + newName);

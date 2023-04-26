@@ -140,7 +140,7 @@
                             {
                                 <MudStack>
                                     <MudText Typo="Typo.subtitle2">Groups</MudText>
-                                    <MemberOfList Model="User" />
+                                    <MemberOfList AssignToClicked=@(()=>{AssignToModal.Show();}) Model="User" />
 
                                 </MudStack>
 
@@ -346,7 +346,11 @@
                                 <DynamicMudInput T=string Label="@AppLocalization["Home Directory"]"
                                          @bind-Value="@User.HomeDirectory"
                                          Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
-
+                                       
+                                         var homeDirectory = new SystemDirectory(User.HomeDirectory);
+                                         
+                                         <MudIcon Class="align-middle" Icon="@(homeDirectory.Exists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
+                                         Color="@(homeDirectory.Exists?Color.Success:Color.Error)"/>
                                 <MudButton StartIcon="@Icons.Material.Filled.ContentCopy" OnClick="@(()=>{CopyToClipboard(User.HomeDirectory);})" />
                                                                 }
                             @if (User.CanReadField(ActiveDirectoryFields.HomeDrive))

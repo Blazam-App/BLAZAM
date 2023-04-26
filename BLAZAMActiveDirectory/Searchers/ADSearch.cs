@@ -98,7 +98,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             if (token != null) cancellationToken = token;
             else cancellationToken = new CancellationToken();
-            if (cancellationToken?.IsCancellationRequested == true) return default;
+            if (cancellationToken?.IsCancellationRequested == true) return new();
             DateTime startTime = NewMethod();
             DirectorySearcher searcher;
             try
@@ -201,16 +201,16 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     //FilterQuery += ")";
 
                 }
-                if (cancellationToken?.IsCancellationRequested == true) return default;
+                if (cancellationToken?.IsCancellationRequested == true) return new();
 
                 PrepareSearcher(searcher);
-                if (cancellationToken?.IsCancellationRequested == true) return default;
+                if (cancellationToken?.IsCancellationRequested == true) return new();
 
                 SearchTime = DateTime.Now - startTime;
 
                 PerformSearch<TObject, TInterface>(startTime, searcher, pageSize);
 
-                if (cancellationToken?.IsCancellationRequested == true) return default;
+                if (cancellationToken?.IsCancellationRequested == true) return new();
 
                 SearchState = SearchState.Completed;
                 SearchTime = DateTime.Now - startTime;
@@ -316,7 +316,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 searcher.Tombstone = true;
             //searcher.Asynchronous = true;
             searcher.SizeLimit = MaxResults;
-            searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + FilterQuery + ")";
+            searcher.Filter = searcher.Filter?.Substring(0, searcher.Filter.Length - 1) + FilterQuery + ")";
             LdapQuery = searcher.Filter;
             searcher.Sort = new SortOption("cn", SortDirection.Ascending);
         }
@@ -370,7 +370,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
             if (r != null && r.Count > 0)
             {
-                IDirectoryEntryAdapter thisObject = null;
+                IDirectoryEntryAdapter? thisObject = null;
                 foreach (SearchResult sr in r)
                 {
                     if (sr.Properties["objectClass"].Contains("top"))

@@ -140,7 +140,7 @@ namespace BLAZAM.Gui.UI
             Nav.NavigateTo(Nav.Uri, forceReload);
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             Context?.Dispose();
         }

@@ -12,7 +12,7 @@
              Items="services">
         <Columns>
             <TemplateColumn StickyLeft=true
-                Title="Name">
+                        Title="Name">
                 <CellTemplate>
                     <MudBadge Icon="@Icons.Material.Filled.Warning"
                           Color=Color.Warning
@@ -75,7 +75,7 @@ else
         base.OnInitialized();
         t = new Timer(RefreshServices, null, 1000, 10000);
 
-       
+
 
     }
 
@@ -84,9 +84,15 @@ else
     {
         try
         {
-            services = Computer.Services;
+            if (Computer != null)
+            {
+                services = Computer.Services;
 
-            sessionsErrorMessage = null;
+                sessionsErrorMessage = null;
+            }
+            else
+                sessionsErrorMessage = "No Computer";
+
         }
         catch (AuthenticationException ex)
         {
@@ -95,8 +101,9 @@ else
 
         await InvokeAsync(StateHasChanged);
     }
-    public void Dispose()
+    public override void Dispose()
     {
-        t.Dispose();
+        base.Dispose();
+        t?.Dispose();
     }
 }

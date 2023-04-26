@@ -78,7 +78,7 @@
             if (Directory.RestoreTombstone(entryToRestore, entryToRestore.LastKnownParent))
             {
                 SnackBarService.Success(entryToRestore.CanonicalName + " restored successfully");
-                GetDeletedEntries();
+                await GetDeletedEntries();
             }
             else
             {

@@ -24,10 +24,8 @@ namespace BLAZAM.Gui.UI
             set
             {
                 _templateIdParameter = value;
-                if (value != null)
                     SelectedTemplate = Templates.Where(t => t.Id == value).FirstOrDefault();
-                else
-                    SelectedTemplate = null;
+              
             }
         }
 

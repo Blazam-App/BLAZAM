@@ -95,7 +95,7 @@
                           Adornment=Adornment.Start
                           AdornmentIcon="@Icons.Material.Filled.Message"
                           Immediate="true"
-                          OnKeyUp=@((args)=>{if(args.Key.ToLower()=="enter") PostMessage();})
+                          OnKeyUp=@(async(args)=>{if(args.Key.ToLower()=="enter") await PostMessage();})
                           T="string"
                           @bind-Text=@draftMessage />
 
@@ -236,7 +236,7 @@
             OnMessagePosted?.Invoke(message);
             draftMessage = "";
             //messageTextField.Value = "";
-            await messageTextField.Clear();
+            await messageTextField?.Clear();
             await InvokeAsync(StateHasChanged);
 
         }

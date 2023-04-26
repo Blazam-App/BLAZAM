@@ -1,0 +1,23 @@
+@inherits AppComponentBase
+@if (Monitor.DirectoryConnected == ServiceConnectionState.Connecting)
+{
+    <MudStack>
+        @*<MudText Typo="Typo.caption">Connecting to Active Directory.</MudText>*@
+        <MudText Typo="Typo.caption">Please wait or use admin login...</MudText>
+
+    </MudStack>
+}
+@if (Monitor.DirectoryConnected == ServiceConnectionState.Down)
+{
+    <MudStack>
+        <MudText Typo="Typo.caption" Color="Color.Error">Active Directry connection unavailable.</MudText>
+        <MudText Typo="Typo.caption" Color="Color.Error">Local Admin login only!</MudText>
+    </MudStack>
+}
+@code{
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
+    }
+}

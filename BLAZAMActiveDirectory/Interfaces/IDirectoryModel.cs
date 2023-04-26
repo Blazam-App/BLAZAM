@@ -256,8 +256,15 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         void Delete();
         string? ToString();
         bool Rename(string newName);
+
         void EnsureDirectoryEntry();
+
         T? GetCustomProperty<T>(string propertyName);
+        /// <summary>
+        /// Returns the specified DateTime property in UTC
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         DateTime? GetDateTimeProperty(string propertyName);
         void SetCustomProperty(string propertyName, object? value);
     }

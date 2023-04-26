@@ -48,7 +48,7 @@ namespace BLAZAM.Session.Interfaces
         /// Changes made to the returned object are not saved
         /// until <see cref="SaveUserSettings()"/> is called
         /// </remarks>
-        AppUser? Preferences { get; }
+        AppUser Preferences { get; }
 
 
         /// <summary>

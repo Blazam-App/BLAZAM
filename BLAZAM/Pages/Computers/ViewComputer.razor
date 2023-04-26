@@ -4,12 +4,13 @@
     string _fieldMudStackClasses = "flex-wrap gap-10";
 }
 <AppPageTitle>@Computer?.CanonicalName</AppPageTitle>
+@if (Computer != null)
+{
+    <EditForm OnValidSubmit=SaveChanges Context="editContext" Model="Computer">
 
-<EditForm OnValidSubmit=SaveChanges Context="editContext" Model="Computer">
+        <SetSubHeader>
 
-    <SetSubHeader>
-
-        <DirectoryEntryViewHeader DirectoryEntry="@Computer"
+            <DirectoryEntryViewHeader DirectoryEntry="@Computer"
                                   OnAssignTo="@(()=>{AssignToModal?.Show();})"
                                   OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
                                   OnDelete="@DeleteComputer"
@@ -20,130 +21,130 @@
                                   OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
                                   OnToggleEditMode="ToggleEditMode"
                                   OnUnlock="@Unlock" />
-        <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
+            <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
-        </MudOverlay>
-
-
-    </SetSubHeader>
-
-    <CascadingValue Value="EditMode">
-        <CascadingValue Value="Computer">
-            <FlexContainer>
+            </MudOverlay>
 
 
-                <AppModal Color="Color.Dark" Title="Assign To..." @ref=@AssignToModal>
-                    <AssignToModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Computer" />
-                </AppModal>
-                <AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
-                    @if (MoveToModal?.IsShown == true)
-                    {
-                        <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Computer" />
-                    }
-                </AppModal>
-                   <AppModal Title="Rename Computer" @ref=@RenameModal>
-                @if (RenameModal?.IsShown == true)
-                {
-                <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Computer="Computer" />
-                }
-                </AppModal>
-           
+        </SetSubHeader>
 
+        <CascadingValue Value="EditMode">
+            <CascadingValue Value="Computer">
+                <FlexContainer>
+
+
+                    <AppModal Color="Color.Dark" Title="Assign To..." @ref=@AssignToModal>
+                        <AssignToModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Computer" />
+                    </AppModal>
+                    <AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
+                        @if (MoveToModal?.IsShown == true)
+                        {
+                            <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Computer" />
+                        }
+                    </AppModal>
+                    <AppModal Title="Rename Computer" @ref=@RenameModal>
+                        @if (RenameModal?.IsShown == true)
+                        {
+                            <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Computer="Computer" />
+                        }
+                    </AppModal>
 
 
 
 
-                <Section Title=@AppLocalization["Info"]>
-                    <MudStack Row Class="@_fieldMudStackClasses">
+
+
+                    <Section Title=@AppLocalization["Info"]>
+                        <MudStack Row Class="@_fieldMudStackClasses">
                         <DynamicMudInput T=string Label="@AppLocalization["Name"]" @bind-Value="@Computer.CanonicalName" Disabled=@true />
                         <DynamicMudInput T=string Label="@AppLocalization["Operating System"]" @bind-Value="@Computer.OperatingSystem" Disabled=@true />
 
-                    </MudStack>
+                        </MudStack>
 
-                    </Section>
+                        </Section>
 
-                    <Section Title=@AppLocalization["Live Stats"]>
-                    <MudStack Row Class="@_fieldMudStackClasses">
-                        <LiveChart  SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})"/>
-                        <LiveChart SeriesName="Memory Usage" Title="Live RAM Usage" History="30" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})"/>
-                            <ComputerServices Computer="Computer"/>
-                        <ComputerSessionPreview Computer="Computer" />
+                        <Section Title=@AppLocalization["Live Stats"]>
+                        <MudStack Row Class="@_fieldMudStackClasses">
+                        <LiveChart SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})" />
+                        <LiveChart SeriesName="Memory Usage" Title="Live RAM Usage" History="30" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})" />
+                        <ComputerServices Computer="Computer" />
 
-                    </MudStack>
+                        </MudStack>
 
-                    </Section>
+                        </Section>
 
-                    <Section Title=@AppLocalization["Drive Details"]>
-                    <MudStack Row Class="@_fieldMudStackClasses">
+                        <Section Title=@AppLocalization["Drive Details"]>
+                        <MudStack Row Class="@_fieldMudStackClasses">
                         @if (drives != null && drives.Count > 0)
-                        {
-                            <MudDataGrid Elevation=0 Items="drives">
-                                <Columns>
-                                    <PropertyColumn Property="x=>x.DriveType" />
-                                    <PropertyColumn Property="x=>x.Letter" />
-                                    <TemplateColumn Title="Used">
-                                        <CellTemplate>
-                                            @(context.Item.PercentUsed.Round(0).ToString() + "%")
-                                        </CellTemplate>
-                                    </TemplateColumn>
-                                    <TemplateColumn Title="Capacity">
-                                        <CellTemplate>
-                                            @(context.Item.Capacity.Round(0).ToString() + "GB")
-                                        </CellTemplate>
-                                    </TemplateColumn>
-                                    <PropertyColumn Property="x=>x.FileSystem" />
-                                    <PropertyColumn Property="x=>x.Serial" />
-                                </Columns>
-                            </MudDataGrid>
+                            {
+                                <MudDataGrid Elevation=0 Items="drives">
+                                    <Columns>
+                                        <PropertyColumn Property="x=>x.DriveType" />
+                                        <PropertyColumn Property="x=>x.Letter" />
+                                        <TemplateColumn Title="Used">
+                                            <CellTemplate>
+                                                @(context.Item.PercentUsed.Round(0).ToString() + "%")
+                                            </CellTemplate>
+                                        </TemplateColumn>
+                                        <TemplateColumn Title="Capacity">
+                                            <CellTemplate>
+                                                @(context.Item.Capacity.Round(0).ToString() + "GB")
+                                            </CellTemplate>
+                                        </TemplateColumn>
+                                        <PropertyColumn Property="x=>x.FileSystem" />
+                                        <PropertyColumn Property="x=>x.Serial" />
+                                    </Columns>
+                                </MudDataGrid>
 
-                        }
+                            }
 
-                    </MudStack>
-                </Section>
-
-
+                        </MudStack>
+                    </Section>
 
 
 
 
-                <Section Title=@AppLocalization["Sessions"]>
-                    <MudStack Row Class="@_fieldMudStackClasses">
+
+
+                    <Section Title=@AppLocalization["Sessions"]>
+                        <MudStack Row Class="@_fieldMudStackClasses">
                         <ComputerSessions Computer="Computer" />
 
-                    </MudStack>
+                        </MudStack>
 
-                    </Section>
+                        </Section>
 
 
-                    @if (Computer.CanReadAnyCustomFields)
-                {
-                    <Section Title="Additional Field">
-                        @if (CustomFields != null)
-                        {
-                            @foreach (var field in CustomFields)
+                        @if (Computer.CanReadAnyCustomFields)
+                    {
+                        <Section Title="Additional Field">
+                            @if (CustomFields != null)
                             {
-                                @if (Computer.CanReadField(field))
+                                @foreach (var field in CustomFields)
                                 {
-                                    <CustomDirectoryField Disabled=@(!EditMode || !Computer.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="Computer" Field="@field" />
+                                    @if (Computer.CanReadField(field))
+                                    {
+                                        <CustomDirectoryField Disabled=@(!EditMode || !Computer.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="Computer" Field="@field" />
 
+                                    }
                                 }
                             }
-                        }
 
-                    </Section>
-                }
-
+                        </Section>
+                    }
 
 
 
-            </FlexContainer>
+
+                </FlexContainer>
+            </CascadingValue>
         </CascadingValue>
-    </CascadingValue>
 
-</EditForm>
-@if (Computer.HasUnsavedChanges && !Computer.NewEntry)
-{
-    <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
+    </EditForm>
+    @if (Computer.HasUnsavedChanges && !Computer.NewEntry)
+    {
+        <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
+    }
 }
 <MudOverlay Visible="SavingChanges" DarkBackground="true" Absolute="true">
     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
@@ -173,11 +174,11 @@
                 await RefreshEntryComponents();
 
             });
-            Task.Run( () =>
+            Task.Run(() =>
             {
-                var services =  Computer.Services;
+                var services = Computer.Services;
 
-                 RefreshEntryComponents();
+                RefreshEntryComponents();
 
             });
 
@@ -199,7 +200,7 @@
 
     async Task Unlock()
     {
-        if (await MessageService.Confirm("Are you sure you want to unlock " + Computer.CanonicalName + "?", "Unlock Computer"))
+        if (await MessageService.Confirm("Are you sure you want to unlock " + Computer?.CanonicalName + "?", "Unlock Computer"))
         {
             Computer.LockedOut = false;
         }
@@ -214,11 +215,11 @@
             await RefreshEntryComponents();
 
         }
-    
+
     }
     async Task DeleteComputer()
     {
-        if (await MessageService.Confirm("Are you sure you want to delete " + Computer.CanonicalName + "?", "Delete Computer"))
+        if (await MessageService.Confirm("Are you sure you want to delete " + Computer?.CanonicalName + "?", "Delete Computer"))
         {
             try
             {
