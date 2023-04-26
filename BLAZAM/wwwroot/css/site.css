@@ -143,3 +143,15 @@ a, .btn-link {
 .w-100{
     width:100% !important;
 }
+
+
+@media(max-width:600px) {
+    .app-subheader {
+        top: 56px !important;
+    }
+}
+@media(min-width:600px) {
+    .app-subheader {
+        top: 64px !important;
+    }
+}
