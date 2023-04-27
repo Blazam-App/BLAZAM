@@ -6,6 +6,7 @@ using BLAZAM.Common.Data.Services;
 using BLAZAM.Logger;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
+using System.Net.Sockets;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -165,6 +166,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             }
                             x++;
                         } while (x < retries);
+
+                    }
+                    catch(SocketException ex)
+                    {
 
                     }
                     catch (Exception ex)

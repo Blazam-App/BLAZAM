@@ -71,11 +71,13 @@
                         break;
                 }
             }
-            <MudPaper Class=" mud-overlay-light" Style="width:100%;height:min-content;">
+            <MudPaper Class=" mud-overlay-light" Style="width:100%;max-width:550px;height:min-content;">
                 <ADAutoComplete Class="mt-0"
+                                Style="max-width:550px;"
                                 AdornmentIcon="@adornmentIcon"
                                 Variant="Variant.Filled"
                                 Label="Search Directory"
+                                SelectedResultChanged="@((result)=>{if(result!=null)SearchService.Search(SearchService.SearchTerm);})"
                                 SearchObjectType="@SearchService.SeachObjectType"
                                 SearchDisabled=@SearchService.IncludeDisabled
                                 @bind-SearchTerm="@SearchService.SearchTerm" />

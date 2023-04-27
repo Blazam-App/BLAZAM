@@ -60,7 +60,9 @@
                     }
 
 
-                    <MudContainer Style="@topMarginForContent" MaxWidth="MaxWidth.Large" Class="pt-5 mud-height-full">
+                    <MudContainer Style="@topMarginForContent"
+                                  MaxWidth="MaxWidth.Large"
+                                  Class="pt-5 pb-10 mud-height-full">
 
 
                         @Body
@@ -68,12 +70,16 @@
                         <AppUserPageTracker />
                         <DirectoryConnectingIndicator />
 
-                        <AppFooter />
-
                     </MudContainer>
 
                 </MudMainContent>
-
+                <MudAppBar Bottom=true Dense=true Color=Color.Dark Elevation="1">
+                    <MudStack Class="mud-width-full pa-0 ma-0" Row=true>
+                        <AppFooter Class="align-middle"/>
+                        
+                        <PageSpecificChat ShowPageViewersButton=false AlwaysShowChatButton=true ChatUri="/" />
+                    </MudStack>
+                </MudAppBar>
                 <NotificationBroadcastListener />
             </Authorized>
             <NotAuthorized>

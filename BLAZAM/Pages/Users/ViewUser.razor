@@ -188,12 +188,15 @@
                                     @if (User.CanReadField(ActiveDirectoryFields.SAMAccountName))
                                     {
 
+                                        <MudStack Row=true Spacing="0">
 
-                                        <DynamicMudInput T=string Label="@AppLocalization["Username"]"
-                                                     @bind-Value="@User.SamAccountName"
-                                                     Disabled=!User.NewEntry />
-                                        <MudButton StartIcon="@Icons.Material.Filled.ContentCopy" OnClick="@(()=>{CopyToClipboard(User.SamAccountName);})" />
 
+                                            <DynamicMudInput T=string Label="@AppLocalization["Username"]"
+                                                         @bind-Value="@User.SamAccountName"
+                                                         Disabled=!User.NewEntry />
+                                            <AppCopyButton TextToCopy="User.SamAccountName" />
+
+                                        </MudStack>
 
                                     }
 
@@ -212,12 +215,14 @@
 
                                     @if (User.CanReadField(ActiveDirectoryFields.Mail))
                                     {
-                                        <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"
-                                                     @bind-Value="@User.Email"
-                                                     Disabled=!User.NewEntry />
+                                        <MudStack Row=true Spacing="0">
+                                            <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"
+                                                         @bind-Value="@User.Email"
+                                                         Disabled=!User.NewEntry />
+                                            <AppCopyButton TextToCopy="User.Email" />
 
-                                        <MudButton StartIcon="@Icons.Material.Filled.ContentCopy"
-                                               OnClick="@(()=>{CopyToClipboard(User.Email);})" />
+                                        </MudStack>
+
 
                                     }
                                     @if (User.CanReadField(ActiveDirectoryFields.AccountExpires))
@@ -343,17 +348,19 @@
 
                         @if (User.CanReadField(ActiveDirectoryFields.HomeDirectory))
                             {
-                                <DynamicMudInput T=string Label="@AppLocalization["Home Directory"]"
-                                         @bind-Value="@User.HomeDirectory"
-                                         Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
-                                @if (!User.HomeDirectory.IsNullOrEmpty())
-                                {
-                                    var homeDirectory = new SystemDirectory(User.HomeDirectory);
-                                    <MudIcon Class="align-middle" Icon="@(homeDirectory.Exists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
-                                 Color="@(homeDirectory.Exists?Color.Success:Color.Error)" />
-                                }
+                                <MudStack Row=true Spacing="0">
 
-                                <MudButton StartIcon="@Icons.Material.Filled.ContentCopy" OnClick="@(()=>{CopyToClipboard(User.HomeDirectory);})" />
+                                    <DynamicMudInput T=string Label="@AppLocalization["Home Directory"]"
+                                             @bind-Value="@User.HomeDirectory"
+                                             Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
+                                    @if (!User.HomeDirectory.IsNullOrEmpty())
+                                    {
+                                        var homeDirectory = new SystemDirectory(User.HomeDirectory);
+                                        <MudIcon Class="align-middle" Icon="@(homeDirectory.Exists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
+                                     Color="@(homeDirectory.Exists?Color.Success:Color.Error)" />
+                                    }
+                                    <AppCopyButton TextToCopy="User.HomeDirectory" />
+                                </MudStack>
                             }
                             @if (User.CanReadField(ActiveDirectoryFields.HomeDrive))
                             {

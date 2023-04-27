@@ -2,8 +2,8 @@
 @page "/search/{SearchTermParameter}"
 
 @inherits AppComponentBase
-@attribute [Authorize]
-<AuthorizeView Roles="@(UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
+@attribute [Authorize(Roles = (UserRoles.SearchOUs + ","+UserRoles.SearchComputers + ","+UserRoles.SearchGroups + "," +UserRoles.SearchUsers + "," + UserRoles.SuperAdmin))]
+<AuthorizeView Roles="@(UserRoles.SearchOUs + ","+UserRoles.SearchComputers + ","+UserRoles.SearchGroups + "," +UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
 
 
     @if (ApplicationInfo.InDemoMode)

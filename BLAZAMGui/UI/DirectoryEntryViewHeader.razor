@@ -36,7 +36,7 @@
 
     @if (accountEntry?.LockedOut == true)
     {
-        <MudIconButton OnClick=Unlock Icon=@Icons.Material.Filled.Lock />
+        <MudIconButton Disabled=@(!accountEntry.CanUnlock) OnClick=Unlock Icon=@Icons.Material.Filled.Lock />
     }
     <MudHidden Breakpoint="Breakpoint.Xs">
         <MudToolBar Class="align-middle" Style="height:32px" DisableGutters Dense>

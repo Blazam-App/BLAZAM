@@ -17,7 +17,7 @@ namespace BLAZAM.Gui.UI.Outputs
 
         public ChartOptions ChartOptions => new()
         {
-            InterpolationOption = Data.Count > 3 ? LineInterpolation : InterpolationOption.Straight,
+            InterpolationOption = Data.Count > 3 ? InterpolationOption.NaturalSpline : InterpolationOption.Straight,
             YAxisTicks = YAxisTicks,
             YAxisLines = true
         };

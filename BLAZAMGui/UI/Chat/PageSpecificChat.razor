@@ -1,58 +1,26 @@
-
 @inherits AppComponentBase
 
 <Audio Src="/audio/messagePop.mp3" @bind-Playing=@playingPop />
 <Audio Src="/audio/bell.wav" @bind-Playing=@playingBell />
-@if (ChatMessages[thisUri].Count > 0)
+@if (AlwaysShowChatButton || ChatMessages[ChatUri].Count > 0)
 {
-    if (unreadMessages > 0)
-    {
-        <MudBadge Content="@unreadMessages" Color="Color.Error" Overlap=true>
-            <MudIconButton OnClick="@(()=>{chatOpen=!chatOpen;})"
-                   Icon="@Icons.Material.Filled.MarkUnreadChatAlt" />
-        </MudBadge>
-    }
-    else
-    {
-        <MudIconButton OnClick="@(()=>{chatOpen=!chatOpen;})"
-               Icon="@Icons.Material.Filled.Chat" />
-    }
+    <ChatButton ChatMessages=ChatMessages[ChatUri] OnClick="@(()=>{_chatOpen=!_chatOpen;})" />
 }
-@if (Viewers.ContainsKey(thisUri) && Viewers[thisUri].Count > 1)
+@if (AlwaysShowPageViewersButton || (ShowPageViewersButton && Viewers.ContainsKey(ChatUri) && Viewers[ChatUri].Count > 1))
 {
-    var otherViewers = Viewers[thisUri].Where(us => !us.Equals(currentUserState));
+    var otherViewers = Viewers[ChatUri].Where(us => !us.Equals(currentUserState));
+    <OtherViewersButton ChatMessages=ChatMessages[ChatUri]
+                    OnClick=@(()=>{_chatOpen=true;})
+                    OtherViewers="otherViewers" />
 
-   
-
-    <MudBadge Color="Color.Info" Content="@otherViewers.Count()" Overlap=true>
-        <MudMenu AnchorOrigin="@Origin.BottomLeft"
-             TransformOrigin=Origin.TopRight
-             Icon="@Icons.Material.Filled.People">
-            @if (ChatMessages[thisUri].Count < 1)
-            {
-                <MudMenuItem IconSize=Size.Small
-                     Icon="@Icons.Material.Filled.ChatBubble"
-                     OnClick="@(()=>{chatOpen=true;})">
-                    Start Chat
-                </MudMenuItem>
-            }
-            <MudText>Other Viewers:</MudText>
-            @foreach (var user in otherViewers)
-            {
-                <MudText>@user.Username</MudText>
-
-            }
-        </MudMenu>
-    </MudBadge>
-   
 }
 
-<MudPopover Style="width:300px" Open="@chatOpen" Fixed="true" Class="px-1 pt-4">
+<MudPopover Style="width:300px" Open="@_chatOpen" Fixed="true" Class="px-1 pt-4">
     <MudContainer class="d-flex flex-column">
         <MudText Typo="Typo.h6">Chat</MudText>
 
         <MudStack Style="height:300px;" Class="overflow-y-auto">
-            @foreach (var message in ChatMessages[thisUri])
+            @foreach (var message in ChatMessages[ChatUri])
             {
                 if (!message.SeenBy.Contains(currentUserState.Preferences))
                     message.SeenBy.Add(currentUserState.Preferences);
@@ -104,7 +72,7 @@
                            ButtonType="ButtonType.Submit" Class="align-middle" />
 
         </MudStack>
-        <MudButton OnClick="@(()=>{chatOpen=!chatOpen;})"
+        <MudButton OnClick="@(()=>{_chatOpen=!_chatOpen;})"
                    Class="ml-auto mr-n3 mb-1"
                    Color="Color.Error">
             Close
@@ -114,18 +82,21 @@
 </MudPopover>
 
 @code {
-    int unreadMessages
-    {
-        get
-        {
-            return ChatMessages[thisUri].Where(
-                cm => cm.User != currentUserState.Preferences 
-                && !cm.SeenBy.Contains(currentUserState.Preferences
-                )).Count();
-        }
-    }
-    bool chatOpen;
-    string thisUri;
+
+    bool _chatOpen;
+
+    [Parameter]
+    public bool ShowPageViewersButton { get; set; } = true;
+    [Parameter]
+    public bool AlwaysShowChatButton { get; set; }
+    [Parameter]
+    public bool AlwaysShowPageViewersButton { get; set; }
+    /// <summary>
+    /// Set's predefined page for this chat display
+    /// </summary>
+
+    [Parameter]
+    public string ChatUri { get; set; }
     IApplicationUserState currentUserState;
 
     /// <summary>
@@ -152,8 +123,23 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        thisUri = Nav.ToBaseRelativePath(Nav.Uri);
+        if (ChatUri.IsNullOrEmpty())
+        {
 
+
+            ChatUri = Nav.ToBaseRelativePath(Nav.Uri);
+            Nav.LocationChanged += ((state, args) =>
+          {
+              if (Nav.ToBaseRelativePath(args.Location) != ChatUri)
+              {
+                  RemoveThisViewer();
+              }
+          });
+        }
+        else
+        {
+
+        }
         //Setup other viewers button listeners
         ViewersChanged += (() =>
        {
@@ -162,13 +148,8 @@
        });
         currentUserState = CurrentUser.State;
         AddThisViewer();
-        Nav.LocationChanged += ((state, args) =>
-        {
-            if (Nav.ToBaseRelativePath(args.Location) != thisUri)
-            {
-                RemoveThisViewer();
-            }
-        });
+
+
 
 
         //Setup chat message listeners
@@ -177,12 +158,12 @@
        {
            if (message.User != currentUserState.Preferences)
            {
-               if (chatOpen && !playingPop)
+               if (_chatOpen && !playingPop)
                {
                    playingPop = true;
 
                }
-               else if (!chatOpen && !playingBell)
+               else if (!_chatOpen && !playingBell)
                {
                    playingBell = true;
                }
@@ -190,10 +171,10 @@
                InvokeAsync(StateHasChanged);
            }
        });
-        if (!ChatMessages.ContainsKey(thisUri))
+        if (!ChatMessages.ContainsKey(ChatUri))
         {
 
-            ChatMessages.Add(thisUri, new());
+            ChatMessages.Add(ChatUri, new());
         }
 
     }
@@ -202,12 +183,12 @@
 
     private void AddThisViewer()
     {
-        if (!Viewers.ContainsKey(thisUri))
-            Viewers.Add(thisUri, new());
+        if (!Viewers.ContainsKey(ChatUri))
+            Viewers.Add(ChatUri, new());
 
-        if (!Viewers[thisUri].Contains(currentUserState))
+        if (!Viewers[ChatUri].Contains(currentUserState))
         {
-            Viewers[thisUri].Add(currentUserState);
+            Viewers[ChatUri].Add(currentUserState);
             ViewersChanged?.Invoke();
         }
     }
@@ -215,12 +196,12 @@
 
     private void RemoveThisViewer()
     {
-        if (!Viewers.ContainsKey(thisUri))
+        if (!Viewers.ContainsKey(ChatUri))
             return;
 
-        if (Viewers[thisUri].Contains(currentUserState))
+        if (Viewers[ChatUri].Contains(currentUserState))
         {
-            Viewers[thisUri].Remove(currentUserState);
+            Viewers[ChatUri].Remove(currentUserState);
             ViewersChanged.Invoke();
 
         }
@@ -231,7 +212,7 @@
         {
             await Task.Delay(5);
             var message = new ChatMessage() { User = currentUserState.Preferences, Message = draftMessage };
-            ChatMessages[thisUri].Add(message);
+            ChatMessages[ChatUri].Add(message);
 
             OnMessagePosted?.Invoke(message);
             draftMessage = "";

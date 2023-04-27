@@ -72,7 +72,7 @@ namespace BLAZAM.Session.Interfaces
         bool HasOUPrivilege { get; }
         bool HasCreateOUPrivilege { get; }
         bool HasComputerPrivilege { get; }
-        bool CanUnlockUsers { get; set; }
+        bool CanUnlockUsers { get;  }
 
         bool CanSearchDisabled(ActiveDirectoryObjectType objectType);
         bool Equals(object? obj);
