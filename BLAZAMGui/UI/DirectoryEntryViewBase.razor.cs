@@ -48,8 +48,11 @@ namespace BLAZAM.Gui.UI
                         break;
                 }
 
+                DirectoryEntry.OnModelChanged += async () =>
+                {
+                    await RefreshEntryComponents();
+                };
 
-                DirectoryEntry.OnModelChanged += async () => { await RefreshEntryComponents(); };
                 DirectoryEntry.OnDirectoryModelRenamed += Renamed;
             }
             if(Context!=null) 

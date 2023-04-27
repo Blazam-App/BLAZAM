@@ -95,11 +95,7 @@
             No results were found.
         </MudAlert>
     }
-    @* else
-    {
-    <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
-
-    }*@
+  
 </AuthorizeView>
 @code {
 
@@ -121,12 +117,9 @@
             LoadingData = true;
             Searcher?.Cancel();
             _searchTermParameter = value;
-            //SearchService.SearchTerm = value;
             PerformSearch();
-            //Searcher.GeneralSearchTerm = value;
             if (_searchTermParameter.IsNullOrEmpty())
                 LoadingData = false;
-            //InvokeAsync(StateHasChanged);
 
         }
     }
@@ -171,20 +164,23 @@
         Searcher.ResultsCollected += ((batch) =>
              {
                  results.AddRange(batch);
-                 //InvokeAsync(StateHasChanged);
              });
-
-        //await PerformSearch();
-        // await InvokeAsync(StateHasChanged);
-
     }
-
+    /// <summary>
+    /// Filter for searching objects of only this type
+    /// </summary>
     [CascadingParameter]
     public ActiveDirectoryObjectType? SearchObjectType { get; set; }
 
     protected virtual List<IDirectoryEntryAdapter> results { get; set; } = new List<IDirectoryEntryAdapter>();
-
+    /// <summary>
+    /// Public search invokation.
+    /// </summary>
     public void SubmitSearch() => SubmitSearch(null);
+    /// <summary>
+    /// Public search invokation.
+    /// </summary>
+    /// <param name="searchTerm"></param>
     public void SubmitSearch(string? searchTerm = null)
     {
         if (searchTerm != null)
@@ -195,7 +191,15 @@
     }
 
 
-
+    /// <summary>
+    /// Called internally to start a search
+    /// </summary>
+    /// <remarks>
+    /// This method in turn calls <see cref="InvokeSearch"/>
+    /// if the <see cref="SearchTermParameter"/> is not
+    /// null or empty.
+    /// </remarks>
+    /// <returns></returns>
     protected async Task PerformSearch()
     {
         results.Clear();
@@ -214,10 +218,14 @@
 
     }
 
-
-    public async Task InvokeSearch()
+    /// <summary>
+    /// Invokes the actual search function
+    /// that processes the current <see cref="SearchService"/>
+    /// settings.
+    /// </summary>
+    /// <returns></returns>
+    protected async Task InvokeSearch()
     {
-        // Searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
         if (Searcher == null)
             Searcher = new ADSearch();
         else
@@ -228,10 +236,8 @@
         Searcher.ObjectTypeFilter = SearchService.SeachObjectType;
         Searcher.ExactMatch = true;
 
-        //await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         //Try exact  match search first
         await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
-        //search.Wait();
         if (Searcher.Results.Count < 1)
         {
             Searcher.ExactMatch = false;

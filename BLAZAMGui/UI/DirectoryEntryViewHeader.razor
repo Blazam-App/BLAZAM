@@ -1,4 +1,4 @@
-@inherits AppComponentBase
+@inherits DirectoryEntryViewBase
 @{
 
     IAccountDirectoryAdapter? accountEntry;
@@ -187,8 +187,7 @@
 
 
 @code {
-    [Parameter]
-    public IDirectoryEntryAdapter DirectoryEntry { get; set; }
+
 
     [Parameter]
     public EventCallback OnDelete { get; set; }
@@ -255,4 +254,5 @@
         _editMode = editEnabled;
         await OnToggleEditMode.InvokeAsync(editEnabled);
     }
+  
 }

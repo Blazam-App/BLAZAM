@@ -21,28 +21,32 @@
                   T="UserDashboardWidget" Items="usersWidgets"
                   ItemsSelector="ItemSelector"
                   ItemDropped="ItemDropped"
-                  Class="d-flex flex-wrap flex-grow-1 mud-width-full mud-theme-dark">
+                  Class="d-flex flex-wrap flex-grow-1 mud-width-full ">
     <ChildContent>
 
         <FlexContainer Spacing="4" Class="mx-auto">
 
+            <MudCard Class="pa-0 ma-0" Elevation="2">
+                <MudList Clickable="true"
+                         Class="d-flex flex-column ma-0 mx-auto py-0">
+                    <MudDropZone AllowReorder=true
+                                 T="UserDashboardWidget"
+                                 Identifier="slot1"
+                                 Class="flex-grow-1"
+                                 Style="min-height:50px;min-width:300px;" />
+                </MudList>
+            </MudCard>
+            <MudCard Class="pa-0 ma-0" Elevation="2">
+                <MudList Clickable="true"
+                         Class="d-flex flex-column ma-0 mx-auto py-0">
+                    <MudDropZone AllowReorder=true
+                                 T="UserDashboardWidget"
+                                 Identifier="slot2"
+                                 Class="flex-grow-1"
+                                 Style="min-height:50px; min-width:300px;" />
+                </MudList>
+            </MudCard>
 
-            <MudList Clickable="true"
-                     Class="d-flex flex-column ma-0 mx-auto">
-                <MudDropZone AllowReorder=true
-                             T="UserDashboardWidget"
-                             Identifier="slot1"
-                             Class="flex-grow-1" 
-                             Style="min-height:50px;min-width:300px;" />
-            </MudList>
-            <MudList Clickable="true"
-                     Class="d-flex flex-column ma-0 mx-auto">
-                <MudDropZone AllowReorder=true
-                             T="UserDashboardWidget"
-                             Identifier="slot2"
-                             Class="flex-grow-1"
-                             Style="min-height:50px; min-width:300px;"/>
-            </MudList>
         </FlexContainer>
     </ChildContent>
     <ItemRenderer>
@@ -104,7 +108,7 @@
         }
         usersWidgets.Add(new UserDashboardWidget
             {
-                Id=0,
+                Id = 0,
                 User = CurrentUser.State.Preferences,
                 Slot = "slot1",
                 WidgetType = widgetType,

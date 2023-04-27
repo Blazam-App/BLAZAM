@@ -163,8 +163,7 @@
     }
     protected override async void Save()
     {
-        //if (await Validation.ValidateAll())
-        //{
+     
         if (!settings.Password.Equals(passwordInDb))
         {
             settings.Password = EncryptionService.EncryptObject(settings.Password);
@@ -177,7 +176,7 @@
         }
         await AuditLogger.System.SettingsChanged("Active Directory", settings.GetChanges(originalSettings));
         base.Save();
-        //}
+ 
 
     }
 
