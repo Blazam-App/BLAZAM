@@ -1,7 +1,9 @@
 @inherits ChatComponentBase
 @inject IJSRuntime JS
-<MudContainer class="d-flex flex-column">
-    @{
+<MudContainer Class=@("d-flex flex-column "+Class)>
+
+    @if (ShowHeader)
+    {
         var chatRoomName = "";
         if (ChatRoom.Name == "/")
             chatRoomName = "App Chat";
@@ -10,11 +12,8 @@
         else
 
             chatRoomName = ChatRoom.Name + " Chat";
-
-
+        <MudText Typo="Typo.h6">@chatRoomName</MudText>
     }
-    <MudText Typo="Typo.h6">@chatRoomName</MudText>
-
     <MudStack id="@ChatRoom.ElementId" Style="height:300px;" Class="overflow-y-auto">
         @foreach (var message in ChatRoom.Messages)
         {
@@ -53,6 +52,10 @@
 
     [Parameter]
     public EventCallback OnCloseClicked { get; set; }
+    [Parameter]
+    public string? Class { get; set; }
+    [Parameter]
+    public bool ShowHeader { get; set; } = false;
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -93,7 +96,7 @@
                 };
             ChatRoom.Messages.Append(message);
             Chat.PostMessage(message);
-            await RefreshChatRoom();
+            await RefreshChatRooms();
             draftMessage = "";
             //messageTextField.Value = "";
             await messageTextField?.Clear();

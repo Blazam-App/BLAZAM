@@ -1,32 +1,71 @@
+@using Microsoft.AspNetCore.Components.Routing;
 @inherits ChatComponentBase
 
 <Audio Src="/audio/messagePop.mp3" @bind-Playing=@playingPop />
 <Audio Src="/audio/bell.wav" @bind-Playing=@playingBell />
-@if (AlwaysShowChatButton || ChatMessages!=null &&  ChatMessages.Count() > 0)
-{
-    <ChatButton ChatRoom=ChatRoom OnClick="@(()=>{_chatOpen=!_chatOpen;})" />
-}
-@if (AlwaysShowPageViewersButton || (ShowPageViewersButton && Viewers.ContainsKey(ChatUri) && Viewers[ChatUri].Count > 1))
+
+<ChatButton ChatRoom=AppChatRoom OnClick="@(()=>{_chatOpen=!_chatOpen;})" />
+
+@if (Viewers.ContainsKey(ChatUri))
 {
     var otherViewers = Viewers[ChatUri].Where(us => !us.Equals(currentUserState));
-    <OtherViewersButton ChatRoom=ChatRoom
-                    OnClick=@(()=>{_chatOpen=true;})
-                    OtherViewers="otherViewers" />
-
 }
 
-<MudPopover Style="width:300px"
+<MudPopover Style="width:356px;"
             Open="@_chatOpen"
             Fixed="true"
-            Class="px-1 pt-4">
+            Square=true
+            AnchorOrigin="Origin.TopRight"
+            TransformOrigin="Origin.BottomRight"
+            Class="overflow-hidden"
+            >
+            <MudToolBar Class="mud-theme-dark"> 
+                <MudText>
+                    App Chat
+                </MudText>
+            </MudToolBar>
+    <MudDrawer @bind-Open="@_drawerOpen"
+               Anchor="Anchor.End"
+               Elevation="1"
+               ClipMode="DrawerClipMode.Docked"
+               Fixed=true
+               Variant="@DrawerVariant.Mini">
+   
+        <MudNavMenu>
+            <MudNavLink Icon="@Icons.Material.Filled.AllInclusive">App Chat</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.FileOpen">Page Chat</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.EnhancedEncryption">Private Chats</MudNavLink>
+            <MudNavGroup Icon="@Icons.Material.Filled.Group" Title="Users">
+                <MudText>Online</MudText>
+                <MudDivider/>
+                @{
+                    var onlineUsers = UserStateService.UserStates.Where(u => u.Ticket?.Properties.ExpiresUtc > DateTime.UtcNow).ToList();
+                }
+                @foreach (var user in onlineUsers)
+                {
+                    <MudNavLink>@user.Username</MudNavLink>
+                }
+                <MudText>Offline</MudText>
+                <MudDivider />
+                @foreach (var user in Context.UserSettings.Where(u => !onlineUsers.Select(us=>us.Preferences).Contains(u)))
+                {
+                    <MudNavLink>@user.Username</MudNavLink>
+                }
+            </MudNavGroup>
+        </MudNavMenu>
+    </MudDrawer>
     <AppChatRoom ChatUri="@ChatUri"
+                 Class="pr-16"
                  OnCloseClicked=@(()=>{_chatOpen=!_chatOpen;})
-                 ChatRoom="ChatRoom" />
+                 ChatRoom="AppChatRoom" />
+    <MudButton Variant="Variant.Text" OnClick="@(() => _drawerOpen=!_drawerOpen)">Chats</MudButton>
+
 </MudPopover>
 
 @code {
 
     bool _chatOpen;
+    bool _drawerOpen;
 
     [Parameter]
     public bool ShowPageViewersButton { get; set; } = true;
@@ -50,7 +89,6 @@
     bool playingBell;
 
 
-    public IEnumerable<ChatMessage> ChatMessages => ChatRoom?.Messages;
     delegate void ChatMessageCallbackEvent(ChatMessage message);
 
     protected override async Task OnInitializedAsync()

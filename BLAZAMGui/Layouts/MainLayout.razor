@@ -73,11 +73,11 @@
                     </MudContainer>
 
                 </MudMainContent>
-                <MudAppBar Bottom=true Dense=true Color=Color.Dark Elevation="1">
+                <MudAppBar DisableGutters=true Bottom=true Dense=true Color=Color.Dark Elevation="1">
                     <MudStack Class="mud-width-full pa-0 ma-0" Row=true>
                         <AppFooter Class="align-middle"/>
                         
-                        <PageSpecificChat ShowPageViewersButton=false AlwaysShowChatButton=true ChatUri="/" />
+                        <AppChat/>
                     </MudStack>
                 </MudAppBar>
                 <NotificationBroadcastListener />

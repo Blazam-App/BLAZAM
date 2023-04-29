@@ -20,13 +20,15 @@ namespace BLAZAM.Gui.UI.Chat
         [Parameter]
         public ChatRoom? ChatRoom { get; set; }
 
+        public ChatRoom? AppChatRoom { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
             Chat.OnMessagePosted += async (message) =>
             {
                 await Task.Delay(100);
-                await RefreshChatRoom();
+                await RefreshChatRooms();
                 await InvokeAsync(StateHasChanged);
 
             };
@@ -35,7 +37,7 @@ namespace BLAZAM.Gui.UI.Chat
                 if (CurrentUser.State.Id == user.Id)
                 {
 
-                    await RefreshChatRoom();
+                    await RefreshChatRooms();
                     await InvokeAsync(StateHasChanged);
                 }
             };
@@ -50,7 +52,7 @@ namespace BLAZAM.Gui.UI.Chat
             
             }
         }
-        protected async Task RefreshChatRoom()
+        protected async Task RefreshChatRooms()
         {
             var room = (await Chat.GetChatRoomsAsync()).Where(cr => cr.Name.Equals(ChatUri)).FirstOrDefault();
             if (room is null && ChatUri!=null)
@@ -64,6 +66,19 @@ namespace BLAZAM.Gui.UI.Chat
             }
 
             ChatRoom = room;
+
+            room = (await Chat.GetChatRoomsAsync()).Where(cr => cr.Name.Equals("/")).FirstOrDefault();
+            if (room is null && ChatUri != null)
+            {
+                Chat.CreateChatRoom(new()
+                {
+                    Name = ChatUri,
+                    IsPublic = true,
+                });
+
+            }
+
+            AppChatRoom = room;
         }
     }
 }
