@@ -2,6 +2,7 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
+using BLAZAM.Server.Data;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 
@@ -9,7 +10,7 @@ namespace BLAZAM.Session.Interfaces
 {
     public interface IApplicationUserState
     {
-
+        public int Id { get; }
         AppEvent<AppUser> OnSettingsChange { get; set; }
 
         /// <summary>
@@ -57,7 +58,7 @@ namespace BLAZAM.Session.Interfaces
         AuthenticationTicket? Ticket { get; set; }
 
 
-        IList<UserNotification>? Messages { get; }
+        IList<UserNotification>? Notifications { get; }
         IApplicationUserSessionCache Cache { get; set; }
 
 
@@ -73,6 +74,7 @@ namespace BLAZAM.Session.Interfaces
         bool HasCreateOUPrivilege { get; }
         bool HasComputerPrivilege { get; }
         bool CanUnlockUsers { get;  }
+        List<ChatMessage> ReadChatMessages { get; }
 
         bool CanSearchDisabled(ActiveDirectoryObjectType objectType);
         bool Equals(object? obj);

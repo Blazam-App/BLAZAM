@@ -15,6 +15,12 @@ namespace BLAZAM.Helpers
         {
             return (MarkupString)input.Replace("\r\n","<br>").Replace("\n","<br>");
         }
+        /// <summary>
+        /// Hash code that doesn't change with application
+        /// restarts
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public static int GetAppHashCode(this string input)
         {
             unchecked // Overflow is fine, just wrap

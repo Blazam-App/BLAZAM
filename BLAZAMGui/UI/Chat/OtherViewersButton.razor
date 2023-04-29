@@ -5,7 +5,7 @@
     <MudMenu AnchorOrigin="@Origin.BottomLeft"
              TransformOrigin=Origin.TopRight
              Icon="@Icons.Material.Filled.People">
-        @if (ChatMessages.Count < 1)
+        @if (ChatRoom.Messages.Count < 1)
         {
             <MudMenuItem IconSize=Size.Small
                      Icon="@Icons.Material.Filled.ChatBubble"

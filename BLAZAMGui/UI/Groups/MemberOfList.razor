@@ -1,6 +1,7 @@
 ﻿@inherits AppComponentBase
 
-
+@if(Model.MemberOf.Count>0)
+{
 <MudList Disabled=false
          Dense=true
          Clickable="false"
@@ -40,7 +41,12 @@
         <MudListItem Text="The user is in more groups you don't have access to" />
     }
 
-</MudList>
+    </MudList>
+}
+else
+{
+    <MudText>@AppLocalization["Not a member of any groups"]</MudText>
+}
 @if (EditMode)
 {
 

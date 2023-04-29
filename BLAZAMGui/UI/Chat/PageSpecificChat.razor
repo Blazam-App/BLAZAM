@@ -1,84 +1,27 @@
-@inherits AppComponentBase
+@inherits ChatComponentBase
 
 <Audio Src="/audio/messagePop.mp3" @bind-Playing=@playingPop />
 <Audio Src="/audio/bell.wav" @bind-Playing=@playingBell />
-@if (AlwaysShowChatButton || ChatMessages[ChatUri].Count > 0)
+@if (AlwaysShowChatButton || ChatMessages.Count() > 0)
 {
-    <ChatButton ChatMessages=ChatMessages[ChatUri] OnClick="@(()=>{_chatOpen=!_chatOpen;})" />
+    <ChatButton ChatRoom=ChatRoom OnClick="@(()=>{_chatOpen=!_chatOpen;})" />
 }
 @if (AlwaysShowPageViewersButton || (ShowPageViewersButton && Viewers.ContainsKey(ChatUri) && Viewers[ChatUri].Count > 1))
 {
     var otherViewers = Viewers[ChatUri].Where(us => !us.Equals(currentUserState));
-    <OtherViewersButton ChatMessages=ChatMessages[ChatUri]
+    <OtherViewersButton ChatRoom=ChatRoom
                     OnClick=@(()=>{_chatOpen=true;})
                     OtherViewers="otherViewers" />
 
 }
 
-<MudPopover Style="width:300px" Open="@_chatOpen" Fixed="true" Class="px-1 pt-4">
-    <MudContainer class="d-flex flex-column">
-        <MudText Typo="Typo.h6">Chat</MudText>
-
-        <MudStack Style="height:300px;" Class="overflow-y-auto">
-            @foreach (var message in ChatMessages[ChatUri])
-            {
-                if (!message.SeenBy.Contains(currentUserState.Preferences))
-                    message.SeenBy.Add(currentUserState.Preferences);
-                if (message.User.Username != currentUserState.Username)
-                {
-                    <MudStack Class="w-100">
-                        <MudStack Row="true">
-                            <MudChip Size=Size.Small Color="Color.Secondary">@message.User.Username</MudChip>
-                            <MudText Class="align-middle">@message.Message</MudText>
-                        </MudStack>
-                        <MudText Class=@("w-max") Typo="Typo.caption">@message.Timestamp.ToLocalTime().ToString()</MudText>
-
-                    </MudStack>
-                }
-                else
-                {
-                    <MudStack Justify="Justify.FlexEnd" Class="w-100">
-                        <MudStack Justify="Justify.FlexEnd" Row="true">
-                            <MudText Class="align-middle">@message.Message</MudText>
-
-                            <MudChip Size=Size.Small
-                             Color="Color.Tertiary">
-                                @message.User.Username
-                            </MudChip>
-
-                        </MudStack>
-                        <MudText Class=@("w-max align-end") Typo="Typo.caption">@message.Timestamp.ToLocalTime().ToString()</MudText>
-
-                    </MudStack>
-
-                }
-
-            }
-        </MudStack>
-        <MudStack Row=true>
-
-            <MudTextField @ref=messageTextField
-                          AutoFocus=true
-                          autocomplete="off"
-                          Adornment=Adornment.Start
-                          AdornmentIcon="@Icons.Material.Filled.Message"
-                          Immediate="true"
-                          OnKeyUp=@(async(args)=>{if(args.Key.ToLower()=="enter") await PostMessage();})
-                          T="string"
-                          @bind-Text=@draftMessage />
-
-            <MudIconButton OnClick=@PostMessage
-                           Icon="@Icons.Material.Filled.Send"
-                           ButtonType="ButtonType.Submit" Class="align-middle" />
-
-        </MudStack>
-        <MudButton OnClick="@(()=>{_chatOpen=!_chatOpen;})"
-                   Class="ml-auto mr-n3 mb-1"
-                   Color="Color.Error">
-            Close
-        </MudButton>
-
-    </MudContainer>
+<MudPopover Style="width:300px"
+            Open="@_chatOpen"
+            Fixed="true"
+            Class="px-1 pt-4">
+    <AppChatRoom ChatUri="@ChatUri"
+                 OnCloseClicked=@(()=>{_chatOpen=!_chatOpen;})
+                 ChatRoom="ChatRoom" />
 </MudPopover>
 
 @code {
@@ -91,12 +34,6 @@
     public bool AlwaysShowChatButton { get; set; }
     [Parameter]
     public bool AlwaysShowPageViewersButton { get; set; }
-    /// <summary>
-    /// Set's predefined page for this chat display
-    /// </summary>
-
-    [Parameter]
-    public string ChatUri { get; set; }
     IApplicationUserState currentUserState;
 
     /// <summary>
@@ -108,21 +45,20 @@
     delegate void CallbackEvent();
     static CallbackEvent ViewersChanged;
 
-    MudTextField<string>? messageTextField;
-    string? draftMessage;
+
     bool playingPop;
     bool playingBell;
-    /// <summary>
-    /// A single system wide singleton static dictionary of every
-    /// viewer on every page this component is placed
-    /// </summary>
-    static Dictionary<string, List<ChatMessage>> ChatMessages = new Dictionary<string, List<ChatMessage>>();
-    delegate void ChatMessageCallbackEvent(ChatMessage message);
-    static ChatMessageCallbackEvent OnMessagePosted;
 
-    protected override void OnInitialized()
+
+    public IEnumerable<ChatMessage> ChatMessages => ChatRoom?.Messages;
+    delegate void ChatMessageCallbackEvent(ChatMessage message);
+
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+
+        await base.OnInitializedAsync();
+
+
         if (ChatUri.IsNullOrEmpty())
         {
 
@@ -136,14 +72,16 @@
               }
           });
         }
-        else
-        {
 
-        }
+
+        await RefreshChatRoom();
+
         //Setup other viewers button listeners
-        ViewersChanged += (() =>
+        ViewersChanged += (async () =>
        {
-           InvokeAsync(StateHasChanged);
+           await RefreshChatRoom();
+
+           await InvokeAsync(StateHasChanged);
 
        });
         currentUserState = CurrentUser.State;
@@ -154,7 +92,7 @@
 
         //Setup chat message listeners
 
-        OnMessagePosted += ((ChatMessage message) =>
+        Chat.OnMessagePosted += ((ChatMessage message) =>
        {
            if (message.User != currentUserState.Preferences)
            {
@@ -171,11 +109,7 @@
                InvokeAsync(StateHasChanged);
            }
        });
-        if (!ChatMessages.ContainsKey(ChatUri))
-        {
 
-            ChatMessages.Add(ChatUri, new());
-        }
 
     }
 
@@ -206,20 +140,5 @@
 
         }
     }
-    private async Task PostMessage()
-    {
-        if (!draftMessage.IsNullOrEmpty())
-        {
-            await Task.Delay(5);
-            var message = new ChatMessage() { User = currentUserState.Preferences, Message = draftMessage };
-            ChatMessages[ChatUri].Add(message);
 
-            OnMessagePosted?.Invoke(message);
-            draftMessage = "";
-            //messageTextField.Value = "";
-            await messageTextField?.Clear();
-            await InvokeAsync(StateHasChanged);
-
-        }
-    }
 }

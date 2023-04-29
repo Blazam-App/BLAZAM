@@ -355,9 +355,9 @@
                                              Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
                                     @if (!User.HomeDirectory.IsNullOrEmpty())
                                     {
-                                        var homeDirectory = new SystemDirectory(User.HomeDirectory);
-                                        <MudIcon Class="align-middle" Icon="@(homeDirectory.Exists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
-                                     Color="@(homeDirectory.Exists?Color.Success:Color.Error)" />
+                                      
+                                        <MudIcon Class="align-middle" Icon="@(homeDirectoryExists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
+                                     Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
                                     }
                                     <AppCopyButton TextToCopy="User.HomeDirectory" />
                                 </MudStack>
@@ -418,14 +418,25 @@
 
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     string Password;
     string ConfirmPassword;
-
+    bool homeDirectoryExists;
     bool showRemoveThumbnail = false;
 
     IADUser User => DirectoryEntry as IADUser;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+        await User.Directory.Impersonation.RunAsync(() =>
+
+        {
+            homeDirectoryExists = new SystemDirectory(User.HomeDirectory).Exists;
+            return true;
+        });
+    }
 
     async void SaveChanges()
     {

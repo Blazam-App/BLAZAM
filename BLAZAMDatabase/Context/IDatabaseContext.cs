@@ -2,9 +2,11 @@
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Audit;
+using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
+using BLAZAM.Server.Data;
 using Microsoft.EntityFrameworkCore;
 namespace BLAZAM.Database.Context
 {
@@ -19,6 +21,8 @@ namespace BLAZAM.Database.Context
         DbSet<AppSettings> AppSettings { get; set; }
         DbSet<AuthenticationSettings> AuthenticationSettings { get; set; }
         DbSet<ComputerAuditLog> ComputerAuditLog { get; set; }
+        DbSet<ChatRoom> ChatRooms { get; set; }
+        DbSet<ChatMessage> ChatMessages { get; set; }
         DbSet<DirectoryTemplateFieldValue> DirectoryTemplateFieldValues { get; set; }
         DbSet<DirectoryTemplateGroup> DirectoryTemplateGroups { get; set; }
         DbSet<DirectoryTemplate> DirectoryTemplates { get; set; }

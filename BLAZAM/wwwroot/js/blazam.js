@@ -58,3 +58,7 @@ window.printPage = async () => {
     window.print();
 
 };
+window.scrollToBottom = async (id) => {
+    const element = document.getElementById(id);
+    element.scrollTop = element.scrollHeight;
+};

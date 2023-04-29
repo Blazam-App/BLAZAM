@@ -43,7 +43,7 @@ namespace BLAZAM.Server.Data.Services
 
 
 
-        public IList<UserNotification> Messages
+        public IList<UserNotification> Notifications
         {
             get
             {
@@ -54,8 +54,15 @@ namespace BLAZAM.Server.Data.Services
 
             }
         }
+        public List<ChatMessage> ReadChatMessages => Preferences.ReadChatMessages.ToList();
+
+        public int Id => Preferences.Id;
 
 
+        public bool IsChatMessageRead(ChatMessage message)
+        {
+            return ReadChatMessages.Contains(message);
+        }
         public IApplicationUserSessionCache Cache { get; set; } = new ApplicationUserSessionCache();
 
         public AuthenticationTicket? Ticket { get; set; }

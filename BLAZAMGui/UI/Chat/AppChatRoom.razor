@@ -1,0 +1,106 @@
+@inherits ChatComponentBase
+@inject IJSRuntime JS
+<MudContainer class="d-flex flex-column">
+    @{
+        var chatRoomName = "";
+        if (ChatRoom.Name == "/")
+            chatRoomName = "App Chat";
+        else if (ChatRoom.Name.StartsWith("/"))
+            chatRoomName = "App Chat";
+        else
+
+            chatRoomName = ChatRoom.Name + " Chat";
+
+
+    }
+    <MudText Typo="Typo.h6">@chatRoomName</MudText>
+
+    <MudStack id="@ChatRoom.ElementId" Style="height:300px;" Class="overflow-y-auto">
+        @foreach (var message in ChatRoom.Messages)
+        {
+            <ChatRoomMessage ChatRoom="ChatRoom" Message="message" />
+
+        }
+    </MudStack>
+    <MudStack Row=true>
+
+        <MudTextField @ref=messageTextField
+                      AutoFocus=true
+                      UserAttributes=@(new Dictionary<string, object>(){{"autocomplete","off"}})
+                      Adornment=Adornment.Start
+                      AdornmentIcon="@Icons.Material.Filled.Message"
+                      Immediate="true"
+                      OnKeyUp=@(async(args)=>{if(args.Key.ToLower()=="enter") await PostMessage();})
+                      T="string"
+                      @bind-Text=@draftMessage />
+
+        <MudIconButton OnClick=@PostMessage
+                       Icon="@Icons.Material.Filled.Send"
+                       ButtonType="ButtonType.Submit" Class="align-middle" />
+
+    </MudStack>
+    <MudButton OnClick="@(()=>{OnCloseClicked.InvokeAsync();})"
+               Class="ml-auto mr-n3 mb-1"
+               Color="Color.Error">
+        Close
+    </MudButton>
+
+</MudContainer>
+@code {
+    MudTextField<string>? messageTextField;
+    string? draftMessage;
+
+
+    [Parameter]
+    public EventCallback OnCloseClicked { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if(firstRender)
+            ScrollToBottom();
+
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Chat.OnMessagePosted += async (ChatMessage message)=>{
+            if (message.ChatRoomId == ChatRoom.Id)
+            {
+                await Task.Delay(100);
+                ScrollToBottom();
+            }
+        };
+    }
+    private void ScrollToBottom()
+    {
+        var param = new object[] { ChatRoom.ElementId };
+        JS.InvokeVoidAsync("scrollToBottom", param);
+    }
+    private async Task PostMessage()
+    {
+        if (!draftMessage.IsNullOrEmpty())
+        {
+            await Task.Delay(5);
+            var message = new ChatMessage()
+                {
+                    User = CurrentUser.State.Preferences,
+                    Message = draftMessage,
+                    ChatRoomId = ChatRoom.Id
+                };
+            ChatRoom.Messages.Append(message);
+            Chat.PostMessage(message);
+            await RefreshChatRoom();
+            draftMessage = "";
+            //messageTextField.Value = "";
+            await messageTextField?.Clear();
+            await InvokeAsync(StateHasChanged);
+
+        }
+    }
+
+}
+

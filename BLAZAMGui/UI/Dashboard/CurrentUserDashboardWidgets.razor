@@ -26,7 +26,7 @@
 
         <FlexContainer Spacing="4" Class="mx-auto">
 
-            <MudCard Class="pa-0 ma-0" Elevation="2">
+            <MudCard Class="pa-0 mx-auto" Elevation="1">
                 <MudList Clickable="true"
                          Class="d-flex flex-column ma-0 mx-auto py-0">
                     <MudDropZone AllowReorder=true
@@ -36,7 +36,7 @@
                                  Style="min-height:50px;min-width:300px;" />
                 </MudList>
             </MudCard>
-            <MudCard Class="pa-0 ma-0" Elevation="2">
+            <MudCard Class="pa-0 mx-auto" Elevation="2">
                 <MudList Clickable="true"
                          Class="d-flex flex-column ma-0 mx-auto py-0">
                     <MudDropZone AllowReorder=true
@@ -53,7 +53,7 @@
         @{
             var widget = allWidgets.First(w => w.WidgetType == context.WidgetType);
         }
-        <MudCard Class="my-5 " Elevation="3">
+        <MudCard Class="my-5 " Elevation="1">
             <MudCardHeader>
                 <MudText Typo="Typo.h6"> @widget.Title</MudText>
                 <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) Style="right:10px;top:15px; position:absolute;" />

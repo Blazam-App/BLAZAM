@@ -17,7 +17,8 @@
                                   OnToggleEditMode="ToggleEditMode" />
         <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true"/>
     </SetSubHeader>
-
+    
+    <CascadingValue Value="EditMode">
 
 
     <AppModal Title="Assign To" @ref=@AssignToModal>
@@ -58,7 +59,7 @@
     </Section>
 
     <Section Style="min-height:200px;" Title="Members">
-        <GroupMembersDataGrid Group="Group"/>
+        @*<GroupMembersDataGrid Group="Group"/>*@
             
     </Section>
        
@@ -72,7 +73,7 @@
         <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
     }
 
-
+    </CascadingValue>
 </EditForm>
 
 
