@@ -15,6 +15,12 @@
                 chatRoomName = ChatRoom.Name + " Chat";
             <MudText Typo="Typo.h6">@chatRoomName</MudText>
         }
+        <MudStack Row=true Spacing="2">
+            @foreach (var member in ChatRoom.Members)
+            {
+                <MudText Typo=Typo.caption>@member.Username</MudText>
+            }
+        </MudStack>
         <MudStack id="@ChatRoom.ElementId" Style="height:300px;" Class="overflow-y-auto">
             @foreach (var message in ChatRoom.Messages)
             {
@@ -73,7 +79,7 @@
 
         Chat.OnMessagePosted += async (ChatMessage message) =>
         {
-            if (message.ChatRoomId == ChatRoom.Id)
+            if (message.ChatRoomId == ChatRoom?.Id)
             {
                 await Task.Delay(100);
                 ScrollToBottom();
@@ -99,9 +105,9 @@
                     Message = draftMessage,
                     ChatRoomId = ChatRoom.Id
                 };
-            ChatRoom.Messages.Append(message);
+            ChatRoom.Messages.Add(message);
             Chat.PostMessage(message);
-            await RefreshChatRooms();
+            //await RefreshChatRooms();
             draftMessage = "";
             //messageTextField.Value = "";
             await messageTextField?.Clear();

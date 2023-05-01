@@ -29,7 +29,7 @@ namespace BLAZAM.Gui.UI.Chat
             Chat.OnMessagePosted += async (message) =>
             {
                 await Task.Delay(100);
-                await RefreshChatRooms();
+                //await RefreshChatRooms();
                 await InvokeAsync(StateHasChanged);
 
             };
@@ -38,7 +38,7 @@ namespace BLAZAM.Gui.UI.Chat
                 if (CurrentUser.State.Id == user.Id)
                 {
 
-                    await RefreshChatRooms();
+                    //await RefreshChatRooms();
                     await InvokeAsync(StateHasChanged);
                 }
             };
@@ -73,7 +73,7 @@ namespace BLAZAM.Gui.UI.Chat
             {
                 Chat.CreateChatRoom(new()
                 {
-                    Name = ChatUri,
+                    Name = "/",
                     IsPublic = true,
                 });
 

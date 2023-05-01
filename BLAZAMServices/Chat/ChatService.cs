@@ -48,10 +48,17 @@ namespace BLAZAM.Services.Chat
             });
             parties = localParties;
             //ChatRoom matchingPrivateChat = null;
+            //var chat= context.ChatRooms.Where(cr => cr.IsPublic == false
+            //&& cr.Members.Count == 2).FirstOrDefault();
             var chat= context.ChatRooms.Where(cr => cr.IsPublic == false
             && cr.Members.Count == 2
             && cr.Members.Any(m=>m.Id==parties[0].Id)
             && cr.Members.Any(m => m.Id == parties[1].Id)).FirstOrDefault();
+            
+            var chat2= context.ChatRooms.Where(cr => cr.IsPublic == false
+            && cr.Members.Count == 2
+            && cr.Members.Any(m=>m.Equals(parties[0]))
+            && cr.Members.Any(m => m.Equals(parties[1]))).FirstOrDefault();
             if (chat == null)
             {
                 chat = new ChatRoom() { Name ="Private Chat", IsPublic = false, Members = parties };
@@ -78,11 +85,12 @@ namespace BLAZAM.Services.Chat
             OnMessagePosted?.Invoke(message);
         }
         public void MessageRead(ChatMessage message,IApplicationUserState user) {
+            message.ReadByUsers.Add(user.Preferences);
             var context = Context;
                 message = context.ChatMessages.Where(cm => cm.Id == message.Id).FirstOrDefault();
             var userInDb = context.UserSettings.Where(us => us.Id == user.Id).FirstOrDefault();
             //userInDb.ReadChatMessages.Add(message);
-            message.ReadByUsers.Add(userInDb);
+            message?.ReadByUsers.Add(userInDb);
 
             context.SaveChanges();
             OnMessageRead?.Invoke(user);
