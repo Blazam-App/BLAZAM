@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Database.Models.Chat;
+using BLAZAM.Database.Models.User;
 using BLAZAM.Server.Data;
 using System;
 using System.Collections.Generic;
@@ -77,6 +78,7 @@ namespace BLAZAM.Gui.UI.Chat
                 });
 
             }
+            var chatRooms = await Chat.GetChatRoomsAsync();
 
             AppChatRoom = room;
         }

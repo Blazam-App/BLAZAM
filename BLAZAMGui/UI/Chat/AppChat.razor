@@ -17,55 +17,68 @@
             Square=true
             AnchorOrigin="Origin.TopRight"
             TransformOrigin="Origin.BottomRight"
-            Class="overflow-hidden"
-            >
-            <MudToolBar Class="mud-theme-dark"> 
-                <MudText>
-                    App Chat
-                </MudText>
-            </MudToolBar>
+            Class="overflow-hidden">
+    <MudToolBar Class="mud-theme-dark">
+        <MudText>
+            App Chat
+        </MudText>
+    </MudToolBar>
     <MudDrawer @bind-Open="@_drawerOpen"
-               Anchor="Anchor.End"
+               Anchor="Anchor.Right"
                Elevation="1"
                ClipMode="DrawerClipMode.Docked"
-               Fixed=true
+               Style="--mud-drawer-width-right: 150px;"
                Variant="@DrawerVariant.Mini">
-   
+
         <MudNavMenu>
             <MudNavLink Icon="@Icons.Material.Filled.AllInclusive">App Chat</MudNavLink>
             <MudNavLink Icon="@Icons.Material.Filled.FileOpen">Page Chat</MudNavLink>
             <MudNavLink Icon="@Icons.Material.Filled.EnhancedEncryption">Private Chats</MudNavLink>
-            <MudNavGroup Icon="@Icons.Material.Filled.Group" Title="Users">
-                <MudText>Online</MudText>
-                <MudDivider/>
+            <MudNavGroup Icon="@Icons.Material.Filled.Group"
+                         Title="Users"
+                         Expanded=_usersExpanded
+                         ExpandedChanged=@ChangeUsersExpanded>
                 @{
-                    var onlineUsers = UserStateService.UserStates.Where(u => u.Ticket?.Properties.ExpiresUtc > DateTime.UtcNow).ToList();
+                    var onlineUsers = UserStateService.UserStates.Where(u => u.Ticket?.Properties.ExpiresUtc > DateTime.UtcNow && !u.Equals(currentUserState)).ToList();
                 }
-                @foreach (var user in onlineUsers)
-                {
-                    <MudNavLink>@user.Username</MudNavLink>
-                }
-                <MudText>Offline</MudText>
-                <MudDivider />
-                @foreach (var user in Context.UserSettings.Where(u => !onlineUsers.Select(us=>us.Preferences).Contains(u)))
-                {
-                    <MudNavLink>@user.Username</MudNavLink>
-                }
+                <MudNavGroup Title="Online" Expanded=true>
+
+
+                    @foreach (var user in onlineUsers)
+                    {
+                        <MudNavLink>@user.Username</MudNavLink>
+                    }
+                </MudNavGroup>
+
+                <MudNavGroup Title="Offline" Expanded=true>
+
+                    @foreach (var user in Context.UserSettings.Where(u => !onlineUsers.Select(us => us.Preferences).Contains(u) && !u.Equals(currentUserState.Preferences)))
+                    {
+                        <MudNavLink OnClick="@(()=>{OpenPrivateChat(user);})">@user.Username</MudNavLink>
+                    }
+                </MudNavGroup>
+
             </MudNavGroup>
         </MudNavMenu>
     </MudDrawer>
-    <AppChatRoom ChatUri="@ChatUri"
+
+    <AppChatRoom
                  Class="pr-16"
                  OnCloseClicked=@(()=>{_chatOpen=!_chatOpen;})
-                 ChatRoom="AppChatRoom" />
-    <MudButton Variant="Variant.Text" OnClick="@(() => _drawerOpen=!_drawerOpen)">Chats</MudButton>
+                 ChatRoom="selectedChatRoom" />
+
+
+    <MudButton Variant="Variant.Text" OnClick="@ToggleDrawer">Chats</MudButton>
 
 </MudPopover>
 
 @code {
 
     bool _chatOpen;
+    bool _usersExpanded;
     bool _drawerOpen;
+    ChatRoom? selectedChatRoom;
+
 
     [Parameter]
     public bool ShowPageViewersButton { get; set; } = true;
@@ -87,7 +100,6 @@
 
     bool playingPop;
     bool playingBell;
-
 
     delegate void ChatMessageCallbackEvent(ChatMessage message);
 
@@ -113,7 +125,7 @@
 
 
         await RefreshChatRooms();
-
+        selectedChatRoom = AppChatRoom;
         //Setup other viewers button listeners
         ViewersChanged += (async () =>
        {
@@ -150,8 +162,24 @@
 
 
     }
+    async Task OpenPrivateChat(AppUser otherParty)
+    {
+        var chat =  Chat.GetPrivateTwoWayChat(new() { currentUserState.Preferences, otherParty });
+        selectedChatRoom = chat;
+    }
+    void ChangeUsersExpanded(bool state)
+    {
+        _usersExpanded = state;
+        if (state) _drawerOpen = true;
 
+    }
 
+    void ToggleDrawer()
+    {
+        _drawerOpen = !_drawerOpen;
+        if (!_drawerOpen) _usersExpanded = false;
+
+    }
 
     private void AddThisViewer()
     {

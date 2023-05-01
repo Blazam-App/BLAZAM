@@ -1,29 +1,30 @@
 @inherits ChatComponentBase
 @inject IJSRuntime JS
 <MudContainer Class=@("d-flex flex-column "+Class)>
-
-    @if (ShowHeader)
+    @if (ChatRoom != null)
     {
-        var chatRoomName = "";
-        if (ChatRoom.Name == "/")
-            chatRoomName = "App Chat";
-        else if (ChatRoom.Name.StartsWith("/"))
-            chatRoomName = "App Chat";
-        else
-
-            chatRoomName = ChatRoom.Name + " Chat";
-        <MudText Typo="Typo.h6">@chatRoomName</MudText>
-    }
-    <MudStack id="@ChatRoom.ElementId" Style="height:300px;" Class="overflow-y-auto">
-        @foreach (var message in ChatRoom.Messages)
+        @if (ShowHeader)
         {
-            <ChatRoomMessage ChatRoom="ChatRoom" Message="message" />
+            var chatRoomName = "";
+            if (ChatRoom.Name == "/")
+                chatRoomName = "App Chat";
+            else if (ChatRoom.Name.StartsWith("/"))
+                chatRoomName = "App Chat";
+            else
 
+                chatRoomName = ChatRoom.Name + " Chat";
+            <MudText Typo="Typo.h6">@chatRoomName</MudText>
         }
-    </MudStack>
-    <MudStack Row=true>
+        <MudStack id="@ChatRoom.ElementId" Style="height:300px;" Class="overflow-y-auto">
+            @foreach (var message in ChatRoom.Messages)
+            {
+                <ChatRoomMessage ChatRoom="ChatRoom" Message="message" />
 
-        <MudTextField @ref=messageTextField
+            }
+        </MudStack>
+        <MudStack Row=true>
+
+            <MudTextField @ref=messageTextField
                       AutoFocus=true
                       UserAttributes=@(new Dictionary<string, object>(){{"autocomplete","off"}})
                       Adornment=Adornment.Start
@@ -33,17 +34,17 @@
                       T="string"
                       @bind-Text=@draftMessage />
 
-        <MudIconButton OnClick=@PostMessage
+            <MudIconButton OnClick=@PostMessage
                        Icon="@Icons.Material.Filled.Send"
                        ButtonType="ButtonType.Submit" Class="align-middle" />
 
-    </MudStack>
-    <MudButton OnClick="@(()=>{OnCloseClicked.InvokeAsync();})"
+        </MudStack>
+        <MudButton OnClick="@(()=>{OnCloseClicked.InvokeAsync();})"
                Class="ml-auto mr-n3 mb-1"
                Color="Color.Error">
-        Close
-    </MudButton>
-
+            Close
+        </MudButton>
+    }
 </MudContainer>
 @code {
     MudTextField<string>? messageTextField;
@@ -60,7 +61,7 @@
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
-        if(firstRender)
+        if (firstRender)
             ScrollToBottom();
 
     }
@@ -70,7 +71,8 @@
     {
         await base.OnInitializedAsync();
 
-        Chat.OnMessagePosted += async (ChatMessage message)=>{
+        Chat.OnMessagePosted += async (ChatMessage message) =>
+        {
             if (message.ChatRoomId == ChatRoom.Id)
             {
                 await Task.Delay(100);
@@ -80,8 +82,11 @@
     }
     private void ScrollToBottom()
     {
-        var param = new object[] { ChatRoom.ElementId };
-        JS.InvokeVoidAsync("scrollToBottom", param);
+        if (ChatRoom != null)
+        {
+            var param = new object[] { ChatRoom.ElementId };
+            JS.InvokeVoidAsync("scrollToBottom", param);
+        }
     }
     private async Task PostMessage()
     {
