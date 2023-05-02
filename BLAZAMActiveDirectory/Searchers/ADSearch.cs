@@ -111,7 +111,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     //TODO Ensure bbroken
                     //Make sure this is not  usable
                     //VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset),
-                    Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)))"
+                    Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
                 };
                 if (EnabledOnly != true)
                 {
@@ -127,7 +127,12 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         if (GeneralSearchTerm != null)
                             FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(distinguishedName=" + GeneralSearchTerm + ")(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(proxyAddresses=*" + GeneralSearchTerm + "*)(ou=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*))";
                         break;
+                    case ActiveDirectoryObjectType.Printer:
+                        searcher.Filter = "(&(objectClass=printQueue))";
+                        if (GeneralSearchTerm != null)
+                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*))";
 
+                        break;
                     case ActiveDirectoryObjectType.Group:
                         searcher.Filter = "(&(objectCategory=group)(objectClass=group))";
                         if (GeneralSearchTerm != null)
@@ -393,6 +398,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         else if (sr.Properties["objectClass"].Contains("group"))
                         {
                             thisObject = new ADGroup();
+                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
+                        }
+                        else if (sr.Properties["objectClass"].Contains("printQueue"))
+                        {
+                            thisObject = new ADPrinter();
                             thisObject.Parse(sr, ActiveDirectoryContext.Instance);
                         }
                         if (thisObject != null)

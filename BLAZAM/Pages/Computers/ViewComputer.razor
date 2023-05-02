@@ -55,35 +55,38 @@
 
 
                     <Section Title=@AppLocalization["Info"]>
-                        <MudStack Row Class="@_fieldMudStackClasses">
-                        <DynamicMudInput T=string Label="@AppLocalization["Name"]" @bind-Value="@Computer.CanonicalName" Disabled=@true />
-                        <DynamicMudInput T=string Label="@AppLocalization["Operating System"]" @bind-Value="@Computer.OperatingSystem" Disabled=@true />
+                        <MudStack Row=true Class="@_fieldMudStackClasses">
+                            <DynamicMudInput T=string Label="@AppLocalization["Name"]" @bind-Value="@Computer.CanonicalName" Disabled=@true />
+                            <DynamicMudInput T=string Label="@AppLocalization["Operating System"]" @bind-Value="@Computer.OperatingSystem" Disabled=@true />
 
                         </MudStack>
 
-                        </Section>
+                    </Section>
 
-                        <Section Title=@AppLocalization["Live Stats"]>
-                        <MudStack Row Class="@_fieldMudStackClasses">
-                        <LiveChart SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})" />
-                        <LiveChart SeriesName="Memory Usage" Title="Live RAM Usage" History="30" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})" />
-                        <ComputerServices Computer="Computer" />
+                    <Section Title=@AppLocalization["Live Stats"]>
+                        <MudStack Row=true Class="@_fieldMudStackClasses">
+                            <LiveChart Enabled=@(Computer.IsOnline==true) SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})" />
+                            <LiveChart Enabled=@(Computer.IsOnline==true) SeriesName="Memory Usage" Title="Live RAM Usage" History="30" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})" />
+                            <ComputerServices Computer="Computer" />
 
                         </MudStack>
 
-                        </Section>
+                    </Section>
 
-                        <Section Title=@AppLocalization["Drive Details"]>
-                        <MudStack Row Class="@_fieldMudStackClasses">
-                        @if (drives != null && drives.Count > 0)
+                    <Section Title=@AppLocalization["Drive Details"]>
+                        <MudStack Row=true Class="@_fieldMudStackClasses">
+                            @if (drives != null && drives.Count > 0)
                             {
-                                <MudDataGrid Elevation=0 Items="drives">
+                                <MudDataGrid Elevation=0 Items="drives.Where(d=>d.DriveType==DriveType.Fixed)">
                                     <Columns>
                                         <PropertyColumn Property="x=>x.DriveType" />
                                         <PropertyColumn Property="x=>x.Letter" />
                                         <TemplateColumn Title="Used">
                                             <CellTemplate>
-                                                @(context.Item.PercentUsed.Round(0).ToString() + "%")
+                                                <MudProgressLinear Style="height:25px;" Value="@context.Item.PercentUsed.Round(0)"
+                                                           Color="@(context.Item.PercentUsed<70?Color.Success:context.Item.PercentUsed<80?Color.Warning:Color.Error)">
+                                                    @(context.Item.PercentUsed.Round(0).ToString() + "%")
+                                                </MudProgressLinear>
                                             </CellTemplate>
                                         </TemplateColumn>
                                         <TemplateColumn Title="Capacity">
@@ -107,15 +110,15 @@
 
 
                     <Section Title=@AppLocalization["Sessions"]>
-                        <MudStack Row Class="@_fieldMudStackClasses">
-                        <ComputerSessions Computer="Computer" />
+                        <MudStack Row=true Class="@_fieldMudStackClasses">
+                            <ComputerSessions Computer="Computer" />
 
                         </MudStack>
 
-                        </Section>
+                    </Section>
 
 
-                        @if (Computer.CanReadAnyCustomFields)
+                    @if (Computer.CanReadAnyCustomFields)
                     {
                         <Section Title="Additional Field">
                             @if (CustomFields != null)

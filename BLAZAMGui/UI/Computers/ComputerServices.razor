@@ -7,9 +7,12 @@
     <MudDataGrid Dense=true
              HorizontalScrollbar=true
              Elevation=0
+             Virtualize=true
+             OverscanCount="15"
              FixedHeader=true
              Height="350px"
              Items="services">
+             
         <Columns>
             <TemplateColumn StickyLeft=true
                         Title="Name">
@@ -50,7 +53,6 @@ else
     </div>
 }
 
-<MudText>Test: </MudText>
 
 @code {
 

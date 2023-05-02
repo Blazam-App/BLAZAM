@@ -32,7 +32,11 @@ namespace BLAZAM.Helpers
                 }
                 return hash;
             }
-        }
+        }   
+        
+
+
+
 
         public static bool IsNullOrEmpty(this string? str)
         {

@@ -18,6 +18,8 @@ namespace BLAZAM.Helpers
                     return Icons.Material.Filled.Computer;
                 case ActiveDirectoryObjectType.OU:
                     return Icons.Material.Filled.Folder;
+                case ActiveDirectoryObjectType.Printer:
+                    return Icons.Material.Filled.Print;
                 default:
                     return Icons.Material.Filled.QuestionMark;
             }

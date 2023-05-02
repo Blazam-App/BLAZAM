@@ -19,9 +19,19 @@
             TransformOrigin="Origin.BottomRight"
             Class="overflow-hidden">
     <MudToolBar Class="mud-theme-dark">
-        <MudText>
-            App Chat
-        </MudText>
+        @if (selectedChatRoom == AppChatRoom)
+        {
+            <MudText>App Chat</MudText>
+        }
+        else
+        {
+            
+                var otherMembers = selectedChatRoom.Members.Where(m=>!m.Equals(currentUserState.Preferences)).Select(m=>m.Username).ToList();
+                string chatName = String.Join(", ", otherMembers);
+            
+            <MudText>@selectedChatRoom.Name</MudText>
+            <MudText Typo="Typo.caption"> Other Members: @chatName</MudText>
+        }
     </MudToolBar>
     <MudDrawer @bind-Open="@_drawerOpen"
                Anchor="Anchor.Right"
@@ -31,7 +41,7 @@
                Variant="@DrawerVariant.Mini">
 
         <MudNavMenu>
-            <MudNavLink Icon="@Icons.Material.Filled.AllInclusive">App Chat</MudNavLink>
+            <MudNavLink OnClick="@(()=>{selectedChatRoom=AppChatRoom;})" Icon="@Icons.Material.Filled.AllInclusive">App Chat</MudNavLink>
             <MudNavLink Icon="@Icons.Material.Filled.FileOpen">Page Chat</MudNavLink>
             <MudNavLink Icon="@Icons.Material.Filled.EnhancedEncryption">Private Chats</MudNavLink>
             <MudNavGroup Icon="@Icons.Material.Filled.Group"
@@ -47,7 +57,7 @@
 
                     @foreach (var user in onlineUsers)
                     {
-                        <MudNavLink OnClick="@(()=>{OpenPrivateChat(user.Preferences);})">@user.Username</MudNavLink>
+                        <MudNavLink OnClick="@(async()=>{await OpenPrivateChat(user.Preferences);})">@user.Username</MudNavLink>
                     }
                 </MudNavGroup>
 
@@ -55,16 +65,16 @@
 
                     @foreach (var user in Context.UserSettings.Where(u => !onlineUsers.Select(us => us.Preferences).Contains(u) && !u.Equals(currentUserState.Preferences)))
                     {
-                        <MudNavLink OnClick="@(()=>{OpenPrivateChat(user);})">@user.Username</MudNavLink>
+                        <MudNavLink OnClick="@(async ()=>{await OpenPrivateChat(user);})">@user.Username</MudNavLink>
                     }
                 </MudNavGroup>
 
             </MudNavGroup>
+            <MudNavLink OnClick="@(()=>{Chat.DeleteAllChatRooms();})" Icon="@Icons.Material.Filled.Clear">Delete All Chat Rooms</MudNavLink>
         </MudNavMenu>
     </MudDrawer>
 
-    <AppChatRoom
-                 Class="pr-16"
+    <AppChatRoom Class="pr-16"
                  OnCloseClicked=@(()=>{_chatOpen=!_chatOpen;})
                  ChatRoom="selectedChatRoom" />
 
@@ -165,7 +175,7 @@
     }
     async Task OpenPrivateChat(AppUser otherParty)
     {
-        var chat =  Chat.GetPrivateTwoWayChat(new() { currentUserState.Preferences, otherParty });
+        var chat = Chat.GetPrivateTwoWayChat(new() { currentUserState.Preferences, otherParty });
         selectedChatRoom = chat;
     }
     void ChangeUsersExpanded(bool state)

@@ -2,11 +2,11 @@
 @if (Computer != null && _privateComputerInstance != null)
 {
     <Section Title=@AppLocalization["Name"]>
-        @if (Computer.Online==true)
+        @if (Computer.IsOnline==true)
         {
 
         }
-        else if(Computer.Online==false)
+        else if(Computer.IsOnline==false)
         {
             <MudAlert Class="mud-theme-info">The computer must be online to changed its name.</MudAlert>
         }

@@ -168,6 +168,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         return ActiveDirectoryObjectType.OU;
                     }
+                    if (Classes.Contains("printQueue"))
+                    {
+                        return ActiveDirectoryObjectType.Printer;
+                    }
 
                 }
                 return ActiveDirectoryObjectType.OU;

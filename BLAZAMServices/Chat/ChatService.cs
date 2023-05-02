@@ -1,6 +1,7 @@
 ﻿using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.User;
+using BLAZAM.Helpers;
 using BLAZAM.Server.Data;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,7 @@ namespace BLAZAM.Services.Chat
 
        public async Task<List<ChatRoom>> GetChatRoomsAsync()
         {
-            using var context = await _appDatabaseFactory.CreateDbContextAsync();
+            var context = Context;
             return await context.ChatRooms.ToListAsync();
         }
 
@@ -50,15 +51,14 @@ namespace BLAZAM.Services.Chat
             //ChatRoom matchingPrivateChat = null;
             //var chat= context.ChatRooms.Where(cr => cr.IsPublic == false
             //&& cr.Members.Count == 2).FirstOrDefault();
-            var chat= context.ChatRooms.Where(cr => cr.IsPublic == false
-            && cr.Members.Count == 2
-            && cr.Members.Any(m=>m.Id==parties[0].Id)
-            && cr.Members.Any(m => m.Id == parties[1].Id)).FirstOrDefault();
+            //var chat= context.ChatRooms.Where(cr => cr.IsPublic == false
+            //&& cr.Members.Count == 2
+            //&& cr.Members.Any(m=>m.Id==parties[0].Id)
+            //&& cr.Members.Any(m => m.Id == parties[1].Id)).FirstOrDefault();
             
-            var chat2= context.ChatRooms.Where(cr => cr.IsPublic == false
-            && cr.Members.Count == 2
-            && cr.Members.Any(m=>m.Equals(parties[0]))
-            && cr.Members.Any(m => m.Equals(parties[1]))).FirstOrDefault();
+            var chat= context.ChatRooms.Where(cr => cr.IsPublic == false
+            && cr.MembersHash == parties.GetMembersHash()).FirstOrDefault();
+            
             if (chat == null)
             {
                 chat = new ChatRoom() { Name ="Private Chat", IsPublic = false, Members = parties };
@@ -94,6 +94,22 @@ namespace BLAZAM.Services.Chat
 
             context.SaveChanges();
             OnMessageRead?.Invoke(user);
+        }
+
+        public void DeleteAllChatRooms()
+        {
+            var context = Context;
+            var allChatRooms = context.ChatRooms.ToList();
+            context.ChatRooms.RemoveRange(allChatRooms.ToArray());
+            context.SaveChanges();
+        }
+
+        public async Task<ChatRoom?> GetChatRoom(ChatRoom? chatRoom)
+        {
+            var context = Context;
+            chatRoom=await context.ChatRooms.Where(cr=>cr.Equals(chatRoom)).FirstOrDefaultAsync();
+            return chatRoom;
+            //return Task.CompletedTask;
         }
     }
 }

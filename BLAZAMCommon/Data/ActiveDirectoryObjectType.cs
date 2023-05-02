@@ -1,7 +1,7 @@
 ﻿namespace BLAZAM.Common.Data
 
 {
-    public enum ActiveDirectoryObjectType { User, Group, Computer, OU, All }
+    public enum ActiveDirectoryObjectType { All, User, Group, Computer, OU, Printer }
 
 
 }

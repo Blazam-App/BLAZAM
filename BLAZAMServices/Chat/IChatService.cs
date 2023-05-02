@@ -11,6 +11,7 @@ namespace BLAZAM.Services.Chat
         AppEvent<IApplicationUserState> OnMessageRead { get; set; }
 
         void CreateChatRoom(ChatRoom room);
+        void DeleteAllChatRooms();
         List<ChatRoom> GetChatRooms();
         Task<List<ChatRoom>> GetChatRoomsAsync();
         /// <summary>
@@ -23,5 +24,6 @@ namespace BLAZAM.Services.Chat
         ChatRoom GetPrivateTwoWayChat(List<AppUser> parties);
         void MessageRead(ChatMessage message, IApplicationUserState user);
         void PostMessage(ChatMessage message);
+        Task<ChatRoom?> GetChatRoom(ChatRoom? chatRoom);
     }
 }

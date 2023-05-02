@@ -8,6 +8,23 @@ namespace BLAZAM.Gui.UI.Outputs
         public InterpolationOption LineInterpolation = InterpolationOption.Straight;
         [Parameter]
         public Func<double> PollFunc { get; set; }
+        [Parameter]
+        public bool Enabled
+        {
+            get => enabled; set
+            {
+                if(enabled== value) return; 
+                enabled = value;
+                if (enabled)
+                {
+                    StartPolling();
+                }
+                else
+                {
+                    StopPolling();
+                }
+            }
+        }
 
         [Parameter]
         public string Title { get; set; }
@@ -32,6 +49,8 @@ namespace BLAZAM.Gui.UI.Outputs
         public int History { get; set; } = 120;
         private Timer _pollingTimer;
         protected List<DataPoint> Data = new();
+        private bool enabled;
+
         protected List<ChartSeries> DataSeries
         {
             get
@@ -45,7 +64,15 @@ namespace BLAZAM.Gui.UI.Outputs
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
+        }
+
+        private void StartPolling()
+        {
             _pollingTimer = new Timer(Tick, null, 500, 5000);
+        }
+         private void StopPolling()
+        {
+            _pollingTimer.Dispose();
         }
 
         protected virtual void PollData()

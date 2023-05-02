@@ -28,6 +28,10 @@
                         <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Computer; })>@AppLocalization["Computer"]</MudMenuItem>
 
                     </AuthorizeView>
+                    <AuthorizeView Roles="@(UserRoles.SearchComputers+","+UserRoles.SuperAdmin)">
+                        <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Printer; })>@AppLocalization["Printer"]</MudMenuItem>
+
+                    </AuthorizeView>
                 </CascadingAuthenticationState>
 
             </MudMenu>

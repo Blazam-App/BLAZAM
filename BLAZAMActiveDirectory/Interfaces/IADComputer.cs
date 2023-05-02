@@ -6,7 +6,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     public interface IADComputer : IAccountDirectoryAdapter
     {
         string? OperatingSystem { get; set; }
-        bool? Online { get; }
+        bool? IsOnline { get; }
         IPHostEntry? IPHostEntry { get; set; }
         AppEvent<bool> OnOnlineChanged { get; set; }
         int Processor { get; }

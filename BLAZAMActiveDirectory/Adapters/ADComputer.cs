@@ -47,7 +47,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// The online status of this computer right now.
         /// Null when still checking, otherwise True or False
         /// </summary>
-        public virtual bool? Online
+        public virtual bool? IsOnline
         {
             get => online; protected set
             {
@@ -145,12 +145,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                     {
                                         if (response.Status == IPStatus.Success)
                                         {
-                                            Online = true;
+                                            IsOnline = true;
                                             return;
                                         }
                                         else if (response.Status == IPStatus.TimedOut)
                                         {
-                                            Online = false;
+                                            IsOnline = false;
                                             return;
 
                                         }
@@ -179,7 +179,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                 }
 
-                Online = false;
+                IsOnline = false;
 
             }, cts.Token);
             await Task.Delay(1000);

@@ -79,9 +79,12 @@
 
         Chat.OnMessagePosted += async (ChatMessage message) =>
         {
-            if (message.ChatRoomId == ChatRoom?.Id)
+            if (message.ChatRoomId == ChatRoom?.Id && message.User!=CurrentUser.State.Preferences)
             {
                 await Task.Delay(100);
+                ChatRoom.Messages.Add(message);
+                await InvokeAsync(StateHasChanged);
+
                 ScrollToBottom();
             }
         };

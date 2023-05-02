@@ -28,9 +28,13 @@ namespace BLAZAM.Gui.UI.Chat
             await base.OnInitializedAsync();
             Chat.OnMessagePosted += async (message) =>
             {
-                await Task.Delay(100);
-                //await RefreshChatRooms();
-                await InvokeAsync(StateHasChanged);
+                if ((ChatRoom!=null && message.ChatRoomId.Equals(ChatRoom.Id))
+                || (AppChatRoom != null && message.ChatRoomId.Equals(AppChatRoom.Id)))
+                {
+                    await Task.Delay(100);
+                    await RefreshSelectedChatRooms();
+                    await InvokeAsync(StateHasChanged);
+                }
 
             };
             Chat.OnMessageRead += async (user) =>
@@ -43,6 +47,13 @@ namespace BLAZAM.Gui.UI.Chat
                 }
             };
         }
+
+        private async Task RefreshSelectedChatRooms()
+        {
+           
+            await Chat.GetChatRoom(ChatRoom);
+        }
+
         protected int UnreadMessages
         {
             get
@@ -68,12 +79,12 @@ namespace BLAZAM.Gui.UI.Chat
 
             ChatRoom = room;
 
-            room = (await Chat.GetChatRoomsAsync()).Where(cr => cr.Name.Equals("/")).FirstOrDefault();
+            room = (await Chat.GetChatRoomsAsync()).Where(cr => cr.Name.Equals("App Chat")).FirstOrDefault();
             if (room is null && ChatUri != null)
             {
                 Chat.CreateChatRoom(new()
                 {
-                    Name = "/",
+                    Name = "App Chat",
                     IsPublic = true,
                 });
 

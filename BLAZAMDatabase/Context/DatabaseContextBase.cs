@@ -606,6 +606,10 @@ namespace BLAZAM.Database.Context
             modelBuilder.Entity<ChatMessage>(entity =>
             {
                 entity.HasOne(e => e.User).WithMany(u => u.PostedChatMessages);
+                entity.HasMany(e=>e.ReadByUsers).WithMany(u=>u.ReadChatMessages).UsingEntity<Dictionary<AppUser,ChatMessage>>(
+                    x=>x.HasOne<AppUser>().WithMany().OnDelete(DeleteBehavior.Cascade),
+                    x=>x.HasOne<ChatMessage>().WithMany().OnDelete(DeleteBehavior.NoAction)
+                    );
                 entity.Navigation(e => e.User).AutoInclude();
                 entity.Navigation(e => e.ReadByUsers).AutoInclude();
 
