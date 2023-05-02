@@ -862,6 +862,37 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.ToTable("ChatRooms");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Chat.ReadChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChatMessageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ChatRoomId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatMessageId");
+
+                    b.HasIndex("ChatRoomId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ReadChatMessage");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.CustomActiveDirectoryField", b =>
                 {
                     b.Property<int>("Id")
@@ -1403,14 +1434,11 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<string>("APIToken")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ChatMessageId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("DarkMode")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("DictionaryReadByUsersId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DictionaryReadChatMessagesId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -1436,10 +1464,10 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChatMessageId");
+
                     b.HasIndex("UserGUID")
                         .IsUnique();
-
-                    b.HasIndex("DictionaryReadByUsersId", "DictionaryReadChatMessagesId");
 
                     b.ToTable("UserSettings");
                 });
@@ -1543,12 +1571,6 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<int>("ChatRoomId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DictionaryReadByUsersId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DictionaryReadChatMessagesId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1564,8 +1586,6 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.HasIndex("ChatRoomId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("DictionaryReadByUsersId", "DictionaryReadChatMessagesId");
 
                     b.ToTable("ChatMessages");
                 });
@@ -1583,21 +1603,6 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.HasIndex("PermissionsMapsId");
 
                     b.ToTable("PermissionDelegatePermissionMapping");
-                });
-
-            modelBuilder.Entity("System.Collections.Generic.Dictionary<BLAZAM.Database.Models.User.AppUser, BLAZAM.Server.Data.ChatMessage>", b =>
-                {
-                    b.Property<int>("ReadByUsersId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReadChatMessagesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ReadByUsersId", "ReadChatMessagesId");
-
-                    b.HasIndex("ReadChatMessagesId");
-
-                    b.ToTable("Dictionary<AppUser, ChatMessage>");
                 });
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
@@ -1665,6 +1670,33 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.HasOne("BLAZAM.Database.Models.CustomActiveDirectoryField", null)
                         .WithMany("ObjectTypes")
                         .HasForeignKey("CustomActiveDirectoryFieldId");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Chat.ReadChatMessage", b =>
+                {
+                    b.HasOne("BLAZAM.Server.Data.ChatMessage", "ChatMessage")
+                        .WithMany()
+                        .HasForeignKey("ChatMessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BLAZAM.Database.Models.Chat.ChatRoom", "ChatRoom")
+                        .WithMany()
+                        .HasForeignKey("ChatRoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
+                        .WithMany("ReadChatMessages")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChatMessage");
+
+                    b.Navigation("ChatRoom");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ActionAccessMapping", b =>
@@ -1753,9 +1785,9 @@ namespace BLAZAM.Common.Migrations.Sql
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
                 {
-                    b.HasOne("System.Collections.Generic.Dictionary<BLAZAM.Database.Models.User.AppUser, BLAZAM.Server.Data.ChatMessage>", null)
-                        .WithMany("Keys")
-                        .HasForeignKey("DictionaryReadByUsersId", "DictionaryReadChatMessagesId");
+                    b.HasOne("BLAZAM.Server.Data.ChatMessage", null)
+                        .WithMany("ReadByUsers")
+                        .HasForeignKey("ChatMessageId");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserDashboardWidget", b =>
@@ -1802,10 +1834,6 @@ namespace BLAZAM.Common.Migrations.Sql
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("System.Collections.Generic.Dictionary<BLAZAM.Database.Models.User.AppUser, BLAZAM.Server.Data.ChatMessage>", null)
-                        .WithMany("Values")
-                        .HasForeignKey("DictionaryReadByUsersId", "DictionaryReadChatMessagesId");
-
                     b.Navigation("ChatRoom");
 
                     b.Navigation("User");
@@ -1823,21 +1851,6 @@ namespace BLAZAM.Common.Migrations.Sql
                         .WithMany()
                         .HasForeignKey("PermissionsMapsId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("System.Collections.Generic.Dictionary<BLAZAM.Database.Models.User.AppUser, BLAZAM.Server.Data.ChatMessage>", b =>
-                {
-                    b.HasOne("BLAZAM.Database.Models.User.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("ReadByUsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BLAZAM.Server.Data.ChatMessage", null)
-                        .WithMany()
-                        .HasForeignKey("ReadChatMessagesId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -1875,13 +1888,13 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Navigation("Messages");
 
                     b.Navigation("PostedChatMessages");
+
+                    b.Navigation("ReadChatMessages");
                 });
 
-            modelBuilder.Entity("System.Collections.Generic.Dictionary<BLAZAM.Database.Models.User.AppUser, BLAZAM.Server.Data.ChatMessage>", b =>
+            modelBuilder.Entity("BLAZAM.Server.Data.ChatMessage", b =>
                 {
-                    b.Navigation("Keys");
-
-                    b.Navigation("Values");
+                    b.Navigation("ReadByUsers");
                 });
 #pragma warning restore 612, 618
         }

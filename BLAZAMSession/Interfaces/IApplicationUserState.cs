@@ -1,5 +1,6 @@
 ﻿
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Server.Data;
@@ -74,7 +75,7 @@ namespace BLAZAM.Session.Interfaces
         bool HasCreateOUPrivilege { get; }
         bool HasComputerPrivilege { get; }
         bool CanUnlockUsers { get;  }
-        List<ChatMessage> ReadChatMessages { get; }
+        List<ReadChatMessage> ReadChatMessages { get; }
 
         bool CanSearchDisabled(ActiveDirectoryObjectType objectType);
         bool Equals(object? obj);

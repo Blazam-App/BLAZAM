@@ -582,8 +582,8 @@ namespace BLAZAM.Database.Context
                 entity.Navigation(e => e.Messages).AutoInclude();
                 
                 entity.Navigation(e => e.DashboardWidgets).AutoInclude();
-                entity.HasMany(e => e.ReadChatMessages).WithMany(u => u.ReadByUsers);
-                //entity.Navigation(e => e.ReadChatMessages).AutoInclude();
+                //entity.HasMany(e => e.ReadChatMessages).WithMany(u => u.ReadByUsers);
+                entity.Navigation(e => e.ReadChatMessages).AutoInclude();
 
             });
             modelBuilder.Entity<UserNotification>(entity =>
@@ -606,10 +606,7 @@ namespace BLAZAM.Database.Context
             modelBuilder.Entity<ChatMessage>(entity =>
             {
                 entity.HasOne(e => e.User).WithMany(u => u.PostedChatMessages);
-                entity.HasMany(e=>e.ReadByUsers).WithMany(u=>u.ReadChatMessages).UsingEntity<Dictionary<AppUser,ChatMessage>>(
-                    x=>x.HasOne<AppUser>().WithMany().OnDelete(DeleteBehavior.Cascade),
-                    x=>x.HasOne<ChatMessage>().WithMany().OnDelete(DeleteBehavior.NoAction)
-                    );
+                
                 entity.Navigation(e => e.User).AutoInclude();
                 entity.Navigation(e => e.ReadByUsers).AutoInclude();
 

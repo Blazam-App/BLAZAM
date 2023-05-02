@@ -13,13 +13,7 @@ namespace BLAZAM.Database.Migrations.MySql
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "Dictionary<AppUser, ChatMessage>ReadByUsersId",
-                table: "UserSettings",
-                type: "int",
-                nullable: true);
-
-            migrationBuilder.AddColumn<int>(
-                name: "Dictionary<AppUser, ChatMessage>ReadChatMessagesId",
+                name: "ChatMessageId",
                 table: "UserSettings",
                 type: "int",
                 nullable: true);
@@ -79,9 +73,7 @@ namespace BLAZAM.Database.Migrations.MySql
                     Timestamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     Message = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ChatRoomId = table.Column<int>(type: "int", nullable: false),
-                    DictionaryAppUserChatMessageReadByUsersId = table.Column<int>(name: "Dictionary<AppUser, ChatMessage>ReadByUsersId", type: "int", nullable: true),
-                    DictionaryAppUserChatMessageReadChatMessagesId = table.Column<int>(name: "Dictionary<AppUser, ChatMessage>ReadChatMessagesId", type: "int", nullable: true)
+                    ChatRoomId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -102,23 +94,34 @@ namespace BLAZAM.Database.Migrations.MySql
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Dictionary<AppUser, ChatMessage>",
+                name: "ReadChatMessage",
                 columns: table => new
                 {
-                    ReadByUsersId = table.Column<int>(type: "int", nullable: false),
-                    ReadChatMessagesId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ChatRoomId = table.Column<int>(type: "int", nullable: false),
+                    ChatMessageId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    IsRead = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Dictionary<AppUser, ChatMessage>", x => new { x.ReadByUsersId, x.ReadChatMessagesId });
+                    table.PrimaryKey("PK_ReadChatMessage", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Dictionary<AppUser, ChatMessage>_ChatMessages_ReadChatMessag~",
-                        column: x => x.ReadChatMessagesId,
+                        name: "FK_ReadChatMessage_ChatMessages_ChatMessageId",
+                        column: x => x.ChatMessageId,
                         principalTable: "ChatMessages",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Dictionary<AppUser, ChatMessage>_UserSettings_ReadByUsersId",
-                        column: x => x.ReadByUsersId,
+                        name: "FK_ReadChatMessage_ChatRooms_ChatRoomId",
+                        column: x => x.ChatRoomId,
+                        principalTable: "ChatRooms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReadChatMessage_UserSettings_UserId",
+                        column: x => x.UserId,
                         principalTable: "UserSettings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -126,9 +129,9 @@ namespace BLAZAM.Database.Migrations.MySql
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserSettings_Dictionary<AppUser, ChatMessage>ReadByUsersId_D~",
+                name: "IX_UserSettings_ChatMessageId",
                 table: "UserSettings",
-                columns: new[] { "Dictionary<AppUser, ChatMessage>ReadByUsersId", "Dictionary<AppUser, ChatMessage>ReadChatMessagesId" });
+                column: "ChatMessageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppUserChatRoom_MembersId",
@@ -141,72 +144,58 @@ namespace BLAZAM.Database.Migrations.MySql
                 column: "ChatRoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChatMessages_Dictionary<AppUser, ChatMessage>ReadByUsersId_D~",
-                table: "ChatMessages",
-                columns: new[] { "Dictionary<AppUser, ChatMessage>ReadByUsersId", "Dictionary<AppUser, ChatMessage>ReadChatMessagesId" });
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ChatMessages_UserId",
                 table: "ChatMessages",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Dictionary<AppUser, ChatMessage>_ReadChatMessagesId",
-                table: "Dictionary<AppUser, ChatMessage>",
-                column: "ReadChatMessagesId");
+                name: "IX_ReadChatMessage_ChatMessageId",
+                table: "ReadChatMessage",
+                column: "ChatMessageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReadChatMessage_ChatRoomId",
+                table: "ReadChatMessage",
+                column: "ChatRoomId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReadChatMessage_UserId",
+                table: "ReadChatMessage",
+                column: "UserId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_UserSettings_Dictionary<AppUser, ChatMessage>_Dictionary<App~",
+                name: "FK_UserSettings_ChatMessages_ChatMessageId",
                 table: "UserSettings",
-                columns: new[] { "Dictionary<AppUser, ChatMessage>ReadByUsersId", "Dictionary<AppUser, ChatMessage>ReadChatMessagesId" },
-                principalTable: "Dictionary<AppUser, ChatMessage>",
-                principalColumns: new[] { "ReadByUsersId", "ReadChatMessagesId" });
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ChatMessages_Dictionary<AppUser, ChatMessage>_Dictionary<App~",
-                table: "ChatMessages",
-                columns: new[] { "Dictionary<AppUser, ChatMessage>ReadByUsersId", "Dictionary<AppUser, ChatMessage>ReadChatMessagesId" },
-                principalTable: "Dictionary<AppUser, ChatMessage>",
-                principalColumns: new[] { "ReadByUsersId", "ReadChatMessagesId" });
+                column: "ChatMessageId",
+                principalTable: "ChatMessages",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_UserSettings_Dictionary<AppUser, ChatMessage>_Dictionary<App~",
+                name: "FK_UserSettings_ChatMessages_ChatMessageId",
                 table: "UserSettings");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_ChatMessages_ChatRooms_ChatRoomId",
-                table: "ChatMessages");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_ChatMessages_Dictionary<AppUser, ChatMessage>_Dictionary<App~",
-                table: "ChatMessages");
 
             migrationBuilder.DropTable(
                 name: "AppUserChatRoom");
 
             migrationBuilder.DropTable(
-                name: "ChatRooms");
-
-            migrationBuilder.DropTable(
-                name: "Dictionary<AppUser, ChatMessage>");
+                name: "ReadChatMessage");
 
             migrationBuilder.DropTable(
                 name: "ChatMessages");
 
+            migrationBuilder.DropTable(
+                name: "ChatRooms");
+
             migrationBuilder.DropIndex(
-                name: "IX_UserSettings_Dictionary<AppUser, ChatMessage>ReadByUsersId_D~",
+                name: "IX_UserSettings_ChatMessageId",
                 table: "UserSettings");
 
             migrationBuilder.DropColumn(
-                name: "Dictionary<AppUser, ChatMessage>ReadByUsersId",
-                table: "UserSettings");
-
-            migrationBuilder.DropColumn(
-                name: "Dictionary<AppUser, ChatMessage>ReadChatMessagesId",
+                name: "ChatMessageId",
                 table: "UserSettings");
         }
     }

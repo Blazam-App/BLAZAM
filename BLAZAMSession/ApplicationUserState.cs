@@ -1,6 +1,7 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Logger;
@@ -54,14 +55,14 @@ namespace BLAZAM.Server.Data.Services
 
             }
         }
-        public List<ChatMessage> ReadChatMessages => Preferences.ReadChatMessages.ToList();
+        public List<ReadChatMessage> ReadChatMessages => Preferences.ReadChatMessages.ToList();
 
         public int Id => Preferences.Id;
 
 
         public bool IsChatMessageRead(ChatMessage message)
         {
-            return ReadChatMessages.Contains(message);
+            return ReadChatMessages.Any(rm=>rm.Equals(message));
         }
         public IApplicationUserSessionCache Cache { get; set; } = new ApplicationUserSessionCache();
 

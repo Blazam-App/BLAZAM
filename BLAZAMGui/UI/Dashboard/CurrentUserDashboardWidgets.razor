@@ -77,7 +77,7 @@
 
     MudDropContainer<UserDashboardWidget>? widgetContainer;
     List<Widget> allWidgets = new List<Widget>();
-    List<UserDashboardWidget> usersWidgets => CurrentUser.State.Preferences.DashboardWidgets;
+    List<UserDashboardWidget> usersWidgets => CurrentUser.State?.Preferences?.DashboardWidgets;
 
     protected override Task OnInitializedAsync()
     {
