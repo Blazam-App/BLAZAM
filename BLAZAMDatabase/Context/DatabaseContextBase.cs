@@ -134,8 +134,9 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<PermissionDelegate> PermissionDelegate { get; set; }
         public virtual DbSet<PermissionMapping> PermissionMap { get; set; }
 
-        public virtual DbSet<ChatRoom> ChatRooms { get; set; }
-        public virtual DbSet<ChatMessage> ChatMessages { get; set; }
+        //public virtual DbSet<ChatRoom> ChatRooms { get; set; }
+        //public virtual DbSet<ChatMessage> ChatMessages { get; set; }
+        //public virtual DbSet<ReadChatMessage> ReadChatMessages { get; set; }
 
 
         //Templates
@@ -608,7 +609,6 @@ namespace BLAZAM.Database.Context
                 entity.HasOne(e => e.User).WithMany(u => u.PostedChatMessages);
                 
                 entity.Navigation(e => e.User).AutoInclude();
-                entity.Navigation(e => e.ReadByUsers).AutoInclude();
 
             });
 

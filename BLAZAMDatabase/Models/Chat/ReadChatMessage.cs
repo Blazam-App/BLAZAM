@@ -10,9 +10,9 @@ namespace BLAZAM.Database.Models.Chat
 {
     public class ReadChatMessage:AppDbSetBase
     {
-        public ChatRoom ChatRoom { get; set; }
         public ChatMessage ChatMessage { get; set; }
         public AppUser User { get; set; }
-        public bool IsRead { get; set; }
+        public int ChatMessageId { get; set; }
+        public int UserId { get; set; }
     }
 }

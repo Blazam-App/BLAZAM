@@ -1,9 +1,5 @@
 @inherits ChatComponentBase
-@if (!Message.IsChatMessageRead(CurrentUser.State.Preferences))
-{
-    Chat.MessageRead(Message, CurrentUser.State);
-    
-}
+
 @{
     var localTimestamp = Message.Timestamp.ToLocalTime();
     var timestamp ="";

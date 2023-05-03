@@ -9,19 +9,125 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADPrinter : DirectoryEntryAdapter, IADPrinter
     {
+        public string DriverName
+        {
+
+            get
+            {
+                return GetStringProperty("driverName");
+            }
+            set
+            {
+                SetProperty("driverName", value);
+            }
+        }
+        public string DriverVersion
+        {
+
+            get
+            {
+                return GetStringProperty("driverVersion");
+            }
+            set
+            {
+                SetProperty("driverVersion", value);
+            }
+        }
+        public string Location
+        {
+
+            get
+            {
+                return GetStringProperty("location");
+            }
+            set
+            {
+                SetProperty("location", value);
+            }
+        }
+        public string PortName
+        {
+
+            get
+            {
+                return GetStringProperty("portName");
+            }
+            set
+            {
+                SetProperty("portName", value);
+            }
+        }
+        public string PrinterName
+        {
+
+            get
+            {
+                return GetStringProperty("printerName");
+            }
+            set
+            {
+                SetProperty("printerName", value);
+            }
+        }
+
+        public string PrintLanguage
+        {
+
+            get
+            {
+                return GetStringProperty("printLanguage");
+            }
+            set
+            {
+                SetProperty("printLanguage", value);
+            }
+        }
+
+        public string PrintRateUnit
+        {
+
+            get
+            {
+                return GetStringProperty("printRateUnit");
+            }
+            set
+            {
+                SetProperty("printRateUnit", value);
+            }
+        }
+
+        public string PrintShareName
+        {
+
+            get
+            {
+                return GetStringProperty("printShareName");
+            }
+            set
+            {
+                SetProperty("printShareName", value);
+            }
+        }
+
+        public string UncName
+        {
+
+            get
+            {
+                return GetStringProperty("uNCName");
+            }
+            set
+            {
+                SetProperty("uNCName", value);
+            }
+        }
         //TODO Add the following attributes
-        // driverName str
-        // driverVersion str
-        // location str
-        // portName str
         // printBinNames strlist
         // printCollate bool
         // printColor bool
         // printDuplexSupported bool
-        // printerName str
         // printOrientationsSupported str
         // printKeepPrintedJobs bool
-        // printLanguage str
         // printMediaReady strlist
         // printMediaSupported strlist
         // printMaxResolutionSupported int
@@ -31,8 +137,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
         // printMaxYExtent int
         // printPagesPerMinute int
         // printRate  int
-        // printRateUnit str
-        // printShareName str
         // printSpooling str
         // printStaplingSupported bool?
         // priority int

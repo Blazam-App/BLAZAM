@@ -59,8 +59,8 @@ namespace BLAZAM.Gui.UI.Chat
             get
             {
                 if (ChatRoom is null) return 0;
-                //TODO  Pull from DB
-                return ChatRoom.Messages.Count(m => !m.ReadByUsers.Contains(CurrentUser.State.Preferences));
+                return 0;
+               // return Context.ReadChatMessages.Count(m => !m.User.Equals(CurrentUser.State.Preferences) && !m.IsRead);
             
             }
         }
