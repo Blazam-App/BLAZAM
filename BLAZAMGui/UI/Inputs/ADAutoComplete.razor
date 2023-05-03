@@ -12,6 +12,7 @@
                  Validation="@Validation"
                  CoerceText="@AllowCustomInput"
                  CoerceValue="false"
+                  MaxItems=@MaxResults
                  Clearable=true
                  Dense=true
                  ShowProgressIndicator=true
@@ -102,7 +103,7 @@
 
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     [Parameter]
     public Func<object> Validation { get; set; }
     [Parameter]
@@ -118,6 +119,9 @@
 
     [Parameter]
     public bool Disabled { get; set; }
+
+    [Parameter]
+    public int MaxResults { get; set; } = 10;
 
     [Parameter]
     public bool AllowCustomInput { get; set; }
@@ -217,7 +221,7 @@
             search.ObjectTypeFilter = SearchObjectType;
             search.GeneralSearchTerm = searchText.Replace(" ", "*");
             search.EnabledOnly = !SearchDisabled;
-            search.MaxResults = 10;
+            search.MaxResults = MaxResults;
             var temp = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token)).Where(r => r.CanRead);
 
             if (!token.IsCancellationRequested)

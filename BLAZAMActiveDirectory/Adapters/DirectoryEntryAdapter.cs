@@ -78,7 +78,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected SearchResult? searchResult;
 
-        protected IAppDatabaseFactory DbFactory=>Directory.Factory;
+        protected IAppDatabaseFactory DbFactory => Directory.Factory;
         protected IApplicationUserState? CurrentUser => Directory.CurrentUser;
 
         bool _newEntry = false;
@@ -352,15 +352,21 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return GetStringListProperty("objectClass");
-                //try
-                //{
-                //    return SearchResult?.Properties["objectclass"].Cast<string>().ToList();
-                //}
-                //catch (ArgumentOutOfRangeException)
-                //{
-                //    return null;
-                //}
+                if (!IsDeleted)
+                {
+                    return GetStringListProperty("objectClass");
+                }
+                else
+                {
+                    try
+                    {
+                        return SearchResult?.Properties["objectclass"].Cast<string>().ToList();
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        return null;
+                    }
+                }
             }
             set
             {
