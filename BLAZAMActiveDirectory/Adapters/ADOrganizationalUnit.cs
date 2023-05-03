@@ -14,16 +14,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private IQueryable<IADComputer>? childComputerCache;
         private IQueryable<IADGroup>? childGroupCache;
 
-        /// <summary>
-        /// Indicates whether this OU is expanded
-        /// in the ui withing a tree view
-        /// </summary>
-        public bool IsExpanded { get; set; }
-
         public bool HasChildren()
         {
 
-            return Children.Any();
+            return SubOUs.Any();
 
         }
         public async Task<bool> HasChildrenAsync()
@@ -37,18 +31,71 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             return await Task.Run(() =>
             {
-                return Children;
+                return SubOUs;
             });
         }
-        public IEnumerable<IADOrganizationalUnit> Children
+
+        public HashSet<IADOrganizationalUnit> CachedTreeViewSubOUs { get; private set; } = new();
+
+        public HashSet<IADOrganizationalUnit> TreeViewSubOUs
         {
             get
             {
-                IsLoadingChildren = true;
+                CachedTreeViewSubOUs = SubOUs.ToHashSet();
+                return CachedTreeViewSubOUs;
+            }
+        }
+        public override  IEnumerable<IDirectoryEntryAdapter> Children { get {
+                List<IDirectoryEntryAdapter>directoryEntries = new List<IDirectoryEntryAdapter>();
+                var children = DirectoryEntry.Children;
+                DirectoryEntryAdapter? thisObject=null;
+                foreach (System.DirectoryServices.DirectoryEntry child in children)
+                {
+                        
+                    if (child.Properties["objectClass"].Contains("top"))
+                    {
+                        if (child.Properties["objectClass"].Contains("computer"))
+                        {
+                            thisObject = new ADComputer();
+                            thisObject.Parse(child, ActiveDirectoryContext.Instance);
+                        }
+                        else if (child.Properties["objectClass"].Contains("user"))
+                        {
+                            thisObject = new ADUser();
+                            thisObject.Parse(child, ActiveDirectoryContext.Instance);
+                        }
+                        else if (child.Properties["objectClass"].Contains("organizationalUnit"))
+                        {
+                            thisObject = new ADOrganizationalUnit();
+                            thisObject.Parse(child, ActiveDirectoryContext.Instance);
+                        }
+                        else if (child.Properties["objectClass"].Contains("group"))
+                        {
+                            thisObject = new ADGroup();
+                            thisObject.Parse(child, ActiveDirectoryContext.Instance);
+                        }
+                        else if (child.Properties["objectClass"].Contains("printQueue"))
+                        {
+                            thisObject = new ADPrinter();
+                            thisObject.Parse(child, ActiveDirectoryContext.Instance);
+                        }
+                        if (thisObject != null)
+                            directoryEntries.Add(thisObject);
+
+                    }
+                    thisObject = null;
+
+                }
+                CachedChildren = directoryEntries;
+                return CachedChildren;
+            } }
+        public IEnumerable<IADOrganizationalUnit> SubOUs
+        {
+            get
+            {
                 if (childrenCache == null)
                     childrenCache = Directory.OUs.FindSubOusByDN(DN).OrderBy(ou => ou.CanonicalName).AsQueryable();
 
-                IsLoadingChildren = false;
 
                 return childrenCache;
             }
@@ -75,6 +122,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
+
         public IQueryable<IADGroup> ChildGroups
         {
             get
@@ -138,7 +186,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public bool IsLoadingChildren { get; set; }
 
 
 

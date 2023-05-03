@@ -4,6 +4,7 @@ using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
+using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -336,81 +337,13 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
 
 
-            var last = Encapsulate(lastResults);
+            var last = lastResults.Encapsulate();
             Results.AddRange(last);
 
             ResultsCollected?.Invoke(last);
 
         }
 
-        public List<I> ConvertTo<T, I>(ICollection r) where T : I, IDirectoryEntryAdapter, new()
-        {
-            return new List<I>((IEnumerable<I>)ConvertTo<T>(r));
-        }
-
-        public List<T> ConvertTo<T>(ICollection r) where T : IDirectoryEntryAdapter, new()
-        {
-            List<T> objects = new();
-
-
-            if (r != null && r.Count > 0)
-            {
-
-                foreach (SearchResult sr in r)
-                {
-
-                    var o = new T();
-
-                    o.Parse(sr, ActiveDirectoryContext.Instance);
-
-                    objects.Add(o);
-                }
-            }
-            return objects;
-        }
-        public List<IDirectoryEntryAdapter> Encapsulate(SearchResultCollection r)
-        {
-            List<IDirectoryEntryAdapter> objects = new();
-
-
-            if (r != null && r.Count > 0)
-            {
-                IDirectoryEntryAdapter? thisObject = null;
-                foreach (SearchResult sr in r)
-                {
-                    if (sr.Properties["objectClass"].Contains("top"))
-                    {
-                        if (sr.Properties["objectClass"].Contains("computer"))
-                        {
-                            thisObject = new ADComputer();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
-                        }
-                        else if (sr.Properties["objectClass"].Contains("user"))
-                        {
-                            thisObject = new ADUser();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
-                        }
-                        else if (sr.Properties["objectClass"].Contains("organizationalUnit"))
-                        {
-                            thisObject = new ADOrganizationalUnit();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
-                        }
-                        else if (sr.Properties["objectClass"].Contains("group"))
-                        {
-                            thisObject = new ADGroup();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
-                        }
-                        else if (sr.Properties["objectClass"].Contains("printQueue"))
-                        {
-                            thisObject = new ADPrinter();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
-                        }
-                        if (thisObject != null)
-                            objects.Add(thisObject);
-                    }
-                }
-            }
-            return objects;
-        }
+       
     }
 }

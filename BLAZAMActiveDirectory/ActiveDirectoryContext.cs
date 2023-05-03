@@ -40,7 +40,7 @@ namespace BLAZAM.ActiveDirectory
 
 
         /// <summary>
-        /// <inheritdoc/>
+        
         /// </summary>
         public DirectoryEntry? AppRootDirectoryEntry { get; private set; }
 
@@ -107,29 +107,29 @@ namespace BLAZAM.ActiveDirectory
         private Timer _timer;
 
         /// <summary>
-        /// <inheritdoc/>
+        
         /// </summary>
         public IADUserSearcher Users { get; }
 
         /// <summary>
-        /// <inheritdoc/>
+        
         /// </summary>
         public IADGroupSearcher Groups { get; }
 
         /// <summary>
-        /// <inheritdoc/>
+        
         /// </summary>
         public IADOUSearcher OUs { get; }
 
         /// <summary>
-        /// <inheritdoc/>
+        
         /// </summary>
         public IADComputerSearcher Computers { get; }
 
         public IDatabaseContext? Context { get; private set; }
 
         /// <summary>
-        /// <inheritdoc/>
+        
         /// </summary>
         public bool PortOpen
         {
@@ -146,7 +146,7 @@ namespace BLAZAM.ActiveDirectory
         private IApplicationUserState? currentUser;
 
         /// <summary>
-        /// <inheritdoc/>
+        
         /// </summary>
         public DirectoryConnectionStatus Status
         {
@@ -158,7 +158,7 @@ namespace BLAZAM.ActiveDirectory
             }
         }
         /// <summary>
-        /// <inheritdoc/>
+        
         /// </summary>
         public AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
 

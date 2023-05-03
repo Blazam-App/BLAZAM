@@ -5,7 +5,7 @@ namespace BLAZAM.Database.Context
 {
     public class SqliteDatabaseContext : DatabaseContextBase
     {
-        /// <inheritdoc/>
+        
 
         public SqliteDatabaseContext() : base()
         {

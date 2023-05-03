@@ -19,7 +19,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
     public class DirectoryEntryAdapter : IDirectoryEntryAdapter
     {
-        /// <inheritdoc/>
+
         public virtual string SearchUri
         {
             get
@@ -28,19 +28,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        /// <inheritdoc/>
+
         public AppEvent? OnModelChanged { get; set; }
 
-        /// <inheritdoc/>
+
         public AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
 
-        /// <inheritdoc/>
+
         public AppEvent? OnModelCommited { get; set; }
 
-        /// <inheritdoc/>
+
         public AppEvent? OnModelDeleted { get; set; }
 
-        /// <inheritdoc/>
+
         public virtual List<AuditChangeLog> Changes
         {
             get
@@ -78,7 +78,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected SearchResult? searchResult;
 
-        protected IAppDatabaseFactory DbFactory;
+        protected IAppDatabaseFactory DbFactory=>Directory.Factory;
         protected IApplicationUserState? CurrentUser => Directory.CurrentUser;
 
         bool _newEntry = false;
@@ -92,7 +92,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-        /// <inheritdoc/>
+
         public Dictionary<string, object> NewEntryProperties { get; set; } = new();
 
         public IActiveDirectoryContext Directory { get; private set; }
@@ -100,7 +100,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        /// <inheritdoc/>
+
         public bool Invoke(string method, object?[]? args = null)
         {
             try
@@ -126,7 +126,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             return false;
         }
-        /// <inheritdoc/>
+
         public DirectoryEntry? DirectoryEntry
         {
             get
@@ -145,7 +145,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 FetchDirectoryEntry();
             }
         }
-        /// <inheritdoc/>
+
         public ActiveDirectoryObjectType ObjectType
         {
             get
@@ -177,7 +177,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return ActiveDirectoryObjectType.OU;
             }
         }
-        /// <inheritdoc/>
+
         public Type ModelType
         {
             get
@@ -270,7 +270,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
-        /// <inheritdoc/>
+
         public virtual DateTime? Created
         {
             get
@@ -284,7 +284,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-        /// <inheritdoc/>
+
         public virtual IADOrganizationalUnit? LastKnownParent
         {
             get
@@ -305,7 +305,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
             private set { _isDeleted = value; }
 
         }
-        /// <inheritdoc/>
+        public bool HasChildren
+        {
+            get
+            {
+                //return Children.Any();
+                var children = DirectoryEntry.Children;
+                var entries = children.Encapsulate();
+                return entries.Count > 0;
+                return true;
+            }
+        }
         public virtual DateTime? LastChanged
         {
             get
@@ -337,19 +347,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             return DN;
         }
-        /// <inheritdoc/>
+
         public virtual List<string>? Classes
         {
             get
             {
-                try
-                {
-                    return SearchResult?.Properties["objectclass"].Cast<string>().ToList();
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    return null;
-                }
+                return GetStringListProperty("objectClass");
+                //try
+                //{
+                //    return SearchResult?.Properties["objectclass"].Cast<string>().ToList();
+                //}
+                //catch (ArgumentOutOfRangeException)
+                //{
+                //    return null;
+                //}
             }
             set
             {
@@ -450,7 +461,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             return false;
         }
-        /// <inheritdoc/>
+
         public virtual bool CanRead
         {
             get
@@ -472,7 +483,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-        /// <inheritdoc/>
+
         public virtual bool CanReadAnyCustomFields
         {
             get
@@ -485,7 +496,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
-        /// <inheritdoc/>
+
         public virtual bool CanEdit
         {
             get
@@ -508,11 +519,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        /// <inheritdoc/>
+
         public virtual bool CanRename { get => HasActionPermission(ObjectActions.Rename); }
-        /// <inheritdoc/>
+
         public virtual bool CanMove { get => HasActionPermission(ObjectActions.Move); }
-        /// <inheritdoc/>
+
         public virtual bool CanCreate { get => HasActionPermission(ObjectActions.Create); }
 
 
@@ -530,10 +541,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                )))
                );
         }
-        /// <inheritdoc/>
+
         public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }
 
-        /// <inheritdoc/>
+
         public virtual bool HasUnsavedChanges
         {
             get => hasUnsavedChanges;
@@ -544,9 +555,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 OnModelChanged?.Invoke();
             }
         }
-        protected ADSettings? DirectorySettings { get; private set; }
+        protected ADSettings? DirectorySettings => Directory.ConnectionSettings;
 
-        /// <inheritdoc/>
+        public bool IsExpanded { get; set; }
+
+        public bool IsSelected { get; set; }
+
+        public virtual IEnumerable<IDirectoryEntryAdapter> CachedChildren { get; protected set; } = new List<IDirectoryEntryAdapter>();
+        public virtual IEnumerable<IDirectoryEntryAdapter> Children => new List<IDirectoryEntryAdapter>();
+
         public virtual bool CanReadField(IActiveDirectoryField field)
         {
             if (field is ActiveDirectoryField)
@@ -582,7 +599,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-        /// <inheritdoc/>
+
         public virtual bool CanEditField(IActiveDirectoryField field)
         {
             if (field is ActiveDirectoryField)
@@ -621,7 +638,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-        /// <inheritdoc/>
+
         protected virtual async Task Parse(DirectoryEntry? directoryEntry, SearchResult? searchResult, IActiveDirectoryContext directory)
         {
             Directory = directory;
@@ -633,29 +650,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 DirectoryEntry = directoryEntry;
 
-                DirectoryEntry.UsePropertyCache = true;
-                DirectoryEntry.Disposed += DirectoryEntry_Disposed;
+                //DirectoryEntry.UsePropertyCache = true;
             }
-            DbFactory = directory.Factory;
 
-            DirectorySettings = await DbFactory.CreateDbContext().ActiveDirectorySettings.FirstOrDefaultAsync();
 
 
         }
 
-        /// <inheritdoc/>
+
         public virtual async Task Parse(DirectoryEntry result, IActiveDirectoryContext directory) => await Parse(result, null, directory);
 
 
-        private void DirectoryEntry_Disposed(object? sender, EventArgs e)
-        {
-            //Not utilized
-        }
 
-        /// <inheritdoc/>
+
         public virtual async Task Parse(SearchResult result, IActiveDirectoryContext directory) => await Parse(null, result, directory);
 
-        /// <inheritdoc/>
+
         public virtual async Task<DirectoryChangeResult> CommitChangesAsync()
         {
             return await Task.Run(() =>
@@ -664,7 +674,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             });
         }
 
-        /// <inheritdoc/>
+
         public virtual DirectoryChangeResult CommitChanges()
         {
             try
@@ -690,9 +700,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         || p.Value is string strValue && strValue.IsNullOrEmpty()
                         || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
                             {
-                                
-                                    DirectoryEntry.Properties[p.Key].Clear();
-                                
+
+                                DirectoryEntry.Properties[p.Key].Clear();
+
 
                             }
                             else
@@ -750,7 +760,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
-        /// <inheritdoc/>
+
         public virtual void Delete()
         {
             try
@@ -781,7 +791,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        /// <inheritdoc/>
+
         public virtual void DiscardChanges()
         {
             DirectoryEntry = null;

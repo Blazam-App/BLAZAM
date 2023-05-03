@@ -1,8 +1,10 @@
-﻿using BLAZAM.ActiveDirectory.Adapters;
+﻿using BLAZAM.ActiveDirectory;
+using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.DirectoryServices;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -73,6 +75,99 @@ namespace BLAZAM.Helpers
             ouComponents.Reverse();
             return string.Join("/", ouComponents);
         }
+        public static List<IDirectoryEntryAdapter> Encapsulate(this SearchResultCollection r)
+        {
+            List<IDirectoryEntryAdapter> objects = new();
 
+
+            if (r != null && r.Count > 0)
+            {
+
+                IDirectoryEntryAdapter? thisObject = null;
+                foreach (SearchResult sr in r)
+                {
+                    if (sr.Properties["objectClass"].Contains("top"))
+                    {
+                        if (sr.Properties["objectClass"].Contains("computer"))
+                        {
+                            thisObject = new ADComputer();
+                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
+                        }
+                        else if (sr.Properties["objectClass"].Contains("user"))
+                        {
+                            thisObject = new ADUser();
+                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
+                        }
+                        else if (sr.Properties["objectClass"].Contains("organizationalUnit"))
+                        {
+                            thisObject = new ADOrganizationalUnit();
+                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
+                        }
+                        else if (sr.Properties["objectClass"].Contains("group"))
+                        {
+                            thisObject = new ADGroup();
+                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
+                        }
+                        else if (sr.Properties["objectClass"].Contains("printQueue"))
+                        {
+                            thisObject = new ADPrinter();
+                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
+                        }
+                        if (thisObject != null)
+                            objects.Add(thisObject);
+                    }
+                    thisObject = null;
+
+                }
+            }
+            return objects;
+        }
+        public static List<IDirectoryEntryAdapter> Encapsulate(this DirectoryEntries r)
+        {
+            List<IDirectoryEntryAdapter> objects = new();
+
+
+            if (r != null)
+            {
+
+                IDirectoryEntryAdapter? thisObject = null;
+                foreach (DirectoryEntry sr in r)
+                {
+                    if (sr.Properties["objectClass"].Contains("top"))
+                    {
+                        if (sr.Properties["objectClass"].Contains("computer"))
+                        {
+                            thisObject = new ADComputer();
+                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
+                        }
+                        else if (sr.Properties["objectClass"].Contains("user"))
+                        {
+                            thisObject = new ADUser();
+                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
+                        }
+                        else if (sr.Properties["objectClass"].Contains("organizationalUnit"))
+                        {
+                            thisObject = new ADOrganizationalUnit();
+                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
+                        }
+                        else if (sr.Properties["objectClass"].Contains("group"))
+                        {
+                            thisObject = new ADGroup();
+                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
+                        }
+                        else if (sr.Properties["objectClass"].Contains("printQueue"))
+                        {
+                            thisObject = new ADPrinter();
+                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
+                        }
+                        if (thisObject != null)
+                            objects.Add(thisObject);
+                    }
+                    thisObject = null;
+
+                }
+            }
+            return objects;
+        }
     }
 }

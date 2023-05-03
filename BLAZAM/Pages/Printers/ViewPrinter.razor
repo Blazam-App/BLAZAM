@@ -1,0 +1,185 @@
+﻿@using BLAZAM.Gui.UI.Computers
+@inherits DirectoryEntryViewBase
+@{
+    string _fieldMudStackClasses = "flex-wrap gap-10";
+}
+<AppPageTitle>@Printer?.CanonicalName</AppPageTitle>
+@if (Printer != null)
+{
+    <EditForm OnValidSubmit=SaveChanges Context="editContext" Model="Printer">
+
+        <SetSubHeader>
+
+            <DirectoryEntryViewHeader DirectoryEntry="@Printer"
+                                  OnDelete="@DeleteComputer"
+                                  OnMove="@(()=>{MoveToModal?.Show();})"
+                                  OnRename="@(()=>{RenameModal?.Show();})"
+                                  OnToggleEditMode="ToggleEditMode"/>
+            <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
+
+            </MudOverlay>
+
+
+        </SetSubHeader>
+
+        <CascadingValue Value="EditMode">
+            <CascadingValue Value="Printer">
+                <FlexContainer>
+
+
+                  
+                    <AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
+                        @if (MoveToModal?.IsShown == true)
+                        {
+                            <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Printer" />
+                        }
+                    </AppModal>
+                    <AppModal Title="Rename Computer" @ref=@RenameModal>
+                        @if (RenameModal?.IsShown == true)
+                        {
+                            @*<RenameComputerModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Computer="Printer" />*@
+                        }
+                    </AppModal>
+
+
+
+
+
+
+                    <Section Title=@AppLocalization["Info"]>
+                        <MudStack Row=true Class="@_fieldMudStackClasses">
+                            <DynamicMudInput T=string Label="@AppLocalization["Name"]" @bind-Value="@Printer.CanonicalName" Disabled=@true />
+                            <DynamicMudInput T=string Label="@AppLocalization["Driver"]" @bind-Value="@Printer.DriverName" Disabled=@true />
+                            <DynamicMudInput T=string Label="@AppLocalization["Driver Version"]" @bind-Value="@Printer.DriverVersion" Disabled=@true />
+                            <DynamicMudInput T=string Label="@AppLocalization["UNC Path"]" @bind-Value="@Printer.UncName" Disabled=@true />
+                            <DynamicMudInput T=string Label="@AppLocalization["Location"]" @bind-Value="@Printer.Location" Disabled=@true />
+
+                        </MudStack>
+
+                    </Section>
+
+                    <Section Title=@AppLocalization["Live Stats"]>
+                        <MudStack Row=true Class="@_fieldMudStackClasses">
+                           
+                        </MudStack>
+
+                    </Section>
+
+                    <Section Title=@AppLocalization["Drive Details"]>
+                        <MudStack Row=true Class="@_fieldMudStackClasses">
+                            
+
+                        </MudStack>
+                    </Section>
+
+
+
+
+
+
+                    <Section Title=@AppLocalization["Sessions"]>
+                        <MudStack Row=true Class="@_fieldMudStackClasses">
+
+                        </MudStack>
+
+                    </Section>
+
+
+                    @if (Printer.CanReadAnyCustomFields)
+                    {
+                        <Section Title="Additional Field">
+                            @if (CustomFields != null)
+                            {
+                                @foreach (var field in CustomFields)
+                                {
+                                    @if (Printer.CanReadField(field))
+                                    {
+                                        <CustomDirectoryField Disabled=@(!EditMode || !Printer.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="Printer" Field="@field" />
+
+                                    }
+                                }
+                            }
+
+                        </Section>
+                    }
+
+
+
+
+                </FlexContainer>
+            </CascadingValue>
+        </CascadingValue>
+
+    </EditForm>
+    @if (Printer.HasUnsavedChanges && !Printer.NewEntry)
+    {
+        <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
+    }
+}
+<MudOverlay Visible="SavingChanges" DarkBackground="true" Absolute="true">
+    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
+
+
+
+
+
+
+
+
+
+@code {
+    IADPrinter? Printer => DirectoryEntry as IADPrinter;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+        
+        LoadingData = false;
+        await RefreshEntryComponents();
+    }
+
+
+   
+    protected override async void DiscardChanges()
+    {
+        if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
+        {
+            Printer.DiscardChanges();
+            EditMode = false;
+            await RefreshEntryComponents();
+
+        }
+
+    }
+    async Task DeleteComputer()
+    {
+        if (await MessageService.Confirm("Are you sure you want to delete " + Printer?.CanonicalName + "?", "Delete Printer"))
+        {
+            try
+            {
+                Printer.Delete();
+                SnackBarService.Success(Printer.CanonicalName + " has been deleted.", "Printer Deleted");
+
+                Nav.NavigateTo("/search");
+
+            }
+            catch (ApplicationException ex)
+            {
+                SnackBarService.Error(ex.Message);
+            }
+            await RefreshEntryComponents();
+        }
+    }
+    async void SaveChanges()
+    {
+        if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
+        {
+            await Printer.CommitChangesAsync();
+            EditMode = false;
+            SnackBarService.Success("The changes made to this computer have been saved.", "Changes Saved");
+            await RefreshEntryComponents();
+
+        }
+    }
+}

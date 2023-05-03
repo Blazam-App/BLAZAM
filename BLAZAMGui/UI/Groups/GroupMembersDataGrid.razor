@@ -2,7 +2,7 @@
 @if (!Members.IsNullOrEmpty())
 {
     <MudDataGrid Elevation=0
-             Items="@Group.Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
+             Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
              Filterable="false"
              Dense=true
              

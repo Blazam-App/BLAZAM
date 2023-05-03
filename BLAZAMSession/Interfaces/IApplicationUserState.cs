@@ -75,7 +75,7 @@ namespace BLAZAM.Session.Interfaces
         bool HasCreateOUPrivilege { get; }
         bool HasComputerPrivilege { get; }
         bool CanUnlockUsers { get;  }
-        List<ReadChatMessage> ReadChatMessages { get; }
+        //List<ReadChatMessage> ReadChatMessages { get; }
 
         bool CanSearchDisabled(ActiveDirectoryObjectType objectType);
         bool Equals(object? obj);

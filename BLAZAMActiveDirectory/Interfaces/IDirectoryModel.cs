@@ -184,6 +184,19 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
         AppEvent? OnModelDeleted { get; set; }
         IActiveDirectoryContext Directory { get; }
+        /// <summary>
+        /// Indicates whether this entry is expanded
+        /// in the ui within a tree view
+        /// </summary>
+        bool IsExpanded { get; set; }
+        /// <summary>
+        /// Indicates whether this entry is selected
+        /// in the ui within a tree view
+        /// </summary>
+        bool IsSelected { get; set; }
+        bool HasChildren { get;}
+        IEnumerable<IDirectoryEntryAdapter> CachedChildren { get; }
+        IEnumerable<IDirectoryEntryAdapter> Children { get; }
 
         /// <summary>
         /// Sends all staged changes to the Active Directory server

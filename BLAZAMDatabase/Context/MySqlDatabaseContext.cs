@@ -6,7 +6,7 @@ namespace BLAZAM.Database.Context
 {
     public class MySqlDatabaseContext : DatabaseContextBase
     {
-        /// <inheritdoc/>
+        
         public MySqlDatabaseContext() : base()
         {
             ConnectionString = new("server=localhost");

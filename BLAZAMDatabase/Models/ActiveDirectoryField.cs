@@ -18,36 +18,36 @@ namespace BLAZAM.Database.Models
     public class ActiveDirectoryField : AppDbSetBase, IActiveDirectoryField
     {
 
-        /// <inheritdoc/>
+        
         [Required]
         public string FieldName { get; set; }
 
 
-        /// <inheritdoc/>
+        
         [Required]
         public string DisplayName { get; set; }
 
 
-        /// <inheritdoc/>
+        
         public ActiveDirectoryFieldType FieldType { get; set; } = ActiveDirectoryFieldType.Text;
 
 
 
 
-        /// <inheritdoc/>
+        
         public override string? ToString()
         {
             return DisplayName;
         }
 
-        /// <inheritdoc/>
+        
         public override int GetHashCode()
         {
             if (FieldName == null) return Id.GetHashCode();
             return FieldName.GetHashCode();
         }
 
-        /// <inheritdoc/>
+        
         public override bool Equals(object? obj)
         {
             if (obj is ActiveDirectoryField)
@@ -62,7 +62,7 @@ namespace BLAZAM.Database.Models
             }
             return false;
         }
-        /// <inheritdoc/>
+        
         public bool IsActionAppropriateForObject(ActiveDirectoryObjectType objectType)
         {
 

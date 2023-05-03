@@ -2,25 +2,25 @@
 @using System.Collections.ObjectModel;
 @inherits AppComponentBase
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
-<h3>Fields</h3>
-<MudDataGrid @ref=fieldGrid 
-    T="CustomActiveDirectoryField"
-    ServerData="RefreshData" 
-    ReadOnly=false 
-     CommittedItemChanges=SaveChanges
-    FixedHeader=true
-    EditTrigger="DataGridEditTrigger.Manual">
+
+<MudDataGrid @ref=fieldGrid
+             T="CustomActiveDirectoryField"
+             ServerData="RefreshData"
+             ReadOnly=false
+             CommittedItemChanges=SaveChanges
+             FixedHeader=true
+             EditTrigger="DataGridEditTrigger.Manual">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Fields</MudText>
         <MudSpacer />
         <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="@(()=>{addFieldModal?.Show();})" />
     </ToolBarContent>
-    
+
     <Columns>
 
         <TemplateColumn Context="cellContext" CellClass="d-flex justify-end" Title="Edit" Sortable="false">
             <CellTemplate>
-                <MudIconButton Disabled=@(cellContext.Item.Id>100000) Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@cellContext.Actions.StartEditingItemAsync" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@cellContext.Actions.StartEditingItemAsync" />
             </CellTemplate>
         </TemplateColumn>
 
@@ -49,22 +49,26 @@
             <TemplateColumn Title="@objectType.ToString()" Sortable="false">
                 <EditTemplate>
                     <MudCheckBox T="bool"
-                             
                              Label="@objectType.ToString()"
                              Size="@Size.Small"
                              Checked="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)"
                              CheckedChanged="@((val)=>{
- ToggleObjectType(context.Item,objectType,val);
-})" />
+                                 ToggleObjectType(context.Item,objectType,val);
+                                })" />
                 </EditTemplate>
                 <CellTemplate>
-                    <MudCheckBox Size="@Size.Small" ReadOnly=true Checked="@(context.Item?.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)" />
+                    <MudCheckBox Size="@Size.Small"
+                             ReadOnly=true
+                             Checked="@(context.Item?.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)" />
                 </CellTemplate>
             </TemplateColumn>
         }
         <TemplateColumn CellClass="d-flex justify-end" Title=@AppLocalization["Delete"] Sortable="false">
             <CellTemplate>
-                <MudIconButton Disabled=@(context.Item?.Id>100000) Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(async()=>{await Delete(context.Item);})" />
+                <MudIconButton Disabled=@(context.Item?.Id>100000)
+                               Size="@Size.Small"
+                               Icon="@Icons.Material.Outlined.Delete"
+                               OnClick="@(async()=>{await Delete(context.Item);})" />
             </CellTemplate>
         </TemplateColumn>
     </Columns>
@@ -114,7 +118,7 @@
     }
     async Task SaveChanges()
     {
-        if(await Context.SaveChangesAsync() > 0)
+        if (await Context.SaveChangesAsync() > 0)
         {
             SnackBarService.Success("Field Updated");
         }
@@ -124,19 +128,18 @@
 
     void ToggleObjectType(CustomActiveDirectoryField field, ActiveDirectoryObjectType objectType, bool newValue)
     {
-            //Handle remove to list
-            if (!newValue && field.ObjectTypes.Any(ot => ot.ObjectType.Equals(objectType)))
-            {
-                field.ObjectTypes.Remove(field.ObjectTypes.First(ot => ot.ObjectType.Equals(objectType)));
-            }
-            //Handle add to list
-            if (newValue && !field.ObjectTypes.Any(ot => ot.ObjectType.Equals(objectType)))
-            {
-                field.ObjectTypes.Add(new ActiveDirectoryFieldObjectType() { ActiveDirectoryFieldId = field.Id, ObjectType = objectType });
-            }
-
-
+        //Handle remove to list
+        if (!newValue && field.ObjectTypes.Any(ot => ot.ObjectType.Equals(objectType)))
+        {
+            field.ObjectTypes.Remove(field.ObjectTypes.First(ot => ot.ObjectType.Equals(objectType)));
         }
-     
+        //Handle add to list
+        if (newValue && !field.ObjectTypes.Any(ot => ot.ObjectType.Equals(objectType)))
+        {
+            field.ObjectTypes.Add(new ActiveDirectoryFieldObjectType() { ActiveDirectoryFieldId = field.Id, ObjectType = objectType });
+        }
+
+
     }
 }
+

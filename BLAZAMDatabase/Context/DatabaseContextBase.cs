@@ -584,7 +584,7 @@ namespace BLAZAM.Database.Context
                 
                 entity.Navigation(e => e.DashboardWidgets).AutoInclude();
                 //entity.HasMany(e => e.ReadChatMessages).WithMany(u => u.ReadByUsers);
-                entity.Navigation(e => e.ReadChatMessages).AutoInclude();
+               // entity.Navigation(e => e.ReadChatMessages).AutoInclude();
 
             });
             modelBuilder.Entity<UserNotification>(entity =>
@@ -599,18 +599,18 @@ namespace BLAZAM.Database.Context
               entity.HasIndex(e => e.DelegateSid).IsUnique();
           });
 
-            modelBuilder.Entity<ChatRoom>(entity =>
-            {
-                entity.Navigation(e => e.Messages).AutoInclude();
-                entity.Navigation(e => e.Members).AutoInclude();
-            });
-            modelBuilder.Entity<ChatMessage>(entity =>
-            {
-                entity.HasOne(e => e.User).WithMany(u => u.PostedChatMessages);
+            //modelBuilder.Entity<ChatRoom>(entity =>
+            //{
+            //    entity.Navigation(e => e.Messages).AutoInclude();
+            //    entity.Navigation(e => e.Members).AutoInclude();
+            //});
+            //modelBuilder.Entity<ChatMessage>(entity =>
+            //{
+            //    entity.HasOne(e => e.User).WithMany(u => u.PostedChatMessages);
                 
-                entity.Navigation(e => e.User).AutoInclude();
+            //    entity.Navigation(e => e.User).AutoInclude();
 
-            });
+            //});
 
         
 

@@ -55,15 +55,15 @@ namespace BLAZAM.Server.Data.Services
 
             }
         }
-        public List<ReadChatMessage> ReadChatMessages => Preferences.ReadChatMessages.ToList();
+        //public List<ReadChatMessage> ReadChatMessages => Preferences.ReadChatMessages.ToList();
 
         public int Id => Preferences.Id;
 
 
-        public bool IsChatMessageRead(ChatMessage message)
-        {
-            return ReadChatMessages.Any(rm=>rm.Equals(message));
-        }
+        //public bool IsChatMessageRead(ChatMessage message)
+        //{
+        //    return ReadChatMessages.Any(rm=>rm.Equals(message));
+        //}
         public IApplicationUserSessionCache Cache { get; set; } = new ApplicationUserSessionCache();
 
         public AuthenticationTicket? Ticket { get; set; }
