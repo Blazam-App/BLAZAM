@@ -16,15 +16,15 @@ namespace BLAZAM.Services.Chat
 {
     public class ChatService : IChatService
     {
+
         public AppEvent<ChatMessage> OnMessagePosted { get; set; }
         public AppEvent<IApplicationUserState> OnMessageRead { get; set; }
-        public List<ChatRoom> GetChatRooms() => null;//Context.ChatRooms.ToList();
+        public List<ChatRoom> GetChatRooms() => Context.ChatRooms.ToList();
 
         public async Task<List<ChatRoom>> GetChatRoomsAsync()
         {
             var context = Context;
-            return null;
-           // return await context.ChatRooms.ToListAsync();
+             return await context.ChatRooms.ToListAsync();
         }
 
         private IAppDatabaseFactory _appDatabaseFactory { get; set; }
@@ -36,8 +36,8 @@ namespace BLAZAM.Services.Chat
         public void CreateChatRoom(ChatRoom room)
         {
             var context = Context;
-            //context.ChatRooms.Add(room);
-            //context.SaveChanges();
+            context.ChatRooms.Add(room);
+            context.SaveChanges();
         }
 
         public ChatRoom? GetPrivateTwoWayChat(List<AppUser> parties)
@@ -51,71 +51,71 @@ namespace BLAZAM.Services.Chat
             });
             parties = localParties;
 
-            return null;
-            //var chat = context.ChatRooms.Where(cr => cr.IsPublic == false
-            //&& cr.MembersHash == parties.GetMembersHash()).FirstOrDefault();
 
-            //if (chat == null)
-            //{
-            //    chat = new ChatRoom() { Name = "Private Chat", IsPublic = false, Members = parties };
+            var chat = context.ChatRooms.Where(cr => cr.IsPublic == false
+            && cr.MembersHash == parties.GetMembersHash()).FirstOrDefault();
 
-            //    context.ChatRooms.Add(chat);
-            //    try
-            //    {
-            //        context.SaveChanges();
-            //    }
-            //    catch (Exception ex)
-            //    {
+            if (chat == null)
+            {
+                chat = new ChatRoom() { Name = "Private Chat", IsPublic = false, Members = parties };
 
-            //    }
-            //}
-            //return chat;
+                context.ChatRooms.Add(chat);
+                try
+                {
+                    context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            return chat;
         }
         public void PostMessage(ChatMessage message)
         {
-            //var context = Context;
-            //if (message.User != null)
-            //{
-            //    message.User = context.UserSettings.Where(us => us.Id == message.User.Id).FirstOrDefault();
-            //}
-           
-            //context.ChatMessages.Add(message);
-            //context.SaveChanges();
+            var context = Context;
+            if (message.User != null)
+            {
+                message.User = context.UserSettings.Where(us => us.Id == message.User.Id).FirstOrDefault();
+            }
+
+            context.ChatMessages.Add(message);
+            context.SaveChanges();
             OnMessagePosted?.Invoke(message);
         }
         public void MessageRead(ChatMessage message, IApplicationUserState user)
         {
             var context = Context;
-           // var dbEntry = context.ReadChatMessages.Where(rm => rm.ChatMessageId == message.Id && rm.UserId == user.Id).FirstOrDefault();
-           
-           //if(dbEntry == null)
-           // {
-           //     dbEntry = new()
-           //     {
-           //         ChatMessageId = message.Id,
-           //         UserId = user.Id
-           //     };
-           //     context.ReadChatMessages.Add(dbEntry);
-           // }
-           // context.SaveChanges();
-          
+            var dbEntry = context.ReadChatMessages.Where(rm => rm.ChatMessageId == message.Id && rm.UserId == user.Id).FirstOrDefault();
+
+            if (dbEntry == null)
+            {
+                dbEntry = new()
+                {
+                    ChatMessageId = message.Id,
+                    UserId = user.Id
+                };
+                context.ReadChatMessages.Add(dbEntry);
+            }
+            context.SaveChanges();
+
             OnMessageRead?.Invoke(user);
         }
 
         public void DeleteAllChatRooms()
         {
             var context = Context;
-            //var allChatRooms = context.ChatRooms.ToList();
-            //context.ChatRooms.RemoveRange(allChatRooms.ToArray());
-            //context.SaveChanges();
+            var allChatRooms = context.ChatRooms.ToList();
+            context.ChatRooms.RemoveRange(allChatRooms.ToArray());
+            context.SaveChanges();
         }
 
         public async Task<ChatRoom?> GetChatRoom(ChatRoom? chatRoom)
         {
             var context = Context;
-            return null;
-            //chatRoom = await context.ChatRooms.Where(cr => cr.Equals(chatRoom)).FirstOrDefaultAsync();
-            //return chatRoom;
+           // return null;
+            chatRoom = await context.ChatRooms.Where(cr => cr.Equals(chatRoom)).FirstOrDefaultAsync();
+            return chatRoom;
         }
     }
 }
