@@ -16,20 +16,38 @@ namespace BLAZAM.Services.Chat
 {
     public class ChatService : IChatService
     {
+        private  List<ChatRoom> chatRooms;
 
+        private  List<ChatRoom> ChatRooms
+        {
+            get
+            {
+                if (chatRooms == null)
+                {
+                    var context = Context;
+                    chatRooms = context.ChatRooms.ToList();
+                }
+                return chatRooms;
+            }
+            set => chatRooms = value;
+        }
         public AppEvent<ChatMessage> OnMessagePosted { get; set; }
         public AppEvent<IApplicationUserState> OnMessageRead { get; set; }
         public List<ChatRoom> GetChatRooms() => Context.ChatRooms.ToList();
 
         public async Task<List<ChatRoom>> GetChatRoomsAsync()
         {
-            var context = Context;
-             return await context.ChatRooms.ToListAsync();
+            if (ChatRooms is null)
+            {
+                var context = Context;
+                ChatRooms = await context.ChatRooms.ToListAsync();
+            }
+            return ChatRooms;
         }
 
         private IAppDatabaseFactory _appDatabaseFactory { get; set; }
 
-        public IDatabaseContext Context => _appDatabaseFactory.CreateDbContext();
+        private IDatabaseContext Context => _appDatabaseFactory.CreateDbContext();
 
         public ChatService(IAppDatabaseFactory appDatabaseFactory) => _appDatabaseFactory = appDatabaseFactory;
 
@@ -38,6 +56,7 @@ namespace BLAZAM.Services.Chat
             var context = Context;
             context.ChatRooms.Add(room);
             context.SaveChanges();
+            ChatRooms.Add(room);
         }
 
         public ChatRoom? GetPrivateTwoWayChat(List<AppUser> parties)
@@ -52,7 +71,7 @@ namespace BLAZAM.Services.Chat
             parties = localParties;
 
 
-            var chat = context.ChatRooms.Where(cr => cr.IsPublic == false
+            var chat = ChatRooms.Where(cr => cr.IsPublic == false
             && cr.MembersHash == parties.GetMembersHash()).FirstOrDefault();
 
             if (chat == null)
@@ -63,6 +82,7 @@ namespace BLAZAM.Services.Chat
                 try
                 {
                     context.SaveChanges();
+                    ChatRooms.Add(chat);
                 }
                 catch (Exception ex)
                 {
@@ -81,6 +101,7 @@ namespace BLAZAM.Services.Chat
 
             context.ChatMessages.Add(message);
             context.SaveChanges();
+            ChatRooms.Where(cr => cr.Id == message.ChatRoomId).First().Messages.Add(message);
             OnMessagePosted?.Invoke(message);
         }
         public void MessageRead(ChatMessage message, IApplicationUserState user)
@@ -112,9 +133,10 @@ namespace BLAZAM.Services.Chat
 
         public async Task<ChatRoom?> GetChatRoom(ChatRoom? chatRoom)
         {
-            var context = Context;
-           // return null;
-            chatRoom = await context.ChatRooms.Where(cr => cr.Equals(chatRoom)).FirstOrDefaultAsync();
+            chatRoom = ChatRooms.Where(cr => cr.Equals(chatRoom)).FirstOrDefault();
+            //var context = Context;
+            // return null;
+            //chatRoom = await context.ChatRooms.Where(cr => cr.Equals(chatRoom)).FirstOrDefaultAsync();
             return chatRoom;
         }
     }

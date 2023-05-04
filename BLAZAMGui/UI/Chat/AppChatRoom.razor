@@ -79,13 +79,17 @@
 
         Chat.OnMessagePosted += async (ChatMessage message) =>
         {
-            if (message.ChatRoomId == ChatRoom?.Id && message.User!=CurrentUser.State.Preferences)
+            if (message.ChatRoomId == ChatRoom?.Id)
             {
-                await Task.Delay(100);
-                ChatRoom.Messages.Add(message);
-                await InvokeAsync(StateHasChanged);
+                if (message.User != CurrentUser.State.Preferences)
+                {
+                    await Task.Delay(100);
+                    //ChatRoom.Messages.Add(message);
+                    await InvokeAsync(StateHasChanged);
 
+                }
                 ScrollToBottom();
+
             }
         };
     }
@@ -108,13 +112,14 @@
                     Message = draftMessage,
                     ChatRoomId = ChatRoom.Id
                 };
-            ChatRoom.Messages.Add(message);
+            //ChatRoom.Messages.Add(message);
             Chat.PostMessage(message);
             //await RefreshChatRooms();
             draftMessage = "";
             //messageTextField.Value = "";
             await messageTextField?.Clear();
             await InvokeAsync(StateHasChanged);
+            ScrollToBottom();
 
         }
     }
