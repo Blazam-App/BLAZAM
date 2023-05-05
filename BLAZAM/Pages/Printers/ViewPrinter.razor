@@ -145,7 +145,7 @@
     {
         if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
         {
-            Printer.DiscardChanges();
+            Printer?.DiscardChanges();
             EditMode = false;
             await RefreshEntryComponents();
 

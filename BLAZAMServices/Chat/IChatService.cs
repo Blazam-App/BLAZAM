@@ -8,7 +8,8 @@ namespace BLAZAM.Services.Chat
     public interface IChatService
     {
         AppEvent<ChatMessage> OnMessagePosted { get; set; }
-        AppEvent<IApplicationUserState> OnMessageRead { get; set; }
+        AppEvent<AppUser> OnMessageRead { get; set; }
+        AppEvent<ChatRoom> OnChatRoomCreated { get; set; }
 
         void CreateChatRoom(ChatRoom room);
         void DeleteAllChatRooms();
@@ -21,9 +22,12 @@ namespace BLAZAM.Services.Chat
         /// </summary>
         /// <param name="parties">The two parties in the private chat.</param>
         /// <returns></returns>
-        ChatRoom GetPrivateTwoWayChat(List<AppUser> parties);
-        void MessageRead(ChatMessage message, IApplicationUserState user);
+        ChatRoom GetPrivateTwoWayChat(AppUser currentUser,AppUser otherUser);
+        void MessageRead(ChatMessage message, AppUser user);
         void PostMessage(ChatMessage message);
         Task<ChatRoom?> GetChatRoom(ChatRoom? chatRoom);
+        List<ChatMessage> GetUnreadMessages(AppUser user);
+        List<ChatRoom> GetPrivateChats(AppUser user);
+        List<ChatMessage> GetUnreadMessages( AppUser user, ChatRoom room);
     }
 }

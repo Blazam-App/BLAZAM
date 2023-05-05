@@ -1,5 +1,4 @@
 @inherits ChatComponentBase
-@inject IJSRuntime JS
 <MudContainer Class=@("d-flex flex-column "+Class)>
     @if (ChatRoom != null)
     {
@@ -24,6 +23,8 @@
         <MudStack id="@ChatRoom.ElementId" Style="height:300px;" Class="overflow-y-auto">
             @foreach (var message in ChatRoom.Messages)
             {
+                Chat.MessageRead(message, CurrentUser.State.Preferences);
+
                 <ChatRoomMessage ChatRoom="ChatRoom" Message="message" />
 
             }
@@ -79,13 +80,17 @@
 
         Chat.OnMessagePosted += async (ChatMessage message) =>
         {
-            if (message.ChatRoomId == ChatRoom?.Id && message.User!=CurrentUser.State.Preferences)
+            if (message.ChatRoomId == ChatRoom?.Id)
             {
-                await Task.Delay(100);
-                ChatRoom.Messages.Add(message);
-                await InvokeAsync(StateHasChanged);
+                if (message.User != CurrentUser.State.Preferences)
+                {
+                    await Task.Delay(100);
+                    //ChatRoom.Messages.Add(message);
+                    await InvokeAsync(StateHasChanged);
 
+                }
                 ScrollToBottom();
+
             }
         };
     }
@@ -106,15 +111,17 @@
                 {
                     User = CurrentUser.State.Preferences,
                     Message = draftMessage,
-                    ChatRoomId = ChatRoom.Id
+                    ChatRoom = ChatRoom,
+
                 };
-            ChatRoom.Messages.Add(message);
+            //ChatRoom.Messages.Add(message);
             Chat.PostMessage(message);
             //await RefreshChatRooms();
             draftMessage = "";
             //messageTextField.Value = "";
             await messageTextField?.Clear();
             await InvokeAsync(StateHasChanged);
+            ScrollToBottom();
 
         }
     }

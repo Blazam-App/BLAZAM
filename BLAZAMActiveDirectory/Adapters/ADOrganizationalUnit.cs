@@ -14,17 +14,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private IQueryable<IADComputer>? childComputerCache;
         private IQueryable<IADGroup>? childGroupCache;
 
-        public bool HasChildren()
-        {
+        public override bool HasChildren=> SubOUs.Any();
 
-            return SubOUs.Any();
-
-        }
+        
         public async Task<bool> HasChildrenAsync()
         {
             return await Task.Run(() =>
             {
-                return HasChildren();
+                return HasChildren;
             });
         }
         public async Task<IEnumerable<IADOrganizationalUnit>> GetChildrenAsync()
@@ -217,7 +214,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             IADUser newUser = new ADUser();
             if (DirectoryEntry == null)
-                DirectoryEntry = searchResult.GetDirectoryEntry();
+                DirectoryEntry = searchResult?.GetDirectoryEntry();
             newUser.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim().Replace(",", "\\,"), "user"), Directory);
             newUser.NewEntry = true;
             return newUser;
@@ -236,7 +233,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             IADGroup newGroup = new ADGroup();
             if (DirectoryEntry == null)
-                DirectoryEntry = searchResult.GetDirectoryEntry();
+                DirectoryEntry = searchResult?.GetDirectoryEntry();
             newGroup.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim(), "group"), Directory);
             newGroup.NewEntry = true;
             return newGroup;

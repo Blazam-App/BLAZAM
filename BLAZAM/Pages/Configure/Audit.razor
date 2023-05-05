@@ -48,7 +48,7 @@
             </MudTabPanel>
             <MudTabPanel>
             <ChildContent>
-
+                <AuditHistoryChart ChartSeries="LoginSeries"/>
                 <MudChart ChartType="ChartType.Line"
                       ChartSeries="@LoginSeries"
                       XAxisLabels="@(allDates.Select(d=>d.ToLocalTime().ToString("M/d")).ToArray())"
@@ -56,7 +56,7 @@
                       Height="350px"
                       ChartOptions="@LoginChartOptions"></MudChart>
 
-                <MudFab Icon="@Icons.Material.Filled.ShowChart" OnClick="ToggleLineMode" />
+                <MudFab StartIcon="@Icons.Material.Filled.ShowChart" OnClick="ToggleLineMode" />
                 <MudDataGrid Virtualize ColumnResizeMode="ResizeMode.Container" Hideable Items="@auditEntries.Where(ae=>ae.Action=="Login" || ae.Action=="Logout").OrderByDescending(ae=>ae.Timestamp)" Filterable="false" SortMode="@SortMode.Multiple" Groupable="false">
                 <Columns>
                     <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" />
@@ -129,12 +129,7 @@
             systemAuditEntries = await context.SystemAuditLog.ToListAsync();
 
 
-            //loginChart.Data = auditEntries.Where(ae => ae.Action == "Login")
-            //.GroupBy(ae => ae.Timestamp.Date)
-            //.ToList()
-            //.Select(g => Convert.ToDouble(g.Count()))
-            //.ToArray();
-
+          
             var endDate = DateTime.Today;
 
             var startDate = endDate.AddDays(-14);
@@ -156,11 +151,7 @@
             uniqueUsersChart.Data = uniqueLoginCounts.ToArray();
 
 
-            //uniqueUsersChart.Data = auditEntries.Where(ae => ae.Action == "Login")
-            //.GroupBy(ae => ae.Timestamp.Date)
-            //.ToList()
-            //.Select(g => Convert.ToDouble(g.DistinctBy(g => g.Username).Count()))
-            //.ToArray();
+          
             LoginSeries.Add(loginChart);
             LoginSeries.Add(uniqueUsersChart);
         }

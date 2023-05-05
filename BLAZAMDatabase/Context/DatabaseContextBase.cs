@@ -134,9 +134,9 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<PermissionDelegate> PermissionDelegate { get; set; }
         public virtual DbSet<PermissionMapping> PermissionMap { get; set; }
 
-        //public virtual DbSet<ChatRoom> ChatRooms { get; set; }
-        //public virtual DbSet<ChatMessage> ChatMessages { get; set; }
-        //public virtual DbSet<ReadChatMessage> ReadChatMessages { get; set; }
+        public virtual DbSet<ChatRoom> ChatRooms { get; set; }
+        public virtual DbSet<ChatMessage> ChatMessages { get; set; }
+        public virtual DbSet<UnreadChatMessage> UnreadChatMessages { get; set; }
 
 
         //Templates
@@ -583,8 +583,7 @@ namespace BLAZAM.Database.Context
                 entity.Navigation(e => e.Messages).AutoInclude();
                 
                 entity.Navigation(e => e.DashboardWidgets).AutoInclude();
-                //entity.HasMany(e => e.ReadChatMessages).WithMany(u => u.ReadByUsers);
-               // entity.Navigation(e => e.ReadChatMessages).AutoInclude();
+                //entity.Navigation(e => e.UnreadChatMessages).AutoInclude();
 
             });
             modelBuilder.Entity<UserNotification>(entity =>
@@ -599,20 +598,26 @@ namespace BLAZAM.Database.Context
               entity.HasIndex(e => e.DelegateSid).IsUnique();
           });
 
-            //modelBuilder.Entity<ChatRoom>(entity =>
-            //{
-            //    entity.Navigation(e => e.Messages).AutoInclude();
-            //    entity.Navigation(e => e.Members).AutoInclude();
-            //});
-            //modelBuilder.Entity<ChatMessage>(entity =>
-            //{
-            //    entity.HasOne(e => e.User).WithMany(u => u.PostedChatMessages);
-                
-            //    entity.Navigation(e => e.User).AutoInclude();
+            modelBuilder.Entity<ChatRoom>(entity =>
+            {
+                entity.HasMany(e => e.Members).WithMany();
+                entity.Navigation(e => e.Messages).AutoInclude();
+                entity.Navigation(e => e.Members).AutoInclude();
+            });
+            modelBuilder.Entity<ChatMessage>(entity =>
+            {
 
-            //});
+                entity.Navigation(e => e.User).AutoInclude();
 
-        
+            });
+
+            modelBuilder.Entity<UnreadChatMessage>(entity =>
+         {
+             entity.Navigation(e => e.ChatMessage).AutoInclude();
+
+         });
+
+
 
         }
 

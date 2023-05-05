@@ -13,9 +13,19 @@ namespace BLAZAM.Database.Models.Chat
 {
     public class ChatRoom : AppDbSetBase
     {
-        public string Name { get; set; }
+        private string _name;
+        public string Name
+        {
+            get
+            {
+                if(!_name.IsNullOrEmpty()) return _name;
+                return String.Join(", ",Members.OrderBy(m => m.Username).Select(m => m.Username).ToArray());
+            }
+            set => _name=value;
+        }
         public List<ChatMessage> Messages { get; set; } = new();
         public List<AppUser> Members { get; set; } = new();
+        [NotMapped]
         public int MemberCount { get => Members.Count; set { _ = value; } }
         public long MembersHash
         {

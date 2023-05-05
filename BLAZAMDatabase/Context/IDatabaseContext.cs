@@ -21,8 +21,7 @@ namespace BLAZAM.Database.Context
         DbSet<AppSettings> AppSettings { get; set; }
         DbSet<AuthenticationSettings> AuthenticationSettings { get; set; }
         DbSet<ComputerAuditLog> ComputerAuditLog { get; set; }
-        //DbSet<ChatRoom> ChatRooms { get; set; }
-        //DbSet<ChatMessage> ChatMessages { get; set; }
+
         DbSet<DirectoryTemplateFieldValue> DirectoryTemplateFieldValues { get; set; }
         DbSet<DirectoryTemplateGroup> DirectoryTemplateGroups { get; set; }
         DbSet<DirectoryTemplate> DirectoryTemplates { get; set; }
@@ -59,6 +58,9 @@ namespace BLAZAM.Database.Context
         bool SeedMismatch { get; }
         DbSet<CustomActiveDirectoryField> CustomActiveDirectoryFields { get; set; }
         DbSet<UserDashboardWidget> UserDashboardWidgets { get; set; }
-        //DbSet<ReadChatMessage> ReadChatMessages { get; set; }
+        DbSet<UnreadChatMessage> UnreadChatMessages { get; set; }
+        DbSet<ChatRoom> ChatRooms { get; set; }
+        DbSet<ChatMessage> ChatMessages { get; set; }
+
     }
 }

@@ -73,11 +73,11 @@
                     </MudContainer>
 
                 </MudMainContent>
-                <MudAppBar Style="height:30px;" DisableGutters=true Bottom=true Dense=true Color=Color.Dark Elevation="1">
+                <MudAppBar Style="height:35px;" DisableGutters=true Bottom=true Dense=true Color=Color.Dark Elevation="1">
                     <MudStack Class="mud-width-full pa-0 ma-0 ps-3" Row=true>
                         <AppFooter Class="align-middle"/>
                         
-                        @*<AppChat/>*@
+                        <AppChat />
                     </MudStack>
                 </MudAppBar>
                 <NotificationBroadcastListener />
@@ -130,7 +130,7 @@
     public void SetHeader(SetHeader? setHeader)
     {
         Header = (setHeader);
-        if (setHeader != null)
+        if (Header != null)
 
             Header.OnRefreshRequested += (async () => { await InvokeAsync(StateHasChanged); });
 
@@ -142,7 +142,7 @@
     public void SetSubHeader(SetSubHeader? setSubHeader)
     {
         SubHeader = (setSubHeader);
-        if (setSubHeader != null)
+        if (SubHeader != null)
             SubHeader.OnRefreshRequested += (async () => { await InvokeAsync(StateHasChanged); });
 
         //StateHasChanged();

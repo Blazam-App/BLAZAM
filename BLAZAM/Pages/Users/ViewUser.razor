@@ -102,8 +102,8 @@
                             <MudStack Row=true>
                                 <MudText Typo="Typo.subtitle2">Created:</MudText>
                                 <MudSpacer />
-                                <MudTooltip Text="@User.Created?.ToLocalTime().TimeOfDay.ToString()">
-                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.Created?.ToLocalTime().ToShortDateString()</MudText>
+                                <MudTooltip Text="@User?.Created?.ToLocalTime().TimeOfDay.ToString()">
+                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User?.Created?.ToLocalTime().ToShortDateString()</MudText>
                                 </MudTooltip>
                             </MudStack>
                             <MudStack Row=true>
@@ -140,7 +140,7 @@
                             {
                                 <MudStack>
                                     <MudText Typo="Typo.subtitle2">Groups</MudText>
-                                    <MemberOfList AssignToClicked=@(()=>{AssignToModal.Show();}) Model="User" />
+                                    <MemberOfList AssignToClicked=@(()=>{AssignToModal?.Show();}) Model="User" />
 
                                 </MudStack>
 

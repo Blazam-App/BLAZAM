@@ -413,11 +413,11 @@ namespace BLAZAM.ActiveDirectory
         /// <returns>The matched user if the credentials are valid, otherwise null.</returns>
         public IADUser? Authenticate(LoginRequest loginReq)
         {
-            if (loginReq.Username.Contains("\\"))
+            if (loginReq.Username!=null && loginReq.Username.Contains("\\"))
             {
                 loginReq.Username = loginReq.Username.Substring(loginReq.Username.IndexOf("\\") + 1);
             }
-            if (loginReq.Valid)
+            if (loginReq.Username!=null && loginReq.Valid)
             {
                 try
                 {
@@ -468,7 +468,7 @@ namespace BLAZAM.ActiveDirectory
         public bool RestoreTombstone(IDirectoryEntryAdapter model, IADOrganizationalUnit newOU)
         {
             if (!model.IsDeleted) throw new ApplicationException(model.CanonicalName + " is not deleted");
-
+            if(ConnectionSettings is null) throw new ApplicationException("Active Directory Connection Settings are missing for this enttry");
             string newDN = "CN=" + model.CanonicalName + "," + newOU.DN;
 
             LdapConnection connection = new LdapConnection(

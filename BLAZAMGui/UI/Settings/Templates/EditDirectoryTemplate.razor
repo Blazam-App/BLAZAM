@@ -10,63 +10,69 @@
         <MudStack>
 
             <MudSelectList T="DirectoryTemplate"
+                HelperText="@(otherTemplates.IsNullOrEmpty()?"There are no other templates":null)"
+                       Disabled=@(otherTemplates.IsNullOrEmpty())
                        Clearable=true
                        Label="Parent Template"
                        Values="@otherTemplates"
                        Value="@DirectoryTemplate.ParentTemplate"
                        ValueChanged="@ParentTemplateChanged" />
+
+
             <MudTextField Label="@AppLocalization["Template Name"]"
                       @bind-Value=DirectoryTemplate.Name />
 
-            <MudAutocomplete CoerceValue SearchFunc="SearchCategories"
+            <MudAutocomplete CoerceValue=true
+                         CoerceText=true
+                         SearchFunc="SearchCategories"
                          @bind-Value=DirectoryTemplate.Category
                          Label="@AppLocalization["Template Category"]" />
 
 
 
-            <MudCard>
-            Variables:
-            <MudStack Row=true>
-                <code>{fn}</code>:First Name<br />
-            </MudStack>
-            <MudStack Row=true>
+            <MudExpansionPanel Text="Variable">
 
-                <code>{fi}</code>:First Initial<br />
-            </MudStack>
-            <MudStack Row=true>
-                <code>{mn}</code>:Middle Name<br />
-            </MudStack>
-            <MudStack Row=true>
-                <code>{mi}</code>:Middle Initial<br />
-            </MudStack>
-            <MudStack Row=true>
-                <code>{ln}</code>:Last Name<br />
-            </MudStack>
-            <MudStack Row=true>
-                <code>{li}</code>:Last Initial<br />
-            </MudStack>
-            <MudStack Row=true>
-                <code>{username}</code>:Username<br />
-            </MudStack>
-            <MudStack Row=true>
-                <code>{AlphaNum[:u/l]}</code>:Random letter or number (optional force uppercase/lowercase)<br />
-            </MudStack>
-            <MudStack Row=true>
-                <code>{Alpha[:u/l]}</code>:Random letter (optional force uppercase/lowercase)<br />
-            </MudStack>
-            <MudStack Row=true>
-                <code>{Num}</code>:Random number<br />
+                <MudStack Row=true>
+                    <code>{fn}</code>:First Name<br />
+                </MudStack>
+                <MudStack Row=true>
 
-            </MudStack>
-            </MudCard>
+                    <code>{fi}</code>:First Initial<br />
+                </MudStack>
+                <MudStack Row=true>
+                    <code>{mn}</code>:Middle Name<br />
+                </MudStack>
+                <MudStack Row=true>
+                    <code>{mi}</code>:Middle Initial<br />
+                </MudStack>
+                <MudStack Row=true>
+                    <code>{ln}</code>:Last Name<br />
+                </MudStack>
+                <MudStack Row=true>
+                    <code>{li}</code>:Last Initial<br />
+                </MudStack>
+                <MudStack Row=true>
+                    <code>{username}</code>:Username<br />
+                </MudStack>
+                <MudStack Row=true>
+                    <code>{AlphaNum[:u/l]}</code>:Random letter or number (optional force uppercase/lowercase)<br />
+                </MudStack>
+                <MudStack Row=true>
+                    <code>{Alpha[:u/l]}</code>:Random letter (optional force uppercase/lowercase)<br />
+                </MudStack>
+                <MudStack Row=true>
+                    <code>{Num}</code>:Random number<br />
+
+                </MudStack>
+            </MudExpansionPanel>
             <Section Title="Account and Name">
 
 
 
-            <MudElement Class="d-flex flex-wrap gap-5">
+                <MudElement Class="d-flex flex-wrap gap-5">
 
 
-                @{
+                    @{
                         var usernameFromTemplate = GetParentOfValue(DirectoryTemplate.EffectiveUsernameFormula, template => template.UsernameFormula); ;
                     }
                     <TemplateOverride SourceTemplate="@usernameFromTemplate">
@@ -87,7 +93,7 @@
                     }
                     <TemplateOverride SourceTemplate="@usernameFromTemplate">
                         <MudTextField Label="Password"
-                                  Placeholder="{AlphaNum}{Alpha:U}{Alpha:L}{Num}{Num}{Num}"
+                                 
                                   @bind-Value=DirectoryTemplate.EffectivePasswordFormula />
                     </TemplateOverride>
 
@@ -259,16 +265,15 @@
 
                 @foreach (var group in DirectoryTemplate.InheritedAssignedGroupSids)
                 {
-                    
-                        var groupFromTemplate = otherTemplates.Where(ot => ot.AssignedGroupSids.Contains(group)).FirstOrDefault();
+
+                    var groupFromTemplate = otherTemplates.Where(ot => ot.AssignedGroupSids.Contains(group)).FirstOrDefault();
                     <TemplateOverride SourceTemplate="@groupFromTemplate">
                         <AssignedTemplateGroup Group="group" />
                     </TemplateOverride>
-                   
+
                 }
                 <MudStack Row=true>
                     <ADAutoComplete Label="@AppLocalization["Groups"]"
-                               
                                 @bind-SelectedResult="@SelectedGroup" />
                     <MudFab Size="Size.Small" StartIcon=@Icons.Material.Filled.Add
                         Color="Color.Primary"

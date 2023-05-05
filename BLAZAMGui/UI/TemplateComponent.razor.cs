@@ -67,7 +67,11 @@ namespace BLAZAM.Gui.UI
             await base.OnInitializedAsync();
             await FetchTemplates();
         }
-
+        protected async Task RefreshComponents()
+        {
+            await InvokeAsync(StateHasChanged);
+            Header?.OnRefreshRequested?.Invoke();
+        }
         protected async Task FetchTemplates()
         {
             if(Context==null) return;
