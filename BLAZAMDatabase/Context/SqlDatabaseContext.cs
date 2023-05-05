@@ -6,7 +6,7 @@ namespace BLAZAM.Database.Context
 {
     public class SqlDatabaseContext : DatabaseContextBase
     {
-        /// <inheritdoc/>
+        
 
         public SqlDatabaseContext() : base()
         {

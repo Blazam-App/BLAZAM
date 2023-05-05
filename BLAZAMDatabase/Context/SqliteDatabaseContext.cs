@@ -5,7 +5,7 @@ namespace BLAZAM.Database.Context
 {
     public class SqliteDatabaseContext : DatabaseContextBase
     {
-        /// <inheritdoc/>
+        
 
         public SqliteDatabaseContext() : base()
         {
@@ -27,7 +27,7 @@ namespace BLAZAM.Database.Context
         {
             if (ConnectionString == null)
             {
-                ConnectionString = new DatabaseConnectionString("test");
+                ConnectionString = new DatabaseConnectionString("database.db");
 
             }
             optionsBuilder.UseSqlite(

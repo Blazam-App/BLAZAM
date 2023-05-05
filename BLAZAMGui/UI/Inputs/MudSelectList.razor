@@ -15,6 +15,7 @@
            HelperTextOnFocus=@HelperTextOnFocus
            Placeholder="@Placeholder"
            Class=@Class
+           Disabled=@Disabled
            Clearable=@Clearable
            ListClass=@(ListClass+"w-min")
            Style="@(Style+" min-width:100px;")">
@@ -33,7 +34,7 @@
                     else
                     {
                         <MudElement>
-                            @val.ToString()
+                            @val?.ToString()
                         </MudElement>
                     }
                 </MudText>

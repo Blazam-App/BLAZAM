@@ -64,6 +64,10 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
         IApplicationUserState? CurrentUser { get; }
+
+        /// <summary>
+        /// Provides an impersonation context to the application domain account.
+        /// </summary>
         WindowsImpersonation Impersonation { get; }
 
         IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid);

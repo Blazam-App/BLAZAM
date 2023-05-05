@@ -1,0 +1,41 @@
+<MudChart ChartType="ChartType.Line"
+          ChartSeries="@ChartSeries"
+          XAxisLabels="@(allDates.Select(d=>d.ToLocalTime().ToString("M/d")).ToArray())"
+          Width="100%"
+          Height=@Height
+          ChartOptions="@ChartOptions"></MudChart>
+@*
+<MudFab Icon="@Icons.Material.Filled.ShowChart" OnClick="ToggleLineMode" />*@
+@code{
+
+    
+    [Parameter]
+    public List<ChartSeries> ChartSeries { get; set; } = new();
+    [Parameter]
+    public ChartOptions ChartOptions { get; set; } = new() { InterpolationOption=InterpolationOption.EndSlope };
+    [Parameter]
+    public DateTime EndDate { get; set; } = DateTime.Today;
+
+    [Parameter]
+    public int Days { get; set; } = 14;
+
+    /// <summary>
+    /// The height of the chart
+    /// </summary>
+    /// <remarks>
+    /// Default is "350px"
+    /// </remarks>
+    [Parameter]
+    public string Height { get; set; } = "350px";
+
+    IEnumerable<DateTime> allDates;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+       
+        var startDate = EndDate.AddDays(-1*Days);
+        allDates = Enumerable.Range(0, (int)(EndDate - startDate).TotalDays + 1)
+                                 .Select(d => startDate.AddDays(d));
+    }
+}

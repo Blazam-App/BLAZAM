@@ -1,0 +1,36 @@
+﻿@inherits ChatComponentBase
+@if (UnreadMessages > 0)
+{
+    <MudBadge Content="@UnreadMessages" Color="Color.Error" Overlap=true Origin=Origin.TopLeft>
+        <MudIconButton Class="@Class" OnClick="@OnClick"
+                   Icon="@Icons.Material.Filled.MarkUnreadChatAlt" />
+    </MudBadge>
+}
+else
+{
+    <MudIconButton Class="@Class" OnClick="@OnClick"
+               Icon="@Icons.Material.Filled.Chat" />
+}
+@code {
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+    
+    [Parameter]
+    public string? Class{ get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+      
+        Chat.OnMessageRead += async (user) =>
+          {
+              if (CurrentUser.State.Id == user.Id)
+              {
+                  await Task.Delay(50);
+
+                  //await RefreshChatRooms();
+                  await InvokeAsync(StateHasChanged);
+              }
+          };
+    }
+}

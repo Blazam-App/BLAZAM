@@ -186,15 +186,22 @@
     }
     async Task CreateCustomUser()
     {
-        if (newUser == null)
+        await Task.Run(() =>
         {
-            newUser = selectedOU.CreateUser(customUserDisplayName.Trim());
-            newUser.DisplayName = customUserDisplayName;
-        }
-        else
-        {
-            newUser.MoveTo(selectedOU);
-        }
+            if (selectedOU != null)
+            {
+                if (newUser == null)
+                {
+                    newUser = selectedOU.CreateUser(customUserDisplayName.Trim());
+                    newUser.DisplayName = customUserDisplayName;
+                }
+                else
+                {
+                    newUser.MoveTo(selectedOU);
+                }
+            }
+        });
+
     }
     async void CreateTemplateUser()
     {
@@ -219,22 +226,22 @@
 
         foreach (var fieldValue in SelectedTemplate.InheritedFieldValues)
         {
-           
-          
 
 
-                try
-                {
-                    if (fieldValue.Field!=null)
+
+
+            try
+            {
+                if (fieldValue.Field != null)
                     newUser.NewEntryProperties[fieldValue.Field.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
-                    else if (fieldValue.CustomField !=null)
-                        newUser.NewEntryProperties[fieldValue.CustomField.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
-                }
-                catch (Exception ex)
-                {
-                    Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field.FieldName + ": " + fieldValue.Value.ToString(), ex);
-                }
-            
+                else if (fieldValue.CustomField != null)
+                    newUser.NewEntryProperties[fieldValue.CustomField.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value.ToString(), ex);
+            }
+
         }
         var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName);
         if (conflictingEntry != null)

@@ -44,8 +44,13 @@ namespace BLAZAM.Common.Data.Services
                     catch(COMException ex)
                     {
                         Loggers.ActiveDirectryLogger.Error("COM Exception while connecting to WMI on " + hostName, ex);
-                    }
-                    return managementScope; 
+                }
+                catch(Exception ex)
+                {
+                    Loggers.ActiveDirectryLogger.Error("Error connecting to WMI " + hostName, ex);
+
+                }
+                return managementScope; 
                 }
             
             throw new WmiConnectionFailure();

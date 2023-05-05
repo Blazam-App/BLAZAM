@@ -7,7 +7,7 @@
     /// Provides an <see cref="Id"/> as well as <see cref="Equals(object?)"/> and
     /// <see cref="GetHashCode"/>
     /// </remarks>
-    public class AppDbSetBase : IEquatable<AppDbSetBase?>
+    public class AppDbSetBase : IEquatable<AppDbSetBase?>, IAppDbSetBase
     {
         public int Id { get; set; }
 

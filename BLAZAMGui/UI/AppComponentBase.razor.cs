@@ -1,6 +1,7 @@
 
 using BLAZAM.Email.Services;
 using BLAZAM.Localization;
+using BLAZAM.Services.Chat;
 
 namespace BLAZAM.Gui.UI
 {
@@ -41,7 +42,7 @@ namespace BLAZAM.Gui.UI
         protected AuditLogger AuditLogger { get; set; }
 
         [Inject]
-        private UserSeederService UserSeeder { get; set; }
+        protected IChatService Chat { get; set; }
 
         [Inject]
         protected AppDialogService MessageService { get; set; }
@@ -140,7 +141,7 @@ namespace BLAZAM.Gui.UI
             Nav.NavigateTo(Nav.Uri, forceReload);
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             Context?.Dispose();
         }

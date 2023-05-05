@@ -67,6 +67,15 @@ namespace BLAZAM.Tests.Mocks
 
         public IActiveDirectoryContext Directory => throw new NotImplementedException();
 
+        public bool IsExpanded { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool IsSelected { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public bool HasChildren => throw new NotImplementedException();
+
+        public IEnumerable<IDirectoryEntryAdapter> CachedChildren => throw new NotImplementedException();
+
+        public IEnumerable<IDirectoryEntryAdapter> Children => throw new NotImplementedException();
+
         public bool CanEditField(IActiveDirectoryField field)
         {
             throw new NotImplementedException();

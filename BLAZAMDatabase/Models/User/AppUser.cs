@@ -1,5 +1,8 @@
 ﻿
 
+using BLAZAM.Database.Models.Chat;
+using BLAZAM.Server.Data;
+
 namespace BLAZAM.Database.Models.User
 {
     public class AppUser : AppDbSetBase
@@ -12,6 +15,10 @@ namespace BLAZAM.Database.Models.User
         public bool SearchDisabledComputers { get; set; }
         public string? Username { get; set; }
         public List<UserNotification> Messages { get; set; } = new();
+        //public List<ChatMessage> PostedChatMessages { get; set; } = new();
+        //public List<UnreadChatMessage> UnreadChatMessages { get; set; } = new();
+        //public List<ChatRoom> ChatRooms{ get; set; } = new();
+
         public List<UserDashboardWidget> DashboardWidgets { get; set; }= new();
         public byte[]? ProfilePicture { get; set; }
         public string? Email { get; set; }

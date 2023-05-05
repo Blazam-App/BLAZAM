@@ -30,7 +30,7 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
         try
         {
             if (Context == null) return;
-            if (Context.PermissionDelegate.Any(pd => pd.DelegateSid == selectedDelegate.SID))
+            if (selectedDelegate !=null && Context.PermissionDelegate.Any(pd => pd.DelegateSid == selectedDelegate.SID))
             {
                 var confilctingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
                 if (confilctingDelegate != null)

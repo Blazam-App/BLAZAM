@@ -1,4 +1,5 @@
 @using BLAZAM.Common.Exceptions;
+@using System.Diagnostics;
 @inherits AppComponentBase
 @implements IDisposable
 @if (sessionsErrorMessage == null)
@@ -28,7 +29,16 @@
                     }
                 </CellTemplate>
             </TemplateColumn>
-           
+          @*  <TemplateColumn Title="Shadow">
+                <CellTemplate>
+                    @if (!context.Item.Equals(selectedSession))
+                    {
+                        <MudButton Color="Color.Info" OnClick=@(()=>{
+                           selectedSession=context.Item;
+                           })>Shadow</MudButton>
+                    }
+                </CellTemplate>
+            </TemplateColumn>*@
             <TemplateColumn Title="Manage">
                 <CellTemplate>
                     @if (context.Item.ConnectionState.ToString() == "Active")
@@ -51,10 +61,37 @@ else
         @sessionsErrorMessage
     </div>
 }
+@if (sessionRDP != null)
+{
+    <WindowCapture Process="@sessionRDP" />
 
+}
 
 
 @code {
+    Process? sessionRDP;
+    IRemoteSession? _selectedSession;
+    IRemoteSession? selectedSession
+    {
+        get => _selectedSession; set
+
+        {
+            if (_selectedSession == value) return;
+            _selectedSession = value;
+            if (sessionRDP != null && sessionRDP.ExitTime == DateTime.MinValue)
+            {
+                sessionRDP.Kill(true);
+                sessionRDP.WaitForExit();
+                sessionRDP.Dispose();
+                sessionRDP = null;
+            }
+            sessionRDP = Directory.Impersonation.Run(() =>
+            {
+                return _selectedSession?.Shadow(true);
+            });
+
+        }
+    }
     IRemoteSession sessionToMessage;
     AppModal? sessionMessageModal;
     SendMessageModalContent? sendMessageContent;
@@ -118,20 +155,24 @@ else
     {
         try
         {
-            sessions = await Computer.GetRemoteSessionsAsync();
-            sessions.ForEach(s =>
+            if (Computer != null)
             {
-                s.OnSessionDown += ((s) =>
+                sessions = await Computer.GetRemoteSessionsAsync();
+                sessions.ForEach(s =>
                 {
-                    sessions.Remove(s);
-                });
-                s.OnSessionUpdated += ((s) =>
-                {
-                    InvokeAsync(StateHasChanged);
-                });
+                    s.OnSessionDown += ((s) =>
+                    {
+                        sessions.Remove(s);
+                    });
+                    s.OnSessionUpdated += ((s) =>
+                    {
+                        InvokeAsync(StateHasChanged);
+                    });
 
-            });
-            sessionsErrorMessage = null;
+                });
+                sessionsErrorMessage = null;
+            }
+
         }
         catch (AuthenticationException ex)
         {
@@ -140,8 +181,9 @@ else
 
         await InvokeAsync(StateHasChanged);
     }
-    public void Dispose()
+    public override void Dispose()
     {
-        t.Dispose();
+        base.Dispose();
+        t?.Dispose();
     }
 }

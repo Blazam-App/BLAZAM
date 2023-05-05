@@ -5,6 +5,9 @@ namespace BLAZAM.FileSystem
     {
         public FileSystemBase(string path)
         {
+            if (path is null) 
+                throw new ArgumentException("path parameter should not be null");
+   
             path = path.Replace("%temp%", System.IO.Path.GetTempPath());
             Path = System.IO.Path.GetFullPath(path);
             if (Path==null || Path=="")

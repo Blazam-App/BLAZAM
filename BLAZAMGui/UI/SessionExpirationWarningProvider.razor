@@ -3,18 +3,27 @@
 @inject IJSRuntime JSRuntime
 
 
-<AppModal Title="Your session is about to expire" @ref="ExpirationWarningModal" AllowClose=false YesText="Refresh Session" OnYes=@(()=>{JSRuntime.InvokeVoidAsync("updateCookieExpiration");ExpirationWarningModal.Hide();})>
+<AppModal Title="Your session is about to expire" 
+    @ref="ExpirationWarningModal"
+    AllowClose=false
+    YesText="Refresh Session" 
+    OnYes=@(()=>{
+        JSRuntime.InvokeVoidAsync("updateCookieExpiration");
+        ExpirationWarningModal?.Hide();
+    })>
 
     @if (ExpirationWarningModal?.IsShown == true)
     {
 
-        var timeLeft = _ticket.Properties.ExpiresUtc - DateTime.UtcNow;
-        if (timeLeft.Value.TotalMilliseconds < 0)
+        var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
+        if (timeLeft.HasValue && timeLeft.Value.TotalMilliseconds < 0)
         {
             ExpirationWarningModal.Hide();
-            ExpiredModal.AllowClose = false;
-            ExpiredModal.Show();
-            //Nav.NavigateTo(Nav.Uri,true);
+            if (ExpiredModal != null)
+            {
+                ExpiredModal.AllowClose = false;
+                ExpiredModal.Show();
+            }
         }
         string formattedTimeLeft = "";
         if (timeLeft != null)
@@ -31,12 +40,12 @@
                 InvokeAsync(StateHasChanged);
             });
         }
-        
-                <MudText>
-                    Session expires in @formattedTimeLeft
-                </MudText>
 
-            
+        <MudText>
+            Session expires in @formattedTimeLeft
+        </MudText>
+
+
     }
 
 </AppModal>
@@ -63,7 +72,7 @@
         if (CurrentUser.State?.Ticket != null)
         {
             _ticket = CurrentUser.State?.Ticket;
-            var timeLeft = _ticket.Properties.ExpiresUtc - DateTime.UtcNow;
+            var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
             if (timeLeft > TimeSpan.FromSeconds(0) && timeLeft < TimeSpan.FromMinutes(2) && ExpirationWarningModal?.IsShown == false)
             {
                 await InvokeAsync(() => { ExpirationWarningModal.Show(); });

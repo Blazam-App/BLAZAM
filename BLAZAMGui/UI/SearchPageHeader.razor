@@ -28,6 +28,10 @@
                         <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Computer; })>@AppLocalization["Computer"]</MudMenuItem>
 
                     </AuthorizeView>
+                    <AuthorizeView Roles="@(UserRoles.SearchComputers+","+UserRoles.SuperAdmin)">
+                        <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Printer; })>@AppLocalization["Printer"]</MudMenuItem>
+
+                    </AuthorizeView>
                 </CascadingAuthenticationState>
 
             </MudMenu>
@@ -71,11 +75,13 @@
                         break;
                 }
             }
-            <MudPaper Class=" mud-overlay-light" Style="width:100%;height:min-content;">
+            <MudPaper Class=" mud-overlay-light" Style="width:100%;max-width:550px;height:min-content;">
                 <ADAutoComplete Class="mt-0"
+                                Style="max-width:550px;"
                                 AdornmentIcon="@adornmentIcon"
                                 Variant="Variant.Filled"
                                 Label="Search Directory"
+                                SelectedResultChanged="@((result)=>{if(result!=null)SearchService.Search(SearchService.SearchTerm);})"
                                 SearchObjectType="@SearchService.SeachObjectType"
                                 SearchDisabled=@SearchService.IncludeDisabled
                                 @bind-SearchTerm="@SearchService.SearchTerm" />
@@ -85,7 +91,7 @@
             @if (Searcher?.SearchState == SearchState.Collecting)
             {
                 <MudIconButton Class="d-flex" Color="Color.Secondary" Icon="@Icons.Material.Filled.Cancel" OnClick=@(()=>{
-                    disableCancel = true;
+                    
                     Searcher.Cancel();
                     }) />
 
@@ -120,7 +126,6 @@
     [Parameter]
     public string? Text { get; set; }
 
-    bool disableCancel = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -129,7 +134,6 @@
         Searcher.ResultsCollected += ((batch) => { InvokeAsync(StateHasChanged); });
         Searcher.OnSearchCompleted += (() =>
         {
-            disableCancel = false;
 
             InvokeAsync(StateHasChanged);
         });

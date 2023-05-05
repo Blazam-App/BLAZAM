@@ -21,6 +21,7 @@ using BLAZAM.Services.Duo;
 using BLAZAM.Server.Data.Services;
 using System.Diagnostics;
 using System.Reflection;
+using BLAZAM.Services.Chat;
 
 namespace BLAZAM.Server
 {
@@ -155,6 +156,10 @@ namespace BLAZAM.Server
 
             //Provide the email client as a service
             builder.Services.AddSingleton<EmailService>();
+
+
+            //Provide chat as a service
+            builder.Services.AddSingleton<IChatService,ChatService>();
 
 
             //Provide a primary Active Directory connection as a service
