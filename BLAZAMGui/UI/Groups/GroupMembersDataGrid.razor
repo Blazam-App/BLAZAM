@@ -2,9 +2,12 @@
 @if (!Members.IsNullOrEmpty())
 {
     <MudDataGrid Elevation=0
-             Items="@Group.Members.Where(m=>m.CanRead)"
+             Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
              Filterable="false"
              Dense=true
+             
+             Height="300px"
+            FixedHeader=true
              SortMode="@SortMode.None"
              Groupable="false">
         <Columns>
@@ -32,7 +35,7 @@
 
                 </CellTemplate>
             </TemplateColumn>
-            <TemplateColumn Context="templateContext">
+            <TemplateColumn Sortable=true Filterable=true Context="templateContext">
                 <HeaderTemplate>
                     Name
                 </HeaderTemplate>
@@ -42,7 +45,7 @@
                     </MudLink>
                 </CellTemplate>
             </TemplateColumn>
-            <TemplateColumn Context="templateContext">
+            <TemplateColumn Sortable=true Filterable=true Context="templateContext">
                 <HeaderTemplate>
                     OU
                 </HeaderTemplate>
@@ -84,6 +87,14 @@ else
 @code {
     [Parameter]
     public IADGroup Group { get; set; }
+    /// <summary>
+    /// Number of membes per page
+    /// </summary>
+    /// <remarks>
+    /// Default value is 25
+    /// </remarks>
+    [Parameter]
+    public int PageSize { get; set; } = 25;
 
     List<IGroupableDirectoryAdapter> Members = new();
 

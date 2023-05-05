@@ -4,6 +4,7 @@ using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
+using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -98,7 +99,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             if (token != null) cancellationToken = token;
             else cancellationToken = new CancellationToken();
-            if (cancellationToken?.IsCancellationRequested == true) return default;
+            if (cancellationToken?.IsCancellationRequested == true) return new();
             DateTime startTime = NewMethod();
             DirectorySearcher searcher;
             try
@@ -111,7 +112,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     //TODO Ensure bbroken
                     //Make sure this is not  usable
                     //VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset),
-                    Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)))"
+                    Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
                 };
                 if (EnabledOnly != true)
                 {
@@ -127,7 +128,12 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         if (GeneralSearchTerm != null)
                             FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*)(distinguishedName=" + GeneralSearchTerm + ")(givenname=*" + GeneralSearchTerm + "*)(sn=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(proxyAddresses=*" + GeneralSearchTerm + "*)(ou=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*))";
                         break;
+                    case ActiveDirectoryObjectType.Printer:
+                        searcher.Filter = "(&(objectClass=printQueue))";
+                        if (GeneralSearchTerm != null)
+                            FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(displayName=*" + GeneralSearchTerm + "*)(name=*" + GeneralSearchTerm + "*)(cn=*" + GeneralSearchTerm + "*))";
 
+                        break;
                     case ActiveDirectoryObjectType.Group:
                         searcher.Filter = "(&(objectCategory=group)(objectClass=group))";
                         if (GeneralSearchTerm != null)
@@ -201,16 +207,16 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     //FilterQuery += ")";
 
                 }
-                if (cancellationToken?.IsCancellationRequested == true) return default;
+                if (cancellationToken?.IsCancellationRequested == true) return new();
 
                 PrepareSearcher(searcher);
-                if (cancellationToken?.IsCancellationRequested == true) return default;
+                if (cancellationToken?.IsCancellationRequested == true) return new();
 
                 SearchTime = DateTime.Now - startTime;
 
                 PerformSearch<TObject, TInterface>(startTime, searcher, pageSize);
 
-                if (cancellationToken?.IsCancellationRequested == true) return default;
+                if (cancellationToken?.IsCancellationRequested == true) return new();
 
                 SearchState = SearchState.Completed;
                 SearchTime = DateTime.Now - startTime;
@@ -316,7 +322,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 searcher.Tombstone = true;
             //searcher.Asynchronous = true;
             searcher.SizeLimit = MaxResults;
-            searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + FilterQuery + ")";
+            searcher.Filter = searcher.Filter?.Substring(0, searcher.Filter.Length - 1) + FilterQuery + ")";
             LdapQuery = searcher.Filter;
             searcher.Sort = new SortOption("cn", SortDirection.Ascending);
         }
@@ -331,76 +337,13 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
 
 
-            var last = Encapsulate(lastResults);
+            var last = lastResults.Encapsulate();
             Results.AddRange(last);
 
             ResultsCollected?.Invoke(last);
 
         }
 
-        public List<I> ConvertTo<T, I>(ICollection r) where T : I, IDirectoryEntryAdapter, new()
-        {
-            return new List<I>((IEnumerable<I>)ConvertTo<T>(r));
-        }
-
-        public List<T> ConvertTo<T>(ICollection r) where T : IDirectoryEntryAdapter, new()
-        {
-            List<T> objects = new();
-
-
-            if (r != null && r.Count > 0)
-            {
-
-                foreach (SearchResult sr in r)
-                {
-
-                    var o = new T();
-
-                    o.Parse(sr, ActiveDirectoryContext.Instance);
-
-                    objects.Add(o);
-                }
-            }
-            return objects;
-        }
-        public List<IDirectoryEntryAdapter> Encapsulate(SearchResultCollection r)
-        {
-            List<IDirectoryEntryAdapter> objects = new();
-
-
-            if (r != null && r.Count > 0)
-            {
-                IDirectoryEntryAdapter thisObject = null;
-                foreach (SearchResult sr in r)
-                {
-                    if (sr.Properties["objectClass"].Contains("top"))
-                    {
-                        if (sr.Properties["objectClass"].Contains("computer"))
-                        {
-                            thisObject = new ADComputer();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
-                        }
-                        else if (sr.Properties["objectClass"].Contains("user"))
-                        {
-                            thisObject = new ADUser();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
-                        }
-                        else if (sr.Properties["objectClass"].Contains("organizationalUnit"))
-                        {
-                            thisObject = new ADOrganizationalUnit();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
-                        }
-                        else if (sr.Properties["objectClass"].Contains("group"))
-                        {
-                            thisObject = new ADGroup();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
-                        }
-                        if (thisObject != null)
-                            objects.Add(thisObject);
-                    }
-                }
-            }
-            return objects;
-        }
+       
     }
 }

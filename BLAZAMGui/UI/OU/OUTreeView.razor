@@ -13,13 +13,14 @@
              @bind-SelectedValue="SelectedOU">
     <ItemTemplate>
         <MudTreeViewItem Value="@context"
+             Items=@(context.IsExpanded?context.TreeViewSubOUs:context.CachedTreeViewSubOUs)
                          LoadingIconColor="Color.Info"
                          @bind-Expanded="@context.IsExpanded"
-                          
+                          @bind-Activated=context.IsSelected
                          Text="@context.CanonicalName"
                          Icon="@Icons.Material.Filled.Folder"
                          Class="minw-max w-100"
-                         CanExpand=context.HasChildren()
+                         CanExpand=context.HasChildren
                          EndText="@EndText?.Invoke(context)">
             @*<Content>
             @{
@@ -159,7 +160,7 @@
         {
             TopLevel = new ADOrganizationalUnit();
             await TopLevel.Parse(Directory.GetDirectoryEntry(), Directory);
-            _ = TopLevel.Children;
+            _ = TopLevel.SubOUs;
             RootOU = new HashSet<IADOrganizationalUnit>() { TopLevel };
         }
         if (StartingSelectedOU == null)
@@ -184,9 +185,21 @@
                 openThis.IsExpanded = true;
                 while (openThis != null)
                 {
-                    openThis = openThis.Children.Where(c => SelectedOU.DN.Contains(c.DN) && !SelectedOU.DN.Equals(c.DN)).FirstOrDefault();
-                    if (openThis != null)
-                        openThis.IsExpanded = true;
+                    var child = openThis.SubOUs.Where(c => SelectedOU.DN.Contains(c.DN) && !SelectedOU.DN.Equals(c.DN)).FirstOrDefault();
+                    if (child != null)
+                    {
+                        child.IsExpanded = true;
+                        openThis = child;
+                    }
+                    else
+                    {
+                        var matchingOU = openThis.SubOUs.Where(c => SelectedOU.DN.Equals(c.DN)).FirstOrDefault();
+                        if (matchingOU!=null)
+                            matchingOU.IsSelected = true;
+                        break;
+                    }
+
+                        
                     //newExpandedNodes.Add(openThis);
                 }
             }
@@ -209,11 +222,9 @@
 
     HashSet<IADOrganizationalUnit> GetChildren(IADOrganizationalUnit parentNode)
     {
-        parentNode.IsLoadingChildren = true;
 
-        var children = parentNode.Children.ToHashSet();
+        var children = parentNode.TreeViewSubOUs;
 
-        parentNode.IsLoadingChildren = false;
         return children;
 
     }

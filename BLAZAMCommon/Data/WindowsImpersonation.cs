@@ -60,7 +60,7 @@ namespace BLAZAM.Common.Data
         {
             impersonationUser = user;
         }
-
+        public async Task<T> RunAsync<T>(Func<T> task) => await Task.Run(() => Run<T>(task));
         public T Run<T>(Func<T> task)
         {
 

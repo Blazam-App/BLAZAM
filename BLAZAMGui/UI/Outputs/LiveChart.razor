@@ -8,9 +8,9 @@
         <MudChart ChartType="ChartType.Line"
                   ChartSeries="@DataSeries"
                   XAxisLabels="@Data.DistinctBy(ae=>ae.TimeStamp.ToLocalTime().ToShortTimeString()).Select(ae=>ae.TimeStamp.ToLocalTime().ToShortTimeString()).ToArray()"
-                  Width="100%"
+                   
                   ChartOptions="@ChartOptions"
-                  Height="350px"></MudChart>
+                  Height="250px"></MudChart>
     </MudBadge>
 </MudStack>
 @code {

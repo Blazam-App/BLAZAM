@@ -48,15 +48,15 @@
             </MudTabPanel>
             <MudTabPanel>
             <ChildContent>
-
+                <AuditHistoryChart ChartSeries="LoginSeries"/>
                 <MudChart ChartType="ChartType.Line"
                       ChartSeries="@LoginSeries"
-                      XAxisLabels="@auditEntries.Where(ae=>ae.Action=="Login" || ae.Action=="Logout").DistinctBy(ae=>ae.Timestamp.ToLocalTime().Date).Select(ae=>ae.Timestamp.ToLocalTime().ToString("M/d/yyyy")).ToArray()"
+                      XAxisLabels="@(allDates.Select(d=>d.ToLocalTime().ToString("M/d")).ToArray())"
                       Width="100%"
                       Height="350px"
                       ChartOptions="@LoginChartOptions"></MudChart>
 
-                <MudFab Icon="@Icons.Material.Filled.ShowChart" OnClick="ToggleLineMode" />
+                <MudFab StartIcon="@Icons.Material.Filled.ShowChart" OnClick="ToggleLineMode" />
                 <MudDataGrid Virtualize ColumnResizeMode="ResizeMode.Container" Hideable Items="@auditEntries.Where(ae=>ae.Action=="Login" || ae.Action=="Logout").OrderByDescending(ae=>ae.Timestamp)" Filterable="false" SortMode="@SortMode.Multiple" Groupable="false">
                 <Columns>
                     <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" />
@@ -104,6 +104,7 @@
 
 
             @code {
+    IEnumerable<DateTime> allDates;
     List<CommonAuditLog> auditEntries = new();
     List<SystemAuditLog> systemAuditEntries = new();
     List<ChartSeries> LoginSeries = new();
@@ -128,17 +129,29 @@
             systemAuditEntries = await context.SystemAuditLog.ToListAsync();
 
 
-            loginChart.Data = auditEntries.Where(ae => ae.Action == "Login")
-            .GroupBy(ae => ae.Timestamp.Date)
-            .ToList()
-            .Select(g => Convert.ToDouble(g.Count()))
-            .ToArray();
+          
+            var endDate = DateTime.Today;
 
-            uniqueUsersChart.Data = auditEntries.Where(ae => ae.Action == "Login")
-            .GroupBy(ae => ae.Timestamp.Date)
-            .ToList()
-            .Select(g => Convert.ToDouble(g.DistinctBy(g => g.Username).Count()))
-            .ToArray();
+            var startDate = endDate.AddDays(-14);
+            allDates = Enumerable.Range(0, (int)(endDate - startDate).TotalDays + 1)
+                                     .Select(d => startDate.AddDays(d));
+
+            var loginCounts = from date in allDates
+                              join ae in auditEntries.Where(ae => ae.Action == "Login")
+                              on date equals ae.Timestamp.Date into grp
+                              select (double)grp.Count();
+
+            var uniqueLoginCounts = from date in allDates
+                              join ae in auditEntries.Where(ae => ae.Action == "Login")
+                              on date equals ae.Timestamp.Date into grp
+                              select (double)grp.DistinctBy(g=>g.Username).Count();
+
+
+            loginChart.Data = loginCounts.ToArray();
+            uniqueUsersChart.Data = uniqueLoginCounts.ToArray();
+
+
+          
             LoginSeries.Add(loginChart);
             LoginSeries.Add(uniqueUsersChart);
         }

@@ -47,10 +47,7 @@ namespace BLAZAM
 
 
 
-        /// <summary>
-        /// Flag for checking if the application is running in Debug Mode.
-        /// </summary>
-        internal static bool InDebugMode;
+
 
         /// <summary>
         /// Can be used for JWT Token signing
@@ -119,7 +116,7 @@ namespace BLAZAM
             AppInstance.UseSerilogRequestLogging(configureOptions => configureOptions.Logger = Loggers.RequestLogger);
 
             // Configure the HTTP request pipeline.
-            if (!AppInstance.Environment.IsDevelopment() && !InDebugMode)
+            if (!AppInstance.Environment.IsDevelopment() && !ApplicationInfo.inDebugMode)
             {
 
                 AppInstance.UseExceptionHandler("/Error");

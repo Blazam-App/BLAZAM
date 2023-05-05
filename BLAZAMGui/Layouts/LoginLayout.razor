@@ -22,27 +22,14 @@
                             right: 0;
 
                             margin: auto;">
-                    <MudCard Elevation="10">
+                    <MudCard Square=true Elevation="10">
                             @Body
-
+                       
                     </MudCard>
-                           
-
                     @if (monitor.DirectoryConnected == ServiceConnectionState.Connecting)
                     {
-                        <MudStack>
-                            <MudText>Please wait or use admin login...</MudText>
-                            <Loader/>
-                        </MudStack>
+                        <MudProgressLinear Color="Color.Warning" Indeterminate=true />
                     }
-                    @if (monitor.DirectoryConnected == ServiceConnectionState.Down)
-                    {
-                        <MudStack>
-                            <MudText Color="Color.Error">Active Directry connection unavailable.</MudText>
-                            <MudText Color="Color.Error">Local Admin login only!</MudText>
-                        </MudStack>
-                    }
-
                 </div>
             </Row>
         </MudMainContent>

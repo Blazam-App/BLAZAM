@@ -13,7 +13,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
         }
 
-        public async Task<List<IADUser?>> FindUsersByStringAsync(string searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
+        public async Task<List<IADUser>> FindUsersByStringAsync(string? searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
         {
             return await Task.Run(() =>
             {
@@ -21,7 +21,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             });
         }
 
-        public List<IADUser> FindUsersByString(string searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
+        public List<IADUser> FindUsersByString(string? searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
         {
             return new ADSearch()
             {
@@ -32,7 +32,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
             }.Search<ADUser, IADUser>();
         }
-        public IADUser? FindUserByUsername(string searchTerm, bool? ignoreDisabledUsers = true)
+        public IADUser? FindUserByUsername(string? searchTerm, bool? ignoreDisabledUsers = true)
         {
             return new ADSearch()
             {

@@ -2,11 +2,40 @@
 
 <MudStack Row=true>
     <MudStack>
-        <ADAutoComplete Class="" Disabled=@(copyFrom!=null) Label="Group Name" SearchObjectType="ActiveDirectoryObjectType.Group"
-                        @bind-SelectedResult=@Group />
+        <ADAutoComplete Class=""
+                        Disabled=@(copyFrom!=null)
+                        Label="Group Name"
+                        SearchObjectType="ActiveDirectoryObjectType.Group"
+                        @bind-SelectedResult=@Group
+                        CustomResultsFilter=@((result)=>{
+                        if(result is IADGroup){
+                        return !DirectoryModel.MemberOf.Contains(result as IADGroup);
+                        }
+                        return true;
+                        }) />
+        @foreach (var group in additionalGroups)
+        {
+           
+                <MudStack Row=true>
 
+                    <ADAutoComplete Class=""
+                            Disabled=@(copyFrom!=null)
+                            Label="Group Name"
+                            SearchObjectType="ActiveDirectoryObjectType.Group"
+                            SelectedResult=@group.Value 
+                            SelectedResultChanged="@((newValue)=>{additionalGroups[group.Key]=newValue;})"/>
+                  
+                    <MudIconButton Icon=@Icons.Material.Filled.Delete OnClick=@(()=>{additionalGroups.Remove(group.Key);}) />
+
+                </MudStack>
+            
+            
+        }
+        <MudIconButton Icon=@Icons.Material.Filled.PlusOne OnClick=@AddGroupInput />
         <MudText Class="my-3" Align="Align.Center">@AppLocalization["or"]</MudText>
-        <ADAutoComplete Disabled=@(Group!=null) Label="Copy Memberships From" SearchObjectType="ActiveDirectoryObjectType.All"
+        <ADAutoComplete Disabled=@(Group!=null)
+                        Label="Copy Memberships From"
+                        SearchObjectType="ActiveDirectoryObjectType.All"
                         @bind-SelectedResult=@copyFrom
                         CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
 
@@ -17,44 +46,44 @@
         <MudStack>
 
             @{
-            var existingGroups = DirectoryModel.MemberOf;
+                var existingGroups = DirectoryModel.MemberOf;
             }
             @if (CopyFrom.MemberOf.Any(g => existingGroups.Contains(g)))
             {
-            <MudText>Already a member of...</MudText>
-            <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
-                @foreach (var group in CopyFrom.MemberOf.Where(g => existingGroups.Contains(g)))
-                {
-                    <MudListItem>
+                <MudText>Already a member of...</MudText>
+                <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
+                    @foreach (var group in CopyFrom.MemberOf.Where(g => existingGroups.Contains(g)))
+                    {
+                        <MudListItem>
 
-                        <MudIcon Color=Color.Success Icon=@Icons.Material.Filled.PlaylistAddCheck />
+                            <MudIcon Color=Color.Success Icon=@Icons.Material.Filled.PlaylistAddCheck />
 
 
-                        @group.GroupName
+                            @group.GroupName
 
-                    </MudListItem>
-                }
-            </MudList>
+                        </MudListItem>
+                    }
+                </MudList>
             }
             @if (CopyFrom.MemberOf.Any(g => !existingGroups.Contains(g)))
             {
-            <MudText>Will be added to...</MudText>
-            <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
+                <MudText>Will be added to...</MudText>
+                <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
 
-                @foreach (var group in CopyFrom.MemberOf.Where(g => !existingGroups.Contains(g)))
-                {
-                    <MudListItem>
+                    @foreach (var group in CopyFrom.MemberOf.Where(g => !existingGroups.Contains(g)))
+                    {
+                        <MudListItem>
 
 
 
-                        <MudIcon Color=Color.Info Icon="@Icons.Material.Filled.PlaylistAdd" />
+                            <MudIcon Color=Color.Info Icon="@Icons.Material.Filled.PlaylistAdd" />
 
-                        @group.GroupName
+                            @group.GroupName
 
-                    </MudListItem>
+                        </MudListItem>
 
-                }
-            </MudList>
+                    }
+                </MudList>
 
             }
 
@@ -67,7 +96,7 @@
 
 @code {
 
-#nullable disable warnings
+    #nullable disable warnings
     [Parameter]
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
 
@@ -77,7 +106,7 @@
     [Parameter]
     public IGroupableDirectoryAdapter DirectoryModel { get; set; }
 
-
+    private Dictionary<int,IDirectoryEntryAdapter?> additionalGroups = new Dictionary<int,IDirectoryEntryAdapter?>();
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -92,13 +121,26 @@
     public IGroupableDirectoryAdapter CopyFrom { get => (IGroupableDirectoryAdapter)copyFrom; set => copyFrom = value; }
 
     new IDirectoryEntryAdapter Group { get; set; }
-
+    async void AddGroupInput()
+    {
+        additionalGroups.Add(additionalGroups.Count,null);
+        await InvokeAsync(StateHasChanged);
+    }
     async void AssignToGroup()
     {
+
         if (Group is IADGroup group)
         {
             DirectoryModel.AssignTo(group);
-            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been assigned to " + group.GroupName + " but changes must be saved.", "Assignment Pending");
+            if (additionalGroups.Count > 0)
+            {
+                foreach(var g in additionalGroups)
+                {
+                    if(g.Value is IADGroup gr)
+                    DirectoryModel.AssignTo(gr);
+                }
+            }
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been assigned to the selected group(s) but changes must be saved.", "Assignment Pending");
             await ModelChanged.InvokeAsync();
 
             Close();

@@ -10,7 +10,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     {
         string? SamAccountName { get; set; }
         string? CanonicalName { get; set; }
-        string? DN { get; set; }
+        string DN { get; set; }
 
         /// <summary>
         /// The date and time in UTC that this entry was created
@@ -184,6 +184,19 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
         AppEvent? OnModelDeleted { get; set; }
         IActiveDirectoryContext Directory { get; }
+        /// <summary>
+        /// Indicates whether this entry is expanded
+        /// in the ui within a tree view
+        /// </summary>
+        bool IsExpanded { get; set; }
+        /// <summary>
+        /// Indicates whether this entry is selected
+        /// in the ui within a tree view
+        /// </summary>
+        bool IsSelected { get; set; }
+        bool HasChildren { get;}
+        IEnumerable<IDirectoryEntryAdapter> CachedChildren { get; }
+        IEnumerable<IDirectoryEntryAdapter> Children { get; }
 
         /// <summary>
         /// Sends all staged changes to the Active Directory server
@@ -256,8 +269,15 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         void Delete();
         string? ToString();
         bool Rename(string newName);
+
         void EnsureDirectoryEntry();
+
         T? GetCustomProperty<T>(string propertyName);
+        /// <summary>
+        /// Returns the specified DateTime property in UTC
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         DateTime? GetDateTimeProperty(string propertyName);
         void SetCustomProperty(string propertyName, object? value);
     }

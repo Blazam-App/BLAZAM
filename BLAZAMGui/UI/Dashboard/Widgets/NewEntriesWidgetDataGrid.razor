@@ -16,11 +16,16 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <PropertyColumn Property="x => x.CanonicalName" Title="Name" />
-        <PropertyColumn Property="x => x.OU.ToPrettyOu()" Title="OU" />
+        <TemplateColumn Title="Name">
+            <CellTemplate>
+                <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                    <MudText>@context.Item.CanonicalName</MudText>
+                </MudTooltip>
+            </CellTemplate>
+        </TemplateColumn>
         <TemplateColumn Title="Created">
             <CellTemplate>
-                @if (context.Item.Created != null)
+                @if (context.Item?.Created != null)
                 {
                     <MudText>@context.Item.Created.Value.ToLocalTime()</MudText>
                 }

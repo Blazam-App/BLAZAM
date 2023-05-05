@@ -181,7 +181,9 @@ namespace BLAZAM.Services
             //Pull the authentication settings from the database so we can check admin credentials
             var settings = _factory.CreateDbContext().AuthenticationSettings.FirstOrDefault();
             //Check admin credentials
-            if (settings != null && loginReq.Username.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            if (settings != null 
+                && loginReq.Username!=null 
+                && loginReq.Username.Equals("admin", StringComparison.OrdinalIgnoreCase))
             {
                 var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
                 if (loginReq.Password == adminPass)
@@ -189,7 +191,9 @@ namespace BLAZAM.Services
 
             }
             //Check if we're in demo mode and this is a demo login
-            else if (_applicationInfo.InDemoMode && settings != null && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
+            else if (_applicationInfo.InDemoMode && settings != null 
+                && loginReq.Username != null 
+                && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
             {
                 result = await SetUser(this.GetDemoUser());
 

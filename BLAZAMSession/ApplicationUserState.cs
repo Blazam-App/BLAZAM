@@ -1,13 +1,17 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
+using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Security.Claims;
+using System.Xml;
 
 namespace BLAZAM.Server.Data.Services
 {
@@ -41,7 +45,7 @@ namespace BLAZAM.Server.Data.Services
 
 
 
-        public IList<UserNotification> Messages
+        public IList<UserNotification>? Notifications
         {
             get
             {
@@ -52,8 +56,15 @@ namespace BLAZAM.Server.Data.Services
 
             }
         }
+        //public List<ReadChatMessage> ReadChatMessages => Preferences.ReadChatMessages.ToList();
+
+        public int Id => Preferences!=null?Preferences.Id:0;
 
 
+        //public bool IsChatMessageRead(ChatMessage message)
+        //{
+        //    return ReadChatMessages.Any(rm=>rm.Equals(message));
+        //}
         public IApplicationUserSessionCache Cache { get; set; } = new ApplicationUserSessionCache();
 
         public AuthenticationTicket? Ticket { get; set; }
@@ -82,7 +93,7 @@ namespace BLAZAM.Server.Data.Services
         {
             get
             {
-                if (User.Identity?.IsAuthenticated!=true) return null;
+                if (User.Identity?.IsAuthenticated != true) return null;
                 if (userSettings == null)
                 {
 
@@ -150,11 +161,11 @@ namespace BLAZAM.Server.Data.Services
                     dbUserSettings.Theme = this.Preferences?.Theme;
                     dbUserSettings.DarkMode = this.Preferences?.DarkMode == true;
                     dbUserSettings.ProfilePicture = this.Preferences?.ProfilePicture;
-                    dbUserSettings.SearchDisabledUsers = this.Preferences?.SearchDisabledUsers==true;
-                    dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers==true;
+                    dbUserSettings.SearchDisabledUsers = this.Preferences?.SearchDisabledUsers == true;
+                    dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
                     SaveDashboardWidgets(dbUserSettings);
                     OnSettingsChange?.Invoke(dbUserSettings);
-
+                    GetUserSettingFromDB();
                     return (await context.SaveChangesAsync()) > 0;
                 }
 
@@ -201,6 +212,7 @@ namespace BLAZAM.Server.Data.Services
         {
             get
             {
+                if (User == null) return false;
                 if (User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin)) return true;
                 if (PermissionDelegates != null)
                     return PermissionDelegates.Any(p => p.IsSuperAdmin);
@@ -224,7 +236,7 @@ namespace BLAZAM.Server.Data.Services
             {
                 try
                 {
-                    return User.Identity?.IsAuthenticated==true;
+                    return User.Identity?.IsAuthenticated == true;
                 }
                 catch
                 {
@@ -281,9 +293,73 @@ namespace BLAZAM.Server.Data.Services
         public bool HasCreateOUPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.OU);
         public bool HasComputerPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Computer);
 
-        public bool CanUnlockUsers { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool CanUnlockUsers => HasObjectActionPermission(ActiveDirectoryObjectType.User,ObjectActions.Unlock);
+
+        private bool HasObjectActionPermission(ActiveDirectoryObjectType objectType, ObjectAction actionType)
+        {
+            return HasPermission(objectType,
+                p => p.Where(pm =>
+                   pm.AccessLevels.Any(al => al.ActionMap.Any(am =>
+                  am.AllowOrDeny && am.ObjectAction.Id == actionType.Id &&
+                  am.ObjectType == objectType
+                   ))),
+                   p => p.Where(pm =>
+                   pm.AccessLevels.Any(al => al.ActionMap.Any(am =>
+                  !am.AllowOrDeny && am.ObjectAction.Id == actionType.Id &&
+                  am.ObjectType == objectType
+                   )))
+                   );
+        }
+
+        /// <summary>
+        /// Used to check application user permissions. The selectors provided will authomatically search for this DirectoryModel's
+        /// OU. Supplied selectors should only check for AccessLevels.Any(...) that match the permission type requested.
+        /// </summary>
+        /// <param name="allowSelector"></param>
+        /// <param name="denySelector"></param>
+        /// <returns></returns>
+        protected virtual bool HasPermission(ActiveDirectoryObjectType objectType, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null)
+        {
+
+            if (IsSuperAdmin) return true;
+
+            var baseSearch = PermissionMappings;
 
 
+            try
+            {
+                var possibleReads = allowSelector.Invoke(baseSearch).ToList();
+                if (denySelector != null)
+                {
+                    var possibleDenys = denySelector.Invoke(baseSearch).ToList();
+
+                    if (possibleReads != null && possibleReads.Count > 0)
+                    {
+                        if (possibleDenys != null && possibleDenys.Count > 0)
+                        {
+                            foreach (var d in possibleDenys)
+                            {
+                                if (d.OU.Length > possibleReads.OrderByDescending(r => r.OU.Length).First().OU.Length)
+                                    return false;
+                            }
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                }
+                else
+                {
+                    return possibleReads?.Count > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message);
+            }
+            return false;
+        }
         /// <summary>
         /// Checks that the user has some kind of read access for disabled objects of
         /// this type in any place on the OU tree.
@@ -301,13 +377,20 @@ namespace BLAZAM.Server.Data.Services
 
         private bool HasObjectReadPermissions(ActiveDirectoryObjectType objectType)
         {
-            if (IsSuperAdmin == true) return true;
-            return PermissionMappings.Any(
-                       m => m.AccessLevels.Any(
-                           a => a.ObjectMap.Any(
-                               o => o.ObjectType == objectType && o.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level)
-                           )
-                       );
+            try
+            {
+                if (IsSuperAdmin == true) return true;
+                return PermissionMappings.Any(
+                           m => m.AccessLevels.Any(
+                               a => a.ObjectMap.Any(
+                                   o => o.ObjectType == objectType && o.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level)
+                               )
+                           );
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
         private bool HasObjectCreatePermissions(ActiveDirectoryObjectType objectType)
         {

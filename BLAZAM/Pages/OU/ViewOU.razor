@@ -37,7 +37,7 @@
             @OU.CanonicalName
         </MudCardHeader>
        
-        @foreach(var childOU in OU.Children)
+        @foreach(var childOU in OU.SubOUs)
         {
             <MudText>@childOU.CanonicalName</MudText>
         }

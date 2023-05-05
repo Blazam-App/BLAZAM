@@ -73,7 +73,7 @@
         SnackBarService.Success("Permission Delegate removed.");
         await DelegateDeleted.InvokeAsync();
     }
-    private async void Save()
+    protected async override void Save()
     {
         collapse1Visible = false;
         Level.DelegateSid = Group.SID;

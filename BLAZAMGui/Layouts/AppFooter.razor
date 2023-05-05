@@ -1,6 +1,6 @@
 @inherits AppComponentBase
-<MudElement Class="relative mud-width-full">
-    <MudToolBar Style="height:1.5em;bottom:0px;" Class="px-3 mud-width-full">
+<MudStack Row=true Class=@("relative mud-width-full "+Class)>
+   
             <Copyright />
             @if (AutoUpdateService.IsUpdatedScheduled)
             {
@@ -13,11 +13,15 @@
                 </MudTooltip>
             }
             <MudSpacer/>
+@*
     <MudTooltip Class="mud-theme-info" Style="width:max-content" Text="@ApplicationInfo.RunningVersion.Version">
 
             Version: @ApplicationInfo.RunningVersion.ShortVersion
-            </MudTooltip>
+            </MudTooltip>*@
 
 
-    </MudToolBar>
-</MudElement>
+</MudStack>
+@code{
+    [Parameter]
+    public string? Class{ get; set; }
+}

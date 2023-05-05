@@ -1,0 +1,51 @@
+@inherits ChatComponentBase
+
+@{
+    var localTimestamp = Message.Timestamp.ToLocalTime();
+    var timestamp ="";
+    if (localTimestamp.Day.Equals(DateTime.Now.Day))
+    {
+        timestamp = localTimestamp.ToShortTimeString();
+    } else if(DateTime.Now-localTimestamp < TimeSpan.FromDays(1))
+    {
+        timestamp = "Yesterday " + localTimestamp.ToShortTimeString();
+    }
+    else
+    {
+        timestamp = localTimestamp.ToString();
+    }
+}  
+@if (Message.User.Username != CurrentUser.State.Username)
+{
+    <MudStack Class="w-100">
+        <MudStack Row="true">
+            <MudChip Size=Size.Small Color="Color.Secondary">@Message.User.Username</MudChip>
+            <MudText Class="align-middle">@Message.Message</MudText>
+        </MudStack>
+        <MudText Class=@("w-max") Typo="Typo.caption">@timestamp</MudText>
+
+    </MudStack>
+}
+else
+{
+    <MudStack Justify="Justify.FlexEnd" Class="w-100">
+        <MudStack Justify="Justify.FlexEnd" Row="true">
+            <MudText Class="align-middle">@Message.Message</MudText>
+
+            <MudChip Size=Size.Small
+                 Color="Color.Tertiary">
+                @Message.User.Username
+            </MudChip>
+
+        </MudStack>
+        <MudText Class=@("w-max align-end") Typo="Typo.caption">@timestamp</MudText>
+
+    </MudStack>
+
+}
+
+@code {
+    [Parameter]
+    public ChatMessage Message { get; set; }
+
+}
