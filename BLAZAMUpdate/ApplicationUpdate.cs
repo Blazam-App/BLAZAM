@@ -267,12 +267,18 @@ namespace BLAZAM.Update
         public async Task<bool> Backup()
         {
             Loggers.UpdateLogger.Information("Attempting backup of current version to: " + BackupPath);
+            try
+            {
+                var result = await Task.Run(() => { return _applicationRootDirectory.CopyTo(BackupDirectory); });
 
-            var result = await Task.Run(() => { return _applicationRootDirectory.CopyTo(BackupDirectory); });
+                Loggers.UpdateLogger.Debug("Backup result: " + result.ToString());
 
-            Loggers.UpdateLogger.Debug("Backup result: " + result.ToString());
-
-            return result;
+                return result;
+            }catch(Exception ex)
+            {
+                Loggers.UpdateLogger.Error("Backup of current version failed: " + ex.Message);
+                return false;
+            }
         }
         /*
         /// <summary>
