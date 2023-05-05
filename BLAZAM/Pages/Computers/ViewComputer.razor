@@ -1,205 +1,189 @@
-﻿@inherits DirectoryModelComponent
+﻿@using BLAZAM.Gui.UI.Computers
+@inherits DirectoryEntryViewBase
+@{
+    string _fieldMudStackClasses = "flex-wrap gap-10";
+}
+<AppPageTitle>@Computer?.CanonicalName</AppPageTitle>
 
-<LoadingIndicator Height="Height.Is100" Visible=LoadingData>
+<EditForm OnValidSubmit=SaveChanges Context="editContext" Model="Computer">
 
+    <SetSubHeader>
 
-    <EditForm Model="Computer">
+        <DirectoryEntryViewHeader DirectoryEntry="@Computer"
+                                  OnAssignTo="@(()=>{AssignToModal?.Show();})"
+                                  OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
+                                  OnDelete="@DeleteComputer"
+                                  OnDisable="@(async()=>{Computer.Enabled=false; await RefreshEntryComponents();})"
+                                  OnEnable="@(async()=>{Computer.Enabled=true; await RefreshEntryComponents();})"
+                                  OnMove="@(()=>{MoveToModal?.Show();})"
+                                  OnRename="@(()=>{RenameModal?.Show();})"
+                                  OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
+                                  OnToggleEditMode="ToggleEditMode"
+                                  OnUnlock="@Unlock" />
+        <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
-        <SetSubHeader>
-            <Bar Mode="BarMode.Horizontal"
-                 CollapseMode="BarCollapseMode.Small"
-                 Breakpoint="Breakpoint.Desktop"
-                 NavigationBreakpoint="Breakpoint.Tablet"
-                 ThemeContrast="ThemeContrast.Dark"
-                 Padding="Padding.Is2.OnX"
-                 Background="Background.Dark"
-                 TextColor="TextColor.Light"
-                 VerticalAlignment="VerticalAlignment.Middle">
-                <BarBrand Width=Width.Is100>
-                    <Row>
-                        <Column ColumnSize="ColumnSize.Is10.OnTablet.Is8">
-
-                            <Row>
-                                <Column ColumnSize="ColumnSize.Is4.OnTablet">
-                                    @Computer.CanonicalName
-
-
-                                </Column>
-                                <Column ColumnSize="ColumnSize.Is8.OnTablet">
-                                    <Small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(Computer.OU) </Small>
-
-                                </Column>
-                            </Row>
-                        </Column>
-
-                        <Column ColumnSize="ColumnSize.Is1.OnTablet.Is2">
-
-                            @if (Computer.LockedOut)
-                            {
-                                <Icon Name=@("fa-lock")>Account Locked</Icon>
-                            }
-                        </Column>
-                        <Column Float=Float.End ColumnSize="ColumnSize.Is1.OnTablet.Is2">
-
-                            <Dropdown>
-                                <DropdownToggle Color="Color.Primary">
-                                    <Icon Name=@("fa-gear") />
-                                </DropdownToggle>
-                                <DropdownMenu>
-                                    <DropdownItem>
-                                        <Switch @bind-Checked=@(Computer.Enabled) Disabled=@((Computer.Disabled && !Computer.CanEnable)||(Computer.Enabled && !Computer.CanDisable))>Account Enabled</Switch>
-
-                                    </DropdownItem>
-                                    <DropdownDivider />
-                                    @if (Computer.CanEdit)
-                                    {
-                                        <DropdownItem Clicked="ToggleEditMode">Edit...</DropdownItem>
-                                    }
-                                    @if (Computer.LockedOut && Computer.CanUnlock)
-                                    {
-                                        <DropdownItem Clicked="Unlock">Unlock...</DropdownItem>
-                                    }
-                                    @if (Computer.CanAssign)
-                                    {
-                                        RefreshComputerGroups();
-                                        <DropdownItem Clicked="@(()=>{AssignToModal?.Show();})">Assign To...</DropdownItem>
-                                    }
-                                    @if (Computer.CanDisable)
-                                    {
-                                        <DropdownItem Clicked="@(()=>{ChangePasswordModal?.Show();})">Change Password...</DropdownItem>
-                                    }
-                                    @if (Computer.CanRename)
-                                    {
-                                        <DropdownItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</DropdownItem>
-
-                                    }
-                                    @if (Computer.CanMove)
-                                    {
-                                        <DropdownItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</DropdownItem>
-                                    }
-                                    @if (Computer.CanDelete)
-                                    {
-                                        <DropdownItem Clicked="@DeleteComputer">Delete...</DropdownItem>
-                                    }
-                                </DropdownMenu>
-                            </Dropdown>
-                        </Column>
-                    </Row>
+        </MudOverlay>
 
 
-                </BarBrand>
+    </SetSubHeader>
 
-            </Bar>
+    <CascadingValue Value="EditMode">
+        <CascadingValue Value="Computer">
+            <FlexContainer>
 
-        </SetSubHeader>
 
-        <Card Shadow="Shadow.Default">
-
-            <Check @bind-Checked="Computer.Disabled" Disabled=@((Computer.Disabled && !Computer.CanEnable)||(!Computer.Disabled && !Computer.CanDisable))>Disabled</Check>
-            <Check @bind-Checked="Computer.LockedOut" Disabled=@(!Computer.LockedOut || (Computer.LockedOut && !Computer.CanUnlock))>Locked out</Check>
-            <Check Checked="Computer.Online" Disabled>Online</Check>
-
-            <CardHeader>
-                @Computer.SamAccountName
-            </CardHeader>
-            <CardBody>
-                <LoadingIndicator Visible=@(drives==null)>
-                    @if (drives!=null && drives.Count > 0)
+                <AppModal Color="Color.Dark" Title="Assign To..." @ref=@AssignToModal>
+                    <AssignToModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Computer" />
+                </AppModal>
+                <AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
+                    @if (MoveToModal?.IsShown == true)
                     {
-
-                        <DataGrid TItem="IADComputerDrive"
-                              Data="drives"
-                              Responsive>
-                            <DataGridColumn Field="@nameof(IADComputerDrive.Description)" Caption="Drive Type" />
-                            <DataGridColumn Field="@nameof(IADComputerDrive.Letter)" Caption="Drive Letter" />
-                            <DataGridColumn Context="fieldContext" Field="@nameof(IADComputerDrive.UsedSpace)" Caption="Space Used">
-                                <DisplayTemplate>
-                                    @Math.Round(fieldContext.UsedSpace,0) GB / @Math.Round(fieldContext.Capacity,0) GB
-                                </DisplayTemplate>
-                            </DataGridColumn>
-                            <DataGridColumn Context="fieldContext" Field="@nameof(IADComputerDrive.PercentUsed)" Caption="Percent Full">
-                                <DisplayTemplate>
-                                    @{
-                                        var bg = Color.Success;
-                                        switch (fieldContext.PercentUsed)
-                                        {
-                                            case > 85:
-                                                bg = Color.Danger;
-                                                break;
-                                            case > 75:
-                                                bg = Color.Warning;
-                                                break;
-
-                                        }
-                                        var percentString = (int)fieldContext.PercentUsed + "%";
-                                    }
-                                    <Tooltip Text="@percentString">
-                                        <Progress Color=bg Value="(int)fieldContext.PercentUsed">
-                                            @percentString
-                                        </Progress>
-                                    </Tooltip>
-                                </DisplayTemplate>
-                            </DataGridColumn>
-                            <DataGridColumn Field="@nameof(IADComputerDrive.FileSystem)" Caption="File System" />
-                            <DataGridColumn Field="@nameof(IADComputerDrive.Serial)" Caption="Serial" />
-
-
-                        </DataGrid>
+                        <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Computer" />
                     }
-
-                </LoadingIndicator>
-                <ComputerSessions Computer="Computer" />
-
-
-
-            </CardBody>
-        </Card>
-
-
-        @if (Computer.HasUnsavedChanges)
-        {
-            <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
-        }
+                </AppModal>
+                   <AppModal Title="Rename Computer" @ref=@RenameModal>
+                @if (RenameModal?.IsShown == true)
+                {
+                <RenameComputerModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) Computer="Computer" />
+                }
+                </AppModal>
+           
 
 
 
-    </EditForm>
 
 
-</LoadingIndicator>
+                <Section Title=@AppLocalization["Info"]>
+                    <MudStack Row Class="@_fieldMudStackClasses">
+                        <DynamicMudInput T=string Label="@AppLocalization["Name"]" @bind-Value="@Computer.CanonicalName" Disabled=@true />
+                        <DynamicMudInput T=string Label="@AppLocalization["Operating System"]" @bind-Value="@Computer.OperatingSystem" Disabled=@true />
+
+                    </MudStack>
+
+                    </Section>
+
+                    <Section Title=@AppLocalization["Live Stats"]>
+                    <MudStack Row Class="@_fieldMudStackClasses">
+                        <LiveChart SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})"/>
+                        <LiveChart SeriesName="Memory Usage" Title="Live RAM Usage" History="30" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})"/>
+                    </MudStack>
+
+                    </Section>
+
+                    <Section Title=@AppLocalization["Drive Details"]>
+                    <MudStack Row Class="@_fieldMudStackClasses">
+                        @if (drives != null && drives.Count > 0)
+                        {
+                            <MudDataGrid Elevation=0 Items="drives">
+                                <Columns>
+                                    <PropertyColumn Property="x=>x.DriveType" />
+                                    <PropertyColumn Property="x=>x.Letter" />
+                                    <TemplateColumn Title="Used">
+                                        <CellTemplate>
+                                            @(context.Item.PercentUsed.Round(0).ToString() + "%")
+                                        </CellTemplate>
+                                    </TemplateColumn>
+                                    <TemplateColumn Title="Capacity">
+                                        <CellTemplate>
+                                            @(context.Item.Capacity.Round(0).ToString() + "GB")
+                                        </CellTemplate>
+                                    </TemplateColumn>
+                                    <PropertyColumn Property="x=>x.FileSystem" />
+                                    <PropertyColumn Property="x=>x.Serial" />
+                                </Columns>
+                            </MudDataGrid>
+
+                        }
+
+                    </MudStack>
+                </Section>
+
+
+
+
+
+
+                <Section Title=@AppLocalization["Sessions"]>
+                    <MudStack Row Class="@_fieldMudStackClasses">
+                        <ComputerSessions Computer="Computer" />
+
+                    </MudStack>
+
+                    </Section>
+
+
+                    @if (Computer.CanReadAnyCustomFields)
+                {
+                    <Section Title="Additional Field">
+                        @if (CustomFields != null)
+                        {
+                            @foreach (var field in CustomFields)
+                            {
+                                @if (Computer.CanReadField(field))
+                                {
+                                    <CustomDirectoryField Disabled=@(!EditMode || !Computer.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="Computer" Field="@field" />
+
+                                }
+                            }
+                        }
+
+                    </Section>
+                }
+
+
+
+
+            </FlexContainer>
+        </CascadingValue>
+    </CascadingValue>
+
+</EditForm>
+@if (Computer.HasUnsavedChanges && !Computer.NewEntry)
+{
+    <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
+}
+<MudOverlay Visible="SavingChanges" DarkBackground="true" Absolute="true">
+    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
+
+
+
+
 
 
 
 
 
 @code {
-
-    List<IADComputerDrive> drives;
-
+    List<IADComputerDrive> drives = new();
+    IADComputer? Computer => DirectoryEntry as IADComputer;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
         if (Computer != null)
         {
+            Task.Run(async () =>
+            {
+                drives = await Computer.GetDrivesAsync();
 
-            drives = await Computer.GetDrivesAsync();
-            if (drives == null)
-                drives = new();
-            await InvokeAsync(StateHasChanged);
+                await RefreshEntryComponents();
+
+            });
+
 
 
 
             Computer.OnOnlineChanged += ((online) =>
             {
-                InvokeAsync(StateHasChanged);
+                RefreshEntryComponents();
             });
 
 
 
-            await AuditLogger.Computer.Searched(Computer);
         }
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
+        await RefreshEntryComponents();
     }
 
 
@@ -211,17 +195,16 @@
         }
 
     }
-
-    async void DiscardChanges()
+    protected override async void DiscardChanges()
     {
         if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
         {
             Computer.DiscardChanges();
             EditMode = false;
-            await InvokeAsync(StateHasChanged);
+            await RefreshEntryComponents();
 
         }
-
+    
     }
     async Task DeleteComputer()
     {
@@ -230,17 +213,16 @@
             try
             {
                 Computer.Delete();
-                await NotificationService.Success(Computer.CanonicalName + " has been deleted.", "Computer Deleted");
+                SnackBarService.Success(Computer.CanonicalName + " has been deleted.", "Computer Deleted");
 
-                Computer = null;
                 Nav.NavigateTo("/users/search");
 
             }
             catch (ApplicationException ex)
             {
-                await NotificationService.Error(ex.Message);
+                SnackBarService.Error(ex.Message);
             }
-            await InvokeAsync(StateHasChanged);
+            await RefreshEntryComponents();
         }
     }
     async void SaveChanges()
@@ -249,8 +231,8 @@
         {
             await Computer.CommitChangesAsync();
             EditMode = false;
-            await NotificationService.Success("The changes made to this computer have been saved.", "Changes Saved");
-            await InvokeAsync(StateHasChanged);
+            SnackBarService.Success("The changes made to this computer have been saved.", "Changes Saved");
+            await RefreshEntryComponents();
 
         }
     }

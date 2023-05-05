@@ -45,7 +45,7 @@ jobs:
         with:
           tag_name: Stable-v${{ env.ASSEMBLY_VERSION }}
           release_name: Stable - v${{ env.ASSEMBLY_VERSION }}
-          body: Automated release created by GitHub Actions
+          body: ""
           draft: true
           prerelease: true
       - name: Upload Release Asset

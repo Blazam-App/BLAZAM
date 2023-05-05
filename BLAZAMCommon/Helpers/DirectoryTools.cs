@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 
-namespace BLAZAM.Common.Helpers
+namespace BLAZAM.Helpers
 {
     public class DirectoryTools
     {

@@ -1,0 +1,74 @@
+@inherits AppComponentBase
+@{
+    var messages = UserState.Messages?.Count;
+
+}
+@if (messages > 0)
+{
+    <MudPopover Open=@Open
+        TransformOrigin="Origin.TopRight"
+    AnchorOrigin="Origin.BottomRight" 
+    >
+        <MudStack Class="mud-theme-dark" Row=true>
+            <MudListSubheader Class="align-middle">Notifications</MudListSubheader>
+            <MudSpacer/>
+            <MudIconButton Icon="@Icons.Material.Filled.ClearAll" OnClick="MarkAllRead"/>
+            <AppCloseButton Class="align-middle" OnClick=@(()=>{Open=false;}) />
+
+        </MudStack>
+        <MudStack Style="max-height:80vh;" Class="overflow-auto">
+        @foreach (var notification in UserState.Messages)
+        {
+
+            <MudAlert OnClick=@(()=>{
+                  if(notification.Notification.Link!=null)
+              Nav.NavigateTo(notification.Notification.Link.ToString());
+                  }) ShowCloseIcon=notification.Notification.Dismissable
+              CloseIconClicked="@(async()=>{await UserState.MarkRead(notification); await InvokeAsync(StateHasChanged);})">
+                    @if (!notification.Notification.Title.IsNullOrEmpty())
+                {
+                    <MudText Typo="Typo.subtitle2">@notification.Notification.Title</MudText>
+                }
+                 <MudText Typo="Typo.caption">
+                        @notification.Notification.Message
+                    </MudText>
+            </MudAlert>
+        }
+        </MudStack>
+
+    </MudPopover>
+}
+
+@code {
+    private bool _open;
+
+    protected override void OnInitialized(){
+        base.OnInitialized();
+        NotificationPublisher.OnNotificationPublished += (notification) => { InvokeAsync(StateHasChanged); };
+    }
+
+    [Parameter]
+    public bool Open { get=>_open; set
+        {
+            if (_open == value) return;
+            _open = value;
+            OpenChanged.InvokeAsync(value);
+
+        } }
+    [Parameter]
+    public EventCallback<bool> OpenChanged { get; set; } 
+    
+    [Parameter]
+    public IApplicationUserState UserState { get; set; }
+
+    async Task MarkAllRead()
+    {
+        foreach (var message in UserState.Messages)
+        {
+            await UserState.MarkRead(message);
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+   
+}

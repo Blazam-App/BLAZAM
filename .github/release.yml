@@ -1,0 +1,21 @@
+# .github/release.yml
+
+changelog:
+  exclude:
+    labels:
+      - exclude-from-release-notes
+    authors:
+      - octocat
+  categories:
+    - title: Database Breaking Change 🏗
+      labels:
+        - databse-breaking-change
+    - title: Breaking Changes 🛠 
+      labels:
+        - breaking-change
+    - title: Exciting New Features 🎉
+      labels:
+        - enhancement
+    - title: Fixes 🏗
+      labels:
+        - bug

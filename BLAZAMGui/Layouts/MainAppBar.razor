@@ -1,0 +1,45 @@
+﻿@inject IStringLocalizer<AppLocalization> AppLocalization
+@inject IApplicationUserStateService UserStateService
+@inject NavigationManager Nav
+
+
+<MudAppBar Color=Color.Default Elevation="1">
+    @if (mainLayout?.DrawerOpen != true)
+    {
+        <MudLink Href="@Nav.Uri">
+            <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+        </MudLink>
+    }
+    @if (mainLayout != null)
+    {
+
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                   Color="Color.Inherit"
+                   Edge="Edge.Start"
+                   OnClick="@((e) => {mainLayout.DrawerOpen=!mainLayout.DrawerOpen; })" />
+    }
+
+    @if (mainLayout?.Header != null)
+    {
+        @mainLayout.Header.ChildContent
+
+    }
+    else
+    {
+        <SearchPageHeader Text="Search" />
+    }
+
+    <MudSpacer />
+  
+    <AppUserButton/>
+  
+</MudAppBar>
+
+
+@code {
+   
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+   
+
+}

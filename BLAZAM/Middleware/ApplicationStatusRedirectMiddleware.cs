@@ -1,6 +1,8 @@
-﻿using BLAZAM.Common.Data.Database;
-using BLAZAM.Server.Background;
-using BLAZAM.Server.Pages.Error;
+﻿using BLAZAM.Common.Data;
+using BLAZAM.Common.Data.Database;
+using BLAZAM.Database.Context;
+using BLAZAM.Pages.Error;
+using BLAZAM.Services.Background;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Server.Middleware
@@ -20,7 +22,7 @@ namespace BLAZAM.Server.Middleware
             _monitor = monitor;
         }
 
-        public async Task InvokeAsync(HttpContext context, IDbContextFactory<DatabaseContext> factory)
+        public async Task InvokeAsync(HttpContext context, IAppDatabaseFactory factory)
         {
             intendedUri = context.Request.Path.ToUriComponent();
             if (!InIgnoreList(intendedUri))
@@ -29,13 +31,12 @@ namespace BLAZAM.Server.Middleware
                 {
                     switch (_monitor.AppReady)
                     {
-                        case ConnectionState.Connecting:
+                        case ServiceConnectionState.Connecting:
                             SendTo(context, "/");
                             break;
-                        case ConnectionState.Up:
-                            var appliedSeedMigration = factory.CreateDbContext().AppliedMigrations.Where(m => m.Contains("seed", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                            var stagedSeedMigration = factory.CreateDbContext().PendingMigrations.Where(m => m.Contains("seed", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                            if(appliedSeedMigration!=null && stagedSeedMigration !=null)
+                        case ServiceConnectionState.Up:
+                            var dbcontext = factory.CreateDbContext();
+                            if(dbcontext.SeedMismatch)
                             {
                                 Oops.ErrorMessage = "The application database is incompatible with this version of the application";
                                 Oops.DetailsMessage = "The database seed is different from the current version of the application";
@@ -43,12 +44,12 @@ namespace BLAZAM.Server.Middleware
                                 SendTo(context, "/oops");
 
                             }
-                            if (!Program.InstallationCompleted)
+                            if (!ApplicationInfo.installationCompleted)
                             {
                                 SendTo(context,"/install");
                             }
                             break;
-                        case ConnectionState.Down:
+                        case ServiceConnectionState.Down:
                             SendTo(context, "/oops");
 
                             break;

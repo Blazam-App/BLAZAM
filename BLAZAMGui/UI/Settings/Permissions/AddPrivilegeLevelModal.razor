@@ -1,0 +1,65 @@
+﻿@inherits AppModal
+<MudDialog @ref="Modal">
+            <MudText>Add Delegate</MudText>
+            <AppCloseButton />
+                
+                        <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
+                                    @bind-SelectedResult=@selectedDelegate
+                                    CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
+
+
+
+
+    <MudSwitch Label="Super User" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=ApplicationInfo.inDemoMode />
+                    <MudText>Will have complete and total acceess to the application if enabled</MudText>
+          
+
+
+
+</MudDialog>
+@code {
+
+
+    IDirectoryEntryAdapter? selectedDelegate;
+    [Parameter]
+    public EventCallback DelegateAdded { get; set; }
+
+    PermissionDelegate NewPermissionDelegate = new PermissionDelegate();
+    private async void AddGroup()
+    {
+        try
+        {
+            if (Context == null) return;
+
+            NewPermissionDelegate.DelegateSid = selectedDelegate.SID;
+            Context.PermissionDelegate.Add(NewPermissionDelegate);
+            await Context.SaveChangesAsync();
+            NewPermissionDelegate = new PermissionDelegate();
+            Modal?.Close();
+            await DelegateAdded.InvokeAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            switch (ex.InnerException?.HResult)
+            {
+                case -2146232060:
+                    var confilctingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
+                    if (confilctingDelegate != null)
+                        if (confilctingDelegate.DeletedAt == null)
+                            NotificationService.Error("That delegate already exists.");
+                        else
+                            NotificationService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
+
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+
+            Loggers.ActiveDirectryLogger.Error("Error attempting to add delegate " + selectedDelegate.CanonicalName);
+            Loggers.ActiveDirectryLogger.Error(ex.Message, ex);
+            NotificationService.Error("An unexpected error has occured.");
+        }
+
+    }
+}

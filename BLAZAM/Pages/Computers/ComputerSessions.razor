@@ -1,58 +1,63 @@
+@using BLAZAM.Common.Exceptions;
 @inherits AppComponentBase
+@implements IDisposable
 @if (sessionsErrorMessage == null)
 {
-    <DataGrid TItem="IRemoteSession"
-          Data="@sessions"
-          Responsive>
-        <DataGridColumn Context="fieldContext" Field="@nameof(IRemoteSession.User)" Caption="Username">
-            <DisplayTemplate>
-                @fieldContext.User?.ToString()
-            </DisplayTemplate>
-        </DataGridColumn>
-        <DataGridColumn Context="fieldContext" Field="@nameof(IRemoteSession.ConnectionState)" Caption="State">
-            <DisplayTemplate>
-                @fieldContext.ConnectionState.ToString()
-            </DisplayTemplate>
-        </DataGridColumn>
-        <DataGridColumn Context="fieldContext" Field="@nameof(IRemoteSession.ClientIPAddress)" Caption="Remote IP">
-            <DisplayTemplate>
-                @fieldContext.ClientIPAddress?.ToString()
-            </DisplayTemplate>
-        </DataGridColumn>
-
-
-        <DataGridColumn Context="fieldContext" Field="@nameof(IRemoteSession.ConnectTime)" Caption="Connected">
-            <DisplayTemplate>
-                @fieldContext.ConnectTime.ToString()
-            </DisplayTemplate>
-        </DataGridColumn>
-        <DataGridColumn Context="fieldContext" Field="@nameof(IRemoteSession.IdleTime)" Caption="Idle">
-            <DisplayTemplate>
-                @Math.Round((double)fieldContext.IdleTime?.TotalMinutes,0) mins
-            </DisplayTemplate>
-        </DataGridColumn>
-        <DataGridColumn Context="fieldContext">
-            <DisplayTemplate>
-                @if (fieldContext.ConnectionState.ToString() == "Active")
-                {
-                    <Button Color="Color.Warning" Clicked=@(()=>{DisconnectSession(fieldContext);})>Disconnect</Button>
-                }
-                <Button Color="Color.Danger" Clicked=@(()=>{LogoffSession(fieldContext);})>Logoff</Button>
-            </DisplayTemplate>
-        </DataGridColumn>
-    </DataGrid>
+    <MudDataGrid Elevation=0 Items="sessions">
+        <Columns>
+            <PropertyColumn Property="x=>x.User" />
+            <PropertyColumn Property="x=>x.ConnectionState" />
+            <PropertyColumn Property="x=>x.ClientIPAddress" />
+            <TemplateColumn Title="Connected">
+                <CellTemplate>
+                    @if (context.Item.ConnectTime!=null)
+                    {
+                       <MudText>@context.Item.ConnectTime.Value.ToLocalTime()</MudText>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x=>x.IdleTime" />
+            <TemplateColumn Title="Message">
+                <CellTemplate>
+                    @if (context.Item.ConnectionState.ToString() == "Active")
+                    {
+                        <MudButton Color="Color.Info" OnClick=@(()=>{
+                            sessionToMessage=context.Item;
+                            sessionMessageModal?.Show();
+                           })>Send Message</MudButton>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+                <TemplateColumn Tile="Manage">
+                    <CellTemplate>
+                    @if (context.Item.ConnectionState.ToString() == "Active")
+                    {
+                        <MudButton Color="Color.Warning" OnClick=@(()=>{DisconnectSession(context.Item);})>Disconnect</MudButton>
+                    }
+                    <MudButton Color="Color.Error" OnClick=@(()=>{LogoffSession(context.Item);})>Logoff</MudButton>
+                    </CellTemplate>
+                </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+ 
+    <AppModal @ref=@sessionMessageModal AllowClose=true Title="Send Message">
+        <SendMessageModalContent Session="@sessionToMessage" />
+    </AppModal>
 }
 else
 {
-    <Div>
+    <div>
         @sessionsErrorMessage
-    </Div>
+    </div>
 }
 
 
 
 @code {
-
+    IRemoteSession sessionToMessage;
+    AppModal? sessionMessageModal;
+    SendMessageModalContent? sendMessageContent;
+    MudTextField<string>? messageTextField;
 
 
     [Parameter]
@@ -64,7 +69,7 @@ else
 
 
     string? sessionsErrorMessage;
-    Timer t;
+    Timer? t;
     List<IRemoteSession> sessions = new();
     List<IRemoteSession> Sessions
     {
@@ -97,6 +102,7 @@ else
 
         await InvokeAsync(StateHasChanged);
     }
+   
     async void DisconnectSession(IRemoteSession session)
     {
         if (await MessageService.Confirm("Are you sure you want to disconnect " + session.User.ToString(), "Disconnect User"))
@@ -132,5 +138,9 @@ else
         }
 
         await InvokeAsync(StateHasChanged);
+    }
+    public void Dispose()
+    {
+        t.Dispose();
     }
 }

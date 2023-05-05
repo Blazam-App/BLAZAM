@@ -1,0 +1,76 @@
+@using BLAZAM.Email.Services;
+@inject EmailService email
+@inject ApplicationInfo ApplicationInfo
+@inject IAppDatabaseFactory factory
+@inject NavigationManager Nav
+<PageTitle>Error</PageTitle>
+
+
+
+
+
+
+<MudAlert Elevation="5"
+    Square
+    ShowCloseIcon 
+    
+    CloseIconClicked=@(()=>{Nav.NavigateTo(Nav.Uri,true);}) 
+    Class="mud-alert-outlined-error" 
+    ContentAlignment="HorizontalAlignment.Center">
+    <MudContainer>
+    <MudText Typo="Typo.h4">
+        Something terrible has happened...
+
+    </MudText>
+
+@if (ApplicationInfo.InDebugMode)
+{
+
+    <MudCard Square Class="mud-border-error mx-auto">
+        <MudCardHeader Class="mud-error">
+            @Error.Source : @Error.GetType()
+        </MudCardHeader>
+        <MudPaper Square>
+            Error Message: @Error.Message
+        </MudPaper Square>
+            <MudPaper Class="overflow-auto mud-typography-nowrap">
+            Stack Trace: <br>
+            @((MarkupString)_error.StackTrace.Replace("\n","<br><br>"))
+        </MudPaper>
+    </MudCard>
+}
+    </MudContainer>
+
+</MudAlert>
+
+
+
+@code {
+    private Exception? _error;
+    private List<string> StackTrace { get; set; } = new();
+    [Parameter]
+    public Exception? Error
+    {
+        get => _error; set
+
+        {
+            if (value == _error) return;
+            _error = value;
+            if (_error != null)
+            {
+                try{
+                    email.SendMessage(
+                            "BLAZAM Unhandled Exception",
+                        "bugs@blazam.org",
+                        (MarkupString)(_error.GetType() + " : " + _error.Message),
+                            (MarkupString)_error.StackTrace.Replace("\n","<br><br>")
+                    );
+                }
+                catch
+                {
+                    
+                }
+            }
+        }
+    }
+}

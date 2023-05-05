@@ -1,0 +1,27 @@
+﻿
+
+
+<MudIcon Icon="@_classes"></MudIcon>
+
+@code {
+    [Parameter]
+    public bool Status { get; set; } = false;
+
+    private string _trueClasses = "fa-solid fa-check text-primary";
+    private string _falseClasses = "fa-solid fa-times text-danger";
+    private string _classes = "fa-solid fa-times text-danger";
+
+
+
+    protected override async void OnParametersSet()
+    {
+
+        if (Status)
+            _classes = _trueClasses;
+        else
+            _classes = _falseClasses;
+
+        await InvokeAsync(StateHasChanged);
+
+    }
+}

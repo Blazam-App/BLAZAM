@@ -2,7 +2,7 @@
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
-namespace BLAZAM.Common.Helpers
+namespace BLAZAM.Helpers
 {
     public class NetworkTools
     {

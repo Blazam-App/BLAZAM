@@ -1,53 +1,84 @@
 ﻿@page "/settings"
-@page "/settings/{selectedTab}"
+@page "/settings/{ActiveTab}"
 @layout MainLayout
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 @inherits TabbedAppComponentBase
+
+<AppPageTitle>Settings</AppPageTitle>
+<SetHeader>
+</SetHeader>
 <AuthorizeView>
-    <SetHeader>
-        <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
-        <Items>
-            <Tab Name="app">@SettingsLocalization["Application"]</Tab>
-            <Tab Name="auth">@SettingsLocalization["Authentication"]</Tab>
-            <Tab Name="dir">@SettingsLocalization["Active Directory"]</Tab>
-            <Tab Name="email">@SettingsLocalization["Email"]</Tab>
-            <Tab Name="update">@SettingsLocalization["Update"]</Tab>
-            <Tab Name="system">@SettingsLocalization["System"]</Tab>
-        </Items>
-    </Tabs>
-    </SetHeader>
-    <Tabs SelectedTab="@selectedTab">
-        
-        <Content>
-            <TabPanel Name="app" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-                <BLAZAM.Server.Shared.UI.Settings.ApplicationSettings />
+        <MudTabs ActivePanelIndex="@ActiveTab">
+            <MudTabPanel>
+                <ChildContent>
+                    <ApplicationSettings />
 
-            </TabPanel>
-            <TabPanel Name="auth" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-                <BLAZAM.Server.Shared.UI.Settings.AuthenticationSetting />
+                </ChildContent>
+                <TabContent>
+                    @AppLocalization["Application"]
+                </TabContent>
+            </MudTabPanel>
+            <MudTabPanel>
+                <ChildContent>
+                <AuthenticationSetting />
 
-            </TabPanel>
-            <TabPanel Name="dir" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-                <BLAZAM.Server.Shared.UI.Settings.DirectorySettings />
+                </ChildContent>
+                <TabContent>
+                    @AppLocalization["Authentication"]
+                </TabContent>
 
-            </TabPanel>
-            <TabPanel Name="email" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-                <BLAZAM.Server.Shared.UI.Settings.EmailSettings />
 
-            </TabPanel>
-            <TabPanel Name="update" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-                <BLAZAM.Server.Shared.UI.Settings.UpdateSettings />
+            </MudTabPanel>
+            <MudTabPanel>
+                <ChildContent>
+                <DirectorySettings />
 
-            </TabPanel>
-            <TabPanel Name="system" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-                <BLAZAM.Server.Shared.UI.Settings.SystemSettings />
+                </ChildContent>
+                <TabContent>
+                    @AppLocalization["Active Directory"]
+                </TabContent>
 
-            </TabPanel>
-        </Content>
-    </Tabs>
+
+            </MudTabPanel>
+            <MudTabPanel >
+                <ChildContent>
+                <EmailSettings />
+
+                </ChildContent>
+                <TabContent>
+                    @AppLocalization["Email"]
+                </TabContent>
+
+
+            </MudTabPanel>
+            <MudTabPanel>
+                <ChildContent>
+                <UpdateSettings />
+
+                </ChildContent>
+                <TabContent>
+                    @AppLocalization["Update"]
+                </TabContent>
+
+
+            </MudTabPanel>
+            <MudTabPanel>
+                <ChildContent>
+                    <SystemSettings />
+
+                </ChildContent>
+                <TabContent>
+                    @AppLocalization["System"]
+                </TabContent>
+
+
+            </MudTabPanel>
+
+        </MudTabs>
+
 </AuthorizeView>
 
 @code {
-  
+
 }

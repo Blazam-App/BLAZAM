@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace BLAZAM.Server.Data.Services.Email
+namespace BLAZAM.Common.Exceptions
 {
     [Serializable]
     public class EmailException : ApplicationException

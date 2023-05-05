@@ -1,0 +1,38 @@
+﻿@inherits MudDataGrid<T> 
+@typeparam T where T:IDirectoryEntryAdapter
+
+<MudDataGrid T="@T"
+             Items="@Items"
+              Dense=true
+             Filterable=true
+              RowsPerPage="5"
+             FilterMode="DataGridFilterMode.Simple"
+             Loading=@Loading
+             Square=true
+             ColumnResizeMode="ResizeMode.Column"
+             Virtualize=true
+             RowClass="cursor-pointer"
+             RowClick=@RowClick
+             Class="py-0"
+             SortMode="SortMode.Single">
+    <Columns>
+        <PropertyColumn Property="x => x.CanonicalName" Title="Name" />
+        <PropertyColumn Property="x => x.OU.ToPrettyOu()" Title="OU" />
+        <TemplateColumn Title="Created">
+            <CellTemplate>
+                @if (context.Item.Created != null)
+                {
+                    <MudText>@context.Item.Created.Value.ToLocalTime()</MudText>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="@T" />
+    </PagerContent>
+</MudDataGrid>
+
+
+@code{
+#nullable disable warnings
+}

@@ -1,11 +1,12 @@
 using BLAZAM.Common.Data;
-using BLAZAM.Server.Background;
-using BLAZAM.Server.Data;
+using BLAZAM.Services;
 using BLAZAM.Server.Data.Services;
+using BLAZAM.Services.Background;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using BLAZAM.Helpers;
 
 namespace BLAZAM.Server.Pages
 {
@@ -20,11 +21,8 @@ namespace BLAZAM.Server.Pages
             AuditLogger = logger;
         }
 
-        public bool _authenticating { get; set; }
-        public bool _directoryAvailable { get; set; }
-        public string _username { get; set; }
-        public string _password { get; set; }
-        public string RedirectUri { get; private set; }
+
+        public string RedirectUri { get; set; }
         public AppAuthenticationStateProvider Auth { get; }
         public NavigationManager Nav { get; private set; }
         public ConnMonitor Monitor { get; private set; }
@@ -47,18 +45,17 @@ namespace BLAZAM.Server.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnPost([FromFormAttribute]LoginRequest req)
         {
-
-            var result = await Auth.Login(req);
-            if (result != null)
-            {
-                await HttpContext.SignInAsync(result.User);
-                await AuditLogger.Logon.Login(result.User);
-                //return Redirect(req.ReturnUrl);
-            }
-            //Nav.NavigateTo("/signin?returnUrl="+req.ReturnUrl, true);
-            //return (IActionResult)Results.Ok();
-            return Redirect("/signin?returnUrl="+req.ReturnUrl);
-
+          
+                var result = await Auth.Login(req);
+                if (result != null && result.Status == LoginResultStatus.OK)
+                {
+                    await HttpContext.SignInAsync(result.AuthenticationState.User);
+                    await AuditLogger.Logon.Login(result.AuthenticationState.User);
+                }
+           
+           
+            
+            return new ObjectResult(result.Status);
         }
 
 

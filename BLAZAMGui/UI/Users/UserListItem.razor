@@ -1,0 +1,20 @@
+﻿
+
+<Row>
+    <Column>
+        @User.SamAccountName
+    </Column>
+    <Column>
+        @User.DisplayName
+    </Column>
+    <Column>
+        @User.OU.ToPrettyOu()
+    </Column>
+</Row>
+
+
+@code {
+#nullable disable warnings
+    [Parameter]
+    public IADUser User{ get; set;  }
+}

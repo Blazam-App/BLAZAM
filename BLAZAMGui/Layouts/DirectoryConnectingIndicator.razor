@@ -1,0 +1,20 @@
+@inherits AppComponentBase
+@if (Monitor.DirectoryConnected == ServiceConnectionState.Connecting)
+{
+    <div Padding="Padding.Is3.OnX">
+
+        <Row>
+            Connecting to Active Directory... Some features are disabled...
+            <Progress Animated=true Value="100" />
+        </Row>
+    </div>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Monitor.OnDirectoryConnectionChanged += ((state) => InvokeAsync(StateHasChanged));
+
+    }
+}

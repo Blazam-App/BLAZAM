@@ -1,0 +1,90 @@
+@inherits SettingsComponents
+
+
+
+
+    <MudText Typo="Typo.h4">@AppLocalization["Authentication Settings"]</MudText>
+    <MudForm @onsubmit=Save>
+
+
+        <SettingsField Label="@AppLocalization["Admin Password"]">
+
+            <MudTextField Label="@AppLocalization["Admin Password"]" InputType="InputType.Password" @bind-Value="newAdminPassword" />
+        </SettingsField>
+
+        <SettingsField Label="@AppLocalization["Session Timeout"]">
+
+            <MudNumericField Label="@AppLocalization["Session Timeout"]" HelperText="Time in minute" T="int?" @bind-Value="@settings.SessionTimeout" />
+
+        </SettingsField>
+        @*
+        <MudText>Duo Security MFA (optional)</MudText>
+        <br />
+        <SettingsField Label="Duo ClientID">
+
+            <MudTextField Label="Duo ClientID" InputType="InputType.Password" @bind-Value="@settings.DuoClientId" />
+
+        </SettingsField>
+        <SettingsField Label="Duo ClientSecret">
+
+            <MudTextField Label="Duo ClientSecret" InputType="InputType.Password" @bind-Value="@settings.DuoClientSecret" />
+
+        </SettingsField>
+        <SettingsField Label="Duo ApiHost">
+
+            <MudTextField Label="Duo ApiHost" InputType="InputType.Password" @bind-Value="@settings.DuoApiHost" />
+
+        </SettingsField>*@
+        <SettingsField>
+
+            <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+        </SettingsField>
+
+
+
+    </MudForm>
+@code {
+#nullable disable warnings
+    AuthenticationSettings settings = new AuthenticationSettings();
+    string newAdminPassword;
+    string adminPasswordInDb;
+    string _timeoutString = "Loading...";
+    protected override async Task OnInitializedAsync()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+
+
+        originalSettings = await Context.AuthenticationSettings.AsNoTracking().FirstOrDefaultAsync();
+
+        settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
+        _timeoutString = settings.SessionTimeout.ToString() + " Minutes";
+        adminPasswordInDb = settings?.AdminPassword;
+        newAdminPassword = adminPasswordInDb;
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
+    }
+    private void UpdateTimeoutDisplay()
+    {
+        _timeoutString = settings.SessionTimeout.ToString() + " Minutes";
+        InvokeAsync(StateHasChanged);
+
+    }
+    protected override async void Save()
+    {
+        if (!newAdminPassword.Equals(adminPasswordInDb))
+        {
+
+            settings.AdminPassword = EncryptionService.EncryptObject(newAdminPassword);
+
+            adminPasswordInDb = settings.AdminPassword;
+
+        }
+        await AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
+        base.Save();
+        await InvokeAsync(StateHasChanged);
+
+    }
+}

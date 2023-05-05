@@ -1,45 +1,69 @@
 ﻿@page "/permissions"
-@page "/permissions/{selectedTab}"
+@page "/permissions/{ActiveTab}"
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 @inherits TabbedAppComponentBase
+
+<AppPageTitle>Permissions</AppPageTitle>
 <AuthorizeView Roles=@UserRoles.SuperAdmin>
 
     <SetHeader>
-        <Tabs Background=Background.Light SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
-            <Items>
-                <Tab Name="delegates">@SettingsLocalization["Delegates"]</Tab>
-                <Tab Name="accessLevels">@SettingsLocalization["Access Levels"]</Tab>
-                <Tab Name="mappings">@SettingsLocalization["Mappings"]</Tab>
-           
-            </Items>
-        </Tabs>
     </SetHeader>
-    <Tabs SelectedTab="@selectedTab">
 
-        <Content>
-            <TabPanel Name="delegates" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-                @if (Monitor.DirectoryConnected == ConnectionState.Up)
+
+
+
+    <MudTabs ActivePanelIndex="@ActiveTab">
+        <MudTabPanel>
+            <ChildContent>
+
+
+                @if (Monitor.DirectoryConnected == ServiceConnectionState.Up)
                 {
-                    <BLAZAM.Server.Shared.UI.Settings.Permissions.DelegateEditor />
-                }
-            </TabPanel>
-            <TabPanel Name="accessLevels" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-                <BLAZAM.Server.Shared.UI.Settings.Permissions.AccessLevelEditor />
-
-            </TabPanel>
-            <TabPanel Name="mappings" Padding="Padding.Is1.OnMobile.Is2.OnTablet.Is3.OnDesktop.Is4.OnWidescreen.Is5.OnFullHD">
-                @if (Monitor.DirectoryConnected == ConnectionState.Up)
-                {
-                    <BLAZAM.Server.Shared.UI.Settings.Permissions.ImpersonateUser />
-                    <BLAZAM.Server.Shared.UI.Settings.Permissions.PrivilegeMapper />
-
+                    <DelegateEditor />
                 }
 
-            </TabPanel>
-           
-        </Content>
-    </Tabs>
+
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Delegates"]
+            </TabContent>
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
+
+
+                <AccessLevelEditor />
+
+
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Access Levels"]
+            </TabContent>
+
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
+
+                @if (Monitor.DirectoryConnected == ServiceConnectionState.Up)
+                {
+                    <ImpersonateUser />
+                    <PermissionMapper />
+
+                }
+
+
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Mappings"]
+            </TabContent>
+
+        </MudTabPanel>
+       
+    </MudTabs>
+
+
+    
 </AuthorizeView>
 
 
@@ -47,7 +71,6 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        selectedTab = "delegates";
         BaseUri = "/permissions";
     }
 }

@@ -1,0 +1,32 @@
+﻿@inherits MudDialog
+<MudDialog @ref="Modal" Options="@Options">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            @*<MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1" />*@
+            @Title
+            @*<AppCloseButton Style="float:right;" OnClick="Hide"/>*@
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <CascadingValue Value="this">
+            <MudContainer Class="pa-4">
+                    @ChildContent
+            </MudContainer>
+        </CascadingValue>
+    </DialogContent>
+    <DialogActions>
+        @if (!CancelText.IsNullOrEmpty())
+        {
+            <MudButton OnClick="@(()=>{OnCancel.Invoke();})">@CancelText</MudButton>
+
+        }
+        @{
+            var yesDisabled = !YesEnabled.Invoke();
+        }
+        <MudButton Disabled=@yesDisabled Color="Color.Primary" OnClick="@YesClicked">@YesText</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+
+

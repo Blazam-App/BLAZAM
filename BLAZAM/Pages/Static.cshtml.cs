@@ -1,4 +1,7 @@
 using BLAZAM.Common.Data.Database;
+using BLAZAM.Database.Context;
+using BLAZAM.Gui;
+using BLAZAM.Static;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -13,12 +16,18 @@ namespace BLAZAM.Server.Pages
 
         [BindProperty(SupportsGet = true)]
         public string Data { get; set; }
-        public DatabaseContext Context { get; private set; }
-        public StaticModel(IDbContextFactory<DatabaseContext> factory)
+
+
+        protected  IDatabaseContext Context { get; private set; }
+
+
+        public StaticModel(IAppDatabaseFactory factory)
         {
             Context = factory.CreateDbContext();
 
         }
+
+
         public async Task<IActionResult> OnGet()
         {
 
@@ -31,9 +40,8 @@ namespace BLAZAM.Server.Pages
                 case "img":
                     return GetImg(Data);
 
-                    break;
             }
-            return null;
+            return NotFound();
 
         }
 
@@ -51,38 +59,5 @@ namespace BLAZAM.Server.Pages
             return null;
         }
   
-    }
-    public class StaticAssets
-    {
-        public static string ApplicationIconUri = "/static/img/appicon.png";
-        public static string FaviconUri = "/static/img/favicon.ico";
-
-        public static byte[] AppIcon(int size = 250)
-        {
-
-            var dbIcon = DatabaseCache.AppIcon;
-            if (dbIcon != null)
-            {
-                return dbIcon.ReizeRawImage(size);
-            }
-            else
-            {
-                var defIcon = GetDefaultIcon();
-                if (defIcon != null)
-                {
-                    return defIcon.ReizeRawImage(size);
-                }
-            }
-            return null;
-        }
-
-
-        private static byte[]? GetDefaultIcon()
-        {
-            var defaultIconFilePath = Path.GetFullPath(Program.RootDirectory + @"static\img\default_logo2.png");
-            if (System.IO.File.Exists(defaultIconFilePath))
-                return System.IO.File.ReadAllBytes(defaultIconFilePath);
-            return null;
-        }
     }
 }

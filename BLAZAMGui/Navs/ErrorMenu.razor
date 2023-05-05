@@ -1,0 +1,19 @@
+﻿@inject IStringLocalizer<AppLocalization> AppLocalization;
+@inject NavigationManager Nav
+
+<Bar Mode="BarMode.VerticalInline"
+     CollapseMode="BarCollapseMode.Small"
+     Breakpoint="Breakpoint.FullHD"
+     NavigationBreakpoint="Breakpoint.Tablet"
+     ThemeContrast="ThemeContrast.Dark">
+    <BarBrand>
+        <BarItem onclick=@(()=>{Nav.NavigateTo("/",true);})>
+          
+                <MudImage class="app-icon" src="@StaticAssets.ApplicationIconUri" />
+               
+        </BarItem>
+    </BarBrand>
+</Bar>
+@code {
+
+}

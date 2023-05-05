@@ -1,0 +1,23 @@
+﻿@inherits Widget
+@attribute [Authorize]
+<NewEntriesWidgetDataGrid Items="@NewGroups" RowClick=@GoTo T="IADGroup" Loading=LoadingData />
+
+@code {
+    List<IADGroup> NewGroups
+    {
+        get => CurrentUser.State.Cache.Get<List<IADGroup>>(this.GetType());
+        set => CurrentUser.State.Cache.Set(this.GetType(), value);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        NewGroups = (await Directory.Groups.FindNewGroupsAsync()).Where(u => u.CanRead).ToList();
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+    }
+    void GoTo(DataGridRowClickEventArgs<IADGroup> args)
+    {
+        Nav.NavigateTo(args.Item.SearchUri);
+    }
+}

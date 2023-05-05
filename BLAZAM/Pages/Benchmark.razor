@@ -1,22 +1,22 @@
-﻿@inject IDbContextFactory<DatabaseContext> factory
+﻿@inject IAppDatabaseFactory factory
 @page "/benchmark"
 
-@inject IActiveDirectory Dir
+@inject IActiveDirectoryContext Dir
 
 <h3>Benchmark</h3>
 <p>Number of cycles</p>
-<NumericEdit @bind-Value=runCount />
+<MudNumericField HideSpinButtons="true" @bind-Value=runCount />
 <br />
 <p>Cycle: @cycle</p>
-<Button Disabled=Running Clicked="Benchmark1">Benchmark One</Button>
+<MudButton Disabled=Running OnClick="Benchmark1">Benchmark One</MudButton>
 <p>@elapsed</p>
-<Button Disabled=Running Clicked="Benchmark2">Benchmark Two</Button>
+<MudButton Disabled=Running OnClick="Benchmark2">Benchmark Two</MudButton>
 <p>@elapsed2</p>
 
 <p>User Bench</p>
 <p>email: @userBench?.SamAccountName</p>
-<PageProgress Visible="Running" />
 @code {
+#nullable disable warnings
     ActiveDirectoryContext ad;
     bool Running = false;
     int runCount;
@@ -53,7 +53,7 @@
 
 
     }
-    bool DirectoryTest(IActiveDirectory dir)
+    bool DirectoryTest(IActiveDirectoryContext dir)
     {
 
         bool result = false;

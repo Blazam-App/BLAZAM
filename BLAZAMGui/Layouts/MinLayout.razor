@@ -1,0 +1,43 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager Nav
+@inject ConnMonitor monitor
+
+
+<PageTitle>Loading</PageTitle>
+    <MudLayout>
+    <CascadingValue Value="this">
+
+        @*<MainAppBar />*@
+    </CascadingValue>
+        <MudContainer Fixed>
+            @if (PageHeader != null)
+            {
+                @PageHeader
+            }
+        </MudContainer>
+        <MudMainContent>
+            <MudContainer MaxWidth="MaxWidth.Large" Class="pt-5">
+                    @Body
+
+        </MudContainer>
+        </MudMainContent>
+
+        <MudContainer Fixed>
+        @if (ApplicationInfo.installationCompleted)
+            {
+                <DirectoryConnectingIndicator />
+
+            }
+            <AppFooter />
+
+        </MudContainer>
+    </MudLayout>
+
+@code {
+    [Parameter]
+    public RenderFragment? PageHeader { get; set; }
+
+
+}
+
+

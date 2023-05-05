@@ -1,0 +1,20 @@
+﻿@inherits LayoutComponentBase
+
+<PageTitle>BLAZAM</PageTitle>
+
+<MudLayout>
+    <MudAppBar Color=Color.Primary Elevation="1">
+        <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+        <MudSpacer />
+
+        <MudText Typo="Typo.h5" Class="ml-3">Blazam</MudText>
+    </MudAppBar>
+
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Medium">
+
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+

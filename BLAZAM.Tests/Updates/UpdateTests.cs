@@ -1,5 +1,6 @@
-﻿using BLAZAM.Server.Data.Services.Update;
+﻿
 using BLAZAM.Tests.Mocks;
+using BLAZAM.Update;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace BLAZAM.Tests.Updates
 {
     public class UpdateTests
     {
-        Mock_UpdateService _updateService = new Mock_UpdateService();
+        readonly Mock_UpdateService _updateService = new();
         [Fact]
         public async void Update_Returns_Data()
         {
@@ -23,15 +24,16 @@ namespace BLAZAM.Tests.Updates
         {
             var latest = await _updateService.GetLatestUpdate();
 
-            Assert.NotNull(latest.Version);
+            Assert.NotNull(latest?.Version);
         }
         [Fact]
         public async void Update_Returns_ValidDownload()
         {
             var latest = await _updateService.GetLatestUpdate();
-            await latest.Download();
+            if (latest != null)
+                await latest.Download();
 
-            Assert.True(latest.UpdateFile.Exists);
+            Assert.True(latest?.UpdateFile.Exists);
             Update_Stages_OK(latest);
             Update_Cleanup_OK(latest);
         }
@@ -45,7 +47,7 @@ namespace BLAZAM.Tests.Updates
         private async void Update_Cleanup_OK(ApplicationUpdate latest)
         {
 
-            latest.CleanStaging();
+            await latest.CleanStaging();
             latest.UpdateFile.Delete();
             Assert.True(!latest.UpdateFile.Exists);
             Assert.True(latest.UpdateStagingDirectory.Files.Count == 0);
