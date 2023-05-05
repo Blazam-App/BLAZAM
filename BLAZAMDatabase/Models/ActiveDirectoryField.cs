@@ -54,7 +54,7 @@ namespace BLAZAM.Database.Models
             {
                 var other = obj as ActiveDirectoryField;
 
-                if (other.FieldName == FieldName)
+                if (other?.FieldName == FieldName)
                 {
                     return true;
                 }

@@ -29,7 +29,7 @@
                     @AppLocalization["Update"]
                 </MudText>
                 <MudIconButton Color="Color.Primary"
-                           OnClick=@(async()=>{await appUpdateComponent.GetLatestUpdate();})
+                           OnClick=@(async()=>{await appUpdateComponent?.GetLatestUpdate();})
                            Icon="@Icons.Material.Filled.Refresh" />
 
             </FieldLabel>

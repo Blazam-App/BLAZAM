@@ -69,7 +69,7 @@
         await base.OnInitializedAsync();
         settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
 
-        if (settings.AdminPassword == "password")
+        if (settings !=null && settings.AdminPassword == "password")
             settings.AdminPassword = "";
 
             

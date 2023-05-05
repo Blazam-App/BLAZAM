@@ -22,7 +22,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         IADUser CreateUser(string containerName);
         IADOrganizationalUnit CreateOU(string containerName);
         Task<IEnumerable<IADOrganizationalUnit>> GetChildrenAsync();
-        bool HasChildren();
         Task<bool> HasChildrenAsync();
     }
 }

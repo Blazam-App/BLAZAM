@@ -58,7 +58,7 @@ namespace BLAZAM.Database.Context
         bool SeedMismatch { get; }
         DbSet<CustomActiveDirectoryField> CustomActiveDirectoryFields { get; set; }
         DbSet<UserDashboardWidget> UserDashboardWidgets { get; set; }
-        DbSet<ReadChatMessage> ReadChatMessages { get; set; }
+        DbSet<UnreadChatMessage> UnreadChatMessages { get; set; }
         DbSet<ChatRoom> ChatRooms { get; set; }
         DbSet<ChatMessage> ChatMessages { get; set; }
 

@@ -1,18 +1,18 @@
 ﻿@inherits AppModal
 <MudDialog @ref="Modal">
-            <MudText>Add Delegate</MudText>
-            <AppCloseButton />
-                
-                        <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
-                                    @bind-SelectedResult=@selectedDelegate
-                                    CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
+    <MudText>Add Delegate</MudText>
+    <AppCloseButton />
+
+    <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
+                    @bind-SelectedResult=@selectedDelegate
+                    CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
 
 
 
 
     <MudSwitch Label="Super User" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=ApplicationInfo.inDemoMode />
-                    <MudText>Will have complete and total acceess to the application if enabled</MudText>
-          
+    <MudText>Will have complete and total acceess to the application if enabled</MudText>
+
 
 
 
@@ -31,7 +31,7 @@
         {
             if (Context == null) return;
 
-            NewPermissionDelegate.DelegateSid = selectedDelegate.SID;
+            NewPermissionDelegate.DelegateSid = selectedDelegate?.SID;
             Context.PermissionDelegate.Add(NewPermissionDelegate);
             await Context.SaveChangesAsync();
             NewPermissionDelegate = new PermissionDelegate();
@@ -43,12 +43,17 @@
             switch (ex.InnerException?.HResult)
             {
                 case -2146232060:
-                    var confilctingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
-                    if (confilctingDelegate != null)
-                        if (confilctingDelegate.DeletedAt == null)
-                            NotificationService.Error("That delegate already exists.");
-                        else
-                            NotificationService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
+                    if (Context != null)
+                    {
+                        var confilctingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
+                        if (confilctingDelegate != null)
+                            if (confilctingDelegate.DeletedAt == null)
+                                NotificationService.Error("That delegate already exists.");
+                            else
+                                NotificationService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
+                    }
+                    else
+                        NotificationService.Error("That database connection was lost.");
 
                     break;
             }

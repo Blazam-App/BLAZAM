@@ -20,7 +20,6 @@ namespace BLAZAM.Gui.UI.Chat
 
         [Parameter]
         public ChatRoom? ChatRoom { get; set; }
-
         public ChatRoom? AppChatRoom { get; set; }
 
         protected override async Task OnInitializedAsync()
@@ -41,6 +40,7 @@ namespace BLAZAM.Gui.UI.Chat
             {
                 if (CurrentUser.State.Id == user.Id)
                 {
+                    await Task.Delay(50);
 
                     //await RefreshChatRooms();
                     await InvokeAsync(StateHasChanged);
@@ -59,27 +59,27 @@ namespace BLAZAM.Gui.UI.Chat
             get
             {
                 if (ChatRoom is null) return 0;
-                return 0;
+                return Chat.GetUnreadMessages(CurrentUser.State.Preferences).Count();
                // return Context.ReadChatMessages.Count(m => !m.User.Equals(CurrentUser.State.Preferences) && !m.IsRead);
             
             }
         }
         protected async Task RefreshChatRooms()
         {
-            var room = (await Chat.GetChatRoomsAsync()).Where(cr => cr.Name.Equals(ChatUri)).FirstOrDefault();
-            if (room is null && ChatUri!=null)
-            {
-                Chat.CreateChatRoom(new()
-                {
-                    Name = ChatUri,
-                    IsPublic = true,
-                });
+            //var room = (await Chat.GetChatRoomsAsync()).Where(cr => cr.Name.Equals(ChatUri)).FirstOrDefault();
+            //if (room is null && ChatUri!=null)
+            //{
+            //    Chat.CreateChatRoom(new()
+            //    {
+            //        Name = ChatUri,
+            //        IsPublic = true,
+            //    });
 
-            }
+            //}
 
-            ChatRoom = room;
+            //ChatRoom = room;
 
-            room = (await Chat.GetChatRoomsAsync()).Where(cr => cr.Name.Equals("App Chat")).FirstOrDefault();
+            var room = (await Chat.GetChatRoomsAsync()).Where(cr => cr.Name.Equals("App Chat")).FirstOrDefault();
             if (room is null && ChatUri != null)
             {
                 Chat.CreateChatRoom(new()
@@ -89,7 +89,6 @@ namespace BLAZAM.Gui.UI.Chat
                 });
 
             }
-            var chatRooms = await Chat.GetChatRoomsAsync();
 
             AppChatRoom = room;
         }

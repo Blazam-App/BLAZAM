@@ -141,7 +141,7 @@
             }
             @if (DirectoryEntry.CanEdit)
             {
-                <MudMenuItem OnClick="(()=>{ToggleEditMode(!_editMode);})">Edit...</MudMenuItem>
+                <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!_editMode);})">Edit...</MudMenuItem>
             }
             @if (accountEntry != null && accountEntry.LockedOut && accountEntry.CanUnlock)
             {

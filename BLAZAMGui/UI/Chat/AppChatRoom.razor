@@ -1,5 +1,4 @@
 @inherits ChatComponentBase
-@inject IJSRuntime JS
 <MudContainer Class=@("d-flex flex-column "+Class)>
     @if (ChatRoom != null)
     {
@@ -24,6 +23,8 @@
         <MudStack id="@ChatRoom.ElementId" Style="height:300px;" Class="overflow-y-auto">
             @foreach (var message in ChatRoom.Messages)
             {
+                Chat.MessageRead(message, CurrentUser.State.Preferences);
+
                 <ChatRoomMessage ChatRoom="ChatRoom" Message="message" />
 
             }
@@ -110,7 +111,8 @@
                 {
                     User = CurrentUser.State.Preferences,
                     Message = draftMessage,
-                    ChatRoomId = ChatRoom.Id
+                    ChatRoom = ChatRoom,
+
                 };
             //ChatRoom.Messages.Add(message);
             Chat.PostMessage(message);

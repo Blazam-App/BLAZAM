@@ -10,7 +10,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     {
         string? SamAccountName { get; set; }
         string? CanonicalName { get; set; }
-        string? DN { get; set; }
+        string DN { get; set; }
 
         /// <summary>
         /// The date and time in UTC that this entry was created

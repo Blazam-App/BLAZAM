@@ -62,7 +62,7 @@
             GetWindowRect(hwnd, out rc);
             if (rc.Width < 1 || rc.Height < 1) return;
             // Create a bitmap with the same size as the window rectangle
-                Bitmap bmp = new Bitmap(rc.Width, rc.Height);
+            Bitmap bmp = new Bitmap(rc.Width, rc.Height);
 
             // Create a graphics object from the bitmap and get its device context handle
             Graphics gfxBmp = Graphics.FromImage(bmp);
@@ -77,9 +77,12 @@
 
             // Save or use the bitmap as needed
             ImageConverter ic = new();
-            var bytes = (byte[])ic.ConvertTo(bmp, typeof(byte[]));
-            LastCapture = bytes;
-            InvokeAsync(StateHasChanged);
+            var converted = ic.ConvertTo(bmp, typeof(byte[]));
+            if (converted != null) {
+                var bytes = (byte[])converted;
+                LastCapture = bytes;
+                InvokeAsync(StateHasChanged);
+            }
         }
 
     }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Security.Claims;
+using System.Xml;
 
 namespace BLAZAM.Server.Data.Services
 {
@@ -44,7 +45,7 @@ namespace BLAZAM.Server.Data.Services
 
 
 
-        public IList<UserNotification> Notifications
+        public IList<UserNotification>? Notifications
         {
             get
             {
@@ -57,7 +58,7 @@ namespace BLAZAM.Server.Data.Services
         }
         //public List<ReadChatMessage> ReadChatMessages => Preferences.ReadChatMessages.ToList();
 
-        public int Id => Preferences.Id;
+        public int Id => Preferences!=null?Preferences.Id:0;
 
 
         //public bool IsChatMessageRead(ChatMessage message)
@@ -164,7 +165,7 @@ namespace BLAZAM.Server.Data.Services
                     dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
                     SaveDashboardWidgets(dbUserSettings);
                     OnSettingsChange?.Invoke(dbUserSettings);
-
+                    GetUserSettingFromDB();
                     return (await context.SaveChangesAsync()) > 0;
                 }
 

@@ -17,14 +17,14 @@
     <Columns>
         <TemplateColumn Title="Name">
             <CellTemplate>
-                <MudTooltip Text="@context.Item.OU.ToPrettyOu()">
-                    <MudText>@context.Item.CanonicalName</MudText>
+                <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                    <MudText>@context.Item?.CanonicalName</MudText>
                 </MudTooltip>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="Locked Out">
             <CellTemplate>
-                @if (context.Item.LockoutTime != null)
+                @if (context.Item?.LockoutTime != null)
                 {
                     <MudText>@context.Item.LockoutTime.Value.ToLocalTime()</MudText>
                 }

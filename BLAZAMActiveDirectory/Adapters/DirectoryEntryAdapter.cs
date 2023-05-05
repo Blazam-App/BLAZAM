@@ -258,7 +258,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        public virtual string? DN
+        public virtual string DN
         {
             get
             {
@@ -305,7 +305,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             private set { _isDeleted = value; }
 
         }
-        public bool HasChildren
+        public virtual bool HasChildren
         {
             get
             {
@@ -313,7 +313,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 var children = DirectoryEntry.Children;
                 var entries = children.Encapsulate();
                 return entries.Count > 0;
-                return true;
             }
         }
         public virtual DateTime? LastChanged

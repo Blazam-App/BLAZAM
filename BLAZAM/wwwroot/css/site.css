@@ -144,6 +144,10 @@ a, .btn-link {
     width:100% !important;
 }
 
+.left-0 {
+    left: 0px !important;
+}
+
 
 @media(max-width:600px) {
     .app-subheader {

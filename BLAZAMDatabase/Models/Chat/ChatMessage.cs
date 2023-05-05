@@ -11,7 +11,7 @@ namespace BLAZAM.Server.Data
         public string Message { get; set; }
         public ChatRoom ChatRoom { get; set; }
         public int ChatRoomId { get; set; }
-        public List<ReadChatMessage> ReadBy { get; set; }
+        public List<UnreadChatMessage> NotReadBy { get; set; }
        
     }
 }
