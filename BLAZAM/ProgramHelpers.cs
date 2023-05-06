@@ -30,6 +30,7 @@ namespace BLAZAM.Server
         public static void IntializeProperties(this WebApplicationBuilder builder)
         {
             //Set DebugMode flag from configuration
+            ApplicationInfo ApplicationInfo = new(builder);
             ApplicationInfo.inDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
             ApplicationInfo.inDemoMode = builder.Configuration.GetValue<bool>("DemoMode");
 
@@ -37,7 +38,7 @@ namespace BLAZAM.Server
             //Set application directories
             //Program.RootDirectory = new SystemDirectory(builder.Environment.ContentRootPath);
             //Program.TempDirectory = new SystemDirectory(Path.GetTempPath() + "Blazam\\");
-            Program.AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "Blazam\\");
+            Program.AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Blazam\\");
 
 
             //Store the configuration so other pages/objects can easily access it

@@ -461,7 +461,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.Audit.ComputerAuditLog", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.DirectoryEntryAuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -480,38 +480,8 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<string>("IpAddress")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Target")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Username")
+                    b.Property<string>("Sid")
                         .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ComputerAuditLog");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Audit.GroupAuditLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("AfterAction")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("BeforeAction")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("IpAddress")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Target")
@@ -526,7 +496,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("GroupAuditLog");
+                    b.ToTable("DirectoryEntryAuditLogs");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.LogonAuditLog", b =>
@@ -561,40 +531,6 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.HasKey("Id");
 
                     b.ToTable("LogonAuditLog");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Audit.OUAuditLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("AfterAction")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("BeforeAction")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("IpAddress")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Target")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OUAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.PermissionsAuditLog", b =>
@@ -731,40 +667,6 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.HasKey("Id");
 
                     b.ToTable("SystemAuditLog");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Audit.UserAuditLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("AfterAction")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("BeforeAction")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("IpAddress")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Target")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.AuthenticationSettings", b =>

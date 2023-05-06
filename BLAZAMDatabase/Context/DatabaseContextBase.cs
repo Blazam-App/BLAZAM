@@ -25,10 +25,10 @@ namespace BLAZAM.Database.Context
 
 
 
-       
+
         public DatabaseConnectionString? ConnectionString { get; set; }
 
-        
+
         public virtual ServiceConnectionState Status
         {
             get
@@ -49,7 +49,7 @@ namespace BLAZAM.Database.Context
             }
         }
         static IEnumerable<string> _appliedMigrations;
- 
+
 
 
         public virtual IEnumerable<string> AppliedMigrations
@@ -80,7 +80,7 @@ namespace BLAZAM.Database.Context
         public DatabaseContextBase(DatabaseConnectionString databaseConnectionString) : base()
         {
             ConnectionString = databaseConnectionString;
-    
+
         }
 
 
@@ -88,7 +88,7 @@ namespace BLAZAM.Database.Context
 
 
 
-       
+
         public DatabaseContextBase(DbContextOptions options) : base(options)
         {
         }
@@ -103,17 +103,18 @@ namespace BLAZAM.Database.Context
         //User Tables
         public virtual DbSet<AppUser> UserSettings { get; set; }
         public virtual DbSet<UserNotification> UserNotifications { get; set; }
-        public virtual DbSet<UserDashboardWidget> UserDashboardWidgets{ get; set; }
+        public virtual DbSet<UserDashboardWidget> UserDashboardWidgets { get; set; }
         public virtual DbSet<NotificationMessage> NotificationMessages { get; set; }
 
 
         //Audit Logs
         public virtual DbSet<SystemAuditLog> SystemAuditLog { get; set; }
         public virtual DbSet<LogonAuditLog> LogonAuditLog { get; set; }
-        public virtual DbSet<UserAuditLog> UserAuditLog { get; set; }
-        public virtual DbSet<GroupAuditLog> GroupAuditLog { get; set; }
-        public virtual DbSet<ComputerAuditLog> ComputerAuditLog { get; set; }
-        public virtual DbSet<OUAuditLog> OUAuditLog { get; set; }
+        public virtual DbSet<DirectoryEntryAuditLog> DirectoryEntryAuditLogs { get; set; }
+        //public virtual DbSet<UserAuditLog> UserAuditLog { get; set; }
+        //public virtual DbSet<GroupAuditLog> GroupAuditLog { get; set; }
+        //public virtual DbSet<ComputerAuditLog> ComputerAuditLog { get; set; }
+        //public virtual DbSet<OUAuditLog> OUAuditLog { get; set; }
         public virtual DbSet<RequestAuditLog> RequestAuditLog { get; set; }
         public virtual DbSet<PermissionsAuditLog> PermissionsAuditLog { get; set; }
         public virtual DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
@@ -581,7 +582,7 @@ namespace BLAZAM.Database.Context
             {
                 entity.HasIndex(e => e.UserGUID).IsUnique();
                 entity.Navigation(e => e.Messages).AutoInclude();
-                
+
                 entity.Navigation(e => e.DashboardWidgets).AutoInclude();
                 //entity.Navigation(e => e.UnreadChatMessages).AutoInclude();
 
@@ -590,7 +591,7 @@ namespace BLAZAM.Database.Context
             {
                 entity.Navigation(e => e.Notification).AutoInclude();
             });
-  
+
 
 
             modelBuilder.Entity<PermissionDelegate>(entity =>

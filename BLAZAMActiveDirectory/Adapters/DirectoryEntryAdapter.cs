@@ -13,6 +13,7 @@ using System.Data;
 using System.DirectoryServices;
 using System.Linq;
 using System.Reflection;
+using MudBlazor;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -377,19 +378,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public virtual bool MoveTo(IADOrganizationalUnit parentOUToMoveTo)
+        public virtual void MoveTo(IADOrganizationalUnit parentOUToMoveTo)
         {
-            parentOUToMoveTo.EnsureDirectoryEntry();
-            if (parentOUToMoveTo.DirectoryEntry != null)
-            {
-                DirectoryEntry?.MoveTo(parentOUToMoveTo.DirectoryEntry);
+            CommitActions.Add(() => {
+                parentOUToMoveTo.EnsureDirectoryEntry();
+                if (parentOUToMoveTo.DirectoryEntry != null)
+                {
+                    DirectoryEntry?.MoveTo(parentOUToMoveTo.DirectoryEntry);
 
-                return true;
-            }
-            return false;
+                    return true;
+                }
+                return false;
+            });
+            HasUnsavedChanges = true;
         }
 
-        public virtual string? OU { get => DirectoryTools.DnToOu(ADSPath); }
+        public virtual string? OU { get => DirectoryTools.DnToOu(DN); }
 
         public async Task<IADOrganizationalUnit?> GetParent()
         {

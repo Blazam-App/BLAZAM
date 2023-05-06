@@ -1,7 +1,7 @@
 ﻿namespace BLAZAM.Database.Models.Audit
 {
 
-    public class GroupAuditLog : CommonAuditLog
+    public class GroupAuditLog : DirectoryEntryAuditLog
     {
     }
 }

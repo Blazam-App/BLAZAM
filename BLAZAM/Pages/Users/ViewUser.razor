@@ -24,6 +24,7 @@
                                   OnRename="@(()=>{RenameModal?.Show();})"
                                   OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
                                   OnToggleEditMode="ToggleEditMode"
+                                  OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
                                   OnUnlock="@Unlock" />
             <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
@@ -60,7 +61,12 @@
                         <ChangeUserPasswordModalContent User="User" />
                     }
                 </AppModal>
-
+                <AppModal Title="Changes" @ref=@ChangeHistoryModal>
+                    @if (ChangeHistoryModal?.IsShown == true)
+                    {
+                        <ChangeHistoryModalContent Model="User" />
+                    }
+                </AppModal>
 
 
                 <MudGrid>
@@ -430,12 +436,21 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        await User.Directory.Impersonation.RunAsync(() =>
-
+        try
         {
-            homeDirectoryExists = new SystemDirectory(User.HomeDirectory).Exists;
-            return true;
-        });
+            await User.Directory.Impersonation.RunAsync(() =>
+
+            {
+                homeDirectoryExists = new SystemDirectory(User.HomeDirectory).Exists;
+                return true;
+            });
+        }
+        catch
+        {
+
+        }
+
+        AuditLogger.Searched(User);
     }
 
     async void SaveChanges()
@@ -485,6 +500,7 @@
             {
                 User.Delete();
                 SnackBarService.Success(User.DisplayName + " has been deleted.", "User Deleted");
+                AuditLogger.User.Deleted(User);
                 //User = null;
                 //Nav.NavigateTo("/users/search");
             }
