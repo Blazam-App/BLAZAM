@@ -2,19 +2,25 @@
 
 @{
     var localTimestamp = Message.Timestamp.ToLocalTime();
-    var timestamp ="";
+    var timestamp = "";
+    bool timestampeShortend = false;
     if (localTimestamp.Day.Equals(DateTime.Now.Day))
     {
         timestamp = localTimestamp.ToShortTimeString();
-    } else if(DateTime.Now-localTimestamp < TimeSpan.FromDays(1))
+        timestampeShortend = true;
+    }
+    else if (DateTime.Now - localTimestamp < TimeSpan.FromDays(1))
     {
         timestamp = "Yesterday " + localTimestamp.ToShortTimeString();
+        timestampeShortend = true;
+
     }
     else
     {
         timestamp = localTimestamp.ToString();
     }
-}  
+}
+
 @if (Message.User.Username != CurrentUser.State.Username)
 {
     <MudStack Class="w-100">
@@ -22,8 +28,10 @@
             <MudChip Size=Size.Small Color="Color.Secondary">@Message.User.Username</MudChip>
             <MudText Class="align-middle">@Message.Message</MudText>
         </MudStack>
-        <MudText Class=@("w-max") Typo="Typo.caption">@timestamp</MudText>
+        <MudTooltip Text="@localTimestamp.ToString()" ShowOnHover=@timestampeShortend>
 
+            <MudText Class="w-max" Typo="Typo.caption">@timestamp</MudText>
+        </MudTooltip>
     </MudStack>
 }
 else
@@ -38,8 +46,10 @@ else
             </MudChip>
 
         </MudStack>
-        <MudText Class=@("w-max align-end") Typo="Typo.caption">@timestamp</MudText>
+        <MudTooltip Style="z-index:1500 !important;" Text="@localTimestamp.ToString()" ShowOnHover=@timestampeShortend>
 
+            <MudText Class="w-max align-end" Typo="Typo.caption">@timestamp</MudText>
+        </MudTooltip>
     </MudStack>
 
 }

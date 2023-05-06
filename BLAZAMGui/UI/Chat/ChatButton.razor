@@ -1,7 +1,7 @@
 ﻿@inherits ChatComponentBase
 @if (UnreadMessages > 0)
 {
-    <MudBadge Content="@UnreadMessages" Color="Color.Error" Overlap=true Origin=Origin.TopLeft>
+    <MudBadge Content="@UnreadMessages" Color="Color.Error" Overlap=true Origin=Origin.TopLeft OnClick="@OnClick">
         <MudIconButton Class="@Class" OnClick="@OnClick"
                    Icon="@Icons.Material.Filled.MarkUnreadChatAlt" />
     </MudBadge>
