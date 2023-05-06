@@ -8,6 +8,7 @@ using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Serilog.Parsing;
 
 namespace BLAZAM.Services
 {
@@ -94,7 +95,17 @@ namespace BLAZAM.Services
             OU = new OUAudit(factory, userStateService);
             Logon = new LogonAudit(factory, userStateService);
         }
-
+        public async Task Searched(IDirectoryEntryAdapter searchedEntry)
+        {
+            if (searchedEntry is IADUser)
+                await User.Searched(searchedEntry);
+            else if (searchedEntry is IADGroup)
+                await Group.Searched(searchedEntry);
+            else if (searchedEntry is IADComputer)
+                await Computer.Searched(searchedEntry);
+            else if (searchedEntry is IADOrganizationalUnit)
+                await OU.Searched(searchedEntry);
+        }
 
     }
 
@@ -105,8 +116,13 @@ namespace BLAZAM.Services
         {
         }
 
+        public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
+         => await Log(t => t.DirectoryEntryAuditLogs,
+             AuditActions.OU_Deleted, deletedEntry);
+
+
         public override async Task<bool> Searched(IDirectoryEntryAdapter searchedOU)
-            => await Log<OUAuditLog>(c => c.OUAuditLog,
+            => await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs,
                 AuditActions.Group_Searched,
                 searchedOU);
 
@@ -119,7 +135,7 @@ namespace BLAZAM.Services
             {
                 newValues += c.Key + "=" + c.Value;
             }
-            await Log<OUAuditLog>(c => c.OUAuditLog, AuditActions.OU_Created, newOU, oldValues, newValues);
+            await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs, AuditActions.OU_Created, newOU, oldValues, newValues);
             return true;
         }
 
@@ -131,6 +147,12 @@ namespace BLAZAM.Services
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
+
+
+        public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
+         => await Log(t => t.DirectoryEntryAuditLogs,
+             AuditActions.Computer_Deleted, deletedEntry);
+
         public async Task<bool> Searched(IADComputer searchedComputer) => await Log(AuditActions.Computer_Searched, searchedComputer);
 
         private async Task<bool> Log(string action, IADComputer searchedComputer)
@@ -139,7 +161,7 @@ namespace BLAZAM.Services
             try
             {
                 using var context = await Factory.CreateDbContextAsync();
-                context.ComputerAuditLog.Add(new ComputerAuditLog
+                context.DirectoryEntryAuditLogs.Add(new ComputerAuditLog
                 {
                     Action = action,
                     Target = searchedComputer.CanonicalName,
@@ -162,12 +184,15 @@ namespace BLAZAM.Services
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
-        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedGroup) => await Log<GroupAuditLog>(c => c.GroupAuditLog, AuditActions.Group_Searched, searchedGroup);
+        public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
+         => await Log(t => t.DirectoryEntryAuditLogs,
+             AuditActions.Group_Deleted, deletedEntry);
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedGroup) => await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs, AuditActions.Group_Searched, searchedGroup);
 
         public override async Task<bool> Changed(IDirectoryEntryAdapter changedGroup, List<AuditChangeLog> changes)
         {
 
-            await Log<GroupAuditLog>(c => c.GroupAuditLog,
+            await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs,
                 AuditActions.Group_Edited,
                 changedGroup,
                 changes.GetValueChangesString(c => c.OldValue),
@@ -216,9 +241,18 @@ namespace BLAZAM.Services
         {
         }
 
-        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedUser) => await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.User_Searched, searchedUser);
+        public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
+            => await Log(t => t.DirectoryEntryAuditLogs,
+                AuditActions.User_Deleted, deletedEntry);
 
-        public async Task<bool> PasswordChanged(IDirectoryEntryAdapter searchedUser, bool requirePasswordChanged = false) => await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.Password_Changed, searchedUser, null, "requirePasswordChange=" + requirePasswordChanged);
+        public override async Task<bool> Searched(IDirectoryEntryAdapter searchedUser)
+            => await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs,
+                AuditActions.User_Searched,
+                searchedUser);
+
+        public async Task<bool> PasswordChanged(IDirectoryEntryAdapter searchedUser,
+            bool requirePasswordChanged = false)
+            => await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs, AuditActions.Password_Changed, searchedUser, null, "requirePasswordChange=" + requirePasswordChanged);
 
 
         public override async Task<bool> Created(IDirectoryEntryAdapter newUser)
@@ -229,13 +263,13 @@ namespace BLAZAM.Services
             {
                 newValues += c.Key + "=" + c.Value;
             }
-            await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.User_Created, newUser, oldValues, newValues);
+            await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs, AuditActions.User_Created, newUser, oldValues, newValues);
             return true;
         }
 
         public override async Task<bool> Changed(IDirectoryEntryAdapter changedUser, List<AuditChangeLog> changes)
         {
-            await Log<UserAuditLog>(c => c.UserAuditLog, AuditActions.User_Edited, changedUser, changes.GetValueChangesString(c => c.OldValue), changes.GetValueChangesString(c => c.NewValue));
+            await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs, AuditActions.User_Edited, changedUser, changes.GetValueChangesString(c => c.OldValue), changes.GetValueChangesString(c => c.NewValue));
             return true;
         }
 
@@ -263,7 +297,11 @@ namespace BLAZAM.Services
         {
             throw new NotImplementedException();
         }
+        public virtual async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
+        {
+            throw new NotImplementedException();
 
+        }
         public virtual Task<bool> Created(IDirectoryEntryAdapter newUser)
         {
             throw new NotImplementedException();
@@ -289,7 +327,7 @@ namespace BLAZAM.Services
             string action,
             IDirectoryEntryAdapter relatedEntry,
             string? beforeAction = null,
-            string? afterAction = null) where T : class, ICommonAuditLog, new()
+            string? afterAction = null) where T : class, IDirectoryEntryAuditLog, new()
         {
 
             try
@@ -300,6 +338,7 @@ namespace BLAZAM.Services
                 {
                     Action = action,
                     Target = relatedEntry.CanonicalName,
+                    Sid = relatedEntry.SID.ToSidString(),
                     BeforeAction = beforeAction,
                     AfterAction = afterAction,
                     Username = CurrentUser.AuditUsername

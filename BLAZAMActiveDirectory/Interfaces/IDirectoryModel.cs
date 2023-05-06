@@ -251,7 +251,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <returns></returns>
         Task Parse(DirectoryEntry result, IActiveDirectoryContext directory);
         Task Parse(SearchResult result, IActiveDirectoryContext directory);
-        bool MoveTo(IADOrganizationalUnit parentOUToMoveTo);
+        void MoveTo(IADOrganizationalUnit parentOUToMoveTo);
         Task<IADOrganizationalUnit?> GetParent();
 
         /// <summary>

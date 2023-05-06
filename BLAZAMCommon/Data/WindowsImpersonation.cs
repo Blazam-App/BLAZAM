@@ -67,7 +67,7 @@ namespace BLAZAM.Common.Data
 
 
 
-
+            if (ImpersonatedToken.IsInvalid) throw new ApplicationException("The impersonation user is invalid. Check settings.");
 
             //Console.WriteLine("Did LogonUser Succeed? " + (returnValue ? "Yes" : "No"));
             // Check the identity.

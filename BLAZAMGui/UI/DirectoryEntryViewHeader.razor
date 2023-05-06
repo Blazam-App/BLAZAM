@@ -1,3 +1,4 @@
+@using BLAZAM.Gui.UI.Chat
 @inherits DirectoryEntryViewBase
 @{
 
@@ -52,7 +53,7 @@
                                      ToggledColor="Color.Success" />
                 </MudTooltip>
             }
-          
+
 
             @if (DirectoryEntry.CanEdit)
             {
@@ -121,6 +122,13 @@
                                    aria-label="change password" />
                 </MudTooltip>
             }
+            @if (DirectoryEntry.CanEdit)
+            {
+                <MudTooltip Text="@AppLocalization["Change History"]">
+                    <MudIconButton OnClick="@ShowHistory" Icon="@Icons.Material.Filled.History" />
+                </MudTooltip>
+
+            }
         </MudToolBar>
     </MudHidden>
     <MudSpacer />
@@ -180,6 +188,10 @@
             {
                 <MudMenuItem OnClick="@DeleteUser">Delete...</MudMenuItem>
             }
+            @if (DirectoryEntry.CanEdit)
+            {
+                <MudMenuItem OnClick="@ShowHistory">Change History</MudMenuItem>
+            }
         </MudMenu>
     </MudHidden>
 </MudStack>
@@ -209,6 +221,7 @@
     {
         await OnRename.InvokeAsync();
     }
+
     [Parameter]
     public EventCallback OnChangeThumbnail { get; set; }
 
@@ -216,36 +229,51 @@
     {
         await OnChangeThumbnail.InvokeAsync();
     }
+
     [Parameter]
     public EventCallback OnResetPassword { get; set; }
     private async Task ResetPassword()
     {
         await OnResetPassword.InvokeAsync();
     }
+
     [Parameter]
     public EventCallback OnAssignTo { get; set; }
     private async Task Assign()
     {
         await OnAssignTo.InvokeAsync();
     }
+
     [Parameter]
     public EventCallback OnUnlock { get; set; }
     private async Task Unlock()
     {
         await OnUnlock.InvokeAsync();
     }
+
     [Parameter]
     public EventCallback OnEnable { get; set; }
     private async Task Enable()
     {
         await OnEnable.InvokeAsync();
     }
+
     [Parameter]
     public EventCallback OnDisable { get; set; }
+
+
     private async Task Disable()
     {
         await OnDisable.InvokeAsync();
     }
+
+    [Parameter]
+    public EventCallback OnShowHistory { get; set; }
+    private async Task ShowHistory()
+    {
+        await OnShowHistory.InvokeAsync();
+    }
+
     private bool _editMode = false;
     [Parameter]
     public EventCallback<bool> OnToggleEditMode { get; set; }
@@ -254,5 +282,5 @@
         _editMode = editEnabled;
         await OnToggleEditMode.InvokeAsync(editEnabled);
     }
-  
+
 }
