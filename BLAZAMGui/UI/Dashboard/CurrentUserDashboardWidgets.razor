@@ -2,21 +2,7 @@
 @using MudBlazor.Utilities;
 
 @inherits AppComponentBase
-<MudMenu>
-    <ActivatorContent>
-        <MudFab StartIcon="@Icons.Material.Filled.AddToHomeScreen" />
 
-    </ActivatorContent>
-    <ChildContent>
-        @foreach (var widget in allWidgets)
-        {
-            @if (!CurrentUser.State?.Preferences?.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType)==true)
-            {
-                <MudMenuItem OnClick="@(async()=>{await AddWidget(widget.WidgetType);})">@widget.Title</MudMenuItem>
-            }
-        }
-    </ChildContent>
-</MudMenu>
 <MudDropContainer @ref=widgetContainer
                   T="UserDashboardWidget" Items="CurrentUser.State?.Preferences?.DashboardWidgets.OrderBy(uw => uw.Slot).ThenBy(uw => uw.Order)"
                   ItemsSelector="ItemSelector"
@@ -56,8 +42,8 @@
         <MudCard Class="my-5 " Elevation="1">
             <MudCardHeader>
                 <MudText Typo="Typo.h6"> @widget.Title</MudText>
-                <MudSpacer/>
-                <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);})  />
+                <MudSpacer />
+                <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
 
             </MudCardHeader>
 
@@ -65,7 +51,22 @@
         </MudCard>
     </ItemRenderer>
 </MudDropContainer>
-
+<MudMenu Class="d-flex" Style="justify-content: flex-end;" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.BottomRight">
+    <ActivatorContent>
+        <MudTooltip Text="Add Widget">
+            <MudFab StartIcon="@Icons.Material.Filled.AddBox" />
+        </MudTooltip>
+    </ActivatorContent>
+    <ChildContent>
+        @foreach (var widget in allWidgets)
+        {
+            @if (!CurrentUser.State?.Preferences?.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType) == true)
+            {
+                <MudMenuItem OnClick="@(async()=>{await AddWidget(widget.WidgetType);})">@widget.Title</MudMenuItem>
+            }
+        }
+    </ChildContent>
+</MudMenu>
 
 
 
@@ -105,7 +106,7 @@
                 widget.Order++;
             }
         }
-     
+
         CurrentUser.State.SaveUserSettings();
         return Task.CompletedTask;
     }

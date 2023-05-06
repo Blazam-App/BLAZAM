@@ -1,0 +1,44 @@
+﻿@using BLAZAM.Database.Models.Audit;
+@inherits AppModalContent
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+    @if (_events.Count > 0)
+    {
+        <MudTimeline Class="mud-width-full">
+            @for (int i = 0; i < _events.Count; i++)
+            {
+                var ev = _events[i];
+                var align = i % 2 == 1 ? Align.End : Align.Start;
+                <MudTimelineItem Size=Size.Small Color="i==0?Color.Primary:Color.Default">
+                    <MudText Align=@align Typo="Typo.h6">@ev.Username</MudText>
+                    <MudText Align=@align>@ev.Action</MudText>
+                    <MudText Align="@align">
+                        <MudText Typo="Typo.caption">@ev.Timestamp.ToLocalTime()</MudText>
+                    </MudText>
+                    <MudText Align=@align Typo="Typo.body2">@ev.BeforeAction</MudText>
+                    <MudText Align=@align Typo="Typo.body2">@ev.AfterAction</MudText>
+                </MudTimelineItem>
+            }
+        </MudTimeline>
+    }
+    else
+    {
+        <MudText>There is no history for this entry.</MudText>
+    }
+</MudContainer>
+
+@code {
+    List<DirectoryEntryAuditLog> _events = new();
+    int _count;
+    [Parameter]
+    public IDirectoryEntryAdapter Model { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _events = await Context.DirectoryEntryAuditLogs.Where(l => l.Action != AuditActions.Computer_Searched
+            && l.Action != AuditActions.User_Searched
+            && l.Action != AuditActions.Group_Searched
+            && l.Action != AuditActions.OU_Searched
+            && l.Sid.Equals(Model.SID.ToSidString())).OrderByDescending(l => l.Timestamp).ToListAsync();
+        _count = _events.Count;
+    }
+}

@@ -19,9 +19,11 @@
 <MudTabs @bind-ActivePanelIndex="@ActiveTab">
     <MudTabPanel>
         <ChildContent>
-            <MudDataGrid Virtualize
+            <MudDataGrid Virtualize=true
+                         Height="300px"
                          ColumnResizeMode="ResizeMode.Container"
-                              Hideable
+                         FixedHeader=true
+                         Hideable=true
                          Items="@auditEntries.Where(ae=>ae.Action!="Login" && ae.Action!="Logout").OrderByDescending(ae=>ae.Timestamp)"
                          Filterable="false"
                          SortMode="@SortMode.Multiple"
@@ -36,28 +38,36 @@
                     <PropertyColumn Property="x => x.AfterAction" />
 
                 </Columns>
-                </MudDataGrid>
+            </MudDataGrid>
 
 
 
 
-            </ChildContent>
-            <TabContent>
-                @AppLocalization["Main"]
-            </TabContent>
-            </MudTabPanel>
-            <MudTabPanel>
-            <ChildContent>
-                <AuditHistoryChart ChartSeries="LoginSeries"/>
-                <MudChart ChartType="ChartType.Line"
+        </ChildContent>
+        <TabContent>
+            @AppLocalization["Main"]
+        </TabContent>
+    </MudTabPanel>
+    <MudTabPanel>
+        <ChildContent>
+            <AuditHistoryChart ChartSeries="LoginSeries" />
+            <MudChart ChartType="ChartType.Line"
                       ChartSeries="@LoginSeries"
                       XAxisLabels="@(allDates.Select(d=>d.ToLocalTime().ToString("M/d")).ToArray())"
                       Width="100%"
                       Height="350px"
                       ChartOptions="@LoginChartOptions"></MudChart>
 
-                <MudFab StartIcon="@Icons.Material.Filled.ShowChart" OnClick="ToggleLineMode" />
-                <MudDataGrid Virtualize ColumnResizeMode="ResizeMode.Container" Hideable Items="@auditEntries.Where(ae=>ae.Action=="Login" || ae.Action=="Logout").OrderByDescending(ae=>ae.Timestamp)" Filterable="false" SortMode="@SortMode.Multiple" Groupable="false">
+            <MudFab StartIcon="@Icons.Material.Filled.ShowChart" OnClick="ToggleLineMode" />
+            <MudDataGrid Virtualize=true
+                         Height="300px"
+                         FixedHeader=true
+                         ColumnResizeMode="ResizeMode.Container"
+                         Hideable=true
+                         Items="@logonEntries.Where(ae=>ae.Action=="Login" || ae.Action=="Logout").OrderByDescending(ae=>ae.Timestamp)"
+                         Filterable="false"
+                         SortMode="@SortMode.Multiple"
+                         Groupable="false">
                 <Columns>
                     <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" />
                     <PropertyColumn Property="x => x.Username" />
@@ -65,19 +75,27 @@
                     <PropertyColumn Property="x => x.Action" />
 
                 </Columns>
-                </MudDataGrid>
+            </MudDataGrid>
 
 
 
 
-            </ChildContent>
-            <TabContent>
-                @AppLocalization["Logins"]
-            </TabContent>
-            </MudTabPanel>
-            <MudTabPanel>
-            <ChildContent>
-                <MudDataGrid Virtualize ColumnResizeMode="ResizeMode.Container" Hideable Items="@systemAuditEntries.OrderByDescending(ae=>ae.Timestamp)" Filterable="false" SortMode="@SortMode.Multiple" Groupable="false">
+        </ChildContent>
+        <TabContent>
+            @AppLocalization["Logins"]
+        </TabContent>
+    </MudTabPanel>
+    <MudTabPanel>
+        <ChildContent>
+            <MudDataGrid Virtualize=true
+                         Height="300px"
+                         ColumnResizeMode="ResizeMode.Container"
+                         FixedHeader=true
+                         Hideable=true
+                         Items="@systemAuditEntries.OrderByDescending(ae=>ae.Timestamp)"
+                         Filterable="false"
+                         SortMode="@SortMode.Multiple"
+                         Groupable="false">
                 <Columns>
                     <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" />
                     <PropertyColumn Property="x => x.Username" />
@@ -88,24 +106,25 @@
                     <PropertyColumn Property="x => x.AfterAction" />
 
                 </Columns>
-                </MudDataGrid>
+            </MudDataGrid>
 
 
 
-            </ChildContent>
-            <TabContent>
-                @AppLocalization["System"]
-            </TabContent>
+        </ChildContent>
+        <TabContent>
+            @AppLocalization["System"]
+        </TabContent>
 
 
-            </MudTabPanel>
+    </MudTabPanel>
 
-            </MudTabs>
+</MudTabs>
 
 
             @code {
     IEnumerable<DateTime> allDates;
-    List<CommonAuditLog> auditEntries = new();
+    List<LogonAuditLog> logonEntries = new();
+    List<DirectoryEntryAuditLog> auditEntries = new();
     List<SystemAuditLog> systemAuditEntries = new();
     List<ChartSeries> LoginSeries = new();
     InterpolationOption _chartInterpolation = InterpolationOption.Straight;
@@ -120,16 +139,13 @@
         BaseUri = "/audit";
         using (var context = await DbFactory.CreateDbContextAsync())
         {
-            auditEntries = await context.LogonAuditLog.ToListAsync<CommonAuditLog>();
-            auditEntries.AddRange(context.UserAuditLog.ToList<CommonAuditLog>());
-            auditEntries.AddRange(context.GroupAuditLog.ToList<CommonAuditLog>());
-            auditEntries.AddRange(context.OUAuditLog.ToList<CommonAuditLog>());
-            auditEntries.AddRange(context.ComputerAuditLog.ToList<CommonAuditLog>());
+            auditEntries = await context.DirectoryEntryAuditLogs.ToListAsync();
+            logonEntries = await context.LogonAuditLog.ToListAsync();
 
             systemAuditEntries = await context.SystemAuditLog.ToListAsync();
 
 
-          
+
             var endDate = DateTime.Today;
 
             var startDate = endDate.AddDays(-14);
@@ -137,26 +153,26 @@
                                      .Select(d => startDate.AddDays(d));
 
             var loginCounts = from date in allDates
-                              join ae in auditEntries.Where(ae => ae.Action == "Login")
+                              join ae in logonEntries.Where(ae => ae.Action == "Login")
                               on date equals ae.Timestamp.Date into grp
                               select (double)grp.Count();
 
             var uniqueLoginCounts = from date in allDates
-                              join ae in auditEntries.Where(ae => ae.Action == "Login")
-                              on date equals ae.Timestamp.Date into grp
-                              select (double)grp.DistinctBy(g=>g.Username).Count();
+                                    join ae in logonEntries.Where(ae => ae.Action == "Login")
+                                    on date equals ae.Timestamp.Date into grp
+                                    select (double)grp.DistinctBy(g => g.Username).Count();
 
 
             loginChart.Data = loginCounts.ToArray();
             uniqueUsersChart.Data = uniqueLoginCounts.ToArray();
 
 
-          
+
             LoginSeries.Add(loginChart);
             LoginSeries.Add(uniqueUsersChart);
         }
 
-       
+
     }
     public async Task ToggleLineMode(MouseEventArgs args)
     {
