@@ -1,7 +1,7 @@
 ﻿namespace BLAZAM.Database.Models.Audit
 {
 
-    public class ComputerAuditLog : CommonAuditLog
+    public class ComputerAuditLog : DirectoryEntryAuditLog
     {
     }
 }

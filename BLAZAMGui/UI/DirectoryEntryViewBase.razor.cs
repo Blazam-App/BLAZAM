@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Gui.UI
 {
-    public class DirectoryEntryViewBase:AppComponentBase
+    public class DirectoryEntryViewBase : AppComponentBase
     {
         [Parameter]
         public IDirectoryEntryAdapter DirectoryEntry { get; set; }
-        
+
         protected bool EditMode { get; set; }
 
         protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = new List<CustomActiveDirectoryField>();
@@ -23,6 +23,7 @@ namespace BLAZAM.Gui.UI
         protected AppModal? MoveToModal { get; set; }
         protected AppModal? RenameModal { get; set; }
         protected AppModal? ChangePasswordModal { get; set; }
+        protected AppModal? ChangeHistoryModal { get; set; }
         protected SetSubHeader? SubHeader { get; set; }
 
 
@@ -32,21 +33,9 @@ namespace BLAZAM.Gui.UI
             await base.OnInitializedAsync();
             if (DirectoryEntry != null)
             {
-                switch (DirectoryEntry.GetType())
-                {
-                    case IADUser:
-                        await AuditLogger.User.Searched(DirectoryEntry);
-                        break;
-                    case IADGroup:
-                        await AuditLogger.User.Searched(DirectoryEntry);
-                        break;
-                    case IADComputer:
-                        await AuditLogger.User.Searched(DirectoryEntry);
-                        break;
-                    case IADOrganizationalUnit:
-                        await AuditLogger.User.Searched(DirectoryEntry);
-                        break;
-                }
+
+              
+
 
                 DirectoryEntry.OnModelChanged += async () =>
                 {
@@ -55,7 +44,7 @@ namespace BLAZAM.Gui.UI
 
                 DirectoryEntry.OnDirectoryModelRenamed += Renamed;
             }
-            if(Context!=null) 
+            if (Context != null)
                 CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
             LoadingData = false;
         }

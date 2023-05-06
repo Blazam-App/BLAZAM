@@ -15,7 +15,7 @@
 @code {
 
 
-    #nullable disable warnings
+#nullable disable warnings
 
     [Parameter]
     public IDirectoryEntryAdapter DirectoryModel { get; set; }
@@ -36,18 +36,22 @@
 
     async void MoveTo()
     {
-        if (await MessageService.Confirm("Are you sure you want to move this " + DirectoryModel.ObjectType.ToString().ToLower() + " to " + SelectedOU.CanonicalName + ". This will take effect immediately. Unsaved changes will remain.", "Confirm move"))
+        if (SelectedOU.DN.Equals(DirectoryModel.OU))
+        {
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " is aleady in that OU.", "No Change");
+            return;
+        }
+        if (await MessageService.Confirm("Are you sure you want to move this " + DirectoryModel.ObjectType.ToString().ToLower() + " to " + SelectedOU.CanonicalName, "Confirm move"))
         {
 
 
-            if (DirectoryModel.MoveTo(SelectedOU))
-            {
-                SnackBarService.Success(DirectoryModel.CanonicalName + " has been moved to " + SelectedOU.CanonicalName, "Moved");
-                await ModelChanged.InvokeAsync();
-                Close();
-                return;
-            }
-            SnackBarService.Error(DirectoryModel.CanonicalName + " was not able to be moved to " + SelectedOU.CanonicalName, "Move failed");
+            DirectoryModel.MoveTo(SelectedOU);
+
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been moved to " + SelectedOU.CanonicalName + ", but changes need to be saved.", "Moved");
+            await ModelChanged.InvokeAsync();
+            Close();
+            return;
+
 
         }
 

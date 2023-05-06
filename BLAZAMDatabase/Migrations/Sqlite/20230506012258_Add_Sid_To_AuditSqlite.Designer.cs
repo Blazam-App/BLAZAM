@@ -3,16 +3,19 @@ using System;
 using BLAZAM.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BLAZAM.Common.Migrations.Sqlite
+namespace BLAZAM.Database.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDatabaseContext))]
-    partial class SqliteDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230506012258_Add_Sid_To_AuditSqlite")]
+    partial class Add_Sid_To_AuditSqlite
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
@@ -458,7 +461,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.Audit.DirectoryEntryAuditLog", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.ComputerAuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -493,7 +496,45 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("DirectoryEntryAuditLogs");
+                    b.ToTable("ComputerAuditLog");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.GroupAuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AfterAction")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BeforeAction")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Sid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Target")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GroupAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.LogonAuditLog", b =>
@@ -528,6 +569,44 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.HasKey("Id");
 
                     b.ToTable("LogonAuditLog");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.OUAuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AfterAction")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BeforeAction")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Sid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Target")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OUAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.PermissionsAuditLog", b =>
@@ -664,6 +743,44 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.HasKey("Id");
 
                     b.ToTable("SystemAuditLog");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.UserAuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AfterAction")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BeforeAction")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Sid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Target")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.AuthenticationSettings", b =>
