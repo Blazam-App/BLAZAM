@@ -6,11 +6,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BLAZAM.Database.Migrations.Sqlite
 {
     /// <inheritdoc />
-    public partial class Add_ChatSqlite : Migration
+    public partial class Add_AppChat_AuditUpdateSqlite : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ComputerAuditLog");
+
+            migrationBuilder.DropTable(
+                name: "GroupAuditLog");
+
+            migrationBuilder.DropTable(
+                name: "OUAuditLog");
+
+            migrationBuilder.DropTable(
+                name: "UserAuditLog");
+
             migrationBuilder.CreateTable(
                 name: "ChatRooms",
                 columns: table => new
@@ -26,6 +38,26 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ChatRooms", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DirectoryEntryAuditLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Sid = table.Column<string>(type: "TEXT", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    Target = table.Column<string>(type: "TEXT", nullable: true),
+                    BeforeAction = table.Column<string>(type: "TEXT", nullable: true),
+                    AfterAction = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DirectoryEntryAuditLogs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -99,18 +131,6 @@ namespace BLAZAM.Database.Migrations.Sqlite
                         principalTable: "ChatMessages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UnreadChatMessages_ChatRooms_ChatRoomId",
-                        column: x => x.ChatRoomId,
-                        principalTable: "ChatRooms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UnreadChatMessages_UserSettings_UserId",
-                        column: x => x.UserId,
-                        principalTable: "UserSettings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -132,16 +152,6 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 name: "IX_UnreadChatMessages_ChatMessageId",
                 table: "UnreadChatMessages",
                 column: "ChatMessageId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UnreadChatMessages_ChatRoomId",
-                table: "UnreadChatMessages",
-                column: "ChatRoomId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UnreadChatMessages_UserId",
-                table: "UnreadChatMessages",
-                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -151,6 +161,9 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 name: "AppUserChatRoom");
 
             migrationBuilder.DropTable(
+                name: "DirectoryEntryAuditLogs");
+
+            migrationBuilder.DropTable(
                 name: "UnreadChatMessages");
 
             migrationBuilder.DropTable(
@@ -158,6 +171,82 @@ namespace BLAZAM.Database.Migrations.Sqlite
 
             migrationBuilder.DropTable(
                 name: "ChatRooms");
+
+            migrationBuilder.CreateTable(
+                name: "ComputerAuditLog",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    AfterAction = table.Column<string>(type: "TEXT", nullable: true),
+                    BeforeAction = table.Column<string>(type: "TEXT", nullable: true),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Target = table.Column<string>(type: "TEXT", nullable: true),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComputerAuditLog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupAuditLog",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    AfterAction = table.Column<string>(type: "TEXT", nullable: true),
+                    BeforeAction = table.Column<string>(type: "TEXT", nullable: true),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Target = table.Column<string>(type: "TEXT", nullable: true),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupAuditLog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OUAuditLog",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    AfterAction = table.Column<string>(type: "TEXT", nullable: true),
+                    BeforeAction = table.Column<string>(type: "TEXT", nullable: true),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Target = table.Column<string>(type: "TEXT", nullable: true),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OUAuditLog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserAuditLog",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    AfterAction = table.Column<string>(type: "TEXT", nullable: true),
+                    BeforeAction = table.Column<string>(type: "TEXT", nullable: true),
+                    IpAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Target = table.Column<string>(type: "TEXT", nullable: true),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAuditLog", x => x.Id);
+                });
         }
     }
 }

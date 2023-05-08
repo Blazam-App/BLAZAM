@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Database.Migrations.MySql
 {
     [DbContext(typeof(MySqlDatabaseContext))]
-    [Migration("20230506023847_Merge_DirectoryAuditTablesMySql")]
-    partial class Merge_DirectoryAuditTablesMySql
+    [Migration("20230508232628_Add_AppChat_AuditUpdateMySql")]
+    partial class Add_AppChat_AuditUpdateMySql
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -755,10 +755,6 @@ namespace BLAZAM.Database.Migrations.MySql
                     b.HasKey("Id");
 
                     b.HasIndex("ChatMessageId");
-
-                    b.HasIndex("ChatRoomId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("UnreadChatMessages");
                 });
@@ -1507,23 +1503,7 @@ namespace BLAZAM.Database.Migrations.MySql
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BLAZAM.Database.Models.Chat.ChatRoom", "ChatRoom")
-                        .WithMany()
-                        .HasForeignKey("ChatRoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("ChatMessage");
-
-                    b.Navigation("ChatRoom");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ActionAccessMapping", b =>
