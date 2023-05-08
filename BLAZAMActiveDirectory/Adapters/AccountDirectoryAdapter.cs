@@ -16,14 +16,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         const int ADS_UF_DONT_EXPIRE_PASSWD = 0x10000;
         const int ACCOUNT_ENABLE_MASK = 0xFFFFFFD;
 
-        DateTime ADS_NULL_TIME
-        {
-            get
-            {
-                var ads_null_time = DateTime.ParseExact("01/01/1601 12:00:00 AM", "MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
-                return DateTime.SpecifyKind(ads_null_time, DateTimeKind.Utc);
-            }
-        }
+        
 
 
         public virtual bool CanEnable { get => HasActionPermission(ObjectActions.Enable); }
@@ -31,8 +24,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual bool CanDisable { get => HasActionPermission(ObjectActions.Disable); }
 
         public virtual bool CanUnlock { get => HasActionPermission(ObjectActions.Unlock); }
-     
-       
+
+
         public bool CanSearchDisabled
         {
             get
@@ -59,10 +52,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
+                return LockoutTime != null;
 
-                var date = LockoutTime;
-                bool matches = date != null && !date.Equals(ADS_NULL_TIME) && !date.Equals(DateTime.MinValue);
-                return matches;
+                //var date = LockoutTime;
+                //bool matches = date != null && !date.Equals(ADS_NULL_TIME) && !date.Equals(DateTime.MinValue);
+                //return matches;
             }
             set
             {
@@ -166,15 +160,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
+                
                 var com = GetProperty<object>("accountExpires");
-                var time = com?.AdsValueToDateTime()?.ToLocalTime();
-                if (time == null || time == ADS_NULL_TIME || time == DateTime.MinValue) time = null;
+                var time = com?.AdsValueToDateTime();
+              
+                if (time != null)
+                    time = time?.ToLocalTime();
                 return time;
             }
             set
             {
 
-
+                if (value == null)
+                    value = CommonHelpers.ADS_NULL_TIME;
                 SetProperty("accountExpires", value?.ToUniversalTime().ToFileTime().ToString());
             }
         }

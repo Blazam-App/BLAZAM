@@ -7,9 +7,9 @@
         @{
             var avatarBgColor = GenerateAvatarColor(UserState.Username);
         }
-        @if (UserState.Messages?.Count > 0)
+        @if (UserState.Notifications?.Count > 0)
         {
-            <MudBadge Color=Color.Error Overlap=true Content="@UserState.Messages.Count">
+            <MudBadge Color=Color.Error Overlap=true Content="@UserState.Notifications.Count">
                 <CurrentUserAvatarIcon UserState="@UserState" />
             </MudBadge>
         }
@@ -23,7 +23,7 @@
         <MudText Typo=Typo.caption Class="my-1" Style="text-align:center">
             @CurrentUser.Username
         </MudText>
-        @if (UserState.Messages.Count > 0)
+        @if (UserState.Notifications?.Count > 0)
         {
             <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})">Notifications</MudMenuItem>
         }

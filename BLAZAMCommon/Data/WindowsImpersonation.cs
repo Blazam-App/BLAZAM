@@ -60,14 +60,14 @@ namespace BLAZAM.Common.Data
         {
             impersonationUser = user;
         }
-
+        public async Task<T> RunAsync<T>(Func<T> task) => await Task.Run(() => Run<T>(task));
         public T Run<T>(Func<T> task)
         {
 
 
 
 
-
+            if (ImpersonatedToken.IsInvalid) throw new ApplicationException("The impersonation user is invalid. Check settings.");
 
             //Console.WriteLine("Did LogonUser Succeed? " + (returnValue ? "Yes" : "No"));
             // Check the identity.

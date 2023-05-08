@@ -16,7 +16,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             IADOrganizationalUnit TopLevel = new ADOrganizationalUnit();
 
             await TopLevel.Parse(Directory.GetDirectoryEntry(), Directory);
-            _ = TopLevel.Children;
+            _ = TopLevel.SubOUs;
             return TopLevel;
         }
 
@@ -85,5 +85,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             return results.OrderByDescending(u => u.Created).ToList();
 
         }
+
+      
     }
 }

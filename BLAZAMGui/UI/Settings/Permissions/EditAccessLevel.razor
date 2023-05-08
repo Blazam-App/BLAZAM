@@ -140,7 +140,8 @@
 
                                     if (ShowField(field, objectMap.ObjectType))
                                     {
-                                        var existingFieldAccess = WorkingModel.FieldMap.Where(m => m.Field == field || m.CustomField == field).FirstOrDefault();
+                                        var existingFieldAccess = WorkingModel.FieldMap.Where(m => m.Field?.Equals(field)==true 
+                                        || m.CustomField?.Equals(field)==true).FirstOrDefault();
                                         if (existingFieldAccess == null)
                                         {
 
@@ -399,7 +400,6 @@
 
     void SetAllFieldAccessLevelsTo(int value)
     {
-        if (value == null) return;
         WorkingModel.FieldMap.ForEach(fm =>
 
         {

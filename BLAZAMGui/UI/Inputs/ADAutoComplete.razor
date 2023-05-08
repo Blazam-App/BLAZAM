@@ -1,18 +1,21 @@
 ﻿@inherits AutoCompleteComponentBase
 <MudAutocomplete Class="@Class"
+    Style="@Style"
                  Disabled=@Disabled
                  T="IDirectoryEntryAdapter"
                  Label="@Label"
                  @bind-Value="SelectedResult"
                  @bind-Text=@SearchTerm
-                 
                  SearchFuncWithCancel="@GetResults"
                  DebounceInterval=500
                  ResetValueOnEmptyText="true"
                  Validation="@Validation"
-                 CoerceText="@AllowCustomInput" CoerceValue="false"
+                 CoerceText="@AllowCustomInput"
+                 CoerceValue="false"
+                  MaxItems=@MaxResults
                  Clearable=true
                  Dense=true
+                 ShowProgressIndicator=true
                  ToStringFunc="item=>item?.CanonicalName"
                  AdornmentColor="Color.Secondary"
                  ProgressIndicatorColor="Color.Secondary"
@@ -20,43 +23,62 @@
                  AdornmentIcon="@AdornmentIcon"
                  Variant="@Variant">
     <ItemTemplate>
-        <FlexContainer Spacing="0">
-            <MudItem Class="w-min">
-                <MudIcon Icon="@context.TypeIcon()"/>
-                <MudText Color=Color.Dark Align="Align.Start" Typo="Typo.button">
-                    @context?.ObjectType
+        @{
+            var lockoutBadgeVisible = false;
+            var disabledBadgeVisible = false;
+            if (context != null && context is IAccountDirectoryAdapter gdm)
+            {
+                if (gdm.LockedOut)
+                {
+                    lockoutBadgeVisible = true;
 
-                    @if (context != null && context is IAccountDirectoryAdapter gdm)
-                    {
-                        if (gdm.LockedOut)
-                        {
+                }
+                if (!gdm.Enabled)
+                {
+                    disabledBadgeVisible = true;
 
-                            <MudBadge Overlap=true Color="Color.Warning">Locked</MudBadge>
+                }
+            }
+        }
 
-                        }
-                        if (!gdm.Enabled)
-                        {
+        <MudGrid Class="mud-width-full" Spacing="0">
+            <MudItem sm="12" md="2">
+                <MudIcon Icon="@context.TypeIcon()" />
 
-                            <MudBadge Overlap=true Color="Color.Error">Disabled</MudBadge>
 
-                        }
-                    }
-                </MudText>
             </MudItem>
-
             <MudItem sm="12" md="10">
-                <MudText Typo="Typo.subtitle2">
-                    @context?.CanonicalName
+                <MudStack Row=true Spacing="0">
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.subtitle2">
+                            @context?.CanonicalName
 
 
-                </MudText>
-                <MudText Typo="Typo.caption">
-                    @context.OU.ToPrettyOu()
-                </MudText>
+                        </MudText>
+                        <MudText Typo="Typo.caption">
+                            @context.OU.ToPrettyOu()
+                        </MudText>
+                    </MudStack>
+                    @if (lockoutBadgeVisible)
+                    {
+                        <MudChip Size=Size.Small Disabled=true Overlap=false Color="Color.Warning" Text=@("Locked") />
+                        
+                    }
+                    @if (disabledBadgeVisible)
+                    {
+                        <MudChip Size=Size.Small Disabled=true Overlap=false Color="Color.Error" Text=@("Disabled") />
+                        
+                    }
+                </MudStack>
+
+
             </MudItem>
-        </FlexContainer>
+
+        </MudGrid>
 
 
+
+        <MudDivider Class="mt-4" />
     </ItemTemplate>
     <NoItemsTemplate>
         @if (SearchTerm.IsNullOrEmpty())
@@ -87,15 +109,19 @@
     [Parameter]
     public string? Label { get; set; }
     [Parameter]
+    public string? Style { get; set; }
+    [Parameter]
     public Variant Variant { get; set; }
     [Parameter]
     public string? Class { get; set; }
     [Parameter]
     public string AdornmentIcon { get; set; } = Icons.Material.Filled.Search;
-    [Parameter]
-    public bool Multiple { get; set; }
+
     [Parameter]
     public bool Disabled { get; set; }
+
+    [Parameter]
+    public int MaxResults { get; set; } = 10;
 
     [Parameter]
     public bool AllowCustomInput { get; set; }
@@ -188,15 +214,15 @@
     {
         if (!token.IsCancellationRequested)
         {
-            SearchResults=new List<IDirectoryEntryAdapter>();
+            SearchResults = new List<IDirectoryEntryAdapter>();
 
             var search = new ADSearch();
 
             search.ObjectTypeFilter = SearchObjectType;
             search.GeneralSearchTerm = searchText.Replace(" ", "*");
             search.EnabledOnly = !SearchDisabled;
-            search.MaxResults = 10;
-            var temp = (await search.SearchAsync<DirectoryEntryAdapter,IDirectoryEntryAdapter>(token)).Where(r => r.CanRead);
+            search.MaxResults = MaxResults;
+            var temp = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token)).Where(r => r.CanRead);
 
             if (!token.IsCancellationRequested)
             {

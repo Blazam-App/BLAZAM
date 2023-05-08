@@ -1,0 +1,245 @@
+﻿@inherits AppComponentBase
+
+<MudText>@Label</MudText>
+
+<MudTreeView 
+    T="IDirectoryEntryAdapter"
+             ServerData="GetChildrenAsync"
+             Items="RootOU"
+             Dense="true"
+             Hover="true"
+             MaxHeight="400px"
+             Color="Color.Success"
+             @bind-SelectedValue="SelectedOU">
+    <ItemTemplate>
+        <MudTreeViewItem Value="@context"
+                         Items=@(context.CachedChildren.ToHashSet())
+                         LoadingIconColor="Color.Info"
+                         @bind-Expanded="@context.IsExpanded"
+                          @bind-Activated=context.IsSelected
+                         Text="@context.CanonicalName"
+                         Icon="@context.TypeIcon()"
+                         Class="minw-max w-100 overflow-x-auto"
+                         CanExpand=@(context.HasChildren)
+                         EndText="@EndText?.Invoke(context)">
+            @*<Content>
+            @{
+            string itemIcon = Icons.Material.Filled.Folder;
+            }
+            @if (context.IsExpanded)
+            {
+            itemIcon = Icons.Material.Filled.FolderOpen;
+            }
+            @if (Badge != null)
+            {
+            <MudBadge Content="Badge" Overlap="true" Class="mx-6 my-4">
+            <MudTreeViewItemToggleButton  Loading=@context.IsLoadingChildren @bind-Expanded="@context.IsExpanded" Visible="@context.HasChildren()" />
+            <MudIcon Icon="@itemIcon" Class="ml-0 mr-2" Color="@Color.Default" />
+            <MudText>@context.CanonicalName</MudText>
+
+            @EndAdornment?.Invoke(context)
+
+            </MudBadge>
+            }
+            else
+            {
+            <MudTreeViewItemToggleButton Loading=@context.IsLoadingChildren @bind-Expanded="@context.IsExpanded" Visible="@context.HasChildren()" />
+            <MudIcon Icon="@itemIcon" Class="ml-0 mr-2" Color="@Color.Default" />
+            <MudText>@context.CanonicalName</MudText>
+            @EndAdornment?.Invoke(context)
+            }
+            </Content>*@
+        </MudTreeViewItem>
+    </ItemTemplate>
+</MudTreeView>
+
+@if (RootOU == null || !RootOU.Any() || LoadingData)
+{
+    <MudProgressLinear Color="Color.Secondary" Indeterminate="true" />
+
+}
+
+
+
+@code {
+    #nullable disable warnings
+
+    [Parameter]
+    public bool StartRootExpanded { get; set; } = true;
+
+    [Parameter]
+    public string? Label { get; set; }
+    [Parameter]
+    public Func<IDirectoryEntryAdapter, string>? EndText { get; set; }
+
+
+    [Parameter]
+    public object? Badge { get; set; }
+
+
+    [Parameter]
+    public RenderFragment<IDirectoryEntryAdapter>? EndAdornment { get; set; }
+
+    IDirectoryEntryAdapter? _selectedNode;
+
+    [Parameter]
+    public HashSet<IDirectoryEntryAdapter> RootOU { get; set; } = new HashSet<IDirectoryEntryAdapter>();
+
+
+    IADOrganizationalUnit? _startingSelectedNode;
+    [Parameter]
+    public IADOrganizationalUnit? StartingSelectedOU
+    {
+        get => _startingSelectedNode; set
+        {
+            if (value == _startingSelectedNode) return;
+            _startingSelectedNode = value;
+            _selectedNode = value;
+
+
+            StartingSelectedOUChanged.InvokeAsync(value);
+        }
+
+    }
+
+    [Parameter]
+    public EventCallback<IDirectoryEntryAdapter> StartingSelectedOUChanged
+    {
+        get; set;
+    }
+
+    [Parameter]
+    public IDirectoryEntryAdapter? SelectedOU
+    {
+        get => _selectedNode; set
+        {
+            if (value == _selectedNode) return;
+            if (value != null && value.CanRead)
+            {
+                _selectedNode = value;
+                //if (TopLevel == null)
+                //    OnInitializedAsync();
+                //OpenToSelected();
+                SelectedOUChanged.InvokeAsync(value);
+            }
+        }
+
+    }
+
+    [Parameter]
+    public EventCallback<IDirectoryEntryAdapter> SelectedOUChanged { get; set; }
+
+    ADOrganizationalUnit TopLevel;
+
+
+    MudTreeView<IDirectoryEntryAdapter>? OUTree { get; set; }
+
+
+    IList<IDirectoryEntryAdapter> ExpandedNodes = new List<IDirectoryEntryAdapter>();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+
+
+        //await InvokeAsync(StateHasChanged);
+
+        await InitializeTreeView();
+
+    }
+    async Task InitializeTreeView()
+    {
+        //Wait a few milliseconds to trip the async into acutally awaiting
+        await Task.Delay(500);
+
+        //ApplicationBaseOUs = Directory.OUs.FindSubOusByDN(null);
+
+
+        if (RootOU is null || RootOU.Count < 1)
+        {
+            TopLevel = new ADOrganizationalUnit();
+            await TopLevel.Parse(Directory.GetDirectoryEntry(), Directory);
+            _ = TopLevel.SubOUs;
+            RootOU = new HashSet<IDirectoryEntryAdapter>() { TopLevel };
+        }
+        if (StartingSelectedOU == null)
+        {
+            SelectedOU = TopLevel;
+        }
+        else
+            OpenToSelected();
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+    }
+    void OpenToSelected()
+    {
+        //ExpandedNodes.Clear();
+        //var newExpandedNodes = new List<IADOrganizationalUnit>(ExpandedNodes);
+        if (StartRootExpanded)
+        {
+            //newExpandedNodes.Add(TopLevel);
+            if (!SelectedOU.Equals(RootOU))
+            {
+                IDirectoryEntryAdapter? openThis = RootOU.First();
+                openThis.IsExpanded = true;
+                //while (openThis != null)
+                //{
+                //    var child = openThis.Children.Where(c => SelectedOU.DN.Contains(c.DN) && !SelectedOU.DN.Equals(c.DN)).FirstOrDefault();
+                //    if (child != null)
+                //    {
+                //        child.IsExpanded = true;
+                //        openThis = child;
+                //    }
+                //    else
+                //    {
+                //        var matchingOU = openThis.Children.Where(c => SelectedOU.DN.Equals(c.DN)).FirstOrDefault();
+                //        if (matchingOU!=null)
+                //            matchingOU.IsSelected = true;
+                //        break;
+                //    }
+
+                        
+                //}
+            }
+        }
+
+
+    }
+
+
+    async Task<HashSet<IDirectoryEntryAdapter>> GetChildrenAsync(IDirectoryEntryAdapter parentNode)
+    {
+        return await Task.Run(() =>
+            {
+                return GetChildren(parentNode);
+
+            });
+    }
+
+    HashSet<IDirectoryEntryAdapter> GetChildren(IDirectoryEntryAdapter parentNode)
+    {
+
+        var children = parentNode.Children.ToHashSet();
+
+        return children;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

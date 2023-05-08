@@ -4,7 +4,9 @@
 @inherits ValidatedForm
 @inject IJSRuntime JSRuntime
 @layout LoginLayout
-@{
+@if (attemptingSignIn)
+{
+    <MudProgressLinear Color="Color.Info" Indeterminate=true />
 }
 <MudContainer Class="py-5">
 
@@ -22,7 +24,7 @@
 
     </MudElement>
     <form onsubmit="@AttemptSignIn" class="login-form" method="post" action="/signin" id="login-form">
-        <MudContainer  Style="max-width:300px;" Class="py-4">
+        <MudContainer Style="max-width:300px;" Class="py-4">
             @if (!ApplicationInfo.InDemoMode || DemoCustomLogin)
             {
 
@@ -32,8 +34,8 @@
 
                 <MudTextField Disabled=@attemptingSignIn Class="justify-center" Label="Password" name="Password" InputType="InputType.Password" @bind-Value=LoginRequest.Password />
                 <MudTextField Class="d-none" name="ReturnUrl" Value="@redirectUrl" />
-                    <MudButton OnClick=@(()=>{attemptingSignIn=true;})  Class="my-5" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</MudButton>
-                     
+                <MudButton OnClick=@(()=>{attemptingSignIn=true;}) Class="my-5" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</MudButton>
+
                 <br />
 
             }
@@ -45,22 +47,23 @@
                     <MudTextField name="password" InputType="InputType.Password" Value=@("demo") hidden />
                     <MudTextField name="ReturnUrl" Value="@redirectUrl" />
                 </MudContainer>
-
+                <LoginConnectionWarnings />
                 <MudButtonGroup Color=Color.Primary Variant="Variant.Outlined">
-                 
 
-                        <MudButton OnClick=@(()=>{attemptingSignIn=true;}) Disabled=@attemptingSignIn Class="my-6" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
-                
+
+                    <MudButton Disabled=@attemptingSignIn Class="my-6" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
+
                     <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
-                            <MudMenuItem OnClick=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</MudMenuItem>
+                        <MudMenuItem OnClick=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</MudMenuItem>
                     </MudMenu>
                 </MudButtonGroup>
 
             }
-            
+
         </MudContainer>
-       <MudOverlay Visible="attemptingSignIn" DarkBackground="true" Absolute="true">
-            <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+
+        <MudOverlay Visible="attemptingSignIn" DarkBackground="true" Absolute="true">
+            @*<MudProgressCircular Color="Color.Secondary" Indeterminate="true" />*@
         </MudOverlay>
     </form>
 
@@ -110,16 +113,18 @@
     }
     async void AttemptSignIn()
     {
+        attemptingSignIn = true;
+        await InvokeAsync(StateHasChanged);
         string? authenticationResult;
         if (ValidateInput(out authenticationResult))
-            authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn",null);
+            authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn", null);
 
 
+        attemptingSignIn = false;
 
         if (!authenticationResult.IsNullOrEmpty())
         {
             int resultCode = int.Parse(authenticationResult);
-            attemptingSignIn = false;
 
             switch ((LoginResultStatus)resultCode)
             {
@@ -154,20 +159,22 @@
                     break;
                 case LoginResultStatus.OK:
                     attemptingSignIn = true;
-                    Nav.NavigateTo(redirectUrl,true);
+                    Nav.NavigateTo(redirectUrl, true);
                     break;
             }
-            await InvokeAsync(StateHasChanged);
+
         }
+
+        await InvokeAsync(StateHasChanged);
     }
     bool ValidateInput(out string? validationResult)
     {
         validationResult = null;
         if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !DemoCustomLogin)) return true;
-      
-            
-            if (LoginRequest.Password.IsNullOrEmpty())
-                validationResult = ((int)LoginResultStatus.NoPassword).ToString();
+
+
+        if (LoginRequest.Password.IsNullOrEmpty())
+            validationResult = ((int)LoginResultStatus.NoPassword).ToString();
         if (LoginRequest.Username.IsNullOrEmpty())
             validationResult = ((int)LoginResultStatus.NoUsername).ToString();
         return false;

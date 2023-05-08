@@ -3,9 +3,13 @@
     <TitleContent>
         <MudStack Row=true>
             <MudText Typo="Typo.h6">
-
+               @if(Group!=null){
                 @Group?.CanonicalName
-            </MudText>
+               }else {
+                    @("Group not found")
+
+                }
+                </MudText>
 
             <MudSwitch Label="Super User Group" Checked="Level?.IsSuperAdmin" Disabled />
         </MudStack>
@@ -69,7 +73,7 @@
         SnackBarService.Success("Permission Delegate removed.");
         await DelegateDeleted.InvokeAsync();
     }
-    private async void Save()
+    protected async override void Save()
     {
         collapse1Visible = false;
         Level.DelegateSid = Group.SID;

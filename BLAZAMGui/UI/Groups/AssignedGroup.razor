@@ -22,9 +22,7 @@
     else
     {
         <MudCardHeader>
-            <Accordion>
-                <Collapse Visible="@collapse1Visible">
-                    <CollapseHeader>
+
                         <MudText Typo ="Typo.h1" Size="HeadingSize.Is5">
 
                             <MudButton OnClick="@(()=>collapse1Visible = !collapse1Visible)">
@@ -39,9 +37,8 @@
 
                         </MudText>
 
-                    </CollapseHeader>
-                    <CollapseBody>
-                        @if (collapse1Visible && Group.IsAGroupMember)
+               
+                        @if (collapse1Visible && Group?.IsAGroupMember==true)
                         {
                             var deniedRead = false;
 
@@ -59,17 +56,14 @@
 
                             if (deniedRead)
                             {
-                                <Column ColumnSize="ColumnSize.Is6.OnDesktop">
+                                <MudText>
                                     The user is in more groups you don't have access to
-                                </Column>
+                                </MudText>
                             }
 
 
                         }
-                    </CollapseBody>
-                </Collapse>
-
-            </Accordion>
+                   
         </MudCardHeader>
 
     }

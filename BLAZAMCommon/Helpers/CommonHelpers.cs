@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
@@ -15,7 +16,7 @@ namespace BLAZAM.Helpers
 {
     public static class CommonHelpers
     {
-        public static double Round(this double number , int decimalPlaces = 0)
+        public static double Round(this double number, int decimalPlaces = 0)
         {
             return Math.Round(number, decimalPlaces);
         }
@@ -66,10 +67,10 @@ namespace BLAZAM.Helpers
         {
             List<AuditChangeLog> changes = new();
             // Get the properties of the object type
-            PropertyInfo[] properties=new PropertyInfo[0];
+            PropertyInfo[] properties = new PropertyInfo[0];
             if (changed is not null)
                 properties = changed.GetType().GetProperties();
-            else if(original is not null)
+            else if (original is not null)
                 properties = original.GetType().GetProperties();
 
             // Iterate over each property
@@ -212,7 +213,7 @@ namespace BLAZAM.Helpers
 
 
 
-     
+
 
         public static string ToSidString(this byte[] sid)
         {
@@ -258,15 +259,15 @@ namespace BLAZAM.Helpers
         }
 
 
-        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T>action) 
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
         {
-            
-                var enumerator = enumerable.GetEnumerator();
-                while (enumerator.MoveNext())
-                {
-                    action.Invoke((T)enumerator.Current);
-                }
-            
+
+            var enumerator = enumerable.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                action.Invoke((T)enumerator.Current);
+            }
+
         }
 
         #region ADSI Extension Methods
@@ -314,6 +315,7 @@ namespace BLAZAM.Helpers
         //1743527936
         public static DateTime? AdsValueToDateTime(this object value)
         {
+            DateTime? dateTime = null;
             //read file time 133213804065419619
             try
             {
@@ -328,14 +330,14 @@ namespace BLAZAM.Helpers
                 catch (Exception)
                 {
 
+                    
                 }
                 if (longInt != null)
-                    return DateTime.FromFileTimeUtc(longInt.Value);
+                {
+                    dateTime = DateTime.FromFileTimeUtc(longInt.Value);
+                }
                 else
                 {
-
-
-
                     IADsLargeInteger? v = value as IADsLargeInteger;
 
                     if (null == v) return DateTime.MinValue;
@@ -343,12 +345,24 @@ namespace BLAZAM.Helpers
                     long dV = ((long)v.HighPart << 32) + v.LowPart;
 
 
-                    return DateTime.FromFileTimeUtc(dV);
+                    dateTime = DateTime.FromFileTimeUtc(dV);
                 }
             }
             catch
             {
                 return null;
+            }
+            if (dateTime == null || dateTime.Equals(ADS_NULL_TIME) || dateTime.Equals(DateTime.MinValue))
+                dateTime = null;
+            return dateTime;
+        }
+
+        public static DateTime ADS_NULL_TIME
+        {
+            get
+            {
+                var ads_null_time = DateTime.ParseExact("01/01/1601 12:00:00 AM", "MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                return DateTime.SpecifyKind(ads_null_time, DateTimeKind.Utc);
             }
         }
 

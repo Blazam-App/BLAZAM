@@ -53,14 +53,16 @@
                 <MudMainContent Class="mud-height-full">
                     @if (SubHeader != null)
                     {
-                        <MudAppBar Color=Color.Primary Style="top:64px;" Elevation="1">
+                        <MudAppBar Color=Color.Primary Class="app-subheader" Elevation="1">
                             @SubHeader?.ChildContent
                         </MudAppBar>
                         topMarginForContent = "margin-top:64px;";
                     }
 
 
-                    <MudContainer Style="@topMarginForContent" MaxWidth="MaxWidth.Large" Class="pt-5 mud-height-full">
+                    <MudContainer Style="@topMarginForContent"
+                                  MaxWidth="MaxWidth.Large"
+                                  Class="pt-5 pb-10 mud-height-full">
 
 
                         @Body
@@ -68,12 +70,16 @@
                         <AppUserPageTracker />
                         <DirectoryConnectingIndicator />
 
-                        <AppFooter />
-
                     </MudContainer>
 
                 </MudMainContent>
-
+                <MudAppBar Style="height:35px;" DisableGutters=true Bottom=true Dense=true Color=Color.Dark Elevation="1">
+                    <MudStack Class="mud-width-full pa-0 ma-0 ps-3" Row=true>
+                        <AppFooter Class="align-middle"/>
+                        
+                        <AppChat />
+                    </MudStack>
+                </MudAppBar>
                 <NotificationBroadcastListener />
             </Authorized>
             <NotAuthorized>
@@ -124,7 +130,7 @@
     public void SetHeader(SetHeader? setHeader)
     {
         Header = (setHeader);
-        if (setHeader != null)
+        if (Header != null)
 
             Header.OnRefreshRequested += (async () => { await InvokeAsync(StateHasChanged); });
 
@@ -136,7 +142,7 @@
     public void SetSubHeader(SetSubHeader? setSubHeader)
     {
         SubHeader = (setSubHeader);
-        if (setSubHeader != null)
+        if (SubHeader != null)
             SubHeader.OnRefreshRequested += (async () => { await InvokeAsync(StateHasChanged); });
 
         //StateHasChanged();

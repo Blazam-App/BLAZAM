@@ -14,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
+using BLAZAM.Database.Models.Chat;
+using BLAZAM.Server.Data;
 
 namespace BLAZAM.Database.Context
 {
@@ -23,10 +25,10 @@ namespace BLAZAM.Database.Context
 
 
 
-       
+
         public DatabaseConnectionString? ConnectionString { get; set; }
 
-        
+
         public virtual ServiceConnectionState Status
         {
             get
@@ -47,7 +49,7 @@ namespace BLAZAM.Database.Context
             }
         }
         static IEnumerable<string> _appliedMigrations;
- 
+
 
 
         public virtual IEnumerable<string> AppliedMigrations
@@ -78,7 +80,7 @@ namespace BLAZAM.Database.Context
         public DatabaseContextBase(DatabaseConnectionString databaseConnectionString) : base()
         {
             ConnectionString = databaseConnectionString;
-    
+
         }
 
 
@@ -86,7 +88,7 @@ namespace BLAZAM.Database.Context
 
 
 
-       
+
         public DatabaseContextBase(DbContextOptions options) : base(options)
         {
         }
@@ -101,17 +103,18 @@ namespace BLAZAM.Database.Context
         //User Tables
         public virtual DbSet<AppUser> UserSettings { get; set; }
         public virtual DbSet<UserNotification> UserNotifications { get; set; }
-        public virtual DbSet<UserDashboardWidget> UserDashboardWidgets{ get; set; }
+        public virtual DbSet<UserDashboardWidget> UserDashboardWidgets { get; set; }
         public virtual DbSet<NotificationMessage> NotificationMessages { get; set; }
 
 
         //Audit Logs
         public virtual DbSet<SystemAuditLog> SystemAuditLog { get; set; }
         public virtual DbSet<LogonAuditLog> LogonAuditLog { get; set; }
-        public virtual DbSet<UserAuditLog> UserAuditLog { get; set; }
-        public virtual DbSet<GroupAuditLog> GroupAuditLog { get; set; }
-        public virtual DbSet<ComputerAuditLog> ComputerAuditLog { get; set; }
-        public virtual DbSet<OUAuditLog> OUAuditLog { get; set; }
+        public virtual DbSet<DirectoryEntryAuditLog> DirectoryEntryAuditLogs { get; set; }
+        //public virtual DbSet<UserAuditLog> UserAuditLog { get; set; }
+        //public virtual DbSet<GroupAuditLog> GroupAuditLog { get; set; }
+        //public virtual DbSet<ComputerAuditLog> ComputerAuditLog { get; set; }
+        //public virtual DbSet<OUAuditLog> OUAuditLog { get; set; }
         public virtual DbSet<RequestAuditLog> RequestAuditLog { get; set; }
         public virtual DbSet<PermissionsAuditLog> PermissionsAuditLog { get; set; }
         public virtual DbSet<SettingsAuditLog> SettingsAuditLog { get; set; }
@@ -131,6 +134,10 @@ namespace BLAZAM.Database.Context
 
         public virtual DbSet<PermissionDelegate> PermissionDelegate { get; set; }
         public virtual DbSet<PermissionMapping> PermissionMap { get; set; }
+
+        public virtual DbSet<ChatRoom> ChatRooms { get; set; }
+        public virtual DbSet<ChatMessage> ChatMessages { get; set; }
+        public virtual DbSet<UnreadChatMessage> UnreadChatMessages { get; set; }
 
 
         //Templates
@@ -575,19 +582,43 @@ namespace BLAZAM.Database.Context
             {
                 entity.HasIndex(e => e.UserGUID).IsUnique();
                 entity.Navigation(e => e.Messages).AutoInclude();
+
                 entity.Navigation(e => e.DashboardWidgets).AutoInclude();
+                //entity.Navigation(e => e.UnreadChatMessages).AutoInclude();
+
             });
             modelBuilder.Entity<UserNotification>(entity =>
             {
                 entity.Navigation(e => e.Notification).AutoInclude();
             });
-  
+
 
 
             modelBuilder.Entity<PermissionDelegate>(entity =>
           {
               entity.HasIndex(e => e.DelegateSid).IsUnique();
           });
+
+            modelBuilder.Entity<ChatRoom>(entity =>
+            {
+                entity.HasMany(e => e.Members).WithMany();
+                entity.Navigation(e => e.Messages).AutoInclude();
+                entity.Navigation(e => e.Members).AutoInclude();
+            });
+            modelBuilder.Entity<ChatMessage>(entity =>
+            {
+
+                entity.Navigation(e => e.User).AutoInclude();
+
+            });
+
+            modelBuilder.Entity<UnreadChatMessage>(entity =>
+         {
+             entity.Navigation(e => e.ChatMessage).AutoInclude();
+
+         });
+
+
 
         }
 

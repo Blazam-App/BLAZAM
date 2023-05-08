@@ -1,6 +1,6 @@
 @inherits AppComponentBase
 @{
-    var messages = UserState.Messages?.Count;
+    var messages = UserState.Notifications?.Count;
 
 }
 @if (messages > 0)
@@ -17,7 +17,7 @@
 
         </MudStack>
         <MudStack Style="max-height:80vh;" Class="overflow-auto">
-        @foreach (var notification in UserState.Messages)
+        @foreach (var notification in UserState.Notifications)
         {
 
             <MudAlert OnClick=@(()=>{
@@ -63,7 +63,7 @@
 
     async Task MarkAllRead()
     {
-        foreach (var message in UserState.Messages)
+        foreach (var message in UserState.Notifications)
         {
             await UserState.MarkRead(message);
         }

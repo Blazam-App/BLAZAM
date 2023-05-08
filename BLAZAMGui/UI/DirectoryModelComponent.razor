@@ -101,19 +101,20 @@
             LoadingData = false;
 
         }
-        if(Group!=null)
+        if (Group != null)
             Group.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
         if (User != null)
             User.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
-        if(Computer!=null)
+        if (Computer != null)
             Computer.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
         if (OU != null)
             OU.OnModelChanged += (() => { InvokeAsync(StateHasChanged); });
 
-        CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
+        if (Context != null)
+            CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
         await InvokeAsync(StateHasChanged);
 
     }
@@ -172,5 +173,5 @@
     }
 
 
- 
+
 }

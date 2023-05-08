@@ -76,7 +76,7 @@ namespace BLAZAM.Database.Models
                 {
                     if (AppName.Length < 14)
                         return AppName;
-                    if (AppName.Contains(" "))
+                    if (AppName.Contains(' '))
                     {
                         var words = AppName.Split(' ');
                         string abb = "";

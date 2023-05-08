@@ -45,7 +45,7 @@
     <Content Update="UI\FlexContainer.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-    <Content Update="UI\PageSpecificChat.razor">
+    <Content Update="UI\Chat\PageSpecificChat.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
     <Content Update="UI\Section.razor">

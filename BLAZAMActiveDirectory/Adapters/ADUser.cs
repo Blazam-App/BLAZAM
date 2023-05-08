@@ -28,42 +28,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (SamAccountName == null) throw new ApplicationException("samaccount name not found!");
                 if (DirectorySettings == null) throw new ApplicationException("Directory settings not found when trying to change directory user password");
 
-                //using (PrincipalContext pContext = new PrincipalContext(
-                //   ContextType.Domain,
-                //   DirectorySettings.ServerAddress+":"+DirectorySettings.ServerPort,
-                //   DirectorySettings.ApplicationBaseDN,
-                //   ContextOptions.Negotiate | ContextOptions.SecureSocketLayer,
-                //   DirectorySettings.Username,
-                //   Encryption.Instance.DecryptObject<string>(DirectorySettings.Password)))
-                //{
-
-        //        LdapDirectoryIdentifier directoryIdentifier = new LdapDirectoryIdentifier(DirectorySettings.ServerAddress + ":686");
-        //        NetworkCredential credential = new NetworkCredential(DirectorySettings.Username, Encryption.Instance.DecryptObject<string>(DirectorySettings.Password), DirectorySettings.FQDN);
-
-        //        using (LdapConnection connection = new LdapConnection(directoryIdentifier, credential,AuthType.Negotiate))
-        //        {
-        //            connection.SessionOptions.ProtocolVersion = 3;
-        //            connection.SessionOptions.VerifyServerCertificate =
-        //new             VerifyServerCertificateCallback((con, cer) => true);
-        //            connection.SessionOptions.SecureSocketLayer = true;
-        //            connection.Bind();
-
-        //            var request = new ModifyRequest(this.DN, DirectoryAttributeOperation.Replace, "unicodePwd", Encoding.Unicode.GetBytes($"\"{password.ToPlainText()}\""));
-        //            var response = (ModifyResponse)connection.SendRequest(request);
-
-        //            if (response.ResultCode != ResultCode.Success)
-        //            {
-        //                throw new Exception($"Error resetting password: {response.ResultCode}");
-        //            }
-        //        }
-
+                var directoryPassword = Encryption.Instance.DecryptObject<string>(DirectorySettings.Password);
+                if (directoryPassword == null) return false;
                 //TODO set password from outside the domain
-                //The following works only when Blazam is running on a domain joined computer
+                //The following works utside the domain but may havee issues with cerrts
                 using (PrincipalContext pContext = new PrincipalContext(
                     ContextType.Domain,
                     DirectorySettings.FQDN + ":" + DirectorySettings.ServerPort,
                     DirectorySettings.Username,
-                    Encryption.Instance.DecryptObject<string>(DirectorySettings.Password)))
+                    directoryPassword
+                    ))
                 {
 
 

@@ -8,15 +8,15 @@ namespace BLAZAM.Server.Data.Services
 
         private Dictionary<Type, object> _cache = new Dictionary<Type, object>();
 
-        public T? Get<T>(Type key)
+        public T Get<T>(Type key) where T : new()
         {
             try
             {
-                return _cache.Keys.Contains(key) ? (T)_cache[key] : default(T);
+                return _cache.Keys.Contains(key) ? (T)_cache[key] : new T();
             }
             catch
             {
-                return default(T);
+                return new T();
             }
         }
 

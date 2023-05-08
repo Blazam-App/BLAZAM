@@ -6,6 +6,7 @@ using BLAZAM.Common.Data.Services;
 using BLAZAM.Logger;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
+using System.Net.Sockets;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -46,7 +47,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// The online status of this computer right now.
         /// Null when still checking, otherwise True or False
         /// </summary>
-        public virtual bool? Online
+        public virtual bool? IsOnline
         {
             get => online; protected set
             {
@@ -57,6 +58,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     OnOnlineChanged?.Invoke((bool)value);
             }
         }
+        public List<ComputerService> Services => wmiConnection.Services;
         public ComputerMemory Memory =>wmiConnection?.Memory ?? new();
         public int Processor => wmiConnection.Processor;
         public double MemoryUsedPercent => wmiConnection.Memory.PercentUsed;
@@ -143,12 +145,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                     {
                                         if (response.Status == IPStatus.Success)
                                         {
-                                            Online = true;
+                                            IsOnline = true;
                                             return;
                                         }
                                         else if (response.Status == IPStatus.TimedOut)
                                         {
-                                            Online = false;
+                                            IsOnline = false;
                                             return;
 
                                         }
@@ -166,6 +168,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         } while (x < retries);
 
                     }
+                    catch(SocketException ex)
+                    {
+
+                    }
                     catch (Exception ex)
                     {
                         Loggers.ActiveDirectryLogger.Error(ex.Message);
@@ -173,7 +179,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                 }
 
-                Online = false;
+                IsOnline = false;
 
             }, cts.Token);
             await Task.Delay(1000);
