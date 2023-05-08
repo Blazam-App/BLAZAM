@@ -15,13 +15,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      #- name: Cache Nuget Packages
-      #  uses: actions/cache@v1
-      #  with:
-      #    path: ~/.nuget/packages
-      #    key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-      #    restore-keys: |
-      #      ${{ runner.os }}-nuget-
+      - name: Cache Nuget Packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1
         with:
@@ -30,8 +30,8 @@ jobs:
         run: dotnet restore
       - name: Build application
         run: dotnet publish -c Release -o bin/publish BLAZAM/BLAZAM.csproj
-      #- name: Test application
-      #  run: dotnet test -c Release
+      - name: Test application
+        run: dotnet test -c Release
 
       - name: Set assembly version as environment variable
         shell: pwsh
