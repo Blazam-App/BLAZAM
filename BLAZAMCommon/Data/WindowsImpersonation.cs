@@ -29,7 +29,7 @@ namespace BLAZAM.Common.Data
                     if (false == returnValue)
                     {
                         int ret = Marshal.GetLastWin32Error();
-                        Loggers.ActiveDirectryLogger.Error("LogonUser failed with error code : {0}", ret);
+                        Loggers.ActiveDirectryLogger.Warning("LogonUser failed with error code : {0}", ret);
                         var exception = new System.ComponentModel.Win32Exception(ret);
                         if (exception.NativeErrorCode == 1326)
                         {

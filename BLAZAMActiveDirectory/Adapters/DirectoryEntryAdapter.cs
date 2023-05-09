@@ -580,12 +580,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return HasPermission(p => p.Where(pm =>
               pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
               om.Field?.FieldName == field.FieldName &&
-              om.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level
+              om.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level &&
+              om.ObjectType == ObjectType
               ))),
               p => p.Where(pm =>
               pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
               om.Field?.FieldName == field.FieldName &&
-              om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level
+              om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level &&
+              om.ObjectType == ObjectType
               )))
               );
             }

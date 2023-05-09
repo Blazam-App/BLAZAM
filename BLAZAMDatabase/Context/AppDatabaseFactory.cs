@@ -59,6 +59,7 @@ namespace BLAZAM.Database.Context
         }
 
         public async Task<IDatabaseContext> CreateDbContextAsync() => await Task.Run(() => { return CreateDbContext(); });
+       
         public IDatabaseContext CreateDbContext()
         {
             var _dbType = _configuration.GetValue<string>("DatabaseType");
@@ -73,16 +74,16 @@ namespace BLAZAM.Database.Context
 
 
                 case "sql":
-                    databaseContext = new SqlDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("SQLConnectionString"), DatabaseType.SQL));
+                    databaseContext = new SqlDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("DBConnectionString"), DatabaseType.SQL));
 
                     break;
                 case "sqlite":
 
-                    databaseContext = new SqliteDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("SQLiteConnectionString"), DatabaseType.SQLite));
+                    databaseContext = new SqliteDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("DBConnectionString"), DatabaseType.SQLite));
                     break;
 
                 case "mysql":
-                    databaseContext = new MySqlDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("MySQLConnectionString"), DatabaseType.MySQL));
+                    databaseContext = new MySqlDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("DBConnectionString"), DatabaseType.MySQL));
                     break;
 
             }

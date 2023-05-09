@@ -191,8 +191,7 @@
                                 <MudStack Row Class="@_fieldMudStackClasses">
 
 
-                                    @if (User.CanReadField(ActiveDirectoryFields.SAMAccountName))
-                                    {
+                              
 
                                         <MudStack Row=true Spacing="0">
 
@@ -204,7 +203,7 @@
 
                                         </MudStack>
 
-                                    }
+                                    
 
                                     @if (User.NewEntry)
                                     {
@@ -219,8 +218,7 @@
                                                      InputType="InputType.Password" />
                                     }
 
-                                    @if (User.CanReadField(ActiveDirectoryFields.Mail))
-                                    {
+                                  
                                         <MudStack Row=true Spacing="0">
                                             <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"
                                                          @bind-Value="@User.Email"
@@ -230,7 +228,7 @@
                                         </MudStack>
 
 
-                                    }
+                                    
                                     @if (User.CanReadField(ActiveDirectoryFields.AccountExpires))
                                     {
                                         <DynamicMudInput T=DateTime?
@@ -445,8 +443,9 @@
                 return true;
             });
         }
-        catch
+        catch(Exception ex)
         {
+            Loggers.ActiveDirectryLogger.Warning("Error checking user h-drive: {Message}", ex);
 
         }
 

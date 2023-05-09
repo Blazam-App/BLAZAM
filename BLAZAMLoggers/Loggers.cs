@@ -41,9 +41,11 @@ namespace BLAZAM.Logger
                         //lc.WriteTo.Console();
                         lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
                     })
-
+                    .WriteTo.Seq("http://logs.blazam.org:5341", apiKey: "8TeLknA8XBk5ybamT5m9", restrictedToMinimumLevel: LogEventLevel.Warning)
                     .CreateLogger();
             SystemLogger = Log.Logger;
+
+            //Serilog.Debugging.SelfLog.Enable(Console.Error);
         }
 
         private static Serilog.ILogger SetupLogger(string logFilePath,RollingInterval rollingInterval=RollingInterval.Hour)
@@ -61,6 +63,7 @@ namespace BLAZAM.Logger
                    //lc.WriteTo.Console();
                    lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
                })
+               .WriteTo.Seq("http://logs.blazam.org:5341",apiKey: "8TeLknA8XBk5ybamT5m9", restrictedToMinimumLevel: LogEventLevel.Warning)
 
                .CreateLogger();
         }

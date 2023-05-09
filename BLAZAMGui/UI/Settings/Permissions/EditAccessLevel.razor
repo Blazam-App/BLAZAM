@@ -140,12 +140,13 @@
 
                                     if (ShowField(field, objectMap.ObjectType))
                                     {
-                                        var existingFieldAccess = WorkingModel.FieldMap.Where(m => m.Field?.Equals(field)==true 
-                                        || m.CustomField?.Equals(field)==true).FirstOrDefault();
+                                        var existingFieldAccess = WorkingModel.FieldMap.Where(m =>m.ObjectType.Equals(objectMap.ObjectType)
+                                        && ( m.Field?.Equals(field)==true 
+                                        || m.CustomField?.Equals(field)==true)).FirstOrDefault();
                                         if (existingFieldAccess == null)
                                         {
 
-                                            <MudMenuItem OnClick="()=>AddFieldAccess(field)">@AppLocalization[field.DisplayName]</MudMenuItem>
+                                            <MudMenuItem OnClick="()=>AddFieldAccess(field,objectMap.ObjectType)">@AppLocalization[field.DisplayName]</MudMenuItem>
 
 
                                         }
@@ -326,7 +327,7 @@
 
         StateHasChanged();
     }
-    private void AddFieldAccess(IActiveDirectoryField fieldToAdd)
+    private void AddFieldAccess(IActiveDirectoryField fieldToAdd,ActiveDirectoryObjectType objectType)
     {
         if (fieldToAdd is ActiveDirectoryField adField)
         {
@@ -334,6 +335,7 @@
                 {
                     Field = adField,
                     FieldAccessLevelId = FieldAccessLevels.Read.Id,
+                    ObjectType=objectType
                 });
         }
         else if (fieldToAdd is CustomActiveDirectoryField customField)
@@ -341,7 +343,9 @@
             WorkingModel.FieldMap.Add(new FieldAccessMapping()
                 {
                     CustomField = customField,
-                    FieldAccessLevelId = FieldAccessLevels.Deny.Id
+                    FieldAccessLevelId = FieldAccessLevels.Read.Id,
+                    ObjectType = objectType
+
                 });
         }
         StateHasChanged();
