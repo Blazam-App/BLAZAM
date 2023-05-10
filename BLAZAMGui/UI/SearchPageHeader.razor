@@ -37,7 +37,7 @@
             </MudMenu>
 
 
-            @if (CurrentUser.State?.IsSuperAdmin == true || CurrentUser.State?.CanSearchDisabled(ActiveDirectoryObjectType.User) == true)
+            @if (IsAdmin == true || CurrentUser.State?.CanSearchDisabled(ActiveDirectoryObjectType.User) == true)
             {
                 var buttonColor = Color.Error;
                 if (!SearchService.IncludeDisabled)

@@ -198,6 +198,7 @@
                 {
                     newUser.MoveTo(selectedOU);
                 }
+                SelectedStep = 4;
             }
         });
 
@@ -232,10 +233,10 @@
             try
             {
                 if (fieldValue.Field != null)
-                if(fieldValue.Field.FieldName.ToLower()=="homedirectory")
+                    if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
                         newUser.HomeDirectory = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
-                else
-                    newUser.NewEntryProperties[fieldValue.Field.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+                    else
+                        newUser.NewEntryProperties[fieldValue.Field.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
                 else if (fieldValue.CustomField != null)
                     newUser.NewEntryProperties[fieldValue.CustomField.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
             }
@@ -259,14 +260,14 @@
                 newUser.AssignTo(group);
 
         });
-        if (SelectedTemplate.HasEmptyFields())
+        if (IsAdmin || SelectedTemplate.HasEmptyFields())
         {
             SelectedStep = 2;
         }
         else
         {
             //Go to confirm step
-            SelectedStep = 5;
+            SelectedStep = 6;
 
         }
         LoadingData = false;

@@ -109,7 +109,7 @@
                 </MudNavGroup>
 
             </MudNavGroup>
-            @if (ApplicationInfo.InDebugMode && CurrentUser.State.IsSuperAdmin)
+            @if (ApplicationInfo.InDebugMode && IsAdmin)
             {
                 <MudNavLink OnClick="@(()=>{Chat.DeleteAllChatRooms();})" Icon="@Icons.Material.Filled.Clear">Delete All Chat Rooms</MudNavLink>
             }

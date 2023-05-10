@@ -1051,6 +1051,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual bool Rename(string newName)
         {
+            newName = newName.Replace(",", "\\,");
             DirectoryEntry?.Rename("cn=" + newName);
             OnDirectoryModelRenamed?.Invoke(this);
             return true;

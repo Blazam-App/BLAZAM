@@ -1,7 +1,7 @@
 ﻿@using BLAZAM.Database.Models.Templates;
 @inherits DirectoryModelComponent
 
-<div Padding="Padding.Is3">
+<MudElement Class="mx-auto">
     <EditForm Model="User">
 
 
@@ -13,7 +13,7 @@
                 {
                     adminEnabledHelperText = "Field unlocked because you are admin.";
                     <MudAlert Class="mud-alert-info">
-                        All fields are editable becausse you are an admin.
+                        All fields are editable because you are an admin.
                     </MudAlert>
                 }
             }
@@ -42,7 +42,7 @@
                     {
 
 
-                        <MudTextField Label="@AppLocalization["Email Address"]" HelperText="@adminEnabledHelperText" @bind-Value="User.Email" />
+                        <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="User.Email" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Mail)) />
 
 
 
@@ -258,7 +258,7 @@
 
 
     </EditForm>
-</div>
+</MudElement>
 
 
 
