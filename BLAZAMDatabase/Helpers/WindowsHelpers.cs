@@ -15,5 +15,14 @@ namespace BLAZAM.Helpers
                 Password = Encryption.Instance.DecryptObject<string>(settings.Password).ToSecureString()
             });
         }
+        public static WindowsImpersonation CreateWindowsImpersonator(this AppSettings settings)
+        {
+            return new(new()
+            {
+                FQDN = settings.UpdateDomain,
+                Username = settings.UpdateUsername,
+                Password = Encryption.Instance.DecryptObject<string>(settings.UpdatePassword).ToSecureString()
+            });
+        }
     }
 }

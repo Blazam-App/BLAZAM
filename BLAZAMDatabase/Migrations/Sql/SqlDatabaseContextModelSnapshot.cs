@@ -456,6 +456,18 @@ namespace BLAZAM.Common.Migrations.Sql
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UpdateDomain")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatePassword")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdateUsername")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("UseUpdateCredentials")
+                        .HasColumnType("bit");
+
                     b.Property<string>("UserHelpdeskURL")
                         .HasColumnType("nvarchar(max)");
 

@@ -8,8 +8,38 @@
 
     @if (settings != null)
     {
+        <SettingsField Label="@AppLocalization["Update Credentials"]">
 
+            <MudSwitch @bind-Checked=@settings.UseUpdateCredentials Label="@AppLocalization["Use Custom Credentials"]" />
+            @if (!settings.UseUpdateCredentials)
+            {
+                <MudText>Using Active Directory connection credentials.</MudText>
+            }
+            else
+            {
+                <MudText>Using custom update credentials.</MudText>
+
+
+                <SettingsField Label="@AppLocalization["Update Domain"]">
+
+                    <MudTextField Label="@AppLocalization["Update Domain"]" @bind-Value="settings.UpdateDomain" />
+                </SettingsField>
+
+                <SettingsField Label="@AppLocalization["Update Username"]">
+
+                    <MudTextField Label="@AppLocalization["Update Username"]" @bind-Value="settings.UpdateUsername" />
+                </SettingsField>
+
+                <SettingsField Label="@AppLocalization["Update Password"]">
+
+                    <MudTextField Label="@AppLocalization["Update Password"]" InputType="InputType.Password" @bind-Value="newUpdatePassword" />
+                </SettingsField>
+            }
+
+
+        </SettingsField>
         <SettingsField Label="@AppLocalization["Update Branch"]">
+
             <MudSelect @bind-Value=@settings.UpdateBranch HelperText="The stable branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers.">
                 @foreach (var val in updateBranches)
                 {
@@ -72,6 +102,10 @@
     }
 </MudForm>
 @code {
+    string newUpdatePassword;
+    string updatePasswordInDb;
+    bool applicationIdentityCanWrite;
+    bool haveCredentialsToApplicationRootDirectory;
     ManualApplicationUpdater? appUpdateComponent;
     AppSettings? settings = new AppSettings();
     List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev };
@@ -81,15 +115,54 @@
         if (Context != null)
         {
             originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
-            settings = await Context.AppSettings.FirstOrDefaultAsync();
 
+            settings = await Context.AppSettings.FirstOrDefaultAsync();
+            //Pull encrypted update pass and store encrypted value
+            updatePasswordInDb = settings?.UpdatePassword;
+            newUpdatePassword = updatePasswordInDb;
+
+            applicationIdentityCanWrite = ApplicationInfo.ApplicationRoot.Writable;
+
+            if(settings.UseUpdateCredentials){
+                var impersonation = settings.CreateWindowsImpersonator();
+                impersonation.Run(() => {
+                    haveCredentialsToApplicationRootDirectory = ApplicationInfo.ApplicationRoot.Writable;
+
+                    return true;
+                });
+            }
+            else
+            {
+                var impersonation = Directory.ConnectionSettings.CreateWindowsImpersonator();
+                impersonation.Run(() =>
+                {
+                    haveCredentialsToApplicationRootDirectory = ApplicationInfo.ApplicationRoot.Writable;
+
+                    return true;
+                });
+            }
         }
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
 
     }
 
+    protected override async void Save()
+    {
 
+        if (!newUpdatePassword.Equals(updatePasswordInDb))
+        {
+
+            settings.UpdatePassword = EncryptionService.EncryptObject(newUpdatePassword);
+
+            updatePasswordInDb = settings.UpdatePassword;
+
+        }
+        await AuditLogger.System.SettingsChanged("Update", settings.GetChanges(originalSettings));
+        base.Save();
+        await InvokeAsync(StateHasChanged);
+
+    }
 
 
 }

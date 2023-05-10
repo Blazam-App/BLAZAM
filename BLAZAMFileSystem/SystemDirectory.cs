@@ -1,6 +1,9 @@
 ﻿
 
 using Serilog;
+using System.IO;
+using System.Security.Permissions;
+using System.Security;
 
 namespace BLAZAM.FileSystem
 {
@@ -109,25 +112,7 @@ namespace BLAZAM.FileSystem
             }
             return false;
         }
-        public bool Writable
-        {
-            get
-            {
-                string randomFileName = Path + "\\" + Guid.NewGuid().ToString() + ".txt";
-                try
-                {
-                    File.WriteAllText(randomFileName, "test");
-                }
-                catch (Exception e)
-                {
-                    //TODO break up loggers to each library
-                    //Loggers.SystemLogger.Error(e.Message);
-                    return false;
-                }
-                File.Delete(randomFileName);
-                return true;
-            }
-        }
+
         public void Delete(bool recursive = false)
         {
             Directory.Delete(Path, recursive);

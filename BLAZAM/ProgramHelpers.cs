@@ -27,7 +27,7 @@ namespace BLAZAM.Server
 {
     public static class ProgramHelpers
     {
-        public static void IntializeProperties(this WebApplicationBuilder builder)
+        public static WebApplicationBuilder IntializeProperties(this WebApplicationBuilder builder)
         {
             //Set DebugMode flag from configuration
             ApplicationInfo ApplicationInfo = new(builder);
@@ -47,10 +47,10 @@ namespace BLAZAM.Server
 
             ApplicationInfo.runningProcess = Process.GetCurrentProcess();
             ApplicationInfo.runningVersion = new ApplicationVersion(Assembly.GetExecutingAssembly()) ;
-
+            return builder;
         }
 
-        public static void InjectServices(this WebApplicationBuilder builder)
+        public static WebApplicationBuilder InjectServices(this WebApplicationBuilder builder)
         {
 
             //Set up string localization
@@ -83,8 +83,7 @@ namespace BLAZAM.Server
             builder.Services.AddSingleton<ApplicationInfo>();
 
 
-            //Add the httpcontext to services so we can detect the users login status
-            builder.Services.AddHttpContextAccessor();
+           
 
             //Set up authentication and api token authentication
             builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -149,11 +148,8 @@ namespace BLAZAM.Server
             //Provide a way to get the current HTTP userPrincipal as a service
             builder.Services.AddHttpContextAccessor();
 
-            //This probably don't need to be here
-            //builder.Services.AddSingleton<WmiFactoryService>();
 
-            //Provide updating as a service, may be a little much for one page using it
-            builder.Services.AddSingleton<UpdateService>();
+            
 
             //Provide the email client as a service
             builder.Services.AddSingleton<EmailService>();
@@ -163,12 +159,7 @@ namespace BLAZAM.Server
             builder.Services.AddSingleton<IChatService,ChatService>();
 
 
-            //Provide a primary Active Directory connection as a service
-            //We run this as a singleton so each user connection doesn't have to wait for connection verification to happen
-            builder.Services.AddSingleton<IActiveDirectoryContext, ActiveDirectoryContext>();
-
-            //Provide a per-user Active Directory connection as a service
-            builder.Services.AddSingleton<IActiveDirectoryContextFactory, ActiveDirectoryContextFactory>();
+            builder.Services.AddActiveDirectoryServices();
 
 
             //Provide an ApplicationManager as a service
@@ -193,10 +184,8 @@ namespace BLAZAM.Server
 
 
 
-            builder.Services.AddScoped<ICurrentUserStateService,CurrentUserStateService>();
 
 
-            builder.Services.AddScoped<UserActiveDirectoryService>();
 
             //Provide DuoSecurity service
             builder.Services.AddSingleton<IDuoClientProvider, DuoClientProvider>();
@@ -213,16 +202,14 @@ namespace BLAZAM.Server
             //Provide notification publishing as a service
             builder.Services.AddSingleton<INotificationPublisher,NotificationPublisher>();
 
-            //Provide UserStates as a service
-            //This service is a "hack" for Blazor Server not having, in a real sense, sessions
-            //It allows data to persist between refreshes/reloading page navigations per logged
-            //in user principal
-            builder.Services.AddSingleton<IApplicationUserStateService, ApplicationUserStateService>();
 
-            //Provide Automatic Updates as a service
-            //This service runs checks every 4 hours for an update and if found, schedules an
-            //update at a time of day specified in the database
-            builder.Services.AddSingleton<AutoUpdateService>();
+
+
+            builder.Services.AddSessionServices();
+            
+            
+            builder.Services.AddUpdateServices();
+          
 
 
 
@@ -247,6 +234,8 @@ namespace BLAZAM.Server
 
 
             builder.Host.UseWindowsService();
+
+            return builder;
         }
     }
 }

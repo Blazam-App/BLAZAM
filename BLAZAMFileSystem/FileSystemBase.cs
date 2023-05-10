@@ -1,4 +1,6 @@
-﻿
+﻿using System.Security;
+using System.Security.Permissions;
+
 namespace BLAZAM.FileSystem
 {
     public class FileSystemBase
@@ -15,6 +17,28 @@ namespace BLAZAM.FileSystem
         }
 
         public string Path { get; set; }
+
+        public virtual bool Writable
+        {
+            get
+            {
+                try
+                {
+                    var permissionSet = new PermissionSet(PermissionState.None);
+                    var writePermission = new FileIOPermission(FileIOPermissionAccess.Write, Path);
+                    permissionSet.AddPermission(writePermission);
+                    permissionSet.Demand();
+                    return true;
+                }
+                catch (SecurityException ex)
+                {
+                   //Loggers.SystemLogger.Warning(e.Message);
+
+                    return false;
+                }
+               
+            }
+        }
 
 
         public override int GetHashCode()

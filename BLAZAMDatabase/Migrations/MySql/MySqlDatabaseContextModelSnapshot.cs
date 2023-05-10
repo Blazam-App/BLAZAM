@@ -449,6 +449,18 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("UpdateDomain")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UpdatePassword")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UpdateUsername")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("UseUpdateCredentials")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("UserHelpdeskURL")
                         .HasColumnType("longtext");
 

@@ -95,7 +95,7 @@ namespace BLAZAM
 
             //Setup host logging so it can catch the earliest logs possible
 
-            Loggers.SetupLoggers(WritablePath + @"logs\");
+            Loggers.SetupLoggers(WritablePath + @"logs\",ApplicationInfo.runningVersion.ToString());
             builder.Host.UseSerilog(Log.Logger);
 
             Log.Information("Application Starting");

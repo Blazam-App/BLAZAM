@@ -3,16 +3,19 @@ using System;
 using BLAZAM.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BLAZAM.Common.Migrations.Sqlite
+namespace BLAZAM.Database.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDatabaseContext))]
-    partial class SqliteDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230510135207_Add_Update_CredentialsSqlite")]
+    partial class Add_Update_CredentialsSqlite
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
@@ -455,9 +458,6 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.Property<string>("UpdateUsername")
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("UseUpdateCredentials")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserHelpdeskURL")
                         .HasColumnType("TEXT");

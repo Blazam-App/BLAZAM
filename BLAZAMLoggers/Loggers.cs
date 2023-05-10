@@ -11,8 +11,10 @@ namespace BLAZAM.Logger
 {
     public static class Loggers
     {
-        private static string LogPath;
-        private static string SeqAPIKey
+        private static string _logPath;
+        private static string _applicationVersion;
+
+        private static string _seqAPIKey
         {
             get
             {
@@ -31,9 +33,10 @@ namespace BLAZAM.Logger
         public static ILogger SystemLogger { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-        public static void SetupLoggers(string logPath)
+        public static void SetupLoggers(string logPath,string applicationVersion="1.0")
         {
-            LogPath = logPath;
+            _logPath = logPath;
+            _applicationVersion = applicationVersion;
             RequestLogger = SetupLogger(logPath + @"requests\requests.txt");
             DatabaseLogger = SetupLogger(logPath + @"database\db.txt");
             ActiveDirectryLogger = SetupLogger(logPath + @"activedirectory\activedirectory.txt");
@@ -41,7 +44,10 @@ namespace BLAZAM.Logger
 
             Log.Logger = new LoggerConfiguration()
                     .Enrich.FromLogContext()
-
+                   .Enrich.WithMachineName()
+                   .Enrich.WithEnvironmentName()
+                   .Enrich.WithEnvironmentUserName()
+                   .Enrich.WithProperty("Application Version", _applicationVersion)
 
                     .WriteTo.File(logPath + @"system\system.txt",
                     rollingInterval: RollingInterval.Hour,
@@ -52,7 +58,7 @@ namespace BLAZAM.Logger
                         //lc.WriteTo.Console();
                         lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
                     })
-                    .WriteTo.Seq("http://logs.blazam.org:5341", apiKey: SeqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning)
+                    .WriteTo.Seq("http://logs.blazam.org:5341", apiKey: _seqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning)
                     .CreateLogger();
             SystemLogger = Log.Logger;
 
@@ -63,6 +69,10 @@ namespace BLAZAM.Logger
         {
             return new LoggerConfiguration()
                .Enrich.FromLogContext()
+               .Enrich.WithMachineName()
+               .Enrich.WithEnvironmentName()
+               .Enrich.WithEnvironmentUserName()
+                   .Enrich.WithProperty("Application Version", _applicationVersion)
                //.WriteTo.File(WritablePath+@"\logs\log.txt")
                .WriteTo.File(logFilePath,
                rollingInterval: RollingInterval.Hour,
@@ -74,7 +84,7 @@ namespace BLAZAM.Logger
                    //lc.WriteTo.Console();
                    lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
                })
-               .WriteTo.Seq("http://logs.blazam.org:5341", apiKey: SeqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning)
+               .WriteTo.Seq("http://logs.blazam.org:5341", apiKey: _seqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning)
 
                .CreateLogger();
         }

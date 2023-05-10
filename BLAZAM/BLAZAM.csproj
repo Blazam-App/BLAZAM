@@ -6,11 +6,18 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.8.2</AssemblyVersion>
-		<Version>2023.05.09.2213</Version>
+		<Version>2023.05.10.1602</Version>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Exceptions\**" />
+	  <Content Remove="Exceptions\**" />
+	  <EmbeddedResource Remove="Exceptions\**" />
+	  <None Remove="Exceptions\**" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <None Remove="nssm.exe" />
@@ -72,10 +79,6 @@
 		<PackageReference Include="System.DirectoryServices" Version="7.0.1" />
 
 		<PackageReference Include="System.DirectoryServices.AccountManagement" Version="7.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Exceptions\ActiveDirectory\" />
 	</ItemGroup>
 
 	<ItemGroup>

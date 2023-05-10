@@ -1,5 +1,6 @@
 ﻿
 using BLAZAM.Common.Data;
+using BLAZAM.FileSystem;
 using BLAZAM.Update.Services;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,10 @@ namespace BLAZAM.Tests.Mocks
     {
         public Mock_UpdateService() : base(new Mock_HttpClientFactory(), new()
         {
-            ApplicationRoot = new FileSystem.SystemDirectory("C:\\temp"),
+            ApplicationRoot = new SystemDirectory("C:\\temp"),
             RunningProcess = Process.GetCurrentProcess(),
             RunningVersion = new ApplicationVersion("0.0.1"),
-             TempDirectory = new FileSystem.SystemDirectory("C:\\temp")
+             TempDirectory = new SystemDirectory("C:\\temp")
         },null)
         {
 
