@@ -102,8 +102,8 @@
     }
 </MudForm>
 @code {
-    string newUpdatePassword;
-    string updatePasswordInDb;
+    string? newUpdatePassword;
+    string? updatePasswordInDb;
     bool applicationIdentityCanWrite;
     bool haveCredentialsToApplicationRootDirectory;
     ManualApplicationUpdater? appUpdateComponent;
@@ -149,14 +149,18 @@
 
     protected override async void Save()
     {
-
-        if (!newUpdatePassword.Equals(updatePasswordInDb))
+        if ((newUpdatePassword == null && updatePasswordInDb is null) == false)
         {
 
-            settings.UpdatePassword = EncryptionService.EncryptObject(newUpdatePassword);
 
-            updatePasswordInDb = settings.UpdatePassword;
+            if (!newUpdatePassword.Equals(updatePasswordInDb))
+            {
 
+                settings.UpdatePassword = EncryptionService.EncryptObject(newUpdatePassword);
+
+                updatePasswordInDb = settings.UpdatePassword;
+
+            }
         }
         await AuditLogger.System.SettingsChanged("Update", settings.GetChanges(originalSettings));
         base.Save();
