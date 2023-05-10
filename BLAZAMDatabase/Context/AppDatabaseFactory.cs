@@ -12,7 +12,7 @@ namespace BLAZAM.Database.Context
     {
         IConfiguration _configuration;
 
-
+        public static DatabaseException DatabaseCreationFailureReason { get; set; }
         public static AppEvent OnMigrationApplied { get; set; }
         public static AppEvent OnMigrationFailed { get; set; }
 
@@ -23,9 +23,14 @@ namespace BLAZAM.Database.Context
 
             //Perform database auto update
             ApplyDatabaseMigrations();
-
-            appInfo.InstallationCompleted = CheckInstallation();
-
+            try
+            {
+                appInfo.InstallationCompleted = CheckInstallation();
+            }
+            catch (DatabaseException ex)
+            {
+                DatabaseCreationFailureReason = ex;
+            }
         }
 
         private bool CheckInstallation()
@@ -34,24 +39,28 @@ namespace BLAZAM.Database.Context
             {
                 if (context != null)
                 {
-                    if (context.IsSeeded())
+                    try
                     {
-                        try
+                        if (context.IsSeeded())
                         {
-                            var appSettings = context.AppSettings.FirstOrDefault();
-                            if (appSettings != null)
-                                return appSettings.InstallationCompleted;
-                            else
-                                return false;
+                            try
+                            {
+                                var appSettings = context.AppSettings.FirstOrDefault();
+                                if (appSettings != null)
+                                    return appSettings.InstallationCompleted;
+                                else
+                                    return false;
+                            }
+                            catch (Exception ex)
+                            {
+                                Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database.", ex);
+                            }
+                            
                         }
-                        catch (Exception ex)
-                        {
-                            Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database.", ex);
-                        }
-                        //if (!context.Seeded()) installationCompleted = false;
-                        //else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                    }catch (Exception ex)
+                    {
+                        throw new DatabaseException("The database could not be checked for installation.", ex);
                     }
-
                 }
 
             }

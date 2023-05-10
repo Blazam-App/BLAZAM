@@ -5,33 +5,43 @@
 @inject ApplicationInfo ApplicationInfo
 @inject IStringLocalizer<AppLocalization> Loc
 
-@if (ApplicationInfo.InDebugMode)
-{
-    <DevTools />
-}
+
 
 <PageTitle>Oops</PageTitle>
-<h3>@Loc["Oops"]</h3>
+<MudText Align="Align.Center">
+    <h3>@Loc["Oops"]</h3>
 
-@if(Exception is null)
-{
-    <h6>@ErrorMessage</h6>
-    <p>@DetailsMessage</p>
-    <p>@HelpMessage</p>
-}
-else
-{
-    <h6>@Exception.GetType().Name</h6>
-    <p>@Exception.Message</p>
-    <p>@Exception.InnerException?.Message</p>
-    <p>@Exception.HelpLink</p>
-}
+    @if (Exception is null)
+    {
+        <h6>@ErrorMessage</h6>
+        <p>@DetailsMessage</p>
+        <p>@HelpMessage</p>
+    }
+    else
+    {
+        <h4>@Exception.GetType().Name</h4>
+        <p>@Exception.Message</p>
+        <p>@Exception.InnerException?.Message</p>
+        <p>@Exception.HelpLink</p>
+    }
 
-<p>@Loc["Please report to"] your system administrator</p>
+    <p>@Loc["Please report to"] your system administrator</p>
+
+
+</MudText>
+
 @code {
 
-    public static string? ErrorMessage {get;set;}
-    public static string? DetailsMessage {get;set;}
-    public static string? HelpMessage {get;set;}
-    public static Exception Exception{ get; set; }
+    public static string? ErrorMessage { get; set; }
+    public static string? DetailsMessage { get; set; }
+    public static string? HelpMessage { get; set; }
+    public static Exception Exception { get; set; }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (AppDatabaseFactory.DatabaseCreationFailureReason != null)
+        {
+            Exception = AppDatabaseFactory.DatabaseCreationFailureReason;
+        }
+    }
 }

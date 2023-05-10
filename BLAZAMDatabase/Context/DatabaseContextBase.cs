@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using BLAZAM.Database.Models.Chat;
 using BLAZAM.Server.Data;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BLAZAM.Database.Context
 {
@@ -56,6 +57,7 @@ namespace BLAZAM.Database.Context
         {
             get
             {
+
                 _appliedMigrations ??= Database.GetAppliedMigrations();
                 return _appliedMigrations;
             }
@@ -757,11 +759,13 @@ namespace BLAZAM.Database.Context
         /// returns false.</returns>
         public virtual bool IsSeeded()
         {
-
-
             if (AppliedMigrations.Count() > 0) return true;
+            
+     
+
             try
             {
+
                 if (AuthenticationSettings.FirstOrDefault() == null)
                     return false;
                 return true;
