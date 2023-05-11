@@ -112,6 +112,7 @@
                                     <MudText Style="text-align:end;" Typo="Typo.caption">@User?.Created?.ToLocalTime().ToShortDateString()</MudText>
                                 </MudTooltip>
                             </MudStack>
+
                             <MudStack Row=true>
 
                                 <MudText Typo="Typo.subtitle2">Last Change:</MudText>
@@ -119,6 +120,26 @@
                                 <MudTooltip Text="@User.LastChanged?.ToLocalTime().TimeOfDay.ToString()">
 
                                     <MudText Style="text-align:end;" Typo="Typo.caption">@User.LastChanged?.ToLocalTime().ToShortDateString()</MudText>
+                                </MudTooltip>
+                            </MudStack>
+
+                            <MudStack Row=true>
+
+                                <MudText Typo="Typo.subtitle2">Pass Change:</MudText>
+                                <MudSpacer />
+                                <MudTooltip Text="@User.PasswordLastSet?.ToLocalTime().TimeOfDay.ToString()">
+
+                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.PasswordLastSet?.ToLocalTime().ToShortDateString()</MudText>
+                                </MudTooltip>
+                            </MudStack>
+
+                            <MudStack Row=true>
+
+                                <MudText Typo="Typo.subtitle2">Last Logon:</MudText>
+                                <MudSpacer />
+                                <MudTooltip Text="@User.LastLogonTime?.ToLocalTime().TimeOfDay.ToString()">
+
+                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.LastLogonTime?.ToLocalTime().ToShortDateString()</MudText>
                                 </MudTooltip>
                             </MudStack>
                             @if (User.LockedOut)

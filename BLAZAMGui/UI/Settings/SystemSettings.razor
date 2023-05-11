@@ -25,6 +25,12 @@
 
 
     </SettingsField>
+
+    <SettingsField>
+
+        <MudButton OnClick="@(()=>{Context.Export("export");})" Color="Color.Success">Export</MudButton>
+
+    </SettingsField>
     <SettingsField>
 
         <MudButton ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>

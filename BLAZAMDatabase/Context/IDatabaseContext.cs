@@ -61,5 +61,7 @@ namespace BLAZAM.Database.Context
         DbSet<ChatRoom> ChatRooms { get; set; }
         DbSet<ChatMessage> ChatMessages { get; set; }
         DbSet<UnreadChatMessage> UnreadChatMessages { get; set; }
+
+        void Export(string directory);
     }
 }

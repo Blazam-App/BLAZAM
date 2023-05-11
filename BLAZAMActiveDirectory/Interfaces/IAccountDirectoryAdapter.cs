@@ -35,6 +35,6 @@
         bool CanSearchDisabled { get; }
         DateTime? LockoutTime { get; }
         DateTime? ExpireTime { get; set; }
-
+        DateTime? LastLogonTime { get; }
     }
 }

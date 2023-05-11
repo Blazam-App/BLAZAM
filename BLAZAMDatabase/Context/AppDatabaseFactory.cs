@@ -78,10 +78,6 @@ namespace BLAZAM.Database.Context
             switch (_dbType.ToLower())
             {
 
-
-
-
-
                 case "sql":
                     databaseContext = new SqlDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("DBConnectionString"), DatabaseType.SQL));
 

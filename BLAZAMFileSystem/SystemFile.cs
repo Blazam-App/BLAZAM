@@ -83,6 +83,10 @@ namespace BLAZAM.FileSystem
         /// </summary>
         private void Create()
         {
+            if (!ParentDirectory.Exists)
+            {
+                ParentDirectory.EnsureCreated();
+            }
             var stream = new FileStream(Path, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, bufferSize: 4096, useAsync: true);
             stream.Close();
         }

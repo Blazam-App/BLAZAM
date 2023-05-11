@@ -849,6 +849,33 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
+        protected virtual List<T> GetNonReplicatedProperty<T>(string propertyName)
+        {
+            var list = new List<T>();
+            foreach(var dc in Directory.DomainControllers)
+            {
+                var searcher = dc.GetDirectorySearcher();
+                searcher.Filter="(distinguishedName="+this.DN+")";
+                var searchResult = searcher.FindOne();
+                try
+                {
+                    var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
+                    try
+                    {
+                        list.Add((T)value);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+                catch
+                {
+                }
+
+            }
+            return list;
+        }
         protected virtual T? GetProperty<T>(string propertyName)
         {
             try

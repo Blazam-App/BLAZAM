@@ -241,6 +241,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
+               
                 var com = GetProperty<object>("pwdLastSet");
                 if (com == null) return null;
                 return com.AdsValueToDateTime();
@@ -248,7 +249,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
-
+       
         public override string? SamAccountName
         {
             get => base.SamAccountName;

@@ -1,6 +1,9 @@
 ﻿using BLAZAM.Common.Data.Database;
 using BLAZAM.Logger;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
+using System.Data;
 
 namespace BLAZAM.Database.Context
 {
@@ -39,7 +42,17 @@ namespace BLAZAM.Database.Context
                           .EnableSensitiveDataLogging()
                                   .LogTo(Loggers.DatabaseLogger.Information);
         }
+        protected override DataTable SelectAllDataFromTable(string? tableName)
+        {
+            // Create a MySQL query to select all rows from the table
+            var query = $"SELECT * FROM {tableName}";
 
+            // Create a data adapter to execute the query and fill a data table
+            var adapter = new MySqlDataAdapter(query, ConnectionString.Value);
+            var table = new DataTable();
+            adapter.Fill(table);
+            return table;
+        }
 
     }
 }

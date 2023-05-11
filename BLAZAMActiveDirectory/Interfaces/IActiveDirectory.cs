@@ -4,6 +4,7 @@ using BLAZAM.Session.Interfaces;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Common.Data;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -69,6 +70,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Provides an impersonation context to the application domain account.
         /// </summary>
         WindowsImpersonation Impersonation { get; }
+        List<DomainController> DomainControllers { get; }
 
         IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid);
 
