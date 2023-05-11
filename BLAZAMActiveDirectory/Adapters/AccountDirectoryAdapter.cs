@@ -47,6 +47,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
+
         public DateTime? LastLogonTime
         {
             get

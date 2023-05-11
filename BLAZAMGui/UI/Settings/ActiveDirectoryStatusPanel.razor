@@ -4,48 +4,60 @@
     <MudCardHeader>
         Active Directory Connection Status
     </MudCardHeader>
-    <MudCardBody>
 
-        <Row>
-            <Column>
+        <MudStack Row=true>
                 Server Port Open
-            </Column>
-            <Column>
                 <StatusCheck Status="_portStatus" />
 
+        </MudStack>
+             <MudStack Row=true>
 
-            </Column>
-        </Row>
-        <Row>
-            <Column>
                 Credentials OK
-            </Column>
-            <Column>
                 <StatusCheck Status="_credStatus" />
-            </Column>
-        </Row>
 
-        <Row>
-            <Column>
+        </MudStack>
+             <MudStack Row=true>
                 Encrypted Connection
                 @if (!_encryptedStatus)
                 {
                     <br />
                     <Help>You may need to install the Active Directry CA</Help>
                 }
-            </Column>
-            <Column>
                 <StatusCheck Status="_encryptedStatus" />
 
-            </Column>
-        </Row>
-    </MudCardBody>
-    <Progress Value="100" Animated Striped Visibility=@showProgress />
+  
+        </MudStack>
+    @if (_credStatus)
+    {
+        <MudStack>
+            <MudStack Row=true>
+                <MudText>Domain</MudText>
+                <MudText>@Directory.DomainControllers.First().Domain.Name</MudText>
+            </MudStack>
+
+            <MudStack Row=true>
+                <MudText>Domain Mode</MudText>
+                <MudText>@Directory.DomainControllers.First().Domain.DomainMode</MudText>
+            </MudStack>
+
+            <MudStack Row=true>
+                <MudText>Domain Level</MudText>
+                <MudText>@Directory.DomainControllers.First().Domain.DomainModeLevel</MudText>
+            </MudStack>
+
+            <MudStack Row=true>
+                <MudText>Primary Domain Controller</MudText>
+                <MudText>@Directory.DomainControllers.First().Domain.PdcRoleOwner</MudText>
+            </MudStack>
+
+            <MudStack Row=true>
+                <MudText>Domain</MudText>
+                <MudText>@Directory.DomainControllers.First().Domain.Forest.RootDomain.Name</MudText>
+            </MudStack>
+        </MudStack>
+    }
     </MudCard>
-    @{
 
-
-}
 @code {
 #nullable disable warnings
 

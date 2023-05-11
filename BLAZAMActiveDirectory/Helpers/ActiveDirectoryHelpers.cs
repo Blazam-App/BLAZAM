@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -17,7 +18,10 @@ namespace BLAZAM.Helpers
     public static class ActiveDirectoryHelpers
     {
 
-
+        public static bool IsPingable(this DomainController dc)
+        {
+            return NetworkTools.PingHost(dc.IPAddress);
+        }
         public static IServiceCollection AddActiveDirectoryServices(this IServiceCollection services)
         {
             //Provide a primary Active Directory connection as a service

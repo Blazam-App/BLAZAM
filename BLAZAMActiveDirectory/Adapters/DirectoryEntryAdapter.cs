@@ -380,7 +380,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual void MoveTo(IADOrganizationalUnit parentOUToMoveTo)
         {
-            CommitActions.Add(() => {
+            CommitActions.Add(() =>
+            {
                 parentOUToMoveTo.EnsureDirectoryEntry();
                 if (parentOUToMoveTo.DirectoryEntry != null)
                 {
@@ -849,30 +850,30 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        protected virtual List<T> GetNonReplicatedProperty<T>(string propertyName)
+        protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
         {
-            var list = new List<T>();
-            foreach(var dc in Directory.DomainControllers)
+            var list = new List<T?>();
+            foreach (var dc in Directory.DomainControllers)
             {
-                var searcher = dc.GetDirectorySearcher();
-                searcher.Filter="(distinguishedName="+this.DN+")";
-                var searchResult = searcher.FindOne();
                 try
                 {
-                    var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
-                    try
+                    if (dc.IsPingable())
                     {
-                        list.Add((T)value);
-                    }
-                    catch
-                    {
+                        var searcher = dc.GetDirectorySearcher();
+                        searcher.Filter = "(distinguishedName=" + this.DN + ")";
+                        searcher.ClientTimeout = TimeSpan.FromMilliseconds(500);
+                        searcher.ServerTimeLimit = TimeSpan.FromMilliseconds(500);
+                        var searchResult = searcher.FindOne();
 
+                        var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
+
+                        list.Add((T)value);
                     }
                 }
                 catch
                 {
+                    list.Add(default(T));
                 }
-
             }
             return list;
         }

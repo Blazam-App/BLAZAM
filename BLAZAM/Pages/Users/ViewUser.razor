@@ -24,7 +24,7 @@
                                   OnRename="@(()=>{RenameModal?.Show();})"
                                   OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
                                   OnToggleEditMode="ToggleEditMode"
-                                  OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
+                                      OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
                                   OnUnlock="@Unlock" />
             <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
@@ -137,10 +137,7 @@
 
                                 <MudText Typo="Typo.subtitle2">Last Logon:</MudText>
                                 <MudSpacer />
-                                <MudTooltip Text="@User.LastLogonTime?.ToLocalTime().TimeOfDay.ToString()">
-
-                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.LastLogonTime?.ToLocalTime().ToShortDateString()</MudText>
-                                </MudTooltip>
+                               <LastLogonTime DirectoryEntry="User"/>
                             </MudStack>
                             @if (User.LockedOut)
                             {
@@ -212,19 +209,19 @@
                                 <MudStack Row Class="@_fieldMudStackClasses">
 
 
-                              
-
-                                        <MudStack Row=true Spacing="0">
 
 
-                                            <DynamicMudInput T=string Label="@AppLocalization["Username"]"
+                                    <MudStack Row=true Spacing="0">
+
+
+                                        <DynamicMudInput T=string Label="@AppLocalization["Username"]"
                                                          @bind-Value="@User.SamAccountName"
                                                          Disabled=!User.NewEntry />
-                                            <AppCopyButton TextToCopy="User.SamAccountName" />
+                                        <AppCopyButton TextToCopy="User.SamAccountName" />
 
-                                        </MudStack>
+                                    </MudStack>
 
-                                    
+
 
                                     @if (User.NewEntry)
                                     {
@@ -239,17 +236,17 @@
                                                      InputType="InputType.Password" />
                                     }
 
-                                  
-                                        <MudStack Row=true Spacing="0">
-                                            <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"
+
+                                    <MudStack Row=true Spacing="0">
+                                        <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"
                                                          @bind-Value="@User.Email"
                                                          Disabled=!User.NewEntry />
-                                            <AppCopyButton TextToCopy="User.Email" />
+                                        <AppCopyButton TextToCopy="User.Email" />
 
-                                        </MudStack>
+                                    </MudStack>
 
 
-                                    
+
                                     @if (User.CanReadField(ActiveDirectoryFields.AccountExpires))
                                     {
                                         <DynamicMudInput T=DateTime?
@@ -380,7 +377,7 @@
                                              Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
                                     @if (!User.HomeDirectory.IsNullOrEmpty())
                                     {
-                                      
+
                                         <MudIcon Class="align-middle" Icon="@(homeDirectoryExists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
                                      Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
                                     }
@@ -443,28 +440,32 @@
 
 
 @code {
-    #nullable disable warnings
+#nullable disable warnings
     string Password;
     string ConfirmPassword;
     bool homeDirectoryExists;
     bool showRemoveThumbnail = false;
-
+    DateTime? userLastLogonTime;
     IADUser User => DirectoryEntry as IADUser;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+
         await InvokeAsync(StateHasChanged);
         try
         {
+           
             await User.Directory.Impersonation.RunAsync(() =>
 
             {
                 homeDirectoryExists = new SystemDirectory(User.HomeDirectory).Exists;
                 return true;
             });
+
         }
-        catch(Exception ex)
+
+        catch (Exception ex)
         {
             Loggers.ActiveDirectryLogger.Warning("Error checking user h-drive: {Message}", ex);
 

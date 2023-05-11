@@ -360,7 +360,9 @@ namespace BLAZAM.ActiveDirectory
                                                 foreach (DomainController dc in Domain.GetDomain(DirectoryContext).DomainControllers)
                                                 {
                                                     //var test = dc;
-                                                    DomainControllers.Add(dc);
+                                           
+                                                        DomainControllers.Add(dc);
+                                                    
                                                 }
                                             }
                                             else

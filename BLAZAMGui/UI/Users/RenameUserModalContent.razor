@@ -1,7 +1,6 @@
 ﻿@inherits AppModalContent
 @if (User != null && _privateUserInstance != null)
 {
-    <Section Title=@AppLocalization["Name"]>
         @if (User.CanReadField(ActiveDirectoryFields.GivenName))
         {
             <MudTextField Label="@AppLocalization["First Name"]" @bind-Value="@_privateUserInstance.GivenName" />
@@ -32,7 +31,6 @@
         }
 
 
-    </Section>
     @if (User.CanEditField(ActiveDirectoryFields.SAMAccountName))
     {
 
