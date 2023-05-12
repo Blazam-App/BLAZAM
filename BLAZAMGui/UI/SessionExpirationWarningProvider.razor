@@ -1,0 +1,83 @@
+@using Microsoft.AspNetCore.Authentication;
+@inherits AppComponentBase
+@inject IJSRuntime JSRuntime
+
+
+<AppModal Title="Your session is about to expire" 
+    @ref="ExpirationWarningModal"
+    AllowClose=false
+    YesText="Refresh Session" 
+    OnYes=@(()=>{
+        JSRuntime.InvokeVoidAsync("updateCookieExpiration");
+        ExpirationWarningModal?.Hide();
+    })>
+
+    @if (ExpirationWarningModal?.IsShown == true)
+    {
+
+        var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
+        if (timeLeft.HasValue && timeLeft.Value.TotalMilliseconds < 0)
+        {
+            ExpirationWarningModal.Hide();
+            if (ExpiredModal != null)
+            {
+                ExpiredModal.AllowClose = false;
+                ExpiredModal.Show();
+            }
+        }
+        string formattedTimeLeft = "";
+        if (timeLeft != null)
+        {
+
+            if (timeLeft.Value.Hours > 0)
+            {
+                formattedTimeLeft += timeLeft.Value.Hours + ":";
+            }
+            formattedTimeLeft += timeLeft.Value.Minutes + ":";
+            formattedTimeLeft += timeLeft.Value.Seconds.ToString("D2");
+            Task.Delay(1000).ContinueWith((state) =>
+            {
+                InvokeAsync(StateHasChanged);
+            });
+        }
+
+        <MudText>
+            Session expires in @formattedTimeLeft
+        </MudText>
+
+
+    }
+
+</AppModal>
+<AppModal Title="Session Expired" @ref="ExpiredModal" YesText="Log In" OnYes="@(()=>{Refresh();})">
+
+
+    <MudText>Your session has expired.</MudText>
+
+
+</AppModal>
+@code {
+    private Timer _t;
+    AppModal? ExpirationWarningModal;
+    AppModal? ExpiredModal;
+    AuthenticationTicket? _ticket;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _t = new Timer(CheckExpiration, null, 30000, 30000);
+    }
+    private async void CheckExpiration(object? obj)
+    {
+        if (CurrentUser.State?.Ticket != null)
+        {
+            _ticket = CurrentUser.State?.Ticket;
+            var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
+            if (timeLeft > TimeSpan.FromSeconds(0) && timeLeft < TimeSpan.FromMinutes(2) && ExpirationWarningModal?.IsShown == false)
+            {
+                await InvokeAsync(() => { ExpirationWarningModal.Show(); });
+
+            }
+        }
+    }
+}

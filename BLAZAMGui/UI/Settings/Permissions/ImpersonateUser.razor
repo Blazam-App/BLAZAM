@@ -1,0 +1,98 @@
+﻿@inherits AppComponentBase
+@inject IJSRuntime JSRuntime
+
+<form action="" @onsubmit=@AttemptSignIn id="login-form">
+
+<SettingsField>
+    
+            <ADAutoComplete Disabled=@attemptingImpersonation 
+                Label="@AppLocalization["Impersonate User"]" 
+            SearchObjectType="ActiveDirectoryObjectType.User" 
+            @bind-SelectedResult=User />
+
+        <MudTextField T="string" name="Impersonation" Text="true" Class="d-none" />
+            <MudTextField T="string" Text="@User?.SamAccountName" Class="d-none" name="Username"/>
+
+            <MudButton Disabled=@attemptingImpersonation 
+                Color=Color.Primary 
+                ButtonType="ButtonType.Submit">
+                Impersonate User
+            </MudButton>
+
+    
+</SettingsField>
+
+@*Hidden Login form to send impersonation login data*@
+
+    <input type="text" class="d-none" name="Username" value="@User?.SamAccountName" />
+    <input type="text" class="d-none" name="Passowrd" value="impersonate" />
+    <input type="text" class="d-none" name="Impersonation" value="true"/>
+
+</form>
+@code {
+    public IDirectoryEntryAdapter? User { get; set; }
+    bool attemptingImpersonation;
+    async void AttemptSignIn()
+    {
+        string? authenticationResult=null;
+        if (User != null)
+        {
+            try
+            {
+                authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn", null);
+
+            }
+            catch
+            {
+                
+            }
+        }
+
+
+
+        if (!authenticationResult.IsNullOrEmpty())
+        {
+            int resultCode = int.Parse(authenticationResult);
+            attemptingImpersonation = false;
+
+            switch ((LoginResultStatus)resultCode)
+            {
+
+                case LoginResultStatus.NoUsername:
+                    SnackBarService.Info("Username is missing");
+
+                    break;
+                case LoginResultStatus.NoPassword:
+                    SnackBarService.Info("Password is missing");
+
+                    break;
+                case LoginResultStatus.NoData:
+                    SnackBarService.Warning("Login request is missing");
+
+                    break;
+                case LoginResultStatus.BadCredentials:
+                    SnackBarService.Warning("Username or password not correct");
+
+                    break;
+                case LoginResultStatus.UnauthorizedImpersonation:
+                    SnackBarService.Error("Unauthorized Impersonation Attempt");
+
+                    break;
+                case LoginResultStatus.DeniedLogin:
+                    SnackBarService.Error("You are not authorized to login");
+
+                    break;
+                case LoginResultStatus.UnknownFailure:
+                    SnackBarService.Error("Unknown error while attempting to log in");
+
+                    break;
+                case LoginResultStatus.OK:
+                    attemptingImpersonation = true;
+                    Nav.NavigateTo("/home", true);
+                    break;
+            }
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

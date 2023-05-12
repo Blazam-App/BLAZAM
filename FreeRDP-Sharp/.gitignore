@@ -1,0 +1,11 @@
+
+bin
+*.user
+*.userprefs
+*.pidb
+obj
+*.pdb
+*.dll
+*.suo
+*~
+

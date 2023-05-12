@@ -138,3 +138,24 @@ a, .btn-link {
 .minw-max {
     min-width: max-content !important;
 }
+
+
+.w-100{
+    width:100% !important;
+}
+
+.left-0 {
+    left: 0px !important;
+}
+
+
+@media(max-width:600px) {
+    .app-subheader {
+        top: 56px !important;
+    }
+}
+@media(min-width:600px) {
+    .app-subheader {
+        top: 64px !important;
+    }
+}

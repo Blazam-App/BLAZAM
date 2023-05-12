@@ -1,19 +1,13 @@
-﻿@using BLAZAM.Server.Shared.Layouts;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
-@using System.Diagnostics;
-@using BLAZAM.Server.Shared.UI.Themes;
-@using Microsoft.AspNetCore.Authentication.Cookies;
-@using Microsoft.Extensions.Options;
+﻿
 @inject IHttpContextAccessor context
 @inject IApplicationUserStateService userStateService
-@*<Blazorise.ThemeProvider Theme="@activeTheme.Theme">*@
+@inject ICurrentUserStateService  currentUser
 <CascadingAuthenticationState>
 
 
 
     <ErrorBoundary>
-
+    
         <ChildContent>
             <Router AppAssembly="@typeof(App).Assembly">
                 <Found Context="routeData">
@@ -22,13 +16,12 @@
                             Authorizing...
                         </Authorizing>
                         <NotAuthorized>
-                            @if (!context.User.Identity?.IsAuthenticated == true)
+                            @if (context.User.Identity?.IsAuthenticated != true)
                             {
                                 <PageTitle>Login</PageTitle>
                                 <LayoutView Layout="@typeof(LoginLayout)">
-                                    <BLAZAM.Server.Pages.Login />
+                                    <Login />
                                 </LayoutView>
-                                @*<RedirectToLogin />*@
                             }
                             else
                             {
@@ -53,7 +46,6 @@
         </ChildContent>
         <ErrorContent>
             <LayoutView Layout="@typeof(MinLayout)">
-
                 <UnhandledExceptionPage Error="@context" />
 
             </LayoutView>
@@ -65,37 +57,39 @@
 
 
 </CascadingAuthenticationState>
-@*  <PageProgressProvider />
-    <NotificationProvider Location="NotificationLocation.Start" />*@
 
-<MudPageProgressProvider />
-<MudThemeProvider Theme="@activeTheme.Theme" />
+<MudThemeProvider IsDarkMode="@darkMode" Theme="@activeTheme.Theme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <SessionExpirationWarningProvider />
-@*</Blazorise.ThemeProvider>*@
-
 
 @code {
-
-
-    ApplicationTheme activeTheme = new LightTheme();
+    bool darkMode = false;
+    ApplicationTheme activeTheme = new BlueTheme();
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        var userTheme = userStateService.CurrentUserState?.UserSettings?.Theme;
-        switch (userTheme)
+        try
         {
-            case "Light":
-            default:
-                activeTheme = new LightTheme();
-                break;
-            case "Dark":
-                activeTheme = new DarkTheme();
-                break;
+            var userTheme = currentUser.State.Preferences?.Theme;
+            switch (userTheme)
+            {
+                case "Blue":
+                default:
+                    activeTheme = new BlueTheme();
+                    break;
+                case "Red":
+                    activeTheme = new RedTheme();
+                    break;
 
 
+            }
+            darkMode = currentUser.State.Preferences?.DarkMode == true;
+        }
+        catch(Exception ex)
+        {
+            Loggers.SystemLogger.Error("Error while fetching user theme: {Message}", ex);
         }
     }
 

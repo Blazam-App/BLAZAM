@@ -1,0 +1,33 @@
+@inherits AppComponentBase
+<MudStack Row=true Class=@("relative mud-width-full "+Class)>
+   
+            <Copyright />
+            @if (AutoUpdateService.IsUpdatedScheduled)
+            {
+                <MudTooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/app");})
+                    Class="mud-theme-info"
+                    Style="width:max-content" 
+                    Text="An automatic update is scheduled. Click for details">
+
+                    <MudIcon Icon=@("fa-solid fa-circle-up") />
+                </MudTooltip>
+            }
+            <MudSpacer/>
+@*
+    <MudTooltip Class="mud-theme-info" Style="width:max-content" Text="@ApplicationInfo.RunningVersion.Version">
+
+            Version: @ApplicationInfo.RunningVersion.ShortVersion
+            </MudTooltip>*@
+
+
+</MudStack>
+@code{
+    [Parameter]
+    public string? Class{ get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+    }
+}

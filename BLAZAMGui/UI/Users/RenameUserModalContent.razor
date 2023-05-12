@@ -1,0 +1,110 @@
+﻿@inherits AppModalContent
+@if (User != null && _privateUserInstance != null)
+{
+        @if (User.CanReadField(ActiveDirectoryFields.GivenName))
+        {
+            <MudTextField Label="@AppLocalization["First Name"]" @bind-Value="@_privateUserInstance.GivenName" />
+
+
+
+        }
+        @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
+        {
+            <MudTextField Label="@AppLocalization["Middle Name"]" @bind-Value="@_privateUserInstance.MiddleName" />
+
+
+
+        }
+        @if (User.CanReadField(ActiveDirectoryFields.SN))
+        {
+            <MudTextField Label="@AppLocalization["Last Name"]" @bind-Value="@_privateUserInstance.Surname" />
+
+
+
+        }
+        @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
+        {
+            <MudTextField T="string" Label="@AppLocalization["Display Name"]" Text="@_privateUserInstance.DisplayName" TextChanged="DisplayNameChanged" />
+
+
+
+        }
+
+
+    @if (User.CanEditField(ActiveDirectoryFields.SAMAccountName))
+    {
+
+
+        <MudTextField Label="@AppLocalization["Username"]" @bind-Value="@_privateUserInstance.SamAccountName" />
+
+
+
+    }
+    @if (User.CanEditField(ActiveDirectoryFields.Mail))
+    {
+
+
+        <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@_privateUserInstance.Email" />
+
+
+
+    }
+}
+else
+{
+    <MudProgressCircular Indeterminate Color="Color.Primary" />
+}
+@code {
+
+    #nullable disable warnings
+    private IADUser _privateUserInstance;
+
+    [Parameter]
+    public EventCallback<IDirectoryEntryAdapter> DirectoryModelRenamed { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _privateUserInstance = Directory.Users.FindUserBySID(User.SID.ToSidString());
+
+        SaveDisabled = false;
+        Modal.OnYes = SaveChanges;
+        Modal.YesText = AppLocalization["Rename User"];
+        Modal.Title = "Rename User";
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    void DisplayNameChanged(string newName)
+    {
+
+        _privateUserInstance.DisplayName = newName;
+
+    }
+    async void SaveChanges()
+    {
+        var possibleConflictingMatch = Directory.Users.FindUsersByContainerName(_privateUserInstance.DisplayName, false, false);
+        if (possibleConflictingMatch == null || possibleConflictingMatch.Equals(_privateUserInstance))
+        {
+            SaveDisabled = true;
+            LoadingData = true;
+            _privateUserInstance.Rename(_privateUserInstance.DisplayName);
+
+            await _privateUserInstance.CommitChangesAsync();
+            SnackBarService.Success("User has been renamed.", "User renamed");
+            User.DirectoryEntry = null;
+
+            await DirectoryModelRenamed.InvokeAsync(_privateUserInstance);
+            Close();
+        }
+        else
+        {
+            SnackBarService.Error("That name already exists. Please choose a different Display Name", "Name Exists");
+        }
+        LoadingData = false;
+
+        SaveDisabled = false;
+    }
+
+}

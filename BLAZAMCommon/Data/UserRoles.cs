@@ -4,7 +4,20 @@ namespace BLAZAM.Common.Data
 {
     public static class UserRoles
     {
-       public const string Login = "Login";
+        /// <summary>
+        /// All roles, except <see cref="SuperAdmin"/>
+        /// </summary>
+        public static List<string> All = new List<string>(){
+            Login,
+            SearchComputers,
+            SearchGroups,
+            SearchOUs,
+            SearchUsers,
+            CreateGroups,
+            CreateOUs,
+            CreateUsers
+        };
+        public const string Login = "Login";
         public const string SearchUsers = "SearchUsers";
         public const string CreateUsers = "CreateUsers";
         public const string SearchGroups = "SearchGroups";

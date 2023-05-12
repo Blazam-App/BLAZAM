@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>BLAZAM.Gui</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Helpers\**" />
+    <Compile Remove="UI\General\**" />
+    <Content Remove="Helpers\**" />
+    <Content Remove="UI\General\**" />
+    <EmbeddedResource Remove="Helpers\**" />
+    <EmbeddedResource Remove="UI\General\**" />
+    <None Remove="Helpers\**" />
+    <None Remove="UI\General\**" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.5" />
+    <PackageReference Include="MudBlazor" Version="6.2.2" />
+    <PackageReference Include="MudBlazor.Markdown" Version="0.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
+    <ProjectReference Include="..\BLAZAMEmail\BLAZAMEmail.csproj" />
+    <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
+    <ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
+    <ProjectReference Include="..\BLAZAMServices\BLAZAMServices.csproj" />
+    <ProjectReference Include="..\BLAZAMThemes\BLAZAMThemes.csproj" />
+    <ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="UI\FlexContainer.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="UI\Chat\PageSpecificChat.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="UI\Section.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
+</Project>

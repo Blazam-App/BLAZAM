@@ -1,0 +1,79 @@
+﻿@inherits AppModalContent
+@if (Computer != null && _privateComputerInstance != null)
+{
+    <Section Title=@AppLocalization["Name"]>
+        @if (Computer.IsOnline==true)
+        {
+
+        }
+        else if(Computer.IsOnline==false)
+        {
+            <MudAlert Class="mud-theme-info">The computer must be online to changed its name.</MudAlert>
+        }
+        else
+        {
+            <MudProgressCircular Indeterminate=true/>
+        }
+
+
+    </Section>
+   
+}
+else
+{
+    <MudProgressCircular Indeterminate Color="Color.Primary" />
+}
+@code {
+
+    #nullable disable warnings
+    private IADComputer _privateComputerInstance;
+
+    [Parameter]
+    public EventCallback<IDirectoryEntryAdapter> DirectoryModelRenamed { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _privateComputerInstance = Directory.GetDirectoryModelBySid(Computer.SID.ToSidString()) as IADComputer;
+
+        SaveDisabled = false;
+        Modal.OnYes = SaveChanges;
+        Modal.YesText = AppLocalization["Rename User"];
+        Modal.Title = "Rename User";
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    void DisplayNameChanged(string newName)
+    {
+
+        _privateComputerInstance.DisplayName = newName;
+
+    }
+    async void SaveChanges()
+    {
+        var possibleConflictingMatch ="";
+        if (possibleConflictingMatch == null || possibleConflictingMatch.Equals(_privateComputerInstance))
+        {
+            SaveDisabled = true;
+            LoadingData = true;
+           // _privateComputerInstance.Rename(_privateComputerInstance.DisplayName);
+
+           // await _privateUserInstance.CommitChangesAsync();
+            SnackBarService.Success("User has been renamed.", "User renamed");
+            User.DirectoryEntry = null;
+
+            await DirectoryModelRenamed.InvokeAsync(_privateComputerInstance);
+            Close();
+        }
+        else
+        {
+            SnackBarService.Error("That name already exists. Please choose a different name", "Name Exists");
+        }
+        LoadingData = false;
+
+        SaveDisabled = false;
+    }
+
+}

@@ -1,0 +1,19 @@
+@inherits AppComponentBase
+<MudText>
+    @ADGroup?.CanonicalName
+</MudText>
+
+
+
+@code{
+    [Parameter]
+    public DirectoryTemplateGroup Group{ get; set; }
+
+    IADGroup? ADGroup;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        ADGroup = Directory.Groups.FindGroupBySID(Group.GroupSid);
+    }
+}

@@ -1,6 +1,4 @@
-﻿using BLAZAM.Server.Background;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+﻿using BLAZAM.Services.Background;
 
 namespace BLAZAM.Server.Middleware
 {

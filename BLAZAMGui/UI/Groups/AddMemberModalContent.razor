@@ -1,0 +1,89 @@
+﻿@inherits AppModalContent
+
+
+<Row Background="Background.Light" Color="Color.Dark">
+    
+            <ADAutoComplete Label="Member" @bind-SelectedResult="@Entry" />
+    
+    
+            <ADAutoComplete Label="Copy Memberships From" SearchObjectType="ActiveDirectoryObjectType.Group"
+                        @bind-SelectedResult=@copyFrom
+                        CustomResultsFilter="(result)=>result is IADGroup" />
+    
+    @if (CopyFrom != null)
+    {
+        var existingMembers = Group.UserMembers;
+        <MudText>Will be assigned...</MudText>
+
+        foreach (var member in CopyFrom.UserMembers)
+        {
+            <MudCard>
+                <MudCardHeader>
+
+                    @if (existingMembers.Contains(member))
+                    {
+                        <MudIcon Icon=@("fa-check") />
+                    }
+                    else
+                    {
+                        <MudIcon Icon=@("fa-plus") />
+                    }
+                    @member.CanonicalName
+
+                </MudCardHeader>
+            </MudCard>
+        }
+    }
+</Row>
+<Row>
+    <MudButton Color="Color.Primary" OnClick="AssignToGroup">Add</MudButton>
+
+</Row>
+
+
+@code {
+
+    [Parameter]
+    public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Modal.OnYes = AssignToGroup;
+        Modal.YesText = AppLocalization["Assign"];
+        Modal.Title = "Assign Member";
+        Modal.YesEnabled = ValidateModal;
+    }
+
+    IDirectoryEntryAdapter? copyFrom;
+
+    public IADGroup CopyFrom { get => (IADGroup)copyFrom; set => copyFrom = value; }
+
+    IDirectoryEntryAdapter Entry { get; set; }
+
+    async void AssignToGroup()
+    {
+        if (Entry is IGroupableDirectoryAdapter groupableEntry)
+        {
+            Group.AssignMember(groupableEntry);
+            SnackBarService.Warning(groupableEntry.CanonicalName + " has been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
+            await ModelChanged.InvokeAsync();
+
+            Close();
+        }
+        if (CopyFrom != null)
+        {
+            foreach (var member in CopyFrom.UserMembers)
+            {
+                Group.AssignMember(member);
+
+            }
+            SnackBarService.Warning("The selected members have been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
+            await ModelChanged.InvokeAsync();
+
+            Close();
+        }
+    }
+    protected override bool IsValid => (Entry != null && CopyFrom != null);
+
+}

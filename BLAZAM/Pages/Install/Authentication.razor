@@ -2,8 +2,6 @@
 @using System.Net
 @using System.Diagnostics
 @using Microsoft.EntityFrameworkCore;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
 @layout InstallLayout
 @inherits ValidatedForm
 
@@ -19,7 +17,7 @@
 <EditForm Model=settings OnValidSubmit="SubmitForm">
     <SettingsField>
         <FieldLabel>
-            @SettingsLocalization["Username"]
+            @AppLocalization["Username"]
         </FieldLabel>
         <ChildContent>
             <MudTextField Label="Username" Text="admin" T=string Disabled />
@@ -27,23 +25,30 @@
     </SettingsField>
     <SettingsField>
         <FieldLabel>
-            @SettingsLocalization["Password"]
+            @AppLocalization["Password"]
         </FieldLabel>
         <ChildContent>
             <MudTextField Label="Password"
-                AutoFocus=true
+                          AutoFocus=true
+                          Immediate=true
                           HelperText="Must be 6 characters or longer containing at least one letter,numer and special character."
                           InputType="InputType.Password"
+                          For="@(() => settings.AdminPassword)"
                           @bind-Value=settings.AdminPassword />
         </ChildContent>
 
     </SettingsField>
     <SettingsField>
         <FieldLabel>
-            @SettingsLocalization["Password"]
+            @AppLocalization["Password"]
         </FieldLabel>
         <ChildContent>
-            <MudTextField @bind-Value=confirmedPassword Label="Confirm Password" Validation=@AppValidationRule.IsEqual(confirmedPassword,settings.AdminPassword) InputType="InputType.Password" T="string" />
+            <MudTextField For="@(() => settings.AdminPasswordConfirmed)"
+                          Immediate=true
+                          @bind-Value=settings.AdminPasswordConfirmed
+                          Label="Confirm Password"
+                          InputType="InputType.Password"
+                          T="string" />
         </ChildContent>
 
     </SettingsField>
@@ -57,14 +62,17 @@
     [Parameter]
     public EventCallback StepCompleted { get; set; }
 
-    public string adminPassword = "";
-    string confirmedPassword;
-    AuthenticationSettings settings=new();
+    AuthenticationSettings settings = new();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
+
+        if (settings !=null && settings.AdminPassword == "password")
+            settings.AdminPassword = "";
+
+            
         await InvokeAsync(StateHasChanged);
 
     }
@@ -77,20 +85,17 @@
             if (settings.Id == 0)
                 Context.AuthenticationSettings.Add(settings);
 
+            settings.AdminPassword = EncryptionService.EncryptObject(settings.AdminPasswordConfirmed);
             await Context.SaveChangesAsync();
-            StepCompleted.InvokeAsync();
+            await StepCompleted.InvokeAsync();
 
         }
         catch (Exception ex)
         {
-            MessageService.Error(ex.Message + " " + ex.InnerException?.Message);
-            
+            await MessageService.Error(ex.Message + " " + ex.InnerException?.Message);
+
 
         }
         await InvokeAsync(StateHasChanged);
     }
-    //async void Matches(ValidatorEventArgs e)
-    //{
-    //    e.Status = ((adminPassword.Equals(e.Value as string)) ? ValidationStatus.Success : ValidationStatus.Error);
-    //}
 }

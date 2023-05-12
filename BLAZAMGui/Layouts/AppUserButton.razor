@@ -1,0 +1,97 @@
+@inherits AppComponentBase
+
+<UserNotificationPopover UserState="@UserState" @bind-Open="@NotificationsOpen" />
+
+<MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+    <ActivatorContent>
+        @{
+            var avatarBgColor = GenerateAvatarColor(UserState.Username);
+        }
+        @if (UserState.Notifications?.Count > 0)
+        {
+            <MudBadge Color=Color.Error Overlap=true Content="@UserState.Notifications.Count">
+                <CurrentUserAvatarIcon UserState="@UserState" />
+            </MudBadge>
+        }
+        else
+        {
+            <CurrentUserAvatarIcon UserState="@UserState" />
+        }
+
+    </ActivatorContent>
+    <ChildContent>
+        <MudText Typo=Typo.caption Class="my-1" Style="text-align:center">
+            @CurrentUser.Username
+        </MudText>
+        @if (UserState.Notifications?.Count > 0)
+        {
+            <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})">Notifications</MudMenuItem>
+        }
+
+
+        <MudMenuItem OnClick="@(()=>{profileModal?.Show();})" Icon="@Icons.Material.Filled.Settings">
+            @AppLocalization["Profile Settings"]
+        </MudMenuItem>
+        @if (UserState.Impersonator == null)
+        {
+            <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/logout",true);})" Icon="@Icons.Material.Filled.Logout">
+                @AppLocalization["Sign Out"]
+            </MudMenuItem>
+        }
+        else
+        {
+            <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/unimpersonate",true);})" Icon="@Icons.Material.Filled.PersonOff">
+
+                @AppLocalization["Stop It"]
+            </MudMenuItem>
+        }
+    </ChildContent>
+</MudMenu>
+<AppModal @ref=profileModal Title="Profile Settings">
+    <CascadingValue Value="mainLayout">
+        <AppUserProfileModalContent />
+    </CascadingValue>
+</AppModal>
+@code {
+    AppModal? profileModal;
+    /// <summary>
+    /// Indicates whether the notification panel is open
+    /// </summary>
+    bool NotificationsOpen;
+
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+
+    private IApplicationUserState UserState;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NotificationPublisher.OnNotificationPublished += ((notifications) =>
+        {
+            if (notifications.Select(n => n.User).Contains(UserState.Preferences))
+            InvokeAsync(StateHasChanged);
+        });
+        UserState = CurrentUser.State;
+        UserState.OnSettingsChange += (settings) =>
+        {
+            InvokeAsync(StateHasChanged);
+        };
+    }
+
+
+    /// <summary>
+    /// Generate a repeatable hex color based on the given username
+    /// </summary>
+    /// <param name="username"></param>
+    /// <returns>A background-color style string</returns>
+    string GenerateAvatarColor(string? username)
+    {
+        if (username is null || username.IsNullOrEmpty()) return "background-color:#0c13a7";
+        int usernameHash = username.GetAppHashCode();
+        byte[] usernameHashBytes = usernameHash.ToByteArray(3);
+        string hexColor = "background-color:#";
+        hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
+        return hexColor;
+    }
+
+}

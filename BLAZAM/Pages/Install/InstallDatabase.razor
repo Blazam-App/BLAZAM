@@ -1,4 +1,3 @@
-@using Microsoft.EntityFrameworkCore
 @layout InstallLayout
 @inherits AppComponentBase
 @{
@@ -29,22 +28,22 @@
         <MudText Class="mb-5" Typo="Typo.h4">The database is ready to install.</MudText>
         <MudStack Row=true>
             <MudText Style="width:140px;" Typo="Typo.h5">Type</MudText>
-            <MudText>@Context.ConnectionString?.DatabaseType</MudText>
+            <MudText>@Context?.ConnectionString?.DatabaseType</MudText>
         </MudStack>
 
         <MudStack Row=true>
             <MudText Style="width:140px;" Typo="Typo.h5">Server</MudText>
-            <MudText>@Context.ConnectionString?.ServerAddress</MudText>
+            <MudText>@Context?.ConnectionString?.ServerAddress</MudText>
         </MudStack>
 
         <MudStack Row=true>
             <MudText Style="width:140px;" Typo="Typo.h5">Port</MudText>
-            <MudText>@Context.ConnectionString?.ServerPort</MudText>
+            <MudText>@Context?.ConnectionString?.ServerPort</MudText>
         </MudStack>
 
         <MudStack Row=true>
             <MudText Style="width:140px;" Typo="Typo.h5">Database</MudText>
-            <MudText>@Context.ConnectionString?.Database</MudText>
+            <MudText>@Context?.ConnectionString?.Database</MudText>
         </MudStack>
 
 
@@ -87,7 +86,7 @@ else
             await InvokeAsync(StateHasChanged);
             try
             {
-                if (await Program.ApplyDatabaseMigrations(true))
+                if (await DbFactory.ApplyDatabaseMigrations(true))
                 {
                     Completed = true;
                     await InvokeAsync(StepCompleted.InvokeAsync);
@@ -97,7 +96,7 @@ else
             }
             catch (Exception ex)
             {
-                MessageService.Error(ex.Message, ex.GetType().FullName);
+                await MessageService.Error(ex.Message, ex.GetType().FullName);
             }
             await InvokeAsync(StateHasChanged);
 

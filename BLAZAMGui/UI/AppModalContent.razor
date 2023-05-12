@@ -1,0 +1,38 @@
+﻿@inherits DirectoryModelComponent
+
+@code {
+    #nullable disable warnings
+
+    [CascadingParameter] protected AppModal Modal { get; set; }
+    [Parameter]
+    public EventCallback ModelChanged { get; set; }
+    /// <summary>
+    /// Closes the containing modal
+    /// </summary>
+    protected void Close(){
+        Modal.Hide();
+        InvokeAsync(StateHasChanged);
+
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        ValidateModal();
+    }
+
+
+    protected virtual bool IsValid => true;
+    private bool _lastIsValid;
+    protected bool ValidateModal()
+    {
+        if (_lastIsValid != IsValid)
+        {
+            _lastIsValid = IsValid;
+            Modal?.RefreshView();
+        }
+        return IsValid;
+    }
+
+
+}

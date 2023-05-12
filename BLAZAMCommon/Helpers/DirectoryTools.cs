@@ -1,10 +1,24 @@
-﻿using System.Text;
+﻿using System.Management;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.RegularExpressions;
 
-namespace BLAZAM.Common.Helpers
+namespace BLAZAM.Helpers
 {
-    public class DirectoryTools
+    public static class DirectoryTools
     {
+        public static T? GetPropertyValue<T>(this ManagementObject? mo,string propertyName)
+        {
+            var value = mo.GetPropertyValue(propertyName);
+            try
+            {
+                return (T)value;
+            }
+            catch
+            {
+                return default;
+            }
+        }
         public static string FqdnToDn(string fqdn)
         {
             // Split the FQDN into its domain components

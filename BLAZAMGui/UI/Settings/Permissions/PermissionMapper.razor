@@ -1,0 +1,77 @@
+﻿@inherits AppComponentBase
+<MudCard Elevation="2">
+    <h3>OU Privilege Mapper</h3>
+
+
+    <MudGrid>
+        <MudItem xs="12" sm="3" md="4">
+            <OUTreeView @ref=@OUTree StartRootExpanded @bind-SelectedOU="SelectedNode" EndText="@((context)=>context.DirectPermissionMappings.Any()?context.DirectPermissionMappings.Count().ToString():null)">
+               @* <EndAdornment>
+                    @if (@context.DirectPermissionMappings.Count() > 0)
+                    {
+                        <MudBadge Overlap
+                                  Color="Color.Secondary"
+                                  Content="@context.DirectPermissionMappings.Count()"
+                                  Class="ml-6 my-4 mud-theme-secondary" />
+
+                    }
+                    @if (@context.OffspringPermissionMappings.Count() > 0)
+                    {
+                        <MudBadge Overlap
+                                  Color="Color.Tertiary"
+                                  Content="@context.OffspringPermissionMappings.Count()"
+                                  Class="ml-6 mr-6 my-0 mud-theme-tertiary" />
+
+                    }
+                </EndAdornment>*@
+            </OUTreeView>
+        </MudItem>
+        <MudItem xs="12" sm="9" md="8">
+            <OUPermissionsEditor MappingsChanged="@MappingsChanged" OU="SelectedNode" />
+        </MudItem>
+    </MudGrid>
+</MudCard>
+@code {
+
+#nullable disable warnings
+    OUTreeView? OUTree { get; set; }
+    IADOrganizationalUnit selectedNode;
+    IADOrganizationalUnit SelectedNode
+    {
+        get => selectedNode; set
+        {
+            if (selectedNode == value) return;
+            selectedNode = value;
+            InvokeAsync(StateHasChanged);
+
+        }
+    }
+
+    IList<IADOrganizationalUnit> ExpandedNodes = new List<IADOrganizationalUnit>();
+    HashSet<IADOrganizationalUnit> ApplicationBaseOUs = new HashSet<IADOrganizationalUnit>();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        //ApplicationBaseOUs = Directory.OUs.FindSubOusByDN(null);
+        ADOrganizationalUnit TopLevel = new ADOrganizationalUnit();
+        await TopLevel.Parse(Directory.GetDirectoryEntry(), Directory);
+        _ = TopLevel.SubOUs;
+        ApplicationBaseOUs.Add(TopLevel);
+
+        ExpandedNodes.Add(TopLevel);
+        selectedNode = TopLevel;
+       
+        //OUTree.RootOU = ApplicationBaseOUs;
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    async Task MappingsChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+   
+}

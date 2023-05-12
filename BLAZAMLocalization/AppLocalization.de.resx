@@ -1,0 +1,576 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Access Levels" xml:space="preserve">
+    <value>Zugriffsebenen</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>Konto</value>
+  </data>
+  <data name="Account Expiration" xml:space="preserve">
+    <value>Ablauf des Kontos</value>
+  </data>
+  <data name="Account is disabled." xml:space="preserve">
+    <value>Das Konto ist deaktiviert.</value>
+  </data>
+  <data name="Account is enabled." xml:space="preserve">
+    <value>Konto ist aktiviert.</value>
+  </data>
+  <data name="Account is locked out." xml:space="preserve">
+    <value>Das Konto ist gesperrt.</value>
+  </data>
+  <data name="Account is not locked out." xml:space="preserve">
+    <value>Das Konto ist nicht gesperrt.</value>
+  </data>
+  <data name="Account Name" xml:space="preserve">
+    <value>Kontenbezeichnung</value>
+  </data>
+  <data name="Active Directory" xml:space="preserve">
+    <value>Active Directory</value>
+  </data>
+  <data name="Active Directory is not available!" xml:space="preserve">
+    <value>Active Directory ist nicht verfügbar!</value>
+  </data>
+  <data name="Active Directory Settings" xml:space="preserve">
+    <value>Active Directory-Einstellungen</value>
+  </data>
+  <data name="Add New Access Level" xml:space="preserve">
+    <value>Neue Zugriffsebene hinzufügen</value>
+  </data>
+  <data name="Additonal Fields" xml:space="preserve">
+    <value>Zusätzliche Felder</value>
+  </data>
+  <data name="Admin bcc" xml:space="preserve">
+    <value>Admin bcc</value>
+  </data>
+  <data name="Admin Password" xml:space="preserve">
+    <value>Admin-Passwort</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="Allow" xml:space="preserve">
+    <value>Erlauben</value>
+  </data>
+  <data name="Allow Auto Update" xml:space="preserve">
+    <value>Automatische Aktualisierung zulassen</value>
+  </data>
+  <data name="Allow Disabled User Access" xml:space="preserve">
+    <value>Behindertenzugriff zulassen</value>
+  </data>
+  <data name="Application" xml:space="preserve">
+    <value>Anwendung</value>
+  </data>
+  <data name="Application Name" xml:space="preserve">
+    <value>Name der Anwendung</value>
+  </data>
+  <data name="Application Settings" xml:space="preserve">
+    <value>Anwendungseinstellungen</value>
+  </data>
+  <data name="ApplicationStarting" xml:space="preserve">
+    <value>Die Anwendung startet... Bitte warten...</value>
+  </data>
+  <data name="Assign Objects" xml:space="preserve">
+    <value>Zuweisen von Objekten</value>
+  </data>
+  <data name="Assign To" xml:space="preserve">
+    <value>Zuweisen zu</value>
+  </data>
+  <data name="Attempting to connect to Active Directory." xml:space="preserve">
+    <value>Es wird versucht, eine Verbindung mit Active Directory herzustellen.</value>
+  </data>
+  <data name="Audit" xml:space="preserve">
+    <value>Rechnungsprüfung</value>
+  </data>
+  <data name="Authentication" xml:space="preserve">
+    <value>Authentifizierung</value>
+  </data>
+  <data name="Authentication Settings" xml:space="preserve">
+    <value>Authentifizierungseinstellungen</value>
+  </data>
+  <data name="Auto Update Time" xml:space="preserve">
+    <value>Automatische Aktualisierungszeit</value>
+  </data>
+  <data name="Base DN" xml:space="preserve">
+    <value>Basis-DN</value>
+  </data>
+  <data name="BaseDN" xml:space="preserve">
+    <value>Basis-DN</value>
+  </data>
+  <data name="Branding Icon" xml:space="preserve">
+    <value>Branding-Symbol</value>
+  </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>Passwort ändern</value>
+  </data>
+  <data name="Choose or Search..." xml:space="preserve">
+    <value>Wählen oder Suchen...</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Stadt</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Firma</value>
+  </data>
+  <data name="Computer" xml:space="preserve">
+    <value>Computer</value>
+  </data>
+  <data name="Configure" xml:space="preserve">
+    <value>Konfigurieren</value>
+  </data>
+  <data name="Confirm Password" xml:space="preserve">
+    <value>Passwort bestätigen</value>
+  </data>
+  <data name="Contact Info" xml:space="preserve">
+    <value>Kontaktdaten</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Schaffen</value>
+  </data>
+  <data name="Create Group" xml:space="preserve">
+    <value>Gruppe erstellen</value>
+  </data>
+  <data name="Create New Delegation Target" xml:space="preserve">
+    <value>Neues Delegierungsziel erstellen</value>
+  </data>
+  <data name="Create OU" xml:space="preserve">
+    <value>Erstellen einer Organisationseinheit</value>
+  </data>
+  <data name="Create User" xml:space="preserve">
+    <value>Benutzer erstellen</value>
+  </data>
+  <data name="Custom Login" xml:space="preserve">
+    <value>Benutzerdefiniertes Login</value>
+  </data>
+  <data name="Database server is not reachable!" xml:space="preserve">
+    <value>Datenbankserver ist nicht erreichbar!</value>
+  </data>
+  <data name="Delegates" xml:space="preserve">
+    <value>Delegierte</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="Delete Access Level" xml:space="preserve">
+    <value>Zugriffsebene löschen</value>
+  </data>
+  <data name="Delgate Name" xml:space="preserve">
+    <value>Delgate-Name</value>
+  </data>
+  <data name="Deny" xml:space="preserve">
+    <value>Leugnen</value>
+  </data>
+  <data name="Department" xml:space="preserve">
+    <value>Abteilung</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="Discard Changes" xml:space="preserve">
+    <value>Verwerfen von Änderungen</value>
+  </data>
+  <data name="Display Name" xml:space="preserve">
+    <value>Anzeigename</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Redigieren</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="Email Address" xml:space="preserve">
+    <value>E-Mail-Adresse</value>
+  </data>
+  <data name="Email Enabled" xml:space="preserve">
+    <value>E-Mail aktiviert</value>
+  </data>
+  <data name="Email Settings" xml:space="preserve">
+    <value>E-Mail-Einstellungen</value>
+  </data>
+  <data name="Employee Id" xml:space="preserve">
+    <value>Mitarbeiter-ID</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Ermöglichte</value>
+  </data>
+  <data name="Field Name" xml:space="preserve">
+    <value>Flurname</value>
+  </data>
+  <data name="Field Type" xml:space="preserve">
+    <value>Feld-Typ</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Felder</value>
+  </data>
+  <data name="First Name" xml:space="preserve">
+    <value>Vorname</value>
+  </data>
+  <data name="Force Https" xml:space="preserve">
+    <value>HTTPS erzwingen</value>
+  </data>
+  <data name="FQDN" xml:space="preserve">
+    <value>FQDN</value>
+  </data>
+  <data name="From Address" xml:space="preserve">
+    <value>Von der Adresse</value>
+  </data>
+  <data name="From Display Name" xml:space="preserve">
+    <value>Über den Anzeigenamen</value>
+  </data>
+  <data name="Google Analytics ID" xml:space="preserve">
+    <value>Google Analytics-ID</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Gruppe</value>
+  </data>
+  <data name="Group Name" xml:space="preserve">
+    <value>Name der Gruppe</value>
+  </data>
+  <data name="Groups" xml:space="preserve">
+    <value>Gruppen</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Heim</value>
+  </data>
+  <data name="Home Directory" xml:space="preserve">
+    <value>Home-Verzeichnis</value>
+  </data>
+  <data name="Home Drive" xml:space="preserve">
+    <value>Home Drive</value>
+  </data>
+  <data name="Home Phone" xml:space="preserve">
+    <value>Telefon zu Hause</value>
+  </data>
+  <data name="Homepage Message" xml:space="preserve">
+    <value>Homepage Nachricht</value>
+  </data>
+  <data name="Impersonate User" xml:space="preserve">
+    <value>Sich als Benutzer ausgeben</value>
+  </data>
+  <data name="Inherited Permissions" xml:space="preserve">
+    <value>Vererbte Berechtigungen</value>
+  </data>
+  <data name="Job Title" xml:space="preserve">
+    <value>Berufsbezeichnung</value>
+  </data>
+  <data name="Last Name" xml:space="preserve">
+    <value>Nachname</value>
+  </data>
+  <data name="levelValue.Name" xml:space="preserve">
+    <value>levelValue.Name</value>
+  </data>
+  <data name="Log In" xml:space="preserve">
+    <value>Anmelden</value>
+  </data>
+  <data name="Log In To Demo" xml:space="preserve">
+    <value>Melden Sie sich bei der Demo an</value>
+  </data>
+  <data name="Logins" xml:space="preserve">
+    <value>Anmeldungen</value>
+  </data>
+  <data name="Main" xml:space="preserve">
+    <value>Hauptsächlich</value>
+  </data>
+  <data name="Mappings" xml:space="preserve">
+    <value>Zuordnungen</value>
+  </data>
+  <data name="Middle Name" xml:space="preserve">
+    <value>Zweitname</value>
+  </data>
+  <data name="Move" xml:space="preserve">
+    <value>Bewegen</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Office" xml:space="preserve">
+    <value>Büro</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Oops" xml:space="preserve">
+    <value>Hoppla</value>
+  </data>
+  <data name="Organization" xml:space="preserve">
+    <value>Organisation</value>
+  </data>
+  <data name="OU" xml:space="preserve">
+    <value>ODER</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Passwort</value>
+  </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>Erlaubnisse</value>
+  </data>
+  <data name="Please report to" xml:space="preserve">
+    <value>Bitte melden Sie sich bei</value>
+  </data>
+  <data name="PO Box" xml:space="preserve">
+    <value>Postfach</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>Hafen</value>
+  </data>
+  <data name="Preferences" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="Profile Path" xml:space="preserve">
+    <value>Profil-Pfad</value>
+  </data>
+  <data name="Profile Settings" xml:space="preserve">
+    <value>Profil-Einstellungen</value>
+  </data>
+  <data name="Recycle Bin" xml:space="preserve">
+    <value>Papierkorb</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Umbenennen</value>
+  </data>
+  <data name="Reply-To Address" xml:space="preserve">
+    <value>Antwort-an-Adresse</value>
+  </data>
+  <data name="Reply-To Display Name" xml:space="preserve">
+    <value>Anzeigename "Antwort an"</value>
+  </data>
+  <data name="Require change" xml:space="preserve">
+    <value>Änderungen erfordern</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Retten</value>
+  </data>
+  <data name="Save Changes" xml:space="preserve">
+    <value>Änderungen speichern</value>
+  </data>
+  <data name="Script Path" xml:space="preserve">
+    <value>Skript-Pfad</value>
+  </data>
+  <data name="Server" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="Session Timeout" xml:space="preserve">
+    <value>Zeitüberschreitung bei der Sitzung</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="Sign Out" xml:space="preserve">
+    <value>Abmelden</value>
+  </data>
+  <data name="Site" xml:space="preserve">
+    <value>Platz</value>
+  </data>
+  <data name="SMTP Password" xml:space="preserve">
+    <value>SMTP-Passwort</value>
+  </data>
+  <data name="SMTP Port" xml:space="preserve">
+    <value>SMTP-Anschluss</value>
+  </data>
+  <data name="SMTP Server" xml:space="preserve">
+    <value>SMTP-Server</value>
+  </data>
+  <data name="SMTP Username" xml:space="preserve">
+    <value>SMTP-Benutzername</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>Zustand</value>
+  </data>
+  <data name="Stop It" xml:space="preserve">
+    <value>Hör auf</value>
+  </data>
+  <data name="Street" xml:space="preserve">
+    <value>Straße</value>
+  </data>
+  <data name="Street Address" xml:space="preserve">
+    <value>Anschrift</value>
+  </data>
+  <data name="System" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="System Settings" xml:space="preserve">
+    <value>Systemeinstellungen</value>
+  </data>
+  <data name="Template Category" xml:space="preserve">
+    <value>Vorlagen-Kategorie</value>
+  </data>
+  <data name="Template Name" xml:space="preserve">
+    <value>Name der Vorlage</value>
+  </data>
+  <data name="Templates" xml:space="preserve">
+    <value>Schablonen</value>
+  </data>
+  <data name="Test Recipient" xml:space="preserve">
+    <value>Testempfänger</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Aufschließen</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="Update Branch" xml:space="preserve">
+    <value>Zweig aktualisieren</value>
+  </data>
+  <data name="Update Scheduled" xml:space="preserve">
+    <value>Update geplant</value>
+  </data>
+  <data name="Update Settings" xml:space="preserve">
+    <value>Einstellungen aktualisieren</value>
+  </data>
+  <data name="Upload Thumbnail Photo" xml:space="preserve">
+    <value>Thumbnail-Foto hochladen</value>
+  </data>
+  <data name="Use SMTP Authentication" xml:space="preserve">
+    <value>SMTP-Authentifizierung verwenden</value>
+  </data>
+  <data name="Use SSL" xml:space="preserve">
+    <value>Verwenden Sie SSL</value>
+  </data>
+  <data name="Use TLS" xml:space="preserve">
+    <value>TLS verwenden</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="User Helpdesk URL" xml:space="preserve">
+    <value>Benutzer-Helpdesk-URL</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Nutzername</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="UseTLS" xml:space="preserve">
+    <value>VerwendenTLS</value>
+  </data>
+  <data name="Website FQDN" xml:space="preserve">
+    <value>Webseite FQDN</value>
+  </data>
+  <data name="Website Name" xml:space="preserve">
+    <value>Website Name</value>
+  </data>
+  <data name="Zip Code" xml:space="preserve">
+    <value>PLZ</value>
+  </data>
+</root>

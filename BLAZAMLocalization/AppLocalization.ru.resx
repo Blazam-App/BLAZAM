@@ -1,0 +1,576 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Access Levels" xml:space="preserve">
+    <value>Уровни доступа</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>Счет</value>
+  </data>
+  <data name="Account Expiration" xml:space="preserve">
+    <value>Срок действия учетной записи</value>
+  </data>
+  <data name="Account is disabled." xml:space="preserve">
+    <value>Учетная запись отключена.</value>
+  </data>
+  <data name="Account is enabled." xml:space="preserve">
+    <value>Учетная запись включена.</value>
+  </data>
+  <data name="Account is locked out." xml:space="preserve">
+    <value>Аккаунт заблокирован.</value>
+  </data>
+  <data name="Account is not locked out." xml:space="preserve">
+    <value>Аккаунт не заблокирован.</value>
+  </data>
+  <data name="Account Name" xml:space="preserve">
+    <value>Имя учетной записи</value>
+  </data>
+  <data name="Active Directory" xml:space="preserve">
+    <value>Active Directory</value>
+  </data>
+  <data name="Active Directory is not available!" xml:space="preserve">
+    <value>Active Directory недоступен!</value>
+  </data>
+  <data name="Active Directory Settings" xml:space="preserve">
+    <value>Параметры Active Directory</value>
+  </data>
+  <data name="Add New Access Level" xml:space="preserve">
+    <value>Добавить новый уровень доступа</value>
+  </data>
+  <data name="Additonal Fields" xml:space="preserve">
+    <value>Дополнительные поля</value>
+  </data>
+  <data name="Admin bcc" xml:space="preserve">
+    <value>Администратор скрытой копии</value>
+  </data>
+  <data name="Admin Password" xml:space="preserve">
+    <value>Пароль администратора</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="Allow" xml:space="preserve">
+    <value>Разрешать</value>
+  </data>
+  <data name="Allow Auto Update" xml:space="preserve">
+    <value>Разрешить автоматическое обновление</value>
+  </data>
+  <data name="Allow Disabled User Access" xml:space="preserve">
+    <value>Разрешить доступ отключенных пользователей</value>
+  </data>
+  <data name="Application" xml:space="preserve">
+    <value>Приложение</value>
+  </data>
+  <data name="Application Name" xml:space="preserve">
+    <value>Имя приложения</value>
+  </data>
+  <data name="Application Settings" xml:space="preserve">
+    <value>Настройки приложения</value>
+  </data>
+  <data name="ApplicationStarting" xml:space="preserve">
+    <value>Приложение запускается... Подождите...</value>
+  </data>
+  <data name="Assign Objects" xml:space="preserve">
+    <value>Назначение объектов</value>
+  </data>
+  <data name="Assign To" xml:space="preserve">
+    <value>Назначьте</value>
+  </data>
+  <data name="Attempting to connect to Active Directory." xml:space="preserve">
+    <value>Попытка подключения к Active Directory.</value>
+  </data>
+  <data name="Audit" xml:space="preserve">
+    <value>Ревизия</value>
+  </data>
+  <data name="Authentication" xml:space="preserve">
+    <value>Аутентификация</value>
+  </data>
+  <data name="Authentication Settings" xml:space="preserve">
+    <value>Параметры проверки подлинности</value>
+  </data>
+  <data name="Auto Update Time" xml:space="preserve">
+    <value>Время автоматического обновления</value>
+  </data>
+  <data name="Base DN" xml:space="preserve">
+    <value>Базовое DN</value>
+  </data>
+  <data name="BaseDN" xml:space="preserve">
+    <value>Базовое DN</value>
+  </data>
+  <data name="Branding Icon" xml:space="preserve">
+    <value>Значок брендинга</value>
+  </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>Смена пароля</value>
+  </data>
+  <data name="Choose or Search..." xml:space="preserve">
+    <value>Выберите или найдите...</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Город</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Компания</value>
+  </data>
+  <data name="Computer" xml:space="preserve">
+    <value>Компьютер</value>
+  </data>
+  <data name="Configure" xml:space="preserve">
+    <value>Настроить</value>
+  </data>
+  <data name="Confirm Password" xml:space="preserve">
+    <value>Подтвердите пароль</value>
+  </data>
+  <data name="Contact Info" xml:space="preserve">
+    <value>Контактная информация</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Создавать</value>
+  </data>
+  <data name="Create Group" xml:space="preserve">
+    <value>Создать группу</value>
+  </data>
+  <data name="Create New Delegation Target" xml:space="preserve">
+    <value>Создание нового целевого объекта делегирования</value>
+  </data>
+  <data name="Create OU" xml:space="preserve">
+    <value>Создание подразделения</value>
+  </data>
+  <data name="Create User" xml:space="preserve">
+    <value>Создать пользователя</value>
+  </data>
+  <data name="Custom Login" xml:space="preserve">
+    <value>Пользовательский вход</value>
+  </data>
+  <data name="Database server is not reachable!" xml:space="preserve">
+    <value>Сервер базы данных недоступен!</value>
+  </data>
+  <data name="Delegates" xml:space="preserve">
+    <value>Делегаты</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="Delete Access Level" xml:space="preserve">
+    <value>Удалить уровень доступа</value>
+  </data>
+  <data name="Delgate Name" xml:space="preserve">
+    <value>Название Delgate</value>
+  </data>
+  <data name="Deny" xml:space="preserve">
+    <value>Отрицать</value>
+  </data>
+  <data name="Department" xml:space="preserve">
+    <value>Отдел</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Приметы:__________</value>
+  </data>
+  <data name="Discard Changes" xml:space="preserve">
+    <value>Отмена изменений</value>
+  </data>
+  <data name="Display Name" xml:space="preserve">
+    <value>Отображаемое имя</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Редактировать</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Отправить по электронной почте</value>
+  </data>
+  <data name="Email Address" xml:space="preserve">
+    <value>Адрес электронной почты</value>
+  </data>
+  <data name="Email Enabled" xml:space="preserve">
+    <value>Электронная почта включена</value>
+  </data>
+  <data name="Email Settings" xml:space="preserve">
+    <value>Настройки электронной почты</value>
+  </data>
+  <data name="Employee Id" xml:space="preserve">
+    <value>Идентификатор сотрудника</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Включен</value>
+  </data>
+  <data name="Field Name" xml:space="preserve">
+    <value>Имя поля</value>
+  </data>
+  <data name="Field Type" xml:space="preserve">
+    <value>Тип поля</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Поля</value>
+  </data>
+  <data name="First Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="Force Https" xml:space="preserve">
+    <value>Принудительный https</value>
+  </data>
+  <data name="FQDN" xml:space="preserve">
+    <value>Полное доменное имя</value>
+  </data>
+  <data name="From Address" xml:space="preserve">
+    <value>С адреса</value>
+  </data>
+  <data name="From Display Name" xml:space="preserve">
+    <value>Из отображаемого имени</value>
+  </data>
+  <data name="Google Analytics ID" xml:space="preserve">
+    <value>Идентификатор Google Analytics</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Группа</value>
+  </data>
+  <data name="Group Name" xml:space="preserve">
+    <value>Название группы</value>
+  </data>
+  <data name="Groups" xml:space="preserve">
+    <value>Группы</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Дом</value>
+  </data>
+  <data name="Home Directory" xml:space="preserve">
+    <value>Домашний каталог</value>
+  </data>
+  <data name="Home Drive" xml:space="preserve">
+    <value>Главная дорога</value>
+  </data>
+  <data name="Home Phone" xml:space="preserve">
+    <value>Домашний телефон</value>
+  </data>
+  <data name="Homepage Message" xml:space="preserve">
+    <value>Сообщение на главной странице</value>
+  </data>
+  <data name="Impersonate User" xml:space="preserve">
+    <value>Выдача себя за пользователя</value>
+  </data>
+  <data name="Inherited Permissions" xml:space="preserve">
+    <value>Унаследованные разрешения</value>
+  </data>
+  <data name="Job Title" xml:space="preserve">
+    <value>Должность</value>
+  </data>
+  <data name="Last Name" xml:space="preserve">
+    <value>Фамилия</value>
+  </data>
+  <data name="levelValue.Name" xml:space="preserve">
+    <value>levelValue.Name</value>
+  </data>
+  <data name="Log In" xml:space="preserve">
+    <value>Войти</value>
+  </data>
+  <data name="Log In To Demo" xml:space="preserve">
+    <value>Войти в демонстрацию</value>
+  </data>
+  <data name="Logins" xml:space="preserve">
+    <value>Имена входа</value>
+  </data>
+  <data name="Main" xml:space="preserve">
+    <value>Главный</value>
+  </data>
+  <data name="Mappings" xml:space="preserve">
+    <value>Сопоставления</value>
+  </data>
+  <data name="Middle Name" xml:space="preserve">
+    <value>Отчество</value>
+  </data>
+  <data name="Move" xml:space="preserve">
+    <value>Двигаться</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="Office" xml:space="preserve">
+    <value>Офис</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>Онлайн</value>
+  </data>
+  <data name="Oops" xml:space="preserve">
+    <value>Ой</value>
+  </data>
+  <data name="Organization" xml:space="preserve">
+    <value>Организация</value>
+  </data>
+  <data name="OU" xml:space="preserve">
+    <value>ИЛИ</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>Разрешения</value>
+  </data>
+  <data name="Please report to" xml:space="preserve">
+    <value>Просьба сообщить по адресу:</value>
+  </data>
+  <data name="PO Box" xml:space="preserve">
+    <value>Почтовый ящик</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>Порт</value>
+  </data>
+  <data name="Preferences" xml:space="preserve">
+    <value>Предпочтения</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Профиль</value>
+  </data>
+  <data name="Profile Path" xml:space="preserve">
+    <value>Путь к профилю</value>
+  </data>
+  <data name="Profile Settings" xml:space="preserve">
+    <value>Настройки профиля</value>
+  </data>
+  <data name="Recycle Bin" xml:space="preserve">
+    <value>Корзина</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Переименовать</value>
+  </data>
+  <data name="Reply-To Address" xml:space="preserve">
+    <value>Адрес для ответа</value>
+  </data>
+  <data name="Reply-To Display Name" xml:space="preserve">
+    <value>Отображаемое имя для ответа</value>
+  </data>
+  <data name="Require change" xml:space="preserve">
+    <value>Требовать изменений</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Спасать</value>
+  </data>
+  <data name="Save Changes" xml:space="preserve">
+    <value>Сохранить изменения</value>
+  </data>
+  <data name="Script Path" xml:space="preserve">
+    <value>Путь к сценарию</value>
+  </data>
+  <data name="Server" xml:space="preserve">
+    <value>Сервер</value>
+  </data>
+  <data name="Session Timeout" xml:space="preserve">
+    <value>Тайм-аут сеанса</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="Sign Out" xml:space="preserve">
+    <value>Выйдите из системы</value>
+  </data>
+  <data name="Site" xml:space="preserve">
+    <value>Место</value>
+  </data>
+  <data name="SMTP Password" xml:space="preserve">
+    <value>Пароль SMTP</value>
+  </data>
+  <data name="SMTP Port" xml:space="preserve">
+    <value>SMTP-порт</value>
+  </data>
+  <data name="SMTP Server" xml:space="preserve">
+    <value>SMTP-сервер</value>
+  </data>
+  <data name="SMTP Username" xml:space="preserve">
+    <value>Имя пользователя SMTP</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>Государство</value>
+  </data>
+  <data name="Stop It" xml:space="preserve">
+    <value>Прекрати</value>
+  </data>
+  <data name="Street" xml:space="preserve">
+    <value>Улица</value>
+  </data>
+  <data name="Street Address" xml:space="preserve">
+    <value>Адрес улицы</value>
+  </data>
+  <data name="System" xml:space="preserve">
+    <value>Система</value>
+  </data>
+  <data name="System Settings" xml:space="preserve">
+    <value>Системные настройки</value>
+  </data>
+  <data name="Template Category" xml:space="preserve">
+    <value>Категория шаблона</value>
+  </data>
+  <data name="Template Name" xml:space="preserve">
+    <value>Имя шаблона</value>
+  </data>
+  <data name="Templates" xml:space="preserve">
+    <value>Шаблоны</value>
+  </data>
+  <data name="Test Recipient" xml:space="preserve">
+    <value>Получатель теста</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Отпирать</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Обновлять</value>
+  </data>
+  <data name="Update Branch" xml:space="preserve">
+    <value>Ветвь обновления</value>
+  </data>
+  <data name="Update Scheduled" xml:space="preserve">
+    <value>Обновление запланировано</value>
+  </data>
+  <data name="Update Settings" xml:space="preserve">
+    <value>Настройки обновления</value>
+  </data>
+  <data name="Upload Thumbnail Photo" xml:space="preserve">
+    <value>Загрузить миниатюру фото</value>
+  </data>
+  <data name="Use SMTP Authentication" xml:space="preserve">
+    <value>Использование проверки подлинности SMTP</value>
+  </data>
+  <data name="Use SSL" xml:space="preserve">
+    <value>Используйте SSL</value>
+  </data>
+  <data name="Use TLS" xml:space="preserve">
+    <value>Использование TLS</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Пользователь</value>
+  </data>
+  <data name="User Helpdesk URL" xml:space="preserve">
+    <value>URL-адрес службы поддержки пользователей</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Имя пользователя</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Пользователей</value>
+  </data>
+  <data name="UseTLS" xml:space="preserve">
+    <value>UseTLS</value>
+  </data>
+  <data name="Website FQDN" xml:space="preserve">
+    <value>Полное доменное имя веб-сайта</value>
+  </data>
+  <data name="Website Name" xml:space="preserve">
+    <value>Название веб-сайта</value>
+  </data>
+  <data name="Zip Code" xml:space="preserve">
+    <value>Почтовый индекс</value>
+  </data>
+</root>

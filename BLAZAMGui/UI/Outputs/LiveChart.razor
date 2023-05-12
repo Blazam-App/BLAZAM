@@ -1,0 +1,31 @@
+﻿@inherits LiveChartComponentBase
+<MudStack>
+    @if (!Title.IsNullOrEmpty())
+    {
+        <h3>@Title</h3>
+    }
+    <MudBadge Icon="@Icons.Material.Filled.ShowChart" OnClick="@(() =>{ LineInterpolation = InterpolationOption.NaturalSpline;})" Overlap=true>
+        <MudChart ChartType="ChartType.Line"
+                  ChartSeries="@DataSeries"
+                  XAxisLabels="@Data.DistinctBy(ae=>ae.TimeStamp.ToLocalTime().ToShortTimeString()).Select(ae=>ae.TimeStamp.ToLocalTime().ToShortTimeString()).ToArray()"
+                   
+                  ChartOptions="@ChartOptions"
+                  Height="250px"></MudChart>
+    </MudBadge>
+</MudStack>
+@code {
+
+
+
+
+    protected override void PollData()
+    {
+        //var point = new KeyValuePair<DateTime,double>(DateTime.Now, PollFunc.Invoke());
+        Data.Add(new()
+            {
+                TimeStamp = DateTime.Now,
+                Value = PollFunc.Invoke()
+            });
+        InvokeAsync(StateHasChanged);
+    }
+}

@@ -77,10 +77,8 @@
 
 
 
-    bool custom = false;
 
     string newGroupName;
-    bool collapseVisible = false;
     List<DirectoryTemplate> templates;
     IADOrganizationalUnit? parentOU;
     IADGroup? newGroup;
@@ -121,6 +119,6 @@
     }
     async Task GroupCreated(IADGroup ou)
     {
-        AuditLogger.Group.Created(ou);
+        await AuditLogger.Group.Created(ou);
     }
 }

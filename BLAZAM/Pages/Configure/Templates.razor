@@ -1,4 +1,5 @@
 ﻿@page "/templates"
+@page "/templates/{TemplateIdParameter:int}"
 @inherits TemplateComponent
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
@@ -10,39 +11,49 @@
 
 
     <MudStack Row=true>
-        <div>
+        <MudText>
             Templates
 
-        </div>
+        </MudText>
 
         <MudSelectList T="string"
+                       Label="Category"
                        Values="TemplateCategories"
                        @bind-Value="@SelectedCategory" />
 
-
-        <MudSelectList T="@DirectoryTemplate"
+        <MudSelectList T="DirectoryTemplate"
+                       Label="Template"
                        Values="@Templates"
-                       @bind-Value="@SelectedTemplate" />
-        @if (Templates?.Count() > 0)
-        {
-            <MudButton Color=Color.Secondary OnClick="@(()=>{SelectedTemplate = new();})" StartIcon="@Icons.Material.Filled.AddCard" />
+                       Value="@SelectedTemplate"
+                       ValueChanged="@((selected)=>{
+                                        SelectedTemplate = selected;
+                                        Nav.NavigateTo("/templates/"+selected.Id);
+                                        })" />
 
-        }else{
-            <MudTooltip Arrow=true IsVisible=@(Templates?.Count()<1) Text="Create your first template">
+        <MudTooltip Color=Color.Error
+                    ShowOnHover=@(Templates?.Count() < 1)
+                    Arrow=true
+                    IsVisible=@(createFirstTemplateTooltipVisible)
+                    Text="Create your first template">
 
-                <MudButton Color=Color.Secondary OnClick="@(()=>{SelectedTemplate = new();})" StartIcon="@Icons.Material.Filled.AddCard" />
+            <MudIconButton Color=Color.Tertiary
+                           Class="align-middle"
+                           OnClick="@(()=>{SelectedTemplate = new();Nav.NavigateTo("/templates");})"
+                           Icon="@Icons.Material.Filled.AddCard" />
 
-            </MudTooltip>
+        </MudTooltip>
 
-        }
+
 
         @if (SelectedCategory != null && SelectedCategory != "All")
         {
-            <MudButton OnClick=@(()=>{RenameModal.Show();}) Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.ChangeCircle" />
+            <MudButton OnClick=@(()=>{RenameModal.Show();})
+                   Color="Color.Tertiary"
+                   StartIcon="@Icons.Material.Filled.ChangeCircle" />
         }
         @if (SelectedTemplate != null)
         {
-            <MudButton OnClick=@(()=>{DuplicateTemplate(SelectedTemplate);}) Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.FileCopy" />
+            <MudButton OnClick=@(async()=>{await DuplicateTemplate(SelectedTemplate);}) Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.FileCopy" />
         }
 
 
@@ -66,13 +77,13 @@
 
 
 @code {
+    bool createFirstTemplateTooltipVisible;
     AppModal? RenameModal;
     string? newCategoryName;
     protected async Task DuplicateTemplate(DirectoryTemplate template)
     {
         SelectedTemplate = (DirectoryTemplate)template.Clone();
-        await InvokeAsync(StateHasChanged);
-        Header?.OnRefreshRequested?.Invoke();
+        await RefreshComponents();
 
 
     }
@@ -91,6 +102,22 @@
         SelectedCategory = newCategoryName;
         await FetchTemplates();
         RenameModal?.Hide();
-        await InvokeAsync(StateHasChanged);
+        await RefreshComponents();
+
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await RefreshComponents();
+        if (Templates?.Count() < 1)
+        {
+
+            await Task.Delay(1000);
+            createFirstTemplateTooltipVisible = true;
+            await RefreshComponents();
+
+
+
+        }
     }
 }
