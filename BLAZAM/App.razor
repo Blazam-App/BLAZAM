@@ -70,20 +70,27 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        var userTheme = currentUser.State.Preferences?.Theme;
-        switch (userTheme)
+        try
         {
-            case "Blue":
-            default:
-                activeTheme = new BlueTheme();
-                break;
-            case "Red":
-                activeTheme = new RedTheme();
-                break;
+            var userTheme = currentUser.State.Preferences?.Theme;
+            switch (userTheme)
+            {
+                case "Blue":
+                default:
+                    activeTheme = new BlueTheme();
+                    break;
+                case "Red":
+                    activeTheme = new RedTheme();
+                    break;
 
 
+            }
+            darkMode = currentUser.State.Preferences?.DarkMode == true;
         }
-        darkMode = currentUser.State.Preferences?.DarkMode==true;
+        catch(Exception ex)
+        {
+            Loggers.SystemLogger.Error("Error while fetching user theme: {Message}", ex);
+        }
     }
 
 }
