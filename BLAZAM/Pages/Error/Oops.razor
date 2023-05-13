@@ -39,6 +39,10 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        if (AppDatabaseFactory.FatalError != null)
+        {
+            Exception = AppDatabaseFactory.FatalError;
+        }
         if (AppDatabaseFactory.DatabaseCreationFailureReason != null)
         {
             Exception = AppDatabaseFactory.DatabaseCreationFailureReason;

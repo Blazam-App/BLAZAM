@@ -106,10 +106,17 @@
 
 
 @{
-    if (CurrentUser.State.IsAuthenticated && CurrentUser.State.User.FindFirst(ClaimTypes.Sid) != null && !Nav.Uri.Contains("/logout"))
+    try
     {
-        JSRuntime.InvokeVoidAsync("updateCookieExpiration");
+        if (CurrentUser.State.IsAuthenticated && CurrentUser.State.User.FindFirst(ClaimTypes.Sid) != null && !Nav.Uri.Contains("/logout"))
+        {
+            JSRuntime.InvokeVoidAsync("updateCookieExpiration");
 
+        }
+    }
+    catch
+    {
+        
     }
 }
 

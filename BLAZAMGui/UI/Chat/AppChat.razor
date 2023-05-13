@@ -41,13 +41,13 @@
                       Max="99"
                       Content="unreadAppMessageCount"
                       Color="Color.Error">
-            <MudNavLink OnClick="@(()=>{SwitchTo(AppChatRoom);})"
-                        Icon="@Icons.Material.Filled.AllInclusive">
-                App Chat
-            </MudNavLink>
+                <MudNavLink OnClick="@(()=>{SwitchTo(AppChatRoom);})"
+                            Icon="@Icons.Material.Filled.AllInclusive">
+                    App Chat
+                </MudNavLink>
             </MudBadge>
             @{
-                int unreadMessageCount = Chat.GetUnreadMessages(currentUserState.Preferences).Where(ur=>ur.ChatRoomId!=AppChatRoom.Id).Count();
+                int unreadMessageCount = Chat.GetUnreadMessages(currentUserState.Preferences).Where(ur => ur.ChatRoomId != AppChatRoom.Id).Count();
             }
             <MudBadge Visible=@((!_chatsExpanded||!_drawerOpen)&& unreadMessageCount>0)
                       Class="mud-width-full"
@@ -187,7 +187,8 @@
 
 
         await RefreshChatRooms();
-        PrivateChatRooms = Chat.GetPrivateChats(CurrentUser.State.Preferences);
+        if (CurrentUser.State != null && CurrentUser.State.Preferences != null)
+            PrivateChatRooms = Chat.GetPrivateChats(CurrentUser.State.Preferences);
 
 
 

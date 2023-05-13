@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.8.2</AssemblyVersion>
-		<Version>2023.05.12.1934</Version>
+		<Version>2023.05.13.1739</Version>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -112,6 +112,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Update="appsettings.json">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Content>
 	  <Content Update="wwwroot\favicon.ico">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>

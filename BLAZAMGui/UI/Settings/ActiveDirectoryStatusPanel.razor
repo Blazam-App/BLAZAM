@@ -32,27 +32,27 @@
         <MudStack>
             <MudStack Row=true>
                 <MudText>Domain</MudText>
-                <MudText>@Directory.DomainControllers.First().Domain.Name</MudText>
+                <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.Name</MudText>
             </MudStack>
 
             <MudStack Row=true>
                 <MudText>Domain Mode</MudText>
-                <MudText>@Directory.DomainControllers.First().Domain.DomainMode</MudText>
+                <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.DomainMode</MudText>
             </MudStack>
 
             <MudStack Row=true>
                 <MudText>Domain Level</MudText>
-                <MudText>@Directory.DomainControllers.First().Domain.DomainModeLevel</MudText>
+                <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.DomainModeLevel</MudText>
             </MudStack>
 
             <MudStack Row=true>
                 <MudText>Primary Domain Controller</MudText>
-                <MudText>@Directory.DomainControllers.First().Domain.PdcRoleOwner</MudText>
+                <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.PdcRoleOwner</MudText>
             </MudStack>
 
             <MudStack Row=true>
                 <MudText>Domain</MudText>
-                <MudText>@Directory.DomainControllers.First().Domain.Forest.RootDomain.Name</MudText>
+                <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.Forest.RootDomain.Name</MudText>
             </MudStack>
         </MudStack>
     }

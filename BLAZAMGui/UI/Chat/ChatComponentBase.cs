@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Gui.UI.Chat
 {
-    public class ChatComponentBase:AppComponentBase
+    public class ChatComponentBase : AppComponentBase
     {
         /// <summary>
         /// Set's predefined page for this chat display
@@ -27,7 +27,7 @@ namespace BLAZAM.Gui.UI.Chat
             await base.OnInitializedAsync();
             Chat.OnMessagePosted += async (message) =>
             {
-                if ((ChatRoom!=null && message.ChatRoomId.Equals(ChatRoom.Id))
+                if ((ChatRoom != null && message.ChatRoomId.Equals(ChatRoom.Id))
                 || (AppChatRoom != null && message.ChatRoomId.Equals(AppChatRoom.Id)))
                 {
                     await Task.Delay(100);
@@ -50,7 +50,7 @@ namespace BLAZAM.Gui.UI.Chat
 
         private async Task RefreshSelectedChatRooms()
         {
-           
+
             await Chat.GetChatRoom(ChatRoom);
         }
 
@@ -59,9 +59,10 @@ namespace BLAZAM.Gui.UI.Chat
             get
             {
                 if (ChatRoom is null) return 0;
-                return Chat.GetUnreadMessages(CurrentUser.State.Preferences).Count();
-               // return Context.ReadChatMessages.Count(m => !m.User.Equals(CurrentUser.State.Preferences) && !m.IsRead);
-            
+                if (CurrentUser.State == null || CurrentUser.State.Preferences == null) return 0;
+                    return Chat.GetUnreadMessages(CurrentUser.State.Preferences).Count();
+                // return Context.ReadChatMessages.Count(m => !m.User.Equals(CurrentUser.State.Preferences) && !m.IsRead);
+
             }
         }
         protected async Task RefreshChatRooms()

@@ -2,71 +2,74 @@
 @using MudBlazor.Utilities;
 
 @inherits AppComponentBase
-
-<MudDropContainer @ref=widgetContainer
+@if (CurrentUser.State != null && CurrentUser.State.Preferences != null)
+{
+    <MudDropContainer @ref=widgetContainer
                   T="UserDashboardWidget" Items="CurrentUser.State?.Preferences?.DashboardWidgets.OrderBy(uw => uw.Slot).ThenBy(uw => uw.Order)"
                   ItemsSelector="ItemSelector"
                   ItemDropped="ItemDropped"
                   Class="d-flex flex-wrap flex-grow-1 mud-width-full ">
-    <ChildContent>
+        <ChildContent>
 
-        <FlexContainer Spacing="4" Class="mx-auto">
+            <FlexContainer Spacing="4" Class="mx-auto">
 
-            <MudCard Class="pa-0 mx-auto" Elevation="1">
-                <MudList Clickable="true"
+                <MudCard Class="pa-0 mx-auto" Elevation="1">
+                    <MudList Clickable="true"
                          Class="d-flex flex-column ma-0 mx-auto py-0">
-                    <MudDropZone AllowReorder=true
+                        <MudDropZone AllowReorder=true
                                  T="UserDashboardWidget"
                                  Identifier="slot1"
                                  Class="flex-grow-1"
                                  Style="min-height:50px;min-width:300px;" />
-                </MudList>
-            </MudCard>
-            <MudCard Class="pa-0 mx-auto" Elevation="2">
-                <MudList Clickable="true"
+                    </MudList>
+                </MudCard>
+                <MudCard Class="pa-0 mx-auto" Elevation="2">
+                    <MudList Clickable="true"
                          Class="d-flex flex-column ma-0 mx-auto py-0">
-                    <MudDropZone AllowReorder=true
+                        <MudDropZone AllowReorder=true
                                  T="UserDashboardWidget"
                                  Identifier="slot2"
                                  Class="flex-grow-1"
                                  Style="min-height:50px; min-width:300px;" />
-                </MudList>
-            </MudCard>
+                    </MudList>
+                </MudCard>
 
-        </FlexContainer>
-    </ChildContent>
-    <ItemRenderer>
-        @{
-            var widget = allWidgets.First(w => w.WidgetType == context.WidgetType);
-        }
-        <MudCard Class="my-5 " Elevation="1">
-            <MudCardHeader>
-                <MudText Typo="Typo.h6"> @widget.Title</MudText>
-                <MudSpacer />
-                <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
-
-            </MudCardHeader>
-
-            <DynamicComponent Type="@widget.GetType()" />
-        </MudCard>
-    </ItemRenderer>
-</MudDropContainer>
-<MudMenu Class="d-flex" Style="justify-content: flex-end;" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.BottomRight">
-    <ActivatorContent>
-        <MudTooltip Text="Add Widget">
-            <MudFab StartIcon="@Icons.Material.Filled.AddBox" />
-        </MudTooltip>
-    </ActivatorContent>
-    <ChildContent>
-        @foreach (var widget in allWidgets)
-        {
-            @if (!CurrentUser.State?.Preferences?.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType) == true)
-            {
-                <MudMenuItem OnClick="@(async()=>{await AddWidget(widget.WidgetType);})">@widget.Title</MudMenuItem>
+            </FlexContainer>
+        </ChildContent>
+        <ItemRenderer>
+            @{
+                var widget = allWidgets.First(w => w.WidgetType == context.WidgetType);
             }
-        }
-    </ChildContent>
-</MudMenu>
+            <MudCard Class="my-5 " Elevation="1">
+                <MudCardHeader>
+                    <MudText Typo="Typo.h6"> @widget.Title</MudText>
+                    <MudSpacer />
+                    <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
+
+                </MudCardHeader>
+
+                <DynamicComponent Type="@widget.GetType()" />
+            </MudCard>
+        </ItemRenderer>
+    </MudDropContainer>
+    <MudMenu Class="d-flex" Style="justify-content: flex-end;" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.BottomRight">
+        <ActivatorContent>
+            <MudTooltip Text="Add Widget">
+                <MudFab StartIcon="@Icons.Material.Filled.AddBox" />
+            </MudTooltip>
+        </ActivatorContent>
+        <ChildContent>
+            @foreach (var widget in allWidgets)
+            {
+                @if (!CurrentUser.State?.Preferences?.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType) == true)
+                {
+                    <MudMenuItem OnClick="@(async()=>{await AddWidget(widget.WidgetType);})">@widget.Title</MudMenuItem>
+                }
+
+            }
+        </ChildContent>
+    </MudMenu>
+}
 
 
 

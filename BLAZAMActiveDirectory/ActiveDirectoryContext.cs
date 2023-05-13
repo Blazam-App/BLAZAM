@@ -225,6 +225,7 @@ namespace BLAZAM.ActiveDirectory
             AppRootDirectoryEntry = activeDirectoryContextSeed.AppRootDirectoryEntry;
             _wmiFactory = activeDirectoryContextSeed._wmiFactory;
             DomainControllers = activeDirectoryContextSeed.DomainControllers;
+            Status=activeDirectoryContextSeed.Status;
             // UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
             //ConnectAsync();
             // _timer = new Timer(KeepAlive, null, 30000, 30000);

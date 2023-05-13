@@ -1,7 +1,14 @@
 @inherits AppComponentBase
 @{
-    var messages = UserState.Notifications?.Count;
-
+    var messages = 0;
+    try
+    {
+    messages = UserState.Notifications.Count;
+    }
+    catch
+    {
+        
+    }
 }
 @if (messages > 0)
 {
