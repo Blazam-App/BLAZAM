@@ -419,11 +419,12 @@ namespace BLAZAM.ActiveDirectory
                                     catch (CryptographicException ex)
                                     {
                                         Loggers.ActiveDirectryLogger.Warning("Unable to decrypt Active Directory password {@Error}", ex);
+                                        Status = DirectoryConnectionStatus.UnreachableConfiguration;
 
                                     }
                                     catch (Exception ex)
                                     {
-                                        Loggers.ActiveDirectryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
+                                        Loggers.ActiveDirectryLogger.Error("Unexpected Error connecting to Active Directory {@Error}", ex);
                                         Status = DirectoryConnectionStatus.BadConfiguration;
 
                                     }
