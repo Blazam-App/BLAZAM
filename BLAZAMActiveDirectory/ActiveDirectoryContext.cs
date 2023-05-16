@@ -16,6 +16,7 @@ using System.Net;
 using System.Security.Claims;
 using BLAZAM.Helpers;
 using System.DirectoryServices.ActiveDirectory;
+using System.Security.Cryptography;
 
 namespace BLAZAM.ActiveDirectory
 {
@@ -146,9 +147,6 @@ namespace BLAZAM.ActiveDirectory
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
         private IApplicationUserState? currentUser;
 
-        /// <summary>
-
-        /// </summary>
         public DirectoryConnectionStatus Status
         {
             get => _status; set
@@ -158,9 +156,6 @@ namespace BLAZAM.ActiveDirectory
                 OnStatusChanged?.Invoke(_status);
             }
         }
-        /// <summary>
-
-        /// </summary>
         public AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
 
         /// <summary>
@@ -280,9 +275,12 @@ namespace BLAZAM.ActiveDirectory
             {
                 Context = Factory.CreateDbContext();
 
+                Loggers.ActiveDirectryLogger.Information("Connecting to settings database");
 
                 if (Context.Status == ServiceConnectionState.Up)
                 {
+                    Loggers.ActiveDirectryLogger.Information("Database connected");
+
                     if (Status != DirectoryConnectionStatus.OK)
                     {
                         ADSettings ad = Context?.ActiveDirectorySettings.FirstOrDefault();
@@ -290,6 +288,8 @@ namespace BLAZAM.ActiveDirectory
 
                         if (ad != null)
                         {
+                            Loggers.ActiveDirectryLogger.Information("Active Directory settings found in database. {@DirectorySettings}",ad);
+
                             _authType = AuthenticationTypes.Secure;
                             if (ad.UseTLS)
                             {
@@ -315,13 +315,14 @@ namespace BLAZAM.ActiveDirectory
                                     try
                                     {
                                         Loggers.ActiveDirectryLogger.Information("Connecting Active Directory context");
-
-                                        AppRootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, _encryption.DecryptObject<string>(ad.Password), _authType);
+                                        var pass = _encryption.DecryptObject<string>(ad.Password);
+                                        AppRootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username,pass , _authType);
                                         Loggers.ActiveDirectryLogger.Information("App Active Directory context connected");
 
-                                        RootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(), ad.Username, _encryption.DecryptObject<string>(ad.Password), _authType);
-                                        Loggers.ActiveDirectryLogger.Information("Root Active Directory context connected");
+                                        RootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(), ad.Username, pass, _authType);
 
+                                        Loggers.ActiveDirectryLogger.Information("Root Active Directory context connected");
+                                        pass = null;
                                         //var nativeEntry = DirectoryEntry.NativeObject;
                                         //Perform Auth check
                                         Loggers.ActiveDirectryLogger.Information("Performing Active Directory connection test");
@@ -415,7 +416,12 @@ namespace BLAZAM.ActiveDirectory
 
                                         Status = DirectoryConnectionStatus.BadConfiguration;
                                     }
-                                    catch(Exception ex)
+                                    catch (CryptographicException ex)
+                                    {
+                                        Loggers.ActiveDirectryLogger.Warning("Unable to decrypt Active Directory password {@Error}", ex);
+
+                                    }
+                                    catch (Exception ex)
                                     {
                                         Loggers.ActiveDirectryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
                                         Status = DirectoryConnectionStatus.BadConfiguration;

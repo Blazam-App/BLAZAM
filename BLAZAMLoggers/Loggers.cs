@@ -11,6 +11,7 @@ namespace BLAZAM.Logger
 {
     public static class Loggers
     {
+        public static string LogPath => _logPath;
         private static string _logPath;
         private static string _applicationVersion;
 
