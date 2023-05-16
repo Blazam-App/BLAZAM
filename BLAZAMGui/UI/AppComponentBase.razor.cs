@@ -1,4 +1,5 @@
 
+using BLAZAM.ActiveDirectory;
 using BLAZAM.Email.Services;
 using BLAZAM.Localization;
 using BLAZAM.Services.Chat;
@@ -66,7 +67,7 @@ namespace BLAZAM.Gui.UI
         protected AppSnackBarService SnackBarService { get; set; }
 
         [Inject]
-        private UserActiveDirectoryService userActiveDirectoryService { get; set; }
+        private ScopedActiveDirectoryContext userActiveDirectoryService { get; set; }
 
         protected bool LoadingData { get; set; } = true;
         protected IDatabaseContext? Context;

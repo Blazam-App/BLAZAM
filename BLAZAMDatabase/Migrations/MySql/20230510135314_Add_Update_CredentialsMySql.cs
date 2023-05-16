@@ -5,37 +5,30 @@
 namespace BLAZAM.Database.Migrations.MySql
 {
     /// <inheritdoc />
-    public partial class Add_Sid_To_AuditMySql : Migration
+    public partial class Add_Update_CredentialsMySql : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Sid",
-                table: "UserAuditLog",
+                name: "UpdateDomain",
+                table: "AppSettings",
                 type: "longtext",
-                nullable: false)
+                nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddColumn<string>(
-                name: "Sid",
-                table: "OUAuditLog",
+                name: "UpdatePassword",
+                table: "AppSettings",
                 type: "longtext",
-                nullable: false)
+                nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddColumn<string>(
-                name: "Sid",
-                table: "GroupAuditLog",
+                name: "UpdateUsername",
+                table: "AppSettings",
                 type: "longtext",
-                nullable: false)
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.AddColumn<string>(
-                name: "Sid",
-                table: "ComputerAuditLog",
-                type: "longtext",
-                nullable: false)
+                nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
         }
 
@@ -43,20 +36,16 @@ namespace BLAZAM.Database.Migrations.MySql
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Sid",
-                table: "UserAuditLog");
+                name: "UpdateDomain",
+                table: "AppSettings");
 
             migrationBuilder.DropColumn(
-                name: "Sid",
-                table: "OUAuditLog");
+                name: "UpdatePassword",
+                table: "AppSettings");
 
             migrationBuilder.DropColumn(
-                name: "Sid",
-                table: "GroupAuditLog");
-
-            migrationBuilder.DropColumn(
-                name: "Sid",
-                table: "ComputerAuditLog");
+                name: "UpdateUsername",
+                table: "AppSettings");
         }
     }
 }

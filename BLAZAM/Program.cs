@@ -95,7 +95,7 @@ namespace BLAZAM
 
             //Setup host logging so it can catch the earliest logs possible
 
-            Loggers.SetupLoggers(WritablePath + @"logs\");
+            Loggers.SetupLoggers(WritablePath + @"logs\",ApplicationInfo.runningVersion.ToString());
             builder.Host.UseSerilog(Log.Logger);
 
             Log.Information("Application Starting");
@@ -146,7 +146,6 @@ namespace BLAZAM
             AppInstance.MapBlazorHub();
             AppInstance.MapFallbackToPage("/_Host");
 
-            StartDatabaseCache();
 
             AppInstance.Start();
             GetRunningWebServerConfiguration();
@@ -184,15 +183,7 @@ namespace BLAZAM
             }
         }
 
-        private static void StartDatabaseCache()
-        {
-            //Start the database cache
-            using (var scope = AppInstance.Services.CreateScope())
-            {
-                _programDbFactory = scope.ServiceProvider.GetRequiredService<IAppDatabaseFactory>();
-                DatabaseCache.Start(_programDbFactory);
-            }
-        }
+        
 
 
         public static bool IsDevelopment

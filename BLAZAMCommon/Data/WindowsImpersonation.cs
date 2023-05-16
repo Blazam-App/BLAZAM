@@ -29,7 +29,7 @@ namespace BLAZAM.Common.Data
                     if (false == returnValue)
                     {
                         int ret = Marshal.GetLastWin32Error();
-                        Loggers.ActiveDirectryLogger.Error("LogonUser failed with error code : {0}", ret);
+                        Loggers.ActiveDirectryLogger.Warning("LogonUser failed with error code : {0}", ret);
                         var exception = new System.ComponentModel.Win32Exception(ret);
                         if (exception.NativeErrorCode == 1326)
                         {
@@ -65,19 +65,18 @@ namespace BLAZAM.Common.Data
         {
 
 
-
-
-            if (ImpersonatedToken.IsInvalid) throw new ApplicationException("The impersonation user is invalid. Check settings.");
-
-            //Console.WriteLine("Did LogonUser Succeed? " + (returnValue ? "Yes" : "No"));
-            // Check the identity.
-            Loggers.ActiveDirectryLogger.Debug("Before impersonation: " + WindowsIdentity.GetCurrent().Name);
-
-            // Note: if you want to run as unimpersonated, pass
-            //       'SafeAccessTokenHandle.InvalidHandle' instead of variable 'safeAccessTokenHandle'
             T success = default;
+
             try
             {
+                if (ImpersonatedToken.IsInvalid) throw new ApplicationException("The impersonation user is invalid. Check settings.");
+
+                //Console.WriteLine("Did LogonUser Succeed? " + (returnValue ? "Yes" : "No"));
+                // Check the identity.
+                Loggers.ActiveDirectryLogger.Debug("Before impersonation: " + WindowsIdentity.GetCurrent().Name);
+
+         
+
                 WindowsIdentity.RunImpersonated(
                   ImpersonatedToken,
                   () =>

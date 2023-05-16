@@ -17,6 +17,7 @@ namespace BLAZAM.Database.Models
         [Required]
         [Compare(nameof(AdminPassword))]
         public string AdminPasswordConfirmed { get; set; }
+
         public string? DuoClientId { get; set; }
         public string? DuoClientSecret { get; set; }
         public string? DuoApiHost { get; set; }

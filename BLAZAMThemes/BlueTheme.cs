@@ -52,7 +52,7 @@ namespace BLAZAM.Themes
                 AppbarBackground = "#132a40",
                 DrawerBackground = "#0f141e",
                 DrawerText = "#c7c7c7",
-                Secondary = "#183042",
+                Secondary = "#2b5676",
                 Info = "#1b8f7e",
                 Success = "#5fad00",
                 Warning = "#ffc270",

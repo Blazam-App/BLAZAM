@@ -158,7 +158,7 @@ namespace BLAZAM.Update
                     await Stage();
 
                 if (!_backedUp)
-                   await Backup();
+                    await Backup();
                 //Confirm staging went as expected
                 return UpdateStagingDirectory.Exists;
             }
@@ -187,51 +187,55 @@ namespace BLAZAM.Update
 
 
             using var context = await _dbFactory.CreateDbContextAsync();
-            var settings = context.ActiveDirectorySettings.FirstOrDefault();
 
-            if (settings == null) throw new ApplicationUpdateException("No credentials are configured for updates");
-
-            var impersonation = settings.CreateWindowsImpersonator();
-            try
+            if (_applicationRootDirectory.Writable)
             {
-
-                impersonation.Run(() =>
+                Loggers.UpdateLogger.Warning("The application user has write permission to the application directory!");
+                try
                 {
-                    try
-                    {
-                        Loggers.UpdateLogger.Information("Updating updater");
-
-                        File.Copy(UpdateStagingDirectory + "\\updater\\*", _applicationRootDirectory + "updater\\", true);
-                        Loggers.UpdateLogger.Information("Updater updated");
-
-                        return true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.UpdateLogger.Error("Error applying updated updater", ex);
-
-                    }
-                    return false;
-                });
-                //If the updater upated we can  run the updater
-                var updaterRan = InvokeUpdateExecutable();
-
-                if (updaterRan)
-                {
-                    Loggers.UpdateLogger.Information("Update process started");
-
-                    return "Success";
+                    return StartUpdate();
                 }
-                else
+                catch (Exception ex)
                 {
+                    Loggers.UpdateLogger.Error("Error applying updated updater: {Message}{NewLine}{StackTrace}", ex);
 
-                    return "Couldn't start update process!";
                 }
-
+                return "Error starting update";
             }
-            catch(ApplicationException ex)
+            else
             {
-                return ex.Message;
+                var settings = context.ActiveDirectorySettings.FirstOrDefault();
+
+
+                if (settings == null) throw new ApplicationUpdateException("No credentials are configured for updates");
+
+                var impersonation = settings.CreateWindowsImpersonator();
+                try
+                {
+
+                    return impersonation.Run(() =>
+                    {
+                        try
+                        {
+                            return StartUpdate();
+                        }
+                        catch (Exception ex)
+                        {
+                            Loggers.UpdateLogger.Error("Error applying updated updater: {Message}{NewLine}{StackTrace}", ex);
+
+                        }
+                        return "Error starting update";
+                    });
+
+
+                }
+                catch (ApplicationException ex)
+                {
+                    return ex.Message;
+                }
+
+
+
             }
 
 
@@ -241,6 +245,28 @@ namespace BLAZAM.Update
 
             throw new ApplicationUpdateException("An unknown error caused the update to fail.");
 
+        }
+
+        private string StartUpdate()
+        {
+            Loggers.UpdateLogger.Information("Updating updater");
+
+            File.Copy(UpdateStagingDirectory + "\\updater\\*", _applicationRootDirectory + "updater\\", true);
+            Loggers.UpdateLogger.Information("Updater updated");
+            //If the updater upated we can  run the updater
+            var updaterRan = InvokeUpdateExecutable();
+
+            if (updaterRan)
+            {
+                Loggers.UpdateLogger.Information("Update process started");
+
+                return "Success";
+            }
+            else
+            {
+
+                return "Couldn't start update process!";
+            }
         }
 
         private bool InvokeUpdateExecutable()
@@ -279,7 +305,8 @@ namespace BLAZAM.Update
                 Loggers.UpdateLogger.Debug("Backup result: " + result.ToString());
 
                 return result;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Loggers.UpdateLogger.Error("Backup of current version failed: " + ex.Message);
                 return false;

@@ -2,6 +2,7 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
+using BLAZAM.Database.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Services.Background
@@ -20,14 +21,15 @@ namespace BLAZAM.Services.Background
         public bool RedirectToHttps { get; set; }
         public ServiceConnectionState? DatabaseConnected { get => DatabaseMonitor.Status; }
         public ServiceConnectionState? DirectoryConnected { get => DirectoryMonitor.Status; }
-        private bool _failedMigration;
+
+        private bool _fatalDBError;
         /// <summary>
         /// Indicated whether the application is ready to serve users.
         /// </summary>
         /// 
         public ServiceConnectionState AppReady
         {
-            get { return _failedMigration == true ? ServiceConnectionState.Down : _appReady; }
+            get { return AppDatabaseFactory.FatalError != null ? ServiceConnectionState.Down : _appReady; }
             protected set
             {
                 if (_appReady == value) return;
@@ -77,11 +79,7 @@ namespace BLAZAM.Services.Background
                 OnDirectoryConnectionChanged?.Invoke(newStatus);
             };
 
-            AppDatabaseFactory.OnMigrationFailed += () =>
-            {
-                //Oops.Exception = DatabaseContextBase.DownReason;
-                _failedMigration = true;
-            };
+            
             MonitorDatabaseValues();
         }
 

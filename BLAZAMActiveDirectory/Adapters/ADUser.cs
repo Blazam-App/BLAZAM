@@ -2,6 +2,7 @@
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
+using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
@@ -172,11 +173,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     return Directory.Impersonation.Run(() =>
                     {
                         if (HomeDirectory.IsNullOrEmpty()) return true;
-
-                        if (!System.IO.Directory.Exists(HomeDirectory))
-                            System.IO.Directory.CreateDirectory(value);
+                        var homeDirectory = new SystemDirectory(HomeDirectory);
+                        if (!homeDirectory.Exists)
+                            homeDirectory.EnsureCreated();
                         SetHomeDirectoryPermissions();
-                        if (System.IO.Directory.Exists(HomeDirectory))
+                        if (homeDirectory.Exists)
                             return true;
                         return false;
 
@@ -195,6 +196,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <summary>
         /// Automatically called when changing <see cref="HomeDirectory"/>
         /// </summary>
+        /// <remarks>Must be called under an identity context that has permission to make these changes</remarks>
         public void SetHomeDirectoryPermissions()
         {
             if (SamAccountName == null) throw new ApplicationException("Samaccount name is null while setting home directory");
@@ -239,6 +241,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
+               
                 var com = GetProperty<object>("pwdLastSet");
                 if (com == null) return null;
                 return com.AdsValueToDateTime();
@@ -246,7 +249,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
-
+       
         public override string? SamAccountName
         {
             get => base.SamAccountName;
@@ -413,6 +416,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-     
+
     }
 }

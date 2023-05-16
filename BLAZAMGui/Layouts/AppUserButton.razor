@@ -5,11 +5,12 @@
 <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
     <ActivatorContent>
         @{
-            var avatarBgColor = GenerateAvatarColor(UserState.Username);
+            
+            var avatarBgColor = GenerateAvatarColor(UserState?.Username);
         }
-        @if (UserState.Notifications?.Count > 0)
+        @if (UserState?.Notifications?.Count > 0)
         {
-            <MudBadge Color=Color.Error Overlap=true Content="@UserState.Notifications.Count">
+            <MudBadge Color=Color.Error Overlap=true Content="@UserState?.Notifications.Count">
                 <CurrentUserAvatarIcon UserState="@UserState" />
             </MudBadge>
         }
@@ -23,7 +24,7 @@
         <MudText Typo=Typo.caption Class="my-1" Style="text-align:center">
             @CurrentUser.Username
         </MudText>
-        @if (UserState.Notifications?.Count > 0)
+        @if (UserState?.Notifications?.Count > 0)
         {
             <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})">Notifications</MudMenuItem>
         }
@@ -32,7 +33,7 @@
         <MudMenuItem OnClick="@(()=>{profileModal?.Show();})" Icon="@Icons.Material.Filled.Settings">
             @AppLocalization["Profile Settings"]
         </MudMenuItem>
-        @if (UserState.Impersonator == null)
+        @if (UserState?.Impersonator == null)
         {
             <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/logout",true);})" Icon="@Icons.Material.Filled.Logout">
                 @AppLocalization["Sign Out"]
@@ -69,13 +70,14 @@
         NotificationPublisher.OnNotificationPublished += ((notifications) =>
         {
             if (notifications.Select(n => n.User).Contains(UserState.Preferences))
-            InvokeAsync(StateHasChanged);
+                InvokeAsync(StateHasChanged);
         });
         UserState = CurrentUser.State;
-        UserState.OnSettingsChange += (settings) =>
-        {
-            InvokeAsync(StateHasChanged);
-        };
+        if (UserState != null)
+            UserState.OnSettingsChange += (settings) =>
+            {
+                InvokeAsync(StateHasChanged);
+            };
     }
 
 

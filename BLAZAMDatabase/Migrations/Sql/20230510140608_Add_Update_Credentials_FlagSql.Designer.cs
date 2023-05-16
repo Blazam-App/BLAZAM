@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Database.Migrations.Sql
 {
     [DbContext(typeof(SqlDatabaseContext))]
-    [Migration("20230506012311_Add_Sid_To_AuditSql")]
-    partial class Add_Sid_To_AuditSql
+    [Migration("20230510140608_Add_Update_Credentials_FlagSql")]
+    partial class Add_Update_Credentials_FlagSql
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -459,6 +459,18 @@ namespace BLAZAM.Database.Migrations.Sql
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UpdateDomain")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatePassword")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdateUsername")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("UseUpdateCredentials")
+                        .HasColumnType("bit");
+
                     b.Property<string>("UserHelpdeskURL")
                         .HasColumnType("nvarchar(max)");
 
@@ -471,7 +483,7 @@ namespace BLAZAM.Database.Migrations.Sql
                         });
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.Audit.ComputerAuditLog", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.Audit.DirectoryEntryAuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -508,47 +520,7 @@ namespace BLAZAM.Database.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("ComputerAuditLog");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Audit.GroupAuditLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AfterAction")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BeforeAction")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IpAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Sid")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Target")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("GroupAuditLog");
+                    b.ToTable("DirectoryEntryAuditLogs");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.LogonAuditLog", b =>
@@ -585,46 +557,6 @@ namespace BLAZAM.Database.Migrations.Sql
                     b.HasKey("Id");
 
                     b.ToTable("LogonAuditLog");
-                });
-
-            modelBuilder.Entity("BLAZAM.Database.Models.Audit.OUAuditLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AfterAction")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BeforeAction")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IpAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Sid")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Target")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OUAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.PermissionsAuditLog", b =>
@@ -771,46 +703,6 @@ namespace BLAZAM.Database.Migrations.Sql
                     b.ToTable("SystemAuditLog");
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.Audit.UserAuditLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AfterAction")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BeforeAction")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IpAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Sid")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Target")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserAuditLog");
-                });
-
             modelBuilder.Entity("BLAZAM.Database.Models.AuthenticationSettings", b =>
                 {
                     b.Property<int>("Id")
@@ -898,10 +790,6 @@ namespace BLAZAM.Database.Migrations.Sql
                     b.HasKey("Id");
 
                     b.HasIndex("ChatMessageId");
-
-                    b.HasIndex("ChatRoomId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("UnreadChatMessages");
                 });
@@ -1688,23 +1576,7 @@ namespace BLAZAM.Database.Migrations.Sql
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BLAZAM.Database.Models.Chat.ChatRoom", "ChatRoom")
-                        .WithMany()
-                        .HasForeignKey("ChatRoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("ChatMessage");
-
-                    b.Navigation("ChatRoom");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ActionAccessMapping", b =>

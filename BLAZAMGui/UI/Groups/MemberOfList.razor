@@ -1,56 +1,58 @@
 ﻿@inherits AppComponentBase
-
-@if(Model.MemberOf.Count>0)
+@if (Model != null)
 {
-<MudList Disabled=false
+    @if (Model.MemberOf.Count > 0)
+    {
+        <MudList Disabled=false
          Dense=true
          Clickable="false"
          DisableGutters=true
          Style="max-height:200px; overflow-y:auto;">
-    @foreach (IADGroup g in Model.MemberOf.Where(group => group.CanRead).OrderBy(g => g.CanonicalName))
-    {
-        if (g.CanRead)
-        {
-            <MudListItem>
-                <ChildContent>
-                    <MudStack Row=true>
-                        @if (EditMode)
-                        {
-                            <MudText Class="align-middle">@g.CanonicalName</MudText>
+            @foreach (IADGroup g in Model.MemberOf.Where(group => group.CanRead).OrderBy(g => g.CanonicalName))
+            {
+                if (g.CanRead)
+                {
+                    <MudListItem>
+                        <ChildContent>
+                            <MudStack Row=true>
+                                @if (EditMode)
+                                {
+                                    <MudText Class="align-middle">@g.CanonicalName</MudText>
 
-                        }
-                        else
-                        {
-                            <MudLink Class="align-middle" OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})">@g.CanonicalName</MudLink>
+                                }
+                                else
+                                {
+                                    <MudLink Class="align-middle" OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})">@g.CanonicalName</MudLink>
 
-                        }
-                        <MudSpacer />
-                        @if (EditMode)
-                        {
-                            <MudIconButton OnClick="@(()=>{Model.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
-                        }
-                    </MudStack>
-                </ChildContent>
-            </MudListItem>
-           
-        }
+                                }
+                                <MudSpacer />
+                                @if (EditMode)
+                                {
+                                    <MudIconButton OnClick="@(()=>{Model.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
+                                }
+                            </MudStack>
+                        </ChildContent>
+                    </MudListItem>
 
+                }
+
+            }
+            @if (Model.MemberOf.Where(group => !group.CanRead).Count() > 0)
+            {
+                <MudListItem Text="The user is in more groups you don't have access to" />
+            }
+
+        </MudList>
     }
-    @if (Model.MemberOf.Where(group => !group.CanRead).Count() > 0)
+    else
     {
-        <MudListItem Text="The user is in more groups you don't have access to" />
+        <MudText>@AppLocalization["Not a member of any groups"]</MudText>
     }
+    @if (EditMode)
+    {
 
-    </MudList>
-}
-else
-{
-    <MudText>@AppLocalization["Not a member of any groups"]</MudText>
-}
-@if (EditMode)
-{
-
-    <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.GroupAdd" OnClick="@(()=>{AssignToClicked.InvokeAsync();})" />
+        <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.GroupAdd" OnClick="@(()=>{AssignToClicked.InvokeAsync();})" />
+    }
 }
 @code {
     [CascadingParameter]

@@ -91,12 +91,12 @@ namespace BLAZAM.Update.Services
             try
             {
                 var appSettings = (await factory.CreateDbContextAsync()).AppSettings.FirstOrDefault();
-                if (appSettings.AutoUpdate)
+                if (appSettings != null && appSettings.AutoUpdate)
                 {
                     Loggers.UpdateLogger.Information("Checking for automatic update");
 
                     var latestUpdate = await updateService.GetLatestUpdate();
-                    if (latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdateTime != null)
+                    if (latestUpdate != null && latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdateTime != null)
                     {
                         ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
                     }
@@ -109,7 +109,7 @@ namespace BLAZAM.Update.Services
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Error while checking for auto update", ex);
+                Loggers.UpdateLogger.Error("Error while checking for auto update: {Message}{NewLine}{StackTrace}", ex);
             }
         }
         public void Cancel()
@@ -122,54 +122,58 @@ namespace BLAZAM.Update.Services
 
         public void ScheduleUpdate(TimeSpan updateTimeOfDay, ApplicationUpdate updateToInstall)
         {
-
-            bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall;
-            if (ScheduledUpdate != updateToInstall)
+            try
             {
-                Loggers.UpdateLogger.Information("New update found: " + updateToInstall.Version);
-
-                //Update availabled
-                var now = DateTime.Now;
-                ScheduledUpdateTime = new DateTime(now.Year, now.Month, now.Day, updateTimeOfDay.Hours, updateTimeOfDay.Minutes, updateTimeOfDay.Seconds);
-
-
-                //Check if we're past the scheduled time this day
-                if (ScheduledUpdateTime < now)
+                bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall;
+                if (ScheduledUpdate != updateToInstall)
                 {
-                    ScheduledUpdateTime = ScheduledUpdateTime.AddDays(1);
+                    Loggers.UpdateLogger.Information("New update found: " + updateToInstall.Version);
+
+                    //Update availabled
+                    var now = DateTime.Now;
+                    ScheduledUpdateTime = new DateTime(now.Year, now.Month, now.Day, updateTimeOfDay.Hours, updateTimeOfDay.Minutes, updateTimeOfDay.Seconds);
+
+
+                    //Check if we're past the scheduled time this day
+                    if (ScheduledUpdateTime < now)
+                    {
+                        ScheduledUpdateTime = ScheduledUpdateTime.AddDays(1);
+                    }
+
+
+                    TimeSpan timeUntilUpdate = ScheduledUpdateTime - now;
+
+                    ScheduledUpdate = updateToInstall;
+
+                    autoUpdateApplyTimer = new Timer(Update, null, (int)timeUntilUpdate.TotalMilliseconds, Timeout.Infinite);
+                    Loggers.UpdateLogger.Information("Auto-update scheduled: " + timeUntilUpdate.TotalMinutes + "mins from now at " + ScheduledUpdateTime);
+                    if (justScheduled)
+                    {
+                        Loggers.UpdateLogger.Debug("Update just scheduled, so sending notification email to admins");
+                        //TODO move to email event logic
+                        //                    try
+                        //                    {
+                        //#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                        //                        email.SendMessage(
+                        //                            "Update Schedueled",
+                        //                            "admin@blazam.org",
+                        //                            (MarkupString)"Update Scheduled",
+                        //                            (MarkupString)("The application has schedueled an update to version "
+                        //                            + ScheduledUpdate.Version + " at " + ScheduledUpdateTime
+                        //                            ));
+                        //#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                        //                    }
+                        //                    catch (Exception ex)
+                        //                    {
+                        //                        Loggers.UpdateLogger.Error("Error while sending auto update scheduled email", ex);
+
+                        //                    }
+                    }
+
+                    OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
                 }
-
-
-                TimeSpan timeUntilUpdate = ScheduledUpdateTime - now;
-
-                ScheduledUpdate = updateToInstall;
-
-                autoUpdateApplyTimer = new Timer(Update, null, (int)timeUntilUpdate.TotalMilliseconds, Timeout.Infinite);
-                Loggers.UpdateLogger.Information("Auto-update scheduled: " + timeUntilUpdate.TotalMinutes + "mins from now at " + ScheduledUpdateTime);
-                if (justScheduled)
-                {
-                    Loggers.UpdateLogger.Debug("Update just scheduled, so sending notification email to admins");
-//TODO move to email event logic
-//                    try
-//                    {
-//#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-//                        email.SendMessage(
-//                            "Update Schedueled",
-//                            "admin@blazam.org",
-//                            (MarkupString)"Update Scheduled",
-//                            (MarkupString)("The application has schedueled an update to version "
-//                            + ScheduledUpdate.Version + " at " + ScheduledUpdateTime
-//                            ));
-//#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-//                    }
-//                    catch (Exception ex)
-//                    {
-//                        Loggers.UpdateLogger.Error("Error while sending auto update scheduled email", ex);
-
-//                    }
-                }
-
-                OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
+            }catch(Exception ex) {
+                Loggers.UpdateLogger.Error("Error during auto update scheduling: {Message}{NewLine}{StackTrace}", ex);
             }
         }
 
@@ -210,15 +214,16 @@ namespace BLAZAM.Update.Services
                 {
                     //Auto Update was turned off since scheduling
                     //Audit.System.LogMessage("Auto Update was turned off after scheduling");
-                    Loggers.UpdateLogger.Debug("Auto Update was turned off after scheduling");
+                    Loggers.UpdateLogger.Warning("Auto Update was turned off after scheduling");
 
                 }
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Execptions attempting auto-update", ex);
-
+                Loggers.UpdateLogger.Error("Error during auto update: {Message}{NewLine}{StackTrace}", ex);
             }
+
+        
         }
     }
 }

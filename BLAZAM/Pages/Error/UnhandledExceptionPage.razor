@@ -22,23 +22,35 @@
         Something terrible has happened...
 
     </MudText>
+    @try
+        {
+            @if (ApplicationInfo.InDebugMode)
+            {
 
-@if (ApplicationInfo.InDebugMode)
-{
+                <MudCard      
+        Square Class="mud-border-error mx-auto">
+                <MudCardHeader Class="mud-error">
+                @Error.Source : @Error.GetType()
+                </MudCardHeader>
+                <MudPaper        
+            Square
+                    >
+                        Error Message: @Error.Message
+                    </MudPaper Square>
+                    <MudPaper Class="overflow-auto mud-typography-nowrap">
+                        Stack Trace: <br>
+                        @(
+                                (MarkupString)_error.StackTrace.Replace("\n", "<br><br>")
+                                )
+                    </MudPaper>
+                </MudCard>
+            }
 
-    <MudCard Square Class="mud-border-error mx-auto">
-        <MudCardHeader Class="mud-error">
-            @Error.Source : @Error.GetType()
-        </MudCardHeader>
-        <MudPaper Square>
-            Error Message: @Error.Message
-        </MudPaper Square>
-            <MudPaper Class="overflow-auto mud-typography-nowrap">
-            Stack Trace: <br>
-            @((MarkupString)_error.StackTrace.Replace("\n","<br><br>"))
-        </MudPaper>
-    </MudCard>
-}
+        }
+        catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error("Error on unexpected error page: {Message}", ex);
+        }
     </MudContainer>
 
 </MudAlert>

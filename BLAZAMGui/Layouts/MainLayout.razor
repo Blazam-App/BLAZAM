@@ -7,6 +7,7 @@
 @inject IApplicationUserStateService UserStateService
 @inject IAppDatabaseFactory DbFactory
 @inject AppSnackBarService SnackBarService
+@inject ApplicationInfo ApplicationInfo
 @inject ConnMonitor monitor
 @inject IStringLocalizer<AppLocalization> AppLocalization
 @{
@@ -38,13 +39,16 @@
                 <MudDrawer Width="185px" @bind-Open=@DrawerOpen Elevation="3">
                     <MudDrawerContainer Style="width:100%;height:100%;">
                         <NavMenu />
-                        <AuthorizeView Roles="@UserRoles.SuperAdmin">
-                            <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
+                        @if (ApplicationInfo.InDebugMode)
+                        {
+                            <AuthorizeView Roles="@UserRoles.SuperAdmin">
+                                <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
                                        OnClick="@(()=>{_devDrawerOpen=!_devDrawerOpen;InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
 
                             <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
                                        OnClick="@(()=>{dataBrowser?.Show();})">Data Browser</MudButton>
                         </AuthorizeView>
+                        }
                     </MudDrawerContainer>
                 </MudDrawer>
 
@@ -102,10 +106,17 @@
 
 
 @{
-    if (CurrentUser.State.IsAuthenticated && CurrentUser.State.User.FindFirst(ClaimTypes.Sid) != null && !Nav.Uri.Contains("/logout"))
+    try
     {
-        JSRuntime.InvokeVoidAsync("updateCookieExpiration");
+        if (CurrentUser.State.IsAuthenticated && CurrentUser.State.User.FindFirst(ClaimTypes.Sid) != null && !Nav.Uri.Contains("/logout"))
+        {
+            JSRuntime.InvokeVoidAsync("updateCookieExpiration");
 
+        }
+    }
+    catch
+    {
+        
     }
 }
 

@@ -127,6 +127,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public override DirectoryChangeResult CommitChanges()
         {
             DirectoryChangeResult dcr = new DirectoryChangeResult();
+            dcr = base.CommitChanges();
+
             ToAssignTo.ForEach(g =>
             {
                 g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
@@ -138,7 +140,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
                 dcr.UnassignedGroups.Add(g.Group);
             });
-            dcr = base.CommitChanges();
 
             return dcr;
         }

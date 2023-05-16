@@ -3,52 +3,58 @@
 
 
 
-    <MudText Typo="Typo.h4">@AppLocalization["Authentication Settings"]</MudText>
-    <MudForm @onsubmit=Save>
+<MudText Typo="Typo.h4">@AppLocalization["Authentication Settings"]</MudText>
+<MudForm @onsubmit=Save>
 
 
-        <SettingsField Label="@AppLocalization["Admin Password"]">
+    <SettingsField Label="@AppLocalization["Admin Password"]">
 
-            <MudTextField Label="@AppLocalization["Admin Password"]" InputType="InputType.Password" @bind-Value="newAdminPassword" />
-        </SettingsField>
+        <MudTextField Label="@AppLocalization["Admin Password"]" InputType="InputType.Password" @bind-Value="newAdminPassword" />
+    </SettingsField>
 
-        <SettingsField Label="@AppLocalization["Session Timeout"]">
+    <SettingsField Label="@AppLocalization["Session Timeout"]">
 
-            <MudNumericField Label="@AppLocalization["Session Timeout"]" HelperText="Time in minute" T="int?" @bind-Value="@settings.SessionTimeout" />
+        <MudNumericField Label="@AppLocalization["Session Timeout"]" HelperText="Time in minute" T="int?" @bind-Value="@settings.SessionTimeout" />
 
-        </SettingsField>
-        @*
-        <MudText>Duo Security MFA (optional)</MudText>
-        <br />
-        <SettingsField Label="Duo ClientID">
+    </SettingsField>
+    @*
+    <MudText>Duo Security MFA (optional)</MudText>
+    <br />
+    <SettingsField Label="Duo ClientID">
 
-            <MudTextField Label="Duo ClientID" InputType="InputType.Password" @bind-Value="@settings.DuoClientId" />
+    <MudTextField Label="Duo ClientID" InputType="InputType.Password" @bind-Value="@settings.DuoClientId" />
 
-        </SettingsField>
-        <SettingsField Label="Duo ClientSecret">
+    </SettingsField>
+    <SettingsField Label="Duo ClientSecret">
 
-            <MudTextField Label="Duo ClientSecret" InputType="InputType.Password" @bind-Value="@settings.DuoClientSecret" />
+    <MudTextField Label="Duo ClientSecret" InputType="InputType.Password" @bind-Value="@settings.DuoClientSecret" />
 
-        </SettingsField>
-        <SettingsField Label="Duo ApiHost">
+    </SettingsField>
+    <SettingsField Label="Duo ApiHost">
 
-            <MudTextField Label="Duo ApiHost" InputType="InputType.Password" @bind-Value="@settings.DuoApiHost" />
+    <MudTextField Label="Duo ApiHost" InputType="InputType.Password" @bind-Value="@settings.DuoApiHost" />
 
-        </SettingsField>*@
-        <SettingsField>
-
-            <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
-
-        </SettingsField>
+    </SettingsField>*@
 
 
+   
 
-    </MudForm>
+    <SettingsField>
+
+        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+    </SettingsField>
+
+
+
+</MudForm>
 @code {
 #nullable disable warnings
     AuthenticationSettings settings = new AuthenticationSettings();
     string newAdminPassword;
     string adminPasswordInDb;
+
+
     string _timeoutString = "Loading...";
     protected override async Task OnInitializedAsync()
     {
@@ -60,6 +66,8 @@
 
         settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
         _timeoutString = settings.SessionTimeout.ToString() + " Minutes";
+
+        //Pull encrypted admin pass and store encrypted value
         adminPasswordInDb = settings?.AdminPassword;
         newAdminPassword = adminPasswordInDb;
         LoadingData = false;
@@ -82,6 +90,7 @@
             adminPasswordInDb = settings.AdminPassword;
 
         }
+       
         await AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
         base.Save();
         await InvokeAsync(StateHasChanged);

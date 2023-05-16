@@ -4,6 +4,7 @@ using BLAZAM.Database.Exceptions;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Runtime.CompilerServices;
 
 namespace BLAZAM.Database.Context
 {
@@ -12,10 +13,10 @@ namespace BLAZAM.Database.Context
     {
         IConfiguration _configuration;
 
-
+        public static DatabaseException DatabaseCreationFailureReason { get; set; }
         public static AppEvent OnMigrationApplied { get; set; }
-        public static AppEvent OnMigrationFailed { get; set; }
-
+        public static AppEvent<Exception> OnFatalError { get; set; }
+        public static Exception? FatalError { get; private set; }
 
         public AppDatabaseFactory(IConfiguration configuration, ApplicationInfo appInfo)
         {
@@ -23,35 +24,54 @@ namespace BLAZAM.Database.Context
 
             //Perform database auto update
             ApplyDatabaseMigrations();
+            try
+            {
+                appInfo.InstallationCompleted = CheckInstallation();
+            }
+            catch (DatabaseException ex)
+            {
+                FatalError = ex;
+                OnFatalError.Invoke(ex);
 
-            appInfo.InstallationCompleted = CheckInstallation();
+            }
+            StartDatabaseCache();
 
         }
-
+        private  void StartDatabaseCache()
+        {
+            //Start the database cache
+            
+                DatabaseCache.Start(this);
+           
+        }
         private bool CheckInstallation()
         {
             using (var context = CreateDbContext())
             {
                 if (context != null)
                 {
-                    if (context.IsSeeded())
+                    try
                     {
-                        try
+                        if (context.IsSeeded())
                         {
-                            var appSettings = context.AppSettings.FirstOrDefault();
-                            if (appSettings != null)
-                                return appSettings.InstallationCompleted;
-                            else
-                                return false;
+                            try
+                            {
+                                var appSettings = context.AppSettings.FirstOrDefault();
+                                if (appSettings != null)
+                                    return appSettings.InstallationCompleted;
+                                else
+                                    return false;
+                            }
+                            catch (Exception ex)
+                            {
+                                Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database.", ex);
+                            }
+                            
                         }
-                        catch (Exception ex)
-                        {
-                            Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database.", ex);
-                        }
-                        //if (!context.Seeded()) installationCompleted = false;
-                        //else installationCompleted = (DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
+                    }catch (Exception ex)
+                    {
+                        throw new DatabaseException("The database could not be checked for installation.", ex);
                     }
-
                 }
 
             }
@@ -59,6 +79,7 @@ namespace BLAZAM.Database.Context
         }
 
         public async Task<IDatabaseContext> CreateDbContextAsync() => await Task.Run(() => { return CreateDbContext(); });
+       
         public IDatabaseContext CreateDbContext()
         {
             var _dbType = _configuration.GetValue<string>("DatabaseType");
@@ -68,21 +89,17 @@ namespace BLAZAM.Database.Context
             switch (_dbType.ToLower())
             {
 
-
-
-
-
                 case "sql":
-                    databaseContext = new SqlDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("SQLConnectionString"), DatabaseType.SQL));
+                    databaseContext = new SqlDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("DBConnectionString"), DatabaseType.SQL));
 
                     break;
                 case "sqlite":
 
-                    databaseContext = new SqliteDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("SQLiteConnectionString"), DatabaseType.SQLite));
+                    databaseContext = new SqliteDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("DBConnectionString"), DatabaseType.SQLite));
                     break;
 
                 case "mysql":
-                    databaseContext = new MySqlDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("MySQLConnectionString"), DatabaseType.MySQL));
+                    databaseContext = new MySqlDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("DBConnectionString"), DatabaseType.MySQL));
                     break;
 
             }
@@ -121,6 +138,8 @@ namespace BLAZAM.Database.Context
                 }
                 catch (DatabaseException ex)
                 {
+                    OnFatalError?.Invoke(ex);
+                    FatalError = ex;
                     throw ex;
                 }
                 catch (Exception ex)
@@ -160,7 +179,8 @@ namespace BLAZAM.Database.Context
             {
                 Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
                 //DownReason = new DatabaseException(ex.Message, ex);
-                OnMigrationFailed?.Invoke();
+                FatalError = ex;
+                OnFatalError?.Invoke(ex);
                 return false;
             }
         }

@@ -109,5 +109,9 @@ namespace BLAZAM.Database.Models
         /// </summary>
         [DefaultValue("Stable")]
         public string UpdateBranch { get; set; } = "Stable";
+        public bool UseUpdateCredentials { get; set; }
+        public string? UpdateDomain { get; set; }
+        public string? UpdateUsername { get; set; }
+        public string? UpdatePassword { get; set; }
     }
 }

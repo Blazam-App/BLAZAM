@@ -17,6 +17,7 @@ using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
 using BLAZAM.Services.Duo;
 using BLAZAM.Server.Helpers;
+using BLAZAM.Logger;
 
 namespace BLAZAM.Services
 {
@@ -84,8 +85,8 @@ namespace BLAZAM.Services
                 options.LogoutPath = new PathString("/logout");
                 if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
                     options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
-                //else
-                //  options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
+                else
+                  options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
 
                 options.SlidingExpiration = true;
             };
@@ -217,7 +218,7 @@ namespace BLAZAM.Services
             if (result?.User != null)
                 //User claim processing is done so we can set the UserState with the new identity
                 newUserState.User = result.User;
-
+            Loggers.SystemLogger.Error("User Exists: " + (result.User != null).ToString());
             //Pass this state to the State Service for statefulness if it's populated
             if (newUserState.User != null)
                 _userStateService.SetUserState(newUserState);

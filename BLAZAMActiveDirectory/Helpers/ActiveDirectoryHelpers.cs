@@ -1,10 +1,12 @@
 ﻿using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -15,10 +17,27 @@ namespace BLAZAM.Helpers
 {
     public static class ActiveDirectoryHelpers
     {
-     
-          
 
-        public static Process? Shadow(this IRemoteSession session,bool withoutPermission = false)
+        public static bool IsPingable(this DomainController dc)
+        {
+            return NetworkTools.PingHost(dc.IPAddress);
+        }
+        public static IServiceCollection AddActiveDirectoryServices(this IServiceCollection services)
+        {
+            //Provide a primary Active Directory connection as a service
+            //We run this as a singleton so each user connection doesn't have to wait for connection verification to happen
+            services.AddSingleton<IActiveDirectoryContext, ActiveDirectoryContext>();
+
+            //Provide a per-user Active Directory connection as a service
+            services.AddSingleton<IActiveDirectoryContextFactory, ActiveDirectoryContextFactory>();
+
+            services.AddScoped<ScopedActiveDirectoryContext>();
+
+            return services;
+        }
+
+
+        public static Process? Shadow(this IRemoteSession session, bool withoutPermission = false)
         {
             if (session == null) return null;
             string command = "mstsc.exe";
@@ -27,7 +46,7 @@ namespace BLAZAM.Helpers
             return Process.Start(command, arguments);
             //Debug.TrackEvent("Shadow (Consent)", properties);
         }
-       
+
         public static string FqdnToDn(string fqdn)
         {
             // Split the FQDN into its domain components

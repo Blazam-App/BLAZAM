@@ -2,15 +2,15 @@
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Session.Interfaces;
 
-namespace BLAZAM.Services
+namespace BLAZAM.ActiveDirectory
 {
-    public class UserActiveDirectoryService
+    public class ScopedActiveDirectoryContext
     {
         private IActiveDirectoryContextFactory _contextFactory;
 
         public IActiveDirectoryContext Context { get; }
 
-        public UserActiveDirectoryService(IActiveDirectoryContextFactory contextFactory, ICurrentUserStateService currentUser)
+        public ScopedActiveDirectoryContext(IActiveDirectoryContextFactory contextFactory, ICurrentUserStateService currentUser)
         {
             _contextFactory = contextFactory;
             Context = _contextFactory.CreateActiveDirectoryContext(currentUser);

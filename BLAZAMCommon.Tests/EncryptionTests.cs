@@ -43,6 +43,7 @@ namespace BLAZAM.Tests
         [InlineData("sho")]
         [InlineData("shor")]
         [InlineData("short")]
+        [InlineData("short")]
         [InlineData("longlonglonglong")]
         [InlineData("longlonglonglonglonglonglonglonglonglonglonglong")]
         [InlineData("longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglong")]
@@ -111,6 +112,7 @@ namespace BLAZAM.Tests
         "differentseedkeytring",
         "seedk3ystr1ngw1th4numbers",
         "Seedk3ystr1ngw1th$pe$#*%(characters",
+        "mylTiV8tNmIQjzHLfdWHFRDpe56NKjMM",
         "small",
         "t",
         "a",
@@ -151,7 +153,24 @@ namespace BLAZAM.Tests
 
             Assert.True(lowestVarianceValue > 90);
         }
+        [Fact]
+        public void Key_Tests()
+        {
+            List<byte[]> generatedKeys = new List<byte[]>();
 
+            testSeedStrings.ForEach(seedString =>
+            {
+                encryption = new Encryption(seedString);
+                generatedKeys.Add(encryption.Key);
+                var cipher = encryption.EncryptObject("jkrfdtnjkrdtn");
+                var test = encryption.DecryptObject<string>(cipher);
+                if (test != "jkrfdtnjkrdtn")
+                {
+                    Assert.Fail(seedString + " as a seed did not decrypt encrypted text correctly.");
+                }
+            });
+
+        }
         [Theory]
         [InlineData((string)null)]
         [InlineData("")]

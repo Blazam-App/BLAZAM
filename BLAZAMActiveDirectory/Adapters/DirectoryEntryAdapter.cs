@@ -380,7 +380,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual void MoveTo(IADOrganizationalUnit parentOUToMoveTo)
         {
-            CommitActions.Add(() => {
+            CommitActions.Add(() =>
+            {
                 parentOUToMoveTo.EnsureDirectoryEntry();
                 if (parentOUToMoveTo.DirectoryEntry != null)
                 {
@@ -580,12 +581,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return HasPermission(p => p.Where(pm =>
               pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
               om.Field?.FieldName == field.FieldName &&
-              om.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level
+              om.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level &&
+              om.ObjectType == ObjectType
               ))),
               p => p.Where(pm =>
               pm.AccessLevels.Any(al => al.FieldMap.Any(om =>
               om.Field?.FieldName == field.FieldName &&
-              om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level
+              om.FieldAccessLevel.Level == FieldAccessLevels.Deny.Level &&
+              om.ObjectType == ObjectType
               )))
               );
             }
@@ -847,6 +850,33 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
+        protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
+        {
+            var list = new List<T?>();
+            foreach (var dc in Directory.DomainControllers)
+            {
+                try
+                {
+                    if (dc.IsPingable())
+                    {
+                        var searcher = dc.GetDirectorySearcher();
+                        searcher.Filter = "(distinguishedName=" + this.DN + ")";
+                        searcher.ClientTimeout = TimeSpan.FromMilliseconds(500);
+                        searcher.ServerTimeLimit = TimeSpan.FromMilliseconds(500);
+                        var searchResult = searcher.FindOne();
+
+                        var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
+
+                        list.Add((T)value);
+                    }
+                }
+                catch
+                {
+                    list.Add(default(T));
+                }
+            }
+            return list;
+        }
         protected virtual T? GetProperty<T>(string propertyName)
         {
             try
@@ -1049,6 +1079,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual bool Rename(string newName)
         {
+            newName = newName.Replace(",", "\\,");
             DirectoryEntry?.Rename("cn=" + newName);
             OnDirectoryModelRenamed?.Invoke(this);
             return true;

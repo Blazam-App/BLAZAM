@@ -16,6 +16,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using BLAZAM.Database.Models.Chat;
 using BLAZAM.Server.Data;
+using Microsoft.IdentityModel.Tokens;
+using System.Data;
+using BLAZAM.FileSystem;
 
 namespace BLAZAM.Database.Context
 {
@@ -56,6 +59,7 @@ namespace BLAZAM.Database.Context
         {
             get
             {
+
                 _appliedMigrations ??= Database.GetAppliedMigrations();
                 return _appliedMigrations;
             }
@@ -757,11 +761,13 @@ namespace BLAZAM.Database.Context
         /// returns false.</returns>
         public virtual bool IsSeeded()
         {
-
-
             if (AppliedMigrations.Count() > 0) return true;
+            
+     
+
             try
             {
+
                 if (AuthenticationSettings.FirstOrDefault() == null)
                     return false;
                 return true;
@@ -798,5 +804,53 @@ namespace BLAZAM.Database.Context
             }
         }
 
+
+        public void Export(string directory)
+        {
+            // Get all the DbSet properties of the context
+            var dbSets = this.GetType().GetProperties().Where(p => p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>));
+
+            // Loop through each DbSet property
+            foreach (var dbSet in dbSets)
+            {
+                // Get the entity type of the DbSet
+                var entityType = dbSet.PropertyType.GetGenericArguments()[0];
+
+                // Get the table name of the entity type
+                var tableName = Model.FindEntityType(entityType).GetTableName();
+
+                DataTable table = SelectAllDataFromTable(tableName);
+
+                // Create a CSV file name for the table
+                var fileName = Path.Combine(directory, tableName + ".csv");
+                var file = new SystemFile(fileName);
+                file.EnsureCreated();
+                // Write the data table to the CSV file
+                using (var writer = new StreamWriter(fileName))
+                {
+                    // Write the column names
+                    var columnNames = table.Columns.Cast<DataColumn>().Select(c => c.ColumnName);
+                    writer.WriteLine(string.Join(",", columnNames));
+
+                    // Write the rows
+                    foreach (DataRow row in table.Rows)
+                    {
+                        var fields = row.ItemArray.Select(f => f.ToString());
+                        List<string> lines = new();
+                        foreach(var field in fields)
+                        {
+                            lines.Add( '"' + field + '"');
+                        }
+                        writer.WriteLine(string.Join(",", lines));
+                    }
+                }
+            }
+        }
+
+        protected virtual DataTable SelectAllDataFromTable(string? tableName)
+        {
+            throw new NotImplementedException("The SelectAllDataFromTable method has not been implemented");
+           
+        }
     }
 }

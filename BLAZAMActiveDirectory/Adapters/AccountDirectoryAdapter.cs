@@ -48,6 +48,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
+        public DateTime? LastLogonTime
+        {
+            get
+            {
+                var coms = GetNonReplicatedProperty<object>("lastLogon");
+                List<DateTime?> times = new List<DateTime?>();
+                foreach (var c in coms)
+                {
+                    times.Add(c.AdsValueToDateTime());
+                }
+                return times.OrderByDescending(t => t).FirstOrDefault();
+            }
+        }
         public virtual bool LockedOut
         {
             get
