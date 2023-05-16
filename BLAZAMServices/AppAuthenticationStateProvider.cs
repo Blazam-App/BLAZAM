@@ -218,7 +218,6 @@ namespace BLAZAM.Services
             if (result?.User != null)
                 //User claim processing is done so we can set the UserState with the new identity
                 newUserState.User = result.User;
-            Loggers.SystemLogger.Error("User Exists: " + (result.User != null).ToString());
             //Pass this state to the State Service for statefulness if it's populated
             if (newUserState.User != null)
                 _userStateService.SetUserState(newUserState);
