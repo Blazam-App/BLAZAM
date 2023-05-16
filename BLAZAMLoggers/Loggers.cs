@@ -72,6 +72,8 @@ namespace BLAZAM.Logger
                .Enrich.WithMachineName()
                .Enrich.WithEnvironmentName()
                .Enrich.WithEnvironmentUserName()
+                 .Enrich.WithProperty("Application Name", "Blazam")
+
                    .Enrich.WithProperty("Application Version", _applicationVersion)
                //.WriteTo.File(WritablePath+@"\logs\log.txt")
                .WriteTo.File(logFilePath,

@@ -91,12 +91,12 @@ namespace BLAZAM.Update.Services
             try
             {
                 var appSettings = (await factory.CreateDbContextAsync()).AppSettings.FirstOrDefault();
-                if (appSettings.AutoUpdate)
+                if (appSettings != null && appSettings.AutoUpdate)
                 {
                     Loggers.UpdateLogger.Information("Checking for automatic update");
 
                     var latestUpdate = await updateService.GetLatestUpdate();
-                    if (latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdateTime != null)
+                    if (latestUpdate != null && latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdateTime != null)
                     {
                         ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
                     }
