@@ -275,7 +275,7 @@ namespace BLAZAM.ActiveDirectory
         public void Connect()
         {
             Status = DirectoryConnectionStatus.Connecting;
-
+            Loggers.ActiveDirectryLogger.Information("Initiating Active Directory connection");
             try
             {
                 Context = Factory.CreateDbContext();
@@ -306,15 +306,26 @@ namespace BLAZAM.ActiveDirectory
 
                             if (ad != null && ad.FQDN != null && ad.Username != null)
                             {
+                                Loggers.ActiveDirectryLogger.Information("Checking Active Directory port status",ad.ServerAddress,ad.ServerPort);
+
                                 if (NetworkTools.IsPortOpen(ad.ServerAddress, ad.ServerPort))
                                 {
+                                    Loggers.ActiveDirectryLogger.Information("Active Directory port is open.");
+
                                     try
                                     {
+                                        Loggers.ActiveDirectryLogger.Information("Connecting Active Directory context");
 
                                         AppRootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, _encryption.DecryptObject<string>(ad.Password), _authType);
+                                        Loggers.ActiveDirectryLogger.Information("App Active Directory context connected");
+
                                         RootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(), ad.Username, _encryption.DecryptObject<string>(ad.Password), _authType);
+                                        Loggers.ActiveDirectryLogger.Information("Root Active Directory context connected");
+
                                         //var nativeEntry = DirectoryEntry.NativeObject;
                                         //Perform Auth check
+                                        Loggers.ActiveDirectryLogger.Information("Performing Active Directory connection test");
+
                                         var search = new ADSearch()
                                         {
                                             ObjectTypeFilter = ActiveDirectoryObjectType.User,
@@ -356,21 +367,29 @@ namespace BLAZAM.ActiveDirectory
                                         {
                                             if (results.Count > 0)
                                             {
+                                                Loggers.ActiveDirectryLogger.Information("Active Directory test passed");
+
                                                 Status = DirectoryConnectionStatus.OK;
                                                 DomainControllers.Clear();
                                                 foreach (DomainController dc in Domain.GetDomain(DirectoryContext).DomainControllers)
                                                 {
                                                     //var test = dc;
-                                           
-                                                        DomainControllers.Add(dc);
-                                                    
+
+                                                    DomainControllers.Add(dc);
+
                                                 }
                                             }
                                             else
+                                            {
+                                                Loggers.ActiveDirectryLogger.Warning("Active Directory test failed");
+
                                                 Status = DirectoryConnectionStatus.BadConfiguration;
+
+                                            }
                                         }
                                         catch (Exception ex)
                                         {
+
                                             switch (ex.HResult)
                                             {
                                                 case -2147016646:
@@ -378,6 +397,9 @@ namespace BLAZAM.ActiveDirectory
                                                     break;
                                                 case -2147023570:
                                                     Status = DirectoryConnectionStatus.BadCredentials;
+                                                    break;
+                                                default:
+                                                    Loggers.ActiveDirectryLogger.Error("Error collecting domain controllers {@Error}",ex);
                                                     break;
                                             }
                                         }
@@ -387,13 +409,23 @@ namespace BLAZAM.ActiveDirectory
                                     }
 
 
-                                    catch (DirectoryOperationException)
+                                    catch (DirectoryOperationException ex)
                                     {
+                                        Loggers.ActiveDirectryLogger.Warning("Error connecting to Active Directory {@Error}", ex);
+
                                         Status = DirectoryConnectionStatus.BadConfiguration;
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        Loggers.ActiveDirectryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
+                                        Status = DirectoryConnectionStatus.BadConfiguration;
+
                                     }
                                 }
                                 else
                                 {
+                                    Loggers.ActiveDirectryLogger.Warning("Active Directory port is not open");
+
                                     Status = DirectoryConnectionStatus.ServerDown;
                                 }
                             }
@@ -404,8 +436,10 @@ namespace BLAZAM.ActiveDirectory
 
 
             }
-            catch (Exception)
+            catch (Exception ex )
             {
+                Loggers.ActiveDirectryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
+
                 Status = DirectoryConnectionStatus.ServerDown;
 
             }
