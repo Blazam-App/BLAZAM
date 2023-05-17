@@ -19,28 +19,29 @@
             {
                 <MudText>Using custom update credentials.</MudText>
 
+                <MudCard>
+                    <SettingsField Label="@AppLocalization["Domain"]">
 
-                <SettingsField Label="@AppLocalization["Domain"]">
+                        <MudTextField Label="@AppLocalization["Domain"]" @bind-Value="settings.UpdateDomain" />
+                    </SettingsField>
 
-                    <MudTextField Label="@AppLocalization["Domain"]" @bind-Value="settings.UpdateDomain" />
-                </SettingsField>
+                    <SettingsField Label="@AppLocalization["Username"]">
 
-                <SettingsField Label="@AppLocalization["Username"]">
+                        <MudTextField Label="@AppLocalization["Username"]" @bind-Value="settings.UpdateUsername" />
+                    </SettingsField>
 
-                    <MudTextField Label="@AppLocalization["Username"]" @bind-Value="settings.UpdateUsername" />
-                </SettingsField>
+                    <SettingsField Label="@AppLocalization["Password"]">
 
-                <SettingsField Label="@AppLocalization["Password"]">
-
-                    <MudTextField Label="@AppLocalization["Password"]" InputType="InputType.Password" @bind-Value="newUpdatePassword" />
-                </SettingsField>
+                        <MudTextField Label="@AppLocalization["Password"]" InputType="InputType.Password" @bind-Value="newUpdatePassword" />
+                    </SettingsField>
+                </MudCard>
             }
 
 
         </SettingsField>
         <SettingsField Label="@AppLocalization["Update Branch"]">
 
-            <MudSelect @bind-Value=@settings.UpdateBranch HelperText="The stable branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers.">
+            <MudSelect Label="@AppLocalization["Update Branch"]" @bind-Value=@settings.UpdateBranch HelperText="The stable branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers.">
                 @foreach (var val in updateBranches)
                 {
                     <MudSelectItem Value="@val">@val</MudSelectItem>
@@ -73,9 +74,9 @@
         </SettingsField>
 
 
-        <SettingsField Label="@AppLocalization["Allow Auto Update"]">
+        <SettingsField Label="@AppLocalization["Enable Auto Update"]">
 
-            <MudSwitch @bind-Checked=@(settings.AutoUpdate) />
+            <MudSwitch Label="@AppLocalization["Enable Auto Update"]" @bind-Checked=@(settings.AutoUpdate) />
 
         </SettingsField>
 
@@ -123,9 +124,11 @@
 
             applicationIdentityCanWrite = ApplicationInfo.ApplicationRoot.Writable;
 
-            if(settings.UseUpdateCredentials){
+            if (settings.UseUpdateCredentials)
+            {
                 var impersonation = settings.CreateWindowsImpersonator();
-                impersonation.Run(() => {
+                impersonation.Run(() =>
+                {
                     haveCredentialsToApplicationRootDirectory = ApplicationInfo.ApplicationRoot.Writable;
 
                     return true;

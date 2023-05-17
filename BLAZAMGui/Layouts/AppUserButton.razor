@@ -74,7 +74,7 @@
         });
         UserState = CurrentUser.State;
         if (UserState != null)
-            UserState.OnSettingsChange += (settings) =>
+            UserState.OnSettingsChanged += (settings) =>
             {
                 InvokeAsync(StateHasChanged);
             };

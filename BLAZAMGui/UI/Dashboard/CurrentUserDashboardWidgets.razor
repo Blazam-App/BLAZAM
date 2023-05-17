@@ -79,14 +79,14 @@
 
 
 
-
+    IApplicationUserState _currentUser;
     MudDropContainer<UserDashboardWidget>? widgetContainer;
     List<Widget> allWidgets = new List<Widget>();
 
     protected override Task OnInitializedAsync()
     {
         allWidgets = new List<Widget>(AllWidgets.Available(CurrentUser.State));
-
+        _currentUser = CurrentUser.State;
         return base.OnInitializedAsync();
     }
     bool ItemSelector(UserDashboardWidget item, string dropzone)

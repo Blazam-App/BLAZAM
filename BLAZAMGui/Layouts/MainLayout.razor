@@ -63,7 +63,13 @@
                         topMarginForContent = "margin-top:64px;";
                     }
 
-
+                    @{
+                        var maxWidth = MaxWidth.Large;
+                        if (Nav.Uri.Contains("/home"))
+                        {
+                            maxWidth = MaxWidth.False;
+                        }
+                    }
                     <MudContainer Style="@topMarginForContent"
                                   MaxWidth="MaxWidth.Large"
                                   Class="pt-5 pb-10 mud-height-full">
