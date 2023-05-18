@@ -18,6 +18,7 @@ using System.Reflection;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Exceptions;
 using BLAZAM.Services.Background;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BLAZAM
 {
@@ -25,7 +26,7 @@ namespace BLAZAM
 
     public class Program
     {
-      
+
         /// <summary>
         /// The writable directry
         /// </summary>
@@ -34,13 +35,13 @@ namespace BLAZAM
         /// </returns>
         internal static SystemDirectory WritablePath => new SystemDirectory(ApplicationInfo.tempDirectory + @"writable\");
 
-    
+
 
         public static SystemDirectory AppDataDirectory { get; set; }
 
 
 
-      
+
         private static IAppDatabaseFactory? _programDbFactory;
 
 
@@ -49,14 +50,10 @@ namespace BLAZAM
 
 
 
-        /// <summary>
-        /// Can be used for JWT Token signing
-        /// </summary>
-        internal static SymmetricSecurityKey? TokenKey;
 
         /// <summary>
-        /// A static reference for the current asp
-        /// net core application instance
+        /// A static reference for the current ASP
+        /// Net Core application instance
         /// </summary>
         public static WebApplication AppInstance { get; private set; }
         /// <summary>
@@ -95,13 +92,15 @@ namespace BLAZAM
 
             //Setup host logging so it can catch the earliest logs possible
 
-            Loggers.SetupLoggers(WritablePath + @"logs\",ApplicationInfo.runningVersion.ToString());
+            Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
             builder.Host.UseSerilog(Log.Logger);
 
             Log.Information("Application Starting");
 
             builder.InjectServices();
 
+            SetupKestrel(builder);
+            
 
             //Done with service injection let's build the App
             AppInstance = builder.Build();
@@ -146,7 +145,6 @@ namespace BLAZAM
             AppInstance.MapBlazorHub();
             AppInstance.MapFallbackToPage("/_Host");
 
-
             AppInstance.Start();
             GetRunningWebServerConfiguration();
             ScheduleAutoLoad();
@@ -154,6 +152,23 @@ namespace BLAZAM
             AppInstance.WaitForShutdown();
             Log.Information("Application Shutting Down");
             //AppInstance.Run();
+
+        }
+
+        private static void SetupKestrel( WebApplicationBuilder builder)
+        {
+            if (WindowsServiceHelpers.IsWindowsService())
+            {
+                var listeningAddress = Configuration.GetValue<string>("ListeningAddress");
+                var httpPort = Configuration.GetValue<string>("HTTPPort");
+                var httpsPort = Configuration.GetValue<string>("HTTPSPort");
+                builder.WebHost.ConfigureKestrel(options =>
+                {
+                    options.ConfigureEndpointDefaults(listeningOptions =>
+                    {
+                    });
+                });
+            }
 
         }
 
@@ -183,7 +198,7 @@ namespace BLAZAM
             }
         }
 
-        
+
 
 
         public static bool IsDevelopment
@@ -222,7 +237,7 @@ namespace BLAZAM
 
         //}
 
-      
+
 
     }
 }

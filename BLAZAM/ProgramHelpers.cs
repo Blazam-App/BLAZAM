@@ -63,7 +63,6 @@ namespace BLAZAM.Server
                     new CultureInfo("fr-FR")
                  };
 
-                options.DefaultRequestCulture = new RequestCulture("fr-FR");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
