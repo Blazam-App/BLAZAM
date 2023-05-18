@@ -472,6 +472,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 try
                 {
+                    
                     var findUser = Users.FindUserByUsername(loginReq.Username.ToLower(), false);
                     if (findUser != null)
                     {
@@ -482,18 +483,38 @@ namespace BLAZAM.ActiveDirectory
                             {
                                 loginReq.Username += "@" + ConnectionSettings.FQDN;
                             }
-                            using (var connection = new LdapConnection(new LdapDirectoryIdentifier(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort)))
+
+                            WindowsImpersonationUser logonUser = new WindowsImpersonationUser
                             {
-                                connection.AuthType = AuthType.Basic;
-                                connection.SessionOptions.ProtocolVersion = 3;
-                                connection.SessionOptions.SecureSocketLayer = ConnectionSettings.UseTLS;
-
-                                connection.Credential = new NetworkCredential(loginReq.Username, loginReq.SecurePassword);
-                                connection.Bind();
-
+                                FQDN = ConnectionSettings.FQDN,
+                                 Username=loginReq.Username,
+                                 Password= loginReq.SecurePassword
+                            };
+                            WindowsImpersonation impersonation = new WindowsImpersonation(logonUser);
+                            try
+                            {
+                                impersonation.Run(() => {
+                                    return true;                               
+                                });
                                 return findUser;
-
                             }
+                            catch(Exception ex)
+                            {
+                                return null;
+                            }
+
+                            //using (var connection = new LdapConnection(new LdapDirectoryIdentifier(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort)))
+                            //{
+                            //    connection.AuthType = AuthType.Basic;
+                            //    connection.SessionOptions.ProtocolVersion = 3;
+                            //    connection.SessionOptions.SecureSocketLayer = ConnectionSettings.UseTLS;
+
+                            //    connection.Credential = new NetworkCredential(loginReq.Username, loginReq.SecurePassword);
+                            //    connection.Bind();
+
+                            //    return findUser;
+
+                            //}
 
                         }
                     }
