@@ -14,7 +14,9 @@ This app is still in Beta. If you choose to install now, you may need to re-inst
 
 ## Installation
 Blazam's Web Installer is the recommended installation method.
+
 [Web Installer](https://blazam.org/download)
+
 [Manual Installation](https://docs.blazam.org/install/manual)
 
 ## Who is it for?
