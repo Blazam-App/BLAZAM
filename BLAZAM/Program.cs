@@ -18,7 +18,7 @@ using System.Reflection;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Exceptions;
 using BLAZAM.Services.Background;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Net;
 
 namespace BLAZAM
 {
@@ -95,12 +95,12 @@ namespace BLAZAM
             Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
             builder.Host.UseSerilog(Log.Logger);
 
-            Log.Information("Application Starting");
+            Log.Warning("Application Starting {@ProcessName}", ApplicationInfo.runningProcess.ProcessName);
 
             builder.InjectServices();
 
             SetupKestrel(builder);
-            
+
 
             //Done with service injection let's build the App
             AppInstance = builder.Build();
@@ -155,18 +155,40 @@ namespace BLAZAM
 
         }
 
-        private static void SetupKestrel( WebApplicationBuilder builder)
+        private static void SetupKestrel(WebApplicationBuilder builder)
         {
-            if (WindowsServiceHelpers.IsWindowsService())
+            if (!ApplicationInfo.isUnderIIS && Debugger.IsAttached)
             {
                 var listeningAddress = Configuration.GetValue<string>("ListeningAddress");
-                var httpPort = Configuration.GetValue<string>("HTTPPort");
-                var httpsPort = Configuration.GetValue<string>("HTTPSPort");
+                var httpPort = Configuration.GetValue<int>("HTTPPort");
+                var httpsPort = Configuration.GetValue<int>("HTTPSPort");
                 builder.WebHost.ConfigureKestrel(options =>
                 {
-                    options.ConfigureEndpointDefaults(listeningOptions =>
+                    if (listeningAddress == "*")
                     {
-                    });
+                        options.ListenAnyIP(httpPort);
+                        if (httpsPort != 0)
+                        {
+                            options.ListenAnyIP(httpsPort, configure =>
+                            {
+                                configure.UseHttps();
+                            });
+                        }
+                    }
+
+                    else
+                    {
+                        var ip = IPAddress.Parse(listeningAddress);
+                        
+                        options.Listen(ip, httpPort);
+                        if (httpsPort != 0)
+                        {
+                            options.Listen(ip, httpsPort, configure =>
+                            {
+                                configure.UseHttps();
+                            });
+                        }
+                    }
                 });
             }
 
