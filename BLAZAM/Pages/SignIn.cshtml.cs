@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using BLAZAM.Helpers;
+using BLAZAM.Gui.UI.Dashboard.Widgets;
 
 namespace BLAZAM.Server.Pages
 {
@@ -45,17 +46,23 @@ namespace BLAZAM.Server.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnPost([FromFormAttribute]LoginRequest req)
         {
-          
+            try
+            {
                 var result = await Auth.Login(req);
                 if (result != null && result.Status == LoginResultStatus.OK)
                 {
                     await HttpContext.SignInAsync(result.AuthenticationState.User);
                     await AuditLogger.Logon.Login(result.AuthenticationState.User);
                 }
-           
+                return new ObjectResult(result.Status);
+
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message);
+            }
            
             
-            return new ObjectResult(result.Status);
         }
 
 

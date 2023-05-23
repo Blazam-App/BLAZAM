@@ -12,7 +12,7 @@ namespace BLAZAM.Session.Interfaces
     public interface IApplicationUserState
     {
         public int Id { get; }
-        AppEvent<AppUser> OnSettingsChange { get; set; }
+        AppEvent<AppUser> OnSettingsChanged { get; set; }
 
         /// <summary>
         /// Returns the combined names of the user, and if applicable, the impersonators username
