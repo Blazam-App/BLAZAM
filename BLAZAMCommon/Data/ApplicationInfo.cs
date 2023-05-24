@@ -46,6 +46,7 @@ namespace BLAZAM.Common.Data
         public static IEnumerable<string> listeningAddresses=new List<string>();
         public static bool inDebugMode;
         public static bool inDemoMode;
+        public static bool isUnderIIS=>runningProcess.ProcessName.Contains("w3wp");
         public static IServiceProvider services;
         public static SecurityKey tokenKey;
 
@@ -88,6 +89,7 @@ namespace BLAZAM.Common.Data
         public bool InstallationCompleted { get => installationCompleted; set => installationCompleted = value; }
         public bool InDebugMode { get => inDebugMode; set => inDebugMode = value; }
         public bool InDemoMode { get => inDemoMode; set => inDemoMode = value; }
+        public bool IsUnderIIS { get => isUnderIIS; }
 
         /// <summary>
         /// Indicates the Installation status
