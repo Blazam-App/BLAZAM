@@ -479,10 +479,10 @@ namespace BLAZAM.ActiveDirectory
                         var user = new ADUser();
                         if (ConnectionSettings != null)
                         {
-                            if (!loginReq.Username.Contains("@"))
-                            {
-                                loginReq.Username += "@" + ConnectionSettings.FQDN;
-                            }
+                            //if (!loginReq.Username.Contains("@"))
+                            //{
+                            //    loginReq.Username += "@" + ConnectionSettings.FQDN;
+                            //}
 
                             WindowsImpersonationUser logonUser = new WindowsImpersonationUser
                             {
