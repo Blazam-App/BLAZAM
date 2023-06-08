@@ -234,7 +234,7 @@ namespace BLAZAM.ActiveDirectory
             DirectoryContextType.Domain,
             ConnectionSettings.FQDN,
             ConnectionSettings.Username,
-            Encryption.Instance.DecryptObject<string>(ConnectionSettings.Password)
+            ConnectionSettings.Password.Decrypt()
             );
 
         public List<DomainController> DomainControllers { get; private set; } = new();

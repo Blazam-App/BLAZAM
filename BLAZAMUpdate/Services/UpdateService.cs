@@ -3,11 +3,17 @@ using Octokit;
 using BLAZAM.Common;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.Logger;
+using BLAZAM.Helpers;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 
 namespace BLAZAM.Update.Services
 {
+    /// <summary>
+    /// Represents the source of the valid credential to write to
+    /// the application directory
+    /// </summary>
+    public enum UpdateCredential { None,Application,Directory,Update};
     public class UpdateService : UpdateServiceBase
     {
         public ApplicationUpdate LatestUpdate { get; set; }
@@ -106,6 +112,39 @@ namespace BLAZAM.Update.Services
 
             }
         }
+        public UpdateCredential UpdateCredential
+        {
+            get {
+                if (ApplicationInfo.applicationRoot.Writable)
+                    return UpdateCredential.Application;
+
+                //Test Directory Credentials
+                    using var context = _dbFactory.CreateDbContext();
+
+                var impersonation = context.ActiveDirectorySettings.FirstOrDefault().CreateWindowsImpersonator();
+                if (impersonation.Run(() =>
+                {
+                    if (ApplicationInfo.applicationRoot.Writable)
+                        return true;
+                    return false;
+                }))
+                    return UpdateCredential.Directory;
+
+                //Test Update Credentials
+                 impersonation = context.AppSettings.FirstOrDefault().CreateWindowsImpersonator();
+
+                if (impersonation.Run(() =>
+                {
+                    if (ApplicationInfo.applicationRoot.Writable)
+                        return true;
+                    return false;
+                }))
+                    return UpdateCredential.Update;
+
+                return UpdateCredential.None;
+            }
+        }
+        public bool HasWritePermission => UpdateCredential != UpdateCredential.None;
 
 
     }

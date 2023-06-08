@@ -20,13 +20,14 @@ namespace BLAZAM.Update
 
 
 
-
+        public UpdateStage UpdateStage { get; set; }
         /// <summary>
         /// Token source for cancelling this update when in progress
         /// </summary>
         private CancellationTokenSource cancellationTokenSource { get; set; }
 
         public static AppEvent OnUpdateStarted { get; set; }
+
         public static AppEvent<Exception> OnUpdateFailed { get; set; }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace BLAZAM.Update
             new SystemDirectory(UpdateTempDirectory + "staged\\");
 
         /// <summary>
-        /// The local path for staging directory path for this update
+        /// The local staging directory path for this update
         /// </summary>
         public SystemDirectory UpdateStagingDirectory { get => new SystemDirectory(StagingDirectory + Version.Version); }
 
@@ -115,7 +116,7 @@ namespace BLAZAM.Update
                 return " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory + "'" +
                    " -Username " + DatabaseCache.ActiveDirectorySettings?.Username +
                    " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN +
-                   " -Password '" + Encryption.Instance.DecryptObject<string>(DatabaseCache.ActiveDirectorySettings?.Password) + "'";
+                   " -Password '" + DatabaseCache.ActiveDirectorySettings?.Password.Decrypt() + "'";
             }
         }
 
@@ -171,6 +172,8 @@ namespace BLAZAM.Update
 
         public async Task<string> Apply()
         {
+            cancellationTokenSource = new CancellationTokenSource();
+
             OnUpdateStarted?.Invoke();
             if (!await Prepare())
                 throw new ApplicationUpdateException("Update preparation not completed");
@@ -420,7 +423,6 @@ namespace BLAZAM.Update
             Loggers.UpdateLogger?.Debug("Download URL: " + Release.DownloadURL);
             Loggers.UpdateLogger?.Debug("Download Path: " + UpdateDownloadDirectory);
 
-            cancellationTokenSource = new CancellationTokenSource();
             var progress = new FileProgress();
             using (var client = new HttpClient())
             {

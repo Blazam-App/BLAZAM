@@ -16,5 +16,18 @@ namespace BLAZAM.Server
         {
             PermissionsChanged?.Invoke();
         }
+
+        /// <summary>
+        /// Called when a template is added or removed
+        /// </summary>
+        public static AppEvent TemplatesChanged { get; set; }
+
+        /// <summary>
+        /// Send event so each user can update the templates in real time
+        /// </summary>
+        public static void InvokeTemplatesChanged()
+        {
+            TemplatesChanged?.Invoke();
+        }
     }
 }
