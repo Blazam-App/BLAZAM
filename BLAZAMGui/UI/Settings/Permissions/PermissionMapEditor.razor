@@ -42,9 +42,9 @@
                         <MudButton Disabled Color="Color.Secondary">@pd</MudButton>
                     }
                 }
-                @if (_accessLevels != null)
+                @if (_map?.AccessLevels != null)
                 {
-                    @foreach (var al in _accessLevels)
+                    @foreach (var al in _map.AccessLevels)
                     {
                         <MudButton Disabled Color="Color.Secondary">@al.Name</MudButton>
                     }
