@@ -61,7 +61,7 @@
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     <MudTooltip ShowOnHover=@(!cellContext.Item.CanUnassign) Text="You don't have permission to remove this group member">
-                        <MudButton Disabled=@(!cellContext.Item.CanUnassign) Color="Color.Error" OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(StateHasChanged);})">
+                        <MudButton Disabled=@(!cellContext.Item.CanUnassign) Color="Color.Error" OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
                             Remove
                         </MudButton>
                     </MudTooltip>
