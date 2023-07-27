@@ -1,6 +1,6 @@
 ﻿@inherits AutoCompleteComponentBase
 <MudAutocomplete Class="@Class"
-    Style="@Style"
+                 Style="@Style"
                  Disabled=@Disabled
                  T="IDirectoryEntryAdapter"
                  Label="@Label"
@@ -12,7 +12,7 @@
                  Validation="@Validation"
                  CoerceText="@AllowCustomInput"
                  CoerceValue="false"
-                  MaxItems=@MaxResults
+                 MaxItems=@MaxResults
                  Clearable=true
                  Dense=true
                  ShowProgressIndicator=true
@@ -62,12 +62,12 @@
                     @if (lockoutBadgeVisible)
                     {
                         <MudChip Size=Size.Small Disabled=true Overlap=false Color="Color.Warning" Text=@("Locked") />
-                        
+
                     }
                     @if (disabledBadgeVisible)
                     {
                         <MudChip Size=Size.Small Disabled=true Overlap=false Color="Color.Error" Text=@("Disabled") />
-                        
+
                     }
                 </MudStack>
 
@@ -98,12 +98,17 @@
         }
 
     </NoItemsTemplate>
+    <MoreItemsTemplate>
+        <MudText>
+           Too many results to show...
+        </MudText>
+    </MoreItemsTemplate>
 </MudAutocomplete>
 
 
 
 @code {
-    #nullable disable warnings
+#nullable disable warnings
     [Parameter]
     public Func<object> Validation { get; set; }
     [Parameter]

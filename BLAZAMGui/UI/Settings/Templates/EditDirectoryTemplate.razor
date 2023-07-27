@@ -10,9 +10,12 @@
         <MudStack>
 
             <MudSelectList T="DirectoryTemplate"
-                HelperText="@(otherTemplates.IsNullOrEmpty()?"There are no other templates":null)"
+                       HelperText="@(otherTemplates.IsNullOrEmpty()?"There are no other templates":null)"
                        Disabled=@(otherTemplates.IsNullOrEmpty())
                        Clearable=true
+                       OnClearButtonClick="@(()=>{
+ParentTemplateChanged(null);
+})"
                        Label="Parent Template"
                        Values="@otherTemplates"
                        Value="@DirectoryTemplate.ParentTemplate"
@@ -23,9 +26,9 @@
                       @bind-Value=DirectoryTemplate.Name />
 
             <MudAutocomplete CoerceValue=true
-                         CoerceText=true
+                         CoerceText=false
                          SearchFunc="SearchCategories"
-                         @bind-Value=DirectoryTemplate.Category
+                         @bind-Text=DirectoryTemplate.Category
                          Label="@AppLocalization["Template Category"]" />
 
 
@@ -93,7 +96,6 @@
                     }
                     <TemplateOverride SourceTemplate="@usernameFromTemplate">
                         <MudTextField Label="Password"
-                                 
                                   @bind-Value=DirectoryTemplate.EffectivePasswordFormula />
                     </TemplateOverride>
 
@@ -105,17 +107,7 @@
 
             </Section>
             <Section Title="Fields">
-                <MudCard>
-                    Variables:
-                    <MudStack Row=true>
-                        All above in addition to
-                    </MudStack>
 
-                    <MudStack Row=true>
-                        <code>{username}</code>:Username<br />
-                    </MudStack>
-
-                </MudCard>
 
                 <MudDrawerContainer Class="mud-height-full" Style="min-height:200px">
                     <MudDrawer @bind-Open="@open" Elevation="0" Variant="@DrawerVariant.Persistent">
@@ -163,8 +155,8 @@
                                      Hover=true>
 
                                 <ToolBarContent>
-                                    <MudText Typo="Typo.h6">Fields</MudText>
-                                    <MudSpacer />
+                                    @*<MudText Typo="Typo.h6">Fields</MudText>
+                                <MudSpacer />*@
                                     <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{open=!open;})">Toggle Fields</MudButton>
 
                                 </ToolBarContent>
@@ -236,28 +228,30 @@
             </Section>
 
             <Section Title="Organizational Unit">
-                @{
-                    var ouTemplateSourceName = GetParentOfValue(DirectoryTemplate.EffectiveParentOU, template => template.ParentOU);
-                }
-                <TemplateOverride SourceTemplate="@ouTemplateSourceName">
-                    <OUTreeView Label=@(AppLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
+                @if (SelectedOU != null)
+                {
+                    var ouTemplateSource = GetParentOfValue(DirectoryTemplate.EffectiveParentOU, template => template.ParentOU);
+
+                    <TemplateOverride SourceTemplate="@ouTemplateSource">
+                        <OUTreeView Label=@(AppLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
                             StartRootExpanded=false
-                            @bind-SelectedOU=@SelectedOU
+                            SelectedOU=@SelectedOU
+                            SelectedOUChanged="@((ou)=>{SelectedOU=ou; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
                             @bind-StartingSelectedOU=@SelectedOU />
-                    @if (!DirectoryTemplate.ParentOU.IsNullOrEmpty())
-                    {
-                        <MudIconButton DisableElevation=true
+                        @if (DirectoryTemplate.ParentTemplateId != null && !DirectoryTemplate.ParentOU.IsNullOrEmpty())
+                        {
+                            <MudIconButton DisableElevation=true
                                Class="d-inline-flex pa-0"
                                Style="vertical-align:top;"
                                Color="Color.Dark"
                                Icon="@Icons.Material.Filled.Undo"
-                               OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;}) />
-                    }
-                </TemplateOverride>
+                               OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;LoadData();}) />
+                        }
+                    </TemplateOverride>
 
 
 
-
+                }
 
             </Section>
             <Section Title="Assigned Groups">
@@ -273,7 +267,7 @@
 
                 }
                 <MudStack Row=true>
-                    <ADAutoComplete Label="@AppLocalization["Groups"]"
+                    <ADAutoComplete SearchObjectType=ActiveDirectoryObjectType.Group Label="@AppLocalization["Groups"]"
                                 @bind-SelectedResult="@SelectedGroup" />
                     <MudFab Size="Size.Small" StartIcon=@Icons.Material.Filled.Add
                         Color="Color.Primary"
@@ -304,7 +298,12 @@
 
     </EditForm>
 }
+
 @code {
+
+    [Parameter]
+    public SetHeader? Header { get; set; }
+
     protected string groupText;
     protected bool open;
     protected bool _usernamePopoverOpen;
@@ -367,6 +366,7 @@
 
     [Parameter]
     public EventCallback<DirectoryTemplate> DirectoryTemplateChanged { get; set; }
+
     protected async Task AssignGroup(IADGroup? group)
     {
         var existing = await Context.DirectoryTemplateGroups.Where(g => g.GroupSid == group.SID.ToSidString()).FirstOrDefaultAsync();
@@ -377,6 +377,7 @@
                 };
         DirectoryTemplate.AssignedGroupSids.Add(existing);
     }
+
     protected async Task LoadData()
     {
         if (Context == null)
@@ -386,16 +387,21 @@
         var matching = await Context.DirectoryTemplates.Where(dt => dt.Id == DirectoryTemplate.Id).FirstOrDefaultAsync();
         if (matching != null)
             _template = matching;
-        if (!DirectoryTemplate.ParentOU.IsNullOrEmpty())
-            SelectedOU = (await Directory.OUs.FindOuByStringAsync(DirectoryTemplate.ParentOU)).FirstOrDefault();
-        //if (SelectedOU == null)
-        //{
-        //    SelectedOU = await Directory.OUs.GetApplicationRootOU();
-        //}
+        await LoadParentOU();
         fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
         fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
         RefreshGroups();
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task LoadParentOU()
+    {
+        if (!DirectoryTemplate.EffectiveParentOU.IsNullOrEmpty())
+            SelectedOU = (await Directory.OUs.FindOuByStringAsync(DirectoryTemplate.EffectiveParentOU)).FirstOrDefault();
+        if (SelectedOU == null)
+        {
+            SelectedOU = await Directory.OUs.GetApplicationRootOU();
+        }
     }
 
     protected void ValueChanged(string? newValue, DirectoryTemplateFieldValue fieldValue)
@@ -411,8 +417,7 @@
             DirectoryTemplate.FieldValues.Add((DirectoryTemplateFieldValue)fieldValue.Clone());
         }
 
-        var fieldToModify = DirectoryTemplate.FieldValues.Where(fv => (fv.Field != null && fv.Field.Equals(fieldValue.Field))
-        || (fv.CustomField != null && fv.CustomField.Equals(fieldValue.CustomField))).FirstOrDefault();
+        var fieldToModify = DirectoryTemplate.FieldValues.Where(fv => (fv.Field != null && fv.Field.Equals(fieldValue.Field)) || (fv.CustomField != null && fv.CustomField.Equals(fieldValue.CustomField))).FirstOrDefault();
         return fieldToModify;
     }
 
@@ -428,21 +433,31 @@
         fieldToModify.Required = newValue;
     }
 
-    protected void ParentTemplateChanged(DirectoryTemplate parent)
+    protected async Task ParentTemplateChanged(DirectoryTemplate? parent)
     {
-        var templateCursor = parent;
-        while (templateCursor.ParentTemplate != null)
+        if (parent != null)
         {
-            templateCursor = templateCursor.ParentTemplate;
-            if (templateCursor.Equals(DirectoryTemplate))
+            var templateCursor = parent;
+            while (templateCursor.ParentTemplate != null)
             {
-                SnackBarService.Warning("Circular inheritance detected!");
-                return;
+                templateCursor = templateCursor.ParentTemplate;
+                if (templateCursor.Equals(DirectoryTemplate))
+                {
+                    SnackBarService.Warning("Circular inheritance detected!");
+                    return;
+                }
             }
 
+            DirectoryTemplate.ParentTemplate = parent;
+            DirectoryTemplate.ParentTemplateId = parent.Id;
         }
-        DirectoryTemplate.ParentTemplate = parent;
-        DirectoryTemplate.ParentTemplateId = parent.Id;
+        else
+        {
+            DirectoryTemplate.ParentTemplateId = null;
+            DirectoryTemplate.ParentTemplate = null;
+        }
+
+        await LoadParentOU();
     }
 
     protected IADOrganizationalUnit SelectedOU;
@@ -481,14 +496,14 @@
         if (Context == null)
             throw new ApplicationException("Database not available");
         DirectoryTemplate.ParentOU = SelectedOU.DN;
-
-
         if (DirectoryTemplate.Id == 0)
         {
             try
             {
                 await Context.DirectoryTemplates.AddAsync(DirectoryTemplate);
                 var result = await Context.SaveChangesAsync();
+
+                Header?.OnRefreshRequested.Invoke();
                 if (result > 0)
                 {
                     SnackBarService.Success("", DirectoryTemplate.Name + " was added.");
@@ -523,16 +538,28 @@
             }
         }
     }
-
-    private DirectoryTemplate GetParentOfValue(string value, Func<DirectoryTemplate, string?> valueSelector)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="valueSelector"></param>
+    /// <returns>Null if the value comes from the current
+    ///  template, otherwise the source template</returns>
+    private DirectoryTemplate? GetParentOfValue(string value, Func<DirectoryTemplate, string?> valueSelector)
     {
         var templateCursor = DirectoryTemplate;
+        var templateValue = valueSelector.Invoke(templateCursor);
+        if (templateValue != null && templateValue.Equals(value))
+            return null;
         while (templateCursor.ParentTemplate != null)
         {
             templateCursor = templateCursor.ParentTemplate;
-            if (valueSelector.Invoke(templateCursor) != null && valueSelector.Invoke(templateCursor).Equals(value))
+
+            var templateCursorValue = valueSelector.Invoke(templateCursor);
+            if (templateCursorValue != null && templateCursorValue.Equals(value))
                 return templateCursor;
         }
+
         return null;
     }
 
@@ -543,4 +570,5 @@
         public string? Value { get; set; }
     }
 }
+
 

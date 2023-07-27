@@ -166,7 +166,7 @@
      
         if (!settings.Password.Equals(passwordInDb))
         {
-            settings.Password = EncryptionService.EncryptObject(settings.Password);
+            settings.Password = settings.Password.Encrypt();
             passwordInDb = settings.Password;
         }
         if (_insert)

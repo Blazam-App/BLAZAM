@@ -10,6 +10,14 @@
     <MudSpacer />
     <MudButton Color=Color.Secondary OnClick="(()=>{trashModal.Show();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
 </MudStack>
+<MudText>
+    Test 1
+</MudText>
+<NewDelegateModalContent />
+<TestComponent/>
+<MudText>
+    Test 2
+</MudText>
 @if (AllDelegates.Count > 0)
 {
     var delegates = AllDelegates.Where(l => l.DeletedAt == null)@*.Where(l =>
@@ -23,7 +31,7 @@
     }
 }
 
-<MudButton Background="Background.Success" OnClick="@(()=>{addGroupModal?.Show();})">
+<MudButton Color=Color.Success OnClick="@(()=>{addGroupModal?.Show();})">
     @AppLocalization["Create New Delegation Target"]
 </MudButton>
 
@@ -43,11 +51,8 @@
 <AppModal @ref=@addGroupModal
           Title="Add Delegate"
           YesText="Add">
-
-    <AddPrivilegeLevelModalContent DelegateAdded=@(()=>{SnackBarService.Success("Delegate added"); DelegatesChanged();})
-                                   @ref=addDelegateContent />
+    <AddPrivilegeLevelModalContent DelegateAdded=@(()=>{SnackBarService.Success("Delegate added"); DelegatesChanged();}) />
 </AppModal>
-
 
 @{
 
@@ -64,7 +69,6 @@
             InvokeAsync(StateHasChanged);
         }
     }
-    AddPrivilegeLevelModalContent? addDelegateContent;
     AppModal? trashModal;
     AppModal? addGroupModal;
     List<PermissionDelegate> AllDelegates { get; set; } = new List<PermissionDelegate>();

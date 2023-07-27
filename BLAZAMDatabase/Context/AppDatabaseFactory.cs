@@ -14,8 +14,8 @@ namespace BLAZAM.Database.Context
         IConfiguration _configuration;
 
         public static DatabaseException DatabaseCreationFailureReason { get; set; }
-        public static AppEvent OnMigrationApplied { get; set; }
-        public static AppEvent<Exception> OnFatalError { get; set; }
+        public static AppEvent? OnMigrationApplied { get; set; }
+        public static AppEvent<Exception>? OnFatalError { get; set; }
         public static Exception? FatalError { get; private set; }
 
         public AppDatabaseFactory(IConfiguration configuration, ApplicationInfo appInfo)
@@ -31,7 +31,7 @@ namespace BLAZAM.Database.Context
             catch (DatabaseException ex)
             {
                 FatalError = ex;
-                OnFatalError.Invoke(ex);
+                OnFatalError?.Invoke(ex);
 
             }
             StartDatabaseCache();

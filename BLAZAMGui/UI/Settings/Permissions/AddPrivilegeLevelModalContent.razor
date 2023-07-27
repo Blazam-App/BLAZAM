@@ -1,6 +1,7 @@
 ﻿@inherits AppModalContent
-<MudStack Row=true>
 
+<MudStack Row=true>
+    
     <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
                     @bind-SelectedResult=@selectedDelegate
                     CustomResultsFilter="@((result)=>{

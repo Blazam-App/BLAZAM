@@ -48,7 +48,7 @@
     {
         <MudText>@AppLocalization["Not a member of any groups"]</MudText>
     }
-    @if (EditMode)
+    @if (Model.CanAssign)
     {
 
         <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.GroupAdd" OnClick="@(()=>{AssignToClicked.InvokeAsync();})" />
