@@ -447,7 +447,7 @@ namespace BLAZAM.Update
 
                             while ((bytesRead = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length)) > 0)
                             {
-                                if (!cancellationTokenSource.IsCancellationRequested)
+                                if (cancellationTokenSource?.IsCancellationRequested!=true)
                                 {
                                     await streamToWriteTo.WriteAsync(buffer, 0, bytesRead);
                                     totalBytesRead += bytesRead;
