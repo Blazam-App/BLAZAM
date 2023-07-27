@@ -172,7 +172,8 @@ namespace BLAZAM.Update
 
         public async Task<string> Apply()
         {
-            cancellationTokenSource = new CancellationTokenSource();
+            if (cancellationTokenSource == null || cancellationTokenSource.IsCancellationRequested)
+                cancellationTokenSource = new CancellationTokenSource();
 
             OnUpdateStarted?.Invoke();
             if (!await Prepare())
@@ -410,7 +411,7 @@ namespace BLAZAM.Update
         }
         public void Cancel()
         {
-            cancellationTokenSource.Cancel();
+            cancellationTokenSource?.Cancel();
         }
         public async Task<bool> Download()
         {
@@ -447,7 +448,7 @@ namespace BLAZAM.Update
 
                             while ((bytesRead = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length)) > 0)
                             {
-                                if (cancellationTokenSource?.IsCancellationRequested!=true)
+                                if (cancellationTokenSource?.IsCancellationRequested != true)
                                 {
                                     await streamToWriteTo.WriteAsync(buffer, 0, bytesRead);
                                     totalBytesRead += bytesRead;
