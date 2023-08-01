@@ -479,31 +479,31 @@ namespace BLAZAM.ActiveDirectory
                         var user = new ADUser();
                         if (ConnectionSettings != null)
                         {
-                            //if (!loginReq.Username.Contains("@"))
+                            if (!loginReq.Username.Contains("@"))
+                            {
+                                loginReq.Username += "@" + ConnectionSettings.FQDN;
+                            }
+
+                            //WindowsImpersonationUser logonUser = new WindowsImpersonationUser
                             //{
-                            //    loginReq.Username += "@" + ConnectionSettings.FQDN;
+                            //    FQDN = ConnectionSettings.FQDN,
+                            //    Username = loginReq.Username,
+                            //    Password = loginReq.SecurePassword
+                            //};
+                            //WindowsImpersonation impersonation = new WindowsImpersonation(logonUser);
+                            //try
+                            //{
+                            //    if (impersonation.Run(() =>
+                            //    {
+                            //        return true;
+                            //    }))
+                            //        return findUser;
                             //}
+                            //catch (Exception ex)
+                            //{
 
-                            WindowsImpersonationUser logonUser = new WindowsImpersonationUser
-                            {
-                                FQDN = ConnectionSettings.FQDN,
-                                Username = loginReq.Username,
-                                Password = loginReq.SecurePassword
-                            };
-                            WindowsImpersonation impersonation = new WindowsImpersonation(logonUser);
-                            try
-                            {
-                                if (impersonation.Run(() =>
-                                {
-                                    return true;
-                                }))
-                                    return findUser;
-                            }
-                            catch (Exception ex)
-                            {
-
-                                return null;
-                            }
+                            //    return null;
+                            //}
                             using (var connection = new LdapConnection(new LdapDirectoryIdentifier(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort)))
                             {
                                 connection.AuthType = AuthType.Basic;
@@ -523,6 +523,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (LdapException ex)
                 {
+                    Loggers.ActiveDirectryLogger.Error("Error authenticating user: "+ex.Message);
                     switch (ex.Message)
                     {
                         case "The user name or password is incorrect.":
