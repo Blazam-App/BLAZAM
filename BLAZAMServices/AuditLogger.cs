@@ -9,6 +9,7 @@ using BLAZAM.Database.Models.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Serilog.Parsing;
+using System.Threading.Channels;
 
 namespace BLAZAM.Services
 {
@@ -189,6 +190,20 @@ namespace BLAZAM.Services
              AuditActions.Group_Deleted, deletedEntry);
         public override async Task<bool> Searched(IDirectoryEntryAdapter searchedGroup) => await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs, AuditActions.Group_Searched, searchedGroup);
 
+        public async Task<bool> Assigned (IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
+        {
+            await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs,
+               AuditActions.Group_Assigned,
+            member,
+               null,
+               "Assigned to" + parent.DN);
+            await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs,
+              AuditActions.Group_Assigned,
+           parent,
+              null,
+              "Added member "+member.DN);
+            return true;
+        }
         public override async Task<bool> Changed(IDirectoryEntryAdapter changedGroup, List<AuditChangeLog> changes)
         {
 
@@ -254,6 +269,20 @@ namespace BLAZAM.Services
             bool requirePasswordChanged = false)
             => await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs, AuditActions.Password_Changed, searchedUser, null, "requirePasswordChange=" + requirePasswordChanged);
 
+        public async Task<bool> Assigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
+        {
+            await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs,
+               AuditActions.User_Assigned,
+            member,
+               null,
+               "Assigned to" + parent.DN);
+            await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs,
+              AuditActions.User_Assigned,
+           parent,
+              null,
+              "Added member " + member.DN);
+            return true;
+        }
 
         public override async Task<bool> Created(IDirectoryEntryAdapter newUser)
         {

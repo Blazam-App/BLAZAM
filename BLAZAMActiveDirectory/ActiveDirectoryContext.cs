@@ -181,8 +181,6 @@ namespace BLAZAM.ActiveDirectory
         /// from the ActiveDirectorySetting table in the database and uses them to configure the
         /// connection.
         /// 
-        /// Upon creation, no actual connection attempt has been made yet, to verify the connection
-        /// status, check the Status property.
         /// </summary>
         /// <param name="context"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
@@ -207,7 +205,10 @@ namespace BLAZAM.ActiveDirectory
             OUs = new ADOUSearcher(this);
             Computers = new ADComputerSearcher(this, _wmiFactory);
         }
-
+        /// <summary>
+        /// Used for factory creation of session scoped contexts.
+        /// </summary>
+        /// <param name="activeDirectoryContextSeed"></param>
         public ActiveDirectoryContext(ActiveDirectoryContext activeDirectoryContextSeed)
         {
             _encryption = activeDirectoryContextSeed._encryption;
@@ -509,8 +510,9 @@ namespace BLAZAM.ActiveDirectory
                                 connection.AuthType = AuthType.Basic;
                                 connection.SessionOptions.ProtocolVersion = 3;
                                 connection.SessionOptions.SecureSocketLayer = ConnectionSettings.UseTLS;
-
+                                connection.SessionOptions.FastConcurrentBind();
                                 connection.Credential = new NetworkCredential(loginReq.Username, loginReq.SecurePassword);
+                                
                                 connection.Bind();
 
                                 return findUser;

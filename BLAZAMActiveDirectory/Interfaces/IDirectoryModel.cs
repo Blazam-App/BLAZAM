@@ -202,12 +202,12 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Sends all staged changes to the Active Directory server
         /// </summary>
         /// <returns></returns>
-        DirectoryChangeResult CommitChanges();
+        DirectoryChangeResult CommitChanges(DirectoryChangeResult? dcr=null);
         /// <summary>
         /// Sends all staged changes to the Active Directory server asynchronously
         /// </summary>
         /// <returns></returns>
-        Task<DirectoryChangeResult> CommitChangesAsync();
+        Task<DirectoryChangeResult> CommitChangesAsync(DirectoryChangeResult? dcr=null);
 
         /// <summary>
         /// Resets the current entry state to it's inital state
