@@ -513,6 +513,7 @@ namespace BLAZAM.ActiveDirectory
                                 connection.SessionOptions.SecureSocketLayer = ConnectionSettings.UseTLS;
                                 connection.SessionOptions.PingWaitTimeout = TimeSpan.FromSeconds(5);
                                 connection.SessionOptions.SendTimeout = TimeSpan.FromSeconds(5);
+                                
                                 //connection.SessionOptions.FastConcurrentBind();
                                 connection.Credential = new NetworkCredential(loginReq.Username, loginReq.SecurePassword);
                                 
