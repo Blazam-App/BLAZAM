@@ -23,62 +23,8 @@
                  AdornmentIcon="@AdornmentIcon"
                  Variant="@Variant">
     <ItemTemplate>
-        @{
-            var lockoutBadgeVisible = false;
-            var disabledBadgeVisible = false;
-            if (context != null && context is IAccountDirectoryAdapter gdm)
-            {
-                if (gdm.LockedOut)
-                {
-                    lockoutBadgeVisible = true;
-
-                }
-                if (!gdm.Enabled)
-                {
-                    disabledBadgeVisible = true;
-
-                }
-            }
-        }
-
-        <MudGrid Class="mud-width-full" Spacing="0">
-            <MudItem sm="12" md="2">
-                <MudIcon Icon="@context.TypeIcon()" />
-
-
-            </MudItem>
-            <MudItem sm="12" md="10">
-                <MudStack Row=true Spacing="0">
-                    <MudStack Spacing="0">
-                        <MudText Typo="Typo.subtitle2">
-                            @context?.CanonicalName
-
-
-                        </MudText>
-                        <MudText Typo="Typo.caption">
-                            @context.OU.ToPrettyOu()
-                        </MudText>
-                    </MudStack>
-                    @if (lockoutBadgeVisible)
-                    {
-                        <MudChip Size=Size.Small Disabled=true Overlap=false Color="Color.Warning" Text=@("Locked") />
-
-                    }
-                    @if (disabledBadgeVisible)
-                    {
-                        <MudChip Size=Size.Small Disabled=true Overlap=false Color="Color.Error" Text=@("Disabled") />
-
-                    }
-                </MudStack>
-
-
-            </MudItem>
-
-        </MudGrid>
-
-
-
-        <MudDivider Class="mt-4" />
+        <ADAutoCompleteResult Entry="context"/>
+      
     </ItemTemplate>
     <NoItemsTemplate>
         @if (SearchTerm.IsNullOrEmpty())
@@ -217,51 +163,58 @@
 
     private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText, CancellationToken token)
     {
-        if (!token.IsCancellationRequested)
-        {
-            SearchResults = new List<IDirectoryEntryAdapter>();
+        return await Task.Run(() =>
+         {
 
-            var search = new ADSearch();
+             if (!token.IsCancellationRequested)
+             {
+                 SearchResults = new List<IDirectoryEntryAdapter>();
 
-            search.ObjectTypeFilter = SearchObjectType;
-            search.GeneralSearchTerm = searchText.Replace(" ", "*");
-            search.EnabledOnly = !SearchDisabled;
-            search.MaxResults = MaxResults;
-            var temp = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token)).Where(r => r.CanRead);
+                 var search = new ADSearch();
 
-            if (!token.IsCancellationRequested)
-            {
+                 search.ObjectTypeFilter = SearchObjectType;
+                 search.GeneralSearchTerm = searchText.Replace(" ", "*");
+                 search.EnabledOnly = !SearchDisabled;
+                 search.MaxResults = MaxResults;
+                 if (!search.GeneralSearchTerm.Equals(String.Empty))
+                 {
+                     var temp = (search.Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token)).Where(r => r.CanRead);
 
-                if (CustomResultsFilter != null)
-                {
-                    List<IDirectoryEntryAdapter> filteredResults = new();
-                    foreach (var result in temp)
-                    {
-                        if (CustomResultsFilter.Invoke(result))
-                            filteredResults.Add(result);
-                    }
-                    if (!token.IsCancellationRequested)
-                    {
-                        temp = filteredResults;
-                    }
-                }
-                if (!token.IsCancellationRequested)
-                {
-                    SearchResults = temp;
-                    return SearchResults;
-                }
+                     if (!token.IsCancellationRequested)
+                     {
 
-            }
+                         if (CustomResultsFilter != null)
+                         {
+                             List<IDirectoryEntryAdapter> filteredResults = new();
+                             foreach (var result in temp)
+                             {
+                                 if (CustomResultsFilter.Invoke(result))
+                                     filteredResults.Add(result);
+                             }
+                             if (!token.IsCancellationRequested)
+                             {
+                                 temp = filteredResults;
+                             }
+                         }
+                         if (!token.IsCancellationRequested)
+                         {
+                             SearchResults = temp;
+                             return SearchResults;
+                         }
 
-            /*
-                        var temp = (await Directory.Users.FindUsersByStringAsync(autocompleteReadDataEventArgs.SearchValue.Replace(" ", "*"), enabledUsersOnly)).Where(u => u.CanRead);
-                        if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
-                        {
-                            SearchResults = temp;
-                        }
-                        */
-        }
-        return new List<IDirectoryEntryAdapter>();
+                     }
+                 }
+                             /*
+                             var temp = (await Directory.Users.FindUsersByStringAsync(autocompleteReadDataEventArgs.SearchValue.Replace(" ", "*"), enabledUsersOnly)).Where(u => u.CanRead);
+                             if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
+                             {
+                                 SearchResults = temp;
+                             }
+                             */
+             }
+             return new List<IDirectoryEntryAdapter>();
+        });
+       
 
     }
 

@@ -1,0 +1,81 @@
+@{
+    var lockoutBadgeVisible = false;
+    var disabledBadgeVisible = false;
+    if (Entry != null && Entry is IAccountDirectoryAdapter gdm)
+    {
+        if (gdm.LockedOut)
+        {
+            lockoutBadgeVisible = true;
+
+        }
+        if (!gdm.Enabled)
+        {
+            disabledBadgeVisible = true;
+
+        }
+    }
+}
+
+<MudGrid Class="mud-width-full" Spacing="0">
+    <MudItem sm="12" md="2">
+        @* <MudIcon Icon="@context.TypeIcon()" /> *@
+        <MudIcon Icon="@typeIcon"/>
+
+    </MudItem>
+    <MudItem sm="12" md="10">
+        <MudStack Row=true Spacing="0">
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.subtitle2">
+                    @Entry?.CanonicalName
+
+
+                </MudText>
+                <MudText Typo="Typo.caption">
+                    @Entry?.OU.ToPrettyOu()
+                </MudText>
+            </MudStack>
+            @if (lockoutBadgeVisible)
+            {
+                <MudChip Size=Size.Small Disabled=true Overlap=false Color="Color.Warning" Text=@("Locked") />
+
+            }
+            @if (disabledBadgeVisible)
+            {
+                <MudChip Size=Size.Small Disabled=true Overlap=false Color="Color.Error" Text=@("Disabled") />
+
+            }
+        </MudStack>
+
+
+    </MudItem>
+
+</MudGrid>
+
+
+
+<MudDivider Class="mt-4" />
+
+@code {
+    [Parameter]
+    public IDirectoryEntryAdapter? Entry { get; set; }
+
+    private string typeIcon = Icons.Material.Filled.QuestionMark;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Task.Run(() =>
+        {
+            Task.Delay(10).Wait();
+            LoadTypeIcon();
+        
+        });
+
+    }
+    private async Task LoadTypeIcon()
+    {
+        typeIcon = Entry.TypeIcon();
+        await InvokeAsync(StateHasChanged);
+    }
+}
+                

@@ -74,8 +74,13 @@
                               Content="unreadRoomMessageCount"
                               Color="Color.Error">
                             <MudNavLink OnClick="@(()=>{SwitchTo(chatRoom);})">@chatRoom.Name</MudNavLink>
+                           
                         </MudBadge>
-
+                        <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                            <MudMenuItem>Profile</MudMenuItem>
+                            <MudMenuItem>My account</MudMenuItem>
+                            <MudMenuItem>Logout</MudMenuItem>
+                        </MudMenu>
                     }
                 </MudNavGroup>
 
