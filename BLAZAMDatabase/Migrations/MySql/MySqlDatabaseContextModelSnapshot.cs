@@ -445,6 +445,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<string>("MOTD")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("MyrtilleURL")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("UpdateBranch")
                         .IsRequired()
                         .HasColumnType("longtext");
