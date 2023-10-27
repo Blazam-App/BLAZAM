@@ -1,0 +1,39 @@
+@inherits SettingsComponents
+
+
+
+
+<MudText Typo="Typo.h4">@AppLocalization["Database Status"]</MudText>
+<MudForm>
+    <MudText>To change these settings, modify appsettings.json in the application directory.</MudText>
+    <SettingsField Label="@AppLocalization["DB Type"]">
+        <MudTextField Disabled=true Label="@AppLocalization["DB Type"]" Value="@Context?.ConnectionString?.DatabaseType"/>
+    </SettingsField>
+
+    <SettingsField Label="@AppLocalization["Server"]">
+        <MudTextField Disabled=true Label="@AppLocalization["Server"]" Value="@Context?.ConnectionString?.ServerAddress" />
+    </SettingsField>
+
+    <SettingsField Label="@AppLocalization["Port"]">
+        <MudTextField Disabled=true Label="@AppLocalization["Port"]"  Value="@Context?.ConnectionString?.ServerPort" />
+    </SettingsField>
+
+    <SettingsField Label="@AppLocalization["Database"]">
+        <MudTextField Disabled=true Label="@AppLocalization["Database"]" Value="@Context?.ConnectionString?.Database" />
+    </SettingsField>
+
+      
+</MudForm>
+@code {
+    #nullable disable warnings
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+       
+
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+    }
+   
+}

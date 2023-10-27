@@ -72,16 +72,16 @@
 
     </SettingsField>
 
-
+    @*
     <SettingsField Label="@AppLocalization["Myrtille Web Adress"]">
 
         <MudTextField Label="@AppLocalization["Myrtille Web Adress"]" For=@(()=> settings.MyrtilleURL) ErrorText="Must be a valid url" HelperText="Enter the url of the Myrtille server. (eg: http://localhost:8080)" Placeholder="Enter the url of the Myrtille server" @bind-Value="@settings.MyrtilleURL" />
 
     </SettingsField>
-    <MudButton OnClick=@(()=>{rdpModal.Show();}) >Test Myrtille Connection</MudButton>
+     <MudButton OnClick=@(()=>{rdpModal.Show();}) >Test Myrtille Connection</MudButton>
     <AppModal @ref=rdpModal Title="Test Myrtille">
         <RDPModal/>
-    </AppModal>
+    </AppModal> *@
     <SettingsField>
         <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
     </SettingsField>

@@ -1,24 +1,76 @@
 ﻿@page "/"
-@layout MinLayout
+@using BLAZAM.Static;
+@layout LoginLayout
 
 @inject NavigationManager NavManager
 @inject IAppDatabaseFactory DbFactory
 @inject ConnMonitor tester
 @inject ApplicationInfo ApplicationInfo
 @inject IStringLocalizer<AppLocalization> Localizer
-<h2>
-    @Localizer["ApplicationStarting"]
 
-</h2>
-<progress />
+
+
+
+<MudContainer Class="py-5">
+
+    <MudText Typo="Typo.h3">
+
+
+        @DatabaseCache.ApplicationSettings?.AppName
+
+    </MudText>
+
+    <MudText>@Localizer["ApplicationStarting"]</MudText>
+    <MudProgressLinear Color="Color.Info" Indeterminate=true />
+
+    <MudElement Class="brand-icon">
+        <MudImage Src="@StaticAssets.ApplicationIconUri" />
+
+    </MudElement>
+    <MudContainer Style="max-width:300px;" Class="py-4">
+
+
+    </MudContainer>
+
+
+
+    <Copyright Class="mx-auto" />
+</MudContainer>
+
+<style>
+    body{
+        height: 98vh;
+    }
+    .brand-icon {
+        position: fixed;
+        left: 5px;
+        top: 5px;
+    }
+
+        .brand-icon img {
+            max-width: 65px;
+            max-height: 65px;
+        }
+
+    .login-form input {
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+
+
 @{
 
     Task.Run(async () =>
     {
-        while (NavManager.ToBaseRelativePath(NavManager.Uri) == "")
+        while (waitingForLoadToComplete)
         {
+
             if (ApplicationInfo.InstallationCompleted)
             {
+                waitingForLoadToComplete = false;
                 if (tester.AppReady == ServiceConnectionState.Up)
                 {
                     NavManager.NavigateTo("/home", true);
@@ -29,13 +81,16 @@
 
                 }
             }
-            Task.Delay(1000).Wait();
+            if (!waitingForLoadToComplete)
+                Task.Delay(1000).Wait();
+
         }
 
     });
 
 }
 @code {
+    private bool waitingForLoadToComplete = true;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -45,8 +100,11 @@
     private void AppReady(ServiceConnectionState newStatus)
     {
         if (newStatus == ServiceConnectionState.Up)
+
             if (NavManager.ToBaseRelativePath(NavManager.Uri) == "")
             {
+                waitingForLoadToComplete = false;
+
                 NavManager.NavigateTo("/home");
 
             }

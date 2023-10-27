@@ -9,73 +9,84 @@
 <SetHeader>
 </SetHeader>
 <AuthorizeView>
-        <MudTabs ActivePanelIndex="@ActiveTab">
-            <MudTabPanel>
-                <ChildContent>
-                    <ApplicationSettings />
+    <MudTabs ActivePanelIndex="@ActiveTab">
+        <MudTabPanel>
+            <ChildContent>
+                <ApplicationSettings />
 
-                </ChildContent>
-                <TabContent>
-                    @AppLocalization["Application"]
-                </TabContent>
-            </MudTabPanel>
-            <MudTabPanel>
-                <ChildContent>
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Application"]
+            </TabContent>
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
                 <AuthenticationSetting />
 
-                </ChildContent>
-                <TabContent>
-                    @AppLocalization["Authentication"]
-                </TabContent>
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Authentication"]
+            </TabContent>
 
 
-            </MudTabPanel>
-            <MudTabPanel>
-                <ChildContent>
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
                 <DirectorySettings />
 
-                </ChildContent>
-                <TabContent>
-                    @AppLocalization["Active Directory"]
-                </TabContent>
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Active Directory"]
+            </TabContent>
 
 
-            </MudTabPanel>
-            <MudTabPanel >
-                <ChildContent>
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
+                <DatabaseStatus />
+
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Database"]
+            </TabContent>
+
+
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
                 <EmailSettings />
 
-                </ChildContent>
-                <TabContent>
-                    @AppLocalization["Email"]
-                </TabContent>
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Email"]
+            </TabContent>
 
 
-            </MudTabPanel>
-            <MudTabPanel>
-                <ChildContent>
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
                 <UpdateSettings />
 
-                </ChildContent>
-                <TabContent>
-                    @AppLocalization["Update"]
-                </TabContent>
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Update"]
+            </TabContent>
 
 
-            </MudTabPanel>
-            <MudTabPanel>
-                <ChildContent>
-                    <SystemSettings />
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
+                <SystemSettings />
 
-                </ChildContent>
-                <TabContent>
-                    @AppLocalization["System"]
-                </TabContent>
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["System"]
+            </TabContent>
 
 
-            </MudTabPanel>
+        </MudTabPanel>
 
-        </MudTabs>
+    </MudTabs>
 
 </AuthorizeView>
 
