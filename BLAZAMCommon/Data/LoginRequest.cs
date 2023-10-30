@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Security;
 using System.Security.Claims;
 using BLAZAM.Helpers;
@@ -28,5 +29,6 @@ namespace BLAZAM.Common.Data
 
         public bool Impersonation { get; set; } = false;
         public ClaimsPrincipal? ImpersonatorClaims { get; set; }
+        public IPAddress IPAddress { get; set; }
     }
 }

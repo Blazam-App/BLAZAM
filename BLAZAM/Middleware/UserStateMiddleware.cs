@@ -2,6 +2,7 @@
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Org.BouncyCastle.Ocsp;
 using System.Threading.Tasks;
 
 namespace BLAZAM.Server.Middleware
@@ -21,6 +22,7 @@ namespace BLAZAM.Server.Middleware
         public Task Invoke(HttpContext httpContext,ICurrentUserStateService currentUserStateService,IApplicationUserStateService userStateService)
         {
             currentUserStateService.State = userStateService.GetUserState(httpContext.User);
+ 
             return _next(httpContext);
         }
     }

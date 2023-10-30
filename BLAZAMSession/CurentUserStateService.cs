@@ -35,6 +35,8 @@ namespace BLAZAM.Server.Data.Services
             {
                 _retryTimer = new Timer(RetryGetCurrentUserState, null, 500, 500);
             }
+            if (State.IsAuthenticated)
+                State.IPAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
         }
 
         private void RetryGetCurrentUserState(object? state = null)

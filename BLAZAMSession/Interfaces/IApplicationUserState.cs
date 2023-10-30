@@ -5,6 +5,7 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Server.Data;
 using Microsoft.AspNetCore.Authentication;
+using System.Net;
 using System.Security.Claims;
 
 namespace BLAZAM.Session.Interfaces
@@ -62,6 +63,7 @@ namespace BLAZAM.Session.Interfaces
         IList<UserNotification>? Notifications { get; }
         IApplicationUserSessionCache Cache { get; set; }
 
+        IPAddress IPAddress { get; set; }
 
         string LastUri { get; set; }
         bool IsAuthenticated { get; }

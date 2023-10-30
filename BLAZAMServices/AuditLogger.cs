@@ -370,7 +370,8 @@ namespace BLAZAM.Services
                     Sid = relatedEntry.SID.ToSidString(),
                     BeforeAction = beforeAction,
                     AfterAction = afterAction,
-                    Username = CurrentUser.AuditUsername
+                    Username = CurrentUser.AuditUsername,
+                    IpAddress = CurrentUser.IPAddress?.ToString(),
                 };
                 table.Add(auditEntry);
                 context.SaveChanges();

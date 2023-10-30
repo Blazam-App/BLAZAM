@@ -10,6 +10,7 @@ using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Net;
 using System.Security.Claims;
 using System.Xml;
 
@@ -42,6 +43,8 @@ namespace BLAZAM.Server.Data.Services
 
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
 
+
+        public IPAddress IPAddress { get; set; }
 
 
 

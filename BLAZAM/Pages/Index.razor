@@ -81,6 +81,13 @@
 
                 }
             }
+            else
+            {
+                if (tester.AppReady == ServiceConnectionState.Up)
+                {
+                    NavManager.NavigateTo("/install", true);
+                }
+            }
             if (!waitingForLoadToComplete)
                 Task.Delay(1000).Wait();
 
@@ -101,7 +108,7 @@
     {
         if (newStatus == ServiceConnectionState.Up)
 
-            if (NavManager.ToBaseRelativePath(NavManager.Uri) == "")
+            if (ApplicationInfo.InstallationCompleted && NavManager.ToBaseRelativePath(NavManager.Uri) == "")
             {
                 waitingForLoadToComplete = false;
 
