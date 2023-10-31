@@ -327,9 +327,10 @@ namespace BLAZAM.Helpers
                 {
                     longInt = Int64.Parse(value.ToString());
                 }
-                catch (Exception)
+                catch (FormatException)
                 {
-
+                    //Ignore input string format exception because it's probably
+                    // a com object.
                     
                 }
                 if (longInt != null)

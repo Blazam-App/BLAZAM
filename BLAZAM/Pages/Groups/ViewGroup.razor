@@ -14,6 +14,7 @@
                                   OnMove="@(()=>{MoveToModal?.Show();})"
                                   OnRename="@(()=>{RenameModal?.Show();})"
                                   OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
+                                  OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
                                   OnToggleEditMode="ToggleEditMode" />
         <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true"/>
     </SetSubHeader>
@@ -84,7 +85,7 @@
 
     IADGroup Group => DirectoryEntry as IADGroup;
 
-  
+
 
     async void SaveChanges()
     {
@@ -92,7 +93,11 @@
         {
             var changes = Group.Changes;
 
-            Group.CommitChanges();
+            var dcr  = Group.CommitChanges();
+            if (dcr.AssignedMembers.Count > 0)
+            {
+                
+            }
             await AuditLogger.Group.Changed(Group, changes);
 
             EditMode = false;

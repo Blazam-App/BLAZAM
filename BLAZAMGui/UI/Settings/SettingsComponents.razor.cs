@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BLAZAM.Gui.UI.Settings
 {
-    public partial class SettingsComponents:ValidatedForm
+    public partial class SettingsComponents : ValidatedForm
     {
         protected object? originalSettings;
 
@@ -13,8 +13,10 @@ namespace BLAZAM.Gui.UI.Settings
         //TODO do we need this save
         protected void Save(IEnumerable<EntityEntry> changedEntries)
         {
-     
+
             base.Save();
         }
+        [Parameter]
+        public EventCallback SettingsSaved { get; set; }
     }
 }

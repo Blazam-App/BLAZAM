@@ -47,6 +47,10 @@ namespace BLAZAM.Server
 
             ApplicationInfo.runningProcess = Process.GetCurrentProcess();
             ApplicationInfo.runningVersion = new ApplicationVersion(Assembly.GetExecutingAssembly()) ;
+
+
+
+
             return builder;
         }
 

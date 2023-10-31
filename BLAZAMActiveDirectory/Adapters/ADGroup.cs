@@ -48,9 +48,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-        public override DirectoryChangeResult CommitChanges()
+        public override DirectoryChangeResult CommitChanges(DirectoryChangeResult? dcr = null)
         {
-            DirectoryChangeResult dcr = new DirectoryChangeResult();
+            dcr ??= new DirectoryChangeResult();
             var newMembers = new List<string>(MembersAsStrings);
             if (MembersToAdd.Count > 0)
             {
@@ -60,6 +60,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
                     dcr.AssignedMembers.Add(g.Group);
+                    
                 });
             }
             if (MembersToRemove.Count > 0)
@@ -72,7 +73,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 });
             }
 
-            dcr = base.CommitChanges();
+            dcr = base.CommitChanges(dcr);
 
             return dcr;
         }

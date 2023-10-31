@@ -181,8 +181,6 @@ namespace BLAZAM.ActiveDirectory
         /// from the ActiveDirectorySetting table in the database and uses them to configure the
         /// connection.
         /// 
-        /// Upon creation, no actual connection attempt has been made yet, to verify the connection
-        /// status, check the Status property.
         /// </summary>
         /// <param name="context"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
@@ -207,7 +205,10 @@ namespace BLAZAM.ActiveDirectory
             OUs = new ADOUSearcher(this);
             Computers = new ADComputerSearcher(this, _wmiFactory);
         }
-
+        /// <summary>
+        /// Used for factory creation of session scoped contexts.
+        /// </summary>
+        /// <param name="activeDirectoryContextSeed"></param>
         public ActiveDirectoryContext(ActiveDirectoryContext activeDirectoryContextSeed)
         {
             _encryption = activeDirectoryContextSeed._encryption;
@@ -222,7 +223,7 @@ namespace BLAZAM.ActiveDirectory
             DomainControllers = activeDirectoryContextSeed.DomainControllers;
             Status = activeDirectoryContextSeed.Status;
             // UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
-            //ConnectAsync();
+            ConnectAsync();
             // _timer = new Timer(KeepAlive, null, 30000, 30000);
 
             Users = new ADUserSearcher(this);
@@ -479,38 +480,43 @@ namespace BLAZAM.ActiveDirectory
                         var user = new ADUser();
                         if (ConnectionSettings != null)
                         {
-                            //if (!loginReq.Username.Contains("@"))
+                            if (!loginReq.Username.Contains("@"))
+                            {
+                                loginReq.Username += "@" + ConnectionSettings.FQDN;
+                            }
+
+                            //WindowsImpersonationUser logonUser = new WindowsImpersonationUser
                             //{
-                            //    loginReq.Username += "@" + ConnectionSettings.FQDN;
+                            //    FQDN = ConnectionSettings.FQDN,
+                            //    Username = loginReq.Username,
+                            //    Password = loginReq.SecurePassword
+                            //};
+                            //WindowsImpersonation impersonation = new WindowsImpersonation(logonUser);
+                            //try
+                            //{
+                            //    if (impersonation.Run(() =>
+                            //    {
+                            //        return true;
+                            //    }))
+                            //        return findUser;
                             //}
+                            //catch (Exception ex)
+                            //{
 
-                            WindowsImpersonationUser logonUser = new WindowsImpersonationUser
-                            {
-                                FQDN = ConnectionSettings.FQDN,
-                                Username = loginReq.Username,
-                                Password = loginReq.SecurePassword
-                            };
-                            WindowsImpersonation impersonation = new WindowsImpersonation(logonUser);
-                            try
-                            {
-                                if (impersonation.Run(() =>
-                                {
-                                    return true;
-                                }))
-                                    return findUser;
-                            }
-                            catch (Exception ex)
-                            {
-
-                                return null;
-                            }
+                            //    return null;
+                            //}
                             using (var connection = new LdapConnection(new LdapDirectoryIdentifier(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort)))
                             {
                                 connection.AuthType = AuthType.Basic;
                                 connection.SessionOptions.ProtocolVersion = 3;
+                                connection.Timeout = TimeSpan.FromSeconds(5);
                                 connection.SessionOptions.SecureSocketLayer = ConnectionSettings.UseTLS;
-
+                                connection.SessionOptions.PingWaitTimeout = TimeSpan.FromSeconds(5);
+                                connection.SessionOptions.SendTimeout = TimeSpan.FromSeconds(5);
+                                
+                                //connection.SessionOptions.FastConcurrentBind();
                                 connection.Credential = new NetworkCredential(loginReq.Username, loginReq.SecurePassword);
+                                
                                 connection.Bind();
 
                                 return findUser;
@@ -523,6 +529,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (LdapException ex)
                 {
+                    Loggers.ActiveDirectryLogger.Error("Error authenticating user: "+ex.Message);
                     switch (ex.Message)
                     {
                         case "The user name or password is incorrect.":

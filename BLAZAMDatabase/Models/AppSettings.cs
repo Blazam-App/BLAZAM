@@ -113,5 +113,13 @@ namespace BLAZAM.Database.Models
         public string? UpdateDomain { get; set; }
         public string? UpdateUsername { get; set; }
         public string? UpdatePassword { get; set; }
+
+
+        public string? MyrtilleURL { get; set; }
+
+        /// <summary>
+        /// Whether or not changes made to AD objects should be staged, aka ask to save prior to applying.
+        /// </summary>
+        //public bool StageChanges { get; set; }
     }
 }

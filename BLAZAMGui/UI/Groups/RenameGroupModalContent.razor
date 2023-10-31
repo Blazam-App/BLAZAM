@@ -44,10 +44,10 @@
             SnackBarService.Warning("You must provide a group name", "Group name");
             GroupName = Group.CanonicalName;
         }
-        //Group.CommitChanges();
         try{
             Group.Rename(GroupName);
             SnackBarService.Success("The group has been renamed.", "Group renamed");
+            
             Close();
         }
         catch(Exception ex)

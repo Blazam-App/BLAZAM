@@ -101,7 +101,7 @@ namespace BLAZAM.Services.Chat
                     IsPublic = false,
                     Members = localParties
                 };
-
+                chat.Name = chat.Name;
                 context.ChatRooms.Add(chat);
                 try
                 {

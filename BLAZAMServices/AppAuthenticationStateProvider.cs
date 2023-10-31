@@ -154,6 +154,7 @@ namespace BLAZAM.Services
         {
             LoginResult loginResult = new();
              var newUserState = _userStateService.CreateUserState(null);
+            newUserState.IPAddress = loginReq.IPAddress;
             
 
             AuthenticationState? result = null;

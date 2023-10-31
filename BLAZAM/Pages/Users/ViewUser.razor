@@ -61,7 +61,7 @@
                         <ChangeUserPasswordModalContent User="User" />
                     }
                 </AppModal>
-                <AppModal Title="Changes" @ref=@ChangeHistoryModal>
+                <AppModal Title="Changes" @ref=@ChangeHistoryModal Options=@(new DialogOptions(){FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
                     @if (ChangeHistoryModal?.IsShown == true)
                     {
                         <ChangeHistoryModalContent Model="User" />

@@ -102,12 +102,18 @@ namespace BLAZAM
             SetupKestrel(builder);
 
 
+            builder.Services.AddCors();
+
+
             //Done with service injection let's build the App
             AppInstance = builder.Build();
 
             ApplicationInfo.services = AppInstance.Services;
 
+         
+            // Configure the HTTP request pipeline.
 
+           
 
 
 
@@ -137,6 +143,12 @@ namespace BLAZAM
             AppInstance.UseMiddleware<ApplicationStatusRedirectMiddleware>();
             AppInstance.UseStaticFiles();
             AppInstance.UseRouting();
+            //AppInstance.UseCors(builder =>
+            //      builder.AllowAnyOrigin()
+            //      .SetIsOriginAllowed((host) => true)
+            //      .AllowAnyMethod()
+            //      .AllowAnyHeader());
+            
             AppInstance.UseCookiePolicy();
             AppInstance.UseAuthentication();
             AppInstance.UseAuthorization();
