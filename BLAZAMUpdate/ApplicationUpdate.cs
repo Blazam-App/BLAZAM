@@ -254,8 +254,10 @@ namespace BLAZAM.Update
         private string StartUpdate()
         {
             Loggers.UpdateLogger.Information("Updating updater");
-
-            File.Copy(UpdateStagingDirectory + "\\updater\\*", _applicationRootDirectory + "updater\\", true);
+            SystemDirectory updaterDirFromStagedUpdate = new SystemDirectory(UpdateStagingDirectory.Path + "\\updater\\");
+            SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.Path + "updater\\");
+            updaterDirFromStagedUpdate.CopyTo(updateDir);
+            File.Copy(UpdateStagingDirectory + "\\updater\\", _applicationRootDirectory + "updater\\", true);
             Loggers.UpdateLogger.Information("Updater updated");
             //If the updater upated we can  run the updater
             var updaterRan = InvokeUpdateExecutable();
