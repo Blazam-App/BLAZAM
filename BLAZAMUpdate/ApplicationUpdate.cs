@@ -10,6 +10,7 @@ using BLAZAM.FileSystem;
 using BLAZAM.Logger;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
+using System.Security.Principal;
 
 namespace BLAZAM.Update
 {
@@ -192,6 +193,7 @@ namespace BLAZAM.Update
 
             using var context = await _dbFactory.CreateDbContextAsync();
 
+
             if (_applicationRootDirectory.Writable)
             {
                 Loggers.UpdateLogger.Warning("The application user has write permission to the application directory!");
@@ -201,7 +203,7 @@ namespace BLAZAM.Update
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Error applying updated updater: {Message}{NewLine}{StackTrace}", ex);
+                    Loggers.UpdateLogger.Error("Error applying updated updater: {Message}", ex);
 
                 }
                 return "Error starting update";
@@ -225,7 +227,7 @@ namespace BLAZAM.Update
                         }
                         catch (Exception ex)
                         {
-                            Loggers.UpdateLogger.Error("Error applying updated updater: {Message}{NewLine}{StackTrace}", ex);
+                            Loggers.UpdateLogger.Error("Error applying updated updater: {Message}", ex);
 
                         }
                         return "Error starting update";
@@ -253,6 +255,7 @@ namespace BLAZAM.Update
 
         private string StartUpdate()
         {
+            Loggers.UpdateLogger.Information("Running update as: " + WindowsIdentity.GetCurrent().Name);
             Loggers.UpdateLogger.Information("Updating updater");
             SystemDirectory updaterDirFromStagedUpdate = new SystemDirectory(UpdateStagingDirectory.Path + "\\updater\\");
             SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.Path + "updater\\");

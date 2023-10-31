@@ -109,7 +109,7 @@ namespace BLAZAM.Update.Services
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Error while checking for auto update: {Message}{NewLine}{StackTrace}", ex);
+                Loggers.UpdateLogger.Error("Error while checking for auto update: {Message}", ex);
             }
         }
         public void Cancel()
@@ -173,7 +173,7 @@ namespace BLAZAM.Update.Services
                     OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
                 }
             }catch(Exception ex) {
-                Loggers.UpdateLogger.Error("Error during auto update scheduling: {Message}{NewLine}{StackTrace}", ex);
+                Loggers.UpdateLogger.Error("Error during auto update scheduling: {Message}", ex);
             }
         }
 
@@ -220,7 +220,7 @@ namespace BLAZAM.Update.Services
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Error during auto update: {Message}{NewLine}{StackTrace}", ex);
+                Loggers.UpdateLogger.Error("Error during auto update: {Message}", ex);
             }
 
         
