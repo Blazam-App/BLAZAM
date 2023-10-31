@@ -79,15 +79,16 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Monitor.OnDirectoryConnectionChanged += ((state) => { UpdateStatus(state); });
+        ResetStatus();
+        Directory.OnStatusChanged += ((state) => { UpdateStatus(state); });
         UpdateStatus(null);
 
     }
 
     public void ResetStatus()
     {
-        Directory = DirectoryFactory.CreateActiveDirectoryContext();
-        Directory.ConnectAsync();
+        //Directory = DirectoryFactory.CreateActiveDirectoryContext();
+        //Directory.ConnectAsync();
         _portStatus = false;
         _credStatus = false;
         _encryptedStatus = false;
@@ -116,9 +117,11 @@
                     if (Directory.PortOpen)
                     {
                         _portStatus = true;
+                        await InvokeAsync(StateHasChanged);
                         if (Directory.Status == DirectoryConnectionStatus.OK)
                         {
                             _credStatus = true;
+                            await InvokeAsync(StateHasChanged);
                             if ((Directory.AppRootDirectoryEntry?.AuthenticationType & AuthenticationTypes.Signing) == AuthenticationTypes.Signing ||
                         (Directory.AppRootDirectoryEntry?.AuthenticationType | AuthenticationTypes.Encryption) == AuthenticationTypes.Encryption)
                             {

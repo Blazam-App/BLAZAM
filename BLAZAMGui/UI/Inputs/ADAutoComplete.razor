@@ -166,7 +166,7 @@
         return await Task.Run(() =>
          {
 
-             if (!token.IsCancellationRequested)
+             if (!token.IsCancellationRequested && searchText!=null)
              {
                  SearchResults = new List<IDirectoryEntryAdapter>();
 
@@ -204,13 +204,7 @@
 
                      }
                  }
-                             /*
-                             var temp = (await Directory.Users.FindUsersByStringAsync(autocompleteReadDataEventArgs.SearchValue.Replace(" ", "*"), enabledUsersOnly)).Where(u => u.CanRead);
-                             if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
-                             {
-                                 SearchResults = temp;
-                             }
-                             */
+                            
              }
              return new List<IDirectoryEntryAdapter>();
         });

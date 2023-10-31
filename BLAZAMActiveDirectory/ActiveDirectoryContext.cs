@@ -223,7 +223,7 @@ namespace BLAZAM.ActiveDirectory
             DomainControllers = activeDirectoryContextSeed.DomainControllers;
             Status = activeDirectoryContextSeed.Status;
             // UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
-            //ConnectAsync();
+            ConnectAsync();
             // _timer = new Timer(KeepAlive, null, 30000, 30000);
 
             Users = new ADUserSearcher(this);
