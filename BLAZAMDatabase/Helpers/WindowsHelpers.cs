@@ -27,14 +27,17 @@ namespace BLAZAM.Helpers
         /// </summary>
         /// <param name="settings"></param>
         /// <returns></returns>
-        public static WindowsImpersonation CreateWindowsImpersonator(this AppSettings settings)
+        public static WindowsImpersonation? CreateWindowsImpersonator(this AppSettings settings)
         {
-            return new(new()
-            {
-                FQDN = settings.UpdateDomain,
-                Username = settings.UpdateUsername,
-                Password = settings.UpdatePassword.Decrypt().ToSecureString()
-            });
+            if (settings != null && settings.UpdateUsername != null && settings.UpdatePassword != null)
+                return new(new()
+                {
+                    FQDN = settings.UpdateDomain,
+                    Username = settings.UpdateUsername,
+                    Password = settings.UpdatePassword.Decrypt().ToSecureString()
+                });
+            else
+                return null;
         }
     }
 }

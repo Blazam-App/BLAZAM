@@ -27,7 +27,8 @@ namespace BLAZAM.FileSystem
                 try
                 {
                     var directoryInfo = new DirectoryInfo(Path);
-                    if (!directoryInfo.Exists)
+                    var fileInfo = new FileInfo(Path);
+                    if (fileInfo.Exists)
                     {
                         using (File.Open(Path, FileMode.Open, FileAccess.Write, FileShare.None))
                         {
@@ -37,9 +38,11 @@ namespace BLAZAM.FileSystem
                     }
                     else
                     {
+                        //if (!directoryInfo.Exists) throw new DirectoryNotFoundException("Directory " + Path + " does not exist!");
 
-                        testFilePath = Path + "\\test.txt";
+                        testFilePath = Path + "test.txt";
                         // Attempt to create a test file within the directory.
+                        
                         using (File.Create(testFilePath))
                         {
                             // If the file can be created, it indicates write permissions on the directory.
