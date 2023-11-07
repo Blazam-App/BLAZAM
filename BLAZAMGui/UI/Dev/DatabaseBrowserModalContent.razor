@@ -4,7 +4,7 @@
 
 
 <MudTabs>
-    <MudTabPanel Text="UserSettings">
+    <MudTabPanel Text="User Settings">
         <MudDataGrid Items="@userSettings">
             <Columns>
                 <PropertyColumn Property="x=>x.Username" />
@@ -17,7 +17,7 @@
             </Columns>
         </MudDataGrid>
     </MudTabPanel>
-    <MudTabPanel Text="UserNotifications">
+    <MudTabPanel Text="User Notifications">
         <MudDataGrid Items="@userNotifications">
             <Columns>
                 <PropertyColumn Property="x=>x.User.Username" />
@@ -32,15 +32,42 @@
             </Columns>
         </MudDataGrid>
     </MudTabPanel>
+   
+    <MudTabPanel Text="Access Levels">
+        <MudDataGrid Items="@accessLevels">
+            <Columns>
+                <PropertyColumn Property="x=>x.Name" />
+                    <TemplateColumn Title="Object Mappings">
+                        <CellTemplate>
+                            <MudList>
+                                @foreach(var obj in context.Item.ObjectMap)
+                                {
+                                string objAccessLevels="";
+                                obj.AccessLevels.ForEach(x => objAccessLevels += x.Name + ",");
+                                <MudListItem>@obj.ObjectType -> @objAccessLevels</MudListItem>
+                                }
+                            </MudList>
+                        </CellTemplate>
+                    </TemplateColumn>
+                <PropertyColumn Property="x=>x.ObjectMap" />
+                <PropertyColumn Property="x=>x.ActionMap" />
+                <PropertyColumn Property="x=>x.DeletedAt" />
+
+
+            </Columns>
+        </MudDataGrid>
+    </MudTabPanel>
 </MudTabs>
 @code {
     List<AppUser> userSettings = new();
     List<UserNotification> userNotifications = new();
+    List<AccessLevel> accessLevels = new();
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         Modal.Options = new() { FullScreen = true };
         userSettings = await Context.UserSettings.ToListAsync();
         userNotifications = await Context.UserNotifications.ToListAsync();
+        accessLevels = await Context.AccessLevels.ToListAsync();
     }
 }
