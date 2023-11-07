@@ -82,13 +82,13 @@
         {
             if (message.ChatRoomId == ChatRoom?.Id)
             {
-                if (message.User != CurrentUser.State.Preferences)
-                {
+                //if (message.User != CurrentUser.State.Preferences)
+                //{
                     await Task.Delay(100);
-                    //ChatRoom.Messages.Add(message);
+                    ChatRoom.Messages.Add(message);
                     await InvokeAsync(StateHasChanged);
 
-                }
+                //}
                 ScrollToBottom();
 
             }

@@ -69,11 +69,11 @@ namespace BLAZAM.Common.Data
 
             try
             {
-                if (ImpersonatedToken.IsInvalid) throw new ApplicationException("The impersonation user is invalid. Check settings.");
+                if (ImpersonatedToken==null || ImpersonatedToken.IsInvalid) throw new ApplicationException("The impersonation user is invalid. Check settings.");
 
                 //Console.WriteLine("Did LogonUser Succeed? " + (returnValue ? "Yes" : "No"));
                 // Check the identity.
-                Loggers.ActiveDirectryLogger.Debug("Before impersonation: " + WindowsIdentity.GetCurrent().Name);
+                Loggers.ActiveDirectryLogger.Information("Before impersonation: " + WindowsIdentity.GetCurrent().Name);
 
          
 
@@ -82,7 +82,7 @@ namespace BLAZAM.Common.Data
                   () =>
                   {
                       // Check the identity.
-                      Loggers.ActiveDirectryLogger.Debug("During impersonation: " + WindowsIdentity.GetCurrent().Name);
+                      Loggers.ActiveDirectryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);
                       success = task.Invoke();
                   }
                   );

@@ -29,7 +29,10 @@
                     @if (monitor.DirectoryConnected == ServiceConnectionState.Connecting)
                     {
                         <MudProgressLinear Color="Color.Warning" Indeterminate=true />
+                        <MudAlert Style="left:25px;right:25px;" Class="absolute  mud-alert-filled-warning">Directory is connecting... Local admin login only...</MudAlert>
+
                     }
+                    
                 </div>
             </Row>
         </MudMainContent>
