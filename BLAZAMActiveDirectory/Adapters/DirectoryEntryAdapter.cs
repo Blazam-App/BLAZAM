@@ -14,6 +14,7 @@ using System.DirectoryServices;
 using System.Linq;
 using System.Reflection;
 using MudBlazor;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -855,7 +856,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
         {
             var list = new List<T?>();
-            foreach (var dc in Directory.DomainControllers)
+            var dcs = new List<DomainController>(Directory.DomainControllers);
+            foreach (var dc in dcs)
             {
                 try
                 {

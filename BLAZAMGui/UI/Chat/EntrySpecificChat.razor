@@ -27,7 +27,8 @@
 @code {
 
     bool _chatOpen;
-
+    [Parameter]
+    public IDirectoryEntryAdapter? Entry { get; set; }
     [Parameter]
     public bool ShowPageViewersButton { get; set; } = true;
     [Parameter]
@@ -41,7 +42,6 @@
     /// viewer on every page this component is placed
     /// </summary>
     static Dictionary<string, List<IApplicationUserState>> Viewers = new Dictionary<string, List<IApplicationUserState>>();
-    static Dictionary<string, ChatRoom> ChatRooms = new Dictionary<string, ChatRoom>();
 
     delegate void CallbackEvent();
     static CallbackEvent ViewersChanged;
@@ -64,7 +64,8 @@
         {
 
 
-            ChatUri = Nav.ToBaseRelativePath(Nav.Uri);
+            //ChatUri = Nav.ToBaseRelativePath(Nav.Uri);
+            ChatUri = Entry.DN;
             Nav.LocationChanged += ((state, args) =>
           {
               if (Nav.ToBaseRelativePath(args.Location) != ChatUri)
@@ -73,12 +74,12 @@
               }
           });
         }
-        var chatRoom = ChatRooms.Where(cr=>cr.Key.Equals(ChatUri)).Select(cr=>cr.Value).FirstOrDefault();
+        var chatRoom = Context.ChatRooms.Where(cr=>cr.Name.Equals(ChatUri)).FirstOrDefault();
         if (chatRoom is null)
         {
             chatRoom = new() { CreatedAt = DateTime.Now, IsPublic = true, Name=ChatUri };
-            ChatRooms.Add(ChatUri,chatRoom);
-            await Context.SaveChangesAsync();
+            Chat.CreateChatRoom(chatRoom);
+
         }
         ChatRoom = chatRoom;
 
