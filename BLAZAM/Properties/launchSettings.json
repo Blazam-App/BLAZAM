@@ -4,10 +4,10 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7099;http://localhost:5099",
+      "applicationUrl": "https://localhost;http://localhost",
       "hotReloadEnabled": false,
       "nativeDebugging": false
     },
@@ -18,14 +18,6 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "BBIIS": {
-      "commandName": "IIS",
-      "workingDirectory": "\\\\bbiis\\inetpub\\blazam_dev",
-      "launchUrl": "http://blazam-dev.branchburg.k12.nj.us",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    }
   },
   "iisSettings": {
     "windowsAuthentication": false,

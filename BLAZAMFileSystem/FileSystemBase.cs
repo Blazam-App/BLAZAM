@@ -30,7 +30,7 @@ namespace BLAZAM.FileSystem
                     var fileInfo = new FileInfo(Path);
                     if (fileInfo.Exists)
                     {
-                        using (File.Open(Path, FileMode.Open, FileAccess.Write, FileShare.None))
+                        using (File.Open(Path, FileMode.Open, FileAccess.Write, FileShare.ReadWrite))
                         {
                             return true;
                         }
@@ -58,6 +58,7 @@ namespace BLAZAM.FileSystem
                 catch (IOException)
                 {
                     // Handle other IO exceptions or log an error as needed
+
                     return false;
                 }
                 finally
