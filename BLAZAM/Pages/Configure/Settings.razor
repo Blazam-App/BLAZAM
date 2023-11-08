@@ -1,5 +1,5 @@
 ﻿@page "/settings"
-@page "/settings/{ActiveTab}"
+@page "/settings/{ActiveTabString}"
 @layout MainLayout
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
@@ -9,7 +9,27 @@
 <SetHeader>
 </SetHeader>
 <AuthorizeView>
-    <MudTabs ActivePanelIndex="@ActiveTab">
+    @{
+        int activeTabIndex = 0;
+        if (ActiveTabString != null && ActiveTabString != String.Empty)
+        {
+            switch (ActiveTabString.ToLower())
+            {
+                case "app":
+                case "application":
+                    activeTabIndex = 0;
+                    break;
+                case "auth":
+                case "authentication":
+                    activeTabIndex = 1;
+                    break;
+                case "update":
+                    activeTabIndex = 5;
+                    break;
+            }
+        }
+    }
+    <MudTabs ActivePanelIndex="@activeTabIndex">
         <MudTabPanel>
             <ChildContent>
                 <ApplicationSettings />
@@ -91,5 +111,6 @@
 </AuthorizeView>
 
 @code {
-
+    [Parameter]
+    public string ActiveTabString { get; set; }
 }

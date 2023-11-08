@@ -47,6 +47,9 @@
 
                             <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
                                        OnClick="@(()=>{dataBrowser?.Show();})">Data Browser</MudButton>
+                                       <AppModal @ref=dataBrowser>
+                                           <DatabaseBrowserModalContent/>
+                                       </AppModal>
                         </AuthorizeView>
                         }
                     </MudDrawerContainer>

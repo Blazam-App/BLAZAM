@@ -6,13 +6,18 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.8.4</AssemblyVersion>
-		<Version>2023.11.07.1459</Version>
+		<Version>2023.11.07.2318</Version>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
 	</PropertyGroup>
 
-
+	<ItemGroup>
+	  <Compile Remove="Exceptions\**" />
+	  <Content Remove="Exceptions\**" />
+	  <EmbeddedResource Remove="Exceptions\**" />
+	  <None Remove="Exceptions\**" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <None Remove="nssm.exe" />

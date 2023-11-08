@@ -170,12 +170,12 @@ namespace BLAZAM
         private static void SetupKestrel(WebApplicationBuilder builder)
         {
             //Temporary if during developementt
-            if (!ApplicationInfo.isUnderIIS && !Debugger.IsAttached)
+            if (!ApplicationInfo.isUnderIIS)
             {
                 var listeningAddress = Configuration.GetValue<string>("ListeningAddress");
                 var httpPort = Configuration.GetValue<int>("HTTPPort");
                 var httpsPort = Configuration.GetValue<int>("HTTPSPort");
-                builder.WebHost.ConfigureKestrel(options =>
+                builder.WebHost.UseKestrel(options =>
                 {
                     if (listeningAddress == "*")
                     {
