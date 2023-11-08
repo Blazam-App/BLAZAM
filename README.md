@@ -1,7 +1,5 @@
 # BLAZAM
 
-This app is still in Beta. If you choose to install now, you may need to re-install from scratch in a future update.
-
 ## Website
 [blazam.org](https://blazam.org)
 
