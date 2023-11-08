@@ -3,11 +3,18 @@ using Octokit;
 using BLAZAM.Common;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.Logger;
+using BLAZAM.Helpers;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
+using System.Security.Principal;
 
 namespace BLAZAM.Update.Services
 {
+    /// <summary>
+    /// Represents the source of the valid credential to write to
+    /// the application directory
+    /// </summary>
+    public enum UpdateCredential { None, Application, Active_Directory, Update };
     public class UpdateService : UpdateServiceBase
     {
         public ApplicationUpdate LatestUpdate { get; set; }
@@ -17,7 +24,7 @@ namespace BLAZAM.Update.Services
         protected readonly IHttpClientFactory httpClientFactory;
         private readonly ApplicationInfo _applicationInfo;
 
-        public UpdateService(IHttpClientFactory _clientFactory,ApplicationInfo applicationInfo,IAppDatabaseFactory? dbFactory=null)
+        public UpdateService(IHttpClientFactory _clientFactory, ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null)
         {
             _dbFactory = dbFactory;
             httpClientFactory = _clientFactory;
@@ -41,7 +48,8 @@ namespace BLAZAM.Update.Services
                 {
                     using var context = await _dbFactory.CreateDbContextAsync();
                     SelectedBranch = context.AppSettings.FirstOrDefault()?.UpdateBranch;
-                }catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
 
                 }
@@ -106,6 +114,62 @@ namespace BLAZAM.Update.Services
 
             }
         }
+        public UpdateCredential UpdateCredential
+        {
+            get
+            {
+                Loggers.UpdateLogger.Information("Checking update credentials");
+
+                if (ApplicationInfo.applicationRoot.Writable)
+                    return UpdateCredential.Application;
+
+                //Test Directory Credentials
+                using var context = _dbFactory.CreateDbContext();
+                //Prepare impersonation
+                WindowsImpersonation impersonation = null;
+
+
+                //Pull ad settings to test if app ad account can write to the application directory
+                var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
+                //Make sure we got the settings
+                if (adSettings != null)
+                    impersonation = adSettings.CreateDirectoryAdminImpersonator();
+                //Make sure impersonation set up and test write permissions
+                if (impersonation != null && impersonation.Run(() =>
+                {
+                    Loggers.UpdateLogger.Information("Checking AD update credential permissions: " + WindowsIdentity.GetCurrent().Name);
+
+                    if (ApplicationInfo.applicationRoot.Writable)
+                        return true;
+                    return false;
+                }))
+                    return UpdateCredential.Active_Directory;
+
+                // Active Directory credentials don't exist or don't have write permissions to the application directory
+
+
+
+                // Clear previous impersonations
+                impersonation = null;
+                //Test Update Credentials
+                var appSettings = context.AppSettings.FirstOrDefault();
+                if (appSettings != null)
+                    impersonation = appSettings?.CreateUpdateImpersonator();
+
+                if (impersonation != null && impersonation.Run(() =>
+                {
+                    Loggers.UpdateLogger.Information("Checking custom update credential permissions: " + WindowsIdentity.GetCurrent().Name);
+
+                    if (ApplicationInfo.applicationRoot.Writable)
+                        return true;
+                    return false;
+                }))
+                    return UpdateCredential.Update;
+
+                return UpdateCredential.None;
+            }
+        }
+        public bool HasWritePermission => UpdateCredential != UpdateCredential.None;
 
 
     }

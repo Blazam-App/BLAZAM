@@ -78,6 +78,7 @@
         {
             chatRoom = new() { CreatedAt = DateTime.Now, IsPublic = true, Name=ChatUri };
             ChatRooms.Add(ChatUri,chatRoom);
+            await Context.SaveChangesAsync();
         }
         ChatRoom = chatRoom;
 

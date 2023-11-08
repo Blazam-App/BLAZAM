@@ -16,6 +16,7 @@ using System.Net;
 using System.Security.Claims;
 using BLAZAM.Helpers;
 using System.DirectoryServices.ActiveDirectory;
+using System.Security.Cryptography;
 
 namespace BLAZAM.ActiveDirectory
 {
@@ -146,9 +147,6 @@ namespace BLAZAM.ActiveDirectory
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
         private IApplicationUserState? currentUser;
 
-        /// <summary>
-
-        /// </summary>
         public DirectoryConnectionStatus Status
         {
             get => _status; set
@@ -158,9 +156,6 @@ namespace BLAZAM.ActiveDirectory
                 OnStatusChanged?.Invoke(_status);
             }
         }
-        /// <summary>
-
-        /// </summary>
         public AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
 
         /// <summary>
@@ -178,7 +173,7 @@ namespace BLAZAM.ActiveDirectory
         {
             get
             {
-                return ConnectionSettings.CreateWindowsImpersonator();
+                return ConnectionSettings.CreateDirectoryAdminImpersonator();
             }
         }
         /// <summary>
@@ -186,8 +181,6 @@ namespace BLAZAM.ActiveDirectory
         /// from the ActiveDirectorySetting table in the database and uses them to configure the
         /// connection.
         /// 
-        /// Upon creation, no actual connection attempt has been made yet, to verify the connection
-        /// status, check the Status property.
         /// </summary>
         /// <param name="context"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
@@ -212,7 +205,10 @@ namespace BLAZAM.ActiveDirectory
             OUs = new ADOUSearcher(this);
             Computers = new ADComputerSearcher(this, _wmiFactory);
         }
-
+        /// <summary>
+        /// Used for factory creation of session scoped contexts.
+        /// </summary>
+        /// <param name="activeDirectoryContextSeed"></param>
         public ActiveDirectoryContext(ActiveDirectoryContext activeDirectoryContextSeed)
         {
             _encryption = activeDirectoryContextSeed._encryption;
@@ -225,8 +221,9 @@ namespace BLAZAM.ActiveDirectory
             AppRootDirectoryEntry = activeDirectoryContextSeed.AppRootDirectoryEntry;
             _wmiFactory = activeDirectoryContextSeed._wmiFactory;
             DomainControllers = activeDirectoryContextSeed.DomainControllers;
+            Status = activeDirectoryContextSeed.Status;
             // UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
-            //ConnectAsync();
+            ConnectAsync();
             // _timer = new Timer(KeepAlive, null, 30000, 30000);
 
             Users = new ADUserSearcher(this);
@@ -238,12 +235,12 @@ namespace BLAZAM.ActiveDirectory
             DirectoryContextType.Domain,
             ConnectionSettings.FQDN,
             ConnectionSettings.Username,
-            Encryption.Instance.DecryptObject<string>(ConnectionSettings.Password)
+            ConnectionSettings.Password.Decrypt()
             );
 
         public List<DomainController> DomainControllers { get; private set; } = new();
 
-        
+
         private async void KeepAlive(object? state)
         {
             if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
@@ -274,14 +271,17 @@ namespace BLAZAM.ActiveDirectory
         public void Connect()
         {
             Status = DirectoryConnectionStatus.Connecting;
-
+            Loggers.ActiveDirectryLogger.Information("Initiating Active Directory connection");
             try
             {
                 Context = Factory.CreateDbContext();
 
+                Loggers.ActiveDirectryLogger.Information("Connecting to settings database");
 
                 if (Context.Status == ServiceConnectionState.Up)
                 {
+                    Loggers.ActiveDirectryLogger.Information("Database connected");
+
                     if (Status != DirectoryConnectionStatus.OK)
                     {
                         ADSettings ad = Context?.ActiveDirectorySettings.FirstOrDefault();
@@ -289,6 +289,8 @@ namespace BLAZAM.ActiveDirectory
 
                         if (ad != null)
                         {
+                            Loggers.ActiveDirectryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
+
                             _authType = AuthenticationTypes.Secure;
                             if (ad.UseTLS)
                             {
@@ -305,15 +307,27 @@ namespace BLAZAM.ActiveDirectory
 
                             if (ad != null && ad.FQDN != null && ad.Username != null)
                             {
+                                Loggers.ActiveDirectryLogger.Information("Checking Active Directory port status", ad.ServerAddress, ad.ServerPort);
+
                                 if (NetworkTools.IsPortOpen(ad.ServerAddress, ad.ServerPort))
                                 {
+                                    Loggers.ActiveDirectryLogger.Information("Active Directory port is open.");
+
                                     try
                                     {
+                                        Loggers.ActiveDirectryLogger.Information("Connecting Active Directory context");
+                                        var pass = _encryption.DecryptObject<string>(ad.Password);
+                                        AppRootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, pass, _authType);
+                                        Loggers.ActiveDirectryLogger.Information("App Active Directory context connected");
 
-                                        AppRootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, _encryption.DecryptObject<string>(ad.Password), _authType);
-                                        RootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(), ad.Username, _encryption.DecryptObject<string>(ad.Password), _authType);
+                                        RootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(), ad.Username, pass, _authType);
+
+                                        Loggers.ActiveDirectryLogger.Information("Root Active Directory context connected");
+                                        pass = null;
                                         //var nativeEntry = DirectoryEntry.NativeObject;
                                         //Perform Auth check
+                                        Loggers.ActiveDirectryLogger.Information("Performing Active Directory connection test");
+
                                         var search = new ADSearch()
                                         {
                                             ObjectTypeFilter = ActiveDirectoryObjectType.User,
@@ -355,21 +369,29 @@ namespace BLAZAM.ActiveDirectory
                                         {
                                             if (results.Count > 0)
                                             {
+                                                Loggers.ActiveDirectryLogger.Information("Active Directory test passed");
+
                                                 Status = DirectoryConnectionStatus.OK;
                                                 DomainControllers.Clear();
                                                 foreach (DomainController dc in Domain.GetDomain(DirectoryContext).DomainControllers)
                                                 {
                                                     //var test = dc;
-                                           
-                                                        DomainControllers.Add(dc);
-                                                    
+
+                                                    DomainControllers.Add(dc);
+
                                                 }
                                             }
                                             else
+                                            {
+                                                Loggers.ActiveDirectryLogger.Warning("Active Directory test failed");
+
                                                 Status = DirectoryConnectionStatus.BadConfiguration;
+
+                                            }
                                         }
                                         catch (Exception ex)
                                         {
+
                                             switch (ex.HResult)
                                             {
                                                 case -2147016646:
@@ -377,6 +399,9 @@ namespace BLAZAM.ActiveDirectory
                                                     break;
                                                 case -2147023570:
                                                     Status = DirectoryConnectionStatus.BadCredentials;
+                                                    break;
+                                                default:
+                                                    Loggers.ActiveDirectryLogger.Error("Error collecting domain controllers {@Error}", ex);
                                                     break;
                                             }
                                         }
@@ -386,13 +411,29 @@ namespace BLAZAM.ActiveDirectory
                                     }
 
 
-                                    catch (DirectoryOperationException)
+                                    catch (DirectoryOperationException ex)
                                     {
+                                        Loggers.ActiveDirectryLogger.Warning("Error connecting to Active Directory {@Error}", ex);
+
                                         Status = DirectoryConnectionStatus.BadConfiguration;
+                                    }
+                                    catch (CryptographicException ex)
+                                    {
+                                        Loggers.ActiveDirectryLogger.Warning("Unable to decrypt Active Directory password {@Error}", ex);
+                                        Status = DirectoryConnectionStatus.UnreachableConfiguration;
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Loggers.ActiveDirectryLogger.Error("Unexpected Error connecting to Active Directory {@Error}", ex);
+                                        Status = DirectoryConnectionStatus.BadConfiguration;
+
                                     }
                                 }
                                 else
                                 {
+                                    Loggers.ActiveDirectryLogger.Warning("Active Directory port is not open");
+
                                     Status = DirectoryConnectionStatus.ServerDown;
                                 }
                             }
@@ -403,8 +444,10 @@ namespace BLAZAM.ActiveDirectory
 
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Loggers.ActiveDirectryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
+
                 Status = DirectoryConnectionStatus.ServerDown;
 
             }
@@ -430,6 +473,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 try
                 {
+
                     var findUser = Users.FindUserByUsername(loginReq.Username.ToLower(), false);
                     if (findUser != null)
                     {
@@ -440,24 +484,52 @@ namespace BLAZAM.ActiveDirectory
                             {
                                 loginReq.Username += "@" + ConnectionSettings.FQDN;
                             }
+
+                            //WindowsImpersonationUser logonUser = new WindowsImpersonationUser
+                            //{
+                            //    FQDN = ConnectionSettings.FQDN,
+                            //    Username = loginReq.Username,
+                            //    Password = loginReq.SecurePassword
+                            //};
+                            //WindowsImpersonation impersonation = new WindowsImpersonation(logonUser);
+                            //try
+                            //{
+                            //    if (impersonation.Run(() =>
+                            //    {
+                            //        return true;
+                            //    }))
+                            //        return findUser;
+                            //}
+                            //catch (Exception ex)
+                            //{
+
+                            //    return null;
+                            //}
                             using (var connection = new LdapConnection(new LdapDirectoryIdentifier(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort)))
                             {
                                 connection.AuthType = AuthType.Basic;
                                 connection.SessionOptions.ProtocolVersion = 3;
+                                connection.Timeout = TimeSpan.FromSeconds(5);
                                 connection.SessionOptions.SecureSocketLayer = ConnectionSettings.UseTLS;
-
+                                connection.SessionOptions.PingWaitTimeout = TimeSpan.FromSeconds(5);
+                                connection.SessionOptions.SendTimeout = TimeSpan.FromSeconds(5);
+                                
+                                //connection.SessionOptions.FastConcurrentBind();
                                 connection.Credential = new NetworkCredential(loginReq.Username, loginReq.SecurePassword);
+                                
                                 connection.Bind();
 
                                 return findUser;
 
                             }
 
+
                         }
                     }
                 }
                 catch (LdapException ex)
                 {
+                    Loggers.ActiveDirectryLogger.Error("Error authenticating user: "+ex.Message);
                     switch (ex.Message)
                     {
                         case "The user name or password is incorrect.":

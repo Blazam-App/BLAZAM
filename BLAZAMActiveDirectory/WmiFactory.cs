@@ -29,7 +29,7 @@ namespace BLAZAM.Common.Data.Services
                 if (settings != null) {
                     ConnectionOptions connectionOptions = new ConnectionOptions();
                     connectionOptions.Username = settings.Username+"@"+settings.FQDN;
-                    connectionOptions.SecurePassword = Encryption.Instance.DecryptObject<string>(settings.Password).ToSecureString();
+                    connectionOptions.SecurePassword = settings.Password.Decrypt().ToSecureString();
                     connectionOptions.Impersonation = ImpersonationLevel.Impersonate;
                     connectionOptions.Timeout = TimeSpan.FromSeconds(5);
                     

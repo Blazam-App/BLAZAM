@@ -29,7 +29,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (SamAccountName == null) throw new ApplicationException("samaccount name not found!");
                 if (DirectorySettings == null) throw new ApplicationException("Directory settings not found when trying to change directory user password");
 
-                var directoryPassword = Encryption.Instance.DecryptObject<string>(DirectorySettings.Password);
+                var directoryPassword = DirectorySettings.Password.Decrypt();
                 if (directoryPassword == null) return false;
                 //TODO set password from outside the domain
                 //The following works utside the domain but may havee issues with cerrts

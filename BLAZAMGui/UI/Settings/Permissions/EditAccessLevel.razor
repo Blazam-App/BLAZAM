@@ -90,7 +90,7 @@
                                 {
                                     if (action.IsActionAppropriateForObject(objectMap.ObjectType))
                                     {
-                                        if (!WorkingModel.ActionMap.Any(a => a.ObjectAction == action))
+                                        if (!WorkingModel.ActionMap.Any(a => a.ObjectType==objectMap.ObjectType && a.ObjectAction == action))
                                         {
 
 

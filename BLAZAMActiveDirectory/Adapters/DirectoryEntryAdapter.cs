@@ -14,6 +14,7 @@ using System.DirectoryServices;
 using System.Linq;
 using System.Reflection;
 using MudBlazor;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -678,17 +679,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual async Task Parse(SearchResult result, IActiveDirectoryContext directory) => await Parse(null, result, directory);
 
 
-        public virtual async Task<DirectoryChangeResult> CommitChangesAsync()
+        public virtual async Task<DirectoryChangeResult> CommitChangesAsync(DirectoryChangeResult? dcr = null)
         {
             return await Task.Run(() =>
             {
-                return CommitChanges();
+                return CommitChanges(dcr);
             });
         }
 
 
-        public virtual DirectoryChangeResult CommitChanges()
+        public virtual DirectoryChangeResult CommitChanges(DirectoryChangeResult? dcr = null)
         {
+            dcr ??= new DirectoryChangeResult();
             try
             {
 
@@ -756,9 +758,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     if (!action.Invoke())
                     {
-                        throw new ApplicationException("Error processing Commit Actions");
+                        //throw new ApplicationException("Error processing Commit Actions");
                     }
                 }
+
 
 
                 HasUnsavedChanges = false;
@@ -853,7 +856,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
         {
             var list = new List<T?>();
-            foreach (var dc in Directory.DomainControllers)
+            var dcs = new List<DomainController>(Directory.DomainControllers);
+            foreach (var dc in dcs)
             {
                 try
                 {

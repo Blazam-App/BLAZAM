@@ -42,7 +42,8 @@ namespace BLAZAM.Gui.UI
             set => templates = value;
         }
         protected IEnumerable<string?> TemplateCategories { get; private set; }
-        protected DirectoryTemplate? SelectedTemplate
+
+        public DirectoryTemplate? SelectedTemplate
         {
             get => selectedTemplate; set
             {

@@ -1,17 +1,20 @@
 ﻿using BLAZAM.Common.Data.Services;
+using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace BLAZAM.Server.Data.Services
 {
     public class CurrentUserStateService : IDisposable, ICurrentUserStateService
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IApplicationUserStateService _applicationUserStateService;
 
         private Timer? _retryTimer;
         private IApplicationUserState state;
 
-
+        //private static Dictionary<string, IApplicationUserState> _userStateCache = new Dictionary<string, IApplicationUserState>();
 
         /// <summary>
         /// The current user's session state
@@ -23,30 +26,36 @@ namespace BLAZAM.Server.Data.Services
         /// </summary>
         public string Username => State.Username;
 
-        public CurrentUserStateService(IApplicationUserStateService applicationUserStateService)
+        public CurrentUserStateService(IApplicationUserStateService applicationUserStateService, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _applicationUserStateService = applicationUserStateService;
             RetryGetCurrentUserState();
             if (State is null)
             {
                 _retryTimer = new Timer(RetryGetCurrentUserState, null, 500, 500);
             }
+            if (State.IsAuthenticated)
+                State.IPAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
         }
 
         private void RetryGetCurrentUserState(object? state = null)
         {
-            var currentState = _applicationUserStateService.CurrentUserState;
-            if (currentState != null)
-            {
-                State = currentState;
-                _retryTimer?.Dispose();
-            }
+        
+                    try
+                    {
+                        State = _applicationUserStateService.GetUserState(_httpContextAccessor.HttpContext?.User);
+                        _retryTimer?.Dispose();
 
+                    }
+                    catch (Exception ex)
+                    {
+                        return;
+                    }
+                
+           
         }
-        public IApplicationUserState? CreateUserState(ClaimsPrincipal user)
-        {
-            return _applicationUserStateService.CreateUserState(user);
-        }
+
         public void Dispose()
         {
             if (_retryTimer != null)

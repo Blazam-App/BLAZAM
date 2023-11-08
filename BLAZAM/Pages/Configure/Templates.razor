@@ -4,9 +4,7 @@
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 <AppPageTitle>Templates</AppPageTitle>
-<SetHeader>
-</SetHeader>
-<h3>Templates</h3>
+
 <SetHeader @ref=Header>
 
 
@@ -22,6 +20,7 @@
                        @bind-Value="@SelectedCategory" />
 
         <MudSelectList T="DirectoryTemplate"
+                       Disabled=@(Templates.Count()<1)
                        Label="Template"
                        Values="@Templates"
                        Value="@SelectedTemplate"
@@ -47,7 +46,7 @@
 
         @if (SelectedCategory != null && SelectedCategory != "All")
         {
-            <MudButton OnClick=@(()=>{RenameModal.Show();})
+            <MudButton OnClick=@(()=>{RenameModal?.Show();})
                    Color="Color.Tertiary"
                    StartIcon="@Icons.Material.Filled.ChangeCircle" />
         }
@@ -70,7 +69,7 @@
 </SetHeader>
 @if (SelectedTemplate != null)
 {
-    <EditDirectoryTemplate DirectoryTemplate=@SelectedTemplate />
+    <EditDirectoryTemplate Header="Header" DirectoryTemplate=@SelectedTemplate />
 }
 
 

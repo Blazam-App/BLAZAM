@@ -1,6 +1,7 @@
 ﻿using BLAZAM.Common;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
+using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
@@ -49,14 +50,53 @@ namespace BLAZAM.Update.Services
                     var fileVersion = new ApplicationVersion(file.Name);
                     if (fileVersion.CompareTo(_applicationInfo.RunningVersion) < 0 && file.SinceLastModified > TimeSpan.FromDays(1))
                     {
-                        Loggers.UpdateLogger.Debug("Deleting old update file: " + file);
-                        file.Delete();
+                        if (file.Writable)
+                        {
+                            Loggers.UpdateLogger.Debug("Deleting old update file: " + file);
+
+                            file.Delete();
+
+                        }
+                        else
+                        {
+                            Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file: " + file);
+
+                            var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault().CreateUpdateImpersonator();
+                            if(!impersonation.Run(() => {
+                                if (file.Writable)
+                                {
+                                    file.Delete();
+                                    return true;
+                                }
+                                return false;
+                            }))
+                            {
+                                impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault().CreateDirectoryAdminImpersonator();
+                                if (!impersonation.Run(() => {
+                                    if (file.Writable)
+                                    {
+                                        file.Delete();
+                                        return true;
+                                    }
+                                    return false;
+                                }))
+                                {
+                                    Loggers.UpdateLogger.Error("No identies with permission to remove old update file: " + file);
+
+                                }
+                            }
+                        }
                     }
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Loggers.UpdateLogger.Debug("Deleting unknown file: " + file, ex);
-                    file.Delete();
+                    Loggers.UpdateLogger.Warning("Tried to delete non-existant file: " + file, ex);
+                    //file.Delete();
+                }
+                catch (Exception ex)
+                {
+                    Loggers.UpdateLogger.Error("Other error deleting file: " + file, ex);
+                    //file.Delete();
                 }
 
             }
@@ -91,12 +131,12 @@ namespace BLAZAM.Update.Services
             try
             {
                 var appSettings = (await factory.CreateDbContextAsync()).AppSettings.FirstOrDefault();
-                if (appSettings.AutoUpdate)
+                if (appSettings != null && appSettings.AutoUpdate)
                 {
                     Loggers.UpdateLogger.Information("Checking for automatic update");
 
                     var latestUpdate = await updateService.GetLatestUpdate();
-                    if (latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdateTime != null)
+                    if (latestUpdate != null && latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdateTime != null)
                     {
                         ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
                     }
@@ -109,7 +149,7 @@ namespace BLAZAM.Update.Services
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Error while checking for auto update: {Message}{NewLine}{StackTrace}", ex);
+                Loggers.UpdateLogger.Error("Error while checking for auto update: {Message}", ex);
             }
         }
         public void Cancel()
@@ -173,7 +213,7 @@ namespace BLAZAM.Update.Services
                     OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
                 }
             }catch(Exception ex) {
-                Loggers.UpdateLogger.Error("Error during auto update scheduling: {Message}{NewLine}{StackTrace}", ex);
+                Loggers.UpdateLogger.Error("Error during auto update scheduling: {Message}", ex);
             }
         }
 
@@ -220,7 +260,7 @@ namespace BLAZAM.Update.Services
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Error during auto update: {Message}{NewLine}{StackTrace}", ex);
+                Loggers.UpdateLogger.Error("Error during auto update: {Message}", ex);
             }
 
         

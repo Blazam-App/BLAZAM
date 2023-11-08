@@ -443,6 +443,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<string>("MOTD")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("MyrtilleURL")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("UpdateBranch")
                         .IsRequired()
                         .HasColumnType("TEXT");

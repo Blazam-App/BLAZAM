@@ -85,7 +85,7 @@
         if (!newAdminPassword.Equals(adminPasswordInDb))
         {
 
-            settings.AdminPassword = EncryptionService.EncryptObject(newAdminPassword);
+            settings.AdminPassword = newAdminPassword.Encrypt();
 
             adminPasswordInDb = settings.AdminPassword;
 

@@ -61,7 +61,7 @@
                         <ChangeUserPasswordModalContent User="User" />
                     }
                 </AppModal>
-                <AppModal Title="Changes" @ref=@ChangeHistoryModal>
+                <AppModal Title="Changes" @ref=@ChangeHistoryModal Options=@(new DialogOptions(){FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
                     @if (ChangeHistoryModal?.IsShown == true)
                     {
                         <ChangeHistoryModalContent Model="User" />
@@ -217,7 +217,7 @@
                                         <DynamicMudInput T=string Label="@AppLocalization["Username"]"
                                                          @bind-Value="@User.SamAccountName"
                                                          Disabled=!User.NewEntry />
-                                        <AppCopyButton TextToCopy="User.SamAccountName" />
+                                        <AppCopyButton TextToCopy=@User.SamAccountName />
 
                                     </MudStack>
 
@@ -241,7 +241,7 @@
                                         <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"
                                                          @bind-Value="@User.Email"
                                                          Disabled=!User.NewEntry />
-                                        <AppCopyButton TextToCopy="User.Email" />
+                                        <AppCopyButton TextToCopy=@User.Email />
 
                                     </MudStack>
 
@@ -381,7 +381,7 @@
                                         <MudIcon Class="align-middle" Icon="@(homeDirectoryExists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
                                      Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
                                     }
-                                    <AppCopyButton TextToCopy="User.HomeDirectory" />
+                                    <AppCopyButton TextToCopy=@User.HomeDirectory />
                                 </MudStack>
                             }
                             @if (User.CanReadField(ActiveDirectoryFields.HomeDrive))

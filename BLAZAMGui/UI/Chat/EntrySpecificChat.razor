@@ -1,0 +1,153 @@
+@inherits ChatComponentBase
+
+<Audio Src="/audio/messagePop.mp3" @bind-Playing=@playingPop />
+<Audio Src="/audio/bell.wav" @bind-Playing=@playingBell />
+@if (AlwaysShowChatButton || ChatMessages!=null &&  ChatMessages.Count() > 0)
+{
+    <ChatButton ChatRoom=ChatRoom OnClick="@(()=>{_chatOpen=!_chatOpen;})" />
+}
+@if (AlwaysShowPageViewersButton || (ShowPageViewersButton && Viewers.ContainsKey(ChatUri) && Viewers[ChatUri].Count > 1))
+{
+    var otherViewers = Viewers[ChatUri].Where(us => !us.Equals(currentUserState));
+    <OtherViewersButton ChatRoom=ChatRoom
+                    OnClick=@(()=>{_chatOpen=true;})
+                    OtherViewers="otherViewers" />
+
+}
+
+<MudPopover Style="width:300px"
+            Open="@_chatOpen"
+            Fixed="true"
+            Class="px-1 pt-4">
+    <AppChatRoom 
+                 OnCloseClicked=@(()=>{_chatOpen=!_chatOpen;})
+                 ChatRoom="ChatRoom" />
+</MudPopover>
+
+@code {
+
+    bool _chatOpen;
+    [Parameter]
+    public IDirectoryEntryAdapter? Entry { get; set; }
+    [Parameter]
+    public bool ShowPageViewersButton { get; set; } = true;
+    [Parameter]
+    public bool AlwaysShowChatButton { get; set; }
+    [Parameter]
+    public bool AlwaysShowPageViewersButton { get; set; }
+    IApplicationUserState currentUserState;
+
+    /// <summary>
+    /// A single system wide singleton static dictionary of every
+    /// viewer on every page this component is placed
+    /// </summary>
+    static Dictionary<string, List<IApplicationUserState>> Viewers = new Dictionary<string, List<IApplicationUserState>>();
+
+    delegate void CallbackEvent();
+    static CallbackEvent ViewersChanged;
+
+
+    bool playingPop;
+    bool playingBell;
+
+
+    public IEnumerable<ChatMessage> ChatMessages => ChatRoom?.Messages;
+    delegate void ChatMessageCallbackEvent(ChatMessage message);
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await base.OnInitializedAsync();
+
+
+        if (ChatUri.IsNullOrEmpty())
+        {
+
+
+            //ChatUri = Nav.ToBaseRelativePath(Nav.Uri);
+            ChatUri = Entry.DN;
+            Nav.LocationChanged += ((state, args) =>
+          {
+              if (Nav.ToBaseRelativePath(args.Location) != ChatUri)
+              {
+                  RemoveThisViewer();
+              }
+          });
+        }
+        var chatRoom = Context.ChatRooms.Where(cr=>cr.Name.Equals(ChatUri)).FirstOrDefault();
+        if (chatRoom is null)
+        {
+            chatRoom = new() { CreatedAt = DateTime.Now, IsPublic = true, Name=ChatUri };
+            Chat.CreateChatRoom(chatRoom);
+
+        }
+        ChatRoom = chatRoom;
+
+       // await RefreshChatRooms();
+
+        //Setup other viewers button listeners
+        ViewersChanged += (async () =>
+       {
+          // await RefreshChatRooms();
+
+           await InvokeAsync(StateHasChanged);
+
+       });
+        currentUserState = CurrentUser.State;
+        AddThisViewer();
+
+
+
+
+        //Setup chat message listeners
+
+        Chat.OnMessagePosted += ((ChatMessage message) =>
+       {
+           if (message.User != currentUserState.Preferences)
+           {
+               if (_chatOpen && !playingPop)
+               {
+                   playingPop = true;
+
+               }
+               else if (!_chatOpen && !playingBell)
+               {
+                   playingBell = true;
+               }
+
+               InvokeAsync(StateHasChanged);
+           }
+       });
+
+
+    }
+
+
+
+    private void AddThisViewer()
+    {
+        if (!Viewers.ContainsKey(ChatUri))
+            Viewers.Add(ChatUri, new());
+
+        if (!Viewers[ChatUri].Contains(currentUserState))
+        {
+            Viewers[ChatUri].Add(currentUserState);
+            ViewersChanged?.Invoke();
+        }
+    }
+
+
+    private void RemoveThisViewer()
+    {
+        if (!Viewers.ContainsKey(ChatUri))
+            return;
+
+        if (Viewers[ChatUri].Contains(currentUserState))
+        {
+            Viewers[ChatUri].Remove(currentUserState);
+            ViewersChanged.Invoke();
+
+        }
+    }
+
+}

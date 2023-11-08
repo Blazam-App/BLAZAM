@@ -3,7 +3,7 @@
 
 
 <MudText Typo="Typo.h4">@AppLocalization["Application Settings"]</MudText>
-<EditForm @ref=@EditForm Context="editContext" OnValidSubmit="Save" Model="settings">
+<EditForm Context="editContext" OnValidSubmit="Save" Model="settings">
 
 
     <SettingsField Label="@AppLocalization["Application Name"]">
@@ -72,6 +72,16 @@
 
     </SettingsField>
 
+    @*
+    <SettingsField Label="@AppLocalization["Myrtille Web Adress"]">
+
+        <MudTextField Label="@AppLocalization["Myrtille Web Adress"]" For=@(()=> settings.MyrtilleURL) ErrorText="Must be a valid url" HelperText="Enter the url of the Myrtille server. (eg: http://localhost:8080)" Placeholder="Enter the url of the Myrtille server" @bind-Value="@settings.MyrtilleURL" />
+
+    </SettingsField>
+     <MudButton OnClick=@(()=>{rdpModal.Show();}) >Test Myrtille Connection</MudButton>
+    <AppModal @ref=rdpModal Title="Test Myrtille">
+        <RDPModal/>
+    </AppModal> *@
     <SettingsField>
         <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
     </SettingsField>
@@ -83,7 +93,7 @@
 </MudOverlay>
 @code {
     AppSettings settings = new AppSettings();
-
+    AppModal? rdpModal;
     protected override async Task OnInitializedAsync()
     {
         originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();

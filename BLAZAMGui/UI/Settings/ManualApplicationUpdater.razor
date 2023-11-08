@@ -122,10 +122,10 @@
                         <MudButton OnClick=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Error">Cancel Auto Update</MudButton>
                     }
                 }
-                else
+                if (LatestAvailableVersion != null && !LatestAvailableVersion.Newer)
                 {
-                    <MudText>Application is up to date</MudText>
-
+                    <MudIcon Class="d-inline" Icon="@Icons.Material.Filled.Check" Color="Color.Success"/>
+                        <MudText Class="d-inline">Application is up to date</MudText>
                 }
                 break;
 

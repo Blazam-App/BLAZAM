@@ -4,6 +4,7 @@ using BLAZAM.Database.Exceptions;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Runtime.CompilerServices;
 
 namespace BLAZAM.Database.Context
 {
@@ -13,9 +14,9 @@ namespace BLAZAM.Database.Context
         IConfiguration _configuration;
 
         public static DatabaseException DatabaseCreationFailureReason { get; set; }
-        public static AppEvent OnMigrationApplied { get; set; }
-        public static AppEvent OnMigrationFailed { get; set; }
-
+        public static AppEvent? OnMigrationApplied { get; set; }
+        public static AppEvent<Exception>? OnFatalError { get; set; }
+        public static Exception? FatalError { get; private set; }
 
         public AppDatabaseFactory(IConfiguration configuration, ApplicationInfo appInfo)
         {
@@ -29,10 +30,20 @@ namespace BLAZAM.Database.Context
             }
             catch (DatabaseException ex)
             {
-                DatabaseCreationFailureReason = ex;
-            }
-        }
+                FatalError = ex;
+                OnFatalError?.Invoke(ex);
 
+            }
+            StartDatabaseCache();
+
+        }
+        private  void StartDatabaseCache()
+        {
+            //Start the database cache
+            
+                DatabaseCache.Start(this);
+           
+        }
         private bool CheckInstallation()
         {
             using (var context = CreateDbContext())
@@ -127,6 +138,8 @@ namespace BLAZAM.Database.Context
                 }
                 catch (DatabaseException ex)
                 {
+                    OnFatalError?.Invoke(ex);
+                    FatalError = ex;
                     throw ex;
                 }
                 catch (Exception ex)
@@ -166,7 +179,8 @@ namespace BLAZAM.Database.Context
             {
                 Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
                 //DownReason = new DatabaseException(ex.Message, ex);
-                OnMigrationFailed?.Invoke();
+                FatalError = ex;
+                OnFatalError?.Invoke(ex);
                 return false;
             }
         }

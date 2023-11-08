@@ -25,7 +25,6 @@ namespace BLAZAM.Server.Middleware
 
 
 
-
             // If the ForceHttps flag is set to true, redirect to HTTPS.
             if (forceHttps 
                 && !context.Request.IsHttps)

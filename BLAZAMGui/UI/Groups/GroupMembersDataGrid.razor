@@ -1,5 +1,5 @@
 @inherits AppComponentBase
-@if (!Members.IsNullOrEmpty())
+@if (Members != null)
 {
     <MudDataGrid Elevation=0
              Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
@@ -61,7 +61,7 @@
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     <MudTooltip ShowOnHover=@(!cellContext.Item.CanUnassign) Text="You don't have permission to remove this group member">
-                        <MudButton Disabled=@(!cellContext.Item.CanUnassign) Color="Color.Error" OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(StateHasChanged);})">
+                        <MudButton Disabled=@(!cellContext.Item.CanUnassign) Color="Color.Error" OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
                             Remove
                         </MudButton>
                     </MudTooltip>
@@ -75,6 +75,14 @@
             The group has more members you don't have access to
         </MudAlert>
     }
+    @if (Group.CanAssign)
+    {
+
+        <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.GroupAdd" OnClick="@(()=>{AssignMemberModal.Show();})" />
+    }
+    <AppModal Color="Color.Dark" Title="Add Member..." @ref=@AssignMemberModal>
+        <AddMemberModalContent ModelChanged=@(()=>{InvokeAsync(OnInitializedAsync);}) Group="Group" />
+    </AppModal>
 }
 else
 {
@@ -98,7 +106,7 @@ else
 
     List<IGroupableDirectoryAdapter> Members = new();
 
-
+    AppModal AssignMemberModal;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

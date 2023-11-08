@@ -30,9 +30,9 @@
 
 
 
-                <MudTextField Disabled=@attemptingSignIn Class="justify-center" AutoFocus Label="Username" name="Username" @bind-Value=LoginRequest.Username />
+                <MudTextField @ref=_usernameTextField Disabled=@attemptingSignIn Class="justify-center" AutoFocus Label="Username" name="Username" @bind-Value=LoginRequest.Username />
 
-                <MudTextField Disabled=@attemptingSignIn Class="justify-center" Label="Password" name="Password" InputType="InputType.Password" @bind-Value=LoginRequest.Password />
+                <MudTextField @ref=_passwordTextField Disabled=@attemptingSignIn Class="justify-center" Label="Password" name="Password" InputType="InputType.Password" @bind-Value=LoginRequest.Password />
                 <MudTextField Class="d-none" name="ReturnUrl" Value="@redirectUrl" />
                 <MudButton OnClick=@(()=>{attemptingSignIn=true;}) Class="my-5" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</MudButton>
 
@@ -90,6 +90,9 @@
 </style>
 
 @code {
+    MudTextField<string>? _usernameTextField;
+    MudTextField<string>? _passwordTextField;
+
     bool attemptingSignIn = false;
     string redirectUrl;
 
@@ -117,8 +120,13 @@
         await InvokeAsync(StateHasChanged);
         string? authenticationResult;
         if (ValidateInput(out authenticationResult))
-            authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn", null);
+            try{
+                authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn", null);
+            }catch(Exception ex)
+            {
 
+                SnackBarService.Info(ex.Message);
+            }
 
         attemptingSignIn = false;
 
@@ -131,11 +139,9 @@
 
                 case LoginResultStatus.NoUsername:
                     SnackBarService.Info("Username is missing");
-
                     break;
                 case LoginResultStatus.NoPassword:
                     SnackBarService.Info("Password is missing");
-
                     break;
                 case LoginResultStatus.NoData:
                     SnackBarService.Warning("Login request is missing");
@@ -143,7 +149,6 @@
                     break;
                 case LoginResultStatus.BadCredentials:
                     SnackBarService.Warning("Username or password not correct");
-
                     break;
                 case LoginResultStatus.UnauthorizedImpersonation:
                     SnackBarService.Error("Unauthorized Impersonation Attempt");

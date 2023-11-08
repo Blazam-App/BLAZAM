@@ -11,6 +11,7 @@ namespace BLAZAM.Logger
 {
     public static class Loggers
     {
+        public static string LogPath => _logPath;
         private static string _logPath;
         private static string _applicationVersion;
 
@@ -47,6 +48,8 @@ namespace BLAZAM.Logger
                    .Enrich.WithMachineName()
                    .Enrich.WithEnvironmentName()
                    .Enrich.WithEnvironmentUserName()
+                 .Enrich.WithProperty("Application Name", "Blazam")
+
                    .Enrich.WithProperty("Application Version", _applicationVersion)
 
                     .WriteTo.File(logPath + @"system\system.txt",
@@ -72,6 +75,8 @@ namespace BLAZAM.Logger
                .Enrich.WithMachineName()
                .Enrich.WithEnvironmentName()
                .Enrich.WithEnvironmentUserName()
+                 .Enrich.WithProperty("Application Name", "Blazam")
+
                    .Enrich.WithProperty("Application Version", _applicationVersion)
                //.WriteTo.File(WritablePath+@"\logs\log.txt")
                .WriteTo.File(logFilePath,

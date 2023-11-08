@@ -10,6 +10,7 @@ using BLAZAM.FileSystem;
 using BLAZAM.Logger;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
+using System.Security.Principal;
 
 namespace BLAZAM.Update
 {
@@ -20,13 +21,14 @@ namespace BLAZAM.Update
 
 
 
-
+        public UpdateStage UpdateStage { get; set; }
         /// <summary>
         /// Token source for cancelling this update when in progress
         /// </summary>
         private CancellationTokenSource cancellationTokenSource { get; set; }
 
         public static AppEvent OnUpdateStarted { get; set; }
+
         public static AppEvent<Exception> OnUpdateFailed { get; set; }
 
         /// <summary>
@@ -50,7 +52,7 @@ namespace BLAZAM.Update
             new SystemDirectory(UpdateTempDirectory + "staged\\");
 
         /// <summary>
-        /// The local path for staging directory path for this update
+        /// The local staging directory path for this update
         /// </summary>
         public SystemDirectory UpdateStagingDirectory { get => new SystemDirectory(StagingDirectory + Version.Version); }
 
@@ -115,7 +117,7 @@ namespace BLAZAM.Update
                 return " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory + "'" +
                    " -Username " + DatabaseCache.ActiveDirectorySettings?.Username +
                    " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN +
-                   " -Password '" + Encryption.Instance.DecryptObject<string>(DatabaseCache.ActiveDirectorySettings?.Password) + "'";
+                   " -Password '" + DatabaseCache.ActiveDirectorySettings?.Password.Decrypt() + "'";
             }
         }
 
@@ -171,6 +173,9 @@ namespace BLAZAM.Update
 
         public async Task<string> Apply()
         {
+            if (cancellationTokenSource == null || cancellationTokenSource.IsCancellationRequested)
+                cancellationTokenSource = new CancellationTokenSource();
+
             OnUpdateStarted?.Invoke();
             if (!await Prepare())
                 throw new ApplicationUpdateException("Update preparation not completed");
@@ -188,6 +193,7 @@ namespace BLAZAM.Update
 
             using var context = await _dbFactory.CreateDbContextAsync();
 
+
             if (_applicationRootDirectory.Writable)
             {
                 Loggers.UpdateLogger.Warning("The application user has write permission to the application directory!");
@@ -197,7 +203,7 @@ namespace BLAZAM.Update
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Error applying updated updater: {Message}{NewLine}{StackTrace}", ex);
+                    Loggers.UpdateLogger.Error("Error applying updated updater: {Message}", ex);
 
                 }
                 return "Error starting update";
@@ -209,7 +215,7 @@ namespace BLAZAM.Update
 
                 if (settings == null) throw new ApplicationUpdateException("No credentials are configured for updates");
 
-                var impersonation = settings.CreateWindowsImpersonator();
+                var impersonation = settings.CreateDirectoryAdminImpersonator();
                 try
                 {
 
@@ -221,7 +227,7 @@ namespace BLAZAM.Update
                         }
                         catch (Exception ex)
                         {
-                            Loggers.UpdateLogger.Error("Error applying updated updater: {Message}{NewLine}{StackTrace}", ex);
+                            Loggers.UpdateLogger.Error("Error applying updated updater: {Message}", ex);
 
                         }
                         return "Error starting update";
@@ -249,9 +255,12 @@ namespace BLAZAM.Update
 
         private string StartUpdate()
         {
+            Loggers.UpdateLogger.Information("Running update as: " + WindowsIdentity.GetCurrent().Name);
             Loggers.UpdateLogger.Information("Updating updater");
-
-            File.Copy(UpdateStagingDirectory + "\\updater\\*", _applicationRootDirectory + "updater\\", true);
+            SystemDirectory updaterDirFromStagedUpdate = new SystemDirectory(UpdateStagingDirectory.Path + "\\updater\\");
+            SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.Path + "updater\\");
+            updaterDirFromStagedUpdate.CopyTo(updaterDir);
+            //File.Copy(UpdateStagingDirectory + "\\updater\\", _applicationRootDirectory + "updater\\", true);
             Loggers.UpdateLogger.Information("Updater updated");
             //If the updater upated we can  run the updater
             var updaterRan = InvokeUpdateExecutable();
@@ -407,7 +416,7 @@ namespace BLAZAM.Update
         }
         public void Cancel()
         {
-            cancellationTokenSource.Cancel();
+            cancellationTokenSource?.Cancel();
         }
         public async Task<bool> Download()
         {
@@ -420,7 +429,6 @@ namespace BLAZAM.Update
             Loggers.UpdateLogger?.Debug("Download URL: " + Release.DownloadURL);
             Loggers.UpdateLogger?.Debug("Download Path: " + UpdateDownloadDirectory);
 
-            cancellationTokenSource = new CancellationTokenSource();
             var progress = new FileProgress();
             using (var client = new HttpClient())
             {
@@ -445,7 +453,7 @@ namespace BLAZAM.Update
 
                             while ((bytesRead = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length)) > 0)
                             {
-                                if (!cancellationTokenSource.IsCancellationRequested)
+                                if (cancellationTokenSource?.IsCancellationRequested != true)
                                 {
                                     await streamToWriteTo.WriteAsync(buffer, 0, bytesRead);
                                     totalBytesRead += bytesRead;

@@ -17,15 +17,7 @@
     <link rel="icon" type="image/x-icon" href=@StaticAssets.FaviconUri>
     <link href="css/site.css" rel="stylesheet" />
     <link href="BLAZAM.styles.css" rel="stylesheet" />
-    @*
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-
-    <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
-    <link href="_content/Blazorise.Bootstrap5/blazorise.bootstrap5.css" rel="stylesheet" />
-    <link href="_content/Blazorise.TreeView/blazorise.treeview.css" rel="stylesheet" />
-    <link href="_content/Blazorise.LoadingIndicator/blazorise.loadingindicator.css" rel="stylesheet" />
-    <link href="_content/Blazorise.Snackbar/blazorise.snackbar.css" rel="stylesheet" />
-    *@
+   
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
@@ -40,7 +32,7 @@
 
 <body>
     @RenderBody()
-
+   
     <div id="blazor-error-ui">
         @if (!ApplicationInfo.inDebugMode)
         {
@@ -88,5 +80,23 @@
     <script src="~/js/blazam.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="_content/MudBlazor.Markdown/MudBlazor.Markdown.min.js"></script>
+
+    <script>
+        // Wait until a 'reload' button appears
+        new MutationObserver((mutations, observer) => {
+            if (document.querySelector('#components-reconnect-modal h5 a')) {
+                // Now every 10 seconds, see if the server appears to be back, and if so, reload
+                async function attemptReload() {
+                    await fetch(''); // Check the server really is back
+                    location.reload();
+                }
+                observer.disconnect();
+                attemptReload();
+                setInterval(attemptReload, 10000);
+            }
+        }).observe(document.body, { childList: true, subtree: true });
+    </script>
+
+
 </body>
 </html>

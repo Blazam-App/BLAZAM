@@ -2,71 +2,81 @@
 @using MudBlazor.Utilities;
 
 @inherits AppComponentBase
+@if (CurrentUser.State != null && CurrentUser.State.Preferences != null)
+{
+    if (CurrentUser.State?.Preferences?.DashboardWidgets.Count > 0)
+    {
+        <MudDropContainer @ref=widgetContainer
+        T="UserDashboardWidget" Items="CurrentUser.State?.Preferences?.DashboardWidgets.OrderBy(uw => uw.Slot).ThenBy(uw => uw.Order)"
+        ItemsSelector="ItemSelector"
+        ItemDropped="ItemDropped"
+        Class="d-flex flex-wrap flex-grow-1 mud-width-full ">
+            <ChildContent>
 
-<MudDropContainer @ref=widgetContainer
-                  T="UserDashboardWidget" Items="CurrentUser.State?.Preferences?.DashboardWidgets.OrderBy(uw => uw.Slot).ThenBy(uw => uw.Order)"
-                  ItemsSelector="ItemSelector"
-                  ItemDropped="ItemDropped"
-                  Class="d-flex flex-wrap flex-grow-1 mud-width-full ">
-    <ChildContent>
+                <FlexContainer Spacing="4" Class="mx-auto">
 
-        <FlexContainer Spacing="4" Class="mx-auto">
+                    <MudCard Class="pa-0 mx-auto" Elevation="1">
+                        <MudList Clickable="true"
+                        Class="d-flex flex-column ma-0 mx-auto py-0">
+                            <MudDropZone AllowReorder=true
+                            T="UserDashboardWidget"
+                            Identifier="slot1"
+                            Class="flex-grow-1"
+                            Style="min-height:50px;min-width:300px;" />
+                        </MudList>
+                    </MudCard>
+                    <MudCard Class="pa-0 mx-auto" Elevation="2">
+                        <MudList Clickable="true"
+                        Class="d-flex flex-column ma-0 mx-auto py-0">
+                            <MudDropZone AllowReorder=true
+                            T="UserDashboardWidget"
+                            Identifier="slot2"
+                            Class="flex-grow-1"
+                            Style="min-height:50px; min-width:300px;" />
+                        </MudList>
+                    </MudCard>
 
-            <MudCard Class="pa-0 mx-auto" Elevation="1">
-                <MudList Clickable="true"
-                         Class="d-flex flex-column ma-0 mx-auto py-0">
-                    <MudDropZone AllowReorder=true
-                                 T="UserDashboardWidget"
-                                 Identifier="slot1"
-                                 Class="flex-grow-1"
-                                 Style="min-height:50px;min-width:300px;" />
-                </MudList>
+                </FlexContainer>
+            </ChildContent>
+            <ItemRenderer>
+                @{
+                    var widget = allWidgets.First(w => w.WidgetType == context.WidgetType);
+                }
+                <MudCard Class="my-5 " Elevation="1">
+                <MudCardHeader>
+                    <MudText Typo="Typo.h6"> @widget.Title</MudText>
+                    <MudSpacer />
+                    <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
+
+                </MudCardHeader>
+
+                <DynamicComponent Type="@widget.GetType()" />
             </MudCard>
-            <MudCard Class="pa-0 mx-auto" Elevation="2">
-                <MudList Clickable="true"
-                         Class="d-flex flex-column ma-0 mx-auto py-0">
-                    <MudDropZone AllowReorder=true
-                                 T="UserDashboardWidget"
-                                 Identifier="slot2"
-                                 Class="flex-grow-1"
-                                 Style="min-height:50px; min-width:300px;" />
-                </MudList>
-            </MudCard>
-
-        </FlexContainer>
-    </ChildContent>
-    <ItemRenderer>
-        @{
-            var widget = allWidgets.First(w => w.WidgetType == context.WidgetType);
-        }
-        <MudCard Class="my-5 " Elevation="1">
-            <MudCardHeader>
-                <MudText Typo="Typo.h6"> @widget.Title</MudText>
-                <MudSpacer />
-                <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
-
-            </MudCardHeader>
-
-            <DynamicComponent Type="@widget.GetType()" />
-        </MudCard>
-    </ItemRenderer>
-</MudDropContainer>
-<MudMenu Class="d-flex" Style="justify-content: flex-end;" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.BottomRight">
-    <ActivatorContent>
-        <MudTooltip Text="Add Widget">
-            <MudFab StartIcon="@Icons.Material.Filled.AddBox" />
-        </MudTooltip>
-    </ActivatorContent>
-    <ChildContent>
-        @foreach (var widget in allWidgets)
-        {
-            @if (!CurrentUser.State?.Preferences?.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType) == true)
+        </ItemRenderer>
+        </MudDropContainer>
+    }
+    else
+    {
+        <MudText> It's lonely in here. Click the + button to add some widgets...</MudText>
+    }
+    <MudMenu Class="d-flex" Style="justify-content: flex-end;" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.BottomRight">
+        <ActivatorContent>
+            <MudTooltip Text="Add Widget">
+                <MudFab StartIcon="@Icons.Material.Filled.AddBox" />
+            </MudTooltip>
+        </ActivatorContent>
+        <ChildContent>
+            @foreach (var widget in allWidgets)
             {
-                <MudMenuItem OnClick="@(async()=>{await AddWidget(widget.WidgetType);})">@widget.Title</MudMenuItem>
+                @if (!CurrentUser.State?.Preferences?.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType) == true)
+                {
+                    <MudMenuItem OnClick="@(async()=>{await AddWidget(widget.WidgetType);})">@widget.Title</MudMenuItem>
+                }
+
             }
-        }
-    </ChildContent>
-</MudMenu>
+        </ChildContent>
+    </MudMenu>
+}
 
 
 
@@ -76,14 +86,14 @@
 
 
 
-
+    IApplicationUserState _currentUser;
     MudDropContainer<UserDashboardWidget>? widgetContainer;
     List<Widget> allWidgets = new List<Widget>();
 
     protected override Task OnInitializedAsync()
     {
         allWidgets = new List<Widget>(AllWidgets.Available(CurrentUser.State));
-
+        _currentUser = CurrentUser.State;
         return base.OnInitializedAsync();
     }
     bool ItemSelector(UserDashboardWidget item, string dropzone)

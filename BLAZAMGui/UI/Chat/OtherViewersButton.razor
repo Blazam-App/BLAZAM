@@ -2,23 +2,26 @@
 
 
 <MudBadge Color="Color.Info" Content="@OtherViewers.Count()" Overlap=true>
-    <MudMenu AnchorOrigin="@Origin.BottomLeft"
+    <MudMenu AnchorOrigin="@Origin.BottomRight"
              TransformOrigin=Origin.TopRight
              Icon="@Icons.Material.Filled.People">
         @if (ChatRoom?.Messages.Count < 1)
         {
             <MudMenuItem IconSize=Size.Small
-                     Icon="@Icons.Material.Filled.ChatBubble"
-                     OnClick="@OnClick">
+                         Icon="@Icons.Material.Filled.ChatBubble"
+                         OnClick="@OnClick">
                 Start Chat
             </MudMenuItem>
         }
-        <MudText>Other Viewers:</MudText>
-        @foreach (var user in OtherViewers)
-        {
-            <MudText>@user.Username</MudText>
+        <MudList>
+            <MudListSubheader>Other Viewers:</MudListSubheader>
+            @foreach (var user in OtherViewers)
+            {
+                <MudListItem>@user.Username</MudListItem>
 
-        }
+            }
+        </MudList>
+
     </MudMenu>
 </MudBadge>
 @code {

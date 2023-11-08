@@ -81,6 +81,7 @@ namespace BLAZAM.Common.Data
         /// <exception cref="ApplicationException"></exception>
         public T? DecryptObject<T>(string? cipherText)
         {
+            if (cipherText == null) return default;
             try
             {
                 byte[] buffer = Convert.FromBase64String(cipherText);

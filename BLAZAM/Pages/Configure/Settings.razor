@@ -1,5 +1,5 @@
 ﻿@page "/settings"
-@page "/settings/{ActiveTab}"
+@page "/settings/{ActiveTabString}"
 @layout MainLayout
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
@@ -9,76 +9,108 @@
 <SetHeader>
 </SetHeader>
 <AuthorizeView>
-        <MudTabs ActivePanelIndex="@ActiveTab">
-            <MudTabPanel>
-                <ChildContent>
-                    <ApplicationSettings />
+    @{
+        int activeTabIndex = 0;
+        if (ActiveTabString != null && ActiveTabString != String.Empty)
+        {
+            switch (ActiveTabString.ToLower())
+            {
+                case "app":
+                case "application":
+                    activeTabIndex = 0;
+                    break;
+                case "auth":
+                case "authentication":
+                    activeTabIndex = 1;
+                    break;
+                case "update":
+                    activeTabIndex = 5;
+                    break;
+            }
+        }
+    }
+    <MudTabs ActivePanelIndex="@activeTabIndex">
+        <MudTabPanel>
+            <ChildContent>
+                <ApplicationSettings />
 
-                </ChildContent>
-                <TabContent>
-                    @AppLocalization["Application"]
-                </TabContent>
-            </MudTabPanel>
-            <MudTabPanel>
-                <ChildContent>
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Application"]
+            </TabContent>
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
                 <AuthenticationSetting />
 
-                </ChildContent>
-                <TabContent>
-                    @AppLocalization["Authentication"]
-                </TabContent>
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Authentication"]
+            </TabContent>
 
 
-            </MudTabPanel>
-            <MudTabPanel>
-                <ChildContent>
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
                 <DirectorySettings />
 
-                </ChildContent>
-                <TabContent>
-                    @AppLocalization["Active Directory"]
-                </TabContent>
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Active Directory"]
+            </TabContent>
 
 
-            </MudTabPanel>
-            <MudTabPanel >
-                <ChildContent>
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
+                <DatabaseStatus />
+
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Database"]
+            </TabContent>
+
+
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
                 <EmailSettings />
 
-                </ChildContent>
-                <TabContent>
-                    @AppLocalization["Email"]
-                </TabContent>
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Email"]
+            </TabContent>
 
 
-            </MudTabPanel>
-            <MudTabPanel>
-                <ChildContent>
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
                 <UpdateSettings />
 
-                </ChildContent>
-                <TabContent>
-                    @AppLocalization["Update"]
-                </TabContent>
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Update"]
+            </TabContent>
 
 
-            </MudTabPanel>
-            <MudTabPanel>
-                <ChildContent>
-                    <SystemSettings />
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
+                <SystemSettings />
 
-                </ChildContent>
-                <TabContent>
-                    @AppLocalization["System"]
-                </TabContent>
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["System"]
+            </TabContent>
 
 
-            </MudTabPanel>
+        </MudTabPanel>
 
-        </MudTabs>
+    </MudTabs>
 
 </AuthorizeView>
 
 @code {
-
+    [Parameter]
+    public string ActiveTabString { get; set; }
 }

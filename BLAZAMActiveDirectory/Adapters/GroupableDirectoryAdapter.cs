@@ -124,10 +124,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public override DirectoryChangeResult CommitChanges()
+        public override DirectoryChangeResult CommitChanges(DirectoryChangeResult? dcr=null)
         {
-            DirectoryChangeResult dcr = new DirectoryChangeResult();
-            dcr = base.CommitChanges();
+            dcr ??= new DirectoryChangeResult();
+            dcr = base.CommitChanges(dcr);
 
             ToAssignTo.ForEach(g =>
             {

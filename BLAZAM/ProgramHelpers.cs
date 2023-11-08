@@ -33,7 +33,7 @@ namespace BLAZAM.Server
             ApplicationInfo ApplicationInfo = new(builder);
             ApplicationInfo.inDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
             ApplicationInfo.inDemoMode = builder.Configuration.GetValue<bool>("DemoMode");
-
+            
 
             //Set application directories
             //Program.RootDirectory = new SystemDirectory(builder.Environment.ContentRootPath);
@@ -47,6 +47,10 @@ namespace BLAZAM.Server
 
             ApplicationInfo.runningProcess = Process.GetCurrentProcess();
             ApplicationInfo.runningVersion = new ApplicationVersion(Assembly.GetExecutingAssembly()) ;
+
+
+
+
             return builder;
         }
 
@@ -63,7 +67,6 @@ namespace BLAZAM.Server
                     new CultureInfo("fr-FR")
                  };
 
-                options.DefaultRequestCulture = new RequestCulture("fr-FR");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });

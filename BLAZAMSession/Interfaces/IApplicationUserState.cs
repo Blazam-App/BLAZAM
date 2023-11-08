@@ -5,6 +5,7 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Server.Data;
 using Microsoft.AspNetCore.Authentication;
+using System.Net;
 using System.Security.Claims;
 
 namespace BLAZAM.Session.Interfaces
@@ -12,7 +13,7 @@ namespace BLAZAM.Session.Interfaces
     public interface IApplicationUserState
     {
         public int Id { get; }
-        AppEvent<AppUser> OnSettingsChange { get; set; }
+        AppEvent<AppUser> OnSettingsChanged { get; set; }
 
         /// <summary>
         /// Returns the combined names of the user, and if applicable, the impersonators username
@@ -62,6 +63,7 @@ namespace BLAZAM.Session.Interfaces
         IList<UserNotification>? Notifications { get; }
         IApplicationUserSessionCache Cache { get; set; }
 
+        IPAddress IPAddress { get; set; }
 
         string LastUri { get; set; }
         bool IsAuthenticated { get; }

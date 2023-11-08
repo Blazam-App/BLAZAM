@@ -10,6 +10,7 @@ using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Net;
 using System.Security.Claims;
 using System.Xml;
 
@@ -28,7 +29,7 @@ namespace BLAZAM.Server.Data.Services
     public class ApplicationUserState : IApplicationUserState
     {
 
-        public AppEvent<AppUser> OnSettingsChange { get; set; }
+        public AppEvent<AppUser> OnSettingsChanged { get; set; }
 
         public ClaimsPrincipal User { get; set; }
 
@@ -42,6 +43,8 @@ namespace BLAZAM.Server.Data.Services
 
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
 
+
+        public IPAddress IPAddress { get; set; }
 
 
 
@@ -85,6 +88,12 @@ namespace BLAZAM.Server.Data.Services
                 if (notifications.Select(n => n.User).Contains(Preferences))
                     GetUserSettingFromDB();
             };
+            OnSettingsChanged += (state) => { 
+                if (Id == state.Id)
+                {
+
+                }
+            };
         }
 
 
@@ -116,7 +125,7 @@ namespace BLAZAM.Server.Data.Services
                 if (result == 1)
                 {
                     GetUserSettingFromDB();
-                    OnSettingsChange?.Invoke(userSettings);
+                    OnSettingsChanged?.Invoke(userSettings);
 
                     return true;
                 }
@@ -164,8 +173,8 @@ namespace BLAZAM.Server.Data.Services
                     dbUserSettings.SearchDisabledUsers = this.Preferences?.SearchDisabledUsers == true;
                     dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
                     SaveDashboardWidgets(dbUserSettings);
-                    OnSettingsChange?.Invoke(dbUserSettings);
-                    GetUserSettingFromDB();
+                    OnSettingsChanged?.Invoke(dbUserSettings);
+                    //GetUserSettingFromDB();
                     return (await context.SaveChangesAsync()) > 0;
                 }
 

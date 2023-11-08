@@ -135,7 +135,7 @@
 </MudForm>
 @code {
 
-#nullable disable warnings
+    #nullable disable warnings
     ADSettings settings = new ADSettings();
     bool _insert;
 
@@ -163,10 +163,10 @@
     }
     protected override async void Save()
     {
-     
+
         if (!settings.Password.Equals(passwordInDb))
         {
-            settings.Password = EncryptionService.EncryptObject(settings.Password);
+            settings.Password = settings.Password.Encrypt();
             passwordInDb = settings.Password;
         }
         if (_insert)
@@ -176,7 +176,8 @@
         }
         await AuditLogger.System.SettingsChanged("Active Directory", settings.GetChanges(originalSettings));
         base.Save();
- 
+        SettingsSaved.InvokeAsync();
+
 
     }
 

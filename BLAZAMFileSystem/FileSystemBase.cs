@@ -1,4 +1,5 @@
 ﻿using System.Security;
+using System.Security.AccessControl;
 using System.Security.Permissions;
 
 namespace BLAZAM.FileSystem
@@ -22,21 +23,52 @@ namespace BLAZAM.FileSystem
         {
             get
             {
+                string testFilePath = null;
                 try
                 {
-                    var permissionSet = new PermissionSet(PermissionState.None);
-                    var writePermission = new FileIOPermission(FileIOPermissionAccess.Write, Path);
-                    permissionSet.AddPermission(writePermission);
-                    permissionSet.Demand();
-                    return true;
+                    var directoryInfo = new DirectoryInfo(Path);
+                    var fileInfo = new FileInfo(Path);
+                    if (fileInfo.Exists)
+                    {
+                        using (File.Open(Path, FileMode.Open, FileAccess.Write, FileShare.ReadWrite))
+                        {
+                            return true;
+                        }
+
+                    }
+                    else
+                    {
+                        //if (!directoryInfo.Exists) throw new DirectoryNotFoundException("Directory " + Path + " does not exist!");
+
+                        testFilePath = Path + "test.txt";
+                        // Attempt to create a test file within the directory.
+                        
+                        using (File.Create(testFilePath))
+                        {
+                            // If the file can be created, it indicates write permissions on the directory.
+                            return true;
+                        }
+                    }
                 }
-                catch (SecurityException ex)
+                catch (UnauthorizedAccessException)
                 {
-                   //Loggers.SystemLogger.Warning(e.Message);
+                    // Handle unauthorized access or log an error as needed
+                    return false;
+                }
+                catch (IOException)
+                {
+                    // Handle other IO exceptions or log an error as needed
 
                     return false;
                 }
-               
+                finally
+                {
+                    // Clean up the test file if it was created
+                    if (testFilePath != null && File.Exists(testFilePath))
+                    {
+                        File.Delete(testFilePath);
+                    }
+                }
             }
         }
 

@@ -18,6 +18,7 @@ using System.Reflection;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Exceptions;
 using BLAZAM.Services.Background;
+using System.Net;
 
 namespace BLAZAM
 {
@@ -25,7 +26,7 @@ namespace BLAZAM
 
     public class Program
     {
-      
+
         /// <summary>
         /// The writable directry
         /// </summary>
@@ -34,13 +35,13 @@ namespace BLAZAM
         /// </returns>
         internal static SystemDirectory WritablePath => new SystemDirectory(ApplicationInfo.tempDirectory + @"writable\");
 
-    
+
 
         public static SystemDirectory AppDataDirectory { get; set; }
 
 
 
-      
+
         private static IAppDatabaseFactory? _programDbFactory;
 
 
@@ -49,14 +50,10 @@ namespace BLAZAM
 
 
 
-        /// <summary>
-        /// Can be used for JWT Token signing
-        /// </summary>
-        internal static SymmetricSecurityKey? TokenKey;
 
         /// <summary>
-        /// A static reference for the current asp
-        /// net core application instance
+        /// A static reference for the current ASP
+        /// Net Core application instance
         /// </summary>
         public static WebApplication AppInstance { get; private set; }
         /// <summary>
@@ -95,12 +92,17 @@ namespace BLAZAM
 
             //Setup host logging so it can catch the earliest logs possible
 
-            Loggers.SetupLoggers(WritablePath + @"logs\",ApplicationInfo.runningVersion.ToString());
+            Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
             builder.Host.UseSerilog(Log.Logger);
 
-            Log.Information("Application Starting");
+            Log.Warning("Application Starting {@ProcessName}", ApplicationInfo.runningProcess.ProcessName);
 
             builder.InjectServices();
+
+            SetupKestrel(builder);
+
+
+            builder.Services.AddCors();
 
 
             //Done with service injection let's build the App
@@ -108,7 +110,10 @@ namespace BLAZAM
 
             ApplicationInfo.services = AppInstance.Services;
 
+         
+            // Configure the HTTP request pipeline.
 
+           
 
 
 
@@ -138,6 +143,12 @@ namespace BLAZAM
             AppInstance.UseMiddleware<ApplicationStatusRedirectMiddleware>();
             AppInstance.UseStaticFiles();
             AppInstance.UseRouting();
+            //AppInstance.UseCors(builder =>
+            //      builder.AllowAnyOrigin()
+            //      .SetIsOriginAllowed((host) => true)
+            //      .AllowAnyMethod()
+            //      .AllowAnyHeader());
+            
             AppInstance.UseCookiePolicy();
             AppInstance.UseAuthentication();
             AppInstance.UseAuthorization();
@@ -146,8 +157,6 @@ namespace BLAZAM
             AppInstance.MapBlazorHub();
             AppInstance.MapFallbackToPage("/_Host");
 
-            StartDatabaseCache();
-
             AppInstance.Start();
             GetRunningWebServerConfiguration();
             ScheduleAutoLoad();
@@ -155,6 +164,46 @@ namespace BLAZAM
             AppInstance.WaitForShutdown();
             Log.Information("Application Shutting Down");
             //AppInstance.Run();
+
+        }
+
+        private static void SetupKestrel(WebApplicationBuilder builder)
+        {
+            //Temporary if during developementt
+            if (!ApplicationInfo.isUnderIIS)
+            {
+                var listeningAddress = Configuration.GetValue<string>("ListeningAddress");
+                var httpPort = Configuration.GetValue<int>("HTTPPort");
+                var httpsPort = Configuration.GetValue<int>("HTTPSPort");
+                builder.WebHost.UseKestrel(options =>
+                {
+                    if (listeningAddress == "*")
+                    {
+                        options.ListenAnyIP(httpPort);
+                        if (httpsPort != 0)
+                        {
+                            options.ListenAnyIP(httpsPort, configure =>
+                            {
+                                configure.UseHttps();
+                            });
+                        }
+                    }
+
+                    else
+                    {
+                        var ip = IPAddress.Parse(listeningAddress);
+                        
+                        options.Listen(ip, httpPort);
+                        if (httpsPort != 0)
+                        {
+                            options.Listen(ip, httpsPort, configure =>
+                            {
+                                configure.UseHttps();
+                            });
+                        }
+                    }
+                });
+            }
 
         }
 
@@ -184,15 +233,7 @@ namespace BLAZAM
             }
         }
 
-        private static void StartDatabaseCache()
-        {
-            //Start the database cache
-            using (var scope = AppInstance.Services.CreateScope())
-            {
-                _programDbFactory = scope.ServiceProvider.GetRequiredService<IAppDatabaseFactory>();
-                DatabaseCache.Start(_programDbFactory);
-            }
-        }
+
 
 
         public static bool IsDevelopment
@@ -231,7 +272,7 @@ namespace BLAZAM
 
         //}
 
-      
+
 
     }
 }
