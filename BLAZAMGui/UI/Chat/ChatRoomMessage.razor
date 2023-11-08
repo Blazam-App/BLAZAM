@@ -27,6 +27,7 @@
         <MudStack Row="true">
             <MudChip Size=Size.Small Color="Color.Secondary">@Message.User.Username</MudChip>
             <MudText Class="align-middle">@Message.Message</MudText>
+           
         </MudStack>
         <MudTooltip Text="@localTimestamp.ToString()" ShowOnHover=@timestampeShortend>
 
@@ -44,11 +45,11 @@ else
                  Color="Color.Tertiary">
                 @Message.User.Username
             </MudChip>
-
+            
         </MudStack>
-        <MudTooltip Style="z-index:1500 !important;" Text="@localTimestamp.ToString()" ShowOnHover=@timestampeShortend>
+        <MudTooltip RootClass="align-end" Style="z-index:1500 !important;" Text="@localTimestamp.ToString()" ShowOnHover=@timestampeShortend>
 
-            <MudText Class="w-max align-end" Typo="Typo.caption">@timestamp</MudText>
+            <MudText Class="w-max" Typo="Typo.caption">@timestamp</MudText>
         </MudTooltip>
     </MudStack>
 

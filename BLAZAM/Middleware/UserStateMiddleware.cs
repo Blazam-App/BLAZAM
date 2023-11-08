@@ -22,7 +22,8 @@ namespace BLAZAM.Server.Middleware
         public Task Invoke(HttpContext httpContext,ICurrentUserStateService currentUserStateService,IApplicationUserStateService userStateService)
         {
             currentUserStateService.State = userStateService.GetUserState(httpContext.User);
- 
+            if (httpContext!=null && httpContext.Connection!=null && httpContext.Connection.RemoteIpAddress!=null && currentUserStateService.State!=null && currentUserStateService.State.IPAddress != httpContext.Connection.RemoteIpAddress)
+                currentUserStateService.State.IPAddress = httpContext.Connection.RemoteIpAddress;
             return _next(httpContext);
         }
     }
