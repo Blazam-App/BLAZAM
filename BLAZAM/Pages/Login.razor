@@ -120,14 +120,18 @@
         await InvokeAsync(StateHasChanged);
         string? authenticationResult;
         if (ValidateInput(out authenticationResult))
-            try{
-                authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn", null);
-            }catch(Exception ex)
+        {
+            try
+            {
+                var result = await JSRuntime.InvokeAsync<object>("attemptSignIn", null);
+                authenticationResult = result.ToString(); 
+            }
+            catch (Exception ex)
             {
 
                 SnackBarService.Info(ex.Message);
             }
-
+        }
         attemptingSignIn = false;
 
         if (!authenticationResult.IsNullOrEmpty())
@@ -184,5 +188,5 @@
             validationResult = ((int)LoginResultStatus.NoUsername).ToString();
         return false;
     }
-
+    
 }

@@ -57,6 +57,13 @@ namespace BLAZAM.Server
         public static WebApplicationBuilder InjectServices(this WebApplicationBuilder builder)
         {
 
+
+            //In-Memory
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(1);
+            });
+
             //Set up string localization
             builder.Services.AddLocalization();
             builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -237,7 +244,7 @@ namespace BLAZAM.Server
 
 
             builder.Host.UseWindowsService();
-
+            
             return builder;
         }
     }

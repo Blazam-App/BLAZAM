@@ -110,13 +110,11 @@ namespace BLAZAM
 
             ApplicationInfo.services = AppInstance.Services;
 
-         
+
             // Configure the HTTP request pipeline.
 
+
            
-
-
-
 
             AppInstance.UseSerilogRequestLogging(configureOptions => configureOptions.Logger = Loggers.RequestLogger);
 
@@ -142,6 +140,7 @@ namespace BLAZAM
             AppInstance.UseMiddleware<HttpsRedirectionMiddleware>();
             AppInstance.UseMiddleware<ApplicationStatusRedirectMiddleware>();
             AppInstance.UseStaticFiles();
+            AppInstance.UseSession();
             AppInstance.UseRouting();
             //AppInstance.UseCors(builder =>
             //      builder.AllowAnyOrigin()
