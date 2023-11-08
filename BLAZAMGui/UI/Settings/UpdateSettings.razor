@@ -10,36 +10,39 @@
     @if (settings != null)
     {
 
-
-        @switch (UpdateCredential)
+        if (updateCredential.HasValue)
         {
-            case UpdateCredential.Application:
-                <MudAlert Icon="@Icons.Material.Filled.Warning" Class="mud-alert-filled-warning">
-                    The account running Blazam can write to the application directory.
-                    This exposes the host machine to unneccessary risk. Change the application identity
-                    to a lower privileged account to improve security.
-                </MudAlert>
-                break;
-            case UpdateCredential.Active_Directory:
-                <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" />
+            @switch (updateCredential.Value)
+            {
+                case UpdateCredential.Application:
+                    <MudAlert Icon="@Icons.Material.Filled.Warning" Class="mud-alert-filled-warning">
+                        The account running Blazam can write to the application directory.
+                        This exposes the host machine to unneccessary risk. Change the application identity
+                        to a lower privileged account to improve security.
+                    </MudAlert>
+                    break;
+                case UpdateCredential.Active_Directory:
+                    <MudAlert Icon="@Icons.Material.Filled.Check" Class="mud-alert-filled-success">
+                        The Active Directory Credentials are validated for updating.
+                    </MudAlert>
+                   
+                    break;
+                case UpdateCredential.Update:
+                    <MudAlert Icon="@Icons.Material.Filled.Check" Class="mud-alert-filled-success">
+                        The Update Credentials are validated for updating.
+                    </MudAlert>
+                   
+                    break;
+                case UpdateCredential.None:
+                    <MudAlert Icon="@Icons.Material.Filled.Error" Class="mud-alert-filled-error">
+                        There are no credentials configured with write permission to the application directory!
+                        Try configuring custom update credentials.
+                    </MudAlert>
+                    break;
 
-                <MudText>
-                    The Active Directory Credentials are validated for updating.
-                </MudText>
-                break;
-            case UpdateCredential.Update:
-                <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" />
+              
+            }
 
-                <MudText>
-                    The Update Credentials are validated for updating.
-                </MudText>
-                break;
-            case UpdateCredential.None:
-                <MudAlert Class="mud-alert-filled-error">
-                    There are no credentials configured with write permission to the application directory!
-                    Try configuring custom update credentials.
-                </MudAlert>
-                break;
         }
         <SettingsField Label="@AppLocalization["Application Credentials"]">
 
@@ -147,7 +150,7 @@
     string? updatePasswordInDb;
     bool applicationIdentityCanWrite;
     bool haveCredentialsToApplicationRootDirectory;
-    UpdateCredential UpdateCredential;
+    UpdateCredential? updateCredential=null;
     ManualApplicationUpdater? appUpdateComponent;
     AppSettings? settings = new AppSettings();
     List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev };
@@ -162,7 +165,7 @@
             //Pull encrypted update pass and store encrypted value
             updatePasswordInDb = settings?.UpdatePassword;
             newUpdatePassword = updatePasswordInDb;
-            UpdateCredential = UpdateService.UpdateCredential;
+            updateCredential = UpdateService.UpdateCredential;
 
         }
         LoadingData = false;

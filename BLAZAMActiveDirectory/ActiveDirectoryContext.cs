@@ -173,7 +173,7 @@ namespace BLAZAM.ActiveDirectory
         {
             get
             {
-                return ConnectionSettings.CreateWindowsImpersonator();
+                return ConnectionSettings.CreateDirectoryAdminImpersonator();
             }
         }
         /// <summary>
