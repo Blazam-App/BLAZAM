@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.8.4</AssemblyVersion>
-		<Version>2023.11.09.1349</Version>
+		<Version>2023.11.09.1634</Version>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 
@@ -84,6 +84,7 @@
 	<ItemGroup>
 	  <None Include="..\BLAZAMGui\UI\Chat\ChatMessage.razor" Link="ChatMessage.razor" />
 	  <None Include="..\BLAZAMGui\UI\Inputs\ADAutoCompleteResult.razor" Link="ADAutoCompleteResult.razor" />
+	  <None Include="..\BLAZAMGui\UI\Settings\AvailableUpdate.razor" Link="AvailableUpdate.razor" />
 	  <None Include="..\BLAZAMGui\UI\Settings\Templates\AssignedTemplateGroup.razor" Link="AssignedTemplateGroup.razor" />
 	</ItemGroup>
 
