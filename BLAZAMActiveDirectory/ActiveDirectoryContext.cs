@@ -37,6 +37,7 @@ namespace BLAZAM.ActiveDirectory
         private INotificationPublisher _notificationPublisher;
         public static ActiveDirectoryContext Instance;
 
+        public int FailedConnectionAttempts { get; set; } = 0;
 
         private AuthenticationTypes _authType;
 
@@ -357,7 +358,10 @@ namespace BLAZAM.ActiveDirectory
                                                     Message = "The configured BaseDN is not valid. Please correct your settings.",
                                                     Title = "Active Directory Error"
                                                 });
-                                                Status = DirectoryConnectionStatus.BadConfiguration; return;
+                                                Status = DirectoryConnectionStatus.BadConfiguration;
+                                                if (FailedConnectionAttempts < 10)
+                                                    FailedConnectionAttempts++; 
+                                                return;
                                             }
                                         }
                                         catch (Exception ex)
@@ -369,7 +373,10 @@ namespace BLAZAM.ActiveDirectory
                                                     Message = "The configured BaseDN is not valid. Please correct your settings.",
                                                     Title = "Active Directory Error"
                                                 });
-                                            Status = DirectoryConnectionStatus.BadConfiguration; return;
+                                            Status = DirectoryConnectionStatus.BadConfiguration;
+                                            if (FailedConnectionAttempts < 10)
+                                                FailedConnectionAttempts++; 
+                                            return;
 
                                         }
 
@@ -388,13 +395,16 @@ namespace BLAZAM.ActiveDirectory
                                                     DomainControllers.Add(dc);
 
                                                 }
+                                                FailedConnectionAttempts = 0;
                                             }
                                             else
                                             {
                                                 Loggers.ActiveDirectryLogger.Warning("Active Directory test failed");
 
                                                 Status = DirectoryConnectionStatus.BadConfiguration;
-
+                                                if (FailedConnectionAttempts < 10)
+                                                    FailedConnectionAttempts++;;
+                                                return;
                                             }
                                         }
                                         catch (Exception ex)
@@ -424,17 +434,26 @@ namespace BLAZAM.ActiveDirectory
                                         Loggers.ActiveDirectryLogger.Warning("Error connecting to Active Directory {@Error}", ex);
 
                                         Status = DirectoryConnectionStatus.BadConfiguration;
+                                        if (FailedConnectionAttempts < 10)
+                                            FailedConnectionAttempts++; ;
+                                        return;
                                     }
                                     catch (CryptographicException ex)
                                     {
                                         Loggers.ActiveDirectryLogger.Warning("Unable to decrypt Active Directory password {@Error}", ex);
                                         Status = DirectoryConnectionStatus.UnreachableConfiguration;
+                                        if (FailedConnectionAttempts < 10)
+                                            FailedConnectionAttempts++; ;
+                                        return;
 
                                     }
                                     catch (Exception ex)
                                     {
                                         Loggers.ActiveDirectryLogger.Error("Unexpected Error connecting to Active Directory {@Error}", ex);
                                         Status = DirectoryConnectionStatus.BadConfiguration;
+                                        if (FailedConnectionAttempts < 10)
+                                            FailedConnectionAttempts++; ;
+                                        return;
 
                                     }
                                 }
@@ -443,13 +462,18 @@ namespace BLAZAM.ActiveDirectory
                                     Loggers.ActiveDirectryLogger.Warning("Active Directory port is not open");
 
                                     Status = DirectoryConnectionStatus.ServerDown;
+                                    if (FailedConnectionAttempts < 10)
+                                        FailedConnectionAttempts++; ;
+                                    return;
                                 }
                             }
                         }
                     }
                 }
                 Status = DirectoryConnectionStatus.Unconfigured;
-
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++; ;
+                return;
 
             }
             catch (Exception ex)
@@ -457,7 +481,9 @@ namespace BLAZAM.ActiveDirectory
                 Loggers.ActiveDirectryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
 
                 Status = DirectoryConnectionStatus.ServerDown;
-
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++; ;
+                return;
             }
         }
 
