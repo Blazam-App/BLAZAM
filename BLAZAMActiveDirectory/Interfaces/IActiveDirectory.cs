@@ -72,7 +72,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         WindowsImpersonation Impersonation { get; }
         List<DomainController> DomainControllers { get; }
 
-        IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid);
+        IDirectoryEntryAdapter? GetDirectoryEntryBySid(string sid);
 
         IDirectoryEntryAdapter? FindEntryBySID(byte[] sid);
 

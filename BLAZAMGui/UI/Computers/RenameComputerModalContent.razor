@@ -35,7 +35,7 @@ else
     {
         await base.OnInitializedAsync();
 
-        _privateComputerInstance = Directory.GetDirectoryModelBySid(Computer.SID.ToSidString()) as IADComputer;
+        _privateComputerInstance = Directory.GetDirectoryEntryBySid(Computer.SID.ToSidString()) as IADComputer;
 
         SaveDisabled = false;
         Modal.OnYes = SaveChanges;
