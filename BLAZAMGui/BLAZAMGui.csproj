@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -28,7 +28,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.5" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.5" />
     <PackageReference Include="MudBlazor" Version="6.2.2" />
-    <PackageReference Include="MudBlazor.Markdown" Version="0.1.0" />
+    <PackageReference Include="MudBlazor.Markdown" Version="0.1.2" />
   </ItemGroup>
 
   <ItemGroup>
