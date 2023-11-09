@@ -77,46 +77,60 @@
                         <h4>Update Available</h4>
 
                     }
-                    <MudStack Row=true Class="w-100">
-
-                        <MudCard Class="mud-theme-success">
-                            <MudCardHeader Class="pb-0">Current Version</MudCardHeader>
-                            <MudCardContent>
-                                <MudText>@ApplicationInfo.RunningVersion</MudText>
-
-                            </MudCardContent>
-                        </MudCard>
-
-                        <MudIcon class="align-middle" Icon="@Icons.Material.Filled.ArrowRightAlt" Size="Size.Large" />
-
-                        <MudCard Class="mud-theme-info">
-                            <MudCardHeader Class="pb-0">
-
-                                <ChildContent>
-                                    Available Version
-                                    <MudIconButton Color="Color.Tertiary" Icon="@Icons.Material.Filled.QuestionMark" OnClick=@ShowReleaseNotes />
-
-                                </ChildContent>
-
-                            </MudCardHeader>
-                            <MudCardContent>
-                                @LatestAvailableVersion.Branch<br />
-                                <MudText>@LatestAvailableVersion.Version</MudText>
-
-                                @LatestAvailableVersion.Release.ReleaseTime?.ToLocalTime().DateTime<br />
-                                @if (ApplicationInfo.InDebugMode)
-                                {
-                                    <MudButton Disabled=@(AutoUpdateService.IsUpdatedScheduled) OnClick=TestAutoUpdate Color="Color.Success">Test Auto Update</MudButton>
-
-                                    <br />
+                    <MudTimeline TimelineAlign="TimelineAlign.Default">
+                        <MudTimelineItem Color="Color.Info" Size="Size.Small">
+                            <ItemOpposite>
+                                @{
+                                    DateTime firstRelease = DateTime.Parse("March 4, 2023");
                                 }
-                                <MudButton Color=Color.Success OnClick="ApplyUpdate">Apply Update</MudButton>
+                                <MudText Color="Color.Info" Typo="Typo.h5">
+                                    @firstRelease.ToString("MMMM d, yyyy")</MudText>
+                            </ItemOpposite>
+                            <ItemContent>
+                                <MudCard Class="pa-3">
+                                    <MudText Color="Color.Info" Typo="Typo.h6" GutterBottom="true">First Release</MudText>
+                                    <MudText Class="pa-6">Blazam Beta 0.6.7 released.</MudText>
+                                </MudCard>
+                            </ItemContent>
+                        </MudTimelineItem>
+                        <MudTimelineItem Color="Color.Success" Size="Size.Small" TimelineAlign="TimelineAlign.End">
+                            <ItemOpposite>
+                                <MudText Color="Color.Success" Typo="Typo.h5">@ApplicationInfo.runningVersion.ReleaseDate.ToString("MMMM d, yyyy")</MudText>
+                            </ItemOpposite>
+                            <ItemContent>
+                                <MudCard Class="pa-3">
 
+                                    <MudText Color="Color.Success" Typo="Typo.h6" GutterBottom="true">Current Version</MudText>
+                                    <MudText Class="pa-6">@ApplicationInfo.runningVersion</MudText>
+                                </MudCard>
+                            </ItemContent>
+                        </MudTimelineItem>
+                        <MudTimelineItem Color="Color.Error" Size="Size.Small">
+                            <ItemOpposite>
+                                <MudText Color="Color.Error" Typo="Typo.h5">@LatestAvailableVersion.Version.ReleaseDate.ToString("MMMM d, yyyy")</MudText>
+                            </ItemOpposite>
+                            <ItemContent>
+                                <MudCard Class="pa-3">
 
-                            </MudCardContent>
-                        </MudCard>
+                                    <MudText Color="Color.Error" Typo="Typo.h6" GutterBottom="true">Available Update</MudText>
+                                    <MudExpansionPanels Elevation=0 DisableBorders=true>
+                                        <MudExpansionPanel Text="@LatestAvailableVersion.Version.ToString()">
+                                            <MudMarkdown OverrideHeaderTypo=ConvertHeaders Value="@LatestAvailableVersion.Release.ReleaseNotes" />
+                                        </MudExpansionPanel>
+                                    </MudExpansionPanels>
+                                    <MudButton Class="mx-6" Variant=Variant.Filled Color=Color.Success OnClick="ApplyUpdate">Apply Update</MudButton>
+                                    @if (ApplicationInfo.InDebugMode)
+                                    {
+                                        <MudButton Class="mx-6" Disabled=@(AutoUpdateService.IsUpdatedScheduled) OnClick=TestAutoUpdate Color="Color.Success">Test Auto Update</MudButton>
 
-                    </MudStack>
+                                       
+                                    }
+                                </MudCard>
+                                @* <AvailableUpdate Update=@LatestAvailableVersion OnApply="ApplyUpdate"/>*@
+                            </ItemContent>
+                        </MudTimelineItem>
+                    </MudTimeline>
+
                     @if (AutoUpdateService.IsUpdatedScheduled)
                     {
                         <MudButton OnClick=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Error">Cancel Auto Update</MudButton>
@@ -124,8 +138,8 @@
                 }
                 if (LatestAvailableVersion != null && !LatestAvailableVersion.Newer)
                 {
-                    <MudIcon Class="d-inline" Icon="@Icons.Material.Filled.Check" Color="Color.Success"/>
-                        <MudText Class="d-inline">Application is up to date</MudText>
+                    <MudIcon Class="d-inline" Icon="@Icons.Material.Filled.Check" Color="Color.Success" />
+                    <MudText Class="d-inline">Application is up to date</MudText>
                 }
                 break;
 
@@ -133,17 +147,10 @@
     }
 }
 
-@if (Monitor.DatabaseUpdatePending)
-{
-    <MudText>A database update needs to be applied</MudText>
-    <MudButton Color=Color.Primary OnClick="UpdateDB">Update</MudButton>
-}
-<AppModal Title=@(LatestAvailableVersion?.Version+" Release Notes") @ref="@_releaseNotesModal">
-    <ReleaseNotesModalContent Update="LatestAvailableVersion" />
-</AppModal>
+
+
 
 @code {
-    AppModal? _releaseNotesModal;
     ApplicationUpdate? LatestAvailableVersion { get; set; }
 
     UpdateStage updateStage = UpdateStage.None;
@@ -171,6 +178,31 @@
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
     }
+
+    private Typo ConvertHeaders(Typo from)
+    {
+        switch (from)
+        {
+            case Typo.h1:
+                return Typo.h3;
+
+            case Typo.h2:
+                return Typo.h4;
+            case Typo.h3:
+                return Typo.h5;
+            case Typo.h4:
+                return Typo.h6;
+
+            case Typo.h5:
+                return Typo.h6;
+
+            case Typo.h6:
+                return Typo.h6;
+            default:
+                return from;
+        }
+    }
+
     async Task ApplyUpdate()
     {
         if (LatestAvailableVersion == null)
@@ -236,11 +268,7 @@
         updateStage = UpdateStage.None;
 
     }
-    void TestAutoUpdate()
-    {
-        if (LatestAvailableVersion != null)
-            AutoUpdateService.ScheduleUpdate(DateTime.Now.TimeOfDay + TimeSpan.FromSeconds(30), LatestAvailableVersion);
-    }
+
     async void UpdateDownloadPercentage(FileProgress? progress)
     {
 
@@ -248,25 +276,12 @@
         await InvokeAsync(StateHasChanged);
 
     }
-    protected void UpdateDB()
+
+    void TestAutoUpdate()
     {
-        Task.Run(async () =>
-        {
-
-            await InvokeAsync(StateHasChanged);
-            if (await DbFactory.ApplyDatabaseMigrations())
-            {
-            }
-
-            await InvokeAsync(StateHasChanged);
-
-        });
+        if (LatestAvailableVersion != null)
+            AutoUpdateService.ScheduleUpdate(DateTime.Now.TimeOfDay + TimeSpan.FromSeconds(60), LatestAvailableVersion);
     }
 
-    void ShowReleaseNotes()
-    {
-        _releaseNotesModal?.Show();
-        //MessageService.Info(LatestAvailableVersion.Release.ReleaseNotes, LatestAvailableVersion.Version + " Release Notes");
-    }
 
 }
