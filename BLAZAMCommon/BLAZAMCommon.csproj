@@ -20,7 +20,7 @@
   <ItemGroup>
     <PackageReference Include="BlazorTemplater" Version="1.5.1" />
     <PackageReference Include="Cassia" Version="2.0.0.60" />
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.24" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.5" />
@@ -32,12 +32,12 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.0.2" />
     <PackageReference Include="System.DirectoryServices" Version="7.0.1" />
-    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="7.0.0" />
-    <PackageReference Include="System.DirectoryServices.Protocols" Version="7.0.0" />
-    <PackageReference Include="System.Management" Version="7.0.1" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="7.0.1" />
+    <PackageReference Include="System.DirectoryServices.Protocols" Version="7.0.1" />
+    <PackageReference Include="System.Management" Version="7.0.2" />
   </ItemGroup>
 
   <ItemGroup>
