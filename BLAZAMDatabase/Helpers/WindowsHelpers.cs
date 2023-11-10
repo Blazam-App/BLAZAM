@@ -12,7 +12,7 @@ namespace BLAZAM.Helpers
         /// </summary>
         /// <param name="settings"></param>
         /// <returns></returns>
-        public static WindowsImpersonation CreateWindowsImpersonator(this ADSettings settings)
+        public static WindowsImpersonation CreateDirectoryAdminImpersonator(this ADSettings settings)
         {
             return new(new()
             {
@@ -27,7 +27,7 @@ namespace BLAZAM.Helpers
         /// </summary>
         /// <param name="settings"></param>
         /// <returns></returns>
-        public static WindowsImpersonation? CreateWindowsImpersonator(this AppSettings settings)
+        public static WindowsImpersonation? CreateUpdateImpersonator(this AppSettings settings)
         {
             if (settings != null && settings.UpdateUsername != null && settings.UpdatePassword != null)
                 return new(new()

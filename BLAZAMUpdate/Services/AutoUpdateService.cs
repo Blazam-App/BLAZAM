@@ -1,6 +1,7 @@
 ﻿using BLAZAM.Common;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
+using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
@@ -49,14 +50,53 @@ namespace BLAZAM.Update.Services
                     var fileVersion = new ApplicationVersion(file.Name);
                     if (fileVersion.CompareTo(_applicationInfo.RunningVersion) < 0 && file.SinceLastModified > TimeSpan.FromDays(1))
                     {
-                        Loggers.UpdateLogger.Debug("Deleting old update file: " + file);
-                        file.Delete();
+                        if (file.Writable)
+                        {
+                            Loggers.UpdateLogger.Debug("Deleting old update file: " + file);
+
+                            file.Delete();
+
+                        }
+                        else
+                        {
+                            Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file: " + file);
+
+                            var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault().CreateUpdateImpersonator();
+                            if(!impersonation.Run(() => {
+                                if (file.Writable)
+                                {
+                                    file.Delete();
+                                    return true;
+                                }
+                                return false;
+                            }))
+                            {
+                                impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault().CreateDirectoryAdminImpersonator();
+                                if (!impersonation.Run(() => {
+                                    if (file.Writable)
+                                    {
+                                        file.Delete();
+                                        return true;
+                                    }
+                                    return false;
+                                }))
+                                {
+                                    Loggers.UpdateLogger.Error("No identies with permission to remove old update file: " + file);
+
+                                }
+                            }
+                        }
                     }
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Loggers.UpdateLogger.Debug("Deleting unknown file: " + file, ex);
-                    file.Delete();
+                    Loggers.UpdateLogger.Warning("Tried to delete non-existant file: " + file, ex);
+                    //file.Delete();
+                }
+                catch (Exception ex)
+                {
+                    Loggers.UpdateLogger.Error("Other error deleting file: " + file, ex);
+                    //file.Delete();
                 }
 
             }

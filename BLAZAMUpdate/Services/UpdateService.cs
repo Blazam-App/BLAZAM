@@ -133,7 +133,7 @@ namespace BLAZAM.Update.Services
                 var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
                 //Make sure we got the settings
                 if (adSettings != null)
-                    impersonation = adSettings.CreateWindowsImpersonator();
+                    impersonation = adSettings.CreateDirectoryAdminImpersonator();
                 //Make sure impersonation set up and test write permissions
                 if (impersonation != null && impersonation.Run(() =>
                 {
@@ -154,7 +154,7 @@ namespace BLAZAM.Update.Services
                 //Test Update Credentials
                 var appSettings = context.AppSettings.FirstOrDefault();
                 if (appSettings != null)
-                    impersonation = appSettings?.CreateWindowsImpersonator();
+                    impersonation = appSettings?.CreateUpdateImpersonator();
 
                 if (impersonation != null && impersonation.Run(() =>
                 {

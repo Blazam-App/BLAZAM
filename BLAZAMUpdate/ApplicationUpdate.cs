@@ -215,7 +215,7 @@ namespace BLAZAM.Update
 
                 if (settings == null) throw new ApplicationUpdateException("No credentials are configured for updates");
 
-                var impersonation = settings.CreateWindowsImpersonator();
+                var impersonation = settings.CreateDirectoryAdminImpersonator();
                 try
                 {
 

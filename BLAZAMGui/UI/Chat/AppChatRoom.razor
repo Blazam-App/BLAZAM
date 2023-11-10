@@ -6,12 +6,12 @@
         {
             var chatRoomName = "";
             if (ChatRoom.Name == "/")
-                chatRoomName = "App Chat";
+                chatRoomName = @AppLocalization["App Chat"];
             else if (ChatRoom.Name.StartsWith("/"))
-                chatRoomName = "App Chat";
+                chatRoomName = @AppLocalization["App Chat"];
             else
 
-                chatRoomName = ChatRoom.Name + " Chat";
+                chatRoomName = ChatRoom.Name + " " + @AppLocalization["Chat"];
             <MudText Typo="Typo.h6">@chatRoomName</MudText>
         }
         <MudStack Row=true Spacing="2">
@@ -42,6 +42,7 @@
                       @bind-Text=@draftMessage />
 
             <MudIconButton OnClick=@PostMessage
+                        Title="Post Message"
                        Icon="@Icons.Material.Filled.Send"
                        ButtonType="ButtonType.Submit" Class="align-middle" />
 
@@ -49,7 +50,7 @@
         <MudButton OnClick="@(()=>{OnCloseClicked.InvokeAsync();})"
                Class="ml-auto mr-n3 mb-1"
                Color="Color.Error">
-            Close
+            @AppLocalization["Close"]
         </MudButton>
     }
 </MudContainer>
@@ -85,7 +86,7 @@
                 //if (message.User != CurrentUser.State.Preferences)
                 //{
                     await Task.Delay(100);
-                    ChatRoom.Messages.Add(message);
+                    //ChatRoom.Messages.Add(message);
                     await InvokeAsync(StateHasChanged);
 
                 //}

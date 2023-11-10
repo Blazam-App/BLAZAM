@@ -28,6 +28,12 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         DirectoryConnectionStatus Status { get; }
 
         /// <summary>
+        /// How many time the connection has failed.
+        /// Max value should not exceed 10
+        /// </summary>
+        int FailedConnectionAttempts { get; set; }
+
+        /// <summary>
         /// The application scoped directory entry root
         /// </summary>
         DirectoryEntry? AppRootDirectoryEntry { get; }
@@ -72,7 +78,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         WindowsImpersonation Impersonation { get; }
         List<DomainController> DomainControllers { get; }
 
-        IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid);
+        IDirectoryEntryAdapter? GetDirectoryEntryBySid(string sid);
 
         IDirectoryEntryAdapter? FindEntryBySID(byte[] sid);
 
