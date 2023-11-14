@@ -135,7 +135,7 @@ namespace BLAZAM.Update.Services
                 {
                     Loggers.UpdateLogger.Information("Checking for automatic update");
 
-                    var latestUpdate = await updateService.GetLatestUpdate();
+                    var latestUpdate = await updateService.GetUpdates();
                     if (latestUpdate != null && latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdateTime != null)
                     {
                         ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
@@ -232,7 +232,7 @@ namespace BLAZAM.Update.Services
 
                     autoUpdateApplyTimer = null;
                     ScheduledUpdateTime = DateTime.MinValue;
-                    var latestUpdate = await updateService.GetLatestUpdate();
+                    var latestUpdate = await updateService.GetUpdates();
                     try
                     {
                         OnAutoUpdateStarted?.Invoke();
