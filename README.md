@@ -1,7 +1,5 @@
 # BLAZAM
 
-This app is still in Beta. If you choose to install now, you may need to re-install from scratch in a future update.
-
 ## Website
 [blazam.org](https://blazam.org)
 
@@ -13,8 +11,11 @@ This app is still in Beta. If you choose to install now, you may need to re-inst
 [docs.blazam.org](https://docs.blazam.org)
 
 ## Installation
-Blazam's MSI installer is still under construction. Therefore,
-the only option to install for now is a [manual installation](https://docs.blazam.org/install/manual)
+Blazam's Web Installer is the recommended installation method.
+
+[Web Installer](https://blazam.org/download)
+
+[Manual Installation](https://docs.blazam.org/install/manual)
 
 ## Who is it for?
 * Do you manage an Active Directory environment?
