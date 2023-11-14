@@ -78,20 +78,70 @@
 
                     }
                     <MudTimeline TimelineAlign="TimelineAlign.Default" TimelinePosition="TimelinePosition.Top">
-                       
                         @{
-                            int i =1;
+                            int i = 0;
                         }
-                        @foreach(var update in UpdateService.StableUpdates.OrderBy(x=>x.Version))
+                        @if (!ShowAllUpdates)
                         {
-                           
+                            <MudTimelineItem Color="Color.Info" Size="Size.Small">
+                                <ItemOpposite>
+                                    <MudText Color="Color.Info" Typo="Typo.h5">@AppLocalization["Previous Versions"]</MudText>
+                                </ItemOpposite>
+                                <ItemContent>
+                                    <MudCard Class="pa-3">
 
-                                    <AvailableUpdate Update=@update OnApply="ApplyUpdate" Disabled=true Even=@(i%2==0)/>
-                           
+                              
+                                                <MudButton Class="mx-6" OnClick="(()=>{ShowAllUpdates=true;})" Color="Color.Success">Show Previous Updates</MudButton>
+
+
+                                          
+                                    </MudCard>
+
+
+                                </ItemContent>
+                            </MudTimelineItem>
+                            @foreach (var update in UpdateService.StableUpdates.Where(x=>x.Version.CompareTo(ApplicationInfo.RunningVersion)>0).OrderBy(x => x.Version))
+                            {
+
+
+                                <AvailableUpdate Update=@update OnApply="ApplyUpdate" Disabled=true Even=@(i%2==0) />
+
                                 i++;
-                            
+
+                            }
+
                         }
-                        
+                        else
+                        {
+                             <MudTimelineItem Color="Color.Info" Size="Size.Small">
+                                <ItemOpposite>
+                                </ItemOpposite>
+                                <ItemContent>
+                                    <MudCard Class="pa-3">
+
+
+                                        <MudButton Class="mx-6" OnClick="(()=>{ShowAllUpdates=false;})" Color="Color.Success">Hide Previous Updates</MudButton>
+
+
+
+                                    </MudCard>
+
+
+                                </ItemContent>
+                            </MudTimelineItem>
+                            @foreach (var update in UpdateService.StableUpdates.OrderBy(x => x.Version))
+                            {
+
+
+                                <AvailableUpdate Update=@update OnApply="ApplyUpdate" Disabled=true Even=@(i%2==0) />
+
+                                i++;
+
+                            }
+                           
+                        }
+                     
+                      
                     </MudTimeline>
 
                     @if (AutoUpdateService.IsUpdatedScheduled)
@@ -120,6 +170,7 @@
 
     FileProgress? DownladProgress { get; set; } = null;
 
+    private bool ShowAllUpdates { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
