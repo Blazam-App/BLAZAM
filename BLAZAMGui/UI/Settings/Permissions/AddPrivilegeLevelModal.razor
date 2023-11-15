@@ -2,16 +2,18 @@
 <MudDialog @ref="Modal">
     <MudText>Add Delegate</MudText>
     <AppCloseButton />
+    <MudStack>
+        <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
+        @bind-SelectedResult=@selectedDelegate
+                        CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
 
-    <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
-                    @bind-SelectedResult=@selectedDelegate
-                    CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
+        <MudSwitch Label="Super User" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=ApplicationInfo.inDemoMode />
+        <MudText>Will have complete and total acceess to the application if enabled</MudText>
 
+    </MudStack>
+  
 
-
-
-    <MudSwitch Label="Super User" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=ApplicationInfo.inDemoMode />
-    <MudText>Will have complete and total acceess to the application if enabled</MudText>
+   
 
 
 

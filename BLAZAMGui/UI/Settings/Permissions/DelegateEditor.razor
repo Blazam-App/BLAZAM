@@ -10,14 +10,9 @@
     <MudSpacer />
     <MudButton Color=Color.Secondary OnClick="(()=>{trashModal.Show();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
 </MudStack>
-<MudText>
-    Test 1
-</MudText>
-<NewDelegateModalContent />
-<TestComponent/>
-<MudText>
-    Test 2
-</MudText>
+
+
+
 @if (AllDelegates.Count > 0)
 {
     var delegates = AllDelegates.Where(l => l.DeletedAt == null)@*.Where(l =>
