@@ -16,20 +16,20 @@ namespace BLAZAM.Tests.Updates
         [Fact]
         public async void Update_Returns_Data()
         {
-            var latest = await _updateService.GetLatestUpdate();
+            var latest = await _updateService.GetUpdates();
             Assert.NotNull(latest);
         }
         [Fact]
         public async void Updat_Returns_ValidVersion()
         {
-            var latest = await _updateService.GetLatestUpdate();
+            var latest = await _updateService.GetUpdates();
 
             Assert.NotNull(latest?.Version);
         }
         [Fact]
         public async void Update_Returns_ValidDownload()
         {
-            var latest = await _updateService.GetLatestUpdate();
+            var latest = await _updateService.GetUpdates();
             if (latest != null)
                 await latest.Download();
 

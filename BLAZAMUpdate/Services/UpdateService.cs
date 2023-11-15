@@ -7,6 +7,7 @@ using BLAZAM.Helpers;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using System.Security.Principal;
+using System.Reflection.Metadata.Ecma335;
 
 namespace BLAZAM.Update.Services
 {
@@ -18,6 +19,7 @@ namespace BLAZAM.Update.Services
     public class UpdateService : UpdateServiceBase
     {
         public ApplicationUpdate LatestUpdate { get; set; }
+        public List<ApplicationUpdate> StableUpdates { get; set; } = new();
         public string? SelectedBranch { get; set; }
 
         private readonly IAppDatabaseFactory? _dbFactory;
@@ -31,8 +33,15 @@ namespace BLAZAM.Update.Services
             _updateCheckTimer = new Timer(CheckForUpdate, null, TimeSpan.FromSeconds(20), TimeSpan.FromHours(1));
             _applicationInfo = applicationInfo;
         }
-
-        public async Task<ApplicationUpdate?> GetLatestUpdate()
+        /// <summary>
+        /// Polls Github for the latest release in the selected branch
+        /// </summary>
+        /// <remarks>
+        /// Also collects all stable releases for changelogs.
+        /// </remarks>
+        /// <returns>A task that will return the latest stable <see cref="ApplicationUpdate"/> if it is reachable </returns>
+        /// <exception cref="ApplicationUpdateException"></exception>
+        public async Task<ApplicationUpdate?> GetUpdates()
         {
             try
             {
@@ -43,7 +52,6 @@ namespace BLAZAM.Update.Services
                 //}
 
                 Octokit.Release? latestRelease = null;
-                ApplicationVersion? latestVer = null;
                 try
                 {
                     using var context = await _dbFactory.CreateDbContextAsync();
@@ -64,29 +72,22 @@ namespace BLAZAM.Update.Services
                 var releases = await client.Repository.Release.GetAll("Blazam-App", "Blazam");
                 //Filter the releases to the selected branch
                 var branchReleases = releases.Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
+                var stableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
                 //Get the first release,which should be the most recent
                 latestRelease = branchReleases.FirstOrDefault();
-                //Get the release filename to prepare a version object
-                var filename = Path.GetFileNameWithoutExtension(latestRelease?.Assets.FirstOrDefault()?.Name);
-                //Create that version object
-                if (filename == null) throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
-                latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
-
-
-
-
-                if (latestRelease != null && latestVer != null)
+                //Store all other releases for use later
+                StableUpdates.Clear();
+                foreach (var release in stableReleases)
                 {
-                    IApplicationRelease release = new ApplicationRelease
-                    {
-                        Branch = SelectedBranch,
-                        GitHubRelease = latestRelease,
-                        Version = latestVer,
-
-                    };
-                    return new ApplicationUpdate(_applicationInfo, _dbFactory) { Release = release };
+                    //Get the release filename to prepare a version object
+                    var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
+                    //Create that version object
+                    if (fn == null) continue;
+                    StableUpdates.Add(EncapsulateUpdate(release));
 
                 }
+                LatestUpdate = EncapsulateUpdate(latestRelease);
+                return LatestUpdate;
 
             }
             catch (Octokit.RateLimitExceededException ex)
@@ -101,11 +102,39 @@ namespace BLAZAM.Update.Services
 
         }
 
+        private ApplicationUpdate? EncapsulateUpdate(Release? latestRelease)
+        {
+            ApplicationVersion? latestVer = null;
+
+            //Get the release filename to prepare a version object
+            var filename = Path.GetFileNameWithoutExtension(latestRelease?.Assets.FirstOrDefault()?.Name);
+            //Create that version object
+            if (filename == null) throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
+            latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
+
+
+
+
+            if (latestRelease != null && latestVer != null)
+            {
+                IApplicationRelease release = new ApplicationRelease
+                {
+                    Branch = SelectedBranch,
+                    GitHubRelease = latestRelease,
+                    Version = latestVer,
+
+                };
+                return new ApplicationUpdate(_applicationInfo, _dbFactory) { Release = release };
+
+            }
+            return null;
+        }
+
         private async void CheckForUpdate(object? state)
         {
             try
             {
-                await GetLatestUpdate();
+                await GetUpdates();
             }
             catch (Exception ex)
             {

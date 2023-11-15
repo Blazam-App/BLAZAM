@@ -108,6 +108,8 @@ namespace BLAZAM.Common.Data
             return Version;
         }
 
+
+
         public int CompareTo(object? obj)
         {
             if (obj is ApplicationVersion other)

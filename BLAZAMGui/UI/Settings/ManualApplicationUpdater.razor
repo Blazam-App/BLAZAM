@@ -77,58 +77,71 @@
                         <h4>Update Available</h4>
 
                     }
-                    <MudTimeline TimelineAlign="TimelineAlign.Default">
-                        <MudTimelineItem Color="Color.Info" Size="Size.Small">
-                            <ItemOpposite>
-                                @{
-                                    DateTime firstRelease = DateTime.Parse("March 4, 2023");
-                                }
-                                <MudText Color="Color.Info" Typo="Typo.h5">
-                                    @firstRelease.ToString("MMMM d, yyyy")</MudText>
-                            </ItemOpposite>
-                            <ItemContent>
-                                <MudCard Class="pa-3">
-                                    <MudText Color="Color.Info" Typo="Typo.h6" GutterBottom="true">First Release</MudText>
-                                    <MudText Class="pa-6">Blazam Beta 0.6.7 released.</MudText>
-                                </MudCard>
-                            </ItemContent>
-                        </MudTimelineItem>
-                        <MudTimelineItem Color="Color.Success" Size="Size.Small" TimelineAlign="TimelineAlign.End">
-                            <ItemOpposite>
-                                <MudText Color="Color.Success" Typo="Typo.h5">@ApplicationInfo.runningVersion.ReleaseDate.ToString("MMMM d, yyyy")</MudText>
-                            </ItemOpposite>
-                            <ItemContent>
-                                <MudCard Class="pa-3">
+                    <MudTimeline TimelineAlign="TimelineAlign.Default" TimelinePosition="TimelinePosition.Top">
+                        @{
+                            int i = 0;
+                        }
+                        @if (!ShowAllUpdates)
+                        {
+                            <MudTimelineItem Color="Color.Info" Size="Size.Small">
+                                <ItemOpposite>
+                                    <MudText Color="Color.Info" Typo="Typo.h5">@AppLocalization["Previous Versions"]</MudText>
+                                </ItemOpposite>
+                                <ItemContent>
+                                    <MudCard Class="pa-3">
 
-                                    <MudText Color="Color.Success" Typo="Typo.h6" GutterBottom="true">Current Version</MudText>
-                                    <MudText Class="pa-6">@ApplicationInfo.runningVersion</MudText>
-                                </MudCard>
-                            </ItemContent>
-                        </MudTimelineItem>
-                        <MudTimelineItem Color="Color.Error" Size="Size.Small">
-                            <ItemOpposite>
-                                <MudText Color="Color.Error" Typo="Typo.h5">@LatestAvailableVersion.Version.ReleaseDate.ToString("MMMM d, yyyy")</MudText>
-                            </ItemOpposite>
-                            <ItemContent>
-                                <MudCard Class="pa-3">
+                              
+                                                <MudButton Class="mx-6" OnClick="(()=>{ShowAllUpdates=true;})" Color="Color.Success">Show Previous Updates</MudButton>
 
-                                    <MudText Color="Color.Error" Typo="Typo.h6" GutterBottom="true">Available Update</MudText>
-                                    <MudExpansionPanels Elevation=0 DisableBorders=true>
-                                        <MudExpansionPanel Text="@LatestAvailableVersion.Version.ToString()">
-                                            <MudMarkdown OverrideHeaderTypo=ConvertHeaders Value="@LatestAvailableVersion.Release.ReleaseNotes" />
-                                        </MudExpansionPanel>
-                                    </MudExpansionPanels>
-                                    <MudButton Class="mx-6" Variant=Variant.Filled Color=Color.Success OnClick="ApplyUpdate">Apply Update</MudButton>
-                                    @if (ApplicationInfo.InDebugMode)
-                                    {
-                                        <MudButton Class="mx-6" Disabled=@(AutoUpdateService.IsUpdatedScheduled) OnClick=TestAutoUpdate Color="Color.Success">Test Auto Update</MudButton>
 
-                                       
-                                    }
-                                </MudCard>
-                                @* <AvailableUpdate Update=@LatestAvailableVersion OnApply="ApplyUpdate"/>*@
-                            </ItemContent>
-                        </MudTimelineItem>
+                                          
+                                    </MudCard>
+
+
+                                </ItemContent>
+                            </MudTimelineItem>
+                            @foreach (var update in UpdateService.StableUpdates.Where(x=>x.Version.CompareTo(ApplicationInfo.RunningVersion)>0).OrderBy(x => x.Version))
+                            {
+
+
+                                <AvailableUpdate Update=@update OnApply="ApplyUpdate" Disabled=true Even=@(i%2==0) />
+
+                                i++;
+
+                            }
+
+                        }
+                        else
+                        {
+                             <MudTimelineItem Color="Color.Info" Size="Size.Small">
+                                <ItemOpposite>
+                                </ItemOpposite>
+                                <ItemContent>
+                                    <MudCard Class="pa-3">
+
+
+                                        <MudButton Class="mx-6" OnClick="(()=>{ShowAllUpdates=false;})" Color="Color.Success">Hide Previous Updates</MudButton>
+
+
+
+                                    </MudCard>
+
+
+                                </ItemContent>
+                            </MudTimelineItem>
+                            @foreach (var update in UpdateService.StableUpdates.OrderBy(x => x.Version))
+                            {
+
+
+                                <AvailableUpdate Update=@update OnApply="ApplyUpdate" Disabled=true Even=@(i%2==0) />
+
+                                i++;
+
+                            }
+                           
+                        }
+                     
+                      
                     </MudTimeline>
 
                     @if (AutoUpdateService.IsUpdatedScheduled)
@@ -157,6 +170,7 @@
 
     FileProgress? DownladProgress { get; set; } = null;
 
+    private bool ShowAllUpdates { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -169,7 +183,7 @@
         await InvokeAsync(StateHasChanged);
         try
         {
-            LatestAvailableVersion = await UpdateService.GetLatestUpdate();
+            LatestAvailableVersion = await UpdateService.GetUpdates();
         }
         catch (Exception ex)
         {
@@ -179,29 +193,7 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    private Typo ConvertHeaders(Typo from)
-    {
-        switch (from)
-        {
-            case Typo.h1:
-                return Typo.h3;
-
-            case Typo.h2:
-                return Typo.h4;
-            case Typo.h3:
-                return Typo.h5;
-            case Typo.h4:
-                return Typo.h6;
-
-            case Typo.h5:
-                return Typo.h6;
-
-            case Typo.h6:
-                return Typo.h6;
-            default:
-                return from;
-        }
-    }
+   
 
     async Task ApplyUpdate()
     {
