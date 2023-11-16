@@ -1,0 +1,21 @@
+﻿
+<MudCard onclick="OnSelected" class="d-inline-flex pa-4">
+    <MudCardContent>
+        <MudText>@Entry.CanonicalName</MudText>
+        <MudText Typo="Typo.body2">@Entry.OU.ToPrettyOu()</MudText>
+    </MudCardContent>
+</MudCard>
+@code {
+
+    /// <summary>
+    /// The directory entry of this search result
+    /// </summary>
+    [Parameter]
+    public IDirectoryEntryAdapter Entry{ get; set; }
+
+    /// <summary>
+    /// Called when the search result is selected for viewing
+    /// </summary>
+    [Parameter]
+    public EventCallback OnSelected{ get; set; }
+}
