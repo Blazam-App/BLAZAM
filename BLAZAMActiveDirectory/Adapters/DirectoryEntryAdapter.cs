@@ -945,7 +945,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             try
             {
-                return (T?)DirectoryEntry?.Properties[propertyName].Value;
+                if (DirectoryEntry!=null && DirectoryEntry.Properties.Contains(propertyName))
+                    return (T?)DirectoryEntry?.Properties[propertyName].Value;
             }
             catch (ArgumentException)
             {
@@ -962,7 +963,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 return default;
             }
-
+            return default;
 
         }
 

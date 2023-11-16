@@ -4,8 +4,8 @@
                  Disabled=@Disabled
                  T="IDirectoryEntryAdapter"
                  Label="@Label"
-                 @bind-Value="SelectedResult"
-                 @bind-Text=@SearchTerm
+@bind-Value="SelectedResult"
+@bind-Text=@SearchTerm
                  SearchFuncWithCancel="@GetResults"
                  DebounceInterval=500
                  ResetValueOnEmptyText="true"
@@ -23,8 +23,8 @@
                  AdornmentIcon="@AdornmentIcon"
                  Variant="@Variant">
     <ItemTemplate>
-        <ADAutoCompleteResult Entry="context"/>
-      
+        <ADAutoCompleteResult Entry="context" />
+
     </ItemTemplate>
     <NoItemsTemplate>
         @if (SearchTerm.IsNullOrEmpty())
@@ -46,7 +46,7 @@
     </NoItemsTemplate>
     <MoreItemsTemplate>
         <MudText>
-           Too many results to show...
+            Too many results to show...
         </MudText>
     </MoreItemsTemplate>
 </MudAutocomplete>
@@ -137,11 +137,15 @@
         {
             if (_selectedResult == value)
                 return;
+
             SearchResults = new List<IDirectoryEntryAdapter>
                 {
                     value
                 };
             _selectedResult = value;
+
+            SearchService.SearchTerm = _selectedResult.CanonicalName;
+
             SelectedResultChanged.InvokeAsync(value);
         }
     }
@@ -166,7 +170,7 @@
         return await Task.Run(() =>
          {
 
-             if (!token.IsCancellationRequested && searchText!=null)
+             if (!token.IsCancellationRequested && searchText != null)
              {
                  SearchResults = new List<IDirectoryEntryAdapter>();
 
@@ -204,11 +208,11 @@
 
                      }
                  }
-                            
+
              }
              return new List<IDirectoryEntryAdapter>();
-        });
-       
+         });
+
 
     }
 

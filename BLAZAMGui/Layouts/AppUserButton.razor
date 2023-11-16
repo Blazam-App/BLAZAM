@@ -33,6 +33,10 @@
         <MudMenuItem OnClick="@(()=>{profileModal?.Show();})" Icon="@Icons.Material.Filled.Settings">
             @AppLocalization["Profile Settings"]
         </MudMenuItem>
+        <MudMenuItem Href="https://docs.blazam.org" Target="_blank" Icon="@Icons.Material.Filled.Book">
+            @AppLocalization["Documentation"]
+        </MudMenuItem>
+
         @if (UserState?.Impersonator == null)
         {
             <MudMenuItem OnClick="@(()=>{Nav.NavigateTo("/logout",true);})" Icon="@Icons.Material.Filled.Logout">
