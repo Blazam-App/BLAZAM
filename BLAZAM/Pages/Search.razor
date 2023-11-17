@@ -1,5 +1,6 @@
 ﻿@page "/search"
 @page "/search/{SearchTermParameter}"
+@using BLAZAM.Gui.UI.Search
 @using BLAZAM.Pages.Printers
 
 @inherits AppComponentBase
@@ -18,22 +19,22 @@
 
     @if (Searcher.Results.Count > 1)
     {
-        <Row Width="Width.Is100">
+        <MudStack Row=true>
                 Results found: @Searcher.Results.Count
                 Time elapsed: @Searcher.SearchTime
-        </Row>
+        </MudStack>
 
         <Virtualize Items="results" TItem="IDirectoryEntryAdapter" Context="u" OverscanCount="30">
             <ItemContent>
                 @if (u.CanRead)
                 {
+                    <SearchResult Entry="u"/>
 
-
-                    <div Class="cursor-pointer" @onclick=@(()=>{Searcher.Results.Clear();Searcher.Results.Add(u);})>
+                   @*  <div Class="cursor-pointer" @onclick=@(()=>{Searcher.Results.Clear();Searcher.Results.Add(u);})>
                         <MudText Typo="Typo.h1">@u.ObjectType</MudText>
                         <MudText Typo="Typo.h1">@u.CanonicalName</MudText>
                         <small>@u.SamAccountName</small>
-                    </div>
+                    </div> *@
 
 
                 }
