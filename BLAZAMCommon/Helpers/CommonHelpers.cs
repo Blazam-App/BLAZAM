@@ -331,7 +331,7 @@ namespace BLAZAM.Helpers
                 {
                     //Ignore input string format exception because it's probably
                     // a com object.
-                    
+
                 }
                 if (longInt != null)
                 {
