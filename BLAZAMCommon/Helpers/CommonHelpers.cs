@@ -321,24 +321,21 @@ namespace BLAZAM.Helpers
             {
                 if (value == null) return null;
 
-                if (value.GetType().FullName != "System.__ComObject")
+
+                Int64? longInt = null;
+                try
                 {
-                    Int64? longInt = null;
-                    try
-                    {
-                        longInt = Int64.Parse(value.ToString());
-                    }
-                    catch (FormatException)
-                    {
-                        //Ignore input string format exception because it's probably
-                        // a com object.
-
-                    }
-
-                    if (longInt != null)
-                    {
-                        dateTime = DateTime.FromFileTimeUtc(longInt.Value);
-                    }
+                    longInt = Int64.Parse(value.ToString());
+                }
+                catch (FormatException)
+                {
+                    //Ignore input string format exception because it's probably
+                    // a com object.
+                    
+                }
+                if (longInt != null)
+                {
+                    dateTime = DateTime.FromFileTimeUtc(longInt.Value);
                 }
                 else
                 {
