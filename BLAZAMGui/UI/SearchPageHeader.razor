@@ -88,24 +88,6 @@
             </MudPaper>
       
 
-            @if (Searcher?.SearchState == SearchState.Collecting)
-            {
-                <MudIconButton Class="d-flex" Color="Color.Secondary" Icon="@Icons.Material.Filled.Cancel" OnClick=@(()=>{
-                    
-                    Searcher.Cancel();
-                    }) />
-
-
-
-            }
-            else
-            {
-                <MudIconButton Class="d-flex" Color="Color.Secondary" Icon="@Icons.Material.Filled.Search" OnClick=@(()=>{SearchService.Search();}) />
-
-
-            }
-
-
         </MudStack>
 
     </AuthorizeView>

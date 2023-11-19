@@ -9,6 +9,7 @@ h1:focus {
     outline: none;
 }
 .app-icon{
+    margin-left:0.5rem;
     max-height:2.5rem;
     max-width:2.5rem;
     aspect-ratio:initial;

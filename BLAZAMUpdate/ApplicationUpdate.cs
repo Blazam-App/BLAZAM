@@ -141,7 +141,9 @@ namespace BLAZAM.Update
             _applicationRootDirectory = applicationInfo.ApplicationRoot;
         }
 
-
+        /// <summary>
+        /// True if this version is newer than the running version
+        /// </summary>
         public bool Newer
         {
             get { return Version.CompareTo(_runningVersion) > 0; }

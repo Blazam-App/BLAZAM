@@ -6,6 +6,7 @@ using BLAZAM.Services.Chat;
 
 namespace BLAZAM.Gui.UI
 {
+
     public class AppComponentBase : ComponentBase
     {
         [Inject]

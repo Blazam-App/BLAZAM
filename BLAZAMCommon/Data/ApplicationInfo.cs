@@ -7,6 +7,11 @@ using System.Diagnostics;
 namespace BLAZAM.Common.Data
 
 {
+
+    /// <summary>
+    /// A store  of base configuration,process, and directory defaults for the
+    /// application
+    /// </summary>
     public class ApplicationInfo
     {
 

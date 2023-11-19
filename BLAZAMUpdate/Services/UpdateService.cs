@@ -83,10 +83,10 @@ namespace BLAZAM.Update.Services
                     var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
                     //Create that version object
                     if (fn == null) continue;
-                    StableUpdates.Add(EncapsulateUpdate(release));
+                    StableUpdates.Add(EncapsulateUpdate(release,"Stable"));
 
                 }
-                LatestUpdate = EncapsulateUpdate(latestRelease);
+                LatestUpdate = EncapsulateUpdate(latestRelease,SelectedBranch);
                 return LatestUpdate;
 
             }
@@ -102,7 +102,7 @@ namespace BLAZAM.Update.Services
 
         }
 
-        private ApplicationUpdate? EncapsulateUpdate(Release? latestRelease)
+        private ApplicationUpdate? EncapsulateUpdate(Release? latestRelease,string Branch)
         {
             ApplicationVersion? latestVer = null;
 
@@ -119,7 +119,7 @@ namespace BLAZAM.Update.Services
             {
                 IApplicationRelease release = new ApplicationRelease
                 {
-                    Branch = SelectedBranch,
+                    Branch = Branch,
                     GitHubRelease = latestRelease,
                     Version = latestVer,
 

@@ -388,6 +388,7 @@ namespace BLAZAM.ActiveDirectory
 
                                                 Status = DirectoryConnectionStatus.OK;
                                                 DomainControllers.Clear();
+
                                                 foreach (DomainController dc in Domain.GetDomain(DirectoryContext).DomainControllers)
                                                 {
                                                     //var test = dc;

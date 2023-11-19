@@ -238,9 +238,10 @@ namespace BLAZAM.Services
                 context.LogonAuditLog.Add(new LogonAuditLog
                 {
                     Action = action,
-                    Username = CurrentUser.AuditUsername
-                });
-                context.SaveChanges();
+                    Username = CurrentUser.AuditUsername,
+                    IpAddress = CurrentUser.IPAddress?.ToString(),
+                }) ;
+                await context.SaveChangesAsync();
                 return true;
             }
             catch
@@ -313,7 +314,7 @@ namespace BLAZAM.Services
         {
             UserStateService = userStateService;
             CurrentUser = UserStateService.CurrentUserState;
-
+            
         }
     }
     public class DirectoryAudit : CommonAudit

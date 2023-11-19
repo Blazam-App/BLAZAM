@@ -6,12 +6,13 @@
                  Label="@Label"
 @bind-Value="SelectedResult"
 @bind-Text=@SearchTerm
+@ref=AutoComplete
                  SearchFuncWithCancel="@GetResults"
                  DebounceInterval=500
                  ResetValueOnEmptyText="true"
                  Validation="@Validation"
                  CoerceText="@AllowCustomInput"
-                 CoerceValue="false"
+                 CoerceValue="true"
                  MaxItems=@MaxResults
                  Clearable=true
                  Dense=true
@@ -26,6 +27,13 @@
         <ADAutoCompleteResult Entry="context" />
 
     </ItemTemplate>
+    <BeforeItemsTemplate>
+        <MudText>
+
+            Showing @Math.Clamp(SearchResults.Count(),0,10) Results
+        </MudText>
+
+    </BeforeItemsTemplate>
     <NoItemsTemplate>
         @if (SearchTerm.IsNullOrEmpty())
         {
@@ -46,15 +54,13 @@
     </NoItemsTemplate>
     <MoreItemsTemplate>
         <MudText>
-            Too many results to show...
+            More results than shown...
         </MudText>
     </MoreItemsTemplate>
 </MudAutocomplete>
 
-
-
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     [Parameter]
     public Func<object> Validation { get; set; }
     [Parameter]
@@ -71,12 +77,19 @@
     [Parameter]
     public bool Disabled { get; set; }
 
+    /// <summary>
+    /// The maximum number of results to show in the autocomplete suggestion list
+    /// </summary>
+    /// <remarks>
+    /// Defaults to 10
+    /// </remarks>
     [Parameter]
     public int MaxResults { get; set; } = 10;
 
     [Parameter]
     public bool AllowCustomInput { get; set; }
 
+    private MudAutocomplete<IDirectoryEntryAdapter>? AutoComplete { get; set; }
 
     [Parameter]
     public Func<IDirectoryEntryAdapter, bool> CustomResultsFilter { get; set; }
@@ -144,7 +157,7 @@
                 };
             _selectedResult = value;
 
-            SearchService.SearchTerm = _selectedResult.CanonicalName;
+            SearchService.SearchTerm = _selectedResult != null ? _selectedResult.CanonicalName : "";
 
             SelectedResultChanged.InvokeAsync(value);
         }
@@ -165,7 +178,7 @@
 
 
 
-    private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText, CancellationToken token)
+    private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText, CancellationToken token = new())
     {
         return await Task.Run(() =>
          {
@@ -179,7 +192,7 @@
                  search.ObjectTypeFilter = SearchObjectType;
                  search.GeneralSearchTerm = searchText.Replace(" ", "*");
                  search.EnabledOnly = !SearchDisabled;
-                 search.MaxResults = MaxResults;
+                 search.MaxResults = MaxResults+1;
                  if (!search.GeneralSearchTerm.Equals(String.Empty))
                  {
                      var temp = (search.Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token)).Where(r => r.CanRead);

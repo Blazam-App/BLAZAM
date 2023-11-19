@@ -245,7 +245,7 @@ ParentTemplateChanged(null);
                                Style="vertical-align:top;"
                                Color="Color.Dark"
                                Icon="@Icons.Material.Filled.Undo"
-                               OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;LoadData();}) />
+                               OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;await LoadData();}) />
                         }
                     </TemplateOverride>
 

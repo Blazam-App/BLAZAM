@@ -522,8 +522,6 @@
                 User.Delete();
                 SnackBarService.Success(User.DisplayName + " has been deleted.", "User Deleted");
                 await AuditLogger.User.Deleted(User);
-                //User = null;
-                //Nav.NavigateTo("/users/search");
             }
             catch (ApplicationException ex)
             {
@@ -535,12 +533,11 @@
     }
     async Task RemoveThumbnail()
     {
-        //if (await MessageService.Confirm("Are you sure you want to delete the thumbnail photo for " + User.DisplayName + "?", "Delete Thumbnail"))
-        // {
+   
         User.ThumbnailPhoto = null;
         SnackBarService.Warning(User.DisplayName + " will have their thumbnail deleted on save.", "Thumbnail Deletion Pending");
         await RefreshEntryComponents();
-        // }
+
     }
 
 
