@@ -10,6 +10,7 @@ using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Serilog.Parsing;
 using System.Threading.Channels;
+using BLAZAM.Logger;
 
 namespace BLAZAM.Services
 {
@@ -172,8 +173,10 @@ namespace BLAZAM.Services
                 context.SaveChanges();
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                Loggers.SystemLogger.Error("Unable to write Log to database", ex);
+
                 return false;
             }
         }

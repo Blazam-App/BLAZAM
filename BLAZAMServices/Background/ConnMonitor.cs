@@ -22,7 +22,6 @@ namespace BLAZAM.Services.Background
         public ServiceConnectionState? DatabaseConnected { get => DatabaseMonitor.Status; }
         public ServiceConnectionState? DirectoryConnected { get => DirectoryMonitor.Status; }
 
-        private bool _fatalDBError;
         /// <summary>
         /// Indicated whether the application is ready to serve users.
         /// </summary>

@@ -291,7 +291,7 @@ namespace BLAZAM.ActiveDirectory
                     if (Status != DirectoryConnectionStatus.OK)
                     {
                         //Ok get the latest settings
-                        ADSettings ad = Context?.ActiveDirectorySettings.FirstOrDefault();
+                        ADSettings? ad = Context?.ActiveDirectorySettings.FirstOrDefault();
                         ConnectionSettings = ad;
 
                         if (ad != null)

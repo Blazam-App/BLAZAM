@@ -271,7 +271,7 @@ ParentTemplateChanged(null);
                                 @bind-SelectedResult="@SelectedGroup" />
                     <MudFab Size="Size.Small" StartIcon=@Icons.Material.Filled.Add
                         Color="Color.Primary"
-                        OnClick="@(()=>{if(SelectedGroup!=null) AssignGroup(SelectedGroup as IADGroup);})" />
+                        OnClick="@(async()=>{if(SelectedGroup!=null) await AssignGroup(SelectedGroup as IADGroup);})" />
                 </MudStack>
 
             </Section>

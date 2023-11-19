@@ -16,12 +16,29 @@ namespace BLAZAM.Update.Services
     /// the application directory
     /// </summary>
     public enum UpdateCredential { None, Application, Active_Directory, Update };
+
+
+
+
     public class UpdateService : UpdateServiceBase
     {
+
+        /// <summary>
+        /// The latest available update for the configured <see cref="SelectedBranch"/>
+        /// </summary>
         public ApplicationUpdate LatestUpdate { get; set; }
+        /// <summary>
+        /// All updates released under the stable branch
+        /// </summary>
         public List<ApplicationUpdate> StableUpdates { get; set; } = new();
+
+        /// <summary>
+        /// The branch configured in the database
+        /// </summary>
         public string? SelectedBranch { get; set; }
 
+        private const string Publisher_Name = "BLAZAM-APP";
+        private const string Repository_Name = "Blazam";
         private readonly IAppDatabaseFactory? _dbFactory;
         protected readonly IHttpClientFactory httpClientFactory;
         private readonly ApplicationInfo _applicationInfo;
@@ -45,48 +62,9 @@ namespace BLAZAM.Update.Services
         {
             try
             {
-                //var dbBranch = DatabaseCache.ApplicationSettings?.UpdateBranch;
-                //if (dbBranch != null)
-                //{
-                //    SelectedBranch = dbBranch;
-                //}
 
-                Octokit.Release? latestRelease = null;
-                try
-                {
-                    using var context = await _dbFactory.CreateDbContextAsync();
-                    SelectedBranch = context.AppSettings.FirstOrDefault()?.UpdateBranch;
-                }
-                catch (Exception ex)
-                {
-
-                }
-                if (SelectedBranch == null) return null;
-                //Create a github client to get api data from repo
-                var client = new GitHubClient(new ProductHeaderValue("BLAZAM-APP"));
-
-
-
-
-                //Get the releases from the repo
-                var releases = await client.Repository.Release.GetAll("Blazam-App", "Blazam");
-                //Filter the releases to the selected branch
-                var branchReleases = releases.Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
-                var stableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
-                //Get the first release,which should be the most recent
-                latestRelease = branchReleases.FirstOrDefault();
-                //Store all other releases for use later
-                StableUpdates.Clear();
-                foreach (var release in stableReleases)
-                {
-                    //Get the release filename to prepare a version object
-                    var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
-                    //Create that version object
-                    if (fn == null) continue;
-                    StableUpdates.Add(EncapsulateUpdate(release,"Stable"));
-
-                }
-                LatestUpdate = EncapsulateUpdate(latestRelease,SelectedBranch);
+                await SetBranch();
+                await GetReleases();
                 return LatestUpdate;
 
             }
@@ -102,7 +80,68 @@ namespace BLAZAM.Update.Services
 
         }
 
-        private ApplicationUpdate? EncapsulateUpdate(Release? latestRelease,string Branch)
+        private async Task GetReleases()
+        {
+            //Create a github client to get api data from repo
+
+            Octokit.Release? latestRelease = null;
+
+            var client = new GitHubClient(new ProductHeaderValue(Publisher_Name));
+
+
+
+
+            //Get the releases from the repo
+            var releases = await client.Repository.Release.GetAll(Publisher_Name, Repository_Name);
+            //Filter the releases to the selected branch
+            var branchReleases = releases.Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
+            var stableReleases = releases.Where(r => r.TagName.Contains(ApplicationReleaseBranches.Stable, StringComparison.OrdinalIgnoreCase));
+            //Get the first release,which should be the most recent
+            latestRelease = branchReleases.FirstOrDefault();
+            //Store all other releases for use later
+            StableUpdates.Clear();
+            foreach (var release in stableReleases)
+            {
+                //Get the release filename to prepare a version object
+                var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
+                //Create that version object
+                if (fn == null) continue;
+                StableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+
+            }
+            LatestUpdate = EncapsulateUpdate(latestRelease, SelectedBranch);
+        }
+
+        /// <summary>
+        /// Sets the branch based on the value in the database
+        /// </summary>
+        /// <returns>The configured branch from the database, if database is unreachable, Stable</returns>
+        private async Task SetBranch()
+        {
+            //Set the branch, if the db is unreachable use Stable
+            if (_dbFactory != null)
+            {
+
+                try
+                {
+                    using var context = await _dbFactory.CreateDbContextAsync();
+                    SelectedBranch = context.AppSettings.FirstOrDefault()?.UpdateBranch;
+                }
+                catch (Exception ex)
+                {
+                    Loggers.DatabaseLogger.Error("Error getting update branch from database", ex);
+
+                }
+            }
+            else
+            {
+                Loggers.UpdateLogger.Error("The database factory service is unavailable.");
+
+            }
+            if (SelectedBranch == null) SelectedBranch = ApplicationReleaseBranches.Stable;
+        }
+
+        private ApplicationUpdate? EncapsulateUpdate(Release? latestRelease, string Branch)
         {
             ApplicationVersion? latestVer = null;
 
@@ -143,6 +182,10 @@ namespace BLAZAM.Update.Services
 
             }
         }
+
+        /// <summary>
+        /// The type of credential validated to be able to write to the app directory
+        /// </summary>
         public UpdateCredential UpdateCredential
         {
             get
@@ -155,7 +198,7 @@ namespace BLAZAM.Update.Services
                 //Test Directory Credentials
                 using var context = _dbFactory.CreateDbContext();
                 //Prepare impersonation
-                WindowsImpersonation impersonation = null;
+                WindowsImpersonation? impersonation = null;
 
 
                 //Pull ad settings to test if app ad account can write to the application directory
@@ -198,6 +241,10 @@ namespace BLAZAM.Update.Services
                 return UpdateCredential.None;
             }
         }
+
+        /// <summary>
+        /// Returns true if any configured credentials have write permission to the app directory
+        /// </summary>
         public bool HasWritePermission => UpdateCredential != UpdateCredential.None;
 
 

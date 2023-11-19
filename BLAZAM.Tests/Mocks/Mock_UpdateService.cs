@@ -1,6 +1,7 @@
 ﻿
 using BLAZAM.Common.Data;
 using BLAZAM.FileSystem;
+using BLAZAM.Update;
 using BLAZAM.Update.Services;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace BLAZAM.Tests.Mocks
         },null)
         {
 
-            SelectedBranch = "Stable";
+            SelectedBranch = ApplicationReleaseBranches.Stable;
         }
     }
 }

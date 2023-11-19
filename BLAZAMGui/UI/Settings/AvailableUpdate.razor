@@ -76,7 +76,7 @@
     {
         get
         {
-            if (Update.Branch == "Stable")
+            if (Update.Branch == ApplicationReleaseBranches.Stable)
                 return Update.Version.ReleaseDate.ToLongDateString();
             else
                 return DateTime.Parse(Update.Release.ReleaseTime.ToString()).ToLongDateString();

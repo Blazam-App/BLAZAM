@@ -42,8 +42,6 @@ namespace BLAZAM
 
 
 
-        private static IAppDatabaseFactory? _programDbFactory;
-
 
 
 

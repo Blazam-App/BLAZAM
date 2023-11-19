@@ -9,7 +9,7 @@ namespace BLAZAM.Static
         public static string ApplicationIconUri = "/static/img/appicon.png";
         public static string FaviconUri = "/static/img/favicon.ico";
 
-        public static byte[] AppIcon(int size = 250)
+        public static byte[]? AppIcon(int size = 250)
         {
 
             var dbIcon = DatabaseCache.AppIcon;
