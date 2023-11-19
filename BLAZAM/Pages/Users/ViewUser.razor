@@ -521,7 +521,7 @@
             {
                 User.Delete();
                 SnackBarService.Success(User.DisplayName + " has been deleted.", "User Deleted");
-                AuditLogger.User.Deleted(User);
+                await AuditLogger.User.Deleted(User);
                 //User = null;
                 //Nav.NavigateTo("/users/search");
             }
