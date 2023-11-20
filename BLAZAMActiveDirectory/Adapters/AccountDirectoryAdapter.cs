@@ -66,10 +66,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 return LockoutTime != null;
-
-                //var date = LockoutTime;
-                //bool matches = date != null && !date.Equals(ADS_NULL_TIME) && !date.Equals(DateTime.MinValue);
-                //return matches;
             }
             set
             {
@@ -173,13 +169,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                
-                var com = GetProperty<object>("accountExpires");
-                var time = com?.AdsValueToDateTime();
-              
-                if (time != null)
-                    time = time?.ToLocalTime();
-                return time;
+               return GetDateTimeProperty("accountExpires");
             }
             set
             {
@@ -188,6 +178,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     value = CommonHelpers.ADS_NULL_TIME;
                 SetProperty("accountExpires", value?.ToUniversalTime().ToFileTime().ToString());
             }
+        }
+
+
+        public DateTime? PasswordLastSet
+        {
+            get
+            {
+               
+                return GetDateTimeProperty("pwdLastSet");
+            }
+
         }
 
 

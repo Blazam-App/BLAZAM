@@ -237,19 +237,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty(ActiveDirectoryFields.ScriptPath.FieldName, value);
             }
         }
-        public DateTime? PasswordLastSet
-        {
-            get
-            {
-               
-                var com = GetProperty<object>("pwdLastSet");
-                if (com == null) return null;
-                return com.AdsValueToDateTime();
 
-            }
-
-        }
-       
         public override string? SamAccountName
         {
             get => base.SamAccountName;

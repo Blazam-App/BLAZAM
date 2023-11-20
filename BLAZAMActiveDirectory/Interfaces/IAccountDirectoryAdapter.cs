@@ -36,5 +36,6 @@
         DateTime? LockoutTime { get; }
         DateTime? ExpireTime { get; set; }
         DateTime? LastLogonTime { get; }
+        DateTime? PasswordLastSet { get; }
     }
 }
