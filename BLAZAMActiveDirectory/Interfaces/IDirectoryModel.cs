@@ -182,7 +182,11 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Called when this entry is renamed
         /// </summary>
         AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
+
         AppEvent? OnModelDeleted { get; set; }
+        /// <summary>
+        /// The directory this entry belongs to
+        /// </summary>
         IActiveDirectoryContext Directory { get; }
         /// <summary>
         /// Indicates whether this entry is expanded
@@ -194,8 +198,12 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// in the ui within a tree view
         /// </summary>
         bool IsSelected { get; set; }
+
         bool HasChildren { get;}
+
         IEnumerable<IDirectoryEntryAdapter> CachedChildren { get; }
+
+
         IEnumerable<IDirectoryEntryAdapter> Children { get; }
 
         /// <summary>
