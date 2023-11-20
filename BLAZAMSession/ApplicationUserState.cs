@@ -174,8 +174,9 @@ namespace BLAZAM.Server.Data.Services
                     dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
                     SaveDashboardWidgets(dbUserSettings);
                     OnSettingsChanged?.Invoke(dbUserSettings);
-                    //GetUserSettingFromDB();
-                    return (await context.SaveChangesAsync()) > 0;
+                    await context.SaveChangesAsync();
+                    GetUserSettingFromDB();
+                    return true;
                 }
 
 

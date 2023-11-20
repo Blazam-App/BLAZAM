@@ -126,14 +126,7 @@
         return Task.CompletedTask;
     }
 
-    //private Task ItemDropped(MudItemDropInfo<UserDashboardWidget> dropItem)
-    //{
-    //    if (dropItem.Item == null) return Task.CompletedTask;
-    //    dropItem.Item.Slot = dropItem.DropzoneIdentifier;
-    //    dropItem.Item.Order = dropItem.IndexInZone;
-    //    CurrentUser.State.SaveUserSettings();
-    //    return Task.CompletedTask;
-    //}
+
     async Task AddWidget(DashboardWidgetType widgetType)
     {
         var order = 0;
