@@ -150,25 +150,10 @@
         await InvokeAsync(StateHasChanged);
         if (Computer != null)
         {
-           
-            Task.Run(() =>
-            {
-                var services = Computer.Services;
-
-                RefreshEntryComponents();
-
-            });
-
-
-
-
             Computer.OnOnlineChanged += ((online) =>
             {
                 RefreshEntryComponents();
             });
-
-
-
         }
         LoadingData = false;
         await RefreshEntryComponents();

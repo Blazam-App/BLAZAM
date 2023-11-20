@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,7 +62,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// to confirm search is completed and no more results are coming.</para>
         /// </summary>
         public AppEvent<IEnumerable<IDirectoryEntryAdapter>> ResultsCollected { get; set; }
-
+        
+        int PageSize = 40;
+        
         public ActiveDirectoryObjectType? ObjectTypeFilter { get; set; }
         public bool? EnabledOnly { get; set; }
         public int MaxResults { get; set; } = 50;
@@ -106,7 +109,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 SearchRoot ??= ActiveDirectoryContext.Instance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
                 var pageOffset = 1;
-                var pageSize = 40;
+                
                 searcher = new DirectorySearcher(SearchRoot)
                 {
                     //TODO Ensure bbroken
@@ -214,7 +217,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 SearchTime = DateTime.Now - startTime;
 
-                PerformSearch<TObject, TInterface>(startTime, searcher, pageSize);
+                PerformSearch<TObject, TInterface>(startTime, searcher, PageSize);
 
                 if (cancellationToken?.IsCancellationRequested == true) return new();
 
@@ -298,7 +301,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 //    throw new ApplicationException("The searcher lost it's VirtualListView in the middle of searching!");
                 lastResults = searcher.FindAll();
                 AddResults<TObject, TInterface>(lastResults);
-                if (lastResults.Count < pageSize)
+                if (searcher.VirtualListView==null || lastResults.Count < pageSize)
                     moreResults = false;
                 SearchTime = DateTime.Now - startTime;
 
@@ -319,7 +322,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 searcher.PropertiesToLoad.Add("name");
             }
             if (SearchDeleted)
+            {
                 searcher.Tombstone = true;
+                searcher.VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, 1);
+            }
             //searcher.Asynchronous = true;
             searcher.SizeLimit = MaxResults;
             searcher.Filter = searcher.Filter?.Substring(0, searcher.Filter.Length - 1) + FilterQuery + ")";
