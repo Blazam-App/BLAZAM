@@ -2,74 +2,66 @@
 @using System.Diagnostics;
 @inherits AppComponentBase
 @implements IDisposable
-@if (sessionsErrorMessage == null)
+   @if (Computer.IsOnline == true)
 {
-    <MudDataGrid HorizontalScrollbar=true Elevation=0 Items="sessions">
-        <Columns>
-            <PropertyColumn Property="x=>x.User" />
-            <PropertyColumn Property="x=>x.ConnectionState" />
-            <PropertyColumn Property="x=>x.ClientIPAddress" />
-            <TemplateColumn Title="Connected">
-                <CellTemplate>
-                    @if (context.Item.ConnectTime != null)
-                    {
-                        <MudText>@context.Item.ConnectTime.Value.ToLocalTime()</MudText>
-                    }
-                </CellTemplate>
-            </TemplateColumn>
-            <PropertyColumn Property="x=>x.IdleTime" />
-            <TemplateColumn Title="Message">
-                <CellTemplate>
-                    @if (context.Item.ConnectionState.ToString() == "Active")
-                    {
-                        <MudButton Color="Color.Info" OnClick=@(()=>{
+    if (sessionsErrorMessage == null)
+    {
+        <MudDataGrid HorizontalScrollbar=true Elevation=0 Items="sessions">
+            <Columns>
+                <PropertyColumn Property="x=>x.User" />
+                <PropertyColumn Property="x=>x.ConnectionState" />
+                <PropertyColumn Property="x=>x.ClientIPAddress" />
+                <TemplateColumn Title="Connected">
+                    <CellTemplate>
+                        @if (context.Item.ConnectTime != null)
+                        {
+                            <MudText>@context.Item.ConnectTime.Value.ToLocalTime()</MudText>
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Property="x=>x.IdleTime" />
+                <TemplateColumn Title="Message">
+                    <CellTemplate>
+                        @if (context.Item.ConnectionState.ToString() == "Active")
+                        {
+                            <MudButton Color="Color.Info" OnClick=@(()=>{
                            sessionToMessage=context.Item;
                            sessionMessageModal?.Show();
                            })>Send Message</MudButton>
-                    }
-                </CellTemplate>
-            </TemplateColumn>
-          @*  <TemplateColumn Title="Shadow">
-                <CellTemplate>
-                    @if (!context.Item.Equals(selectedSession))
-                    {
-                        <MudButton Color="Color.Info" OnClick=@(()=>{
-                           selectedSession=context.Item;
-                           })>Shadow</MudButton>
-                    }
-                </CellTemplate>
-            </TemplateColumn>*@
-            <TemplateColumn Title="Manage">
-                <CellTemplate>
-                    @if (context.Item.ConnectionState.ToString() == "Active")
-                    {
-                        <MudButton Color="Color.Warning" OnClick=@(()=>{DisconnectSession(context.Item);})>Disconnect</MudButton>
-                    }
-                    <MudButton Color="Color.Error" OnClick=@(()=>{LogoffSession(context.Item);})>Logoff</MudButton>
-                </CellTemplate>
-            </TemplateColumn>
-        </Columns>
-    </MudDataGrid>
-
-    <AppModal @ref=@sessionMessageModal AllowClose=true Title="Send Message">
-        <SendMessageModalContent Session="@sessionToMessage" />
-    </AppModal>
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+           
+                <TemplateColumn Title="Manage">
+                    <CellTemplate>
+                        @if (context.Item.ConnectionState.ToString() == "Active")
+                        {
+                            <MudButton Color="Color.Warning" OnClick=@(()=>{DisconnectSession(context.Item);})>Disconnect</MudButton>
+                        }
+                        <MudButton Color="Color.Error" OnClick=@(()=>{LogoffSession(context.Item);})>Logoff</MudButton>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>   <AppModal @ref=@sessionMessageModal AllowClose=true Title="Send Message">
+            <SendMessageModalContent Session="@sessionToMessage" />
+        </AppModal>
+        
+    }
+    else
+    {
+        <div>
+            @sessionsErrorMessage
+        </div>
+    }
 }
 else
 {
-    <div>
-        @sessionsErrorMessage
-    </div>
+    <MudText>Computer is not reachable.</MudText>
 }
-@if (sessionRDP != null)
-{
-    <WindowCapture Process="@sessionRDP" />
 
-}
 
 
 @code {
-    Process? sessionRDP;
     IRemoteSession? _selectedSession;
     IRemoteSession? selectedSession
     {
@@ -78,17 +70,7 @@ else
         {
             if (_selectedSession == value) return;
             _selectedSession = value;
-            if (sessionRDP != null && sessionRDP.ExitTime == DateTime.MinValue)
-            {
-                sessionRDP.Kill(true);
-                sessionRDP.WaitForExit();
-                sessionRDP.Dispose();
-                sessionRDP = null;
-            }
-            sessionRDP = Directory.Impersonation.Run(() =>
-            {
-                return _selectedSession?.Shadow(true);
-            });
+           
 
         }
     }

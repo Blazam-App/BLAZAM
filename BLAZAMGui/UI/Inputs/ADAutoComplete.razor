@@ -111,13 +111,10 @@
             if (_searchDisabled == value)
                 return;
             _searchDisabled = value;
-            // SearchDisabledChanged.InvokeAsync(value);
         }
     }
 
 
-    [Parameter]
-    public EventCallback<bool> SearchDisabledChanged { get; set; }
 
 
     [Parameter]
@@ -141,7 +138,7 @@
     [Parameter]
     public EventCallback<IEnumerable<IDirectoryEntryAdapter>> SearchResultsChanged { get; set; }
 
-    public IDirectoryEntryAdapter _selectedResult;
+    private IDirectoryEntryAdapter _selectedResult;
     [Parameter]
     public IDirectoryEntryAdapter SelectedResult
     {

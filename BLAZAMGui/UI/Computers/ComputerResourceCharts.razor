@@ -1,0 +1,17 @@
+﻿
+@if (Computer.IsOnline == true)
+{
+    <LiveChart Enabled=@(Computer.IsOnline==true) SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})" />
+    <LiveChart Enabled=@(Computer.IsOnline==true) SeriesName="Memory Usage" Title="Live RAM Usage" History="30" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})" />
+
+}
+else
+{
+    <MudText>Computer is not reachable.</MudText>
+}
+
+
+@code {
+    [Parameter]
+    public IADComputer Computer { get; set; }
+}

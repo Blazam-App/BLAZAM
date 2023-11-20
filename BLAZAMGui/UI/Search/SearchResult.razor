@@ -1,5 +1,5 @@
 ﻿
-<MudCard onclick="OnSelected" class="d-inline-flex pa-4">
+<MudCard onclick=@(()=>{OnSelected.InvokeAsync();}) Class="cursor-pointer d-inline-flex pa-4">
     <MudCardContent>
         <MudText>@Entry.CanonicalName</MudText>
         <MudText Typo="Typo.body2">@Entry.OU.ToPrettyOu()</MudText>
