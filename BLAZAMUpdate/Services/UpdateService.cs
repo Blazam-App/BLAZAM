@@ -133,11 +133,7 @@ namespace BLAZAM.Update.Services
 
                 }
             }
-            else
-            {
-                Loggers.UpdateLogger.Error("The database factory service is unavailable.");
-
-            }
+           
             if (SelectedBranch == null) SelectedBranch = ApplicationReleaseBranches.Stable;
         }
 
