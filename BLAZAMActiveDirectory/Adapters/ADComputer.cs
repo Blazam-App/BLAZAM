@@ -7,6 +7,7 @@ using BLAZAM.Logger;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using System.Net.Sockets;
+using System.DirectoryServices;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -26,7 +27,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private bool? online;
         public ADComputer()
         {
-            MonitorOnlineStatus();
+            
         }
 
         public string? OperatingSystem
@@ -59,7 +60,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         public List<ComputerService> Services => wmiConnection.Services;
-        public ComputerMemory Memory =>wmiConnection?.Memory ?? new();
+        public ComputerMemory Memory => wmiConnection?.Memory ?? new();
         public int Processor => wmiConnection.Processor;
         public double MemoryUsedPercent => wmiConnection.Memory.PercentUsed;
         public List<IADComputerDrive> GetDrives()
@@ -168,7 +169,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         } while (x < retries);
 
                     }
-                    catch(SocketException ex)
+                    catch (SocketException ex)
                     {
 
                     }
@@ -185,6 +186,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             await Task.Delay(1000);
             MonitorOnlineStatus();
 
+        }
+
+        public override async Task Parse(SearchResult result, IActiveDirectoryContext directory)
+        {
+            await base.Parse(result, directory);
+            if (!this.IsDeleted)
+                MonitorOnlineStatus();
         }
 
         public override void Dispose()
