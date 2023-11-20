@@ -321,8 +321,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var timeUTC = GetProperty<DateTime?>("whenChanged");
-                return timeUTC != null ? DateTime.Parse(timeUTC.Value.ToString("MM/dd/yyyy HH:mm:ssZ")) : null;
+                //var timeUTC = GetProperty<DateTime?>("whenChanged");
+                return GetDateTimeProperty("whenChanged");
+                //return timeUTC != null ? DateTime.Parse(timeUTC.Value.ToString("MM/dd/yyyy HH:mm:ssZ")) : null;
+                //return timeUTC.Value;
+                //return timeUTC != null ? DateTime.Parse(timeUTC.Value.ToString("MM/dd/yyyy HH:mm:ssZ")) : null;
             }
             set
             {
@@ -844,6 +847,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
+                
                 var com = GetProperty<object>(propertyName);
                 return com?.AdsValueToDateTime();
             }

@@ -108,29 +108,35 @@
                             <MudStack Row=true>
                                 <MudText Typo="Typo.subtitle2">Created:</MudText>
                                 <MudSpacer />
-                                <MudTooltip Text="@User?.Created?.ToLocalTime().TimeOfDay.ToString()">
+                                <DateWithTimeTooltip DateTime="User?.Created"/>
+                                @* <MudTooltip Text="@User?.Created?.ToLocalTime().TimeOfDay.ToString()">
                                     <MudText Style="text-align:end;" Typo="Typo.caption">@User?.Created?.ToLocalTime().ToShortDateString()</MudText>
-                                </MudTooltip>
+                                </MudTooltip> *@
                             </MudStack>
 
                             <MudStack Row=true>
 
                                 <MudText Typo="Typo.subtitle2">Last Change:</MudText>
                                 <MudSpacer />
-                                <MudTooltip Text="@User.LastChanged?.ToLocalTime().TimeOfDay.ToString()">
+
+                                <DateWithTimeTooltip DateTime="User?.LastChanged" />
+
+                               @*  <MudTooltip Text="@User.LastChanged?.ToLocalTime().TimeOfDay.ToString()">
 
                                     <MudText Style="text-align:end;" Typo="Typo.caption">@User.LastChanged?.ToLocalTime().ToShortDateString()</MudText>
-                                </MudTooltip>
+                                </MudTooltip> *@
                             </MudStack>
 
                             <MudStack Row=true>
 
                                 <MudText Typo="Typo.subtitle2">Pass Change:</MudText>
                                 <MudSpacer />
-                                <MudTooltip Text="@User.PasswordLastSet?.ToLocalTime().TimeOfDay.ToString()">
+                                <DateWithTimeTooltip DateTime="User?.PasswordLastSet" />
+
+                               @*  <MudTooltip Text="@User.PasswordLastSet?.ToLocalTime().TimeOfDay.ToString()">
 
                                     <MudText Style="text-align:end;" Typo="Typo.caption">@User.PasswordLastSet?.ToLocalTime().ToShortDateString()</MudText>
-                                </MudTooltip>
+                                </MudTooltip> *@
                             </MudStack>
 
                             <MudStack Row=true>
@@ -144,10 +150,12 @@
                                 <MudStack Row=true>
                                     <MudText Typo="Typo.subtitle2">Locked Out Time:</MudText>
                                     <MudSpacer />
+                                    <DateWithTimeTooltip DateTime="User?.LockoutTime" />
+@* 
                                     <MudTooltip Text="@User.LockoutTime?.ToLocalTime().TimeOfDay.ToString()">
 
                                         <MudText Style="text-align:end;" Typo="Typo.caption">@User.LockoutTime?.ToLocalTime().ToShortDateString()</MudText>
-                                    </MudTooltip>
+                                    </MudTooltip> *@
 
                                 </MudStack>
                             }

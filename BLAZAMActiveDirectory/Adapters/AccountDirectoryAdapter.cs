@@ -174,9 +174,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 
-                var com = GetProperty<object>("accountExpires");
-                var time = com?.AdsValueToDateTime();
-              
+                //var com = GetProperty<object>("accountExpires");
+                var time = GetDateTimeProperty("accountExpires");
+
+
                 if (time != null)
                     time = time?.ToLocalTime();
                 return time;
@@ -188,6 +189,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     value = CommonHelpers.ADS_NULL_TIME;
                 SetProperty("accountExpires", value?.ToUniversalTime().ToFileTime().ToString());
             }
+        }
+
+
+        public DateTime? PasswordLastSet
+        {
+            get
+            {
+               
+                return GetDateTimeProperty("pwdLastSet");
+               // if (com == null) return null;
+                //return com.AdsValueToDateTime();
+
+            }
+
         }
 
 
