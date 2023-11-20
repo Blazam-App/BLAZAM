@@ -1,0 +1,10 @@
+﻿<MudTooltip Text="@DateTime?.ToLocalTime().TimeOfDay.ToString()">
+    <MudText Style="text-align:end;" Typo="Typo.caption">@DateTime?.ToLocalTime().ToShortDateString()</MudText>
+</MudTooltip>
+@code {
+    /// <summary>
+    /// The DateTime to display in UTC
+    /// </summary>
+    [Parameter]
+    public DateTime? DateTime { get; set; }
+}

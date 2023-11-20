@@ -313,12 +313,19 @@ namespace BLAZAM.Helpers
         //133241760000000000
         //31029034
         //1743527936
+        /// <summary>
+        /// Converts an ADS datetime to a .Net <see cref="DateTime"/> in UTC
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>A UTC <see cref="DateTime"/></returns>
         public static DateTime? AdsValueToDateTime(this object value)
         {
             DateTime? dateTime = null;
             //read file time 133213804065419619
             try
             {
+                if (value is DateTime) return (DateTime?)value;
+
                 if (value == null) return null;
 
 
