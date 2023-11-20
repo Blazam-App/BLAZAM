@@ -15,17 +15,17 @@
         <SetSubHeader @ref="SubHeader">
 
             <DirectoryEntryViewHeader DirectoryEntry="@User"
-                                  OnAssignTo="@(()=>{AssignToModal?.Show();})"
-                                  OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
-                                  OnDelete="@DeleteUser"
-                                  OnDisable="@(async()=>{User.Enabled=false; await RefreshEntryComponents();})"
-                                  OnEnable="@(async()=>{User.Enabled=true; await RefreshEntryComponents();})"
-                                  OnMove="@(()=>{MoveToModal?.Show();})"
-                                  OnRename="@(()=>{RenameModal?.Show();})"
-                                  OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
-                                  OnToggleEditMode="ToggleEditMode"
+                                      OnAssignTo="@(()=>{AssignToModal?.Show();})"
+                                      OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
+                                      OnDelete="@DeleteUser"
+                                      OnDisable="@(async()=>{User.Enabled=false; await RefreshEntryComponents();})"
+                                      OnEnable="@(async()=>{User.Enabled=true; await RefreshEntryComponents();})"
+                                      OnMove="@(()=>{MoveToModal?.Show();})"
+                                      OnRename="@(()=>{RenameModal?.Show();})"
+                                      OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
+                                      OnToggleEditMode="ToggleEditMode"
                                       OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
-                                  OnUnlock="@Unlock" />
+                                      OnUnlock="@Unlock" />
             <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
             </MudOverlay>
@@ -76,8 +76,8 @@
                             <MudCard Elevation="2"
                                      Style="width:fit-content;height:fit-content"
                                      Class="relative mx-auto my-auto d-block p-1"
-                                     @onmouseenter=@(()=>{showRemoveThumbnail=true;})
-                                     @onmouseleave=@(()=>{showRemoveThumbnail=false;})>
+                            @onmouseenter=@(()=>{showRemoveThumbnail=true;})
+                            @onmouseleave=@(()=>{showRemoveThumbnail=false;})>
                                 @if (User?.ThumbnailPhoto != null)
                                 {
                                     <Base64Image Style="max-height:150px;max-width:150px;" Data="User.ThumbnailPhoto.ReizeRawImage(150)" />
@@ -85,9 +85,9 @@
                                     {
 
                                         <MudIconButton OnClick=RemoveThumbnail
-                                               Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;left:10px"
-                                               Color=Color.Error
-                                               Icon="@Icons.Material.Filled.Delete" />
+                                                       Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;left:10px"
+                                                       Color=Color.Error
+                                                       Icon="@Icons.Material.Filled.Delete" />
                                     }
 
                                 }
@@ -99,19 +99,17 @@
                                 @if (showRemoveThumbnail && User.CanEditField(ActiveDirectoryFields.Thumbnail))
                                 {
                                     <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.Show();})
-                                               Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
-                                               Color=Color.Primary
-                                               Icon="@Icons.Material.Filled.Upload" />
+                                                   Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
+                                                   Color=Color.Primary
+                                                   Icon="@Icons.Material.Filled.Upload" />
                                 }
                             </MudCard>
 
                             <MudStack Row=true>
                                 <MudText Typo="Typo.subtitle2">Created:</MudText>
                                 <MudSpacer />
-                                <DateWithTimeTooltip DateTime="User?.Created"/>
-                                @* <MudTooltip Text="@User?.Created?.ToLocalTime().TimeOfDay.ToString()">
-                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User?.Created?.ToLocalTime().ToShortDateString()</MudText>
-                                </MudTooltip> *@
+                                <DateWithTimeTooltip DateTime="User?.Created" />
+
                             </MudStack>
 
                             <MudStack Row=true>
@@ -121,10 +119,6 @@
 
                                 <DateWithTimeTooltip DateTime="User?.LastChanged" />
 
-                               @*  <MudTooltip Text="@User.LastChanged?.ToLocalTime().TimeOfDay.ToString()">
-
-                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.LastChanged?.ToLocalTime().ToShortDateString()</MudText>
-                                </MudTooltip> *@
                             </MudStack>
 
                             <MudStack Row=true>
@@ -133,17 +127,14 @@
                                 <MudSpacer />
                                 <DateWithTimeTooltip DateTime="User?.PasswordLastSet" />
 
-                               @*  <MudTooltip Text="@User.PasswordLastSet?.ToLocalTime().TimeOfDay.ToString()">
 
-                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.PasswordLastSet?.ToLocalTime().ToShortDateString()</MudText>
-                                </MudTooltip> *@
                             </MudStack>
 
                             <MudStack Row=true>
 
                                 <MudText Typo="Typo.subtitle2">Last Logon:</MudText>
                                 <MudSpacer />
-                               <LastLogonTime DirectoryEntry="User"/>
+                                <LastLogonTime DirectoryEntry="User" />
                             </MudStack>
                             @if (User.LockedOut)
                             {
@@ -151,12 +142,6 @@
                                     <MudText Typo="Typo.subtitle2">Locked Out Time:</MudText>
                                     <MudSpacer />
                                     <DateWithTimeTooltip DateTime="User?.LockoutTime" />
-@* 
-                                    <MudTooltip Text="@User.LockoutTime?.ToLocalTime().TimeOfDay.ToString()">
-
-                                        <MudText Style="text-align:end;" Typo="Typo.caption">@User.LockoutTime?.ToLocalTime().ToShortDateString()</MudText>
-                                    </MudTooltip> *@
-
                                 </MudStack>
                             }
                             <MudStack Row=true>
@@ -192,17 +177,17 @@
                                 <MudStack Row Class="@_fieldMudStackClasses">
 
 
-                                    <DynamicMudInput T=string Label="@AppLocalization["First Name"]" @bind-Value="@User.GivenName" Disabled=!User.NewEntry />
+                                     <DynamicMudInput T=string Label="@AppLocalization["First Name"]" @bind-Value="@User.GivenName" Disabled=!User.NewEntry />
 
-                                    <DynamicMudInput T=string Label="@AppLocalization["Middle Name"]" @bind-Value="@User.MiddleName" Disabled=!User.NewEntry />
+                                     <DynamicMudInput T=string Label="@AppLocalization["Middle Name"]" @bind-Value="@User.MiddleName" Disabled=!User.NewEntry />
 
-                                    <DynamicMudInput T=string Label="@AppLocalization["Last Name"]" @bind-Value="@User.Surname" Disabled=!User.NewEntry />
+                                     <DynamicMudInput T=string Label="@AppLocalization["Last Name"]" @bind-Value="@User.Surname" Disabled=!User.NewEntry />
 
-                                    <DynamicMudInput T=string Label="@AppLocalization["Display Name"]" @bind-Value="@User.DisplayName" Disabled=!User.NewEntry />
+                                     <DynamicMudInput T=string Label="@AppLocalization["Display Name"]" @bind-Value="@User.DisplayName" Disabled=!User.NewEntry />
 
 
-                                </MudStack>
-                                @if (EditMode && !User.NewEntry)
+                                 </MudStack>
+                                 @if (EditMode && !User.NewEntry)
                                 {
                                     <MudText>
                                         To Modify the user's name click the Gear button and choose "Rename..."
@@ -219,35 +204,35 @@
 
 
 
-                                    <MudStack Row=true Spacing="0">
+                                     <MudStack Row=true Spacing="0">
 
 
-                                        <DynamicMudInput T=string Label="@AppLocalization["Username"]"
-                                                         @bind-Value="@User.SamAccountName"
-                                                         Disabled=!User.NewEntry />
-                                        <AppCopyButton TextToCopy=@User.SamAccountName />
+                                         <DynamicMudInput T=string Label="@AppLocalization["Username"]"
+                                         @bind-Value="@User.SamAccountName"
+                                                          Disabled=!User.NewEntry />
+                                         <AppCopyButton TextToCopy=@User.SamAccountName />
 
-                                    </MudStack>
+                                     </MudStack>
 
 
 
-                                    @if (User.NewEntry)
+                                     @if (User.NewEntry)
                                     {
                                         <DynamicMudInput T=string
-                                                     Label="@AppLocalization["Password"]"
-                                                     @bind-Value="@Password"
-                                                     InputType="InputType.Password" />
+                                                         Label="@AppLocalization["Password"]"
+                                        @bind-Value="@Password"
+                                                         InputType="InputType.Password" />
 
                                         <DynamicMudInput T=string
-                                                     Label="@AppLocalization["Confirm Password"]"
-                                                     @bind-Value="@ConfirmPassword"
-                                                     InputType="InputType.Password" />
+                                                         Label="@AppLocalization["Confirm Password"]"
+                                        @bind-Value="@ConfirmPassword"
+                                                         InputType="InputType.Password" />
                                     }
 
 
                                     <MudStack Row=true Spacing="0">
                                         <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"
-                                                         @bind-Value="@User.Email"
+                                        @bind-Value="@User.Email"
                                                          Disabled=!User.NewEntry />
                                         <AppCopyButton TextToCopy=@User.Email />
 
@@ -259,9 +244,9 @@
                                     {
                                         <DynamicMudInput T=DateTime?
                                                               Clearable
-                                                     Label="@AppLocalization["Account Expiration"]"
-                                                     @bind-Value="@User.ExpireTime"
-                                                     Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.AccountExpires)) />
+                                                          Label="@AppLocalization["Account Expiration"]"
+                                         @bind-Value="@User.ExpireTime"
+                                                          Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.AccountExpires)) />
 
 
                                     }
@@ -297,7 +282,7 @@
                     <Section Title=@AppLocalization["Organization"]>
                         <MudStack Row Class="@_fieldMudStackClasses">
 
-                        @if (User.CanReadField(ActiveDirectoryFields.Description))
+                             @if (User.CanReadField(ActiveDirectoryFields.Description))
                             {
                                 <DynamicMudInput T=string Label="@AppLocalization["Description"]" @bind-Value="@User.Description" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Description)) />
                             }
@@ -336,7 +321,7 @@
                     <Section Title=@AppLocalization["Contact Info"]>
                         <MudStack Row Class="@_fieldMudStackClasses">
 
-                        @if (User.CanReadField(ActiveDirectoryFields.HomePhone))
+                             @if (User.CanReadField(ActiveDirectoryFields.HomePhone))
                             {
                                 <DynamicMudInput T=string Label="@AppLocalization["Home Phone"]" @bind-Value="@User.HomePhone" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomePhone)) />
 
@@ -376,18 +361,18 @@
                     <Section Title=@AppLocalization["Profile"]>
                         <MudStack Row Class="@_fieldMudStackClasses">
 
-                        @if (User.CanReadField(ActiveDirectoryFields.HomeDirectory))
+                             @if (User.CanReadField(ActiveDirectoryFields.HomeDirectory))
                             {
                                 <MudStack Row=true Spacing="0">
 
                                     <DynamicMudInput T=string Label="@AppLocalization["Home Directory"]"
-                                             @bind-Value="@User.HomeDirectory"
-                                             Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
+                                    @bind-Value="@User.HomeDirectory"
+                                                     Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
                                     @if (!User.HomeDirectory.IsNullOrEmpty())
                                     {
 
                                         <MudIcon Class="align-middle" Icon="@(homeDirectoryExists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
-                                     Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
+                                                 Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
                                     }
                                     <AppCopyButton TextToCopy=@User.HomeDirectory />
                                 </MudStack>
@@ -463,7 +448,7 @@
         await InvokeAsync(StateHasChanged);
         try
         {
-           
+
             await User.Directory.Impersonation.RunAsync(() =>
 
             {
@@ -541,7 +526,7 @@
     }
     async Task RemoveThumbnail()
     {
-   
+
         User.ThumbnailPhoto = null;
         SnackBarService.Warning(User.DisplayName + " will have their thumbnail deleted on save.", "Thumbnail Deletion Pending");
         await RefreshEntryComponents();
