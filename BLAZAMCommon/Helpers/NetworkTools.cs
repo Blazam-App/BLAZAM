@@ -30,7 +30,7 @@ namespace BLAZAM.Helpers
         public static bool IsAnyPortOpen(string hostNameOrAddress, int[] ports)
         {
             bool portOpen = false;
-            IPAddress ip;
+            IPAddress? ip;
             IPAddress.TryParse(hostNameOrAddress, out ip);
 
             foreach (int port in ports)

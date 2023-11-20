@@ -14,13 +14,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
         ITerminalServer server;
         private bool Polling;
         public List<IRemoteSession> ConnectedSessions = new List<IRemoteSession>();
-        IADComputer _host;
+        IADComputer Computer;
 
         public AppEvent ConnectedSessionsChanged { get; set; }
         public ADComputerSessions(IADComputer host)
         {
-            _host = host;
-            RefreshSessions();
+            Computer = host;
+            if (Computer.IsOnline == true)
+                RefreshSessions();
+            else
+                Computer.OnOnlineChanged += (status) => { if (status == true) RefreshSessions(); };
 
         }
 
@@ -39,59 +42,61 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (!Polling)
             {
-
-                Loggers.ActiveDirectryLogger.Information("Getting sessions for " + _host);
-                Polling = true;
-                var impersonation = _host.Directory.Impersonation;
-                var success = impersonation.Run(() =>
-               {
-                   try
+                if (Computer.IsOnline == true)
+                {
+                    Loggers.ActiveDirectryLogger.Information("Getting sessions for " + Computer);
+                    Polling = true;
+                    var impersonation = Computer.Directory.Impersonation;
+                    var success = impersonation.Run(() =>
                    {
-                       server = manager.GetRemoteServer(_host.CanonicalName);
                        try
                        {
-                           server.Open();
-
+                           server = manager.GetRemoteServer(Computer.CanonicalName);
                            try
                            {
-                               foreach (ITerminalServicesSession session in server.GetSessions())
+                               server.Open();
+
+                               try
                                {
-                                   if (session.UserAccount != null)
+                                   foreach (ITerminalServicesSession session in server.GetSessions())
                                    {
-                                       if (!session.Server.IsOpen)
-                                           session.Server.Open();
-                                       IRemoteSession s = new RemoteSession(session,_host);
-                                       s.OnSessionDown += SessionDownEvent;
-                                       if (!ConnectedSessions.Contains(s))
+                                       if (session.UserAccount != null)
                                        {
-                                           ConnectedSessions.Add(s);
-                                           ConnectedSessionsChanged?.Invoke();
+                                           if (!session.Server.IsOpen)
+                                               session.Server.Open();
+                                           IRemoteSession s = new RemoteSession(session, Computer);
+                                           s.OnSessionDown += SessionDownEvent;
+                                           if (!ConnectedSessions.Contains(s))
+                                           {
+                                               ConnectedSessions.Add(s);
+                                               ConnectedSessionsChanged?.Invoke();
+                                           }
                                        }
                                    }
+
                                }
-
+                               catch (Win32Exception ex)
+                               {
+                                   Loggers.ActiveDirectryLogger.Error("Error while collecting sessions for " + Computer, ex);
+                               }
                            }
-                           catch (Win32Exception ex)
+                           catch
                            {
-                               Loggers.ActiveDirectryLogger.Error("Error while collecting sessions for " + _host, ex);
+
                            }
+
+
+                           Polling = false;
+                           return true;
                        }
-                       catch
+                       catch (Exception ex)
                        {
-
+                           Loggers.ActiveDirectryLogger.Error("Error while connecting to TerminalServices on " + Computer, ex);
+                           return false;
                        }
-
-
-                       Polling = false;
-                       return true;
-                   }
-                   catch (Exception ex)
-                   {
-                       Loggers.ActiveDirectryLogger.Error("Error while connecting to TerminalServices on " + _host, ex);
-                       return false;
-                   }
-               });
-
+                   });
+                }
+             
 
             }
 

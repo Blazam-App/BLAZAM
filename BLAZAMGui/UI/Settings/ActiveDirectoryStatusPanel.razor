@@ -24,44 +24,48 @@
 
         </MudStack>
              <MudStack Row=true>
-                Encrypted Connection
-                @if (!_encryptedStatus)
-                {
-                    <br />
-                    <Help>You may need to install the Active Directry CA</Help>
-                }
-                <StatusCheck Status="_encryptedStatus" />
+                Connected
+
+                <StatusCheck Status="Directory.Status==DirectoryConnectionStatus.OK" />
 
   
         </MudStack>
     @if (_credStatus)
     {
-        <MudStack>
+        var firstDC = Directory.DomainControllers.FirstOrDefault();
+        if(firstDC!=null){
+            <MudStack>
             <MudStack Row=true>
                 <MudText>Domain</MudText>
-                <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.Name</MudText>
+                <MudText>@firstDC.Domain.Name</MudText>
             </MudStack>
 
             <MudStack Row=true>
                 <MudText>Domain Mode</MudText>
-                <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.DomainMode</MudText>
+                <MudText>@firstDC.Domain.DomainMode</MudText>
             </MudStack>
 
             <MudStack Row=true>
                 <MudText>Domain Level</MudText>
-                <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.DomainModeLevel</MudText>
+                <MudText>@firstDC.Domain.DomainModeLevel</MudText>
             </MudStack>
 
             <MudStack Row=true>
                 <MudText>Primary Domain Controller</MudText>
-                <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.PdcRoleOwner</MudText>
+                <MudText>@firstDC.Domain.PdcRoleOwner</MudText>
             </MudStack>
 
             <MudStack Row=true>
                 <MudText>Domain</MudText>
                 <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.Forest.RootDomain.Name</MudText>
             </MudStack>
-        </MudStack>
+            </MudStack>
+        }
+        else
+        {
+            <MudText>Could not reach Domain Controllers directly from application server. Please check DNS.</MudText>
+        }
+
     }
     </MudCard>
 
@@ -91,7 +95,6 @@
         //Directory.ConnectAsync();
         _portStatus = false;
         _credStatus = false;
-        _encryptedStatus = false;
         showProgress = true;
         StateHasChanged();
     }
@@ -121,12 +124,7 @@
                         if (Directory.Status == DirectoryConnectionStatus.OK)
                         {
                             _credStatus = true;
-                            await InvokeAsync(StateHasChanged);
-                            if ((Directory.AppRootDirectoryEntry?.AuthenticationType & AuthenticationTypes.Signing) == AuthenticationTypes.Signing ||
-                        (Directory.AppRootDirectoryEntry?.AuthenticationType | AuthenticationTypes.Encryption) == AuthenticationTypes.Encryption)
-                            {
-                                _encryptedStatus = true;
-                            }
+                           
                             showProgress = false;
 
                             await InvokeAsync(DirectoryConnected.InvokeAsync);

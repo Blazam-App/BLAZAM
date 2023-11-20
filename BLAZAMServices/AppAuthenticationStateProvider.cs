@@ -153,7 +153,7 @@ namespace BLAZAM.Services
         public async Task<LoginResult> Login(LoginRequest loginReq)
         {
             LoginResult loginResult = new();
-             var newUserState = _userStateService.CreateUserState(null);
+             var newUserState = _userStateService.CreateUserState(GetAnonymous());
             newUserState.IPAddress = loginReq.IPAddress;
             
 

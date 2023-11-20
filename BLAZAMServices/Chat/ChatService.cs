@@ -2,6 +2,7 @@
 using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
+using BLAZAM.Logger;
 using BLAZAM.Server.Data;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -111,7 +112,7 @@ namespace BLAZAM.Services.Chat
                 }
                 catch (Exception ex)
                 {
-
+                    Loggers.DatabaseLogger.Error("Unable to creat private chat room", ex);
                 }
             }
             return chat;

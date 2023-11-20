@@ -42,7 +42,6 @@ namespace BLAZAM.Gui.UI.Chat
                 {
                     await Task.Delay(50);
 
-                    //await RefreshChatRooms();
                     await InvokeAsync(StateHasChanged);
                 }
             };
@@ -61,25 +60,11 @@ namespace BLAZAM.Gui.UI.Chat
                 if (ChatRoom is null) return 0;
                 if (CurrentUser.State == null || CurrentUser.State.Preferences == null) return 0;
                     return Chat.GetUnreadMessages(CurrentUser.State.Preferences).Count();
-                // return Context.ReadChatMessages.Count(m => !m.User.Equals(CurrentUser.State.Preferences) && !m.IsRead);
-
+                
             }
         }
         protected async Task RefreshChatRooms()
         {
-            //var room = (await Chat.GetChatRoomsAsync()).Where(cr => cr.Name.Equals(ChatUri)).FirstOrDefault();
-            //if (room is null && ChatUri!=null)
-            //{
-            //    Chat.CreateChatRoom(new()
-            //    {
-            //        Name = ChatUri,
-            //        IsPublic = true,
-            //    });
-
-            //}
-
-            //ChatRoom = room;
-
             var room = (await Chat.GetChatRoomsAsync()).Where(cr => cr.Name.Equals("App Chat")).FirstOrDefault();
             if (room is null && ChatUri != null)
             {

@@ -835,7 +835,7 @@ namespace BLAZAM.Database.Context
                     // Write the rows
                     foreach (DataRow row in table.Rows)
                     {
-                        var fields = row.ItemArray.Select(f => f.ToString());
+                        var fields = row.ItemArray.Select(f => f?.ToString());
                         List<string> lines = new();
                         foreach(var field in fields)
                         {

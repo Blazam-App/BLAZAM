@@ -7,18 +7,19 @@
 
 <MudTimelineItem Color="UpdateColor" Size="Size.Small" TimelineAlign="@UpdateAlign">
     <ItemOpposite>
-        <MudText Color="UpdateColor" Typo="Typo.h5">@Update.Version.ReleaseDate.ToString("MMMM d, yyyy")</MudText>
+        <MudText Color="UpdateColor" Typo="Typo.h5">@Timestamp</MudText>
     </ItemOpposite>
     <ItemContent>
         <MudCard Class="pa-3">
 
             <MudText Color="UpdateColor" Typo="Typo.h6" GutterBottom="true">@Title</MudText>
+            <MudText Typo="Typo.body1" GutterBottom="true">@AppLocalization["Branch"]: @Update.Branch</MudText>
             <MudExpansionPanels Elevation=0 DisableBorders=true>
                 <MudExpansionPanel Text="@AppLocalization["Release Notes"]">
                     <MudMarkdown OverrideHeaderTypo=ConvertHeaders Value="@Update.Release.ReleaseNotes" />
                 </MudExpansionPanel>
             </MudExpansionPanels>
-            @if (!CurrentVersion)
+            @if (Update.Newer && !Disabled)
             {
                 <MudButton Class="mx-6" Variant=Variant.Filled Color=Color.Success OnClick="(()=>{OnApply.InvokeAsync();})">Apply Update</MudButton>
                 @if (ApplicationInfo.InDebugMode)
@@ -71,6 +72,17 @@
                 return from;
         }
     }
+    private string Timestamp
+    {
+        get
+        {
+            if (Update.Branch == ApplicationReleaseBranches.Stable)
+                return Update.Version.ReleaseDate.ToLongDateString();
+            else
+                return DateTime.Parse(Update.Release.ReleaseTime.ToString()).ToLongDateString();
+            //return Update.Version.ReleaseDate.ToString("MMMM d, yyyy");
+        }
+    }
     private string Title
     {
         get
@@ -85,7 +97,7 @@
 
                 case -1:
                     //Update is newer
-                    return AppLocalization["Available Update"];
+                    return AppLocalization["Available Update"] + "\r\n" + Update.Version.ToString();
 
 
             }

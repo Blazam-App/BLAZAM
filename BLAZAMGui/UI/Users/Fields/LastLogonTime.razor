@@ -21,7 +21,7 @@ else
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
 
-        Task.Run(() =>
+        await Task.Run(() =>
          {
 
              userLastLogonTime = DirectoryEntry.LastLogonTime;

@@ -28,7 +28,7 @@
             <ItemContent>
                 @if (u.CanRead)
                 {
-                    <SearchResult Entry="u"/>
+                    <SearchResult Entry="u" OnSelected=@(()=>{Searcher.Results.Clear();Searcher.Results.Add(u);}) />
 
                    @*  <div Class="cursor-pointer" @onclick=@(()=>{Searcher.Results.Clear();Searcher.Results.Add(u);})>
                         <MudText Typo="Typo.h1">@u.ObjectType</MudText>

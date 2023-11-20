@@ -10,6 +10,7 @@ using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Serilog.Parsing;
 using System.Threading.Channels;
+using BLAZAM.Logger;
 
 namespace BLAZAM.Services
 {
@@ -172,8 +173,10 @@ namespace BLAZAM.Services
                 context.SaveChanges();
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                Loggers.SystemLogger.Error("Unable to write Log to database", ex);
+
                 return false;
             }
         }
@@ -238,9 +241,10 @@ namespace BLAZAM.Services
                 context.LogonAuditLog.Add(new LogonAuditLog
                 {
                     Action = action,
-                    Username = CurrentUser.AuditUsername
-                });
-                context.SaveChanges();
+                    Username = CurrentUser.AuditUsername,
+                    IpAddress = CurrentUser.IPAddress?.ToString(),
+                }) ;
+                await context.SaveChangesAsync();
                 return true;
             }
             catch
@@ -313,7 +317,7 @@ namespace BLAZAM.Services
         {
             UserStateService = userStateService;
             CurrentUser = UserStateService.CurrentUserState;
-
+            
         }
     }
     public class DirectoryAudit : CommonAudit

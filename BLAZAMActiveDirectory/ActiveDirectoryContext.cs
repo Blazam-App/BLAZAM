@@ -164,6 +164,7 @@ namespace BLAZAM.ActiveDirectory
         /// </summary>
         public AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
 
+
         public IAppDatabaseFactory Factory { get; private set; }
 
         public ADSettings? ConnectionSettings { get; private set; }
@@ -291,7 +292,7 @@ namespace BLAZAM.ActiveDirectory
                     if (Status != DirectoryConnectionStatus.OK)
                     {
                         //Ok get the latest settings
-                        ADSettings ad = Context?.ActiveDirectorySettings.FirstOrDefault();
+                        ADSettings? ad = Context?.ActiveDirectorySettings.FirstOrDefault();
                         ConnectionSettings = ad;
 
                         if (ad != null)
@@ -388,6 +389,7 @@ namespace BLAZAM.ActiveDirectory
 
                                                 Status = DirectoryConnectionStatus.OK;
                                                 DomainControllers.Clear();
+
                                                 foreach (DomainController dc in Domain.GetDomain(DirectoryContext).DomainControllers)
                                                 {
                                                     //var test = dc;

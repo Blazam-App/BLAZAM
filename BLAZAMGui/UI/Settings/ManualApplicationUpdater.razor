@@ -61,100 +61,71 @@
                 break;
             case UpdateStage.None:
             default:
-                if ((LatestAvailableVersion != null && LatestAvailableVersion.Newer) || ApplicationInfo.InDebugMode)
-                {
-                    if (ApplicationInfo.InDebugMode && !LatestAvailableVersion?.Newer == true)
-                    {
-                        <h4>
-                            Downgrade Available (Debug Mode)
-                            <MudIconButton Icon="@Icons.Material.Filled.QuestionMark" OnClick=@(async()=>{await CopyToClipboard(LatestAvailableVersion.UpdateCommand);}) />
 
-                        </h4>
+
+                <MudTimeline TimelineAlign="TimelineAlign.Default" TimelinePosition="TimelinePosition.Top">
+                    @{
+                        int i = 0;
                     }
-                    else
+
+                    <MudTimelineItem Color="Color.Info" Size="Size.Small">
+                        <ItemOpposite>
+                            <MudText Color="Color.Info" Typo="Typo.h5">@AppLocalization["Previous Versions"]</MudText>
+                        </ItemOpposite>
+                        <ItemContent>
+                            <MudCard Class="pa-3">
+
+
+                                <MudButton Class="mx-6" OnClick="(()=>{ShowAllUpdates=!ShowAllUpdates;})" Color="Color.Success">@(ShowAllUpdates == false ? "Show Previous Updates" : "Hide Previous Updates")</MudButton>
+
+
+
+                                </MudCard>
+
+
+                            </ItemContent>
+                        </MudTimelineItem>
+
+
+
+                        @if (ShowAllUpdates)
                     {
-
-                        <h4>Update Available</h4>
-
-                    }
-                    <MudTimeline TimelineAlign="TimelineAlign.Default" TimelinePosition="TimelinePosition.Top">
-                        @{
-                            int i = 0;
-                        }
-                        @if (!ShowAllUpdates)
+                        @foreach (var update in UpdateService.StableUpdates.OrderBy(x => x.Version))
                         {
-                            <MudTimelineItem Color="Color.Info" Size="Size.Small">
-                                <ItemOpposite>
-                                    <MudText Color="Color.Info" Typo="Typo.h5">@AppLocalization["Previous Versions"]</MudText>
-                                </ItemOpposite>
-                                <ItemContent>
-                                    <MudCard Class="pa-3">
-
-                              
-                                                <MudButton Class="mx-6" OnClick="(()=>{ShowAllUpdates=true;})" Color="Color.Success">Show Previous Updates</MudButton>
 
 
-                                          
-                                    </MudCard>
+                            <AvailableUpdate Update=@update OnApply="ApplyUpdate" Disabled="@(!ApplicationInfo.InDebugMode)" Even=@(i%2==0) />
 
-
-                                </ItemContent>
-                            </MudTimelineItem>
-                            @foreach (var update in UpdateService.StableUpdates.Where(x=>x.Version.CompareTo(ApplicationInfo.RunningVersion)>0).OrderBy(x => x.Version))
-                            {
-
-
-                                <AvailableUpdate Update=@update OnApply="ApplyUpdate" Disabled=true Even=@(i%2==0) />
-
-                                i++;
-
-                            }
+                            i++;
 
                         }
-                        else
-                        {
-                             <MudTimelineItem Color="Color.Info" Size="Size.Small">
-                                <ItemOpposite>
-                                </ItemOpposite>
-                                <ItemContent>
-                                    <MudCard Class="pa-3">
-
-
-                                        <MudButton Class="mx-6" OnClick="(()=>{ShowAllUpdates=false;})" Color="Color.Success">Hide Previous Updates</MudButton>
-
-
-
-                                    </MudCard>
-
-
-                                </ItemContent>
-                            </MudTimelineItem>
-                            @foreach (var update in UpdateService.StableUpdates.OrderBy(x => x.Version))
-                            {
-
-
-                                <AvailableUpdate Update=@update OnApply="ApplyUpdate" Disabled=true Even=@(i%2==0) />
-
-                                i++;
-
-                            }
-                           
-                        }
-                     
-                      
-
-                    </MudTimeline>
-
-                    @if (AutoUpdateService.IsUpdatedScheduled)
-                    {
-                        <MudButton OnClick=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Error">Cancel Auto Update</MudButton>
                     }
-                }
-                if (LatestAvailableVersion != null && !LatestAvailableVersion.Newer)
+                    @if (UpdateService.LatestUpdate.Version.CompareTo(ApplicationInfo.RunningVersion) > -1)
+                    {
+                        <AvailableUpdate Update=@UpdateService.LatestUpdate OnApply="ApplyUpdate" Even=@(i%2==0) />
+
+                    }
+
+                    @if (LatestAvailableVersion != null && LatestAvailableVersion.Version.CompareTo(ApplicationInfo.RunningVersion) < 1)
+                    {
+                        <MudTimelineItem Color="Color.Success" Size="Size.Small">
+                            <ItemOpposite>
+                                <MudText Color="Color.Success" Typo="Typo.h5">@AppLocalization["Up to date"]</MudText>
+                            </ItemOpposite>
+                            <ItemContent>
+
+                            </ItemContent>
+                        </MudTimelineItem>
+                    }
+
+                </MudTimeline>
+
+                @if (AutoUpdateService.IsUpdatedScheduled)
                 {
-                    <MudIcon Class="d-inline" Icon="@Icons.Material.Filled.Check" Color="Color.Success" />
-                    <MudText Class="d-inline">Application is up to date</MudText>
+                    <MudButton OnClick=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Error">Cancel Auto Update</MudButton>
                 }
+
+
                 break;
 
         }
