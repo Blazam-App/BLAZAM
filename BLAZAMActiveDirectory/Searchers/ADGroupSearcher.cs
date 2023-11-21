@@ -3,6 +3,7 @@ using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Helpers;
 using BLAZAM.Common.Data;
+using BLAZAM.Logger;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -133,10 +134,27 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 foreach (string groupDN in list)
                 {
-                    query = "(distinguishedName=" + groupDN + ")";
-                    var group = SearchObjects(query, ActiveDirectoryObjectType.Group, 1);
-                    var adGroup = ConvertTo<ADGroup>(group);
-                    foundGroups.Add(adGroup.First());
+                    var group = new ADSearch()
+                    {
+                        ObjectTypeFilter = ActiveDirectoryObjectType.Group,
+                        Fields = new()
+                        {
+                            DN = groupDN
+                        }
+
+                    }.Search<ADGroup, IADGroup>().FirstOrDefault();
+
+                   // query = "(distinguishedName=" + groupDN + ")";
+                   // var group = SearchObjects(query, ActiveDirectoryObjectType.Group, 1);
+                    if (group != null)
+                    {
+                       // var adGroup = ConvertTo<ADGroup>(group);
+                        foundGroups.Add(group);
+                    }
+                    else
+                    {
+                        Loggers.ActiveDirectryLogger.Warning("Unable to find group in list by DN", list, groupDN, group);
+                    }
                 }
 
             }

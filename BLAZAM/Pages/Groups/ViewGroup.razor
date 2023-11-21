@@ -6,6 +6,8 @@
 
 
 <EditForm Model="Group">
+
+
     <SetSubHeader>
         <DirectoryEntryViewHeader DirectoryEntry="@Group"
                                   OnAssignTo="@(()=>{AssignToModal?.Show();})"
@@ -16,63 +18,73 @@
                                   OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
                                   OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
                                   OnToggleEditMode="ToggleEditMode" />
-        <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true"/>
+        <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true" />
     </SetSubHeader>
-    
+
     <CascadingValue Value="EditMode">
 
 
-    <AppModal Title="Assign To" @ref=@AssignToModal>
-        <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignToModal?.Hide(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
-    </AppModal>
-    <AppModal Title="Assign To" @ref=@AssignMemberModal>
-        <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal?.Hide();InvokeAsync(StateHasChanged);}) Group="Group" />
-    </AppModal>
-    <AppModal Title="Move To" @ref=@MoveToModal>
-        @if (MoveToModal?.IsShown == true)
+        <AppModal Title=@AppLocalization["Assign To"] @ref=@AssignToModal>
+            <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignToModal?.Hide(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
+        </AppModal>
+        <AppModal Title=@AppLocalization["Add Members"] @ref=@AssignMemberModal>
+            <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal?.Hide();InvokeAsync(StateHasChanged);}) Group="Group" />
+        </AppModal>
+        <AppModal Title=@AppLocalization["Move To"] @ref=@MoveToModal>
+            @if (MoveToModal?.IsShown == true)
+            {
+                <MoveToOUModalContent DirectoryModel="Group" />
+            }
+        </AppModal>
+
+        <AppModal Title=@AppLocalization["Rename Group"] @ref=@RenameModal>
+            @if (RenameModal?.IsShown == true)
+            {
+                <RenameGroupModalContent Group="Group" />
+            }
+        </AppModal>
+
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <Section Style="min-height:200px;" Title="Group Details">
+                    <MudTextField Label="@AppLocalization["Group Name"]" @bind-Value="@Group.CanonicalName" Disabled />
+
+                    <MudTextField Label="@AppLocalization["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
+
+
+                    <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
+                </Section>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <Section Style="min-height:200px;" Title=@AppLocalization["Member Of"]>
+                    <MemberOfList Model="Group" />
+
+                </Section>
+            </MudItem>
+            <MudItem xs="12" md="12">
+                <Section Style="min-height:200px;" Title=@AppLocalization["Members"]>
+                    <GroupMembersDataGrid Group="Group" />
+
+                </Section>
+            </MudItem>
+        </MudGrid>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        @if (Group.HasUnsavedChanges)
         {
-            <MoveToOUModalContent DirectoryModel="Group" />
+            <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
         }
-    </AppModal>
-
-    <AppModal Title="Rename Group" @ref=@RenameModal>
-        @if (RenameModal?.IsShown == true)
-        {
-            <RenameGroupModalContent Group="Group" />
-        }
-    </AppModal>
-
-
-
-    <Section Style="min-height:200px;" Title="Group Details">
-        <MudTextField Label="@AppLocalization["Group Name"]" @bind-Value="@Group.CanonicalName" Disabled />
-
-        <MudTextField Label="@AppLocalization["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
-
-
-        <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
-    </Section>
-
-
-   <Section Style="min-height:200px;" Title="Member Of">
-                                    <MemberOfList Model="Group" />
-
-    </Section>
-
-    <Section Style="min-height:200px;" Title="Members">
-        <GroupMembersDataGrid Group="Group"/>
-            
-    </Section>
-       
-   
-
-
-
-
-    @if (Group.HasUnsavedChanges)
-    {
-        <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
-    }
 
     </CascadingValue>
 </EditForm>
@@ -89,14 +101,14 @@
 
     async void SaveChanges()
     {
-        if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
+        if (await MessageService.Confirm("Are you sure you want to save the changes to " + Group.CanonicalName + "?", "Save Changes"))
         {
             var changes = Group.Changes;
 
-            var dcr  = Group.CommitChanges();
+            var dcr = Group.CommitChanges();
             if (dcr.AssignedMembers.Count > 0)
             {
-                
+
             }
             await AuditLogger.Group.Changed(Group, changes);
 

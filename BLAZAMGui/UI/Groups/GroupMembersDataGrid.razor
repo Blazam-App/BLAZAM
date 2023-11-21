@@ -2,14 +2,13 @@
 @if (Members != null)
 {
     <MudDataGrid Elevation=0
-             Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
-             Filterable="false"
-             Dense=true
-             
-             Height="300px"
-            FixedHeader=true
-             SortMode="@SortMode.None"
-             Groupable="false">
+                 Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
+                 Filterable="false"
+                 Dense=true
+                 Height="300px"
+                 FixedHeader=true
+                 SortMode="@SortMode.None"
+                 Groupable="false">
         <Columns>
             <TemplateColumn Context="templateContext">
                 <HeaderTemplate>
@@ -60,8 +59,13 @@
                     Remove Member
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
-                    <MudTooltip ShowOnHover=@(!cellContext.Item.CanUnassign) Text="You don't have permission to remove this group member">
-                        <MudButton Disabled=@(!cellContext.Item.CanUnassign) Color="Color.Error" OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
+                    <MudTooltip ShowOnFocus=@(!cellContext.Item.CanUnassign)
+                        ShowOnClick=@(!cellContext.Item.CanUnassign)
+                                ShowOnHover=@(!cellContext.Item.CanUnassign)
+                                Text="You don't have permission to remove this group member">
+                        <MudButton Disabled=@(!cellContext.Item.CanUnassign)
+                                   Color="Color.Error"
+                                   OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
                             Remove
                         </MudButton>
                     </MudTooltip>
@@ -88,7 +92,7 @@ else
 {
     <MudOverlay Visible=true Absolute=true DarkBackground=true>
         <MudProgressCircular Indeterminate Color=Color.Primary />
-        </MudOverlay>
+    </MudOverlay>
 }
 
 
