@@ -104,7 +104,8 @@
         redirectUrl = Nav.Uri;
         if (Monitor.AppReady != ServiceConnectionState.Up)
             Monitor.OnAppReadyChanged += AppReadyChanged;
-        Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
+        //I don't think the following is necessary
+            //Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
     }
 
     async void AppReadyChanged(ServiceConnectionState state)

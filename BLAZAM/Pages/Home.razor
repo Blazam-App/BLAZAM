@@ -7,11 +7,11 @@
     string testValue="";
     Type valueType =testValue.GetType();
 }
-<AppPageTitle>Home</AppPageTitle>
+<AppPageTitle>@AppLocalization["Home"]</AppPageTitle>
 
 @if (MOTD.HasValue && MOTD.Value.ToString() != "")
 {
-    <MudAlert Class="mb-6" ShowCloseIcon Elevation="3">
+    <MudAlert Class="mb-6" ShowCloseIcon=false Elevation="3">
 
 
         @MOTD.Value

@@ -2,7 +2,7 @@
 @using System.Diagnostics;
 @inherits AppComponentBase
 @implements IDisposable
-   @if (Computer.IsOnline == true)
+@if (Computer.IsOnline == true)
 {
     if (sessionsErrorMessage == null)
     {
@@ -31,7 +31,7 @@
                         }
                     </CellTemplate>
                 </TemplateColumn>
-           
+
                 <TemplateColumn Title="Manage">
                     <CellTemplate>
                         @if (context.Item.ConnectionState.ToString() == "Active")
@@ -45,7 +45,7 @@
         </MudDataGrid>   <AppModal @ref=@sessionMessageModal AllowClose=true Title="Send Message">
             <SendMessageModalContent Session="@sessionToMessage" />
         </AppModal>
-        
+
     }
     else
     {
@@ -70,7 +70,7 @@ else
         {
             if (_selectedSession == value) return;
             _selectedSession = value;
-           
+
 
         }
     }
@@ -137,7 +137,7 @@ else
     {
         try
         {
-            if (Computer != null)
+            if (Computer != null && Computer.IsOnline == true)
             {
                 sessions = await Computer.GetRemoteSessionsAsync();
                 sessions.ForEach(s =>

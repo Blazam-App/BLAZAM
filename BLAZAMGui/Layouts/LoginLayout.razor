@@ -26,7 +26,7 @@
                             @Body
                        
                     </MudCard>
-                    @if (monitor.DirectoryConnected == ServiceConnectionState.Connecting)
+                    @if (monitor.DirectoryConnectionStatus == ServiceConnectionState.Connecting)
                     {
                      
                             <MudProgressLinear Color="Color.Warning" Indeterminate=true />
@@ -34,7 +34,7 @@
                         
                         
                     }
-                    @if (monitor.DirectoryConnected == ServiceConnectionState.Down){
+                    @if (monitor.DirectoryConnectionStatus == ServiceConnectionState.Down){
                         @* <MudProgressLinear Color="Color.Error" Indeterminate=true /> *@
                         <MudAlert Style="left:25px;right:25px;" Class="absolute  mud-alert-filled-error">Unable to connect to directory after @directory.FailedConnectionAttempts attempts ... Local admin login only...</MudAlert>
 

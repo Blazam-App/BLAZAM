@@ -60,7 +60,7 @@
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     <MudTooltip ShowOnFocus=@(!cellContext.Item.CanUnassign)
-                        ShowOnClick=@(!cellContext.Item.CanUnassign)
+                                ShowOnClick=@(!cellContext.Item.CanUnassign)
                                 ShowOnHover=@(!cellContext.Item.CanUnassign)
                                 Text="You don't have permission to remove this group member">
                         <MudButton Disabled=@(!cellContext.Item.CanUnassign)
