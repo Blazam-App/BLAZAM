@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.8.5</AssemblyVersion>
-		<Version>2023.11.21.1255</Version>
+		<Version>2023.11.22.0020</Version>
 
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -24,6 +24,8 @@
 	  <None Remove="nssm.exe" />
 	  <None Remove="static\img\default_logo.png" />
 	  <None Remove="static\img\default_logo2.png" />
+	  <None Remove="static\img\default_logo3.png" />
+	  <None Remove="static\img\default_logo4.png" />
 	</ItemGroup>
 
 
@@ -38,6 +40,12 @@
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	  <Content Include="static\img\default_logo2.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="static\img\default_logo3.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="static\img\default_logo4.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>
