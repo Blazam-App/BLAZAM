@@ -17,10 +17,10 @@
             <MudCardHeader>
                 Conn Monitor
             </MudCardHeader>
-            <Row>Database Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DatabaseConnected)</Row>
-            <Row>ActiveDirectory Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DirectoryConnected)</Row>
+            <Row>Database Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DatabaseConnectionStatus)</Row>
+            <Row>ActiveDirectory Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DirectoryConnectionStatus)</Row>
             <Row>App Ready Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.AppReady)</Row>
-            @*<Row>Error Message: @Oops.ErrorMessage</Row>*@
+            
         </MudCard>
         <MudDataGrid Items="@UserStateService.UserStates">
             <Columns>

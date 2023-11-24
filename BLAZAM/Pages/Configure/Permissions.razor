@@ -18,7 +18,7 @@
             <ChildContent>
 
 
-                @if (Monitor.DirectoryConnected == ServiceConnectionState.Up)
+                @if (Monitor.DirectoryConnectionStatus == ServiceConnectionState.Up)
                 {
                     <DelegateEditor />
                 }
@@ -45,7 +45,7 @@
         <MudTabPanel>
             <ChildContent>
 
-                @if (Monitor.DirectoryConnected == ServiceConnectionState.Up)
+                @if (Monitor.DirectoryConnectionStatus == ServiceConnectionState.Up)
                 {
                     <ImpersonateUser />
                     <PermissionMapper />

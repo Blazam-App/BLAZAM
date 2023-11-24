@@ -15,12 +15,19 @@ namespace BLAZAM.Services.Background
         private readonly IEncryptionService _encryption;
         private readonly IAppDatabaseFactory _factory;
         private readonly IDatabaseContext _context;
+        /// <summary>
+        /// Called when the database can connect and application settings have been loaded
+        /// </summary>
         public AppEvent<ServiceConnectionState>? OnAppReadyChanged { get; set; }
+        /// <summary>
+        /// Called when the Active Directory connection changes
+        /// </summary>
         public AppEvent<ServiceConnectionState>? OnDirectoryConnectionChanged { get; set; }
 
-        public bool RedirectToHttps { get; set; }
-        public ServiceConnectionState? DatabaseConnected { get => DatabaseMonitor.Status; }
-        public ServiceConnectionState? DirectoryConnected { get => DirectoryMonitor.Status; }
+
+        //public bool RedirectToHttps { get; set; }
+        public ServiceConnectionState? DatabaseConnectionStatus { get => DatabaseMonitor.Status; }
+        public ServiceConnectionState? DirectoryConnectionStatus { get => DirectoryMonitor.Status; }
 
         /// <summary>
         /// Indicated whether the application is ready to serve users.
@@ -102,15 +109,7 @@ namespace BLAZAM.Services.Background
             {
                 using (var _context = _factory.CreateDbContext())
                 {
-                    try
-                    {
-                        RedirectToHttps = _context.AppSettings.First().ForceHTTPS;
-
-                    }
-                    catch (Exception)
-                    {
-
-                    }
+                   
                     try
                     {
                         var temp = _context.Database.GetPendingMigrations();

@@ -63,6 +63,16 @@
 
                     </Section>
 
+                    <Section Title=@AppLocalization["Groups"]>
+                        <MudStack Row=true Class="@_fieldMudStackClasses">
+                            <MemberOfList AssignToClicked=@(()=>{AssignToModal?.Show();}) Model="Computer" />
+
+                        </MudStack>
+
+                    </Section>
+
+
+               
                     <Section Title=@AppLocalization["Live Stats"]>
                      
                             <MudStack Row=true Class="@_fieldMudStackClasses">
