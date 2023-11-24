@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.8.5</AssemblyVersion>
-		<Version>2023.11.22.0057</Version>
+		<Version>2023.11.24.2007</Version>
 
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -74,10 +74,10 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.13" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.14" />
 		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="7.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
-		<PackageReference Include="MudBlazor" Version="6.11.0" />
+		<PackageReference Include="MudBlazor" Version="6.11.1" />
 		<PackageReference Include="MudBlazor.Markdown" Version="0.1.2" />
 		<PackageReference Include="MudBlazor.ThemeManager" Version="1.0.8" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
