@@ -15,6 +15,7 @@ using System.Linq;
 using System.Reflection;
 using MudBlazor;
 using System.DirectoryServices.ActiveDirectory;
+using BLAZAM.Jobs;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -71,10 +72,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-        /// <summary>
+        /// <summary>s
         /// Actions to perform during <see cref="CommitChanges"/>
         /// </summary>
         protected List<Func<bool>> CommitActions { get; set; } = new();
+
+        /// <summary>s
+        /// Actions to perform during <see cref="CommitChanges"/>
+        /// </summary>
+        protected List<JobStep> CommitSteps { get; set; } = new();
 
         private DirectoryEntry? directoryEntry;
 
@@ -395,6 +401,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 return false;
             });
+            CommitSteps.Add(new Jobs.JobStep("Move to OU", () =>
+            {
+                parentOUToMoveTo.EnsureDirectoryEntry();
+                if (parentOUToMoveTo.DirectoryEntry != null)
+                {
+                    DirectoryEntry?.MoveTo(parentOUToMoveTo.DirectoryEntry);
+
+                    return true;
+                }
+                return false;
+            }));
+
             HasUnsavedChanges = true;
         }
 
@@ -682,21 +700,26 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual async Task Parse(SearchResult result, IActiveDirectoryContext directory) => await Parse(null, result, directory);
 
 
-        public virtual async Task<DirectoryChangeResult> CommitChangesAsync(DirectoryChangeResult? dcr = null)
+        public virtual async Task<IJob> CommitChangesAsync(IJob? commitJob = null)
         {
             return await Task.Run(() =>
             {
-                return CommitChanges(dcr);
+                return CommitChanges(commitJob);
             });
         }
 
 
-        public virtual DirectoryChangeResult CommitChanges(DirectoryChangeResult? dcr = null)
+        public virtual IJob CommitChanges(IJob? commitJob = null)
         {
-            dcr ??= new DirectoryChangeResult();
             try
             {
+                commitJob ??= new Job
+                {
+                    User = CurrentUser
+                };
 
+              
+                JobStep? propertiesStep;
                 if (!NewEntry)
                 {
                     //Existing Active Directory Entry
@@ -706,70 +729,86 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             " entry is somehow missing on commit.");
                         throw new ApplicationException("DirectoryEntry is null");
                     }
-                    foreach (var p in NewEntryProperties)
+                    propertiesStep = new JobStep("Set AD attributes", () =>
                     {
-
-
-                        if (!DirectoryEntry.Properties.Contains(p.Key)
-                            || DirectoryEntry.Properties[p.Key].Value?.Equals(p.Value) != true)
+                        foreach (var p in NewEntryProperties)
                         {
-                            if (p.Value == null
-                        || p.Value is string strValue && strValue.IsNullOrEmpty()
-                        || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
+
+
+                            if (!DirectoryEntry.Properties.Contains(p.Key)
+                                || DirectoryEntry.Properties[p.Key].Value?.Equals(p.Value) != true)
                             {
+                                if (p.Value == null
+                            || p.Value is string strValue && strValue.IsNullOrEmpty()
+                            || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
+                                {
 
-                                DirectoryEntry.Properties[p.Key].Clear();
+                                    DirectoryEntry.Properties[p.Key].Clear();
 
 
-                            }
-                            else
-                            {
-                                DirectoryEntry.Properties[p.Key].Value = p.Value;
+                                }
+                                else
+                                {
+                                    DirectoryEntry.Properties[p.Key].Value = p.Value;
 
+                                }
                             }
                         }
-                    }
+                        DirectoryEntry.CommitChanges();
+                        return true;
+                    });
+                  
 
-                    DirectoryEntry.CommitChanges();
 
                 }
                 else
                 {
-                    DirectoryEntry?.CommitChanges();
+                    JobStep createStep = new JobStep("Create directory entry", () =>
+                    {
+                        DirectoryEntry?.CommitChanges();
 
+                        return true;
+                    });
+                    commitJob.Steps.Insert(0,createStep);
                     if (DirectoryEntry == null)
                     {
                         Loggers.ActiveDirectryLogger.Error("The directory entry for new entry " + DN +
                             " is somehow missing on commit.");
                         throw new ApplicationException("DirectoryEntry is null");
                     }
-                    foreach (var p in NewEntryProperties)
-                    {
-                        if (p.Value == null
-                            || p.Value is string strValue && strValue.IsNullOrEmpty()
-                            || p.Value is DateTime dateValue && dateValue == DateTime.MinValue) continue;
-                        DirectoryEntry.Properties[p.Key].Value = p.Value;
-                        DirectoryEntry.CommitChanges();
 
-                    }
+                    propertiesStep = new JobStep("Set AD attributes", () =>
+                    {
+                        foreach (var p in NewEntryProperties)
+                        {
+                            if (p.Value == null
+                                || p.Value is string strValue && strValue.IsNullOrEmpty()
+                                || p.Value is DateTime dateValue && dateValue == DateTime.MinValue) continue;
+                            DirectoryEntry.Properties[p.Key].Value = p.Value;
+                            DirectoryEntry.CommitChanges();
+
+                        }
+                        return true; 
+                    });
+                  
                 }
 
 
 
+                commitJob.Steps.Insert(commitJob.Steps.Count>1?1:0,propertiesStep);
 
-                foreach (var action in CommitActions)
+                foreach (var step in CommitSteps)
                 {
-                    if (!action.Invoke())
-                    {
-                        //throw new ApplicationException("Error processing Commit Actions");
-                    }
-                }
+                    commitJob.Steps.Add(step);
 
+                    
+                }
+                var result = commitJob.Run();
 
 
                 HasUnsavedChanges = false;
                 OnModelCommited?.Invoke();
-                return new DirectoryChangeResult();
+                return commitJob;
             }
             catch (DirectoryServicesCOMException ex)
             {
@@ -777,7 +816,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
-
 
         public virtual void Delete()
         {

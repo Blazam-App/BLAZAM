@@ -1,9 +1,13 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
+using BLAZAM.Logger;
 using System.Data;
+using System.DirectoryServices.AccountManagement;
 using System.Globalization;
+using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -16,7 +20,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         const int ADS_UF_DONT_EXPIRE_PASSWD = 0x10000;
         const int ACCOUNT_ENABLE_MASK = 0xFFFFFFD;
 
-        
+
 
 
         public virtual bool CanEnable { get => HasActionPermission(ObjectActions.Enable); }
@@ -169,7 +173,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-               return GetDateTimeProperty("accountExpires");
+                return GetDateTimeProperty("accountExpires");
             }
             set
             {
@@ -185,9 +189,74 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-               
+
                 return GetDateTimeProperty("pwdLastSet");
             }
+
+        }
+        public bool SetPassword(SecureString password, bool requireChange = false)
+        {
+            if (SamAccountName == null) throw new ApplicationException("samaccount name not found!");
+            if (DirectorySettings == null) throw new ApplicationException("Directory settings not found when trying to change directory user password");
+
+            var directoryPassword = DirectorySettings.Password.Decrypt();
+            if (directoryPassword == null) return false;
+
+
+            try
+            {
+
+
+
+                // DirectoryEntry.InvokeSet("SetPassword", new object[] { password.ToPlainText() });
+
+                //TODO set password from outside the domain
+                //The following works utside the domain but may havee issues with cerrts
+                using (PrincipalContext pContext = new PrincipalContext(
+                    ContextType.Domain,
+                    DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
+                    DirectorySettings.Username,
+                    directoryPassword
+                    ))
+                {
+
+
+                    UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
+                    if (up != null)
+                    {
+                        up.SetPassword(password.ToPlainText());
+                        if (requireChange)
+                            up.ExpirePasswordNow();
+
+                        up.Save();
+
+                    }
+                }
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                
+                Loggers.ActiveDirectryLogger.Error("Error setting entry password", ex);
+
+                throw new ApplicationException("Unable to set password", ex);
+            }
+
+        }
+
+        public void StagePasswordChange(SecureString newPassword, bool requireChange = false)
+        {
+            CommitActions.Add(() =>
+            {
+                return SetPassword(newPassword, requireChange);
+            });
+            CommitSteps.Add(new Jobs.JobStep("Set Password", () =>
+            {
+                return SetPassword(newPassword, requireChange);
+            }));
+
 
         }
 

@@ -105,15 +105,19 @@
         {
             var changes = Group.Changes;
 
-            var dcr = Group.CommitChanges();
-            if (dcr.AssignedMembers.Count > 0)
+            var dcr = await Group.CommitChangesAsync();
+            if (dcr.FailedSteps.Count > 0)
             {
+                foreach(var failedStep in dcr.FailedSteps)
+                {
 
+                    SnackBarService.Error(failedStep.Name+": "+ failedStep.Exception.Message + " " + failedStep.Exception.InnerException.Message);
+                }
             }
             await AuditLogger.Group.Changed(Group, changes);
 
             EditMode = false;
-            SnackBarService.Success("The changes made to this group have been saved.", "Changes Saved");
+            SnackBarService.Success("The changes made to this group have been saved.");
             await InvokeAsync(StateHasChanged);
 
         }
@@ -126,7 +130,7 @@
             try
             {
                 Group.Delete();
-                SnackBarService.Success(Group.CanonicalName + " has been deleted.", "Group Deleted");
+                SnackBarService.Success(Group.CanonicalName + " has been deleted.");
 
                 //Group = null;
                 Nav.NavigateTo("/groups/search");

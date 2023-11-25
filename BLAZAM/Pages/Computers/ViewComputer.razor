@@ -196,7 +196,7 @@
             try
             {
                 Computer.Delete();
-                SnackBarService.Success(Computer.CanonicalName + " has been deleted.", "Computer Deleted");
+                SnackBarService.Success(Computer.CanonicalName + " has been deleted.");
 
                 Nav.NavigateTo("/users/search");
 
@@ -210,11 +210,11 @@
     }
     async void SaveChanges()
     {
-        if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
+        if (await MessageService.Confirm("Are you sure you want to save the changes?"))
         {
             await Computer.CommitChangesAsync();
             EditMode = false;
-            SnackBarService.Success("The changes made to this computer have been saved.", "Changes Saved");
+            SnackBarService.Success("The changes made to this computer have been saved.");
             await RefreshEntryComponents();
 
         }

@@ -2,6 +2,7 @@
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
+using BLAZAM.Jobs;
 using System.DirectoryServices;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
@@ -210,12 +211,12 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Sends all staged changes to the Active Directory server
         /// </summary>
         /// <returns></returns>
-        DirectoryChangeResult CommitChanges(DirectoryChangeResult? dcr=null);
+        IJob CommitChanges(IJob? commitJob=null);
         /// <summary>
         /// Sends all staged changes to the Active Directory server asynchronously
         /// </summary>
         /// <returns></returns>
-        Task<DirectoryChangeResult> CommitChangesAsync(DirectoryChangeResult? dcr=null);
+        Task<IJob> CommitChangesAsync(IJob? commitJob = null);
 
         /// <summary>
         /// Resets the current entry state to it's inital state

@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.ActiveDirectory.Interfaces
+﻿using System.Security;
+
+namespace BLAZAM.ActiveDirectory.Interfaces
 {
     public interface IAccountDirectoryAdapter : IGroupableDirectoryAdapter
     {
@@ -37,5 +39,8 @@
         DateTime? ExpireTime { get; set; }
         DateTime? LastLogonTime { get; }
         DateTime? PasswordLastSet { get; }
+
+        bool SetPassword(SecureString password, bool requireChange = false);
+        void StagePasswordChange(SecureString newPassword, bool requireChange = false);
     }
 }
