@@ -38,7 +38,7 @@
             }
             <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true;})">Custom</MudButton>
 
-            <MudButton Disabled=@(SelectedTemplate is null && custom!=true) Color=Color.Success OnClick="@(()=>{if(custom==true)SelectedStep=3;else selectedStep=1;})">Next</MudButton>
+            <MudButton Disabled=@(SelectedTemplate is null && custom!=true) Color=Color.Success OnClick="@(()=>{if(custom==true)SelectedStep=4;else selectedStep=1;})">Next</MudButton>
         </ChildContent>
 
     </MudTabPanel>
@@ -200,7 +200,7 @@
                 {
                     newUser.MoveTo(selectedOU);
                 }
-                SelectedStep = 4;
+                SelectedStep = 2;
             }
         });
 
@@ -211,7 +211,6 @@
         await InvokeAsync(StateHasChanged);
             var ou = Directory.OUs.FindOuByString(SelectedTemplate.ParentOU).FirstOrDefault();
             newUser = ou.CreateUser(SelectedTemplate.GenerateDisplayName(newUserName));
-            newUser.NewEntry = true;
 
             newUser.SamAccountName = SelectedTemplate.GenerateUsername(newUserName);
             newUser.DisplayName = SelectedTemplate.GenerateDisplayName(newUserName);

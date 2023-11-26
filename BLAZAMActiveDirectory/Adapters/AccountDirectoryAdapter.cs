@@ -248,10 +248,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public void StagePasswordChange(SecureString newPassword, bool requireChange = false)
         {
-            CommitActions.Add(() =>
-            {
-                return SetPassword(newPassword, requireChange);
-            });
+          
             CommitSteps.Add(new Jobs.JobStep("Set Password", () =>
             {
                 return SetPassword(newPassword, requireChange);

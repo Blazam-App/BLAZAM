@@ -72,10 +72,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-        /// <summary>s
-        /// Actions to perform during <see cref="CommitChanges"/>
-        /// </summary>
-        protected List<Func<bool>> CommitActions { get; set; } = new();
+
 
         /// <summary>s
         /// Actions to perform during <see cref="CommitChanges"/>
@@ -390,18 +387,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual void MoveTo(IADOrganizationalUnit parentOUToMoveTo)
         {
-            CommitActions.Add(() =>
-            {
-                parentOUToMoveTo.EnsureDirectoryEntry();
-                if (parentOUToMoveTo.DirectoryEntry != null)
-                {
-                    DirectoryEntry?.MoveTo(parentOUToMoveTo.DirectoryEntry);
-
-                    return true;
-                }
-                return false;
-            });
-            CommitSteps.Add(new Jobs.JobStep("Move to OU", () =>
+          CommitSteps.Add(new Jobs.JobStep("Move to OU", () =>
             {
                 parentOUToMoveTo.EnsureDirectoryEntry();
                 if (parentOUToMoveTo.DirectoryEntry != null)

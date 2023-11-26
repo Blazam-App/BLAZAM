@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models.Permissions;
+using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Contracts;
 using System.DirectoryServices;
@@ -211,14 +212,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <returns>An uncommited user</returns>
         public IADUser CreateUser(string containerName)
         {
-
-            IADUser newUser = new ADUser();
-            if (DirectoryEntry == null)
-                DirectoryEntry = searchResult?.GetDirectoryEntry();
-            newUser.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim().Replace(",", "\\,"), "user"), Directory);
-            newUser.NewEntry = true;
-            return newUser;
-
+            var fullContainerName = "CN=" + containerName.Trim().Replace(",", "\\,");
+            try
+            {
+                IADUser newUser = new ADUser();
+                if (DirectoryEntry == null)
+                    DirectoryEntry = searchResult?.GetDirectoryEntry();
+                newUser.Parse(DirectoryEntry.Children.Add(fullContainerName, "user"), Directory);
+                newUser.NewEntry = true;
+                return newUser;
+            }catch(Exception ex)
+            {
+                Loggers.ActiveDirectryLogger.Error("Error while attempting to create user: "+fullContainerName, ex);
+                throw ex;
+            }
         }
 
         /// <summary>

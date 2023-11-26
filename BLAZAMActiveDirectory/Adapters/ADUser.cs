@@ -126,21 +126,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty(ActiveDirectoryFields.HomeDirectory.FieldName, value);
                 if (value == null || value == "") return;
 
-                CommitActions.Add(() =>
-                {
-                    return Directory.Impersonation.Run(() =>
-                    {
-                        if (HomeDirectory.IsNullOrEmpty()) return true;
-                        var homeDirectory = new SystemDirectory(HomeDirectory);
-                        if (!homeDirectory.Exists)
-                            homeDirectory.EnsureCreated();
-                        SetHomeDirectoryPermissions();
-                        if (homeDirectory.Exists)
-                            return true;
-                        return false;
-
-                    });
-                });
+               
                 CommitSteps.Add(new Jobs.JobStep("Create home directory", () =>
                 {
                     return Directory.Impersonation.Run(() =>
