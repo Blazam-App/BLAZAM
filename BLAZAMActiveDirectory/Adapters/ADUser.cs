@@ -4,6 +4,7 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
+using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using System.DirectoryServices.AccountManagement;
@@ -20,49 +21,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
     {
 
         public SecureString NewPassword { get; set; }
-        public bool SetPassword(SecureString password, bool requireChange = false)
-        {
-
-            try
-            {
-
-                if (SamAccountName == null) throw new ApplicationException("samaccount name not found!");
-                if (DirectorySettings == null) throw new ApplicationException("Directory settings not found when trying to change directory user password");
-
-                var directoryPassword = DirectorySettings.Password.Decrypt();
-                if (directoryPassword == null) return false;
-                //TODO set password from outside the domain
-                //The following works utside the domain but may havee issues with cerrts
-                using (PrincipalContext pContext = new PrincipalContext(
-                    ContextType.Domain,
-                    DirectorySettings.FQDN + ":" + DirectorySettings.ServerPort,
-                    DirectorySettings.Username,
-                    directoryPassword
-                    ))
-                {
-
-
-                    UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
-                    if (up != null)
-                    {
-                        up.SetPassword(password.ToPlainText());
-                        if (requireChange)
-                            up.ExpirePasswordNow();
-
-                        up.Save();
-
-                    }
-                }
-
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-
-        }
 
         public byte[]? ThumbnailPhoto
         {
@@ -168,7 +126,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty(ActiveDirectoryFields.HomeDirectory.FieldName, value);
                 if (value == null || value == "") return;
 
-                CommitActions.Add(() =>
+               
+                CommitSteps.Add(new Jobs.JobStep("Create home directory", () =>
                 {
                     return Directory.Impersonation.Run(() =>
                     {
@@ -182,17 +141,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         return false;
 
                     });
-                });
+                }));
             }
         }
 
-        public void StagePasswordChange(SecureString newPassword, bool requireChange = false)
-        {
-            CommitActions.Add(() =>
-            {
-                return SetPassword(newPassword, requireChange);
-            });
-        }
         /// <summary>
         /// Automatically called when changing <see cref="HomeDirectory"/>
         /// </summary>

@@ -2,6 +2,7 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
+using BLAZAM.Jobs;
 using System.Data;
 using System.Globalization;
 
@@ -124,24 +125,38 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public override DirectoryChangeResult CommitChanges(DirectoryChangeResult? dcr=null)
+        public override IJob CommitChanges(IJob? commitJob=null)
         {
-            dcr ??= new DirectoryChangeResult();
-            dcr = base.CommitChanges(dcr);
-
-            ToAssignTo.ForEach(g =>
+            //dcr ??= new DirectoryChangeResult();
+            if (ToAssignTo.Count > 0)
             {
-                g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
-                dcr.AssignedGroups.Add(g.Group);
+                CommitSteps.Add(new Jobs.JobStep("Assign to groups", () =>
+                {
+                    ToAssignTo.ForEach(g =>
+                    {
+                        g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
+                        //dcr.AssignedGroups.Add(g.Group);
 
-            });
-            ToUnassignFrom.ForEach(g =>
+                    });
+                    return true;
+                }));
+            }
+            if (ToUnassignFrom.Count > 0)
             {
-                g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
-                dcr.UnassignedGroups.Add(g.Group);
-            });
+                CommitSteps.Add(new Jobs.JobStep("Unassign from groups", () =>
+                {
+                    ToUnassignFrom.ForEach(g =>
+                    {
+                        g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
+                       // dcr.UnassignedGroups.Add(g.Group);
+                    });
+                    return true;
+                }));
 
-            return dcr;
+            }
+            commitJob = base.CommitChanges(commitJob);
+
+            return commitJob;
         }
 
         public override void DiscardChanges()

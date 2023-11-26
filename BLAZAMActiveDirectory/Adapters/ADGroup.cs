@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
+using BLAZAM.Jobs;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -48,29 +49,35 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-        public override DirectoryChangeResult CommitChanges(DirectoryChangeResult? dcr = null)
+        public override IJob CommitChanges(IJob? dcr = null)
         {
-            dcr ??= new DirectoryChangeResult();
+            //dcr ??= new DirectoryChangeResult();
             var newMembers = new List<string>(MembersAsStrings);
             if (MembersToAdd.Count > 0)
             {
+                CommitSteps.Add(new Jobs.JobStep("Add group members", () => {
+                    MembersToAdd.ForEach(g =>
+                    {
+                        g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
+                        //dcr.AssignedMembers.Add(g.Group);
 
+                    });
+                    return true;
+                }));
 
-                MembersToAdd.ForEach(g =>
-                {
-                    g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
-                    dcr.AssignedMembers.Add(g.Group);
-                    
-                });
+               
             }
             if (MembersToRemove.Count > 0)
             {
-
-                MembersToRemove.ForEach(g =>
-                {
-                    g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
-                    dcr.UnassignedMembers.Add(g.Group);
-                });
+                CommitSteps.Add(new Jobs.JobStep("Remove group members", () => {
+                    MembersToRemove.ForEach(g =>
+                    {
+                        g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
+                        //dcr.UnassignedMembers.Add(g.Group);
+                    });
+                    return true;
+                }));
+             
             }
 
             dcr = base.CommitChanges(dcr);

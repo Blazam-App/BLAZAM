@@ -159,7 +159,7 @@
             try
             {
                 Printer.Delete();
-                SnackBarService.Success(Printer.CanonicalName + " has been deleted.", "Printer Deleted");
+                SnackBarService.Success(Printer.CanonicalName + " has been deleted.");
 
                 Nav.NavigateTo("/search");
 
@@ -177,7 +177,7 @@
         {
             await Printer.CommitChangesAsync();
             EditMode = false;
-            SnackBarService.Success("The changes made to this computer have been saved.", "Changes Saved");
+            SnackBarService.Success("The changes made to this printer have been saved.");
             await RefreshEntryComponents();
 
         }

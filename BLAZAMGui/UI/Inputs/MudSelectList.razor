@@ -4,7 +4,8 @@
 <MudSelect T="T"
            @bind-SelectedValues=@SelectedValues
            @bind-Text=@Text
-           @bind-Value=@Value
+           Value=@Value
+           ValueChanged="(val)=>{Value=val;ValueChanged.InvokeAsync(val);}"
            FullWidth=@FullWidth
            Dense=@Dense
            Variant="@Variant"

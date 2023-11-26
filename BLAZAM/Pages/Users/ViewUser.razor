@@ -445,31 +445,35 @@
     {
         await base.OnInitializedAsync();
 
+
         await InvokeAsync(StateHasChanged);
-        try
+
+        if (User.HomeDirectory != null)
         {
-
-            await User.Directory.Impersonation.RunAsync(() =>
-
+            try
             {
-                homeDirectoryExists = new SystemDirectory(User.HomeDirectory).Exists;
-                return true;
-            });
 
+                await User.Directory.Impersonation.RunAsync(() =>
+
+                {
+                    homeDirectoryExists = new SystemDirectory(User.HomeDirectory).Exists;
+                    return true;
+                });
+
+            }
+
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectryLogger.Warning("Error checking user h-drive: {Message}", ex);
+
+            }
         }
-
-        catch (Exception ex)
-        {
-            Loggers.ActiveDirectryLogger.Warning("Error checking user h-drive: {Message}", ex);
-
-        }
-
         AuditLogger.Searched(User);
     }
 
     async void SaveChanges()
     {
-        if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
+        if (await MessageService.Confirm("Are you sure you want to save the changes?"))
         {
             SavingChanges = true;
             await RefreshEntryComponents();
@@ -479,12 +483,12 @@
                 await User.CommitChangesAsync();
                 await AuditLogger.User.Changed(User, changes);
                 EditMode = false;
-                SnackBarService.Success("The changes made to this user have been saved.", "Changes Saved");
+                SnackBarService.Success("The changes made to this user have been saved.");
 
             }
             catch (ApplicationException ex)
             {
-                SnackBarService.Error(ex.Message, "Save Failed");
+                SnackBarService.Error(ex.Message);
 
             }
             SavingChanges = false;
@@ -500,7 +504,7 @@
         if (await MessageService.Confirm("Are you sure you want to unlock " + User.DisplayName + "?", "Unlock User"))
         {
             User.LockedOut = false;
-            SnackBarService.Warning(User.DisplayName + " will be unlocked when changes are saved.", "Unlock Pending");
+            SnackBarService.Warning(User.DisplayName + " will be unlocked when changes are saved.");
             await RefreshEntryComponents();
 
         }
@@ -513,7 +517,7 @@
             try
             {
                 User.Delete();
-                SnackBarService.Success(User.DisplayName + " has been deleted.", "User Deleted");
+                SnackBarService.Success(User.DisplayName + " has been deleted.");
                 await AuditLogger.User.Deleted(User);
             }
             catch (ApplicationException ex)
@@ -528,7 +532,7 @@
     {
 
         User.ThumbnailPhoto = null;
-        SnackBarService.Warning(User.DisplayName + " will have their thumbnail deleted on save.", "Thumbnail Deletion Pending");
+        SnackBarService.Warning(User.DisplayName + " will have their thumbnail deleted on save.");
         await RefreshEntryComponents();
 
     }

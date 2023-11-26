@@ -29,18 +29,18 @@
     }
     void InfoBroadcast(NotificationMessage message)
     {
-        SnackBarService.Info(message.Message, message.Title);
+        MessageService.Info(message.Message, message.Title);
     }
     void ErrorBroadcast(NotificationMessage message)
     {
-        SnackBarService.Error(message.Message, message.Title);
+        MessageService.Error(message.Message, message.Title);
     }
     void SuccessBroadcast(NotificationMessage message)
     {
-        SnackBarService.Success(message.Message, message.Title);
+        MessageService.Success(message.Message, message.Title);
     }
     void WarningBroadcast(NotificationMessage message)
     {
-        SnackBarService.Warning(message.Message, message.Title);
+        MessageService.Warning(message.Message, message.Title);
     }
 }

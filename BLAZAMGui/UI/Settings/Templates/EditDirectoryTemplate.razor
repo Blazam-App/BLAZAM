@@ -33,7 +33,7 @@ ParentTemplateChanged(null);
 
 
 
-            <MudExpansionPanel Text="Variable">
+            <MudExpansionPanel Text="Variables">
 
                 <MudStack Row=true>
                     <code>{fn}</code>:First Name<br />
@@ -68,7 +68,7 @@ ParentTemplateChanged(null);
 
                 </MudStack>
             </MudExpansionPanel>
-            <Section Title="Account and Name">
+            <Section Title=@AppLocalization["Account and Name"]>
 
 
 
@@ -106,7 +106,7 @@ ParentTemplateChanged(null);
                 </MudElement>
 
             </Section>
-            <Section Title="Fields">
+            <Section Title=@AppLocalization["Fields"]>
 
 
                 <MudDrawerContainer Class="mud-height-full" Style="min-height:200px">
@@ -227,7 +227,7 @@ ParentTemplateChanged(null);
 
             </Section>
 
-            <Section Title="Organizational Unit">
+            <Section Title=@AppLocalization["Organizational Unit"]>
                 @if (SelectedOU != null)
                 {
                     var ouTemplateSource = GetParentOfValue(DirectoryTemplate.EffectiveParentOU, template => template.ParentOU);
@@ -254,7 +254,7 @@ ParentTemplateChanged(null);
                 }
 
             </Section>
-            <Section Title="Assigned Groups">
+            <Section Title=@AppLocalization["Assigned Groups"]>
 
 
                 @foreach (var group in DirectoryTemplate.InheritedAssignedGroupSids)
@@ -271,7 +271,7 @@ ParentTemplateChanged(null);
                                 @bind-SelectedResult="@SelectedGroup" />
                     <MudFab Size="Size.Small" StartIcon=@Icons.Material.Filled.Add
                         Color="Color.Primary"
-                        OnClick="@(async()=>{if(SelectedGroup!=null) await AssignGroup(SelectedGroup as IADGroup);})" />
+                        OnClick="@(async()=>{if(SelectedGroup!=null) await AssignGroup(SelectedGroup as IADGroup);SelectedGroup=null;})" />
                 </MudStack>
 
             </Section>
@@ -506,7 +506,7 @@ ParentTemplateChanged(null);
                 Header?.OnRefreshRequested.Invoke();
                 if (result > 0)
                 {
-                    SnackBarService.Success("", DirectoryTemplate.Name + " was added.");
+                    SnackBarService.Success(DirectoryTemplate.Name + " was added.");
                     // DirectoryTemplate = new();
                 }
             }
@@ -515,7 +515,7 @@ ParentTemplateChanged(null);
                 switch (ex.InnerException?.HResult)
                 {
                     case -2146232060:
-                        SnackBarService.Error("Each template must be uniquely named.", "Duplicate Template Name");
+                        SnackBarService.Error("Each template must be uniquely named.");
                         break;
                 }
             }
