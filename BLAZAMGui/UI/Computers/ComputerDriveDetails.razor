@@ -1,4 +1,6 @@
-﻿@if (Computer.IsOnline == true)
+﻿@inherits ComputerViewBase
+
+@if (Computer.IsOnline == true)
 {
     @if (Drives != null && Drives.Count > 0)
     {
@@ -36,8 +38,6 @@ else
     <MudText>Computer is not reachable.</MudText>
 }
 @code {
-    [Parameter]
-    public IADComputer Computer { get; set; }
 
     List<IADComputerDrive> Drives = new();
 

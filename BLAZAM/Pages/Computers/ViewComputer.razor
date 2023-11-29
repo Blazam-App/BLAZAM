@@ -108,6 +108,14 @@
                         
                     </Section>
 
+                    <Section Title=@AppLocalization["Printers"]>
+
+                        <MudStack Row=true Class="@_fieldMudStackClasses">
+                            <ComputerSharedPrinters Computer="Computer" />
+
+                        </MudStack>
+
+                    </Section>
 
                     @if (Computer.CanReadAnyCustomFields)
                     {

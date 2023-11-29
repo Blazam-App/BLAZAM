@@ -1,4 +1,4 @@
-﻿
+﻿@inherits ComputerViewBase
 @if (Computer.IsOnline == true)
 {
     <LiveChart Enabled=@(Computer.IsOnline==true) SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})" />
@@ -12,6 +12,4 @@ else
 
 
 @code {
-    [Parameter]
-    public IADComputer Computer { get; set; }
 }

@@ -1,0 +1,18 @@
+﻿@inherits ComputerViewBase
+@if (Computer.IsOnline == true)
+{
+    <h3>ComputerSharedPrinters</h3>
+}
+@code
+{
+    private List<object> Printers { get; set; } = new();
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Task.Run(() =>
+        {
+            Printers = Computer.SharedPrinters;
+
+        });
+    }
+}

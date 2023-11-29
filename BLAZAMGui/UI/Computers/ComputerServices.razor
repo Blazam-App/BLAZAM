@@ -1,6 +1,7 @@
 @using BLAZAM.Common.Exceptions;
 @using System.Diagnostics;
-@inherits AppComponentBase
+@inherits ComputerViewBase
+
 @implements IDisposable
 @if (Computer.IsOnline == true)
 {
@@ -64,17 +65,6 @@ else
 
 
 @code {
-
-
-
-    [Parameter]
-    public IADComputer? Computer { get; set; }
-
-
-
-
-
-
     string? sessionsErrorMessage;
     Timer? t;
     List<ComputerService> services = new();

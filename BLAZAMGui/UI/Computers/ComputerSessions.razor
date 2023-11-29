@@ -1,6 +1,7 @@
 @using BLAZAM.Common.Exceptions;
 @using System.Diagnostics;
-@inherits AppComponentBase
+@inherits ComputerViewBase
+
 @implements IDisposable
 @if (Computer.IsOnline == true)
 {
@@ -79,9 +80,6 @@ else
     SendMessageModalContent? sendMessageContent;
     MudTextField<string>? messageTextField;
 
-
-    [Parameter]
-    public IADComputer? Computer { get; set; }
 
 
 

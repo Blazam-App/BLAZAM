@@ -27,7 +27,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private bool? online;
         public ADComputer()
         {
-            
+
         }
 
         public string? OperatingSystem
@@ -90,6 +90,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
             });
         }
         public AppEvent<bool> OnOnlineChanged { get; set; }
+
+        public List<object> SharedPrinters
+        {
+            get
+            {
+                return wmiConnection.SharePrinters;
+              
+            }
+        }
 
 
         /// <summary>

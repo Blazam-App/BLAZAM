@@ -1,7 +1,6 @@
 
 using BLAZAM.ActiveDirectory;
 using BLAZAM.Email.Services;
-using BLAZAM.Localization;
 using BLAZAM.Services.Chat;
 
 namespace BLAZAM.Gui.UI
