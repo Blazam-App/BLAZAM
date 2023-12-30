@@ -8,6 +8,7 @@ using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using System.Net.Sockets;
 using System.DirectoryServices;
+using System.Threading;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -123,85 +124,98 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-
-        protected async void MonitorOnlineStatus(int timeout = 500)
+        /// <summary>
+        /// When called this computers network reachabillity will be continusously monitored.
+        /// </summary>
+        /// <param name="timeout"></param>
+        public void MonitorOnlineStatus(int timeout = 5000)
         {
             cts = new CancellationTokenSource();
-            await Task.Run(() =>
+            Task.Run(() =>
             {
-                if (SearchResult != null && !cts.IsCancellationRequested && CanonicalName != null)
+                while (!cts.IsCancellationRequested)
                 {
                     try
                     {
-                        if (IPHostEntry == null && !cts.IsCancellationRequested)
+                        if (SearchResult != null && !cts.IsCancellationRequested && CanonicalName != null)
                         {
-                            IPHostEntry = Dns.GetHostEntry(CanonicalName);
-                            Task.Delay(60000).ContinueWith((s) =>
-                            {
-                                IPHostEntry = null;
-                            });
+                            Ping(timeout);
                         }
-                        Ping ping = new Ping();
-                        int retries = 5;
-                        int x = 0;
-                        do
-                        {
-                            try
-                            {
-                                if (!cts.IsCancellationRequested)
-                                {
-                                    PingReply response = ping.Send(CanonicalName, timeout);
-                                    if (response != null)
-                                    {
-                                        if (response.Status == IPStatus.Success)
-                                        {
-                                            IsOnline = true;
-                                            return;
-                                        }
-                                        else if (response.Status == IPStatus.TimedOut)
-                                        {
-                                            IsOnline = false;
-                                            return;
-
-                                        }
-                                    }
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Loggers.ActiveDirectryLogger.Error(ex.Message);
-
-                                //MainWindow.Get.Toast("Error pinging " + destination);
-                                //Debug.WriteLine("Error pinging " + destination);
-                            }
-                            x++;
-                        } while (x < retries);
+                    }catch (Exception ex)
+                    {
+                        IsOnline = false;
 
                     }
-                    catch (SocketException ex)
-                    {
+                    Task.Delay(1000).Wait();
+                }
+            }, cts.Token);
+           // await Task.Delay(1000);
+           // MonitorOnlineStatus();
 
+        }
+        private void Ping(int timeout=5000)
+        {
+            try
+            {
+                if (IPHostEntry == null && !cts.IsCancellationRequested)
+                {
+                    IPHostEntry = Dns.GetHostEntry(CanonicalName);
+                    Task.Delay(60000).ContinueWith((s) =>
+                    {
+                        IPHostEntry = null;
+                    });
+                }
+                Ping ping = new Ping();
+                int retries = 5;
+                int x = 0;
+                do
+                {
+                    try
+                    {
+                        if (!cts.IsCancellationRequested)
+                        {
+                            PingReply response = ping.Send(CanonicalName, timeout);
+                            if (response != null)
+                            {
+                                if (response.Status == IPStatus.Success)
+                                {
+                                    IsOnline = true;
+                                    return;
+                                }
+                                else if (response.Status == IPStatus.TimedOut && x==retries-1)
+                                {
+                                    IsOnline = false;
+
+                                }
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {
                         Loggers.ActiveDirectryLogger.Error(ex.Message);
 
+                        //MainWindow.Get.Toast("Error pinging " + destination);
+                        //Debug.WriteLine("Error pinging " + destination);
                     }
-                }
+                    x++;
+                } while (x < retries);
 
-                IsOnline = false;
+            }
+            catch (SocketException ex)
+            {
 
-            }, cts.Token);
-            await Task.Delay(1000);
-            MonitorOnlineStatus();
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectryLogger.Error(ex.Message);
 
+            }
         }
-
         public override async Task Parse(SearchResult result, IActiveDirectoryContext directory)
         {
             await base.Parse(result, directory);
-            if (!this.IsDeleted)
-                MonitorOnlineStatus();
+            //if (!this.IsDeleted)
+            //    MonitorOnlineStatus();
         }
 
         public override void Dispose()

@@ -16,5 +16,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         List<IADComputerDrive> GetDrives();
         Task<List<IADComputerDrive>> GetDrivesAsync();
         Task<List<IRemoteSession>> GetRemoteSessionsAsync();
+        void MonitorOnlineStatus(int timeout = 500);
     }
 }

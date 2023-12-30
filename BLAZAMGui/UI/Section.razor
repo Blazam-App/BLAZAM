@@ -1,4 +1,4 @@
-﻿<MudPaper Elevation=2
+﻿<MudPaper Elevation=@Elevation
           Class=@((FullWidth?"mud-width-full":"") + " section px-4 py-3")
           Style=@(Style +"overflow:hidden; position:relative;")>
     @if (SectionHeaderPosition == HeaderPosition.TopLeft || SectionHeaderPosition == HeaderPosition.TopRight)
@@ -6,8 +6,8 @@
         <MudElement Class="section-title-container">
 
             <MudElement Class="section-title">
-                <MudText Color="TextColor" 
-                    Class="section-title-text">@Title</MudText>
+                <MudText Color="TextColor"
+                         Class="section-title-text">@Title</MudText>
 
             </MudElement>
         </MudElement>
@@ -99,6 +99,8 @@
     [Parameter]
     public string Style { get; set; }
 
+    [Parameter]
+    public int Elevation { get; set; } = 2;
 
     /// <summary>
     /// Color for the text
