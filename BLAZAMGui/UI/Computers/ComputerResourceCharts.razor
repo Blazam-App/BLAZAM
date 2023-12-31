@@ -1,7 +1,11 @@
 ﻿@inherits ComputerViewBase
 @if (Computer.IsOnline == true)
 {
+    <DialGuage Title="CPU" PollFunc="@(()=>{return Computer.Processor;})" />
+    <DialGuage Title="RAM" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})" />
+
     <LiveChart Enabled=@(Computer.IsOnline==true) SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})" />
+
     <LiveChart Enabled=@(Computer.IsOnline==true) SeriesName="Memory Usage" Title="Live RAM Usage" History="30" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})" />
 
 }

@@ -14,10 +14,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private const string ServicesQuery = "SELECT * FROM Win32_Service";
         private const string SharedPrintersQuery = "SELECT * FROM Win32_Printer";
         private ManagementScope managementScope;
+        private IADComputer target;
 
-        public WmiConnection(ManagementScope managementScope)
+        public WmiConnection(ManagementScope managementScope,IADComputer target)
         {
             this.managementScope = managementScope;
+            this.target = target;
         }
 
         public ComputerMemory Memory
@@ -55,7 +57,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     service.Name = mo.GetPropertyValue<string>("Name");
                     service.StartMode = mo.GetPropertyValue<string>("StartMode");
                     service.StartName = mo.GetPropertyValue<string>("StartName");
-                    service.InstallDate = mo.GetPropertyValue<DateTime>("AcceptPause");
+                    service.InstallDate = mo.GetPropertyValue<DateTime>("InstallDate");
                     service.CanPause = mo.GetPropertyValue<bool>("AcceptPause");
                     service.CanStop = mo.GetPropertyValue<bool>("AcceptStop");
                     service.Started = mo.GetPropertyValue<bool>("Started");
@@ -123,10 +125,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public List<object> SharePrinters
+        public List<SharedPrinter> SharePrinters
         {
             get
             {
+                List<SharedPrinter> sharedPrinters = new List<SharedPrinter>();
                 try
                 {
 
@@ -135,6 +138,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         if ((bool)mo["Shared"])
                         {
                             Console.WriteLine(mo["Name"]);
+                            sharedPrinters.Add(new SharedPrinter(target,mo));
+
                         }
                     }
                 }
@@ -145,7 +150,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                
                
 
-                return default;
+                return sharedPrinters;
             }
         }
 

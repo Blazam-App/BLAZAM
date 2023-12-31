@@ -21,7 +21,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 if (CanonicalName == null) return null;
-                return new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName));
+                return new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName),this);
             }
         }
         private CancellationTokenSource cts;
@@ -92,12 +92,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public AppEvent<bool> OnOnlineChanged { get; set; }
 
-        public List<object> SharedPrinters
+        public List<SharedPrinter> SharedPrinters
         {
             get
             {
                 return wmiConnection.SharePrinters;
-              
+
             }
         }
 
@@ -141,7 +141,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         {
                             Ping(timeout);
                         }
-                    }catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         IsOnline = false;
 
@@ -149,11 +150,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     Task.Delay(1000).Wait();
                 }
             }, cts.Token);
-           // await Task.Delay(1000);
-           // MonitorOnlineStatus();
+            // await Task.Delay(1000);
+            // MonitorOnlineStatus();
 
         }
-        private void Ping(int timeout=5000)
+        private void Ping(int timeout = 5000)
         {
             try
             {
@@ -172,23 +173,23 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     try
                     {
-                        if (!cts.IsCancellationRequested)
-                        {
-                            PingReply response = ping.Send(CanonicalName, timeout);
-                            if (response != null)
-                            {
-                                if (response.Status == IPStatus.Success)
-                                {
-                                    IsOnline = true;
-                                    return;
-                                }
-                                else if (response.Status == IPStatus.TimedOut && x==retries-1)
-                                {
-                                    IsOnline = false;
+                        if (cts.IsCancellationRequested) return;
 
-                                }
+                        PingReply response = ping.Send(CanonicalName, timeout);
+                        if (response != null)
+                        {
+                            if (response.Status == IPStatus.Success)
+                            {
+                                IsOnline = true;
+                                return;
+                            }
+                            else if (response.Status == IPStatus.TimedOut && x == retries - 1)
+                            {
+                                IsOnline = false;
+
                             }
                         }
+
                     }
                     catch (Exception ex)
                     {
