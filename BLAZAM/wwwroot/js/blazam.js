@@ -62,3 +62,33 @@ window.scrollToBottom = async (id) => {
     const element = document.getElementById(id);
     element.scrollTop = element.scrollHeight;
 };
+
+var dialGauges = {};
+
+window.createGauge = async (id,maxValue) => {
+    dialGauges[id] = Gauge(document.getElementById(id), {
+        max: maxValue,
+        // custom label renderer
+        label: function (value) {
+            return Math.round(value) + "/" + this.max;
+        },
+        value: 0,
+        // Custom dial colors (Optional)
+        color: function (value) {
+            if (value < 20) {
+                return "#5ee432"; // green
+            } else if (value < 40) {
+                return "#fffa50"; // yellow
+            } else if (value < 60) {
+                return "#f7aa38"; // orange
+            } else {
+                return "#ef4655"; // red
+            }
+        }
+    });
+    //console.log(dialGauges);
+}
+
+window.setGaugeValue = async (id, val, time) => {
+    dialGauges[id].setValueAnimated(val, time);
+}

@@ -9,13 +9,25 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Gui.UI
 {
+    /// <summary>
+    /// Provides a generic <see cref="IDirectoryEntryAdapter"/> parameter and the modals used on view pages.
+    /// <para>It also contains the search sub header and a store of custom fields</para>
+    /// 
+    /// <para>This is primarily geared towards search result pages</para>
+    /// </summary>
     public class DirectoryEntryViewBase : AppComponentBase
     {
         [Parameter]
         public IDirectoryEntryAdapter DirectoryEntry { get; set; }
 
+        /// <summary>
+        /// Indicates whether the current page is in edit mode.
+        /// </summary>
         protected bool EditMode { get; set; }
 
+        /// <summary>
+        /// A store of all custom fields defined
+        /// </summary>
         protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = new List<CustomActiveDirectoryField>();
 
         protected AppModal? UploadThumbnailModal { get; set; }
@@ -27,7 +39,10 @@ namespace BLAZAM.Gui.UI
         protected SetSubHeader? SubHeader { get; set; }
 
 
-
+        /// <summary>
+        /// Loads custom fields and sets up event listeners for entry changes
+        /// </summary>
+        /// <returns></returns>
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
@@ -48,7 +63,9 @@ namespace BLAZAM.Gui.UI
                 CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
             LoadingData = false;
         }
-
+        /// <summary>
+        /// Toggles <see cref="EditMode"/>
+        /// </summary>
         protected void ToggleEditMode()
         {
             EditMode = !EditMode;
@@ -64,7 +81,9 @@ namespace BLAZAM.Gui.UI
 
             }
         }
-
+        /// <summary>
+        /// Prompts the user for confirmation and sends a discard changes call to the <see cref="IDirectoryEntryAdapter"/> to remove changes if accepted
+        /// </summary>
         protected virtual async void DiscardChanges()
         {
             if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
@@ -77,6 +96,11 @@ namespace BLAZAM.Gui.UI
 
         }
 
+        /// <summary>
+        /// Sets the expire time for <see cref="IAccountDirectoryAdapter"/> entries
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
         protected DateTime? SetExpireTime(DateTime? time)
         {
             DateTime? expireTime = null;
@@ -85,6 +109,10 @@ namespace BLAZAM.Gui.UI
             return expireTime;
         }
 
+        /// <summary>
+        /// Called when an entry is renamed to update the current url
+        /// </summary>
+        /// <param name="renamedEntry"></param>
         protected void Renamed(IDirectoryEntryAdapter renamedEntry)
         {
 
@@ -94,6 +122,10 @@ namespace BLAZAM.Gui.UI
 
         }
 
+        /// <summary>
+        /// Refreshes the <see cref="SubHeader"/> along with invoking StateHasChanged();
+        /// </summary>
+        /// <returns></returns>
         protected async Task RefreshEntryComponents()
         {
             SubHeader?.Refresh();

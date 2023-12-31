@@ -25,7 +25,7 @@ namespace BLAZAM.Common.Data
 
 
                     bool returnValue = LogonUser(impersonationUser.Username, impersonationUser.FQDN!=null?impersonationUser.FQDN:"", impersonationUser.Password.ToPlainText(),
-                            LOGON32_LOGON_INTERACTIVE, LOGON32_PROVIDER_DEFAULT,
+                            LOGON32_LOGON_NETWORK, LOGON32_PROVIDER_DEFAULT,
                             out safeAccessTokenHandle);
    
     
@@ -52,6 +52,7 @@ namespace BLAZAM.Common.Data
         const int LOGON32_PROVIDER_DEFAULT = 0;
         //This parameter causes LogonUser to create a primary token. 
         const int LOGON32_LOGON_INTERACTIVE = 2;
+        const int LOGON32_LOGON_NETWORK = 9;
 
 
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]

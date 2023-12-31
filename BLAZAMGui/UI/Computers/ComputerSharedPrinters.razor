@@ -1,0 +1,44 @@
+﻿@inherits ComputerViewBase
+@if (Computer.IsOnline == true)
+{
+    <MudDataGrid Elevation=0 Items="Printers" HorizontalScrollbar=true>
+        <Columns>
+            <PropertyColumn Property="x=>x.ShareName" />
+            <PropertyColumn Property="x=>x.Location" />
+            <PropertyColumn Property="x=>x.Comment" />
+            <PropertyColumn Property="x=>x.DoCompleteFirst" />
+            <PropertyColumn Property="x=>x.Hidden" />
+            <PropertyColumn Property="x=>x.DriverName" />
+            <PropertyColumn Property="x=>x.SpoolEnabled" />
+            <PropertyColumn Property="x=>x.Queued" />
+            <PropertyColumn Property="x=>x.ErrorDescription" />
+            <PropertyColumn Property="x=>x.ErrorInformation" />
+            <PropertyColumn Property="x=>x.Description" />
+            <PropertyColumn Property="x=>x.Caption" />
+            <PropertyColumn Property="x=>x.PortName" />
+            <PropertyColumn Property="x=>x.Published" />
+            <PropertyColumn Property="x=>x.PrinterState" />
+            <PropertyColumn Property="x=>x.PrinterStatus" />
+            <PropertyColumn Property="x=>x.Name" />
+           
+        </Columns>
+    </MudDataGrid>
+
+
+
+   
+    
+}
+@code
+{
+    private List<SharedPrinter> Printers { get; set; } = new();
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Task.Run(() =>
+        {
+            Printers = Computer.SharedPrinters;
+            InvokeAsync(StateHasChanged);
+        });
+    }
+}
