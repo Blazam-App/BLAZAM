@@ -243,6 +243,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 DirectoryEntry = searchResult?.GetDirectoryEntry();
             newGroup.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim(), "group"), Directory);
             newGroup.NewEntry = true;
+            newGroup.SamAccountName = containerName;
             return newGroup;
 
         }
