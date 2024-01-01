@@ -24,6 +24,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty("name", value);
             }
         }
+
+        public override bool Rename(string newName)
+        {
+            SamAccountName = newName;
+            CommitChanges();
+            return base.Rename(newName);
+        }
+
         public override List<AuditChangeLog> Changes
         {
             get
@@ -55,7 +63,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             var newMembers = new List<string>(MembersAsStrings);
             if (MembersToAdd.Count > 0)
             {
-                CommitSteps.Add(new Jobs.JobStep("Add group members", () => {
+                CommitSteps.Add(new JobStep("Add group members", () => {
                     MembersToAdd.ForEach(g =>
                     {
                         g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
@@ -69,7 +77,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             if (MembersToRemove.Count > 0)
             {
-                CommitSteps.Add(new Jobs.JobStep("Remove group members", () => {
+                CommitSteps.Add(new JobStep("Remove group members", () => {
                     MembersToRemove.ForEach(g =>
                     {
                         g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
@@ -94,6 +102,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public bool HasMembers => UserMembers.Count > 0 || GroupMembers.Count > 0;
         List<IADUser> _userMembersCache;
+
+        /// <summary>
+        /// The members of this group, that are users themselves
+        /// </summary>
         public List<IADUser> UserMembers
         {
             get
@@ -120,6 +132,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         List<IADGroup> _groupMembersCache;
+        /// <summary>
+        /// The members of this group, that are groups themselves
+        /// </summary>
         public List<IADGroup> GroupMembers
         {
             get
@@ -151,6 +166,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return temp;
             }
         }
+
+        /// <summary>
+        /// Gathers group and sub-group members in realtime
+        /// </summary>
         public IEnumerable<IGroupableDirectoryAdapter> NestedMembers
         {
             get
@@ -161,6 +180,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return result;
             }
         }
+
+        /// <summary>
+        /// Gathers current group members in realtime
+        /// </summary>
         public List<IGroupableDirectoryAdapter> Members
         {
             get
@@ -196,7 +219,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return members;
             }
         }
-
+        /// <summary>
+        /// Removes a memeber from this group
+        /// </summary>
+        /// <param name="member">The user or group to remove</param>
         public void UnassignMember(IGroupableDirectoryAdapter member)
         {
 
@@ -207,7 +233,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         }
-
+        /// <summary>
+        /// Assigns a memeber to this group
+        /// </summary>
+        /// <param name="member"></param>
         public void AssignMember(IGroupableDirectoryAdapter member)
         {
 
