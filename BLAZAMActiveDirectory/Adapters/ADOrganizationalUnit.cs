@@ -192,7 +192,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// must execute CommitChanges() to actually create the object in Active
         /// Directory.
         /// </summary>
-        /// <param name="containerName"></param>
+        /// <param name="containerName">The name of the new ou</param>
         /// <returns>An uncommited organizational unit</returns>
         public IADOrganizationalUnit CreateOU(string containerName)
         {
@@ -208,7 +208,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// must execute CommitChanges() to actually create the object in Active
         /// Directory.
         /// </summary>
-        /// <param name="containerName"></param>
+        /// <param name="containerName">The container name of the new user</param>
         /// <returns>An uncommited user</returns>
         public IADUser CreateUser(string containerName)
         {
@@ -233,7 +233,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// must execute CommitChanges() to actually create the object in Active
         /// Directory.
         /// </summary>
-        /// <param name="containerName"></param>
+        /// <param name="containerName">The container name of the new group</param>
         /// <returns>An uncommited group</returns>
         public IADGroup CreateGroup(string containerName)
         {
@@ -247,6 +247,28 @@ namespace BLAZAM.ActiveDirectory.Adapters
             return newGroup;
 
         }
+
+        /// <summary>
+        /// Creates a new printer under this OU. Note that the returned Directory object
+        /// must execute CommitChanges() to actually create the object in Active
+        /// Directory.
+        /// </summary>
+        /// <param name="containerName">The container name of the new printer</param>
+        /// <returns>An uncommited printer</returns>
+        public IADPrinter CreatePrinter(string containerName)
+        {
+
+            IADPrinter newPrinter = new ADPrinter();
+            if (DirectoryEntry == null)
+                DirectoryEntry = searchResult?.GetDirectoryEntry();
+            newPrinter.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim(), "printQueue"), Directory);
+            newPrinter.NewEntry = true;
+            newPrinter.SamAccountName = containerName;
+            return newPrinter;
+
+        }
+
+
         public override int GetHashCode()
         {
             return DN.GetHashCode();

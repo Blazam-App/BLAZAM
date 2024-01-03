@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNetCore.Components.Forms;
+@inherits AppModalContent
+<div Background="Background.Light" Color="Color.Dark">
+    <MudDataGrid Elevation=0 Items="Printers" HorizontalScrollbar=true MultiSelection=true>
+       
+        <Columns>
+            <SelectColumn/>
+            <PropertyColumn Property="x=>x.ShareName" />
+            <PropertyColumn Property="x=>x.Location" />
+            <PropertyColumn Property="x=>x.Comment" />
+                <TemplateColumn>
+                    <CellTemplate>
+                        <MudButton>Register</MudButton>
+                    </CellTemplate>
+                </TemplateColumn>
+
+        </Columns>
+    </MudDataGrid>
+
+</div>
+@code {
+  
+    [Parameter]
+    public List<SharedPrinter> Printers { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+       // Modal.OnYes = SaveChanges;
+        Modal.YesText = AppLocalization["Register"];
+        Modal.Title = "Register Printers";
+        Modal.YesEnabled = ValidateModal;
+
+        
+
+        await InvokeAsync(StateHasChanged);
+    }
+    
+    protected override bool IsValid => true;
+
+
+}
