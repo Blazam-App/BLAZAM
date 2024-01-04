@@ -20,12 +20,13 @@
             Searcher?.Results.Clear();
             _searchTermParameter = value;
             SearchTerm = value;
-            Search();
+            Task.Run(async() => { 
+            await Search();
             //Searcher.GeneralSearchTerm = value;
             if (_searchTermParameter.IsNullOrEmpty())
                 LoadingData = false;
-            InvokeAsync(StateHasChanged);
-
+            await InvokeAsync(StateHasChanged);
+            });
         }
     }
 

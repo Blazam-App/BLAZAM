@@ -84,7 +84,12 @@ namespace BLAZAM.Helpers
         {
             return dN.Substring(dN.IndexOf("OU="));
         }
-
+        /// <summary>
+        /// Takes a raw OU DN and removes all OU='s and separates by /'s
+        /// </summary>
+        /// 
+        /// <param name="ou"></param>
+        /// <returns></returns>
         public static string? PrettifyOu(string? ou)
         {
             if (ou == null) return null;
@@ -94,6 +99,11 @@ namespace BLAZAM.Helpers
             ouComponents.Reverse();
             return string.Join("/", ouComponents);
         }
+        /// <summary>
+        /// Encapsulates a raw DirectoryEntry search's <see cref="SearchResultCollection"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
+        /// </summary>
+        /// <param name="r"></param>
+        /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
         public static List<IDirectoryEntryAdapter> Encapsulate(this SearchResultCollection r)
         {
             List<IDirectoryEntryAdapter> objects = new();
@@ -141,6 +151,14 @@ namespace BLAZAM.Helpers
             }
             return objects;
         }
+        /// <summary>
+        /// Encapsulates a raw DirectoryEntry search's <see cref="DirectoryEntries"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
+        /// </summary>
+        /// <remarks>
+        /// This is used when getting child ojects from a OU
+        /// </remarks>
+        /// <param name="r"></param>
+        /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
         public static List<IDirectoryEntryAdapter> Encapsulate(this DirectoryEntries r)
         {
             List<IDirectoryEntryAdapter> objects = new();

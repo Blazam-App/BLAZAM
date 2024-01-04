@@ -5,6 +5,12 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 {
     public interface IActiveDirectoryContextFactory
     {
+        /// <summary>
+        /// Creates a new Active Directory connection context. If a user state is provided, the connection will be created
+        /// for only that web user.
+        /// </summary>
+        /// <param name="currentUserStateService"></param>
+        /// <returns></returns>
         IActiveDirectoryContext CreateActiveDirectoryContext(ICurrentUserStateService? currentUserStateService = null);
     }
 }

@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Components.Forms;
+@inherits AppModalContent
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mud-width-full pa-0">
+    <MudDataGrid Elevation=0 Items="Printers" HorizontalScrollbar=true MultiSelection=true>
+       
+        <Columns>
+            <SelectColumn/>
+            <PropertyColumn Property="x=>x.ShareName" />
+            <PropertyColumn Property="x=>x.Location" />
+            <PropertyColumn Property="x=>x.Comment" />
+                <TemplateColumn>
+                    <CellTemplate>
+                        <MudButton>Register</MudButton>
+                    </CellTemplate>
+                </TemplateColumn>
+
+        </Columns>
+    </MudDataGrid>
+
+</MudContainer>
+@code {
+
+    [Parameter]
+    public List<SharedPrinter> Printers { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Modal.Options.FullWidth = true;
+        Modal.Options.MaxWidth = MaxWidth.Large;
+
+        base.OnInitialized();
+        // Modal.OnYes = SaveChanges;
+        Modal.YesText = AppLocalization["Register"];
+        Modal.Title = "Register Printers";
+        Modal.YesEnabled = ValidateModal;
+
+
+        
+    }
+    
+    protected override bool IsValid => true;
+
+
+}

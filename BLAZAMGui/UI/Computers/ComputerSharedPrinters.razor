@@ -2,6 +2,13 @@
 @if (Computer.IsOnline == true)
 {
     <MudDataGrid Elevation=0 Items="Printers" HorizontalScrollbar=true>
+        <ToolBarContent>
+            <MudSpacer />
+            <MudButton StartIcon="@Icons.Material.Filled.AppRegistration"
+                       OnClick=@(()=>{_registerPrintersModal.Show();})
+                       IconSize="Size.Medium"
+                       Class="mt-0">@AppLocalization["Register printers with Active Directory"]</MudButton>
+        </ToolBarContent>
         <Columns>
             <PropertyColumn Property="x=>x.ShareName" />
             <PropertyColumn Property="x=>x.Location" />
@@ -20,17 +27,20 @@
             <PropertyColumn Property="x=>x.PrinterState" />
             <PropertyColumn Property="x=>x.PrinterStatus" />
             <PropertyColumn Property="x=>x.Name" />
-           
+
         </Columns>
     </MudDataGrid>
 
+    <AppModal  @ref=_registerPrintersModal>
+        <RegisterPrintersModalContent Printers="@Printers" />
+    </AppModal>
 
 
-   
-    
+
 }
 @code
 {
+    AppModal? _registerPrintersModal;
     private List<SharedPrinter> Printers { get; set; } = new();
     protected override void OnInitialized()
     {
