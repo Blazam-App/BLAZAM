@@ -23,7 +23,7 @@
         <MudImage Src="@StaticAssets.ApplicationIconUri" />
 
     </MudElement>
-    <form onsubmit="@AttemptSignIn" class="login-form" method="post" action="/signin" id="login-form">
+    <form onsubmit="@(()=>{AttemptSignIn();})" class="login-form" method="post" action="/signin" id="login-form">
         <MudContainer Style="max-width:300px;" Class="py-4">
             @if (!ApplicationInfo.InDemoMode || DemoCustomLogin)
             {

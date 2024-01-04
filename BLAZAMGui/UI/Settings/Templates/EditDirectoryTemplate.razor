@@ -10,26 +10,26 @@
         <MudStack>
 
             <MudSelectList T="DirectoryTemplate"
-                       HelperText="@(otherTemplates.IsNullOrEmpty()?"There are no other templates":null)"
-                       Disabled=@(otherTemplates.IsNullOrEmpty())
-                       Clearable=true
-                       OnClearButtonClick="@(()=>{
-ParentTemplateChanged(null);
+                           HelperText="@(otherTemplates.IsNullOrEmpty()?"There are no other templates":null)"
+                           Disabled=@(otherTemplates.IsNullOrEmpty())
+                           Clearable=true
+                           OnClearButtonClick="@(async()=>{
+await ParentTemplateChanged(null);
 })"
-                       Label="Parent Template"
-                       Values="@otherTemplates"
-                       Value="@DirectoryTemplate.ParentTemplate"
-                       ValueChanged="@ParentTemplateChanged" />
+                           Label="Parent Template"
+                           Values="@otherTemplates"
+                           Value="@DirectoryTemplate.ParentTemplate"
+                           ValueChanged="@ParentTemplateChanged" />
 
 
             <MudTextField Label="@AppLocalization["Template Name"]"
-                      @bind-Value=DirectoryTemplate.Name />
+            @bind-Value=DirectoryTemplate.Name />
 
             <MudAutocomplete CoerceValue=true
-                         CoerceText=false
-                         SearchFunc="SearchCategories"
-                         @bind-Text=DirectoryTemplate.Category
-                         Label="@AppLocalization["Template Category"]" />
+                             CoerceText=false
+                             SearchFunc="SearchCategories"
+            @bind-Text=DirectoryTemplate.Category
+                             Label="@AppLocalization["Template Category"]" />
 
 
 
@@ -80,7 +80,7 @@ ParentTemplateChanged(null);
                     }
                     <TemplateOverride SourceTemplate="@usernameFromTemplate">
                         <MudTextField Label="Username Format"
-                                  @bind-Value=DirectoryTemplate.EffectiveUsernameFormula />
+                        @bind-Value=DirectoryTemplate.EffectiveUsernameFormula />
                     </TemplateOverride>
 
                     @{
@@ -88,7 +88,7 @@ ParentTemplateChanged(null);
                     }
                     <TemplateOverride SourceTemplate="@displayNameFromTemplateName">
                         <MudTextField Label="Display Name Format"
-                                  @bind-Value=DirectoryTemplate.EffectiveDisplayNameFormula />
+                        @bind-Value=DirectoryTemplate.EffectiveDisplayNameFormula />
                     </TemplateOverride>
 
                     @{
@@ -96,7 +96,7 @@ ParentTemplateChanged(null);
                     }
                     <TemplateOverride SourceTemplate="@usernameFromTemplate">
                         <MudTextField Label="Password"
-                                  @bind-Value=DirectoryTemplate.EffectivePasswordFormula />
+                        @bind-Value=DirectoryTemplate.EffectivePasswordFormula />
                     </TemplateOverride>
 
 
@@ -149,10 +149,10 @@ ParentTemplateChanged(null);
                     <div class="d-flex justify-center align-center mud-height-full">
                         <MudStack>
                             <MudDataGrid Items="@DirectoryTemplate.InheritedFieldValues.OrderBy(fv => fv.FieldDisplayName)"
-                                     Dense=true
-                                     Striped=true
-                                     Bordered=true
-                                     Hover=true>
+                                         Dense=true
+                                         Striped=true
+                                         Bordered=true
+                                         Hover=true>
 
                                 <ToolBarContent>
                                     @*<MudText Typo="Typo.h6">Fields</MudText>
@@ -177,26 +177,26 @@ ParentTemplateChanged(null);
                                     <TemplateColumn Title="Value">
                                         <CellTemplate Context="cellContext">
                                             <MudTextField T=string Value=cellContext.Item.Value
-                                                      ValueChanged=@((newValue)=>{ValueChanged(newValue,cellContext.Item);}) />
+                                                          ValueChanged=@((newValue)=>{ValueChanged(newValue,cellContext.Item);}) />
 
                                         </CellTemplate>
                                     </TemplateColumn>
                                     <TemplateColumn Title="Editable">
                                         <CellTemplate Context="cellContext">
                                             <MudCheckBox T=bool
-                                                     Label="Editable"
-                                                     Checked=cellContext.Item.Editable
-                                                     CheckedChanged="@((newValue)=>{EditableChanged(newValue,cellContext.Item);})" />
+                                                         Label="Editable"
+                                                         Checked=cellContext.Item.Editable
+                                                         CheckedChanged="@((newValue)=>{EditableChanged(newValue,cellContext.Item);})" />
 
                                         </CellTemplate>
                                     </TemplateColumn>
                                     <TemplateColumn Title="Required">
                                         <CellTemplate Context="cellContext">
                                             <MudCheckBox T=bool
-                                                     Label="Required"
-                                                     Checked=cellContext.Item.Required
-                                                     CheckedChanged="@((newValue)=>{RequiredChanged(newValue,cellContext.Item);})"
-                                                     Disabled=@(!cellContext.Item.Editable) />
+                                                         Label="Required"
+                                                         Checked=cellContext.Item.Required
+                                                         CheckedChanged="@((newValue)=>{RequiredChanged(newValue,cellContext.Item);})"
+                                                         Disabled=@(!cellContext.Item.Editable) />
 
                                         </CellTemplate>
                                     </TemplateColumn>
@@ -205,14 +205,14 @@ ParentTemplateChanged(null);
                                             @if (DirectoryTemplate.IsValueOverriden(cellContext.Item))
                                             {
                                                 <MudIconButton DisableElevation=true
-                                                       Color="Color.Dark"
-                                                       Icon="@Icons.Material.Filled.Undo"
-                                                       OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
+                                                               Color="Color.Dark"
+                                                               Icon="@Icons.Material.Filled.Undo"
+                                                               OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
                                             }
                                             else
                                             {
                                                 <AppCloseButton Disabled=@(!DirectoryTemplate.FieldValues.Contains(cellContext.Item))
-                                                        OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
+                                                                OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
 
                                             }
 
@@ -234,18 +234,18 @@ ParentTemplateChanged(null);
 
                     <TemplateOverride SourceTemplate="@ouTemplateSource">
                         <OUTreeView Label=@(AppLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
-                            StartRootExpanded=false
-                            SelectedOU=@SelectedOU
-                            SelectedOUChanged="@((ou)=>{SelectedOU=ou; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
-                            @bind-StartingSelectedOU=@SelectedOU />
+                                    StartRootExpanded=false
+                                    SelectedOU=@SelectedOU
+                                    SelectedOUChanged="@((ou)=>{SelectedOU=ou; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
+                        @bind-StartingSelectedOU=@SelectedOU />
                         @if (DirectoryTemplate.ParentTemplateId != null && !DirectoryTemplate.ParentOU.IsNullOrEmpty())
                         {
                             <MudIconButton DisableElevation=true
-                               Class="d-inline-flex pa-0"
-                               Style="vertical-align:top;"
-                               Color="Color.Dark"
-                               Icon="@Icons.Material.Filled.Undo"
-                               OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;await LoadData();}) />
+                                           Class="d-inline-flex pa-0"
+                                           Style="vertical-align:top;"
+                                           Color="Color.Dark"
+                                           Icon="@Icons.Material.Filled.Undo"
+                                           OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;await LoadData();}) />
                         }
                     </TemplateOverride>
 
@@ -268,10 +268,10 @@ ParentTemplateChanged(null);
                 }
                 <MudStack Row=true>
                     <ADAutoComplete SearchObjectType=ActiveDirectoryObjectType.Group Label="@AppLocalization["Groups"]"
-                                @bind-SelectedResult="@SelectedGroup" />
+                    @bind-SelectedResult="@SelectedGroup" />
                     <MudFab Size="Size.Small" StartIcon=@Icons.Material.Filled.Add
-                        Color="Color.Primary"
-                        OnClick="@(async()=>{if(SelectedGroup!=null) await AssignGroup(SelectedGroup as IADGroup);SelectedGroup=null;})" />
+                            Color="Color.Primary"
+                            OnClick="@(async()=>{if(SelectedGroup!=null) await AssignGroup(SelectedGroup as IADGroup);SelectedGroup=null;})" />
                 </MudStack>
 
             </Section>
@@ -359,8 +359,12 @@ ParentTemplateChanged(null);
             if (_template == value)
                 return;
             _template = value;
-            LoadData();
-            DirectoryTemplateChanged.InvokeAsync(value);
+            Task.Run(async () =>
+            {
+                await LoadData();
+                await DirectoryTemplateChanged.InvokeAsync(value);
+            });
+
         }
     }
 
@@ -539,7 +543,7 @@ ParentTemplateChanged(null);
         }
     }
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="value"></param>
     /// <param name="valueSelector"></param>

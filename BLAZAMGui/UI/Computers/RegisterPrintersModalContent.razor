@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms;
 @inherits AppModalContent
-<div Background="Background.Light" Color="Color.Dark">
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mud-width-full pa-0">
     <MudDataGrid Elevation=0 Items="Printers" HorizontalScrollbar=true MultiSelection=true>
        
         <Columns>
@@ -17,23 +17,25 @@
         </Columns>
     </MudDataGrid>
 
-</div>
+</MudContainer>
 @code {
-  
+
     [Parameter]
     public List<SharedPrinter> Printers { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await base.OnInitializedAsync();
-       // Modal.OnYes = SaveChanges;
+        Modal.Options.FullWidth = true;
+        Modal.Options.MaxWidth = MaxWidth.Large;
+
+        base.OnInitialized();
+        // Modal.OnYes = SaveChanges;
         Modal.YesText = AppLocalization["Register"];
         Modal.Title = "Register Printers";
         Modal.YesEnabled = ValidateModal;
 
-        
 
-        await InvokeAsync(StateHasChanged);
+        
     }
     
     protected override bool IsValid => true;

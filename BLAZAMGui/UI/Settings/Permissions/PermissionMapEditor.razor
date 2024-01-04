@@ -5,29 +5,29 @@
 
     <EditForm Model="Map" OnValidSubmit="@Save">
 
-        @if (!ReadOnly && _permissionDelegates!=null)
+        @if (!ReadOnly && _permissionDelegates != null)
         {
 
             <MudSelectList Validation="@(_permissionDelegates?.Count>0)"
-                   Values=@_permissionDelegates
-                   Placeholder=@AppLocalization["Choose or Search..."]
-                   T="PermissionDelegate"
-                   ToStringFunc=DelegateToString
-                   Label="@AppLocalization["Delegates"]"
+                           Values=@_permissionDelegates
+                           Placeholder=@AppLocalization["Choose or Search..."]
+                           T="PermissionDelegate"
+                           ToStringFunc=DelegateToString
+                           Label="@AppLocalization["Delegates"]"
                               MultiSelection
-                   @bind-Text=@selectedPermissionDelegateNames
-                   @bind-SelectedValues=@Map.PermissionDelegates />
+             @bind-Text=@selectedPermissionDelegateNames
+             @bind-SelectedValues=@Map.PermissionDelegates />
 
 
             <MudSelectList Validation="@(_permissionDelegates?.Count>0)"
-                   Values=@_accessLevels
-                   Placeholder=@AppLocalization["Choose or Search..."]
-                   T="AccessLevel"
-                   ToStringFunc="item=>item?.Name"
-                   Label="@AppLocalization["Access Levels"]"
-                   @bind-Text=@selectedAccessLevelNames
+                           Values=@_accessLevels
+                           Placeholder=@AppLocalization["Choose or Search..."]
+                           T="AccessLevel"
+                           ToStringFunc="item=>item?.Name"
+                           Label="@AppLocalization["Access Levels"]"
+            @bind-Text=@selectedAccessLevelNames
                               MultiSelection
-                   @bind-SelectedValues=@Map.AccessLevels />
+             @bind-SelectedValues=@Map.AccessLevels />
 
             <MudButton Color=Color.Success Disabled=SaveDisabled ButtonType="ButtonType.Submit">Save Mapping</MudButton>
             <AppCloseButton OnClick="DeleteMapping" />
@@ -66,8 +66,12 @@
             if (_map == value) return;
 
             _map = value;
+            Task.Run(async () =>
+            {
 
-            RefreshData();
+                await RefreshData();
+
+            });
 
 
         }
