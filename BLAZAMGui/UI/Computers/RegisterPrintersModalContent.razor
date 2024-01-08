@@ -1,25 +1,34 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms;
 @inherits AppModalContent
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mud-width-full pa-0">
-    <MudDataGrid Elevation=0 Items="Printers" HorizontalScrollbar=true MultiSelection=true>
-       
-        <Columns>
-            <SelectColumn/>
-            <PropertyColumn Property="x=>x.ShareName" />
-            <PropertyColumn Property="x=>x.Location" />
-            <PropertyColumn Property="x=>x.Comment" />
-                <TemplateColumn>
-                    <CellTemplate>
-                        <MudButton>Register</MudButton>
-                    </CellTemplate>
-                </TemplateColumn>
+    <MudTabs @bind-ActivePanelIndex="activePanel" Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+        <MudTabPanel Text="Shared Printers">
+            <MudDataGrid Elevation=0 Items="Printers.Where(p=>p.ADPrinter==null)" HorizontalScrollbar=true MultiSelection=true>
+                <Columns>
+                    <SelectColumn />
+                    <PropertyColumn Property="x=>x.ShareName" />
+                    <PropertyColumn Property="x=>x.Location" />
+                    <PropertyColumn Property="x=>x.Comment" />
+                    <TemplateColumn>
+                        <CellTemplate>
+                            <MudButton OnClick="@(()=>{activePanel=1;})">@AppLocalization["Next"]</MudButton>
+                        </CellTemplate>
+                    </TemplateColumn>
 
-        </Columns>
-    </MudDataGrid>
+                </Columns>
+            </MudDataGrid>
+        </MudTabPanel>
+        <MudTabPanel Text="@AppLocalization["OU"]">
+            <OUTreeView @bind-SelectedOU="destinationOU"/>
+        </MudTabPanel>
+        
+    </MudTabs>
+  
 
 </MudContainer>
 @code {
-
+    int activePanel = 0;
+    IADOrganizationalUnit destinationOU;
     [Parameter]
     public List<SharedPrinter> Printers { get; set; }
 
@@ -28,12 +37,12 @@
         Modal.Options.FullWidth = true;
         Modal.Options.MaxWidth = MaxWidth.Large;
 
-        base.OnInitialized();
         // Modal.OnYes = SaveChanges;
-        Modal.YesText = AppLocalization["Register"];
+        Modal.YesText = AppLocalization["Next"];
         Modal.Title = "Register Printers";
         Modal.YesEnabled = ValidateModal;
-
+        Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); });
+        base.OnInitialized();
 
         
     }

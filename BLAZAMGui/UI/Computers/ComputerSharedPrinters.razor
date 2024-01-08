@@ -10,7 +10,19 @@
                        Class="mt-0">@AppLocalization["Register printers with Active Directory"]</MudButton>
         </ToolBarContent>
         <Columns>
-            <PropertyColumn Property="x=>x.ShareName" />
+            <TemplateColumn Title="Share Name">
+                <CellTemplate>
+                    @if (context.Item.ADPrinter != null)
+                    {
+                        <MudLink OnClick="@(()=>{Nav.NavigateTo("/search/"+context.Item.ADPrinter.CanonicalName);})">@context.Item.ShareName</MudLink>
+                    }
+                    else
+                    {
+                        <MudText>@context.Item.ShareName</MudText>
+
+                    }
+                </CellTemplate>
+                </TemplateColumn>
             <PropertyColumn Property="x=>x.Location" />
             <PropertyColumn Property="x=>x.Comment" />
             <PropertyColumn Property="x=>x.DoCompleteFirst" />
