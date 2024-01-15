@@ -243,7 +243,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 DirectoryEntry = searchResult?.GetDirectoryEntry();
             newGroup.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim(), "group"), Directory);
             newGroup.NewEntry = true;
-            newGroup.SamAccountName = containerName;
+            newGroup.SamAccountName = containerName.Trim();
             return newGroup;
 
         }
@@ -255,17 +255,43 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// </summary>
         /// <param name="containerName">The container name of the new printer</param>
         /// <returns>An uncommited printer</returns>
-        public IADPrinter CreatePrinter(string containerName)
+        public IADPrinter CreatePrinter(string containerName,string uncPath,string shortServerName)
         {
 
             IADPrinter newPrinter = new ADPrinter();
             if (DirectoryEntry == null)
                 DirectoryEntry = searchResult?.GetDirectoryEntry();
-            newPrinter.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim(), "printQueue"), Directory);
+            newPrinter.Parse(DirectoryEntry.Children.Add("CN=" + shortServerName+ "-"+ containerName.Trim(), "printQueue"), Directory);
             newPrinter.NewEntry = true;
-            newPrinter.SamAccountName = containerName;
+            newPrinter.UncName = uncPath;
+            newPrinter.PrinterName = containerName.Trim();
+            newPrinter.ShortServerName = shortServerName;
             return newPrinter;
 
+        }
+        /// <summary>
+        /// Creates a new printer under this OU. Note that the returned Directory object
+        /// must execute CommitChanges() to actually create the object in Active
+        /// Directory.
+        /// </summary>
+        /// <param name="sharedPrinter">The sharedPrinter to be added</param>
+        /// <returns>An uncommited printer</returns>
+        public IADPrinter CreatePrinter(SharedPrinter sharedPrinter)
+        {
+            IADPrinter newPrinter = new ADPrinter();
+            if (DirectoryEntry == null)
+                DirectoryEntry = searchResult?.GetDirectoryEntry();
+            newPrinter.Parse(DirectoryEntry.Children.Add("CN=" + sharedPrinter.Host.CanonicalName+ "-" + sharedPrinter.ShareName.Trim(), "printQueue"), Directory);
+            newPrinter.NewEntry = true;
+            newPrinter.UncName = "\\\\"+sharedPrinter.Host.CanonicalName+"\\"+ sharedPrinter.ShareName;
+            newPrinter.PrinterName = sharedPrinter.Name.Trim();
+            newPrinter.ShortServerName = sharedPrinter.Host.CanonicalName;
+            newPrinter.ServerName = sharedPrinter.Host.CanonicalName;
+            newPrinter.VersionNumber = 4; 
+            newPrinter.Location = sharedPrinter.Location.Trim();
+            newPrinter.DriverName = sharedPrinter.DriverName.Trim();
+            newPrinter.PortName = sharedPrinter.PortName.Trim();
+            return newPrinter;
         }
 
 

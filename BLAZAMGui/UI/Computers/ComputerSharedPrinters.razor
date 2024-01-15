@@ -1,16 +1,34 @@
 ﻿@inherits ComputerViewBase
 @if (Computer.IsOnline == true)
 {
+    @if(Printers!=null){
     <MudDataGrid Elevation=0 Items="Printers" HorizontalScrollbar=true>
         <ToolBarContent>
             <MudSpacer />
+            @if (Printers.Count > 0)
+            {
+                
+            
             <MudButton StartIcon="@Icons.Material.Filled.AppRegistration"
                        OnClick=@(()=>{_registerPrintersModal.Show();})
                        IconSize="Size.Medium"
                        Class="mt-0">@AppLocalization["Register printers with Active Directory"]</MudButton>
+            }
         </ToolBarContent>
         <Columns>
-            <PropertyColumn Property="x=>x.ShareName" />
+            <TemplateColumn Title="Share Name">
+                <CellTemplate>
+                    @if (context.Item.ADPrinter != null)
+                    {
+                        <MudLink OnClick="@(()=>{Nav.NavigateTo("/search/"+context.Item.ADPrinter.CanonicalName);})">@context.Item.ShareName</MudLink>
+                    }
+                    else
+                    {
+                        <MudText>@context.Item.ShareName</MudText>
+
+                    }
+                </CellTemplate>
+                </TemplateColumn>
             <PropertyColumn Property="x=>x.Location" />
             <PropertyColumn Property="x=>x.Comment" />
             <PropertyColumn Property="x=>x.DoCompleteFirst" />
@@ -33,15 +51,19 @@
 
     <AppModal  @ref=_registerPrintersModal>
         <RegisterPrintersModalContent Printers="@Printers" />
-    </AppModal>
+        </AppModal>
+    }
 
+    else{
+       <MudProgressLinear Indeterminate=true/>
+    }
 
 
 }
 @code
 {
     AppModal? _registerPrintersModal;
-    private List<SharedPrinter> Printers { get; set; } = new();
+    private List<SharedPrinter>? Printers { get; set; }
     protected override void OnInitialized()
     {
         base.OnInitialized();

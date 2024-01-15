@@ -11,7 +11,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class SharedPrinter
     {
-        public IADPrinter? ADPrinter { get;set; }
+        public IADPrinter? ADPrinter { get; set; }
 
         public IADComputer Host;
         private ManagementObject _wmiPrinterObject;
@@ -20,7 +20,27 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             Host = host;
             _wmiPrinterObject = wmiPrinterObject;
-            
+            GetDirectoryPrinter();
+        }
+
+        /// <summary>
+        /// Returns the mathing printer in Active Directory
+        /// if one exists, otherwise returns null.
+        /// </summary>
+        /// <returns></returns>
+        public void GetDirectoryPrinter()
+        {
+            var directory = Host.Directory;
+            if (directory != null)
+            {
+                var printer = directory.Printers.FindPrintersByString(ShareName).FirstOrDefault();
+                if(printer != null)
+                {
+
+                    ADPrinter = printer;
+                }
+            }
+            return;
         }
 
         public bool DoCompleteFirst => _wmiPrinterObject.GetPropertyValue<bool>("DoCompleteFirst");

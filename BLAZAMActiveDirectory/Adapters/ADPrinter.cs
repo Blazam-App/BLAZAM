@@ -69,6 +69,31 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty("printerName", value);
             }
         }
+        
+        public string ShortServerName
+        {
+
+            get
+            {
+                return GetStringProperty("shortServerName");
+            }
+            set
+            {
+                SetProperty("shortServerName", value);
+            }
+        }
+        public string ServerName
+        {
+
+            get
+            {
+                return GetStringProperty("serverName");
+            }
+            set
+            {
+                SetProperty("serverName", value);
+            }
+        }
 
         public string PrintLanguage
         {
@@ -337,26 +362,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty("priority", value);
             }
         }
-        //TODO Add the following attributes
-        // printBinNames strlist
-        // printCollate bool
-        // printColor bool
-        // printDuplexSupported bool
-        // printOrientationsSupported str
-        // printKeepPrintedJobs bool
-        // printMediaReady strlist
-        // printMediaSupported strlist
-        // printMaxResolutionSupported int
-        // printMaxXExtent int
-        // printMinXExtent int
-        // printMinYExtent int
-        // printMaxYExtent int
-        // printPagesPerMinute int
-        // printRate  int
-        // printSpooling str
-        // printStaplingSupported bool?
-        // priority int
-        // uNCName string
+        public int VersionNumber
+        {
+            get
+            {
+                return GetProperty<int>("versionNumber");
+            }
+            set
+            {
+                SetProperty("versionNumber", value);
+            }
+        }
+        
     }
 
 }

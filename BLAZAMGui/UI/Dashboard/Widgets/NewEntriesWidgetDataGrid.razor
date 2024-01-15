@@ -1,4 +1,5 @@
 ﻿@inherits MudDataGrid<T> 
+@inject IStringLocalizer<AppLocalization> AppLocalization
 @typeparam T where T:IDirectoryEntryAdapter
 
 <MudDataGrid T="@T"
@@ -16,14 +17,14 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Title="Name">
+        <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
                 <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
                     <MudText>@context.Item.CanonicalName</MudText>
                 </MudTooltip>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="Created">
+        <TemplateColumn Title=@AppLocalization["Created"]>
             <CellTemplate>
                 @if (context.Item?.Created != null)
                 {

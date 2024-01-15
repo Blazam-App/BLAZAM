@@ -1,4 +1,5 @@
 ﻿
+using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.Database.Models.Permissions;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
@@ -23,5 +24,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         IADOrganizationalUnit CreateOU(string containerName);
         Task<IEnumerable<IADOrganizationalUnit>> GetChildrenAsync();
         Task<bool> HasChildrenAsync();
+        IADPrinter CreatePrinter(string containerName, string uncPath, string shortServerName);
+        IADPrinter CreatePrinter(SharedPrinter sharedPrinter);
     }
 }
