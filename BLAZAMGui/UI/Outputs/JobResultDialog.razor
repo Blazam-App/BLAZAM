@@ -1,0 +1,58 @@
+﻿@inherits AppComponentBase
+
+
+<MudDialog>
+    <DialogContent>
+        <MudDataGrid Elevation=0
+                     Bordered=false
+                     Dense=true
+                     SortMode="SortMode.None"
+                     Items="Job.Steps">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">
+                    @AppLocalization["Job Details"] - @(Job.Result == true ? AppLocalization["Success"]:AppLocalization["Failed"])
+                    </MudText>
+                <MudSpacer />
+            </ToolBarContent>
+            <Columns>
+                <TemplateColumn Title="Step">
+                    <CellTemplate>@context.Item.Name</CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="Result">
+                    <CellTemplate>
+                        <MudIcon Color="@(context.Item.Result==true?Color.Success:Color.Error)"
+                                 Icon="@(context.Item.Result==true?Icons.Material.Filled.Check:Icons.Material.Filled.Close)" />
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="Message">
+                    <CellTemplate>
+                        <MudText>
+                            @(context.Item.Result == true ? AppLocalization["Completed Successfully"] : context.Item.Exception?.Message)
+                        </MudText>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>
+      <MudStack Row=true>
+            <MudText Typo="Typo.caption">@AppLocalization["Start Time"]: @Job.StartTime.Value.ToShortTimeString() </MudText>
+           @*  <MudText Typo="Typo.caption">@AppLocalization["Finish Time"]: @Job.EndTime.Value.ToShortTimeString() </MudText> *@
+            <MudText Typo="Typo.caption">@AppLocalization["Elapsed Time"]: @((int)Job.ElapsedTime.Value.TotalMinutes)m @((int)(Job.ElapsedTime.Value.TotalMinutes % 1 * 60))s </MudText>
+            <MudText Typo="Typo.caption">@AppLocalization["Ran by"]: @Job.User.AuditUsername</MudText>
+      </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="@Color.Primary" Variant="Variant.Filled" OnClick="Dismiss">@AppLocalization["Ok"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public IJob Job { get; set; }
+
+    private void Dismiss()
+    {
+        MudDialog.Close();
+    }
+}

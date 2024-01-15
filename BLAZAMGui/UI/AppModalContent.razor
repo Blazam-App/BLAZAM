@@ -1,7 +1,7 @@
 ﻿@inherits DirectoryModelComponent
 
 @code {
-    #nullable disable warnings
+#nullable disable warnings
 
     [CascadingParameter] protected AppModal Modal { get; set; }
     [Parameter]
@@ -9,7 +9,8 @@
     /// <summary>
     /// Closes the containing modal
     /// </summary>
-    protected void Close(){
+    protected void Close()
+    {
         Modal.Hide();
         InvokeAsync(StateHasChanged);
 
@@ -22,9 +23,9 @@
     }
 
 
-    protected virtual bool IsValid => true;
+    protected virtual bool IsValid { get; set; } = true;
     private bool _lastIsValid;
-    protected bool ValidateModal()
+    protected virtual bool ValidateModal()
     {
         if (_lastIsValid != IsValid)
         {
