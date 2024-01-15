@@ -11,7 +11,8 @@ namespace BLAZAM.Database.Models.User
         PasswordsChanged,
         NewOus,
         NewGroups,
-        NewComputers
+        NewComputers,
+        NewPrinters
     }
     public class UserDashboardWidget : AppDbSetBase
     {
