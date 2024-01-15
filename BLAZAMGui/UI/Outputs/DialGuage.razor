@@ -47,41 +47,7 @@
             font-size: 1em;
         }
 </style>
-<script>
-    // Require JS
-    //var Gauge = require("svg-gauge");
 
-    // Standalone
-    //var Gauge = window.Gauge;
-
-    // Create a new Gauge
-    
-    // var cpuGauge = Gauge(document.getElementById("@(_elementID)"), {
-    //     max: 100,
-    //     // custom label renderer
-    //     label: function (value) {
-    //         return Math.round(value) + "/" + this.max;
-    //     },
-    //     value: 0,
-    //     // Custom dial colors (Optional)
-    //     color: function (value) {
-    //         if (value < 20) {
-    //             return "#5ee432"; // green
-    //         } else if (value < 40) {
-    //             return "#fffa50"; // yellow
-    //         } else if (value < 60) {
-    //             return "#f7aa38"; // orange
-    //         } else {
-    //             return "#ef4655"; // red
-    //         }
-    //     }
-    // });
-    // Set gauge value
-    //cpuGauge.setValue(50);
-
-    // Set value and animate (value, animation duration in seconds)
-    //cpuGauge.setValueAnimated(90, 1);
-</script>
 @code {
     private string _elementID = Guid.NewGuid().ToString();
 
