@@ -49,38 +49,97 @@
                         }
                     </AppModal>
 
+                    <MudGrid>
+                        <MudItem xs="12" md="3">
+                            <Section FullWidth=false>
+
+                                <Section Elevation=0 Title=@AppLocalization["Info"]>
+                                    <MudStack Row=true Class="@_fieldMudStackClasses">
+                                        <DynamicMudInput T=string Label="@AppLocalization["Name"]" @bind-Value="@Computer.CanonicalName" Disabled=@(!EditMode) />
+                                        <DynamicMudInput T=string Label="@AppLocalization["Operating System"]" @bind-Value="@Computer.OperatingSystem" Disabled=@true />
+                                        <DynamicMudInput T=bool Label="@AppLocalization["Online"]" Value="@(Computer.IsOnline==true)" Disabled=@true />
+
+                                    </MudStack>
+
+                                </Section>
+
+                                <Section Title=@AppLocalization["Groups"]>
+                                    <MudStack Row=true Class="@_fieldMudStackClasses">
+                                        <MemberOfList AssignToClicked=@(()=>{AssignToModal?.Show();}) Model="Computer" />
+
+                                    </MudStack>
+
+                                </Section>
 
 
 
+                            </Section>
+                        </MudItem>
+                        <MudItem xs=12 md="9">
+                            <MudStack>
+
+                                <Section Title=@AppLocalization["Live Stats"]>
+
+                                    <MudStack Row=true Class="@_fieldMudStackClasses">
+                                        @if (Computer.IsOnline == true)
+                                        {
+                                            <ComputerResourceCharts Computer="Computer" />
 
 
-                    <Section Title=@AppLocalization["Info"]>
-                        <MudStack Row=true Class="@_fieldMudStackClasses">
-                            <DynamicMudInput T=string Label="@AppLocalization["Name"]" @bind-Value="@Computer.CanonicalName" Disabled=@true />
-                            <DynamicMudInput T=string Label="@AppLocalization["Operating System"]" @bind-Value="@Computer.OperatingSystem" Disabled=@true />
+                                        }
+                                        else
+                                        {
+                                            <MudText>@AppLocalization["Computer is not reachable."]</MudText>
 
-                        </MudStack>
+                                        }
+                                    </MudStack>
+                                </Section>
 
-                    </Section>
 
-                    <Section Title=@AppLocalization["Live Stats"]>
-                     
-                            <MudStack Row=true Class="@_fieldMudStackClasses">
-                               <ComputerResourceCharts Computer="Computer"/>
+                                <Section Title=@AppLocalization["Services"]>
+
+                                    <MudStack Row=true Class="@_fieldMudStackClasses">
+                                        @if (Computer.IsOnline == true)
+                                        {
+                                            <ComputerServices Computer="Computer" />
+                                        }
+                                        else
+                                        {
+                                            <MudText>@AppLocalization["Computer is not reachable."]</MudText>
+
+                                        }
+
+                                    </MudStack>
+                                </Section>
+
                             </MudStack>
-                    </Section>
-                    
-                    <Section Title=@AppLocalization["Services"]>
-                  
-                            <MudStack Row=true Class="@_fieldMudStackClasses">
-                                <ComputerServices Computer="Computer" />
-                            </MudStack>
-                    </Section>
+
+                        </MudItem>
+                    </MudGrid>
+
+
+
+
+
+
+
+
+
+
+                   
 
                     <Section Title=@AppLocalization["Drive Details"]>
                         <MudStack Row=true Class="@_fieldMudStackClasses">
+                            @if (Computer.IsOnline == true)
+                            {
+                                <ComputerDriveDetails Computer="Computer" />
+                            }
+                            else
+                            {
+                                <MudText>@AppLocalization["Computer is not reachable."]</MudText>
 
-                            <ComputerDriveDetails Computer="Computer" />
+                            }
+
                         </MudStack>
                     </Section>
 
@@ -90,14 +149,40 @@
 
 
                     <Section Title=@AppLocalization["Sessions"]>
-                     
-                            <MudStack Row=true Class="@_fieldMudStackClasses">
-                                <ComputerSessions Computer="Computer" />
 
-                            </MudStack>
-                        
+                        <MudStack Row=true Class="@_fieldMudStackClasses">
+                            @if (Computer.IsOnline == true)
+                            {
+                                <ComputerSessions Computer="Computer" />
+                            }
+                            else
+                            {
+                                <MudText>
+                                    @AppLocalization["Computer is not reachable."]
+                                </MudText>
+
+                            }
+
+
+                        </MudStack>
+
                     </Section>
 
+                    <Section Title=@AppLocalization["Printers"]>
+
+                        <MudStack Row=true Class="@_fieldMudStackClasses">
+                            @if (Computer.IsOnline == true)
+                            {
+                                <ComputerSharedPrinters Computer="Computer" />
+                            }
+                            else
+                            {
+                                <MudText>@AppLocalization["Computer is not reachable."]</MudText>
+
+                            }
+                        </MudStack>
+
+                    </Section>
 
                     @if (Computer.CanReadAnyCustomFields)
                     {
@@ -146,6 +231,7 @@
     IADComputer? Computer => DirectoryEntry as IADComputer;
     protected override async Task OnInitializedAsync()
     {
+        Computer?.MonitorOnlineStatus();
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
         if (Computer != null)
@@ -186,7 +272,7 @@
             try
             {
                 Computer.Delete();
-                SnackBarService.Success(Computer.CanonicalName + " has been deleted.", "Computer Deleted");
+                SnackBarService.Success(Computer.CanonicalName + " has been deleted.");
 
                 Nav.NavigateTo("/users/search");
 
@@ -200,11 +286,11 @@
     }
     async void SaveChanges()
     {
-        if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
+        if (await MessageService.Confirm("Are you sure you want to save the changes?"))
         {
             await Computer.CommitChangesAsync();
             EditMode = false;
-            SnackBarService.Success("The changes made to this computer have been saved.", "Changes Saved");
+            SnackBarService.Success("The changes made to this computer have been saved.");
             await RefreshEntryComponents();
 
         }

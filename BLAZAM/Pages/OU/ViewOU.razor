@@ -55,9 +55,9 @@
     {
         if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
         {
-            OU.CommitChanges();
+            await OU.CommitChangesAsync();
             EditMode = false;
-            SnackBarService.Success("The changes made to this ou have been saved.", "Changes Saved");
+            SnackBarService.Success("The changes made to this ou have been saved.");
             await InvokeAsync(StateHasChanged);
 
         }
@@ -70,7 +70,7 @@
             try
             {
                 OU.Delete();
-                SnackBarService.Success(OU.CanonicalName + " has been deleted.", "OU Deleted");
+                SnackBarService.Success(OU.CanonicalName + " has been deleted.");
 
                
                 Nav.NavigateTo("/ou/search");

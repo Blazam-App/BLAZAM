@@ -23,7 +23,7 @@
         <MudImage Src="@StaticAssets.ApplicationIconUri" />
 
     </MudElement>
-    <form onsubmit="@AttemptSignIn" class="login-form" method="post" action="/signin" id="login-form">
+    <form onsubmit="@(()=>{AttemptSignIn();})" class="login-form" method="post" action="/signin" id="login-form">
         <MudContainer Style="max-width:300px;" Class="py-4">
             @if (!ApplicationInfo.InDemoMode || DemoCustomLogin)
             {
@@ -104,7 +104,8 @@
         redirectUrl = Nav.Uri;
         if (Monitor.AppReady != ServiceConnectionState.Up)
             Monitor.OnAppReadyChanged += AppReadyChanged;
-        Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
+        //I don't think the following is necessary
+            //Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
     }
 
     async void AppReadyChanged(ServiceConnectionState state)

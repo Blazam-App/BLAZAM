@@ -24,11 +24,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.24" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.13" />
-    <PackageReference Include="MudBlazor" Version="6.11.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.25" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.14" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.14" />
+    <PackageReference Include="MudBlazor" Version="6.11.1" />
     <PackageReference Include="MudBlazor.Markdown" Version="0.1.2" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

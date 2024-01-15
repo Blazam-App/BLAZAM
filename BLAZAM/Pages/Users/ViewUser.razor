@@ -37,31 +37,31 @@
         <CascadingValue Value="User">
             <FlexContainer>
 
-                <AppModal Color="Color.Dark" Title="Upload Thumbnail..." @ref=@UploadThumbnailModal>
+                <AppModal Color="Color.Dark" Title=@AppLocalization["Upload Thumbnail"] @ref=@UploadThumbnailModal>
                     <UploadThumbnailModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
                 </AppModal>
-                <AppModal Color="Color.Dark" Title="Assign To..." @ref=@AssignToModal>
+                <AppModal Color="Color.Dark" Title=@AppLocalization["Assign To"] @ref=@AssignToModal>
                     <AssignToModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
                 </AppModal>
-                <AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
+                <AppModal Color="Color.Dark" Title=@AppLocalization["Move To"] @ref=@MoveToModal>
                     @if (MoveToModal?.IsShown == true)
                     {
                         <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
                     }
                 </AppModal>
-                <AppModal Title="Rename User" @ref=@RenameModal>
+                <AppModal Title=@AppLocalization["Rename User"] @ref=@RenameModal>
                     @if (RenameModal?.IsShown == true)
                     {
                         <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) User="User" />
                     }
                 </AppModal>
-                <AppModal Title="Set Password" @ref=@ChangePasswordModal>
+                <AppModal Title=@AppLocalization["Reset Password"] @ref=@ChangePasswordModal>
                     @if (ChangePasswordModal?.IsShown == true)
                     {
                         <ChangeUserPasswordModalContent User="User" />
                     }
                 </AppModal>
-                <AppModal Title="Changes" @ref=@ChangeHistoryModal Options=@(new DialogOptions(){FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
+                <AppModal Title=@AppLocalization["Change History"] @ref=@ChangeHistoryModal Options=@(new DialogOptions(){FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
                     @if (ChangeHistoryModal?.IsShown == true)
                     {
                         <ChangeHistoryModalContent Model="User" />
@@ -106,7 +106,7 @@
                             </MudCard>
 
                             <MudStack Row=true>
-                                <MudText Typo="Typo.subtitle2">Created:</MudText>
+                                <MudText Typo="Typo.subtitle2">@AppLocalization["Created"]:</MudText>
                                 <MudSpacer />
                                 <DateWithTimeTooltip DateTime="User?.Created" />
 
@@ -114,7 +114,7 @@
 
                             <MudStack Row=true>
 
-                                <MudText Typo="Typo.subtitle2">Last Change:</MudText>
+                                <MudText Typo="Typo.subtitle2">@AppLocalization["Last Change"]:</MudText>
                                 <MudSpacer />
 
                                 <DateWithTimeTooltip DateTime="User?.LastChanged" />
@@ -123,7 +123,7 @@
 
                             <MudStack Row=true>
 
-                                <MudText Typo="Typo.subtitle2">Pass Change:</MudText>
+                                <MudText Typo="Typo.subtitle2">@AppLocalization["Pass Change"]:</MudText>
                                 <MudSpacer />
                                 <DateWithTimeTooltip DateTime="User?.PasswordLastSet" />
 
@@ -132,20 +132,20 @@
 
                             <MudStack Row=true>
 
-                                <MudText Typo="Typo.subtitle2">Last Logon:</MudText>
+                                <MudText Typo="Typo.subtitle2">@AppLocalization["Last Logon"]:</MudText>
                                 <MudSpacer />
                                 <LastLogonTime DirectoryEntry="User" />
                             </MudStack>
                             @if (User.LockedOut)
                             {
                                 <MudStack Row=true>
-                                    <MudText Typo="Typo.subtitle2">Locked Out Time:</MudText>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization["Lockout Time"]:</MudText>
                                     <MudSpacer />
                                     <DateWithTimeTooltip DateTime="User?.LockoutTime" />
                                 </MudStack>
                             }
                             <MudStack Row=true>
-                                <MudText Typo="Typo.subtitle2">OU:</MudText>
+                                <MudText Typo="Typo.subtitle2">@AppLocalization["OU"]:</MudText>
                                 <MudSpacer />
 
                                 <MudText Style="text-align:end;" Typo="Typo.caption">@User.OU.ToPrettyOu()</MudText>
@@ -156,7 +156,7 @@
                             @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
                             {
                                 <MudStack>
-                                    <MudText Typo="Typo.subtitle2">Groups</MudText>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization["Groups"]</MudText>
                                     <MemberOfList AssignToClicked=@(()=>{AssignToModal?.Show();}) Model="User" />
 
                                 </MudStack>
@@ -396,7 +396,7 @@
 
                 @if (User.CanReadAnyCustomFields)
                 {
-                    <Section Title="Additional Field">
+                    <Section Title=@AppLocalization["Additional Field"]>
                         @if (CustomFields != null)
                         {
                             @foreach (var field in CustomFields)
@@ -445,31 +445,35 @@
     {
         await base.OnInitializedAsync();
 
+
         await InvokeAsync(StateHasChanged);
-        try
+
+        if (User.HomeDirectory != null)
         {
-
-            await User.Directory.Impersonation.RunAsync(() =>
-
+            try
             {
-                homeDirectoryExists = new SystemDirectory(User.HomeDirectory).Exists;
-                return true;
-            });
 
+                await User.Directory.Impersonation.RunAsync(() =>
+
+                {
+                    homeDirectoryExists = new SystemDirectory(User.HomeDirectory).Exists;
+                    return true;
+                });
+
+            }
+
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectryLogger.Warning("Error checking user h-drive: {Message}", ex);
+
+            }
         }
-
-        catch (Exception ex)
-        {
-            Loggers.ActiveDirectryLogger.Warning("Error checking user h-drive: {Message}", ex);
-
-        }
-
         AuditLogger.Searched(User);
     }
 
     async void SaveChanges()
     {
-        if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
+        if (await MessageService.Confirm("Are you sure you want to save the changes?"))
         {
             SavingChanges = true;
             await RefreshEntryComponents();
@@ -479,12 +483,12 @@
                 await User.CommitChangesAsync();
                 await AuditLogger.User.Changed(User, changes);
                 EditMode = false;
-                SnackBarService.Success("The changes made to this user have been saved.", "Changes Saved");
+                SnackBarService.Success("The changes made to this user have been saved.");
 
             }
             catch (ApplicationException ex)
             {
-                SnackBarService.Error(ex.Message, "Save Failed");
+                SnackBarService.Error(ex.Message);
 
             }
             SavingChanges = false;
@@ -500,7 +504,7 @@
         if (await MessageService.Confirm("Are you sure you want to unlock " + User.DisplayName + "?", "Unlock User"))
         {
             User.LockedOut = false;
-            SnackBarService.Warning(User.DisplayName + " will be unlocked when changes are saved.", "Unlock Pending");
+            SnackBarService.Warning(User.DisplayName + " will be unlocked when changes are saved.");
             await RefreshEntryComponents();
 
         }
@@ -513,7 +517,7 @@
             try
             {
                 User.Delete();
-                SnackBarService.Success(User.DisplayName + " has been deleted.", "User Deleted");
+                SnackBarService.Success(User.DisplayName + " has been deleted.");
                 await AuditLogger.User.Deleted(User);
             }
             catch (ApplicationException ex)
@@ -528,7 +532,7 @@
     {
 
         User.ThumbnailPhoto = null;
-        SnackBarService.Warning(User.DisplayName + " will have their thumbnail deleted on save.", "Thumbnail Deletion Pending");
+        SnackBarService.Warning(User.DisplayName + " will have their thumbnail deleted on save.");
         await RefreshEntryComponents();
 
     }

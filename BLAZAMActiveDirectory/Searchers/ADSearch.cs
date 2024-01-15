@@ -81,7 +81,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 return Search<T, I>(token);
             });
         }
-
+        /// <summary>
+        /// Searches ambiguously for all object types
+        /// </summary>
+        /// <returns></returns>
         public List<IDirectoryEntryAdapter> Search()
         {
             return Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>();

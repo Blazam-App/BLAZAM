@@ -36,7 +36,7 @@ namespace BLAZAM.Update.Services
             this.factory = factory;
             //Audit = auditLogger;
             this.updateService = updateService;
-            updateCheckTimer = new Timer(CheckForUpdate, null, (int)TimeSpan.FromHours(0).TotalMilliseconds, (int)TimeSpan.FromHours(1).TotalMilliseconds);
+            updateCheckTimer = new Timer(CheckForUpdate, null, (int)TimeSpan.FromSeconds(20).TotalMilliseconds, (int)TimeSpan.FromHours(1).TotalMilliseconds);
             directoryCleaner = new Timer(CleanDirectories, null, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, (int)TimeSpan.FromDays(1).TotalMilliseconds);
         }
 
@@ -131,12 +131,11 @@ namespace BLAZAM.Update.Services
             try
             {
                 var appSettings = (await factory.CreateDbContextAsync()).AppSettings.FirstOrDefault();
-                if (appSettings != null && appSettings.AutoUpdate)
-                {
+          
                     Loggers.UpdateLogger.Information("Checking for automatic update");
 
                     var latestUpdate = await updateService.GetUpdates();
-                    if (latestUpdate != null && latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdateTime != null)
+                    if (latestUpdate != null && latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
                     {
                         ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
                     }
@@ -145,7 +144,7 @@ namespace BLAZAM.Update.Services
                         Loggers.UpdateLogger.Information("No new updates found.");
 
                     }
-                }
+                
             }
             catch (Exception ex)
             {
@@ -189,28 +188,11 @@ namespace BLAZAM.Update.Services
                     Loggers.UpdateLogger.Information("Auto-update scheduled: " + timeUntilUpdate.TotalMinutes + "mins from now at " + ScheduledUpdateTime);
                     if (justScheduled)
                     {
-                        Loggers.UpdateLogger.Debug("Update just scheduled, so sending notification email to admins");
-                        //TODO move to email event logic
-                        //                    try
-                        //                    {
-                        //#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                        //                        email.SendMessage(
-                        //                            "Update Schedueled",
-                        //                            "admin@blazam.org",
-                        //                            (MarkupString)"Update Scheduled",
-                        //                            (MarkupString)("The application has schedueled an update to version "
-                        //                            + ScheduledUpdate.Version + " at " + ScheduledUpdateTime
-                        //                            ));
-                        //#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                        //                    }
-                        //                    catch (Exception ex)
-                        //                    {
-                        //                        Loggers.UpdateLogger.Error("Error while sending auto update scheduled email", ex);
+                        Loggers.UpdateLogger.Debug("Update just scheduled");
+                    OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
 
-                        //                    }
                     }
 
-                    OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
                 }
             }catch(Exception ex) {
                 Loggers.UpdateLogger.Error("Error during auto update scheduling: {Message}", ex);

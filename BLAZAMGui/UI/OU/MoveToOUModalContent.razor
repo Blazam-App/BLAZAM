@@ -38,7 +38,7 @@
     {
         if (SelectedOU.DN.Equals(DirectoryModel.OU))
         {
-            SnackBarService.Warning(DirectoryModel.CanonicalName + " is aleady in that OU.", "No Change");
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " is aleady in that OU.");
             return;
         }
         if (await MessageService.Confirm("Are you sure you want to move this " + DirectoryModel.ObjectType.ToString().ToLower() + " to " + SelectedOU.CanonicalName, "Confirm move"))
@@ -47,7 +47,7 @@
 
             DirectoryModel.MoveTo(SelectedOU);
 
-            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been moved to " + SelectedOU.CanonicalName + ", but changes need to be saved.", "Moved");
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been moved to " + SelectedOU.CanonicalName + ", but changes need to be saved.");
             await ModelChanged.InvokeAsync();
             Close();
             return;

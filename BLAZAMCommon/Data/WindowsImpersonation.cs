@@ -22,9 +22,14 @@ namespace BLAZAM.Common.Data
                 if (safeAccessTokenHandle == null)
                 {
                     // Call LogonUser to obtain a handle to an access token. 
-                    bool returnValue = LogonUser(impersonationUser.Username, impersonationUser.FQDN, impersonationUser.Password.ToPlainText(),
-                        LOGON32_LOGON_INTERACTIVE, LOGON32_PROVIDER_DEFAULT,
-                        out safeAccessTokenHandle);
+
+
+                    bool returnValue = LogonUser(impersonationUser.Username, impersonationUser.FQDN!=null?impersonationUser.FQDN:"", impersonationUser.Password.ToPlainText(),
+                            LOGON32_LOGON_NETWORK, LOGON32_PROVIDER_DEFAULT,
+                            out safeAccessTokenHandle);
+   
+    
+        
 
                     if (false == returnValue)
                     {
@@ -47,6 +52,7 @@ namespace BLAZAM.Common.Data
         const int LOGON32_PROVIDER_DEFAULT = 0;
         //This parameter causes LogonUser to create a primary token. 
         const int LOGON32_LOGON_INTERACTIVE = 2;
+        const int LOGON32_LOGON_NETWORK = 9;
 
 
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -65,7 +71,7 @@ namespace BLAZAM.Common.Data
         {
 
 
-            T success = default;
+            T result = default;
 
             try
             {
@@ -83,7 +89,7 @@ namespace BLAZAM.Common.Data
                   {
                       // Check the identity.
                       Loggers.ActiveDirectryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);
-                      success = task.Invoke();
+                      result = task.Invoke();
                   }
                   );
 
@@ -92,15 +98,14 @@ namespace BLAZAM.Common.Data
             {
                 Loggers.ActiveDirectryLogger.Error("Error trying to impersonate " + impersonationUser.Username, ex);
             }
-            return success;
+            return result;
         }
         public async Task<string> RunProcess(string processPath, string arguments)
         {
 
-            //process.StartInfo.UserName = impersonationUser.Username+"@"+ impersonationUser.FQDN;
-            //process.StartInfo.Password = impersonationUser.Password.ToSecureString();
+            
             var output = "";
-
+            try { 
 
             var process = new Process
             {
@@ -130,10 +135,13 @@ namespace BLAZAM.Common.Data
             process.WaitForExit();
 
 
-
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectryLogger.Error("Error trying to impersonate " + impersonationUser.Username, ex);
+            }
             return output;
 
-            throw new Exception("Unknown exception impersonating process");
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using BLAZAM.Services.Background;
+﻿using BLAZAM.Database.Context;
+using BLAZAM.Services.Background;
 
 namespace BLAZAM.Server.Middleware
 {
@@ -20,7 +21,7 @@ namespace BLAZAM.Server.Middleware
             bool forceHttps;
             // If the value is not cached, retrieve it from the database.
 
-            forceHttps = _monitor.RedirectToHttps;
+            forceHttps = DatabaseCache.ApplicationSettings.ForceHTTPS;
 
 
 

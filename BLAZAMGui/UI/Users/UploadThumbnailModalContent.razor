@@ -63,11 +63,11 @@
         {
             DirectoryModel.ThumbnailPhoto = newThumbnail;
 
-            SnackBarService.Warning("Thumbnail changed for " + DirectoryModel.DisplayName + " but changes need to be saved.", "Thumbnail Changed");
+            SnackBarService.Warning("Thumbnail changed for " + DirectoryModel.DisplayName + " but changes need to be saved.");
         }
         catch
         {
-            SnackBarService.Error("Unable to set thumbnail for " + DirectoryModel.DisplayName, "Change Failed");
+            SnackBarService.Error("Unable to set thumbnail for " + DirectoryModel.DisplayName);
 
         }
         Close();

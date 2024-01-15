@@ -1,9 +1,21 @@
-﻿
+﻿@inherits ComputerViewBase
 @if (Computer.IsOnline == true)
 {
-    <LiveChart Enabled=@(Computer.IsOnline==true) SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})" />
-    <LiveChart Enabled=@(Computer.IsOnline==true) SeriesName="Memory Usage" Title="Live RAM Usage" History="30" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})" />
+    <DialGuage Title="CPU" PollFunc="@(()=>{return Computer.Processor;})" />
 
+    <MudTooltip Text="@AppLocalization["CPU Chart"]">
+        <MudIconButton Style="width:75px;height:75px;" Size="Size.Large" Icon="@Icons.Material.Filled.History" OnClick="@(()=>{showCPUChart=!showCPUChart;})" />
+    </MudTooltip>
+    <DialGuage Title="RAM" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})" />
+    <MudIconButton Style="width:75px;height:75px;" Size="Size.Large" Icon="@Icons.Material.Filled.History" OnClick="@(()=>{showRAMChart=!showRAMChart;})" />
+    @if (showCPUChart)
+    {
+        <LiveChart Enabled=@(Computer.IsOnline==true) SeriesName="CPU Usage" Title="Live CPU Usage" History="30" PollFunc="@(()=>{return Computer.Processor;})" />
+    }
+    @if (showRAMChart)
+    {
+        <LiveChart Enabled=@(Computer.IsOnline==true) SeriesName="Memory Usage" Title="Live RAM Usage" History="30" PollFunc="@(()=>{return Computer.MemoryUsedPercent;})" />
+    }
 }
 else
 {
@@ -12,6 +24,6 @@ else
 
 
 @code {
-    [Parameter]
-    public IADComputer Computer { get; set; }
+    private bool showCPUChart = false;
+    private bool showRAMChart = false;
 }

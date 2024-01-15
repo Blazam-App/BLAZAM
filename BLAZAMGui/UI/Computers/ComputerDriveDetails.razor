@@ -1,4 +1,6 @@
-﻿@if (Computer.IsOnline == true)
+﻿@inherits ComputerViewBase
+
+@if (Computer.IsOnline == true)
 {
     @if (Drives != null && Drives.Count > 0)
     {
@@ -36,18 +38,18 @@ else
     <MudText>Computer is not reachable.</MudText>
 }
 @code {
-    [Parameter]
-    public IADComputer Computer { get; set; }
 
     List<IADComputerDrive> Drives = new();
 
 
     protected override void OnInitialized()
     {
-
-        Task.Run(async () =>
+        if (Computer.IsOnline==true)
         {
-            Drives = await Computer.GetDrivesAsync();
+            GetDriveData();
+        }
+        Computer.OnOnlineChanged += (async(status) => {
+            if (status == true) GetDriveData(); 
             await InvokeAsync(StateHasChanged);
 
         });
@@ -56,5 +58,14 @@ else
         base.OnInitialized();
 
 
+    }
+    private void GetDriveData()
+    {
+        Task.Run(async () =>
+           {
+               Drives = await Computer.GetDrivesAsync();
+               await InvokeAsync(StateHasChanged);
+
+           });
     }
 }

@@ -12,9 +12,10 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         int Processor { get; }
         double MemoryUsedPercent { get; }
         List<ComputerService> Services { get; }
-
+        List<SharedPrinter> SharedPrinters { get; }
         List<IADComputerDrive> GetDrives();
         Task<List<IADComputerDrive>> GetDrivesAsync();
         Task<List<IRemoteSession>> GetRemoteSessionsAsync();
+        void MonitorOnlineStatus(int timeout = 500);
     }
 }

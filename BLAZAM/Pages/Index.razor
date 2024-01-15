@@ -38,9 +38,10 @@
 </MudContainer>
 
 <style>
-    body{
+    body {
         height: 98vh;
     }
+
     .brand-icon {
         position: fixed;
         left: 5px;
@@ -98,6 +99,7 @@
 }
 @code {
     private bool waitingForLoadToComplete = true;
+    ServiceConnectionState? oldStatus;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -106,8 +108,8 @@
     }
     private void AppReady(ServiceConnectionState newStatus)
     {
-        if (newStatus == ServiceConnectionState.Up)
-
+        if (newStatus == ServiceConnectionState.Up && oldStatus != newStatus)
+        {
             if (ApplicationInfo.InstallationCompleted && NavManager.ToBaseRelativePath(NavManager.Uri) == "")
             {
                 waitingForLoadToComplete = false;
@@ -115,6 +117,9 @@
                 NavManager.NavigateTo("/home");
 
             }
+        }
+        oldStatus = newStatus;
+
     }
 }
 

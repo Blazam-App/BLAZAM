@@ -1,0 +1,26 @@
+﻿@page "/browse"
+@inherits AppComponentBase
+@attribute [Authorize]
+<h3>Browse</h3>
+@if (Monitor.DirectoryConnectionStatus == ServiceConnectionState.Up)
+{
+
+
+    <ADTreeView @bind-SelectedOU=selectedEntry/>
+    @if (selectedEntry != null && selectedEntry is not IADOrganizationalUnit)
+    {
+        <ViewDirectoryEntry DirectoryEntry="selectedEntry" />
+
+    }
+
+}
+@code {
+
+    IDirectoryEntryAdapter? selectedEntry;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Monitor.OnDirectoryConnectionChanged += (async (status)=> {await InvokeAsync(StateHasChanged); });
+    }
+}

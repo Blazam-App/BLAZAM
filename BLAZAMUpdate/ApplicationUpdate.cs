@@ -190,7 +190,6 @@ namespace BLAZAM.Update
             Loggers.UpdateLogger.Debug("Copying updater script");
             Loggers.UpdateLogger.Debug("Source: " + UpdateStagingDirectory + "\\updater\\*");
             Loggers.UpdateLogger.Debug("Dest: " + _applicationRootDirectory + "updater\\");
-            Loggers.UpdateLogger.Debug("Update command: " + UpdateCommand);
 
 
             using var context = await _dbFactory.CreateDbContextAsync();
@@ -201,11 +200,11 @@ namespace BLAZAM.Update
                 Loggers.UpdateLogger.Warning("The application user has write permission to the application directory!");
                 try
                 {
-                    return StartUpdate();
+                    return ApplyFiles();
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Error applying updated updater: {Message}", ex);
+                    Loggers.UpdateLogger.Error("Error applying update: {Message}", ex);
 
                 }
                 return "Error starting update";
@@ -225,11 +224,11 @@ namespace BLAZAM.Update
                     {
                         try
                         {
-                            return StartUpdate();
+                            return ApplyFiles();
                         }
                         catch (Exception ex)
                         {
-                            Loggers.UpdateLogger.Error("Error applying updated updater: {Message}", ex);
+                            Loggers.UpdateLogger.Error("Error applying update: {Message}", ex);
 
                         }
                         return "Error starting update";
@@ -255,7 +254,7 @@ namespace BLAZAM.Update
 
         }
 
-        private string StartUpdate()
+        private string ApplyFiles()
         {
             Loggers.UpdateLogger.Information("Running update as: " + WindowsIdentity.GetCurrent().Name);
             Loggers.UpdateLogger.Information("Updating updater");
@@ -323,31 +322,8 @@ namespace BLAZAM.Update
                 return false;
             }
         }
-        /*
-        /// <summary>
-        /// Checks if the running application identity has write
-        /// permission to a specified path. It does this by creating
-        /// a randomly named test file, writing to it, and deleting it.
-        /// If all these tests pass the return is true.
-        /// </summary>
-        /// <param name="rootPath">The directory to test permissions against.</param>
-        /// <returns>True if the application identity has write permission to the specified folder, otherwise false.</returns>
-        private bool HasWritePermissions(string rootPath)
-        {
-            var testFilePath = rootPath + "WritePermissionSecurityTest-" + Guid.NewGuid();
-            try
-            {
-                //File.Create(testFilePath);
-                File.WriteAllText(testFilePath, "Test Write");
-                File.Delete(testFilePath);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-        */
+      
+
         public async Task<bool> CleanDownload()
         {
             return await Task.Run(() =>

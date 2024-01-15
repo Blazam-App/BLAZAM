@@ -1,10 +1,8 @@
 ﻿@page "/search"
 @page "/search/{SearchTermParameter}"
-@using BLAZAM.Gui.UI.Search
-@using BLAZAM.Pages.Printers
 
 @inherits AppComponentBase
-@attribute [Authorize(Roles = (UserRoles.SearchOUs + ","+UserRoles.SearchComputers + ","+UserRoles.SearchGroups + "," +UserRoles.SearchUsers + "," + UserRoles.SuperAdmin))]
+@attribute [Authorize(Roles = (UserRoles.SearchOUs + "," + UserRoles.SearchComputers + "," + UserRoles.SearchGroups + "," + UserRoles.SearchUsers + "," + UserRoles.SuperAdmin))]
 <AuthorizeView Roles="@(UserRoles.SearchOUs + ","+UserRoles.SearchComputers + ","+UserRoles.SearchGroups + "," +UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
 
 
@@ -20,21 +18,23 @@
     @if (Searcher.Results.Count > 1)
     {
         <MudStack Row=true>
-                Results found: @Searcher.Results.Count
-                Time elapsed: @Searcher.SearchTime
+            Results found: @Searcher.Results.Count
+            Time elapsed: @Searcher.SearchTime
         </MudStack>
 
         <Virtualize Items="results" TItem="IDirectoryEntryAdapter" Context="u" OverscanCount="30">
             <ItemContent>
                 @if (u.CanRead)
                 {
-                    <SearchResult Entry="u" OnSelected=@(()=>{Searcher.Results.Clear();Searcher.Results.Add(u);}) />
+                    <SearchResult Entry="u" OnSelected=@(()=>{
+                          Searcher.Results.Clear();Searcher.Results.Add(u);
+                          }) />
 
-                   @*  <div Class="cursor-pointer" @onclick=@(()=>{Searcher.Results.Clear();Searcher.Results.Add(u);})>
-                        <MudText Typo="Typo.h1">@u.ObjectType</MudText>
-                        <MudText Typo="Typo.h1">@u.CanonicalName</MudText>
-                        <small>@u.SamAccountName</small>
-                    </div> *@
+                    @*  <div Class="cursor-pointer" @onclick=@(()=>{Searcher.Results.Clear();Searcher.Results.Add(u);})>
+            <MudText Typo="Typo.h1">@u.ObjectType</MudText>
+            <MudText Typo="Typo.h1">@u.CanonicalName</MudText>
+            <small>@u.SamAccountName</small>
+            </div> *@
 
 
                 }
@@ -62,7 +62,7 @@
             }
             else
             {
-              <ViewDirectoryEntry DirectoryEntry="result"/>
+                <ViewDirectoryEntry DirectoryEntry="result" />
             }
         }
         @*        else
@@ -83,7 +83,7 @@
             No results were found.
         </MudAlert>
     }
-  
+
 </AuthorizeView>
 @code {
 
@@ -105,9 +105,13 @@
             LoadingData = true;
             Searcher?.Cancel();
             _searchTermParameter = value;
-            PerformSearch();
-            if (_searchTermParameter.IsNullOrEmpty())
-                LoadingData = false;
+            Task.Run(async () =>
+            {
+                await PerformSearch();
+                if (_searchTermParameter.IsNullOrEmpty())
+                    LoadingData = false;
+            });
+
 
         }
     }
