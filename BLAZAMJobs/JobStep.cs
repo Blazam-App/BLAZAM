@@ -3,9 +3,9 @@ using System.Runtime.CompilerServices;
 
 namespace BLAZAM.Jobs
 {
-    public class JobStep
+    public class JobStep : IJobStep
     {
-        public string Name { get; set; }    
+        public virtual string Name { get; set; }
         public Exception Exception { get; private set; }
         public WindowsImpersonation Identity { get; set; }
         public Func<bool> Action { get; set; }
@@ -26,7 +26,8 @@ namespace BLAZAM.Jobs
         {
             try
             {
-                return Action.Invoke();
+                Result = Action.Invoke();
+                return (bool)Result;
 
             }
             catch (Exception ex)
