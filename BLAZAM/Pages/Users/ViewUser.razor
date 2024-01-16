@@ -433,7 +433,7 @@
 
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     string Password;
     string ConfirmPassword;
     bool homeDirectoryExists;
@@ -469,6 +469,9 @@
             }
         }
         AuditLogger.Searched(User);
+        LoadingData = false;
+        await RefreshEntryComponents();
+
     }
 
     async void SaveChanges()

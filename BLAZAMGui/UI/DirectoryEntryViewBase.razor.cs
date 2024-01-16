@@ -1,11 +1,5 @@
 ﻿using BLAZAM.Database.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Gui.UI
 {
@@ -48,16 +42,13 @@ namespace BLAZAM.Gui.UI
             await base.OnInitializedAsync();
             if (DirectoryEntry != null)
             {
-
-              
-
-
                 DirectoryEntry.OnModelChanged += async () =>
                 {
                     await RefreshEntryComponents();
                 };
 
                 DirectoryEntry.OnDirectoryModelRenamed += Renamed;
+
             }
             if (Context != null)
                 CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();

@@ -17,7 +17,7 @@
         {
             if (_group == value) return;
             _group = value;
-
+           
         }
     }
 
@@ -54,8 +54,8 @@
             _user = value;
             if (_user != null)
             {
-                if (!_user.NewEntry)
-                    AuditLogger.User.Searched(_user);
+                //if (!_user.NewEntry)
+                   // AuditLogger.User.Searched(_user);
                 RefreshGroupGroupsAsync();
             }
 

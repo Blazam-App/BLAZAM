@@ -22,6 +22,7 @@ using BLAZAM.Server.Data.Services;
 using System.Diagnostics;
 using System.Reflection;
 using BLAZAM.Services.Chat;
+using BLAZAM.Services.Audit;
 
 namespace BLAZAM.Server
 {

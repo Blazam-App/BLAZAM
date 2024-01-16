@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using BLAZAM.Helpers;
 using BLAZAM.Gui.UI.Dashboard.Widgets;
+using BLAZAM.Services.Audit;
 
 namespace BLAZAM.Server.Pages
 {
