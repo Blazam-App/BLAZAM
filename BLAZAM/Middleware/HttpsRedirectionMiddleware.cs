@@ -21,7 +21,14 @@ namespace BLAZAM.Server.Middleware
             bool forceHttps;
             // If the value is not cached, retrieve it from the database.
 
-            forceHttps = DatabaseCache.ApplicationSettings.ForceHTTPS;
+            try
+            {
+                forceHttps = DatabaseCache.ApplicationSettings.ForceHTTPS;
+            }catch (NullReferenceException ex)
+            {
+                Loggers.SystemLogger.Error("Error while checking database cache for Force HTTPS", new object[] { ex, DatabaseCache.ApplicationSettings });
+                forceHttps = false;
+            }
 
 
 
