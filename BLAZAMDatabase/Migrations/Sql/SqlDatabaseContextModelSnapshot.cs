@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.Sql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -1430,6 +1430,28 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.ToTable("UserDashboardWidgets");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.User.UserFavoriteEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserFavoriteEntries");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserNotification", b =>
                 {
                     b.Property<int>("Id")
@@ -1674,6 +1696,17 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.User.UserFavoriteEntry", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
+                        .WithMany("FavoriteEntries")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserNotification", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.User.NotificationMessage", "Notification")
@@ -1757,6 +1790,8 @@ namespace BLAZAM.Common.Migrations.Sql
             modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
                 {
                     b.Navigation("DashboardWidgets");
+
+                    b.Navigation("FavoriteEntries");
 
                     b.Navigation("Messages");
                 });
