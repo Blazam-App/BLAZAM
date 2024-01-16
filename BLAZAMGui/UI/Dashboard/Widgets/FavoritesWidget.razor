@@ -1,0 +1,54 @@
+﻿@inherits Widget
+@attribute [Authorize]
+@* <NewEntriesWidgetDataGrid Items="@FavoriteEntries" T="IDirectoryEntryAdapter" Loading=LoadingData /> *@
+<FlexContainer Spacing="1" Class="mx-auto">
+    @foreach(var entry in FavoriteEntries)
+    {
+
+        <MudButton Variant="Variant.Outlined" Color="Color.Default" OnClick=@(()=>{GoTo(entry);}) Class="pa-3 ma-1 cursor-pointer" Elevation="0">
+            <MudStack Row=true>
+                <MudIcon Icon="@entry.TypeIcon()"/>
+                <MudStack>
+                    <MudTooltip Text="@entry.OU.ToPrettyOu()">
+                        <MudText>@entry.CanonicalName</MudText>
+                    </MudTooltip>
+                    <MudText>@entry.OU.ToPrettyOu()</MudText>
+                    <MudText>@AppLocalization["Last Change"]: @entry.LastChanged.Value.ToLocalTime().ToShortDateString()</MudText>
+                </MudStack>
+               
+            </MudStack>
+        </MudButton>
+           
+    }
+</FlexContainer>
+<MudOverlay Visible=LoadingData>
+    <MudProgressLinear Indeterminate=true/>
+</MudOverlay>
+@code {
+    List<IDirectoryEntryAdapter> FavoriteEntries { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await Task.Run(() =>
+        {
+            foreach (var entry in CurrentUser.State.Preferences.FavoriteEntries)
+            {
+                IDirectoryEntryAdapter match = Directory.GetDirectoryEntryByDN(entry.DN);
+                if (match.CanRead)
+                {
+                    FavoriteEntries.Add(match);
+                }
+            }
+
+            LoadingData = false;
+            InvokeAsync(StateHasChanged);
+
+        });
+
+    }
+    void GoTo(IDirectoryEntryAdapter args)
+    {
+        Nav.NavigateTo(args.SearchUri);
+    }
+}

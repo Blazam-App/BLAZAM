@@ -117,5 +117,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <returns></returns>
         DirectoryEntry GetDirectoryEntry(string? baseDN = null);
         bool RestoreTombstone(IDirectoryEntryAdapter model, IADOrganizationalUnit newOU);
+        IDirectoryEntryAdapter? GetDirectoryEntryByDN(string dn);
     }
 }

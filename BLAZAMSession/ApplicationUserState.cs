@@ -46,7 +46,7 @@ namespace BLAZAM.Server.Data.Services
 
         public IPAddress IPAddress { get; set; }
 
-
+        public List<UserFavoriteEntry> FavoriteEntries => userSettings.FavoriteEntries;
 
         public IList<UserNotification>? Notifications
         {
@@ -172,6 +172,7 @@ namespace BLAZAM.Server.Data.Services
                     dbUserSettings.ProfilePicture = this.Preferences?.ProfilePicture;
                     dbUserSettings.SearchDisabledUsers = this.Preferences?.SearchDisabledUsers == true;
                     dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
+                    dbUserSettings.FavoriteEntries = this.Preferences?.FavoriteEntries;
                     SaveDashboardWidgets(dbUserSettings);
                     OnSettingsChanged?.Invoke(dbUserSettings);
                     await context.SaveChangesAsync();
