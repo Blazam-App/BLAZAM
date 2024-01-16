@@ -32,6 +32,7 @@ namespace BLAZAM.Jobs
             }
             catch (Exception ex)
             {
+                Result = false;
                 Exception = ex;
                 return false;
             }

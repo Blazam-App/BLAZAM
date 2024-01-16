@@ -2,7 +2,7 @@
 @inherits AppComponentBase
 @page "/Home"
 @using BLAZAM.Gui.UI.Dashboard
-
+@using BLAZAM.Gui.Helper
 @{
     string testValue="";
     Type valueType =testValue.GetType();
@@ -20,7 +20,6 @@
 }
 <CurrentUserDashboardWidgets/>
 
-
 @code {
     MarkupString? MOTD;
 
@@ -36,7 +35,7 @@
         }
         return base.OnInitializedAsync();
     }
-
    
+
 
 }

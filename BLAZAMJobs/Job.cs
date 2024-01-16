@@ -7,11 +7,11 @@ namespace BLAZAM.Jobs
     /// <summary>
     /// 
     /// </summary>
-    public class Job : IJob
+    public class Job : IJob, IJobStep
     {
         private DateTime scheduledRunTime = DateTime.Now;
-
-        public string? Title { get; set; }
+        public bool StopOnFailedStep { get; set; }
+        public string? Name { get; set; }
         public IApplicationUserState User { get; set; }
         private Timer? runScheduler;
         public IList<IJobStep> Steps { get; set; } = new List<IJobStep>();
@@ -35,6 +35,7 @@ namespace BLAZAM.Jobs
             }
         }
         public IList<IJobStep> FailedSteps { get; protected set; } = new List<IJobStep>();
+        public IList<IJobStep> PassedSteps { get; protected set; } = new List<IJobStep>();
 
         public bool? Result
         {
@@ -49,9 +50,13 @@ namespace BLAZAM.Jobs
             }
         }
 
-        public Job(string? title = null,IApplicationUserState requestingUser=null)
+        public Exception Exception { get; protected set; }
+
+        public WindowsImpersonation Identity { get; set; }
+
+        public Job(string? title = null, IApplicationUserState requestingUser = null)
         {
-            Title = title;
+            Name = title;
             User = requestingUser;
         }
 
@@ -64,6 +69,19 @@ namespace BLAZAM.Jobs
 
         public bool Run()
         {
+            if (Identity != null)
+            {
+                return Identity.Run(() =>
+                {
+                    return Execute();
+                });
+            }
+            return Execute();
+
+        }
+
+        private bool Execute()
+        {
             runScheduler?.Dispose();
             FailedSteps.Clear();
             StartTime = DateTime.Now;
@@ -72,7 +90,12 @@ namespace BLAZAM.Jobs
                 if (!Steps[i].Run())
                 {
                     FailedSteps.Add(Steps[i]);
-
+                    if (StopOnFailedStep)
+                        break;
+                }
+                else
+                {
+                    PassedSteps.Add(Steps[i]);
                 }
             }
             EndTime = DateTime.Now;

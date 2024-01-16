@@ -16,7 +16,7 @@ namespace BLAZAM.Jobs
         IApplicationUserState User { get; set; }
         IList<IJobStep> Steps { get; set; }
         IList<IJobStep> FailedSteps { get; }
-        string? Title { get; set; }
+        string? Name { get; set; }
         /// <summary>
         /// Returns true if all steps ran without error. 
         /// Returns false if any step failed. 
@@ -24,6 +24,8 @@ namespace BLAZAM.Jobs
         /// </summary>
         bool? Result { get; }
         TimeSpan? ElapsedTime { get; }
+        bool StopOnFailedStep { get; set; }
+        IList<IJobStep> PassedSteps { get; }
 
         bool Run();
         Task<bool> RunAsync();
