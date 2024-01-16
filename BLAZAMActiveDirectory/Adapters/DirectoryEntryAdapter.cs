@@ -704,12 +704,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 commitJob ??= new Job
                 {
-                    Title = "Commit Changes",
+                    Name = "Commit Changes",
                     User = CurrentUser
                 };
 
 
-                JobStep? propertyStep;
+                IJobStep? propertyStep;
                 if (!NewEntry)
                 {
                     //Existing Active Directory Entry
