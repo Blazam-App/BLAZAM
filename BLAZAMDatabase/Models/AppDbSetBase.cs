@@ -16,7 +16,7 @@
             return Equals(obj as AppDbSetBase);
         }
 
-        public bool Equals(AppDbSetBase? other)
+        public virtual bool Equals(AppDbSetBase? other)
         {
             return other is not null &&
                    Id == other.Id;

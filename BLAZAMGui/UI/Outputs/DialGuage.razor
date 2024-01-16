@@ -1,0 +1,117 @@
+﻿@inherits AppComponentBase
+<MudStack>
+   
+    <div id="@_elementID" class="gauge-container">
+        <span class="label">@Title</span>
+
+    </div>
+</MudStack>
+<style>
+    .gauge-container {
+        width: 150px;
+        height: 150px;
+        display: block;
+        float: left;
+        padding: 10px;
+        margin: 7px;
+        border-radius: 3px;
+        position: relative;
+    }
+
+        .gauge-container > .label {
+            position: absolute;
+            right: 0;
+            top: 0;
+            display: inline-block;
+            
+            font-family: monospace;
+            font-size: 0.8em;
+            padding: 5px 10px;
+        }
+        .gauge-container > .gauge .dial {
+            stroke: #eee;
+            stroke-width: 2;
+            fill: rgba(0,0,0,0);
+        }
+
+        .gauge-container > .gauge .value {
+            stroke: rgb(47, 227, 255);
+            stroke-width: 2;
+            fill: rgba(0,0,0,0);
+        }
+
+        .gauge-container > .gauge .value-text {
+            fill: rgb(47, 227, 255);
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 1em;
+        }
+</style>
+
+@code {
+    private string _elementID = Guid.NewGuid().ToString();
+
+    [Parameter]
+    public double Value { get; set; } = 50;
+
+    [Parameter]
+    public double MaxValue { get; set; } = 100;
+
+    public RollingAverage AverageValue = new Common.Data.RollingAverage(3);
+    [Parameter]
+    public string? Title { get; set; }
+
+    Func<double> _pollFunc;
+    bool _polling;
+
+    [Parameter]
+    public Func<double> PollFunc
+    {
+        get => _pollFunc;
+        set
+        {
+            _pollFunc = value;
+            if (value != null)
+            {
+                StartPolling();
+            }
+            else
+            {
+                StopPolling();
+            }
+        }
+    }
+
+    private void StopPolling()
+    {
+        _polling = false;
+    }
+    private void StartPolling()
+    {
+        if (!_polling)
+        {
+            _polling=true;
+            Task.Run(() =>
+            {
+
+                while (_polling)
+                {
+                    Task.Delay(1000).Wait();
+                    Value = _pollFunc.Invoke();
+                    var temp = AverageValue.AddValue(Value);
+                    //JS.InvokeVoidAsync("console.log(dialGauges[" + _elementID + "]);");
+                    JS.InvokeVoidAsync("window.setGaugeValue", new object[] {_elementID, temp, 1 });
+                    //InvokeAsync(StateHasChanged);
+
+                }
+            });
+
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await Task.Delay(10);
+        await JS.InvokeVoidAsync("window.createGauge", new object[] { _elementID,MaxValue });
+    }
+}

@@ -47,10 +47,10 @@
                 <MudTooltip Text="@AppLocalization[accountEntry.Enabled==true?"Disable":"Enable"]">
 
                     <MudToggleIconButton @bind-Toggled="@accountEntry.Enabled"
-                                     Icon="@Icons.Material.Filled.PersonOff"
-                                     Color="Color.Error"
-                                     ToggledIcon="@Icons.Material.Filled.Person"
-                                     ToggledColor="Color.Success" />
+                                         Icon="@Icons.Material.Filled.PersonOff"
+                                         Color="Color.Error"
+                                         ToggledIcon="@Icons.Material.Filled.Person"
+                                         ToggledColor="Color.Success" />
                 </MudTooltip>
             }
 
@@ -60,10 +60,10 @@
                 <MudTooltip Text="@AppLocalization["Edit"]">
 
                     <MudToggleIconButton ToggledChanged="@(async(state)=>{await ToggleEditMode(state);})"
-                                     Icon="@Icons.Material.Filled.Edit"
-                                     ToggledIcon="@Icons.Material.Filled.EditOff"
-                                     ToggledColor="Color.Error"
-                                     ToggledTitle="End Edit" />
+                                         Icon="@Icons.Material.Filled.Edit"
+                                         ToggledIcon="@Icons.Material.Filled.EditOff"
+                                         ToggledColor="Color.Error"
+                                         ToggledTitle="End Edit" />
                 </MudTooltip>
             }
             @if (accountEntry != null && accountEntry.LockedOut && accountEntry.CanUnlock)
@@ -71,7 +71,7 @@
                 <MudTooltip Text="@AppLocalization["Unlock"]">
 
                     <MudIconButton OnClick="Unlock"
-                               Icon="@Icons.Material.Filled.LockOpen"
+                                   Icon="@Icons.Material.Filled.LockOpen"
                                    aria-label="unlock" />
                 </MudTooltip>
             }
@@ -80,7 +80,7 @@
                 <MudTooltip Text="@AppLocalization["Assign To"]">
 
                     <MudIconButton OnClick="@Assign"
-                               Icon="@Icons.Material.Filled.GroupAdd"
+                                   Icon="@Icons.Material.Filled.GroupAdd"
                                    aria-label="assign to" />
                 </MudTooltip>
 
@@ -89,7 +89,7 @@
             {
                 <MudTooltip Text="@AppLocalization["Change Password"]">
                     <MudIconButton OnClick="@ResetPassword"
-                               Icon="@Icons.Material.Filled.Password"
+                                   Icon="@Icons.Material.Filled.Password"
                                    aria-label="change password" />
                 </MudTooltip>
             }
@@ -98,7 +98,7 @@
                 <MudTooltip Text="@AppLocalization["Rename"]">
 
                     <MudIconButton OnClick="@Rename"
-                               Icon="@Icons.Material.Filled.DriveFileRenameOutline"
+                                   Icon="@Icons.Material.Filled.DriveFileRenameOutline"
                                    aria-label="rename" />
 
                 </MudTooltip>
@@ -108,7 +108,7 @@
                 <MudTooltip Text="@AppLocalization["Move"]">
 
                     <MudIconButton OnClick="@Move"
-                               Icon="@Icons.Material.Filled.DriveFileMove"
+                                   Icon="@Icons.Material.Filled.DriveFileMove"
                                    aria-label="move" />
                 </MudTooltip>
             }
@@ -117,8 +117,8 @@
                 <MudTooltip Text="@AppLocalization["Delete"]">
 
                     <MudIconButton OnClick="@DeleteUser"
-                               Color="Color.Error"
-                               Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   Icon="@Icons.Material.Filled.Delete"
                                    aria-label="change password" />
                 </MudTooltip>
             }
@@ -129,10 +129,14 @@
                 </MudTooltip>
 
             }
+
+            <MudTooltip Text="@(IsFavorite==true?AppLocalization["Remove from favorites"]:AppLocalization["Add to favorites"])">
+                <MudIconButton OnClick="@ToggleFavorite" Icon="@(IsFavorite==true?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)" Color="@(IsFavorite==true?Color.Warning:Color.Default)" />
+            </MudTooltip>
         </MudToolBar>
     </MudHidden>
     <MudSpacer />
-    <EntrySpecificChat Entry="DirectoryEntry"/>
+    <EntrySpecificChat Entry="DirectoryEntry" />
     <MudHidden Breakpoint="Breakpoint.SmAndUp">
 
         <MudMenu Class="align-self-end" StartIcon="@Icons.Material.Filled.Settings">
@@ -281,6 +285,29 @@
     {
         _editMode = editEnabled;
         await OnToggleEditMode.InvokeAsync(editEnabled);
+    }
+    private bool IsFavorite
+    {
+        get
+        {
+            UserFavoriteEntry newFavorrite = new UserFavoriteEntry { DN = DirectoryEntry.DN, UserId = CurrentUser.State.Id };
+
+            return CurrentUser.State.Preferences.FavoriteEntries.Contains(newFavorrite);
+        }
+    }
+    private async Task ToggleFavorite()
+    {
+        UserFavoriteEntry newFavorrite = new UserFavoriteEntry { DN = DirectoryEntry.DN, UserId = CurrentUser.State.Id };
+        if (CurrentUser.State.Preferences.FavoriteEntries.Contains(newFavorrite))
+        {
+            newFavorrite = CurrentUser.State.Preferences.FavoriteEntries.Where(u => newFavorrite.Equals(u)).FirstOrDefault();
+            CurrentUser.State.Preferences.FavoriteEntries.Remove(newFavorrite);
+        }
+        else
+        {
+            CurrentUser.State.Preferences.FavoriteEntries.Add(newFavorrite);
+        }
+        CurrentUser.State.SaveUserSettings();
     }
 
 }

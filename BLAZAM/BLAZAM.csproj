@@ -5,8 +5,8 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
-		<AssemblyVersion>0.8.5</AssemblyVersion>
-		<Version>2023.11.26.2319</Version>
+		<AssemblyVersion>0.8.7</AssemblyVersion>
+		<Version>2024.01.16.0020</Version>
 
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -26,6 +26,10 @@
 	  <None Remove="static\img\default_logo2.png" />
 	  <None Remove="static\img\default_logo3.png" />
 	  <None Remove="static\img\default_logo4.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="..\BLAZAMGui\UI\ComputerViewBase.razor.cs" Link="ComputerViewBase.razor.cs" />
 	</ItemGroup>
 
 

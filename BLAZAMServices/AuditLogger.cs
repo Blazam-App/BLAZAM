@@ -217,6 +217,21 @@ namespace BLAZAM.Services
                 changes.GetValueChangesString(c => c.NewValue));
             return true;
         }
+        public override async Task<bool> Created(IDirectoryEntryAdapter newGroup)
+        {
+            var oldValues = "";
+            var newValues = "";
+            foreach (var c in newGroup.NewEntryProperties)
+            {
+                newValues += c.Key + "=" + c.Value;
+            }
+            await Log<DirectoryEntryAuditLog>(c => c.DirectoryEntryAuditLogs,
+                AuditActions.Group_Created,
+                newGroup,
+                oldValues,
+                newValues);
+            return true;
+        }
     }
     public class LogonAudit : CommonAudit
     {

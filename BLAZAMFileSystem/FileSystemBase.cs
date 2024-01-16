@@ -23,7 +23,7 @@ namespace BLAZAM.FileSystem
         {
             get
             {
-                string testFilePath = null;
+                string? testFilePath = null;
                 try
                 {
                     var directoryInfo = new DirectoryInfo(Path);

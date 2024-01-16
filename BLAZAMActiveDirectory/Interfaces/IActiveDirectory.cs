@@ -52,6 +52,10 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Provides User search functions
         /// </summary>
         IADUserSearcher Users { get; }
+          /// <summary>
+        /// Provides Printer search functions
+        /// </summary>
+        IADPrinterSearcher Printers { get; }
 
         /// <summary>
         /// Provides Computer search functions
@@ -113,5 +117,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <returns></returns>
         DirectoryEntry GetDirectoryEntry(string? baseDN = null);
         bool RestoreTombstone(IDirectoryEntryAdapter model, IADOrganizationalUnit newOU);
+        IDirectoryEntryAdapter? GetDirectoryEntryByDN(string dn);
     }
 }

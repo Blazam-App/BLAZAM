@@ -9,6 +9,12 @@ namespace BLAZAM.Notifications.Services
         private IDialogService _dialog { get; set; }
         DialogOptions DialogOptions { get; set; } = new DialogOptions() { };
 
+        public async Task ShowMessage<TComponent>(DialogParameters parameters , string? title = null, string? yesText = null, string? noText = null, string? cancelText = null) where TComponent : ComponentBase, new()
+        {
+            await _dialog.ShowAsync<TComponent>(title, parameters, DialogOptions);
+        }
+
+
         private async Task ShowMessage(MarkupString message, string? title = null, string? yesText = null, string? noText = null, string? cancelText = null)
         {
             await _dialog.ShowMessageBox(title, message, yesText, noText, cancelText,DialogOptions);
@@ -24,6 +30,8 @@ namespace BLAZAM.Notifications.Services
         {
             _dialog = dialog;
         }
+
+        
 
         public async Task Error(string message, string? title = null)
         {

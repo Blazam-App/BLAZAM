@@ -7,12 +7,16 @@
 
         <MudStack Row="true">
 
-            <MudMenu AnchorOrigin=Origin.BottomCenter TransformOrigin=Origin.TopCenter Color=Color.Secondary StartIcon="@Icons.Material.Filled.TypeSpecimen" Label="@SearchService.SeachObjectType.ToString()">
+            <MudMenu AnchorOrigin=Origin.BottomCenter
+                     TransformOrigin=Origin.TopCenter
+                     Color=Color.Secondary
+                     StartIcon="@Icons.Material.Filled.TypeSpecimen"
+                     Label="@SearchService.SeachObjectType.ToString()">
                 <CascadingAuthenticationState>
 
                     <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.All; })>@AppLocalization["All"]</MudMenuItem>
                     <AuthorizeView Roles="@(UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
-                        
+
                         <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.User; })>@AppLocalization["User"]</MudMenuItem>
                     </AuthorizeView>
 
@@ -28,7 +32,7 @@
                         <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Computer; })>@AppLocalization["Computer"]</MudMenuItem>
 
                     </AuthorizeView>
-                    <AuthorizeView Roles="@(UserRoles.SearchComputers+","+UserRoles.SuperAdmin)">
+                    <AuthorizeView Roles="@(UserRoles.SearchPrinters+","+UserRoles.SuperAdmin)">
                         <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Printer; })>@AppLocalization["Printer"]</MudMenuItem>
 
                     </AuthorizeView>
@@ -73,6 +77,9 @@
                     case ActiveDirectoryObjectType.Computer:
                         adornmentIcon = Icons.Material.Filled.Computer;
                         break;
+                    case ActiveDirectoryObjectType.Printer:
+                        adornmentIcon = Icons.Material.Filled.Print;
+                        break;
                 }
             }
             <MudPaper Class=" mud-overlay-light" Style="width:100%;max-width:550px;height:min-content;">
@@ -84,9 +91,9 @@
                                 SelectedResultChanged="@((result)=>{if(result!=null)SearchService.Search(SearchService.SearchTerm);})"
                                 SearchObjectType="@SearchService.SeachObjectType"
                                 SearchDisabled=@SearchService.IncludeDisabled
-                                @bind-SearchTerm="@SearchService.SearchTerm" />
+                @bind-SearchTerm="@SearchService.SearchTerm" />
             </MudPaper>
-      
+
 
         </MudStack>
 
@@ -94,7 +101,14 @@
 </MudForm>
 
 @code {
-    List<ActiveDirectoryObjectType> ObjectTypes = new() { ActiveDirectoryObjectType.All, ActiveDirectoryObjectType.User, ActiveDirectoryObjectType.Group, ActiveDirectoryObjectType.OU, ActiveDirectoryObjectType.Computer };
+    List<ActiveDirectoryObjectType> ObjectTypes = new() {
+        ActiveDirectoryObjectType.All,
+        ActiveDirectoryObjectType.User,
+        ActiveDirectoryObjectType.Group,
+        ActiveDirectoryObjectType.OU,
+        ActiveDirectoryObjectType.Computer,
+        ActiveDirectoryObjectType.Printer
+    };
 
 
     public ADSearch Searcher { get; set; } = new ADSearch();

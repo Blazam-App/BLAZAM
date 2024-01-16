@@ -123,6 +123,8 @@ namespace BLAZAM.ActiveDirectory
 
         /// </summary>
         public IADOUSearcher OUs { get; }
+        /// </summary>
+        public IADPrinterSearcher Printers { get; }
 
         /// <summary>
 
@@ -205,6 +207,7 @@ namespace BLAZAM.ActiveDirectory
             Users = new ADUserSearcher(this);
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
+            Printers = new ADPrinterSearcher(this);
             Computers = new ADComputerSearcher(this, _wmiFactory);
         }
         /// <summary>
@@ -231,6 +234,8 @@ namespace BLAZAM.ActiveDirectory
             Users = new ADUserSearcher(this);
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
+            Printers = new ADPrinterSearcher(this);
+
             Computers = new ADComputerSearcher(this, activeDirectoryContextSeed._wmiFactory);
         }
         private DirectoryContext DirectoryContext => new DirectoryContext(
@@ -673,6 +678,15 @@ namespace BLAZAM.ActiveDirectory
             var searcher = new ADSearch();
             searcher.SearchRoot = RootDirectoryEntry;
             searcher.Fields.SID = sid;
+            var result = searcher.Search().FirstOrDefault();
+            return result;
+        }
+        
+        public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string dn)
+        {
+            var searcher = new ADSearch();
+            searcher.SearchRoot = RootDirectoryEntry;
+            searcher.Fields.DN = dn;
             var result = searcher.Search().FirstOrDefault();
             return result;
         }

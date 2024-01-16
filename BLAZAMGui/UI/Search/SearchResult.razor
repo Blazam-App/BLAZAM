@@ -1,7 +1,11 @@
 ﻿
 <MudCard onclick=@(()=>{OnSelected.InvokeAsync();}) Class="cursor-pointer d-inline-flex pa-4">
     <MudCardContent>
-        <MudText>@Entry.CanonicalName</MudText>
+        <MudStack Row=true>
+            <MudIcon Icon="@Entry.TypeIcon()"/>
+            <MudText>@Entry.CanonicalName</MudText>
+
+        </MudStack>
         <MudText Typo="Typo.body2">@Entry.OU.ToPrettyOu()</MudText>
     </MudCardContent>
 </MudCard>

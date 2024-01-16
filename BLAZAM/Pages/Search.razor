@@ -105,9 +105,13 @@
             LoadingData = true;
             Searcher?.Cancel();
             _searchTermParameter = value;
-            PerformSearch();
-            if (_searchTermParameter.IsNullOrEmpty())
-                LoadingData = false;
+            Task.Run(async () =>
+            {
+                await PerformSearch();
+                if (_searchTermParameter.IsNullOrEmpty())
+                    LoadingData = false;
+            });
+
 
         }
     }
