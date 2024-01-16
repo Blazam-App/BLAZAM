@@ -681,5 +681,14 @@ namespace BLAZAM.ActiveDirectory
             var result = searcher.Search().FirstOrDefault();
             return result;
         }
+        
+        public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string dn)
+        {
+            var searcher = new ADSearch();
+            searcher.SearchRoot = RootDirectoryEntry;
+            searcher.Fields.DN = dn;
+            var result = searcher.Search().FirstOrDefault();
+            return result;
+        }
     }
 }
