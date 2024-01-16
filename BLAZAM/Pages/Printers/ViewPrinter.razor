@@ -110,7 +110,8 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        
+        AuditLogger.Searched(Printer);
+
         LoadingData = false;
         await RefreshEntryComponents();
     }

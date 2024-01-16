@@ -97,7 +97,15 @@
 
     IADGroup Group => DirectoryEntry as IADGroup;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+        AuditLogger.Searched(Group);
 
+        LoadingData = false;
+        await RefreshEntryComponents();
+    }
 
     async void SaveChanges()
     {
