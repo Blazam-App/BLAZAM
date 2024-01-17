@@ -239,7 +239,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             catch (Exception ex)
             {
                 
-                Loggers.ActiveDirectryLogger.Error("Error setting entry password", ex);
+                Loggers.ActiveDirectryLogger.Error("Error setting entry password {@Error}", ex);
 
                 throw new ApplicationException("Unable to set password", ex);
             }

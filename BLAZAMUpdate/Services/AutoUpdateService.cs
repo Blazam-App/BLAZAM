@@ -95,7 +95,7 @@ namespace BLAZAM.Update.Services
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Other error deleting file: " + file, ex);
+                    Loggers.UpdateLogger.Error("Other error deleting file: " + file + " {@Error}", ex);
                     //file.Delete();
                 }
 
@@ -148,7 +148,7 @@ namespace BLAZAM.Update.Services
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Error while checking for auto update: {Message}", ex);
+                Loggers.UpdateLogger.Error("Error while checking for auto update {@Error}", ex);
             }
         }
         public void Cancel()
@@ -195,7 +195,7 @@ namespace BLAZAM.Update.Services
 
                 }
             }catch(Exception ex) {
-                Loggers.UpdateLogger.Error("Error during auto update scheduling: {Message}", ex);
+                Loggers.UpdateLogger.Error("Error during auto update scheduling {@Error}", ex);
             }
         }
 
@@ -229,7 +229,7 @@ namespace BLAZAM.Update.Services
                     {
                         //Log.Error(ex);
                         OnAutoUpdateFailed?.Invoke();
-                        Loggers.UpdateLogger.Error("Error trying to apply auto update", ex);
+                        Loggers.UpdateLogger.Error("Error trying to apply auto update {@Error}", ex);
                     }
                 }
                 else
@@ -242,7 +242,7 @@ namespace BLAZAM.Update.Services
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Error during auto update: {Message}", ex);
+                Loggers.UpdateLogger.Error("Error during auto update {@Error}", ex);
             }
 
         

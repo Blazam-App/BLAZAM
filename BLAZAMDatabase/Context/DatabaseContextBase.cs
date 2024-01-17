@@ -740,7 +740,7 @@ namespace BLAZAM.Database.Context
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error(ex.Message, ex);
+                    Loggers.DatabaseLogger.Error(ex.Message + " {@Error}", ex);
                     DownReason = new("The database experienced an unexpected error. " + ex.Message);
 
                 }

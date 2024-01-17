@@ -223,7 +223,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return newUser;
             }catch(Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("Error while attempting to create user: "+fullContainerName, ex);
+                Loggers.ActiveDirectryLogger.Error("Error while attempting to create user: "+fullContainerName + " {@Error}", ex);
                 throw ex;
             }
         }

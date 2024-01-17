@@ -122,7 +122,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("Directory Entry failed to connect", ex);
+                Loggers.ActiveDirectryLogger.Error("Directory Entry failed to connect {@Error}", ex);
             }
             return null;
             // Set the filter to look for a specific user

@@ -112,7 +112,7 @@ namespace BLAZAM.Services.Chat
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error("Unable to creat private chat room", ex);
+                    Loggers.DatabaseLogger.Error("Unable to creat private chat room {@Error}", ex);
                 }
             }
             return chat;

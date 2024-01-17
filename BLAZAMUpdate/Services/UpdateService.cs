@@ -74,7 +74,7 @@ namespace BLAZAM.Update.Services
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("An error occured while getting latest update", ex);
+                Loggers.UpdateLogger.Error("An error occured while getting latest update {@Error}", ex);
             }
             return null;
 
@@ -129,7 +129,7 @@ namespace BLAZAM.Update.Services
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error("Error getting update branch from database", ex);
+                    Loggers.DatabaseLogger.Error("Error getting update branch from database {@Error}", ex);
 
                 }
             }
@@ -173,8 +173,7 @@ namespace BLAZAM.Update.Services
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Error while checking for latest update");
-                Loggers.UpdateLogger.Error(ex.Message, ex);
+                Loggers.UpdateLogger.Error("Error while checking for latest update {@Error}",ex);
 
             }
         }

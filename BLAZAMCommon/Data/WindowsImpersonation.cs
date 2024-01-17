@@ -96,7 +96,7 @@ namespace BLAZAM.Common.Data
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("Error trying to impersonate " + impersonationUser.Username, ex);
+                Loggers.ActiveDirectryLogger.Error("Error trying to impersonate " + impersonationUser.Username + " {@Error}", ex);
             }
             return result;
         }
@@ -138,7 +138,7 @@ namespace BLAZAM.Common.Data
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("Error trying to impersonate " + impersonationUser.Username, ex);
+                Loggers.ActiveDirectryLogger.Error("Error trying to impersonate " + impersonationUser.Username + " {@Error}", ex);
             }
             return output;
 

@@ -556,7 +556,7 @@ namespace BLAZAM.ActiveDirectory
                             {
                                 Loggers.ActiveDirectryLogger.Debug("Authentication failure: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
 
-                                Loggers.ActiveDirectryLogger.Error("Error while authenticating credentials.", ex);
+                                Loggers.ActiveDirectryLogger.Error("Error while authenticating credentials. {@Error}", ex);
                             }
 
                             //WindowsImpersonationUser logonUser = new WindowsImpersonationUser
@@ -664,8 +664,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Error attempting to restore " + model.CanonicalName);
-                    Loggers.ActiveDirectryLogger.Error(ex.Message, ex);
+                    Loggers.ActiveDirectryLogger.Error("Error attempting to restore " + model.CanonicalName  + "{@Error}",ex);
                 }
             }
             return false;
