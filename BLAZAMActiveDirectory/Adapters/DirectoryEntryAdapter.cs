@@ -704,12 +704,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 commitJob ??= new Job
                 {
-                    Title = "Commit Changes",
+                    Name = "Commit Changes",
                     User = CurrentUser
                 };
 
 
-                JobStep? propertyStep;
+                IJobStep? propertyStep;
                 if (!NewEntry)
                 {
                     //Existing Active Directory Entry
@@ -719,35 +719,38 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             " entry is somehow missing on commit.");
                         throw new ApplicationException("DirectoryEntry is null");
                     }
-                    propertyStep = new JobStep("Set AD attributes", () =>
+                    foreach (var p in NewEntryProperties)
                     {
-                        foreach (var p in NewEntryProperties)
-                        {
+                        propertyStep = new JobStep("Set AD attributes", () =>
+                         {
 
 
-                            if (!DirectoryEntry.Properties.Contains(p.Key)
-                                || DirectoryEntry.Properties[p.Key].Value?.Equals(p.Value) != true)
-                            {
-                                if (p.Value == null
-                            || p.Value is string strValue && strValue.IsNullOrEmpty()
-                            || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
-                                {
 
-                                    DirectoryEntry.Properties[p.Key].Clear();
+                             if (!DirectoryEntry.Properties.Contains(p.Key)
+                                 || DirectoryEntry.Properties[p.Key].Value?.Equals(p.Value) != true)
+                             {
+                                 if (p.Value == null
+                             || p.Value is string strValue && strValue.IsNullOrEmpty()
+                             || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
+                                 {
+
+                                     DirectoryEntry.Properties[p.Key].Clear();
 
 
-                                }
-                                else
-                                {
-                                    DirectoryEntry.Properties[p.Key].Value = p.Value;
+                                 }
+                                 else
+                                 {
+                                     DirectoryEntry.Properties[p.Key].Value = p.Value;
 
-                                }
-                            }
-                        }
-                        DirectoryEntry.CommitChanges();
-                        return true;
-                    });
+                                 }
+                             }
 
+                             DirectoryEntry.CommitChanges();
+                             return true;
+                         });
+                        commitJob.Steps.Add(propertyStep);
+
+                    }
 
 
                 }
@@ -777,23 +780,27 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 //commitJob.Steps.Insert(commitJob.Steps.Count>1?1:0,propertiesStep);
-         
-
-                JobStep createStep = new JobStep("Create directory entry", () =>
-                {
-                    DirectoryEntry?.CommitChanges();
-
-                    return true;
-                });
-                commitJob.Steps.Add(createStep);
 
 
+               
+
+                //Inject custom commit steps
                 foreach (var step in CommitSteps)
                 {
                     commitJob.Steps.Add(step);
 
 
                 }
+
+                //Inject final commitchanges step
+                JobStep commitStep = new JobStep("Save directory entry", () =>
+                {
+                    DirectoryEntry?.CommitChanges();
+
+                    return true;
+                });
+                commitJob.Steps.Add(commitStep);
+
                 var result = commitJob.Run();
 
 

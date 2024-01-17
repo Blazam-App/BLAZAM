@@ -50,7 +50,15 @@
 }
 @code {
     IADOrganizationalUnit OU => DirectoryEntry as IADOrganizationalUnit;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+        AuditLogger.Searched(OU);
 
+        LoadingData = false;
+        await RefreshEntryComponents();
+    }
     async void SaveChanges()
     {
         if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
@@ -58,7 +66,8 @@
             await OU.CommitChangesAsync();
             EditMode = false;
             SnackBarService.Success("The changes made to this ou have been saved.");
-            await InvokeAsync(StateHasChanged);
+            await RefreshEntryComponents();
+
 
         }
 
