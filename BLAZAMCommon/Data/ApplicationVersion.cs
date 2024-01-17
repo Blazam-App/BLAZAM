@@ -30,8 +30,13 @@ namespace BLAZAM.Common.Data
         {
             string[]? assemblyVersion = (executingAssembly.GetName().Version?.ToString().Split(".")) ?? throw new ApplicationException("The assembly version of the running app could not be read.");
             AssemblyVersion = new Version(int.Parse(assemblyVersion[0]), int.Parse(assemblyVersion[1]), int.Parse(assemblyVersion[2]));
-
-            BuildNumber = FileVersionInfo.GetVersionInfo(executingAssembly.Location).ProductVersion;
+            var fileInfo = FileVersionInfo.GetVersionInfo(executingAssembly.Location);
+            var productVersion = fileInfo.ProductVersion;
+            if (productVersion.Contains("+"))
+            {
+                productVersion = productVersion.Split("+")[0];
+            }
+            BuildNumber = productVersion;
         }
         public ApplicationVersion(Version assemblyVersion, string? buildNumber)
         {
