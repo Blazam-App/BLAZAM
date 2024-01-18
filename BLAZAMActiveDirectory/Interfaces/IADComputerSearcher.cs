@@ -2,6 +2,9 @@
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
+    /// <summary>
+    /// A searcher class for computer objects in an <see cref="IActiveDirectoryContext"/>
+    /// </summary>
     public interface IADComputerSearcher
     {
         WmiFactory WmiFactory { get; }

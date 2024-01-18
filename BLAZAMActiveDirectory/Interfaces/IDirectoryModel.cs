@@ -244,7 +244,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Sends all staged changes to the Active Directory server
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A job with the results of the performed actions</returns>
         IJob CommitChanges(IJob? commitJob=null);
         /// <summary>
         /// Sends all staged changes to the Active Directory server asynchronously
