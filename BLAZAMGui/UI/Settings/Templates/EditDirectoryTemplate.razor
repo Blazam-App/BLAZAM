@@ -472,7 +472,7 @@ await ParentTemplateChanged(null);
         var categories = await Context.DirectoryTemplates.Select(t => t.Category).Distinct().ToListAsync();
         if (searchTerm.IsNullOrEmpty())
             return categories;
-        return categories.Where(s => s.Contains(searchTerm) || s.Equals(searchTerm));
+        return categories.Where(s => s!=null && (s.Contains(searchTerm) || s.Equals(searchTerm)));
     }
 
     protected async Task RemoveField(DirectoryTemplateFieldValue field)
