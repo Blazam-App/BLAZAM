@@ -194,6 +194,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
+        /// <summary>
+        /// Changes the password for this entry immediately
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="requireChange"></param>
+        /// <returns></returns>
+        /// <exception cref="ApplicationException"></exception>
         public bool SetPassword(SecureString password, bool requireChange = false)
         {
             if (SamAccountName == null) throw new ApplicationException("samaccount name not found!");
