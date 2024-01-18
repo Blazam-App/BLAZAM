@@ -1,5 +1,8 @@
 ﻿namespace BLAZAM.ActiveDirectory.Interfaces
 {
+    /// <summary>
+    /// A searcher class for OU objects in an <see cref="IActiveDirectoryContext"/>
+    /// </summary>
     public interface IADOUSearcher
     {
         List<IADUser> FindSubUsersByDN(string searchTerm);

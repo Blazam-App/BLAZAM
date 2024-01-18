@@ -60,7 +60,7 @@ namespace BLAZAM.Services
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error attempting to synchronize directory and application users.", ex);
+                Loggers.SystemLogger.Error("Error attempting to synchronize directory and application users. {@Error}", ex);
             }
         }
         /// <summary>

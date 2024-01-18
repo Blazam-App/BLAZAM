@@ -119,7 +119,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Error polling drives", ex);
+                    Loggers.ActiveDirectryLogger.Error("Error polling drives {@Error}", ex);
                 }
                 return drives;
             }
@@ -145,7 +145,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Error polling printers", ex);
+                    Loggers.ActiveDirectryLogger.Error("Error polling printers {@Error}", ex);
                 }
                
                

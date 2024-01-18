@@ -18,8 +18,25 @@ namespace BLAZAM.Common.Data
     public class ApplicationVersion : IComparable
     {
         public Version AssemblyVersion { get; private set; }
+        /// <summary>
+        /// The forth and remaining . segments
+        /// </summary>
+        /// <remarks>
+        /// For Blazam this is the build time
+        /// </remarks>
         public string? BuildNumber { get; private set; }
+
+        /// <summary>
+        /// The full version number in string form
+        /// </summary>
         public string Version { get => AssemblyVersion.ToString() + "." + BuildNumber; }
+        
+        /// <summary>
+        /// Only the first three . segments of the version number
+        /// </summary>
+        /// <remarks>
+        /// Same as the <see cref="AssemblyVersion"/>
+        /// </remarks>
         public string ShortVersion { get => AssemblyVersion.ToString(); }
         /// <summary>
         /// Reads the running assembly and constructs a version object of the
@@ -38,6 +55,12 @@ namespace BLAZAM.Common.Data
             }
             BuildNumber = productVersion;
         }
+
+        /// <summary>
+        /// Builds a new <see cref="ApplicationVersion"/> from an existing <see cref="Version"/> and a build number string if provided
+        /// </summary>
+        /// <param name="assemblyVersion"></param>
+        /// <param name="buildNumber"></param>
         public ApplicationVersion(Version assemblyVersion, string? buildNumber)
         {
 
@@ -45,6 +68,13 @@ namespace BLAZAM.Common.Data
             BuildNumber = buildNumber;
         }
 
+        /// <summary>
+        /// Creates a new <see cref="ApplicationVersion"/> from a raw string of a version number
+        /// </summary>
+        /// <remarks>
+        /// The version number must follow Major.Minor.Build standards
+        /// </remarks>
+        /// <param name="fullVersionString"></param>
         public ApplicationVersion(string fullVersionString)
         {
             string[] versionFragments = fullVersionString.Split('.');

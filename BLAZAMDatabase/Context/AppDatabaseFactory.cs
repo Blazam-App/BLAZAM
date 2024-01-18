@@ -80,7 +80,7 @@ namespace BLAZAM.Database.Context
                             }
                             catch (Exception ex)
                             {
-                                Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database.", ex);
+                                Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database. {@Error}", ex);
                             }
                             
                         }
@@ -185,7 +185,7 @@ namespace BLAZAM.Database.Context
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
+                    Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!! {@Error}", ex);
                     throw ex;
                 }
             });
@@ -218,7 +218,7 @@ namespace BLAZAM.Database.Context
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
+                Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!! {@Error}", ex);
                 //DownReason = new DatabaseException(ex.Message, ex);
                 FatalError = ex;
                 OnFatalError?.Invoke(ex);

@@ -1,6 +1,9 @@
 ﻿
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
+    /// <summary>
+    /// A searcher class for group objects in an <see cref="IActiveDirectoryContext"/>
+    /// </summary>
     public interface IADGroupSearcher
     {
         IADGroup? FindGroupBySID(byte[] groupSID);

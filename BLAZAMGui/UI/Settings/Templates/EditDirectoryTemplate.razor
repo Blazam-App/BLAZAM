@@ -525,8 +525,7 @@ await ParentTemplateChanged(null);
             }
             catch (SqlException ex)
             {
-                Loggers.DatabaseLogger.Error("Error attempting to save creation template " + _template.Name);
-                Loggers.DatabaseLogger.Error(ex.Message, ex);
+                Loggers.DatabaseLogger.Error("Error attempting to save creation template " + _template.Name + " {@Error}",ex);
             }
         }
         else

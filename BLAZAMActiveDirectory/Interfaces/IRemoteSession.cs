@@ -4,6 +4,7 @@ using System.Security.Principal;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
+
     public interface IRemoteSession
     {
         IPAddress ClientIPAddress { get; }
