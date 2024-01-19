@@ -65,7 +65,7 @@ namespace BLAZAM.Gui.UI.Chat
         }
         protected async Task RefreshChatRooms()
         {
-            var room = (await Chat.GetChatRoomsAsync()).Where(cr => cr.Name.Equals("App Chat")).FirstOrDefault();
+            var room = Chat.AppChatRoom;
             if (room is null && ChatUri != null)
             {
                 Chat.CreateChatRoom(new()
