@@ -75,7 +75,7 @@ namespace BLAZAM.Tests.Jobs
             var subjobStep1Result = ((IJob)testJob.Steps[3]).Steps[0].Result;
             var subjobStep3Result = ((IJob)testJob.Steps[3]).Steps[2].Result;
             // Assert
-            Assert.True(testJob.Steps[3] is IJob && subjobStep1Result == true && subjobStep3Result == false);
+            Assert.True(testJob.Steps[3] is IJob && subjobStep1Result == JobResult.Passed && subjobStep3Result == JobResult.Failed);
         }
 
         [Fact]

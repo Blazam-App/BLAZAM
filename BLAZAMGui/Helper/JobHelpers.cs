@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Gui.UI.Outputs;
+using BLAZAM.Gui.UI.Outputs.Jobs;
 using BLAZAM.Jobs;
 using MudBlazor;
 using System;

@@ -11,15 +11,21 @@
             }
             @switch (Job.Result)
             {
-                case true:
+                case JobResult.Passed:
                     title += AppLocalization["Success"];
                     break;
-                case false:
+                case JobResult.Failed:
                     title += AppLocalization["Failed"];
                     break;
 
-                case null:
-                    title += AppLocalization["Not Run"];
+                case JobResult.NotRun:
+                    title += AppLocalization["Queued"];
+                    break;
+                case JobResult.Running:
+                    title += AppLocalization["Running"];
+                    break;
+                    case JobResult.Cancelled:
+                    title += AppLocalization["Cancelled"];
                     break;
 
             }
@@ -33,39 +39,30 @@
         </TemplateColumn>
         <TemplateColumn Title="Result">
             <CellTemplate>
-                @{
-                    var color = Color.Success;
-                    var icon = Icons.Material.Filled.Check;
-                    var result = context.Item.Result;
-                    switch (result)
-                    {
-                        case null:
-                            color = Color.Warning;
-                            icon = Icons.Material.Filled.QuestionMark;
-                            break;
-                        case false:
-                            color = Color.Error;
-                            icon = Icons.Material.Filled.Close;
-                            break;
-                    }
-                }
-                <MudIcon Color="@color"
-                         Icon="@icon" />
+                <JobStepResultIcon Step="context.Item"/>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="Message">
             <CellTemplate>
-                <MudText>
-                    @(context.Item.Result == true ? AppLocalization["Completed Successfully"] : context.Item.Exception?.Message)
-                </MudText>
+               
+<JobStepResultMessage Step="context.Item" />
+              
+            </CellTemplate>
+        </TemplateColumn>
+        
+        <TemplateColumn Title="Elapsed Time">
+            <CellTemplate>
+                
+                <MudText>@context.Item.ElapsedTime</MudText>
+              
             </CellTemplate>
         </TemplateColumn>
         <HierarchyColumn ButtonDisabledFunc="@(x => x is not IJob)" />
     </Columns>
     <ChildRowContent>
-        @if (context.Item is IJob)
+        @if (context.Item is IJob jobStep)
         {
-            <JobDetails Job="@((IJob)context.Item)"/>
+            <JobDetails Job="@jobStep" />
         }
     </ChildRowContent>
 </MudDataGrid>
@@ -75,4 +72,13 @@
 @code {
     [Parameter]
     public IJob Job { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Job.OnProgressUpdated += (async (value) =>
+       {
+           await InvokeAsync(StateHasChanged);
+       });
+    }
 }

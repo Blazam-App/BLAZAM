@@ -1,0 +1,29 @@
+@{
+    var color = Color.Success;
+    var icon = Icons.Material.Filled.Check;
+    switch (Step.Result)
+    {
+        case JobResult.NotRun:
+            color = Color.Warning;
+            icon = Icons.Material.Filled.QuestionMark;
+            break;
+        case JobResult.Failed:
+            color = Color.Error;
+            icon = Icons.Material.Filled.Close;
+            break;
+        case JobResult.Running:
+            color = Color.Warning;
+            icon = Icons.Material.Filled.RunCircle;
+            break;
+        case JobResult.Cancelled:
+            color = Color.Error;
+            icon = Icons.Material.Filled.Cancel;
+            break;
+    }
+}
+<MudIcon Color="@color"
+         Icon="@icon" />
+@code {
+    [Parameter]
+    public IJobStep Step { get; set; }
+}

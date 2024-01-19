@@ -1,0 +1,15 @@
+@inherits AppComponentBase
+<MudText Typo="Typo.caption">@AppLocalization["Start Time"]: @StartTime </MudText>
+
+
+@code {
+    [CascadingParameter]
+    public IJob Job { get; set; }
+
+    private string StartTime {
+        get{
+            if (Job.StartTime == null || !Job.StartTime.HasValue) return AppLocalization["Not started"];
+            return Job.StartTime.Value.ToShortTimeString();
+        }
+    }
+}
