@@ -35,7 +35,11 @@
             foreach (var entry in CurrentUser.State.Preferences.FavoriteEntries)
             {
                 IDirectoryEntryAdapter match = Directory.GetDirectoryEntryByDN(entry.DN);
-                if (match.CanRead)
+                if (match == null)
+                {
+                   
+                }
+                else if (match.CanRead)
                 {
                     FavoriteEntries.Add(match);
                 }
