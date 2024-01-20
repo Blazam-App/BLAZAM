@@ -19,6 +19,11 @@ namespace BLAZAM.Gui.Helper
                 { x => x.Job, job }
             };
             return parameters;
+        } 
+        
+        public static void ShowJobDetailsDialog(this IJob job, AppDialogService MessageService)
+        {
+            MessageService.ShowMessage<JobResultDialog>(job.ToDialogParameters(), job.Name);
         }
     }
 }

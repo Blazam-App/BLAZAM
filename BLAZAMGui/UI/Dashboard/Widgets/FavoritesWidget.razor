@@ -21,7 +21,13 @@
                 <MudIcon Icon="@context.Item.TypeIcon()" />
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="x=>x.CanonicalName" Title="Name" />
+        <TemplateColumn Title="Name">
+            <CellTemplate>
+                <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                    <MudText>@context.Item?.CanonicalName</MudText>
+                </MudTooltip>
+            </CellTemplate>
+        </TemplateColumn>
         <PropertyColumn Property="x=>x.LastChanged" Title="Changed" />
 
     </Columns>

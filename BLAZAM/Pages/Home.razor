@@ -67,7 +67,8 @@
     private async Task testJob()
     {
         var test = TestJob;
-        await MessageService.ShowMessage<JobResultDialog>(test.ToDialogParameters(), "Test Job");
+        test.ShowJobDetailsDialog(MessageService);
+        //await MessageService.ShowMessage<JobResultDialog>(test.ToDialogParameters(), "Test Job");
         var result = await test.RunAsync();
 
 
