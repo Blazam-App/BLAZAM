@@ -21,7 +21,7 @@ namespace BLAZAM.Jobs
         /// <summary>
         /// The name of this step
         /// </summary>
-        string Name { get; set; }
+        string? Name { get; set; }
 
         /// <summary>
         /// The result of this step

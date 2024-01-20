@@ -8,17 +8,15 @@ namespace BLAZAM.Jobs
     /// <summary>
     /// 
     /// </summary>
-    public class Job : IJob, IJobStep
+    public class Job : JobStepBase, IJob, IJobStep
     {
         private DateTime scheduledRunTime = DateTime.Now;
         private Timer? runScheduler;
-        private double progress;
 
-        private CancellationTokenSource cancellationTokenSource = new();
-
+     
         public bool StopOnFailedStep { get; set; }
 
-        public string? Name { get; set; }
+     
 
         public IApplicationUserState User { get; set; }
 
@@ -33,34 +31,12 @@ namespace BLAZAM.Jobs
                 runScheduler = new Timer(TriggerRun, null, (int)(ScheduledRunTime - DateTime.Now).TotalMilliseconds, int.MaxValue);
             }
         }
-        public DateTime? StartTime { get; protected set; }
-        public DateTime? EndTime { get; protected set; }
-        public TimeSpan? ElapsedTime
-        {
-            get
-            {
-                if (EndTime == null) return null;
-                return EndTime - StartTime;
-            }
-        }
+      
         public IList<IJobStep> FailedSteps { get; protected set; } = new List<IJobStep>();
         public IList<IJobStep> PassedSteps { get; protected set; } = new List<IJobStep>();
 
-        public JobResult Result { get; set; }
-
-        public Exception Exception { get; protected set; }
-
-        public WindowsImpersonation Identity { get; set; }
-        public AppEvent<double> OnProgressUpdated { get; set; }
-        public double Progress
-        {
-            get => progress; set
-            {
-                if (value == progress) return;
-                progress = value;
-                OnProgressUpdated?.Invoke(progress);
-            }
-        }
+     
+       
 
         public Job(string? title = null, IApplicationUserState requestingUser = null)
         {
@@ -68,10 +44,7 @@ namespace BLAZAM.Jobs
             User = requestingUser;
         }
 
-        public async Task<bool> RunAsync()
-        {
-            return await Task.Run(() => { return Run(); });
-        }
+       
 
         /// <summary>
         /// Used for scheduled triggering
@@ -79,7 +52,7 @@ namespace BLAZAM.Jobs
         /// <param name="state"></param>
         private void TriggerRun(object? state) => Run();
 
-        public bool Run()
+        public override bool Run()
         {
             if (Identity != null)
             {
