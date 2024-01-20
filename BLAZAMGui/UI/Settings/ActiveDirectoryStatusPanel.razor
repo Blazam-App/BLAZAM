@@ -88,6 +88,11 @@
         UpdateStatus(null);
 
     }
+    public override void Dispose()
+    {
+        base.Dispose();
+        _monitoring = false;
+    }
 
     public void ResetStatus()
     {
