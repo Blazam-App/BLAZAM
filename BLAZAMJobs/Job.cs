@@ -96,6 +96,7 @@ namespace BLAZAM.Jobs
                     if (StopOnFailedStep)
                     {
                         Result = JobResult.Failed;
+                        Cancel();
                         break;
 
                     }
