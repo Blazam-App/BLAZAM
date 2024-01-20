@@ -52,7 +52,7 @@ namespace BLAZAM.Tests.Jobs
             Assert.True(result == false && testJob.FailedSteps.Count == 1 && testJob.PassedSteps.Count == 1);
         }
         [Fact]
-        public void Steps_Canceled_After_Error_When_Stop_Enabled()
+        public void Steps_Cancelled_After_Error_When_Stop_Enabled()
         {
             // Arrange
             var testJob = TestJob;
