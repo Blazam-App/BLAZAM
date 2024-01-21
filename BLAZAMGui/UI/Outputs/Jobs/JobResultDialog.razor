@@ -39,9 +39,12 @@
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
-        MudDialog.Options.DisableBackdropClick = true;
+        var newOptions = MudDialog.Options;
+        newOptions.DisableBackdropClick= true;
+        MudDialog.SetOptions(newOptions);
 
+        base.OnInitialized();
+       
         if (Job != null)
         {
             Job.OnProgressUpdated += ((value) =>

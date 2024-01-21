@@ -11,6 +11,7 @@ namespace BLAZAM.Jobs
         {
             get
             {
+                if (Result == JobResult.Running && StartTime!=null) return DateTime.Now - StartTime;
                 if (EndTime == null) return null;
                 return EndTime - StartTime;
             }

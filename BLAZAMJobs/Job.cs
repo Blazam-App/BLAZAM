@@ -18,7 +18,7 @@ namespace BLAZAM.Jobs
 
      
 
-        public IApplicationUserState User { get; set; }
+        public IApplicationUserState? User { get; set; }
 
         public IList<IJobStep> Steps { get; set; } = new List<IJobStep>();
 
@@ -84,6 +84,7 @@ namespace BLAZAM.Jobs
             if (cancelToken.IsCancellationRequested)
             {
                 Cancel();
+         
                 return false;
             }
 
@@ -142,7 +143,7 @@ namespace BLAZAM.Jobs
                     step.Cancel();
                 }
                 Result = JobResult.Cancelled;
-
+                EndTime = DateTime.Now;
                 Progress = 100;
             }
         }

@@ -25,7 +25,7 @@ namespace BLAZAM.Jobs
             if (Progress < 100)
             {
                 cancellationTokenSource.Cancel();
-
+                EndTime = DateTime.Now;
                 Result = JobResult.Cancelled;
                 Progress = 100;
             }
