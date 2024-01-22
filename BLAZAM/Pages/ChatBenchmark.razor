@@ -1,0 +1,74 @@
+﻿@page "/chatbenchmark"
+@inherits AppComponentBase
+
+<h3>Benchmark</h3>
+<p>Number of cycles</p>
+<MudNumericField HideSpinButtons="true" @bind-Value=runCount />
+<br />
+<p>Cycle: @cycle</p>
+<MudButton Disabled=Running OnClick="Benchmark1">Benchmark One</MudButton>
+<p>@elapsed</p>
+<MudButton Disabled=Running OnClick="Benchmark2">Benchmark Two</MudButton>
+<p>@elapsed2</p>
+
+@code {
+    #nullable disable warnings
+    bool Running = false;
+    int runCount;
+    int cycle;
+
+    double elapsed;
+    double elapsed2;
+    protected override void OnInitialized()
+    {
+        
+    }
+    async Task Benchmark1()
+    {
+
+        Running = true;
+        await InvokeAsync(StateHasChanged);
+        await Task.Run(() =>
+        {
+            double[] runs = new double[runCount];
+            for (cycle = 0; cycle < runCount; cycle++)
+            {
+                DateTime start = DateTime.Now;
+                var chatRooms = Chat.ChatRooms;
+
+                runs[cycle] = (DateTime.Now - start).TotalSeconds;
+               
+                InvokeAsync(StateHasChanged);
+
+            }
+            elapsed = runs.Average();
+            Running = false;
+            InvokeAsync(StateHasChanged);
+        });
+
+
+
+    }
+   
+    async Task Benchmark2()
+    {
+        Running = true;
+        await InvokeAsync(StateHasChanged);
+        await Task.Run(() =>
+        {
+            double[] runs = new double[runCount];
+            for (cycle = 0; cycle < runCount; cycle++)
+            {
+
+                
+                InvokeAsync(StateHasChanged);
+
+            }
+            elapsed2 = runs.Average();
+            Running = false;
+            InvokeAsync(StateHasChanged);
+        });
+
+
+    }
+}

@@ -1,28 +1,44 @@
 ﻿@inherits Widget
 @attribute [Authorize]
-@* <NewEntriesWidgetDataGrid Items="@FavoriteEntries" T="IDirectoryEntryAdapter" Loading=LoadingData /> *@
-<FlexContainer Spacing="1" Class="mx-auto">
-    @foreach(var entry in FavoriteEntries)
-    {
 
-        <MudButton Variant="Variant.Outlined" Color="Color.Default" OnClick=@(()=>{GoTo(entry);}) Class="pa-3 ma-1 cursor-pointer" Elevation="0">
-            <MudStack Row=true>
-                <MudIcon Icon="@entry.TypeIcon()"/>
-                <MudStack>
-                    <MudTooltip Text="@entry.OU.ToPrettyOu()">
-                        <MudText>@entry.CanonicalName</MudText>
-                    </MudTooltip>
-                    <MudText>@entry.OU.ToPrettyOu()</MudText>
-                    <MudText>@AppLocalization["Last Change"]: @entry.LastChanged.Value.ToLocalTime().ToShortDateString()</MudText>
-                </MudStack>
-               
-            </MudStack>
-        </MudButton>
-           
-    }
-</FlexContainer>
+<MudDataGrid T="IDirectoryEntryAdapter"
+             Items="FavoriteEntries"
+             RowClick="@RowClicked"
+             RowClass="cursor-pointer"
+             Dense=true
+             Filterable=true
+             RowsPerPage="5"
+             FilterMode="DataGridFilterMode.Simple"
+             Loading=@LoadingData
+             Square=true
+             ColumnResizeMode="ResizeMode.Column"
+             Virtualize=true
+             Class="py-0"
+             SortMode="SortMode.Single">
+    <Columns>
+        <TemplateColumn Title="Type">
+            <CellTemplate>
+                <MudIcon Icon="@context.Item.TypeIcon()" />
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Name">
+            <CellTemplate>
+                <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                    <MudText>@context.Item?.CanonicalName</MudText>
+                </MudTooltip>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x=>x.LastChanged" Title="Changed" />
+
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="IDirectoryEntryAdapter" />
+    </PagerContent>
+</MudDataGrid>
+
+
 <MudOverlay Visible=LoadingData>
-    <MudProgressLinear Indeterminate=true/>
+    <MudProgressLinear Indeterminate=true />
 </MudOverlay>
 @code {
     List<IDirectoryEntryAdapter> FavoriteEntries { get; set; } = new();
@@ -35,7 +51,11 @@
             foreach (var entry in CurrentUser.State.Preferences.FavoriteEntries)
             {
                 IDirectoryEntryAdapter match = Directory.GetDirectoryEntryByDN(entry.DN);
-                if (match.CanRead)
+                if (match == null)
+                {
+
+                }
+                else if (match.CanRead)
                 {
                     FavoriteEntries.Add(match);
                 }
@@ -46,6 +66,20 @@
 
         });
 
+    }
+    void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
+    {
+        if (args.Item != null)
+        {
+            GoTo(args.Item);
+        }
+    }
+    void FavoriteClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
+    {
+        if (args.Item != null)
+        {
+            GoTo(args.Item);
+        }
     }
     void GoTo(IDirectoryEntryAdapter args)
     {

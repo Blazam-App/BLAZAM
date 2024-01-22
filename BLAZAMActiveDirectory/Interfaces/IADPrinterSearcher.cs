@@ -1,5 +1,9 @@
 ﻿namespace BLAZAM.ActiveDirectory.Interfaces
 {
+
+    /// <summary>
+    /// A searcher class for printer objects in an <see cref="IActiveDirectoryContext"/>
+    /// </summary>
     public interface IADPrinterSearcher
     {
         List<IADPrinter> FindChangedPrinters(bool? ignoreDisabledPrinters = true, int daysBackToSearch = 90);

@@ -26,8 +26,8 @@ window.attemptSignIn = async () => {
     var formData = new FormData();
     //Load the form data
     for (var x = 0; x < form.length; x++) {
-        console.log(form[x].name);
-        console.log(form[x].value);
+        //console.log(form[x].name);
+        //console.log(form[x].value);
         formData.append(form[x].name,form[x].value)
     }
     //var data = Array.from(formData);

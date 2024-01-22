@@ -18,34 +18,34 @@ namespace BLAZAM.Services.Chat
 {
     public class ChatService : IChatService
     {
-        private List<ChatRoom> chatRooms;
+       // private List<ChatRoom> chatRooms;
 
-        private List<ChatRoom> ChatRooms
-        {
-            get
-            {
-                if (chatRooms == null)
-                {
-                    var context = Context;
-                    chatRooms = context.ChatRooms.ToList();
-                }
-                return chatRooms;
-            }
-            set => chatRooms = value;
-        }
+        //private List<ChatRoom> ChatRooms
+        //{
+        //    get
+        //    {
+        //        if (chatRooms == null)
+        //        {
+        //            var context = Context;
+        //            chatRooms = context.ChatRooms.ToList();
+        //        }
+        //        return chatRooms;
+        //    }
+        //    set => chatRooms = value;
+        //}
+        public IQueryable<ChatRoom> ChatRooms => Context.ChatRooms.AsQueryable();
         public AppEvent<ChatMessage> OnMessagePosted { get; set; }
         public AppEvent<AppUser> OnMessageRead { get; set; }
         public AppEvent<ChatRoom> OnChatRoomCreated { get; set; }
-        public List<ChatRoom> GetChatRooms() => Context.ChatRooms.ToList();
 
-        public async Task<List<ChatRoom>> GetChatRoomsAsync()
+        public async Task<IQueryable<ChatRoom>> GetChatRoomsAsync()
         {
-            if (ChatRooms is null)
+            return await Task.Run(() =>
             {
-                var context = Context;
-                ChatRooms = await context.ChatRooms.ToListAsync();
-            }
-            return ChatRooms;
+                return ChatRooms;
+
+
+            });
         }
         public List<ChatRoom> GetPrivateChats(AppUser user)
         {
@@ -67,6 +67,8 @@ namespace BLAZAM.Services.Chat
 
         private IDatabaseContext Context => _appDatabaseFactory.CreateDbContext();
 
+        public ChatRoom? AppChatRoom => ChatRooms.Where(cr => cr.Name.Equals("App Chat")).FirstOrDefault();
+
         public ChatService(IAppDatabaseFactory appDatabaseFactory) => _appDatabaseFactory = appDatabaseFactory;
 
         public void CreateChatRoom(ChatRoom room)
@@ -74,7 +76,7 @@ namespace BLAZAM.Services.Chat
             var context = Context;
             context.ChatRooms.Add(room);
             context.SaveChanges();
-            ChatRooms.Add(room);
+            //ChatRooms.Add(room);
             OnChatRoomCreated?.Invoke(room);
 
         }
@@ -98,7 +100,7 @@ namespace BLAZAM.Services.Chat
             {
                 chat = new ChatRoom()
                 {
-                   
+
                     IsPublic = false,
                     Members = localParties
                 };
@@ -107,12 +109,12 @@ namespace BLAZAM.Services.Chat
                 try
                 {
                     context.SaveChanges();
-                    ChatRooms.Add(chat);
+                    //ChatRooms.Add(chat);
                     OnChatRoomCreated?.Invoke(chat);
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error("Unable to creat private chat room", ex);
+                    Loggers.DatabaseLogger.Error("Unable to creat private chat room {@Error}", ex);
                 }
             }
             return chat;
@@ -188,7 +190,7 @@ namespace BLAZAM.Services.Chat
             var allChatRooms = context.ChatRooms.ToList();
             context.ChatRooms.RemoveRange(allChatRooms.ToArray());
             context.SaveChanges();
-            ChatRooms = new();
+            //ChatRooms = new();
         }
 
         public async Task<ChatRoom?> GetChatRoom(ChatRoom? chatRoom)

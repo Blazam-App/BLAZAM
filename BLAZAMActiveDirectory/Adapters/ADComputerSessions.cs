@@ -77,7 +77,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                }
                                catch (Win32Exception ex)
                                {
-                                   Loggers.ActiveDirectryLogger.Error("Error while collecting sessions for " + Computer, ex);
+                                   Loggers.ActiveDirectryLogger.Error("Error while collecting sessions for " + Computer + " {@Error}", ex);
                                }
                            }
                            catch
@@ -91,7 +91,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                        }
                        catch (Exception ex)
                        {
-                           Loggers.ActiveDirectryLogger.Error("Error while connecting to TerminalServices on " + Computer, ex);
+                           Loggers.ActiveDirectryLogger.Error("Error while connecting to TerminalServices on " + Computer + " {@Error}", ex);
                            return false;
                        }
                    });

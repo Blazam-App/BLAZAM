@@ -52,7 +52,7 @@ namespace BLAZAM.Server.Data.Services
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error trying to get current user state", ex);
+                Loggers.SystemLogger.Error("Error trying to get current user state {@Error}", ex);
                 return;
             }
 

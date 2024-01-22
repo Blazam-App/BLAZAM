@@ -2,6 +2,13 @@
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
+    /// <summary>
+    /// Represents Active Dirtory Account Objects. These types have passwords and can be enabled, disabled,
+    /// and locked out.
+    /// </summary>
+    /// <remarks>
+    /// Examples include Active Directory users and computers
+    /// </remarks>
     public interface IAccountDirectoryAdapter : IGroupableDirectoryAdapter
     {
         /// <summary>

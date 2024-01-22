@@ -204,7 +204,7 @@ namespace BLAZAM.Update
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Error applying update: {Message}", ex);
+                    Loggers.UpdateLogger.Error("Error applying update: {@Error}", ex);
 
                 }
                 return "Error starting update";
@@ -228,7 +228,7 @@ namespace BLAZAM.Update
                         }
                         catch (Exception ex)
                         {
-                            Loggers.UpdateLogger.Error("Error applying update: {Message}", ex);
+                            Loggers.UpdateLogger.Error("Error applying update: {@Error}", ex);
 
                         }
                         return "Error starting update";
@@ -338,7 +338,7 @@ namespace BLAZAM.Update
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Error while cleaning of download folder: " + UpdateFile, ex);
+                    Loggers.UpdateLogger.Error("Error while cleaning of download folder: " + UpdateFile + " {@Error}", ex);
 
                     return false;
                 }
@@ -384,7 +384,7 @@ namespace BLAZAM.Update
                     }
                     catch (Exception ex)
                     {
-                        Loggers.UpdateLogger.Error("Error while extracting update zip", ex);
+                        Loggers.UpdateLogger.Error("Error while extracting update zip {@Error}", ex);
 
                         return false;
                     }

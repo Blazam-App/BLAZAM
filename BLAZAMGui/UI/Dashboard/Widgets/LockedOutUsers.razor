@@ -2,12 +2,12 @@
 @attribute [Authorize]
 <MudDataGrid T="IADUser"
              Items="@LockedUsers"
-              Dense
-              Filterable
+              Dense=true
+              Filterable=true
              RowsPerPage="5"
              FilterMode="DataGridFilterMode.Simple"
              Loading=@LoadingData
-              Square
+              Square=true
              ColumnResizeMode="ResizeMode.Column"
               Virtualize
              RowClass="cursor-pointer"

@@ -2,6 +2,9 @@
 
 namespace BLAZAM.ActiveDirectory
 {
+    /// <summary>
+    /// Used to store membership changes for auditing purposes
+    /// </summary>
     public class GroupMembershipChange
     {
         public IGroupableDirectoryAdapter Member { get; }

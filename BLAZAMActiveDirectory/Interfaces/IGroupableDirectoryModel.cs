@@ -2,6 +2,12 @@
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
+    /// <summary>
+    /// Those Active Directory Object types that can be members of a group
+    /// </summary>
+    /// <remarks>
+    /// Examples include users, computers, groups, printers
+    /// </remarks>
     public interface IGroupableDirectoryAdapter : IDirectoryEntryAdapter
     {
         string? Description { get; set; }

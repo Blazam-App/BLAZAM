@@ -13,8 +13,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     /// </summary>
     public interface IActiveDirectoryContext
     {
-        IApplicationUserStateService UserStateService { get; }
-        IDatabaseContext? Context { get; }
         IAppDatabaseFactory Factory { get; }
 
         /// <summary>

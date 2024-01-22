@@ -77,16 +77,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        /// <summary>s
+        /// <summary>
         /// Actions to perform during <see cref="CommitChanges"/>
         /// </summary>
         protected List<JobStep> CommitSteps { get; set; } = new();
 
+        /// <summary>
+        /// The .NET <see cref="DirectoryEntry"/>  unerlying object
+        /// </summary>
         private DirectoryEntry? directoryEntry;
 
         protected SearchResult? searchResult;
 
         protected IAppDatabaseFactory DbFactory => Directory.Factory;
+
         protected IApplicationUserState? CurrentUser => Directory.CurrentUser;
 
         bool _newEntry = false;
@@ -317,7 +321,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                //return Children.Any();
                 var children = DirectoryEntry.Children;
                 var entries = children.Encapsulate();
                 return entries.Count > 0;
@@ -327,11 +330,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                //var timeUTC = GetProperty<DateTime?>("whenChanged");
                 return GetDateTimeProperty("whenChanged");
-                //return timeUTC != null ? DateTime.Parse(timeUTC.Value.ToString("MM/dd/yyyy HH:mm:ssZ")) : null;
-                //return timeUTC.Value;
-                //return timeUTC != null ? DateTime.Parse(timeUTC.Value.ToString("MM/dd/yyyy HH:mm:ssZ")) : null;
             }
             set
             {
@@ -782,7 +781,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 //commitJob.Steps.Insert(commitJob.Steps.Count>1?1:0,propertiesStep);
 
 
-               
+
 
                 //Inject custom commit steps
                 foreach (var step in CommitSteps)

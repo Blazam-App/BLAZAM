@@ -483,11 +483,19 @@
             try
             {
                 var changes = User.Changes;
-                await User.CommitChangesAsync();
-                await AuditLogger.User.Changed(User, changes);
-                EditMode = false;
-                SnackBarService.Success("The changes made to this user have been saved.");
+                var jobResults = await User.CommitChangesAsync();
+                if (jobResults.Result == JobResult.Passed)
+                {
 
+
+                    await AuditLogger.User.Changed(User, changes);
+                    EditMode = false;
+                    SnackBarService.Success("The changes made to this user have been saved.");
+                }
+                else
+                {
+                    jobResults.ShowJobDetailsDialog(MessageService);
+                }
             }
             catch (ApplicationException ex)
             {
