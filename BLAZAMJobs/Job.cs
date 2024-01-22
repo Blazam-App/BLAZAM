@@ -13,12 +13,12 @@ namespace BLAZAM.Jobs
         private DateTime scheduledRunTime = DateTime.Now;
         private Timer? runScheduler;
 
-     
+
         public bool StopOnFailedStep { get; set; }
 
-     
 
-        public IApplicationUserState? User { get; set; }
+
+        public string? User { get; set; }
 
         public IList<IJobStep> Steps { get; set; } = new List<IJobStep>();
 
@@ -31,20 +31,24 @@ namespace BLAZAM.Jobs
                 runScheduler = new Timer(TriggerRun, null, (int)(ScheduledRunTime - DateTime.Now).TotalMilliseconds, int.MaxValue);
             }
         }
-      
+
         public IList<IJobStep> FailedSteps { get; protected set; } = new List<IJobStep>();
         public IList<IJobStep> PassedSteps { get; protected set; } = new List<IJobStep>();
 
-     
-       
 
-        public Job(string? title = null, IApplicationUserState requestingUser = null)
+
+
+        public Job(string? title = null, string requestingUser = null, CancellationTokenSource externalCancellationToken = null)
         {
             Name = title;
             User = requestingUser;
+            if (externalCancellationToken != null)
+            {
+                cancellationTokenSource = externalCancellationToken;
+            }
         }
 
-       
+
 
         /// <summary>
         /// Used for scheduled triggering
@@ -84,14 +88,14 @@ namespace BLAZAM.Jobs
             if (cancelToken.IsCancellationRequested)
             {
                 Cancel();
-         
+
                 return false;
             }
 
             for (int i = 0; i < Steps.Count; i++)
             {
                 Steps[i].OnProgressUpdated += ((val) => { OnProgressUpdated?.Invoke(val); });
-                if (!Steps[i].Run())
+                if (!Steps[i].Run() && Result != JobResult.Cancelled)
                 {
                     FailedSteps.Add(Steps[i]);
                     if (StopOnFailedStep)
@@ -115,11 +119,17 @@ namespace BLAZAM.Jobs
                 }
 
             }
-            if (FailedSteps.Count > 0)
+            if (Result != JobResult.Cancelled)
             {
-                Result = JobResult.Failed;
+                if (FailedSteps.Count > 0)
+                {
+                    Result = JobResult.Failed;
+                }
+                else
+                {
+                    Result = JobResult.Passed;
+                }
             }
-            else { Result = JobResult.Passed; }
             EndTime = DateTime.Now;
             if (Progress == 100)
             {
@@ -133,9 +143,17 @@ namespace BLAZAM.Jobs
             return FailedSteps.Count < 1;
         }
 
+        public void Wait()
+        {
+            while (Result == JobResult.Running)
+            {
+                Task.Delay(100).Wait();
+            }
+        }
+
         public void Cancel()
         {
-            if (Progress < 100)
+            if (Progress == null || Progress < 100)
             {
                 cancellationTokenSource.Cancel();
                 foreach (var step in Steps)
@@ -143,7 +161,7 @@ namespace BLAZAM.Jobs
                     step.Cancel();
                 }
                 Result = JobResult.Cancelled;
-                EndTime = DateTime.Now;
+               // EndTime = DateTime.Now;
                 Progress = 100;
             }
         }
@@ -151,5 +169,5 @@ namespace BLAZAM.Jobs
 
     }
 
-    
+
 }

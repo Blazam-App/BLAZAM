@@ -3,26 +3,33 @@ using BLAZAM.Common.Data.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor.Services;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace BLAZAM.Jobs
 {
     public class JobStep : JobStepBase, IJobStep 
     {
-        public Func<bool> Action { get; set; }
+        public Func<JobStep?,bool>? Action { get; }
+        public Func<JobStep?,Task<bool>>? AsyncAction { get; }
 
-        public JobStep(string name, Func<bool> action)
+        public JobStep(string name, Func<JobStep?,bool> action)
         {
             Name = name;
             Action = action;
         }
+        public JobStep(string name, Func<JobStep?,Task<bool>> asyncAction)
+        {
+            Name = name;
+            AsyncAction = asyncAction;
+        }
 
-        public JobStep(string name, Func<bool> action, WindowsImpersonation identity) : this(name, action)
+        public JobStep(string name, Func<JobStep?,bool> action, WindowsImpersonation identity) : this(name, action)
         {
             Identity = identity;
         }
         public void Cancel()
         {
-            if (Progress < 100)
+            if (Progress == null || Progress < 100)
             {
                 cancellationTokenSource.Cancel();
                 EndTime = DateTime.Now;
@@ -44,15 +51,37 @@ namespace BLAZAM.Jobs
 
                 StartTime = DateTime.Now;
                 Result = JobResult.Running;
-                if (Progress == 0)
+                OnProgressUpdated?.Invoke(0);
+                //We can't track progress from outside the action
+                //so trying to say we can is pointless
+                //if (Progress == 0)
+                //{
+                //    OnProgressUpdated?.Invoke(0);
+                //}
+                //else
+                //{
+                //    Progress = 0;
+                //}
+
+
+                bool actionResult=false;
+                if (Action != null)
                 {
-                    OnProgressUpdated?.Invoke(0);
+                    actionResult = Action.Invoke(this);
+                }else if (AsyncAction != null)
+                {
+                    Task.Run(async () =>
+                    {
+
+                        actionResult = await AsyncAction.Invoke(this);
+                    }).Wait();
                 }
                 else
                 {
-                    Progress = 0;
+                    throw new ApplicationException("Step: " + Name + " had no action provided!");
                 }
-                var actionResult = Action.Invoke();
+
+
                 if (cancelToken.IsCancellationRequested)
                 {
                     Cancel();

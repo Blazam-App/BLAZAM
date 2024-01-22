@@ -3,6 +3,7 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
+using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using System.Data;
 using System.DirectoryServices.AccountManagement;
@@ -256,7 +257,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public void StagePasswordChange(SecureString newPassword, bool requireChange = false)
         {
           
-            CommitSteps.Add(new Jobs.JobStep("Set Password", () =>
+            CommitSteps.Add(new JobStep("Set Password", (JobStep? step) =>
             {
                 return SetPassword(newPassword, requireChange);
             }));
