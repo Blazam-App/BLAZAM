@@ -1,0 +1,73 @@
+\doxysection{BLAZAM.\+Update.\+Services.\+Update\+Service Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service}{}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service}\index{BLAZAM.Update.Services.UpdateService@{BLAZAM.Update.Services.UpdateService}}
+Inheritance diagram for BLAZAM.\+Update.\+Services.\+Update\+Service\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a4f914612ac659ae6ca86cb2950704115}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a4f914612ac659ae6ca86cb2950704115} 
+{\bfseries Update\+Service} (IHttp\+Client\+Factory \+\_\+client\+Factory, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info}{Application\+Info}} application\+Info, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}}? db\+Factory=null)
+\item 
+async Task$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_update_1_1_application_update}{Application\+Update}}?$>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a4ffa93edbe0b82a02c0aa39939b71365}{Get\+Updates}} ()
+\begin{DoxyCompactList}\small\item\em Polls Github for the latest release in the selected branch. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a9844a5186f5753e18f3e692c3064a7ce}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a9844a5186f5753e18f3e692c3064a7ce} 
+readonly IHttp\+Client\+Factory {\bfseries http\+Client\+Factory}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_base}{BLAZAM.\+Update.\+Services.\+Update\+Service\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+Timer {\bfseries \+\_\+update\+Check\+Timer}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a0811ec30c86048611045e2fde17cf9f0}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a0811ec30c86048611045e2fde17cf9f0} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_update_1_1_application_update}{Application\+Update}} {\bfseries Latest\+Update}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The latest available update for the configured Selected\+Branch \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a41769eaa87ccdfd714aacf9fd4b7001e}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a41769eaa87ccdfd714aacf9fd4b7001e} 
+List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_update_1_1_application_update}{Application\+Update}} $>$ {\bfseries Stable\+Updates} = new()\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em All updates released under the stable branch. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a4077424e643b2b878feff57462adfd4c}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a4077424e643b2b878feff57462adfd4c} 
+string? {\bfseries Selected\+Branch}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The branch configured in the database. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a691fce423f4947c9922f2beb224bb03b}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a691fce423f4947c9922f2beb224bb03b} 
+\mbox{\hyperlink{namespace_b_l_a_z_a_m_1_1_update_1_1_services_aa712c95e9c6e5f3cc210f9a57a6e2c64}{Update\+Credential}} {\bfseries Update\+Credential}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The type of credential validated to be able to write to the app directory. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_aad3cda25763049ae88bed87b31cbe815}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_aad3cda25763049ae88bed87b31cbe815} 
+bool {\bfseries Has\+Write\+Permission}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if any configured credentials have write permission to the app directory. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a4ffa93edbe0b82a02c0aa39939b71365}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service_a4ffa93edbe0b82a02c0aa39939b71365} 
+\index{BLAZAM.Update.Services.UpdateService@{BLAZAM.Update.Services.UpdateService}!GetUpdates@{GetUpdates}}
+\index{GetUpdates@{GetUpdates}!BLAZAM.Update.Services.UpdateService@{BLAZAM.Update.Services.UpdateService}}
+\doxysubsubsection{\texorpdfstring{GetUpdates()}{GetUpdates()}}
+{\footnotesize\ttfamily async Task$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_update_1_1_application_update}{Application\+Update}}?$>$ BLAZAM.\+Update.\+Services.\+Update\+Service.\+Get\+Updates (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Polls Github for the latest release in the selected branch. 
+
+Also collects all stable releases for changelogs. 
+
+\begin{DoxyReturn}{Returns}
+A task that will return the latest stable Application\+Update if it is reachable 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Application\+Update\+Exception} & \\
+\hline
+\end{DoxyExceptions}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMUpdate/\+Services/Update\+Service.\+cs\end{DoxyCompactItemize}

@@ -1,0 +1,140 @@
+\doxysection{BLAZAM.\+Gui.\+UI.\+Outputs.\+Live\+Chart\+Component\+Base Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base}{}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base}\index{BLAZAM.Gui.UI.Outputs.LiveChartComponentBase@{BLAZAM.Gui.UI.Outputs.LiveChartComponentBase}}
+Inheritance diagram for BLAZAM.\+Gui.\+UI.\+Outputs.\+Live\+Chart\+Component\+Base\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_1_1_data_point}{Data\+Point}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a1cf3ae80c92507f8b04bb9c0d915ed5b}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a1cf3ae80c92507f8b04bb9c0d915ed5b} 
+Interpolation\+Option {\bfseries Line\+Interpolation} = Interpolation\+Option.\+Straight
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a9ef3e45b65666f3ada9b050ae4c2d68d}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a9ef3e45b65666f3ada9b050ae4c2d68d} 
+override async Task {\bfseries On\+Initialized\+Async} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a7e1d0d4355aa23b779c7008cb0d67224}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a7e1d0d4355aa23b779c7008cb0d67224} 
+virtual void {\bfseries Poll\+Data} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_aa43851016ee1395a5bb8bd81c920ba32}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_aa43851016ee1395a5bb8bd81c920ba32} 
+void {\bfseries Tick} (object state)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_component_base}{BLAZAM.\+Gui.\+UI.\+App\+Component\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+override void {\bfseries On\+Initialized} ()
+\item 
+override async Task {\bfseries On\+Initialized\+Async} ()
+\item 
+void {\bfseries Refresh} ()
+\item 
+void {\bfseries Refresh} (bool force\+Reload=false)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a25b236844dbffc8ea6b0a1418a4be660}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a25b236844dbffc8ea6b0a1418a4be660} 
+List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_1_1_data_point}{Data\+Point}} $>$ {\bfseries Data} = new()
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_component_base}{BLAZAM.\+Gui.\+UI.\+App\+Component\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+IDatabase\+Context? {\bfseries Context}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a3b0655549942c2223743e99eb5d96217}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a3b0655549942c2223743e99eb5d96217} 
+Func$<$ double $>$ {\bfseries Poll\+Func}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a89f3d8b4e0f70abd2fc62dce4a5479e1}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a89f3d8b4e0f70abd2fc62dce4a5479e1} 
+bool {\bfseries Enabled}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a004b8eb30c06117fce2c0abfdbbd68a4}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a004b8eb30c06117fce2c0abfdbbd68a4} 
+string {\bfseries Title}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a7103798ce56508559d735f0123975b9e}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a7103798ce56508559d735f0123975b9e} 
+int {\bfseries YAxis\+Ticks} = 20\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a348dec5683ae4fe8620b3477ec47c3ce}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a348dec5683ae4fe8620b3477ec47c3ce} 
+Chart\+Options {\bfseries Chart\+Options}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a852b2197edd04a0fa807412f6b76750b}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a852b2197edd04a0fa807412f6b76750b} 
+string {\bfseries Series\+Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_ab4ef46c182506adfb1da4273e85ddf1a}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_ab4ef46c182506adfb1da4273e85ddf1a} 
+int {\bfseries History} = 120\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em How many points of data to keep in the series. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a0e61941fceb4a9b6d314132b754aa7fd}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_outputs_1_1_live_chart_component_base_a0e61941fceb4a9b6d314132b754aa7fd} 
+List$<$ Chart\+Series $>$ {\bfseries Data\+Series}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_component_base}{BLAZAM.\+Gui.\+UI.\+App\+Component\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+IString\+Localizer$<$ App\+Localization $>$ {\bfseries App\+Localization}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Search\+Service {\bfseries Search\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Navigation\+Manager {\bfseries Nav}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Conn\+Monitor {\bfseries Monitor}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Application\+Info {\bfseries Application\+Info}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+IActive\+Directory\+Context\+Factory {\bfseries Directory\+Factory}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+IActive\+Directory\+Context {\bfseries Directory}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+IJSRuntime {\bfseries JS}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+IApplication\+User\+State\+Service {\bfseries User\+State\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+ICurrent\+User\+State\+Service {\bfseries Current\+User}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_audit_logger}{Audit\+Logger}} {\bfseries Audit\+Logger}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service}{IChat\+Service}} {\bfseries Chat}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+App\+Dialog\+Service {\bfseries Message\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Update\+Service {\bfseries Update\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Auto\+Update\+Service {\bfseries Auto\+Update\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service}{Email\+Service}} {\bfseries Email\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+INotification\+Publisher {\bfseries Notification\+Publisher}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+IEncryption\+Service {\bfseries Encryption\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+App\+Snack\+Bar\+Service {\bfseries Snack\+Bar\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+bool {\bfseries Loading\+Data} = true\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+IApp\+Database\+Factory {\bfseries Db\+Factory}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+bool {\bfseries Is\+Admin}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em True if the current web user is a super admin. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_component_base}{BLAZAM.\+Gui.\+UI.\+App\+Component\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual void {\bfseries Dispose} ()
+\item 
+async Task {\bfseries Copy\+To\+Clipboard} (string? text)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMGui/\+UI/\+Outputs/Live\+Chart\+Component\+Base.\+razor.\+cs\end{DoxyCompactItemize}

@@ -1,0 +1,85 @@
+\doxysection{BLAZAM.\+Jobs.\+IJob\+Step Interface Reference}
+\hypertarget{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{}\label{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}\index{BLAZAM.Jobs.IJobStep@{BLAZAM.Jobs.IJobStep}}
+
+
+An action step that can be inserted into a IJob  
+
+
+Inheritance diagram for BLAZAM.\+Jobs.\+IJob\+Step\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.216359cm]{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_a5013e8e5de14352f6ee76a4db7f405da}{Run}} ()
+\begin{DoxyCompactList}\small\item\em Executes the actions of this step. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_af99d803000a19d2f96dd03efb34dca59}{Cancel}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_a6212cdceef88f2e845b32f73de4ba4d5}\label{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_a6212cdceef88f2e845b32f73de4ba4d5} 
+Exception? {\bfseries Exception}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The exception that caused this step to fail, if any. \end{DoxyCompactList}\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_a6491801f317f1300cf0bc925245bbb42}\label{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_a6491801f317f1300cf0bc925245bbb42} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_windows_impersonation}{Windows\+Impersonation}} {\bfseries Identity}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The Windows Identity to run this step as. \end{DoxyCompactList}\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_afb76b74f7af3a237a538033066c33408}\label{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_afb76b74f7af3a237a538033066c33408} 
+string? {\bfseries Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The name of this step. \end{DoxyCompactList}\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_afef86392e6a17ae8604f55302485f708}\label{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_afef86392e6a17ae8604f55302485f708} 
+Job\+Result {\bfseries Result}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The result of this step. \end{DoxyCompactList}\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_a75261eb75b2a593fbfd9658244ba24e0}\label{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_a75261eb75b2a593fbfd9658244ba24e0} 
+Date\+Time? {\bfseries Start\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_a853045dfd44d2b44ca465311176ee989}\label{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_a853045dfd44d2b44ca465311176ee989} 
+Date\+Time? {\bfseries End\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_ab81281e286618663fb527f1233d7a243}\label{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_ab81281e286618663fb527f1233d7a243} 
+Time\+Span? {\bfseries Elapsed\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_common_1_1_data_1_1_interfaces_1_1_i_progress_tracker}{BLAZAM.\+Common.\+Data.\+Interfaces.\+IProgress\+Tracker$<$ double $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+App\+Event$<$ TNumber $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_common_1_1_data_1_1_interfaces_1_1_i_progress_tracker_af087a5856d407f108b4ae9b0fa3aeff7}{On\+Progress\+Updated}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when the progress changes. \end{DoxyCompactList}\item 
+TNumber {\bfseries Progress}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The current progress between 0 and 100. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+An action step that can be inserted into a IJob 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_af99d803000a19d2f96dd03efb34dca59}\label{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_af99d803000a19d2f96dd03efb34dca59} 
+\index{BLAZAM.Jobs.IJobStep@{BLAZAM.Jobs.IJobStep}!Cancel@{Cancel}}
+\index{Cancel@{Cancel}!BLAZAM.Jobs.IJobStep@{BLAZAM.Jobs.IJobStep}}
+\doxysubsubsection{\texorpdfstring{Cancel()}{Cancel()}}
+{\footnotesize\ttfamily void BLAZAM.\+Jobs.\+IJob\+Step.\+Cancel (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_ac8d82e45d566e5bc30e3fd649680a0a9}{BLAZAM.\+Jobs.\+Job}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_a5013e8e5de14352f6ee76a4db7f405da}\label{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step_a5013e8e5de14352f6ee76a4db7f405da} 
+\index{BLAZAM.Jobs.IJobStep@{BLAZAM.Jobs.IJobStep}!Run@{Run}}
+\index{Run@{Run}!BLAZAM.Jobs.IJobStep@{BLAZAM.Jobs.IJobStep}}
+\doxysubsubsection{\texorpdfstring{Run()}{Run()}}
+{\footnotesize\ttfamily bool BLAZAM.\+Jobs.\+IJob\+Step.\+Run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Executes the actions of this step. 
+
+\begin{DoxyReturn}{Returns}
+True if the action complete without exceptions, otherwise false
+\end{DoxyReturn}
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMJobs/IJob\+Step.\+cs\end{DoxyCompactItemize}

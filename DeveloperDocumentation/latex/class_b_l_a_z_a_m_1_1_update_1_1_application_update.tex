@@ -1,0 +1,106 @@
+\doxysection{BLAZAM.\+Update.\+Application\+Update Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update}{}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update}\index{BLAZAM.Update.ApplicationUpdate@{BLAZAM.Update.ApplicationUpdate}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_ad46e8538f0422b7d9e6e4bf3e6fc7564}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_ad46e8538f0422b7d9e6e4bf3e6fc7564} 
+{\bfseries Application\+Update} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info}{Application\+Info}} application\+Info, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} db\+Factory)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_ab288e1991ddb6889aa7a8207927d303c}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_ab288e1991ddb6889aa7a8207927d303c} 
+async Task$<$ bool $>$ {\bfseries Prepare} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a9c011061b30c03a049aa3073d01a734e}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a9c011061b30c03a049aa3073d01a734e} 
+async Task$<$ string $>$ {\bfseries Apply} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a3a51cb0c582f45d96743e26dc4bb7a66}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a3a51cb0c582f45d96743e26dc4bb7a66} 
+async Task$<$ bool $>$ {\bfseries Backup} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_aa30830f6d69b6556fc7177931c853a99}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_aa30830f6d69b6556fc7177931c853a99} 
+async Task$<$ bool $>$ {\bfseries Clean\+Download} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a315dcfcd8f11394d32cd264b13ecde90}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a315dcfcd8f11394d32cd264b13ecde90} 
+async Task$<$ bool $>$ {\bfseries Clean\+Staging} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a07c4988238aaf697714cd56cffe4c401}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a07c4988238aaf697714cd56cffe4c401} 
+async Task$<$ bool $>$ {\bfseries Stage} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a7202005e70c732f56cba9f2d098c0bb9}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a7202005e70c732f56cba9f2d098c0bb9} 
+void {\bfseries Cancel} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a8ab4ddce4f27c709ac405d59c78825ef}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a8ab4ddce4f27c709ac405d59c78825ef} 
+async Task$<$ bool $>$ {\bfseries Download} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_ad85a0f673c60424ae7ccb4cf998d9249}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_ad85a0f673c60424ae7ccb4cf998d9249} 
+Update\+Stage {\bfseries Update\+Stage}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_acb2b08c07a74d3469244ea5acdf0cd95}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_acb2b08c07a74d3469244ea5acdf0cd95} 
+static App\+Event {\bfseries On\+Update\+Started}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_aa66cc9b2d1fc8eed3c41f1fdaed2f12f}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_aa66cc9b2d1fc8eed3c41f1fdaed2f12f} 
+static App\+Event$<$ Exception $>$ {\bfseries On\+Update\+Failed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a11151694fe0d4db18153c6eadf4f14d8}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a11151694fe0d4db18153c6eadf4f14d8} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version}{Application\+Version}} {\bfseries Version}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The version of this update. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a8134ac9a5f88a55d7337895331985545}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a8134ac9a5f88a55d7337895331985545} 
+string {\bfseries Branch}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a016559386a468b7d53b41fc928c278ce}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a016559386a468b7d53b41fc928c278ce} 
+static \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} {\bfseries Staging\+Directory}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a92f44a6d1c9f8d2c2387746e46e1f83f}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a92f44a6d1c9f8d2c2387746e46e1f83f} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} {\bfseries Update\+Staging\+Directory}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The local staging directory path for this update. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_update_1_1_application_update_ae21ca0851316580d3ddb173cbd35e4a2}{Update\+Download\+Directory}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The local path to the directory containing the downloaded update zip file. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a366de73a0806713de24996a2c1d215f6}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a366de73a0806713de24996a2c1d215f6} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} {\bfseries Backup\+Path}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a984b3845e892968655fc52ce7ff1c03c}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a984b3845e892968655fc52ce7ff1c03c} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} {\bfseries Backup\+Directory}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a87c5bee0b10d20b4a0a8f7423ad50e4b}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a87c5bee0b10d20b4a0a8f7423ad50e4b} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file}{System\+File}} {\bfseries Update\+File}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The local path to the downloaded zip file. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_aa3c39b104703507bbbad13cacef349fc}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_aa3c39b104703507bbbad13cacef349fc} 
+string {\bfseries Update\+Command}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a62829cb391b16b4f4dee83a4b6cd044c}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a62829cb391b16b4f4dee83a4b6cd044c} 
+string {\bfseries Update\+Command\+Process}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a37830e9f4b779d1e46ffb20d34758678}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a37830e9f4b779d1e46ffb20d34758678} 
+string {\bfseries Update\+Command\+Arguments}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_ade7fab0f57147db1a34c9353aacaa310}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_ade7fab0f57147db1a34c9353aacaa310} 
+App\+Event$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_file_progress}{File\+Progress}}?$>$ {\bfseries Download\+Percentage\+Changed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_aca9bde259e38247a30b0967730438b36}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_aca9bde259e38247a30b0967730438b36} 
+bool {\bfseries Newer}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em True if this version is newer than the running version. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a3f4dfd16236b3acbaadb01779259c329}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_a3f4dfd16236b3acbaadb01779259c329} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_update_1_1_i_application_release}{IApplication\+Release}} {\bfseries Release}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_application_update_ae21ca0851316580d3ddb173cbd35e4a2}\label{class_b_l_a_z_a_m_1_1_update_1_1_application_update_ae21ca0851316580d3ddb173cbd35e4a2} 
+\index{BLAZAM.Update.ApplicationUpdate@{BLAZAM.Update.ApplicationUpdate}!UpdateDownloadDirectory@{UpdateDownloadDirectory}}
+\index{UpdateDownloadDirectory@{UpdateDownloadDirectory}!BLAZAM.Update.ApplicationUpdate@{BLAZAM.Update.ApplicationUpdate}}
+\doxysubsubsection{\texorpdfstring{UpdateDownloadDirectory}{UpdateDownloadDirectory}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} BLAZAM.\+Update.\+Application\+Update.\+Update\+Download\+Directory\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [get]}}
+
+
+
+The local path to the directory containing the downloaded update zip file. 
+
+\begin{DoxyReturn}{Returns}
+eg\+: C\+:\textbackslash{}inetpub\textbackslash{}blazam\textbackslash{}\+Writable\textbackslash{}\+Update\textbackslash{}\+Download\textbackslash{} 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMUpdate/Application\+Update.\+cs\end{DoxyCompactItemize}

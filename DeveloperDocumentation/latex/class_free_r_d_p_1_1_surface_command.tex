@@ -1,0 +1,58 @@
+\doxysection{Free\+RDP.\+Surface\+Command Class Reference}
+\hypertarget{class_free_r_d_p_1_1_surface_command}{}\label{class_free_r_d_p_1_1_surface_command}\index{FreeRDP.SurfaceCommand@{FreeRDP.SurfaceCommand}}
+Inheritance diagram for Free\+RDP.\+Surface\+Command\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.382979cm]{class_free_r_d_p_1_1_surface_command}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_surface_command_a5f008ac1be904a5793b1704dfea65f2a}\label{class_free_r_d_p_1_1_surface_command_a5f008ac1be904a5793b1704dfea65f2a} 
+virtual void {\bfseries Read} (Binary\+Reader fp)
+\item 
+\Hypertarget{class_free_r_d_p_1_1_surface_command_a30ff6ed295194bc65681197781d3ef8f}\label{class_free_r_d_p_1_1_surface_command_a30ff6ed295194bc65681197781d3ef8f} 
+byte\mbox{[}$\,$\mbox{]} {\bfseries Write} ()
+\item 
+\Hypertarget{class_free_r_d_p_1_1_surface_command_a6ba694e5d78c265b4c2b812edaff7017}\label{class_free_r_d_p_1_1_surface_command_a6ba694e5d78c265b4c2b812edaff7017} 
+UInt16 {\bfseries Get\+Cmd\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_surface_command_add204cb7cab7abb33cb521f7ec320d17}\label{class_free_r_d_p_1_1_surface_command_add204cb7cab7abb33cb521f7ec320d17} 
+static \mbox{\hyperlink{class_free_r_d_p_1_1_surface_command}{Surface\+Command}} {\bfseries Parse} (Binary\+Reader fp)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_surface_command_ad7a28721844020be74437c0dd4fed585}\label{class_free_r_d_p_1_1_surface_command_ad7a28721844020be74437c0dd4fed585} 
+UInt16 {\bfseries Cmd\+Type} = 0
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_surface_command_a2a91de16dae12d5414ce4d87f1881150}\label{class_free_r_d_p_1_1_surface_command_a2a91de16dae12d5414ce4d87f1881150} 
+const UInt16 {\bfseries CMDTYPE\+\_\+\+SET\+\_\+\+SURFACE\+\_\+\+BITS} = 1
+\item 
+\Hypertarget{class_free_r_d_p_1_1_surface_command_ab7ed97e9c587fbb67698b40ea1be390d}\label{class_free_r_d_p_1_1_surface_command_ab7ed97e9c587fbb67698b40ea1be390d} 
+const UInt16 {\bfseries CMDTYPE\+\_\+\+STREAM\+\_\+\+SURFACE\+\_\+\+BITS} = 6
+\item 
+\Hypertarget{class_free_r_d_p_1_1_surface_command_ae8cc1522f76529b607eef137f600e49e}\label{class_free_r_d_p_1_1_surface_command_ae8cc1522f76529b607eef137f600e49e} 
+const UInt16 {\bfseries CMDTYPE\+\_\+\+FRAME\+\_\+\+MARKER} = 4
+\item 
+\Hypertarget{class_free_r_d_p_1_1_surface_command_ab10cbd5294e4703393e8a440261e2864}\label{class_free_r_d_p_1_1_surface_command_ab10cbd5294e4703393e8a440261e2864} 
+const byte {\bfseries CODEC\+\_\+\+ID\+\_\+\+NONE} = 0x00
+\item 
+\Hypertarget{class_free_r_d_p_1_1_surface_command_ad1eb70018cab8580306ee55d8a075c9a}\label{class_free_r_d_p_1_1_surface_command_ad1eb70018cab8580306ee55d8a075c9a} 
+const byte {\bfseries CODEC\+\_\+\+ID\+\_\+\+NSCODEC} = 0x01
+\item 
+\Hypertarget{class_free_r_d_p_1_1_surface_command_ad8b316a7a680a6889084e6a7a25634a9}\label{class_free_r_d_p_1_1_surface_command_ad8b316a7a680a6889084e6a7a25634a9} 
+const byte {\bfseries CODEC\+\_\+\+ID\+\_\+\+REMOTEFX} = 0x03
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Free\+RDP-\/\+Sharp/\+Free\+RDP/\+Codec/Surface\+Command.\+cs\end{DoxyCompactItemize}

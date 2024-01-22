@@ -1,0 +1,87 @@
+\doxysection{BLAZAM.\+Services.\+Background.\+Connection\+Monitor Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor}{}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor}\index{BLAZAM.Services.Background.ConnectionMonitor@{BLAZAM.Services.Background.ConnectionMonitor}}
+Inheritance diagram for BLAZAM.\+Services.\+Background.\+Connection\+Monitor\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.683706cm]{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_ad7e9f87ce4aca102d8e58516e8eb3680}{Monitor}} ()
+\begin{DoxyCompactList}\small\item\em Starts a timer to call a local Tick() method on the child object. The default time is 20 seconds. Adjust the Interval property before calling to change from 20 seconds. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_acff2ef88da64c120e3c1c0a0c714d274}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_acff2ef88da64c120e3c1c0a0c714d274} 
+void {\bfseries Stop} ()
+\begin{DoxyCompactList}\small\item\em Stops the monitoring of this connection. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_a24ff79a3be908417d698c279995a701b}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_a24ff79a3be908417d698c279995a701b} 
+virtual void {\bfseries Tick} (object? state)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_a194fc3fad6d74aadadc92587e268a599}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_a194fc3fad6d74aadadc92587e268a599} 
+bool {\bfseries \+\_\+monitoring}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_a8fee2fe15d3c188d1df97d5391337219}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_a8fee2fe15d3c188d1df97d5391337219} 
+Timer? {\bfseries \+\_\+timer}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+virtual Service\+Connection\+State \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_abf419dba0a181e57b6905c569f8a48e4}{Status}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_a797a0c88a15366bc5688aa97e6ff3c00}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_a797a0c88a15366bc5688aa97e6ff3c00} 
+virtual int {\bfseries Interval} = 20000\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The time between ticks of the Monitor Timer in milliseconds. \end{DoxyCompactList}\item 
+App\+Event$<$ Service\+Connection\+State $>$? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_a2db01464bec312a76ab88e5b845fb1aa}{On\+Connected\+Changed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_services_1_1_background_1_1_i_connection_monitor}{BLAZAM.\+Services.\+Background.\+IConnection\+Monitor}}}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_ad7e9f87ce4aca102d8e58516e8eb3680}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_ad7e9f87ce4aca102d8e58516e8eb3680} 
+\index{BLAZAM.Services.Background.ConnectionMonitor@{BLAZAM.Services.Background.ConnectionMonitor}!Monitor@{Monitor}}
+\index{Monitor@{Monitor}!BLAZAM.Services.Background.ConnectionMonitor@{BLAZAM.Services.Background.ConnectionMonitor}}
+\doxysubsubsection{\texorpdfstring{Monitor()}{Monitor()}}
+{\footnotesize\ttfamily void BLAZAM.\+Services.\+Background.\+Connection\+Monitor.\+Monitor (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Starts a timer to call a local Tick() method on the child object. The default time is 20 seconds. Adjust the Interval property before calling to change from 20 seconds. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_services_1_1_background_1_1_i_connection_monitor}{BLAZAM.\+Services.\+Background.\+IConnection\+Monitor}}.
+
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_a2db01464bec312a76ab88e5b845fb1aa}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_a2db01464bec312a76ab88e5b845fb1aa} 
+\index{BLAZAM.Services.Background.ConnectionMonitor@{BLAZAM.Services.Background.ConnectionMonitor}!OnConnectedChanged@{OnConnectedChanged}}
+\index{OnConnectedChanged@{OnConnectedChanged}!BLAZAM.Services.Background.ConnectionMonitor@{BLAZAM.Services.Background.ConnectionMonitor}}
+\doxysubsubsection{\texorpdfstring{OnConnectedChanged}{OnConnectedChanged}}
+{\footnotesize\ttfamily App\+Event$<$Service\+Connection\+State$>$? BLAZAM.\+Services.\+Background.\+Connection\+Monitor.\+On\+Connected\+Changed\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_services_1_1_background_1_1_i_connection_monitor}{BLAZAM.\+Services.\+Background.\+IConnection\+Monitor}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_abf419dba0a181e57b6905c569f8a48e4}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_abf419dba0a181e57b6905c569f8a48e4} 
+\index{BLAZAM.Services.Background.ConnectionMonitor@{BLAZAM.Services.Background.ConnectionMonitor}!Status@{Status}}
+\index{Status@{Status}!BLAZAM.Services.Background.ConnectionMonitor@{BLAZAM.Services.Background.ConnectionMonitor}}
+\doxysubsubsection{\texorpdfstring{Status}{Status}}
+{\footnotesize\ttfamily virtual Service\+Connection\+State BLAZAM.\+Services.\+Background.\+Connection\+Monitor.\+Status\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_services_1_1_background_1_1_i_connection_monitor}{BLAZAM.\+Services.\+Background.\+IConnection\+Monitor}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMServices/\+Background/Connection\+Monitor.\+cs\end{DoxyCompactItemize}

@@ -1,0 +1,98 @@
+\doxysection{BLAZAM.\+Database.\+Models.\+User.\+Notification\+Message Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message}{}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message}\index{BLAZAM.Database.Models.User.NotificationMessage@{BLAZAM.Database.Models.User.NotificationMessage}}
+
+
+A notification message for the web user. These are placed under the user\textquotesingle{}s notifications panel.  
+
+
+Inheritance diagram for BLAZAM.\+Database.\+Models.\+User.\+Notification\+Message\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.600619cm]{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a5a762c1831f733b22cffcf2eee283161}{Equals}} (object? obj)
+\begin{DoxyCompactList}\small\item\em True if the Id\textquotesingle{}s match or the Level, Title, and Message match. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{BLAZAM.\+Database.\+Models.\+App\+Db\+Set\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+override bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base_ae817b72ce6406a52b4aae7aebfd08cea}{Equals}} (object? obj)
+\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base_af0386f5e738b3fcc5e6811663e4bc8d7}{Equals}} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{App\+Db\+Set\+Base}}? other)
+\item 
+override int \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base_a4dd262a260c49ace2c838039c149d84c}{Get\+Hash\+Code}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a174689fda39bfb42f26d918dcfa900aa}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a174689fda39bfb42f26d918dcfa900aa} 
+Notification\+Level {\bfseries Level}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The severity level of this notification. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a9f8e89bfb4a883f737a852bd0c01f5b1}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a9f8e89bfb4a883f737a852bd0c01f5b1} 
+string? {\bfseries Title}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The title of the notificaiton. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a426ce3cb5256d68e812425bd422ec82a}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a426ce3cb5256d68e812425bd422ec82a} 
+string? {\bfseries Message}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The message of the notificatioon. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_aae5f69cedbf5eb1b63513057ec516964}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_aae5f69cedbf5eb1b63513057ec516964} 
+Uri? {\bfseries Link}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a321f32bce70d0dbb45633bcbbdf0d0ec}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a321f32bce70d0dbb45633bcbbdf0d0ec} 
+Date\+Time? {\bfseries Expires}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em If set, the message will be deleted after this Date\+Time \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a5669ff9ea0131fd1460ebb26f21d9ed0}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a5669ff9ea0131fd1460ebb26f21d9ed0} 
+Date\+Time {\bfseries Created} = Date\+Time.\+Now\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a85d8ddd1ea6515dbb63a7da0fcb94207}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a85d8ddd1ea6515dbb63a7da0fcb94207} 
+bool {\bfseries Dismissable} = true\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{BLAZAM.\+Database.\+Models.\+App\+Db\+Set\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base_ad524794769f6c7801cb22dafc0439dde}{Id}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_models_1_1_i_app_db_set_base}{BLAZAM.\+Database.\+Models.\+IApp\+Db\+Set\+Base}}}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{BLAZAM.\+Database.\+Models.\+App\+Db\+Set\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+static bool {\bfseries operator==} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{App\+Db\+Set\+Base}}? left, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{App\+Db\+Set\+Base}}? right)
+\item 
+static bool {\bfseries operator!=} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{App\+Db\+Set\+Base}}? left, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{App\+Db\+Set\+Base}}? right)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A notification message for the web user. These are placed under the user\textquotesingle{}s notifications panel. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a5a762c1831f733b22cffcf2eee283161}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message_a5a762c1831f733b22cffcf2eee283161} 
+\index{BLAZAM.Database.Models.User.NotificationMessage@{BLAZAM.Database.Models.User.NotificationMessage}!Equals@{Equals}}
+\index{Equals@{Equals}!BLAZAM.Database.Models.User.NotificationMessage@{BLAZAM.Database.Models.User.NotificationMessage}}
+\doxysubsubsection{\texorpdfstring{Equals()}{Equals()}}
+{\footnotesize\ttfamily override bool BLAZAM.\+Database.\+Models.\+User.\+Notification\+Message.\+Equals (\begin{DoxyParamCaption}\item[{object?}]{obj }\end{DoxyParamCaption})}
+
+
+
+True if the Id\textquotesingle{}s match or the Level, Title, and Message match. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_models_1_1_i_app_db_set_base}{BLAZAM.\+Database.\+Models.\+IApp\+Db\+Set\+Base}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMDatabase/\+Models/\+User/Notification\+Message.\+cs\end{DoxyCompactItemize}

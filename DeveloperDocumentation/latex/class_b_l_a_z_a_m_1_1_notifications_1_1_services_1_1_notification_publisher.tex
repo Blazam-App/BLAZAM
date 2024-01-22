@@ -1,0 +1,117 @@
+\doxysection{BLAZAM.\+Notifications.\+Services.\+Notification\+Publisher Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher}{}\label{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher}\index{BLAZAM.Notifications.Services.NotificationPublisher@{BLAZAM.Notifications.Services.NotificationPublisher}}
+Inheritance diagram for BLAZAM.\+Notifications.\+Services.\+Notification\+Publisher\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_a1e20f329917ee70c34af6b47a1391b66}\label{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_a1e20f329917ee70c34af6b47a1391b66} 
+{\bfseries Notification\+Publisher} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} database\+Factory)
+\item 
+Task \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_a85d1149c39efc4786a592e7e7791f54d}{Publish\+Notification}} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} user, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message}{Notification\+Message}} notification\+Message)
+\begin{DoxyCompactList}\small\item\em Publishes a notification to a single user. \end{DoxyCompactList}\item 
+Task \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_ab74f5ac5f4d68720bf0f5a3034882016}{Publish\+Notification}} (List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} $>$ users, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message}{Notification\+Message}} notification\+Message)
+\begin{DoxyCompactList}\small\item\em Publishes a notification to a list of users. \end{DoxyCompactList}\item 
+Task \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_a2e8cf2bf1b9858078cb8e768f7516dc5}{Publish\+Notification}} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message}{Notification\+Message}} notification\+Message)
+\begin{DoxyCompactList}\small\item\em Publishes a notification to all users currently in the users table. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+App\+Event$<$ List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_user_notification}{User\+Notification}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_af1e636370a324824a7d51a0dae6e7a70}{On\+Notification\+Published}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_i_notification_publisher}{BLAZAM.\+Notifications.\+Services.\+INotification\+Publisher}}}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_a85d1149c39efc4786a592e7e7791f54d}\label{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_a85d1149c39efc4786a592e7e7791f54d} 
+\index{BLAZAM.Notifications.Services.NotificationPublisher@{BLAZAM.Notifications.Services.NotificationPublisher}!PublishNotification@{PublishNotification}}
+\index{PublishNotification@{PublishNotification}!BLAZAM.Notifications.Services.NotificationPublisher@{BLAZAM.Notifications.Services.NotificationPublisher}}
+\doxysubsubsection{\texorpdfstring{PublishNotification()}{PublishNotification()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily Task BLAZAM.\+Notifications.\+Services.\+Notification\+Publisher.\+Publish\+Notification (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}}}]{user,  }\item[{\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message}{Notification\+Message}}}]{notification\+Message }\end{DoxyParamCaption})}
+
+
+
+Publishes a notification to a single user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user} & \\
+\hline
+{\em notification\+Message} & Can be a new or existing notification\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_i_notification_publisher_ae3911c4709c22f79b3a7792e71317a02}{BLAZAM.\+Notifications.\+Services.\+INotification\+Publisher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_ab74f5ac5f4d68720bf0f5a3034882016}\label{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_ab74f5ac5f4d68720bf0f5a3034882016} 
+\index{BLAZAM.Notifications.Services.NotificationPublisher@{BLAZAM.Notifications.Services.NotificationPublisher}!PublishNotification@{PublishNotification}}
+\index{PublishNotification@{PublishNotification}!BLAZAM.Notifications.Services.NotificationPublisher@{BLAZAM.Notifications.Services.NotificationPublisher}}
+\doxysubsubsection{\texorpdfstring{PublishNotification()}{PublishNotification()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily Task BLAZAM.\+Notifications.\+Services.\+Notification\+Publisher.\+Publish\+Notification (\begin{DoxyParamCaption}\item[{List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} $>$}]{users,  }\item[{\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message}{Notification\+Message}}}]{notification\+Message }\end{DoxyParamCaption})}
+
+
+
+Publishes a notification to a list of users. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em users} & \\
+\hline
+{\em notification\+Message} & Can be a new or existing notification\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_i_notification_publisher_a13bcb399458914a58198526d63f25de6}{BLAZAM.\+Notifications.\+Services.\+INotification\+Publisher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_a2e8cf2bf1b9858078cb8e768f7516dc5}\label{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_a2e8cf2bf1b9858078cb8e768f7516dc5} 
+\index{BLAZAM.Notifications.Services.NotificationPublisher@{BLAZAM.Notifications.Services.NotificationPublisher}!PublishNotification@{PublishNotification}}
+\index{PublishNotification@{PublishNotification}!BLAZAM.Notifications.Services.NotificationPublisher@{BLAZAM.Notifications.Services.NotificationPublisher}}
+\doxysubsubsection{\texorpdfstring{PublishNotification()}{PublishNotification()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily Task BLAZAM.\+Notifications.\+Services.\+Notification\+Publisher.\+Publish\+Notification (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message}{Notification\+Message}}}]{notification\+Message }\end{DoxyParamCaption})}
+
+
+
+Publishes a notification to all users currently in the users table. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em notification\+Message} & Can be a new or existing notification\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_i_notification_publisher_aef104bd00560f618c6d218f51f1a6547}{BLAZAM.\+Notifications.\+Services.\+INotification\+Publisher}}.
+
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_af1e636370a324824a7d51a0dae6e7a70}\label{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_notification_publisher_af1e636370a324824a7d51a0dae6e7a70} 
+\index{BLAZAM.Notifications.Services.NotificationPublisher@{BLAZAM.Notifications.Services.NotificationPublisher}!OnNotificationPublished@{OnNotificationPublished}}
+\index{OnNotificationPublished@{OnNotificationPublished}!BLAZAM.Notifications.Services.NotificationPublisher@{BLAZAM.Notifications.Services.NotificationPublisher}}
+\doxysubsubsection{\texorpdfstring{OnNotificationPublished}{OnNotificationPublished}}
+{\footnotesize\ttfamily App\+Event$<$List$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_user_notification}{User\+Notification}}$>$ $>$ BLAZAM.\+Notifications.\+Services.\+Notification\+Publisher.\+On\+Notification\+Published\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_i_notification_publisher}{BLAZAM.\+Notifications.\+Services.\+INotification\+Publisher}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMNotifications/\+Services/Notification\+Publisher.\+cs\end{DoxyCompactItemize}

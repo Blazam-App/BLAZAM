@@ -1,0 +1,43 @@
+\doxysection{BLAZAM.\+Services.\+Background.\+Conn\+Monitor Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor}{}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor}\index{BLAZAM.Services.Background.ConnMonitor@{BLAZAM.Services.Background.ConnMonitor}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a1abd0763be84e586cb3a12230ccdd07b}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a1abd0763be84e586cb3a12230ccdd07b} 
+{\bfseries Conn\+Monitor} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} Db\+Factory, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_common_1_1_data_1_1_services_1_1_i_encryption_service}{IEncryption\+Service}} encryption)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a6c6aa19888e3077a1071b1e906d40303}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a6c6aa19888e3077a1071b1e906d40303} 
+readonly \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_database_monitor}{Database\+Monitor}} {\bfseries Database\+Monitor}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_acf05b484dc3862b8d425eda12203a2ba}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_acf05b484dc3862b8d425eda12203a2ba} 
+readonly \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_directory_monitor}{Directory\+Monitor}} {\bfseries Directory\+Monitor}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a1277a961fae03d943bbdef1f1b889d80}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a1277a961fae03d943bbdef1f1b889d80} 
+App\+Event$<$ Service\+Connection\+State $>$? {\bfseries On\+App\+Ready\+Changed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when the database can connect and application settings have been loaded. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a59095b41e97485ebc8adddbb3edb4d93}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a59095b41e97485ebc8adddbb3edb4d93} 
+App\+Event$<$ Service\+Connection\+State $>$? {\bfseries On\+Directory\+Connection\+Changed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when the Active Directory connection changes. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a36c41b532b2a49fd7035d71957e1f6cc}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a36c41b532b2a49fd7035d71957e1f6cc} 
+Service\+Connection\+State? {\bfseries Database\+Connection\+Status}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a96ed2a248d85e603b5713dc19ad831b4}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a96ed2a248d85e603b5713dc19ad831b4} 
+Service\+Connection\+State? {\bfseries Directory\+Connection\+Status}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a6da510d53fe1993f1ef4ced681b00fa8}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a6da510d53fe1993f1ef4ced681b00fa8} 
+Service\+Connection\+State {\bfseries App\+Ready}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicated whether the application is ready to serve users. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a00917b43978a6a5d6cb9426e304ae8f8}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_conn_monitor_a00917b43978a6a5d6cb9426e304ae8f8} 
+bool {\bfseries Database\+Update\+Pending}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMServices/\+Background/Conn\+Monitor.\+cs\end{DoxyCompactItemize}

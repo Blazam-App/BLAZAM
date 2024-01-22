@@ -1,0 +1,13 @@
+digraph "BLAZAM.Server.Pages.SignInModel.OnPost"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node1 [id="Node000001",label="BLAZAM.Server.Pages.Sign\lInModel.OnPost",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip="The authentication endpoint for web clients."];
+  Node1 -> Node2 [id="edge3_Node000001_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="BLAZAM.Services.AppAuthentication\lStateProvider.Login",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider.html#a3de5a65e4113700b2ee408d9ea573be3",tooltip="Processes a login request."];
+  Node2 -> Node3 [id="edge4_Node000002_Node000003",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="BLAZAM.Services.AppAuthentication\lStateProvider.SetUser",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider.html#a997d61520a8e1b2d4f10b43520b9a7a3",tooltip="Sets the User AuthenticationState in the AuthenticationProvider."];
+}
