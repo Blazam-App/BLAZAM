@@ -1,0 +1,348 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context Interface Reference}
+\hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+
+
+Provides a connection to an Active Directory Domain.  
+
+
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a97abf3b83d718c7287819e417ccedf65}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a97abf3b83d718c7287819e417ccedf65} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}}? {\bfseries Get\+Directory\+Entry\+By\+Sid} (string sid)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a3983a9334ea96c104c5ca9beb57fb95b}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a3983a9334ea96c104c5ca9beb57fb95b} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}}? {\bfseries Find\+Entry\+By\+SID} (byte\mbox{[}$\,$\mbox{]} sid)
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}}? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_aaa53a06969f2e2abdd7f9e8ab885c8a1}{Authenticate}} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request}{Login\+Request}} login\+Req)
+\begin{DoxyCompactList}\small\item\em Authenticates a login request\textquotesingle{}s credentials against the configured Activer Directory connection in the application settings database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a303888fb1726b0698a10db58c216a31c}{Connect}} ()
+\item 
+Task \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_aecf52db71b3dee814f9da3b375e593ef}{Connect\+Async}} ()
+\begin{DoxyCompactList}\small\item\em connects to an Active Directory server. It first checks the database connection status, then retrieves the Active Directory settings from the database.\+Sets the Status property to reflect the server connectivity. \end{DoxyCompactList}\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_ae597fdd38ce4a282f54c25bca2f8640f}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_ae597fdd38ce4a282f54c25bca2f8640f} 
+void {\bfseries Dispose} ()
+\item 
+Directory\+Entry \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a35373352b5880ca240f27a00d9eb3e0a}{Get\+Delete\+Objects\+Entry}} ()
+\item 
+Directory\+Entry \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_ad8d4149d81100841ef14eb8df1ce0b94}{Get\+Directory\+Entry}} (string? base\+DN=null)
+\begin{DoxyCompactList}\small\item\em Retuns the directory entry of the given Base distiguished name. If no base is provided, the application scope Base\+DN setting will be used. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a64471caa18232e9d6616e8f47947a659}{Restore\+Tombstone}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} model, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} new\+OU)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a9891365ae9bf752b0128f7da2c4f700c}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a9891365ae9bf752b0128f7da2c4f700c} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}}? {\bfseries Get\+Directory\+Entry\+By\+DN} (string dn)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a68594dd9dc3d70c8bc057adde95bc237}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a68594dd9dc3d70c8bc057adde95bc237} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} {\bfseries Factory}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a6813a04e924b375db733452df9b1d1f0}{Port\+Open}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Checks whether the configured Active Directory port is open for connections. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespace_b_l_a_z_a_m_1_1_active_directory_aed31b0bfa03cee8097fa24a5d695b599}{Directory\+Connection\+Status}} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_af86f88da44ddce107eb80b7a3050b3d9}{Status}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The current status of the Active Directory connection. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a9ffdc561462a66682ce8dda96d714323}{Failed\+Connection\+Attempts}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em How many time the connection has failed. Max value should not exceed 10. \end{DoxyCompactList}\item 
+Directory\+Entry? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a40701ee68c549cfaa074f413377d489f}{App\+Root\+Directory\+Entry}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The application scoped directory entry root. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_o_u_searcher}{IADOUSearcher}} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a376c0b270c18e2dee10145eb5d73ce52}{OUs}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Provides OU search functions. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{IADGroup\+Searcher}} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_afdfed28e52969d9dc27f6ecac5967fe3}{Groups}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Provides Group search functions. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{IADUser\+Searcher}} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a2fad61c7c6b747060188849ba9400e59}{Users}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Provides User search functions. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher}{IADPrinter\+Searcher}} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a153afa9ff5107a61a4fc70cc2971a573}{Printers}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_searcher}{IADComputer\+Searcher}} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a4df7e3e834dabc7e67d6ca6cf518c3e1}{Computers}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Provides Computer search functions. \end{DoxyCompactList}\item 
+App\+Event$<$ \mbox{\hyperlink{namespace_b_l_a_z_a_m_1_1_active_directory_aed31b0bfa03cee8097fa24a5d695b599}{Directory\+Connection\+Status}} $>$? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a87dbc16e35cce286a656fe0600055bc4}{On\+Status\+Changed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when the connection state of the Active Directory server has changed. \end{DoxyCompactList}\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a2fea0c52835f7d6dc7c6b5acc42a0d84}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a2fea0c52835f7d6dc7c6b5acc42a0d84} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_a_d_settings}{ADSettings}}? {\bfseries Connection\+Settings}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+App\+Event$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} $>$? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_ab12c986a433787c99aaf53b524e002b2}{On\+New\+Login\+User}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when a new user login matches an Active Directory user. \end{DoxyCompactList}\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a673d004c91b1f495ecec8e558f007660}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a673d004c91b1f495ecec8e558f007660} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? {\bfseries Current\+User}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_windows_impersonation}{Windows\+Impersonation}} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_ab8f2889f6807d15e14b7e76eba2edff6}{Impersonation}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Provides an impersonation context to the application domain account. \end{DoxyCompactList}\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a4f6317666468021c409548d91d6867d0}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a4f6317666468021c409548d91d6867d0} 
+List$<$ Domain\+Controller $>$ {\bfseries Domain\+Controllers}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Provides a connection to an Active Directory Domain. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_aaa53a06969f2e2abdd7f9e8ab885c8a1}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_aaa53a06969f2e2abdd7f9e8ab885c8a1} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!Authenticate@{Authenticate}}
+\index{Authenticate@{Authenticate}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{Authenticate()}{Authenticate()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}}? BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Authenticate (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request}{Login\+Request}}}]{login\+Req }\end{DoxyParamCaption})}
+
+
+
+Authenticates a login request\textquotesingle{}s credentials against the configured Activer Directory connection in the application settings database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em login\+Req} & The login request to validate\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The Active Directory user who authenticated, or null if the credentials were invalid, or connection attempt failed.
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_a07cb0b9df072774b1e42ac257fe673d3}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a303888fb1726b0698a10db58c216a31c}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a303888fb1726b0698a10db58c216a31c} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!Connect@{Connect}}
+\index{Connect@{Connect}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{Connect()}{Connect()}}
+{\footnotesize\ttfamily void BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Connect (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_af8dcf4f6565ffe21920bde7e4a208164}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_aecf52db71b3dee814f9da3b375e593ef}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_aecf52db71b3dee814f9da3b375e593ef} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!ConnectAsync@{ConnectAsync}}
+\index{ConnectAsync@{ConnectAsync}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{ConnectAsync()}{ConnectAsync()}}
+{\footnotesize\ttfamily Task BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Connect\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+connects to an Active Directory server. It first checks the database connection status, then retrieves the Active Directory settings from the database.\+Sets the Status property to reflect the server connectivity. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_a1ce41123999925ab6b6959e8ceade90f}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a35373352b5880ca240f27a00d9eb3e0a}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a35373352b5880ca240f27a00d9eb3e0a} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!GetDeleteObjectsEntry@{GetDeleteObjectsEntry}}
+\index{GetDeleteObjectsEntry@{GetDeleteObjectsEntry}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{GetDeleteObjectsEntry()}{GetDeleteObjectsEntry()}}
+{\footnotesize\ttfamily Directory\+Entry BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Get\+Delete\+Objects\+Entry (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_a9175145510e1aa918f7549666c487b16}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_ad8d4149d81100841ef14eb8df1ce0b94}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_ad8d4149d81100841ef14eb8df1ce0b94} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!GetDirectoryEntry@{GetDirectoryEntry}}
+\index{GetDirectoryEntry@{GetDirectoryEntry}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{GetDirectoryEntry()}{GetDirectoryEntry()}}
+{\footnotesize\ttfamily Directory\+Entry BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Get\+Directory\+Entry (\begin{DoxyParamCaption}\item[{string?}]{base\+DN = {\ttfamily null} }\end{DoxyParamCaption})}
+
+
+
+Retuns the directory entry of the given Base distiguished name. If no base is provided, the application scope Base\+DN setting will be used. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em base\+DN} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_a1d557eb0faa56132df113b278c7df3d5}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a64471caa18232e9d6616e8f47947a659}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a64471caa18232e9d6616e8f47947a659} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!RestoreTombstone@{RestoreTombstone}}
+\index{RestoreTombstone@{RestoreTombstone}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{RestoreTombstone()}{RestoreTombstone()}}
+{\footnotesize\ttfamily bool BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Restore\+Tombstone (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}}}]{model,  }\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}}}]{new\+OU }\end{DoxyParamCaption})}
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_a631b32efa326059c1ff17fd93c57c7d8}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a40701ee68c549cfaa074f413377d489f}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a40701ee68c549cfaa074f413377d489f} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!AppRootDirectoryEntry@{AppRootDirectoryEntry}}
+\index{AppRootDirectoryEntry@{AppRootDirectoryEntry}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{AppRootDirectoryEntry}{AppRootDirectoryEntry}}
+{\footnotesize\ttfamily Directory\+Entry? BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+App\+Root\+Directory\+Entry\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The application scoped directory entry root. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_adf7980ea31d70cc01b0b0e5a456b85d0}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a4df7e3e834dabc7e67d6ca6cf518c3e1}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a4df7e3e834dabc7e67d6ca6cf518c3e1} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!Computers@{Computers}}
+\index{Computers@{Computers}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{Computers}{Computers}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_searcher}{IADComputer\+Searcher}} BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Computers\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provides Computer search functions. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_af1938150187c35a37a421b005f440ebd}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a9ffdc561462a66682ce8dda96d714323}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a9ffdc561462a66682ce8dda96d714323} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!FailedConnectionAttempts@{FailedConnectionAttempts}}
+\index{FailedConnectionAttempts@{FailedConnectionAttempts}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{FailedConnectionAttempts}{FailedConnectionAttempts}}
+{\footnotesize\ttfamily int BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Failed\+Connection\+Attempts\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+How many time the connection has failed. Max value should not exceed 10. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_a413bb0466ddd00e312b5b4521856bbf4}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_afdfed28e52969d9dc27f6ecac5967fe3}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_afdfed28e52969d9dc27f6ecac5967fe3} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!Groups@{Groups}}
+\index{Groups@{Groups}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{Groups}{Groups}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{IADGroup\+Searcher}} BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Groups\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provides Group search functions. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_af6ae0d52d2374bc56550e366a4c8db49}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_ab8f2889f6807d15e14b7e76eba2edff6}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_ab8f2889f6807d15e14b7e76eba2edff6} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!Impersonation@{Impersonation}}
+\index{Impersonation@{Impersonation}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{Impersonation}{Impersonation}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_windows_impersonation}{Windows\+Impersonation}} BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Impersonation\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provides an impersonation context to the application domain account. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_ab0a67dfb2d938f9c8a0b7b63c66549f3}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_ab12c986a433787c99aaf53b524e002b2}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_ab12c986a433787c99aaf53b524e002b2} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!OnNewLoginUser@{OnNewLoginUser}}
+\index{OnNewLoginUser@{OnNewLoginUser}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{OnNewLoginUser}{OnNewLoginUser}}
+{\footnotesize\ttfamily App\+Event$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}$>$? BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+On\+New\+Login\+User\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Called when a new user login matches an Active Directory user. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_aad11a19c93044959e7fb25548f6ed670}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a87dbc16e35cce286a656fe0600055bc4}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a87dbc16e35cce286a656fe0600055bc4} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!OnStatusChanged@{OnStatusChanged}}
+\index{OnStatusChanged@{OnStatusChanged}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{OnStatusChanged}{OnStatusChanged}}
+{\footnotesize\ttfamily App\+Event$<$\mbox{\hyperlink{namespace_b_l_a_z_a_m_1_1_active_directory_aed31b0bfa03cee8097fa24a5d695b599}{Directory\+Connection\+Status}}$>$? BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+On\+Status\+Changed\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Called when the connection state of the Active Directory server has changed. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_a44a44c5ed3bc63747bccd92e266d2560}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a376c0b270c18e2dee10145eb5d73ce52}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a376c0b270c18e2dee10145eb5d73ce52} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!OUs@{OUs}}
+\index{OUs@{OUs}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{OUs}{OUs}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_o_u_searcher}{IADOUSearcher}} BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+OUs\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provides OU search functions. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_ae139a52f8a27ceef4d501ca7d12987e6}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a6813a04e924b375db733452df9b1d1f0}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a6813a04e924b375db733452df9b1d1f0} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!PortOpen@{PortOpen}}
+\index{PortOpen@{PortOpen}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{PortOpen}{PortOpen}}
+{\footnotesize\ttfamily bool BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Port\+Open\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Checks whether the configured Active Directory port is open for connections. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_a0ea085c024879a1bccfa99c8c2c37269}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a153afa9ff5107a61a4fc70cc2971a573}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a153afa9ff5107a61a4fc70cc2971a573} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!Printers@{Printers}}
+\index{Printers@{Printers}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{Printers}{Printers}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher}{IADPrinter\+Searcher}} BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Printers\hspace{0.3cm}{\ttfamily [get]}}
+
+Provides Printer search functions 
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_af350f83b990c34ddd53a6b86c74767df}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_af86f88da44ddce107eb80b7a3050b3d9}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_af86f88da44ddce107eb80b7a3050b3d9} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!Status@{Status}}
+\index{Status@{Status}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{Status}{Status}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespace_b_l_a_z_a_m_1_1_active_directory_aed31b0bfa03cee8097fa24a5d695b599}{Directory\+Connection\+Status}} BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Status\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The current status of the Active Directory connection. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_a581db560daf87bc0b726acb0c83db243}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a2fad61c7c6b747060188849ba9400e59}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context_a2fad61c7c6b747060188849ba9400e59} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}!Users@{Users}}
+\index{Users@{Users}!BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext@{BLAZAM.ActiveDirectory.Interfaces.IActiveDirectoryContext}}
+\doxysubsubsection{\texorpdfstring{Users}{Users}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{IADUser\+Searcher}} BLAZAM.\+Active\+Directory.\+Interfaces.\+IActive\+Directory\+Context.\+Users\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provides User search functions. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context_ad8c3625fb12ea66b80754c67a1f44e1a}{BLAZAM.\+Active\+Directory.\+Active\+Directory\+Context}}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Interfaces/IActive\+Directory.\+cs\end{DoxyCompactItemize}

@@ -22,6 +22,11 @@ namespace BLAZAM.Gui.UI.Chat
         public ChatRoom? ChatRoom { get; set; }
         public ChatRoom? AppChatRoom { get; set; }
 
+
+
+        protected int unreadAppChatMessages;
+        protected int unreadChatMessages;
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
@@ -30,8 +35,10 @@ namespace BLAZAM.Gui.UI.Chat
                 if ((ChatRoom != null && message.ChatRoomId.Equals(ChatRoom.Id))
                 || (AppChatRoom != null && message.ChatRoomId.Equals(AppChatRoom.Id)))
                 {
+                    //ChatRoom?.Messages.Add(message);
+                    //AppChatRoom?.Messages.Add(message);
                     await Task.Delay(100);
-                    await RefreshSelectedChatRooms();
+                    await RefreshChatRooms();
                     await InvokeAsync(StateHasChanged);
                 }
 
@@ -47,25 +54,22 @@ namespace BLAZAM.Gui.UI.Chat
             };
         }
 
-        private async Task RefreshSelectedChatRooms()
-        {
 
-            await Chat.GetChatRoom(ChatRoom);
-        }
 
-        protected int UnreadMessages
+        protected int LastUnreadMessages;
+
+        protected int GetUnreadMessages()
         {
-            get
-            {
+           
                 if (ChatRoom is null) return 0;
                 if (CurrentUser.State == null || CurrentUser.State.Preferences == null) return 0;
                     return Chat.GetUnreadMessages(CurrentUser.State.Preferences).Count();
                 
-            }
+           
         }
         protected async Task RefreshChatRooms()
         {
-            var room = (await Chat.GetChatRoomsAsync()).Where(cr => cr.Name.Equals("App Chat")).FirstOrDefault();
+            var room = Chat.AppChatRoom;
             if (room is null && ChatUri != null)
             {
                 Chat.CreateChatRoom(new()
@@ -77,6 +81,14 @@ namespace BLAZAM.Gui.UI.Chat
             }
 
             AppChatRoom = room;
+
+            if(ChatRoom is not null)
+            {
+                ChatRoom = await Chat.GetChatRoom(ChatRoom);
+
+            }
+            unreadAppChatMessages = Chat.GetUnreadMessages(CurrentUser.State.Preferences).Where(ur => ur.ChatRoomId == AppChatRoom.Id).Count();
+            unreadChatMessages = Chat.GetUnreadMessages(CurrentUser.State.Preferences).Where(ur => ur.ChatRoomId != AppChatRoom.Id).Count();
         }
     }
 }

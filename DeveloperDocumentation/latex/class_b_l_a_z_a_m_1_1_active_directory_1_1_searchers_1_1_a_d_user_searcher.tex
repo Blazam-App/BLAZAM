@@ -1,0 +1,200 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher}{}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher}\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.696970cm]{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_abe6d377e33bfca9caaa87e2194438c89}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_abe6d377e33bfca9caaa87e2194438c89} 
+{\bfseries ADUser\+Searcher} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a572b6bb5c0a19b39c4a0ca8fbf9f73f4}{Find\+Users\+By\+String\+Async}} (string? search\+Term, bool? ignore\+Disabled\+Users=true, bool exact\+Match=false)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_afcb746cdb73835b84368accc1bb6e69f}{Find\+Users\+By\+String}} (string? search\+Term, bool? ignore\+Disabled\+Users=true, bool exact\+Match=false)
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}}? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a73947762822e1b3f32a806590d5505bf}{Find\+User\+By\+Username}} (string? search\+Term, bool? ignore\+Disabled\+Users=true)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_aedf80f4967282fdfe925b630f3b813cd}{Find\+Locked\+Out\+Users\+Async}} (bool? ignore\+Disabled\+Users=true)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a82dbe5a3cfe0e2f2cf31bdd98ecb356c}{Find\+Locked\+Out\+Users}} (bool? ignore\+Disabled\+Users=true)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a0e43da9ebb22d8c6d54379a3b2f60ab9}{Find\+New\+Users\+Async}} (int max\+Age\+In\+Days=14, bool? ignore\+Disabled\+Users=true)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a069d8103e8a04c54e8d83ba75f0cf71c}{Find\+New\+Users}} (int max\+Age\+In\+Days=14, bool? ignore\+Disabled\+Users=true)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a699c3b21b8894b04daaa6f8d459c76b6}{Find\+Changed\+Password\+Users\+Async}} (bool? ignore\+Disabled\+Users=true)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a37c44dca0b3dc0eeb6c02bddf06db998}{Find\+Changed\+Password\+Users}} (bool? ignore\+Disabled\+Users=true)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a319342860c59e5b2db9538270b4722ec}{Find\+Changed\+Users\+Async}} (bool? ignore\+Disabled\+Users=true)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a12742b3049933f12deb38bf41f6c8721}{Find\+Changed\+Users}} (bool? ignore\+Disabled\+Users=true, int days\+Back\+To\+Search=90)
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}}? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a174b732ee3396071db83f30dd6f79509}{Find\+User\+By\+SID}} (string? sid)
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}}? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_ae25f6065847c857d011811e40619c408}{Find\+Users\+By\+Container\+Name}} (string? search\+Term, bool? ignore\+Disabled\+Users=true, bool exact\+Match=false)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries ADSearcher} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual Search\+Result\+Collection {\bfseries Search\+Objects} (string field\+Query, Active\+Directory\+Object\+Type search\+Type, int return\+Count=5, bool? enabled\+Only=true)
+\item 
+virtual Search\+Result\+Collection {\bfseries Search\+Objects} (string? search\+Base\+DN, string field\+Query, Active\+Directory\+Object\+Type? search\+Type, int return\+Count=5, bool? enabled\+Only=true, Search\+Scope search\+Scope=Search\+Scope.\+Subtree)
+\item 
+Search\+Result\+Collection {\bfseries Search\+Object\+By\+SID} (string sid)
+\item 
+List$<$ T $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_a1c5b8c87363140052743cc42141df205}{Convert\+To$<$ T $>$}} (Search\+Result\+Collection r)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} {\bfseries Directory}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a37c44dca0b3dc0eeb6c02bddf06db998}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a37c44dca0b3dc0eeb6c02bddf06db998} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}!FindChangedPasswordUsers@{FindChangedPasswordUsers}}
+\index{FindChangedPasswordUsers@{FindChangedPasswordUsers}!BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+\doxysubsubsection{\texorpdfstring{FindChangedPasswordUsers()}{FindChangedPasswordUsers()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher.\+Find\+Changed\+Password\+Users (\begin{DoxyParamCaption}\item[{bool?}]{ignore\+Disabled\+Users = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a699c3b21b8894b04daaa6f8d459c76b6}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a699c3b21b8894b04daaa6f8d459c76b6} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}!FindChangedPasswordUsersAsync@{FindChangedPasswordUsersAsync}}
+\index{FindChangedPasswordUsersAsync@{FindChangedPasswordUsersAsync}!BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+\doxysubsubsection{\texorpdfstring{FindChangedPasswordUsersAsync()}{FindChangedPasswordUsersAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher.\+Find\+Changed\+Password\+Users\+Async (\begin{DoxyParamCaption}\item[{bool?}]{ignore\+Disabled\+Users = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a12742b3049933f12deb38bf41f6c8721}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a12742b3049933f12deb38bf41f6c8721} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}!FindChangedUsers@{FindChangedUsers}}
+\index{FindChangedUsers@{FindChangedUsers}!BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+\doxysubsubsection{\texorpdfstring{FindChangedUsers()}{FindChangedUsers()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher.\+Find\+Changed\+Users (\begin{DoxyParamCaption}\item[{bool?}]{ignore\+Disabled\+Users = {\ttfamily true},  }\item[{int}]{days\+Back\+To\+Search = {\ttfamily 90} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a319342860c59e5b2db9538270b4722ec}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a319342860c59e5b2db9538270b4722ec} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}!FindChangedUsersAsync@{FindChangedUsersAsync}}
+\index{FindChangedUsersAsync@{FindChangedUsersAsync}!BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+\doxysubsubsection{\texorpdfstring{FindChangedUsersAsync()}{FindChangedUsersAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher.\+Find\+Changed\+Users\+Async (\begin{DoxyParamCaption}\item[{bool?}]{ignore\+Disabled\+Users = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a82dbe5a3cfe0e2f2cf31bdd98ecb356c}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a82dbe5a3cfe0e2f2cf31bdd98ecb356c} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}!FindLockedOutUsers@{FindLockedOutUsers}}
+\index{FindLockedOutUsers@{FindLockedOutUsers}!BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+\doxysubsubsection{\texorpdfstring{FindLockedOutUsers()}{FindLockedOutUsers()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher.\+Find\+Locked\+Out\+Users (\begin{DoxyParamCaption}\item[{bool?}]{ignore\+Disabled\+Users = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_aedf80f4967282fdfe925b630f3b813cd}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_aedf80f4967282fdfe925b630f3b813cd} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}!FindLockedOutUsersAsync@{FindLockedOutUsersAsync}}
+\index{FindLockedOutUsersAsync@{FindLockedOutUsersAsync}!BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+\doxysubsubsection{\texorpdfstring{FindLockedOutUsersAsync()}{FindLockedOutUsersAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher.\+Find\+Locked\+Out\+Users\+Async (\begin{DoxyParamCaption}\item[{bool?}]{ignore\+Disabled\+Users = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a069d8103e8a04c54e8d83ba75f0cf71c}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a069d8103e8a04c54e8d83ba75f0cf71c} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}!FindNewUsers@{FindNewUsers}}
+\index{FindNewUsers@{FindNewUsers}!BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+\doxysubsubsection{\texorpdfstring{FindNewUsers()}{FindNewUsers()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher.\+Find\+New\+Users (\begin{DoxyParamCaption}\item[{int}]{max\+Age\+In\+Days = {\ttfamily 14},  }\item[{bool?}]{ignore\+Disabled\+Users = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a0e43da9ebb22d8c6d54379a3b2f60ab9}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a0e43da9ebb22d8c6d54379a3b2f60ab9} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}!FindNewUsersAsync@{FindNewUsersAsync}}
+\index{FindNewUsersAsync@{FindNewUsersAsync}!BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+\doxysubsubsection{\texorpdfstring{FindNewUsersAsync()}{FindNewUsersAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher.\+Find\+New\+Users\+Async (\begin{DoxyParamCaption}\item[{int}]{max\+Age\+In\+Days = {\ttfamily 14},  }\item[{bool?}]{ignore\+Disabled\+Users = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a174b732ee3396071db83f30dd6f79509}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a174b732ee3396071db83f30dd6f79509} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}!FindUserBySID@{FindUserBySID}}
+\index{FindUserBySID@{FindUserBySID}!BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+\doxysubsubsection{\texorpdfstring{FindUserBySID()}{FindUserBySID()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}}? BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher.\+Find\+User\+By\+SID (\begin{DoxyParamCaption}\item[{string?}]{sid }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a73947762822e1b3f32a806590d5505bf}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a73947762822e1b3f32a806590d5505bf} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}!FindUserByUsername@{FindUserByUsername}}
+\index{FindUserByUsername@{FindUserByUsername}!BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+\doxysubsubsection{\texorpdfstring{FindUserByUsername()}{FindUserByUsername()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}}? BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher.\+Find\+User\+By\+Username (\begin{DoxyParamCaption}\item[{string?}]{search\+Term,  }\item[{bool?}]{ignore\+Disabled\+Users = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_ae25f6065847c857d011811e40619c408}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_ae25f6065847c857d011811e40619c408} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}!FindUsersByContainerName@{FindUsersByContainerName}}
+\index{FindUsersByContainerName@{FindUsersByContainerName}!BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+\doxysubsubsection{\texorpdfstring{FindUsersByContainerName()}{FindUsersByContainerName()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}}? BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher.\+Find\+Users\+By\+Container\+Name (\begin{DoxyParamCaption}\item[{string?}]{search\+Term,  }\item[{bool?}]{ignore\+Disabled\+Users = {\ttfamily true},  }\item[{bool}]{exact\+Match = {\ttfamily false} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_afcb746cdb73835b84368accc1bb6e69f}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_afcb746cdb73835b84368accc1bb6e69f} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}!FindUsersByString@{FindUsersByString}}
+\index{FindUsersByString@{FindUsersByString}!BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+\doxysubsubsection{\texorpdfstring{FindUsersByString()}{FindUsersByString()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher.\+Find\+Users\+By\+String (\begin{DoxyParamCaption}\item[{string?}]{search\+Term,  }\item[{bool?}]{ignore\+Disabled\+Users = {\ttfamily true},  }\item[{bool}]{exact\+Match = {\ttfamily false} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a572b6bb5c0a19b39c4a0ca8fbf9f73f4}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_user_searcher_a572b6bb5c0a19b39c4a0ca8fbf9f73f4} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}!FindUsersByStringAsync@{FindUsersByStringAsync}}
+\index{FindUsersByStringAsync@{FindUsersByStringAsync}!BLAZAM.ActiveDirectory.Searchers.ADUserSearcher@{BLAZAM.ActiveDirectory.Searchers.ADUserSearcher}}
+\doxysubsubsection{\texorpdfstring{FindUsersByStringAsync()}{FindUsersByStringAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADUser\+Searcher.\+Find\+Users\+By\+String\+Async (\begin{DoxyParamCaption}\item[{string?}]{search\+Term,  }\item[{bool?}]{ignore\+Disabled\+Users = {\ttfamily true},  }\item[{bool}]{exact\+Match = {\ttfamily false} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Searchers/ADUser\+Searcher.\+cs\end{DoxyCompactItemize}

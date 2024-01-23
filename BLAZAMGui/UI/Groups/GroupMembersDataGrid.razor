@@ -5,6 +5,7 @@
                  Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
                  Filterable="false"
                  Dense=true
+                 Loading=@LoadingData
                  Height="300px"
                  FixedHeader=true
                  SortMode="@SortMode.None"
@@ -117,6 +118,7 @@ else
         await Task.Run(() =>
         {
             Members = Group.Members;
+            LoadingData = false;
             InvokeAsync(StateHasChanged);
 
         });

@@ -290,10 +290,21 @@
     {
         if (await MessageService.Confirm("Are you sure you want to save the changes?"))
         {
-            await Computer.CommitChangesAsync();
-            EditMode = false;
-            SnackBarService.Success("The changes made to this computer have been saved.");
-            await RefreshEntryComponents();
+           var jobResults= await Computer.CommitChangesAsync();
+            if (jobResults.Result == JobResult.Passed)
+            {
+
+
+                await AuditLogger.Computer.Changed(Computer, Computer.Changes);
+                EditMode = false;
+                SnackBarService.Success("The changes made to this computer have been saved.");
+                await RefreshEntryComponents();
+            }
+            else
+            {
+                jobResults.ShowJobDetailsDialog(MessageService);
+            }
+           
 
         }
     }

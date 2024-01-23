@@ -1,0 +1,51 @@
+\doxysection{BLAZAM.\+Services.\+Permission\+Applicator Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator}{}\label{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator}\index{BLAZAM.Services.PermissionApplicator@{BLAZAM.Services.PermissionApplicator}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator_af77749f19bd0c5fbf2b3824167044fdf}\label{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator_af77749f19bd0c5fbf2b3824167044fdf} 
+{\bfseries Permission\+Applicator} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{IApplication\+User\+State\+Service}} user\+State\+Service, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} factory, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\item 
+async Task \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator_ac03dfd54cc7364114c1e827721dedb2d}{Load\+Permissions}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} web\+User, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} directory\+User)
+\begin{DoxyCompactList}\small\item\em Reads the current database settings and applys the assign permissions for the provided directory user. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator_a6c13326243ca0108b3b042dbe2b27a7e}\label{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator_a6c13326243ca0108b3b042dbe2b27a7e} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{IApplication\+User\+State\+Service}} {\bfseries \+\_\+user\+State\+Service}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator_a7ec1b302cb6ee7f2fc7c642baec5881d}\label{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator_a7ec1b302cb6ee7f2fc7c642baec5881d} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} {\bfseries \+\_\+factory}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator_af1c95c8589f80babf91fde70d1dfb8a6}\label{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator_af1c95c8589f80babf91fde70d1dfb8a6} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} {\bfseries \+\_\+directory}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator_ac03dfd54cc7364114c1e827721dedb2d}\label{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator_ac03dfd54cc7364114c1e827721dedb2d} 
+\index{BLAZAM.Services.PermissionApplicator@{BLAZAM.Services.PermissionApplicator}!LoadPermissions@{LoadPermissions}}
+\index{LoadPermissions@{LoadPermissions}!BLAZAM.Services.PermissionApplicator@{BLAZAM.Services.PermissionApplicator}}
+\doxysubsubsection{\texorpdfstring{LoadPermissions()}{LoadPermissions()}}
+{\footnotesize\ttfamily async Task BLAZAM.\+Services.\+Permission\+Applicator.\+Load\+Permissions (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}}]{web\+User,  }\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}}}]{directory\+User }\end{DoxyParamCaption})}
+
+
+
+Reads the current database settings and applys the assign permissions for the provided directory user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMServices/Login\+Permission\+Applicator.\+cs\end{DoxyCompactItemize}

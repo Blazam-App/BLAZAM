@@ -1,20 +1,27 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Session.Interfaces;
+using Microsoft.AspNetCore.Components;
 
 namespace BLAZAM.Jobs
 {
     /// <summary>
     /// 
     /// </summary>
-    public class Job : IJob, IJobStep
+    public class Job : JobStepBase, IJob, IJobStep
     {
         private DateTime scheduledRunTime = DateTime.Now;
-        public bool StopOnFailedStep { get; set; }
-        public string? Name { get; set; }
-        public IApplicationUserState User { get; set; }
         private Timer? runScheduler;
+
+
+        public bool StopOnFailedStep { get; set; }
+
+
+
+        public string? User { get; set; }
+
         public IList<IJobStep> Steps { get; set; } = new List<IJobStep>();
+
         public DateTime ScheduledRunTime
         {
             get => scheduledRunTime; set
@@ -24,50 +31,32 @@ namespace BLAZAM.Jobs
                 runScheduler = new Timer(TriggerRun, null, (int)(ScheduledRunTime - DateTime.Now).TotalMilliseconds, int.MaxValue);
             }
         }
-        public DateTime? StartTime { get; protected set; }
-        public DateTime? EndTime { get; protected set; }
-        public TimeSpan? ElapsedTime
-        {
-            get
-            {
-                if (EndTime == null) return null;
-                return EndTime - StartTime;
-            }
-        }
+
         public IList<IJobStep> FailedSteps { get; protected set; } = new List<IJobStep>();
         public IList<IJobStep> PassedSteps { get; protected set; } = new List<IJobStep>();
 
-        public bool? Result
-        {
-            get
-            {
-                foreach (var step in Steps)
-                {
-                    if (step.Result == false) return false;
-                    if (step.Result == null) return null;
-                }
-                return true;
-            }
-        }
 
-        public Exception Exception { get; protected set; }
 
-        public WindowsImpersonation Identity { get; set; }
 
-        public Job(string? title = null, IApplicationUserState requestingUser = null)
+        public Job(string? title = null, string requestingUser = null, CancellationTokenSource externalCancellationToken = null)
         {
             Name = title;
             User = requestingUser;
+            if (externalCancellationToken != null)
+            {
+                cancellationTokenSource = externalCancellationToken;
+            }
         }
 
-        public async Task<bool> RunAsync()
-        {
-            return await Task.Run(() => { return Run(); });
-        }
 
+
+        /// <summary>
+        /// Used for scheduled triggering
+        /// </summary>
+        /// <param name="state"></param>
         private void TriggerRun(object? state) => Run();
 
-        public bool Run()
+        public override bool Run()
         {
             if (Identity != null)
             {
@@ -82,24 +71,103 @@ namespace BLAZAM.Jobs
 
         private bool Execute()
         {
+            var cancelToken = cancellationTokenSource.Token;
+
             runScheduler?.Dispose();
             FailedSteps.Clear();
             StartTime = DateTime.Now;
+            Result = JobResult.Running;
+            if (Progress == 0)
+            {
+                OnProgressUpdated?.Invoke(0);
+            }
+            else
+            {
+                Progress = 0;
+            }
+            if (cancelToken.IsCancellationRequested)
+            {
+                Cancel();
+
+                return false;
+            }
+
             for (int i = 0; i < Steps.Count; i++)
             {
-                if (!Steps[i].Run())
+                Steps[i].OnProgressUpdated += ((val) => { OnProgressUpdated?.Invoke(val); });
+                if (!Steps[i].Run() && Result != JobResult.Cancelled)
                 {
                     FailedSteps.Add(Steps[i]);
                     if (StopOnFailedStep)
+                    {
+                        Result = JobResult.Failed;
+                        Cancel();
                         break;
+
+                    }
                 }
                 else
                 {
                     PassedSteps.Add(Steps[i]);
+
+                }
+                Progress = 100.0 / Steps.Count * (i + 1);
+                if (cancelToken.IsCancellationRequested)
+                {
+                    Cancel();
+                    return false;
+                }
+
+            }
+            if (Result != JobResult.Cancelled)
+            {
+                if (FailedSteps.Count > 0)
+                {
+                    Result = JobResult.Failed;
+                }
+                else
+                {
+                    Result = JobResult.Passed;
                 }
             }
             EndTime = DateTime.Now;
+            if (Progress == 100)
+            {
+                OnProgressUpdated?.Invoke(Progress);
+
+            }
+            else
+            {
+                Progress = 100;
+            }
             return FailedSteps.Count < 1;
         }
+
+        public void Wait()
+        {
+            while (Result == JobResult.Running)
+            {
+                Task.Delay(100).Wait();
+            }
+        }
+
+        public void Cancel()
+        {
+            if (Progress == null || Progress < 100)
+            {
+                cancellationTokenSource.Cancel();
+                foreach (var step in Steps)
+                {
+                    step.Cancel();
+                }
+                Result = JobResult.Cancelled;
+               // EndTime = DateTime.Now;
+                Progress = 100;
+            }
+        }
+
+
     }
+
+
 }

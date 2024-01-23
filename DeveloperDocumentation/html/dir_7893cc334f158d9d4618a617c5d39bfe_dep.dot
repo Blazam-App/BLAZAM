@@ -1,0 +1,17 @@
+digraph "BLAZAMCommon.Tests/obj"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  compound=true
+  subgraph clusterdir_6840bf7eb5609e8854d2094672eb0f20 {
+    graph [ bgcolor="#edf0f7", pencolor="grey25", label="BLAZAMCommon.Tests", fontname=Helvetica,fontsize=10 style="filled,dashed", URL="dir_6840bf7eb5609e8854d2094672eb0f20.html",tooltip=""]
+  subgraph clusterdir_7893cc334f158d9d4618a617c5d39bfe {
+    graph [ bgcolor="#edf0f7", pencolor="grey25", label="", fontname=Helvetica,fontsize=10 style="filled,bold", URL="dir_7893cc334f158d9d4618a617c5d39bfe.html",tooltip=""]
+    dir_7893cc334f158d9d4618a617c5d39bfe [shape=plaintext, label="obj"];
+  dir_40012dd2d6eed6db01459cf5cb37c99a [label="Debug", fillcolor="#a2b4d6", color="grey25", style="filled", URL="dir_40012dd2d6eed6db01459cf5cb37c99a.html",tooltip=""];
+  dir_a94d949d19eea88685edf0cfbc8367b3 [label="Release", fillcolor="#a2b4d6", color="grey25", style="filled", URL="dir_a94d949d19eea88685edf0cfbc8367b3.html",tooltip=""];
+  }
+  }
+}

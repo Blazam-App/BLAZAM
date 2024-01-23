@@ -1,0 +1,188 @@
+\doxysection{BLAZAM.\+Database.\+Context.\+IDatabase\+Context Interface Reference}
+\hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}\index{BLAZAM.Database.Context.IDatabaseContext@{BLAZAM.Database.Context.IDatabaseContext}}
+Inheritance diagram for BLAZAM.\+Database.\+Context.\+IDatabase\+Context\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.010753cm]{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a8b0bf8b6feabb1e3507992f38edf7149}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a8b0bf8b6feabb1e3507992f38edf7149} 
+void {\bfseries Export} (string directory)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context}{BLAZAM.\+Database.\+Context.\+IEFCore\+Db\+Context}}}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a3e651819b2ce8464967ef753a8bb0c66}{Is\+Seeded}} ()
+\item 
+int {\bfseries Save\+Changes} ()
+\item 
+int {\bfseries Save\+Changes} (bool accept\+All\+Changes\+On\+Success)
+\item 
+Task$<$ int $>$ {\bfseries Save\+Changes\+Async} (Cancellation\+Token cancellation\+Token=default)
+\item 
+Task$<$ int $>$ {\bfseries Save\+Changes\+Async} (bool accept\+All\+Changes\+On\+Success, Cancellation\+Token cancellation\+Token=default)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_ad9771aaaabf511c04b8821d1f2da50c0}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_ad9771aaaabf511c04b8821d1f2da50c0} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_field_access_mapping}{Field\+Access\+Mapping}} $>$ {\bfseries Access\+Level\+Field\+Mapping}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_add615b0259393ac3a511dc18db1dd630}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_add615b0259393ac3a511dc18db1dd630} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_object_access_mapping}{Object\+Access\+Mapping}} $>$ {\bfseries Access\+Level\+Object\+Mapping}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a820c54bae99a38b92d473e58b6af9d1e}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a820c54bae99a38b92d473e58b6af9d1e} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_access_level}{Access\+Level}} $>$ {\bfseries Access\+Levels}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a71544139d554e78c22e1926cebb910f1}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a71544139d554e78c22e1926cebb910f1} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_active_directory_field}{Active\+Directory\+Field}} $>$ {\bfseries Active\+Directory\+Fields}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_ae497a348509caba745bd9066298ce447}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_ae497a348509caba745bd9066298ce447} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_a_d_settings}{ADSettings}} $>$ {\bfseries Active\+Directory\+Settings}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a9afa9540dc5478dc0f38a6f2e75ebcf7}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a9afa9540dc5478dc0f38a6f2e75ebcf7} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings}{App\+Settings}} $>$ {\bfseries App\+Settings}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a7c4845849a863260599fa6a17ac735af}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a7c4845849a863260599fa6a17ac735af} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_authentication_settings}{Authentication\+Settings}} $>$ {\bfseries Authentication\+Settings}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a224d9e67038a17336d4ad06d788c1e1a}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a224d9e67038a17336d4ad06d788c1e1a} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_templates_1_1_directory_template_field_value}{Directory\+Template\+Field\+Value}} $>$ {\bfseries Directory\+Template\+Field\+Values}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a27d9a65eaf30fe25dac8148704cb3992}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a27d9a65eaf30fe25dac8148704cb3992} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_templates_1_1_directory_template_group}{Directory\+Template\+Group}} $>$ {\bfseries Directory\+Template\+Groups}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_abd982024b2aa57c2d514b9d41e7c5669}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_abd982024b2aa57c2d514b9d41e7c5669} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_templates_1_1_directory_template}{Directory\+Template}} $>$ {\bfseries Directory\+Templates}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a706e226d606dba9352ea03d73942a2a1}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a706e226d606dba9352ea03d73942a2a1} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_email_settings}{Email\+Settings}} $>$ {\bfseries Email\+Settings}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a0e03f29a3a3379b9467a5bfb34bfe6ac}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a0e03f29a3a3379b9467a5bfb34bfe6ac} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_email_template}{Email\+Template}} $>$ {\bfseries Email\+Templates}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a8736b73ae8b67926d83bcb2fafc517f8}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a8736b73ae8b67926d83bcb2fafc517f8} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_field_access_level}{Field\+Access\+Level}} $>$ {\bfseries Field\+Access\+Level}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a677d79c9d890cf89727688779086357c}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a677d79c9d890cf89727688779086357c} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_logon_audit_log}{Logon\+Audit\+Log}} $>$ {\bfseries Logon\+Audit\+Log}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a13d0d86e89dde02e4ea8a10f71e0a55e}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a13d0d86e89dde02e4ea8a10f71e0a55e} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_object_access_level}{Object\+Access\+Level}} $>$ {\bfseries Object\+Access\+Level}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_ad278939496e3ca145c5a1dd582b9d62f}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_ad278939496e3ca145c5a1dd582b9d62f} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_object_action}{Object\+Action}} $>$ {\bfseries Object\+Action\+Flag}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_ad6e47f567e772d1fe64177235217e700}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_ad6e47f567e772d1fe64177235217e700} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_delegate}{Permission\+Delegate}} $>$ {\bfseries Permission\+Delegate}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_add3eaf7563634b419192d68a4a9bff60}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_add3eaf7563634b419192d68a4a9bff60} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_mapping}{Permission\+Mapping}} $>$ {\bfseries Permission\+Map}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_ab96496df44ddea6bea01fe8e22c8cfd0}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_ab96496df44ddea6bea01fe8e22c8cfd0} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_permissions_audit_log}{Permissions\+Audit\+Log}} $>$ {\bfseries Permissions\+Audit\+Log}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a230ba236b851aaac540c509d109c1152}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a230ba236b851aaac540c509d109c1152} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_request_audit_log}{Request\+Audit\+Log}} $>$ {\bfseries Request\+Audit\+Log}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_ad442bc45dedfbb657130733f497647ab}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_ad442bc45dedfbb657130733f497647ab} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_settings_audit_log}{Settings\+Audit\+Log}} $>$ {\bfseries Settings\+Audit\+Log}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a7c5bbfddc2798040661a0c1832445a3a}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a7c5bbfddc2798040661a0c1832445a3a} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_system_audit_log}{System\+Audit\+Log}} $>$ {\bfseries System\+Audit\+Log}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_af1b2258de009a556e8b96b38db5b7f1e}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_af1b2258de009a556e8b96b38db5b7f1e} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} $>$ {\bfseries User\+Settings}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_database_1_1_database_connection_string}{Database\+Connection\+String}}? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a2847b7a443a60c9536751b5d58f2f033}{Connection\+String}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The connection string as set in the ASP Net Core appsettings.\+json. \end{DoxyCompactList}\item 
+Service\+Connection\+State \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a6cc7a250727d1e5473843e155fd991d3}{Status}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Checks the realtime pingabillity and connectivity to the database right now. \end{DoxyCompactList}\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a3184b4d3b43503aa1cab0d76db834623}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a3184b4d3b43503aa1cab0d76db834623} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message}{Notification\+Message}} $>$ {\bfseries Notification\+Messages}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_abd09f517506d4bd303b23b210a4ef5f1}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_abd09f517506d4bd303b23b210a4ef5f1} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_user_notification}{User\+Notification}} $>$ {\bfseries User\+Notifications}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a69d55a83f5744d75d120fa099303fb7d}{Seed\+Mismatch}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a1dc092ebc053f9582a17e8a2e399928a}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a1dc092ebc053f9582a17e8a2e399928a} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_custom_active_directory_field}{Custom\+Active\+Directory\+Field}} $>$ {\bfseries Custom\+Active\+Directory\+Fields}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_aa83f19d1e9e5476913de5fa8b56ec33b}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_aa83f19d1e9e5476913de5fa8b56ec33b} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_user_dashboard_widget}{User\+Dashboard\+Widget}} $>$ {\bfseries User\+Dashboard\+Widgets}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_abc2bc311ca482666e078e150aa5d51c4}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_abc2bc311ca482666e078e150aa5d51c4} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_directory_entry_audit_log}{Directory\+Entry\+Audit\+Log}} $>$ {\bfseries Directory\+Entry\+Audit\+Logs}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a765ee28c564b9150393fb187b7751aff}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a765ee28c564b9150393fb187b7751aff} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}} $>$ {\bfseries Chat\+Rooms}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a6272d6f877c7a38e41bf41a947d2efb7}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a6272d6f877c7a38e41bf41a947d2efb7} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_chat_message}{Chat\+Message}} $>$ {\bfseries Chat\+Messages}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a2d7df018e6ef1f2e878f8401c79dc797}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a2d7df018e6ef1f2e878f8401c79dc797} 
+Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_unread_chat_message}{Unread\+Chat\+Message}} $>$ {\bfseries Unread\+Chat\+Messages}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context}{BLAZAM.\+Database.\+Context.\+IEFCore\+Db\+Context}}}
+\begin{DoxyCompactItemize}
+\item 
+IEnumerable$<$ string $>$ {\bfseries Applied\+Migrations}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+Change\+Tracker {\bfseries Change\+Tracker}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+Database\+Facade {\bfseries Database}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+IEnumerable$<$ string $>$ {\bfseries Pending\+Migrations}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a2847b7a443a60c9536751b5d58f2f033}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a2847b7a443a60c9536751b5d58f2f033} 
+\index{BLAZAM.Database.Context.IDatabaseContext@{BLAZAM.Database.Context.IDatabaseContext}!ConnectionString@{ConnectionString}}
+\index{ConnectionString@{ConnectionString}!BLAZAM.Database.Context.IDatabaseContext@{BLAZAM.Database.Context.IDatabaseContext}}
+\doxysubsubsection{\texorpdfstring{ConnectionString}{ConnectionString}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_database_1_1_database_connection_string}{Database\+Connection\+String}}? BLAZAM.\+Database.\+Context.\+IDatabase\+Context.\+Connection\+String\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The connection string as set in the ASP Net Core appsettings.\+json. 
+
+This should be set before any attempts to connect.
+
+Usually in the Program.\+Main method before injecting the service.
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a17454b2d0d36bf40875720d93878ae51}{BLAZAM.\+Database.\+Context.\+Database\+Context\+Base}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a69d55a83f5744d75d120fa099303fb7d}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a69d55a83f5744d75d120fa099303fb7d} 
+\index{BLAZAM.Database.Context.IDatabaseContext@{BLAZAM.Database.Context.IDatabaseContext}!SeedMismatch@{SeedMismatch}}
+\index{SeedMismatch@{SeedMismatch}!BLAZAM.Database.Context.IDatabaseContext@{BLAZAM.Database.Context.IDatabaseContext}}
+\doxysubsubsection{\texorpdfstring{SeedMismatch}{SeedMismatch}}
+{\footnotesize\ttfamily bool BLAZAM.\+Database.\+Context.\+IDatabase\+Context.\+Seed\+Mismatch\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a302ca3ce95d15603efdab534417e377b}{BLAZAM.\+Database.\+Context.\+Database\+Context\+Base}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a6cc7a250727d1e5473843e155fd991d3}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a6cc7a250727d1e5473843e155fd991d3} 
+\index{BLAZAM.Database.Context.IDatabaseContext@{BLAZAM.Database.Context.IDatabaseContext}!Status@{Status}}
+\index{Status@{Status}!BLAZAM.Database.Context.IDatabaseContext@{BLAZAM.Database.Context.IDatabaseContext}}
+\doxysubsubsection{\texorpdfstring{Status}{Status}}
+{\footnotesize\ttfamily Service\+Connection\+State BLAZAM.\+Database.\+Context.\+IDatabase\+Context.\+Status\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Checks the realtime pingabillity and connectivity to the database right now. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_abd354fe918187f83df71f3e3d5c031a5}{BLAZAM.\+Database.\+Context.\+Database\+Context\+Base}}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMDatabase/\+Context/IDatabase\+Context.\+cs\end{DoxyCompactItemize}

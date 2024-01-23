@@ -4,6 +4,7 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
+using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
@@ -127,7 +128,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (value == null || value == "") return;
 
                
-                CommitSteps.Add(new Jobs.JobStep("Create home directory", () =>
+                CommitSteps.Add(new Jobs.JobStep("Create home directory", (JobStep? step) =>
                 {
                     return Directory.Impersonation.Run(() =>
                     {

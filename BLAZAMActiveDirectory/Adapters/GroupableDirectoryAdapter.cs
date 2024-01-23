@@ -130,7 +130,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             //dcr ??= new DirectoryChangeResult();
             if (ToAssignTo.Count > 0)
             {
-                CommitSteps.Add(new Jobs.JobStep("Assign to groups", () =>
+                CommitSteps.Add(new Jobs.JobStep("Assign to groups", (step) =>
                 {
                     ToAssignTo.ForEach(g =>
                     {
@@ -143,7 +143,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             if (ToUnassignFrom.Count > 0)
             {
-                CommitSteps.Add(new Jobs.JobStep("Unassign from groups", () =>
+                CommitSteps.Add(new Jobs.JobStep("Unassign from groups", (step) =>
                 {
                     ToUnassignFrom.ForEach(g =>
                     {

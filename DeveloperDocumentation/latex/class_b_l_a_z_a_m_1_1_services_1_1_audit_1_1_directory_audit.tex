@@ -1,0 +1,93 @@
+\doxysection{BLAZAM.\+Services.\+Audit.\+Directory\+Audit Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit}{}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit}\index{BLAZAM.Services.Audit.DirectoryAudit@{BLAZAM.Services.Audit.DirectoryAudit}}
+Inheritance diagram for BLAZAM.\+Services.\+Audit.\+Directory\+Audit\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.813765cm]{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_ae8e741a35df4ad4fe8cbe60920db9b05}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_ae8e741a35df4ad4fe8cbe60920db9b05} 
+{\bfseries Directory\+Audit} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} factory, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{IApplication\+User\+State\+Service}} user\+State\+Service)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_acea6b59b0cee407bf079a54369e0b136}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_acea6b59b0cee407bf079a54369e0b136} 
+virtual Task$<$ bool $>$ {\bfseries Changed} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} changed\+User, List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_audit_change_log}{Audit\+Change\+Log}} $>$ changes)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_a094b579bf3239d10a8c02f8616afa48c}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_a094b579bf3239d10a8c02f8616afa48c} 
+virtual async Task$<$ bool $>$ {\bfseries Deleted} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} deleted\+Entry)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_afe5a657000ebb617c6941f8299dc6591}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_afe5a657000ebb617c6941f8299dc6591} 
+virtual Task$<$ bool $>$ {\bfseries Created} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} new\+User)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_a66e1e2acac1a628d40a38f50cfd90944}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_a66e1e2acac1a628d40a38f50cfd90944} 
+virtual Task$<$ bool $>$ {\bfseries Searched} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} searched\+User)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_common_audit}{BLAZAM.\+Services.\+Audit.\+Common\+Audit}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Common\+Audit} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} factory, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{IApplication\+User\+State\+Service}} user\+State\+Service)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_base_audit}{BLAZAM.\+Services.\+Audit.\+Base\+Audit}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Base\+Audit} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} factory)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual async Task$<$ bool $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_ac4d364229f8e87d4dc4ff4938115863b}{Log$<$ T $>$}} (Func$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{IDatabase\+Context}}, Db\+Set$<$ T $>$ $>$ audit\+Table, string action, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} related\+Entry, string? before\+Action=null, string? after\+Action=null)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_common_audit}{BLAZAM.\+Services.\+Audit.\+Common\+Audit}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{IApplication\+User\+State\+Service}} {\bfseries User\+State\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? {\bfseries Current\+User}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_base_audit}{BLAZAM.\+Services.\+Audit.\+Base\+Audit}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} {\bfseries Factory}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_ac4d364229f8e87d4dc4ff4938115863b}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_ac4d364229f8e87d4dc4ff4938115863b} 
+\index{BLAZAM.Services.Audit.DirectoryAudit@{BLAZAM.Services.Audit.DirectoryAudit}!Log$<$ T $>$@{Log$<$ T $>$}}
+\index{Log$<$ T $>$@{Log$<$ T $>$}!BLAZAM.Services.Audit.DirectoryAudit@{BLAZAM.Services.Audit.DirectoryAudit}}
+\doxysubsubsection{\texorpdfstring{Log$<$ T $>$()}{Log< T >()}}
+{\footnotesize\ttfamily virtual async Task$<$ bool $>$ BLAZAM.\+Services.\+Audit.\+Directory\+Audit.\+Log$<$ T $>$ (\begin{DoxyParamCaption}\item[{Func$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{IDatabase\+Context}}, Db\+Set$<$ T $>$ $>$}]{audit\+Table,  }\item[{string}]{action,  }\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}}}]{related\+Entry,  }\item[{string?}]{before\+Action = {\ttfamily null},  }\item[{string?}]{after\+Action = {\ttfamily null} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & The Log Entry Type to insert\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em audit\+Table} & \\
+\hline
+{\em action} & \\
+\hline
+{\em related\+Entry} & \\
+\hline
+{\em before\+Action} & \\
+\hline
+{\em after\+Action} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em class}]\item[{\em T} : {\em IDirectory\+Entry\+Audit\+Log}]\item[{\em T} : {\em new()}]\end{description}
+\end{Desc}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMServices/\+Audit/Directory\+Audit.\+cs\end{DoxyCompactItemize}

@@ -114,6 +114,7 @@ namespace BLAZAM.Gui.UI
         /// </summary>
         public IDialogReference? Show()
         {
+
             IsShown = true;
 
             return Modal?.Show();
@@ -148,6 +149,7 @@ namespace BLAZAM.Gui.UI
                 existingOptions.MaxWidth = MaxWidth.ExtraExtraLarge;
             }
             Modal.Options = existingOptions;
+            RefreshView();
         }
     }
 }

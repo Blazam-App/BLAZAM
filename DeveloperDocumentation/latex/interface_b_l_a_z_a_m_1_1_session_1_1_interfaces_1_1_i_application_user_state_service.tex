@@ -1,0 +1,88 @@
+\doxysection{BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service Interface Reference}
+\hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}\index{BLAZAM.Session.Interfaces.IApplicationUserStateService@{BLAZAM.Session.Interfaces.IApplicationUserStateService}}
+Inheritance diagram for BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_a6c43617d1044787703eb7f2b8b529b9a}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_a6c43617d1044787703eb7f2b8b529b9a} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} {\bfseries Create\+User\+State} (Claims\+Principal user)
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_ae795dae0d2f6e6b64933c37e083d681f}{Get\+User\+State}} (Claims\+Principal user\+Claim)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_a77619d5b8de1c0ba96eeda8fb2fbfab3}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_a77619d5b8de1c0ba96eeda8fb2fbfab3} 
+void {\bfseries Remove\+User\+State} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} state)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_afca0b2f4ab186c888e99d69b62e72834}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_afca0b2f4ab186c888e99d69b62e72834} 
+void {\bfseries Remove\+User\+State} (Claims\+Principal current\+User)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_afe6ff1be4ed80aa0055ad4056daf322e}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_afe6ff1be4ed80aa0055ad4056daf322e} 
+void {\bfseries Set\+User\+State} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} state)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_a5d6798f3c379eee826fb788443823cb9}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_a5d6798f3c379eee826fb788443823cb9} 
+string {\bfseries Current\+Username}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_abbf83daa4ab33d31c1f78efed50debb8}{Current\+User\+State}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+App\+Event$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_a1df0890a9f049336ee82d7da0ee8ff3b}{User\+State\+Added}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+IList$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_a96712a2d44556eca54de514cba494818}{User\+States}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_ae795dae0d2f6e6b64933c37e083d681f}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_ae795dae0d2f6e6b64933c37e083d681f} 
+\index{BLAZAM.Session.Interfaces.IApplicationUserStateService@{BLAZAM.Session.Interfaces.IApplicationUserStateService}!GetUserState@{GetUserState}}
+\index{GetUserState@{GetUserState}!BLAZAM.Session.Interfaces.IApplicationUserStateService@{BLAZAM.Session.Interfaces.IApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{GetUserState()}{GetUserState()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service.\+Get\+User\+State (\begin{DoxyParamCaption}\item[{Claims\+Principal}]{user\+Claim }\end{DoxyParamCaption})}
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_aba9934bc3acd56eaf2056e23789b31f5}{BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service}}.
+
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_abbf83daa4ab33d31c1f78efed50debb8}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_abbf83daa4ab33d31c1f78efed50debb8} 
+\index{BLAZAM.Session.Interfaces.IApplicationUserStateService@{BLAZAM.Session.Interfaces.IApplicationUserStateService}!CurrentUserState@{CurrentUserState}}
+\index{CurrentUserState@{CurrentUserState}!BLAZAM.Session.Interfaces.IApplicationUserStateService@{BLAZAM.Session.Interfaces.IApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{CurrentUserState}{CurrentUserState}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service.\+Current\+User\+State\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a184472955d609f2d6dfc9aa4e2d3e8ae}{BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_a1df0890a9f049336ee82d7da0ee8ff3b}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_a1df0890a9f049336ee82d7da0ee8ff3b} 
+\index{BLAZAM.Session.Interfaces.IApplicationUserStateService@{BLAZAM.Session.Interfaces.IApplicationUserStateService}!UserStateAdded@{UserStateAdded}}
+\index{UserStateAdded@{UserStateAdded}!BLAZAM.Session.Interfaces.IApplicationUserStateService@{BLAZAM.Session.Interfaces.IApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{UserStateAdded}{UserStateAdded}}
+{\footnotesize\ttfamily App\+Event$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}$>$ BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service.\+User\+State\+Added\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a2a2b33bc8ff6e9e950b9b7555c678041}{BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_a96712a2d44556eca54de514cba494818}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service_a96712a2d44556eca54de514cba494818} 
+\index{BLAZAM.Session.Interfaces.IApplicationUserStateService@{BLAZAM.Session.Interfaces.IApplicationUserStateService}!UserStates@{UserStates}}
+\index{UserStates@{UserStates}!BLAZAM.Session.Interfaces.IApplicationUserStateService@{BLAZAM.Session.Interfaces.IApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{UserStates}{UserStates}}
+{\footnotesize\ttfamily IList$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}$>$ BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service.\+User\+States\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a24b64dbc97bec70c2e68f8e9bf1bdd76}{BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service}}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMSession/\+Interfaces/IApplication\+User\+State\+Service.\+cs\end{DoxyCompactItemize}

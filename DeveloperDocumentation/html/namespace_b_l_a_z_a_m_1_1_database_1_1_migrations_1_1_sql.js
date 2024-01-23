@@ -1,0 +1,12 @@
+var namespace_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql =
+[
+    [ "Add_AppChat_AuditUpdateSql", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___app_chat___audit_update_sql.html", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___app_chat___audit_update_sql" ],
+    [ "Add_MyrtilleURLSql", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___myrtille_u_r_l_sql.html", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___myrtille_u_r_l_sql" ],
+    [ "Add_TemplateInheritanceSql", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___template_inheritance_sql.html", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___template_inheritance_sql" ],
+    [ "Add_Update_Credentials_FlagSql", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___update___credentials___flag_sql.html", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___update___credentials___flag_sql" ],
+    [ "Add_Update_CredentialsSql", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___update___credentials_sql.html", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___update___credentials_sql" ],
+    [ "Add_User_EmailSql", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___user___email_sql.html", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___user___email_sql" ],
+    [ "Add_User_FavoritesSql", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___user___favorites_sql.html", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___user___favorites_sql" ],
+    [ "Add_UserDashboardWidgetsSql", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___user_dashboard_widgets_sql.html", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_add___user_dashboard_widgets_sql" ],
+    [ "Nullable_TemplateFieldsSql", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_nullable___template_fields_sql.html", "class_b_l_a_z_a_m_1_1_database_1_1_migrations_1_1_sql_1_1_nullable___template_fields_sql" ]
+];

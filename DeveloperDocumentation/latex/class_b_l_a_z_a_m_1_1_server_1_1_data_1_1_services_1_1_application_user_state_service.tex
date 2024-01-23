@@ -1,0 +1,203 @@
+\doxysection{BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service}{}\label{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service}\index{BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}}
+
+
+A stateful "{}session"{} store for the application\textquotesingle{}s user session state. This class is a "{}hack"{} for Blazor Server to allow it to behave as if there is a persistent user web session between reloads on the client. Using this class data can be persisted over the course of an entire user\textquotesingle{}s login session. In the context of this app, this class\textquotesingle{}s primary purpose is to cache the user permission for logged in Active\+Directory users. Each logged in user\textquotesingle{}s Claims\+Principal is cached at login, retrieved on reload, and removed either on logout, or after 3x the Timeout set in the Authentication\+Settings in the Database. Of note\+: On webapp restart, if a valid Claims\+Principal still exists in the user\textquotesingle{}s browser cookies for a logged in user when they reload any page the cache is updated with the missing Claims\+Principal.  
+
+
+Inheritance diagram for BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_aa93d9718351f77b1ece21a79716f4a1a}{Application\+User\+State\+Service}} (IHttp\+Context\+Accessor http\+Context\+Accessor, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} factory, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_i_notification_publisher}{INotification\+Publisher}} notification\+Publisher)
+\begin{DoxyCompactList}\small\item\em A service to provide stateful user session data storage for runtime. Caches all logged in users. Raises a User\+State\+Added event when a new state is added to the cache for processing in other modules. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_aba9934bc3acd56eaf2056e23789b31f5}{Get\+User\+State}} (Claims\+Principal user\+Claim)
+\begin{DoxyCompactList}\small\item\em Get the matching cached user state for a given Claims\+Principal. This principal is usually attained via the browser authentication cookie. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a63d025a3689439f6104fcb5a17796e7a}{Set\+User\+State}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} state)
+\item 
+void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a2d6a5713be6d5778e4f50d71f5b16dfc}{Remove\+User\+State}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} state)
+\item 
+void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_ad35fb5808425d05dca1d1c574564a9b5}{Remove\+User\+State}} (Claims\+Principal current\+User)
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a25c0d88424bcb1d777d9a4891f9c659f}{Create\+User\+State}} (Claims\+Principal user)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_ab1452e935186dde0f2aad0c5faec33a8}\label{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_ab1452e935186dde0f2aad0c5faec33a8} 
+static \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{IApplication\+User\+State\+Service}} {\bfseries Instance}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+App\+Event$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a2a2b33bc8ff6e9e950b9b7555c678041}{User\+State\+Added}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when a new User\+State is added to the cache. \end{DoxyCompactList}\item 
+App\+Event$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a66dd3f9d71b30406d5b3a796c8bbdd82}{On\+User\+State\+Removed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when a User\+State is removeed from the cache. \end{DoxyCompactList}\item 
+IList$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a24b64dbc97bec70c2e68f8e9bf1bdd76}{User\+States}} = new List$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}$>$()\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em A cached list of user states for logged in users. This allows easy, cached access to the users permissions and Directry\+Entry. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a184472955d609f2d6dfc9aa4e2d3e8ae}{Current\+User\+State}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the current User\+State cached object of the currently logged in user, referenced by the users browser authentication cookie. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a7915563b7dd800ed06fe7918c381ca70}{Current\+Username}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service}}}
+
+
+\doxysubsection{Detailed Description}
+A stateful "{}session"{} store for the application\textquotesingle{}s user session state. This class is a "{}hack"{} for Blazor Server to allow it to behave as if there is a persistent user web session between reloads on the client. Using this class data can be persisted over the course of an entire user\textquotesingle{}s login session. In the context of this app, this class\textquotesingle{}s primary purpose is to cache the user permission for logged in Active\+Directory users. Each logged in user\textquotesingle{}s Claims\+Principal is cached at login, retrieved on reload, and removed either on logout, or after 3x the Timeout set in the Authentication\+Settings in the Database. Of note\+: On webapp restart, if a valid Claims\+Principal still exists in the user\textquotesingle{}s browser cookies for a logged in user when they reload any page the cache is updated with the missing Claims\+Principal. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_aa93d9718351f77b1ece21a79716f4a1a}\label{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_aa93d9718351f77b1ece21a79716f4a1a} 
+\index{BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}!ApplicationUserStateService@{ApplicationUserStateService}}
+\index{ApplicationUserStateService@{ApplicationUserStateService}!BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{ApplicationUserStateService()}{ApplicationUserStateService()}}
+{\footnotesize\ttfamily BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service.\+Application\+User\+State\+Service (\begin{DoxyParamCaption}\item[{IHttp\+Context\+Accessor}]{http\+Context\+Accessor,  }\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}}}]{factory,  }\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_i_notification_publisher}{INotification\+Publisher}}}]{notification\+Publisher }\end{DoxyParamCaption})}
+
+
+
+A service to provide stateful user session data storage for runtime. Caches all logged in users. Raises a User\+State\+Added event when a new state is added to the cache for processing in other modules. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em http\+Context\+Accessor} & An HTTP Context Accessor to get the current Claims\+Principal of the current session. This Principal is persisted via the browser authentication cookie\\
+\hline
+{\em factory} & Database Context Factory for accessing the Authentication Setting -\/ Session\+Timeout\\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a25c0d88424bcb1d777d9a4891f9c659f}\label{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a25c0d88424bcb1d777d9a4891f9c659f} 
+\index{BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}!CreateUserState@{CreateUserState}}
+\index{CreateUserState@{CreateUserState}!BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{CreateUserState()}{CreateUserState()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service.\+Create\+User\+State (\begin{DoxyParamCaption}\item[{Claims\+Principal}]{user }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_aba9934bc3acd56eaf2056e23789b31f5}\label{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_aba9934bc3acd56eaf2056e23789b31f5} 
+\index{BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}!GetUserState@{GetUserState}}
+\index{GetUserState@{GetUserState}!BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{GetUserState()}{GetUserState()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service.\+Get\+User\+State (\begin{DoxyParamCaption}\item[{Claims\+Principal}]{user\+Claim }\end{DoxyParamCaption})}
+
+
+
+Get the matching cached user state for a given Claims\+Principal. This principal is usually attained via the browser authentication cookie. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+Claim} & The users Claims\+Principal to match against.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_ad35fb5808425d05dca1d1c574564a9b5}\label{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_ad35fb5808425d05dca1d1c574564a9b5} 
+\index{BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}!RemoveUserState@{RemoveUserState}}
+\index{RemoveUserState@{RemoveUserState}!BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{RemoveUserState()}{RemoveUserState()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service.\+Remove\+User\+State (\begin{DoxyParamCaption}\item[{Claims\+Principal}]{current\+User }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a2d6a5713be6d5778e4f50d71f5b16dfc}\label{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a2d6a5713be6d5778e4f50d71f5b16dfc} 
+\index{BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}!RemoveUserState@{RemoveUserState}}
+\index{RemoveUserState@{RemoveUserState}!BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{RemoveUserState()}{RemoveUserState()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service.\+Remove\+User\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}}]{state }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a63d025a3689439f6104fcb5a17796e7a}\label{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a63d025a3689439f6104fcb5a17796e7a} 
+\index{BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}!SetUserState@{SetUserState}}
+\index{SetUserState@{SetUserState}!BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{SetUserState()}{SetUserState()}}
+{\footnotesize\ttfamily void BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service.\+Set\+User\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}}]{state }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service}}.
+
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a7915563b7dd800ed06fe7918c381ca70}\label{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a7915563b7dd800ed06fe7918c381ca70} 
+\index{BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}!CurrentUsername@{CurrentUsername}}
+\index{CurrentUsername@{CurrentUsername}!BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{CurrentUsername}{CurrentUsername}}
+{\footnotesize\ttfamily string BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service.\+Current\+Username\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a184472955d609f2d6dfc9aa4e2d3e8ae}\label{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a184472955d609f2d6dfc9aa4e2d3e8ae} 
+\index{BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}!CurrentUserState@{CurrentUserState}}
+\index{CurrentUserState@{CurrentUserState}!BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{CurrentUserState}{CurrentUserState}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service.\+Current\+User\+State\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the current User\+State cached object of the currently logged in user, referenced by the users browser authentication cookie. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a66dd3f9d71b30406d5b3a796c8bbdd82}\label{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a66dd3f9d71b30406d5b3a796c8bbdd82} 
+\index{BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}!OnUserStateRemoved@{OnUserStateRemoved}}
+\index{OnUserStateRemoved@{OnUserStateRemoved}!BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{OnUserStateRemoved}{OnUserStateRemoved}}
+{\footnotesize\ttfamily App\+Event$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}$>$ BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service.\+On\+User\+State\+Removed\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Called when a User\+State is removeed from the cache. 
+
+This can happen on timeout or user intitiated logout. \Hypertarget{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a2a2b33bc8ff6e9e950b9b7555c678041}\label{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a2a2b33bc8ff6e9e950b9b7555c678041} 
+\index{BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}!UserStateAdded@{UserStateAdded}}
+\index{UserStateAdded@{UserStateAdded}!BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{UserStateAdded}{UserStateAdded}}
+{\footnotesize\ttfamily App\+Event$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}$>$ BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service.\+User\+State\+Added\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Called when a new User\+State is added to the cache. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a24b64dbc97bec70c2e68f8e9bf1bdd76}\label{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service_a24b64dbc97bec70c2e68f8e9bf1bdd76} 
+\index{BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}!UserStates@{UserStates}}
+\index{UserStates@{UserStates}!BLAZAM.Server.Data.Services.ApplicationUserStateService@{BLAZAM.Server.Data.Services.ApplicationUserStateService}}
+\doxysubsubsection{\texorpdfstring{UserStates}{UserStates}}
+{\footnotesize\ttfamily IList$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}$>$ BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State\+Service.\+User\+States = new List$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}$>$()\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+A cached list of user states for logged in users. This allows easy, cached access to the users permissions and Directry\+Entry. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+Service}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMSession/Application\+User\+State\+Service.\+cs\end{DoxyCompactItemize}

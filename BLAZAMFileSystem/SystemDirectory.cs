@@ -7,13 +7,18 @@ using System.Security;
 
 namespace BLAZAM.FileSystem
 {
+    /// <summary>
+    /// Represents a diretory in the filesystem
+    /// </summary>
     public class SystemDirectory : FileSystemBase
     {
         public SystemDirectory(string path) : base(path)
         {
 
         }
-
+        /// <summary>
+        /// All direct sub-directories of this directory
+        /// </summary>
         public List<SystemDirectory> SubDirectories
         {
             get
@@ -31,7 +36,7 @@ namespace BLAZAM.FileSystem
                 }
                 catch (DirectoryNotFoundException)
                 {
-
+                    //Ignore directories not found as they are the . and .. directories
                 }
                 catch (Exception ex)
                 {
@@ -40,8 +45,14 @@ namespace BLAZAM.FileSystem
                 return dirs;
             }
         }
+        /// <summary>
+        /// Indicates whether this directory currently exists
+        /// </summary>
         public bool Exists => Directory.Exists(Path);
 
+        /// <summary>
+        /// All direct sub-files of this directory
+        /// </summary>
         public List<SystemFile> Files
         {
             get
@@ -69,6 +80,9 @@ namespace BLAZAM.FileSystem
             }
         }
 
+        /// <summary>
+        /// The full directory name
+        /// </summary>
         public string? Name => System.IO.Path.GetDirectoryName(Path);
 
 
@@ -112,12 +126,17 @@ namespace BLAZAM.FileSystem
             }
             return false;
         }
-
+        /// <summary>
+        /// Deletes this directory
+        /// </summary>
+        /// <param name="recursive"></param>
         public void Delete(bool recursive = false)
         {
             Directory.Delete(Path, recursive);
         }
-
+        /// <summary>
+        /// Creates the directory if it does not already exist
+        /// </summary>
         public void EnsureCreated()
         {
             Directory.CreateDirectory(Path);

@@ -17,7 +17,7 @@
         </SettingsField>
     }
     <MudText>Log Directory: @Loggers.LogPath</MudText>
-    <SettingsField>
+    <SettingsField Label=@AppLocalization["Logs"]>
 
         <MudLink Href="/download/logs" Target="Target.Blank">
             <MudButton Variant=Variant.Outlined Color="Color.Primary">Download Logs</MudButton>
@@ -25,12 +25,17 @@
 
 
     </SettingsField>
+    <SettingsField Label=@AppLocalization["Memory"]>
+        <MudText>@(new  ByteSize((double)ApplicationInfo.RunningProcess.WorkingSet64).ToString())</MudText>
 
+    </SettingsField>
     <SettingsField>
 
         <MudButton OnClick="@(()=>{Context.Export("export");})" Color="Color.Success">Export</MudButton>
 
     </SettingsField>
+   
+
     <SettingsField>
 
         <MudButton ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>

@@ -17,7 +17,7 @@
                                   OnRename="@(()=>{RenameModal?.Show();})"
                                   OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
                                   OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
-                                  OnToggleEditMode="ToggleEditMode" />
+                                  OnToggleEditMode="@ToggleEditMode" />
         <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true" />
     </SetSubHeader>
 
@@ -42,7 +42,21 @@
             {
                 <RenameGroupModalContent Group="Group" />
             }
+        </AppModal> 
+        
+        <AppModal Title=@AppLocalization["Rename Group"] @ref=@RenameModal>
+            @if (RenameModal?.IsShown == true)
+            {
+                <RenameGroupModalContent Group="Group" />
+            }
         </AppModal>
+          <AppModal Title=@AppLocalization["Change History"] @ref=@ChangeHistoryModal Options=@(new DialogOptions(){FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
+                    @if (ChangeHistoryModal?.IsShown == true)
+                    {
+                        <ChangeHistoryModalContent Model="Group" />
+                    }
+                </AppModal>
+
 
         <MudGrid>
             <MudItem xs="12" md="6">
@@ -111,21 +125,21 @@
     {
         if (await MessageService.Confirm("Are you sure you want to save the changes to " + Group.CanonicalName + "?", "Save Changes"))
         {
-            var changes = Group.Changes;
 
-            var dcr = await Group.CommitChangesAsync();
-            if (dcr.FailedSteps.Count > 0)
+            var jobResults = await Group.CommitChangesAsync();
+            if (jobResults.Result == JobResult.Passed)
             {
-                foreach(var failedStep in dcr.FailedSteps)
-                {
+                await AuditLogger.Group.Changed(Group, Group.Changes);
 
-                    SnackBarService.Error(failedStep.Name+": "+ failedStep.Exception.Message + " " + failedStep.Exception.InnerException.Message);
-                }
+                EditMode = false;
+                SnackBarService.Success("The changes made to this group have been saved.");
             }
-            await AuditLogger.Group.Changed(Group, changes);
-
-            EditMode = false;
-            SnackBarService.Success("The changes made to this group have been saved.");
+            else
+            {
+                jobResults.ShowJobDetailsDialog(MessageService);
+            }
+            
+            
             await InvokeAsync(StateHasChanged);
 
         }

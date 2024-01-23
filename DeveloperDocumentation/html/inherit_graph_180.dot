@@ -1,0 +1,9 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node0 [id="Node000000",label="FreeRDP.RfxMessage.RFX_TILE",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1_rfx_message_1_1_r_f_x___t_i_l_e.html",tooltip=" "];
+}

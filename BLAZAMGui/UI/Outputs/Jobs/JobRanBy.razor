@@ -1,0 +1,10 @@
+@inherits AppComponentBase
+@if (Job != null && Job.User != null)
+{
+
+    <MudText Typo="Typo.caption">@AppLocalization["Ran by"]: @Job.User</MudText>
+}
+@code {
+    [CascadingParameter]
+    public IJob Job { get; set; }
+}

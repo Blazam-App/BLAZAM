@@ -26,7 +26,7 @@ namespace BLAZAM.Server.Middleware
                 forceHttps = DatabaseCache.ApplicationSettings.ForceHTTPS;
             }catch (NullReferenceException ex)
             {
-                Loggers.SystemLogger.Error("Error while checking database cache for Force HTTPS", new object[] { ex, DatabaseCache.ApplicationSettings });
+                Loggers.SystemLogger.Error("Error while checking database cache for Force HTTPS {@Error}", ex);
                 forceHttps = false;
             }
 

@@ -1,0 +1,136 @@
+\doxysection{BLAZAM.\+Database.\+Models.\+App\+Settings Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings}{}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings}\index{BLAZAM.Database.Models.AppSettings@{BLAZAM.Database.Models.AppSettings}}
+
+
+The base application settings. These are the most general settings, and application wide.  
+
+
+Inheritance diagram for BLAZAM.\+Database.\+Models.\+App\+Settings\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+Date\+Time? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_ab7a96334467d052cedce943586733cf6}{Last\+Update\+Check}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The timestamp of the last update check. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_ae8ed24d9e030f915d2baad331ef03b5f}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_ae8ed24d9e030f915d2baad331ef03b5f} 
+string {\bfseries App\+Name} = "{}Blazam"{}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The name given to the application by it\textquotesingle{}s administrator. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a66310c5883b36fc879585bc8d65a43e0}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a66310c5883b36fc879585bc8d65a43e0} 
+bool {\bfseries Installation\+Completed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The database flag that indicates the intial setup wizard has been completed. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a2da29cbfadabe437be73ba91856bd1fd}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a2da29cbfadabe437be73ba91856bd1fd} 
+string? {\bfseries MOTD} = "{}Welcome to Blazam. Head over to the $<$a href=\textbackslash{}"{}/settings\textbackslash{}"{}$>$settings$<$a/$>$ page to configure this application.$<$br/$>$To remove this message, modify or clear the Homepage Message settings on the $<$a href=\textbackslash{}"{}/settings\textbackslash{}"{}$>$settings$<$a/$>$ page."{}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em An administrator set message for their users. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_ab9c5f037df9bfdfbf25301752f8b361a}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_ab9c5f037df9bfdfbf25301752f8b361a} 
+bool {\bfseries Force\+HTTPS}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Administrator setting to indicate whether to forward HTTP requests to HTTPS. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a0bfb898fd79e9309854f32e763f70430}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a0bfb898fd79e9309854f32e763f70430} 
+string? {\bfseries App\+FQDN}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+string? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_affcac3ba4c03665dbeb726af409b3c1e}{Analytics\+Id}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The Google Analytics Id to use for this particular installation. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a17d0034d84c8550d350889e6ce7821f9}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a17d0034d84c8550d350889e6ce7821f9} 
+string? {\bfseries User\+Helpdesk\+URL}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a47817d7e63eada8b93ff2dda8564ea7b}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a47817d7e63eada8b93ff2dda8564ea7b} 
+byte?\mbox{[}$\,$\mbox{]} {\bfseries App\+Icon}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+string \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a41ee15a75e5c3fa4494e5f046bb512bf}{App\+Abbreviation}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em An abbreviated form of App\+Name. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a86fb7d35ec1f5e1f3785b466fd3fda31}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a86fb7d35ec1f5e1f3785b466fd3fda31} 
+bool {\bfseries Auto\+Update}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicated whether the administrator wants the application to automatically updated. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a07df206636be071c7bf495f417169e50}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a07df206636be071c7bf495f417169e50} 
+Time\+Span? {\bfseries Auto\+Update\+Time} = Time\+Span.\+From\+Hours(2)\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The time of day the administrator wants the application to perform the Auto\+Update, if enabled. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a4a39276a51ed7e17579b315e5bf48636}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a4a39276a51ed7e17579b315e5bf48636} 
+string {\bfseries Update\+Branch} = "{}Stable"{}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The release branch to get updates from. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a34b49ab1573e906bbbefa1aea322b720}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a34b49ab1573e906bbbefa1aea322b720} 
+bool {\bfseries Use\+Update\+Credentials}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a446e5a9b8820cc7e65d05b55a672987e}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a446e5a9b8820cc7e65d05b55a672987e} 
+string? {\bfseries Update\+Domain}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a0b18aba188c8709563f601df662414b2}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a0b18aba188c8709563f601df662414b2} 
+string? {\bfseries Update\+Username}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_ad3badfd6dd1a239463a3fa5d250e5795}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_ad3badfd6dd1a239463a3fa5d250e5795} 
+string? {\bfseries Update\+Password}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_ae881f0f65b43e12538802c0b00205b8d}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_ae881f0f65b43e12538802c0b00205b8d} 
+string? {\bfseries Myrtille\+URL}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{BLAZAM.\+Database.\+Models.\+App\+Db\+Set\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base_ad524794769f6c7801cb22dafc0439dde}{Id}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_models_1_1_i_app_db_set_base}{BLAZAM.\+Database.\+Models.\+IApp\+Db\+Set\+Base}}}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{BLAZAM.\+Database.\+Models.\+App\+Db\+Set\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+override bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base_ae817b72ce6406a52b4aae7aebfd08cea}{Equals}} (object? obj)
+\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base_af0386f5e738b3fcc5e6811663e4bc8d7}{Equals}} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{App\+Db\+Set\+Base}}? other)
+\item 
+override int \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base_a4dd262a260c49ace2c838039c149d84c}{Get\+Hash\+Code}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{BLAZAM.\+Database.\+Models.\+App\+Db\+Set\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+static bool {\bfseries operator==} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{App\+Db\+Set\+Base}}? left, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{App\+Db\+Set\+Base}}? right)
+\item 
+static bool {\bfseries operator!=} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{App\+Db\+Set\+Base}}? left, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_db_set_base}{App\+Db\+Set\+Base}}? right)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The base application settings. These are the most general settings, and application wide. 
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_affcac3ba4c03665dbeb726af409b3c1e}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_affcac3ba4c03665dbeb726af409b3c1e} 
+\index{BLAZAM.Database.Models.AppSettings@{BLAZAM.Database.Models.AppSettings}!AnalyticsId@{AnalyticsId}}
+\index{AnalyticsId@{AnalyticsId}!BLAZAM.Database.Models.AppSettings@{BLAZAM.Database.Models.AppSettings}}
+\doxysubsubsection{\texorpdfstring{AnalyticsId}{AnalyticsId}}
+{\footnotesize\ttfamily string? BLAZAM.\+Database.\+Models.\+App\+Settings.\+Analytics\+Id\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The Google Analytics Id to use for this particular installation. 
+
+This has no effect on the developer Analytics, that is hard-\/coded. \Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a41ee15a75e5c3fa4494e5f046bb512bf}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_a41ee15a75e5c3fa4494e5f046bb512bf} 
+\index{BLAZAM.Database.Models.AppSettings@{BLAZAM.Database.Models.AppSettings}!AppAbbreviation@{AppAbbreviation}}
+\index{AppAbbreviation@{AppAbbreviation}!BLAZAM.Database.Models.AppSettings@{BLAZAM.Database.Models.AppSettings}}
+\doxysubsubsection{\texorpdfstring{AppAbbreviation}{AppAbbreviation}}
+{\footnotesize\ttfamily string BLAZAM.\+Database.\+Models.\+App\+Settings.\+App\+Abbreviation\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+An abbreviated form of App\+Name. 
+
+\begin{DoxyReturn}{Returns}
+If the name has spaces, it will return the first letter of each word.
+\end{DoxyReturn}
+
+
+Otherwise the first 14 letters will be returned\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_ab7a96334467d052cedce943586733cf6}\label{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings_ab7a96334467d052cedce943586733cf6} 
+\index{BLAZAM.Database.Models.AppSettings@{BLAZAM.Database.Models.AppSettings}!LastUpdateCheck@{LastUpdateCheck}}
+\index{LastUpdateCheck@{LastUpdateCheck}!BLAZAM.Database.Models.AppSettings@{BLAZAM.Database.Models.AppSettings}}
+\doxysubsubsection{\texorpdfstring{LastUpdateCheck}{LastUpdateCheck}}
+{\footnotesize\ttfamily Date\+Time? BLAZAM.\+Database.\+Models.\+App\+Settings.\+Last\+Update\+Check\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The timestamp of the last update check. 
+
+Not yet implemented. TODO Implement 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMDatabase/\+Models/App\+Settings.\+cs\end{DoxyCompactItemize}

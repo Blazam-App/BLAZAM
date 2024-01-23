@@ -30,9 +30,10 @@
 
   
         </MudStack>
+    @*
     @if (_credStatus)
     {
-        var firstDC = Directory.DomainControllers.FirstOrDefault();
+       var firstDC = Directory.DomainControllers.FirstOrDefault();
         if(firstDC!=null){
             <MudStack>
             <MudStack Row=true>
@@ -59,7 +60,7 @@
                 <MudText>Domain</MudText>
                 <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.Forest.RootDomain.Name</MudText>
             </MudStack>
-            </MudStack>
+            </MudStack> 
         }
         else
         {
@@ -67,6 +68,7 @@
         }
 
     }
+    *@
     </MudCard>
 
 @code {
@@ -80,6 +82,7 @@
     bool _portStatus;
     bool _credStatus;
     bool showProgress = true;
+    System.DirectoryServices.ActiveDirectory.Domain _domain;
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -87,6 +90,11 @@
         Directory.OnStatusChanged += ((state) => { UpdateStatus(state); });
         UpdateStatus(null);
 
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        _monitoring = false;
     }
 
     public void ResetStatus()
@@ -109,7 +117,7 @@
                 _monitoring = true;
                 while (_monitoring == true)
                 {
-                    
+
                     if (Directory.Status == DirectoryConnectionStatus.Connecting)
                     {
                         showProgress = true;
@@ -124,8 +132,24 @@
                         if (Directory.Status == DirectoryConnectionStatus.OK)
                         {
                             _credStatus = true;
-                           
+
                             showProgress = false;
+                            // Directory.DomainControllers.ForEach(async dc =>
+                            // {
+                            //     try
+                            //     {
+                            //         if (dc.Domain != null)
+                            //         {
+                            //             if (dc.Domain.DomainMode != null)
+                            //             {
+                            //                 _domain = dc.Domain;
+                            //             }
+                            //         }
+                            //     }catch(Exception ex)
+                            //     {
+                            //         Loggers.ActiveDirectryLogger.Information("Unable to contact domain from domain controller. {@Error}", ex);
+                            //     }
+                            // });
 
                             await InvokeAsync(DirectoryConnected.InvokeAsync);
 
@@ -153,7 +177,7 @@
                     }
 
                     await InvokeAsync(StateHasChanged);
-                    await Task.Delay(1000);
+                    await Task.Delay(10000);
                 }
             }
 
