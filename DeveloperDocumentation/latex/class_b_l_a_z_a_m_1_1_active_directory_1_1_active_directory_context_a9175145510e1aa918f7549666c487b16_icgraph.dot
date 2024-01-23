@@ -1,0 +1,11 @@
+digraph "BLAZAM.ActiveDirectory.ActiveDirectoryContext.GetDeleteObjectsEntry"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="RL";
+  Node1 [id="Node000001",label="BLAZAM.ActiveDirectory.Active\lDirectoryContext.GetDeleteObjectsEntry",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip="Gets the root entry for deleted objects in Active Directory."];
+  Node1 -> Node2 [id="edge2_Node000001_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="BLAZAM.ActiveDirectory.Active\lDirectoryContext.GetDeletedObjects",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context.html#afc7764e67a80125fcc45f755981f6074",tooltip="Gets all deleted entries from Active Directory."];
+}

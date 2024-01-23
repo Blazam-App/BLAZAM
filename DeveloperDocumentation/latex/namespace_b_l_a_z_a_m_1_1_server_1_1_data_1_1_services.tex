@@ -1,0 +1,13 @@
+\doxysection{BLAZAM.\+Server.\+Data.\+Services Namespace Reference}
+\hypertarget{namespace_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services}{}\label{namespace_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services}\index{BLAZAM.Server.Data.Services@{BLAZAM.Server.Data.Services}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_session_cache}{Application\+User\+Session\+Cache}}
+\item 
+class \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state}{Application\+User\+State}}
+\begin{DoxyCompactList}\small\item\em An application user state as managed by the Application\+User\+State\+Service \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_service}{Application\+User\+State\+Service}}
+\begin{DoxyCompactList}\small\item\em A stateful "{}session"{} store for the application\textquotesingle{}s user session state. This class is a "{}hack"{} for Blazor Server to allow it to behave as if there is a persistent user web session between reloads on the client. Using this class data can be persisted over the course of an entire user\textquotesingle{}s login session. In the context of this app, this class\textquotesingle{}s primary purpose is to cache the user permission for logged in Active\+Directory users. Each logged in user\textquotesingle{}s Claims\+Principal is cached at login, retrieved on reload, and removed either on logout, or after 3x the Timeout set in the Authentication\+Settings in the Database. Of note\+: On webapp restart, if a valid Claims\+Principal still exists in the user\textquotesingle{}s browser cookies for a logged in user when they reload any page the cache is updated with the missing Claims\+Principal. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_current_user_state_service}{Current\+User\+State\+Service}}
+\end{DoxyCompactItemize}

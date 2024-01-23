@@ -1,0 +1,111 @@
+\doxysection{BLAZAM.\+Jobs.\+Job\+Step Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step}{}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step}\index{BLAZAM.Jobs.JobStep@{BLAZAM.Jobs.JobStep}}
+Inheritance diagram for BLAZAM.\+Jobs.\+Job\+Step\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.216359cm]{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_a3b69338d2bd379d8e60f893e420157bc}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_a3b69338d2bd379d8e60f893e420157bc} 
+{\bfseries Job\+Step} (string name, Func$<$ bool $>$ action)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_aceaf40772ca2d425317d5a70186f7721}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_aceaf40772ca2d425317d5a70186f7721} 
+{\bfseries Job\+Step} (string name, Func$<$ bool $>$ action, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_windows_impersonation}{Windows\+Impersonation}} identity)
+\item 
+void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_a0084feba4a540a162e2d46dbfb08b13c}{Cancel}} ()
+\item 
+override bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_a45958c58ad1603b1a487d67dd12feb61}{Run}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_base}{BLAZAM.\+Jobs.\+Job\+Step\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+async Task$<$ bool $>$ {\bfseries Run\+Async} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_a54c842e76bb569b34d0c10848853f99a}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_a54c842e76bb569b34d0c10848853f99a} 
+Func$<$ bool $>$ {\bfseries Action}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_base}{BLAZAM.\+Jobs.\+Job\+Step\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+Time\+Span? {\bfseries Elapsed\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+Date\+Time? {\bfseries End\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\item 
+Exception {\bfseries Exception}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_windows_impersonation}{Windows\+Impersonation}} {\bfseries Identity}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual ? string {\bfseries Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+App\+Event$<$ double $>$ {\bfseries On\+Progress\+Updated}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+double {\bfseries Progress}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Job\+Result {\bfseries Result} = Job\+Result.\+Not\+Run\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\item 
+Date\+Time? {\bfseries Start\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{BLAZAM.\+Jobs.\+IJob\+Step}}}
+\begin{DoxyCompactItemize}
+\item 
+Exception? {\bfseries Exception}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The exception that caused this step to fail, if any. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_windows_impersonation}{Windows\+Impersonation}} {\bfseries Identity}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The Windows Identity to run this step as. \end{DoxyCompactList}\item 
+string? {\bfseries Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The name of this step. \end{DoxyCompactList}\item 
+Job\+Result {\bfseries Result}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The result of this step. \end{DoxyCompactList}\item 
+Date\+Time? {\bfseries Start\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+Date\+Time? {\bfseries End\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+Time\+Span? {\bfseries Elapsed\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_common_1_1_data_1_1_interfaces_1_1_i_progress_tracker}{BLAZAM.\+Common.\+Data.\+Interfaces.\+IProgress\+Tracker$<$ double $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+App\+Event$<$ TNumber $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_common_1_1_data_1_1_interfaces_1_1_i_progress_tracker_af087a5856d407f108b4ae9b0fa3aeff7}{On\+Progress\+Updated}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when the progress changes. \end{DoxyCompactList}\item 
+TNumber {\bfseries Progress}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The current progress between 0 and 100. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_base}{BLAZAM.\+Jobs.\+Job\+Step\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+Cancellation\+Token\+Source {\bfseries cancellation\+Token\+Source} = new()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_a0084feba4a540a162e2d46dbfb08b13c}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_a0084feba4a540a162e2d46dbfb08b13c} 
+\index{BLAZAM.Jobs.JobStep@{BLAZAM.Jobs.JobStep}!Cancel@{Cancel}}
+\index{Cancel@{Cancel}!BLAZAM.Jobs.JobStep@{BLAZAM.Jobs.JobStep}}
+\doxysubsubsection{\texorpdfstring{Cancel()}{Cancel()}}
+{\footnotesize\ttfamily void BLAZAM.\+Jobs.\+Job\+Step.\+Cancel (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{BLAZAM.\+Jobs.\+IJob\+Step}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_a45958c58ad1603b1a487d67dd12feb61}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_a45958c58ad1603b1a487d67dd12feb61} 
+\index{BLAZAM.Jobs.JobStep@{BLAZAM.Jobs.JobStep}!Run@{Run}}
+\index{Run@{Run}!BLAZAM.Jobs.JobStep@{BLAZAM.Jobs.JobStep}}
+\doxysubsubsection{\texorpdfstring{Run()}{Run()}}
+{\footnotesize\ttfamily override bool BLAZAM.\+Jobs.\+Job\+Step.\+Run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_base}{BLAZAM.\+Jobs.\+Job\+Step\+Base}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMJobs/Job\+Step.\+cs\end{DoxyCompactItemize}

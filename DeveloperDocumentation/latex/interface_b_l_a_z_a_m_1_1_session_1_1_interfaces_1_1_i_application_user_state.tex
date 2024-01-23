@@ -1,0 +1,218 @@
+\doxysection{BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State Interface Reference}
+\hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}\index{BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}}
+Inheritance diagram for BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a3a8fff8a18c934dd69a536e59fdd922a}{Can\+Search\+Disabled}} (Active\+Directory\+Object\+Type object\+Type)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a5a4681c3c33c600af53d0d69c98deeca}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a5a4681c3c33c600af53d0d69c98deeca} 
+bool {\bfseries Equals} (object? obj)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a9d48814460085138dbddf710ab604eec}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a9d48814460085138dbddf710ab604eec} 
+bool {\bfseries Has\+Role} (string search\+Users)
+\item 
+Task$<$ bool $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a32c1360609ef0c5ff499e57a5de35a5b}{Save\+User\+Settings}} ()
+\begin{DoxyCompactList}\small\item\em Saves the current state of the Preferences to the database. \end{DoxyCompactList}\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a0c8aa796567d6c6ba82334e2a7132356}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a0c8aa796567d6c6ba82334e2a7132356} 
+Task$<$ bool $>$ {\bfseries Mark\+Read} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_user_notification}{User\+Notification}} notification)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_aa036b7377cbe88e9c7f2c8cf2b7f5c22}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_aa036b7377cbe88e9c7f2c8cf2b7f5c22} 
+int {\bfseries Id}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_afd53c5b9985b452e654f8ceda975c50d}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_afd53c5b9985b452e654f8ceda975c50d} 
+App\+Event$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} $>$ {\bfseries On\+Settings\+Changed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+string \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a21f01713750fac012b808680aedb9925}{Audit\+Username}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns the combined names of the user, and if applicable, the impersonators username with the structure "{}\{username\}\mbox{[} impersonated by \{impersonator\+Name\}\mbox{]}"{}. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a5e703b3060d6ae8d333a61f9f3b133c7}{Username}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns the name of the user. \end{DoxyCompactList}\item 
+Claims\+Principal? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_af7437f32877cff28914cd85d8eedaee4}{Impersonator}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The user who is impersonating this web user. It is optional, obviously. \end{DoxyCompactList}\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a98bdba1547774e4898debd32f82b1c6c}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a98bdba1547774e4898debd32f82b1c6c} 
+bool {\bfseries Is\+Super\+Admin}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+Date\+Time \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a18fcbb3e8189d60fae9298277cc82a28}{Last\+Accessed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The last request time for this web user. \end{DoxyCompactList}\item 
+Claims\+Principal \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a4cc92902e433ff59f47cee8e67d03355}{User}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The web user who is currently logged in. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a501f0404f4ea3f8c6a784db81ed6ab75}{Preferences}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Provides access to the user\textquotesingle{}s preferences in the database. \end{DoxyCompactList}\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a9226fdb4bdb46db4bc1e2dc1a521ad25}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a9226fdb4bdb46db4bc1e2dc1a521ad25} 
+Authentication\+Ticket? {\bfseries Ticket}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_acd8ce117ed415316281d834123903101}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_acd8ce117ed415316281d834123903101} 
+IList$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_user_notification}{User\+Notification}} $>$? {\bfseries Notifications}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a5fad3840e9d4f6d5ca9f8d144761c642}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a5fad3840e9d4f6d5ca9f8d144761c642} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_session_cache}{IApplication\+User\+Session\+Cache}} {\bfseries Cache}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_aeb1c013098d1b72b00f8f64ec31637af}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_aeb1c013098d1b72b00f8f64ec31637af} 
+IPAddress {\bfseries IPAddress}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a15259b916dcb38842665d1c044a18825}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a15259b916dcb38842665d1c044a18825} 
+string {\bfseries Last\+Uri}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a9cb6adfc5777eeeeaa76faf370272eae}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a9cb6adfc5777eeeeaa76faf370272eae} 
+bool {\bfseries Is\+Authenticated}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a04788b5fcf4863a5336920f96472d08c}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a04788b5fcf4863a5336920f96472d08c} 
+List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_delegate}{Permission\+Delegate}} $>$ {\bfseries Permission\+Delegates}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a6e8e18249f0f41c6da4c393796159a9a}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a6e8e18249f0f41c6da4c393796159a9a} 
+List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_mapping}{Permission\+Mapping}} $>$ {\bfseries Permission\+Mappings}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a2f8f9a7795adc71fa79e0826abbf4bdd}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a2f8f9a7795adc71fa79e0826abbf4bdd} 
+bool {\bfseries Has\+User\+Privilege}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a687edfc7f0b1db2d9c4cf0cc0d8833ea}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a687edfc7f0b1db2d9c4cf0cc0d8833ea} 
+bool {\bfseries Has\+Create\+User\+Privilege}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a395812c154bdbdfd2d31f3a79c8d0b3e}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a395812c154bdbdfd2d31f3a79c8d0b3e} 
+bool {\bfseries Has\+Group\+Privilege}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_ad6b1f020c0fa029933a6a416be52a030}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_ad6b1f020c0fa029933a6a416be52a030} 
+bool {\bfseries Has\+Create\+Group\+Privilege}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a2fbd9a128f99bdf540958112e30e541a}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a2fbd9a128f99bdf540958112e30e541a} 
+bool {\bfseries Has\+OUPrivilege}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a8fd348cdc5283b6f9502c30e2d242115}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a8fd348cdc5283b6f9502c30e2d242115} 
+bool {\bfseries Has\+Create\+OUPrivilege}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a4dde4604103af4f2a8763b40b3c086f5}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a4dde4604103af4f2a8763b40b3c086f5} 
+bool {\bfseries Has\+Computer\+Privilege}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a66898f41f328f308df7402b8f48de74b}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a66898f41f328f308df7402b8f48de74b} 
+bool {\bfseries Can\+Unlock\+Users}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a3a8fff8a18c934dd69a536e59fdd922a}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a3a8fff8a18c934dd69a536e59fdd922a} 
+\index{BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}!CanSearchDisabled@{CanSearchDisabled}}
+\index{CanSearchDisabled@{CanSearchDisabled}!BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}}
+\doxysubsubsection{\texorpdfstring{CanSearchDisabled()}{CanSearchDisabled()}}
+{\footnotesize\ttfamily bool BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State.\+Can\+Search\+Disabled (\begin{DoxyParamCaption}\item[{Active\+Directory\+Object\+Type}]{object\+Type }\end{DoxyParamCaption})}
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_abde619fcb0cb60bc1584e3b0ff839637}{BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a32c1360609ef0c5ff499e57a5de35a5b}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a32c1360609ef0c5ff499e57a5de35a5b} 
+\index{BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}!SaveUserSettings@{SaveUserSettings}}
+\index{SaveUserSettings@{SaveUserSettings}!BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}}
+\doxysubsubsection{\texorpdfstring{SaveUserSettings()}{SaveUserSettings()}}
+{\footnotesize\ttfamily Task$<$ bool $>$ BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State.\+Save\+User\+Settings (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the current state of the Preferences to the database. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_a84ebbb475e887ab09d12faa476127266}{BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State}}.
+
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a21f01713750fac012b808680aedb9925}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a21f01713750fac012b808680aedb9925} 
+\index{BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}!AuditUsername@{AuditUsername}}
+\index{AuditUsername@{AuditUsername}!BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}}
+\doxysubsubsection{\texorpdfstring{AuditUsername}{AuditUsername}}
+{\footnotesize\ttfamily string BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State.\+Audit\+Username\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns the combined names of the user, and if applicable, the impersonators username with the structure "{}\{username\}\mbox{[} impersonated by \{impersonator\+Name\}\mbox{]}"{}. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_a1597560806040352ca13901eaf26278c}{BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_af7437f32877cff28914cd85d8eedaee4}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_af7437f32877cff28914cd85d8eedaee4} 
+\index{BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}!Impersonator@{Impersonator}}
+\index{Impersonator@{Impersonator}!BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}}
+\doxysubsubsection{\texorpdfstring{Impersonator}{Impersonator}}
+{\footnotesize\ttfamily Claims\+Principal? BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State.\+Impersonator\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The user who is impersonating this web user. It is optional, obviously. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_a7488da7ec898478374828a63a1979d0b}{BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a18fcbb3e8189d60fae9298277cc82a28}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a18fcbb3e8189d60fae9298277cc82a28} 
+\index{BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}!LastAccessed@{LastAccessed}}
+\index{LastAccessed@{LastAccessed}!BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}}
+\doxysubsubsection{\texorpdfstring{LastAccessed}{LastAccessed}}
+{\footnotesize\ttfamily Date\+Time BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State.\+Last\+Accessed\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The last request time for this web user. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_a18ea84b38732dffc9bc45461ae5b87d0}{BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a501f0404f4ea3f8c6a784db81ed6ab75}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a501f0404f4ea3f8c6a784db81ed6ab75} 
+\index{BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}!Preferences@{Preferences}}
+\index{Preferences@{Preferences}!BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}}
+\doxysubsubsection{\texorpdfstring{Preferences}{Preferences}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State.\+Preferences\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provides access to the user\textquotesingle{}s preferences in the database. 
+
+Changes made to the returned object are not saved until Save\+User\+Settings() is called 
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_a961e67e161527a35c357fd5c48cb6580}{BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a4cc92902e433ff59f47cee8e67d03355}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a4cc92902e433ff59f47cee8e67d03355} 
+\index{BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}!User@{User}}
+\index{User@{User}!BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}}
+\doxysubsubsection{\texorpdfstring{User}{User}}
+{\footnotesize\ttfamily Claims\+Principal BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State.\+User\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The web user who is currently logged in. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_a77e4ebcafe9f5a62030de5527ee74de7}{BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a5e703b3060d6ae8d333a61f9f3b133c7}\label{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_a5e703b3060d6ae8d333a61f9f3b133c7} 
+\index{BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}!Username@{Username}}
+\index{Username@{Username}!BLAZAM.Session.Interfaces.IApplicationUserState@{BLAZAM.Session.Interfaces.IApplicationUserState}}
+\doxysubsubsection{\texorpdfstring{Username}{Username}}
+{\footnotesize\ttfamily string BLAZAM.\+Session.\+Interfaces.\+IApplication\+User\+State.\+Username\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns the name of the user. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_services_1_1_application_user_state_ae51b4f3c5dce0f4ff556c246ccf91cd6}{BLAZAM.\+Server.\+Data.\+Services.\+Application\+User\+State}}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMSession/\+Interfaces/IApplication\+User\+State.\+cs\end{DoxyCompactItemize}

@@ -1,0 +1,40 @@
+\doxysection{BLAZAM.\+Update.\+Services.\+Auto\+Update\+Service Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service}{}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service}\index{BLAZAM.Update.Services.AutoUpdateService@{BLAZAM.Update.Services.AutoUpdateService}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_ae2c00ae835ea969c07033c9e56303ba9}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_ae2c00ae835ea969c07033c9e56303ba9} 
+{\bfseries Auto\+Update\+Service} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} factory, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_update_service}{Update\+Service}} update\+Service, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info}{Application\+Info}} application\+Info)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_a6f154a5a3582b6260a6fac5677a94b75}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_a6f154a5a3582b6260a6fac5677a94b75} 
+void {\bfseries Cancel} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_accb77327097d7e13505a6a0b735c9135}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_accb77327097d7e13505a6a0b735c9135} 
+void {\bfseries Schedule\+Update} (Time\+Span update\+Time\+Of\+Day, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_update_1_1_application_update}{Application\+Update}} update\+To\+Install)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_a9187b7df2a11961ce76d8de52779287b}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_a9187b7df2a11961ce76d8de52779287b} 
+App\+Event$<$ Date\+Time?$>$ {\bfseries On\+Auto\+Update\+Queued}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_a8b26da7adab1825a68e0393f5b360553}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_a8b26da7adab1825a68e0393f5b360553} 
+App\+Event {\bfseries On\+Auto\+Update\+Started}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_aa181c5659fd9467d15a6b5b5b9a393b7}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_aa181c5659fd9467d15a6b5b5b9a393b7} 
+App\+Event {\bfseries On\+Auto\+Update\+Failed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_ac44cd96fe7aed1246076f13928083c46}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_ac44cd96fe7aed1246076f13928083c46} 
+bool {\bfseries Is\+Updated\+Scheduled}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_ae726d74e6db0ff43db6bf23385821f0b}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_ae726d74e6db0ff43db6bf23385821f0b} 
+Date\+Time {\bfseries Scheduled\+Update\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_a468eb3b2b9f951a3cca78c4fba2e3be5}\label{class_b_l_a_z_a_m_1_1_update_1_1_services_1_1_auto_update_service_a468eb3b2b9f951a3cca78c4fba2e3be5} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_update_1_1_application_update}{Application\+Update}}? {\bfseries Scheduled\+Update}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMUpdate/\+Services/Auto\+Update\+Service.\+cs\end{DoxyCompactItemize}

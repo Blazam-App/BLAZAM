@@ -1,0 +1,13 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node0 [id="Node000000",label="BLAZAM.FileSystem.FileSystemBase",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_file_system_1_1_file_system_base.html",tooltip=" "];
+  Node0 -> Node1 [id="edge32_Node000000_Node000001",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 [id="Node000001",label="BLAZAM.FileSystem.System\lDirectory",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory.html",tooltip=" "];
+  Node0 -> Node2 [id="edge33_Node000000_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="BLAZAM.FileSystem.SystemFile",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_file_system_1_1_system_file.html",tooltip=" "];
+}

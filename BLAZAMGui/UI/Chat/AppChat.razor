@@ -95,7 +95,7 @@
 
                     @foreach (var user in onlineUsers)
                     {
-                        <MudNavLink OnClick="@(async()=>{await OpenPrivateChat(user.Preferences);})">@user.Username</MudNavLink>
+                        <MudNavLink OnClick="@(()=>{OpenPrivateChat(user.Preferences);})">@user.Username</MudNavLink>
                     }
                 </MudNavGroup>
 
@@ -104,7 +104,7 @@
                     {
                         @foreach (var user in Context.UserSettings.Where(u => !onlineUsers.Select(us => us.Preferences).Contains(u) && !u.Equals(currentUserState.Preferences)))
                         {
-                            <MudNavLink OnClick="@(async ()=>{await OpenPrivateChat(user);})">@user.Username</MudNavLink>
+                            <MudNavLink OnClick="@(()=>{OpenPrivateChat(user);})">@user.Username</MudNavLink>
                         }
                     }
                 </MudNavGroup>
@@ -128,10 +128,10 @@
         else
         {
 
-            var otherMembers = selectedChatRoom.Members.Where(m => !m.Equals(currentUserState.Preferences)).Select(m => m.Username).ToList();
+            var otherMembers = selectedChatRoom?.Members.Where(m => !m.Equals(currentUserState.Preferences)).Select(m => m.Username).ToList();
             string chatName = String.Join(", ", otherMembers);
 
-            <MudText>@selectedChatRoom.Name</MudText>
+            <MudText>@selectedChatRoom?.Name</MudText>
             <MudText Typo="Typo.caption"> Other Members: @chatName</MudText>
         }
 
@@ -217,8 +217,9 @@
                    playingBell = true;
                }
 
-               InvokeAsync(StateHasChanged);
            }
+           InvokeAsync(StateHasChanged);
+
        });
 
 
@@ -243,7 +244,7 @@
         _drawerOpen = false;
 
     }
-    async Task OpenPrivateChat(AppUser otherParty)
+    void OpenPrivateChat(AppUser otherParty)
     {
         var chat = Chat.GetPrivateTwoWayChat(currentUserState.Preferences, otherParty);
         SwitchTo(chat);

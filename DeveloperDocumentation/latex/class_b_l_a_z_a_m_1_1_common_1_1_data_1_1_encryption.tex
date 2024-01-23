@@ -1,0 +1,122 @@
+\doxysection{BLAZAM.\+Common.\+Data.\+Encryption Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption}{}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption}\index{BLAZAM.Common.Data.Encryption@{BLAZAM.Common.Data.Encryption}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_ac066b08094f5e5561c345c59c8265bbb}{Encryption}} (string? key\+Seed\+String, int key\+Size=256)
+\begin{DoxyCompactList}\small\item\em Initializes the Encryption service that can both encrypt and decrypt any serializable object. \end{DoxyCompactList}\item 
+T? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_ab8ecc14c755c804a9199695fe844e082}{Decrypt\+Object$<$ T $>$}} (string? cipher\+Text)
+\begin{DoxyCompactList}\small\item\em Decrypts cipher-\/text. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_ae636b4a05d15d4c66039d5e2772da19f}{Encrypt\+Object}} (object obj)
+\begin{DoxyCompactList}\small\item\em Encrypt any serializable object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_ab5def83333140c69ed7d38d3b176509e}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_ab5def83333140c69ed7d38d3b176509e} 
+static \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption}{Encryption}} {\bfseries Instance}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+string \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_a9bb0a3673b542a856eb967c9bbe943fe}{Key\+Seed\+String}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em String used to generate the key bytes. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_ac5661578efe1b50a4370583f1c9e95cb}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_ac5661578efe1b50a4370583f1c9e95cb} 
+int {\bfseries Key\+Size}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The size of the key in bits. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_a62bc2a387c87d6e66412733c723b95de}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_a62bc2a387c87d6e66412733c723b95de} 
+byte\mbox{[}$\,$\mbox{]} {\bfseries Key}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The key that is Key\+Size bits long and was generated from the Key\+Seed\+String \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_ac066b08094f5e5561c345c59c8265bbb}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_ac066b08094f5e5561c345c59c8265bbb} 
+\index{BLAZAM.Common.Data.Encryption@{BLAZAM.Common.Data.Encryption}!Encryption@{Encryption}}
+\index{Encryption@{Encryption}!BLAZAM.Common.Data.Encryption@{BLAZAM.Common.Data.Encryption}}
+\doxysubsubsection{\texorpdfstring{Encryption()}{Encryption()}}
+{\footnotesize\ttfamily BLAZAM.\+Common.\+Data.\+Encryption.\+Encryption (\begin{DoxyParamCaption}\item[{string?}]{key\+Seed\+String,  }\item[{int}]{key\+Size = {\ttfamily 256} }\end{DoxyParamCaption})}
+
+
+
+Initializes the Encryption service that can both encrypt and decrypt any serializable object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key\+Seed\+String} & Any length string that will be processed into a repeatable generated private key\\
+\hline
+{\em key\+Size} & How large a key to generate in bits\\
+\hline
+\end{DoxyParams}
+
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Application\+Exception} & Thows an exception when no key\+Seed\+String is provided.\\
+\hline
+\end{DoxyExceptions}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_ab8ecc14c755c804a9199695fe844e082}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_ab8ecc14c755c804a9199695fe844e082} 
+\index{BLAZAM.Common.Data.Encryption@{BLAZAM.Common.Data.Encryption}!DecryptObject$<$ T $>$@{DecryptObject$<$ T $>$}}
+\index{DecryptObject$<$ T $>$@{DecryptObject$<$ T $>$}!BLAZAM.Common.Data.Encryption@{BLAZAM.Common.Data.Encryption}}
+\doxysubsubsection{\texorpdfstring{DecryptObject$<$ T $>$()}{DecryptObject< T >()}}
+{\footnotesize\ttfamily T? BLAZAM.\+Common.\+Data.\+Encryption.\+Decrypt\+Object$<$ T $>$ (\begin{DoxyParamCaption}\item[{string?}]{cipher\+Text }\end{DoxyParamCaption})}
+
+
+
+Decrypts cipher-\/text. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & The serializable type that should represent the decrypted cipher object\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em cipher\+Text} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Application\+Exception} & \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_ae636b4a05d15d4c66039d5e2772da19f}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_ae636b4a05d15d4c66039d5e2772da19f} 
+\index{BLAZAM.Common.Data.Encryption@{BLAZAM.Common.Data.Encryption}!EncryptObject@{EncryptObject}}
+\index{EncryptObject@{EncryptObject}!BLAZAM.Common.Data.Encryption@{BLAZAM.Common.Data.Encryption}}
+\doxysubsubsection{\texorpdfstring{EncryptObject()}{EncryptObject()}}
+{\footnotesize\ttfamily string BLAZAM.\+Common.\+Data.\+Encryption.\+Encrypt\+Object (\begin{DoxyParamCaption}\item[{object}]{obj }\end{DoxyParamCaption})}
+
+
+
+Encrypt any serializable object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_a9bb0a3673b542a856eb967c9bbe943fe}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_encryption_a9bb0a3673b542a856eb967c9bbe943fe} 
+\index{BLAZAM.Common.Data.Encryption@{BLAZAM.Common.Data.Encryption}!KeySeedString@{KeySeedString}}
+\index{KeySeedString@{KeySeedString}!BLAZAM.Common.Data.Encryption@{BLAZAM.Common.Data.Encryption}}
+\doxysubsubsection{\texorpdfstring{KeySeedString}{KeySeedString}}
+{\footnotesize\ttfamily string BLAZAM.\+Common.\+Data.\+Encryption.\+Key\+Seed\+String\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+String used to generate the key bytes. 
+
+This is not the actual key used but will be transformed in a consistent manner, into a reusable key 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMCommon/\+Data/Encryption.\+cs\end{DoxyCompactItemize}

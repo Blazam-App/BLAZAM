@@ -1,0 +1,88 @@
+\doxysection{BLAZAM.\+Services.\+Chat.\+IChat\+Service Interface Reference}
+\hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service}{}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service}\index{BLAZAM.Services.Chat.IChatService@{BLAZAM.Services.Chat.IChatService}}
+Inheritance diagram for BLAZAM.\+Services.\+Chat.\+IChat\+Service\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_a661723c461bdc39cf7efc62e5599a041}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_a661723c461bdc39cf7efc62e5599a041} 
+void {\bfseries Create\+Chat\+Room} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}} room)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_aad7bc7a85181f3c1db2b037993f96d93}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_aad7bc7a85181f3c1db2b037993f96d93} 
+void {\bfseries Delete\+All\+Chat\+Rooms} ()
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_a6d86075960610f92e919fb1334d3b33e}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_a6d86075960610f92e919fb1334d3b33e} 
+Task$<$ IQueryable$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}} $>$ $>$ {\bfseries Get\+Chat\+Rooms\+Async} ()
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_aef1f57e14925917e6d26d6da9a3bfc2c}{Get\+Private\+Two\+Way\+Chat}} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} current\+User, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} other\+User)
+\begin{DoxyCompactList}\small\item\em Returns the existing private chat between these two users. Returns a new chat if no existing chat exists. \end{DoxyCompactList}\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_ab4815751a1b423234794bc1e5f925dc2}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_ab4815751a1b423234794bc1e5f925dc2} 
+void {\bfseries Message\+Read} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_chat_message}{Chat\+Message}} message, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} user)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_a6db5030987c4660f6d5dbd8c90792b59}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_a6db5030987c4660f6d5dbd8c90792b59} 
+void {\bfseries Post\+Message} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_chat_message}{Chat\+Message}} message)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_a83c55c259d502ace086b3c5e100e0853}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_a83c55c259d502ace086b3c5e100e0853} 
+Task$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}}?$>$ {\bfseries Get\+Chat\+Room} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}}? chat\+Room)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_ae8fae7b5c9567aca16a49448e0a9d986}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_ae8fae7b5c9567aca16a49448e0a9d986} 
+List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_chat_message}{Chat\+Message}} $>$ {\bfseries Get\+Unread\+Messages} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} user)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_af4a1d540825333990f4b9412ea7c0829}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_af4a1d540825333990f4b9412ea7c0829} 
+List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}} $>$ {\bfseries Get\+Private\+Chats} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} user)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_abef3e5648eb20a50ac8d224026f28917}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_abef3e5648eb20a50ac8d224026f28917} 
+List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_chat_message}{Chat\+Message}} $>$ {\bfseries Get\+Unread\+Messages} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} user, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}} room)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_aa4e45a7d95434ad7c44f137776339523}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_aa4e45a7d95434ad7c44f137776339523} 
+App\+Event$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_chat_message}{Chat\+Message}} $>$ {\bfseries On\+Message\+Posted}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_af279c158de7a49e483b106133fc310eb}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_af279c158de7a49e483b106133fc310eb} 
+App\+Event$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} $>$ {\bfseries On\+Message\+Read}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_a82552318633bc2820ae639cb296320fe}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_a82552318633bc2820ae639cb296320fe} 
+App\+Event$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}} $>$ {\bfseries On\+Chat\+Room\+Created}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_aa1c640ee3158e51742c329c6b6ac5de5}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_aa1c640ee3158e51742c329c6b6ac5de5} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}}? {\bfseries App\+Chat\+Room}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_a88913207b623749cccf110a42a191cfd}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_a88913207b623749cccf110a42a191cfd} 
+IQueryable$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}} $>$ {\bfseries Chat\+Rooms}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_aef1f57e14925917e6d26d6da9a3bfc2c}\label{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service_aef1f57e14925917e6d26d6da9a3bfc2c} 
+\index{BLAZAM.Services.Chat.IChatService@{BLAZAM.Services.Chat.IChatService}!GetPrivateTwoWayChat@{GetPrivateTwoWayChat}}
+\index{GetPrivateTwoWayChat@{GetPrivateTwoWayChat}!BLAZAM.Services.Chat.IChatService@{BLAZAM.Services.Chat.IChatService}}
+\doxysubsubsection{\texorpdfstring{GetPrivateTwoWayChat()}{GetPrivateTwoWayChat()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}} BLAZAM.\+Services.\+Chat.\+IChat\+Service.\+Get\+Private\+Two\+Way\+Chat (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}}}]{current\+User,  }\item[{\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}}}]{other\+User }\end{DoxyParamCaption})}
+
+
+
+Returns the existing private chat between these two users. Returns a new chat if no existing chat exists. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parties} & The two parties in the private chat.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_chat_service_a46cb2324e23f55dce4afb8e160bfad10}{BLAZAM.\+Services.\+Chat.\+Chat\+Service}}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMServices/\+Chat/IChat\+Service.\+cs\end{DoxyCompactItemize}

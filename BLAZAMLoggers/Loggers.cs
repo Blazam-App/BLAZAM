@@ -80,8 +80,8 @@ namespace BLAZAM.Logger
                    .Enrich.WithProperty("Application Version", _applicationVersion)
                //.WriteTo.File(WritablePath+@"\logs\log.txt")
                .WriteTo.File(logFilePath,
-               rollingInterval: RollingInterval.Hour,
-        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}",
+               rollingInterval: rollingInterval,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] {Message}{NewLine}{Exception}",
         retainedFileTimeLimit: TimeSpan.FromDays(30))
 
                .WriteTo.Logger(lc =>

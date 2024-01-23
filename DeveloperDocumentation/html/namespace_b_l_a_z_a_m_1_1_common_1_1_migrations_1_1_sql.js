@@ -1,0 +1,15 @@
+var namespace_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql =
+[
+    [ "AddDarkModeUserPreferenceSql", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_add_dark_mode_user_preference_sql.html", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_add_dark_mode_user_preference_sql" ],
+    [ "AddUserNotificationsTableSql", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_add_user_notifications_table_sql.html", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_add_user_notifications_table_sql" ],
+    [ "CustomADFieldsSql", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_custom_a_d_fields_sql.html", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_custom_a_d_fields_sql" ],
+    [ "CustomFieldRelationshipsSql", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_custom_field_relationships_sql.html", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_custom_field_relationships_sql" ],
+    [ "FieldAccessObjectTypeColumnSql", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_field_access_object_type_column_sql.html", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_field_access_object_type_column_sql" ],
+    [ "FixCityFieldNameSql", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_fix_city_field_name_sql.html", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_fix_city_field_name_sql" ],
+    [ "FixFieldAccessMappingRequiredADFieldSql", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_fix_field_access_mapping_required_a_d_field_sql.html", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_fix_field_access_mapping_required_a_d_field_sql" ],
+    [ "NotificationsUpdateSql", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_notifications_update_sql.html", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_notifications_update_sql" ],
+    [ "RecoverableTemplatesFieldsPermissionsSql", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_recoverable_templates_fields_permissions_sql.html", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_recoverable_templates_fields_permissions_sql" ],
+    [ "Seedv3Sql", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_seedv3_sql.html", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_seedv3_sql" ],
+    [ "SqlDatabaseContextModelSnapshot", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_sql_database_context_model_snapshot.html", null ],
+    [ "TemplatesEditableRequiredCustomGroupsSql", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_templates_editable_required_custom_groups_sql.html", "class_b_l_a_z_a_m_1_1_common_1_1_migrations_1_1_sql_1_1_templates_editable_required_custom_groups_sql" ]
+];

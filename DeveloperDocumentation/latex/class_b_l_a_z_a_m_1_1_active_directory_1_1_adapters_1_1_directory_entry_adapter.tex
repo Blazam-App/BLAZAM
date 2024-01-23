@@ -1,0 +1,1069 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter}{}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter}\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.198953cm]{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a0d5c3a2e412952665c03c0419790ae62}{Invoke}} (string method, object?\mbox{[}$\,$\mbox{]}? args=null)
+\begin{DoxyCompactList}\small\item\em Wrapper method for the base Directory\+Entry Invoke method. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ab6e8882aa112a1c293039040cb569980}{Ensure\+Directory\+Entry}} ()
+\item 
+override? string \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6cf28fb2918b6f7b2be1d4ddb4764007}{To\+String}} ()
+\begin{DoxyCompactList}\small\item\em The string representation of this entry. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a2a634362ec0ccd5d57d96321c26818dc}{Move\+To}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} parent\+OUTo\+Move\+To)
+\begin{DoxyCompactList}\small\item\em Move this entry to a new IADOrganizational\+Unit \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}}?$>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_abd8574c4f87e8b4f5144f5f0f8149b26}{Get\+Parent}} ()
+\begin{DoxyCompactList}\small\item\em Get\textquotesingle{}s the parent IADOrganizational\+Unit of this entry. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_af2c1275332acece4af181aaaa8bfd5c2}{Can\+Read\+Field}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_models_1_1_i_active_directory_field}{IActive\+Directory\+Field}} field)
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can read the specified field. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a8311e5a7dd3a497753e5631f891301a2}{Can\+Edit\+Field}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_models_1_1_i_active_directory_field}{IActive\+Directory\+Field}} field)
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can modify the specified field. \end{DoxyCompactList}\item 
+virtual async Task \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aadf086391802680d9926fad070fe7da5}{Parse}} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a31e81554776db18dcc57b9ffcfdd6e3d}{Directory\+Entry}} result, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\begin{DoxyCompactList}\small\item\em Converts a raw Directory\+Entry into an application IDirectory\+Entry\+Adapter object. \end{DoxyCompactList}\item 
+virtual async Task \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_afc32d3cf1c003f7406862ec1f2a8c4aa}{Parse}} (Search\+Result result, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\begin{DoxyCompactList}\small\item\em Converts a raw Search\+Result into an application IDirectory\+Entry\+Adapter object. \end{DoxyCompactList}\item 
+virtual async Task$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a40fceaa7b8b550ae14428f409da76941}{Commit\+Changes\+Async}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}}? commit\+Job=null)
+\begin{DoxyCompactList}\small\item\em Sends all staged changes to the Active Directory server asynchronously. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}} \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a63c48517bae700f9589238239766bd56}{Commit\+Changes}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}}? commit\+Job=null)
+\begin{DoxyCompactList}\small\item\em Sends all staged changes to the Active Directory server. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a412c359fe5938d1a1be77ee679b8c379}{Delete}} ()
+\begin{DoxyCompactList}\small\item\em Deletes this entry from the directory. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ab1f86b86f20f9a51b5abd3781862d06b}{Discard\+Changes}} ()
+\begin{DoxyCompactList}\small\item\em Resets the current entry state to it\textquotesingle{}s inital state. \end{DoxyCompactList}\item 
+virtual ? T \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a40fe8b05ea3c96022389ec3cfd53b694}{Get\+Custom\+Property$<$ T $>$}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Gets a custom attribute value for the given name and returns an object with the given type. \end{DoxyCompactList}\item 
+virtual ? Date\+Time \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a41d2d88beb282c9f9f5a27edbc45fe0e}{Get\+Date\+Time\+Property}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Returns the specified Date\+Time property in UTC. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a62effd4c4d264b9a13f909f3eb01739a}{Set\+Custom\+Property}} (string property\+Name, object? value)
+\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a64b9dbd0939ff7416bd25ec309a1f2fa}{Rename}} (string new\+Name)
+\begin{DoxyCompactList}\small\item\em Renames the CN attribute. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a40f5be8b4dc8a540282579fd07465c5b}{Dispose}} ()
+\begin{DoxyCompactList}\small\item\em Properly disposes of this entry from memory. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ac7187748518bd955eceaad0cfd443972}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ac7187748518bd955eceaad0cfd443972} 
+override bool {\bfseries Equals} (object? obj)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a4a0fb76801888a44c148a7365d181c6a}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a4a0fb76801888a44c148a7365d181c6a} 
+override int {\bfseries Get\+Hash\+Code} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a0ad732ad844a4dee5586eee9a3c856dd}{Has\+Permission}} (Func$<$ IEnumerable$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_mapping}{Permission\+Mapping}} $>$, IEnumerable$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_mapping}{Permission\+Mapping}} $>$ $>$ allow\+Selector, Func$<$ IEnumerable$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_mapping}{Permission\+Mapping}} $>$, IEnumerable$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_mapping}{Permission\+Mapping}} $>$ $>$? deny\+Selector=null)
+\begin{DoxyCompactList}\small\item\em Used to check application user permissions. The selectors provided will authomatically search for this Directory\+Model\textquotesingle{}s OU. Supplied selectors should only check for Access\+Levels.\+Any(...) that match the permission type requested. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ad456385bc238d46b74ae9ed6be45ee78}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ad456385bc238d46b74ae9ed6be45ee78} 
+virtual bool {\bfseries Has\+Action\+Permission} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_object_action}{Object\+Action}} action)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a4a9ab69af685b7fc6c68779e069df26b}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a4a9ab69af685b7fc6c68779e069df26b} 
+virtual async Task {\bfseries Parse} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a31e81554776db18dcc57b9ffcfdd6e3d}{Directory\+Entry}}? directory\+Entry, Search\+Result? search\+Result, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a719c6875664fc688ad59e6f5e4f7160f}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a719c6875664fc688ad59e6f5e4f7160f} 
+virtual List$<$ T?$>$ {\bfseries Get\+Non\+Replicated\+Property$<$ T $>$} (string property\+Name)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a24869ed34938ee2ff7f528d12cdc6cce}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a24869ed34938ee2ff7f528d12cdc6cce} 
+virtual ? T {\bfseries Get\+Property$<$ T $>$} (string property\+Name)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a69a8d3fe2c87dbb771df17dd07128172}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a69a8d3fe2c87dbb771df17dd07128172} 
+virtual ? string {\bfseries Get\+String\+Property} (string property\+Name)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a756ddd4b796ff63bfac548b33c5f6a64}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a756ddd4b796ff63bfac548b33c5f6a64} 
+virtual ? List$<$ string $>$ {\bfseries Get\+String\+List\+Property} (string property\+Name)
+\item 
+virtual void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a3ca487b7bc33f8c55b36c03e0550d70c}{Set\+Property}} (string property\+Name, object? value)
+\begin{DoxyCompactList}\small\item\em Sets an attribute value. Note that this change is uncommited, Commit\+Changes must be called afterwards for the change to persist. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a7ef89f54b21aac34995035c6055c0015}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a7ef89f54b21aac34995035c6055c0015} 
+virtual void {\bfseries Remove\+From\+List\+Property} (string property\+Name, object? value)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_adae88a2b2cac5b68bfd74d86e87ceba4}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_adae88a2b2cac5b68bfd74d86e87ceba4} 
+virtual void {\bfseries Add\+To\+List\+Property} (string property\+Name, object? value)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_af3113c6a1a14a5c3ef37523200a7f67b}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_af3113c6a1a14a5c3ef37523200a7f67b} 
+Search\+Result? {\bfseries search\+Result}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+virtual string \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a9e5345607ef907b5b7bcc67b7ef603a9}{Search\+Uri}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns the relative path to reach the search result page for this entry. \end{DoxyCompactList}\item 
+App\+Event? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a25032be6846b01330bf42f81d14cc542}{On\+Model\+Changed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when any changes occur to this entry. \end{DoxyCompactList}\item 
+App\+Event$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} $>$? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a3e9ce2fdc0ec388779dc11d7501e7cff}{On\+Directory\+Model\+Renamed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when this entry is renamed. \end{DoxyCompactList}\item 
+App\+Event? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a08134f8947dd9eed663f8f9d6f36d3e1}{On\+Model\+Commited}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when pending changes to this entry are commited. \end{DoxyCompactList}\item 
+App\+Event? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a2a51689512141b7b805ced886692531f}{On\+Model\+Deleted}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when this entry is deleted. \end{DoxyCompactList}\item 
+virtual List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_audit_change_log}{Audit\+Change\+Log}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a7caf62ebd1ce2b8362d17d5f91e11f60}{Changes}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em A list of changelogs made to this entry for auditting purposes. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a39659fe623f7e9182c9b12d2c1989766}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a39659fe623f7e9182c9b12d2c1989766} 
+List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step}{Job\+Step}} $>$ {\bfseries Commit\+Steps} = new()\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Actions to perform during Commit\+Changes \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a55261d7ba228706e72e8ef8411eadb92}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a55261d7ba228706e72e8ef8411eadb92} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} {\bfseries Db\+Factory}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a04efab67de4db5090b35ea547081c4fe}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a04efab67de4db5090b35ea547081c4fe} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? {\bfseries Current\+User}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6f888f721355e13b10a45f42365e8c93}{New\+Entry}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Set this to true to indicate that this entry is a new entry. \end{DoxyCompactList}\item 
+Dictionary$<$ string, object $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a851676480aaf9b86f32ce872c54afde8}{New\+Entry\+Properties}} = new()\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em If New\+Entry is true, property changes will be staged in this property. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a7505958ae3c0527ce2c23f0f435d0ea9}{Directory}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The directory this entry belongs to. \end{DoxyCompactList}\item 
+Directory\+Entry? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a31e81554776db18dcc57b9ffcfdd6e3d}{Directory\+Entry}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The .NET underlying object for this entry. \end{DoxyCompactList}\item 
+Active\+Directory\+Object\+Type \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a68812b8f8a163ec87558caa0c86cc30f}{Object\+Type}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The type of Active Directory entry that this is. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_abeb61c206d531e8bf6ba12c1939a6dc1}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_abeb61c206d531e8bf6ba12c1939a6dc1} 
+Type {\bfseries Model\+Type}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a4c687a9658bfe12f848ca599a5533234}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a4c687a9658bfe12f848ca599a5533234} 
+Search\+Result? {\bfseries Search\+Result}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual ? string \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aab6e0bd70a654e4b7cbe790b253c501f}{Sam\+Account\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The SAMAccount\+Name property, generally used as the username property. \end{DoxyCompactList}\item 
+virtual ? string \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6971b49293dfcd35d33841c3e69826ab}{ADSPath}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The full Active Directory Services path including LDAP server name. \end{DoxyCompactList}\item 
+virtual ? string \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a65eb6879a1668d1a1b801f143a2f0f0a}{Canonical\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The name that displays for this object in ADUC. \end{DoxyCompactList}\item 
+virtual string \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a4dda380dfbe98397bf1ac39b78677c01}{DN}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em This entry\textquotesingle{}s Distinguished Name. \end{DoxyCompactList}\item 
+virtual ? Date\+Time \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6f60e638933f34fd0e55d565427f6bad}{Created}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The date and time in UTC that this entry was created. \end{DoxyCompactList}\item 
+virtual ? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ad333cc41f798dfcf3e9981b0de684423}{Last\+Known\+Parent}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em If this object is deleted, this was the last IADOrganizational\+Unit it was under. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6d9b12836315e7ac1d791fe8d55c08fc}{Is\+Deleted}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates this entry is in the Active Directory Recycle Bin. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a1da19faa9fc54d8e875e705b068baa02}{Has\+Children}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this entry has any child entries. \end{DoxyCompactList}\item 
+virtual ? Date\+Time \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a39942a7e9be1e7b6516e9d08811847dd}{Last\+Changed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The date and time in UTC that this entry was last modified. \end{DoxyCompactList}\item 
+virtual ? byte\mbox{[}$\,$\mbox{]} \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6c92ec67f24f74dc44e7156937bc9b16}{SID}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em This entry\textquotesingle{}s SID in byte form. \end{DoxyCompactList}\item 
+virtual ? List$<$ string $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aafb752c796d2dee00c7dc46624a17195}{Classes}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The object\+Class value. \end{DoxyCompactList}\item 
+virtual ? string \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ac3ae97f14f6e32bffcea123924a6ec2b}{OU}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The parent OU distinguished name as a string. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aecc8288016783112faa09465a64da57f}{Can\+Read}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user has read access to this directory entry. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aa22fdb01ad78414846de12e890570baa}{Can\+Read\+Any\+Custom\+Fields}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can read any custom fields for this directory entry. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aede7d46b7479554644cbaae071237448}{Can\+Edit}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can edit any fields for this directory entry. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a509f0e7c0562bbd0b3f6b638bd30c0b3}{Can\+Rename}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user has read access to this directory entry. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_af7c9874a2c23cafd3566b72d9ec35dec}{Can\+Move}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user has move permission for this directory entry. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a2e186bd13d2b5a183107fec3b1d2cc36}{Can\+Create}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can create this Active\+Directory\+Object\+Type \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a0e3d202324e571c55cf1f073678b18f6}{Can\+Delete}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can delete this directory entry. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a365ffa0bee69223acef1b03280ba23af}{Has\+Unsaved\+Changes}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether there have been uncommitted changes to this entry. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a57c6c67f2e16ed79ae36d6f4b53e6c2a}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a57c6c67f2e16ed79ae36d6f4b53e6c2a} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_a_d_settings}{ADSettings}}? {\bfseries Directory\+Settings}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_afd8fa07e4ac2385d628c0b1d0fd000f0}{Is\+Expanded}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this entry is expanded in the ui within a tree view. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a84c7e54256a949fc632c48ff6412f796}{Is\+Selected}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this entry is selected in the ui within a tree view. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a7fc2d9bf98229ad0fa26de9bb3e0439d}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a7fc2d9bf98229ad0fa26de9bb3e0439d} 
+virtual IEnumerable$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} $>$ {\bfseries Cached\+Children} = new List$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}}$>$()\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\item 
+virtual IEnumerable$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a171b07a15cfe7887ba745e9eec8e6573}{Children}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The children of this entry. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a8311e5a7dd3a497753e5631f891301a2}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a8311e5a7dd3a497753e5631f891301a2} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!CanEditField@{CanEditField}}
+\index{CanEditField@{CanEditField}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{CanEditField()}{CanEditField()}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Can\+Edit\+Field (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_models_1_1_i_active_directory_field}{IActive\+Directory\+Field}}}]{field }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Indicates whether the current web application user can modify the specified field. 
+
+Checks against permissions set in database. Always true for super admins. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em field} & The field to test\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the current user can modify the field, otherwise false
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a256f3bee3ab3cf02818042c39da6397c}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_af2c1275332acece4af181aaaa8bfd5c2}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_af2c1275332acece4af181aaaa8bfd5c2} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!CanReadField@{CanReadField}}
+\index{CanReadField@{CanReadField}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{CanReadField()}{CanReadField()}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Can\+Read\+Field (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_models_1_1_i_active_directory_field}{IActive\+Directory\+Field}}}]{field }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Indicates whether the current web application user can read the specified field. 
+
+Checks against permissions set in database. Always true for super admins. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em field} & The field to test\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the current user can read the field, otherwise false
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_ad2459b448307d948360acc245cab2df5}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a63c48517bae700f9589238239766bd56}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a63c48517bae700f9589238239766bd56} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!CommitChanges@{CommitChanges}}
+\index{CommitChanges@{CommitChanges}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{CommitChanges()}{CommitChanges()}}
+{\footnotesize\ttfamily virtual \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}} BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Commit\+Changes (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}}?}]{commit\+Job = {\ttfamily null} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Sends all staged changes to the Active Directory server. 
+
+\begin{DoxyReturn}{Returns}
+A job with the results of the performed actions
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_ae536a894824daa5b96c95ede792551ef}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_groupable_directory_adapter_aef9f89ab5b92efa9e9d4da059de29210}{BLAZAM.\+Active\+Directory.\+Adapters.\+Groupable\+Directory\+Adapter}}, and \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_group_a546409f574a6aaf8f222d92e237cad96}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADGroup}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a40fceaa7b8b550ae14428f409da76941}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a40fceaa7b8b550ae14428f409da76941} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!CommitChangesAsync@{CommitChangesAsync}}
+\index{CommitChangesAsync@{CommitChangesAsync}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{CommitChangesAsync()}{CommitChangesAsync()}}
+{\footnotesize\ttfamily virtual async Task$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}} $>$ BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Commit\+Changes\+Async (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}}?}]{commit\+Job = {\ttfamily null} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Sends all staged changes to the Active Directory server asynchronously. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_af6d6a44c47d2a260141e40e304984fb7}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a412c359fe5938d1a1be77ee679b8c379}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a412c359fe5938d1a1be77ee679b8c379} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!Delete@{Delete}}
+\index{Delete@{Delete}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily virtual void BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Delete (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Deletes this entry from the directory. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a858a0bebfdae76fa49174e937bb36070}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ab1f86b86f20f9a51b5abd3781862d06b}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ab1f86b86f20f9a51b5abd3781862d06b} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!DiscardChanges@{DiscardChanges}}
+\index{DiscardChanges@{DiscardChanges}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{DiscardChanges()}{DiscardChanges()}}
+{\footnotesize\ttfamily virtual void BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Discard\+Changes (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Resets the current entry state to it\textquotesingle{}s inital state. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6b9f253b237a7fa1bdc43628ea1dd8bb}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_group_a607692179f27b71885a5c82830bce590}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADGroup}}, and \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_groupable_directory_adapter_acce63e7be5fc696ca3c446680f409e37}{BLAZAM.\+Active\+Directory.\+Adapters.\+Groupable\+Directory\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a40f5be8b4dc8a540282579fd07465c5b}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a40f5be8b4dc8a540282579fd07465c5b} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!Dispose@{Dispose}}
+\index{Dispose@{Dispose}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{Dispose()}{Dispose()}}
+{\footnotesize\ttfamily virtual void BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Dispose (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Properly disposes of this entry from memory. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6c444860f8e80c5dbedfd7f81982068f}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_a2c5b3cba4ed7424015ef2757dc90a3a1}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ab6e8882aa112a1c293039040cb569980}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ab6e8882aa112a1c293039040cb569980} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!EnsureDirectoryEntry@{EnsureDirectoryEntry}}
+\index{EnsureDirectoryEntry@{EnsureDirectoryEntry}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{EnsureDirectoryEntry()}{EnsureDirectoryEntry()}}
+{\footnotesize\ttfamily void BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Ensure\+Directory\+Entry (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a40fe8b05ea3c96022389ec3cfd53b694}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a40fe8b05ea3c96022389ec3cfd53b694} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!GetCustomProperty$<$ T $>$@{GetCustomProperty$<$ T $>$}}
+\index{GetCustomProperty$<$ T $>$@{GetCustomProperty$<$ T $>$}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{GetCustomProperty$<$ T $>$()}{GetCustomProperty< T >()}}
+{\footnotesize\ttfamily virtual ? T BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Get\+Custom\+Property$<$ T $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a custom attribute value for the given name and returns an object with the given type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a4f850e3123d697920805748cb61caebe}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a41d2d88beb282c9f9f5a27edbc45fe0e}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a41d2d88beb282c9f9f5a27edbc45fe0e} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!GetDateTimeProperty@{GetDateTimeProperty}}
+\index{GetDateTimeProperty@{GetDateTimeProperty}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{GetDateTimeProperty()}{GetDateTimeProperty()}}
+{\footnotesize\ttfamily virtual ? Date\+Time BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Get\+Date\+Time\+Property (\begin{DoxyParamCaption}\item[{string}]{property\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Returns the specified Date\+Time property in UTC. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a963e91ee1b34ecc363abdd78fe124c81}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_abd8574c4f87e8b4f5144f5f0f8149b26}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_abd8574c4f87e8b4f5144f5f0f8149b26} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!GetParent@{GetParent}}
+\index{GetParent@{GetParent}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{GetParent()}{GetParent()}}
+{\footnotesize\ttfamily async Task$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}}?$>$ BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Get\+Parent (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get\textquotesingle{}s the parent IADOrganizational\+Unit of this entry. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a41033d2a18ccd24e2975628e21ed8267}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a0ad732ad844a4dee5586eee9a3c856dd}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a0ad732ad844a4dee5586eee9a3c856dd} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!HasPermission@{HasPermission}}
+\index{HasPermission@{HasPermission}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{HasPermission()}{HasPermission()}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Has\+Permission (\begin{DoxyParamCaption}\item[{Func$<$ IEnumerable$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_mapping}{Permission\+Mapping}} $>$, IEnumerable$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_mapping}{Permission\+Mapping}} $>$ $>$}]{allow\+Selector,  }\item[{Func$<$ IEnumerable$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_mapping}{Permission\+Mapping}} $>$, IEnumerable$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_mapping}{Permission\+Mapping}} $>$ $>$?}]{deny\+Selector = {\ttfamily null} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Used to check application user permissions. The selectors provided will authomatically search for this Directory\+Model\textquotesingle{}s OU. Supplied selectors should only check for Access\+Levels.\+Any(...) that match the permission type requested. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em allow\+Selector} & \\
+\hline
+{\em deny\+Selector} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a0d5c3a2e412952665c03c0419790ae62}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a0d5c3a2e412952665c03c0419790ae62} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!Invoke@{Invoke}}
+\index{Invoke@{Invoke}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{Invoke()}{Invoke()}}
+{\footnotesize\ttfamily bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Invoke (\begin{DoxyParamCaption}\item[{string}]{method,  }\item[{object??\mbox{[}$\,$\mbox{]}}]{args = {\ttfamily null} }\end{DoxyParamCaption})}
+
+
+
+Wrapper method for the base Directory\+Entry Invoke method. 
+
+Useful for setting passwords and managing group memberships. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em method} & \\
+\hline
+{\em args} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a7e35fc56532a49cdd7adbd427908ed05}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a2a634362ec0ccd5d57d96321c26818dc}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a2a634362ec0ccd5d57d96321c26818dc} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!MoveTo@{MoveTo}}
+\index{MoveTo@{MoveTo}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{MoveTo()}{MoveTo()}}
+{\footnotesize\ttfamily virtual void BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Move\+To (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}}}]{parent\+OUTo\+Move\+To }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Move this entry to a new IADOrganizational\+Unit 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parent\+OUTo\+Move\+To} & The destination OU\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a4f614c32de3d42660ac73167d1d15181}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aadf086391802680d9926fad070fe7da5}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aadf086391802680d9926fad070fe7da5} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!Parse@{Parse}}
+\index{Parse@{Parse}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{Parse()}{Parse()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual async Task BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Parse (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a31e81554776db18dcc57b9ffcfdd6e3d}{Directory\+Entry}}}]{result,  }\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}}}]{directory }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Converts a raw Directory\+Entry into an application IDirectory\+Entry\+Adapter object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em result} & \\
+\hline
+{\em directory} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a45374f2e68a19d8f2053c55e73099704}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_afc32d3cf1c003f7406862ec1f2a8c4aa}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_afc32d3cf1c003f7406862ec1f2a8c4aa} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!Parse@{Parse}}
+\index{Parse@{Parse}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{Parse()}{Parse()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual async Task BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Parse (\begin{DoxyParamCaption}\item[{Search\+Result}]{result,  }\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}}}]{directory }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Converts a raw Search\+Result into an application IDirectory\+Entry\+Adapter object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em result} & \\
+\hline
+{\em directory} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a16203a0cf4a87d436cf4c1427c0028ef}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_a0d4a65528bca0f92b38aaf0cf662124a}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a64b9dbd0939ff7416bd25ec309a1f2fa}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a64b9dbd0939ff7416bd25ec309a1f2fa} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!Rename@{Rename}}
+\index{Rename@{Rename}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{Rename()}{Rename()}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Rename (\begin{DoxyParamCaption}\item[{string}]{new\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Renames the CN attribute. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Name} & New CN\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_abe9ce091d35ef44345d68b6b47026cd7}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_group_a46a39d36c950507811f5ec14126130f7}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADGroup}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a62effd4c4d264b9a13f909f3eb01739a}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a62effd4c4d264b9a13f909f3eb01739a} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!SetCustomProperty@{SetCustomProperty}}
+\index{SetCustomProperty@{SetCustomProperty}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{SetCustomProperty()}{SetCustomProperty()}}
+{\footnotesize\ttfamily virtual void BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Set\+Custom\+Property (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{object?}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a3ca487b7bc33f8c55b36c03e0550d70c}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a3ca487b7bc33f8c55b36c03e0550d70c} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!SetProperty@{SetProperty}}
+\index{SetProperty@{SetProperty}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{SetProperty()}{SetProperty()}}
+{\footnotesize\ttfamily virtual void BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Set\+Property (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{object?}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Sets an attribute value. Note that this change is uncommited, Commit\+Changes must be called afterwards for the change to persist. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & \\
+\hline
+{\em value} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6cf28fb2918b6f7b2be1d4ddb4764007}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6cf28fb2918b6f7b2be1d4ddb4764007} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!ToString@{ToString}}
+\index{ToString@{ToString}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{ToString()}{ToString()}}
+{\footnotesize\ttfamily override? string BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+To\+String (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+The string representation of this entry. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a2ad0f18bf765bd6fe866754ea977cb37}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6971b49293dfcd35d33841c3e69826ab}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6971b49293dfcd35d33841c3e69826ab} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!ADSPath@{ADSPath}}
+\index{ADSPath@{ADSPath}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{ADSPath}{ADSPath}}
+{\footnotesize\ttfamily virtual ? string BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+ADSPath\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The full Active Directory Services path including LDAP server name. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_afca8eff71eb839eaca40c86509a60e29}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a2e186bd13d2b5a183107fec3b1d2cc36}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a2e186bd13d2b5a183107fec3b1d2cc36} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!CanCreate@{CanCreate}}
+\index{CanCreate@{CanCreate}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{CanCreate}{CanCreate}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Can\+Create\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Indicates whether the current web application user can create this Active\+Directory\+Object\+Type 
+
+Checks against permissions set in database. Always true for super admins. 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_af533f89c7f3fe4c864e742c1fdd9bca6}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a0e3d202324e571c55cf1f073678b18f6}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a0e3d202324e571c55cf1f073678b18f6} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!CanDelete@{CanDelete}}
+\index{CanDelete@{CanDelete}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{CanDelete}{CanDelete}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Can\+Delete\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Indicates whether the current web application user can delete this directory entry. 
+
+Checks against permissions set in database. Always true for super admins. 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_abf586bb748c76f8239b14cf5379ff139}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aede7d46b7479554644cbaae071237448}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aede7d46b7479554644cbaae071237448} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!CanEdit@{CanEdit}}
+\index{CanEdit@{CanEdit}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{CanEdit}{CanEdit}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Can\+Edit\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Indicates whether the current web application user can edit any fields for this directory entry. 
+
+Checks against permissions set in database. Always true for super admins. 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6eb9958c37f15168fd8fd71928b546b3}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_af7c9874a2c23cafd3566b72d9ec35dec}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_af7c9874a2c23cafd3566b72d9ec35dec} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!CanMove@{CanMove}}
+\index{CanMove@{CanMove}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{CanMove}{CanMove}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Can\+Move\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Indicates whether the current web application user has move permission for this directory entry. 
+
+Checks against permissions set in database. Always true for super admins. 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_abfcf78a992b22b8b6d7ece615aef8753}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a65eb6879a1668d1a1b801f143a2f0f0a}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a65eb6879a1668d1a1b801f143a2f0f0a} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!CanonicalName@{CanonicalName}}
+\index{CanonicalName@{CanonicalName}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{CanonicalName}{CanonicalName}}
+{\footnotesize\ttfamily virtual ? string BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Canonical\+Name\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The name that displays for this object in ADUC. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6fe008fd86aa2ce2ed68c8f2253a677f}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aecc8288016783112faa09465a64da57f}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aecc8288016783112faa09465a64da57f} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!CanRead@{CanRead}}
+\index{CanRead@{CanRead}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{CanRead}{CanRead}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Can\+Read\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Indicates whether the current web application user has read access to this directory entry. 
+
+Checks against permissions set in database. Always true for super admins. 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a503cc3a88485b370dac3d3f5141bfae3}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aa22fdb01ad78414846de12e890570baa}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aa22fdb01ad78414846de12e890570baa} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!CanReadAnyCustomFields@{CanReadAnyCustomFields}}
+\index{CanReadAnyCustomFields@{CanReadAnyCustomFields}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{CanReadAnyCustomFields}{CanReadAnyCustomFields}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Can\+Read\+Any\+Custom\+Fields\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Indicates whether the current web application user can read any custom fields for this directory entry. 
+
+Checks against permissions set in database. Always true for super admins. 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a000ef0a599643a3d3495b86bd9904e67}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a509f0e7c0562bbd0b3f6b638bd30c0b3}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a509f0e7c0562bbd0b3f6b638bd30c0b3} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!CanRename@{CanRename}}
+\index{CanRename@{CanRename}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{CanRename}{CanRename}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Can\+Rename\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Indicates whether the current web application user has read access to this directory entry. 
+
+Checks against permissions set in database. Always true for super admins. 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_adcf454d39f969e8ac8e2d02b7dd58961}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a7caf62ebd1ce2b8362d17d5f91e11f60}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a7caf62ebd1ce2b8362d17d5f91e11f60} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!Changes@{Changes}}
+\index{Changes@{Changes}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{Changes}{Changes}}
+{\footnotesize\ttfamily virtual List$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_audit_change_log}{Audit\+Change\+Log}}$>$ BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Changes\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+A list of changelogs made to this entry for auditting purposes. 
+
+Must be collected prior to executing Commit\+Changes 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a8ab6eb219270571c791d8e1fba8eabe1}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a171b07a15cfe7887ba745e9eec8e6573}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a171b07a15cfe7887ba745e9eec8e6573} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!Children@{Children}}
+\index{Children@{Children}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{Children}{Children}}
+{\footnotesize\ttfamily virtual IEnumerable$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}}$>$ BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Children\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The children of this entry. 
+
+Usually only used for IADOrganizational\+Unit\textquotesingle{}s 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a13204cd284668f8c25ff648ac92a0760}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aafb752c796d2dee00c7dc46624a17195}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aafb752c796d2dee00c7dc46624a17195} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!Classes@{Classes}}
+\index{Classes@{Classes}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{Classes}{Classes}}
+{\footnotesize\ttfamily virtual ? List$<$string$>$ BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Classes\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The object\+Class value. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a49b9b93a33081c61352434eb2f968d91}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6f60e638933f34fd0e55d565427f6bad}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6f60e638933f34fd0e55d565427f6bad} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!Created@{Created}}
+\index{Created@{Created}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{Created}{Created}}
+{\footnotesize\ttfamily virtual ? Date\+Time BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Created\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The date and time in UTC that this entry was created. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a2b57416a7bed1b9a3f882d129d2ac690}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a7505958ae3c0527ce2c23f0f435d0ea9}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a7505958ae3c0527ce2c23f0f435d0ea9} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!Directory@{Directory}}
+\index{Directory@{Directory}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{Directory}{Directory}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Directory\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The directory this entry belongs to. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a85e7f2233674684ad89aeea6c385742a}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a31e81554776db18dcc57b9ffcfdd6e3d}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a31e81554776db18dcc57b9ffcfdd6e3d} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!DirectoryEntry@{DirectoryEntry}}
+\index{DirectoryEntry@{DirectoryEntry}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{DirectoryEntry}{DirectoryEntry}}
+{\footnotesize\ttfamily Directory\+Entry? BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Directory\+Entry\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The .NET underlying object for this entry. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6419100ef150a476f9cd610c244fbffd}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a4dda380dfbe98397bf1ac39b78677c01}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a4dda380dfbe98397bf1ac39b78677c01} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!DN@{DN}}
+\index{DN@{DN}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{DN}{DN}}
+{\footnotesize\ttfamily virtual string BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+DN\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+This entry\textquotesingle{}s Distinguished Name. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_af19bda9f95e0144fd99cd1187ee7a2dd}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a1da19faa9fc54d8e875e705b068baa02}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a1da19faa9fc54d8e875e705b068baa02} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!HasChildren@{HasChildren}}
+\index{HasChildren@{HasChildren}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{HasChildren}{HasChildren}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Has\+Children\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Indicates whether this entry has any child entries. 
+
+Only looks for "{}top"{} object types 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a7ca023983567d28bd34dc22de81a51ad}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a365ffa0bee69223acef1b03280ba23af}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a365ffa0bee69223acef1b03280ba23af} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!HasUnsavedChanges@{HasUnsavedChanges}}
+\index{HasUnsavedChanges@{HasUnsavedChanges}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{HasUnsavedChanges}{HasUnsavedChanges}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Has\+Unsaved\+Changes\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Indicates whether there have been uncommitted changes to this entry. 
+
+Compares the current state to the initial state 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a11ad7149260f1691b8e90f36dae78dde}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6d9b12836315e7ac1d791fe8d55c08fc}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6d9b12836315e7ac1d791fe8d55c08fc} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!IsDeleted@{IsDeleted}}
+\index{IsDeleted@{IsDeleted}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{IsDeleted}{IsDeleted}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Is\+Deleted\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Indicates this entry is in the Active Directory Recycle Bin. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a41780b18bb2636e8957160b1d2499048}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_afd8fa07e4ac2385d628c0b1d0fd000f0}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_afd8fa07e4ac2385d628c0b1d0fd000f0} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!IsExpanded@{IsExpanded}}
+\index{IsExpanded@{IsExpanded}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{IsExpanded}{IsExpanded}}
+{\footnotesize\ttfamily bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Is\+Expanded\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Indicates whether this entry is expanded in the ui within a tree view. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_ac9f72340138bc057f24c319d3a5e19f4}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a84c7e54256a949fc632c48ff6412f796}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a84c7e54256a949fc632c48ff6412f796} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!IsSelected@{IsSelected}}
+\index{IsSelected@{IsSelected}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{IsSelected}{IsSelected}}
+{\footnotesize\ttfamily bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Is\+Selected\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Indicates whether this entry is selected in the ui within a tree view. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_abdaeb2444c0c89e06c253ffe100237fa}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a39942a7e9be1e7b6516e9d08811847dd}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a39942a7e9be1e7b6516e9d08811847dd} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!LastChanged@{LastChanged}}
+\index{LastChanged@{LastChanged}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{LastChanged}{LastChanged}}
+{\footnotesize\ttfamily virtual ? Date\+Time BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Last\+Changed\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The date and time in UTC that this entry was last modified. 
+
+Many AD functions count as updating a user, such as logging in... 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_af834cadc4fb19bea4282d7526cea98c0}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ad333cc41f798dfcf3e9981b0de684423}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ad333cc41f798dfcf3e9981b0de684423} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!LastKnownParent@{LastKnownParent}}
+\index{LastKnownParent@{LastKnownParent}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{LastKnownParent}{LastKnownParent}}
+{\footnotesize\ttfamily virtual ? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Last\+Known\+Parent\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+If this object is deleted, this was the last IADOrganizational\+Unit it was under. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a2b6c9362657ac17bbb0125d044816749}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6f888f721355e13b10a45f42365e8c93}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6f888f721355e13b10a45f42365e8c93} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!NewEntry@{NewEntry}}
+\index{NewEntry@{NewEntry}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{NewEntry}{NewEntry}}
+{\footnotesize\ttfamily bool BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+New\+Entry\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Set this to true to indicate that this entry is a new entry. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6516815e834fd61b327da4f7cd996b58}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a851676480aaf9b86f32ce872c54afde8}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a851676480aaf9b86f32ce872c54afde8} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!NewEntryProperties@{NewEntryProperties}}
+\index{NewEntryProperties@{NewEntryProperties}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{NewEntryProperties}{NewEntryProperties}}
+{\footnotesize\ttfamily Dictionary$<$string, object$>$ BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+New\+Entry\+Properties = new()\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+If New\+Entry is true, property changes will be staged in this property. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_acdfdc7a71d1a669b4d0585289fce0052}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a68812b8f8a163ec87558caa0c86cc30f}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a68812b8f8a163ec87558caa0c86cc30f} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!ObjectType@{ObjectType}}
+\index{ObjectType@{ObjectType}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{ObjectType}{ObjectType}}
+{\footnotesize\ttfamily Active\+Directory\+Object\+Type BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Object\+Type\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The type of Active Directory entry that this is. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_aaaa70870feafcff13559557e1400bea5}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a3e9ce2fdc0ec388779dc11d7501e7cff}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a3e9ce2fdc0ec388779dc11d7501e7cff} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!OnDirectoryModelRenamed@{OnDirectoryModelRenamed}}
+\index{OnDirectoryModelRenamed@{OnDirectoryModelRenamed}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{OnDirectoryModelRenamed}{OnDirectoryModelRenamed}}
+{\footnotesize\ttfamily App\+Event$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}}$>$? BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+On\+Directory\+Model\+Renamed\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Called when this entry is renamed. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6915cc93945a4e7d413eed287fd637bb}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a25032be6846b01330bf42f81d14cc542}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a25032be6846b01330bf42f81d14cc542} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!OnModelChanged@{OnModelChanged}}
+\index{OnModelChanged@{OnModelChanged}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{OnModelChanged}{OnModelChanged}}
+{\footnotesize\ttfamily App\+Event? BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+On\+Model\+Changed\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Called when any changes occur to this entry. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a502ce5e319022770b14f45f8364e53eb}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a08134f8947dd9eed663f8f9d6f36d3e1}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a08134f8947dd9eed663f8f9d6f36d3e1} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!OnModelCommited@{OnModelCommited}}
+\index{OnModelCommited@{OnModelCommited}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{OnModelCommited}{OnModelCommited}}
+{\footnotesize\ttfamily App\+Event? BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+On\+Model\+Commited\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Called when pending changes to this entry are commited. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a9fae79df960e3a84d6105d56b58c173e}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a2a51689512141b7b805ced886692531f}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a2a51689512141b7b805ced886692531f} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!OnModelDeleted@{OnModelDeleted}}
+\index{OnModelDeleted@{OnModelDeleted}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{OnModelDeleted}{OnModelDeleted}}
+{\footnotesize\ttfamily App\+Event? BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+On\+Model\+Deleted\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Called when this entry is deleted. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a83b49dc2e4bd55fa0b2fbf2b166104ca}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ac3ae97f14f6e32bffcea123924a6ec2b}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_ac3ae97f14f6e32bffcea123924a6ec2b} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!OU@{OU}}
+\index{OU@{OU}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{OU}{OU}}
+{\footnotesize\ttfamily virtual ? string BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+OU\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The parent OU distinguished name as a string. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a940794a0a7712a15096e392f1086402f}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aab6e0bd70a654e4b7cbe790b253c501f}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_aab6e0bd70a654e4b7cbe790b253c501f} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!SamAccountName@{SamAccountName}}
+\index{SamAccountName@{SamAccountName}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{SamAccountName}{SamAccountName}}
+{\footnotesize\ttfamily virtual ? string BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Sam\+Account\+Name\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The SAMAccount\+Name property, generally used as the username property. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_ae699eadc30a20a8107bc42fab29f9fed}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a9e5345607ef907b5b7bcc67b7ef603a9}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a9e5345607ef907b5b7bcc67b7ef603a9} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!SearchUri@{SearchUri}}
+\index{SearchUri@{SearchUri}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{SearchUri}{SearchUri}}
+{\footnotesize\ttfamily virtual string BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+Search\+Uri\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns the relative path to reach the search result page for this entry. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_aa840ac4b9d9e8d5421d055d4024f06f0}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6c92ec67f24f74dc44e7156937bc9b16}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter_a6c92ec67f24f74dc44e7156937bc9b16} 
+\index{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}!SID@{SID}}
+\index{SID@{SID}!BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter@{BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter}}
+\doxysubsubsection{\texorpdfstring{SID}{SID}}
+{\footnotesize\ttfamily virtual ? byte \mbox{[}$\,$\mbox{]} BLAZAM.\+Active\+Directory.\+Adapters.\+Directory\+Entry\+Adapter.\+SID\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+This entry\textquotesingle{}s SID in byte form. 
+
+Use To\+Sid\+String() extension method to stringify"{}/\texorpdfstring{$>$}{>} 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a0211eb1a6969f5854b4708edc965a968}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Adapters/Directory\+Entry\+Adapter.\+cs\end{DoxyCompactItemize}

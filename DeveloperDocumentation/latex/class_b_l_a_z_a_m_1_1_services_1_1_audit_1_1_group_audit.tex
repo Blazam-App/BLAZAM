@@ -1,0 +1,106 @@
+\doxysection{BLAZAM.\+Services.\+Audit.\+Group\+Audit Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit}{}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit}\index{BLAZAM.Services.Audit.GroupAudit@{BLAZAM.Services.Audit.GroupAudit}}
+Inheritance diagram for BLAZAM.\+Services.\+Audit.\+Group\+Audit\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_a86b46075f9bcc2f065a8d00676107ee7}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_a86b46075f9bcc2f065a8d00676107ee7} 
+{\bfseries Group\+Audit} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} factory, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{IApplication\+User\+State\+Service}} user\+State\+Service)
+\item 
+override async Task$<$ bool $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_a8791e4b4d377f5930aca9b555bda6b7c}{Deleted}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} deleted\+Entry)
+\item 
+override async Task$<$ bool $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_a0b761c139a1e45453439c84d62443c93}{Searched}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} searched\+Group)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_a1f59a170df39953a459f8c66b0d7ac7c}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_a1f59a170df39953a459f8c66b0d7ac7c} 
+async Task$<$ bool $>$ {\bfseries Assigned} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} member, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} parent)
+\item 
+override async Task$<$ bool $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_ade024e9cc54a0cdafd1ce7c2ebc10509}{Changed}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} changed\+Group, List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_audit_change_log}{Audit\+Change\+Log}} $>$ changes)
+\item 
+override async Task$<$ bool $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_a1b28716aa5beb6c094baf217794a958f}{Created}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} new\+Group)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit}{BLAZAM.\+Services.\+Audit.\+Directory\+Audit}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Directory\+Audit} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} factory, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{IApplication\+User\+State\+Service}} user\+State\+Service)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_common_audit}{BLAZAM.\+Services.\+Audit.\+Common\+Audit}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Common\+Audit} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} factory, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{IApplication\+User\+State\+Service}} user\+State\+Service)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_base_audit}{BLAZAM.\+Services.\+Audit.\+Base\+Audit}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Base\+Audit} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} factory)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit}{BLAZAM.\+Services.\+Audit.\+Directory\+Audit}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual async Task$<$ bool $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit_ac4d364229f8e87d4dc4ff4938115863b}{Log$<$ T $>$}} (Func$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{IDatabase\+Context}}, Db\+Set$<$ T $>$ $>$ audit\+Table, string action, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} related\+Entry, string? before\+Action=null, string? after\+Action=null)
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_common_audit}{BLAZAM.\+Services.\+Audit.\+Common\+Audit}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{IApplication\+User\+State\+Service}} {\bfseries User\+State\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? {\bfseries Current\+User}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_base_audit}{BLAZAM.\+Services.\+Audit.\+Base\+Audit}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} {\bfseries Factory}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_ade024e9cc54a0cdafd1ce7c2ebc10509}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_ade024e9cc54a0cdafd1ce7c2ebc10509} 
+\index{BLAZAM.Services.Audit.GroupAudit@{BLAZAM.Services.Audit.GroupAudit}!Changed@{Changed}}
+\index{Changed@{Changed}!BLAZAM.Services.Audit.GroupAudit@{BLAZAM.Services.Audit.GroupAudit}}
+\doxysubsubsection{\texorpdfstring{Changed()}{Changed()}}
+{\footnotesize\ttfamily override async Task$<$ bool $>$ BLAZAM.\+Services.\+Audit.\+Group\+Audit.\+Changed (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}}}]{changed\+Group,  }\item[{List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_audit_change_log}{Audit\+Change\+Log}} $>$}]{changes }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit}{BLAZAM.\+Services.\+Audit.\+Directory\+Audit}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_a1b28716aa5beb6c094baf217794a958f}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_a1b28716aa5beb6c094baf217794a958f} 
+\index{BLAZAM.Services.Audit.GroupAudit@{BLAZAM.Services.Audit.GroupAudit}!Created@{Created}}
+\index{Created@{Created}!BLAZAM.Services.Audit.GroupAudit@{BLAZAM.Services.Audit.GroupAudit}}
+\doxysubsubsection{\texorpdfstring{Created()}{Created()}}
+{\footnotesize\ttfamily override async Task$<$ bool $>$ BLAZAM.\+Services.\+Audit.\+Group\+Audit.\+Created (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}}}]{new\+Group }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit}{BLAZAM.\+Services.\+Audit.\+Directory\+Audit}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_a8791e4b4d377f5930aca9b555bda6b7c}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_a8791e4b4d377f5930aca9b555bda6b7c} 
+\index{BLAZAM.Services.Audit.GroupAudit@{BLAZAM.Services.Audit.GroupAudit}!Deleted@{Deleted}}
+\index{Deleted@{Deleted}!BLAZAM.Services.Audit.GroupAudit@{BLAZAM.Services.Audit.GroupAudit}}
+\doxysubsubsection{\texorpdfstring{Deleted()}{Deleted()}}
+{\footnotesize\ttfamily override async Task$<$ bool $>$ BLAZAM.\+Services.\+Audit.\+Group\+Audit.\+Deleted (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}}}]{deleted\+Entry }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit}{BLAZAM.\+Services.\+Audit.\+Directory\+Audit}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_a0b761c139a1e45453439c84d62443c93}\label{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_group_audit_a0b761c139a1e45453439c84d62443c93} 
+\index{BLAZAM.Services.Audit.GroupAudit@{BLAZAM.Services.Audit.GroupAudit}!Searched@{Searched}}
+\index{Searched@{Searched}!BLAZAM.Services.Audit.GroupAudit@{BLAZAM.Services.Audit.GroupAudit}}
+\doxysubsubsection{\texorpdfstring{Searched()}{Searched()}}
+{\footnotesize\ttfamily override async Task$<$ bool $>$ BLAZAM.\+Services.\+Audit.\+Group\+Audit.\+Searched (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}}}]{searched\+Group }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_directory_audit}{BLAZAM.\+Services.\+Audit.\+Directory\+Audit}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMServices/\+Audit/Group\+Audit.\+cs\end{DoxyCompactItemize}

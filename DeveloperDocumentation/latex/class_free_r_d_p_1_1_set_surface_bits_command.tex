@@ -1,0 +1,92 @@
+\doxysection{Free\+RDP.\+Set\+Surface\+Bits\+Command Class Reference}
+\hypertarget{class_free_r_d_p_1_1_set_surface_bits_command}{}\label{class_free_r_d_p_1_1_set_surface_bits_command}\index{FreeRDP.SetSurfaceBitsCommand@{FreeRDP.SetSurfaceBitsCommand}}
+Inheritance diagram for Free\+RDP.\+Set\+Surface\+Bits\+Command\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_free_r_d_p_1_1_set_surface_bits_command}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_set_surface_bits_command_a3fc57dd48dfcfe6b8875bc57b9f06c33}\label{class_free_r_d_p_1_1_set_surface_bits_command_a3fc57dd48dfcfe6b8875bc57b9f06c33} 
+override UInt16 {\bfseries Get\+Cmd\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_free_r_d_p_1_1_surface_bits_command}{Free\+RDP.\+Surface\+Bits\+Command}}}
+\begin{DoxyCompactItemize}
+\item 
+override void \mbox{\hyperlink{class_free_r_d_p_1_1_surface_bits_command_a989c66a2f13284495ab6f937213e3de2}{Read}} (Binary\+Reader fp)
+\item 
+void {\bfseries Read} (\mbox{\hyperlink{struct_free_r_d_p_1_1_surface_bits}{Surface\+Bits}} \texorpdfstring{$\ast$}{*}surface\+Bits)
+\item 
+override byte\mbox{[}$\,$\mbox{]} {\bfseries Write} ()
+\item 
+override UInt16 {\bfseries Get\+Cmd\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_free_r_d_p_1_1_surface_command}{Free\+RDP.\+Surface\+Command}}}
+\begin{DoxyCompactItemize}
+\item 
+byte\mbox{[}$\,$\mbox{]} {\bfseries Write} ()
+\item 
+UInt16 {\bfseries Get\+Cmd\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_free_r_d_p_1_1_surface_command}{Free\+RDP.\+Surface\+Command}}}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_free_r_d_p_1_1_surface_command}{Surface\+Command}} {\bfseries Parse} (Binary\+Reader fp)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{class_free_r_d_p_1_1_surface_command}{Free\+RDP.\+Surface\+Command}}}
+\begin{DoxyCompactItemize}
+\item 
+UInt16 {\bfseries Cmd\+Type} = 0
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_free_r_d_p_1_1_surface_bits_command}{Free\+RDP.\+Surface\+Bits\+Command}}}
+\begin{DoxyCompactItemize}
+\item 
+byte\mbox{[}$\,$\mbox{]} {\bfseries buffer}
+\item 
+UInt16 {\bfseries dest\+Left}
+\item 
+UInt16 {\bfseries dest\+Top}
+\item 
+UInt16 {\bfseries dest\+Right}
+\item 
+UInt16 {\bfseries dest\+Bottom}
+\item 
+Byte {\bfseries bpp}
+\item 
+Byte {\bfseries reserved1}
+\item 
+Byte {\bfseries reserved2}
+\item 
+Byte {\bfseries codec\+ID}
+\item 
+UInt16 {\bfseries width}
+\item 
+UInt16 {\bfseries height}
+\item 
+UInt32 {\bfseries bitmap\+Data\+Length}
+\item 
+byte\mbox{[}$\,$\mbox{]} {\bfseries bitmap\+Data}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Attributes inherited from \mbox{\hyperlink{class_free_r_d_p_1_1_surface_command}{Free\+RDP.\+Surface\+Command}}}
+\begin{DoxyCompactItemize}
+\item 
+const UInt16 {\bfseries CMDTYPE\+\_\+\+SET\+\_\+\+SURFACE\+\_\+\+BITS} = 1
+\item 
+const UInt16 {\bfseries CMDTYPE\+\_\+\+STREAM\+\_\+\+SURFACE\+\_\+\+BITS} = 6
+\item 
+const UInt16 {\bfseries CMDTYPE\+\_\+\+FRAME\+\_\+\+MARKER} = 4
+\item 
+const byte {\bfseries CODEC\+\_\+\+ID\+\_\+\+NONE} = 0x00
+\item 
+const byte {\bfseries CODEC\+\_\+\+ID\+\_\+\+NSCODEC} = 0x01
+\item 
+const byte {\bfseries CODEC\+\_\+\+ID\+\_\+\+REMOTEFX} = 0x03
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Free\+RDP-\/\+Sharp/\+Free\+RDP/\+Codec/Set\+Surface\+Bits\+Command.\+cs\end{DoxyCompactItemize}

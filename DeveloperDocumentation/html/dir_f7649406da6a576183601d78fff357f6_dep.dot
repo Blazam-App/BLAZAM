@@ -1,0 +1,12 @@
+digraph "BLAZAMServices/Chat"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  compound=true
+  subgraph clusterdir_d84bbf9a41db309af2ff620c96bc5c1f {
+    graph [ bgcolor="#edf0f7", pencolor="grey25", label="BLAZAMServices", fontname=Helvetica,fontsize=10 style="filled,dashed", URL="dir_d84bbf9a41db309af2ff620c96bc5c1f.html",tooltip=""]
+  dir_f7649406da6a576183601d78fff357f6 [label="Chat", fillcolor="#edf0f7", color="grey25", style="filled,bold", URL="dir_f7649406da6a576183601d78fff357f6.html",tooltip=""];
+  }
+}

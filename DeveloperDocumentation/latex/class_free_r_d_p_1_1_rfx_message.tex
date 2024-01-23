@@ -1,0 +1,77 @@
+\doxysection{Free\+RDP.\+Rfx\+Message Class Reference}
+\hypertarget{class_free_r_d_p_1_1_rfx_message}{}\label{class_free_r_d_p_1_1_rfx_message}\index{FreeRDP.RfxMessage@{FreeRDP.RfxMessage}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_free_r_d_p_1_1_rfx_message_1_1_r_f_x___r_e_c_t}{RFX\+\_\+\+RECT}}
+\item 
+struct \mbox{\hyperlink{struct_free_r_d_p_1_1_rfx_message_1_1_r_f_x___t_i_l_e}{RFX\+\_\+\+TILE}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_acf9750d8ba9aad3950f5a2e8cf580c0d}\label{class_free_r_d_p_1_1_rfx_message_acf9750d8ba9aad3950f5a2e8cf580c0d} 
+static Int\+Ptr {\bfseries rfx\+\_\+process\+\_\+message} (Int\+Ptr rfx\+Handle, byte\mbox{[}$\,$\mbox{]} data, UInt32 length)
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_a440902da085748643b11d5d9e37423bc}\label{class_free_r_d_p_1_1_rfx_message_a440902da085748643b11d5d9e37423bc} 
+static UInt16 {\bfseries rfx\+\_\+message\+\_\+get\+\_\+tile\+\_\+count} (Int\+Ptr handle)
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_ab42ee2470001bce333b8f5cee54acd70}\label{class_free_r_d_p_1_1_rfx_message_ab42ee2470001bce333b8f5cee54acd70} 
+static \mbox{\hyperlink{struct_free_r_d_p_1_1_rfx_message_1_1_r_f_x___t_i_l_e}{RFX\+\_\+\+TILE}} \texorpdfstring{$\ast$}{*} {\bfseries rfx\+\_\+message\+\_\+get\+\_\+tile} (Int\+Ptr handle, int index)
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_a730ca99dde8b1f9d7fd5369f11fab4a5}\label{class_free_r_d_p_1_1_rfx_message_a730ca99dde8b1f9d7fd5369f11fab4a5} 
+static UInt16 {\bfseries rfx\+\_\+message\+\_\+get\+\_\+rect\+\_\+count} (Int\+Ptr handle)
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_a60e4d5ff99f2e1f1398dc56fb38b0975}\label{class_free_r_d_p_1_1_rfx_message_a60e4d5ff99f2e1f1398dc56fb38b0975} 
+static \mbox{\hyperlink{struct_free_r_d_p_1_1_rfx_message_1_1_r_f_x___r_e_c_t}{RFX\+\_\+\+RECT}} \texorpdfstring{$\ast$}{*} {\bfseries rfx\+\_\+message\+\_\+get\+\_\+rect} (Int\+Ptr handle, int index)
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_a625b746550c3d89a3a937b83b4bee3ac}\label{class_free_r_d_p_1_1_rfx_message_a625b746550c3d89a3a937b83b4bee3ac} 
+static void {\bfseries rfx\+\_\+message\+\_\+free} (Int\+Ptr rfx\+Handle, Int\+Ptr handle)
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_aa0beccb266866c12445ff6a4322abb6a}\label{class_free_r_d_p_1_1_rfx_message_aa0beccb266866c12445ff6a4322abb6a} 
+bool {\bfseries Has\+Next\+Tile} ()
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_a36224024c8ccdde2ac197ad06e76a85c}\label{class_free_r_d_p_1_1_rfx_message_a36224024c8ccdde2ac197ad06e76a85c} 
+void {\bfseries Get\+Next\+Tile} (byte\mbox{[}$\,$\mbox{]} buffer, ref int x, ref int y)
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_ac3162de7cf5e10bc5d7d6d1eda63065d}\label{class_free_r_d_p_1_1_rfx_message_ac3162de7cf5e10bc5d7d6d1eda63065d} 
+bool {\bfseries Has\+Next\+Rect} ()
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_af325f6b99b6027d7abdbf52ca5c73271}\label{class_free_r_d_p_1_1_rfx_message_af325f6b99b6027d7abdbf52ca5c73271} 
+void {\bfseries Get\+Next\+Rect} (ref int x, ref int y, ref int width, ref int height)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_a7ee78b3ddc824c2485c969a015e45e63}\label{class_free_r_d_p_1_1_rfx_message_a7ee78b3ddc824c2485c969a015e45e63} 
+static \mbox{\hyperlink{class_free_r_d_p_1_1_rfx_message}{Rfx\+Message}} {\bfseries Parse} (Int\+Ptr rfx\+Handle, byte\mbox{[}$\,$\mbox{]} data, UInt32 length)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_a30a585a83f6a5b76809134ee59a22f9d}\label{class_free_r_d_p_1_1_rfx_message_a30a585a83f6a5b76809134ee59a22f9d} 
+int {\bfseries itiles}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_a24c49d0b29590976e7df0553faf1daba}\label{class_free_r_d_p_1_1_rfx_message_a24c49d0b29590976e7df0553faf1daba} 
+int {\bfseries irects}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_aa783c78ed7d28e1ad303c3a94983d18e}\label{class_free_r_d_p_1_1_rfx_message_aa783c78ed7d28e1ad303c3a94983d18e} 
+UInt16 {\bfseries nrects}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_a074b8edd55fdb6fce86918d87f9da1a9}\label{class_free_r_d_p_1_1_rfx_message_a074b8edd55fdb6fce86918d87f9da1a9} 
+UInt16 {\bfseries ntiles}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_a42e060636f516f547210c5c8a890c1ba}\label{class_free_r_d_p_1_1_rfx_message_a42e060636f516f547210c5c8a890c1ba} 
+int {\bfseries Rect\+Count}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_message_ad6dd657137b3643f4eba68d85d9ea458}\label{class_free_r_d_p_1_1_rfx_message_ad6dd657137b3643f4eba68d85d9ea458} 
+int {\bfseries Tile\+Count}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Free\+RDP-\/\+Sharp/\+Free\+RDP/\+Codec/Rfx\+Message.\+cs\end{DoxyCompactItemize}

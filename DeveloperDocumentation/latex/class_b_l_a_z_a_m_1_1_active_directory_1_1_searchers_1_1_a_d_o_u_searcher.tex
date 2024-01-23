@@ -1,0 +1,166 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Searchers.\+ADOUSearcher Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher}{}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher}\index{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}}
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Searchers.\+ADOUSearcher\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.739130cm]{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+async Task$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a691f639cc64dd1f32c8ef55dc9dd4c21}{Get\+Application\+Root\+OU}} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_adbf4248bffd65e4f8fa4aa774bb5b354}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_adbf4248bffd65e4f8fa4aa774bb5b354} 
+{\bfseries ADOUSearcher} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a57fd2e7bed3f6764dd3ce94488195829}{Find\+Ou\+By\+String\+Async}} (string search\+Term)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_aed4bdc517d2e9858f983223955456e18}{Find\+Ou\+By\+String}} (string search\+Term)
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}}? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a1585acc785f335c151dcf9b51334ede9}{Find\+Ou\+By\+DN}} (string search\+Term)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a73eaf70fa370e7360654f4dcd4f7962c}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a73eaf70fa370e7360654f4dcd4f7962c} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} $>$ {\bfseries Find\+Sub\+Ous\+By\+DN} (string? search\+Base\+DN)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a834f6b3fcdba89477e6d21baa75c33e0}{Find\+Sub\+Users\+By\+DN}} (string search\+Base\+DN)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}{IADComputer}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_ab493b8d92959d2b8f2761a545e4502b0}{Find\+Sub\+Computer\+By\+DN}} (string search\+Base\+DN)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_adb893e60a19b24495119c133ad322a6c}{Find\+Sub\+Groups\+By\+DN}} (string search\+Base\+DN)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a574345536d11eb77d8235772e7a206d7}{Find\+New\+OUs\+Async}} (int max\+Age\+In\+Days=14)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a4253a98a70e1d346f4fb2b2fe8cfe20c}{Find\+New\+OUs}} (int max\+Age\+In\+Days=14)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries ADSearcher} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_o_u_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADOUSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} $>$ {\bfseries Find\+Sub\+Ous\+By\+DN} (string search\+Term)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_aced5669d8809ebf3c7d05f96ad478842}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_aced5669d8809ebf3c7d05f96ad478842} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search}{ADSearch}} {\bfseries New\+Search}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual Search\+Result\+Collection {\bfseries Search\+Objects} (string field\+Query, Active\+Directory\+Object\+Type search\+Type, int return\+Count=5, bool? enabled\+Only=true)
+\item 
+virtual Search\+Result\+Collection {\bfseries Search\+Objects} (string? search\+Base\+DN, string field\+Query, Active\+Directory\+Object\+Type? search\+Type, int return\+Count=5, bool? enabled\+Only=true, Search\+Scope search\+Scope=Search\+Scope.\+Subtree)
+\item 
+Search\+Result\+Collection {\bfseries Search\+Object\+By\+SID} (string sid)
+\item 
+List$<$ T $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_a1c5b8c87363140052743cc42141df205}{Convert\+To$<$ T $>$}} (Search\+Result\+Collection r)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} {\bfseries Directory}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a4253a98a70e1d346f4fb2b2fe8cfe20c}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a4253a98a70e1d346f4fb2b2fe8cfe20c} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}!FindNewOUs@{FindNewOUs}}
+\index{FindNewOUs@{FindNewOUs}!BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}}
+\doxysubsubsection{\texorpdfstring{FindNewOUs()}{FindNewOUs()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADOUSearcher.\+Find\+New\+OUs (\begin{DoxyParamCaption}\item[{int}]{max\+Age\+In\+Days = {\ttfamily 14} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_o_u_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADOUSearcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a574345536d11eb77d8235772e7a206d7}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a574345536d11eb77d8235772e7a206d7} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}!FindNewOUsAsync@{FindNewOUsAsync}}
+\index{FindNewOUsAsync@{FindNewOUsAsync}!BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}}
+\doxysubsubsection{\texorpdfstring{FindNewOUsAsync()}{FindNewOUsAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADOUSearcher.\+Find\+New\+OUs\+Async (\begin{DoxyParamCaption}\item[{int}]{max\+Age\+In\+Days = {\ttfamily 14} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_o_u_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADOUSearcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a1585acc785f335c151dcf9b51334ede9}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a1585acc785f335c151dcf9b51334ede9} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}!FindOuByDN@{FindOuByDN}}
+\index{FindOuByDN@{FindOuByDN}!BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}}
+\doxysubsubsection{\texorpdfstring{FindOuByDN()}{FindOuByDN()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}}? BLAZAM.\+Active\+Directory.\+Searchers.\+ADOUSearcher.\+Find\+Ou\+By\+DN (\begin{DoxyParamCaption}\item[{string}]{search\+Term }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_o_u_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADOUSearcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_aed4bdc517d2e9858f983223955456e18}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_aed4bdc517d2e9858f983223955456e18} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}!FindOuByString@{FindOuByString}}
+\index{FindOuByString@{FindOuByString}!BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}}
+\doxysubsubsection{\texorpdfstring{FindOuByString()}{FindOuByString()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADOUSearcher.\+Find\+Ou\+By\+String (\begin{DoxyParamCaption}\item[{string}]{search\+Term }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_o_u_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADOUSearcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a57fd2e7bed3f6764dd3ce94488195829}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a57fd2e7bed3f6764dd3ce94488195829} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}!FindOuByStringAsync@{FindOuByStringAsync}}
+\index{FindOuByStringAsync@{FindOuByStringAsync}!BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}}
+\doxysubsubsection{\texorpdfstring{FindOuByStringAsync()}{FindOuByStringAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADOUSearcher.\+Find\+Ou\+By\+String\+Async (\begin{DoxyParamCaption}\item[{string}]{search\+Term }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_o_u_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADOUSearcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_ab493b8d92959d2b8f2761a545e4502b0}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_ab493b8d92959d2b8f2761a545e4502b0} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}!FindSubComputerByDN@{FindSubComputerByDN}}
+\index{FindSubComputerByDN@{FindSubComputerByDN}!BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}}
+\doxysubsubsection{\texorpdfstring{FindSubComputerByDN()}{FindSubComputerByDN()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}{IADComputer}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADOUSearcher.\+Find\+Sub\+Computer\+By\+DN (\begin{DoxyParamCaption}\item[{string}]{search\+Base\+DN }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_o_u_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADOUSearcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_adb893e60a19b24495119c133ad322a6c}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_adb893e60a19b24495119c133ad322a6c} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}!FindSubGroupsByDN@{FindSubGroupsByDN}}
+\index{FindSubGroupsByDN@{FindSubGroupsByDN}!BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}}
+\doxysubsubsection{\texorpdfstring{FindSubGroupsByDN()}{FindSubGroupsByDN()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADOUSearcher.\+Find\+Sub\+Groups\+By\+DN (\begin{DoxyParamCaption}\item[{string}]{search\+Base\+DN }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_o_u_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADOUSearcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a834f6b3fcdba89477e6d21baa75c33e0}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a834f6b3fcdba89477e6d21baa75c33e0} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}!FindSubUsersByDN@{FindSubUsersByDN}}
+\index{FindSubUsersByDN@{FindSubUsersByDN}!BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}}
+\doxysubsubsection{\texorpdfstring{FindSubUsersByDN()}{FindSubUsersByDN()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADOUSearcher.\+Find\+Sub\+Users\+By\+DN (\begin{DoxyParamCaption}\item[{string}]{search\+Base\+DN }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_o_u_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADOUSearcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a691f639cc64dd1f32c8ef55dc9dd4c21}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_o_u_searcher_a691f639cc64dd1f32c8ef55dc9dd4c21} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}!GetApplicationRootOU@{GetApplicationRootOU}}
+\index{GetApplicationRootOU@{GetApplicationRootOU}!BLAZAM.ActiveDirectory.Searchers.ADOUSearcher@{BLAZAM.ActiveDirectory.Searchers.ADOUSearcher}}
+\doxysubsubsection{\texorpdfstring{GetApplicationRootOU()}{GetApplicationRootOU()}}
+{\footnotesize\ttfamily async Task$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADOUSearcher.\+Get\+Application\+Root\+OU (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_o_u_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADOUSearcher}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Searchers/ADOUSearcher.\+cs\end{DoxyCompactItemize}
