@@ -31,7 +31,7 @@ namespace BLAZAM.Tests.Updates
         {
             var latest = await _updateService.GetUpdates();
             if (latest != null)
-                await latest.Download();
+                await latest.Download(null);
 
             Assert.True(latest?.UpdateFile.Exists);
             Update_Stages_OK(latest);
@@ -40,7 +40,7 @@ namespace BLAZAM.Tests.Updates
         private async void Update_Stages_OK(ApplicationUpdate latest)
         {
 
-            await latest.Stage();
+            await latest.ExtractFiles(null);
             Assert.True(latest.UpdateStagingDirectory.Files.Count > 2);
 
         }

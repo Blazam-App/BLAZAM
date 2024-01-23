@@ -21,8 +21,21 @@
             break;
     }
 }
+@if(Step.Result!=JobResult.Running){
 <MudIcon Color="@color"
-         Icon="@icon" />
+    Icon="@icon" />
+}
+else
+{
+    <MudStack AlignItems=AlignItems.Center Spacing="0">
+        <MudProgressLinear Indeterminate=@(Step.Progress==null) Value="@(Step.Progress.HasValue==true?Step.Progress.Value:0)" Max="100"/>
+        @if (Step.Progress != null)
+        {
+            <MudText Typo="Typo.caption">@Step.Progress.Value%</MudText>
+        }
+    </MudStack>
+        
+}
 @code {
     [Parameter]
     public IJobStep Step { get; set; }

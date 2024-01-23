@@ -29,7 +29,7 @@ namespace BLAZAM.Update.Services
         public ApplicationUpdate? ScheduledUpdate { get; set; }
         //private AuditLogger Audit;
 
-        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService,ApplicationInfo applicationInfo)
+        public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo)
         {
             _applicationInfo = applicationInfo;
             //email = emailService;
@@ -62,7 +62,8 @@ namespace BLAZAM.Update.Services
                             Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file: " + file);
 
                             var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault().CreateUpdateImpersonator();
-                            if(!impersonation.Run(() => {
+                            if (!impersonation.Run(() =>
+                            {
                                 if (file.Writable)
                                 {
                                     file.Delete();
@@ -72,7 +73,8 @@ namespace BLAZAM.Update.Services
                             }))
                             {
                                 impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault().CreateDirectoryAdminImpersonator();
-                                if (!impersonation.Run(() => {
+                                if (!impersonation.Run(() =>
+                                {
                                     if (file.Writable)
                                     {
                                         file.Delete();
@@ -131,20 +133,20 @@ namespace BLAZAM.Update.Services
             try
             {
                 var appSettings = (await factory.CreateDbContextAsync()).AppSettings.FirstOrDefault();
-          
-                    Loggers.UpdateLogger.Information("Checking for automatic update");
 
-                    var latestUpdate = await updateService.GetUpdates();
-                    if (latestUpdate != null && latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
-                    {
-                        ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
-                    }
-                    else
-                    {
-                        Loggers.UpdateLogger.Information("No new updates found.");
+                Loggers.UpdateLogger.Information("Checking for automatic update");
 
-                    }
-                
+                var latestUpdate = await updateService.GetUpdates();
+                if (latestUpdate != null && latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
+                {
+                    ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
+                }
+                else
+                {
+                    Loggers.UpdateLogger.Information("No new updates found.");
+
+                }
+
             }
             catch (Exception ex)
             {
@@ -189,12 +191,14 @@ namespace BLAZAM.Update.Services
                     if (justScheduled)
                     {
                         Loggers.UpdateLogger.Debug("Update just scheduled");
-                    OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
+                        OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
 
                     }
 
                 }
-            }catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Loggers.UpdateLogger.Error("Error during auto update scheduling {@Error}", ex);
             }
         }
@@ -218,11 +222,21 @@ namespace BLAZAM.Update.Services
                     try
                     {
                         OnAutoUpdateStarted?.Invoke();
-                        var result = await latestUpdate.Apply();
-                        if (result != null)
+                        var updateJob = latestUpdate.GetUpdateJob();
+                        if (updateJob != null)
                         {
-                            Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot. Response: " + result);
+                            updateJob.Run();
+                            if (updateJob.Result != Jobs.JobResult.Passed)
+                                Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot. Response: " + updateJob);
+                            else
+                            {
+                                var thrownStep = updateJob.Steps.FirstOrDefault(x => x.Exception != null);
+                                if (thrownStep != null)
+                                    Loggers.UpdateLogger.Error("Failed to auto-update. {@Error}", thrownStep.Exception);
+                                else
+                                    Loggers.UpdateLogger.Error("Failed to auto-update. No exception collected from update job!");
 
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -245,7 +259,7 @@ namespace BLAZAM.Update.Services
                 Loggers.UpdateLogger.Error("Error during auto update {@Error}", ex);
             }
 
-        
+
         }
     }
 }

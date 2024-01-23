@@ -2,7 +2,7 @@
 @if (Job != null && Job.User != null)
 {
 
-    <MudText Typo="Typo.caption">@AppLocalization["Ran by"]: @Job.User?.AuditUsername</MudText>
+    <MudText Typo="Typo.caption">@AppLocalization["Ran by"]: @Job.User</MudText>
 }
 @code {
     [CascadingParameter]

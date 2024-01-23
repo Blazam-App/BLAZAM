@@ -5,13 +5,21 @@
     <MudDialog>
         <DialogContent>
             <JobDetails Job="Job" />
+            @if (Job.Result == JobResult.Running)
+            {
+                <MudProgressLinear Value=@(Job.Progress.HasValue==true?Job.Progress.Value:0) Max="100" />
+            }
             <MudStack Row=true>
                 <JobStartTime />
                 <JobElapsedTime />
                 <JobRanBy />
             </MudStack>
+       
         </DialogContent>
         <DialogActions>
+
+
+            
             @switch (Job.Result)
             {
                 case JobResult.Cancelled:
@@ -27,7 +35,6 @@
 
                     break;
             }
-            
         </DialogActions>
     </MudDialog>
 </CascadingValue>
