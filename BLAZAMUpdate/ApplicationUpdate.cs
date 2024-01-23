@@ -361,9 +361,10 @@ namespace BLAZAM.Update
                     return true;
 
                 }
-                catch
+                catch (Exception ex)
                 {
-                    return false;
+                    Loggers.UpdateLogger.Error("Error while cleaning staging directory. {@Error}", ex);
+                    return true;
                 }
             });
         }
