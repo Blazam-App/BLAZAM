@@ -170,6 +170,11 @@ namespace BLAZAM.Services.Chat
 
             OnMessagePosted?.Invoke(message);
         }
+        /// <summary>
+        /// Marks a message as read in the database
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="user"></param>
         public void MessageRead(ChatMessage message, AppUser user)
         {
             var context = Context;
