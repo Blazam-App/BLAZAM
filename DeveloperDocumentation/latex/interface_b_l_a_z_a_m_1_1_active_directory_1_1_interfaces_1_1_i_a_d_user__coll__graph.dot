@@ -1,0 +1,16 @@
+digraph "BLAZAM.ActiveDirectory.Interfaces.IADUser"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  Node1 [id="Node000001",label="BLAZAM.ActiveDirectory.Interfaces.\lIADUser",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip=" "];
+  Node2 -> Node1 [id="edge5_Node000001_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="IAccountDirectoryAdapter",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_account_directory_adapter.html",tooltip="Represents Active Dirtory Account Objects. These types have passwords and can be enabled,..."];
+  Node3 -> Node2 [id="edge6_Node000002_Node000003",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="IGroupableDirectoryAdapter",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter.html",tooltip="Those Active Directory Object types that can be members of a group."];
+  Node4 -> Node3 [id="edge7_Node000003_Node000004",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node4 [id="Node000004",label="IDirectoryEntryAdapter",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter.html",tooltip="The core representation of an object in active directory. This class has properties that all Active D..."];
+  Node5 -> Node4 [id="edge8_Node000004_Node000005",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node5 [id="Node000005",label="IDisposable",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+}

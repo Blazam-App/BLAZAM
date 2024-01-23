@@ -11,6 +11,7 @@ using BLAZAM.Logger;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using System.Security.Principal;
+using BLAZAM.Jobs;
 
 namespace BLAZAM.Update
 {
@@ -151,38 +152,47 @@ namespace BLAZAM.Update
 
         public IApplicationRelease Release { get; set; }
 
-        public async Task<bool> Prepare()
+      
+
+
+        public IJob GetUpdateJob()
         {
-            try
-            {
-                //Confirm the update is downloaded and staged before applying
-                if (!_downloaded)
-                    await Download();
-                if (!_staged)
-                    await Stage();
-
-                if (!_backedUp)
-                    await Backup();
-                //Confirm staging went as expected
-                return UpdateStagingDirectory.Exists;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-
-        public async Task<string> Apply()
-        {
+            
             if (cancellationTokenSource == null || cancellationTokenSource.IsCancellationRequested)
                 cancellationTokenSource = new CancellationTokenSource();
 
-            OnUpdateStarted?.Invoke();
-            if (!await Prepare())
-                throw new ApplicationUpdateException("Update preparation not completed");
+           
+            IJob updateJob = new Job("Applying application update", "System", cancellationTokenSource);
+            updateJob.StopOnFailedStep = true;
+            var cleanDownloadStep = new JobStep("Cleaning previous downloads", CleanDownload);
+            var downloadStep = new JobStep("Download latest version", Download);
+            var cleanStageStep = new JobStep("Cleaning staging area", CleanStaging);
+            var stageStep = new JobStep("Extract files", ExtractFiles);
+            var stagingCheckStep = new JobStep("Check prepared files", (step) => { return UpdateStagingDirectory.Exists; });
+            var bakupStep = new JobStep("Create backup", Backup);
+            var updateUpdaterStep = new JobStep("Apply Files", InitiateFileCopy) ;
+            updateJob.Steps.Add(cleanDownloadStep);
+            updateJob.Steps.Add(downloadStep);
+            updateJob.Steps.Add(cleanStageStep);
+            updateJob.Steps.Add(stageStep);
+            updateJob.Steps.Add(stagingCheckStep);
+            updateJob.Steps.Add(bakupStep);
+            updateJob.Steps.Add(updateUpdaterStep);
+            return updateJob;
+           
+             
 
-            if (cancellationTokenSource.IsCancellationRequested) throw new ApplicationUpdateCanceledException("Update cancelled by user");
+          
+           
+
+
+
+            throw new ApplicationUpdateException("An unknown error caused the update to fail.");
+
+        }
+
+        private async Task<bool> InitiateFileCopy(JobStep? step)
+        {
             //All prerequisites met
 
 
@@ -207,7 +217,7 @@ namespace BLAZAM.Update
                     Loggers.UpdateLogger.Error("Error applying update: {@Error}", ex);
 
                 }
-                return "Error starting update";
+                return false;
             }
             else
             {
@@ -231,14 +241,14 @@ namespace BLAZAM.Update
                             Loggers.UpdateLogger.Error("Error applying update: {@Error}", ex);
 
                         }
-                        return "Error starting update";
+                        return false;
                     });
 
 
                 }
                 catch (ApplicationException ex)
                 {
-                    return ex.Message;
+                    return false;
                 }
 
 
@@ -246,18 +256,15 @@ namespace BLAZAM.Update
             }
 
 
-
-
-
-
-            throw new ApplicationUpdateException("An unknown error caused the update to fail.");
-
         }
 
-        private string ApplyFiles()
+        private bool ApplyFiles()
         {
             Loggers.UpdateLogger.Information("Running update as: " + WindowsIdentity.GetCurrent().Name);
             Loggers.UpdateLogger.Information("Updating updater");
+
+            
+
             SystemDirectory updaterDirFromStagedUpdate = new SystemDirectory(UpdateStagingDirectory.Path + "\\updater\\");
             SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.Path + "updater\\");
             updaterDirFromStagedUpdate.CopyTo(updaterDir);
@@ -270,12 +277,12 @@ namespace BLAZAM.Update
             {
                 Loggers.UpdateLogger.Information("Update process started");
 
-                return "Success";
+                return true;
             }
             else
             {
 
-                return "Couldn't start update process!";
+                throw new ApplicationUpdateException("Updater script did not run.");
             }
         }
 
@@ -305,7 +312,7 @@ namespace BLAZAM.Update
             return true;
         }
 
-        public async Task<bool> Backup()
+        public async Task<bool> Backup(JobStep? step)
         {
             Loggers.UpdateLogger.Information("Attempting backup of current version to: " + BackupPath);
             try
@@ -324,7 +331,7 @@ namespace BLAZAM.Update
         }
       
 
-        public async Task<bool> CleanDownload()
+        public async Task<bool> CleanDownload(IJobStep? step)
         {
             return await Task.Run(() =>
             {
@@ -344,7 +351,7 @@ namespace BLAZAM.Update
                 }
             });
         }
-        public async Task<bool> CleanStaging()
+        public async Task<bool> CleanStaging(IJobStep? step)
         {
             return await Task.Run(() =>
             {
@@ -360,7 +367,7 @@ namespace BLAZAM.Update
                 }
             });
         }
-        public async Task<bool> Stage()
+        public async Task<bool> ExtractFiles(JobStep? step)
         {
             return await Task.Run(() =>
             {
@@ -396,7 +403,7 @@ namespace BLAZAM.Update
         {
             cancellationTokenSource?.Cancel();
         }
-        public async Task<bool> Download()
+        public async Task<bool> Download(JobStep? step)
         {
 
             if (Release == null)
@@ -436,7 +443,11 @@ namespace BLAZAM.Update
                                     await streamToWriteTo.WriteAsync(buffer, 0, bytesRead);
                                     totalBytesRead += bytesRead;
                                     progress.CompletedBytes = totalBytesRead;
-
+                                    if (step != null )
+                                    {
+                                        step.Progress = progress.FilePercentage;
+                                    }
+                                    
                                     DownloadPercentageChanged?.Invoke(progress);
                                 }
                                 else

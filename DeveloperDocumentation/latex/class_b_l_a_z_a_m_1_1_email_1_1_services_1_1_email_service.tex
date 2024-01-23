@@ -1,0 +1,72 @@
+\doxysection{BLAZAM.\+Email.\+Services.\+Email\+Service Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service}{}\label{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service}\index{BLAZAM.Email.Services.EmailService@{BLAZAM.Email.Services.EmailService}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_a9903f88d81ca16f1eb61df4e7fc12908}\label{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_a9903f88d81ca16f1eb61df4e7fc12908} 
+{\bfseries Email\+Service} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} factory)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_ab33c79b694d960dc579ae5b40025bbe3}\label{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_ab33c79b694d960dc579ae5b40025bbe3} 
+async Task$<$ bool $>$ {\bfseries Send\+Message} (string subject, string to, Markup\+String header, Markup\+String body, string? cc=null, string? bcc=null)
+\item 
+async Task$<$ bool $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_a9d75c78aa3421cc9a4fa3b092901f18b}{Send\+Message$<$ T $>$}} (string subject, string to, string? cc=null, string? bcc=null)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_a77738e9e865a9c1d27b3c5b1ca25b9e2}\label{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_a77738e9e865a9c1d27b3c5b1ca25b9e2} 
+async Task$<$ bool $>$ {\bfseries Send\+Test\+Email} (string to)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+string \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_a5296c8d940f1d841237b7a1ad3004140}{Wrap\+Message$<$ TComponent $>$}} ()
+\begin{DoxyCompactList}\small\item\em Takes any IComponent razor page, renders it, and returns the raw HTML. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_a5f777b0e2e61c99808522659dc29ee14}\label{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_a5f777b0e2e61c99808522659dc29ee14} 
+string {\bfseries Wrap\+Generic\+Message} (Markup\+String header, Markup\+String body)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_ad4e98728c70bb68369299cece90f665a}\label{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_ad4e98728c70bb68369299cece90f665a} 
+static ? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service}{Email\+Service}} {\bfseries Instance}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_a9d75c78aa3421cc9a4fa3b092901f18b}\label{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_a9d75c78aa3421cc9a4fa3b092901f18b} 
+\index{BLAZAM.Email.Services.EmailService@{BLAZAM.Email.Services.EmailService}!SendMessage$<$ T $>$@{SendMessage$<$ T $>$}}
+\index{SendMessage$<$ T $>$@{SendMessage$<$ T $>$}!BLAZAM.Email.Services.EmailService@{BLAZAM.Email.Services.EmailService}}
+\doxysubsubsection{\texorpdfstring{SendMessage$<$ T $>$()}{SendMessage< T >()}}
+{\footnotesize\ttfamily async Task$<$ bool $>$ BLAZAM.\+Email.\+Services.\+Email\+Service.\+Send\+Message$<$ T $>$ (\begin{DoxyParamCaption}\item[{string}]{subject,  }\item[{string}]{to,  }\item[{string?}]{cc = {\ttfamily null},  }\item[{string?}]{bcc = {\ttfamily null} }\end{DoxyParamCaption})}
+
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em IComponent}]\end{description}
+\end{Desc}
+\Hypertarget{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_a5296c8d940f1d841237b7a1ad3004140}\label{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service_a5296c8d940f1d841237b7a1ad3004140} 
+\index{BLAZAM.Email.Services.EmailService@{BLAZAM.Email.Services.EmailService}!WrapMessage$<$ TComponent $>$@{WrapMessage$<$ TComponent $>$}}
+\index{WrapMessage$<$ TComponent $>$@{WrapMessage$<$ TComponent $>$}!BLAZAM.Email.Services.EmailService@{BLAZAM.Email.Services.EmailService}}
+\doxysubsubsection{\texorpdfstring{WrapMessage$<$ TComponent $>$()}{WrapMessage< TComponent >()}}
+{\footnotesize\ttfamily string BLAZAM.\+Email.\+Services.\+Email\+Service.\+Wrap\+Message$<$ TComponent $>$ (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Takes any IComponent razor page, renders it, and returns the raw HTML. 
+
+The IComponent provided can not have any Blazorise components, only base Blazor 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em TComponent} & \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em TComponent} : {\em IComponent}]\end{description}
+\end{Desc}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMEmail/\+Services/Email\+Service.\+cs\end{DoxyCompactItemize}

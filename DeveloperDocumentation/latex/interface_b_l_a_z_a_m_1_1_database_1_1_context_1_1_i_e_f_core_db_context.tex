@@ -1,0 +1,58 @@
+\doxysection{BLAZAM.\+Database.\+Context.\+IEFCore\+Db\+Context Interface Reference}
+\hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context}{}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context}\index{BLAZAM.Database.Context.IEFCoreDbContext@{BLAZAM.Database.Context.IEFCoreDbContext}}
+Inheritance diagram for BLAZAM.\+Database.\+Context.\+IEFCore\+Db\+Context\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.010753cm]{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a3e651819b2ce8464967ef753a8bb0c66}{Is\+Seeded}} ()
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a27ed4caac3006db0c3034daf8d23df27}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a27ed4caac3006db0c3034daf8d23df27} 
+int {\bfseries Save\+Changes} ()
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a5052d14022b4a80e48d05ba631ceb57d}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a5052d14022b4a80e48d05ba631ceb57d} 
+int {\bfseries Save\+Changes} (bool accept\+All\+Changes\+On\+Success)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a8164e87285c399cc77fc490c5141c571}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a8164e87285c399cc77fc490c5141c571} 
+Task$<$ int $>$ {\bfseries Save\+Changes\+Async} (Cancellation\+Token cancellation\+Token=default)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_adeea5c47ece70186d40a9d8f140f01c3}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_adeea5c47ece70186d40a9d8f140f01c3} 
+Task$<$ int $>$ {\bfseries Save\+Changes\+Async} (bool accept\+All\+Changes\+On\+Success, Cancellation\+Token cancellation\+Token=default)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a0312f4cab376417e869f4cc1f7bdf7b0}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a0312f4cab376417e869f4cc1f7bdf7b0} 
+IEnumerable$<$ string $>$ {\bfseries Applied\+Migrations}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_acbccfadf47283759b47bece3752801b2}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_acbccfadf47283759b47bece3752801b2} 
+Change\+Tracker {\bfseries Change\+Tracker}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a6d499c7720c00179fe9b0c075626b053}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a6d499c7720c00179fe9b0c075626b053} 
+Database\+Facade {\bfseries Database}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a58325c1b1f12ea5fe2b5f5cee6ce1eed}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a58325c1b1f12ea5fe2b5f5cee6ce1eed} 
+IEnumerable$<$ string $>$ {\bfseries Pending\+Migrations}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a3e651819b2ce8464967ef753a8bb0c66}\label{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context_a3e651819b2ce8464967ef753a8bb0c66} 
+\index{BLAZAM.Database.Context.IEFCoreDbContext@{BLAZAM.Database.Context.IEFCoreDbContext}!IsSeeded@{IsSeeded}}
+\index{IsSeeded@{IsSeeded}!BLAZAM.Database.Context.IEFCoreDbContext@{BLAZAM.Database.Context.IEFCoreDbContext}}
+\doxysubsubsection{\texorpdfstring{IsSeeded()}{IsSeeded()}}
+{\footnotesize\ttfamily bool BLAZAM.\+Database.\+Context.\+IEFCore\+Db\+Context.\+Is\+Seeded (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a7c64eb9d8b498c18c00eff28161daa5c}{BLAZAM.\+Database.\+Context.\+Database\+Context\+Base}}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMDatabase/\+Context/IEFCore\+Db\+Context.\+cs\end{DoxyCompactItemize}

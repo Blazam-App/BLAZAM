@@ -21,12 +21,12 @@ namespace BLAZAM.Tests.Jobs
             {
                 IJob job = new Job("Test Job");
                 IJob job2 = new Job("Nested Job");
-                IJobStep step1 = new JobStep("Regular Step Passes", () => { Task.Delay(200).Wait(); return true; });
-                IJobStep step2 = new JobStep("Regular Step Fails", () => { Task.Delay(200).Wait(); return false; });
-                IJobStep step3 = new JobStep("Regular Step Throws", () => { Task.Delay(200).Wait(); throw new ApplicationException("Test exception"); });
-                IJobStep step4 = new JobStep("Nested Step Passes", () => { Task.Delay(200).Wait(); return true; });
-                IJobStep step5 = new JobStep("Nested Step Fails", () => { Task.Delay(200).Wait(); return false; });
-                IJobStep step6 = new JobStep("Nested Step Throws", () => { Task.Delay(200).Wait(); throw new ApplicationException("Test exception"); });
+                IJobStep step1 = new JobStep("Regular Step Passes", (step) => { Task.Delay(200).Wait(); return true; });
+                IJobStep step2 = new JobStep("Regular Step Fails", (step) => { Task.Delay(200).Wait(); return false; });
+                IJobStep step3 = new JobStep("Regular Step Throws", (step) => { Task.Delay(200).Wait(); throw new ApplicationException("Test exception"); return false; });
+                IJobStep step4 = new JobStep("Nested Step Passes", (step) => { Task.Delay(200).Wait(); return true; });
+                IJobStep step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(200).Wait(); return false; });
+                IJobStep step6 = new JobStep("Nested Step Throws", (step) => { Task.Delay(200).Wait(); throw new ApplicationException("Test exception"); return false; });
 
                 job.Steps.Add(step1);
                 job.Steps.Add(step2);

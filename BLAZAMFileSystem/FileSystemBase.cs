@@ -16,9 +16,14 @@ namespace BLAZAM.FileSystem
             if (Path==null || Path=="")
                 Path = path;
         }
-
+        /// <summary>
+        /// The full raw path to this file or directory
+        /// </summary>
         public string Path { get; set; }
 
+        /// <summary>
+        /// Indicates whether the executing identity has write permission to this directory or file
+        /// </summary>
         public virtual bool Writable
         {
             get

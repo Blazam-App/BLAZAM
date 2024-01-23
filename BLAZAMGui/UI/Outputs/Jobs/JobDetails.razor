@@ -14,6 +14,9 @@
                 case JobResult.Passed:
                     title += AppLocalization["Success"];
                     break;
+                case JobResult.Cancelled:
+                    title += AppLocalization["Cancelled"];
+                    break;
                 case JobResult.Failed:
                     title += AppLocalization["Failed"];
                     break;
@@ -24,9 +27,7 @@
                 case JobResult.Running:
                     title += AppLocalization["Running"];
                     break;
-                    case JobResult.Cancelled:
-                    title += AppLocalization["Cancelled"];
-                    break;
+                 
 
             }
             @title
@@ -53,7 +54,7 @@
         <TemplateColumn Title="Elapsed Time">
             <CellTemplate>
                 
-                <MudText>@context.Item.ElapsedTime</MudText>
+                <MudText>@(context.Item.ElapsedTime.HasValue==true?context.Item.ElapsedTime.Value.ToString("mm\\:ss"):"")</MudText>
               
             </CellTemplate>
         </TemplateColumn>

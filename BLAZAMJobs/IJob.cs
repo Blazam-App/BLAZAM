@@ -8,7 +8,7 @@ namespace BLAZAM.Jobs
     /// <summary>
     /// A flexible multi step Job that can have actions as trackable steps.
     /// </summary>
-    public interface IJob:IProgressTracker<double>
+    public interface IJob:IProgressTracker<double?>
     {
 
     
@@ -38,9 +38,9 @@ namespace BLAZAM.Jobs
         DateTime ScheduledRunTime { get; set; }
 
         /// <summary>
-        /// The web application user
+        /// The triggering username
         /// </summary>
-        IApplicationUserState? User { get; set; }
+        string? User { get; set; }
 
         /// <summary>
         /// The steps associated with this job, in order.
@@ -105,5 +105,6 @@ namespace BLAZAM.Jobs
         /// Cancels this job after the current step finishes if execution already started
         /// </summary>
         void Cancel();
+        void Wait();
     }
 }

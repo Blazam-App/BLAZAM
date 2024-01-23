@@ -1,0 +1,69 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher Interface Reference}
+\hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}\index{BLAZAM.ActiveDirectory.Interfaces.IADGroupSearcher@{BLAZAM.ActiveDirectory.Interfaces.IADGroupSearcher}}
+
+
+A searcher class for group objects in an IActive\+Directory\+Context  
+
+
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a250d35a6e4e8c2405dbebbe843f0b3d2}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a250d35a6e4e8c2405dbebbe843f0b3d2} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}}? {\bfseries Find\+Group\+By\+SID} (byte\mbox{[}$\,$\mbox{]} group\+SID)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_aa760984683c2426888fa0cee7011a06b}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_aa760984683c2426888fa0cee7011a06b} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}}? {\bfseries Find\+Group\+By\+SID} (string group\+SID)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a0623223d2b416ef29cf6beb04463a849}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a0623223d2b416ef29cf6beb04463a849} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ {\bfseries Find\+Group\+By\+String} (string search\+Term, bool exact\+Match=false)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a040d4c2275711b40aa34a18c97772348}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a040d4c2275711b40aa34a18c97772348} 
+Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ $>$ {\bfseries Find\+Group\+By\+String\+Async} (string search\+Term, bool exact\+Match=false)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a365a37295f6a65d01ed606afecc6b87a}{Find\+Groups\+By\+DN}} (List$<$ string $>$? list)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_acc9fc42556ad78c62f42ce0d7a51d44d}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_acc9fc42556ad78c62f42ce0d7a51d44d} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ {\bfseries Get\+Group\+Members} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} group)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a95475556ca0937114fb3212c1723757c}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a95475556ca0937114fb3212c1723757c} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ {\bfseries Get\+Direct\+User\+Members} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} group, bool ignore\+Disabled\+Users=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a462f0db46e9b03cd90e379e8296db3c1}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a462f0db46e9b03cd90e379e8296db3c1} 
+bool {\bfseries Is\+AMember\+Of} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}}? group, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter}{IGroupable\+Directory\+Adapter}}? user, bool v, bool ignore\+Disabled\+Users=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a89bf5974bcb4244fe2e14428cd614660}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a89bf5974bcb4244fe2e14428cd614660} 
+Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ $>$ {\bfseries Find\+New\+Groups\+Async} (int max\+Age\+In\+Days=14)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a3522751fb3b904e909158f111a4fb56d}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a3522751fb3b904e909158f111a4fb56d} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$? {\bfseries Find\+New\+Groups} (int max\+Age\+In\+Days=14)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a3db203a312c0ce9663ec26f3c042d9cc}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a3db203a312c0ce9663ec26f3c042d9cc} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter}{IGroupable\+Directory\+Adapter}} $>$? {\bfseries Get\+All\+Nested\+Members} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} group)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A searcher class for group objects in an IActive\+Directory\+Context 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a365a37295f6a65d01ed606afecc6b87a}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher_a365a37295f6a65d01ed606afecc6b87a} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IADGroupSearcher@{BLAZAM.ActiveDirectory.Interfaces.IADGroupSearcher}!FindGroupsByDN@{FindGroupsByDN}}
+\index{FindGroupsByDN@{FindGroupsByDN}!BLAZAM.ActiveDirectory.Interfaces.IADGroupSearcher@{BLAZAM.ActiveDirectory.Interfaces.IADGroupSearcher}}
+\doxysubsubsection{\texorpdfstring{FindGroupsByDN()}{FindGroupsByDN()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher.\+Find\+Groups\+By\+DN (\begin{DoxyParamCaption}\item[{List$<$ string $>$?}]{list }\end{DoxyParamCaption})}
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a5d4265ae7dc8c2b0e06b7c3fcd84a5ea}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher}}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Interfaces/IADGroup\+Searcher.\+cs\end{DoxyCompactItemize}

@@ -168,68 +168,18 @@
 
     async Task ApplyUpdate()
     {
-        if (LatestAvailableVersion == null)
+        if (await MessageService.Confirm("Would you like to apply the update?"))
         {
-            SnackBarService.Error("Couldn't fetch updates.");
-            return;
-        }
-
-        SnackBarService.Info("Update started. Downloading update...");
-
-        updateStage = UpdateStage.Downloading;
-        LatestAvailableVersion.DownloadPercentageChanged += UpdateDownloadPercentage;
-
-        if (await LatestAvailableVersion.Download())
-        {
-            DownladProgress = null;
-            LatestAvailableVersion.DownloadPercentageChanged -= UpdateDownloadPercentage;
-
-
-            updateStage = UpdateStage.Staging;
-
-            await InvokeAsync(StateHasChanged);
-            if (await LatestAvailableVersion.Stage())
+            var output = LatestAvailableVersion.GetUpdateJob();
+            if (output != null)
             {
-
-
-                if (await MessageService.Confirm("Would you like to apply the update?"))
-                {
-                    updateStage = UpdateStage.Applying;
-
-
-                    await InvokeAsync(StateHasChanged);
-
-                    var output = await LatestAvailableVersion.Apply();
-                    if (output != null)
-                    {
-                        SnackBarService.Success("Update started successfully. The web application will restart and update momentarily.");
-                        if (ApplicationInfo.InDebugMode)
-                        {
-                            await MessageService.Info(output);
-
-                        }
-                    }
-
-
-
-
-                    updateStage = UpdateStage.Applied;
-
-                }
-                updateStage = UpdateStage.None;
-
-                await InvokeAsync(StateHasChanged);
+                MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization["Update"]);
+                output.RunAsync();
+                // SnackBarService.Success("Update started successfully. The web application will restart and update momentarily.");
 
             }
+            await InvokeAsync(StateHasChanged);
         }
-        else
-        {
-            SnackBarService.Error("Update failed.");
-            updateStage = UpdateStage.None;
-
-        }
-        updateStage = UpdateStage.None;
-
     }
 
     async void UpdateDownloadPercentage(FileProgress? progress)

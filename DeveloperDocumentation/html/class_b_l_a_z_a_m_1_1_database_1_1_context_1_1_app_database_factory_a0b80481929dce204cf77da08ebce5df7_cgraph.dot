@@ -1,0 +1,15 @@
+digraph "BLAZAM.Database.Context.AppDatabaseFactory.AppDatabaseFactory"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node1 [id="Node000001",label="BLAZAM.Database.Context.\lAppDatabaseFactory.AppDatabase\lFactory",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip="Creates a new factory with the supplied configuration and ApplicationInfo"];
+  Node1 -> Node2 [id="edge1_Node000001_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="BLAZAM.Database.Context.\lAppDatabaseFactory.ApplyDatabase\lMigrations",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory.html#a87e9d7d3cf0acef0b0223b6eb80c2418",tooltip="Applies all pending database migrations."];
+  Node2 -> Node3 [id="edge2_Node000002_Node000003",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="BLAZAM.Database.Context.\lAppDatabaseFactory.CreateDbContext",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory.html#af510f5ac0769d1fee380783b1fbf85c8",tooltip="Creates a new application DbContext based on the configured DatabaseType and DBConnectionString in ap..."];
+  Node2 -> Node4 [id="edge3_Node000002_Node000004",color="steelblue1",style="solid",tooltip=" "];
+  Node4 [id="Node000004",label="BLAZAM.Database.Context.\lAppDatabaseFactory.Migrate",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory.html#a12343486fde0b108e74b4b7c7315f1fb",tooltip="Applies any pending migrations for the context to the database. Will create the database if it does n..."];
+}

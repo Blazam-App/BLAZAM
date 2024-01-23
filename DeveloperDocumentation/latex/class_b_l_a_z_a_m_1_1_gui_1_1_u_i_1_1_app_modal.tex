@@ -1,0 +1,93 @@
+\doxysection{BLAZAM.\+Gui.\+UI.\+App\+Modal Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal}{}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal}\index{BLAZAM.Gui.UI.AppModal@{BLAZAM.Gui.UI.AppModal}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_ab30a86a6550aece2c2906014f6d14a1e}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_ab30a86a6550aece2c2906014f6d14a1e} 
+void {\bfseries Refresh\+View} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a03e9bf52f72c69172ef61587bffa6d42}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a03e9bf52f72c69172ef61587bffa6d42} 
+IDialog\+Reference? {\bfseries Show} ()
+\begin{DoxyCompactList}\small\item\em Show this modal. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a77ac8c7136dbbb70818b6a6a4d0f92fa}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a77ac8c7136dbbb70818b6a6a4d0f92fa} 
+void {\bfseries Hide} ()
+\begin{DoxyCompactList}\small\item\em Hide this modal. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a62a4d1b5f9ef885c1feeeb4565ea2b42}{Fullscreen}} (bool enabled=true)
+\begin{DoxyCompactList}\small\item\em Sets the modal to be fullscreen, disabled by passing false. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a2ed45b558c5ace09726736e07bfa4eec}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a2ed45b558c5ace09726736e07bfa4eec} 
+override void {\bfseries On\+Initialized} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a2fae5a42aff09f35ed4872ee42f807a3}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a2fae5a42aff09f35ed4872ee42f807a3} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_app_snack_bar_service}{App\+Snack\+Bar\+Service}} {\bfseries Notification\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a45d4c2f8f3814184fe3f78a381354413}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a45d4c2f8f3814184fe3f78a381354413} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{IDatabase\+Context}}? {\bfseries Context}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The modal\textquotesingle{}s databse connection. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a7e96e123d9a48c6c790660ec05d22917}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a7e96e123d9a48c6c790660ec05d22917} 
+bool {\bfseries Allow\+Close}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em If set to false, will prevent this modal from closing via the UI. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a1dcf8737f201eccfa987cfe915c7d4c5}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a1dcf8737f201eccfa987cfe915c7d4c5} 
+Color {\bfseries Color} = Color.\+Default\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_aaf0f47f571b2ad5d6f2f6716e79e6f39}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_aaf0f47f571b2ad5d6f2f6716e79e6f39} 
+Render\+Fragment? {\bfseries Child\+Content}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The modal content. By default, there is no content. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a8e4ef0249f42fa94c3b58a18109a3576}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a8e4ef0249f42fa94c3b58a18109a3576} 
+Mud\+Dialog? {\bfseries Modal}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em A reference to this modal. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a0c2bce38720d4dbfa946566cd2bbc0da}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a0c2bce38720d4dbfa946566cd2bbc0da} 
+On\+Cancel\+Event {\bfseries On\+Cancel}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a2758a47cdcfdb8e7503fe7909906a009}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a2758a47cdcfdb8e7503fe7909906a009} 
+On\+Yes\+Event {\bfseries On\+Yes}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a64310bb96ff6790ade225d1abbfe4158}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a64310bb96ff6790ade225d1abbfe4158} 
+string {\bfseries Yes\+Text} = "{}Ok"{}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a5513508aeeb1ca07e6b6a73171e4428f}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a5513508aeeb1ca07e6b6a73171e4428f} 
+string {\bfseries Cancel\+Text}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_ac6b13fa8dfcb469b1f19c380282181be}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_ac6b13fa8dfcb469b1f19c380282181be} 
+Func$<$ bool $>$ {\bfseries Yes\+Enabled} = (() =$>$ \{ return true; \})\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_aa421560422b4c93406807b1797d2414a}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_aa421560422b4c93406807b1797d2414a} 
+string {\bfseries Title}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_ab2d921ec582277096d4a441cda11196c}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_ab2d921ec582277096d4a441cda11196c} 
+Event\+Callback$<$ Mud\+Message\+Box $>$? {\bfseries Modal\+Changed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_ae9a1e3fd7e2b782abae56c5b094e5fa5}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_ae9a1e3fd7e2b782abae56c5b094e5fa5} 
+bool {\bfseries Is\+Shown}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this modal is currently shown. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a6cea91352ee8b546131549bd24dc4583}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a6cea91352ee8b546131549bd24dc4583} 
+Event\+Callback$<$ bool $>$ {\bfseries Is\+Shown\+Changed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a62a4d1b5f9ef885c1feeeb4565ea2b42}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal_a62a4d1b5f9ef885c1feeeb4565ea2b42} 
+\index{BLAZAM.Gui.UI.AppModal@{BLAZAM.Gui.UI.AppModal}!Fullscreen@{Fullscreen}}
+\index{Fullscreen@{Fullscreen}!BLAZAM.Gui.UI.AppModal@{BLAZAM.Gui.UI.AppModal}}
+\doxysubsubsection{\texorpdfstring{Fullscreen()}{Fullscreen()}}
+{\footnotesize\ttfamily void BLAZAM.\+Gui.\+UI.\+App\+Modal.\+Fullscreen (\begin{DoxyParamCaption}\item[{bool}]{enabled = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Sets the modal to be fullscreen, disabled by passing false. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em enabled} & \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMGui/\+UI/App\+Modal.\+razor.\+cs\end{DoxyCompactItemize}

@@ -1,0 +1,411 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer Interface Reference}
+\hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}{}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}\index{BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}}
+
+
+Represents a computer object in Active Directory.  
+
+
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=6.000000cm]{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_drive}{IADComputer\+Drive}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a8fec0c9570fcd6adfaed46b5180f5ccb}{Get\+Drives}} ()
+\begin{DoxyCompactList}\small\item\em Gets the drive details from this computer. \end{DoxyCompactList}\item 
+Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_drive}{IADComputer\+Drive}} $>$ $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a87096d4af1add04ddf2faf6715e68355}{Get\+Drives\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Gets the drive details from this computer asynchronously. \end{DoxyCompactList}\item 
+Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_remote_session}{IRemote\+Session}} $>$ $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_adda6769bedc9ee81ad6572835c48e449}{Get\+Remote\+Sessions\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Gets all connected sessions on this computer asynchronously. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_ae9cc204403d530f0b6a52c718e80c9c5}{Monitor\+Online\+Status}} (int timeout=500)
+\begin{DoxyCompactList}\small\item\em A trigger to start monitoring the online status of this computer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_account_directory_adapter}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IAccount\+Directory\+Adapter}}}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_account_directory_adapter_af439152be42359f98a12258106cbe778}{Set\+Password}} (Secure\+String password, bool require\+Change=false)
+\item 
+void {\bfseries Stage\+Password\+Change} (Secure\+String new\+Password, bool require\+Change=false)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IGroupable\+Directory\+Adapter}}}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries Assign\+To} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} group)
+\item 
+bool {\bfseries Is\+AMember\+Of} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} group)
+\item 
+void {\bfseries Unassign\+From} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} group)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_ae536a894824daa5b96c95ede792551ef}{Commit\+Changes}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}}? commit\+Job=null)
+\begin{DoxyCompactList}\small\item\em Sends all staged changes to the Active Directory server. \end{DoxyCompactList}\item 
+Task$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_af6d6a44c47d2a260141e40e304984fb7}{Commit\+Changes\+Async}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}}? commit\+Job=null)
+\begin{DoxyCompactList}\small\item\em Sends all staged changes to the Active Directory server asynchronously. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6b9f253b237a7fa1bdc43628ea1dd8bb}{Discard\+Changes}} ()
+\begin{DoxyCompactList}\small\item\em Resets the current entry state to it\textquotesingle{}s inital state. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a256f3bee3ab3cf02818042c39da6397c}{Can\+Edit\+Field}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_models_1_1_i_active_directory_field}{IActive\+Directory\+Field}} field)
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can modify the specified field. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_ad2459b448307d948360acc245cab2df5}{Can\+Read\+Field}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_models_1_1_i_active_directory_field}{IActive\+Directory\+Field}} field)
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can read the specified field. \end{DoxyCompactList}\item 
+new void \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6c444860f8e80c5dbedfd7f81982068f}{Dispose}} ()
+\begin{DoxyCompactList}\small\item\em Properly disposes of this entry from memory. \end{DoxyCompactList}\item 
+Task \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a45374f2e68a19d8f2053c55e73099704}{Parse}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6419100ef150a476f9cd610c244fbffd}{Directory\+Entry}} result, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\begin{DoxyCompactList}\small\item\em Converts a raw Directory\+Entry into an application IDirectory\+Entry\+Adapter object. \end{DoxyCompactList}\item 
+Task \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a16203a0cf4a87d436cf4c1427c0028ef}{Parse}} (Search\+Result result, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\begin{DoxyCompactList}\small\item\em Converts a raw Search\+Result into an application IDirectory\+Entry\+Adapter object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a4f614c32de3d42660ac73167d1d15181}{Move\+To}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} parent\+OUTo\+Move\+To)
+\begin{DoxyCompactList}\small\item\em Move this entry to a new IADOrganizational\+Unit \end{DoxyCompactList}\item 
+Task$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}}?$>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a41033d2a18ccd24e2975628e21ed8267}{Get\+Parent}} ()
+\begin{DoxyCompactList}\small\item\em Get\textquotesingle{}s the parent IADOrganizational\+Unit of this entry. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a7e35fc56532a49cdd7adbd427908ed05}{Invoke}} (string method, object?\mbox{[}$\,$\mbox{]}? args=null)
+\begin{DoxyCompactList}\small\item\em Wrapper method for the base Directory\+Entry Invoke method. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a858a0bebfdae76fa49174e937bb36070}{Delete}} ()
+\begin{DoxyCompactList}\small\item\em Deletes this entry from the directory. \end{DoxyCompactList}\item 
+string? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a2ad0f18bf765bd6fe866754ea977cb37}{To\+String}} ()
+\begin{DoxyCompactList}\small\item\em The string representation of this entry. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_abe9ce091d35ef44345d68b6b47026cd7}{Rename}} (string new\+Name)
+\begin{DoxyCompactList}\small\item\em Renames the CN attribute. \end{DoxyCompactList}\item 
+T? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a4f850e3123d697920805748cb61caebe}{Get\+Custom\+Property$<$ T $>$}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Gets a custom attribute value for the given name and returns an object with the given type. \end{DoxyCompactList}\item 
+Date\+Time? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a963e91ee1b34ecc363abdd78fe124c81}{Get\+Date\+Time\+Property}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Returns the specified Date\+Time property in UTC. \end{DoxyCompactList}\item 
+void {\bfseries Set\+Custom\+Property} (string property\+Name, object? value)
+\item 
+void {\bfseries Ensure\+Directory\+Entry} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+string? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a42c2803498333e6f46fe6244355a1755}{Operating\+System}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em This computer\textquotesingle{}s Operating System. \end{DoxyCompactList}\item 
+bool? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_aaf623a698681de870d3820e4b40d77ce}{Is\+Online}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indiates whether this computer is reachable by the server. Null indicates that the check has not yet completed. \end{DoxyCompactList}\item 
+IPHost\+Entry? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a2f2ee0305296ac3c55b07110fb00f85f}{IPHost\+Entry}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em If this computer is online, this is the resolved IP address from the server. Otherwise, this is null. \end{DoxyCompactList}\item 
+App\+Event$<$ bool $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a5d927faa758bc8280e0b2bab4688212d}{On\+Online\+Changed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when this computers Is\+Online status changes. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a2bdbfebb55ccb13090ef4faf320dc113}{Processor}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The realtime CPU usage percentage. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a9166fd8275e4bf0bf28106cf4ac4d84f}{Memory\+Used\+Percent}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The realtime RAM usage percentage. \end{DoxyCompactList}\item 
+List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_computer_service}{Computer\+Service}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_aa387256eb8f7f44c054632d64f74ae59}{Services}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em All services installed on this computer. \end{DoxyCompactList}\item 
+List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_shared_printer}{Shared\+Printer}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a45479dbae2975dd56e33b737c3d44954}{Shared\+Printers}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em All shared printers on this computer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_account_directory_adapter}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IAccount\+Directory\+Adapter}}}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_account_directory_adapter_a7a7a6ce19a11aee3dcd8ad3e3ba4063f}{Can\+Enable}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web user can enable this IAccount\+Directory\+Adapter \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_account_directory_adapter_a6171e1aeb43a89c35ab23a1502e3434a}{Can\+Disable}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web user can disable this IAccount\+Directory\+Adapter \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_account_directory_adapter_a6738d2831f2ad7d5f3742cf7d1208914}{Can\+Unlock}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web user can unlock this IAccount\+Directory\+Adapter \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_account_directory_adapter_a3fb64cadaacb91738fcd5f51ac6531d4}{Locked\+Out}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this IAccount\+Directory\+Adapter is currently locked out of logging in. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_account_directory_adapter_a2022128c1a1459db7aaee93f7f564713}{Disabled}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this IAccount\+Directory\+Adapter is disabled. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_account_directory_adapter_acd750f1f8e5301349dabc8fefdaeb1a6}{Enabled}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this IAccount\+Directory\+Adapter is disabled. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_account_directory_adapter_a7e46f0e4d3f441bf75aceade2c8b11cd}{Can\+Search\+Disabled}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web user can search disabled IAccount\+Directory\+Adapter\textquotesingle{}s. \end{DoxyCompactList}\item 
+Date\+Time? {\bfseries Lockout\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+Date\+Time? {\bfseries Expire\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Date\+Time? {\bfseries Last\+Logon\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+Date\+Time? {\bfseries Password\+Last\+Set}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IGroupable\+Directory\+Adapter}}}
+\begin{DoxyCompactItemize}
+\item 
+string? {\bfseries Description}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+string? {\bfseries Display\+Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+string? {\bfseries Email}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+bool {\bfseries Is\+AGroup\+Member}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_abf9a4e3924e7941c31d900fbf24a82ee}{Member\+Of}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a13424317765969365209ce89add31f9c}{Can\+Assign}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web user can assign this IGroupable\+Directory\+Adapter to any groups. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_ab224fd3a8fa17e887f67765308c345fd}{Can\+Unassign}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web user can unassign to/from this IGroupable\+Directory\+Adapter \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}}
+\begin{DoxyCompactItemize}
+\item 
+string? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_ae699eadc30a20a8107bc42fab29f9fed}{Sam\+Account\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The SAMAccount\+Name property, generally used as the username property. \end{DoxyCompactList}\item 
+string? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6fe008fd86aa2ce2ed68c8f2253a677f}{Canonical\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The name that displays for this object in ADUC. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_af19bda9f95e0144fd99cd1187ee7a2dd}{DN}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em This entry\textquotesingle{}s Distinguished Name. \end{DoxyCompactList}\item 
+Date\+Time? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a2b57416a7bed1b9a3f882d129d2ac690}{Created}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The date and time in UTC that this entry was created. \end{DoxyCompactList}\item 
+Date\+Time? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_af834cadc4fb19bea4282d7526cea98c0}{Last\+Changed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The date and time in UTC that this entry was last modified. \end{DoxyCompactList}\item 
+byte?\mbox{[}$\,$\mbox{]} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a0211eb1a6969f5854b4708edc965a968}{SID}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em This entry\textquotesingle{}s SID in byte form. \end{DoxyCompactList}\item 
+List$<$ string $>$? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a49b9b93a33081c61352434eb2f968d91}{Classes}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The object\+Class value. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a503cc3a88485b370dac3d3f5141bfae3}{Can\+Read}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user has read access to this directory entry. \end{DoxyCompactList}\item 
+Active\+Directory\+Object\+Type \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_aaaa70870feafcff13559557e1400bea5}{Object\+Type}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The type of Active Directory entry that this is. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_abfcf78a992b22b8b6d7ece615aef8753}{Can\+Move}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user has move permission for this directory entry. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_adcf454d39f969e8ac8e2d02b7dd58961}{Can\+Rename}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user has read access to this directory entry. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_af533f89c7f3fe4c864e742c1fdd9bca6}{Can\+Create}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can create this Active\+Directory\+Object\+Type \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_abf586bb748c76f8239b14cf5379ff139}{Can\+Delete}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can delete this directory entry. \end{DoxyCompactList}\item 
+Directory\+Entry? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6419100ef150a476f9cd610c244fbffd}{Directory\+Entry}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The .NET underlying object for this entry. \end{DoxyCompactList}\item 
+string? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_afca8eff71eb839eaca40c86509a60e29}{ADSPath}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The full Active Directory Services path including LDAP server name. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6eb9958c37f15168fd8fd71928b546b3}{Can\+Edit}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can edit any fields for this directory entry. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a000ef0a599643a3d3495b86bd9904e67}{Can\+Read\+Any\+Custom\+Fields}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can read any custom fields for this directory entry. \end{DoxyCompactList}\item 
+string? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a940794a0a7712a15096e392f1086402f}{OU}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The parent OU distinguished name as a string. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a11ad7149260f1691b8e90f36dae78dde}{Has\+Unsaved\+Changes}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether there have been uncommitted changes to this entry. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6516815e834fd61b327da4f7cd996b58}{New\+Entry}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Set this to true to indicate that this entry is a new entry. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_aa840ac4b9d9e8d5421d055d4024f06f0}{Search\+Uri}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns the relative path to reach the search result page for this entry. \end{DoxyCompactList}\item 
+App\+Event? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a9fae79df960e3a84d6105d56b58c173e}{On\+Model\+Commited}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when pending changes to this entry are commited. \end{DoxyCompactList}\item 
+App\+Event? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a502ce5e319022770b14f45f8364e53eb}{On\+Model\+Changed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when any changes occur to this entry. \end{DoxyCompactList}\item 
+Dictionary$<$ string, object $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_acdfdc7a71d1a669b4d0585289fce0052}{New\+Entry\+Properties}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em If New\+Entry is true, property changes will be staged in this property. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}}? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a2b6c9362657ac17bbb0125d044816749}{Last\+Known\+Parent}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em If this object is deleted, this was the last IADOrganizational\+Unit it was under. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a41780b18bb2636e8957160b1d2499048}{Is\+Deleted}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates this entry is in the Active Directory Recycle Bin. \end{DoxyCompactList}\item 
+List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_audit_change_log}{Audit\+Change\+Log}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a8ab6eb219270571c791d8e1fba8eabe1}{Changes}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em A list of changelogs made to this entry for auditting purposes. \end{DoxyCompactList}\item 
+App\+Event$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} $>$? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6915cc93945a4e7d413eed287fd637bb}{On\+Directory\+Model\+Renamed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when this entry is renamed. \end{DoxyCompactList}\item 
+App\+Event? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a83b49dc2e4bd55fa0b2fbf2b166104ca}{On\+Model\+Deleted}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when this entry is deleted. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a85e7f2233674684ad89aeea6c385742a}{Directory}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The directory this entry belongs to. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_ac9f72340138bc057f24c319d3a5e19f4}{Is\+Expanded}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this entry is expanded in the ui within a tree view. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_abdaeb2444c0c89e06c253ffe100237fa}{Is\+Selected}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this entry is selected in the ui within a tree view. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a7ca023983567d28bd34dc22de81a51ad}{Has\+Children}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this entry has any child entries. \end{DoxyCompactList}\item 
+IEnumerable$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a13204cd284668f8c25ff648ac92a0760}{Children}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The children of this entry. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents a computer object in Active Directory. 
+
+For realtime monitoring, remember to call Monitor\+Online\+Status(int) after instantiation. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a8fec0c9570fcd6adfaed46b5180f5ccb}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a8fec0c9570fcd6adfaed46b5180f5ccb} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}!GetDrives@{GetDrives}}
+\index{GetDrives@{GetDrives}!BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}}
+\doxysubsubsection{\texorpdfstring{GetDrives()}{GetDrives()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_drive}{IADComputer\+Drive}} $>$ BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer.\+Get\+Drives (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the drive details from this computer. 
+
+\begin{DoxyReturn}{Returns}
+The drive details
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_af24e779b9870c42d7c001d676ecff1fa}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a87096d4af1add04ddf2faf6715e68355}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a87096d4af1add04ddf2faf6715e68355} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}!GetDrivesAsync@{GetDrivesAsync}}
+\index{GetDrivesAsync@{GetDrivesAsync}!BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}}
+\doxysubsubsection{\texorpdfstring{GetDrivesAsync()}{GetDrivesAsync()}}
+{\footnotesize\ttfamily Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_drive}{IADComputer\+Drive}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer.\+Get\+Drives\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the drive details from this computer asynchronously. 
+
+\begin{DoxyReturn}{Returns}
+The drive details
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_a3ba551f84f1194d5cf05d551b8e7603d}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_adda6769bedc9ee81ad6572835c48e449}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_adda6769bedc9ee81ad6572835c48e449} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}!GetRemoteSessionsAsync@{GetRemoteSessionsAsync}}
+\index{GetRemoteSessionsAsync@{GetRemoteSessionsAsync}!BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}}
+\doxysubsubsection{\texorpdfstring{GetRemoteSessionsAsync()}{GetRemoteSessionsAsync()}}
+{\footnotesize\ttfamily Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_remote_session}{IRemote\+Session}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer.\+Get\+Remote\+Sessions\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets all connected sessions on this computer asynchronously. 
+
+\begin{DoxyReturn}{Returns}
+A list of logged in sessions
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_a92739fac04e01126cd72ea595a61b622}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_ae9cc204403d530f0b6a52c718e80c9c5}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_ae9cc204403d530f0b6a52c718e80c9c5} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}!MonitorOnlineStatus@{MonitorOnlineStatus}}
+\index{MonitorOnlineStatus@{MonitorOnlineStatus}!BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}}
+\doxysubsubsection{\texorpdfstring{MonitorOnlineStatus()}{MonitorOnlineStatus()}}
+{\footnotesize\ttfamily void BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer.\+Monitor\+Online\+Status (\begin{DoxyParamCaption}\item[{int}]{timeout = {\ttfamily 500} }\end{DoxyParamCaption})}
+
+
+
+A trigger to start monitoring the online status of this computer. 
+
+No checks are performed before calling this method 
+
+
+\begin{DoxyParams}{Parameters}
+{\em timeout} & \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_adef4075b7611635a685545c5752c904a}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a2f2ee0305296ac3c55b07110fb00f85f}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a2f2ee0305296ac3c55b07110fb00f85f} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}!IPHostEntry@{IPHostEntry}}
+\index{IPHostEntry@{IPHostEntry}!BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}}
+\doxysubsubsection{\texorpdfstring{IPHostEntry}{IPHostEntry}}
+{\footnotesize\ttfamily IPHost\+Entry? BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer.\+IPHost\+Entry\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+If this computer is online, this is the resolved IP address from the server. Otherwise, this is null. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_a2c1dcc94609cf694d23bbcabbb2ace47}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_aaf623a698681de870d3820e4b40d77ce}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_aaf623a698681de870d3820e4b40d77ce} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}!IsOnline@{IsOnline}}
+\index{IsOnline@{IsOnline}!BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}}
+\doxysubsubsection{\texorpdfstring{IsOnline}{IsOnline}}
+{\footnotesize\ttfamily bool? BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer.\+Is\+Online\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Indiates whether this computer is reachable by the server. Null indicates that the check has not yet completed. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_acf715b1251ba610d604be00899659418}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a9166fd8275e4bf0bf28106cf4ac4d84f}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a9166fd8275e4bf0bf28106cf4ac4d84f} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}!MemoryUsedPercent@{MemoryUsedPercent}}
+\index{MemoryUsedPercent@{MemoryUsedPercent}!BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}}
+\doxysubsubsection{\texorpdfstring{MemoryUsedPercent}{MemoryUsedPercent}}
+{\footnotesize\ttfamily double BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer.\+Memory\+Used\+Percent\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The realtime RAM usage percentage. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_a2dd42f290315b2fae4992f93bfd913f2}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a5d927faa758bc8280e0b2bab4688212d}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a5d927faa758bc8280e0b2bab4688212d} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}!OnOnlineChanged@{OnOnlineChanged}}
+\index{OnOnlineChanged@{OnOnlineChanged}!BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}}
+\doxysubsubsection{\texorpdfstring{OnOnlineChanged}{OnOnlineChanged}}
+{\footnotesize\ttfamily App\+Event$<$bool$>$ BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer.\+On\+Online\+Changed\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Called when this computers Is\+Online status changes. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_a6bdedb62e4afa5460f5936770c27533b}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a42c2803498333e6f46fe6244355a1755}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a42c2803498333e6f46fe6244355a1755} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}!OperatingSystem@{OperatingSystem}}
+\index{OperatingSystem@{OperatingSystem}!BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}}
+\doxysubsubsection{\texorpdfstring{OperatingSystem}{OperatingSystem}}
+{\footnotesize\ttfamily string? BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer.\+Operating\+System\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+This computer\textquotesingle{}s Operating System. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_a00d409fb51ea39a24bdb2acbefa341f6}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a2bdbfebb55ccb13090ef4faf320dc113}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a2bdbfebb55ccb13090ef4faf320dc113} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}!Processor@{Processor}}
+\index{Processor@{Processor}!BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}}
+\doxysubsubsection{\texorpdfstring{Processor}{Processor}}
+{\footnotesize\ttfamily int BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer.\+Processor\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The realtime CPU usage percentage. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_ad39dee15750b88f881a0dc093e976cd1}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_aa387256eb8f7f44c054632d64f74ae59}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_aa387256eb8f7f44c054632d64f74ae59} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}!Services@{Services}}
+\index{Services@{Services}!BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}}
+\doxysubsubsection{\texorpdfstring{Services}{Services}}
+{\footnotesize\ttfamily List$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_computer_service}{Computer\+Service}}$>$ BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer.\+Services\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+All services installed on this computer. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_ad187a2c2ef74a2c9da6aa4aafd8099fd}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a45479dbae2975dd56e33b737c3d44954}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_a45479dbae2975dd56e33b737c3d44954} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}!SharedPrinters@{SharedPrinters}}
+\index{SharedPrinters@{SharedPrinters}!BLAZAM.ActiveDirectory.Interfaces.IADComputer@{BLAZAM.ActiveDirectory.Interfaces.IADComputer}}
+\doxysubsubsection{\texorpdfstring{SharedPrinters}{SharedPrinters}}
+{\footnotesize\ttfamily List$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_shared_printer}{Shared\+Printer}}$>$ BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer.\+Shared\+Printers\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+All shared printers on this computer. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_computer_a2d61fa04b78e7b66bcfc8cdcf42f6670}{BLAZAM.\+Active\+Directory.\+Adapters.\+ADComputer}}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Interfaces/IADComputer.\+cs\end{DoxyCompactItemize}

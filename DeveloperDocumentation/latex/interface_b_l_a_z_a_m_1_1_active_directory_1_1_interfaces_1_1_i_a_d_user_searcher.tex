@@ -1,0 +1,63 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher Interface Reference}
+\hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}{}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}\index{BLAZAM.ActiveDirectory.Interfaces.IADUserSearcher@{BLAZAM.ActiveDirectory.Interfaces.IADUserSearcher}}
+
+
+A searcher class for user objects in an IActive\+Directory\+Context  
+
+
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Interfaces.\+IADUser\+Searcher\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a2ae22e9b36b89facffddc6fabbac8e25}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a2ae22e9b36b89facffddc6fabbac8e25} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ {\bfseries Find\+Users\+By\+String} (string? search\+Term, bool? ignore\+Disabled\+Users=true, bool exact\+Match=false)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a59e46b83db492f9d3f81103b37c602fc}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a59e46b83db492f9d3f81103b37c602fc} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}}? {\bfseries Find\+Users\+By\+Container\+Name} (string? search\+Term, bool? ignore\+Disabled\+Users=true, bool exact\+Match=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a8e85eef65f075b2b70d61f6b0afd7d47}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a8e85eef65f075b2b70d61f6b0afd7d47} 
+Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ {\bfseries Find\+Users\+By\+String\+Async} (string? search\+Term, bool? ignore\+Disabled\+Users=true, bool exact\+Match=false)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a2d55f93570eeae67a395dbc001e34b6c}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a2d55f93570eeae67a395dbc001e34b6c} 
+Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ {\bfseries Find\+Locked\+Out\+Users\+Async} (bool? ignore\+Disabled\+Users=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a5e87e9f35cf0ee4aa9f0e7ca28c73217}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a5e87e9f35cf0ee4aa9f0e7ca28c73217} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$? {\bfseries Find\+Locked\+Out\+Users} (bool? ignore\+Disabled\+Users=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_aa1641c6d5b48b365d66e168ebfaf5bbd}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_aa1641c6d5b48b365d66e168ebfaf5bbd} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}}? {\bfseries Find\+User\+By\+SID} (string? sid)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a1975182e3033a4980ef6d1ceabfedff6}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a1975182e3033a4980ef6d1ceabfedff6} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}}? {\bfseries Find\+User\+By\+Username} (string? search\+Term, bool? ignore\+Disabled\+Users=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a8b4a1dfe48e72190617601a08b4fb643}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a8b4a1dfe48e72190617601a08b4fb643} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$? {\bfseries Find\+New\+Users} (int max\+Age\+In\+Days=14, bool? ignore\+Disabled\+Users=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a272db4391ea6bd0aa468ca26765b1f92}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a272db4391ea6bd0aa468ca26765b1f92} 
+Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ {\bfseries Find\+New\+Users\+Async} (int max\+Age\+In\+Days=14, bool? ignore\+Disabled\+Users=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a6748104a821426af7b073765c04f51ff}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a6748104a821426af7b073765c04f51ff} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$? {\bfseries Find\+Changed\+Users} (bool? ignore\+Disabled\+Users=true, int days\+Back\+To\+Search=90)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_ae830ac57930809537a7ad19dd894bfaa}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_ae830ac57930809537a7ad19dd894bfaa} 
+Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ {\bfseries Find\+Changed\+Users\+Async} (bool? ignore\+Disabled\+Users=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_aa2ac921bda9c430619f5a19a3e62dc63}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_aa2ac921bda9c430619f5a19a3e62dc63} 
+Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ $>$ {\bfseries Find\+Changed\+Password\+Users\+Async} (bool? ignore\+Disabled\+Users=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a28b0006b8c0236d11bc0a9d75bd40c6b}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user_searcher_a28b0006b8c0236d11bc0a9d75bd40c6b} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$? {\bfseries Find\+Changed\+Password\+Users} (bool? ignore\+Disabled\+Users=true)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A searcher class for user objects in an IActive\+Directory\+Context 
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Interfaces/IADUser\+Searcher.\+cs\end{DoxyCompactItemize}

@@ -389,7 +389,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual void MoveTo(IADOrganizationalUnit parentOUToMoveTo)
         {
-            CommitSteps.Add(new Jobs.JobStep("Move to OU", () =>
+            CommitSteps.Add(new Jobs.JobStep("Move to OU", (JobStep? step) =>
               {
                   parentOUToMoveTo.EnsureDirectoryEntry();
                   if (parentOUToMoveTo.DirectoryEntry != null)
@@ -704,7 +704,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 commitJob ??= new Job
                 {
                     Name = "Commit Changes",
-                    User = CurrentUser
+                    User = CurrentUser.AuditUsername
                 };
 
 
@@ -720,7 +720,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     foreach (var p in NewEntryProperties)
                     {
-                        propertyStep = new JobStep("Set AD attributes", () =>
+                        propertyStep = new JobStep("Set AD attributes", (step) =>
                          {
 
 
@@ -767,7 +767,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         if (p.Value == null
                                || p.Value is string strValue && strValue.IsNullOrEmpty()
                                || p.Value is DateTime dateValue && dateValue == DateTime.MinValue) continue;
-                        propertyStep = new JobStep("Set " + p.Key, () =>
+                        propertyStep = new JobStep("Set " + p.Key, (step) =>
                         {
                             DirectoryEntry.Properties[p.Key].Value = p.Value;
                             return true;
@@ -792,7 +792,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
 
                 //Inject final commitchanges step
-                JobStep commitStep = new JobStep("Save directory entry", () =>
+                JobStep commitStep = new JobStep("Save directory entry", (step) =>
                 {
                     DirectoryEntry?.CommitChanges();
 

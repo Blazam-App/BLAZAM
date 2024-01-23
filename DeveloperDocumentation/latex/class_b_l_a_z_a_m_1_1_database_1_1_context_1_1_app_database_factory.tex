@@ -1,0 +1,165 @@
+\doxysection{BLAZAM.\+Database.\+Context.\+App\+Database\+Factory Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory}{}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory}\index{BLAZAM.Database.Context.AppDatabaseFactory@{BLAZAM.Database.Context.AppDatabaseFactory}}
+
+
+A factory for dynamic creation of Db\+Context objects based on IConfiguration properties.  
+
+
+Inheritance diagram for BLAZAM.\+Database.\+Context.\+App\+Database\+Factory\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a0b80481929dce204cf77da08ebce5df7}{App\+Database\+Factory}} (IConfiguration configuration, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info}{Application\+Info}} app\+Info)
+\begin{DoxyCompactList}\small\item\em Creates a new factory with the supplied configuration and Application\+Info \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{IDatabase\+Context}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a66df7fa8735b58c76143be0ac90239aa}{Create\+Db\+Context\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Async call to Create\+Db\+Context \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{IDatabase\+Context}} \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_af510f5ac0769d1fee380783b1fbf85c8}{Create\+Db\+Context}} ()
+\begin{DoxyCompactList}\small\item\em Creates a new application Db\+Context based on the configured Database\+Type and DBConnection\+String in appsettings.\+json. \end{DoxyCompactList}\item 
+async Task$<$ bool $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a87e9d7d3cf0acef0b0223b6eb80c2418}{Apply\+Database\+Migrations}} (bool force=false)
+\begin{DoxyCompactList}\small\item\em Applies all pending database migrations. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a12343486fde0b108e74b4b7c7315f1fb}{Migrate}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{IDatabase\+Context}} context)
+\begin{DoxyCompactList}\small\item\em Applies any pending migrations for the context to the database. Will create the database if it does not already exist. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_ac4d264910d0fdf448f6a75d0611ca839}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_ac4d264910d0fdf448f6a75d0611ca839} 
+static \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_exceptions_1_1_database_exception}{Database\+Exception}} {\bfseries Database\+Creation\+Failure\+Reason}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a482699236537dccbadd07d968f20ce87}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a482699236537dccbadd07d968f20ce87} 
+static ? App\+Event {\bfseries On\+Migration\+Applied}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_aa7a308429737ef45eb091e8a5f1bbd48}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_aa7a308429737ef45eb091e8a5f1bbd48} 
+static ? App\+Event$<$ Exception $>$ {\bfseries On\+Fatal\+Error}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a2e234a84b4475d594a63da72a058c19d}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a2e234a84b4475d594a63da72a058c19d} 
+static ? Exception {\bfseries Fatal\+Error}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A factory for dynamic creation of Db\+Context objects based on IConfiguration properties. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a0b80481929dce204cf77da08ebce5df7}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a0b80481929dce204cf77da08ebce5df7} 
+\index{BLAZAM.Database.Context.AppDatabaseFactory@{BLAZAM.Database.Context.AppDatabaseFactory}!AppDatabaseFactory@{AppDatabaseFactory}}
+\index{AppDatabaseFactory@{AppDatabaseFactory}!BLAZAM.Database.Context.AppDatabaseFactory@{BLAZAM.Database.Context.AppDatabaseFactory}}
+\doxysubsubsection{\texorpdfstring{AppDatabaseFactory()}{AppDatabaseFactory()}}
+{\footnotesize\ttfamily BLAZAM.\+Database.\+Context.\+App\+Database\+Factory.\+App\+Database\+Factory (\begin{DoxyParamCaption}\item[{IConfiguration}]{configuration,  }\item[{\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info}{Application\+Info}}}]{app\+Info }\end{DoxyParamCaption})}
+
+
+
+Creates a new factory with the supplied configuration and Application\+Info 
+
+
+\begin{DoxyParams}{Parameters}
+{\em configuration} & \\
+\hline
+{\em app\+Info} & \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a87e9d7d3cf0acef0b0223b6eb80c2418}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a87e9d7d3cf0acef0b0223b6eb80c2418} 
+\index{BLAZAM.Database.Context.AppDatabaseFactory@{BLAZAM.Database.Context.AppDatabaseFactory}!ApplyDatabaseMigrations@{ApplyDatabaseMigrations}}
+\index{ApplyDatabaseMigrations@{ApplyDatabaseMigrations}!BLAZAM.Database.Context.AppDatabaseFactory@{BLAZAM.Database.Context.AppDatabaseFactory}}
+\doxysubsubsection{\texorpdfstring{ApplyDatabaseMigrations()}{ApplyDatabaseMigrations()}}
+{\footnotesize\ttfamily async Task$<$ bool $>$ BLAZAM.\+Database.\+Context.\+App\+Database\+Factory.\+Apply\+Database\+Migrations (\begin{DoxyParamCaption}\item[{bool}]{force = {\ttfamily false} }\end{DoxyParamCaption})}
+
+
+
+Applies all pending database migrations. 
+
+{\itshape force} \+: If true, the updates will happen even if the database is seeded. If false, no updates will be applied if seeding has already occurred. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em force} & If true, the updates will happen even if the database is seeded. If false, no updates will be applied if seeding has already occurred.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{BLAZAM.\+Database.\+Context.\+IApp\+Database\+Factory}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_af510f5ac0769d1fee380783b1fbf85c8}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_af510f5ac0769d1fee380783b1fbf85c8} 
+\index{BLAZAM.Database.Context.AppDatabaseFactory@{BLAZAM.Database.Context.AppDatabaseFactory}!CreateDbContext@{CreateDbContext}}
+\index{CreateDbContext@{CreateDbContext}!BLAZAM.Database.Context.AppDatabaseFactory@{BLAZAM.Database.Context.AppDatabaseFactory}}
+\doxysubsubsection{\texorpdfstring{CreateDbContext()}{CreateDbContext()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{IDatabase\+Context}} BLAZAM.\+Database.\+Context.\+App\+Database\+Factory.\+Create\+Db\+Context (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates a new application Db\+Context based on the configured Database\+Type and DBConnection\+String in appsettings.\+json. 
+
+Currently supports SQL,My\+SQL/\+Maria\+DB, and SQlite 
+
+Throws a Database\+Exception when the attempt to connect fails 
+
+\begin{DoxyReturn}{Returns}
+A valid and connected IDatabase\+Context
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Database\+Exception} & \\
+\hline
+{\em Exception} & Thrown for unexpected exceptions\\
+\hline
+\end{DoxyExceptions}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{BLAZAM.\+Database.\+Context.\+IApp\+Database\+Factory}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a66df7fa8735b58c76143be0ac90239aa}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a66df7fa8735b58c76143be0ac90239aa} 
+\index{BLAZAM.Database.Context.AppDatabaseFactory@{BLAZAM.Database.Context.AppDatabaseFactory}!CreateDbContextAsync@{CreateDbContextAsync}}
+\index{CreateDbContextAsync@{CreateDbContextAsync}!BLAZAM.Database.Context.AppDatabaseFactory@{BLAZAM.Database.Context.AppDatabaseFactory}}
+\doxysubsubsection{\texorpdfstring{CreateDbContextAsync()}{CreateDbContextAsync()}}
+{\footnotesize\ttfamily async Task$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{IDatabase\+Context}} $>$ BLAZAM.\+Database.\+Context.\+App\+Database\+Factory.\+Create\+Db\+Context\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Async call to Create\+Db\+Context 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{BLAZAM.\+Database.\+Context.\+IApp\+Database\+Factory}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a12343486fde0b108e74b4b7c7315f1fb}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_app_database_factory_a12343486fde0b108e74b4b7c7315f1fb} 
+\index{BLAZAM.Database.Context.AppDatabaseFactory@{BLAZAM.Database.Context.AppDatabaseFactory}!Migrate@{Migrate}}
+\index{Migrate@{Migrate}!BLAZAM.Database.Context.AppDatabaseFactory@{BLAZAM.Database.Context.AppDatabaseFactory}}
+\doxysubsubsection{\texorpdfstring{Migrate()}{Migrate()}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Database.\+Context.\+App\+Database\+Factory.\+Migrate (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{IDatabase\+Context}}}]{context }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Applies any pending migrations for the context to the database. Will create the database if it does not already exist. 
+
+If the migration fails, the Status will be set to Service\+Connection\+State.\+Down 
+
+See Database migrations
+
+for more information and examples. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em database\+Facade} & The Database\+Facade for the context.\\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMDatabase/\+Context/App\+Database\+Factory.\+cs\end{DoxyCompactItemize}
