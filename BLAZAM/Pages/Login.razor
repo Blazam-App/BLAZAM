@@ -8,21 +8,38 @@
 {
     <MudProgressLinear Color="Color.Info" Indeterminate=true />
 }
+
+<MudElement Class="brand-icon">
+    <MudImage Src="@StaticAssets.ApplicationIconUri" />
+
+</MudElement>
+
+
 <MudContainer Class="py-5">
+    <MudElement Style="width:400px;  height:56px; display:flex;  align-items:center;  justify-content:center;">
+        @{
+            var fontSize = 50.0;
 
-    <MudText Typo="Typo.h3">
+            if (DatabaseCache.ApplicationSettings != null)
+            {
+                var percentageLengthFromFull = 15.0 / DatabaseCache.ApplicationSettings.AppName.Length;
+                if (percentageLengthFromFull < 1)
+                {
+                    fontSize *= percentageLengthFromFull;
+                }
+            }
+        }
+
+        <MudText Class="shrink" Style=@("white-space: nowrap; font-size:"+(int)fontSize+"px;")>
 
 
-        @DatabaseCache.ApplicationSettings?.AppName
+            @DatabaseCache.ApplicationSettings?.AppName
 
-    </MudText>
-
-
-
-    <MudElement Class="brand-icon">
-        <MudImage Src="@StaticAssets.ApplicationIconUri" />
-
+        </MudText>
     </MudElement>
+
+
+   
     <form onsubmit="@(()=>{AttemptSignIn();})" class="login-form" method="post" action="/signin" id="login-form">
         <MudContainer Style="max-width:300px;" Class="py-4">
             @if (!ApplicationInfo.InDemoMode || DemoCustomLogin)
@@ -36,7 +53,7 @@
                 <MudTextField Class="d-none" name="ReturnUrl" Value="@redirectUrl" />
                 <MudButton OnClick=@(()=>{attemptingSignIn=true;}) Class="my-5" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</MudButton>
 
-                <br />
+          
 
             }
             else if (ApplicationInfo.InDemoMode)
@@ -66,8 +83,10 @@
             @*<MudProgressCircular Color="Color.Secondary" Indeterminate="true" />*@
         </MudOverlay>
     </form>
+    <MudElement Class="d-flex mud-width-full justify-end">  
+        <Copyright Style="font-size:0.8em;"/>
 
-    <Copyright Class="mx-auto" />
+    </MudElement>
 </MudContainer>
 
 <style>
@@ -105,7 +124,8 @@
         if (Monitor.AppReady != ServiceConnectionState.Up)
             Monitor.OnAppReadyChanged += AppReadyChanged;
         //I don't think the following is necessary
-            //Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
+        //Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
+
     }
 
     async void AppReadyChanged(ServiceConnectionState state)
@@ -121,9 +141,11 @@
         await InvokeAsync(StateHasChanged);
         string? authenticationResult;
         if (ValidateInput(out authenticationResult))
-            try{
+            try
+            {
                 authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn", null);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
 
                 SnackBarService.Info(ex.Message);
