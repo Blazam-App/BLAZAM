@@ -13,12 +13,8 @@
 
 <MudContainer Class="py-5">
 
-    <MudText Typo="Typo.h3">
-
-
-        @DatabaseCache.ApplicationSettings?.AppName
-
-    </MudText>
+    <FullAppName/>
+   
 
     <MudText>@Localizer["ApplicationStarting"]</MudText>
     <MudProgressLinear Color="Color.Info" Indeterminate=true />
