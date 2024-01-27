@@ -28,10 +28,6 @@
 	  <None Remove="static\img\default_logo4.png" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Compile Include="..\BLAZAMGui\UI\ComputerViewBase.razor.cs" Link="ComputerViewBase.razor.cs" />
-	</ItemGroup>
-
 
 	
 
@@ -92,15 +88,6 @@
 		<PackageReference Include="System.DirectoryServices" Version="7.0.1" />
 
 		<PackageReference Include="System.DirectoryServices.AccountManagement" Version="7.0.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="..\BLAZAMGui\UI\Chat\ChatMessage.razor" Link="ChatMessage.razor" />
-	  <None Include="..\BLAZAMGui\UI\Outputs\Jobs\JobElapsedTime.razor" Link="JobElapsedTime.razor" />
-	  <None Include="..\BLAZAMGui\UI\Outputs\Jobs\JobRanBy.razor" Link="JobRanBy.razor" />
-	  <None Include="..\BLAZAMGui\UI\Outputs\Jobs\JobStartTime.razor" Link="JobStartTime.razor" />
-	  <None Include="..\BLAZAMGui\UI\Outputs\Jobs\JobStepResult.razor" Link="JobStepResult.razor" />
-	  <None Include="..\BLAZAMGui\UI\Outputs\Jobs\JobStepResultMessage.razor" Link="JobStepResultMessage.razor" />
 	</ItemGroup>
 
 	<ItemGroup>
