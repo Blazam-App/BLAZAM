@@ -468,7 +468,7 @@
 
             }
         }
-        AuditLogger.Searched(User);
+        await AuditLogger.Searched(User);
         LoadingData = false;
         await RefreshEntryComponents();
 

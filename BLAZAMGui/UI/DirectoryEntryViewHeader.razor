@@ -279,8 +279,13 @@
     }
 
     private bool _editMode = false;
+    /// <summary>
+    /// Called when the edit mode is changed
+    /// </summary>
     [Parameter]
     public EventCallback<bool> OnToggleEditMode { get; set; }
+
+
     private async Task ToggleEditMode(bool editEnabled)
     {
         _editMode = editEnabled;
@@ -297,17 +302,26 @@
     }
     private async Task ToggleFavorite()
     {
-        UserFavoriteEntry newFavorrite = new UserFavoriteEntry { DN = DirectoryEntry.DN, UserId = CurrentUser.State.Id };
-        if (CurrentUser.State.Preferences.FavoriteEntries.Contains(newFavorrite))
+        try
         {
-            newFavorrite = CurrentUser.State.Preferences.FavoriteEntries.Where(u => newFavorrite.Equals(u)).FirstOrDefault();
-            CurrentUser.State.Preferences.FavoriteEntries.Remove(newFavorrite);
+            UserFavoriteEntry? newFavorrite = new UserFavoriteEntry { DN = DirectoryEntry.DN, UserId = CurrentUser.State.Id };
+            if (CurrentUser.State.Preferences.FavoriteEntries.Contains(newFavorrite))
+            {
+                newFavorrite = CurrentUser.State.Preferences.FavoriteEntries.Where(u => newFavorrite.Equals(u)).FirstOrDefault();
+                CurrentUser.State.Preferences.FavoriteEntries.Remove(newFavorrite);
+            }
+            else
+            {
+                CurrentUser.State.Preferences.FavoriteEntries.Add(newFavorrite);
+            }
+            await CurrentUser.State.SaveUserSettings();
         }
-        else
+        catch (Exception ex)
         {
-            CurrentUser.State.Preferences.FavoriteEntries.Add(newFavorrite);
+            Loggers.SystemLogger.Error("Error toggling favorite entry  {@Error}", ex);
+            SnackBarService.Error("Error while trying to toggle favorite");    
+
         }
-        CurrentUser.State.SaveUserSettings();
     }
 
 }

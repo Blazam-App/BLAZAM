@@ -38,7 +38,7 @@ namespace BLAZAM.Jobs
 
 
 
-        public Job(string? title = null, string requestingUser = null, CancellationTokenSource externalCancellationToken = null)
+        public Job(string? title = null, string? requestingUser = null, CancellationTokenSource? externalCancellationToken = null)
         {
             Name = title;
             User = requestingUser;

@@ -115,7 +115,7 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        AuditLogger.Searched(Group);
+        await AuditLogger.Searched(Group);
 
         LoadingData = false;
         await RefreshEntryComponents();
