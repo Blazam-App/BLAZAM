@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MudBlazor" Version="6.11.1" />
+    <PackageReference Include="MudBlazor" Version="6.14.0" />
   </ItemGroup>
 
   <ItemGroup>
