@@ -10,8 +10,8 @@
   <ItemGroup>
     <PackageReference Include="DuoUniversal" Version="1.2.1" />
     <PackageReference Include="MailKit" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

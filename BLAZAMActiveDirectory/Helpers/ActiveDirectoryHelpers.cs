@@ -9,6 +9,7 @@ using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Reflection;
+using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -79,6 +80,8 @@ namespace BLAZAM.Helpers
 
             return string.Join(",", ouComponents);
         }
+
+      
 
         public static string? ParentOU(string? dN)
         {
