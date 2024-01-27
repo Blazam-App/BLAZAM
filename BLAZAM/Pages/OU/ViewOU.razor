@@ -54,7 +54,7 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        AuditLogger.Searched(OU);
+        await AuditLogger.Searched(OU);
 
         LoadingData = false;
         await RefreshEntryComponents();

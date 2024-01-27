@@ -241,7 +241,7 @@
                 RefreshEntryComponents();
             });
         }
-        AuditLogger.Searched(Computer);
+        await AuditLogger.Searched(Computer);
 
         LoadingData = false;
         await RefreshEntryComponents();
