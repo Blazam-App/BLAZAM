@@ -238,16 +238,18 @@
                 <Section Title=@AppLocalization["Additonal Fields"]>
                     @foreach (var field in DirectoryTemplate.InheritedFieldValues.Where(f => f.CustomField != null))
                     {
-                        <MudTextField Validation=@(()=>{
+                        @if (field.CustomField != null)
+                        {
+                            <MudTextField Validation=@(()=>{
                               if(field.Required && User.NewEntryProperties[field.CustomField.FieldName]!=null
                               && User.NewEntryProperties[field.CustomField.FieldName].ToString()!="")
                               return true;
                               else
                               return false;
                               })
-                              Label="@field.FieldDisplayName"
-                              @bind-Value="@User.NewEntryProperties[field.CustomField.FieldName]" Disabled=@(!IsAdmin && !IsEditableTemplatField(field.CustomField)) />
-
+                                          Label="@field.FieldDisplayName"
+                            @bind-Value="@User.NewEntryProperties[field.CustomField.FieldName]" Disabled=@(!IsAdmin && !IsEditableTemplatField(field.CustomField)) />
+                        }
                     }
                 </Section>
             }

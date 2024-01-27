@@ -35,7 +35,7 @@ namespace BLAZAM.Update.Services
         /// <summary>
         /// The branch configured in the database
         /// </summary>
-        public string? SelectedBranch { get; set; }
+        public string SelectedBranch { get; set; } = ApplicationReleaseBranches.Stable;
 
         private const string Publisher_Name = "BLAZAM-APP";
         private const string Repository_Name = "Blazam";
