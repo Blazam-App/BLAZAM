@@ -74,7 +74,7 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.14" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="7.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
 		<PackageReference Include="MudBlazor" Version="6.11.1" />
