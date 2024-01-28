@@ -34,7 +34,6 @@ jobs:
         run: dotnet restore
       - name: Setup Playwright
         shell: pwsh
-        id: get_version
         run: |
           bin/Debug/netX/playwright.ps1 install; 
       - name: Build application
