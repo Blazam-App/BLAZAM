@@ -34,12 +34,12 @@ jobs:
         run: dotnet restore
       - name: Build application (Debug)
         run: dotnet build -c Debug
-      
+      - name: Show Current Directory
+        run: dir /w
       - name: Setup Playwright
         shell: pwsh
         run: |
-          cd $ {GITHUB_WORKSPACE}/bin/Debug/net8.0/
-          . /playwright.ps1 install
+          Playwright/bin/Debug/net8.0/playwright.ps1 install; 
           
       - name: Test application
         run: dotnet test -c Release
