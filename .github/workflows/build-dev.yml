@@ -39,7 +39,7 @@ jobs:
       - name: Setup Playwright
         shell: pwsh
         run: |
-          Playwright/bin/Debug/net8.0/playwright.ps1 install; 
+          PlaywrightTests/bin/Debug/net8.0/playwright.ps1 install; 
           
       - name: Test application
         run: dotnet test -c Release
