@@ -32,12 +32,13 @@ jobs:
           dotnet-version: 8.x
       - name: Restore dependencies
         run: dotnet restore
+     
+      - name: Build application
+        run: dotnet publish -c Release -o bin/publish BLAZAM/BLAZAM.csproj
       - name: Setup Playwright
         shell: pwsh
         run: |
           bin/Debug/net8.0/playwright.ps1 install; 
-      - name: Build application
-        run: dotnet publish -c Release -o bin/publish BLAZAM/BLAZAM.csproj
       - name: Test application
         run: dotnet test -c Release
 
