@@ -34,8 +34,6 @@ jobs:
         run: dotnet restore
       - name: Build application (Debug)
         run: dotnet build -c Debug
-      - name: Show Current Directory
-        run: dir
       - name: Setup Playwright
         shell: pwsh
         run: |
@@ -79,6 +77,6 @@ jobs:
           tag_name: Dev
           name: 'Dev'
           prerelease: true
-          body: This release is highly unstable. Expect bugs and crashed on this branch. Developers Only!
+          body: This release is highly unstable. Expect bugs and crashes on this branch. Developers Only!
           files: |
             ./blazam-dev-v${{ env.ASSEMBLY_VERSION }}.zip
