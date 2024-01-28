@@ -132,6 +132,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
+        public override string SearchUri => "/search/"+DN;
+
         public override string? CanonicalName
         {
             get => Name;
