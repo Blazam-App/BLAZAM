@@ -35,7 +35,7 @@ jobs:
       - name: Setup Playwright
         shell: pwsh
         run: |
-          bin/Debug/netX/playwright.ps1 install; 
+          bin/Debug/net8.0/playwright.ps1 install; 
       - name: Build application
         run: dotnet publish -c Release -o bin/publish BLAZAM/BLAZAM.csproj
       - name: Test application
