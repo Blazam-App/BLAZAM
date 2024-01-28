@@ -23,6 +23,8 @@ using System.Diagnostics;
 using System.Reflection;
 using BLAZAM.Services.Chat;
 using BLAZAM.Services.Audit;
+using BLAZAM.Common;
+using BLAZAM.Nav;
 
 namespace BLAZAM.Server
 {
@@ -88,7 +90,6 @@ namespace BLAZAM.Server
             builder.Services.AddSingleton<ApplicationInfo>();
 
 
-           
 
             //Set up authentication and api token authentication
             builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -186,6 +187,10 @@ namespace BLAZAM.Server
 
             //Add web user application search as a service
             builder.Services.AddScoped<SearchService>();
+
+
+
+            builder.Services.AddScoped<AppNavigationManager>();
 
 
 

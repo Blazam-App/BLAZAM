@@ -132,6 +132,7 @@
                 await AuditLogger.Group.Changed(Group, Group.Changes);
 
                 EditMode = false;
+                Nav.WarnOnNavigation = false;
                 SnackBarService.Success("The changes made to this group have been saved.");
             }
             else

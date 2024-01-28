@@ -2,12 +2,7 @@
 @using BLAZAM.Static;
 @layout LoginLayout
 
-@inject NavigationManager NavManager
-@inject IAppDatabaseFactory DbFactory
-@inject ConnMonitor tester
-@inject ApplicationInfo ApplicationInfo
-@inject IStringLocalizer<AppLocalization> Localizer
-
+@inherits AppComponentBase
 
 
 
@@ -16,7 +11,7 @@
     <FullAppName/>
    
 
-    <MudText>@Localizer["ApplicationStarting"]</MudText>
+    <MudText>@AppLocalization["ApplicationStarting"]</MudText>
     <MudProgressLinear Color="Color.Info" Indeterminate=true />
 
     <MudElement Class="brand-icon">
@@ -68,21 +63,21 @@
             if (ApplicationInfo.InstallationCompleted)
             {
                 waitingForLoadToComplete = false;
-                if (tester.AppReady == ServiceConnectionState.Up)
+                if (Monitor.AppReady == ServiceConnectionState.Up)
                 {
-                    NavManager.NavigateTo("/home", true);
+                    Nav.NavigateTo("/home", true);
                 }
-                else if (tester.AppReady == ServiceConnectionState.Down)
+                else if (Monitor.AppReady == ServiceConnectionState.Down)
                 {
-                    NavManager.NavigateTo("/oops", true);
+                    Nav.NavigateTo("/oops", true);
 
                 }
             }
             else
             {
-                if (tester.AppReady == ServiceConnectionState.Up)
+                if (Monitor.AppReady == ServiceConnectionState.Up)
                 {
-                    NavManager.NavigateTo("/install", true);
+                    Nav.NavigateTo("/install", true);
                 }
             }
             if (!waitingForLoadToComplete)
@@ -99,18 +94,18 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        tester.OnAppReadyChanged += AppReady;
+        Monitor.OnAppReadyChanged += AppReady;
 
     }
     private void AppReady(ServiceConnectionState newStatus)
     {
         if (newStatus == ServiceConnectionState.Up && oldStatus != newStatus)
         {
-            if (ApplicationInfo.InstallationCompleted && NavManager.ToBaseRelativePath(NavManager.Uri) == "")
+            if (ApplicationInfo.InstallationCompleted && Nav.ToBaseRelativePath(Nav.Uri) == "")
             {
                 waitingForLoadToComplete = false;
 
-                NavManager.NavigateTo("/home");
+                Nav.NavigateTo("/home");
 
             }
         }

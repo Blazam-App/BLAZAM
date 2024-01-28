@@ -1,5 +1,7 @@
-﻿using BLAZAM.Common.Data;
+﻿using BLAZAM.Common;
+using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
+using BLAZAM.Nav;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components;
 
@@ -8,7 +10,7 @@ namespace BLAZAM.Services
     public class SearchService
     {
         private readonly IApplicationUserStateService _userStateService;
-        private readonly NavigationManager _nav;
+        private readonly AppNavigationManager _nav;
         private bool includeDisabled = false;
         private string? searchTerm;
 
@@ -29,7 +31,7 @@ namespace BLAZAM.Services
 
         public ActiveDirectoryObjectType SeachObjectType { get; set; } = ActiveDirectoryObjectType.All;
 
-        public SearchService(IApplicationUserStateService userStateService, NavigationManager nav)
+        public SearchService(IApplicationUserStateService userStateService, AppNavigationManager nav)
         {
             _userStateService = userStateService;
             _nav = nav;

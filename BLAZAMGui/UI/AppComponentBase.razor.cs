@@ -3,6 +3,8 @@ using BLAZAM.ActiveDirectory;
 using BLAZAM.Email.Services;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
+using BLAZAM.Common;
+using BLAZAM.Nav;
 
 namespace BLAZAM.Gui.UI
 {
@@ -15,9 +17,8 @@ namespace BLAZAM.Gui.UI
         [Inject]
         protected SearchService SearchService { get; set; }
 
-       
         [Inject]
-        protected NavigationManager Nav { get; set; }
+        protected AppNavigationManager Nav { get; set; }
 
         [Inject]
         protected ConnMonitor Monitor { get; set; }
@@ -76,11 +77,10 @@ namespace BLAZAM.Gui.UI
         protected IAppDatabaseFactory DbFactory { get; set; }
 
 
-
         protected override void OnInitialized()
         {
             base.OnInitialized();
-
+            //Nav = new AppNavigationManager(BaseNav);
             try
             {
                 Context = DbFactory.CreateDbContext();

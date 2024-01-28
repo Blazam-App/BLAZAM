@@ -37,6 +37,7 @@
     <ProjectReference Include="..\BLAZAMEmail\BLAZAMEmail.csproj" />
     <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
     <ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
+    <ProjectReference Include="..\BLAZAMNav\BLAZAMNav.csproj" />
     <ProjectReference Include="..\BLAZAMServices\BLAZAMServices.csproj" />
     <ProjectReference Include="..\BLAZAMThemes\BLAZAMThemes.csproj" />
     <ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />

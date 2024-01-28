@@ -1,13 +1,35 @@
 @inherits AppComponentBase
-<MudText>
-    @ADGroup?.CanonicalName
-</MudText>
+@if (ADGroup != null)
+{
+    <MudText>
 
+        @ADGroup?.CanonicalName
+    </MudText>
 
+}
+else
+{
+    <MudText>
+        Unknown Group: @Group.GroupSid
+    </MudText>
 
-@code{
+}
+<MudTooltip Text="@AppLocalization["Remove Group"]">
+    <MudIconButton OnClick=@(()=>{
+        Template.AssignedGroupSids.Remove(Group);
+        OnGroupRemoved.InvokeAsync(Group);
+    }) Color=Color.Error Icon="@Icons.Material.Filled.Close" />
+</MudTooltip>
+
+@code {
     [Parameter]
-    public DirectoryTemplateGroup Group{ get; set; }
+    public DirectoryTemplateGroup Group { get; set; }
+
+    [CascadingParameter]
+    public DirectoryTemplate Template { get; set; }
+
+    [Parameter]
+    public EventCallback<DirectoryTemplateGroup> OnGroupRemoved{ get; set; }
 
     IADGroup? ADGroup;
 

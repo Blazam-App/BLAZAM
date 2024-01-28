@@ -65,6 +65,7 @@
         {
             await OU.CommitChangesAsync();
             EditMode = false;
+            Nav.WarnOnNavigation = false;
             SnackBarService.Success("The changes made to this ou have been saved.");
             await RefreshEntryComponents();
 

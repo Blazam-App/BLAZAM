@@ -21,11 +21,11 @@ namespace PlaywrightTests
             await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
 
             // create a locator
-            var loginButton = Page.Locator("text=LOG IN TO DEMO");
+            //var loginButton = Page.Locator("id=main_chat_button");
 
            
             // Click the get started link.
-            await loginButton.ClickAsync();
+            //await loginButton.ClickAsync();
         }
 
 
@@ -33,6 +33,7 @@ namespace PlaywrightTests
         private async Task LogIn()
         {
             await Page.GotoAsync("https://blazam.azurewebsites.net/");
+            //await Page.GotoAsync("http://localhost/");
 
             // Expect a title "to contain" a substring.
             await Expect(Page).ToHaveTitleAsync(new Regex("Login"));

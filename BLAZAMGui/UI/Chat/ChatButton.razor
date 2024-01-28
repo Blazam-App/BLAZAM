@@ -2,7 +2,7 @@
 @if (LastUnreadMessages > 0)
 {
     <MudBadge Content="@LastUnreadMessages" Color="Color.Error" Overlap=true Origin=Origin.TopLeft OnClick="@OnClick">
-        <MudIconButton Class="@Class" OnClick="@OnClick"
+        <MudIconButton id="main_chat_button" Class="@Class" OnClick="@OnClick"
                    Icon="@Icons.Material.Filled.MarkUnreadChatAlt" />
     </MudBadge>
 }

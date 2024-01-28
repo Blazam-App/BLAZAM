@@ -10,7 +10,7 @@
 
                 <CascadingValue Value="this">
         <MudAppBar Color=Color.Default Elevation="1" >
-            <MudLink Href="@Nav.Uri">
+            <MudLink OnClick="@(()=>{Nav.NavigateTo(Nav.Uri);})">
                 <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
             </MudLink>
             </MudAppBar>

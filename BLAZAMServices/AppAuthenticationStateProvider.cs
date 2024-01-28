@@ -345,9 +345,6 @@ namespace BLAZAM.Services
 
             var identity = new ClaimsIdentity();
 
-            //TODO Uncomment and store IADUser somewhere in state
-            //_newUserState.DirectoryUser = user;
-            
             
             
             //Load privilege levels for user

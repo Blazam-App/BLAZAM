@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using BLAZAM.Database.Context;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Database.Models.Templates
 {
-    public class DirectoryTemplateFieldValue : AppDbSetBase, ICloneable
+    public class DirectoryTemplateFieldValue : AppDbSetBase
     {
         public ActiveDirectoryField? Field { get; set; }
         public CustomActiveDirectoryField? CustomField { get; set; }
@@ -22,12 +23,12 @@ namespace BLAZAM.Database.Models.Templates
         [NotMapped]
         public string FieldDisplayName => Field != null ? Field?.DisplayName : CustomField?.DisplayName;
 
-        public object Clone()
+        public object Clone(IDatabaseContext context)
         {
             var clone = new DirectoryTemplateFieldValue()
             {
 
-                Field = Field,
+                Field = context.ActiveDirectoryFields.FirstOrDefault(f => f.Id == Field.Id),
                 CustomField = CustomField,
                 Value = Value,
                 Editable = Editable,
