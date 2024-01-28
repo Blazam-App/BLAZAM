@@ -33,12 +33,14 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build application (Debug)
-        run: dotnet publish -c Debug
+        run: dotnet build -c Debug
       
       - name: Setup Playwright
         shell: pwsh
         run: |
-          bin/Debug/net8.0/playwright.ps1 install; 
+          cd $ {GITHUB_WORKSPACE}/bin/Debug/net8.0/
+          . /playwright.ps1 install
+          
       - name: Test application
         run: dotnet test -c Release
 
