@@ -31,7 +31,7 @@
     </SettingsField>
     <SettingsField>
 
-        <MudButton OnClick="@(()=>{Context.Export("export");})" Color="Color.Success">Export</MudButton>
+        <MudButton OnClick="Export" Color="Color.Success">Export</MudButton>
 
     </SettingsField>
    
@@ -42,9 +42,9 @@
 
     </SettingsField>
 </MudForm>
-@code {
-#nullable disable warnings
-    AppSettings? settings = new AppSettings();
+    @code {
+    #nullable disable warnings
+        AppSettings? settings = new AppSettings();
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,7 +58,31 @@
 
 
     [Inject] ApplicationManager applicationManager { get; set; }
+    async Task Export()
+    {
+        MemoryStream memoryStream = new MemoryStream();
 
+        IJob exportJob = new Job(AppLocalization["Export Database"], CurrentUser.Username);
+        IJobStep exportData = new JobStep(AppLocalization["Export Data"], (step) =>
+        {
+            Context.Export("export");
+            return true;
+
+        });
+        IJobStep packageData = new JobStep(AppLocalization["Prepare Files"], (step) =>
+    {
+        ZipArchive exportZip = new ZipArchive(memoryStream, ZipArchiveMode.Create);
+        var exportDir = new SystemDirectory("export");
+        exportZip.AddToZip(exportDir,exportDir.Path);
+        memoryStream.SaveTo(new SystemFile("export/" + DatabaseCache.ApplicationSettings.AppName + "-" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".zip"));
+        return true;
+
+    });
+        exportJob.Steps.Add(exportData);
+        exportJob.Steps.Add(packageData);
+        exportJob.Run();
+        exportJob.ShowJobDetailsDialog(MessageService);
+    }
     async Task RestartApplication()
     {
         if (await MessageService.Confirm("Are you sure you want to restart the application? All connected users will be disconnected.", "Restart Application"))
