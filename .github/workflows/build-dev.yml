@@ -33,7 +33,7 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build application (Debug)
-        run: dotnet publish -c Release -o bin/publish BLAZAM/BLAZAM.csproj
+        run: dotnet publish -c Debug
       
       - name: Setup Playwright
         shell: pwsh
