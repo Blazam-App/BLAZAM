@@ -241,7 +241,7 @@
                 RefreshEntryComponents();
             });
         }
-        AuditLogger.Searched(Computer);
+        await AuditLogger.Searched(Computer);
 
         LoadingData = false;
         await RefreshEntryComponents();
@@ -297,6 +297,7 @@
 
                 await AuditLogger.Computer.Changed(Computer, Computer.Changes);
                 EditMode = false;
+                Nav.WarnOnNavigation = false;
                 SnackBarService.Success("The changes made to this computer have been saved.");
                 await RefreshEntryComponents();
             }

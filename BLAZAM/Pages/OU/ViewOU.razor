@@ -54,7 +54,7 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        AuditLogger.Searched(OU);
+        await AuditLogger.Searched(OU);
 
         LoadingData = false;
         await RefreshEntryComponents();
@@ -65,6 +65,7 @@
         {
             await OU.CommitChangesAsync();
             EditMode = false;
+            Nav.WarnOnNavigation = false;
             SnackBarService.Success("The changes made to this ou have been saved.");
             await RefreshEntryComponents();
 

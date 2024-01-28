@@ -16,27 +16,7 @@
 
 
 <MudContainer Class="py-5">
-    <MudElement Style="width:400px;  height:56px; display:flex;  align-items:center;  justify-content:center;">
-        @{
-            var fontSize = 50.0;
-
-            if (DatabaseCache.ApplicationSettings != null)
-            {
-                var percentageLengthFromFull = 15.0 / DatabaseCache.ApplicationSettings.AppName.Length;
-                if (percentageLengthFromFull < 1)
-                {
-                    fontSize *= percentageLengthFromFull;
-                }
-            }
-        }
-
-        <MudText Class="shrink" Style=@("white-space: nowrap; font-size:"+(int)fontSize+"px;")>
-
-
-            @DatabaseCache.ApplicationSettings?.AppName
-
-        </MudText>
-    </MudElement>
+       <FullAppName/>
 
 
    
@@ -123,9 +103,6 @@
         redirectUrl = Nav.Uri;
         if (Monitor.AppReady != ServiceConnectionState.Up)
             Monitor.OnAppReadyChanged += AppReadyChanged;
-        //I don't think the following is necessary
-        //Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
-
     }
 
     async void AppReadyChanged(ServiceConnectionState state)

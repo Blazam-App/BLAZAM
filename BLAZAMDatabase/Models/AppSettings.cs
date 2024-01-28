@@ -115,6 +115,8 @@ namespace BLAZAM.Database.Models
         public string? UpdatePassword { get; set; }
 
 
+
+
         public string? MyrtilleURL { get; set; }
 
         /// <summary>

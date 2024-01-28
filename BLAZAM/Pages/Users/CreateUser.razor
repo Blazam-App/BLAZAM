@@ -31,7 +31,7 @@
                 <MudPaper Width="300px">
                     <MudText>There are no templates available</MudText>
                     <AuthorizeView Roles="@UserRoles.SuperAdmin">
-                        <MudLink Href="/templates">Create One</MudLink>
+                        <MudLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">Create One</MudLink>
 
                     </AuthorizeView>
                 </MudPaper>

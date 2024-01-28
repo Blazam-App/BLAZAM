@@ -9,20 +9,20 @@ namespace BLAZAM.Notifications.Services
         private IDialogService _dialog { get; set; }
         DialogOptions DialogOptions { get; set; } = new DialogOptions() { };
 
-        public async Task ShowMessage<TComponent>(DialogParameters parameters , string? title = null, string? yesText = null, string? noText = null, string? cancelText = null) where TComponent : ComponentBase, new()
+        public async Task<IDialogReference> ShowMessage<TComponent>(DialogParameters parameters , string? title = null, string? yesText = null, string? noText = null, string? cancelText = null) where TComponent : ComponentBase, new()
         {
-            await _dialog.ShowAsync<TComponent>(title, parameters, DialogOptions);
+           return await _dialog.ShowAsync<TComponent>(title, parameters, DialogOptions);
         }
 
 
-        private async Task ShowMessage(MarkupString message, string? title = null, string? yesText = null, string? noText = null, string? cancelText = null)
+        private async Task<bool?> ShowMessage(MarkupString message, string? title = null, string? yesText = null, string? noText = null, string? cancelText = null)
         {
-            await _dialog.ShowMessageBox(title, message, yesText, noText, cancelText,DialogOptions);
+            return await _dialog.ShowMessageBox(title, message, yesText, noText, cancelText,DialogOptions);
         }
 
-        private async Task ShowMessage(string message, string? title = null)
+        private async Task<bool?> ShowMessage(string message, string? title = null)
         {
-            await ShowMessage(message.ToMarkupString(), title);
+           return await ShowMessage(message.ToMarkupString(), title);
         }
 
 
@@ -33,30 +33,30 @@ namespace BLAZAM.Notifications.Services
 
         
 
-        public async Task Error(string message, string? title = null)
+        public async Task<bool?> Error(string message, string? title = null)
         {
             
-            await ShowMessage(message, title);
+            return await ShowMessage(message, title);
         }
 
 
-        public async Task Info(string message, string? title = null)
+        public async Task<bool?> Info(string message, string? title = null)
 
         {
-            await ShowMessage(message, title);
+            return await ShowMessage(message, title);
 
         }
-        public async Task Warning(string message, string? title = null)
+        public async Task<bool?> Warning(string message, string? title = null)
 
         {
-            await ShowMessage(message, title);
+            return await ShowMessage(message, title);
 
         }
-        public async Task Success(string message, string? title = null)
+        public async Task<bool?> Success(string message, string? title = null)
 
         {
 
-            await ShowMessage(message, title);
+            return await ShowMessage(message, title);
 
 
         }

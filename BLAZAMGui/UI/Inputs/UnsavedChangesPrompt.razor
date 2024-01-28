@@ -27,10 +27,15 @@
         </MudStack>
         </MudElement>
 
-        @code {
+ @code {
     [Parameter]
     public EventCallback SaveChanges { get; set; }
     [Parameter]
     public EventCallback DiscardChanges { get; set; }
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Nav.WarnOnNavigation = true;
+    }
 }

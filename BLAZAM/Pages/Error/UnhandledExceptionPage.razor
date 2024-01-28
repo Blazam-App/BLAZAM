@@ -71,12 +71,7 @@
             if (_error != null)
             {
                 try{
-                    email.SendMessage(
-                            "BLAZAM Unhandled Exception",
-                        "bugs@blazam.org",
-                        (MarkupString)(_error.GetType() + " : " + _error.Message),
-                            (MarkupString)_error.StackTrace.Replace("\n","<br><br>")
-                    );
+                    Loggers.SystemLogger.Error("Unhandled exception {@Error}", _error);
                 }
                 catch
                 {

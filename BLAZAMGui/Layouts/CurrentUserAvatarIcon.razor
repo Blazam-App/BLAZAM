@@ -22,7 +22,7 @@ else
         {
             if (UserState == null) return "background-color:#0c13a7";
             int usernameHash = UserState.Username.GetAppHashCode();
-            byte[] usernameHashBytes = usernameHash.ToByteArray(3);
+            byte[] usernameHashBytes = Helpers.ByteHelpers.ToByteArray(usernameHash, (int?)3);
             string hexColor = "background-color:#";
             hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
             return hexColor;
