@@ -257,16 +257,17 @@ await ParentTemplateChanged(null);
                 </Section>
                 <Section Title=@AppLocalization["Assigned Groups"]>
 
+                    <MudStack>
+                        @foreach (var group in DirectoryTemplate.InheritedAssignedGroupSids)
+                        {
 
-                    @foreach (var group in DirectoryTemplate.InheritedAssignedGroupSids)
-                    {
+                            var groupFromTemplate = otherTemplates.Where(ot => ot.AssignedGroupSids.Contains(group)).FirstOrDefault();
+                            <TemplateOverride SourceTemplate="@groupFromTemplate">
+                                <AssignedTemplateGroup Group="group" OnGroupRemoved="@(async (group)=>{await InvokeAsync(StateHasChanged);})" />
+                            </TemplateOverride>
 
-                        var groupFromTemplate = otherTemplates.Where(ot => ot.AssignedGroupSids.Contains(group)).FirstOrDefault();
-                        <TemplateOverride SourceTemplate="@groupFromTemplate">
-                            <AssignedTemplateGroup Group="group" OnGroupRemoved="@(async (group)=>{await InvokeAsync(StateHasChanged);})"/>
-                        </TemplateOverride>
-
-                    }
+                        }
+                    </MudStack>
                     <MudStack Row=true>
                         <ADAutoComplete SearchObjectType=ActiveDirectoryObjectType.Group Label="@AppLocalization["Groups"]"
                                         @bind-SelectedResult="@SelectedGroup" />

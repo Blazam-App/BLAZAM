@@ -1,11 +1,13 @@
 ﻿using BLAZAM.Common.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
@@ -127,7 +129,7 @@ namespace BLAZAM.Helpers
                 {
                     using FileStream fs = file.OpenReadStream();
                     // Create an entry for each file with its relative path
-                    ZipArchiveEntry entry = archive.CreateEntry(directory.Path.Replace(basePath, "") + "/" + file.Name + file.Extension);
+                    ZipArchiveEntry entry = archive.CreateEntry(directory.Path.Replace(basePath, "") + file.Name + file.Extension);
 
                     // Copy the file contents to the entry stream
 
@@ -137,9 +139,9 @@ namespace BLAZAM.Helpers
                         fs.CopyTo(es);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
                 }
             }
 
@@ -152,6 +154,21 @@ namespace BLAZAM.Helpers
                 archive.AddToZip(sdi, basePath);
             }
         }
+
+
+        public static void SaveTo(this MemoryStream memoryStream, SystemFile destinationFile)
+        {
+            if (destinationFile.Exists)
+                destinationFile.Delete();
+
+
+            using var outStream = destinationFile.OpenWriteStream();
+            memoryStream.Seek(0,SeekOrigin.Begin);
+            memoryStream.CopyTo(outStream);
+            outStream.Close();
+            memoryStream.Close();
+        }
+
 
         public static bool IsNullOrEmpty(this ICollection collection)
         {

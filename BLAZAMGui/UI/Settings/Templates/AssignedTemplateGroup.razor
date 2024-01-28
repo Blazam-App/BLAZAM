@@ -1,26 +1,27 @@
 @inherits AppComponentBase
-@if (ADGroup != null)
-{
-    <MudText>
+<MudStack Row=true>
+    @if (ADGroup != null)
+    {
+        <MudText>
 
-        @ADGroup?.CanonicalName
-    </MudText>
+            @ADGroup?.CanonicalName
+        </MudText>
 
-}
-else
-{
-    <MudText>
-        Unknown Group: @Group.GroupSid
-    </MudText>
+    }
+    else
+    {
+        <MudText>
+            Unknown Group: @Group.GroupSid
+        </MudText>
 
-}
-<MudTooltip Text="@AppLocalization["Remove Group"]">
-    <MudIconButton OnClick=@(()=>{
-        Template.AssignedGroupSids.Remove(Group);
-        OnGroupRemoved.InvokeAsync(Group);
-    }) Color=Color.Error Icon="@Icons.Material.Filled.Close" />
-</MudTooltip>
-
+    }
+    <MudTooltip Text="@AppLocalization["Remove Group"]">
+        <MudIconButton OnClick=@(()=>{
+                       Template.AssignedGroupSids.Remove(Group);
+                       OnGroupRemoved.InvokeAsync(Group);
+                       }) Color=Color.Error Icon="@Icons.Material.Filled.Close" />
+    </MudTooltip>
+</MudStack>
 @code {
     [Parameter]
     public DirectoryTemplateGroup Group { get; set; }
@@ -29,7 +30,7 @@ else
     public DirectoryTemplate Template { get; set; }
 
     [Parameter]
-    public EventCallback<DirectoryTemplateGroup> OnGroupRemoved{ get; set; }
+    public EventCallback<DirectoryTemplateGroup> OnGroupRemoved { get; set; }
 
     IADGroup? ADGroup;
 

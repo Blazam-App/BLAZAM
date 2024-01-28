@@ -1,43 +1,44 @@
 ﻿@inherits AppModalContent
 @using BLAZAM.Helpers
-   @if (CurrentUser.State.Preferences.ProfilePicture != null)
-            {
-<Base64Image Data="@CurrentUser.State.Preferences.ProfilePicture"/>
-            }
-<MudFileUpload T="IBrowserFile"
-               FilesChanged="UploadProfilePicture">
-    <ButtonTemplate>
-        
-        <MudButton HtmlTag="label"
-                   Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.CloudUpload"
-                   for="@context">
-            @if (CurrentUser.State.Preferences.ProfilePicture == null)
-            {
-                <MudText>Upload Profile Icon</MudText>
-
-            }
-            else
-            {
-             <MudText>Change Profile Icon</MudText>   
-            }
-        </MudButton>
-    </ButtonTemplate>
-</MudFileUpload>
-<MudTextField T="string" @bind-Text=@CurrentUser.State.Preferences.Email Label=@AppLocalization["Email"]/>
-<MudNavGroup Title="Themes">
-    @foreach (var theme in ApplicationTheme.Themes)
+<MudStack>
+    @if (CurrentUser.State.Preferences.ProfilePicture != null)
     {
-        <MudButton OnClick=@(()=>{mainLayout.SetUserTheme(theme);})>
-            @theme.Name
-        </MudButton>
+        <Base64Image Data="@CurrentUser.State.Preferences.ProfilePicture" />
     }
+    <MudFileUpload T="IBrowserFile"
+                   FilesChanged="UploadProfilePicture">
+        <ButtonTemplate>
+
+            <MudButton HtmlTag="label"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       for="@context">
+                @if (CurrentUser.State.Preferences.ProfilePicture == null)
+                {
+                    <MudText>Upload Profile Icon</MudText>
+
+                }
+                else
+                {
+                    <MudText>Change Profile Icon</MudText>
+                }
+            </MudButton>
+        </ButtonTemplate>
+    </MudFileUpload>
+    <MudTextField T="string" @bind-Text=@CurrentUser.State.Preferences.Email Label=@AppLocalization["Email"] />
+    <MudNavGroup Title="Themes">
+        @foreach (var theme in ApplicationTheme.Themes)
+        {
+            <MudButton OnClick=@(()=>{mainLayout.SetUserTheme(theme);})>
+                @theme.Name
+            </MudButton>
+        }
+        <MudSwitch Checked="@CurrentUser.State.Preferences.DarkMode" CheckedChanged=@((state)=>{mainLayout.SetDarkMode(state);}) Color="Color.Primary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode" />
 
 
-</MudNavGroup>
-<MudSwitch Checked="@CurrentUser.State.Preferences.DarkMode" CheckedChanged=@((state)=>{mainLayout.SetDarkMode(state);}) Color="Color.Primary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode" />
-
+    </MudNavGroup>
+</MudStack>
 @code {
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }

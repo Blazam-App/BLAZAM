@@ -217,12 +217,16 @@ namespace BLAZAM.Services
                 }
             }
             if (result?.User != null)
+            {               
                 //User claim processing is done so we can set the UserState with the new identity
                 newUserState.User = result.User;
+                
+            }
             //Pass this state to the State Service for statefulness if it's populated
             if (newUserState.User != null)
                 _userStateService.SetUserState(newUserState);
 
+            
             //Return the authenticationstate
             if (result != null)
                 return loginResult.Success(result);
@@ -373,7 +377,8 @@ namespace BLAZAM.Services
                 claims.Add(new Claim(ClaimTypes.GivenName, user.GivenName));
             if (user.Surname != null)
                 claims.Add(new Claim(ClaimTypes.Surname, user.Surname));
-
+            if (user.Email != null)
+                claims.Add(new Claim(ClaimTypes.Email, user.Email));
 
 
             if (loginReq.Impersonation)
