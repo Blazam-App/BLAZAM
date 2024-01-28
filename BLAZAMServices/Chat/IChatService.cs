@@ -10,11 +10,12 @@ namespace BLAZAM.Services.Chat
         AppEvent<ChatMessage> OnMessagePosted { get; set; }
         AppEvent<AppUser> OnMessageRead { get; set; }
         AppEvent<ChatRoom> OnChatRoomCreated { get; set; }
+        ChatRoom? AppChatRoom { get; }
+        IQueryable<ChatRoom> ChatRooms { get; }
 
         void CreateChatRoom(ChatRoom room);
         void DeleteAllChatRooms();
-        List<ChatRoom> GetChatRooms();
-        Task<List<ChatRoom>> GetChatRoomsAsync();
+        Task<IQueryable<ChatRoom>> GetChatRoomsAsync();
         /// <summary>
         /// Returns the existing private chat between
         /// these two users. Returns a new chat if no

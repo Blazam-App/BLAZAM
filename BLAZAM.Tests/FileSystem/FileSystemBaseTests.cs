@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Tests.FileSystem
 {
-    public class FileSystemBaseTests
+    public class JobTests
     {
         [Fact]
         public void Constructor_ThrowsArgumentException_WhenPathIsNull()

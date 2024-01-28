@@ -39,15 +39,15 @@ namespace BLAZAM.Common.Data.Services
                         managementScope.Connect();
                     }catch(UnauthorizedAccessException ex)
                     {
-                        Loggers.ActiveDirectryLogger.Error("Unauthorized access exception connecting wmi to " + hostName, ex);
+                        Loggers.ActiveDirectryLogger.Error("Unauthorized access exception connecting wmi to " + hostName + " {@Error}", ex);
                     }
                     catch(COMException ex)
                     {
-                        Loggers.ActiveDirectryLogger.Error("COM Exception while connecting to WMI on " + hostName, ex);
+                        Loggers.ActiveDirectryLogger.Error("COM Exception while connecting to WMI on " + hostName + " {@Error}", ex);
                 }
                 catch(Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Error connecting to WMI " + hostName, ex);
+                    Loggers.ActiveDirectryLogger.Error("Error connecting to WMI " + hostName + " {@Error}", ex);
 
                 }
                 return managementScope; 

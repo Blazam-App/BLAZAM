@@ -53,8 +53,7 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
         catch (Exception ex)
         {
 
-            Loggers.ActiveDirectryLogger.Error("Error attempting to add delegate " + selectedDelegate.CanonicalName);
-            Loggers.ActiveDirectryLogger.Error(ex.Message, ex);
+            Loggers.ActiveDirectryLogger.Error("Error attempting to add delegate " + selectedDelegate.CanonicalName + " {@Error}",ex);
             SnackBarService.Error("An unexpected error has occured.");
         }
     }

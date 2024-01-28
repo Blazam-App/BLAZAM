@@ -51,7 +51,7 @@
 
         <SettingsField Label="@AppLocalization["Update Credential Source"]">
 
-            <MudTextField T="string" Label="@AppLocalization["Update Credential Source"]" Disabled=true Value="@updateCredential.ToString().Replace('_',' ')" />
+            <MudTextField T="string" Label="@AppLocalization["Update Credential Source"]" Disabled=true Value="@updateCredential?.ToString().Replace('_',' ')" />
         </SettingsField>
 
         <SettingsField Label="@AppLocalization["Update Credentials"]">
@@ -109,13 +109,13 @@
             </FieldLabel>
             <ChildContent>
 
-                <ManualApplicationUpdater @ref=appUpdateComponent />
+               
 
             </ChildContent>
 
-
         </SettingsField>
 
+        <ManualApplicationUpdater @ref=appUpdateComponent />
 
         <SettingsField Label="@AppLocalization["Enable Auto Update"]">
 

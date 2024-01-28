@@ -4,6 +4,9 @@ using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.ActiveDirectory
 {
+    /// <summary>
+    /// An <see cref="IActiveDirectoryContext"/> intended for each web user connection
+    /// </summary>
     public class ScopedActiveDirectoryContext
     {
         private IActiveDirectoryContextFactory _contextFactory;

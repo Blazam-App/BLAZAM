@@ -1,0 +1,47 @@
+﻿@{
+    var fontSize = FontSize;
+
+    if (DatabaseCache.ApplicationSettings != null)
+    {
+        double percentageLengthFromFull = (double)Breakpoint / DatabaseCache.ApplicationSettings.AppName.Length;
+        if (percentageLengthFromFull < 1)
+        {
+            fontSize *= percentageLengthFromFull;
+        }
+    }
+}
+
+<MudText Style=@("white-space: nowrap; font-size:"+(int)fontSize+"px;")>
+
+
+    @DatabaseCache.ApplicationSettings?.AppName
+
+</MudText>
+
+@code{
+    /// <summary>
+    /// <para>
+    /// The base font size when the name is smaller than the breakpoint.
+    /// </para>
+    ///  <para>
+    ///  When longer than the breakpoint, the font size will be a relative
+    ///  percentage smaller than this value.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// The default value is 50
+    ///  </remarks>
+    [Parameter]
+    public double FontSize { get; set; } = 50;
+
+    /// <summary>
+    /// <para>
+    /// The character length at which to begin reducing the font size
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// The default value is 15
+    //  </remarks>
+    [Parameter]
+    public int Breakpoint { get; set; } = 15;
+}

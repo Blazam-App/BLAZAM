@@ -1,22 +1,11 @@
-using Microsoft.AspNetCore.Localization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.Cookies;
+
 using Microsoft.Extensions.Hosting.WindowsServices;
-using System.Globalization;
 using BLAZAM.Server.Middleware;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
-using System.Diagnostics;
 using BLAZAM.Common.Data;
-using MudBlazor.Services;
 using BLAZAM.Server;
-using BLAZAM.FileSystem;
-using BLAZAM.Update;
-using System.Reflection;
-using BLAZAM.Database.Context;
-using BLAZAM.Database.Exceptions;
 using BLAZAM.Services.Background;
 using System.Net;
 
@@ -41,8 +30,6 @@ namespace BLAZAM
 
 
 
-
-        private static IAppDatabaseFactory? _programDbFactory;
 
 
 

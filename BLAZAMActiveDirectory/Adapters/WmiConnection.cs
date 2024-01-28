@@ -12,11 +12,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private const string CPUStatsQuery = "SELECT * FROM Win32_PerfFormattedData_PerfOS_Processor WHERE Name='_Total'";
         private const string IPStatsQuery = "SELECT * FROM Win32_NetworkAdapterConfiguration WHERE IPEnabled = 'TRUE'";
         private const string ServicesQuery = "SELECT * FROM Win32_Service";
+        private const string SharedPrintersQuery = "SELECT * FROM Win32_Printer";
         private ManagementScope managementScope;
+        private IADComputer target;
 
-        public WmiConnection(ManagementScope managementScope)
+        public WmiConnection(ManagementScope managementScope,IADComputer target)
         {
             this.managementScope = managementScope;
+            this.target = target;
         }
 
         public ComputerMemory Memory
@@ -54,7 +57,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     service.Name = mo.GetPropertyValue<string>("Name");
                     service.StartMode = mo.GetPropertyValue<string>("StartMode");
                     service.StartName = mo.GetPropertyValue<string>("StartName");
-                    service.InstallDate = mo.GetPropertyValue<DateTime>("AcceptPause");
+                    service.InstallDate = mo.GetPropertyValue<DateTime>("InstallDate");
                     service.CanPause = mo.GetPropertyValue<bool>("AcceptPause");
                     service.CanStop = mo.GetPropertyValue<bool>("AcceptStop");
                     service.Started = mo.GetPropertyValue<bool>("Started");
@@ -64,66 +67,95 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-    public int Processor
-    {
-        get
+        public int Processor
         {
-            foreach (var mo in PerformQuery(CPUStatsQuery))
+            get
             {
-                var test = mo;
-                int percentIdle = Convert.ToInt32(mo["PercentIdleTime"]);
-                int percentProcessor = Convert.ToInt32(mo["PercentProcessorTime"]);
-                return percentProcessor;
-            }
-            return 0;
-        }
-    }
-
-    public List<IADComputerDrive> Drives
-    {
-        get
-        {
-            List<IADComputerDrive> drives = new List<IADComputerDrive>();
-            try
-            {
-
-                foreach (var mo in PerformQuery(DriveStatsQuery))
+                foreach (var mo in PerformQuery(CPUStatsQuery))
                 {
-                    string letter = mo["DeviceID"]?.ToString();
-                    string description = mo["Description"]?.ToString();
-                    string fileSystem = mo["FileSystem"]?.ToString();
-                    bool volumeDirty = Convert.ToBoolean(mo["VolumeDirty"]);
-                    string volumeSerial = mo["VolumeSerialNumber"]?.ToString();
-                    int driveType = Convert.ToInt32(mo["DriveType"]);
-                    int mediaType = Convert.ToInt32(mo["MediaType"]);
-                    double freeSpace = Convert.ToDouble(mo["FreeSpace"]) / (1024 * 1024 * 1024);
-                    double size = Convert.ToDouble(mo["Size"]) / (1024 * 1024 * 1024);
-                    drives.Add(new ADComputerDrive
-                    {
-                        Letter = letter,
-                        Capacity = size,
-                        FreeSpace = freeSpace,
-                        Description = description,
-                        FileSystem = fileSystem,
-                        Dirty = volumeDirty,
-                        Serial = volumeSerial,
-                        DriveType = (DriveType)driveType,
-                        MediaType = mediaType
-                    });
-                    //Console.WriteLine("Free space: " + freeSpace + " GB");
-                    //Console.WriteLine("Size: " + size + " GB");
+                    var test = mo;
+                    int percentIdle = Convert.ToInt32(mo["PercentIdleTime"]);
+                    int percentProcessor = Convert.ToInt32(mo["PercentProcessorTime"]);
+                    return percentProcessor;
                 }
+                return 0;
             }
-            catch (Exception ex)
-            {
-                Loggers.ActiveDirectryLogger.Error("Error polling drives", ex);
-            }
-            return drives;
         }
-    }
 
-    private List<ManagementObject> PerformQuery(string query)
-    {
+        public List<IADComputerDrive> Drives
+        {
+            get
+            {
+                List<IADComputerDrive> drives = new List<IADComputerDrive>();
+                try
+                {
+
+                    foreach (var mo in PerformQuery(DriveStatsQuery))
+                    {
+                        string letter = mo["DeviceID"]?.ToString();
+                        string description = mo["Description"]?.ToString();
+                        string fileSystem = mo["FileSystem"]?.ToString();
+                        bool volumeDirty = Convert.ToBoolean(mo["VolumeDirty"]);
+                        string volumeSerial = mo["VolumeSerialNumber"]?.ToString();
+                        int driveType = Convert.ToInt32(mo["DriveType"]);
+                        int mediaType = Convert.ToInt32(mo["MediaType"]);
+                        double freeSpace = Convert.ToDouble(mo["FreeSpace"]) / (1024 * 1024 * 1024);
+                        double size = Convert.ToDouble(mo["Size"]) / (1024 * 1024 * 1024);
+                        drives.Add(new ADComputerDrive
+                        {
+                            Letter = letter,
+                            Capacity = size,
+                            FreeSpace = freeSpace,
+                            Description = description,
+                            FileSystem = fileSystem,
+                            Dirty = volumeDirty,
+                            Serial = volumeSerial,
+                            DriveType = (DriveType)driveType,
+                            MediaType = mediaType
+                        });
+                        //Console.WriteLine("Free space: " + freeSpace + " GB");
+                        //Console.WriteLine("Size: " + size + " GB");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Loggers.ActiveDirectryLogger.Error("Error polling drives {@Error}", ex);
+                }
+                return drives;
+            }
+        }
+
+        public List<SharedPrinter> SharePrinters
+        {
+            get
+            {
+                List<SharedPrinter> sharedPrinters = new List<SharedPrinter>();
+                try
+                {
+
+                    foreach (var mo in PerformQuery(SharedPrintersQuery))
+                    {
+                        if ((bool)mo["Shared"])
+                        {
+                            Console.WriteLine(mo["Name"]);
+                            sharedPrinters.Add(new SharedPrinter(target,mo));
+
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Loggers.ActiveDirectryLogger.Error("Error polling printers {@Error}", ex);
+                }
+               
+               
+
+                return sharedPrinters;
+            }
+        }
+
+        private List<ManagementObject> PerformQuery(string query)
+        {
             try
             {
                 List<ManagementObject> results = new();
@@ -138,14 +170,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                 }
                 return results;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Loggers.ActiveDirectryLogger.Error("WMI query failure: " + ex.Message);
 
             }
             return new();
+        }
     }
-}
     public class ComputerService
     {
         public bool? CanPause { get; set; }
@@ -164,7 +197,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public string? DisplayName { get; set; }
         public string? ErrorControl { get; set; }
         public UInt32? ExitCode { get; set; }
-        public DateTime? InstallDate{ get; set; }
+        public DateTime? InstallDate { get; set; }
         public bool? DelayedAutoStart { get; set; }
 
     }

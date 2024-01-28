@@ -102,7 +102,7 @@ namespace BLAZAM.Tests
             var converted = test.AdsValueToDateTime();
             bool result = converted.Equals(valid);
             
-            Assert.True(result, "The conversion of COM large integers to DateTime is not returning the correct DateTime");
+            Assert.True(result, "The conversion of COM large integers to DateTime is not returning the correct DateTime: Expected "+valid.ToString()+" Tested "+converted.ToString());
         }
         
     }

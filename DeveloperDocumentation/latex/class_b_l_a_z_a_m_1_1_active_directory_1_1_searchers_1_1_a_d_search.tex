@@ -1,0 +1,153 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearch Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search}{}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search}\index{BLAZAM.ActiveDirectory.Searchers.ADSearch@{BLAZAM.ActiveDirectory.Searchers.ADSearch}}
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearch\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+async Task$<$ List$<$ I $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a26ea4a1abbe18c68c4c35dac1a7e8ff8}{Search\+Async$<$ T, I $>$}} (Cancellation\+Token? token=null)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a7ad8f3715cdef01843572ca39ec400ed}{Search}} ()
+\begin{DoxyCompactList}\small\item\em Searches ambiguously for all object types. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_ac3250584f32530b91a61c22b543f9433}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_ac3250584f32530b91a61c22b543f9433} 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} $>$ $>$ {\bfseries Search\+Async} ()
+\item 
+List$<$ TInterface $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a668fac1333c101dadae8a83d8ad9d764}{Search$<$ TObject, TInterface $>$}} (Cancellation\+Token? token=null)
+\begin{DoxyCompactList}\small\item\em Executes a search in Active Directory using the configured properties of this object. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a3e25c9db55bcf081e43137a5d61cb0c4}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a3e25c9db55bcf081e43137a5d61cb0c4} 
+void {\bfseries Cancel} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a4674eca66ae7545ce0f90d33f4eba36f}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a4674eca66ae7545ce0f90d33f4eba36f} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_fields}{ADSearch\+Fields}} {\bfseries Fields} = new()\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a02946e4298d3f06271c6df210f30c185}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a02946e4298d3f06271c6df210f30c185} 
+bool {\bfseries Exact\+Match}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the resulting fields searched should be an exact match of the terms provided. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a64f9bb4c4e7aa0bd3f4ad88bd7d148e0}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a64f9bb4c4e7aa0bd3f4ad88bd7d148e0} 
+string? {\bfseries General\+Search\+Term}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em A string to find in the common name and username fields. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a964d22ed2a6b79eb2112c2369235b201}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a964d22ed2a6b79eb2112c2369235b201} 
+string {\bfseries Filter\+Query}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The ldap query filter that filters by fields. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a3bc37e557af77676e480553e0b4e565c}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a3bc37e557af77676e480553e0b4e565c} 
+Directory\+Entry {\bfseries Search\+Root}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The search root and authenticated Directory\+Entry \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a867694d0b0b4f3d203f1068c37cf3583}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a867694d0b0b4f3d203f1068c37cf3583} 
+System.\+Directory\+Services.\+Search\+Scope {\bfseries Search\+Scope} = System.\+Directory\+Services.\+Search\+Scope.\+Subtree\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the search is single level or recursive default is recursive. \end{DoxyCompactList}\item 
+App\+Event$<$ IEnumerable$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a71fe547bb97df66ed121f99a21394bb2}{Results\+Collected}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The realtime results of this search. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a9f2b1b454a8b7a37cf0d78efd29101f2}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a9f2b1b454a8b7a37cf0d78efd29101f2} 
+Active\+Directory\+Object\+Type? {\bfseries Object\+Type\+Filter}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_ab8c0088b26936ed5f171bd3752fe6ed8}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_ab8c0088b26936ed5f171bd3752fe6ed8} 
+bool? {\bfseries Enabled\+Only}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_ab2c15ef2388f13f32a0f1fbd949c14d0}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_ab2c15ef2388f13f32a0f1fbd949c14d0} 
+int {\bfseries Max\+Results} = 50\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_af660f2fc9903929a4ff9a15169545ff5}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_af660f2fc9903929a4ff9a15169545ff5} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} $>$ {\bfseries Results} = new()\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a85488e27710f70158bd6d047f91495cf}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a85488e27710f70158bd6d047f91495cf} 
+string {\bfseries Ldap\+Query}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a9177d3f98b27893f6dd21d5ff46f386c}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a9177d3f98b27893f6dd21d5ff46f386c} 
+bool {\bfseries Search\+Deleted} = false\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_search_base}{BLAZAM.\+Active\+Directory.\+Searchers.\+Search\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+App\+Event {\bfseries On\+Search\+Completed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Event fired when all results have been collected, or an error occurred. \end{DoxyCompactList}\item 
+App\+Event {\bfseries On\+Search\+Started}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Time\+Span {\bfseries Search\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Search\+State {\bfseries Search\+State}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates the current state of this search. \end{DoxyCompactList}\item 
+Event\+Callback$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_search_base_a2364e48c8bb5f1c87f6b6e1a8f25bd8a}{Search\+State}} $>$ {\bfseries Search\+State\+Changed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Cancellation\+Token? {\bfseries cancellation\+Token} = new Cancellation\+Token()\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Allows for cancelling the search. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_search_base}{BLAZAM.\+Active\+Directory.\+Searchers.\+Search\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_search_base_a2364e48c8bb5f1c87f6b6e1a8f25bd8a}{Search\+State}} {\bfseries search\+State} = Search\+State.\+Ready
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a7ad8f3715cdef01843572ca39ec400ed}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a7ad8f3715cdef01843572ca39ec400ed} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADSearch@{BLAZAM.ActiveDirectory.Searchers.ADSearch}!Search@{Search}}
+\index{Search@{Search}!BLAZAM.ActiveDirectory.Searchers.ADSearch@{BLAZAM.ActiveDirectory.Searchers.ADSearch}}
+\doxysubsubsection{\texorpdfstring{Search()}{Search()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearch.\+Search (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Searches ambiguously for all object types. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a668fac1333c101dadae8a83d8ad9d764}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a668fac1333c101dadae8a83d8ad9d764} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADSearch@{BLAZAM.ActiveDirectory.Searchers.ADSearch}!Search$<$ TObject, TInterface $>$@{Search$<$ TObject, TInterface $>$}}
+\index{Search$<$ TObject, TInterface $>$@{Search$<$ TObject, TInterface $>$}!BLAZAM.ActiveDirectory.Searchers.ADSearch@{BLAZAM.ActiveDirectory.Searchers.ADSearch}}
+\doxysubsubsection{\texorpdfstring{Search$<$ TObject, TInterface $>$()}{Search< TObject, TInterface >()}}
+{\footnotesize\ttfamily List$<$ TInterface $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a7ad8f3715cdef01843572ca39ec400ed}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearch.\+Search}}$<$ TObject, TInterface $>$ (\begin{DoxyParamCaption}\item[{Cancellation\+Token?}]{token = {\ttfamily null} }\end{DoxyParamCaption})}
+
+
+
+Executes a search in Active Directory using the configured properties of this object. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em TObject} & The object type to convert search results to\\
+\hline
+{\em TInterface} & The interface type to case converted search results to\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+A list of search results converted and casted to supplied types
+\end{DoxyReturn}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em TObject} : {\em TInterface}]\item[{\em TObject} : {\em IDirectory\+Entry\+Adapter}]\item[{\em TObject} : {\em new()}]\end{description}
+\end{Desc}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a26ea4a1abbe18c68c4c35dac1a7e8ff8}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a26ea4a1abbe18c68c4c35dac1a7e8ff8} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADSearch@{BLAZAM.ActiveDirectory.Searchers.ADSearch}!SearchAsync$<$ T, I $>$@{SearchAsync$<$ T, I $>$}}
+\index{SearchAsync$<$ T, I $>$@{SearchAsync$<$ T, I $>$}!BLAZAM.ActiveDirectory.Searchers.ADSearch@{BLAZAM.ActiveDirectory.Searchers.ADSearch}}
+\doxysubsubsection{\texorpdfstring{SearchAsync$<$ T, I $>$()}{SearchAsync< T, I >()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ I $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearch.\+Search\+Async$<$ T, I $>$ (\begin{DoxyParamCaption}\item[{Cancellation\+Token?}]{token = {\ttfamily null} }\end{DoxyParamCaption})}
+
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em I}]\item[{\em T} : {\em IDirectory\+Entry\+Adapter}]\item[{\em T} : {\em new()}]\end{description}
+\end{Desc}
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a71fe547bb97df66ed121f99a21394bb2}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search_a71fe547bb97df66ed121f99a21394bb2} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADSearch@{BLAZAM.ActiveDirectory.Searchers.ADSearch}!ResultsCollected@{ResultsCollected}}
+\index{ResultsCollected@{ResultsCollected}!BLAZAM.ActiveDirectory.Searchers.ADSearch@{BLAZAM.ActiveDirectory.Searchers.ADSearch}}
+\doxysubsubsection{\texorpdfstring{ResultsCollected}{ResultsCollected}}
+{\footnotesize\ttfamily App\+Event$<$IEnumerable$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}}$>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearch.\+Results\+Collected\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The realtime results of this search. 
+
+Check Search\+State or listen to On\+Search\+Completed to confirm search is completed and no more results are coming.
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Searchers/ADSearch.\+cs\end{DoxyCompactItemize}

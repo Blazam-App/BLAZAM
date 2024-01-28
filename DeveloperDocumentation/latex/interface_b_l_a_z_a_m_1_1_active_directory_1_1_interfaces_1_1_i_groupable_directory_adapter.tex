@@ -1,0 +1,207 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Interfaces.\+IGroupable\+Directory\+Adapter Interface Reference}
+\hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter}{}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter}\index{BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter@{BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter}}
+
+
+Those Active Directory Object types that can be members of a group.  
+
+
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Interfaces.\+IGroupable\+Directory\+Adapter\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.230769cm]{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_ae90e29da33d9188642bbec3e1866941b}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_ae90e29da33d9188642bbec3e1866941b} 
+void {\bfseries Assign\+To} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} group)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a4d3661f84b5316723ff65d5ae72adfc5}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a4d3661f84b5316723ff65d5ae72adfc5} 
+bool {\bfseries Is\+AMember\+Of} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} group)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a6cab37460de29bd805be0d889f913f94}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a6cab37460de29bd805be0d889f913f94} 
+void {\bfseries Unassign\+From} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} group)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_ae536a894824daa5b96c95ede792551ef}{Commit\+Changes}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}}? commit\+Job=null)
+\begin{DoxyCompactList}\small\item\em Sends all staged changes to the Active Directory server. \end{DoxyCompactList}\item 
+Task$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_af6d6a44c47d2a260141e40e304984fb7}{Commit\+Changes\+Async}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{IJob}}? commit\+Job=null)
+\begin{DoxyCompactList}\small\item\em Sends all staged changes to the Active Directory server asynchronously. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6b9f253b237a7fa1bdc43628ea1dd8bb}{Discard\+Changes}} ()
+\begin{DoxyCompactList}\small\item\em Resets the current entry state to it\textquotesingle{}s inital state. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a256f3bee3ab3cf02818042c39da6397c}{Can\+Edit\+Field}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_models_1_1_i_active_directory_field}{IActive\+Directory\+Field}} field)
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can modify the specified field. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_ad2459b448307d948360acc245cab2df5}{Can\+Read\+Field}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_models_1_1_i_active_directory_field}{IActive\+Directory\+Field}} field)
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can read the specified field. \end{DoxyCompactList}\item 
+new void \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6c444860f8e80c5dbedfd7f81982068f}{Dispose}} ()
+\begin{DoxyCompactList}\small\item\em Properly disposes of this entry from memory. \end{DoxyCompactList}\item 
+Task \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a45374f2e68a19d8f2053c55e73099704}{Parse}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6419100ef150a476f9cd610c244fbffd}{Directory\+Entry}} result, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\begin{DoxyCompactList}\small\item\em Converts a raw Directory\+Entry into an application IDirectory\+Entry\+Adapter object. \end{DoxyCompactList}\item 
+Task \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a16203a0cf4a87d436cf4c1427c0028ef}{Parse}} (Search\+Result result, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\begin{DoxyCompactList}\small\item\em Converts a raw Search\+Result into an application IDirectory\+Entry\+Adapter object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a4f614c32de3d42660ac73167d1d15181}{Move\+To}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}} parent\+OUTo\+Move\+To)
+\begin{DoxyCompactList}\small\item\em Move this entry to a new IADOrganizational\+Unit \end{DoxyCompactList}\item 
+Task$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}}?$>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a41033d2a18ccd24e2975628e21ed8267}{Get\+Parent}} ()
+\begin{DoxyCompactList}\small\item\em Get\textquotesingle{}s the parent IADOrganizational\+Unit of this entry. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a7e35fc56532a49cdd7adbd427908ed05}{Invoke}} (string method, object?\mbox{[}$\,$\mbox{]}? args=null)
+\begin{DoxyCompactList}\small\item\em Wrapper method for the base Directory\+Entry Invoke method. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a858a0bebfdae76fa49174e937bb36070}{Delete}} ()
+\begin{DoxyCompactList}\small\item\em Deletes this entry from the directory. \end{DoxyCompactList}\item 
+string? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a2ad0f18bf765bd6fe866754ea977cb37}{To\+String}} ()
+\begin{DoxyCompactList}\small\item\em The string representation of this entry. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_abe9ce091d35ef44345d68b6b47026cd7}{Rename}} (string new\+Name)
+\begin{DoxyCompactList}\small\item\em Renames the CN attribute. \end{DoxyCompactList}\item 
+T? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a4f850e3123d697920805748cb61caebe}{Get\+Custom\+Property$<$ T $>$}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Gets a custom attribute value for the given name and returns an object with the given type. \end{DoxyCompactList}\item 
+Date\+Time? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a963e91ee1b34ecc363abdd78fe124c81}{Get\+Date\+Time\+Property}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Returns the specified Date\+Time property in UTC. \end{DoxyCompactList}\item 
+void {\bfseries Set\+Custom\+Property} (string property\+Name, object? value)
+\item 
+void {\bfseries Ensure\+Directory\+Entry} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a63988581eb28e8fe83fde74d5dd2abbd}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a63988581eb28e8fe83fde74d5dd2abbd} 
+string? {\bfseries Description}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a1f0dd7dae7e947bf4ee8be0bc24e5f61}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a1f0dd7dae7e947bf4ee8be0bc24e5f61} 
+string? {\bfseries Display\+Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a977079b0b1666673b309625e414610ad}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a977079b0b1666673b309625e414610ad} 
+string? {\bfseries Email}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a25b0249c3ba5c1a3e14ea61635e861de}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a25b0249c3ba5c1a3e14ea61635e861de} 
+bool {\bfseries Is\+AGroup\+Member}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_abf9a4e3924e7941c31d900fbf24a82ee}{Member\+Of}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a13424317765969365209ce89add31f9c}{Can\+Assign}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web user can assign this IGroupable\+Directory\+Adapter to any groups. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_ab224fd3a8fa17e887f67765308c345fd}{Can\+Unassign}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web user can unassign to/from this IGroupable\+Directory\+Adapter \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IDirectory\+Entry\+Adapter}}}
+\begin{DoxyCompactItemize}
+\item 
+string? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_ae699eadc30a20a8107bc42fab29f9fed}{Sam\+Account\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The SAMAccount\+Name property, generally used as the username property. \end{DoxyCompactList}\item 
+string? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6fe008fd86aa2ce2ed68c8f2253a677f}{Canonical\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The name that displays for this object in ADUC. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_af19bda9f95e0144fd99cd1187ee7a2dd}{DN}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em This entry\textquotesingle{}s Distinguished Name. \end{DoxyCompactList}\item 
+Date\+Time? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a2b57416a7bed1b9a3f882d129d2ac690}{Created}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The date and time in UTC that this entry was created. \end{DoxyCompactList}\item 
+Date\+Time? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_af834cadc4fb19bea4282d7526cea98c0}{Last\+Changed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The date and time in UTC that this entry was last modified. \end{DoxyCompactList}\item 
+byte?\mbox{[}$\,$\mbox{]} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a0211eb1a6969f5854b4708edc965a968}{SID}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em This entry\textquotesingle{}s SID in byte form. \end{DoxyCompactList}\item 
+List$<$ string $>$? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a49b9b93a33081c61352434eb2f968d91}{Classes}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The object\+Class value. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a503cc3a88485b370dac3d3f5141bfae3}{Can\+Read}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user has read access to this directory entry. \end{DoxyCompactList}\item 
+Active\+Directory\+Object\+Type \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_aaaa70870feafcff13559557e1400bea5}{Object\+Type}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The type of Active Directory entry that this is. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_abfcf78a992b22b8b6d7ece615aef8753}{Can\+Move}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user has move permission for this directory entry. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_adcf454d39f969e8ac8e2d02b7dd58961}{Can\+Rename}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user has read access to this directory entry. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_af533f89c7f3fe4c864e742c1fdd9bca6}{Can\+Create}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can create this Active\+Directory\+Object\+Type \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_abf586bb748c76f8239b14cf5379ff139}{Can\+Delete}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can delete this directory entry. \end{DoxyCompactList}\item 
+Directory\+Entry? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6419100ef150a476f9cd610c244fbffd}{Directory\+Entry}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The .NET underlying object for this entry. \end{DoxyCompactList}\item 
+string? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_afca8eff71eb839eaca40c86509a60e29}{ADSPath}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The full Active Directory Services path including LDAP server name. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6eb9958c37f15168fd8fd71928b546b3}{Can\+Edit}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can edit any fields for this directory entry. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a000ef0a599643a3d3495b86bd9904e67}{Can\+Read\+Any\+Custom\+Fields}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current web application user can read any custom fields for this directory entry. \end{DoxyCompactList}\item 
+string? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a940794a0a7712a15096e392f1086402f}{OU}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The parent OU distinguished name as a string. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a11ad7149260f1691b8e90f36dae78dde}{Has\+Unsaved\+Changes}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether there have been uncommitted changes to this entry. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6516815e834fd61b327da4f7cd996b58}{New\+Entry}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Set this to true to indicate that this entry is a new entry. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_aa840ac4b9d9e8d5421d055d4024f06f0}{Search\+Uri}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns the relative path to reach the search result page for this entry. \end{DoxyCompactList}\item 
+App\+Event? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a9fae79df960e3a84d6105d56b58c173e}{On\+Model\+Commited}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when pending changes to this entry are commited. \end{DoxyCompactList}\item 
+App\+Event? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a502ce5e319022770b14f45f8364e53eb}{On\+Model\+Changed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when any changes occur to this entry. \end{DoxyCompactList}\item 
+Dictionary$<$ string, object $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_acdfdc7a71d1a669b4d0585289fce0052}{New\+Entry\+Properties}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em If New\+Entry is true, property changes will be staged in this property. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_organizational_unit}{IADOrganizational\+Unit}}? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a2b6c9362657ac17bbb0125d044816749}{Last\+Known\+Parent}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em If this object is deleted, this was the last IADOrganizational\+Unit it was under. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a41780b18bb2636e8957160b1d2499048}{Is\+Deleted}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates this entry is in the Active Directory Recycle Bin. \end{DoxyCompactList}\item 
+List$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_audit_change_log}{Audit\+Change\+Log}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a8ab6eb219270571c791d8e1fba8eabe1}{Changes}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em A list of changelogs made to this entry for auditting purposes. \end{DoxyCompactList}\item 
+App\+Event$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} $>$? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a6915cc93945a4e7d413eed287fd637bb}{On\+Directory\+Model\+Renamed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when this entry is renamed. \end{DoxyCompactList}\item 
+App\+Event? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a83b49dc2e4bd55fa0b2fbf2b166104ca}{On\+Model\+Deleted}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when this entry is deleted. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a85e7f2233674684ad89aeea6c385742a}{Directory}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The directory this entry belongs to. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_ac9f72340138bc057f24c319d3a5e19f4}{Is\+Expanded}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this entry is expanded in the ui within a tree view. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_abdaeb2444c0c89e06c253ffe100237fa}{Is\+Selected}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this entry is selected in the ui within a tree view. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a7ca023983567d28bd34dc22de81a51ad}{Has\+Children}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this entry has any child entries. \end{DoxyCompactList}\item 
+IEnumerable$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter}{IDirectory\+Entry\+Adapter}} $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter_a13204cd284668f8c25ff648ac92a0760}{Children}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The children of this entry. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Those Active Directory Object types that can be members of a group. 
+
+Examples include users, computers, groups, printers 
+
+\doxysubsection{Property Documentation}
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a13424317765969365209ce89add31f9c}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_a13424317765969365209ce89add31f9c} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter@{BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter}!CanAssign@{CanAssign}}
+\index{CanAssign@{CanAssign}!BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter@{BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter}}
+\doxysubsubsection{\texorpdfstring{CanAssign}{CanAssign}}
+{\footnotesize\ttfamily bool BLAZAM.\+Active\+Directory.\+Interfaces.\+IGroupable\+Directory\+Adapter.\+Can\+Assign\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Indicates whether the current web user can assign this IGroupable\+Directory\+Adapter to any groups. 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_groupable_directory_adapter_aa9c46c199b41bf25dc79e7ae9586f58c}{BLAZAM.\+Active\+Directory.\+Adapters.\+Groupable\+Directory\+Adapter}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_ab224fd3a8fa17e887f67765308c345fd}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_ab224fd3a8fa17e887f67765308c345fd} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter@{BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter}!CanUnassign@{CanUnassign}}
+\index{CanUnassign@{CanUnassign}!BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter@{BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter}}
+\doxysubsubsection{\texorpdfstring{CanUnassign}{CanUnassign}}
+{\footnotesize\ttfamily bool BLAZAM.\+Active\+Directory.\+Interfaces.\+IGroupable\+Directory\+Adapter.\+Can\+Unassign\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Indicates whether the current web user can unassign to/from this IGroupable\+Directory\+Adapter 
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_groupable_directory_adapter_a3a607b40c8d8f24611082fca9b708701}{BLAZAM.\+Active\+Directory.\+Adapters.\+Groupable\+Directory\+Adapter}}.
+
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_abf9a4e3924e7941c31d900fbf24a82ee}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter_abf9a4e3924e7941c31d900fbf24a82ee} 
+\index{BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter@{BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter}!MemberOf@{MemberOf}}
+\index{MemberOf@{MemberOf}!BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter@{BLAZAM.ActiveDirectory.Interfaces.IGroupableDirectoryAdapter}}
+\doxysubsubsection{\texorpdfstring{MemberOf}{MemberOf}}
+{\footnotesize\ttfamily List$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}}$>$ BLAZAM.\+Active\+Directory.\+Interfaces.\+IGroupable\+Directory\+Adapter.\+Member\+Of\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Implemented in \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_groupable_directory_adapter_a31aec0428b2c03e88de0eee7c3a3877c}{BLAZAM.\+Active\+Directory.\+Adapters.\+Groupable\+Directory\+Adapter}}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Interfaces/IGroupable\+Directory\+Model.\+cs\end{DoxyCompactItemize}

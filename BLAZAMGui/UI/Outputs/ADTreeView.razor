@@ -13,7 +13,7 @@
              @bind-SelectedValue="SelectedOU">
     <ItemTemplate>
         <MudTreeViewItem Value="@context"
-                         Items=@(context.CachedChildren.ToHashSet())
+                         Items=@(context.Children.ToHashSet())
                          LoadingIconColor="Color.Info"
                          @bind-Expanded="@context.IsExpanded"
                           @bind-Activated=context.IsSelected

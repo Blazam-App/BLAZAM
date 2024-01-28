@@ -15,7 +15,9 @@ namespace BLAZAM.Common.Data
             SearchUsers,
             CreateGroups,
             CreateOUs,
-            CreateUsers
+            CreateUsers,
+            SearchPrinters,
+            CreatePrinters
         };
         public const string Login = "Login";
         public const string SearchUsers = "SearchUsers";
@@ -23,8 +25,10 @@ namespace BLAZAM.Common.Data
         public const string SearchGroups = "SearchGroups";
         public const string CreateGroups = "CreateGroups";
         public const string SearchOUs = "SearchOUs";
-        public const string SearchComputers = "SearchComputers";
         public const string CreateOUs = "CreateOUs";
+        public const string SearchPrinters = "SearchPrinters";
+        public const string CreatePrinters = "CreatePrinters";
+        public const string SearchComputers = "SearchComputers";
         public const string SuperAdmin = "SuperAdmin";
     }
 }

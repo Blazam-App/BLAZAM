@@ -9,7 +9,7 @@ namespace BLAZAM.Static
         public static string ApplicationIconUri = "/static/img/appicon.png";
         public static string FaviconUri = "/static/img/favicon.ico";
 
-        public static byte[] AppIcon(int size = 250)
+        public static byte[]? AppIcon(int size = 250)
         {
 
             var dbIcon = DatabaseCache.AppIcon;
@@ -31,7 +31,7 @@ namespace BLAZAM.Static
 
         private static byte[]? GetDefaultIcon()
         {
-            var defaultIconFilePath = Path.GetFullPath(ApplicationInfo.applicationRoot + @"static\img\default_logo2.png");
+            var defaultIconFilePath = Path.GetFullPath(ApplicationInfo.applicationRoot + @"static\img\default_logo4.png");
             if (File.Exists(defaultIconFilePath))
                 return File.ReadAllBytes(defaultIconFilePath);
             return null;

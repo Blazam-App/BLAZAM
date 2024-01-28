@@ -107,6 +107,7 @@ namespace BLAZAM.Database.Context
         //User Tables
         public virtual DbSet<AppUser> UserSettings { get; set; }
         public virtual DbSet<UserNotification> UserNotifications { get; set; }
+        public virtual DbSet<UserFavoriteEntry> UserFavoriteEntries { get; set; }
         public virtual DbSet<UserDashboardWidget> UserDashboardWidgets { get; set; }
         public virtual DbSet<NotificationMessage> NotificationMessages { get; set; }
 
@@ -586,7 +587,7 @@ namespace BLAZAM.Database.Context
             {
                 entity.HasIndex(e => e.UserGUID).IsUnique();
                 entity.Navigation(e => e.Messages).AutoInclude();
-
+                entity.Navigation(e => e.FavoriteEntries).AutoInclude();
                 entity.Navigation(e => e.DashboardWidgets).AutoInclude();
                 //entity.Navigation(e => e.UnreadChatMessages).AutoInclude();
 
@@ -739,7 +740,7 @@ namespace BLAZAM.Database.Context
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error(ex.Message, ex);
+                    Loggers.DatabaseLogger.Error(ex.Message + " {@Error}", ex);
                     DownReason = new("The database experienced an unexpected error. " + ex.Message);
 
                 }
@@ -835,7 +836,7 @@ namespace BLAZAM.Database.Context
                     // Write the rows
                     foreach (DataRow row in table.Rows)
                     {
-                        var fields = row.ItemArray.Select(f => f.ToString());
+                        var fields = row.ItemArray.Select(f => f?.ToString());
                         List<string> lines = new();
                         foreach(var field in fields)
                         {

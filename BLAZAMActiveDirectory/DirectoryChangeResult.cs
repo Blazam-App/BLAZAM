@@ -2,6 +2,7 @@
 
 namespace BLAZAM.ActiveDirectory
 {
+    [Obsolete("Never implemented")]
     public class DirectoryChangeResult
     {
         public List<IADGroup> AssignedGroups { get; internal set; } = new List<IADGroup>();

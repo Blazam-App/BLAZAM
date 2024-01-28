@@ -1,0 +1,203 @@
+\doxysection{BLAZAM.\+Common.\+Data.\+Application\+Info Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info}{}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info}\index{BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}}
+
+
+A store of base configuration,process, and directory defaults for the application.  
+
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a976237d44ece88993a103c37b082b04c}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a976237d44ece88993a103c37b082b04c} 
+{\bfseries Application\+Info} ()
+\begin{DoxyCompactList}\small\item\em Use only for Unit\+Tests. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a7deb102fe09d37df42a5465860e94bd9}{Application\+Info}} (Web\+Application\+Builder builder)
+\begin{DoxyCompactList}\small\item\em Creates a new Application\+Info object for the running application. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_aeec8e37c895dc542fe60fb07c9eb5f16}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_aeec8e37c895dc542fe60fb07c9eb5f16} 
+static \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version}{Application\+Version}} {\bfseries running\+Version}
+\begin{DoxyCompactList}\small\item\em The running Blazam version. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a276586765b888d06b909904e3a0e8249}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a276586765b888d06b909904e3a0e8249} 
+static Process {\bfseries running\+Process}
+\begin{DoxyCompactList}\small\item\em The process of the running application. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_ad536ac73e1943694697be606ac9650fe}{application\+Root}}
+\begin{DoxyCompactList}\small\item\em The root directory of the running web application. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_aba24ca659b9ca4b9aafbd7ce6ba9a503}{temp\+Directory}}
+\begin{DoxyCompactList}\small\item\em The temporary file directry. \end{DoxyCompactList}\item 
+static IEnumerable$<$ string $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a372955fad9ab7cd9f4303876fc885ec9}{listening\+Addresses}} =new List$<$string$>$()
+\begin{DoxyCompactList}\small\item\em A collection of active listening address\textquotesingle{}s with port. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a859a639fae3fb6a12ebaa2d34e47d8bb}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a859a639fae3fb6a12ebaa2d34e47d8bb} 
+static bool {\bfseries in\+Debug\+Mode}
+\begin{DoxyCompactList}\small\item\em A static access to In\+Debug\+Mode \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a9f6564452ad4f1799c25d3ec1f61f0a4}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a9f6564452ad4f1799c25d3ec1f61f0a4} 
+static bool {\bfseries in\+Demo\+Mode}
+\begin{DoxyCompactList}\small\item\em A static access to In\+Demo\+Mode \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_ae31f0ad0476b0f540e8fa2f82d3b612b}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_ae31f0ad0476b0f540e8fa2f82d3b612b} 
+static IService\+Provider {\bfseries services}
+\begin{DoxyCompactList}\small\item\em A local store of the .Net web application Services. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_aab31f86cc83f2ef7aac4fe1bbf4da038}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_aab31f86cc83f2ef7aac4fe1bbf4da038} 
+static Security\+Key {\bfseries token\+Key}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a25986b7a34bab952caab69ec3e1cd6b3}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a25986b7a34bab952caab69ec3e1cd6b3} 
+static bool {\bfseries is\+Under\+IIS}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether Blazam is running under IIS or as a service. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a8aaa8357eac0b413bcc6e7a31d1cd1cd}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a8aaa8357eac0b413bcc6e7a31d1cd1cd} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version}{Application\+Version}} {\bfseries Running\+Version}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The running Blazam version. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a74cb5a66152c7c23a06b4474a0524b76}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a74cb5a66152c7c23a06b4474a0524b76} 
+Process {\bfseries Running\+Process}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The process of the running application. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a48e1362caafe63bfce23557db08ed62e}{Application\+Root}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The root directory of the running web application. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_ae0057a14191b5d5f08003960d0b39608}{Temp\+Directory}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The temporary file directry. \end{DoxyCompactList}\item 
+IEnumerable$<$ string $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a9df3d7f467b8eb5c429f92c22fe1c9f9}{Listening\+Addresses}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em A collection of active listening address\textquotesingle{}s with port. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a03a10f703ed70c25bb39a9fda3fb4b96}{Installation\+Completed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether installation wizard has been completed. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_af4d20e7ddde2439c9e319f9dc8f75050}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_af4d20e7ddde2439c9e319f9dc8f75050} 
+bool {\bfseries In\+Debug\+Mode}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether Blazam is in Debug Mode. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_ace5cf53881f175da205f80ab2afa9aa8}{In\+Demo\+Mode}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether Blazam is in Demo Mode. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_af940e346f0d8746bf7b5f3d4d601264a}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_af940e346f0d8746bf7b5f3d4d601264a} 
+bool {\bfseries Is\+Under\+IIS}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether Blazam is running under IIS or as a service. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a5dca261cbfff5418df7d8fcaeeea6236}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a5dca261cbfff5418df7d8fcaeeea6236} 
+static bool {\bfseries installation\+Completed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates the Installation status. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A store of base configuration,process, and directory defaults for the application. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a7deb102fe09d37df42a5465860e94bd9}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a7deb102fe09d37df42a5465860e94bd9} 
+\index{BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}!ApplicationInfo@{ApplicationInfo}}
+\index{ApplicationInfo@{ApplicationInfo}!BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}}
+\doxysubsubsection{\texorpdfstring{ApplicationInfo()}{ApplicationInfo()}}
+{\footnotesize\ttfamily BLAZAM.\+Common.\+Data.\+Application\+Info.\+Application\+Info (\begin{DoxyParamCaption}\item[{Web\+Application\+Builder}]{builder }\end{DoxyParamCaption})}
+
+
+
+Creates a new Application\+Info object for the running application. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em builder} & \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_ad536ac73e1943694697be606ac9650fe}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_ad536ac73e1943694697be606ac9650fe} 
+\index{BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}!applicationRoot@{applicationRoot}}
+\index{applicationRoot@{applicationRoot}!BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}}
+\doxysubsubsection{\texorpdfstring{applicationRoot}{applicationRoot}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} BLAZAM.\+Common.\+Data.\+Application\+Info.\+application\+Root\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+The root directory of the running web application. 
+
+\begin{DoxyReturn}{Returns}
+eg\+: C\+:\textbackslash{}inetpub\textbackslash{}blazam\textbackslash{} 
+\end{DoxyReturn}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a372955fad9ab7cd9f4303876fc885ec9}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a372955fad9ab7cd9f4303876fc885ec9} 
+\index{BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}!listeningAddresses@{listeningAddresses}}
+\index{listeningAddresses@{listeningAddresses}!BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}}
+\doxysubsubsection{\texorpdfstring{listeningAddresses}{listeningAddresses}}
+{\footnotesize\ttfamily IEnumerable$<$string$>$ BLAZAM.\+Common.\+Data.\+Application\+Info.\+listening\+Addresses =new List$<$string$>$()\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+A collection of active listening address\textquotesingle{}s with port. 
+
+\begin{DoxyReturn}{Returns}
+A list of address strings eg\+: \{"{}https\+://localhost\+:7900/"{},"{}http\+://localhost\+:5900/"{}\} 
+\end{DoxyReturn}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_aba24ca659b9ca4b9aafbd7ce6ba9a503}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_aba24ca659b9ca4b9aafbd7ce6ba9a503} 
+\index{BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}!tempDirectory@{tempDirectory}}
+\index{tempDirectory@{tempDirectory}!BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}}
+\doxysubsubsection{\texorpdfstring{tempDirectory}{tempDirectory}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} BLAZAM.\+Common.\+Data.\+Application\+Info.\+temp\+Directory\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+The temporary file directry. 
+
+\begin{DoxyReturn}{Returns}
+eg\+: C\+:\textbackslash{}\+Users\textbackslash{}user\textbackslash{}appdata\textbackslash{}temp\textbackslash{} 
+\end{DoxyReturn}
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a48e1362caafe63bfce23557db08ed62e}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a48e1362caafe63bfce23557db08ed62e} 
+\index{BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}!ApplicationRoot@{ApplicationRoot}}
+\index{ApplicationRoot@{ApplicationRoot}!BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}}
+\doxysubsubsection{\texorpdfstring{ApplicationRoot}{ApplicationRoot}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} BLAZAM.\+Common.\+Data.\+Application\+Info.\+Application\+Root\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The root directory of the running web application. 
+
+\begin{DoxyReturn}{Returns}
+eg\+: C\+:\textbackslash{}inetpub\textbackslash{}blazam\textbackslash{} 
+\end{DoxyReturn}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_ace5cf53881f175da205f80ab2afa9aa8}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_ace5cf53881f175da205f80ab2afa9aa8} 
+\index{BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}!InDemoMode@{InDemoMode}}
+\index{InDemoMode@{InDemoMode}!BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}}
+\doxysubsubsection{\texorpdfstring{InDemoMode}{InDemoMode}}
+{\footnotesize\ttfamily bool BLAZAM.\+Common.\+Data.\+Application\+Info.\+In\+Demo\+Mode\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Indicates whether Blazam is in Demo Mode. 
+
+Used for public dev demo site \Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a03a10f703ed70c25bb39a9fda3fb4b96}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a03a10f703ed70c25bb39a9fda3fb4b96} 
+\index{BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}!InstallationCompleted@{InstallationCompleted}}
+\index{InstallationCompleted@{InstallationCompleted}!BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}}
+\doxysubsubsection{\texorpdfstring{InstallationCompleted}{InstallationCompleted}}
+{\footnotesize\ttfamily bool BLAZAM.\+Common.\+Data.\+Application\+Info.\+Installation\+Completed\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Indicates whether installation wizard has been completed. 
+
+This relies on a database connection being functional \Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a9df3d7f467b8eb5c429f92c22fe1c9f9}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_a9df3d7f467b8eb5c429f92c22fe1c9f9} 
+\index{BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}!ListeningAddresses@{ListeningAddresses}}
+\index{ListeningAddresses@{ListeningAddresses}!BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}}
+\doxysubsubsection{\texorpdfstring{ListeningAddresses}{ListeningAddresses}}
+{\footnotesize\ttfamily IEnumerable$<$string$>$ BLAZAM.\+Common.\+Data.\+Application\+Info.\+Listening\+Addresses\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+A collection of active listening address\textquotesingle{}s with port. 
+
+\begin{DoxyReturn}{Returns}
+A list of address strings eg\+: \{"{}https\+://localhost\+:7900/"{},"{}http\+://localhost\+:5900/"{}\} 
+\end{DoxyReturn}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_ae0057a14191b5d5f08003960d0b39608}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info_ae0057a14191b5d5f08003960d0b39608} 
+\index{BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}!TempDirectory@{TempDirectory}}
+\index{TempDirectory@{TempDirectory}!BLAZAM.Common.Data.ApplicationInfo@{BLAZAM.Common.Data.ApplicationInfo}}
+\doxysubsubsection{\texorpdfstring{TempDirectory}{TempDirectory}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} BLAZAM.\+Common.\+Data.\+Application\+Info.\+Temp\+Directory\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The temporary file directry. 
+
+\begin{DoxyReturn}{Returns}
+eg\+: C\+:\textbackslash{}\+Users\textbackslash{}user\textbackslash{}appdata\textbackslash{}temp\textbackslash{} 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMCommon/\+Data/Application\+Info.\+cs\end{DoxyCompactItemize}

@@ -1,5 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models.Permissions;
+using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Contracts;
 using System.DirectoryServices;
@@ -131,6 +132,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
+        public override string SearchUri => "/search/"+DN;
+
         public override string? CanonicalName
         {
             get => Name;
@@ -191,7 +194,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// must execute CommitChanges() to actually create the object in Active
         /// Directory.
         /// </summary>
-        /// <param name="containerName"></param>
+        /// <param name="containerName">The name of the new ou</param>
         /// <returns>An uncommited organizational unit</returns>
         public IADOrganizationalUnit CreateOU(string containerName)
         {
@@ -207,18 +210,24 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// must execute CommitChanges() to actually create the object in Active
         /// Directory.
         /// </summary>
-        /// <param name="containerName"></param>
+        /// <param name="containerName">The container name of the new user</param>
         /// <returns>An uncommited user</returns>
         public IADUser CreateUser(string containerName)
         {
-
-            IADUser newUser = new ADUser();
-            if (DirectoryEntry == null)
-                DirectoryEntry = searchResult?.GetDirectoryEntry();
-            newUser.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim().Replace(",", "\\,"), "user"), Directory);
-            newUser.NewEntry = true;
-            return newUser;
-
+            var fullContainerName = "CN=" + containerName.Trim().Replace(",", "\\,");
+            try
+            {
+                IADUser newUser = new ADUser();
+                if (DirectoryEntry == null)
+                    DirectoryEntry = searchResult?.GetDirectoryEntry();
+                newUser.Parse(DirectoryEntry.Children.Add(fullContainerName, "user"), Directory);
+                newUser.NewEntry = true;
+                return newUser;
+            }catch(Exception ex)
+            {
+                Loggers.ActiveDirectryLogger.Error("Error while attempting to create user: "+fullContainerName + " {@Error}", ex);
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -226,7 +235,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// must execute CommitChanges() to actually create the object in Active
         /// Directory.
         /// </summary>
-        /// <param name="containerName"></param>
+        /// <param name="containerName">The container name of the new group</param>
         /// <returns>An uncommited group</returns>
         public IADGroup CreateGroup(string containerName)
         {
@@ -236,9 +245,58 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 DirectoryEntry = searchResult?.GetDirectoryEntry();
             newGroup.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim(), "group"), Directory);
             newGroup.NewEntry = true;
+            newGroup.SamAccountName = containerName.Trim();
             return newGroup;
 
         }
+
+        /// <summary>
+        /// Creates a new printer under this OU. Note that the returned Directory object
+        /// must execute CommitChanges() to actually create the object in Active
+        /// Directory.
+        /// </summary>
+        /// <param name="containerName">The container name of the new printer</param>
+        /// <returns>An uncommited printer</returns>
+        public IADPrinter CreatePrinter(string containerName,string uncPath,string shortServerName)
+        {
+
+            IADPrinter newPrinter = new ADPrinter();
+            if (DirectoryEntry == null)
+                DirectoryEntry = searchResult?.GetDirectoryEntry();
+            newPrinter.Parse(DirectoryEntry.Children.Add("CN=" + shortServerName+ "-"+ containerName.Trim(), "printQueue"), Directory);
+            newPrinter.NewEntry = true;
+            newPrinter.UncName = uncPath;
+            newPrinter.PrinterName = containerName.Trim();
+            newPrinter.ShortServerName = shortServerName;
+            return newPrinter;
+
+        }
+        /// <summary>
+        /// Creates a new printer under this OU. Note that the returned Directory object
+        /// must execute CommitChanges() to actually create the object in Active
+        /// Directory.
+        /// </summary>
+        /// <param name="sharedPrinter">The sharedPrinter to be added</param>
+        /// <returns>An uncommited printer</returns>
+        public IADPrinter CreatePrinter(SharedPrinter sharedPrinter)
+        {
+            IADPrinter newPrinter = new ADPrinter();
+            if (DirectoryEntry == null)
+                DirectoryEntry = searchResult?.GetDirectoryEntry();
+            newPrinter.Parse(DirectoryEntry.Children.Add("CN=" + sharedPrinter.Host.CanonicalName+ "-" + sharedPrinter.ShareName.Trim(), "printQueue"), Directory);
+            newPrinter.NewEntry = true;
+            newPrinter.UncName = "\\\\"+sharedPrinter.Host.CanonicalName+"\\"+ sharedPrinter.ShareName;
+            newPrinter.PrinterName = sharedPrinter.Name.Trim();
+            newPrinter.ShortServerName = sharedPrinter.Host.CanonicalName;
+            newPrinter.ServerName = sharedPrinter.Host.CanonicalName;
+            newPrinter.VersionNumber = 4; 
+            newPrinter.Location = sharedPrinter.Location.Trim();
+            newPrinter.DriverName = sharedPrinter.DriverName.Trim();
+            newPrinter.PortName = sharedPrinter.PortName.Trim();
+            return newPrinter;
+        }
+
+
         public override int GetHashCode()
         {
             return DN.GetHashCode();

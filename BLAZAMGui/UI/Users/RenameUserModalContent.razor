@@ -92,7 +92,7 @@ else
             _privateUserInstance.Rename(_privateUserInstance.DisplayName);
 
             await _privateUserInstance.CommitChangesAsync();
-            SnackBarService.Success("User has been renamed.", "User renamed");
+            SnackBarService.Success("User has been renamed.");
             User.DirectoryEntry = null;
 
             await DirectoryModelRenamed.InvokeAsync(_privateUserInstance);
@@ -100,7 +100,7 @@ else
         }
         else
         {
-            SnackBarService.Error("That name already exists. Please choose a different Display Name", "Name Exists");
+            SnackBarService.Error("That name already exists. Please choose a different Display Name");
         }
         LoadingData = false;
 

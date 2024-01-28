@@ -7,6 +7,11 @@ using System.Diagnostics;
 namespace BLAZAM.Common.Data
 
 {
+
+    /// <summary>
+    /// A store  of base configuration,process, and directory defaults for the
+    /// application
+    /// </summary>
     public class ApplicationInfo
     {
 
@@ -44,10 +49,28 @@ namespace BLAZAM.Common.Data
         /// A list of address strings eg: {"https://localhost:7900/","http://localhost:5900/"}
         /// </returns>
         public static IEnumerable<string> listeningAddresses=new List<string>();
+
+        /// <summary>
+        /// A static access to <see cref="InDebugMode"/>
+        /// </summary>
         public static bool inDebugMode;
+
+        /// <summary>
+        /// A static access to <see cref="InDemoMode"/>
+        /// </summary>
         public static bool inDemoMode;
+
+        /// <summary>
+        /// Indicates whether Blazam is running under IIS or as a service
+        /// </summary>
         public static bool isUnderIIS=>runningProcess.ProcessName.Contains("w3wp");
+
+        /// <summary>
+        /// A local store of the .Net web application Services
+        /// </summary>
         public static IServiceProvider services;
+
+        [Obsolete("Not using any local REST API")]
         public static SecurityKey tokenKey;
 
 
@@ -77,7 +100,6 @@ namespace BLAZAM.Common.Data
         /// eg: C:\Users\user\appdata\temp\
         /// </returns>
         public SystemDirectory TempDirectory { get => tempDirectory; set => tempDirectory = value; }
-        public IServiceProvider Services { get => services; set => services = value; }
 
         /// <summary>
         /// A collection of active listening address's with port
@@ -86,9 +108,31 @@ namespace BLAZAM.Common.Data
         /// A list of address strings eg: {"https://localhost:7900/","http://localhost:5900/"}
         /// </returns>
         public IEnumerable<string> ListeningAddresses { get => listeningAddresses; set => listeningAddresses = value; }
+        
+        /// <summary>
+        /// Indicates whether installation wizard has been completed
+        /// </summary>
+        /// <remarks>
+        /// This relies on a database connection being functional
+        /// </remarks>
         public bool InstallationCompleted { get => installationCompleted; set => installationCompleted = value; }
+        
+        /// <summary>
+        /// Indicates whether Blazam is in Debug Mode
+        /// </summary>
         public bool InDebugMode { get => inDebugMode; set => inDebugMode = value; }
+
+        /// <summary>
+        /// Indicates whether Blazam is in Demo Mode
+        /// </summary>
+        /// <remarks>
+        /// Used for public dev demo site
+        /// </remarks>
         public bool InDemoMode { get => inDemoMode; set => inDemoMode = value; }
+
+        /// <summary>
+        /// Indicates whether Blazam is running under IIS or as a service
+        /// </summary>
         public bool IsUnderIIS { get => isUnderIIS; }
 
         /// <summary>
@@ -99,10 +143,18 @@ namespace BLAZAM.Common.Data
             get;set;
         }
 
+        /// <summary>
+        /// Use only for UnitTests
+        /// </summary>
         public ApplicationInfo()
         {
 
         }
+
+        /// <summary>
+        /// Creates a new ApplicationInfo object for the running application
+        /// </summary>
+        /// <param name="builder"></param>
         public ApplicationInfo(WebApplicationBuilder builder)
         {
             RunningProcess = Process.GetCurrentProcess();

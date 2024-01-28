@@ -144,11 +144,8 @@ namespace BLAZAM.Common.Data
                     CryptoStreamMode.Write))
                 {
 
-                    //  using (StreamWriter streamWriter = new StreamWriter(cryptoStream))
-                    //   {
                     var serialized = JsonConvert.SerializeObject(obj);
                     byte[] data = Encoding.UTF8.GetBytes(serialized);
-                    //streamWriter.Write(serialized.ToString());
                     cryptoStream.Write(data, 0, data.Length);
                     cryptoStream.FlushFinalBlock();
 
@@ -156,14 +153,13 @@ namespace BLAZAM.Common.Data
 
 
                     var encryptedMessage = iv;
-                    for( int i = 0; i < encryptedBytes.Length; i++)
+                    for (int i = 0; i < encryptedBytes.Length; i++)
                     {
-                        //Array.Resize(ref encryptedMessage, encryptedMessage.Length + 1);
-                        //encryptedMessage[encryptedMessage.Length - 1] = encryptedBytes[i];
+
                         encryptedMessage = encryptedMessage.Append<byte>(encryptedBytes[i]).ToArray<byte>();
                     }
                     return Convert.ToBase64String(encryptedMessage);
-                    // }
+
                 }
             }
         }

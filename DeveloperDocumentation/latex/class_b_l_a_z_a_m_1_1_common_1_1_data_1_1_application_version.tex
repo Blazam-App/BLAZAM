@@ -1,0 +1,143 @@
+\doxysection{BLAZAM.\+Common.\+Data.\+Application\+Version Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version}{}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version}\index{BLAZAM.Common.Data.ApplicationVersion@{BLAZAM.Common.Data.ApplicationVersion}}
+
+
+A representation of a version of the app.  
+
+
+Inheritance diagram for BLAZAM.\+Common.\+Data.\+Application\+Version\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_ac40535fb91869f7111263ac233177e27}{Application\+Version}} (Assembly executing\+Assembly)
+\begin{DoxyCompactList}\small\item\em Reads the running assembly and constructs a version object of the current application version. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a46d9f2aa9662b0b4e27697e126a57621}{Application\+Version}} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a3ffd7ce76a5724bdbe4359e0a16901f6}{Version}} assembly\+Version, string? build\+Number)
+\begin{DoxyCompactList}\small\item\em Builds a new Application\+Version from an existing Version and a build number string if provided. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_acdf5e03037f99317fd3fce5e8cf6f854}{Application\+Version}} (string full\+Version\+String)
+\begin{DoxyCompactList}\small\item\em Creates a new Application\+Version from a raw string of a version number. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_adc571ec1659fbcc04490728485e4284b}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_adc571ec1659fbcc04490728485e4284b} 
+override int {\bfseries Get\+Hash\+Code} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_ac3c714eda373659ccced998ba43e40ce}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_ac3c714eda373659ccced998ba43e40ce} 
+override? string {\bfseries To\+String} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a69516eece4a13fbf058c7262ce31f08b}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a69516eece4a13fbf058c7262ce31f08b} 
+int {\bfseries Compare\+To} (object? obj)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_ac6f381ddbf495ff514d2523032757a12}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_ac6f381ddbf495ff514d2523032757a12} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a3ffd7ce76a5724bdbe4359e0a16901f6}{Version}} {\bfseries Assembly\+Version}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+string? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a8e37cd26c3cf22a8e16f4ecf3e32235c}{Build\+Number}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The forth and remaining . segments. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a3ffd7ce76a5724bdbe4359e0a16901f6}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a3ffd7ce76a5724bdbe4359e0a16901f6} 
+string {\bfseries Version}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The full version number in string form. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a9ea85af854ab15e9578595fe57c602d8}{Short\+Version}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Only the first three . segments of the version number. \end{DoxyCompactList}\item 
+Date\+Time \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a4055d7bf66bb8f83448d090a27089de0}{Release\+Date}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The UTC time of release for this version. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A representation of a version of the app. 
+
+\mbox{[}0.\+8.\+4\mbox{]}.\mbox{[}2023.\+11.\+09.\+1134\mbox{]} 
+
+\mbox{[}Assembly\+Version\mbox{]}\mbox{[}Build Number\mbox{]} 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_ac40535fb91869f7111263ac233177e27}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_ac40535fb91869f7111263ac233177e27} 
+\index{BLAZAM.Common.Data.ApplicationVersion@{BLAZAM.Common.Data.ApplicationVersion}!ApplicationVersion@{ApplicationVersion}}
+\index{ApplicationVersion@{ApplicationVersion}!BLAZAM.Common.Data.ApplicationVersion@{BLAZAM.Common.Data.ApplicationVersion}}
+\doxysubsubsection{\texorpdfstring{ApplicationVersion()}{ApplicationVersion()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily BLAZAM.\+Common.\+Data.\+Application\+Version.\+Application\+Version (\begin{DoxyParamCaption}\item[{Assembly}]{executing\+Assembly }\end{DoxyParamCaption})}
+
+
+
+Reads the running assembly and constructs a version object of the current application version. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em short\+Version} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a46d9f2aa9662b0b4e27697e126a57621}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a46d9f2aa9662b0b4e27697e126a57621} 
+\index{BLAZAM.Common.Data.ApplicationVersion@{BLAZAM.Common.Data.ApplicationVersion}!ApplicationVersion@{ApplicationVersion}}
+\index{ApplicationVersion@{ApplicationVersion}!BLAZAM.Common.Data.ApplicationVersion@{BLAZAM.Common.Data.ApplicationVersion}}
+\doxysubsubsection{\texorpdfstring{ApplicationVersion()}{ApplicationVersion()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily BLAZAM.\+Common.\+Data.\+Application\+Version.\+Application\+Version (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a3ffd7ce76a5724bdbe4359e0a16901f6}{Version}}}]{assembly\+Version,  }\item[{string?}]{build\+Number }\end{DoxyParamCaption})}
+
+
+
+Builds a new Application\+Version from an existing Version and a build number string if provided. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em assembly\+Version} & \\
+\hline
+{\em build\+Number} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_acdf5e03037f99317fd3fce5e8cf6f854}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_acdf5e03037f99317fd3fce5e8cf6f854} 
+\index{BLAZAM.Common.Data.ApplicationVersion@{BLAZAM.Common.Data.ApplicationVersion}!ApplicationVersion@{ApplicationVersion}}
+\index{ApplicationVersion@{ApplicationVersion}!BLAZAM.Common.Data.ApplicationVersion@{BLAZAM.Common.Data.ApplicationVersion}}
+\doxysubsubsection{\texorpdfstring{ApplicationVersion()}{ApplicationVersion()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily BLAZAM.\+Common.\+Data.\+Application\+Version.\+Application\+Version (\begin{DoxyParamCaption}\item[{string}]{full\+Version\+String }\end{DoxyParamCaption})}
+
+
+
+Creates a new Application\+Version from a raw string of a version number. 
+
+The version number must follow Major.\+Minor.\+Build standards 
+
+
+\begin{DoxyParams}{Parameters}
+{\em full\+Version\+String} & \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a8e37cd26c3cf22a8e16f4ecf3e32235c}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a8e37cd26c3cf22a8e16f4ecf3e32235c} 
+\index{BLAZAM.Common.Data.ApplicationVersion@{BLAZAM.Common.Data.ApplicationVersion}!BuildNumber@{BuildNumber}}
+\index{BuildNumber@{BuildNumber}!BLAZAM.Common.Data.ApplicationVersion@{BLAZAM.Common.Data.ApplicationVersion}}
+\doxysubsubsection{\texorpdfstring{BuildNumber}{BuildNumber}}
+{\footnotesize\ttfamily string? BLAZAM.\+Common.\+Data.\+Application\+Version.\+Build\+Number\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The forth and remaining . segments. 
+
+For Blazam this is the build time \Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a4055d7bf66bb8f83448d090a27089de0}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a4055d7bf66bb8f83448d090a27089de0} 
+\index{BLAZAM.Common.Data.ApplicationVersion@{BLAZAM.Common.Data.ApplicationVersion}!ReleaseDate@{ReleaseDate}}
+\index{ReleaseDate@{ReleaseDate}!BLAZAM.Common.Data.ApplicationVersion@{BLAZAM.Common.Data.ApplicationVersion}}
+\doxysubsubsection{\texorpdfstring{ReleaseDate}{ReleaseDate}}
+{\footnotesize\ttfamily Date\+Time BLAZAM.\+Common.\+Data.\+Application\+Version.\+Release\+Date\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The UTC time of release for this version. 
+
+This is calculated from the build number \Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a9ea85af854ab15e9578595fe57c602d8}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_version_a9ea85af854ab15e9578595fe57c602d8} 
+\index{BLAZAM.Common.Data.ApplicationVersion@{BLAZAM.Common.Data.ApplicationVersion}!ShortVersion@{ShortVersion}}
+\index{ShortVersion@{ShortVersion}!BLAZAM.Common.Data.ApplicationVersion@{BLAZAM.Common.Data.ApplicationVersion}}
+\doxysubsubsection{\texorpdfstring{ShortVersion}{ShortVersion}}
+{\footnotesize\ttfamily string BLAZAM.\+Common.\+Data.\+Application\+Version.\+Short\+Version\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Only the first three . segments of the version number. 
+
+Same as the Assembly\+Version 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMCommon/\+Data/Application\+Version.\+cs\end{DoxyCompactItemize}

@@ -1,0 +1,17 @@
+digraph "BLAZAM.ActiveDirectory.ActiveDirectoryContext.ActiveDirectoryContext"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node1 [id="Node000001",label="BLAZAM.ActiveDirectory.Active\lDirectoryContext.ActiveDirectory\lContext",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip="Initializes the applications Active Directory connection. It takes the information from the ActiveDir..."];
+  Node1 -> Node2 [id="edge1_Node000001_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="BLAZAM.ActiveDirectory.Active\lDirectoryContext.ConnectAsync",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context.html#a1ce41123999925ab6b6959e8ceade90f",tooltip="connects to an Active Directory server. It first checks the database connection status,..."];
+  Node2 -> Node3 [id="edge2_Node000002_Node000003",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="BLAZAM.ActiveDirectory.Active\lDirectoryContext.Connect",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context.html#af8dcf4f6565ffe21920bde7e4a208164",tooltip="Attempts a connection to the Active Directory server."];
+  Node3 -> Node4 [id="edge3_Node000003_Node000004",color="steelblue1",style="solid",tooltip=" "];
+  Node4 [id="Node000004",label="BLAZAM.Notifications.Services.\lINotificationPublisher.PublishNotification",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$interface_b_l_a_z_a_m_1_1_notifications_1_1_services_1_1_i_notification_publisher.html#ae3911c4709c22f79b3a7792e71317a02",tooltip="Publishes a notification to a single user."];
+  Node3 -> Node5 [id="edge4_Node000003_Node000005",color="steelblue1",style="solid",tooltip=" "];
+  Node5 [id="Node000005",label="BLAZAM.ActiveDirectory.Searchers.\lADSearch.Search",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_search.html#a7ad8f3715cdef01843572ca39ec400ed",tooltip="Searches ambiguously for all object types."];
+}

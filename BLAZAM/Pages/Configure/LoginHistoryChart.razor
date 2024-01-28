@@ -1,0 +1,78 @@
+@inherits AppComponentBase
+<MudChart ChartType="ChartType.Line"
+          ChartSeries="@LoginSeries"
+          XAxisLabels="@(allDates.Select(d=>d.ToLocalTime().ToString("M/d")).ToArray())"
+          Width="100%"
+          Height=@Height
+          ChartOptions="@ChartOptions"></MudChart>
+@*
+<MudFab Icon="@Icons.Material.Filled.ShowChart" OnClick="ToggleLineMode" />*@
+@code{
+
+    
+    [Parameter]
+    public ChartOptions ChartOptions { get; set; } = new() { InterpolationOption=InterpolationOption.Straight };
+    [Parameter]
+    public DateTime EndDate { get; set; } = DateTime.Today;
+
+    [Parameter]
+    public int Days { get; set; } = 14;
+
+    /// <summary>
+    /// The height of the chart
+    /// </summary>
+    /// <remarks>
+    /// Default is "350px"
+    /// </remarks>
+    [Parameter]
+    public string Height { get; set; } = "350px";
+
+
+
+
+
+    List<ChartSeries> LoginSeries = new();
+    ChartSeries loginChart = new() { Name = "Daily Logins" };
+    ChartSeries uniqueUsersChart = new() { Name = "Daily Users" };
+    List<LogonAuditLog> logonEntries = new();
+    IEnumerable<DateTime> allDates;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+       
+        var startDate = EndDate.AddDays(-1*Days);
+        allDates = Enumerable.Range(0, (int)(EndDate - startDate).TotalDays + 1)
+                                 .Select(d => startDate.AddDays(d));
+        using (var context = await DbFactory.CreateDbContextAsync())
+        {
+           
+            logonEntries = await context.LogonAuditLog.ToListAsync();
+
+
+
+
+
+            var loginCounts = from date in allDates
+                              join ae in logonEntries.Where(ae => ae.Action == "Login")
+                              on date equals ae.Timestamp.Date into grp
+                              select (double)grp.Count();
+
+            var uniqueLoginCounts = from date in allDates
+                                    join ae in logonEntries.Where(ae => ae.Action == "Login")
+                                    on date equals ae.Timestamp.Date into grp
+                                    select (double)grp.DistinctBy(g => g.Username).Count();
+
+
+            loginChart.Data = loginCounts.ToArray();
+            uniqueUsersChart.Data = uniqueLoginCounts.ToArray();
+
+
+
+            LoginSeries.Add(loginChart);
+            LoginSeries.Add(uniqueUsersChart);
+        }
+
+
+    }
+}

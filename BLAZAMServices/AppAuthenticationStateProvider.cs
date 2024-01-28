@@ -153,7 +153,7 @@ namespace BLAZAM.Services
         public async Task<LoginResult> Login(LoginRequest loginReq)
         {
             LoginResult loginResult = new();
-             var newUserState = _userStateService.CreateUserState(null);
+             var newUserState = _userStateService.CreateUserState(GetAnonymous());
             newUserState.IPAddress = loginReq.IPAddress;
             
 
@@ -345,9 +345,6 @@ namespace BLAZAM.Services
 
             var identity = new ClaimsIdentity();
 
-            //TODO Uncomment and store IADUser somewhere in state
-            //_newUserState.DirectoryUser = user;
-            
             
             
             //Load privilege levels for user

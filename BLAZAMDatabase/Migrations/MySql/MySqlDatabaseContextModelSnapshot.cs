@@ -16,7 +16,7 @@ namespace BLAZAM.Common.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
@@ -1373,6 +1373,26 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("UserDashboardWidgets");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.User.UserFavoriteEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("DN")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserFavoriteEntries");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserNotification", b =>
                 {
                     b.Property<int>("Id")
@@ -1613,6 +1633,17 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.User.UserFavoriteEntry", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
+                        .WithMany("FavoriteEntries")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserNotification", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.User.NotificationMessage", "Notification")
@@ -1696,6 +1727,8 @@ namespace BLAZAM.Common.Migrations.MySql
             modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
                 {
                     b.Navigation("DashboardWidgets");
+
+                    b.Navigation("FavoriteEntries");
 
                     b.Navigation("Messages");
                 });

@@ -1,0 +1,574 @@
+\doxysection{BLAZAM.\+Database.\+Context.\+Database\+Context\+Base Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base}{}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base}\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+Inheritance diagram for BLAZAM.\+Database.\+Context.\+Database\+Context\+Base\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.010753cm]{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aaa5dc75575be6d0d57c14aa1c146ab73}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aaa5dc75575be6d0d57c14aa1c146ab73} 
+enum {\bfseries Database\+Status} \{ \newline
+{\bfseries OK}
+, {\bfseries Server\+Unreachable}
+, {\bfseries Tables\+Missing}
+, {\bfseries Database\+Connection\+Issue}
+, \newline
+{\bfseries Incomplete\+Configuration}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a1481e964f85851d918cb715f4068bfa9}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a1481e964f85851d918cb715f4068bfa9} 
+{\bfseries Database\+Context\+Base} ()
+\begin{DoxyCompactList}\small\item\em Constructor for building migrations. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_add389f0b9bd301bfd92068b22a595b4b}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_add389f0b9bd301bfd92068b22a595b4b} 
+{\bfseries Database\+Context\+Base} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_database_1_1_database_connection_string}{Database\+Connection\+String}} database\+Connection\+String)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a579363905dee2a9d2d5cfee80250b686}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a579363905dee2a9d2d5cfee80250b686} 
+{\bfseries Database\+Context\+Base} (Db\+Context\+Options options)
+\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a7c64eb9d8b498c18c00eff28161daa5c}{Is\+Seeded}} ()
+\begin{DoxyCompactList}\small\item\em Checks if the database seed migration hase been applied. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ac2c3c35c888cc06367c061ac3e57dafb}{Export}} (string directory)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context}{BLAZAM.\+Database.\+Context.\+IEFCore\+Db\+Context}}}
+\begin{DoxyCompactItemize}
+\item 
+int {\bfseries Save\+Changes} ()
+\item 
+int {\bfseries Save\+Changes} (bool accept\+All\+Changes\+On\+Success)
+\item 
+Task$<$ int $>$ {\bfseries Save\+Changes\+Async} (Cancellation\+Token cancellation\+Token=default)
+\item 
+Task$<$ int $>$ {\bfseries Save\+Changes\+Async} (bool accept\+All\+Changes\+On\+Success, Cancellation\+Token cancellation\+Token=default)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aff0ab848256d4bfd2039eab43c517cf7}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aff0ab848256d4bfd2039eab43c517cf7} 
+override void {\bfseries On\+Configuring} (Db\+Context\+Options\+Builder options\+Builder)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a633cd010dd6a3ad6552a9702a6c4b38c}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a633cd010dd6a3ad6552a9702a6c4b38c} 
+override void {\bfseries On\+Model\+Creating} (Model\+Builder model\+Builder)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ada1b231d231aa2db29fda5e41a1bebd9}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ada1b231d231aa2db29fda5e41a1bebd9} 
+virtual Data\+Table {\bfseries Select\+All\+Data\+From\+Table} (string? table\+Name)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_database_1_1_database_connection_string}{Database\+Connection\+String}}? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a17454b2d0d36bf40875720d93878ae51}{Connection\+String}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The connection string as set in the ASP Net Core appsettings.\+json. \end{DoxyCompactList}\item 
+virtual Service\+Connection\+State \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_abd354fe918187f83df71f3e3d5c031a5}{Status}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Checks the realtime pingabillity and connectivity to the database right now. \end{DoxyCompactList}\item 
+virtual IEnumerable$<$ string $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_afb485c8d4a41dfb6d1c6b28caebadf7f}{Pending\+Migrations}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+virtual IEnumerable$<$ string $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_af572959a3fff14c77b5df089fcfa9e83}{Applied\+Migrations}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings}{App\+Settings}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a05a8c242c00fa48fdf7f2d03f2f127f9}{App\+Settings}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_a_d_settings}{ADSettings}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a5a7b03add103e12b8474f95bf3eb234e}{Active\+Directory\+Settings}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_authentication_settings}{Authentication\+Settings}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a3f24d60bd6fd5abaa2ea27bfef2c97a6}{Authentication\+Settings}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_email_settings}{Email\+Settings}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a9021c32a6ebf97543c36cf493771c74f}{Email\+Settings}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_email_template}{Email\+Template}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a18191411794d4a818a1c542822ed2495}{Email\+Templates}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a3c87b03e056cb63db6858746cea17f7d}{User\+Settings}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_user_notification}{User\+Notification}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a35a872e50a0ef14bfb209477b94d991a}{User\+Notifications}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a126b7c86c10602f5f48b2983567e0c59}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a126b7c86c10602f5f48b2983567e0c59} 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_user_favorite_entry}{User\+Favorite\+Entry}} $>$ {\bfseries User\+Favorite\+Entries}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_user_dashboard_widget}{User\+Dashboard\+Widget}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a12eb01ffb5a790229a3697e99b716c4a}{User\+Dashboard\+Widgets}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message}{Notification\+Message}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a78b0d296e1512e869553011e294504c7}{Notification\+Messages}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_system_audit_log}{System\+Audit\+Log}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ab628da3bed7d0a065b91f841c60e7528}{System\+Audit\+Log}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_logon_audit_log}{Logon\+Audit\+Log}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_adb8d8a4cae2c87ea15a8a30dd7987cd4}{Logon\+Audit\+Log}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_directory_entry_audit_log}{Directory\+Entry\+Audit\+Log}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aad4e5d98dbc625b751f5c2379922c6af}{Directory\+Entry\+Audit\+Logs}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_request_audit_log}{Request\+Audit\+Log}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aff3f3e8f05b710ee5ec28060a46e6d2d}{Request\+Audit\+Log}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_permissions_audit_log}{Permissions\+Audit\+Log}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ae75c9b3a5d2fcf66f71cac8f1633e0f2}{Permissions\+Audit\+Log}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_settings_audit_log}{Settings\+Audit\+Log}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ad96a8839bfeb10ad345abdd9d39ecff2}{Settings\+Audit\+Log}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_active_directory_field}{Active\+Directory\+Field}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a4e0da6f414ebaab729b8831b038046d2}{Active\+Directory\+Fields}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_custom_active_directory_field}{Custom\+Active\+Directory\+Field}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ab91f8ccf6b68233142c3b0fe2f4a11e7}{Custom\+Active\+Directory\+Fields}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a47ee919c6a40fc0e298ec2b03367d5ef}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a47ee919c6a40fc0e298ec2b03367d5ef} 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_active_directory_field_object_type}{Active\+Directory\+Field\+Object\+Type}} $>$ {\bfseries Active\+Directory\+Field\+Object\+Mappings}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_access_level}{Access\+Level}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a6de18c16e151fe47a62fac871d7e6cb7}{Access\+Levels}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_object_access_mapping}{Object\+Access\+Mapping}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a083a4110bd53fb12852f25eea3cc8a18}{Access\+Level\+Object\+Mapping}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_field_access_mapping}{Field\+Access\+Mapping}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ab63ee5d811ad680da327b5f800201c51}{Access\+Level\+Field\+Mapping}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_field_access_level}{Field\+Access\+Level}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ae7b3e1d92182a5bc0b920dc4764e29e4}{Field\+Access\+Level}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_object_access_level}{Object\+Access\+Level}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a8b4f5b75be626e59cb04e79a14d0779c}{Object\+Access\+Level}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_object_action}{Object\+Action}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a2fada11bef6035c51afb68dcfe386768}{Object\+Action\+Flag}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_delegate}{Permission\+Delegate}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aae28229f0f7eba5347b359655f9c068a}{Permission\+Delegate}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_mapping}{Permission\+Mapping}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aa32ebe26481101279ed0628428107042}{Permission\+Map}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a823273e5b7c0b264d55e55a4d33b9d1e}{Chat\+Rooms}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_chat_message}{Chat\+Message}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a0fc5a5dd1729a19722a3a6ea0de85e8d}{Chat\+Messages}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_unread_chat_message}{Unread\+Chat\+Message}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a98e2c5cdd837e27ad4a84ba5c714506c}{Unread\+Chat\+Messages}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_templates_1_1_directory_template}{Directory\+Template}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a4fb88eca065be432af5a86bf95c70fe6}{Directory\+Templates}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_templates_1_1_directory_template_field_value}{Directory\+Template\+Field\+Value}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a31753926c8757d9a13fdf3a1dcf3d72c}{Directory\+Template\+Field\+Values}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual Db\+Set$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_templates_1_1_directory_template_group}{Directory\+Template\+Group}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a2cd9e5b404ff2bc8f9dbb47f9e9d07af}{Directory\+Template\+Groups}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_acbbeecf23ac220b94a7bfb3284016c34}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_acbbeecf23ac220b94a7bfb3284016c34} 
+static Configuration\+Manager {\bfseries Configuration}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a35aa529a623d3494f58e325da0f88d52}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a35aa529a623d3494f58e325da0f88d52} 
+static \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_exceptions_1_1_database_exception}{Database\+Exception}} {\bfseries Down\+Reason}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a302ca3ce95d15603efdab534417e377b}{Seed\+Mismatch}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Checks if there is an applied and pending seed, indicating the migration chain has been reseeded and the database needs to be wiped and reinstalled. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context}{BLAZAM.\+Database.\+Context.\+IEFCore\+Db\+Context}}}
+\begin{DoxyCompactItemize}
+\item 
+Change\+Tracker {\bfseries Change\+Tracker}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+Database\+Facade {\bfseries Database}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ac2c3c35c888cc06367c061ac3e57dafb}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ac2c3c35c888cc06367c061ac3e57dafb} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!Export@{Export}}
+\index{Export@{Export}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{Export()}{Export()}}
+{\footnotesize\ttfamily void BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Export (\begin{DoxyParamCaption}\item[{string}]{directory }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a7c64eb9d8b498c18c00eff28161daa5c}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a7c64eb9d8b498c18c00eff28161daa5c} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!IsSeeded@{IsSeeded}}
+\index{IsSeeded@{IsSeeded}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{IsSeeded()}{IsSeeded()}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Is\+Seeded (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Checks if the database seed migration hase been applied. 
+
+If the database cannot connect this method returns true
+
+\begin{DoxyReturn}{Returns}
+Returns true if the seed migration has been applied, or the database can\textquotesingle{}t be reached, otherwise returns false.
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context}{BLAZAM.\+Database.\+Context.\+IEFCore\+Db\+Context}}.
+
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ab63ee5d811ad680da327b5f800201c51}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ab63ee5d811ad680da327b5f800201c51} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!AccessLevelFieldMapping@{AccessLevelFieldMapping}}
+\index{AccessLevelFieldMapping@{AccessLevelFieldMapping}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{AccessLevelFieldMapping}{AccessLevelFieldMapping}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_field_access_mapping}{Field\+Access\+Mapping}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Access\+Level\+Field\+Mapping\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a083a4110bd53fb12852f25eea3cc8a18}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a083a4110bd53fb12852f25eea3cc8a18} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!AccessLevelObjectMapping@{AccessLevelObjectMapping}}
+\index{AccessLevelObjectMapping@{AccessLevelObjectMapping}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{AccessLevelObjectMapping}{AccessLevelObjectMapping}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_object_access_mapping}{Object\+Access\+Mapping}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Access\+Level\+Object\+Mapping\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a6de18c16e151fe47a62fac871d7e6cb7}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a6de18c16e151fe47a62fac871d7e6cb7} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!AccessLevels@{AccessLevels}}
+\index{AccessLevels@{AccessLevels}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{AccessLevels}{AccessLevels}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_access_level}{Access\+Level}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Access\+Levels\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a4e0da6f414ebaab729b8831b038046d2}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a4e0da6f414ebaab729b8831b038046d2} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!ActiveDirectoryFields@{ActiveDirectoryFields}}
+\index{ActiveDirectoryFields@{ActiveDirectoryFields}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{ActiveDirectoryFields}{ActiveDirectoryFields}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_active_directory_field}{Active\+Directory\+Field}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Active\+Directory\+Fields\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a5a7b03add103e12b8474f95bf3eb234e}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a5a7b03add103e12b8474f95bf3eb234e} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!ActiveDirectorySettings@{ActiveDirectorySettings}}
+\index{ActiveDirectorySettings@{ActiveDirectorySettings}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{ActiveDirectorySettings}{ActiveDirectorySettings}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_a_d_settings}{ADSettings}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Active\+Directory\+Settings\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_af572959a3fff14c77b5df089fcfa9e83}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_af572959a3fff14c77b5df089fcfa9e83} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!AppliedMigrations@{AppliedMigrations}}
+\index{AppliedMigrations@{AppliedMigrations}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{AppliedMigrations}{AppliedMigrations}}
+{\footnotesize\ttfamily virtual IEnumerable$<$string$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Applied\+Migrations\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context}{BLAZAM.\+Database.\+Context.\+IEFCore\+Db\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a05a8c242c00fa48fdf7f2d03f2f127f9}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a05a8c242c00fa48fdf7f2d03f2f127f9} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!AppSettings@{AppSettings}}
+\index{AppSettings@{AppSettings}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{AppSettings}{AppSettings}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_app_settings}{App\+Settings}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+App\+Settings\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a3f24d60bd6fd5abaa2ea27bfef2c97a6}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a3f24d60bd6fd5abaa2ea27bfef2c97a6} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!AuthenticationSettings@{AuthenticationSettings}}
+\index{AuthenticationSettings@{AuthenticationSettings}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{AuthenticationSettings}{AuthenticationSettings}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_authentication_settings}{Authentication\+Settings}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Authentication\+Settings\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a0fc5a5dd1729a19722a3a6ea0de85e8d}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a0fc5a5dd1729a19722a3a6ea0de85e8d} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!ChatMessages@{ChatMessages}}
+\index{ChatMessages@{ChatMessages}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{ChatMessages}{ChatMessages}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_server_1_1_data_1_1_chat_message}{Chat\+Message}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Chat\+Messages\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a823273e5b7c0b264d55e55a4d33b9d1e}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a823273e5b7c0b264d55e55a4d33b9d1e} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!ChatRooms@{ChatRooms}}
+\index{ChatRooms@{ChatRooms}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{ChatRooms}{ChatRooms}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_chat_room}{Chat\+Room}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Chat\+Rooms\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a17454b2d0d36bf40875720d93878ae51}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a17454b2d0d36bf40875720d93878ae51} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!ConnectionString@{ConnectionString}}
+\index{ConnectionString@{ConnectionString}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{ConnectionString}{ConnectionString}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_database_1_1_database_connection_string}{Database\+Connection\+String}}? BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Connection\+String\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The connection string as set in the ASP Net Core appsettings.\+json. 
+
+This should be set before any attempts to connect.
+
+Usually in the Program.\+Main method before injecting the service.
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a2847b7a443a60c9536751b5d58f2f033}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ab91f8ccf6b68233142c3b0fe2f4a11e7}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ab91f8ccf6b68233142c3b0fe2f4a11e7} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!CustomActiveDirectoryFields@{CustomActiveDirectoryFields}}
+\index{CustomActiveDirectoryFields@{CustomActiveDirectoryFields}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{CustomActiveDirectoryFields}{CustomActiveDirectoryFields}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_custom_active_directory_field}{Custom\+Active\+Directory\+Field}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Custom\+Active\+Directory\+Fields\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aad4e5d98dbc625b751f5c2379922c6af}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aad4e5d98dbc625b751f5c2379922c6af} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!DirectoryEntryAuditLogs@{DirectoryEntryAuditLogs}}
+\index{DirectoryEntryAuditLogs@{DirectoryEntryAuditLogs}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{DirectoryEntryAuditLogs}{DirectoryEntryAuditLogs}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_directory_entry_audit_log}{Directory\+Entry\+Audit\+Log}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Directory\+Entry\+Audit\+Logs\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a31753926c8757d9a13fdf3a1dcf3d72c}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a31753926c8757d9a13fdf3a1dcf3d72c} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!DirectoryTemplateFieldValues@{DirectoryTemplateFieldValues}}
+\index{DirectoryTemplateFieldValues@{DirectoryTemplateFieldValues}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{DirectoryTemplateFieldValues}{DirectoryTemplateFieldValues}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_templates_1_1_directory_template_field_value}{Directory\+Template\+Field\+Value}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Directory\+Template\+Field\+Values\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a2cd9e5b404ff2bc8f9dbb47f9e9d07af}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a2cd9e5b404ff2bc8f9dbb47f9e9d07af} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!DirectoryTemplateGroups@{DirectoryTemplateGroups}}
+\index{DirectoryTemplateGroups@{DirectoryTemplateGroups}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{DirectoryTemplateGroups}{DirectoryTemplateGroups}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_templates_1_1_directory_template_group}{Directory\+Template\+Group}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Directory\+Template\+Groups\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a4fb88eca065be432af5a86bf95c70fe6}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a4fb88eca065be432af5a86bf95c70fe6} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!DirectoryTemplates@{DirectoryTemplates}}
+\index{DirectoryTemplates@{DirectoryTemplates}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{DirectoryTemplates}{DirectoryTemplates}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_templates_1_1_directory_template}{Directory\+Template}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Directory\+Templates\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a9021c32a6ebf97543c36cf493771c74f}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a9021c32a6ebf97543c36cf493771c74f} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!EmailSettings@{EmailSettings}}
+\index{EmailSettings@{EmailSettings}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{EmailSettings}{EmailSettings}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_email_settings}{Email\+Settings}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Email\+Settings\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a18191411794d4a818a1c542822ed2495}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a18191411794d4a818a1c542822ed2495} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!EmailTemplates@{EmailTemplates}}
+\index{EmailTemplates@{EmailTemplates}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{EmailTemplates}{EmailTemplates}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_email_template}{Email\+Template}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Email\+Templates\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ae7b3e1d92182a5bc0b920dc4764e29e4}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ae7b3e1d92182a5bc0b920dc4764e29e4} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!FieldAccessLevel@{FieldAccessLevel}}
+\index{FieldAccessLevel@{FieldAccessLevel}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{FieldAccessLevel}{FieldAccessLevel}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_field_access_level}{Field\+Access\+Level}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Field\+Access\+Level\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_adb8d8a4cae2c87ea15a8a30dd7987cd4}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_adb8d8a4cae2c87ea15a8a30dd7987cd4} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!LogonAuditLog@{LogonAuditLog}}
+\index{LogonAuditLog@{LogonAuditLog}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{LogonAuditLog}{LogonAuditLog}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_logon_audit_log}{Logon\+Audit\+Log}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Logon\+Audit\+Log\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a78b0d296e1512e869553011e294504c7}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a78b0d296e1512e869553011e294504c7} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!NotificationMessages@{NotificationMessages}}
+\index{NotificationMessages@{NotificationMessages}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{NotificationMessages}{NotificationMessages}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_notification_message}{Notification\+Message}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Notification\+Messages\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a8b4f5b75be626e59cb04e79a14d0779c}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a8b4f5b75be626e59cb04e79a14d0779c} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!ObjectAccessLevel@{ObjectAccessLevel}}
+\index{ObjectAccessLevel@{ObjectAccessLevel}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{ObjectAccessLevel}{ObjectAccessLevel}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_object_access_level}{Object\+Access\+Level}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Object\+Access\+Level\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a2fada11bef6035c51afb68dcfe386768}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a2fada11bef6035c51afb68dcfe386768} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!ObjectActionFlag@{ObjectActionFlag}}
+\index{ObjectActionFlag@{ObjectActionFlag}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{ObjectActionFlag}{ObjectActionFlag}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_object_action}{Object\+Action}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Object\+Action\+Flag\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_afb485c8d4a41dfb6d1c6b28caebadf7f}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_afb485c8d4a41dfb6d1c6b28caebadf7f} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!PendingMigrations@{PendingMigrations}}
+\index{PendingMigrations@{PendingMigrations}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{PendingMigrations}{PendingMigrations}}
+{\footnotesize\ttfamily virtual IEnumerable$<$string$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Pending\+Migrations\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_e_f_core_db_context}{BLAZAM.\+Database.\+Context.\+IEFCore\+Db\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aae28229f0f7eba5347b359655f9c068a}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aae28229f0f7eba5347b359655f9c068a} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!PermissionDelegate@{PermissionDelegate}}
+\index{PermissionDelegate@{PermissionDelegate}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{PermissionDelegate}{PermissionDelegate}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_delegate}{Permission\+Delegate}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Permission\+Delegate\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aa32ebe26481101279ed0628428107042}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aa32ebe26481101279ed0628428107042} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!PermissionMap@{PermissionMap}}
+\index{PermissionMap@{PermissionMap}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{PermissionMap}{PermissionMap}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_permissions_1_1_permission_mapping}{Permission\+Mapping}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Permission\+Map\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ae75c9b3a5d2fcf66f71cac8f1633e0f2}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ae75c9b3a5d2fcf66f71cac8f1633e0f2} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!PermissionsAuditLog@{PermissionsAuditLog}}
+\index{PermissionsAuditLog@{PermissionsAuditLog}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{PermissionsAuditLog}{PermissionsAuditLog}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_permissions_audit_log}{Permissions\+Audit\+Log}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Permissions\+Audit\+Log\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aff3f3e8f05b710ee5ec28060a46e6d2d}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_aff3f3e8f05b710ee5ec28060a46e6d2d} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!RequestAuditLog@{RequestAuditLog}}
+\index{RequestAuditLog@{RequestAuditLog}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{RequestAuditLog}{RequestAuditLog}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_request_audit_log}{Request\+Audit\+Log}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Request\+Audit\+Log\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a302ca3ce95d15603efdab534417e377b}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a302ca3ce95d15603efdab534417e377b} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!SeedMismatch@{SeedMismatch}}
+\index{SeedMismatch@{SeedMismatch}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{SeedMismatch}{SeedMismatch}}
+{\footnotesize\ttfamily virtual bool BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Seed\+Mismatch\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Checks if there is an applied and pending seed, indicating the migration chain has been reseeded and the database needs to be wiped and reinstalled. 
+
+If the database cannot connect this returns false
+
+\begin{DoxyReturn}{Returns}
+Returns true if the seed migration has been applied, otherwise returns false.
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ad96a8839bfeb10ad345abdd9d39ecff2}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ad96a8839bfeb10ad345abdd9d39ecff2} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!SettingsAuditLog@{SettingsAuditLog}}
+\index{SettingsAuditLog@{SettingsAuditLog}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{SettingsAuditLog}{SettingsAuditLog}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_settings_audit_log}{Settings\+Audit\+Log}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Settings\+Audit\+Log\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_abd354fe918187f83df71f3e3d5c031a5}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_abd354fe918187f83df71f3e3d5c031a5} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!Status@{Status}}
+\index{Status@{Status}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{Status}{Status}}
+{\footnotesize\ttfamily virtual Service\+Connection\+State BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Status\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Checks the realtime pingabillity and connectivity to the database right now. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context_a6cc7a250727d1e5473843e155fd991d3}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ab628da3bed7d0a065b91f841c60e7528}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_ab628da3bed7d0a065b91f841c60e7528} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!SystemAuditLog@{SystemAuditLog}}
+\index{SystemAuditLog@{SystemAuditLog}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{SystemAuditLog}{SystemAuditLog}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_audit_1_1_system_audit_log}{System\+Audit\+Log}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+System\+Audit\+Log\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a98e2c5cdd837e27ad4a84ba5c714506c}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a98e2c5cdd837e27ad4a84ba5c714506c} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!UnreadChatMessages@{UnreadChatMessages}}
+\index{UnreadChatMessages@{UnreadChatMessages}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{UnreadChatMessages}{UnreadChatMessages}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_chat_1_1_unread_chat_message}{Unread\+Chat\+Message}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+Unread\+Chat\+Messages\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a12eb01ffb5a790229a3697e99b716c4a}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a12eb01ffb5a790229a3697e99b716c4a} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!UserDashboardWidgets@{UserDashboardWidgets}}
+\index{UserDashboardWidgets@{UserDashboardWidgets}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{UserDashboardWidgets}{UserDashboardWidgets}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_user_dashboard_widget}{User\+Dashboard\+Widget}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+User\+Dashboard\+Widgets\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a35a872e50a0ef14bfb209477b94d991a}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a35a872e50a0ef14bfb209477b94d991a} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!UserNotifications@{UserNotifications}}
+\index{UserNotifications@{UserNotifications}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{UserNotifications}{UserNotifications}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_user_notification}{User\+Notification}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+User\+Notifications\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a3c87b03e056cb63db6858746cea17f7d}\label{class_b_l_a_z_a_m_1_1_database_1_1_context_1_1_database_context_base_a3c87b03e056cb63db6858746cea17f7d} 
+\index{BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}!UserSettings@{UserSettings}}
+\index{UserSettings@{UserSettings}!BLAZAM.Database.Context.DatabaseContextBase@{BLAZAM.Database.Context.DatabaseContextBase}}
+\doxysubsubsection{\texorpdfstring{UserSettings}{UserSettings}}
+{\footnotesize\ttfamily virtual Db\+Set$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_user_1_1_app_user}{App\+User}}$>$ BLAZAM.\+Database.\+Context.\+Database\+Context\+Base.\+User\+Settings\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_database_context}{BLAZAM.\+Database.\+Context.\+IDatabase\+Context}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMDatabase/\+Context/Database\+Context\+Base.\+cs\end{DoxyCompactItemize}

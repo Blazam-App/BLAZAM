@@ -1,0 +1,140 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Searchers.\+ADPrinter\+Searcher Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher}{}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher}\index{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}}
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Searchers.\+ADPrinter\+Searcher\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.637427cm]{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a5aa5f1116d8a139754d7ebc57860ecaa}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a5aa5f1116d8a139754d7ebc57860ecaa} 
+{\bfseries ADPrinter\+Searcher} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a944d65b77e68f8d05d91d5dcaae25655}{Find\+Printers\+By\+String\+Async}} (string? search\+Term, bool? ignore\+Disabled\+Printers=true, bool exact\+Match=false)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a60afe13cd05ddd8ba6758d249ac903b1}{Find\+Printers\+By\+String}} (string? search\+Term, bool? ignore\+Disabled\+Printers=true, bool exact\+Match=false)
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}}? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a94c361319c810e61c633ba604c530c61}{Find\+Printer\+By\+Name}} (string? search\+Term, bool? ignore\+Disabled\+Printers=true)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a79be2c53987a0e19165c6870f37dceac}{Find\+New\+Printers\+Async}} (int max\+Age\+In\+Days=14, bool? ignore\+Disabled\+Printers=true)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a617e58ce58c9e9367fb32b1fce5c8477}{Find\+New\+Printers}} (int max\+Age\+In\+Days=14, bool? ignore\+Disabled\+Printers=true)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_aee038f8b8023a6af1f1231aa0f03a66b}{Find\+Changed\+Printers\+Async}} (bool? ignore\+Disabled\+Printers=true)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_ae18b6e329bb4ec8228e70a573f3ba6e6}{Find\+Changed\+Printers}} (bool? ignore\+Disabled\+Printers=true, int days\+Back\+To\+Search=90)
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}}? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a4a75c67967ce3d7b262a33eadb08d6ce}{Find\+Printers\+By\+Container\+Name}} (string? search\+Term, bool? ignore\+Disabled\+Printers=true, bool exact\+Match=false)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries ADSearcher} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual Search\+Result\+Collection {\bfseries Search\+Objects} (string field\+Query, Active\+Directory\+Object\+Type search\+Type, int return\+Count=5, bool? enabled\+Only=true)
+\item 
+virtual Search\+Result\+Collection {\bfseries Search\+Objects} (string? search\+Base\+DN, string field\+Query, Active\+Directory\+Object\+Type? search\+Type, int return\+Count=5, bool? enabled\+Only=true, Search\+Scope search\+Scope=Search\+Scope.\+Subtree)
+\item 
+Search\+Result\+Collection {\bfseries Search\+Object\+By\+SID} (string sid)
+\item 
+List$<$ T $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_a1c5b8c87363140052743cc42141df205}{Convert\+To$<$ T $>$}} (Search\+Result\+Collection r)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} {\bfseries Directory}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_ae18b6e329bb4ec8228e70a573f3ba6e6}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_ae18b6e329bb4ec8228e70a573f3ba6e6} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}!FindChangedPrinters@{FindChangedPrinters}}
+\index{FindChangedPrinters@{FindChangedPrinters}!BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}}
+\doxysubsubsection{\texorpdfstring{FindChangedPrinters()}{FindChangedPrinters()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADPrinter\+Searcher.\+Find\+Changed\+Printers (\begin{DoxyParamCaption}\item[{bool?}]{ignore\+Disabled\+Printers = {\ttfamily true},  }\item[{int}]{days\+Back\+To\+Search = {\ttfamily 90} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADPrinter\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_aee038f8b8023a6af1f1231aa0f03a66b}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_aee038f8b8023a6af1f1231aa0f03a66b} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}!FindChangedPrintersAsync@{FindChangedPrintersAsync}}
+\index{FindChangedPrintersAsync@{FindChangedPrintersAsync}!BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}}
+\doxysubsubsection{\texorpdfstring{FindChangedPrintersAsync()}{FindChangedPrintersAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADPrinter\+Searcher.\+Find\+Changed\+Printers\+Async (\begin{DoxyParamCaption}\item[{bool?}]{ignore\+Disabled\+Printers = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADPrinter\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a617e58ce58c9e9367fb32b1fce5c8477}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a617e58ce58c9e9367fb32b1fce5c8477} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}!FindNewPrinters@{FindNewPrinters}}
+\index{FindNewPrinters@{FindNewPrinters}!BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}}
+\doxysubsubsection{\texorpdfstring{FindNewPrinters()}{FindNewPrinters()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADPrinter\+Searcher.\+Find\+New\+Printers (\begin{DoxyParamCaption}\item[{int}]{max\+Age\+In\+Days = {\ttfamily 14},  }\item[{bool?}]{ignore\+Disabled\+Printers = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADPrinter\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a79be2c53987a0e19165c6870f37dceac}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a79be2c53987a0e19165c6870f37dceac} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}!FindNewPrintersAsync@{FindNewPrintersAsync}}
+\index{FindNewPrintersAsync@{FindNewPrintersAsync}!BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}}
+\doxysubsubsection{\texorpdfstring{FindNewPrintersAsync()}{FindNewPrintersAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADPrinter\+Searcher.\+Find\+New\+Printers\+Async (\begin{DoxyParamCaption}\item[{int}]{max\+Age\+In\+Days = {\ttfamily 14},  }\item[{bool?}]{ignore\+Disabled\+Printers = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADPrinter\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a94c361319c810e61c633ba604c530c61}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a94c361319c810e61c633ba604c530c61} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}!FindPrinterByName@{FindPrinterByName}}
+\index{FindPrinterByName@{FindPrinterByName}!BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}}
+\doxysubsubsection{\texorpdfstring{FindPrinterByName()}{FindPrinterByName()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}}? BLAZAM.\+Active\+Directory.\+Searchers.\+ADPrinter\+Searcher.\+Find\+Printer\+By\+Name (\begin{DoxyParamCaption}\item[{string?}]{search\+Term,  }\item[{bool?}]{ignore\+Disabled\+Printers = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADPrinter\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a4a75c67967ce3d7b262a33eadb08d6ce}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a4a75c67967ce3d7b262a33eadb08d6ce} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}!FindPrintersByContainerName@{FindPrintersByContainerName}}
+\index{FindPrintersByContainerName@{FindPrintersByContainerName}!BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}}
+\doxysubsubsection{\texorpdfstring{FindPrintersByContainerName()}{FindPrintersByContainerName()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}}? BLAZAM.\+Active\+Directory.\+Searchers.\+ADPrinter\+Searcher.\+Find\+Printers\+By\+Container\+Name (\begin{DoxyParamCaption}\item[{string?}]{search\+Term,  }\item[{bool?}]{ignore\+Disabled\+Printers = {\ttfamily true},  }\item[{bool}]{exact\+Match = {\ttfamily false} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADPrinter\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a60afe13cd05ddd8ba6758d249ac903b1}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a60afe13cd05ddd8ba6758d249ac903b1} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}!FindPrintersByString@{FindPrintersByString}}
+\index{FindPrintersByString@{FindPrintersByString}!BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}}
+\doxysubsubsection{\texorpdfstring{FindPrintersByString()}{FindPrintersByString()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADPrinter\+Searcher.\+Find\+Printers\+By\+String (\begin{DoxyParamCaption}\item[{string?}]{search\+Term,  }\item[{bool?}]{ignore\+Disabled\+Printers = {\ttfamily true},  }\item[{bool}]{exact\+Match = {\ttfamily false} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADPrinter\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a944d65b77e68f8d05d91d5dcaae25655}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_printer_searcher_a944d65b77e68f8d05d91d5dcaae25655} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}!FindPrintersByStringAsync@{FindPrintersByStringAsync}}
+\index{FindPrintersByStringAsync@{FindPrintersByStringAsync}!BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher@{BLAZAM.ActiveDirectory.Searchers.ADPrinterSearcher}}
+\doxysubsubsection{\texorpdfstring{FindPrintersByStringAsync()}{FindPrintersByStringAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADPrinter\+Searcher.\+Find\+Printers\+By\+String\+Async (\begin{DoxyParamCaption}\item[{string?}]{search\+Term,  }\item[{bool?}]{ignore\+Disabled\+Printers = {\ttfamily true},  }\item[{bool}]{exact\+Match = {\ttfamily false} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADPrinter\+Searcher}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Searchers/ADPrinter\+Searcher.\+cs\end{DoxyCompactItemize}

@@ -4,14 +4,15 @@
                  Disabled=@Disabled
                  T="IDirectoryEntryAdapter"
                  Label="@Label"
-                 @bind-Value="SelectedResult"
-                 @bind-Text=@SearchTerm
+@bind-Value="SelectedResult"
+@bind-Text=@SearchTerm
+@ref=AutoComplete
                  SearchFuncWithCancel="@GetResults"
                  DebounceInterval=500
                  ResetValueOnEmptyText="true"
                  Validation="@Validation"
                  CoerceText="@AllowCustomInput"
-                 CoerceValue="false"
+                 CoerceValue="true"
                  MaxItems=@MaxResults
                  Clearable=true
                  Dense=true
@@ -23,9 +24,16 @@
                  AdornmentIcon="@AdornmentIcon"
                  Variant="@Variant">
     <ItemTemplate>
-        <ADAutoCompleteResult Entry="context"/>
-      
+        <ADAutoCompleteResult Entry="context" />
+
     </ItemTemplate>
+    <BeforeItemsTemplate>
+        <MudText>
+
+            Showing @Math.Clamp(SearchResults.Count(),0,10) Results
+        </MudText>
+
+    </BeforeItemsTemplate>
     <NoItemsTemplate>
         @if (SearchTerm.IsNullOrEmpty())
         {
@@ -46,15 +54,13 @@
     </NoItemsTemplate>
     <MoreItemsTemplate>
         <MudText>
-           Too many results to show...
+            More results than shown...
         </MudText>
     </MoreItemsTemplate>
 </MudAutocomplete>
 
-
-
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     [Parameter]
     public Func<object> Validation { get; set; }
     [Parameter]
@@ -71,12 +77,19 @@
     [Parameter]
     public bool Disabled { get; set; }
 
+    /// <summary>
+    /// The maximum number of results to show in the autocomplete suggestion list
+    /// </summary>
+    /// <remarks>
+    /// Defaults to 10
+    /// </remarks>
     [Parameter]
     public int MaxResults { get; set; } = 10;
 
     [Parameter]
     public bool AllowCustomInput { get; set; }
 
+    private MudAutocomplete<IDirectoryEntryAdapter>? AutoComplete { get; set; }
 
     [Parameter]
     public Func<IDirectoryEntryAdapter, bool> CustomResultsFilter { get; set; }
@@ -98,13 +111,10 @@
             if (_searchDisabled == value)
                 return;
             _searchDisabled = value;
-            // SearchDisabledChanged.InvokeAsync(value);
         }
     }
 
 
-    [Parameter]
-    public EventCallback<bool> SearchDisabledChanged { get; set; }
 
 
     [Parameter]
@@ -128,7 +138,7 @@
     [Parameter]
     public EventCallback<IEnumerable<IDirectoryEntryAdapter>> SearchResultsChanged { get; set; }
 
-    public IDirectoryEntryAdapter _selectedResult;
+    private IDirectoryEntryAdapter _selectedResult;
     [Parameter]
     public IDirectoryEntryAdapter SelectedResult
     {
@@ -137,11 +147,15 @@
         {
             if (_selectedResult == value)
                 return;
+
             SearchResults = new List<IDirectoryEntryAdapter>
                 {
                     value
                 };
             _selectedResult = value;
+
+            SearchService.SearchTerm = _selectedResult != null ? _selectedResult.CanonicalName : "";
+
             SelectedResultChanged.InvokeAsync(value);
         }
     }
@@ -161,12 +175,12 @@
 
 
 
-    private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText, CancellationToken token)
+    private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText, CancellationToken token = new())
     {
         return await Task.Run(() =>
          {
 
-             if (!token.IsCancellationRequested && searchText!=null)
+             if (!token.IsCancellationRequested && searchText != null)
              {
                  SearchResults = new List<IDirectoryEntryAdapter>();
 
@@ -175,7 +189,7 @@
                  search.ObjectTypeFilter = SearchObjectType;
                  search.GeneralSearchTerm = searchText.Replace(" ", "*");
                  search.EnabledOnly = !SearchDisabled;
-                 search.MaxResults = MaxResults;
+                 search.MaxResults = MaxResults+1;
                  if (!search.GeneralSearchTerm.Equals(String.Empty))
                  {
                      var temp = (search.Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token)).Where(r => r.CanRead);
@@ -204,11 +218,11 @@
 
                      }
                  }
-                            
+
              }
              return new List<IDirectoryEntryAdapter>();
-        });
-       
+         });
+
 
     }
 

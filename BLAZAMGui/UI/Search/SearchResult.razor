@@ -1,0 +1,25 @@
+﻿
+<MudCard onclick=@(()=>{OnSelected.InvokeAsync();}) Class="cursor-pointer d-inline-flex pa-4">
+    <MudCardContent>
+        <MudStack Row=true>
+            <MudIcon Icon="@Entry.TypeIcon()"/>
+            <MudText>@Entry.CanonicalName</MudText>
+
+        </MudStack>
+        <MudText Typo="Typo.body2">@Entry.OU.ToPrettyOu()</MudText>
+    </MudCardContent>
+</MudCard>
+@code {
+
+    /// <summary>
+    /// The directory entry of this search result
+    /// </summary>
+    [Parameter]
+    public IDirectoryEntryAdapter Entry{ get; set; }
+
+    /// <summary>
+    /// Called when the search result is selected for viewing
+    /// </summary>
+    [Parameter]
+    public EventCallback OnSelected{ get; set; }
+}

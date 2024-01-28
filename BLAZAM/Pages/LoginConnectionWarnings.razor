@@ -1,5 +1,5 @@
 @inherits AppComponentBase
-@if (Monitor.DirectoryConnected == ServiceConnectionState.Connecting)
+@if (Monitor.DirectoryConnectionStatus == ServiceConnectionState.Connecting)
 {
     <MudStack>
         @*<MudText Typo="Typo.caption">Connecting to Active Directory.</MudText>*@
@@ -7,7 +7,7 @@
 
     </MudStack>
 }
-@if (Monitor.DirectoryConnected == ServiceConnectionState.Down)
+@if (Monitor.DirectoryConnectionStatus == ServiceConnectionState.Down)
 {
     <MudStack>
         <MudText Typo="Typo.caption" Color="Color.Error">Active Directry connection unavailable.</MudText>

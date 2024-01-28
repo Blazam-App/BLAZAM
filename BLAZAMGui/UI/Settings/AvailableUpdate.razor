@@ -1,0 +1,130 @@
+@using BLAZAM.Update;
+@inherits AppComponentBase
+
+
+
+
+
+<MudTimelineItem Color="UpdateColor" Size="Size.Small" TimelineAlign="@UpdateAlign">
+    <ItemOpposite>
+        <MudText Color="UpdateColor" Typo="Typo.h5">@Timestamp</MudText>
+    </ItemOpposite>
+    <ItemContent>
+        <MudCard Class="pa-3">
+
+            <MudText Color="UpdateColor" Typo="Typo.h6" GutterBottom="true">@Title</MudText>
+            <MudText Typo="Typo.body1" GutterBottom="true">@AppLocalization["Branch"]: @Update.Branch</MudText>
+            <MudExpansionPanels Elevation=0 DisableBorders=true>
+                <MudExpansionPanel Text="@AppLocalization["Release Notes"]">
+                    <MudMarkdown OverrideHeaderTypo=ConvertHeaders Value="@Update.Release.ReleaseNotes" />
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+            @if (Update.Newer && !Disabled)
+            {
+                <MudButton Class="mx-6" Variant=Variant.Filled Color=Color.Success OnClick="(()=>{OnApply.InvokeAsync();})">Apply Update</MudButton>
+                @if (ApplicationInfo.InDebugMode)
+                {
+                    <MudButton Class="mx-6" Disabled=@(AutoUpdateService.IsUpdatedScheduled) OnClick="(()=>{OnSchedule.InvokeAsync();})" Color="Color.Success">Test Auto Update</MudButton>
+
+
+                }
+            }
+        </MudCard>
+
+
+    </ItemContent>
+</MudTimelineItem>
+@code {
+    [Parameter]
+    public ApplicationUpdate Update { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; } = false;
+    [Parameter]
+    public bool Even { get; set; } = false;
+
+    [Parameter]
+    public EventCallback OnApply { get; set; }
+
+    [Parameter]
+    public EventCallback OnSchedule { get; set; }
+
+    private Typo ConvertHeaders(Typo from)
+    {
+        switch (from)
+        {
+            case Typo.h1:
+                return Typo.h3;
+
+            case Typo.h2:
+                return Typo.h4;
+            case Typo.h3:
+                return Typo.h5;
+            case Typo.h4:
+                return Typo.h6;
+
+            case Typo.h5:
+                return Typo.h6;
+
+            case Typo.h6:
+                return Typo.h6;
+            default:
+                return from;
+        }
+    }
+    private string Timestamp
+    {
+        get
+        {
+            if (Update.Branch == ApplicationReleaseBranches.Stable)
+                return Update.Version.ReleaseDate.ToLongDateString();
+            else
+                return DateTime.Parse(Update.Release.ReleaseTime.ToString()).ToLongDateString();
+            //return Update.Version.ReleaseDate.ToString("MMMM d, yyyy");
+        }
+    }
+    private string Title
+    {
+        get
+        {
+            switch (ApplicationInfo.RunningVersion.CompareTo(Update.Version))
+            {
+                case 1:
+                    //Update is older
+                    return Update.Version.ToString();
+                case 0:
+                    return AppLocalization["Current Version"];
+
+                case -1:
+                    //Update is newer
+                    return AppLocalization["Available Update"] + "\r\n" + Update.Version.ToString();
+
+
+            }
+            return "Unknown";
+        }
+    }
+    private TimelineAlign UpdateAlign => Even == true ? TimelineAlign.End : TimelineAlign.Default;
+
+    private Color UpdateColor {get{
+            switch (ApplicationInfo.RunningVersion.CompareTo(Update.Version))
+            {
+                case 1:
+                    //Update is older
+                    return MudBlazor.Color.Info;
+                case 0:
+                    return MudBlazor.Color.Success;
+
+                case -1:
+                    //Update is newer
+                    return MudBlazor.Color.Error;
+
+            }
+            return MudBlazor.Color.Default;
+        }
+    }
+
+    private bool CurrentVersion => ApplicationInfo.RunningVersion.CompareTo(Update.Version) == 0;
+
+
+}

@@ -13,8 +13,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     /// </summary>
     public interface IActiveDirectoryContext
     {
-        IApplicationUserStateService UserStateService { get; }
-        IDatabaseContext? Context { get; }
         IAppDatabaseFactory Factory { get; }
 
         /// <summary>
@@ -26,6 +24,12 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// The current status of the Active Directory connection
         /// </summary>
         DirectoryConnectionStatus Status { get; }
+
+        /// <summary>
+        /// How many time the connection has failed.
+        /// Max value should not exceed 10
+        /// </summary>
+        int FailedConnectionAttempts { get; set; }
 
         /// <summary>
         /// The application scoped directory entry root
@@ -46,6 +50,10 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Provides User search functions
         /// </summary>
         IADUserSearcher Users { get; }
+          /// <summary>
+        /// Provides Printer search functions
+        /// </summary>
+        IADPrinterSearcher Printers { get; }
 
         /// <summary>
         /// Provides Computer search functions
@@ -72,7 +80,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         WindowsImpersonation Impersonation { get; }
         List<DomainController> DomainControllers { get; }
 
-        IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid);
+        IDirectoryEntryAdapter? GetDirectoryEntryBySid(string sid);
 
         IDirectoryEntryAdapter? FindEntryBySID(byte[] sid);
 
@@ -107,5 +115,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <returns></returns>
         DirectoryEntry GetDirectoryEntry(string? baseDN = null);
         bool RestoreTombstone(IDirectoryEntryAdapter model, IADOrganizationalUnit newOU);
+        IDirectoryEntryAdapter? GetDirectoryEntryByDN(string dn);
     }
 }

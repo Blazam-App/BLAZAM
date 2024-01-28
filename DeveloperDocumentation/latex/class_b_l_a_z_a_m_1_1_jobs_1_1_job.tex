@@ -1,0 +1,228 @@
+\doxysection{BLAZAM.\+Jobs.\+Job Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job}{}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job}\index{BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}}
+Inheritance diagram for BLAZAM.\+Jobs.\+Job\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.477573cm]{class_b_l_a_z_a_m_1_1_jobs_1_1_job}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a2dff35b692596488f5c7466856b1f95a}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a2dff35b692596488f5c7466856b1f95a} 
+{\bfseries Job} (string? title=null, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}} requesting\+User=null)
+\item 
+override bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a0c02174e235e9f515fbf245eb6e00c20}{Run}} ()
+\item 
+void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_ac8d82e45d566e5bc30e3fd649680a0a9}{Cancel}} ()
+\begin{DoxyCompactList}\small\item\em Cancels this job after the current step finishes if execution already started. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_base}{BLAZAM.\+Jobs.\+Job\+Step\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+async Task$<$ bool $>$ {\bfseries Run\+Async} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{BLAZAM.\+Jobs.\+IJob}}}
+\begin{DoxyCompactItemize}
+\item 
+Task$<$ bool $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_ac21039946d7a8483538bc3db45526564}{Run\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Run this job immediately and asynchronously. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a9ee4273467c2a8bc299d6b7643c79b53}{Stop\+On\+Failed\+Step}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em If true, the job will stop of first error, and cancel all remaining steps. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_aacf9e9670371dcd9e53710540872de1f}{User}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The web application user. \end{DoxyCompactList}\item 
+IList$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{IJob\+Step}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a9327e877bba3c2dc36c779890e1104e1}{Steps}} = new List$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{IJob\+Step}}$>$()\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The steps associated with this job, in order. \end{DoxyCompactList}\item 
+Date\+Time \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a15284b355014fe21a1df96ff79cdeac3}{Scheduled\+Run\+Time}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The time to run this job. Execution will wait until this time arrives. \end{DoxyCompactList}\item 
+IList$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{IJob\+Step}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_ac7ea87e0074f4d2df7931f2727d83d59}{Failed\+Steps}} = new List$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{IJob\+Step}}$>$()\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em A list of all failed steps. \end{DoxyCompactList}\item 
+IList$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{IJob\+Step}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_ace132bdd9713d0c9fa314d068b8c20af}{Passed\+Steps}} = new List$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{IJob\+Step}}$>$()\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em All the steps that executed without exception. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_base}{BLAZAM.\+Jobs.\+Job\+Step\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+Time\+Span? {\bfseries Elapsed\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+Date\+Time? {\bfseries End\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\item 
+Exception {\bfseries Exception}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_windows_impersonation}{Windows\+Impersonation}} {\bfseries Identity}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual ? string {\bfseries Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+App\+Event$<$ double $>$ {\bfseries On\+Progress\+Updated}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+double {\bfseries Progress}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Job\+Result {\bfseries Result} = Job\+Result.\+Not\+Run\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\item 
+Date\+Time? {\bfseries Start\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job}{BLAZAM.\+Jobs.\+IJob}}}
+\begin{DoxyCompactItemize}
+\item 
+Date\+Time? {\bfseries Start\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The time execution of this job started. \end{DoxyCompactList}\item 
+Date\+Time? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_ad2aba3d1e0abbe4c9940971469b1d621}{End\+Time}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The time execution finished for this job. \end{DoxyCompactList}\item 
+Time\+Span? \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_a3456ce6532f81a8819cc1eb475f5e27d}{Elapsed\+Time}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The total time of execution since the job started. \end{DoxyCompactList}\item 
+string? {\bfseries Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The name of this job. \end{DoxyCompactList}\item 
+Job\+Result {\bfseries Result}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if all steps ran without error. Returns false if any step failed. Returns null if the job hasn\textquotesingle{}t finished. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_common_1_1_data_1_1_interfaces_1_1_i_progress_tracker}{BLAZAM.\+Common.\+Data.\+Interfaces.\+IProgress\+Tracker$<$ double $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+App\+Event$<$ TNumber $>$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_common_1_1_data_1_1_interfaces_1_1_i_progress_tracker_af087a5856d407f108b4ae9b0fa3aeff7}{On\+Progress\+Updated}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Called when the progress changes. \end{DoxyCompactList}\item 
+TNumber {\bfseries Progress}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The current progress between 0 and 100. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{BLAZAM.\+Jobs.\+IJob\+Step}}}
+\begin{DoxyCompactItemize}
+\item 
+Exception? {\bfseries Exception}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The exception that caused this step to fail, if any. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_windows_impersonation}{Windows\+Impersonation}} {\bfseries Identity}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The Windows Identity to run this step as. \end{DoxyCompactList}\item 
+string? {\bfseries Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The name of this step. \end{DoxyCompactList}\item 
+Job\+Result {\bfseries Result}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The result of this step. \end{DoxyCompactList}\item 
+Date\+Time? {\bfseries Start\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+Date\+Time? {\bfseries End\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+Time\+Span? {\bfseries Elapsed\+Time}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_base}{BLAZAM.\+Jobs.\+Job\+Step\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+Cancellation\+Token\+Source {\bfseries cancellation\+Token\+Source} = new()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_ac8d82e45d566e5bc30e3fd649680a0a9}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_ac8d82e45d566e5bc30e3fd649680a0a9} 
+\index{BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}!Cancel@{Cancel}}
+\index{Cancel@{Cancel}!BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}}
+\doxysubsubsection{\texorpdfstring{Cancel()}{Cancel()}}
+{\footnotesize\ttfamily void BLAZAM.\+Jobs.\+Job.\+Cancel (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Cancels this job after the current step finishes if execution already started. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_ae72d99b323af5d31be0df7f2ef134d83}{BLAZAM.\+Jobs.\+IJob}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a0c02174e235e9f515fbf245eb6e00c20}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a0c02174e235e9f515fbf245eb6e00c20} 
+\index{BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}!Run@{Run}}
+\index{Run@{Run}!BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}}
+\doxysubsubsection{\texorpdfstring{Run()}{Run()}}
+{\footnotesize\ttfamily override bool BLAZAM.\+Jobs.\+Job.\+Run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_jobs_1_1_job_step_base}{BLAZAM.\+Jobs.\+Job\+Step\+Base}}.
+
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_ac7ea87e0074f4d2df7931f2727d83d59}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_ac7ea87e0074f4d2df7931f2727d83d59} 
+\index{BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}!FailedSteps@{FailedSteps}}
+\index{FailedSteps@{FailedSteps}!BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}}
+\doxysubsubsection{\texorpdfstring{FailedSteps}{FailedSteps}}
+{\footnotesize\ttfamily IList$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{IJob\+Step}}$>$ BLAZAM.\+Jobs.\+Job.\+Failed\+Steps = new List$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{IJob\+Step}}$>$()\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+A list of all failed steps. 
+
+Empty if all steps succeed 
+
+Will only contain first error if Stop\+On\+Failed\+Step is true 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_a3852117cf550877166086a8ff12154f1}{BLAZAM.\+Jobs.\+IJob}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_ace132bdd9713d0c9fa314d068b8c20af}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_ace132bdd9713d0c9fa314d068b8c20af} 
+\index{BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}!PassedSteps@{PassedSteps}}
+\index{PassedSteps@{PassedSteps}!BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}}
+\doxysubsubsection{\texorpdfstring{PassedSteps}{PassedSteps}}
+{\footnotesize\ttfamily IList$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{IJob\+Step}}$>$ BLAZAM.\+Jobs.\+Job.\+Passed\+Steps = new List$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{IJob\+Step}}$>$()\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+All the steps that executed without exception. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_ae751b7889b076de35f5d0c2c46cb2885}{BLAZAM.\+Jobs.\+IJob}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a15284b355014fe21a1df96ff79cdeac3}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a15284b355014fe21a1df96ff79cdeac3} 
+\index{BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}!ScheduledRunTime@{ScheduledRunTime}}
+\index{ScheduledRunTime@{ScheduledRunTime}!BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}}
+\doxysubsubsection{\texorpdfstring{ScheduledRunTime}{ScheduledRunTime}}
+{\footnotesize\ttfamily Date\+Time BLAZAM.\+Jobs.\+Job.\+Scheduled\+Run\+Time\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The time to run this job. Execution will wait until this time arrives. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_afb911d3b0e1758967a42ce461ab16b10}{BLAZAM.\+Jobs.\+IJob}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a9327e877bba3c2dc36c779890e1104e1}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a9327e877bba3c2dc36c779890e1104e1} 
+\index{BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}!Steps@{Steps}}
+\index{Steps@{Steps}!BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}}
+\doxysubsubsection{\texorpdfstring{Steps}{Steps}}
+{\footnotesize\ttfamily IList$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{IJob\+Step}}$>$ BLAZAM.\+Jobs.\+Job.\+Steps = new List$<$\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step}{IJob\+Step}}$>$()\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The steps associated with this job, in order. 
+
+Some steps may be Job\textquotesingle{}s themselves 
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_acf6c338ae958e0a3644a5c48f6a2cd58}{BLAZAM.\+Jobs.\+IJob}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a9ee4273467c2a8bc299d6b7643c79b53}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_a9ee4273467c2a8bc299d6b7643c79b53} 
+\index{BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}!StopOnFailedStep@{StopOnFailedStep}}
+\index{StopOnFailedStep@{StopOnFailedStep}!BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}}
+\doxysubsubsection{\texorpdfstring{StopOnFailedStep}{StopOnFailedStep}}
+{\footnotesize\ttfamily bool BLAZAM.\+Jobs.\+Job.\+Stop\+On\+Failed\+Step\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+If true, the job will stop of first error, and cancel all remaining steps. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_af5372cc85cd5ac3a7252b4ea27a9e58c}{BLAZAM.\+Jobs.\+IJob}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_jobs_1_1_job_aacf9e9670371dcd9e53710540872de1f}\label{class_b_l_a_z_a_m_1_1_jobs_1_1_job_aacf9e9670371dcd9e53710540872de1f} 
+\index{BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}!User@{User}}
+\index{User@{User}!BLAZAM.Jobs.Job@{BLAZAM.Jobs.Job}}
+\doxysubsubsection{\texorpdfstring{User}{User}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state}{IApplication\+User\+State}}? BLAZAM.\+Jobs.\+Job.\+User\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The web application user. 
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_a72aeeb338ae9bb8b73bc2a996892504a}{BLAZAM.\+Jobs.\+IJob}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMJobs/Job.\+cs\end{DoxyCompactItemize}

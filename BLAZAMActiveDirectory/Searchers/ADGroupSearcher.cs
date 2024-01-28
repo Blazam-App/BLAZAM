@@ -3,15 +3,18 @@ using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Helpers;
 using BLAZAM.Common.Data;
+using BLAZAM.Logger;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
+    
     public class ADGroupSearcher : ADSearcher, IADGroupSearcher
     {
         /// <summary>
         /// This might need to go, or at least be set to remove cached entries after some period of time
         /// </summary>
         private static Dictionary<string, IADGroup> GroupSIDCache = new Dictionary<string, IADGroup>();
+
 
         public ADGroupSearcher(IActiveDirectoryContext directory) : base(directory)
         {
@@ -28,7 +31,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// <summary>
         /// Find all matching groups by Distinguished Name fragment.
         /// This is not always an exact match search. For exact match, be sure
-        /// to use the entire group's Distinguished Name including the CN=
+        /// to use the entire group's Distinguished Name including the CN=. This
+        /// is a limitation of LDAP.
         /// </summary>
         /// <param name="dn">The Distinguished Name fragment to find in groups</param>
         /// <returns>All groups with the distinguished name fragment in their own distinguished name</returns>
@@ -130,10 +134,27 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 foreach (string groupDN in list)
                 {
-                    query = "(distinguishedName=" + groupDN + ")";
-                    var group = SearchObjects(query, ActiveDirectoryObjectType.Group, 1);
-                    var adGroup = ConvertTo<ADGroup>(group);
-                    foundGroups.Add(adGroup.First());
+                    var group = new ADSearch()
+                    {
+                        ObjectTypeFilter = ActiveDirectoryObjectType.Group,
+                        Fields = new()
+                        {
+                            DN = groupDN
+                        }
+
+                    }.Search<ADGroup, IADGroup>().FirstOrDefault();
+
+                   // query = "(distinguishedName=" + groupDN + ")";
+                   // var group = SearchObjects(query, ActiveDirectoryObjectType.Group, 1);
+                    if (group != null)
+                    {
+                       // var adGroup = ConvertTo<ADGroup>(group);
+                        foundGroups.Add(group);
+                    }
+                    else
+                    {
+                        Loggers.ActiveDirectryLogger.Warning("Unable to find group in list by DN", list, groupDN, group);
+                    }
                 }
 
             }

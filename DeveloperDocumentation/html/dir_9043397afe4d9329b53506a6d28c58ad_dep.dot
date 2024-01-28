@@ -1,0 +1,16 @@
+digraph "BLAZAM/obj/Release/net6.0/PubTmp/Out/wwwroot/Identity/lib"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  compound=true
+  subgraph clusterdir_f2762583ba1ff7c51753f04c2a551948 {
+    graph [ bgcolor="#edf0f7", pencolor="grey50", label="Identity", fontname=Helvetica,fontsize=10 style="filled,dashed", URL="dir_f2762583ba1ff7c51753f04c2a551948.html",tooltip=""]
+  subgraph clusterdir_9043397afe4d9329b53506a6d28c58ad {
+    graph [ bgcolor="#edf0f7", pencolor="grey25", label="", fontname=Helvetica,fontsize=10 style="filled,bold", URL="dir_9043397afe4d9329b53506a6d28c58ad.html",tooltip=""]
+    dir_9043397afe4d9329b53506a6d28c58ad [shape=plaintext, label="lib"];
+  dir_e38f5614ff132c2311eaaa1b8cb0ba57 [label="jquery-validation", fillcolor="#a2b4d6", color="grey25", style="filled", URL="dir_e38f5614ff132c2311eaaa1b8cb0ba57.html",tooltip=""];
+  }
+  }
+}

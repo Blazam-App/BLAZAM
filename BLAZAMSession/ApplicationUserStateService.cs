@@ -208,7 +208,7 @@ namespace BLAZAM.Server.Data.Services
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error trying to remove user state", ex);
+                Loggers.SystemLogger.Error("Error trying to remove user state {@Error}", ex);
             }
 
         }

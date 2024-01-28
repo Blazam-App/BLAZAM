@@ -1,0 +1,16 @@
+digraph "BLAZAMJobs/obj"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  compound=true
+  subgraph clusterdir_3b65592cee7326e26ac82e9455d91f10 {
+    graph [ bgcolor="#edf0f7", pencolor="grey25", label="BLAZAMJobs", fontname=Helvetica,fontsize=10 style="filled,dashed", URL="dir_3b65592cee7326e26ac82e9455d91f10.html",tooltip=""]
+  subgraph clusterdir_749b876a8bdb1f9d27918c6f6d5f346c {
+    graph [ bgcolor="#edf0f7", pencolor="grey25", label="", fontname=Helvetica,fontsize=10 style="filled,bold", URL="dir_749b876a8bdb1f9d27918c6f6d5f346c.html",tooltip=""]
+    dir_749b876a8bdb1f9d27918c6f6d5f346c [shape=plaintext, label="obj"];
+  dir_96435289e7c8e786cb90347cb0a02d2b [label="Debug", fillcolor="#a2b4d6", color="grey25", style="filled", URL="dir_96435289e7c8e786cb90347cb0a02d2b.html",tooltip=""];
+  }
+  }
+}

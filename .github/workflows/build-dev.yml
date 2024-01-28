@@ -22,16 +22,29 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-      - name: Setup .NET Core SDK
+      - name: Setup .NET Core SDK 6
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.x
+      - name: Setup .NET Core SDK 8
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 8.x
       - name: Restore dependencies
         run: dotnet restore
-      - name: Build application
-        run: dotnet publish -c Release -o bin/publish BLAZAM/BLAZAM.csproj
+      - name: Build application (Debug)
+        run: dotnet build -c Debug
+      - name: Setup Playwright
+        shell: pwsh
+        run: |
+          PlaywrightTests/bin/Debug/net8.0/playwright.ps1 install; 
+          
       - name: Test application
         run: dotnet test -c Release
+
+      - name: Build application (Release)
+        run: dotnet publish -c Release -o bin/publish BLAZAM/BLAZAM.csproj
+      
 
       - name: Set assembly version as environment variable
         shell: pwsh
@@ -64,6 +77,6 @@ jobs:
           tag_name: Dev
           name: 'Dev'
           prerelease: true
-          body: This release is highly unstable. Expect bugs and crashed on this branch. Developers Only!
+          body: This release is highly unstable. Expect bugs and crashes on this branch. Developers Only!
           files: |
             ./blazam-dev-v${{ env.ASSEMBLY_VERSION }}.zip

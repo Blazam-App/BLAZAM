@@ -22,6 +22,9 @@ using BLAZAM.Server.Data.Services;
 using System.Diagnostics;
 using System.Reflection;
 using BLAZAM.Services.Chat;
+using BLAZAM.Services.Audit;
+using BLAZAM.Common;
+using BLAZAM.Nav;
 
 namespace BLAZAM.Server
 {
@@ -73,11 +76,12 @@ namespace BLAZAM.Server
             /*
              * Uncomment this to force a language
              *
-            //CultureInfo culture = new CultureInfo("fr-FR");
-            CultureInfo culture = new CultureInfo("zh-Hans");
+             
+            CultureInfo culture = new CultureInfo("fr-FR");
+            //CultureInfo culture = new CultureInfo("zh-Hans");
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
-            */
+           */
 
             //Grab the connection string and store it in the context statically
             //This can obviously only be changed on app restart
@@ -86,7 +90,6 @@ namespace BLAZAM.Server
             builder.Services.AddSingleton<ApplicationInfo>();
 
 
-           
 
             //Set up authentication and api token authentication
             builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -184,6 +187,10 @@ namespace BLAZAM.Server
 
             //Add web user application search as a service
             builder.Services.AddScoped<SearchService>();
+
+
+
+            builder.Services.AddScoped<AppNavigationManager>();
 
 
 

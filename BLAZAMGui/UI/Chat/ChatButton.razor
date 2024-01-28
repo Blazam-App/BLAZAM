@@ -1,8 +1,8 @@
 ﻿@inherits ChatComponentBase
-@if (UnreadMessages > 0)
+@if (LastUnreadMessages > 0)
 {
-    <MudBadge Content="@UnreadMessages" Color="Color.Error" Overlap=true Origin=Origin.TopLeft OnClick="@OnClick">
-        <MudIconButton Class="@Class" OnClick="@OnClick"
+    <MudBadge Content="@LastUnreadMessages" Color="Color.Error" Overlap=true Origin=Origin.TopLeft OnClick="@OnClick">
+        <MudIconButton id="main_chat_button" Class="@Class" OnClick="@OnClick"
                    Icon="@Icons.Material.Filled.MarkUnreadChatAlt" />
     </MudBadge>
 }
@@ -28,7 +28,7 @@ else
               {
                   await Task.Delay(50);
 
-                  //await RefreshChatRooms();
+                  GetUnreadMessages();
                   await InvokeAsync(StateHasChanged);
               }
           };

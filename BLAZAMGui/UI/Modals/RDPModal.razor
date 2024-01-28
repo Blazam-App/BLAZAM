@@ -50,6 +50,6 @@
         var hash = await GetPasswordHash();
         rdpUrl = Context.AppSettings.FirstOrDefault().MyrtilleURL + "?__EVENTTARGET=&__EVENTARGUMENT=server=" + computerName + "&user=" + Context.ActiveDirectorySettings.FirstOrDefault().Username + "&passwordHash=" + hash + "&connect=Connect%21";
         //rdpUrl = Context.AppSettings.FirstOrDefault().MyrtilleURL + "?__EVENTTARGET=&__EVENTARGUMENT=server=" + computerName + "&user=" + Context.ActiveDirectorySettings.FirstOrDefault().Username + "&password=" + hash;
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 }

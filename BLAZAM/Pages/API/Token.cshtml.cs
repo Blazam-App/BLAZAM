@@ -11,6 +11,7 @@ using System.Security.Claims;
 
 namespace BLAZAM.Server.Pages.API
 {
+    [Obsolete("Not using any  local REST API")]
     public class TokenModel : PageModel
     {
         public JwtSecurityTokenHandler JwtTokenHandler { get; private set; }

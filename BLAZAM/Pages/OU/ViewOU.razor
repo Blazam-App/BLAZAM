@@ -1,24 +1,24 @@
 ﻿@inherits DirectoryEntryViewBase
 <AppPageTitle>@OU?.CanonicalName</AppPageTitle>
 
-<SetSubHeader>
+    <SetSubHeader>
 
-    <DirectoryEntryViewHeader DirectoryEntry="@OU"
-                              OnDelete="@DeleteOU"
-                              OnMove="@(()=>{MoveToModal?.Show();})"
-                              OnRename="@(()=>{RenameModal?.Show();})"
-                              OnToggleEditMode="ToggleEditMode"/>
-    <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
+        <DirectoryEntryViewHeader DirectoryEntry="@OU"
+                                  OnDelete="@DeleteOU"
+                                  OnMove="@(()=>{MoveToModal?.Show();})"
+                                  OnRename="@(()=>{RenameModal?.Show();})"
+                                  OnToggleEditMode="ToggleEditMode" />
+        <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
-    </MudOverlay>
-
-
-</SetSubHeader>
+        </MudOverlay>
 
 
+    </SetSubHeader>
 
-<AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
-    @if (MoveToModal?.IsShown==true)
+
+
+    <AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
+        @if (MoveToModal?.IsShown == true)
     {
         <MoveToOUModalContent DirectoryModel="OU" />
     }
@@ -31,37 +31,71 @@
 </AppModal>
 
 
-@if(OU!=null){
-    <MudCard>
-        <MudCardHeader>
-            @OU.CanonicalName
-        </MudCardHeader>
-       
-        @foreach(var childOU in OU.SubOUs)
-        {
-            <MudText>@childOU.CanonicalName</MudText>
-        }
-    </MudCard>
+@if (OU != null)
+{
+  
+
+    <MudDataGrid RowClass="cursor-pointer"
+                 Dense=true
+                 Filterable=true
+                 Virtualize=true
+                 Class="py-0"
+                 SortMode="SortMode.Single"
+                 Items="@OU.Children.OrderBy(x=>x.CanonicalName).OrderByDescending(x=>x.ObjectType)"
+                 T=IDirectoryEntryAdapter
+                 RowClick="@ChildClicked">
+                 <ToolBarContent>
+            <MudText>@AppLocalization["Current OU"]: @OU.CanonicalName</MudText>
+
+            <MudSpacer />
+            <MudButton StartIcon="@Icons.Material.Filled.DriveFolderUpload"
+            OnClick="@(()=>{Nav.NavigateTo(parentOU.SearchUri);})">@parentOU?.CanonicalName</MudButton>
+
+                 </ToolBarContent>
+        <Columns>
+            <TemplateColumn Title=@AppLocalization["Type"]>
+                <CellTemplate>
+                    <MudIcon Icon="@context.Item.TypeIcon()" />
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Title="@AppLocalization["Name"]" Property="x=>x.CanonicalName" />
+        </Columns>
+    </MudDataGrid>
 }
 
 @if (OU.HasUnsavedChanges)
 {
-        <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
+    <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
 }
 @code {
     IADOrganizationalUnit OU => DirectoryEntry as IADOrganizationalUnit;
-
+    IADOrganizationalUnit? parentOU;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+        await AuditLogger.Searched(OU);
+        parentOU = await OU.GetParent();
+        LoadingData = false;
+        await RefreshEntryComponents();
+    }
     async void SaveChanges()
     {
         if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
         {
-            OU.CommitChanges();
+            await OU.CommitChangesAsync();
             EditMode = false;
-            SnackBarService.Success("The changes made to this ou have been saved.", "Changes Saved");
-            await InvokeAsync(StateHasChanged);
+            Nav.WarnOnNavigation = false;
+            SnackBarService.Success("The changes made to this ou have been saved.");
+            await RefreshEntryComponents();
+
 
         }
 
+    }
+    void ChildClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
+    {
+        Nav.NavigateTo(args?.Item.SearchUri);
     }
     async Task DeleteOU()
     {
@@ -70,9 +104,9 @@
             try
             {
                 OU.Delete();
-                SnackBarService.Success(OU.CanonicalName + " has been deleted.", "OU Deleted");
+                SnackBarService.Success(OU.CanonicalName + " has been deleted.");
 
-               
+
                 Nav.NavigateTo("/ou/search");
 
             }
@@ -80,7 +114,7 @@
             {
                 SnackBarService.Error(ex.Message);
             }
-       
+
             await InvokeAsync(StateHasChanged);
         }
     }

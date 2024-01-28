@@ -1,11 +1,14 @@
 
 using BLAZAM.ActiveDirectory;
 using BLAZAM.Email.Services;
-using BLAZAM.Localization;
+using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
+using BLAZAM.Common;
+using BLAZAM.Nav;
 
 namespace BLAZAM.Gui.UI
 {
+
     public class AppComponentBase : ComponentBase
     {
         [Inject]
@@ -14,9 +17,8 @@ namespace BLAZAM.Gui.UI
         [Inject]
         protected SearchService SearchService { get; set; }
 
-       
         [Inject]
-        protected NavigationManager Nav { get; set; }
+        protected AppNavigationManager Nav { get; set; }
 
         [Inject]
         protected ConnMonitor Monitor { get; set; }
@@ -75,18 +77,17 @@ namespace BLAZAM.Gui.UI
         protected IAppDatabaseFactory DbFactory { get; set; }
 
 
-
         protected override void OnInitialized()
         {
             base.OnInitialized();
-
+            //Nav = new AppNavigationManager(BaseNav);
             try
             {
                 Context = DbFactory.CreateDbContext();
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Error("Failed to connect to database", ex);
+                Loggers.DatabaseLogger.Error("Failed to connect to database {@Error}", ex);
             }
             try
             {
@@ -95,7 +96,8 @@ namespace BLAZAM.Gui.UI
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Error("Failed to connect to database", ex);
+                Loggers.ActiveDirectryLogger.Error("Failed to connect to scoped active directory {@Error}", ex);
+
             }
             Monitor.OnDirectoryConnectionChanged += (status) =>
             {
@@ -114,7 +116,7 @@ namespace BLAZAM.Gui.UI
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error("Failed to connect to database", ex);
+                    Loggers.DatabaseLogger.Error("Failed to connect to database {@Error}", ex);
                 }
                 try
                 {
@@ -123,7 +125,7 @@ namespace BLAZAM.Gui.UI
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error("Failed to connect to database", ex);
+                    Loggers.ActiveDirectryLogger.Error("Failed to connect to scoped active directory {@Error}", ex);
                 }
                 Monitor.OnDirectoryConnectionChanged += (status) =>
                 {

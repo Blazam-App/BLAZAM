@@ -1,0 +1,20 @@
+digraph "BLAZAMDatabase/Models"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  compound=true
+  subgraph clusterdir_74c120be7d521141a777c93deee301c7 {
+    graph [ bgcolor="#edf0f7", pencolor="grey25", label="BLAZAMDatabase", fontname=Helvetica,fontsize=10 style="filled,dashed", URL="dir_74c120be7d521141a777c93deee301c7.html",tooltip=""]
+  subgraph clusterdir_e916af802a1ccb74e7618e24112c26f1 {
+    graph [ bgcolor="#edf0f7", pencolor="grey25", label="", fontname=Helvetica,fontsize=10 style="filled,bold", URL="dir_e916af802a1ccb74e7618e24112c26f1.html",tooltip=""]
+    dir_e916af802a1ccb74e7618e24112c26f1 [shape=plaintext, label="Models"];
+  dir_554fd35e6cbeded62a31895d89cc6d2a [label="Audit", fillcolor="#a2b4d6", color="grey25", style="filled", URL="dir_554fd35e6cbeded62a31895d89cc6d2a.html",tooltip=""];
+  dir_034a362cc5ac6e3c92a6a022dab2af22 [label="Chat", fillcolor="#a2b4d6", color="grey25", style="filled", URL="dir_034a362cc5ac6e3c92a6a022dab2af22.html",tooltip=""];
+  dir_257ea38e2e92e1ce8af9d7fcbed5f5fe [label="Permissions", fillcolor="#a2b4d6", color="grey25", style="filled", URL="dir_257ea38e2e92e1ce8af9d7fcbed5f5fe.html",tooltip=""];
+  dir_182aba0ed7e94fd7f635d68432f8b06e [label="Templates", fillcolor="#a2b4d6", color="grey25", style="filled", URL="dir_182aba0ed7e94fd7f635d68432f8b06e.html",tooltip=""];
+  dir_a9a246b93f277ecb2c2d6cedc5b8bedd [label="User", fillcolor="#a2b4d6", color="grey25", style="filled", URL="dir_a9a246b93f277ecb2c2d6cedc5b8bedd.html",tooltip=""];
+  }
+  }
+}
