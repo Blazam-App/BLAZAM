@@ -6,7 +6,7 @@
 
 @foreach (var objectType in assignedObjectTypes)
 {
-    <MudCheckBox Label="@objectType.Key" @bind-Checked=assignedObjectTypes[objectType.Key] />
+    <MudCheckBox Label="@objectType.Key" @bind-bind-Value=assignedObjectTypes[objectType.Key] />
 
 }
 </EditForm>

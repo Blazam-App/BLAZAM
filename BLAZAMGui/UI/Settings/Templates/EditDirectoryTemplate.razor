@@ -186,8 +186,8 @@ await ParentTemplateChanged(null);
                                                 <CellTemplate Context="cellContext">
                                                     <MudCheckBox T=bool
                                                                  Label="Editable"
-                                                                 Checked=cellContext.Item.Editable
-                                                                 CheckedChanged="@((newValue)=>{EditableChanged(newValue,cellContext.Item);})" />
+                                                                 Value=cellContext.Item.Editable
+                                                                 ValueChanged="@((newValue)=>{EditableChanged(newValue,cellContext.Item);})" />
 
                                                 </CellTemplate>
                                             </TemplateColumn>
@@ -195,8 +195,8 @@ await ParentTemplateChanged(null);
                                                 <CellTemplate Context="cellContext">
                                                     <MudCheckBox T=bool
                                                                  Label="Required"
-                                                                 Checked=cellContext.Item.Required
-                                                                 CheckedChanged="@((newValue)=>{RequiredChanged(newValue,cellContext.Item);})"
+                                                                 Value=cellContext.Item.Required
+                                                                 ValueChanged="@((newValue)=>{RequiredChanged(newValue,cellContext.Item);})"
                                                                  Disabled=@(!cellContext.Item.Editable) />
 
                                                 </CellTemplate>
