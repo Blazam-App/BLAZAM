@@ -51,15 +51,15 @@
                     <MudCheckBox T="bool"
                              Label="@objectType.ToString()"
                              Size="@Size.Small"
-                             Checked="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)"
-                             CheckedChanged="@((val)=>{
+                             Value="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)"
+                             ValueChanged="@((val)=>{
                                  ToggleObjectType(context.Item,objectType,val);
                                 })" />
                 </EditTemplate>
                 <CellTemplate>
                     <MudCheckBox Size="@Size.Small"
                              ReadOnly=true
-                             Checked="@(context.Item?.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)" />
+                             Value="@(context.Item?.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)" />
                 </CellTemplate>
             </TemplateColumn>
         }

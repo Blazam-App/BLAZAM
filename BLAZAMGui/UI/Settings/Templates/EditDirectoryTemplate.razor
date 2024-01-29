@@ -186,8 +186,8 @@ await ParentTemplateChanged(null);
                                                 <CellTemplate Context="cellContext">
                                                     <MudCheckBox T=bool
                                                                  Label="Editable"
-                                                                 Checked=cellContext.Item.Editable
-                                                                 CheckedChanged="@((newValue)=>{EditableChanged(newValue,cellContext.Item);})" />
+                                                                 Value=cellContext.Item.Editable
+                                                                 ValueChanged="@((newValue)=>{EditableChanged(newValue,cellContext.Item);})" />
 
                                                 </CellTemplate>
                                             </TemplateColumn>
@@ -195,8 +195,8 @@ await ParentTemplateChanged(null);
                                                 <CellTemplate Context="cellContext">
                                                     <MudCheckBox T=bool
                                                                  Label="Required"
-                                                                 Checked=cellContext.Item.Required
-                                                                 CheckedChanged="@((newValue)=>{RequiredChanged(newValue,cellContext.Item);})"
+                                                                 Value=cellContext.Item.Required
+                                                                 ValueChanged="@((newValue)=>{RequiredChanged(newValue,cellContext.Item);})"
                                                                  Disabled=@(!cellContext.Item.Editable) />
 
                                                 </CellTemplate>
@@ -257,16 +257,17 @@ await ParentTemplateChanged(null);
                 </Section>
                 <Section Title=@AppLocalization["Assigned Groups"]>
 
+                    <MudStack>
+                        @foreach (var group in DirectoryTemplate.InheritedAssignedGroupSids)
+                        {
 
-                    @foreach (var group in DirectoryTemplate.InheritedAssignedGroupSids)
-                    {
+                            var groupFromTemplate = otherTemplates.Where(ot => ot.AssignedGroupSids.Contains(group)).FirstOrDefault();
+                            <TemplateOverride SourceTemplate="@groupFromTemplate">
+                                <AssignedTemplateGroup Group="group" OnGroupRemoved="@(async (group)=>{await InvokeAsync(StateHasChanged);})" />
+                            </TemplateOverride>
 
-                        var groupFromTemplate = otherTemplates.Where(ot => ot.AssignedGroupSids.Contains(group)).FirstOrDefault();
-                        <TemplateOverride SourceTemplate="@groupFromTemplate">
-                            <AssignedTemplateGroup Group="group" OnGroupRemoved="@(async (group)=>{await InvokeAsync(StateHasChanged);})"/>
-                        </TemplateOverride>
-
-                    }
+                        }
+                    </MudStack>
                     <MudStack Row=true>
                         <ADAutoComplete SearchObjectType=ActiveDirectoryObjectType.Group Label="@AppLocalization["Groups"]"
                                         @bind-SelectedResult="@SelectedGroup" />

@@ -143,11 +143,30 @@ namespace BLAZAM.Server.Data.Services
                 if (userSettings == null)
                 {
                     userSettings = new AppUser();
+                    string email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+                    if (email != null)
+                    {
+                        userSettings.Email = email;
+                    }
                     userSettings.UserGUID = User.FindFirstValue(ClaimTypes.Sid);
                     userSettings.Username = User.Identity?.Name;
                     context.UserSettings.Add(userSettings);
+                    
                     context.SaveChanges();
 
+                }
+                else if (Preferences.Email == null)
+                {
+                    string email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+                    if (email != null)
+                    {
+                        Preferences.Email = email;
+                        Task.Run(() => {
+                            Task.Delay(1000).Wait();
+                            SaveUserSettings();
+
+                        });
+                    }
                 }
 
                 lastDataRefresh = DateTime.Now;
@@ -173,6 +192,7 @@ namespace BLAZAM.Server.Data.Services
                     dbUserSettings.SearchDisabledUsers = this.Preferences?.SearchDisabledUsers == true;
                     dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
                     dbUserSettings.FavoriteEntries = this.Preferences?.FavoriteEntries;
+                    dbUserSettings.Email = this.Preferences?.Email;
                     SaveDashboardWidgets(dbUserSettings);
                     OnSettingsChanged?.Invoke(dbUserSettings);
                     await context.SaveChangesAsync();
