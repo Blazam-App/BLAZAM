@@ -49,11 +49,19 @@ namespace BLAZAM.Server.Pages
         {
             try
             {
+                req.IPAddress = HttpContext.Connection.RemoteIpAddress;
+            }catch(Exception ex)
+            {
+                Loggers.SystemLogger.Error("Error setting ip address for login request {@Error}", ex);
+            }
+            try
+            {
+                
                 var result = await Auth.Login(req);
                 if (result != null && result.Status == LoginResultStatus.OK)
                 {
                     await HttpContext.SignInAsync(result.AuthenticationState.User);
-                    await AuditLogger.Logon.Login(result.AuthenticationState.User);
+                    await AuditLogger.Logon.Login(result.AuthenticationState.User,req.IPAddress);
                 }
                 return new ObjectResult(result.Status);
 
