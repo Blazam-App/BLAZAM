@@ -111,9 +111,17 @@
             Details
         </TabContent>
         <ChildContent>
-            <ViewUser DirectoryEntry="@newUser" />
+            <ViewUser DirectoryEntry="@newUser" @bind-ConfirmPassword=@customConfirmPassword @bind-Password=customPassword />
             <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=4;})">Back</MudButton>
-            <MudButton Color=Color.Success OnClick="@(()=>{SelectedStep=6;})">Next</MudButton>
+            <MudButton Color=Color.Success
+                       OnClick="@(()=>{
+SelectedStep=6;
+if(newUser.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
+newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
+})"
+                       Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
+                Next
+            </MudButton>
         </ChildContent>
 
     </MudTabPanel>
@@ -136,8 +144,8 @@
 
 
 @code {
-
-
+    string customConfirmPassword;
+    string customPassword;
     int selectedStep;
     int SelectedStep
     {
@@ -229,20 +237,20 @@
 
 
 
-                try
-                {
-                    if (fieldValue.Field != null)
-                        if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
-                            newUser.HomeDirectory = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
-                        else
-                            newUser.NewEntryProperties[fieldValue.Field.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
-                    else if (fieldValue.CustomField != null)
-                        newUser.NewEntryProperties[fieldValue.CustomField.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
-                }
-                catch (Exception ex)
-                {
+            try
+            {
+                if (fieldValue.Field != null)
+                    if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
+                        newUser.HomeDirectory = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+                    else
+                        newUser.NewEntryProperties[fieldValue.Field.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+                else if (fieldValue.CustomField != null)
+                    newUser.NewEntryProperties[fieldValue.CustomField.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+            }
+            catch (Exception ex)
+            {
                 Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value.ToString() + " {@Error}", ex);
-                }
+            }
 
         }
         var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName);

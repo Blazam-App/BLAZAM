@@ -195,13 +195,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
-        /// <summary>
-        /// Changes the password for this entry immediately
-        /// </summary>
-        /// <param name="password"></param>
-        /// <param name="requireChange"></param>
-        /// <returns></returns>
-        /// <exception cref="ApplicationException"></exception>
+       
+
+        public SecureString? NewPassword { get; set; }
+
+
+      
         public bool SetPassword(SecureString password, bool requireChange = false)
         {
             if (SamAccountName == null) throw new ApplicationException("samaccount name not found!");
@@ -256,10 +255,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public void StagePasswordChange(SecureString newPassword, bool requireChange = false)
         {
-          
+            NewPassword = newPassword;
             CommitSteps.Add(new JobStep("Set Password", (JobStep? step) =>
             {
-                return SetPassword(newPassword, requireChange);
+                var pass = NewPassword;
+                NewPassword = null;
+                return SetPassword(pass, requireChange);
             }));
 
 

@@ -20,9 +20,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADUser : AccountDirectoryAdapter, IADUser
     {
-        [Obsolete("Not used for anything, I think")]
-        public SecureString NewPassword { get; set; }
-
         public byte[]? ThumbnailPhoto
         {
 

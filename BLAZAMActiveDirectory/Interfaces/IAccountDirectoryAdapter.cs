@@ -47,7 +47,22 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         DateTime? LastLogonTime { get; }
         DateTime? PasswordLastSet { get; }
 
+
+        /// <summary>
+        /// If a password change is staged using <see cref="StagePasswordChange(SecureString, bool)"/>, holds the encrypted new password to be applied.
+        /// </summary>
+        SecureString? NewPassword { get; set; }
+
+        /// <summary>
+        /// Changes the password for this entry immediately
+        /// </summary>
+        /// <param name="password">The new password</param>
+        /// <param name="requireChange">Whether to force a password change after reset</param>
+        /// <returns>True if the password change was successful, otherwise false.</returns>
+        /// <exception cref="ApplicationException"></exception>
         bool SetPassword(SecureString password, bool requireChange = false);
+
+
         void StagePasswordChange(SecureString newPassword, bool requireChange = false);
     }
 }
