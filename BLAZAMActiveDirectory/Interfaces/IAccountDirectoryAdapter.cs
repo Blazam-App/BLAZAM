@@ -3,7 +3,7 @@
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
     /// <summary>
-    /// Represents Active Dirtory Account Objects. These types have passwords and can be enabled, disabled,
+    /// Represents Active Directory Account Objects. These types have passwords and can be enabled, disabled,
     /// and locked out.
     /// </summary>
     /// <remarks>
@@ -42,9 +42,28 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Indicates whether the current web user can search disabled <see cref="IAccountDirectoryAdapter"/>'s
         /// </summary>
         bool CanSearchDisabled { get; }
+
+        /// <summary>
+        /// If the account has been locked out, this will be the <see cref="DateTime"/> that it was locked
+        /// </summary>
         DateTime? LockoutTime { get; }
+
+        /// <summary>
+        /// If the account has an expiration this will be the <see cref="DateTime"/> that it will/had expire(d)
+        /// </summary>
         DateTime? ExpireTime { get; set; }
+
+        /// <summary>
+        /// Collects login data synchronously from all domain controllers in the domain
+        /// </summary>
+        /// <remarks>
+        /// This is a GUI hanging operation and should be surrounded by another thread
+        /// </remarks>
         DateTime? LastLogonTime { get; }
+
+        /// <summary>
+        /// The time the password was last changed
+        /// </summary>
         DateTime? PasswordLastSet { get; }
 
 

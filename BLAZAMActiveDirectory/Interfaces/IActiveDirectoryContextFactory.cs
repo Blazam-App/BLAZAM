@@ -3,6 +3,9 @@ using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
+    /// <summary>
+    /// A factory for creating Active Directory connections
+    /// </summary>
     public interface IActiveDirectoryContextFactory
     {
         /// <summary>
