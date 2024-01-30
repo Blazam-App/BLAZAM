@@ -111,6 +111,9 @@
             Details
         </TabContent>
         <ChildContent>
+            @*TODO: The following binding cause the next button to not update when validation is reached, updates are controlled from
+                this element
+            *@
             <ViewUser DirectoryEntry="@newUser" @bind-ConfirmPassword=@customConfirmPassword @bind-Password=customPassword />
             <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=4;})">Back</MudButton>
             <MudButton Color=Color.Success

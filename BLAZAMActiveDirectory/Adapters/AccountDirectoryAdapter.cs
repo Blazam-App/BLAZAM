@@ -215,9 +215,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-                // DirectoryEntry.InvokeSet("SetPassword", new object[] { password.ToPlainText() });
-
-                //TODO set password from outside the domain
                 //The following works utside the domain but may havee issues with cerrts
                 using (PrincipalContext pContext = new PrincipalContext(
                     ContextType.Domain,
