@@ -183,7 +183,9 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 
         try
         {
-            var result = await User.CommitChangesAsync();
+            IJob createUserJob = new Job(AppLocalization["Create User"]);
+            createUserJob.ShowJobDetailsDialog(MessageService);
+            var result = await User.CommitChangesAsync(createUserJob);
             if (result.FailedSteps.Count > 0)
             {
                 SnackBarService.Success("User created with errors.");
@@ -199,9 +201,11 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
             {
 
                 SnackBarService.Success("User has been created");
+                Nav.NavigateTo("/search/" + User.SamAccountName);
+
             }
-            await Confirmed.InvokeAsync(User);
-            Nav.NavigateTo("/search/" + User.SamAccountName);
+            await AuditLogger.User.Created(User);
+
         }
         catch (ApplicationException ex)
         {
