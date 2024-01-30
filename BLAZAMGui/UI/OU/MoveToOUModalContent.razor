@@ -23,10 +23,10 @@
     IADOrganizationalUnit SelectedOU { get; set; }
     IADOrganizationalUnit StartingOU { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await base.OnInitializedAsync();
-        StartingOU = await DirectoryModel.GetParent();
+        base.OnInitialized();
+        StartingOU = DirectoryModel.GetParent();
         Modal.OnYes = MoveTo;
         Modal.YesText = AppLocalization["Move"];
         Modal.Title = "Move To";

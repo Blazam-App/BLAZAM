@@ -123,30 +123,31 @@ namespace BLAZAM.Helpers
                         if (sr.Properties["objectClass"].Contains("computer"))
                         {
                             thisObject = new ADComputer();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
                         }
                         else if (sr.Properties["objectClass"].Contains("user"))
                         {
                             thisObject = new ADUser();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
                         }
                         else if (sr.Properties["objectClass"].Contains("organizationalUnit"))
                         {
                             thisObject = new ADOrganizationalUnit();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
                         }
                         else if (sr.Properties["objectClass"].Contains("group"))
                         {
                             thisObject = new ADGroup();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
                         }
                         else if (sr.Properties["objectClass"].Contains("printQueue"))
                         {
                             thisObject = new ADPrinter();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
                         }
                         if (thisObject != null)
+                        {
+                            thisObject.Parse(directory: ActiveDirectoryContext.Instance, searchResult: sr);
+
+
                             objects.Add(thisObject);
+
+                        }
                     }
                     thisObject = null;
 
@@ -178,30 +179,30 @@ namespace BLAZAM.Helpers
                         if (sr.Properties["objectClass"].Contains("computer"))
                         {
                             thisObject = new ADComputer();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
                         }
                         else if (sr.Properties["objectClass"].Contains("user"))
                         {
                             thisObject = new ADUser();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
                         }
                         else if (sr.Properties["objectClass"].Contains("organizationalUnit"))
                         {
                             thisObject = new ADOrganizationalUnit();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
                         }
                         else if (sr.Properties["objectClass"].Contains("group"))
                         {
                             thisObject = new ADGroup();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
                         }
                         else if (sr.Properties["objectClass"].Contains("printQueue"))
                         {
                             thisObject = new ADPrinter();
-                            thisObject.Parse(sr, ActiveDirectoryContext.Instance);
                         }
                         if (thisObject != null)
+                        {
+                            thisObject.Parse(directory: ActiveDirectoryContext.Instance, directoryEntry: sr);
+
                             objects.Add(thisObject);
+
+                        }
                     }
                     thisObject = null;
 

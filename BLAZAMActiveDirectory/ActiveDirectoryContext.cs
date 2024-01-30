@@ -100,7 +100,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 var model = new DirectoryEntryAdapter();
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                model.Parse(result, this);
+                model.Parse(directory: this, searchResult: result );
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 found.Add(model);
             }
@@ -426,7 +426,7 @@ namespace BLAZAM.ActiveDirectory
                                                     Status = DirectoryConnectionStatus.BadCredentials;
                                                     break;
                                                 default:
-                                                    Loggers.ActiveDirectryLogger.Error("Error collecting domain controllers {@Error}", ex);
+                                                    Loggers.ActiveDirectryLogger.Warning("Error collecting domain controllers {@Error}", ex);
                                                     break;
                                             }
                                         }
@@ -577,7 +577,7 @@ namespace BLAZAM.ActiveDirectory
                             }
                             catch (DirectoryServicesCOMException ex)
                             {
-                                Loggers.ActiveDirectryLogger.Error("Error authenticating user: " + ex.Message);
+                                Loggers.ActiveDirectryLogger.Error("Error authenticating user: " + ex.Message+" {@Error}",ex);
                                 switch (ex.Message)
                                 {
                                     case "The user name or password is incorrect.":
@@ -599,7 +599,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (LdapException ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Error authenticating user: " + ex.Message);
+                    Loggers.ActiveDirectryLogger.Error("Error authenticating user: " + ex.Message+" {@Error}",ex);
                     switch (ex.Message)
                     {
                         case "The user name or password is incorrect.":

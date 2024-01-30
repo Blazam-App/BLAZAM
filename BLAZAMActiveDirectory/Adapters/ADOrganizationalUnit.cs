@@ -55,30 +55,29 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         if (child.Properties["objectClass"].Contains("computer"))
                         {
                             thisObject = new ADComputer();
-                            thisObject.Parse(child, ActiveDirectoryContext.Instance);
                         }
                         else if (child.Properties["objectClass"].Contains("user"))
                         {
                             thisObject = new ADUser();
-                            thisObject.Parse(child, ActiveDirectoryContext.Instance);
                         }
                         else if (child.Properties["objectClass"].Contains("organizationalUnit"))
                         {
                             thisObject = new ADOrganizationalUnit();
-                            thisObject.Parse(child, ActiveDirectoryContext.Instance);
                         }
                         else if (child.Properties["objectClass"].Contains("group"))
                         {
                             thisObject = new ADGroup();
-                            thisObject.Parse(child, ActiveDirectoryContext.Instance);
                         }
                         else if (child.Properties["objectClass"].Contains("printQueue"))
                         {
                             thisObject = new ADPrinter();
-                            thisObject.Parse(child, ActiveDirectoryContext.Instance);
                         }
                         if (thisObject != null)
+                        {
+                            thisObject.Parse(directory: ActiveDirectoryContext.Instance, directoryEntry: child);
                             directoryEntries.Add(thisObject);
+
+                        }
 
                     }
                     thisObject = null;
@@ -201,7 +200,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             EnsureDirectoryEntry();
             IADOrganizationalUnit newOU = new ADOrganizationalUnit();
 
-            newOU.Parse(DirectoryEntry.Children.Add("OU=" + containerName.Trim(), "OrganizationalUnit"), Directory);
+            newOU.Parse(directoryEntry: DirectoryEntry.Children.Add("OU=" + containerName.Trim(), "OrganizationalUnit"), directory: Directory);
             newOU.NewEntry = true;
             return newOU;
         }
@@ -220,7 +219,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 IADUser newUser = new ADUser();
                 if (DirectoryEntry == null)
                     DirectoryEntry = searchResult?.GetDirectoryEntry();
-                newUser.Parse(DirectoryEntry.Children.Add(fullContainerName, "user"), Directory);
+                newUser.Parse(directoryEntry: DirectoryEntry.Children.Add(fullContainerName, "user"), directory: Directory);
                 newUser.NewEntry = true;
                 return newUser;
             }catch(Exception ex)
@@ -243,7 +242,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             IADGroup newGroup = new ADGroup();
             if (DirectoryEntry == null)
                 DirectoryEntry = searchResult?.GetDirectoryEntry();
-            newGroup.Parse(DirectoryEntry.Children.Add("CN=" + containerName.Trim(), "group"), Directory);
+            newGroup.Parse(directoryEntry: DirectoryEntry.Children.Add("CN=" + containerName.Trim(), "group"), directory: Directory);
             newGroup.NewEntry = true;
             newGroup.SamAccountName = containerName.Trim();
             return newGroup;
@@ -263,7 +262,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             IADPrinter newPrinter = new ADPrinter();
             if (DirectoryEntry == null)
                 DirectoryEntry = searchResult?.GetDirectoryEntry();
-            newPrinter.Parse(DirectoryEntry.Children.Add("CN=" + shortServerName+ "-"+ containerName.Trim(), "printQueue"), Directory);
+            newPrinter.Parse(directoryEntry: DirectoryEntry.Children.Add("CN=" + shortServerName+ "-"+ containerName.Trim(), "printQueue"),directory: Directory);
             newPrinter.NewEntry = true;
             newPrinter.UncName = uncPath;
             newPrinter.PrinterName = containerName.Trim();
@@ -283,7 +282,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             IADPrinter newPrinter = new ADPrinter();
             if (DirectoryEntry == null)
                 DirectoryEntry = searchResult?.GetDirectoryEntry();
-            newPrinter.Parse(DirectoryEntry.Children.Add("CN=" + sharedPrinter.Host.CanonicalName+ "-" + sharedPrinter.ShareName.Trim(), "printQueue"), Directory);
+            newPrinter.Parse(directoryEntry: DirectoryEntry.Children.Add("CN=" + sharedPrinter.Host.CanonicalName+ "-" + sharedPrinter.ShareName.Trim(), "printQueue"),directory: Directory);
             newPrinter.NewEntry = true;
             newPrinter.UncName = "\\\\"+sharedPrinter.Host.CanonicalName+"\\"+ sharedPrinter.ShareName;
             newPrinter.PrinterName = sharedPrinter.Name.Trim();

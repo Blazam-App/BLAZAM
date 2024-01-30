@@ -406,13 +406,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual string? OU { get => DirectoryTools.DnToOu(DN); }
 
-        public async Task<IADOrganizationalUnit?> GetParent()
+        public IADOrganizationalUnit? GetParent()
         {
             if (DirectoryEntry == null || DirectoryEntry.Parent == null) return null;
 
             var parent = new ADOrganizationalUnit();
 
-            await parent.Parse(DirectoryEntry.Parent, Directory);
+            parent.Parse(Directory,DirectoryEntry.Parent);
             return parent;
 
 
@@ -435,7 +435,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (DN == null)
             {
                 Loggers.ActiveDirectryLogger.Error("The directory object " + ADSPath
-                    + " did not load a distinguished name.");
+                    + " did not load a distinguished name." + " {@Error}", new ApplicationException());
                 return false;
             }
             var baseSearch = CurrentUser.PermissionMappings
@@ -444,7 +444,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (baseSearch == null)
             {
                 Loggers.ActiveDirectryLogger.Error("The active user state for " + DN + " could not" +
-                    "be found in the application cache.");
+                    "be found in the application cache." + " {@Error}", new ApplicationException());
                 return false;
             }
             try
@@ -661,7 +661,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        protected virtual async Task Parse(DirectoryEntry? directoryEntry, SearchResult? searchResult, IActiveDirectoryContext directory)
+        public virtual void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry=null, SearchResult? searchResult=null )
         {
             Directory = directory;
 
@@ -680,12 +680,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public virtual async Task Parse(DirectoryEntry result, IActiveDirectoryContext directory) => await Parse(result, null, directory);
-
-
-
-
-        public virtual async Task Parse(SearchResult result, IActiveDirectoryContext directory) => await Parse(null, result, directory);
+      
 
 
         public virtual async Task<IJob> CommitChangesAsync(IJob? commitJob = null)
@@ -707,6 +702,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     User = CurrentUser.AuditUsername
                 };
 
+                //Prepare commitchanges step
+                JobStep commitStep = new JobStep("Save directory entry", (step) =>
+                {
+                    DirectoryEntry?.CommitChanges();
+
+                    return true;
+                });
 
                 IJobStep? propertyStep;
                 if (!NewEntry)
@@ -715,7 +717,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     if (DirectoryEntry == null)
                     {
                         Loggers.ActiveDirectryLogger.Error("The directory entry for an existing " +
-                            " entry is somehow missing on commit.");
+                            " entry is somehow missing on commit." + " {@Error}", new ApplicationException("DirectoryEntry is null"));
                         throw new ApplicationException("DirectoryEntry is null");
                     }
                     foreach (var p in NewEntryProperties)
@@ -750,7 +752,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         commitJob.Steps.Add(propertyStep);
 
                     }
-
+                    commitJob.Steps.Add(commitStep);
 
                 }
                 else
@@ -759,7 +761,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     if (DirectoryEntry == null)
                     {
                         Loggers.ActiveDirectryLogger.Error("The directory entry for new entry " + DN +
-                            " is somehow missing on commit.");
+                            " is somehow missing on commit." + " {@Error}", new ApplicationException("DirectoryEntry is null"));
                         throw new ApplicationException("DirectoryEntry is null");
                     }
                     foreach (var p in NewEntryProperties)
@@ -777,12 +779,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
 
 
-
-                //commitJob.Steps.Insert(commitJob.Steps.Count>1?1:0,propertiesStep);
-
-
-
-
                 //Inject custom commit steps
                 foreach (var step in CommitSteps)
                 {
@@ -791,13 +787,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 }
 
-                //Inject final commitchanges step
-                JobStep commitStep = new JobStep("Save directory entry", (step) =>
-                {
-                    DirectoryEntry?.CommitChanges();
-
-                    return true;
-                });
+               
                 commitJob.Steps.Add(commitStep);
 
                 var result = commitJob.Run();
@@ -838,7 +828,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         OnModelDeleted?.Invoke();
                         break;
                     default:
-                        throw new ApplicationException("Deleting objects other than users is not supported yet.");
+                        throw new ApplicationException("Deleting that object type is not supported yet.");
 
 
                 }
@@ -848,6 +838,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 throw new ApplicationException("The application directory user does not " +
                     "have permission to delete entries", ex);
+            }
+            catch(Exception ex)
+            {
+                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
             }
         }
 
@@ -927,6 +921,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             return list;
         }
+
+
         protected virtual T? GetProperty<T>(string propertyName)
         {
             try
