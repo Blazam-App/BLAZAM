@@ -218,7 +218,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 //The following works utside the domain but may havee issues with cerrts
                 using (PrincipalContext pContext = new PrincipalContext(
                     ContextType.Domain,
-                    DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
+                    DirectorySettings.FQDN + ":" + DirectorySettings.ServerPort,
                     DirectorySettings.Username,
                     directoryPassword
                     ))
@@ -245,7 +245,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 
                 Loggers.ActiveDirectryLogger.Error("Error setting entry password {@Error}", ex);
 
-                throw new ApplicationException("Unable to set password", ex);
+                throw ex;
             }
 
         }
@@ -253,7 +253,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public void StagePasswordChange(SecureString newPassword, bool requireChange = false)
         {
             NewPassword = newPassword;
-            CommitSteps.Add(new JobStep("Set Password", (JobStep? step) =>
+            PostCommitSteps.Add(new JobStep("Set Password", (JobStep? step) =>
             {
                 var pass = NewPassword;
                 NewPassword = null;

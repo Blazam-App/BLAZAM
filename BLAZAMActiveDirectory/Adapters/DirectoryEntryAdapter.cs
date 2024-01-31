@@ -83,7 +83,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected List<JobStep> CommitSteps { get; set; } = new();
 
         /// <summary>
-        /// The .NET <see cref="DirectoryEntry"/>  unerlying object
+        /// Actions to perform during <see cref="CommitChanges"/> but to happen after an initial commit, for new entries
+        /// </summary>
+        protected List<JobStep> PostCommitSteps { get; set; } = new();
+
+        /// <summary>
+        /// The .NET <see cref="DirectoryEntry"/>  underlying object
         /// </summary>
         private DirectoryEntry? directoryEntry;
 
@@ -134,7 +139,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     case -2146232828:
 
                         return false;
-                }
+
+                 }
             }
             return false;
         }
@@ -412,7 +418,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             var parent = new ADOrganizationalUnit();
 
-            parent.Parse(Directory,DirectoryEntry.Parent);
+            parent.Parse(Directory, DirectoryEntry.Parent);
             return parent;
 
 
@@ -661,7 +667,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public virtual void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry=null, SearchResult? searchResult=null )
+        public virtual void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry = null, SearchResult? searchResult = null)
         {
             Directory = directory;
 
@@ -680,7 +686,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-      
+
 
 
         public virtual async Task<IJob> CommitChangesAsync(IJob? commitJob = null)
@@ -786,9 +792,32 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 }
+                if (!NewEntry)
+                {
+                    if (PostCommitSteps.Count > 0)
+                    {
+                        foreach (var step in PostCommitSteps)
+                        {
+                            commitJob.Steps.Add(step);
+                        }
+                        commitJob.Steps.Add(commitStep);
 
-               
+                    }
+                }
                 commitJob.Steps.Add(commitStep);
+                if (NewEntry)
+                {
+                    if (PostCommitSteps.Count > 0)
+                    {
+                        foreach (var step in PostCommitSteps)
+                        {
+                            commitJob.Steps.Add(step);
+                        }
+                        commitJob.Steps.Add(commitStep);
+
+                    }
+                }
+
 
                 var result = commitJob.Run();
 
@@ -839,7 +868,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 throw new ApplicationException("The application directory user does not " +
                     "have permission to delete entries", ex);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
             }
@@ -908,7 +937,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         searcher.ClientTimeout = TimeSpan.FromMilliseconds(500);
                         searcher.ServerTimeLimit = TimeSpan.FromMilliseconds(500);
                         var searchResult = searcher.FindOne();
-
                         var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
 
                         list.Add((T)value);
@@ -949,17 +977,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 try
                 {
-                    return (T)NewEntryProperties[propertyName];
+                    if (NewEntryProperties.ContainsKey(propertyName))
+                        return (T)NewEntryProperties[propertyName];
                 }
                 catch (InvalidCastException ex)
                 {
                     throw ex;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    return default;
-
+                    Loggers.ActiveDirectryLogger.Error("Unexpected error while getting property value. {@Error}", ex);
                 }
+
+
+
+                return default;
+
             }
             if (DirectoryEntry == null)
             {

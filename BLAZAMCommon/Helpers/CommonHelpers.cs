@@ -280,10 +280,10 @@ namespace BLAZAM.Helpers
                 if (value == null) return null;
 
 
-                Int64? longInt = null;
+                Int64 longInt = Int64.MinValue;
                 try
                 {
-                    longInt = Int64.Parse(value.ToString());
+                    Int64.TryParse(value.ToString(),out longInt);
                 }
                 catch (FormatException)
                 {
@@ -291,9 +291,9 @@ namespace BLAZAM.Helpers
                     // a com object.
 
                 }
-                if (longInt != null)
+                if (longInt != Int64.MinValue && longInt!=0)
                 {
-                    dateTime = DateTime.FromFileTimeUtc(longInt.Value);
+                    dateTime = DateTime.FromFileTimeUtc(longInt);
                 }
                 else
                 {

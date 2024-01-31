@@ -85,6 +85,15 @@ namespace BLAZAM.FileSystem
         /// </summary>
         public string? Name => System.IO.Path.GetDirectoryName(Path);
 
+        public void ClearDirectory()
+        {
+            var fileList = new List<SystemFile>(Files);
+            foreach(var file in fileList)
+            {
+                file.Delete();
+            }
+        }
+
 
         /// <summary>
         /// Copies the entire directory tree to another directory

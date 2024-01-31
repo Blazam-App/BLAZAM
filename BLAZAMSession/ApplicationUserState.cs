@@ -157,15 +157,21 @@ namespace BLAZAM.Server.Data.Services
                 }
                 else if (Preferences.Email == null)
                 {
-                    string email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
-                    if (email != null)
+                    var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                    if (emailClaim != null)
                     {
-                        Preferences.Email = email;
-                        Task.Run(() => {
-                            Task.Delay(1000).Wait();
-                            SaveUserSettings();
+                        var email = emailClaim.Value;
 
-                        });
+                        if (email != null)
+                        {
+                            Preferences.Email = email;
+                            Task.Run(() =>
+                            {
+                                Task.Delay(1000).Wait();
+                                SaveUserSettings();
+
+                            });
+                        }
                     }
                 }
 

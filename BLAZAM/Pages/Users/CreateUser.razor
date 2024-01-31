@@ -12,14 +12,14 @@
             Template
         </TabContent>
         <ChildContent>
-            @if (Templates != null && Templates.Count() > 0)
+            @if (Templates != null && Templates.Count(t=>t.DeletedAt==null) > 0)
             {
                 <MudSelectList Values="TemplateCategories"
                                @bind-Value=SelectedCategory />
 
                 <MudPaper Width="300px">
                     <MudList SelectedItemChanged=@SetTemplate Clickable="true">
-                        @foreach (var template in Templates)
+                        @foreach (var template in Templates.Where(t=>t.DeletedAt==null))
                         {
                             <MudListItem Text="@template.Name" Value="template" />
                         }
@@ -217,70 +217,78 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
     }
     async void CreateTemplateUser()
     {
-        LoadingData = true;
-        await InvokeAsync(StateHasChanged);
-        var ou = Directory.OUs.FindOuByString(SelectedTemplate.ParentOU).FirstOrDefault();
-        newUser = ou.CreateUser(SelectedTemplate.GenerateDisplayName(newUserName));
-
-        newUser.SamAccountName = SelectedTemplate.GenerateUsername(newUserName);
-        newUser.DisplayName = SelectedTemplate.GenerateDisplayName(newUserName);
-        //newUser.SetPassword(SelectedTemplate.GeneratePassword().ToSecureString(),false);
-        //newUser.CanonicalName = SelectedTemplate.GenerateDisplayName(newUserName);
-        newUser.StagePasswordChange(SelectedTemplate.GeneratePassword().ToSecureString(), true);
-        if (!newUserName.GivenName.IsNullOrEmpty())
-            newUser.GivenName = newUserName.GivenName;
-        if (!newUserName.MiddleName.IsNullOrEmpty())
-            newUser.MiddleName = newUserName.MiddleName;
-        if (!newUserName.Surname.IsNullOrEmpty())
-            newUser.Surname = newUserName.Surname;
-
-        foreach (var fieldValue in SelectedTemplate.InheritedFieldValues)
+        try
         {
+            LoadingData = true;
+            await InvokeAsync(StateHasChanged);
+            var ou = Directory.OUs.FindOuByString(SelectedTemplate.ParentOU).FirstOrDefault();
+            newUser = ou.CreateUser(SelectedTemplate.GenerateDisplayName(newUserName));
 
+            newUser.SamAccountName = SelectedTemplate.GenerateUsername(newUserName);
+            newUser.DisplayName = SelectedTemplate.GenerateDisplayName(newUserName);
+            //newUser.SetPassword(SelectedTemplate.GeneratePassword().ToSecureString(),false);
+            //newUser.CanonicalName = SelectedTemplate.GenerateDisplayName(newUserName);
+            newUser.StagePasswordChange(SelectedTemplate.GeneratePassword().ToSecureString(), true);
+            if (!newUserName.GivenName.IsNullOrEmpty())
+                newUser.GivenName = newUserName.GivenName;
+            if (!newUserName.MiddleName.IsNullOrEmpty())
+                newUser.MiddleName = newUserName.MiddleName;
+            if (!newUserName.Surname.IsNullOrEmpty())
+                newUser.Surname = newUserName.Surname;
 
-
-
-            try
+            foreach (var fieldValue in SelectedTemplate.InheritedFieldValues)
             {
-                if (fieldValue.Field != null)
-                    if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
-                        newUser.HomeDirectory = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
-                    else
-                        newUser.NewEntryProperties[fieldValue.Field.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
-                else if (fieldValue.CustomField != null)
-                    newUser.NewEntryProperties[fieldValue.CustomField.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+
+
+
+
+                try
+                {
+                    if (fieldValue.Field != null)
+                        if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
+                            newUser.HomeDirectory = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+                        else
+                            newUser.NewEntryProperties[fieldValue.Field.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+                    else if (fieldValue.CustomField != null)
+                        newUser.NewEntryProperties[fieldValue.CustomField.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+                }
+                catch (Exception ex)
+                {
+                    Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value.ToString() + " {@Error}", ex);
+                }
+
             }
-            catch (Exception ex)
+            var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName);
+            if (conflictingEntry != null)
             {
-                Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value.ToString() + " {@Error}", ex);
+                newUser = null;
+                SnackBarService.Warning("An account with that name already exists! " + conflictingEntry.SamAccountName);
+                return;
             }
+            SelectedTemplate.AssignedGroupSids.ForEach(sid =>
+            {
+                var group = Directory.Groups.FindGroupBySID(sid.GroupSid);
+                if (group != null)
+                    newUser.AssignTo(group);
 
-        }
-        var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName);
-        if (conflictingEntry != null)
-        {
-            newUser = null;
-            SnackBarService.Warning("An account with that name already exists! " + conflictingEntry.SamAccountName);
-            return;
-        }
-        SelectedTemplate.AssignedGroupSids.ForEach(sid =>
-        {
-            var group = Directory.Groups.FindGroupBySID(sid.GroupSid);
-            if (group != null)
-                newUser.AssignTo(group);
+            });
+            if (IsAdmin || SelectedTemplate.HasEmptyFields())
+            {
+                SelectedStep = 2;
+            }
+            else
+            {
+                //Go to confirm step
+                SelectedStep = 6;
 
-        });
-        if (IsAdmin || SelectedTemplate.HasEmptyFields())
+            }
+        }catch(Exception ex)
         {
-            SelectedStep = 2;
-        }
-        else
-        {
-            //Go to confirm step
-            SelectedStep = 6;
 
+            Loggers.ActiveDirectryLogger.Error("Error while creating template user {@Error}", ex);
+            
+            SnackBarService.Error(AppLocalization["An error has occurred while trying to create the template user"]);
         }
-
         LoadingData = false;
 
         await InvokeAsync(StateHasChanged);
