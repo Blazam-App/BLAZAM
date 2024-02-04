@@ -28,10 +28,11 @@ await ParentTemplateChanged(null);
 
                 <MudAutocomplete CoerceValue=true
                                  CoerceText=false
+                                 Clearable=true
                                  SearchFunc="SearchCategories"
                                  @bind-Text=DirectoryTemplate.Category
                                  Label="@AppLocalization["Template Category"]" />
-
+                @* *@
 
 
                 <MudExpansionPanel Text="Variables">
@@ -471,6 +472,7 @@ await ParentTemplateChanged(null);
     protected List<IDirectoryEntryAdapter> TemplateGroups = new();
     protected async Task<IEnumerable<string?>> SearchCategories(string? searchTerm)
     {
+        if (searchTerm is null || searchTerm == DirectoryTemplate.Category) return null;
         var categories = await Context.DirectoryTemplates.Select(t => t.Category).Distinct().ToListAsync();
         if (searchTerm.IsNullOrEmpty())
             return categories;
