@@ -16,18 +16,7 @@ namespace BLAZAM.Gui.UI
 
         protected SetHeader? Header { get; set; }
 
-        private int _templateIdParameter;
-        [Parameter]
-        public int TemplateIdParameter
-        {
-            get => _templateIdParameter;
-            set
-            {
-                _templateIdParameter = value;
-                    SelectedTemplate = Templates.Where(t => t.Id == value).FirstOrDefault();
-              
-            }
-        }
+       
 
         protected IEnumerable<DirectoryTemplate> Templates
         {
@@ -73,6 +62,31 @@ namespace BLAZAM.Gui.UI
             await InvokeAsync(StateHasChanged);
             Header?.OnRefreshRequested?.Invoke();
         }
+
+
+
+
+        private int? _templateIdParameter;
+        [Parameter]
+        public int? TemplateIdParameter
+        {
+            get => _templateIdParameter;
+            set
+            {
+                _templateIdParameter = value;
+                if (value > 0)
+                {
+                    SelectedTemplate = Templates.Where(t => t.Id == value).FirstOrDefault();
+                }
+                else if (value == 0)
+                {
+                    SelectedTemplate = new();
+                }
+
+            }
+        }
+
+
         protected async Task FetchTemplates()
         {
             if(Context==null) return;

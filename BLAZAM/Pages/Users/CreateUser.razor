@@ -12,14 +12,14 @@
             Template
         </TabContent>
         <ChildContent>
-            @if (Templates != null && Templates.Count(t=>t.DeletedAt==null) > 0)
+            @if (Templates != null && Templates.Count(t => t.DeletedAt == null && t.Visible) > 0)
             {
                 <MudSelectList Values="TemplateCategories"
                                @bind-Value=SelectedCategory />
 
                 <MudPaper Width="300px">
                     <MudList SelectedItemChanged=@SetTemplate Clickable="true">
-                        @foreach (var template in Templates.Where(t=>t.DeletedAt==null))
+                        @foreach (var template in Templates.Where(t => t.DeletedAt == null && t.Visible))
                         {
                             <MudListItem Text="@template.Name" Value="template" />
                         }
@@ -29,7 +29,7 @@
             else
             {
                 <MudPaper Width="300px">
-                    <MudText>There are no templates available</MudText>
+                    <MudText>@AppLocalization["There are no templates available"]</MudText>
                     <AuthorizeView Roles="@UserRoles.SuperAdmin">
                         <MudLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">Create One</MudLink>
 
@@ -45,7 +45,7 @@
 
     <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled=@( SelectedTemplate==null)>
         <TabContent>
-            Name
+            @AppLocalization["Name"]
         </TabContent>
         <ChildContent>
 
@@ -62,7 +62,7 @@
 
     <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null)">
         <TabContent>
-            Fields
+            @AppLocalization["Fields"]
         </TabContent>
         <ChildContent>
             <NewTemplateUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
@@ -75,7 +75,7 @@
 
     <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null && SelectedTemplate?.AllowCustomGroups==true)">
         <TabContent>
-            Groups
+            @AppLocalization["Groups"]
         </TabContent>
         <ChildContent>
             <MemberOfList Model="@newUser" />
@@ -90,7 +90,7 @@
 
     <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(custom==false)">
         <TabContent>
-            OU
+            @AppLocalization["OU"]
         </TabContent>
         <ChildContent>
             <OUTreeView SelectedOUChanged="OUSelected" />
@@ -108,7 +108,7 @@
     </MudTabPanel>
     <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(newUser==null)">
         <TabContent>
-            Details
+            @AppLocalization["Details"]
         </TabContent>
         <ChildContent>
             @*TODO: The following binding cause the next button to not update when validation is reached, updates are controlled from
@@ -123,7 +123,8 @@ if(newUser.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPasswor
 newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
 })"
                        Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
-                Next
+
+                @AppLocalization["Next"]
             </MudButton>
         </ChildContent>
 
@@ -132,7 +133,8 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
 
     <MudTabPanel Disabled=@(newUser==null)>
         <TabContent>
-            Confirm
+
+            @AppLocalization["Confirm"]
         </TabContent>
         <ChildContent>
             <ConfirmNewUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
@@ -286,7 +288,7 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
         {
 
             Loggers.ActiveDirectryLogger.Error("Error while creating template user {@Error}", ex);
-            
+
             SnackBarService.Error(AppLocalization["An error has occurred while trying to create the template user"]);
         }
         LoadingData = false;
@@ -300,4 +302,5 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
         custom = false;
         await InvokeAsync(StateHasChanged);
     }
+
 }

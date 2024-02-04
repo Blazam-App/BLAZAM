@@ -2,6 +2,7 @@
 using BLAZAM.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
@@ -26,8 +27,8 @@ namespace BLAZAM.Database.Models.Templates
 
 
         public string? Category { get; set; }
-
-
+        [DefaultValue(true)]
+        public bool Visible { get; set; } = true;
         [Required]
         public ActiveDirectoryObjectType ObjectType { get; set; } = ActiveDirectoryObjectType.User;
 

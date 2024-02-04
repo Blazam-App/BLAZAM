@@ -218,7 +218,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 //The following works utside the domain but may havee issues with cerrts
                 using (PrincipalContext pContext = new PrincipalContext(
                     ContextType.Domain,
-                    DirectorySettings.FQDN + ":" + DirectorySettings.ServerPort,
+                    DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
                     DirectorySettings.Username,
                     directoryPassword
                     ))

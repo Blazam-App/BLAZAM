@@ -119,9 +119,6 @@ namespace BLAZAM.Database.Models
 
         public string? MyrtilleURL { get; set; }
 
-        /// <summary>
-        /// Whether or not changes made to AD objects should be staged, aka ask to save prior to applying.
-        /// </summary>
-        //public bool StageChanges { get; set; }
+     
     }
 }

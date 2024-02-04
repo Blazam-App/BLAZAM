@@ -1,8 +1,10 @@
 @inject NavigationManager Nav
 <MudTooltip ShowOnHover=@(SourceTemplate!=null)
-            Text=>
+            Text=""
+            RootClass="@Class">
     <MudBadge Visible=@(SourceTemplate!=null)
               Icon="@Icons.Material.Filled.LowPriority"
+              Class="@BadgeClass"
               OnClick="@(()=>{_popoverOpen=!_popoverOpen;})"
               Overlap=true
               Color="Color.Info">
@@ -16,12 +18,17 @@
     </MudPopover>
 </MudTooltip>
 
-@code {
+    @code {
     [Parameter]
     public DirectoryTemplate? SourceTemplate { get; set; }
 
     [Parameter]
-    public RenderFragment ChildContent{ get; set; }
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string Class { get; set; }
+    [Parameter]
+    public string BadgeClass { get; set; }
 
     bool _popoverOpen;
 }
