@@ -1,0 +1,84 @@
+﻿@inherits AppComponentBase
+@if (!Label.IsNullOrEmpty())
+{
+    <MudText>@Label</MudText>
+}
+
+    <MudTreeView T="DirectoryTemplate"
+                 Items="RootTemplate"
+                 Dense="true"
+                 Hover="true"
+                 Class="py-3"
+                 SelectedValueChanged=SelectedTemplateChanged
+                 MaxHeight="400px"
+                 Color="Color.Success">
+        <ItemTemplate>
+            <MudTreeViewItem Activated=@(context.Id.Equals(SelectedTemplate?.Id))
+                             Selected=@(context.Id.Equals(SelectedTemplate?.Id))
+                             Expanded="true"
+                             Items="@context.ChildTemplates"
+                             Value="@context">
+                <Content>
+                    <MudTreeViewItemToggleButton Expanded="true"
+                                                 Visible="@(context.ChildTemplates!=null)" />
+
+                    <MudBadge
+                              Icon="@Icons.Material.Filled.VisibilityOff"
+                              Visible=@(!context.Visible)
+                              Color="Color.Warning">
+                        @context.Name
+                </MudBadge>
+            </Content>
+        </MudTreeViewItem>
+    </ItemTemplate>
+</MudTreeView>
+
+
+
+
+
+@code {
+
+
+    [Parameter]
+    public string? Label { get; set; }
+    /// <summary>
+    /// Called when the user clicks on a template in the treeview
+    /// </summary>
+    [Parameter]
+    public EventCallback<DirectoryTemplate> OnTemplateSelected { get; set; }
+
+
+
+
+    /// <summary>
+    /// The hashset of all templates, starting at the root templates that have no parents
+    /// </summary>
+    [Parameter]
+    public HashSet<DirectoryTemplate> RootTemplate { get; set; } = new HashSet<DirectoryTemplate>();
+
+    /// <summary>
+    /// The already or recently selected template
+    /// </summary>
+    /// <remarks>
+    /// Prefilling this from another razor component will active this template in the treeview
+    /// </remarks>
+    [Parameter]
+    public DirectoryTemplate? SelectedTemplate { get; set; }
+    private void SelectedTemplateChanged(DirectoryTemplate selectedTemplate)
+    {
+        if (selectedTemplate != null)
+        {
+            SelectedTemplate = selectedTemplate;
+            OnTemplateSelected.InvokeAsync(selectedTemplate);
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+}

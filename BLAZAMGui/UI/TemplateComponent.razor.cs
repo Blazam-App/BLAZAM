@@ -36,7 +36,6 @@ namespace BLAZAM.Gui.UI
         {
             get => selectedTemplate; set
             {
-
                 selectedTemplate = value;
                 Header?.OnRefreshRequested?.Invoke();
 
@@ -90,7 +89,7 @@ namespace BLAZAM.Gui.UI
         protected async Task FetchTemplates()
         {
             if(Context==null) return;
-            var temp = await Context.DirectoryTemplates.OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
+            var temp = await Context.DirectoryTemplates.Include(t=>t.ParentTemplate).OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
             if (temp != null)
                 Templates = temp;
             var cats = await Context.DirectoryTemplates.Select(c => c.Category).Where(c=>c!="" && c!=null).Distinct().ToListAsync();

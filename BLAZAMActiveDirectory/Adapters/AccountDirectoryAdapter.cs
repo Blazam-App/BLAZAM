@@ -219,7 +219,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 using (PrincipalContext pContext = new PrincipalContext(
                     ContextType.Domain,
                     DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
-                    DirectorySettings.Username,
+                    DirectorySettings.Username+"@"+DirectorySettings.FQDN,
                     directoryPassword
                     ))
                 {

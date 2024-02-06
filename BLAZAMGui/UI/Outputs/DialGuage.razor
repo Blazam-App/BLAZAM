@@ -99,9 +99,8 @@
                     Task.Delay(1000).Wait();
                     Value = _pollFunc.Invoke();
                     var temp = AverageValue.AddValue(Value);
-                    //JS.InvokeVoidAsync("console.log(dialGauges[" + _elementID + "]);");
+                    
                     JS.InvokeVoidAsync("window.setGaugeValue", new object[] {_elementID, temp, 1 });
-                    //InvokeAsync(StateHasChanged);
 
                 }
             });

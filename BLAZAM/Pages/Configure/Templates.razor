@@ -117,9 +117,22 @@
 
     </AppModal>
 </SetHeader>
+@if (Templates.Count() > 0)
+{
+    
+    <MudCard Elevation="2">
+        <MudExpansionPanel Text="@AppLocalization["Inheritance Tree"]">
+            <TemplateInheritanceTreeView RootTemplate="CreateTemplateHash"
+                                         SelectedTemplate="SelectedTemplate"
+                                         OnTemplateSelected="@((template)=>{SelectedTemplate=template; Nav.NavigateTo("/templates/"+template.Id);})" />
+        </MudExpansionPanel>
+    </MudCard>
+}
 @if (SelectedTemplate != null)
 {
-    <EditDirectoryTemplate Header="Header" @bind-DirectoryTemplate=@SelectedTemplate ClearSelectedTemplate="()=>{SelectedTemplate = null; InvokeAsync(StateHasChanged);}"/>
+    <EditDirectoryTemplate Header="Header" @bind-DirectoryTemplate=@SelectedTemplate
+                           ClearSelectedTemplate="()=>{SelectedTemplate = null; InvokeAsync(StateHasChanged);}" />
+
 }
 
 
@@ -133,21 +146,21 @@
 
 
 
-
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await RefreshComponents();
+        
         if (Templates?.Count() < 1)
         {
 
             await Task.Delay(1000);
             createFirstTemplateTooltipVisible = true;
-            await RefreshComponents();
+            
 
 
 
         }
+        await RefreshComponents();
     }
 
     protected async Task DuplicateTemplate(DirectoryTemplate template)
@@ -174,6 +187,31 @@
         RenameModal?.Hide();
         await RefreshComponents();
 
+    }
+    private HashSet<DirectoryTemplate> CreateTemplateHash
+    {
+        get
+
+        {
+            HashSet<DirectoryTemplate> rootTemplates = Templates.Where(t => t.ParentTemplate == null && t.DeletedAt == null).ToHashSet();
+            rootTemplates = RecursiveFill(rootTemplates);
+            return rootTemplates;
+
+        }
+    }
+
+    private HashSet<DirectoryTemplate> RecursiveFill(HashSet<DirectoryTemplate> setToFill)
+    {
+        foreach (var template in setToFill)
+        {
+            if (Templates.Any(t => t.ParentTemplateId == template.Id))
+            {
+                var children = Templates.Where(t => t.ParentTemplateId == template.Id && t.DeletedAt == null).ToHashSet();
+                children = RecursiveFill(children);
+                template.ChildTemplates = children;
+            }
+        }
+        return setToFill;
     }
     private async Task DeleteTemplate()
     {

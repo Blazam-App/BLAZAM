@@ -36,7 +36,7 @@
                     </AuthorizeView>
                 </MudPaper>
             }
-            <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true;})">Custom</MudButton>
+            <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true; newUser=null; SelectedTemplate=null; SelectedStep=4;})">Custom</MudButton>
 
             <MudButton Disabled=@(SelectedTemplate is null && custom!=true) Color=Color.Success OnClick="@(()=>{if(custom==true)SelectedStep=4;else selectedStep=1;})">Next</MudButton>
         </ChildContent>
@@ -50,10 +50,8 @@
         <ChildContent>
 
 
-            <NewUserNameEntry @bind-NewUserName=@newUserName />
-            <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=0;})">Back</MudButton>
-            <MudButton Color="Color.Primary" OnClick="CreateTemplateUser">Next</MudButton>
-
+            <NewUserNameEntry @bind-NewUserName=@newUserName OnNext="CreateTemplateUser" OnBack="@(()=>{SelectedStep=0;})" />
+            
 
 
         </ChildContent>
@@ -240,10 +238,6 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
 
             foreach (var fieldValue in SelectedTemplate.InheritedFieldValues)
             {
-
-
-
-
                 try
                 {
                     if (fieldValue.Field != null)

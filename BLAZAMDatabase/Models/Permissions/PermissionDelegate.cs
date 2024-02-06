@@ -35,5 +35,14 @@ namespace BLAZAM.Database.Models.Permissions
             }
             return false;
         }
+
+        public override string? ToString()
+        {
+            if(!DelegateName.IsNullOrEmpty())
+            {
+                return DelegateName;
+            }
+            return base.ToString();
+        }
     }
 }

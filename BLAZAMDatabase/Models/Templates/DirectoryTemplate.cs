@@ -171,7 +171,11 @@ namespace BLAZAM.Database.Models.Templates
                                          || (fv.CustomField != null && fv.CustomField.Equals(fieldValue.CustomField)));
         }
 
-
+        /// <summary>
+        /// Only used for GUI TreeViews
+        /// </summary>
+        [NotMapped]
+        public HashSet<DirectoryTemplate> ChildTemplates { get; set; }
 
         public string GenerateUsername(NewUserName newUser)
         {
