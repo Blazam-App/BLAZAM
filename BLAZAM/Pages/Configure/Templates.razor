@@ -1,5 +1,5 @@
 ﻿@page "/templates"
-@page "/templates/{TemplateIdParameter:int}"
+@page "/templates/{TemplateIdParameter:int?}"
 @inherits TemplateComponent
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
@@ -28,31 +28,32 @@
                                         SelectedTemplate = selected;
                                         Nav.NavigateTo("/templates/"+selected.Id);
                                         })" />
-@if (createFirstTemplateTooltipVisible)
+        @if (createFirstTemplateTooltipVisible)
         {
-            <MudTooltip Color
-            =Color.Error
-            ShowOnHover=@(Templates?.Count() < 1)
-                    Arrow=true
-                    IsVisible=@(createFirstTemplateTooltipVisible)
-                    Text="Create your first template">
-          
+            <MudTooltip Color=Color.Error
+                        ShowOnHover=@(Templates?.Count() < 1)
+                        Arrow=true
+                        IsVisible=@(createFirstTemplateTooltipVisible)
+                        Text="Create your first template">
 
 
-            <MudIconButton Color=Color.Tertiary
-                           Class="align-middle"
-                           OnClick="@(()=>{SelectedTemplate = new();Nav.NavigateTo("/templates");})"
-                           Icon="@Icons.Material.Filled.AddCard" />
-           
-        </MudTooltip>
-        }else{
-          <MudTooltip Text="@AppLocalization["New template"]">
+
                 <MudIconButton Color=Color.Tertiary
                                Class="align-middle"
                                OnClick="@(()=>{SelectedTemplate = new();Nav.NavigateTo("/templates");})"
                                Icon="@Icons.Material.Filled.AddCard" />
 
-        </MudTooltip>
+            </MudTooltip>
+        }
+        else
+        {
+            <MudTooltip Text="@AppLocalization["New template"]">
+                <MudIconButton Color=Color.Tertiary
+                               Class="align-middle"
+                               OnClick="@(()=>{SelectedTemplate = new();Nav.NavigateTo("/templates");})"
+                               Icon="@Icons.Material.Filled.AddCard" />
+
+            </MudTooltip>
         }
 
         @if (SelectedCategory != null && SelectedCategory != "All")
@@ -67,18 +68,18 @@
         {
             <MudTooltip Text="@AppLocalization["Copy template"]">
 
-            <MudIconButton OnClick=@(async()=>{await DuplicateTemplate(SelectedTemplate);}) 
-                Color="Color.Tertiary"
-                Icon="@Icons.Material.Filled.FileCopy" />
+                <MudIconButton OnClick=@(async()=>{await DuplicateTemplate(SelectedTemplate);})
+                               Color="Color.Tertiary"
+                               Icon="@Icons.Material.Filled.FileCopy" />
             </MudTooltip>
             <MudTooltip Text="@AppLocalization["Remove template"]">
 
-                
+
                 <MudIconButton Color=Color.Error
-                           Class="align-middle"
-                           OnClick="DeleteTemplate"
-                           Icon="@Icons.Material.Filled.Delete" />
-                           </MudTooltip>
+                               Class="align-middle"
+                               OnClick="DeleteTemplate"
+                               Icon="@Icons.Material.Filled.Delete" />
+            </MudTooltip>
         }
 
         @if (Templates.Any(t => t.DeletedAt != null))
@@ -86,8 +87,8 @@
             <MudTooltip Text="@AppLocalization["Restore templates"]">
 
                 <MudIconButton OnClick=@(async()=>{RestoreModal.Show();})
-                    Color="Color.Warning"
-                    Icon="@Icons.Material.Filled.RestoreFromTrash" />
+                               Color="Color.Warning"
+                               Icon="@Icons.Material.Filled.RestoreFromTrash" />
             </MudTooltip>
         }
     </MudStack>
@@ -106,9 +107,9 @@
         <MudDataGrid @ref=restoreDataGrid Items="Templates.Where(t=>t.DeletedAt!=null)" SelectOnRowClick=true>
             <Columns>
                 <SelectColumn />
-                <PropertyColumn Property="t=>t.Name"/>
-                <PropertyColumn Property="t=>t.Category"/>
-                    
+                <PropertyColumn Property="t=>t.Name" />
+                <PropertyColumn Property="t=>t.Category" />
+
             </Columns>
         </MudDataGrid>
 
@@ -116,11 +117,23 @@
 
     </AppModal>
 </SetHeader>
+@if (Templates.Count() > 0)
+{
+    
+    <MudCard Elevation="2">
+        <MudExpansionPanel Text="@AppLocalization["Inheritance Tree"]">
+            <TemplateInheritanceTreeView RootTemplate="CreateTemplateHash"
+                                         SelectedTemplate="SelectedTemplate"
+                                         OnTemplateSelected="@((template)=>{SelectedTemplate=template; Nav.NavigateTo("/templates/"+template.Id);})" />
+        </MudExpansionPanel>
+    </MudCard>
+}
 @if (SelectedTemplate != null)
 {
-    <EditDirectoryTemplate Header="Header" DirectoryTemplate=@SelectedTemplate />
-}
+    <EditDirectoryTemplate Header="Header" @bind-DirectoryTemplate=@SelectedTemplate
+                           ClearSelectedTemplate="()=>{SelectedTemplate = null; InvokeAsync(StateHasChanged);}" />
 
+}
 
 
 
@@ -130,6 +143,26 @@
     AppModal? RestoreModal;
     MudDataGrid<DirectoryTemplate>? restoreDataGrid;
     string? newCategoryName;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        if (Templates?.Count() < 1)
+        {
+
+            await Task.Delay(1000);
+            createFirstTemplateTooltipVisible = true;
+            
+
+
+
+        }
+        await RefreshComponents();
+    }
+
     protected async Task DuplicateTemplate(DirectoryTemplate template)
     {
         SelectedTemplate = (DirectoryTemplate)template.Clone(Context);
@@ -155,6 +188,31 @@
         await RefreshComponents();
 
     }
+    private HashSet<DirectoryTemplate> CreateTemplateHash
+    {
+        get
+
+        {
+            HashSet<DirectoryTemplate> rootTemplates = Templates.Where(t => t.ParentTemplate == null && t.DeletedAt == null).ToHashSet();
+            rootTemplates = RecursiveFill(rootTemplates);
+            return rootTemplates;
+
+        }
+    }
+
+    private HashSet<DirectoryTemplate> RecursiveFill(HashSet<DirectoryTemplate> setToFill)
+    {
+        foreach (var template in setToFill)
+        {
+            if (Templates.Any(t => t.ParentTemplateId == template.Id))
+            {
+                var children = Templates.Where(t => t.ParentTemplateId == template.Id && t.DeletedAt == null).ToHashSet();
+                children = RecursiveFill(children);
+                template.ChildTemplates = children;
+            }
+        }
+        return setToFill;
+    }
     private async Task DeleteTemplate()
     {
         SelectedTemplate.DeletedAt = DateTime.Now;
@@ -162,27 +220,12 @@
         SelectedTemplate = null;
         await InvokeAsync(StateHasChanged);
     }
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        await RefreshComponents();
-        if (Templates?.Count() < 1)
-        {
-
-            await Task.Delay(1000);
-            createFirstTemplateTooltipVisible = true;
-            await RefreshComponents();
-
-
-
-        }
-    }
     private async void RestoreSelectedTemplates()
     {
-        
-        foreach(var template in restoreDataGrid.SelectedItems)
+
+        foreach (var template in restoreDataGrid.SelectedItems)
         {
-            template.DeletedAt =null;
+            template.DeletedAt = null;
             try
             {
                 Templates.First(t => template.Equals(t)).DeletedAt = null;
@@ -192,7 +235,7 @@
                 //Do nothing, it's a best attempt
             }
         }
-        var result  = await Context.SaveChangesAsync();
+        var result = await Context.SaveChangesAsync();
         RestoreModal?.Hide();
         SnackBarService.Success(AppLocalization["Template(s) restored"]);
     }

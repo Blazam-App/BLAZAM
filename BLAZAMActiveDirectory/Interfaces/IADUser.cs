@@ -29,7 +29,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
       
       
         byte[]? ThumbnailPhoto { get; set; }
-        SecureString NewPassword { get; set; }
 
         bool SetPassword(SecureString password, bool requireChange);
         void StagePasswordChange(SecureString newPassword, bool requireChange);

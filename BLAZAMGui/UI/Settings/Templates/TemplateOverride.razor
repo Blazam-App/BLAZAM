@@ -1,8 +1,11 @@
 @inject NavigationManager Nav
+@inject IStringLocalizer<AppLocalization> AppLocalization
 <MudTooltip ShowOnHover=@(SourceTemplate!=null)
-            Text=>
+            Text=""
+            RootClass="@Class">
     <MudBadge Visible=@(SourceTemplate!=null)
               Icon="@Icons.Material.Filled.LowPriority"
+              Class="@BadgeClass"
               OnClick="@(()=>{_popoverOpen=!_popoverOpen;})"
               Overlap=true
               Color="Color.Info">
@@ -10,18 +13,23 @@
     </MudBadge>
     <MudPopover Open="@_popoverOpen" Fixed="true" Class="px-4 pt-4">
         <div class="d-flex flex-column">
-            <MudText>Inherited from<MudLink OnClick="@(()=>{Nav.NavigateTo("/templates/"+SourceTemplate.Id);})"> @SourceTemplate</MudLink></MudText>
+            <MudText>@AppLocalization["Inherited from"] <MudLink OnClick="@(()=>{Nav.NavigateTo("/templates/"+SourceTemplate.Id);})"> @SourceTemplate</MudLink></MudText>
             <MudButton OnClick="@(()=>{_popoverOpen=false;})" Class="ml-auto mr-n3 mb-1" Color="Color.Error">Close</MudButton>
         </div>
     </MudPopover>
 </MudTooltip>
 
-@code {
+    @code {
     [Parameter]
     public DirectoryTemplate? SourceTemplate { get; set; }
 
     [Parameter]
-    public RenderFragment ChildContent{ get; set; }
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string Class { get; set; }
+    [Parameter]
+    public string BadgeClass { get; set; }
 
     bool _popoverOpen;
 }

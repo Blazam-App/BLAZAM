@@ -195,13 +195,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
-        /// <summary>
-        /// Changes the password for this entry immediately
-        /// </summary>
-        /// <param name="password"></param>
-        /// <param name="requireChange"></param>
-        /// <returns></returns>
-        /// <exception cref="ApplicationException"></exception>
+       
+
+        public SecureString? NewPassword { get; set; }
+
+
+      
         public bool SetPassword(SecureString password, bool requireChange = false)
         {
             if (SamAccountName == null) throw new ApplicationException("samaccount name not found!");
@@ -213,17 +212,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             try
             {
+                var portOpen = NetworkTools.IsPortOpen(DirectorySettings.ServerAddress, 464);
+                //Invoke("SetPassword", new[] { password.ToPlainText() });
+                //return true;
 
-
-
-                // DirectoryEntry.InvokeSet("SetPassword", new object[] { password.ToPlainText() });
-
-                //TODO set password from outside the domain
                 //The following works utside the domain but may havee issues with cerrts
                 using (PrincipalContext pContext = new PrincipalContext(
                     ContextType.Domain,
                     DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
-                    DirectorySettings.Username,
+                    DirectorySettings.Username+"@"+DirectorySettings.FQDN,
                     directoryPassword
                     ))
                 {
@@ -249,17 +246,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 
                 Loggers.ActiveDirectryLogger.Error("Error setting entry password {@Error}", ex);
 
-                throw new ApplicationException("Unable to set password", ex);
+                throw ex;
             }
 
         }
 
         public void StagePasswordChange(SecureString newPassword, bool requireChange = false)
         {
-          
-            CommitSteps.Add(new JobStep("Set Password", (JobStep? step) =>
+            NewPassword = newPassword;
+            PostCommitSteps.Add(new JobStep("Set Password", (JobStep? step) =>
             {
-                return SetPassword(newPassword, requireChange);
+                var pass = NewPassword;
+                NewPassword = null;
+                return SetPassword(pass, requireChange);
             }));
 
 

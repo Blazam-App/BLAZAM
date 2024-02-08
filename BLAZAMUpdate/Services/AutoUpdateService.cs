@@ -17,8 +17,6 @@ namespace BLAZAM.Update.Services
 
         private readonly ApplicationInfo _applicationInfo;
 
-        //TODO use event listener to send email
-        //private readonly EmailService email;
         private readonly IAppDatabaseFactory factory;
         private UpdateService updateService;
         private Timer? updateCheckTimer;

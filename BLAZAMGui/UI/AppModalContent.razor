@@ -1,7 +1,7 @@
 ﻿@inherits DirectoryModelComponent
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
 
     [CascadingParameter] protected AppModal Modal { get; set; }
     [Parameter]
@@ -15,8 +15,12 @@
         InvokeAsync(StateHasChanged);
 
     }
-    
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Modal.YesEnabled = ValidateModal;
+    }
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);

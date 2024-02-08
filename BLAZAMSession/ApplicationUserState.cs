@@ -168,7 +168,6 @@ namespace BLAZAM.Server.Data.Services
                                 SaveUserSettings();
 
                             });
-                        
                     }
                 }
 

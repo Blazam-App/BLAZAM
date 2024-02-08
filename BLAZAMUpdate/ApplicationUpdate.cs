@@ -125,9 +125,7 @@ namespace BLAZAM.Update
 
         public AppEvent<FileProgress?> DownloadPercentageChanged { get; set; }
 
-        bool _downloaded = false;
-        bool _staged = false;
-        bool _backedUp = false;
+       
         ApplicationVersion _runningVersion;
         Process _runningProcess;
         SystemDirectory _applicationRootDirectory;
@@ -270,7 +268,7 @@ namespace BLAZAM.Update
             updaterDirFromStagedUpdate.CopyTo(updaterDir);
             //File.Copy(UpdateStagingDirectory + "\\updater\\", _applicationRootDirectory + "updater\\", true);
             Loggers.UpdateLogger.Information("Updater updated");
-            //If the updater upated we can  run the updater
+            //If the updater updated we can  run the updater
             var updaterRan = InvokeUpdateExecutable();
 
             if (updaterRan)
@@ -339,7 +337,8 @@ namespace BLAZAM.Update
 
                 try
                 {
-                    UpdateFile.Delete();
+                    UpdateDownloadDirectory.ClearDirectory();
+                    
                     return true;
 
                 }
@@ -385,7 +384,7 @@ namespace BLAZAM.Update
                     {
                         var zip = new ZipArchive(streamToReadFrom);
                         zip.ExtractToDirectory(UpdateStagingDirectory.Path, true);
-                        _staged = true;
+                        
                         Loggers.UpdateLogger.Debug(UpdateFile + " unzipped successfully to " + UpdateStagingDirectory);
 
                         return true;
@@ -459,7 +458,6 @@ namespace BLAZAM.Update
                                 }
                             }
 
-                            _downloaded = true;
 
 
                         }

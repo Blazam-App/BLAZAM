@@ -16,18 +16,7 @@ namespace BLAZAM.Gui.UI
 
         protected SetHeader? Header { get; set; }
 
-        private int _templateIdParameter;
-        [Parameter]
-        public int TemplateIdParameter
-        {
-            get => _templateIdParameter;
-            set
-            {
-                _templateIdParameter = value;
-                    SelectedTemplate = Templates.Where(t => t.Id == value).FirstOrDefault();
-              
-            }
-        }
+       
 
         protected IEnumerable<DirectoryTemplate> Templates
         {
@@ -47,7 +36,6 @@ namespace BLAZAM.Gui.UI
         {
             get => selectedTemplate; set
             {
-
                 selectedTemplate = value;
                 Header?.OnRefreshRequested?.Invoke();
 
@@ -73,10 +61,35 @@ namespace BLAZAM.Gui.UI
             await InvokeAsync(StateHasChanged);
             Header?.OnRefreshRequested?.Invoke();
         }
+
+
+
+
+        private int? _templateIdParameter;
+        [Parameter]
+        public int? TemplateIdParameter
+        {
+            get => _templateIdParameter;
+            set
+            {
+                _templateIdParameter = value;
+                if (value > 0)
+                {
+                    SelectedTemplate = Templates.Where(t => t.Id == value).FirstOrDefault();
+                }
+                else if (value == 0)
+                {
+                    SelectedTemplate = new();
+                }
+
+            }
+        }
+
+
         protected async Task FetchTemplates()
         {
             if(Context==null) return;
-            var temp = await Context.DirectoryTemplates.OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
+            var temp = await Context.DirectoryTemplates.Include(t=>t.ParentTemplate).OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
             if (temp != null)
                 Templates = temp;
             var cats = await Context.DirectoryTemplates.Select(c => c.Category).Where(c=>c!="" && c!=null).Distinct().ToListAsync();

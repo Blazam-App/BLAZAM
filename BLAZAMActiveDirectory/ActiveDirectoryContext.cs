@@ -393,15 +393,7 @@ namespace BLAZAM.ActiveDirectory
                                                 Loggers.ActiveDirectryLogger.Information("Active Directory test passed");
 
                                                 Status = DirectoryConnectionStatus.OK;
-                                                DomainControllers.Clear();
-
-                                                foreach (DomainController dc in Domain.GetDomain(DirectoryContext).DomainControllers)
-                                                {
-                                                    //var test = dc;
-
-                                                    DomainControllers.Add(dc);
-
-                                                }
+                                                TryGetDomainControllers();
                                                 FailedConnectionAttempts = 0;
                                             }
                                             else
@@ -492,6 +484,30 @@ namespace BLAZAM.ActiveDirectory
                     FailedConnectionAttempts++; ;
                 return;
             }
+        }
+        /// <summary>
+        /// Tries to get the domain controllers by connecting to the domain from the web server
+        /// </summary>
+        /// <remarks>
+        /// If the web host cannot contact the domain directly via DNS this will not populate <see cref="DomainControllers"/>
+        /// </remarks>
+        private void TryGetDomainControllers()
+        {
+            try
+            {
+                //Clear local list of domain controllers
+                DomainControllers.Clear();
+
+                foreach (DomainController dc in Domain.GetDomain(DirectoryContext).DomainControllers)
+                {
+                    DomainControllers.Add(dc);
+                }
+            }
+            catch (Exception ex) 
+            {
+                Loggers.ActiveDirectryLogger.Warning("Could not get domain controllers directly {@Error}", ex);
+            }
+           
         }
 
         public void Dispose()

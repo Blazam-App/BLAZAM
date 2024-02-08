@@ -92,8 +92,10 @@
         //Wait for a database connection
         await base.OnInitializedAsync();
 
-        LoadingData = false;
         await RefreshData();
+        LoadingData = false;
+
+        await InvokeAsync(StateHasChanged);
     }
 
     async Task RefreshData()
@@ -109,7 +111,7 @@
             {
                 if (Map.Id != 0)
                 {
-                    _map = Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Map.Id).FirstOrDefault();
+                    _map = await Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Map.Id).FirstOrDefaultAsync();
                 }
                 _accessLevels = await Context.AccessLevels.ToListAsync();
                 _permissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin).ToListAsync();
@@ -144,7 +146,6 @@
 
         }
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
 
     }
     async Task DeleteMapping()
@@ -167,6 +168,7 @@
 
     string DelegateToString(PermissionDelegate deleg)
     {
+        if (deleg == null) return AppLocalization["Unknown delegate"];
         if (deleg.DelegateSid != null)
             return Directory.FindEntryBySID(deleg?.DelegateSid)?.CanonicalName;
         else

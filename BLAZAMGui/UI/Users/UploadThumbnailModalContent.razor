@@ -36,7 +36,6 @@
         Modal.OnYes = SaveChanges;
         Modal.YesText = AppLocalization["Save Photo"];
         Modal.Title = "Change Thumbnail";
-        Modal.YesEnabled = ValidateModal;
         await InvokeAsync(StateHasChanged);
     }
     private async void LoadIcon(IBrowserFile e)

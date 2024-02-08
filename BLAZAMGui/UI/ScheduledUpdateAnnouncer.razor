@@ -7,9 +7,9 @@
     @if (timeLeft.TotalMinutes <= 60)
     {
 
-        <div>
+        <MudBadge Color="Color.Warning">
             Auto-update scheduled! The application will shutdown and update in @timeLeft.Minutes:@timeLeft.Seconds
-        </div>
+        </MudBadge>
 
         Task.Delay(400).ContinueWith((s) => { InvokeAsync(StateHasChanged); });
     }
