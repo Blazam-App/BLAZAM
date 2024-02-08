@@ -43,7 +43,7 @@ namespace BLAZAM.Jobs
         }
         public virtual bool Run()
         {
-            throw new NotImplementedException();
+            throw new ApplicationException("This step contains no action.");
         }
     }
 }

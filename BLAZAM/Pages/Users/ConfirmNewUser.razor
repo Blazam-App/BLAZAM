@@ -196,15 +196,15 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
             InvokeAsync(StateHasChanged);
             if (result.FailedSteps.Count > 0)
             {
-                User.Enabled = true;
-                await User.CommitChangesAsync();
-                SnackBarService.Success("User created with errors.");
+          
+                //SnackBarService.Success("User created with errors.");
 
-                foreach (var failedStep in result.FailedSteps)
+                /*foreach (var failedStep in result.FailedSteps)
                 {
 
-                    SnackBarService.Error(failedStep.Name+": "+ failedStep.Exception.Message + " " + failedStep.Exception.InnerException?.Message);
+                    SnackBarService.Error(failedStep.Name+": "+ failedStep.Exception?.Message + " " + failedStep.Exception?.InnerException?.Message);
                 }
+                */
 
             }
             else

@@ -32,7 +32,7 @@
     <BeforeItemsTemplate>
         <MudText>
 
-            Showing @Math.Clamp(SearchResults.Count(),0,10) Results
+            @SearchResults.Count() @AppLocalization["Results"]
         </MudText>
 
     </BeforeItemsTemplate>
@@ -55,6 +55,7 @@
 
     </NoItemsTemplate>
     <MoreItemsTemplate>
+        <MudButton OnClick="ShowMoreResults" Color="Color.Primary">@AppLocalization["Show more"]</MudButton>
         <MudText>
             More results than shown...
         </MudText>
@@ -122,7 +123,11 @@
     }
 
 
-
+    async Task ShowMoreResults()
+    {
+        MaxResults += 10;
+        await GetResults(SearchTerm);
+    }
 
     [Parameter]
     public ActiveDirectoryObjectType? SearchObjectType { get; set; }
@@ -182,11 +187,11 @@
 
 
 
-    private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText, CancellationToken token = new())
+    private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText ,CancellationToken token = new())
     {
         return await Task.Run(() =>
          {
-
+            
              if (!token.IsCancellationRequested && searchText != null)
              {
                  SearchResults = new List<IDirectoryEntryAdapter>();
@@ -199,6 +204,7 @@
                  search.MaxResults = MaxResults+1;
                  if (!search.GeneralSearchTerm.Equals(String.Empty))
                  {
+                     
                      var temp = (search.Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token)).Where(r => r.CanRead);
 
                      if (!token.IsCancellationRequested)

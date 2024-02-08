@@ -125,7 +125,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (value == null || value == "") return;
 
                
-                CommitSteps.Add(new Jobs.JobStep("Create home directory", (JobStep? step) =>
+                PostCommitSteps.Add(new Jobs.JobStep("Create home directory", (JobStep? step) =>
                 {
                     return Directory.Impersonation.Run(() =>
                     {
