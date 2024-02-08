@@ -264,10 +264,11 @@ await ParentTemplateChanged(null);
 
                         <TemplateOverride SourceTemplate="@ouTemplateSource">
                             <OUTreeView Label=@(AppLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
-                                        StartRootExpanded=false
+                                        
+                                        
                                         SelectedOU=@SelectedOU
                                         SelectedOUChanged="@((ou)=>{SelectedOU=ou; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
-                                        @bind-StartingSelectedOU=@SelectedOU />
+                                        StartingSelectedOU=@SelectedOU />
                             @if (!DirectoryTemplate.ParentOU.IsNullOrEmpty() && DirectoryTemplate.ParentTemplateId != null && !DirectoryTemplate.ParentOU.IsNullOrEmpty())
                             {
                                 <RevertTemplateValueButton OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;await LoadData();}) />
@@ -460,9 +461,9 @@ await ParentTemplateChanged(null);
 
         }
 
-        if (DirectoryTemplate != null)
+        if (DirectoryTemplate != null && !Context.EntityIsTracked(DirectoryTemplate))
         {
-            var matching = await Context.DirectoryTemplates.Where(dt => dt.Id == DirectoryTemplate.Id).FirstOrDefaultAsync();
+            var matching = await Context.DirectoryTemplates.Include(dt=>dt.ParentTemplate).Where(dt => dt.Id == DirectoryTemplate.Id).FirstOrDefaultAsync();
             if (matching != null) _template = matching;
             await LoadParentOU();
         }
