@@ -186,7 +186,7 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
         try
         {
             disableCreateUserButton =true;
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
             IJob createUserJob = new Job(AppLocalization["Create User"]);
             createUserJob.StopOnFailedStep = true;
             createUserJob.ShowJobDetailsDialog(MessageService);
