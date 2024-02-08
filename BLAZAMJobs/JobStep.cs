@@ -94,7 +94,6 @@ namespace BLAZAM.Jobs
                 else
                 {
                     Result = JobResult.Failed;
-
                 }
                 EndTime = DateTime.Now;
                 Progress = 100;

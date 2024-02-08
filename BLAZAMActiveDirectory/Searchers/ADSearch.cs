@@ -286,6 +286,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
             AddResults<TObject, TInterface>(lastResults);
             SearchTime = DateTime.Now - startTime;
+
             if (ObjectTypeFilter != ActiveDirectoryObjectType.OU)
             {
                 var approxTotal = searcher.VirtualListView?.ApproximateTotal;
@@ -296,7 +297,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             if (lastResults.Count < pageSize)
                 moreResults = false;
 
-            while (moreResults && cancellationToken?.IsCancellationRequested != true)
+            while (moreResults && cancellationToken?.IsCancellationRequested != true && searcher.VirtualListView!=null)
             {
                 if (searcher.VirtualListView != null)
                     searcher.VirtualListView.Offset += pageSize;
@@ -306,9 +307,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 AddResults<TObject, TInterface>(lastResults);
                 if (searcher.VirtualListView==null || lastResults.Count < pageSize)
                     moreResults = false;
-                SearchTime = DateTime.Now - startTime;
 
             }
+            SearchTime = DateTime.Now - startTime;
+
             if (cancellationToken?.IsCancellationRequested == true) return;
 
         }
@@ -328,7 +330,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 searcher.Tombstone = true;
                 searcher.VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, 1);
+
             }
+
+
             //searcher.Asynchronous = true;
             searcher.SizeLimit = MaxResults;
             searcher.Filter = searcher.Filter?.Substring(0, searcher.Filter.Length - 1) + FilterQuery + ")";
