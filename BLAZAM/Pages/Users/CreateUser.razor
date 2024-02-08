@@ -71,7 +71,7 @@
 
     </MudTabPanel>
 
-    <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null && SelectedTemplate?.AllowCustomGroups==true)">
+    <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null)">
         <TabContent>
             @AppLocalization["Groups"]
         </TabContent>
