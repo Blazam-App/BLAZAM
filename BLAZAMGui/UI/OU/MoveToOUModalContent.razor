@@ -40,8 +40,8 @@
             SnackBarService.Warning(DirectoryModel.CanonicalName + " is already in that OU.");
             return;
         }
-        if (await MessageService.Confirm("Are you sure you want to move this " + DirectoryModel.ObjectType.ToString().ToLower() + " to " + SelectedOU.CanonicalName, "Confirm move"))
-        {
+        // if (await MessageService.Confirm("Are you sure you want to move this " + DirectoryModel.ObjectType.ToString().ToLower() + " to " + SelectedOU.CanonicalName, "Confirm move"))
+        // {
 
 
             DirectoryModel.MoveTo(SelectedOU);
@@ -52,7 +52,7 @@
             return;
 
 
-        }
+        //}
 
     }
     protected override bool IsValid => SelectedOU != null;

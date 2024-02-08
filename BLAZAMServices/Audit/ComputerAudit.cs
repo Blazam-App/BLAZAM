@@ -4,6 +4,7 @@ using BLAZAM.Database.Models.Audit;
 using BLAZAM.Session.Interfaces;
 using BLAZAM.Logger;
 using BLAZAM.Helpers;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.Services.Audit
 {
@@ -14,6 +15,11 @@ namespace BLAZAM.Services.Audit
         {
         }
 
+        public override async Task<bool> Changed(IDirectoryEntryAdapter changedComputer, List<AuditChangeLog> changes)
+        {
+            await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Computer_Edited, changedComputer, changes.GetValueChangesString(c => c.OldValue), changes.GetValueChangesString(c => c.NewValue));
+            return true;
+        }
 
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
          => await Log(t => t.DirectoryEntryAuditLogs,
