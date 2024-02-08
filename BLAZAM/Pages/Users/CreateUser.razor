@@ -254,7 +254,7 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
                 }
 
             }
-            var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName);
+            var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName,false);
             if (conflictingEntry != null)
             {
                 newUser = null;
