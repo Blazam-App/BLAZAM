@@ -553,6 +553,8 @@
     }
     async Task DeleteUser()
     {
+        SavingChanges = true;
+        await InvokeAsync(StateHasChanged);
         if (await MessageService.Confirm("Are you sure you want to delete " + User.DisplayName + "?", "Delete User"))
         {
             try
