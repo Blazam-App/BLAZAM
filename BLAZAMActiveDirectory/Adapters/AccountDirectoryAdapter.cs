@@ -212,8 +212,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             try
             {
-
-
+                var portOpen = NetworkTools.IsPortOpen(DirectorySettings.ServerAddress, 464);
+                //Invoke("SetPassword", new[] { password.ToPlainText() });
+                //return true;
 
                 //The following works utside the domain but may havee issues with cerrts
                 using (PrincipalContext pContext = new PrincipalContext(
