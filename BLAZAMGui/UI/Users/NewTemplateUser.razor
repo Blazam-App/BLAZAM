@@ -32,7 +32,10 @@
                     {
 
 
-                        <MudTextField Label="@AppLocalization["Description"]" @bind-Value=@User.Description Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Description)) />
+                        <MudTextField Label="@AppLocalization["Description"]"
+                                      @bind-Value=@User.Description
+                                      Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Description))
+                                      Required=@(!IsRequiredTemplateField(ActiveDirectoryFields.Description)) />
 
 
 
@@ -71,7 +74,9 @@
                     {
 
 
-                        <MudTextField Label="@AppLocalization["Company"]" @bind-Value="@User.Company" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Company)) />
+                        <MudTextField Label="@AppLocalization["Company"]"
+                                      @bind-Value="@User.Company"
+                                      Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Company)) />
 
 
 
@@ -81,7 +86,9 @@
                     {
 
 
-                        <MudTextField Label="@AppLocalization["Job Title"]" @bind-Value="@User.Title" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Title)) />
+                        <MudTextField Label="@AppLocalization["Job Title"]"
+                                      @bind-Value="@User.Title"
+                                      Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.Title)) />
 
 
 
@@ -91,7 +98,9 @@
                     {
 
 
-                        <MudTextField Label="@AppLocalization["Office"]" @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
+                        <MudTextField Label="@AppLocalization["Office"]"
+                                      @bind-Value="@User.PhysicalDeliveryOfficeName"
+                                      Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
 
 
 
@@ -114,7 +123,9 @@
                     {
 
 
-                        <MudTextField Label="@AppLocalization["Home Phone"]" @bind-Value="@User.HomePhone" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomePhone)) />
+                        <MudTextField Label="@AppLocalization["Home Phone"]"
+                                      @bind-Value="@User.HomePhone"
+                                      Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.HomePhone)) />
 
 
 
@@ -124,7 +135,8 @@
                     {
 
 
-                        <MudTextField Label="@AppLocalization["Street Address"]" @bind-Value="@User.StreetAddress" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.StreetAddress)) />
+                        <MudTextField Label="@AppLocalization["Street Address"]"
+                                      @bind-Value="@User.StreetAddress" Disabled=@(!IsAdmin && !IsEditableTemplatField(ActiveDirectoryFields.StreetAddress)) />
 
 
 
@@ -248,7 +260,7 @@
                               return false;
                               })
                                           Label="@field.FieldDisplayName"
-                            @bind-Value="@User.NewEntryProperties[field.CustomField.FieldName]" Disabled=@(!IsAdmin && !IsEditableTemplatField(field.CustomField)) />
+                                          @bind-Value="@User.NewEntryProperties[field.CustomField.FieldName]" Disabled=@(!IsAdmin && !IsEditableTemplatField(field.CustomField)) />
                         }
                     }
                 </Section>
@@ -270,7 +282,7 @@
 @code {
 
 
-#nullable disable warnings
+    #nullable disable warnings
 
     [Parameter]
     public DirectoryTemplate DirectoryTemplate { get; set; }
@@ -286,11 +298,22 @@
     bool IsEditableTemplatField(IActiveDirectoryField field)
     {
 
+        //if (IsAdmin) return true;
 
         if (field is ActiveDirectoryField)
             return DirectoryTemplate.InheritedFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Editable);
         else
             return DirectoryTemplate.InheritedFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Editable);
+    
+    } 
+    bool IsRequiredTemplateField(IActiveDirectoryField field)
+    {
+
+
+        if (field is ActiveDirectoryField)
+            return DirectoryTemplate.InheritedFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Required);
+        else
+            return DirectoryTemplate.InheritedFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Required);
     }
 
 

@@ -150,7 +150,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 foreach (SearchResult sr in r)
                 {
                     var o = new T();
-                    o.Parse(sr, Directory);
+                    o.Parse(directory:Directory,searchResult: sr);
 
                     objects.Add(o);
                 }

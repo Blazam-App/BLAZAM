@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
@@ -208,7 +209,32 @@ namespace BLAZAM.Helpers
                 }
             }
         }
+        public static PropertyInfo GetPropertyFromExpression<T>(this T obj, Expression<Func<T, object>> GetPropertyLambda)
+        {
+            MemberExpression Exp = null;
 
+            //this line is necessary, because sometimes the expression comes in as Convert(originalexpression)
+            if (GetPropertyLambda.Body is UnaryExpression)
+            {
+                var UnExp = (UnaryExpression)GetPropertyLambda.Body;
+                if (UnExp.Operand is MemberExpression)
+                {
+                    Exp = (MemberExpression)UnExp.Operand;
+                }
+                else
+                    throw new ArgumentException();
+            }
+            else if (GetPropertyLambda.Body is MemberExpression)
+            {
+                Exp = (MemberExpression)GetPropertyLambda.Body;
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
+
+            return (PropertyInfo)Exp.Member;
+        }
 
         public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
         {
@@ -280,10 +306,10 @@ namespace BLAZAM.Helpers
                 if (value == null) return null;
 
 
-                Int64? longInt = null;
+                Int64 longInt = Int64.MinValue;
                 try
                 {
-                    longInt = Int64.Parse(value.ToString());
+                    Int64.TryParse(value.ToString(),out longInt);
                 }
                 catch (FormatException)
                 {
@@ -291,9 +317,9 @@ namespace BLAZAM.Helpers
                     // a com object.
 
                 }
-                if (longInt != null)
+                if (longInt != Int64.MinValue && longInt!=0)
                 {
-                    dateTime = DateTime.FromFileTimeUtc(longInt.Value);
+                    dateTime = DateTime.FromFileTimeUtc(longInt);
                 }
                 else
                 {

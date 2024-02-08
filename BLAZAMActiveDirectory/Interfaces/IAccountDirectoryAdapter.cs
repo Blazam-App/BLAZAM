@@ -3,7 +3,7 @@
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
     /// <summary>
-    /// Represents Active Dirtory Account Objects. These types have passwords and can be enabled, disabled,
+    /// Represents Active Directory Account Objects. These types have passwords and can be enabled, disabled,
     /// and locked out.
     /// </summary>
     /// <remarks>
@@ -42,12 +42,46 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Indicates whether the current web user can search disabled <see cref="IAccountDirectoryAdapter"/>'s
         /// </summary>
         bool CanSearchDisabled { get; }
+
+        /// <summary>
+        /// If the account has been locked out, this will be the <see cref="DateTime"/> that it was locked
+        /// </summary>
         DateTime? LockoutTime { get; }
+
+        /// <summary>
+        /// If the account has an expiration this will be the <see cref="DateTime"/> that it will/had expire(d)
+        /// </summary>
         DateTime? ExpireTime { get; set; }
+
+        /// <summary>
+        /// Collects login data synchronously from all domain controllers in the domain
+        /// </summary>
+        /// <remarks>
+        /// This is a GUI hanging operation and should be surrounded by another thread
+        /// </remarks>
         DateTime? LastLogonTime { get; }
+
+        /// <summary>
+        /// The time the password was last changed
+        /// </summary>
         DateTime? PasswordLastSet { get; }
 
+
+        /// <summary>
+        /// If a password change is staged using <see cref="StagePasswordChange(SecureString, bool)"/>, holds the encrypted new password to be applied.
+        /// </summary>
+        SecureString? NewPassword { get; set; }
+
+        /// <summary>
+        /// Changes the password for this entry immediately
+        /// </summary>
+        /// <param name="password">The new password</param>
+        /// <param name="requireChange">Whether to force a password change after reset</param>
+        /// <returns>True if the password change was successful, otherwise false.</returns>
+        /// <exception cref="ApplicationException"></exception>
         bool SetPassword(SecureString password, bool requireChange = false);
+
+
         void StagePasswordChange(SecureString newPassword, bool requireChange = false);
     }
 }

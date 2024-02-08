@@ -19,6 +19,7 @@ using BLAZAM.Server.Data;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using BLAZAM.FileSystem;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BLAZAM.Database.Context
 {
@@ -630,7 +631,11 @@ namespace BLAZAM.Database.Context
 
 
 
-
+        public bool EntityIsTracked<TEntry>(TEntry entry)
+        {
+            if (entry == null) return false;
+            return base.Entry(entry).State != EntityState.Detached;
+        }
 
         public static DatabaseException DownReason { get; set; }
 
@@ -853,5 +858,6 @@ namespace BLAZAM.Database.Context
             throw new NotImplementedException("The SelectAllDataFromTable method has not been implemented");
            
         }
+
     }
 }

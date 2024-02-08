@@ -62,7 +62,7 @@
                          FixedHeader=true
                          ColumnResizeMode="ResizeMode.Container"
                          Hideable=true
-                         Items="@logonEntries.Where(ae=>ae.Action=="Login" || ae.Action=="Logout").OrderByDescending(ae=>ae.Timestamp)"
+                         Items="@logonEntries.OrderByDescending(ae=>ae.Timestamp)"
                          Filterable="false"
                          SortMode="@SortMode.Multiple"
                          Groupable="false">

@@ -154,7 +154,7 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 </Row>
 
 
-<MudButton Color="Color.Success" OnClick="ConfirmUser">Create User</MudButton>
+<MudButton Disabled=@disableCreateUserButton Color="Color.Success" OnClick="ConfirmUser">Create User</MudButton>
 <MudButton StartIcon="@Icons.Material.Filled.Print" Color="Color.Info" OnClick="Print">Print</MudButton>
 
 @code {
@@ -173,6 +173,8 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
         if (DirectoryTemplate == null) return true;
         return DirectoryTemplate?.FieldValues.Any(f => f.Field.FieldName == field.FieldName) == true;
     }
+
+    bool disableCreateUserButton=false;
     /// <summary>
     /// Triggered when the user confirms the creation of this
     /// Active Directory User
@@ -183,9 +185,19 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 
         try
         {
-            var result = await User.CommitChangesAsync();
+            disableCreateUserButton =true;
+            await InvokeAsync(StateHasChanged);
+            IJob createUserJob = new Job(AppLocalization["Create User"]);
+            createUserJob.StopOnFailedStep = true;
+            createUserJob.ShowJobDetailsDialog(MessageService);
+            var result = await User.CommitChangesAsync(createUserJob);
+
+            disableCreateUserButton = false;
+            InvokeAsync(StateHasChanged);
             if (result.FailedSteps.Count > 0)
             {
+                User.Enabled = true;
+                await User.CommitChangesAsync();
                 SnackBarService.Success("User created with errors.");
 
                 foreach (var failedStep in result.FailedSteps)
@@ -199,9 +211,11 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
             {
 
                 SnackBarService.Success("User has been created");
+                Nav.NavigateTo("/search/" + User.SamAccountName);
+
             }
-            await Confirmed.InvokeAsync(User);
-            Nav.NavigateTo("/search/" + User.SamAccountName);
+            await AuditLogger.User.Created(User);
+
         }
         catch (ApplicationException ex)
         {

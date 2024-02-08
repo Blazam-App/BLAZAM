@@ -55,7 +55,7 @@
 
         //ApplicationBaseOUs = Directory.OUs.FindSubOusByDN(null);
         ADOrganizationalUnit TopLevel = new ADOrganizationalUnit();
-        await TopLevel.Parse(Directory.GetDirectoryEntry(), Directory);
+        TopLevel.Parse(directory:Directory,directoryEntry: Directory.GetDirectoryEntry());
         _ = TopLevel.SubOUs;
         ApplicationBaseOUs.Add(TopLevel);
 

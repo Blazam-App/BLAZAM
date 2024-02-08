@@ -67,6 +67,32 @@
 
 
                     <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
+
+                     <MudStack Row=true>
+                         <MudText Typo="Typo.subtitle2">@AppLocalization["Created"]:</MudText>
+                            <MudSpacer />
+                            <DateWithTimeTooltip DateTime="Group?.Created" />
+
+                        </MudStack>
+
+                        <MudStack Row=true>
+
+                            <MudText Typo="Typo.subtitle2">@AppLocalization["Last Change"]:</MudText>
+                            <MudSpacer />
+
+                            <DateWithTimeTooltip DateTime="Group?.LastChanged" />
+
+                        </MudStack>
+
+                       
+                    <MudStack Row=true>
+                        <MudText Typo="Typo.subtitle2">@AppLocalization["OU"]:</MudText>
+                            <MudSpacer />
+
+                            <MudText Style="text-align:end;" Typo="Typo.caption">@Group.OU.ToPrettyOu()</MudText>
+                        </MudStack>
+
+
                 </Section>
             </MudItem>
             <MudItem xs="12" md="6">

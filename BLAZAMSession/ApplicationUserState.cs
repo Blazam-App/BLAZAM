@@ -4,6 +4,7 @@ using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
+using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Session.Interfaces;
@@ -157,15 +158,16 @@ namespace BLAZAM.Server.Data.Services
                 }
                 else if (Preferences.Email == null)
                 {
-                    string email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
-                    if (email != null)
+                    var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                    if (emailClaim != null && !emailClaim.Value.IsNullOrEmpty())
                     {
-                        Preferences.Email = email;
-                        Task.Run(() => {
-                            Task.Delay(1000).Wait();
-                            SaveUserSettings();
+                        
+                            Preferences.Email = emailClaim.Value;
+                            Task.Run(() => {
+                                Task.Delay(1000).Wait();
+                                SaveUserSettings();
 
-                        });
+                            });
                     }
                 }
 

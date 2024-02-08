@@ -8,7 +8,7 @@
         List<IADUser> FindSubUsersByDN(string searchTerm);
         List<IADOrganizationalUnit> FindSubOusByDN(string searchTerm);
         IADOrganizationalUnit? FindOuByDN(string searchTerm);
-        Task<IADOrganizationalUnit> GetApplicationRootOU();
+        IADOrganizationalUnit GetApplicationRootOU();
         List<IADOrganizationalUnit> FindOuByString(string searchTerm);
         Task<List<IADOrganizationalUnit>> FindOuByStringAsync(string searchTerm);
         List<IADComputer> FindSubComputerByDN(string searchBaseDN);

@@ -116,7 +116,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error(ex.Message);
+                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}",ex);
             }
             return false;
 
@@ -193,7 +193,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     catch (Exception ex)
                     {
-                        Loggers.ActiveDirectryLogger.Error(ex.Message);
+                        Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
 
                         //MainWindow.Get.Toast("Error pinging " + destination);
                         //Debug.WriteLine("Error pinging " + destination);
@@ -208,17 +208,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error(ex.Message);
+                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex );
 
             }
         }
-        public override async Task Parse(SearchResult result, IActiveDirectoryContext directory)
-        {
-            await base.Parse(result, directory);
-            //if (!this.IsDeleted)
-            //    MonitorOnlineStatus();
-        }
-
+      
         public override void Dispose()
         {
             base.Dispose();

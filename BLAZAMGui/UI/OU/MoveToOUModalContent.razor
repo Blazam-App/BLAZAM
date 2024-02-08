@@ -23,15 +23,14 @@
     IADOrganizationalUnit SelectedOU { get; set; }
     IADOrganizationalUnit StartingOU { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await base.OnInitializedAsync();
-        StartingOU = await DirectoryModel.GetParent();
+        base.OnInitialized();
+        StartingOU = DirectoryModel.GetParent();
         Modal.OnYes = MoveTo;
         Modal.YesText = AppLocalization["Move"];
         Modal.Title = "Move To";
 
-        Modal.YesEnabled = ValidateModal;
     }
 
     async void MoveTo()
@@ -41,8 +40,8 @@
             SnackBarService.Warning(DirectoryModel.CanonicalName + " is already in that OU.");
             return;
         }
-        if (await MessageService.Confirm("Are you sure you want to move this " + DirectoryModel.ObjectType.ToString().ToLower() + " to " + SelectedOU.CanonicalName, "Confirm move"))
-        {
+        // if (await MessageService.Confirm("Are you sure you want to move this " + DirectoryModel.ObjectType.ToString().ToLower() + " to " + SelectedOU.CanonicalName, "Confirm move"))
+        // {
 
 
             DirectoryModel.MoveTo(SelectedOU);
@@ -53,7 +52,7 @@
             return;
 
 
-        }
+        //}
 
     }
     protected override bool IsValid => SelectedOU != null;

@@ -287,23 +287,15 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         new void Dispose();
 
         /// <summary>
-        /// Converts a raw <see cref="DirectoryEntry"/> into 
+        /// Converts a raw <see cref="DirectoryEntry"/> or <see cref="SearchResult"/> into 
         /// an application <see cref="IDirectoryEntryAdapter"/>
         /// object.
         /// </summary>
         /// <param name="result"></param>
         /// <param name="directory"></param>
         /// <returns></returns>
-        Task Parse(DirectoryEntry result, IActiveDirectoryContext directory);
-        /// <summary>
-        /// Converts a raw <see cref="SearchResult"/> into 
-        /// an application <see cref="IDirectoryEntryAdapter"/>
-        /// object.
-        /// </summary>
-        /// <param name="result"></param>
-        /// <param name="directory"></param>
-        /// <returns></returns>
-        Task Parse(SearchResult result, IActiveDirectoryContext directory);
+        void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry=null, SearchResult? searchResult=null);
+      
         /// <summary>
         /// Move this entry to a new <see cref="IADOrganizationalUnit"/>
         /// </summary>
@@ -314,7 +306,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Get's the parent <see cref="IADOrganizationalUnit"/> of this entry
         /// </summary>
         /// <returns></returns>
-        Task<IADOrganizationalUnit?> GetParent();
+        IADOrganizationalUnit? GetParent();
 
         /// <summary>
         /// Wrapper method for the base <see cref="DirectoryEntry"/>

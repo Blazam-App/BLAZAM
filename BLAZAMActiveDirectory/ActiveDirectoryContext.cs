@@ -100,7 +100,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 var model = new DirectoryEntryAdapter();
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                model.Parse(result, this);
+                model.Parse(directory: this, searchResult: result );
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 found.Add(model);
             }
@@ -393,15 +393,7 @@ namespace BLAZAM.ActiveDirectory
                                                 Loggers.ActiveDirectryLogger.Information("Active Directory test passed");
 
                                                 Status = DirectoryConnectionStatus.OK;
-                                                DomainControllers.Clear();
-
-                                                foreach (DomainController dc in Domain.GetDomain(DirectoryContext).DomainControllers)
-                                                {
-                                                    //var test = dc;
-
-                                                    DomainControllers.Add(dc);
-
-                                                }
+                                                TryGetDomainControllers();
                                                 FailedConnectionAttempts = 0;
                                             }
                                             else
@@ -426,7 +418,7 @@ namespace BLAZAM.ActiveDirectory
                                                     Status = DirectoryConnectionStatus.BadCredentials;
                                                     break;
                                                 default:
-                                                    Loggers.ActiveDirectryLogger.Error("Error collecting domain controllers {@Error}", ex);
+                                                    Loggers.ActiveDirectryLogger.Warning("Error collecting domain controllers {@Error}", ex);
                                                     break;
                                             }
                                         }
@@ -492,6 +484,30 @@ namespace BLAZAM.ActiveDirectory
                     FailedConnectionAttempts++; ;
                 return;
             }
+        }
+        /// <summary>
+        /// Tries to get the domain controllers by connecting to the domain from the web server
+        /// </summary>
+        /// <remarks>
+        /// If the web host cannot contact the domain directly via DNS this will not populate <see cref="DomainControllers"/>
+        /// </remarks>
+        private void TryGetDomainControllers()
+        {
+            try
+            {
+                //Clear local list of domain controllers
+                DomainControllers.Clear();
+
+                foreach (DomainController dc in Domain.GetDomain(DirectoryContext).DomainControllers)
+                {
+                    DomainControllers.Add(dc);
+                }
+            }
+            catch (Exception ex) 
+            {
+                Loggers.ActiveDirectryLogger.Warning("Could not get domain controllers directly {@Error}", ex);
+            }
+           
         }
 
         public void Dispose()
@@ -577,7 +593,7 @@ namespace BLAZAM.ActiveDirectory
                             }
                             catch (DirectoryServicesCOMException ex)
                             {
-                                Loggers.ActiveDirectryLogger.Error("Error authenticating user: " + ex.Message);
+                                Loggers.ActiveDirectryLogger.Error("Error authenticating user: " + ex.Message+" {@Error}",ex);
                                 switch (ex.Message)
                                 {
                                     case "The user name or password is incorrect.":
@@ -599,7 +615,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (LdapException ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Error authenticating user: " + ex.Message);
+                    Loggers.ActiveDirectryLogger.Error("Error authenticating user: " + ex.Message+" {@Error}",ex);
                     switch (ex.Message)
                     {
                         case "The user name or password is incorrect.":
