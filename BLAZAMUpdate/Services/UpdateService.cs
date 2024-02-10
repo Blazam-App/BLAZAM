@@ -8,6 +8,7 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using System.Security.Principal;
 using System.Reflection.Metadata.Ecma335;
+using System.Diagnostics;
 
 namespace BLAZAM.Update.Services
 {
@@ -133,7 +134,7 @@ namespace BLAZAM.Update.Services
 
                 }
             }
-           
+
             if (SelectedBranch == null) SelectedBranch = ApplicationReleaseBranches.Stable;
         }
 
@@ -173,7 +174,7 @@ namespace BLAZAM.Update.Services
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Error while checking for latest update {@Error}",ex);
+                Loggers.UpdateLogger.Error("Error while checking for latest update {@Error}", ex);
 
             }
         }
@@ -187,54 +188,76 @@ namespace BLAZAM.Update.Services
             {
                 Loggers.UpdateLogger.Information("Checking update credentials");
 
-                if (ApplicationInfo.applicationRoot.Writable)
+                if (!Debugger.IsAttached && ApplicationInfo.applicationRoot.Writable)
                     return UpdateCredential.Application;
 
                 //Test Directory Credentials
-                using var context = _dbFactory.CreateDbContext();
-                //Prepare impersonation
-                WindowsImpersonation? impersonation = null;
-
-
-                //Pull ad settings to test if app ad account can write to the application directory
-                var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
-                //Make sure we got the settings
-                if (adSettings != null)
-                    impersonation = adSettings.CreateDirectoryAdminImpersonator();
-                //Make sure impersonation set up and test write permissions
-                if (impersonation != null && impersonation.Run(() =>
-                {
-                    Loggers.UpdateLogger.Information("Checking AD update credential permissions: " + WindowsIdentity.GetCurrent().Name);
-
-                    if (ApplicationInfo.applicationRoot.Writable)
-                        return true;
-                    return false;
-                }))
+                if (!Debugger.IsAttached && TestDirectoryCredentials())
                     return UpdateCredential.Active_Directory;
 
                 // Active Directory credentials don't exist or don't have write permissions to the application directory
 
 
 
-                // Clear previous impersonations
-                impersonation = null;
                 //Test Update Credentials
-                var appSettings = context.AppSettings.FirstOrDefault();
-                if (appSettings != null)
-                    impersonation = appSettings?.CreateUpdateImpersonator();
+               if(TestCustomCredentials())
+                    return UpdateCredential.Update;
 
-                if (impersonation != null && impersonation.Run(() =>
+                return UpdateCredential.None;
+            }
+        }
+
+        private bool TestCustomCredentials()
+        {
+            using var context = _dbFactory.CreateDbContext();
+            WindowsImpersonation? impersonation = null;
+
+            var appSettings = context.AppSettings.FirstOrDefault();
+            if (appSettings != null)
+                impersonation = appSettings?.CreateUpdateImpersonator();
+
+            if (impersonation != null)
+            {
+                return impersonation.Run(() =>
                 {
                     Loggers.UpdateLogger.Information("Checking custom update credential permissions: " + WindowsIdentity.GetCurrent().Name);
 
                     if (ApplicationInfo.applicationRoot.Writable)
                         return true;
                     return false;
-                }))
-                    return UpdateCredential.Update;
-
-                return UpdateCredential.None;
+                });
             }
+            return false;
+        }
+
+        private bool TestDirectoryCredentials()
+        {
+            using var context = _dbFactory.CreateDbContext();
+            //Prepare impersonation
+            WindowsImpersonation? impersonation = null;
+
+
+            //Pull ad settings to test if app ad account can write to the application directory
+            var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
+            //Make sure we got the settings
+            if (adSettings != null)
+                impersonation = adSettings.CreateDirectoryAdminImpersonator();
+            //Make sure impersonation set up and test write permissions
+            if (impersonation != null)
+            {
+
+                return impersonation.Run(() =>
+               {
+                   Loggers.UpdateLogger.Information("Checking AD update credential permissions: " + WindowsIdentity.GetCurrent().Name);
+
+                   if (ApplicationInfo.applicationRoot.Writable)
+                       return true;
+                   return false;
+
+               });
+
+            }
+            return false;
         }
 
         /// <summary>

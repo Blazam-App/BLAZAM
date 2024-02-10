@@ -87,8 +87,14 @@ namespace BLAZAM.Gui.UI.Chat
                 ChatRoom = await Chat.GetChatRoom(ChatRoom);
 
             }
-            unreadAppChatMessages = Chat.GetUnreadMessages(CurrentUser.State.Preferences).Where(ur => ur.ChatRoomId == AppChatRoom.Id).Count();
-            unreadChatMessages = Chat.GetUnreadMessages(CurrentUser.State.Preferences).Where(ur => ur.ChatRoomId != AppChatRoom.Id).Count();
+            try
+            {
+                unreadAppChatMessages = Chat.GetUnreadMessages(CurrentUser.State.Preferences).Where(ur => ur.ChatRoomId == AppChatRoom.Id).Count();
+                unreadChatMessages = Chat.GetUnreadMessages(CurrentUser.State.Preferences).Where(ur => ur.ChatRoomId != AppChatRoom.Id).Count();
+            }catch (Exception ex)
+            {
+                Loggers.DatabaseLogger.Error("Error getting unread chat messages {@Error}", ex);
+            }
         }
     }
 }

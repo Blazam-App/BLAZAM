@@ -1,4 +1,5 @@
-﻿using System.Security;
+﻿using Serilog.Configuration;
+using System.Security;
 using System.Security.AccessControl;
 using System.Security.Permissions;
 
@@ -71,7 +72,14 @@ namespace BLAZAM.FileSystem
                     // Clean up the test file if it was created
                     if (testFilePath != null && File.Exists(testFilePath))
                     {
-                        File.Delete(testFilePath);
+                        try
+                        {
+                            File.Delete(testFilePath);
+                        }
+                        catch
+                        {
+                            //Do nothing if we can't delete the test file
+                        }
                     }
                 }
             }
