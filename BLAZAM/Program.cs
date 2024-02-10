@@ -170,12 +170,13 @@ namespace BLAZAM
                 var listeningAddress = Configuration.GetValue<string>("ListeningAddress");
                 var httpPort = Configuration.GetValue<int>("HTTPPort");
                 var httpsPort = Configuration.GetValue<int>("HTTPSPort");
+                var dbSettings = kestrelContext.AppSettings.FirstOrDefault();
                 builder.WebHost.UseKestrel(options =>
                 {
                     if (listeningAddress == "*")
                     {
                         options.ListenAnyIP(httpPort);
-                        if (httpsPort != 0 && kestrelContext.AppSettings.FirstOrDefault()?.AppFQDN=="gsdfgfds")
+                        if (httpsPort != 0 && dbSettings!=null && !dbSettings.SSLCertificateCipher.IsNullOrEmpty())
                         {
                             options.ListenAnyIP(httpsPort, configure =>
                             {
@@ -189,7 +190,7 @@ namespace BLAZAM
                         var ip = IPAddress.Parse(listeningAddress);
 
                         options.Listen(ip, httpPort);
-                        if (httpsPort != 0 && kestrelContext.AppSettings.FirstOrDefault()?.AppFQDN == "gsdfgfds")
+                        if (httpsPort != 0 && dbSettings != null && !dbSettings.SSLCertificateCipher.IsNullOrEmpty())
                         {
                             options.Listen(ip, httpsPort, configure =>
                             {

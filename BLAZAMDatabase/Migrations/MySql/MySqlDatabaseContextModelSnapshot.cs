@@ -449,7 +449,6 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasColumnType("longtext");
 
                     b.Property<string>("SSLCertificateCipher")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("UpdateBranch")
