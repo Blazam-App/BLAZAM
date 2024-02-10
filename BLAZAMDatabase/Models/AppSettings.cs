@@ -112,10 +112,21 @@ namespace BLAZAM.Database.Models
         public bool UseUpdateCredentials { get; set; }
         public string? UpdateDomain { get; set; }
         public string? UpdateUsername { get; set; }
+        /// <summary>
+        /// The password for the credential to update the application with
+        /// </summary>
+        /// <remarks>
+        /// This should always be encrypted on the way in, and decrypted on the way out
+        /// </remarks>
         public string? UpdatePassword { get; set; }
 
-
-
+        /// <summary>
+        /// The byte array of the certificate to use for SSL
+        /// </summary>
+        /// <remarks>
+        /// This should always be encrypted on the way in, and decrypted on the way out
+        /// </remarks>
+        public string SSLCertificateCipher { get; set; }
 
         public string? MyrtilleURL { get; set; }
 

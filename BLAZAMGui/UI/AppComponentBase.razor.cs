@@ -41,6 +41,8 @@ namespace BLAZAM.Gui.UI
         [Inject]
         public ICurrentUserStateService CurrentUser { get; set; }
 
+       // protected IApplicationUserState? CurrentUser => UserStateService.CurrentUserState;
+
         [Inject]
         protected AuditLogger AuditLogger { get; set; }
 

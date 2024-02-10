@@ -8,7 +8,8 @@ namespace BLAZAM.Server.Data.Services
 {
     public class CurrentUserStateService : IDisposable, ICurrentUserStateService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private IHttpContextAccessor _httpContextAccessor { get; set; }
+
         private readonly IApplicationUserStateService _applicationUserStateService;
 
         private Timer? _retryTimer;
@@ -19,7 +20,11 @@ namespace BLAZAM.Server.Data.Services
         /// <summary>
         /// The current user's session state
         /// </summary>
-        public IApplicationUserState State { get => state; set => state = value; }
+        public IApplicationUserState State
+        {
+            get => state;
+            set => state = value;
+        }
 
         /// <summary>
         /// The current user's username
@@ -45,7 +50,7 @@ namespace BLAZAM.Server.Data.Services
             try
             {
                 State = _applicationUserStateService.GetUserState(_httpContextAccessor.HttpContext?.User);
-                if (State !=null && State.IsAuthenticated)
+                if (State != null && State.IsAuthenticated)
                     State.IPAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
                 _retryTimer?.Dispose();
 

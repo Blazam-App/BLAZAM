@@ -144,7 +144,7 @@ namespace BLAZAM.Server.Data.Services
                 if (userSettings == null)
                 {
                     userSettings = new AppUser();
-                    string email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+                    string? email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
                     if (email != null)
                     {
                         userSettings.Email = email;
@@ -193,7 +193,7 @@ namespace BLAZAM.Server.Data.Services
                     dbUserSettings.ProfilePicture = this.Preferences?.ProfilePicture;
                     dbUserSettings.SearchDisabledUsers = this.Preferences?.SearchDisabledUsers == true;
                     dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
-                    dbUserSettings.FavoriteEntries = this.Preferences?.FavoriteEntries;
+                    dbUserSettings.FavoriteEntries = this.Preferences?.FavoriteEntries!=null? this.Preferences.FavoriteEntries:new();
                     dbUserSettings.Email = this.Preferences?.Email;
                     SaveDashboardWidgets(dbUserSettings);
                     OnSettingsChanged?.Invoke(dbUserSettings);
