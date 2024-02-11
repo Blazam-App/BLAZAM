@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Components.Forms;
+﻿@using BLAZAM.Gui.UI.Settings.Modals
+@using Microsoft.AspNetCore.Components.Forms;
 @using System.Security.Cryptography.X509Certificates
 @inherits SettingsComponents
 
@@ -77,30 +78,18 @@
     @if (ApplicationInfo.IsUnderIIS || ApplicationInfo.InDebugMode)
     {
         <SettingsField Label="@AppLocalization["SSL Certificate"]">
-
-        <MudFileUpload T="IBrowserFile" FilesChanged="LoadCert" Accept=".pem, .key, .crt, .pfx">
-            <ButtonTemplate>
-                <MudButton HtmlTag="label"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.CloudUpload"
-                               for="@context.Id">
-                    Upload Certificate
-                </MudButton>
-            </ButtonTemplate>
-                <SelectedTemplate>
-                    @if (context != null)
-                    {
-                        <MudText>@context.Name</MudText>
-                    }
-                    else
-                    {
-                        <MudText>No File</MudText>
-                    }
-                </SelectedTemplate>
-        </MudFileUpload>
+            <MudButton OnClick="()=>{uploadCertificateModal?.Show();}"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       >
+                Upload Certificate
+            </MudButton>
+        
     </SettingsField>
-
+    <AppModal @ref="uploadCertificateModal" Title=@AppLocalization["Upload SSL Certificate"]>
+        <UploadCertificateModalContent AppSettings="settings"/>
+    </AppModal>
     }
 
     @*
@@ -124,7 +113,9 @@
 </MudOverlay>
 @code {
     AppSettings settings = new AppSettings();
+
     AppModal? rdpModal;
+    AppModal? uploadCertificateModal;
     protected override async Task OnInitializedAsync()
     {
         originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
@@ -154,37 +145,7 @@
 
 
     }
-    private async void LoadCert(IBrowserFile e)
-    {
-        byte[] fileBytes;
-        using (var stream = e.OpenReadStream(5000000))
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                await stream.CopyToAsync(memoryStream);
-                fileBytes = memoryStream.ToArray();
-            }
-        }
-        var extension = Path.GetExtension(e.Name);
-        if(extension.Equals(".pfx",StringComparison.InvariantCultureIgnoreCase))
-        {
-           
-        }
-        var cert = new X509Certificate2(fileBytes);
-        if (cert != null)
-        {
-            settings.SSLCertificateCipher = (await e.ToByteArrayAsync(5000000))?.Encrypt();
-
-        }
-        else
-        {
-            SnackBarService.Warning(AppLocalization["Not a valid certificate type."]);
-        }
-        //await Context.SaveChangesAsync();
-        await InvokeAsync(StateHasChanged);
-
-
-    }
+  
 
     protected override void Save()
     {

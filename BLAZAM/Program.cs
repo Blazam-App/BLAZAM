@@ -10,6 +10,9 @@ using BLAZAM.Services.Background;
 using System.Net;
 using BLAZAM.Database.Context;
 using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.WebSockets;
+using BLAZAM.Database.Models;
 
 namespace BLAZAM
 {
@@ -78,6 +81,7 @@ namespace BLAZAM
 
             builder.IntializeProperties();
 
+            _ = new Encryption(Configuration.GetValue<string>("EncryptionKey"));
 
             //Setup host logging so it can catch the earliest logs possible
 
@@ -170,17 +174,30 @@ namespace BLAZAM
                 var listeningAddress = Configuration.GetValue<string>("ListeningAddress");
                 var httpPort = Configuration.GetValue<int>("HTTPPort");
                 var httpsPort = Configuration.GetValue<int>("HTTPSPort");
-                var dbSettings = kestrelContext.AppSettings.FirstOrDefault();
+                AppSettings? dbSettings=null;
+                X509Certificate2? cert = null;
+                try
+                {
+                    dbSettings = kestrelContext.AppSettings.FirstOrDefault();
+
+                    var certBytes = dbSettings.SSLCertificateCipher.Decrypt<byte[]>();
+                    cert = new X509Certificate2(certBytes);
+
+                }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Error("Error collecting SSL information {@Error}", ex);
+                }
                 builder.WebHost.UseKestrel(options =>
                 {
                     if (listeningAddress == "*")
                     {
                         options.ListenAnyIP(httpPort);
-                        if (httpsPort != 0 && dbSettings!=null && !dbSettings.SSLCertificateCipher.IsNullOrEmpty())
+                        if (httpsPort != 0 && dbSettings!=null && cert!=null && cert.HasPrivateKey)
                         {
                             options.ListenAnyIP(httpsPort, configure =>
                             {
-                                configure.UseHttps();
+                                configure.UseHttps(options=>options.ServerCertificate=cert);
                             });
                         }
                     }
@@ -190,11 +207,11 @@ namespace BLAZAM
                         var ip = IPAddress.Parse(listeningAddress);
 
                         options.Listen(ip, httpPort);
-                        if (httpsPort != 0 && dbSettings != null && !dbSettings.SSLCertificateCipher.IsNullOrEmpty())
+                        if (httpsPort != 0 && dbSettings != null && cert != null && cert.HasPrivateKey)
                         {
                             options.Listen(ip, httpsPort, configure =>
                             {
-                                configure.UseHttps();
+                                configure.UseHttps(options => options.ServerCertificate = cert);
                             });
                         }
                     }
