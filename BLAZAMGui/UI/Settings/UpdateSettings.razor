@@ -143,7 +143,10 @@
         <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
 
     </SettingsField>
-    
+
+    <MudOverlay Visible=LoadingData DarkBackground=true>
+        <MudProgressLinear Indeterminate="true" />
+    </MudOverlay>
 </MudForm>
 @code {
     string? newUpdatePassword;
@@ -162,10 +165,17 @@
             originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
 
             settings = await Context.AppSettings.FirstOrDefaultAsync();
+            await InvokeAsync(StateHasChanged);
+
             //Pull encrypted update pass and store encrypted value
-            updatePasswordInDb = settings?.UpdatePassword;
-            newUpdatePassword = updatePasswordInDb;
-            updateCredential = UpdateService.UpdateCredential;
+            await Task.Run(() =>
+            
+            {
+                updatePasswordInDb = settings?.UpdatePassword;
+                newUpdatePassword = updatePasswordInDb;
+                updateCredential = UpdateService.UpdateCredential;
+            });
+
 
         }
         LoadingData = false;

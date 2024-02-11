@@ -214,18 +214,21 @@ namespace BLAZAM.Update.Services
 
             var appSettings = context.AppSettings.FirstOrDefault();
             if (appSettings != null)
+            {
+                if (!appSettings.UseUpdateCredentials) return false;
                 impersonation = appSettings?.CreateUpdateImpersonator();
 
-            if (impersonation != null)
-            {
-                return impersonation.Run(() =>
+                if (impersonation != null)
                 {
-                    Loggers.UpdateLogger.Information("Checking custom update credential permissions: " + WindowsIdentity.GetCurrent().Name);
+                    return impersonation.Run(() =>
+                    {
+                        Loggers.UpdateLogger.Information("Checking custom update credential permissions: " + WindowsIdentity.GetCurrent().Name);
 
-                    if (ApplicationInfo.applicationRoot.Writable)
-                        return true;
-                    return false;
-                });
+                        if (ApplicationInfo.applicationRoot.Writable)
+                            return true;
+                        return false;
+                    });
+                }
             }
             return false;
         }

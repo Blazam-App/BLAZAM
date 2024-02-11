@@ -72,7 +72,7 @@
         base.OnInitialized();
         try
         {
-            var userTheme = currentUser.State.Preferences?.Theme;
+            var userTheme = currentUser.State?.Preferences?.Theme;
             switch (userTheme)
             {
                 case "Blue":
@@ -85,7 +85,7 @@
 
 
             }
-            darkMode = currentUser.State.Preferences?.DarkMode == true;
+            darkMode = currentUser.State?.Preferences?.DarkMode == true;
         }
         catch(Exception ex)
         {

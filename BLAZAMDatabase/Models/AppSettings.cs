@@ -126,7 +126,7 @@ namespace BLAZAM.Database.Models
         /// <remarks>
         /// This should always be encrypted on the way in, and decrypted on the way out
         /// </remarks>
-        public string SSLCertificateCipher { get; set; }
+        public string? SSLCertificateCipher { get; set; }
 
         public string? MyrtilleURL { get; set; }
 

@@ -1,4 +1,6 @@
-﻿@using Microsoft.AspNetCore.Components.Forms;
+﻿@using BLAZAM.Gui.UI.Settings.Modals
+@using Microsoft.AspNetCore.Components.Forms;
+@using System.Security.Cryptography.X509Certificates
 @inherits SettingsComponents
 
 
@@ -52,12 +54,13 @@
                     </MudTooltip>
                 }
             </MudContainer>
-            <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
+            <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon" Accept="image/*">
                 <ButtonTemplate>
                     <MudButton HtmlTag="label"
                                Variant="Variant.Filled"
                                Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.CloudUpload">
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           for="@context.Id">
                         Upload Icon
                     </MudButton>
                 </ButtonTemplate>
@@ -75,41 +78,20 @@
     @if (ApplicationInfo.IsUnderIIS || ApplicationInfo.InDebugMode)
     {
         <SettingsField Label="@AppLocalization["SSL Certificate"]">
-
-            <MudContainer>
-
-                @if (settings != null && settings.SSLCertificateCipher != null && settings.SSLCertificateCipher.Length > 0)
-                {
-                    <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
-                    <MudTooltip Text="Remove custom icon">
-                        <AppCloseButton OnClick="@(()=>{settings.SSLCertificateCipher=null;})" />
-                    </MudTooltip>
-                }
-            </MudContainer>
-        <MudFileUpload T="IBrowserFile" FilesChanged="LoadCert" Accept=".pem, .key, .crt, .pfx">
-            <ButtonTemplate>
-                <MudButton HtmlTag="label"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.CloudUpload">
-                    Upload Certificate
-                </MudButton>
-            </ButtonTemplate>
-        </MudFileUpload>
-    </SettingsField>
-
-    }
-    <MudFileUpload T="IBrowserFile" Accept=".pdf" FilesChanged="((rrec)=>{})" MaximumFileCount="100">
-        <ButtonTemplate>
-            <MudButton HtmlTag="label"
+            <MudButton OnClick="()=>{uploadCertificateModal?.Show();}"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.CloudUpload"
                        >
-                Only .pdf files
+                Upload Certificate
             </MudButton>
-        </ButtonTemplate>
-    </MudFileUpload>
+        
+    </SettingsField>
+    <AppModal @ref="uploadCertificateModal" Title=@AppLocalization["Upload SSL Certificate"]>
+        <UploadCertificateModalContent AppSettings="settings"/>
+    </AppModal>
+    }
+
     @*
     <SettingsField Label="@AppLocalization["Myrtille Web Adress"]">
 
@@ -131,7 +113,9 @@
 </MudOverlay>
 @code {
     AppSettings settings = new AppSettings();
+
     AppModal? rdpModal;
+    AppModal? uploadCertificateModal;
     protected override async Task OnInitializedAsync()
     {
         originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
@@ -154,29 +138,14 @@
                 fileBytes = memoryStream.ToArray();
             }
         }
+
         settings.AppIcon = await e.ToByteArrayAsync(5000000);
-        await Context.SaveChangesAsync();
+        //await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
 
 
     }
-    private async void LoadCert(IBrowserFile e)
-    {
-        byte[] fileBytes;
-        using (var stream = e.OpenReadStream(5000000))
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                await stream.CopyToAsync(memoryStream);
-                fileBytes = memoryStream.ToArray();
-            }
-        }
-        //settings.AppIcon = await e.ToByteArrayAsync(5000000);
-        await Context.SaveChangesAsync();
-        await InvokeAsync(StateHasChanged);
-
-
-    }
+  
 
     protected override void Save()
     {

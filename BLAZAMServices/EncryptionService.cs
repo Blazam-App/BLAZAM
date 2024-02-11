@@ -18,7 +18,12 @@ namespace BLAZAM.Services
 
         public EncryptionService(IConfiguration configuration)
         {
-            Encryption = new Encryption(configuration.GetValue<string>("EncryptionKey"));
+            if (Encryption.Instance == null)
+                Encryption = new Encryption(configuration.GetValue<string>("EncryptionKey"));
+            else
+            {
+                Encryption = Encryption.Instance;
+            }
         }
 
 

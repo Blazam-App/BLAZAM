@@ -456,7 +456,6 @@ namespace BLAZAM.Common.Migrations.Sql
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SSLCertificateCipher")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdateBranch")
