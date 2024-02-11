@@ -19,11 +19,18 @@ namespace BLAZAM.Server.Middleware
             _next = next;
         }
 
-        public Task Invoke(HttpContext httpContext,ICurrentUserStateService currentUserStateService,IApplicationUserStateService userStateService)
+        public Task Invoke(HttpContext httpContext, ICurrentUserStateService currentUserStateService, IApplicationUserStateService userStateService)
         {
-            currentUserStateService.State = userStateService.GetUserState(httpContext.User);
-            if (httpContext!=null && httpContext.Connection!=null && httpContext.Connection.RemoteIpAddress!=null && currentUserStateService.State!=null && currentUserStateService.State.IPAddress != httpContext.Connection.RemoteIpAddress)
-                currentUserStateService.State.IPAddress = httpContext.Connection.RemoteIpAddress;
+            if (httpContext != null && httpContext.User != null && httpContext.User.Identity != null)
+            {
+                if (httpContext.User.Identity.Name != null)
+                {
+
+                }
+                currentUserStateService.State = userStateService.GetUserState(httpContext.User);
+                if (httpContext.Connection != null && httpContext.Connection.RemoteIpAddress != null && currentUserStateService.State != null && currentUserStateService.State.IPAddress != httpContext.Connection.RemoteIpAddress)
+                    currentUserStateService.State.IPAddress = httpContext.Connection.RemoteIpAddress;
+            }
             return _next(httpContext);
         }
     }

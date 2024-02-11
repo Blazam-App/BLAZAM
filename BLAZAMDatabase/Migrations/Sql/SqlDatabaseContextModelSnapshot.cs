@@ -455,6 +455,10 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<string>("MyrtilleURL")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SSLCertificateCipher")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UpdateBranch")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

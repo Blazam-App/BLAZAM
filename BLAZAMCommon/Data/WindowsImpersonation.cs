@@ -19,13 +19,10 @@ namespace BLAZAM.Common.Data
         {
             get
             {
-                if (safeAccessTokenHandle == null)
-                {
-                    // Call LogonUser to obtain a handle to an access token. 
-
-
+                //Use interactive logon
+    
                     bool returnValue = LogonUser(impersonationUser.Username, impersonationUser.FQDN!=null?impersonationUser.FQDN:"", impersonationUser.Password.ToPlainText(),
-                            LOGON32_LOGON_NETWORK, LOGON32_PROVIDER_DEFAULT,
+                            LOGON32_LOGON_INTERACTIVE, LOGON32_PROVIDER_DEFAULT,
                             out safeAccessTokenHandle);
    
     
@@ -42,16 +39,15 @@ namespace BLAZAM.Common.Data
                             throw new AuthenticationException(exception.Message);
                         }
                     }
-                }
                 return safeAccessTokenHandle;
 
             }
-            set => safeAccessTokenHandle = value;
         }
 
         const int LOGON32_PROVIDER_DEFAULT = 0;
         //This parameter causes LogonUser to create a primary token. 
         const int LOGON32_LOGON_INTERACTIVE = 2;
+
         const int LOGON32_LOGON_NETWORK = 9;
 
 
@@ -66,16 +62,17 @@ namespace BLAZAM.Common.Data
         {
             impersonationUser = user;
         }
-        public async Task<T> RunAsync<T>(Func<T> task) => await Task.Run(() => Run<T>(task));
-        public T Run<T>(Func<T> task)
+        public async Task<T?> RunAsync<T>(Func<T> task) => await Task.Run(() => Run<T>(task));
+        public T? Run<T>(Func<T> task)
         {
 
 
-            T result = default;
+            T? result = default;
 
             try
             {
-                if (ImpersonatedToken==null || ImpersonatedToken.IsInvalid) throw new ApplicationException("The impersonation user is invalid. Check settings.");
+                var impersonatedToken = ImpersonatedToken;
+                if (impersonatedToken == null || impersonatedToken.IsInvalid) throw new ApplicationException("The impersonation user is invalid. Check settings.");
 
                 //Console.WriteLine("Did LogonUser Succeed? " + (returnValue ? "Yes" : "No"));
                 // Check the identity.
@@ -84,7 +81,7 @@ namespace BLAZAM.Common.Data
          
 
                 WindowsIdentity.RunImpersonated(
-                  ImpersonatedToken,
+                  impersonatedToken,
                   () =>
                   {
                       // Check the identity.

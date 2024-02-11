@@ -83,8 +83,6 @@ namespace BLAZAM.Server
             CultureInfo.DefaultThreadCurrentUICulture = culture;
            */
 
-            //Grab the connection string and store it in the context statically
-            //This can obviously only be changed on app restart
 
 
             builder.Services.AddSingleton<ApplicationInfo>();

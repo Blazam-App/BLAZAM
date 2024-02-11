@@ -8,6 +8,8 @@ using BLAZAM.Common.Data;
 using BLAZAM.Server;
 using BLAZAM.Services.Background;
 using System.Net;
+using BLAZAM.Database.Context;
+using System.Diagnostics;
 
 namespace BLAZAM
 {
@@ -86,10 +88,12 @@ namespace BLAZAM
 
             builder.InjectServices();
 
-            SetupKestrel(builder);
 
 
             builder.Services.AddCors();
+            
+            
+            SetupKestrel(builder);
 
 
             //Done with service injection let's build the App
@@ -97,10 +101,10 @@ namespace BLAZAM
 
             ApplicationInfo.services = AppInstance.Services;
 
-         
+
             // Configure the HTTP request pipeline.
 
-           
+
 
 
 
@@ -135,7 +139,7 @@ namespace BLAZAM
             //      .SetIsOriginAllowed((host) => true)
             //      .AllowAnyMethod()
             //      .AllowAnyHeader());
-            
+
             AppInstance.UseCookiePolicy();
             AppInstance.UseAuthentication();
             AppInstance.UseAuthorization();
@@ -156,8 +160,12 @@ namespace BLAZAM
 
         private static void SetupKestrel(WebApplicationBuilder builder)
         {
-            //Temporary if during developementt
-            if (!ApplicationInfo.isUnderIIS)
+           
+            var _programDbFactory = new AppDatabaseFactory(Configuration);
+            var kestrelContext = _programDbFactory.CreateDbContext();
+
+
+            if (!ApplicationInfo.isUnderIIS && !Debugger.IsAttached)
             {
                 var listeningAddress = Configuration.GetValue<string>("ListeningAddress");
                 var httpPort = Configuration.GetValue<int>("HTTPPort");
@@ -167,7 +175,7 @@ namespace BLAZAM
                     if (listeningAddress == "*")
                     {
                         options.ListenAnyIP(httpPort);
-                        if (httpsPort != 0)
+                        if (httpsPort != 0 && kestrelContext.AppSettings.FirstOrDefault()?.AppFQDN=="gsdfgfds")
                         {
                             options.ListenAnyIP(httpsPort, configure =>
                             {
@@ -179,9 +187,9 @@ namespace BLAZAM
                     else
                     {
                         var ip = IPAddress.Parse(listeningAddress);
-                        
+
                         options.Listen(ip, httpPort);
-                        if (httpsPort != 0)
+                        if (httpsPort != 0 && kestrelContext.AppSettings.FirstOrDefault()?.AppFQDN == "gsdfgfds")
                         {
                             options.Listen(ip, httpsPort, configure =>
                             {
@@ -230,36 +238,5 @@ namespace BLAZAM
                 return AppInstance.Environment.IsDevelopment();
             }
         }
-
-
-        //public static void CheckWritablePathPermissions()
-        //{
-
-        //    try
-        //    {
-        //        //Check permissions
-        //        File.WriteAllText(WritablePath + @"writetest.test", "writetest");
-        //        Writable = true;
-        //        File.Delete(WritablePath + @"writetest.test");
-
-        //    }
-        //    catch (UnauthorizedAccessException)
-        //    {
-        //        Writable = false;
-        //        Oops.ErrorMessage = "Applicatin Directory Error";
-        //        Oops.DetailsMessage = "The application does not have write permission to the 'writable' directory.";
-        //    }
-        //    catch (DirectoryNotFoundException)
-        //    {
-        //        Writable = false;
-
-        //        Oops.ErrorMessage = "Applicatin Directory Error";
-        //        Oops.DetailsMessage = "The application's 'writable' directory is missing!";
-        //    }
-
-        //}
-
-
-
     }
 }

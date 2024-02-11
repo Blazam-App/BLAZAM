@@ -25,7 +25,7 @@ namespace BLAZAM.Database.Context
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="appInfo"></param>
-        public AppDatabaseFactory(IConfiguration configuration, ApplicationInfo appInfo)
+        public AppDatabaseFactory(IConfiguration configuration)
         {
             _configuration = configuration;
 
@@ -33,7 +33,7 @@ namespace BLAZAM.Database.Context
             ApplyDatabaseMigrations();
             try
             {
-                appInfo.InstallationCompleted = CheckInstallation();
+                ApplicationInfo.installationCompleted = CheckInstallation();
             }
             catch (DatabaseException ex)
             {

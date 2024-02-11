@@ -63,7 +63,7 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// Indicates whether Blazam is running under IIS or as a service
         /// </summary>
-        public static bool isUnderIIS=>runningProcess.ProcessName.Contains("w3wp");
+        public static bool isUnderIIS=>runningProcess.ProcessName.Contains("w3wp")|| runningProcess.ProcessName.Contains("iisexpress");
 
         /// <summary>
         /// A local store of the .Net web application Services
@@ -148,7 +148,7 @@ namespace BLAZAM.Common.Data
         /// </summary>
         public ApplicationInfo()
         {
-
+            
         }
 
         /// <summary>
