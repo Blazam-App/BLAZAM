@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace BLAZAM.Database.Migrations.Sqlite
+namespace BLAZAM.Database.Migrations.Sql
 {
     /// <inheritdoc />
-    public partial class Add_SSL_CertificateSqlite : Migration
+    public partial class Add_SSL_CertificateSql : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -13,9 +13,8 @@ namespace BLAZAM.Database.Migrations.Sqlite
             migrationBuilder.AddColumn<string>(
                 name: "SSLCertificateCipher",
                 table: "AppSettings",
-                type: "TEXT",
-                nullable: false,
-                defaultValue: "");
+                type: "nvarchar(max)",
+                nullable: true);
         }
 
         /// <inheritdoc />

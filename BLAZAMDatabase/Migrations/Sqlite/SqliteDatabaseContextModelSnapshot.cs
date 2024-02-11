@@ -447,7 +447,6 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SSLCertificateCipher")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UpdateBranch")

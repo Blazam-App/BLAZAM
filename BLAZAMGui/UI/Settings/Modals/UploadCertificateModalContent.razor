@@ -1,0 +1,165 @@
+﻿@using BLAZAM.Database.Models.Audit;
+@using BLAZAM.Services.Audit;
+@using System.Security.Cryptography.X509Certificates
+@inherits AppModalContent
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
+    <MudSelectList Label=@AppLocalization["Certificate Type"] Values="@(new List<string>{"PFX","Crt and Key"})"  @bind-Value=SelectedCertType />
+        @if(SelectedCertType=="PFX"){
+        <MudFileUpload T="IBrowserFile" FilesChanged="LoadPFX" Accept=".pfx">
+        <ButtonTemplate>
+            <MudButton HtmlTag="label"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       for="@context.Id">
+                Upload PFX
+            </MudButton>
+        </ButtonTemplate>
+        <SelectedTemplate>
+            @if (context != null)
+            {
+                <MudText>@context.Name</MudText>
+            }
+            else
+            {
+                <MudText>No File</MudText>
+            }
+        </SelectedTemplate>
+        </MudFileUpload>
+        <MudTextField Label="Password" name="Password" InputType="InputType.Password" @bind-Value=pfxPassword />
+
+    }
+    else
+    {
+        <MudFileUpload T="IBrowserFile" FilesChanged="LoadCert" Accept=".pem, .crt">
+            <ButtonTemplate>
+                <MudButton HtmlTag="label"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           for="@context.Id">
+                    Upload Certificate
+                </MudButton>
+            </ButtonTemplate>
+            <SelectedTemplate>
+                @if (context != null)
+                {
+                    <MudText>@context.Name</MudText>
+                }
+                else
+                {
+                    <MudText>No File</MudText>
+                }
+            </SelectedTemplate>
+        </MudFileUpload>
+
+        <MudFileUpload T="IBrowserFile" FilesChanged="LoadKey" Accept=".pem, .key">
+            <ButtonTemplate>
+                <MudButton HtmlTag="label"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           for="@context.Id">
+                    Upload Key
+                </MudButton>
+            </ButtonTemplate>
+            <SelectedTemplate>
+                @if (context != null)
+                {
+                    <MudText>@context.Name</MudText>
+                }
+                else
+                {
+                    <MudText>No File</MudText>
+                }
+            </SelectedTemplate>
+        </MudFileUpload>
+    }
+</MudContainer>
+
+@code {
+    string SelectedCertType="PFX";
+    string pfxPassword = "";
+    byte[] pfxBytes;
+    byte[] crtBytes;
+    byte[] keyBytes;
+
+    [Parameter]
+    public AppSettings AppSettings { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        Modal.YesText = AppLocalization["Upload"];
+        Modal.OnYes = Import;
+        await base.OnInitializedAsync();
+
+    }
+
+
+    public void Import()
+    {
+        try
+        {
+            switch (SelectedCertType)
+            {
+                case "PFX":
+                    var cert = new X509Certificate2(pfxBytes, pfxPassword, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
+                    var rawCert2 = cert.Export(X509ContentType.Pkcs12);
+                    var cert2 = new X509Certificate2(rawCert2);
+                    if (rawCert2 != null)
+                    {
+                        var cipher = rawCert2?.Encrypt();
+                        AppSettings.SSLCertificateCipher = cipher;
+
+                        var byteArray = cipher.Decrypt<byte[]>();
+                        var cert3 = new X509Certificate2(byteArray);
+                        Close();
+                    }
+                    else
+                    {
+                        SnackBarService.Warning(AppLocalization["Not a valid certificate type."]);
+                    }
+                    break;
+                case "Crt and Key":
+
+                    break;
+            }
+        }catch(Exception ex)
+        {
+            SnackBarService.Warning(ex.Message);
+        }
+     
+    }
+
+    private async void LoadPFX(IBrowserFile e)
+    {
+        pfxBytes = await e.ToByteArrayAsync(5000000);
+        
+       
+       
+        //await Context.SaveChangesAsync();
+        await InvokeAsync(StateHasChanged);
+
+
+    }
+
+
+    private async void LoadCert(IBrowserFile e)
+    {
+        crtBytes = await e.ToByteArrayAsync(5000000);
+
+        
+        //await Context.SaveChangesAsync();
+        await InvokeAsync(StateHasChanged);
+
+
+    }
+
+    private async void LoadKey(IBrowserFile e)
+    {
+        keyBytes = await e.ToByteArrayAsync(5000000);
+
+        await InvokeAsync(StateHasChanged);
+
+
+    }
+}

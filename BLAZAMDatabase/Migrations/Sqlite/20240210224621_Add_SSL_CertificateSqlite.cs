@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace BLAZAM.Database.Migrations.MySql
+namespace BLAZAM.Database.Migrations.Sqlite
 {
     /// <inheritdoc />
-    public partial class Add_SSL_CertificateMySql : Migration
+    public partial class Add_SSL_CertificateSqlite : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -13,9 +13,8 @@ namespace BLAZAM.Database.Migrations.MySql
             migrationBuilder.AddColumn<string>(
                 name: "SSLCertificateCipher",
                 table: "AppSettings",
-                type: "longtext",
-                nullable: false)
-                .Annotation("MySql:CharSet", "utf8mb4");
+                type: "TEXT",
+                nullable: true);
         }
 
         /// <inheritdoc />

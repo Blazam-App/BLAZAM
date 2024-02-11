@@ -76,6 +76,7 @@ namespace BLAZAM.Services
                         context.Properties.ExpiresUtc = currentUtc.AddMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
                     }
                 };
+                
                 options.Events.OnValidatePrincipal = async (context) =>
                 {
                    if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)

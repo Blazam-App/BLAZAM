@@ -9,7 +9,11 @@ namespace BLAZAM.Helpers
 {
     public static class EncryptionHelpers
     {
-
+        public static T Decrypt<T>(this string input)
+        {
+            var str = Encryption.Instance.DecryptObject<T>(input);
+            return str == null ? default : str;
+        }
         public static string Decrypt(this string input)
         {
             var str= Encryption.Instance.DecryptObject<string>(input);
