@@ -54,7 +54,7 @@
 		<PackageReference Include="BlazorTemplater" Version="1.5.1" />
 		<PackageReference Include="Cassia" Version="2.0.0.60" />
 		<PackageReference Include="Core.System.Configuration.Install" Version="1.1.0" />
-		<PackageReference Include="DuoUniversal" Version="1.2.1" />
+		<PackageReference Include="DuoUniversal" Version="1.2.2" />
 		<PackageReference Include="MailKit" Version="4.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.26" />
