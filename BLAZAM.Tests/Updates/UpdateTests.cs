@@ -16,22 +16,22 @@ namespace BLAZAM.Tests.Updates
         [Fact]
         public async void Update_Returns_Data()
         {
-            var latest = await _updateService.GetLatestUpdate();
+            var latest = await _updateService.GetUpdates();
             Assert.NotNull(latest);
         }
         [Fact]
         public async void Updat_Returns_ValidVersion()
         {
-            var latest = await _updateService.GetLatestUpdate();
+            var latest = await _updateService.GetUpdates();
 
             Assert.NotNull(latest?.Version);
         }
         [Fact]
         public async void Update_Returns_ValidDownload()
         {
-            var latest = await _updateService.GetLatestUpdate();
+            var latest = await _updateService.GetUpdates();
             if (latest != null)
-                await latest.Download();
+                await latest.Download(null);
 
             Assert.True(latest?.UpdateFile.Exists);
             Update_Stages_OK(latest);
@@ -40,14 +40,14 @@ namespace BLAZAM.Tests.Updates
         private async void Update_Stages_OK(ApplicationUpdate latest)
         {
 
-            await latest.Stage();
+            await latest.ExtractFiles(null);
             Assert.True(latest.UpdateStagingDirectory.Files.Count > 2);
 
         }
         private async void Update_Cleanup_OK(ApplicationUpdate latest)
         {
 
-            await latest.CleanStaging();
+            await latest.CleanStaging(null);
             latest.UpdateFile.Delete();
             Assert.True(!latest.UpdateFile.Exists);
             Assert.True(latest.UpdateStagingDirectory.Files.Count == 0);

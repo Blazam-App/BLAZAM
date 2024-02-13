@@ -15,7 +15,7 @@
 
             <MudTooltip Text="@AppLocalization["Save Changes"]">
                 <MudFab Color=Color.Success
-                        Icon="@Icons.Material.Filled.SaveAlt"
+                        Icon="@Icons.Material.Filled.Save"
                         OnClick="@(()=>{SaveChanges.InvokeAsync();})" />
             </MudTooltip>
 
@@ -27,10 +27,15 @@
         </MudStack>
         </MudElement>
 
-        @code {
+ @code {
     [Parameter]
     public EventCallback SaveChanges { get; set; }
     [Parameter]
     public EventCallback DiscardChanges { get; set; }
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Nav.WarnOnNavigation = true;
+    }
 }

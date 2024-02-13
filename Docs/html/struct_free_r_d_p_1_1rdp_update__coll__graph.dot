@@ -1,0 +1,38 @@
+digraph "FreeRDP.rdpUpdate"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node1 [id="Node000001",label="FreeRDP.rdpUpdate",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip=" "];
+  Node2 -> Node1 [id="edge1_Node000001_Node000002",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" pointer",fontcolor="grey" ];
+  Node2 [id="Node000002",label="FreeRDP.rdpPointerUpdate",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_pointer_update.html",tooltip=" "];
+  Node3 -> Node2 [id="edge2_Node000002_Node000003",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" context",fontcolor="grey" ];
+  Node3 [id="Node000003",label="FreeRDP.rdpContext",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_context.html",tooltip=" "];
+  Node4 -> Node3 [id="edge3_Node000003_Node000004",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" instance",fontcolor="grey" ];
+  Node4 [id="Node000004",label="FreeRDP.freerdp",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1freerdp.html",tooltip=" "];
+  Node3 -> Node4 [id="edge4_Node000004_Node000003",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" context",fontcolor="grey" ];
+  Node5 -> Node4 [id="edge5_Node000004_Node000005",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" update",fontcolor="grey" ];
+  Node5 [id="Node000005",label="FreeRDP.rdpUpdate",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_update.html",tooltip=" "];
+  Node2 -> Node5 [id="edge6_Node000005_Node000002",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" pointer",fontcolor="grey" ];
+  Node6 -> Node5 [id="edge7_Node000005_Node000006",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" primary",fontcolor="grey" ];
+  Node6 [id="Node000006",label="FreeRDP.rdpPrimaryUpdate",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_primary_update.html",tooltip=" "];
+  Node3 -> Node6 [id="edge8_Node000006_Node000003",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" context",fontcolor="grey" ];
+  Node7 -> Node5 [id="edge9_Node000005_Node000007",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" secondary",fontcolor="grey" ];
+  Node7 [id="Node000007",label="FreeRDP.rdpSecondaryUpdate",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_secondary_update.html",tooltip=" "];
+  Node3 -> Node7 [id="edge10_Node000007_Node000003",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" context",fontcolor="grey" ];
+  Node8 -> Node5 [id="edge11_Node000005_Node000008",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" altsec",fontcolor="grey" ];
+  Node8 [id="Node000008",label="FreeRDP.rdpAltSecUpdate",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_alt_sec_update.html",tooltip=" "];
+  Node3 -> Node8 [id="edge12_Node000008_Node000003",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" context",fontcolor="grey" ];
+  Node9 -> Node5 [id="edge13_Node000005_Node000009",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" window",fontcolor="grey" ];
+  Node9 [id="Node000009",label="FreeRDP.rdpWindowUpdate",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_window_update.html",tooltip=" "];
+  Node3 -> Node9 [id="edge14_Node000009_Node000003",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" context",fontcolor="grey" ];
+  Node10 -> Node4 [id="edge15_Node000004_Node000010",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" settings",fontcolor="grey" ];
+  Node10 [id="Node000010",label="FreeRDP.rdpSettings",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_settings.html",tooltip=" "];
+  Node4 -> Node10 [id="edge16_Node000010_Node000004",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" instance",fontcolor="grey" ];
+  Node6 -> Node1 [id="edge17_Node000001_Node000006",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" primary",fontcolor="grey" ];
+  Node7 -> Node1 [id="edge18_Node000001_Node000007",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" secondary",fontcolor="grey" ];
+  Node8 -> Node1 [id="edge19_Node000001_Node000008",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" altsec",fontcolor="grey" ];
+  Node9 -> Node1 [id="edge20_Node000001_Node000009",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" window",fontcolor="grey" ];
+}

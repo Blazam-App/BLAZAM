@@ -13,6 +13,7 @@ namespace BLAZAM.Database.Context
         DatabaseFacade Database { get; }
         IEnumerable<string> PendingMigrations { get; }
 
+        bool EntityIsTracked<TEntry>(TEntry entry);
         bool IsSeeded();
         int SaveChanges();
         int SaveChanges(bool acceptAllChangesOnSuccess);

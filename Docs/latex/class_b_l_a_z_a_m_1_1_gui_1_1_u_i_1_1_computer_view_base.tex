@@ -1,0 +1,138 @@
+\doxysection{BLAZAM.\+Gui.\+UI.\+Computer\+View\+Base Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_computer_view_base}{}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_computer_view_base}\index{BLAZAM.Gui.UI.ComputerViewBase@{BLAZAM.Gui.UI.ComputerViewBase}}
+
+
+Provides an IADComputer parameter along with everything included in Directory\+Entry\+View\+Base  
+
+
+Inheritance diagram for BLAZAM.\+Gui.\+UI.\+Computer\+View\+Base\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_computer_view_base}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_computer_view_base_a8f4a7448519e9ed85e7019f8c3169efb}\label{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_computer_view_base_a8f4a7448519e9ed85e7019f8c3169efb} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}{IADComputer}} {\bfseries Computer}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_directory_entry_view_base}{BLAZAM.\+Gui.\+UI.\+Directory\+Entry\+View\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+IDirectory\+Entry\+Adapter {\bfseries Directory\+Entry}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+bool {\bfseries Edit\+Mode}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether the current page is in edit mode. \end{DoxyCompactList}\item 
+IList$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_custom_active_directory_field}{Custom\+Active\+Directory\+Field}} $>$ {\bfseries Custom\+Fields} = new List$<$\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_database_1_1_models_1_1_custom_active_directory_field}{Custom\+Active\+Directory\+Field}}$>$()\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em A store of all custom fields defined. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal}{App\+Modal}}? {\bfseries Upload\+Thumbnail\+Modal}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal}{App\+Modal}}? {\bfseries Assign\+To\+Modal}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal}{App\+Modal}}? {\bfseries Move\+To\+Modal}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal}{App\+Modal}}? {\bfseries Rename\+Modal}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal}{App\+Modal}}? {\bfseries Change\+Password\+Modal}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_modal}{App\+Modal}}? {\bfseries Change\+History\+Modal}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_set_sub_header}{Set\+Sub\+Header}}? {\bfseries Sub\+Header}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+bool {\bfseries Saving\+Changes}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_component_base}{BLAZAM.\+Gui.\+UI.\+App\+Component\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+IString\+Localizer$<$ App\+Localization $>$ {\bfseries App\+Localization}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Search\+Service {\bfseries Search\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Navigation\+Manager {\bfseries Nav}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Conn\+Monitor {\bfseries Monitor}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Application\+Info {\bfseries Application\+Info}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+IActive\+Directory\+Context\+Factory {\bfseries Directory\+Factory}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+IActive\+Directory\+Context {\bfseries Directory}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+IJSRuntime {\bfseries JS}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+IApplication\+User\+State\+Service {\bfseries User\+State\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+ICurrent\+User\+State\+Service {\bfseries Current\+User}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_audit_1_1_audit_logger}{Audit\+Logger}} {\bfseries Audit\+Logger}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_services_1_1_chat_1_1_i_chat_service}{IChat\+Service}} {\bfseries Chat}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+App\+Dialog\+Service {\bfseries Message\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Update\+Service {\bfseries Update\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Auto\+Update\+Service {\bfseries Auto\+Update\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_email_1_1_services_1_1_email_service}{Email\+Service}} {\bfseries Email\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+INotification\+Publisher {\bfseries Notification\+Publisher}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+IEncryption\+Service {\bfseries Encryption\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+App\+Snack\+Bar\+Service {\bfseries Snack\+Bar\+Service}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+bool {\bfseries Loading\+Data} = true\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+IApp\+Database\+Factory {\bfseries Db\+Factory}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+bool {\bfseries Is\+Admin}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em True if the current web user is a super admin. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_component_base}{BLAZAM.\+Gui.\+UI.\+App\+Component\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual void {\bfseries Dispose} ()
+\item 
+async Task {\bfseries Copy\+To\+Clipboard} (string? text)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_directory_entry_view_base}{BLAZAM.\+Gui.\+UI.\+Directory\+Entry\+View\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+override async Task \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_directory_entry_view_base_a028047e86f5590f672bb97654cb31842}{On\+Initialized\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Loads custom fields and sets up event listeners for entry changes. \end{DoxyCompactList}\item 
+void {\bfseries Toggle\+Edit\+Mode} ()
+\begin{DoxyCompactList}\small\item\em Toggles Edit\+Mode \end{DoxyCompactList}\item 
+virtual async void {\bfseries Discard\+Changes} ()
+\begin{DoxyCompactList}\small\item\em Prompts the user for confirmation and sends a discard changes call to the IDirectory\+Entry\+Adapter to remove changes if accepted. \end{DoxyCompactList}\item 
+Date\+Time? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_directory_entry_view_base_a2e2c5bb4cd938546645d97d9bdb003af}{Set\+Expire\+Time}} (Date\+Time? time)
+\begin{DoxyCompactList}\small\item\em Sets the expire time for IAccount\+Directory\+Adapter entries. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_directory_entry_view_base_ae39d2e8ec155c9360b8a0efb6e47bf92}{Renamed}} (IDirectory\+Entry\+Adapter renamed\+Entry)
+\begin{DoxyCompactList}\small\item\em Called when an entry is renamed to update the current url. \end{DoxyCompactList}\item 
+async Task \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_directory_entry_view_base_a032db68a6cc4fd6273f55144acc12a77}{Refresh\+Entry\+Components}} ()
+\begin{DoxyCompactList}\small\item\em Refreshes the Sub\+Header along with invoking State\+Has\+Changed();. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_component_base}{BLAZAM.\+Gui.\+UI.\+App\+Component\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+override void {\bfseries On\+Initialized} ()
+\item 
+override async Task {\bfseries On\+Initialized\+Async} ()
+\item 
+void {\bfseries Refresh} ()
+\item 
+void {\bfseries Refresh} (bool force\+Reload=false)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_gui_1_1_u_i_1_1_app_component_base}{BLAZAM.\+Gui.\+UI.\+App\+Component\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+IDatabase\+Context? {\bfseries Context}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Provides an IADComputer parameter along with everything included in Directory\+Entry\+View\+Base 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMGui/\+UI/Computer\+View\+Base.\+razor.\+cs\end{DoxyCompactItemize}

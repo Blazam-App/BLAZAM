@@ -1,0 +1,48 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADPrinter\+Searcher Interface Reference}
+\hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher}{}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher}\index{BLAZAM.ActiveDirectory.Interfaces.IADPrinterSearcher@{BLAZAM.ActiveDirectory.Interfaces.IADPrinterSearcher}}
+
+
+A searcher class for printer objects in an IActive\+Directory\+Context  
+
+
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Interfaces.\+IADPrinter\+Searcher\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a7d0105dff701afcd4218121561e9bca4}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a7d0105dff701afcd4218121561e9bca4} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ {\bfseries Find\+Changed\+Printers} (bool? ignore\+Disabled\+Printers=true, int days\+Back\+To\+Search=90)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a2641620fa79d77543f2de85149ed224a}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a2641620fa79d77543f2de85149ed224a} 
+Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ $>$ {\bfseries Find\+Changed\+Printers\+Async} (bool? ignore\+Disabled\+Printers=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a313c32f1294dcd642e394b8b2cdceb34}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a313c32f1294dcd642e394b8b2cdceb34} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ {\bfseries Find\+New\+Printers} (int max\+Age\+In\+Days=14, bool? ignore\+Disabled\+Printers=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a48c0b435216463134d5dbbab91786054}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a48c0b435216463134d5dbbab91786054} 
+Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ $>$ {\bfseries Find\+New\+Printers\+Async} (int max\+Age\+In\+Days=14, bool? ignore\+Disabled\+Printers=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a49840ffa40aab811639c6b140aca462c}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a49840ffa40aab811639c6b140aca462c} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}}? {\bfseries Find\+Printer\+By\+Name} (string? search\+Term, bool? ignore\+Disabled\+Printers=true)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a5956e73e23e8e3287f08e9da828dd913}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a5956e73e23e8e3287f08e9da828dd913} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}}? {\bfseries Find\+Printers\+By\+Container\+Name} (string? search\+Term, bool? ignore\+Disabled\+Printers=true, bool exact\+Match=false)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a0477578f93dad5fa35ef1afb822d6312}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a0477578f93dad5fa35ef1afb822d6312} 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ {\bfseries Find\+Printers\+By\+String} (string? search\+Term, bool? ignore\+Disabled\+Printers=true, bool exact\+Match=false)
+\item 
+\Hypertarget{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a44690338c6a3e55bb1fb4a173b700979}\label{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer_searcher_a44690338c6a3e55bb1fb4a173b700979} 
+Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_printer}{IADPrinter}} $>$ $>$ {\bfseries Find\+Printers\+By\+String\+Async} (string? search\+Term, bool? ignore\+Disabled\+Printers=true, bool exact\+Match=false)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A searcher class for printer objects in an IActive\+Directory\+Context 
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Interfaces/IADPrinter\+Searcher.\+cs\end{DoxyCompactItemize}

@@ -23,11 +23,19 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
                 if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchGroups))
     
                     widgets.Add(new NewGroupsWidget() { WidgetType = DashboardWidgetType.NewGroups, Title = "Groups created in the last 14 days" });
+
+                if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchPrinters))
+
+                    widgets.Add(new NewPrintersWidget() { WidgetType = DashboardWidgetType.NewPrinters, Title = "Printers created in the last 14 days" });
+
                 if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchComputers))
     
                     widgets.Add(new NewComputersWidget() { WidgetType = DashboardWidgetType.NewComputers, Title = "Computers created in the last 14 days" });
                 if (applicationUser.IsSuperAdmin)
                     widgets.Add(new ChangedPasswordsWidget() { WidgetType = DashboardWidgetType.PasswordsChanged });
+
+                widgets.Add(new FavoritesWidget() { WidgetType = DashboardWidgetType.FavoriteEntries, Title = "Favorites" });
+
             }
             return widgets;
         }

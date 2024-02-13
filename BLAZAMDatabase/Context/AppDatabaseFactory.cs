@@ -8,7 +8,9 @@ using System.Runtime.CompilerServices;
 
 namespace BLAZAM.Database.Context
 {
-
+    /// <summary>
+    /// A factory for dynamic creation of <see cref="DbContext"/> objects based on <see cref="IConfiguration"/> properties.
+    /// </summary>
     public class AppDatabaseFactory : IAppDatabaseFactory
     {
         IConfiguration _configuration;
@@ -18,7 +20,12 @@ namespace BLAZAM.Database.Context
         public static AppEvent<Exception>? OnFatalError { get; set; }
         public static Exception? FatalError { get; private set; }
 
-        public AppDatabaseFactory(IConfiguration configuration, ApplicationInfo appInfo)
+        /// <summary>
+        /// Creates a new factory with the supplied configuration and <see cref="ApplicationInfo"/>
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="appInfo"></param>
+        public AppDatabaseFactory(IConfiguration configuration)
         {
             _configuration = configuration;
 
@@ -26,7 +33,7 @@ namespace BLAZAM.Database.Context
             ApplyDatabaseMigrations();
             try
             {
-                appInfo.InstallationCompleted = CheckInstallation();
+                ApplicationInfo.installationCompleted = CheckInstallation();
             }
             catch (DatabaseException ex)
             {
@@ -44,6 +51,13 @@ namespace BLAZAM.Database.Context
                 DatabaseCache.Start(this);
            
         }
+
+        /// <summary>
+        /// Checks that the DB can connect, has seed data, and has
+        /// the installation flag set
+        /// </summary>
+        /// <returns>Returns true if all check pass</returns>
+        /// <exception cref="DatabaseException"></exception>
         private bool CheckInstallation()
         {
             using (var context = CreateDbContext())
@@ -56,6 +70,8 @@ namespace BLAZAM.Database.Context
                         {
                             try
                             {
+                                //Grab the app settings to check that the install completed
+                                //flag is set
                                 var appSettings = context.AppSettings.FirstOrDefault();
                                 if (appSettings != null)
                                     return appSettings.InstallationCompleted;
@@ -64,7 +80,7 @@ namespace BLAZAM.Database.Context
                             }
                             catch (Exception ex)
                             {
-                                Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database.", ex);
+                                Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database. {@Error}", ex);
                             }
                             
                         }
@@ -77,9 +93,25 @@ namespace BLAZAM.Database.Context
             }
             return false;
         }
-
+        /// <summary>
+        /// Async call to <see cref="CreateDbContext"/>
+        /// </summary>
+        /// <returns></returns>
         public async Task<IDatabaseContext> CreateDbContextAsync() => await Task.Run(() => { return CreateDbContext(); });
-       
+
+        /// <summary>
+        /// Creates a new application <see cref="DbContext"/> based on the configured DatabaseType
+        /// and DBConnectionString in appsettings.json
+        /// <para>
+        /// Currently supports SQL,MySQL/MariaDB, and SQlite
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// Throws a <see cref="DatabaseException"/> when the attempt to connect fails
+        /// </remarks>
+        /// <returns>A valid and connected <see cref="IDatabaseContext"/></returns>
+        /// <exception cref="DatabaseException"></exception>
+        /// <exception cref="Exception">Thrown for unexpected exceptions</exception>
         public IDatabaseContext CreateDbContext()
         {
             var _dbType = _configuration.GetValue<string>("DatabaseType");
@@ -109,7 +141,16 @@ namespace BLAZAM.Database.Context
                 : databaseContext;
         }
 
-
+        /// <summary>
+        /// Applies all pending database migrations
+        /// <para>
+        /// <paramref name="force"/>: If true, the updates will happen 
+        /// even if the database is seeded. If false, no updates will 
+        /// be applied if seeding has already occurred.
+        /// </para>
+        /// </summary>
+        /// <param name="force">If true, the updates will happen even if the database is seeded. If false, no updates will be applied if seeding has already occurred.</param>
+        /// <returns></returns>
         public async Task<bool> ApplyDatabaseMigrations(bool force = false)
         {
 
@@ -144,7 +185,7 @@ namespace BLAZAM.Database.Context
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
+                    Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!! {@Error}", ex);
                     throw ex;
                 }
             });
@@ -177,7 +218,7 @@ namespace BLAZAM.Database.Context
             }
             catch (Exception ex)
             {
-                Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
+                Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!! {@Error}", ex);
                 //DownReason = new DatabaseException(ex.Message, ex);
                 FatalError = ex;
                 OnFatalError?.Invoke(ex);

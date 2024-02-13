@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
-    public class RemoteSession : IRemoteSession
+    public class RemoteSession : IRemoteSession, IDisposable
     {
         ITerminalServicesSession _session;
         ITerminalServicesSession Session
@@ -254,7 +254,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     OnSessionDown?.Invoke(this);
                 }
-
+                this.Dispose();
 
             }
             catch (Exception ex)
@@ -278,6 +278,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public override int GetHashCode()
         {
             return (SessionId + Server.ServerName).GetHashCode();
+        }
+
+        public void Dispose()
+        {
+            t.Dispose();
+            Session = null;
         }
     }
 }

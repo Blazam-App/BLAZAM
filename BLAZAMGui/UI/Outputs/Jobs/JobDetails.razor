@@ -1,0 +1,85 @@
+@inherits AppComponentBase
+<MudDataGrid Elevation=0
+             Bordered=false
+             Dense=true
+             SortMode="SortMode.None"
+             Items="Job.Steps">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">
+            @{
+                var title = "";
+            }
+            @switch (Job.Result)
+            {
+                case JobResult.Passed:
+                    title += AppLocalization["Success"];
+                    break;
+                case JobResult.Cancelled:
+                    title += AppLocalization["Cancelled"];
+                    break;
+                case JobResult.Failed:
+                    title += AppLocalization["Failed"];
+                    break;
+
+                case JobResult.NotRun:
+                    title += AppLocalization["Queued"];
+                    break;
+                case JobResult.Running:
+                    title += AppLocalization["Running"];
+                    break;
+                 
+
+            }
+            @title
+        </MudText>
+        <MudSpacer />
+    </ToolBarContent>
+    <Columns>
+        <TemplateColumn Title="Step">
+            <CellTemplate>@context.Item.Name</CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Result">
+            <CellTemplate>
+                <JobStepResultIcon Step="context.Item"/>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Message">
+            <CellTemplate>
+               
+<JobStepResultMessage Step="context.Item" />
+              
+            </CellTemplate>
+        </TemplateColumn>
+        
+        <TemplateColumn Title="Elapsed Time">
+            <CellTemplate>
+                
+                <MudText>@(context.Item.ElapsedTime.HasValue==true?context.Item.ElapsedTime.Value.ToString("mm\\:ss"):"")</MudText>
+              
+            </CellTemplate>
+        </TemplateColumn>
+        <HierarchyColumn ButtonDisabledFunc="@(x => x is not IJob)" />
+    </Columns>
+    <ChildRowContent>
+        @if (context.Item is IJob jobStep)
+        {
+            <JobDetails Job="@jobStep" />
+        }
+    </ChildRowContent>
+</MudDataGrid>
+
+
+
+@code {
+    [Parameter]
+    public IJob Job { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Job.OnProgressUpdated += (async (value) =>
+       {
+           await InvokeAsync(StateHasChanged);
+       });
+    }
+}

@@ -1,0 +1,8 @@
+var searchData=
+[
+  ['name_0',['Name',['../interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job.html#a494d840b03a8801fecd869e689f38a14',1,'BLAZAM.Jobs.IJob.Name'],['../interface_b_l_a_z_a_m_1_1_jobs_1_1_i_job_step.html#afb76b74f7af3a237a538033066c33408',1,'BLAZAM.Jobs.IJobStep.Name'],['../class_b_l_a_z_a_m_1_1_localization_1_1_app_localization.html#a2c7368070bac873423772b62d98f3664',1,'BLAZAM.Localization.AppLocalization.Name']]],
+  ['nestedmembers_1',['NestedMembers',['../class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_a_d_group.html#a8967bcd075ac1a142532a132729ce3c6',1,'BLAZAM::ActiveDirectory::Adapters::ADGroup']]],
+  ['newentry_2',['NewEntry',['../class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter.html#a6f888f721355e13b10a45f42365e8c93',1,'BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter.NewEntry'],['../interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter.html#a6516815e834fd61b327da4f7cd996b58',1,'BLAZAM.ActiveDirectory.Interfaces.IDirectoryEntryAdapter.NewEntry']]],
+  ['newentryproperties_3',['NewEntryProperties',['../class_b_l_a_z_a_m_1_1_active_directory_1_1_adapters_1_1_directory_entry_adapter.html#a851676480aaf9b86f32ce872c54afde8',1,'BLAZAM.ActiveDirectory.Adapters.DirectoryEntryAdapter.NewEntryProperties'],['../interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_directory_entry_adapter.html#acdfdc7a71d1a669b4d0585289fce0052',1,'BLAZAM.ActiveDirectory.Interfaces.IDirectoryEntryAdapter.NewEntryProperties']]],
+  ['newer_4',['Newer',['../class_b_l_a_z_a_m_1_1_update_1_1_application_update.html#aca9bde259e38247a30b0967730438b36',1,'BLAZAM::Update::ApplicationUpdate']]]
+];

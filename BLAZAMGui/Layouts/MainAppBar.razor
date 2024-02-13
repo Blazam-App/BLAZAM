@@ -6,7 +6,7 @@
 <MudAppBar Color=Color.Default Elevation="1">
     @if (mainLayout?.DrawerOpen != true)
     {
-        <MudLink Href="@Nav.Uri">
+        <MudLink OnClick="@(()=>{Nav.NavigateTo(Nav.Uri);})">
             <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
         </MudLink>
     }

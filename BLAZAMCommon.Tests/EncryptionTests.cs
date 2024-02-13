@@ -43,7 +43,6 @@ namespace BLAZAM.Tests
         [InlineData("sho")]
         [InlineData("shor")]
         [InlineData("short")]
-        [InlineData("short")]
         [InlineData("longlonglonglong")]
         [InlineData("longlonglonglonglonglonglonglonglonglonglonglong")]
         [InlineData("longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglong")]
@@ -141,7 +140,7 @@ namespace BLAZAM.Tests
                 generatedKeys.Where(k => !k.SequenceEqual(key)).ToList().ForEach(otherKey =>
                 {
                     //Calculate xor of the two 256 bit keys
-                    int variance = key.BitDifference(otherKey);
+                    int variance = Helpers.ByteHelpers.BitDifference(key, otherKey);
                     //Update lowestVariance if needed
                     if (variance < lowestVariance) lowestVariance = variance;
                 });
@@ -172,7 +171,9 @@ namespace BLAZAM.Tests
 
         }
         [Theory]
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         [InlineData((string)null)]
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
         [InlineData("")]
         public void Key_Null_ForInvalid_EncryptionKeyString(string? seedString)
         {

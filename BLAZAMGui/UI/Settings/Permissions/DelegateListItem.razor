@@ -64,7 +64,6 @@
         Group = Directory.FindEntryBySID(Level.DelegateSid);
     }
 
-    bool collapse1Visible = false;
 
     async Task DeleteDelegate()
     {
@@ -75,7 +74,6 @@
     }
     protected async override void Save()
     {
-        collapse1Visible = false;
         Level.DelegateSid = Group.SID;
         await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);

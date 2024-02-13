@@ -2,14 +2,30 @@
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
+using BLAZAM.Jobs;
 using System.DirectoryServices;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
+    /// <summary>
+    /// The core representation of an object in active directory. This class has properties that all Active
+    /// Directory object types have
+    /// </summary>
     public interface IDirectoryEntryAdapter : IDisposable
     {
+        /// <summary>
+        /// The SAMAccountName property, generally used as the username property
+        /// </summary>
         string? SamAccountName { get; set; }
+
+        /// <summary>
+        /// The name that displays for this object in ADUC
+        /// </summary>
         string? CanonicalName { get; set; }
+
+        /// <summary>
+        /// This entry's Distinguished Name
+        /// </summary>
         string DN { get; set; }
 
         /// <summary>
@@ -24,6 +40,13 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Many AD functions count as updating a user, such as logging in...
         /// </remarks>
         DateTime? LastChanged { get; set; }
+
+        /// <summary>
+        /// This entry's SID in byte form
+        /// </summary>
+        /// <remarks>
+        /// Use ToSidString() extension method to stringify"/>
+        /// </remarks>
         byte[]? SID { get; set; }
 
         /// <summary>
@@ -182,7 +205,14 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Called when this entry is renamed
         /// </summary>
         AppEvent<IDirectoryEntryAdapter>? OnDirectoryModelRenamed { get; set; }
+
+        /// <summary>
+        /// Called when this entry is deleted
+        /// </summary>
         AppEvent? OnModelDeleted { get; set; }
+        /// <summary>
+        /// The directory this entry belongs to
+        /// </summary>
         IActiveDirectoryContext Directory { get; }
         /// <summary>
         /// Indicates whether this entry is expanded
@@ -194,20 +224,33 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// in the ui within a tree view
         /// </summary>
         bool IsSelected { get; set; }
+
+        /// <summary>
+        /// Indicates whether this entry has any child entries
+        /// </summary>
+        /// <remarks>
+        /// Only looks for "top" object types
+        /// </remarks>
         bool HasChildren { get;}
-        IEnumerable<IDirectoryEntryAdapter> CachedChildren { get; }
+
+        /// <summary>
+        /// The children of this entry
+        /// </summary>
+        /// <remarks>
+        /// Usually only used for <see cref="IADOrganizationalUnit"/>'s
+        /// </remarks>
         IEnumerable<IDirectoryEntryAdapter> Children { get; }
 
         /// <summary>
         /// Sends all staged changes to the Active Directory server
         /// </summary>
-        /// <returns></returns>
-        DirectoryChangeResult CommitChanges(DirectoryChangeResult? dcr=null);
+        /// <returns>A job with the results of the performed actions</returns>
+        IJob CommitChanges(IJob? commitJob=null);
         /// <summary>
         /// Sends all staged changes to the Active Directory server asynchronously
         /// </summary>
         /// <returns></returns>
-        Task<DirectoryChangeResult> CommitChangesAsync(DirectoryChangeResult? dcr=null);
+        Task<IJob> CommitChangesAsync(IJob? commitJob = null);
 
         /// <summary>
         /// Resets the current entry state to it's inital state
@@ -238,21 +281,32 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <returns>True if the current user can read the field, otherwise false</returns>
         bool CanReadField(IActiveDirectoryField field);
 
-
+        /// <summary>
+        /// Properly disposes of this entry from memory
+        /// </summary>
         new void Dispose();
 
         /// <summary>
-        /// Converts a raw <see cref="DirectoryEntry"/> into 
+        /// Converts a raw <see cref="DirectoryEntry"/> or <see cref="SearchResult"/> into 
         /// an application <see cref="IDirectoryEntryAdapter"/>
         /// object.
         /// </summary>
         /// <param name="result"></param>
         /// <param name="directory"></param>
         /// <returns></returns>
-        Task Parse(DirectoryEntry result, IActiveDirectoryContext directory);
-        Task Parse(SearchResult result, IActiveDirectoryContext directory);
+        void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry=null, SearchResult? searchResult=null);
+      
+        /// <summary>
+        /// Move this entry to a new <see cref="IADOrganizationalUnit"/>
+        /// </summary>
+        /// <param name="parentOUToMoveTo">The destination OU</param>
         void MoveTo(IADOrganizationalUnit parentOUToMoveTo);
-        Task<IADOrganizationalUnit?> GetParent();
+
+        /// <summary>
+        /// Get's the parent <see cref="IADOrganizationalUnit"/> of this entry
+        /// </summary>
+        /// <returns></returns>
+        IADOrganizationalUnit? GetParent();
 
         /// <summary>
         /// Wrapper method for the base <see cref="DirectoryEntry"/>
@@ -266,12 +320,32 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <param name="args"></param>
         /// <returns></returns>
         bool Invoke(string method, object?[]? args = null);
+
+        /// <summary>
+        /// Deletes this entry from the directory
+        /// </summary>
         void Delete();
+
+        /// <summary>
+        /// The string representation of this entry
+        /// </summary>
+        /// <returns></returns>
         string? ToString();
+
+        /// <summary>
+        /// Renames the CN attribute
+        /// </summary>
+        /// <param name="newName">New CN</param>
+        /// <returns></returns>
         bool Rename(string newName);
 
-        void EnsureDirectoryEntry();
-
+        /// <summary>
+        /// Gets a custom attribute value for the given name and returns
+        /// an object with the given type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         T? GetCustomProperty<T>(string propertyName);
         /// <summary>
         /// Returns the specified DateTime property in UTC
@@ -280,5 +354,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <returns></returns>
         DateTime? GetDateTimeProperty(string propertyName);
         void SetCustomProperty(string propertyName, object? value);
+        void EnsureDirectoryEntry();
     }
 }

@@ -1,0 +1,73 @@
+@inherits AppComponentBase
+@using System.Diagnostics
+<SettingsField Label=@AppLocalization["CPU"]>
+    @if (CPUCounter != null)
+    {
+        <MudText>@cpuUsage%</MudText>
+    }
+    else
+    {
+        <MudText>@AppLocalization["Loading"]</MudText>
+    }
+
+    </SettingsField>
+<SettingsField Label=@AppLocalization["Memory"]>
+    @if (MemoryCounter != null)
+    {
+                <MudText>@memoryUsage</MudText>
+
+    }
+    else
+    {
+        <MudText>@AppLocalization["Loading"]</MudText>
+    }
+    </SettingsField>
+
+    @code {
+    [Parameter]
+    public Process Process { get; set; }
+
+    private string cpuUsage
+    {
+        get
+
+        {
+            return Math.Round(CPUCounter.NextValue(),2).ToString();
+            Process.Refresh();
+            return Process.TotalProcessorTime.ToString();
+
+        }
+    }
+    private string memoryUsage
+    {
+        get
+
+        {
+            return new ByteSize(MemoryCounter.NextValue()).ToString();
+
+
+        }
+    }
+    private PerformanceCounter? CPUCounter;
+    private PerformanceCounter? MemoryCounter;
+
+    private Timer? refreshTimer;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        refreshTimer = new Timer((state) => { InvokeAsync(StateHasChanged); }, null, 2000, 2000);
+        await Task.Run(() =>
+        {
+            CPUCounter = new PerformanceCounter("Process", "% Processor Time",
+                                    Process.ProcessName);
+            MemoryCounter = new PerformanceCounter("Process", "Working Set",
+                                           Process.ProcessName);
+        
+        });
+      
+    }
+    public override void Dispose()
+    {
+        refreshTimer?.Dispose();
+    }
+}

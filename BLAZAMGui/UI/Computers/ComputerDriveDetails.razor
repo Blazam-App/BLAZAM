@@ -1,0 +1,71 @@
+﻿@inherits ComputerViewBase
+
+@if (Computer.IsOnline == true)
+{
+    @if (Drives != null && Drives.Count > 0)
+    {
+        <MudDataGrid Elevation=0 Items="Drives.Where(d=>d.DriveType==DriveType.Fixed)">
+            <Columns>
+                <PropertyColumn Property="x=>x.DriveType" />
+                <PropertyColumn Property="x=>x.Letter" />
+                <TemplateColumn Title="Used">
+                    <CellTemplate>
+                        <MudProgressLinear Style="height:25px;" Value="@context.Item.PercentUsed.Round(0)"
+                                           Color="@(context.Item.PercentUsed<70?Color.Success:context.Item.PercentUsed<80?Color.Warning:Color.Error)">
+                            @(
+                                context.Item.PercentUsed.Round(0).ToString() + "%"
+                                )
+                        </MudProgressLinear>
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="Capacity">
+                    <CellTemplate>
+                        @(
+                            context.Item.Capacity.Round(0).ToString() + "GB"
+                            )
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Property="x=>x.FileSystem" />
+                <PropertyColumn Property="x=>x.Serial" />
+            </Columns>
+        </MudDataGrid>
+
+    }
+
+}
+else
+{
+    <MudText>Computer is not reachable.</MudText>
+}
+@code {
+
+    List<IADComputerDrive> Drives = new();
+
+
+    protected override void OnInitialized()
+    {
+        if (Computer.IsOnline==true)
+        {
+            GetDriveData();
+        }
+        Computer.OnOnlineChanged += (async(status) => {
+            if (status == true) GetDriveData(); 
+            await InvokeAsync(StateHasChanged);
+
+        });
+
+
+        base.OnInitialized();
+
+
+    }
+    private void GetDriveData()
+    {
+        Task.Run(async () =>
+           {
+               Drives = await Computer.GetDrivesAsync();
+               await InvokeAsync(StateHasChanged);
+
+           });
+    }
+}

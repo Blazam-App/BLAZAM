@@ -1,6 +1,8 @@
 ﻿@page "/users/create"
 @inherits TemplateComponent
 @attribute [Authorize(Roles = UserRoles.CreateUsers)]
+
+
 <AppPageTitle>Create User</AppPageTitle>
 
 <MudTabs PanelClass="mx-auto mud-container mud-container-maxwidth-sm" @ref=Tabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="SelectedStep" Centered=true>
@@ -10,14 +12,14 @@
             Template
         </TabContent>
         <ChildContent>
-            @if (Templates != null && Templates.Count() > 0)
+            @if (Templates != null && Templates.Count(t => t.DeletedAt == null && t.Visible) > 0)
             {
                 <MudSelectList Values="TemplateCategories"
-                           @bind-Value=SelectedCategory />
+                               @bind-Value=SelectedCategory />
 
                 <MudPaper Width="300px">
                     <MudList SelectedItemChanged=@SetTemplate Clickable="true">
-                        @foreach (var template in Templates)
+                        @foreach (var template in Templates.Where(t => t.DeletedAt == null && t.Visible))
                         {
                             <MudListItem Text="@template.Name" Value="template" />
                         }
@@ -27,31 +29,29 @@
             else
             {
                 <MudPaper Width="300px">
-                    <MudText>There are no templates available</MudText>
+                    <MudText>@AppLocalization["There are no templates available"]</MudText>
                     <AuthorizeView Roles="@UserRoles.SuperAdmin">
-                        <MudLink Href="/templates">Create One</MudLink>
+                        <MudLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">Create One</MudLink>
 
                     </AuthorizeView>
                 </MudPaper>
             }
-            <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true;})">Custom</MudButton>
+            <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true; newUser=null; SelectedTemplate=null; SelectedStep=4;})">Custom</MudButton>
 
-            <MudButton Disabled=@(SelectedTemplate is null && custom!=true) Color=Color.Success OnClick="@(()=>{if(custom==true)SelectedStep=3;else selectedStep=1;})">Next</MudButton>
+            <MudButton Disabled=@(SelectedTemplate is null && custom!=true) Color=Color.Success OnClick="@(()=>{if(custom==true)SelectedStep=4;else selectedStep=1;})">Next</MudButton>
         </ChildContent>
 
     </MudTabPanel>
 
     <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled=@( SelectedTemplate==null)>
         <TabContent>
-            Name
+            @AppLocalization["Name"]
         </TabContent>
         <ChildContent>
 
 
-            <NewUserNameEntry @bind-NewUserName=@newUserName />
-            <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=0;})">Back</MudButton>
-            <MudButton Color="Color.Primary" OnClick="CreateTemplateUser">Next</MudButton>
-
+            <NewUserNameEntry @bind-NewUserName=@newUserName OnNext="CreateTemplateUser" OnBack="@(()=>{SelectedStep=0;})" />
+            
 
 
         </ChildContent>
@@ -60,7 +60,7 @@
 
     <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null)">
         <TabContent>
-            Fields
+            @AppLocalization["Fields"]
         </TabContent>
         <ChildContent>
             <NewTemplateUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
@@ -71,9 +71,9 @@
 
     </MudTabPanel>
 
-    <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null && SelectedTemplate?.AllowCustomGroups==true)">
+    <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null)">
         <TabContent>
-            Groups
+            @AppLocalization["Groups"]
         </TabContent>
         <ChildContent>
             <MemberOfList Model="@newUser" />
@@ -88,7 +88,7 @@
 
     <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(custom==false)">
         <TabContent>
-            OU
+            @AppLocalization["OU"]
         </TabContent>
         <ChildContent>
             <OUTreeView SelectedOUChanged="OUSelected" />
@@ -106,12 +106,24 @@
     </MudTabPanel>
     <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(newUser==null)">
         <TabContent>
-            Details
+            @AppLocalization["Details"]
         </TabContent>
         <ChildContent>
-            <ViewUser DirectoryEntry="@newUser" />
+            @*TODO: The following binding cause the next button to not update when validation is reached, updates are controlled from
+                this element
+            *@
+            <ViewUser DirectoryEntry="@newUser" @bind-ConfirmPassword=@customConfirmPassword @bind-Password=customPassword />
             <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=4;})">Back</MudButton>
-            <MudButton Color=Color.Success OnClick="@(()=>{SelectedStep=6;})">Next</MudButton>
+            <MudButton Color=Color.Success
+                       OnClick="@(()=>{
+SelectedStep=6;
+if(newUser.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
+newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
+})"
+                       Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
+
+                @AppLocalization["Next"]
+            </MudButton>
         </ChildContent>
 
     </MudTabPanel>
@@ -119,10 +131,11 @@
 
     <MudTabPanel Disabled=@(newUser==null)>
         <TabContent>
-            Confirm
+
+            @AppLocalization["Confirm"]
         </TabContent>
         <ChildContent>
-            <ConfirmNewUser User="@newUser" DirectoryTemplate="SelectedTemplate" Confirmed="UserCreated" />
+            <ConfirmNewUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
 
         </ChildContent>
 
@@ -134,8 +147,8 @@
 
 
 @code {
-
-
+    string customConfirmPassword;
+    string customPassword;
     int selectedStep;
     int SelectedStep
     {
@@ -198,90 +211,90 @@
                 {
                     newUser.MoveTo(selectedOU);
                 }
-                SelectedStep = 4;
             }
         });
 
     }
     async void CreateTemplateUser()
     {
-        LoadingData = true;
-        await InvokeAsync(StateHasChanged);
-
-        var ou = Directory.OUs.FindOuByString(SelectedTemplate.ParentOU).FirstOrDefault();
-        newUser = ou.CreateUser(SelectedTemplate.GenerateDisplayName(newUserName));
-        newUser.NewEntry = true;
-
-        newUser.SamAccountName = SelectedTemplate.GenerateUsername(newUserName);
-        newUser.DisplayName = SelectedTemplate.GenerateDisplayName(newUserName);
-        newUser.NewPassword = SelectedTemplate.GeneratePassword().ToSecureString();
-        //newUser.CanonicalName = SelectedTemplate.GenerateDisplayName(newUserName);
-        newUser.StagePasswordChange(newUser.NewPassword, true);
-        if (!newUserName.GivenName.IsNullOrEmpty())
-            newUser.GivenName = newUserName.GivenName;
-        if (!newUserName.MiddleName.IsNullOrEmpty())
-            newUser.MiddleName = newUserName.MiddleName;
-        if (!newUserName.Surname.IsNullOrEmpty())
-            newUser.Surname = newUserName.Surname;
-
-        foreach (var fieldValue in SelectedTemplate.InheritedFieldValues)
+        try
         {
+            LoadingData = true;
+            await InvokeAsync(StateHasChanged);
+            var ou = Directory.OUs.FindOuByString(SelectedTemplate.ParentOU).FirstOrDefault();
+            newUser = ou.CreateUser(SelectedTemplate.GenerateDisplayName(newUserName));
 
+            newUser.SamAccountName = SelectedTemplate.GenerateUsername(newUserName);
+            newUser.DisplayName = SelectedTemplate.GenerateDisplayName(newUserName);
+            //newUser.SetPassword(SelectedTemplate.GeneratePassword().ToSecureString(),false);
+            //newUser.CanonicalName = SelectedTemplate.GenerateDisplayName(newUserName);
+            newUser.StagePasswordChange(SelectedTemplate.GeneratePassword().ToSecureString(), true);
+            if (!newUserName.GivenName.IsNullOrEmpty())
+                newUser.GivenName = newUserName.GivenName;
+            if (!newUserName.MiddleName.IsNullOrEmpty())
+                newUser.MiddleName = newUserName.MiddleName;
+            if (!newUserName.Surname.IsNullOrEmpty())
+                newUser.Surname = newUserName.Surname;
 
-
-
-            try
+            foreach (var fieldValue in SelectedTemplate.InheritedFieldValues)
             {
-                if (fieldValue.Field != null)
-                    if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
-                        newUser.HomeDirectory = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
-                    else
-                        newUser.NewEntryProperties[fieldValue.Field.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
-                else if (fieldValue.CustomField != null)
-                    newUser.NewEntryProperties[fieldValue.CustomField.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+                try
+                {
+                    if (fieldValue.Field != null)
+                        if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
+                            newUser.HomeDirectory = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+                        else
+                            newUser.NewEntryProperties[fieldValue.Field.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+                    else if (fieldValue.CustomField != null)
+                        newUser.NewEntryProperties[fieldValue.CustomField.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
+                }
+                catch (Exception ex)
+                {
+                    Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value.ToString() + " {@Error}", ex);
+                }
+
             }
-            catch (Exception ex)
+            var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName,false);
+            if (conflictingEntry != null)
             {
-                Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value.ToString(), ex);
+                newUser = null;
+                SnackBarService.Warning("An account with that name already exists! " + conflictingEntry.SamAccountName);
+                return;
             }
+            SelectedTemplate.AssignedGroupSids.ForEach(sid =>
+            {
+                var group = Directory.Groups.FindGroupBySID(sid.GroupSid);
+                if (group != null)
+                    newUser.AssignTo(group);
 
-        }
-        var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName);
-        if (conflictingEntry != null)
-        {
-            newUser = null;
-            SnackBarService.Warning("An account with that name already exists! " + conflictingEntry.SamAccountName);
-            return;
-        }
-        SelectedTemplate.AssignedGroupSids.ForEach(sid =>
-        {
-            var group = Directory.Groups.FindGroupBySID(sid.GroupSid);
-            if (group != null)
-                newUser.AssignTo(group);
+            });
+            if (IsAdmin || SelectedTemplate.HasEmptyFields())
+            {
+                SelectedStep = 2;
+            }
+            else
+            {
+                //Go to confirm step
+                SelectedStep = 6;
 
-        });
-        if (IsAdmin || SelectedTemplate.HasEmptyFields())
+            }
+        }catch(Exception ex)
         {
-            SelectedStep = 2;
-        }
-        else
-        {
-            //Go to confirm step
-            SelectedStep = 6;
 
+            Loggers.ActiveDirectryLogger.Error("Error while creating template user {@Error}", ex);
+
+            SnackBarService.Error(AppLocalization["An error has occurred while trying to create the template user"]);
         }
         LoadingData = false;
 
         await InvokeAsync(StateHasChanged);
     }
-    async Task UserCreated(IADUser user)
-    {
-        await AuditLogger.User.Created(user);
-    }
+
     async Task SetTemplate(MudListItem selectedTemplate)
     {
         SelectedTemplate = selectedTemplate.Value as DirectoryTemplate;
         custom = false;
         await InvokeAsync(StateHasChanged);
     }
+
 }

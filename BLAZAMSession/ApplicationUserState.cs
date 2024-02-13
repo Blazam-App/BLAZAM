@@ -4,6 +4,7 @@ using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
+using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Session.Interfaces;
@@ -46,7 +47,7 @@ namespace BLAZAM.Server.Data.Services
 
         public IPAddress IPAddress { get; set; }
 
-
+        public List<UserFavoriteEntry> FavoriteEntries => userSettings.FavoriteEntries;
 
         public IList<UserNotification>? Notifications
         {
@@ -83,6 +84,7 @@ namespace BLAZAM.Server.Data.Services
 
             _notificationPublisher = notificationPublisher;
             _dbFactory = factory;
+            //userSettings = new();
             _notificationPublisher.OnNotificationPublished += (notifications) =>
             {
                 if (notifications.Select(n => n.User).Contains(Preferences))
@@ -143,11 +145,31 @@ namespace BLAZAM.Server.Data.Services
                 if (userSettings == null)
                 {
                     userSettings = new AppUser();
+                    string? email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+                    if (email != null)
+                    {
+                        userSettings.Email = email;
+                    }
                     userSettings.UserGUID = User.FindFirstValue(ClaimTypes.Sid);
                     userSettings.Username = User.Identity?.Name;
                     context.UserSettings.Add(userSettings);
+                    
                     context.SaveChanges();
 
+                }
+                else if (Preferences.Email == null)
+                {
+                    var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                    if (emailClaim != null && !emailClaim.Value.IsNullOrEmpty())
+                    {
+                        
+                            Preferences.Email = emailClaim.Value;
+                            Task.Run(() => {
+                                Task.Delay(1000).Wait();
+                                SaveUserSettings();
+
+                            });
+                    }
                 }
 
                 lastDataRefresh = DateTime.Now;
@@ -172,10 +194,13 @@ namespace BLAZAM.Server.Data.Services
                     dbUserSettings.ProfilePicture = this.Preferences?.ProfilePicture;
                     dbUserSettings.SearchDisabledUsers = this.Preferences?.SearchDisabledUsers == true;
                     dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
+                    dbUserSettings.FavoriteEntries = this.Preferences?.FavoriteEntries!=null? this.Preferences.FavoriteEntries:new();
+                    dbUserSettings.Email = this.Preferences?.Email;
                     SaveDashboardWidgets(dbUserSettings);
                     OnSettingsChanged?.Invoke(dbUserSettings);
-                    //GetUserSettingFromDB();
-                    return (await context.SaveChangesAsync()) > 0;
+                    await context.SaveChangesAsync();
+                    GetUserSettingFromDB();
+                    return true;
                 }
 
 

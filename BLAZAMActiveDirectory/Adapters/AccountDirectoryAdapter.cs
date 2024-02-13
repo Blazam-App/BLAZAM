@@ -1,9 +1,14 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
+using BLAZAM.Jobs;
+using BLAZAM.Logger;
 using System.Data;
+using System.DirectoryServices.AccountManagement;
 using System.Globalization;
+using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -16,7 +21,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         const int ADS_UF_DONT_EXPIRE_PASSWD = 0x10000;
         const int ACCOUNT_ENABLE_MASK = 0xFFFFFFD;
 
-        
+
 
 
         public virtual bool CanEnable { get => HasActionPermission(ObjectActions.Enable); }
@@ -66,10 +71,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 return LockoutTime != null;
-
-                //var date = LockoutTime;
-                //bool matches = date != null && !date.Equals(ADS_NULL_TIME) && !date.Equals(DateTime.MinValue);
-                //return matches;
             }
             set
             {
@@ -173,13 +174,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                
-                var com = GetProperty<object>("accountExpires");
-                var time = com?.AdsValueToDateTime();
-              
-                if (time != null)
-                    time = time?.ToLocalTime();
-                return time;
+                return GetDateTimeProperty("accountExpires");
             }
             set
             {
@@ -188,6 +183,85 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     value = CommonHelpers.ADS_NULL_TIME;
                 SetProperty("accountExpires", value?.ToUniversalTime().ToFileTime().ToString());
             }
+        }
+
+
+        public DateTime? PasswordLastSet
+        {
+            get
+            {
+
+                return GetDateTimeProperty("pwdLastSet");
+            }
+
+        }
+       
+
+        public SecureString? NewPassword { get; set; }
+
+
+      
+        public bool SetPassword(SecureString password, bool requireChange = false)
+        {
+            if (SamAccountName == null) throw new ApplicationException("samaccount name not found!");
+            if (DirectorySettings == null) throw new ApplicationException("Directory settings not found when trying to change directory user password");
+
+            var directoryPassword = DirectorySettings.Password.Decrypt();
+            if (directoryPassword == null) return false;
+
+
+            try
+            {
+                var portOpen = NetworkTools.IsPortOpen(DirectorySettings.ServerAddress, 464);
+                //Invoke("SetPassword", new[] { password.ToPlainText() });
+                //return true;
+
+                //The following works utside the domain but may havee issues with cerrts
+                using (PrincipalContext pContext = new PrincipalContext(
+                    ContextType.Domain,
+                    DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
+                    DirectorySettings.Username+"@"+DirectorySettings.FQDN,
+                    directoryPassword
+                    ))
+                {
+
+
+                    UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
+                    if (up != null)
+                    {
+                        up.SetPassword(password.ToPlainText());
+                        if (requireChange)
+                            up.ExpirePasswordNow();
+
+                        up.Save();
+
+                    }
+                }
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                
+                Loggers.ActiveDirectryLogger.Error("Error setting entry password {@Error}", ex);
+
+                throw ex;
+            }
+
+        }
+
+        public void StagePasswordChange(SecureString newPassword, bool requireChange = false)
+        {
+            NewPassword = newPassword;
+            PostCommitSteps.Add(new JobStep("Set Password", (JobStep? step) =>
+            {
+                var pass = NewPassword;
+                NewPassword = null;
+                return SetPassword(pass, requireChange);
+            }));
+
+
         }
 
 

@@ -1,0 +1,62 @@
+\doxysection{BLAZAM.\+Services.\+Background.\+Directory\+Monitor Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_directory_monitor}{}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_directory_monitor}\index{BLAZAM.Services.Background.DirectoryMonitor@{BLAZAM.Services.Background.DirectoryMonitor}}
+Inheritance diagram for BLAZAM.\+Services.\+Background.\+Directory\+Monitor\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_directory_monitor}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_directory_monitor_aea1dd8929890a0db56fa1f458ccd891d}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_directory_monitor_aea1dd8929890a0db56fa1f458ccd891d} 
+{\bfseries Directory\+Monitor} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directry)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor}{BLAZAM.\+Services.\+Background.\+Connection\+Monitor}}}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_ad7e9f87ce4aca102d8e58516e8eb3680}{Monitor}} ()
+\begin{DoxyCompactList}\small\item\em Starts a timer to call a local Tick() method on the child object. The default time is 20 seconds. Adjust the Interval property before calling to change from 20 seconds. \end{DoxyCompactList}\item 
+void {\bfseries Stop} ()
+\begin{DoxyCompactList}\small\item\em Stops the monitoring of this connection. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override void \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_directory_monitor_ade6330d8cd6212f20195c12eb190ddf3}{Tick}} (object? state)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor}{BLAZAM.\+Services.\+Background.\+Connection\+Monitor}}}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries \+\_\+monitoring}
+\item 
+Timer? {\bfseries \+\_\+timer}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor}{BLAZAM.\+Services.\+Background.\+Connection\+Monitor}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual Service\+Connection\+State \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_abf419dba0a181e57b6905c569f8a48e4}{Status}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual int {\bfseries Interval} = 20000\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The time between ticks of the Monitor Timer in milliseconds. \end{DoxyCompactList}\item 
+App\+Event$<$ Service\+Connection\+State $>$? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor_a2db01464bec312a76ab88e5b845fb1aa}{On\+Connected\+Changed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_services_1_1_background_1_1_i_connection_monitor}{BLAZAM.\+Services.\+Background.\+IConnection\+Monitor}}}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_directory_monitor_ade6330d8cd6212f20195c12eb190ddf3}\label{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_directory_monitor_ade6330d8cd6212f20195c12eb190ddf3} 
+\index{BLAZAM.Services.Background.DirectoryMonitor@{BLAZAM.Services.Background.DirectoryMonitor}!Tick@{Tick}}
+\index{Tick@{Tick}!BLAZAM.Services.Background.DirectoryMonitor@{BLAZAM.Services.Background.DirectoryMonitor}}
+\doxysubsubsection{\texorpdfstring{Tick()}{Tick()}}
+{\footnotesize\ttfamily override void BLAZAM.\+Services.\+Background.\+Directory\+Monitor.\+Tick (\begin{DoxyParamCaption}\item[{object?}]{state }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_background_1_1_connection_monitor}{BLAZAM.\+Services.\+Background.\+Connection\+Monitor}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMServices/\+Background/Directory\+Monitor.\+cs\end{DoxyCompactItemize}

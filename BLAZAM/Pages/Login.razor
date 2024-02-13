@@ -8,22 +8,19 @@
 {
     <MudProgressLinear Color="Color.Info" Indeterminate=true />
 }
+
+<MudElement Class="brand-icon">
+    <MudImage Src="@StaticAssets.ApplicationIconUri" />
+
+</MudElement>
+
+
 <MudContainer Class="py-5">
-
-    <MudText Typo="Typo.h3">
-
-
-        @DatabaseCache.ApplicationSettings?.AppName
-
-    </MudText>
+       <FullAppName/>
 
 
-
-    <MudElement Class="brand-icon">
-        <MudImage Src="@StaticAssets.ApplicationIconUri" />
-
-    </MudElement>
-    <form onsubmit="@AttemptSignIn" class="login-form" method="post" action="/signin" id="login-form">
+   
+    <form onsubmit="@(()=>{AttemptSignIn();})" class="login-form" method="post" action="/signin" id="login-form">
         <MudContainer Style="max-width:300px;" Class="py-4">
             @if (!ApplicationInfo.InDemoMode || DemoCustomLogin)
             {
@@ -36,7 +33,7 @@
                 <MudTextField Class="d-none" name="ReturnUrl" Value="@redirectUrl" />
                 <MudButton OnClick=@(()=>{attemptingSignIn=true;}) Class="my-5" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</MudButton>
 
-                <br />
+          
 
             }
             else if (ApplicationInfo.InDemoMode)
@@ -66,8 +63,10 @@
             @*<MudProgressCircular Color="Color.Secondary" Indeterminate="true" />*@
         </MudOverlay>
     </form>
+    <MudElement Class="d-flex mud-width-full justify-end">  
+        <Copyright Style="font-size:0.8em;"/>
 
-    <Copyright Class="mx-auto" />
+    </MudElement>
 </MudContainer>
 
 <style>
@@ -104,7 +103,6 @@
         redirectUrl = Nav.Uri;
         if (Monitor.AppReady != ServiceConnectionState.Up)
             Monitor.OnAppReadyChanged += AppReadyChanged;
-        Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
     }
 
     async void AppReadyChanged(ServiceConnectionState state)
@@ -120,9 +118,11 @@
         await InvokeAsync(StateHasChanged);
         string? authenticationResult;
         if (ValidateInput(out authenticationResult))
-            try{
+            try
+            {
                 authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn", null);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
 
                 SnackBarService.Info(ex.Message);

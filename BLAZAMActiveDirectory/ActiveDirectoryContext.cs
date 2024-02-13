@@ -37,6 +37,7 @@ namespace BLAZAM.ActiveDirectory
         private INotificationPublisher _notificationPublisher;
         public static ActiveDirectoryContext Instance;
 
+        public int FailedConnectionAttempts { get; set; } = 0;
 
         private AuthenticationTypes _authType;
 
@@ -99,7 +100,7 @@ namespace BLAZAM.ActiveDirectory
             {
                 var model = new DirectoryEntryAdapter();
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                model.Parse(result, this);
+                model.Parse(directory: this, searchResult: result );
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 found.Add(model);
             }
@@ -122,6 +123,8 @@ namespace BLAZAM.ActiveDirectory
 
         /// </summary>
         public IADOUSearcher OUs { get; }
+        /// </summary>
+        public IADPrinterSearcher Printers { get; }
 
         /// <summary>
 
@@ -163,6 +166,7 @@ namespace BLAZAM.ActiveDirectory
         /// </summary>
         public AppEvent<IApplicationUserState>? OnNewLoginUser { get; set; }
 
+
         public IAppDatabaseFactory Factory { get; private set; }
 
         public ADSettings? ConnectionSettings { get; private set; }
@@ -203,6 +207,7 @@ namespace BLAZAM.ActiveDirectory
             Users = new ADUserSearcher(this);
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
+            Printers = new ADPrinterSearcher(this);
             Computers = new ADComputerSearcher(this, _wmiFactory);
         }
         /// <summary>
@@ -223,12 +228,14 @@ namespace BLAZAM.ActiveDirectory
             DomainControllers = activeDirectoryContextSeed.DomainControllers;
             Status = activeDirectoryContextSeed.Status;
             // UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
-            ConnectAsync();
+            //ConnectAsync();
             // _timer = new Timer(KeepAlive, null, 30000, 30000);
 
             Users = new ADUserSearcher(this);
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
+            Printers = new ADPrinterSearcher(this);
+
             Computers = new ADComputerSearcher(this, activeDirectoryContextSeed._wmiFactory);
         }
         private DirectoryContext DirectoryContext => new DirectoryContext(
@@ -270,27 +277,34 @@ namespace BLAZAM.ActiveDirectory
         /// </summary>
         public void Connect()
         {
+            //Set status flag
             Status = DirectoryConnectionStatus.Connecting;
             Loggers.ActiveDirectryLogger.Information("Initiating Active Directory connection");
             try
             {
+                //We want the latest settings each connection attempt so we make a new database connection
+                //We do this without making a new thread
+                //This may be unneccessary
                 Context = Factory.CreateDbContext();
 
                 Loggers.ActiveDirectryLogger.Information("Connecting to settings database");
 
+                //Proceed no further if the DB is down
                 if (Context.Status == ServiceConnectionState.Up)
                 {
                     Loggers.ActiveDirectryLogger.Information("Database connected");
-
+                    //No reason connecting if we're already connected
                     if (Status != DirectoryConnectionStatus.OK)
                     {
-                        ADSettings ad = Context?.ActiveDirectorySettings.FirstOrDefault();
+                        //Ok get the latest settings
+                        ADSettings? ad = Context?.ActiveDirectorySettings.FirstOrDefault();
                         ConnectionSettings = ad;
 
                         if (ad != null)
                         {
                             Loggers.ActiveDirectryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
-
+                            //We need to determine what security options to use when authenticating
+                            //based on the settings in the DB
                             _authType = AuthenticationTypes.Secure;
                             if (ad.UseTLS)
                             {
@@ -341,6 +355,7 @@ namespace BLAZAM.ActiveDirectory
                                         var results = search.Search<ADUser, IADUser>();
                                         try
                                         {
+                                            //Check if there is a parent to confirm the app root is a valid OU, even at the root of a domain this reports the domain itself
                                             if (AppRootDirectoryEntry.Parent == null)
                                             {
                                                 _notificationPublisher.PublishNotification(new NotificationMessage()
@@ -349,7 +364,10 @@ namespace BLAZAM.ActiveDirectory
                                                     Message = "The configured BaseDN is not valid. Please correct your settings.",
                                                     Title = "Active Directory Error"
                                                 });
-                                                Status = DirectoryConnectionStatus.BadConfiguration; return;
+                                                Status = DirectoryConnectionStatus.BadConfiguration;
+                                                if (FailedConnectionAttempts < 10)
+                                                    FailedConnectionAttempts++;
+                                                return;
                                             }
                                         }
                                         catch (Exception ex)
@@ -361,7 +379,10 @@ namespace BLAZAM.ActiveDirectory
                                                     Message = "The configured BaseDN is not valid. Please correct your settings.",
                                                     Title = "Active Directory Error"
                                                 });
-                                            Status = DirectoryConnectionStatus.BadConfiguration; return;
+                                            Status = DirectoryConnectionStatus.BadConfiguration;
+                                            if (FailedConnectionAttempts < 10)
+                                                FailedConnectionAttempts++;
+                                            return;
 
                                         }
 
@@ -372,21 +393,17 @@ namespace BLAZAM.ActiveDirectory
                                                 Loggers.ActiveDirectryLogger.Information("Active Directory test passed");
 
                                                 Status = DirectoryConnectionStatus.OK;
-                                                DomainControllers.Clear();
-                                                foreach (DomainController dc in Domain.GetDomain(DirectoryContext).DomainControllers)
-                                                {
-                                                    //var test = dc;
-
-                                                    DomainControllers.Add(dc);
-
-                                                }
+                                                TryGetDomainControllers();
+                                                FailedConnectionAttempts = 0;
                                             }
                                             else
                                             {
                                                 Loggers.ActiveDirectryLogger.Warning("Active Directory test failed");
 
                                                 Status = DirectoryConnectionStatus.BadConfiguration;
-
+                                                if (FailedConnectionAttempts < 10)
+                                                    FailedConnectionAttempts++; ;
+                                                return;
                                             }
                                         }
                                         catch (Exception ex)
@@ -401,7 +418,7 @@ namespace BLAZAM.ActiveDirectory
                                                     Status = DirectoryConnectionStatus.BadCredentials;
                                                     break;
                                                 default:
-                                                    Loggers.ActiveDirectryLogger.Error("Error collecting domain controllers {@Error}", ex);
+                                                    Loggers.ActiveDirectryLogger.Warning("Error collecting domain controllers {@Error}", ex);
                                                     break;
                                             }
                                         }
@@ -416,17 +433,26 @@ namespace BLAZAM.ActiveDirectory
                                         Loggers.ActiveDirectryLogger.Warning("Error connecting to Active Directory {@Error}", ex);
 
                                         Status = DirectoryConnectionStatus.BadConfiguration;
+                                        if (FailedConnectionAttempts < 10)
+                                            FailedConnectionAttempts++; ;
+                                        return;
                                     }
                                     catch (CryptographicException ex)
                                     {
                                         Loggers.ActiveDirectryLogger.Warning("Unable to decrypt Active Directory password {@Error}", ex);
                                         Status = DirectoryConnectionStatus.UnreachableConfiguration;
+                                        if (FailedConnectionAttempts < 10)
+                                            FailedConnectionAttempts++; ;
+                                        return;
 
                                     }
                                     catch (Exception ex)
                                     {
                                         Loggers.ActiveDirectryLogger.Error("Unexpected Error connecting to Active Directory {@Error}", ex);
                                         Status = DirectoryConnectionStatus.BadConfiguration;
+                                        if (FailedConnectionAttempts < 10)
+                                            FailedConnectionAttempts++; ;
+                                        return;
 
                                     }
                                 }
@@ -435,13 +461,18 @@ namespace BLAZAM.ActiveDirectory
                                     Loggers.ActiveDirectryLogger.Warning("Active Directory port is not open");
 
                                     Status = DirectoryConnectionStatus.ServerDown;
+                                    if (FailedConnectionAttempts < 10)
+                                        FailedConnectionAttempts++; ;
+                                    return;
                                 }
                             }
                         }
                     }
                 }
                 Status = DirectoryConnectionStatus.Unconfigured;
-
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++; ;
+                return;
 
             }
             catch (Exception ex)
@@ -449,8 +480,34 @@ namespace BLAZAM.ActiveDirectory
                 Loggers.ActiveDirectryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
 
                 Status = DirectoryConnectionStatus.ServerDown;
-
+                if (FailedConnectionAttempts < 10)
+                    FailedConnectionAttempts++; ;
+                return;
             }
+        }
+        /// <summary>
+        /// Tries to get the domain controllers by connecting to the domain from the web server
+        /// </summary>
+        /// <remarks>
+        /// If the web host cannot contact the domain directly via DNS this will not populate <see cref="DomainControllers"/>
+        /// </remarks>
+        private void TryGetDomainControllers()
+        {
+            try
+            {
+                //Clear local list of domain controllers
+                DomainControllers.Clear();
+
+                foreach (DomainController dc in Domain.GetDomain(DirectoryContext).DomainControllers)
+                {
+                    DomainControllers.Add(dc);
+                }
+            }
+            catch (Exception ex) 
+            {
+                Loggers.ActiveDirectryLogger.Warning("Could not get domain controllers directly {@Error}", ex);
+            }
+           
         }
 
         public void Dispose()
@@ -465,6 +522,7 @@ namespace BLAZAM.ActiveDirectory
         /// <returns>The matched user if the credentials are valid, otherwise null.</returns>
         public IADUser? Authenticate(LoginRequest loginReq)
         {
+            var startOfLogon = DateTime.Now;
             if (loginReq.Username != null && loginReq.Username.Contains("\\"))
             {
                 loginReq.Username = loginReq.Username.Substring(loginReq.Username.IndexOf("\\") + 1);
@@ -485,43 +543,71 @@ namespace BLAZAM.ActiveDirectory
                                 loginReq.Username += "@" + ConnectionSettings.FQDN;
                             }
 
-                            //WindowsImpersonationUser logonUser = new WindowsImpersonationUser
-                            //{
-                            //    FQDN = ConnectionSettings.FQDN,
-                            //    Username = loginReq.Username,
-                            //    Password = loginReq.SecurePassword
-                            //};
-                            //WindowsImpersonation impersonation = new WindowsImpersonation(logonUser);
-                            //try
-                            //{
-                            //    if (impersonation.Run(() =>
-                            //    {
-                            //        return true;
-                            //    }))
-                            //        return findUser;
-                            //}
-                            //catch (Exception ex)
-                            //{
 
-                            //    return null;
-                            //}
-                            using (var connection = new LdapConnection(new LdapDirectoryIdentifier(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort)))
+
+
+
+
+                            try
                             {
-                                connection.AuthType = AuthType.Basic;
-                                connection.SessionOptions.ProtocolVersion = 3;
-                                connection.Timeout = TimeSpan.FromSeconds(5);
-                                connection.SessionOptions.SecureSocketLayer = ConnectionSettings.UseTLS;
-                                connection.SessionOptions.PingWaitTimeout = TimeSpan.FromSeconds(5);
-                                connection.SessionOptions.SendTimeout = TimeSpan.FromSeconds(5);
-                                
-                                //connection.SessionOptions.FastConcurrentBind();
-                                connection.Credential = new NetworkCredential(loginReq.Username, loginReq.SecurePassword);
-                                
-                                connection.Bind();
+                                Loggers.ActiveDirectryLogger.Information("Authenticating Active Directory credentials");
 
-                                return findUser;
+
+
+                                NetworkCredential cred = new NetworkCredential()
+                                {
+                                   
+                                    UserName = loginReq.Username,
+                                    SecurePassword = loginReq.Password.ToSecureString()
+                                };
+                                LdapConnection connection = new LdapConnection(
+                                   new LdapDirectoryIdentifier(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort),
+                                   cred,
+                                   AuthType.Negotiate);
+
+                                using (connection)
+                                {
+                                    string cn = string.Empty;
+                                    connection.SessionOptions.ProtocolVersion = 3;
+                                    //connection.SessionOptions.FastConcurrentBind();
+                                    connection.SessionOptions.SendTimeout = TimeSpan.FromSeconds(5);
+                                    connection.SessionOptions.AutoReconnect = false;
+
+                                    connection.SessionOptions.SecureSocketLayer = ConnectionSettings.UseTLS;
+                                    connection.Bind();
+                                    return findUser;
+                                }
+
+
+
+
+
+
+
+                                //var _authenticatedContext = new DirectoryEntry("LDAP://" + ConnectionSettings.ServerAddress + ":" + ConnectionSettings.ServerPort + "/" + ConnectionSettings.ApplicationBaseDN, loginReq.Username, loginReq.Password, AuthenticationTypes.FastBind);
+                                ////_authenticatedContext.RefreshCache();
+                                //var _name = _authenticatedContext.Name;
+                                //Loggers.ActiveDirectryLogger.Debug("Authentication successful: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
+                                //return findUser;
 
                             }
+                            catch (DirectoryServicesCOMException ex)
+                            {
+                                Loggers.ActiveDirectryLogger.Error("Error authenticating user: " + ex.Message+" {@Error}",ex);
+                                switch (ex.Message)
+                                {
+                                    case "The user name or password is incorrect.":
+                                        Loggers.ActiveDirectryLogger.Debug("Authentication failure: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
+                                        return null;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Loggers.ActiveDirectryLogger.Debug("Authentication failure: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
+
+                                Loggers.ActiveDirectryLogger.Error("Error while authenticating credentials. {@Error}", ex);
+                            }
+
 
 
                         }
@@ -529,7 +615,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (LdapException ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Error authenticating user: "+ex.Message);
+                    Loggers.ActiveDirectryLogger.Error("Error authenticating user: " + ex.Message+" {@Error}",ex);
                     switch (ex.Message)
                     {
                         case "The user name or password is incorrect.":
@@ -587,20 +673,28 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Error attempting to restore " + model.CanonicalName);
-                    Loggers.ActiveDirectryLogger.Error(ex.Message, ex);
+                    Loggers.ActiveDirectryLogger.Error("Error attempting to restore " + model.CanonicalName + "{@Error}", ex);
                 }
             }
             return false;
 
         }
 
-        public IDirectoryEntryAdapter? FindEntryBySID(byte[] sid) => GetDirectoryModelBySid(sid.ToSidString());
-        public IDirectoryEntryAdapter? GetDirectoryModelBySid(string sid)
+        public IDirectoryEntryAdapter? FindEntryBySID(byte[] sid) => GetDirectoryEntryBySid(sid.ToSidString());
+        public IDirectoryEntryAdapter? GetDirectoryEntryBySid(string sid)
         {
             var searcher = new ADSearch();
             searcher.SearchRoot = RootDirectoryEntry;
             searcher.Fields.SID = sid;
+            var result = searcher.Search().FirstOrDefault();
+            return result;
+        }
+
+        public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string dn)
+        {
+            var searcher = new ADSearch();
+            searcher.SearchRoot = RootDirectoryEntry;
+            searcher.Fields.DN = dn;
             var result = searcher.Search().FirstOrDefault();
             return result;
         }

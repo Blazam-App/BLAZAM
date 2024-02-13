@@ -1,0 +1,12 @@
+digraph "BLAZAMLoggers/obj/Debug/net6.0"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  compound=true
+  subgraph clusterdir_e4678369d6e86961bfa13db239e01e06 {
+    graph [ bgcolor="#edf0f7", pencolor="grey50", label="Debug", fontname=Helvetica,fontsize=10 style="filled,dashed", URL="dir_e4678369d6e86961bfa13db239e01e06.html",tooltip=""]
+  dir_81a33b228388b2c4050b695d2bffdbfc [label="net6.0", fillcolor="#edf0f7", color="grey25", style="filled,bold", URL="dir_81a33b228388b2c4050b695d2bffdbfc.html",tooltip=""];
+  }
+}

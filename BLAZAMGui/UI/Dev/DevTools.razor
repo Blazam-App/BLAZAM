@@ -1,3 +1,4 @@
+@using System.Diagnostics
 @inherits AppComponentBase
 @inject IHttpContextAccessor ca
 
@@ -6,9 +7,9 @@
 
 
         <MudText Typo="Typo.h6">Dev Tools</MudText>
-
+        <MudText>Debugger Attached: @Debugger.IsAttached</MudText>
         <MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>
-            {SnackBarService.Success("Test Notification " + Guid.NewGuid(),"Test");
+            {SnackBarService.Success("Test Notification " + Guid.NewGuid());
             })">Test Notification</MudButton>
         <MudButton Color="Color.Primary" style="height:35px;" OnClick="@(()=>{SnackbarBroadcastService.Success("Test Broadcast " + Guid.NewGuid(),"Test");})">Test Broadcast</MudButton>
         <MudButton Color="Color.Primary" style="height:35px;" OnClick=TestNotificationBroadcast>Test Notification Broadcast</MudButton>
@@ -17,11 +18,19 @@
             <MudCardHeader>
                 Conn Monitor
             </MudCardHeader>
-            <Row>Database Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DatabaseConnected)</Row>
-            <Row>ActiveDirectory Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DirectoryConnected)</Row>
+            <Row>Database Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DatabaseConnectionStatus)</Row>
+            <Row>ActiveDirectory Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.DirectoryConnectionStatus)</Row>
             <Row>App Ready Status: @Enum.GetName(typeof(ServiceConnectionState),Monitor.AppReady)</Row>
-            @*<Row>Error Message: @Oops.ErrorMessage</Row>*@
+            
         </MudCard>
+       @*      <MudDataGrid Items="new List<IApplicationUserState>{CurrentUser.State}">
+            <Columns>
+                <PropertyColumn Property="s=>s.Username"/>
+                <PropertyColumn Property="s=>s.AuditUsername"/>
+                    <PropertyColumn Property="s=>s.User!=null && s.User.Identity==null?null:s.User.Identity.Name" />
+                    <PropertyColumn Property="s=>s.Ticket!=null && s.Ticket.Principal!=null  && s.Ticket.Principal.Identity!=null?s.Ticket.Principal.Identity.Name:null" />
+            </Columns>
+        </MudDataGrid> *@
         <MudDataGrid Items="@UserStateService.UserStates">
             <Columns>
                 <PropertyColumn Title="Username" Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
@@ -29,6 +38,7 @@
 
                 <PropertyColumn Title="Auth Type" Property="x => x.User.Identity==null || x.User.Identity.AuthenticationType==null?null:x.User.Identity.AuthenticationType.ToString()" />
                 <PropertyColumn Title="Authenticated" Property="x => x.User.Identity==null?null:x.User.Identity.IsAuthenticated.ToString()" />
+                    <PropertyColumn Property="s=>s.Ticket!=null && s.Ticket.Principal!=null  && s.Ticket.Principal.Identity!=null?s.Ticket.Principal.Identity.Name:null" />
 
                 <PropertyColumn Title="Last URI" Property="x => x.LastUri" />
                 <PropertyColumn Title="Super Admin" Property="x => x.IsSuperAdmin" />

@@ -1,0 +1,29 @@
+\doxysection{BLAZAM.\+Services.\+Admin\+Token\+Service Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_admin_token_service}{}\label{class_b_l_a_z_a_m_1_1_services_1_1_admin_token_service}\index{BLAZAM.Services.AdminTokenService@{BLAZAM.Services.AdminTokenService}}
+
+
+Provides an administrative token. Note that tokens expire after one hour and are static to the server, meaning every user and the server itself gets the same token. This may be considered a security risk, but the lack of any data transfer or server control via the Rest\+API mean there is no risk.  
+
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_admin_token_service_ace528777bb78d6ab36381b3a4462e9b0}\label{class_b_l_a_z_a_m_1_1_services_1_1_admin_token_service_ace528777bb78d6ab36381b3a4462e9b0} 
+{\bfseries Admin\+Token\+Service} (ILogger$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_admin_token_service}{Admin\+Token\+Service}} $>$ logger, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_application_manager}{Application\+Manager}} application\+Manager)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_admin_token_service_a9d8c9b88005a482ce1dddd815d2c3919}\label{class_b_l_a_z_a_m_1_1_services_1_1_admin_token_service_a9d8c9b88005a482ce1dddd815d2c3919} 
+static \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_admin_token}{Admin\+Token}} {\bfseries Token}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns either an existing token or creates a new one. Tokens last one hour before expiring. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Provides an administrative token. Note that tokens expire after one hour and are static to the server, meaning every user and the server itself gets the same token. This may be considered a security risk, but the lack of any data transfer or server control via the Rest\+API mean there is no risk. 
+
+If a real Rest\+API is implemente this will need to change to jwt tokens. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMServices/Admin\+Token\+Service.\+cs\end{DoxyCompactItemize}

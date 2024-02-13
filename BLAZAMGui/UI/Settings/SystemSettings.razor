@@ -1,43 +1,48 @@
 @inherits SettingsComponents
-@using System.IO.Compression;
 <MudText Typo="Typo.h4">@AppLocalization["System Settings"]</MudText>
-<MudForm @onsubmit="Save">
-    @if (settings != null)
+    <MudForm @onsubmit="Save">
+        @if (settings != null)
     {
         <SettingsField Label="@AppLocalization["Google Analytics ID"]">
 
             <MudTextField Label="@AppLocalization["Google Analytics ID"]" @bind-Value="@settings.AnalyticsId" />
 
         </SettingsField>
-        <SettingsField>
+        <SettingsField Label="@AppLocalization["Manage Web Application"]">
 
             <MudButton Color="Color.Error" Variant=Variant.Outlined OnClick=RestartApplication>Restart Web Application</MudButton>
 
 
         </SettingsField>
     }
-    <MudText>Log Directory: @Loggers.LogPath</MudText>
-    <SettingsField>
+   
+        <SettingsField Label=@AppLocalization["Logs"]>
 
-        <MudLink Href="/download/logs" Target="Target.Blank">
-            <MudButton Variant=Variant.Outlined Color="Color.Primary">Download Logs</MudButton>
-        </MudLink>
+            <MudLink Href="/download/logs" Target="Target.Blank">
+                <MudButton Variant=Variant.Outlined Color="Color.Primary">Download Logs</MudButton>
+            </MudLink>
+        <MudText>Log Directory: @Loggers.LogPath</MudText>
+
+        </SettingsField>
+
+        <ProcessResourceUsage Process="@ApplicationInfo.RunningProcess" />
 
 
-    </SettingsField>
 
-    <SettingsField>
+        <SettingsField Label="@AppLocalization["Encryption Seed String"]">
 
-        <MudButton OnClick="@(()=>{Context.Export("export");})" Color="Color.Success">Export</MudButton>
+            <MudTextField Label="@AppLocalization["Encryption Seed String"]" Disabled=true Value="@Encryption.Instance?.KeySeedString" />
 
-    </SettingsField>
-    <SettingsField>
+        </SettingsField>
 
-        <MudButton ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
 
-    </SettingsField>
-</MudForm>
-@code {
+        <SettingsField>
+
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+        </SettingsField>
+    </MudForm>
+    @code {
 #nullable disable warnings
     AppSettings? settings = new AppSettings();
 
@@ -50,10 +55,18 @@
         await InvokeAsync(StateHasChanged);
     }
 
-
+    string processMemory
+    {
+        get
+        {
+            ApplicationInfo.RunningProcess.Refresh();
+            return new ByteSize((double)ApplicationInfo.RunningProcess.WorkingSet64).ToString();
+        }
+    }
 
     [Inject] ApplicationManager applicationManager { get; set; }
 
+   
     async Task RestartApplication()
     {
         if (await MessageService.Confirm("Are you sure you want to restart the application? All connected users will be disconnected.", "Restart Application"))

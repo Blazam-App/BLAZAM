@@ -6,6 +6,8 @@
 
 
 <EditForm Model="Group">
+
+
     <SetSubHeader>
         <DirectoryEntryViewHeader DirectoryEntry="@Group"
                                   OnAssignTo="@(()=>{AssignToModal?.Show();})"
@@ -15,64 +17,114 @@
                                   OnRename="@(()=>{RenameModal?.Show();})"
                                   OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
                                   OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
-                                  OnToggleEditMode="ToggleEditMode" />
-        <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true"/>
+                                  OnToggleEditMode="@ToggleEditMode" />
+        <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true" />
     </SetSubHeader>
-    
+
     <CascadingValue Value="EditMode">
 
 
-    <AppModal Title="Assign To" @ref=@AssignToModal>
-        <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignToModal?.Hide(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
-    </AppModal>
-    <AppModal Title="Assign To" @ref=@AssignMemberModal>
-        <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal?.Hide();InvokeAsync(StateHasChanged);}) Group="Group" />
-    </AppModal>
-    <AppModal Title="Move To" @ref=@MoveToModal>
-        @if (MoveToModal?.IsShown == true)
+        <AppModal Title=@AppLocalization["Assign To"] @ref=@AssignToModal>
+            <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignToModal?.Hide(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
+        </AppModal>
+        <AppModal Title=@AppLocalization["Add Members"] @ref=@AssignMemberModal>
+            <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal?.Hide();InvokeAsync(StateHasChanged);}) Group="Group" />
+        </AppModal>
+        <AppModal Title=@AppLocalization["Move To"] @ref=@MoveToModal>
+            @if (MoveToModal?.IsShown == true)
+            {
+                <MoveToOUModalContent DirectoryModel="Group" />
+            }
+        </AppModal>
+
+        <AppModal Title=@AppLocalization["Rename Group"] @ref=@RenameModal>
+            @if (RenameModal?.IsShown == true)
+            {
+                <RenameGroupModalContent Group="Group" />
+            }
+        </AppModal> 
+        
+        <AppModal Title=@AppLocalization["Rename Group"] @ref=@RenameModal>
+            @if (RenameModal?.IsShown == true)
+            {
+                <RenameGroupModalContent Group="Group" />
+            }
+        </AppModal>
+          <AppModal Title=@AppLocalization["Change History"] @ref=@ChangeHistoryModal Options=@(new DialogOptions(){FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
+                    @if (ChangeHistoryModal?.IsShown == true)
+                    {
+                        <ChangeHistoryModalContent Model="Group" />
+                    }
+                </AppModal>
+
+
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <Section Style="min-height:200px;" Title="Group Details">
+                    <MudTextField Label="@AppLocalization["Group Name"]" @bind-Value="@Group.CanonicalName" Disabled />
+
+                    <MudTextField Label="@AppLocalization["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
+
+
+                    <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
+
+                     <MudStack Row=true>
+                         <MudText Typo="Typo.subtitle2">@AppLocalization["Created"]:</MudText>
+                            <MudSpacer />
+                            <DateWithTimeTooltip DateTime="Group?.Created" />
+
+                        </MudStack>
+
+                        <MudStack Row=true>
+
+                            <MudText Typo="Typo.subtitle2">@AppLocalization["Last Change"]:</MudText>
+                            <MudSpacer />
+
+                            <DateWithTimeTooltip DateTime="Group?.LastChanged" />
+
+                        </MudStack>
+
+                       
+                    <MudStack Row=true>
+                        <MudText Typo="Typo.subtitle2">@AppLocalization["OU"]:</MudText>
+                            <MudSpacer />
+
+                            <MudText Style="text-align:end;" Typo="Typo.caption">@Group.OU.ToPrettyOu()</MudText>
+                        </MudStack>
+
+
+                </Section>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <Section Style="min-height:200px;" Title=@AppLocalization["Member Of"]>
+                    <MemberOfList Model="Group" />
+
+                </Section>
+            </MudItem>
+            <MudItem xs="12" md="12">
+                <Section Style="min-height:200px;" Title=@AppLocalization["Members"]>
+                    <GroupMembersDataGrid Group="Group" />
+
+                </Section>
+            </MudItem>
+        </MudGrid>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        @if (Group.HasUnsavedChanges)
         {
-            <MoveToOUModalContent DirectoryModel="Group" />
+            <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
         }
-    </AppModal>
-
-    <AppModal Title="Rename Group" @ref=@RenameModal>
-        @if (RenameModal?.IsShown == true)
-        {
-            <RenameGroupModalContent Group="Group" />
-        }
-    </AppModal>
-
-
-
-    <Section Style="min-height:200px;" Title="Group Details">
-        <MudTextField Label="@AppLocalization["Group Name"]" @bind-Value="@Group.CanonicalName" Disabled />
-
-        <MudTextField Label="@AppLocalization["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
-
-
-        <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
-    </Section>
-
-
-   <Section Style="min-height:200px;" Title="Member Of">
-                                    <MemberOfList Model="Group" />
-
-    </Section>
-
-    <Section Style="min-height:200px;" Title="Members">
-        <GroupMembersDataGrid Group="Group"/>
-            
-    </Section>
-       
-   
-
-
-
-
-    @if (Group.HasUnsavedChanges)
-    {
-        <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
-    }
 
     </CascadingValue>
 </EditForm>
@@ -85,23 +137,36 @@
 
     IADGroup Group => DirectoryEntry as IADGroup;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+        await AuditLogger.Searched(Group);
 
+        LoadingData = false;
+        await RefreshEntryComponents();
+    }
 
     async void SaveChanges()
     {
-        if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
+        if (await MessageService.Confirm("Are you sure you want to save the changes to " + Group.CanonicalName + "?", "Save Changes"))
         {
-            var changes = Group.Changes;
 
-            var dcr  = Group.CommitChanges();
-            if (dcr.AssignedMembers.Count > 0)
+            var jobResults = await Group.CommitChangesAsync();
+            if (jobResults.Result == JobResult.Passed)
             {
-                
-            }
-            await AuditLogger.Group.Changed(Group, changes);
+                await AuditLogger.Group.Changed(Group, Group.Changes);
 
-            EditMode = false;
-            SnackBarService.Success("The changes made to this group have been saved.", "Changes Saved");
+                EditMode = false;
+                Nav.WarnOnNavigation = false;
+                SnackBarService.Success("The changes made to this group have been saved.");
+            }
+            else
+            {
+                jobResults.ShowJobDetailsDialog(MessageService);
+            }
+            
+            
             await InvokeAsync(StateHasChanged);
 
         }
@@ -114,7 +179,7 @@
             try
             {
                 Group.Delete();
-                SnackBarService.Success(Group.CanonicalName + " has been deleted.", "Group Deleted");
+                SnackBarService.Success(Group.CanonicalName + " has been deleted.");
 
                 //Group = null;
                 Nav.NavigateTo("/groups/search");

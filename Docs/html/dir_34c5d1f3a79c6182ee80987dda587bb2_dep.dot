@@ -1,0 +1,12 @@
+digraph "BLAZAMActiveDirectory/Adapters"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  compound=true
+  subgraph clusterdir_6efefc218a191c7b2602f8047fb6b913 {
+    graph [ bgcolor="#edf0f7", pencolor="grey25", label="BLAZAMActiveDirectory", fontname=Helvetica,fontsize=10 style="filled,dashed", URL="dir_6efefc218a191c7b2602f8047fb6b913.html",tooltip=""]
+  dir_34c5d1f3a79c6182ee80987dda587bb2 [label="Adapters", fillcolor="#edf0f7", color="grey25", style="filled,bold", URL="dir_34c5d1f3a79c6182ee80987dda587bb2.html",tooltip=""];
+  }
+}

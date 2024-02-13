@@ -1,0 +1,82 @@
+﻿@inherits Widget
+@attribute [Authorize]
+
+<MudDataGrid T="IDirectoryEntryAdapter"
+             Items="FavoriteEntries"
+             RowClick="@RowClicked"
+             RowClass="cursor-pointer"
+             Dense=true
+             Filterable=true
+             RowsPerPage="5"
+             FilterMode="DataGridFilterMode.Simple"
+             Loading=@LoadingData
+             Square=true
+             ColumnResizeMode="ResizeMode.Column"
+             Virtualize=true
+             Class="py-0"
+             SortMode="SortMode.Single">
+    <Columns>
+        <TemplateColumn Title="Type">
+            <CellTemplate>
+                <MudIcon Icon="@context.Item.TypeIcon()" />
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Name">
+            <CellTemplate>
+                <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                    <MudText>@context.Item?.CanonicalName</MudText>
+                </MudTooltip>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x=>x.LastChanged" Title="Changed" />
+
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="IDirectoryEntryAdapter" />
+    </PagerContent>
+</MudDataGrid>
+
+
+<MudOverlay Visible=LoadingData>
+    <MudProgressLinear Indeterminate=true />
+</MudOverlay>
+@code {
+    List<IDirectoryEntryAdapter> FavoriteEntries { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await Task.Run(() =>
+        {
+            foreach (var entry in CurrentUser.State.Preferences.FavoriteEntries)
+            {
+                IDirectoryEntryAdapter match = Directory.GetDirectoryEntryByDN(entry.DN);
+                if (match == null)
+                {
+
+                }
+                else if (match.CanRead)
+                {
+                    FavoriteEntries.Add(match);
+                }
+            }
+
+            LoadingData = false;
+            InvokeAsync(StateHasChanged);
+
+        });
+
+    }
+    void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
+    {
+        if (args.Item != null)
+        {
+            GoTo(args.Item);
+        }
+    }
+  
+    void GoTo(IDirectoryEntryAdapter args)
+    {
+        Nav.NavigateTo(args.SearchUri);
+    }
+}

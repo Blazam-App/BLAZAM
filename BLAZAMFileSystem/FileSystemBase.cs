@@ -1,4 +1,5 @@
-﻿using System.Security;
+﻿using Serilog.Configuration;
+using System.Security;
 using System.Security.AccessControl;
 using System.Security.Permissions;
 
@@ -16,14 +17,19 @@ namespace BLAZAM.FileSystem
             if (Path==null || Path=="")
                 Path = path;
         }
-
+        /// <summary>
+        /// The full raw path to this file or directory
+        /// </summary>
         public string Path { get; set; }
 
+        /// <summary>
+        /// Indicates whether the executing identity has write permission to this directory or file
+        /// </summary>
         public virtual bool Writable
         {
             get
             {
-                string testFilePath = null;
+                string? testFilePath = null;
                 try
                 {
                     var directoryInfo = new DirectoryInfo(Path);
@@ -66,7 +72,14 @@ namespace BLAZAM.FileSystem
                     // Clean up the test file if it was created
                     if (testFilePath != null && File.Exists(testFilePath))
                     {
-                        File.Delete(testFilePath);
+                        try
+                        {
+                            File.Delete(testFilePath);
+                        }
+                        catch
+                        {
+                            //Do nothing if we can't delete the test file
+                        }
                     }
                 }
             }

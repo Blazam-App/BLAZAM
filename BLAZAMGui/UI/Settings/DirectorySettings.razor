@@ -6,6 +6,8 @@
 
 <MudForm @onsubmit="Save">
 
+    <ActiveDirectoryStatusPanel/>
+
     <SettingsField Label="@AppLocalization["Server"]">
 
 
@@ -176,7 +178,7 @@
         }
         await AuditLogger.System.SettingsChanged("Active Directory", settings.GetChanges(originalSettings));
         base.Save();
-        SettingsSaved.InvokeAsync();
+        await SettingsSaved.InvokeAsync();
 
 
     }

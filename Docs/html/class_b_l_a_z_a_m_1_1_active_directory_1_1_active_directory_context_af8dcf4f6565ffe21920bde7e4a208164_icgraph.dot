@@ -1,0 +1,13 @@
+digraph "BLAZAM.ActiveDirectory.ActiveDirectoryContext.Connect"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="RL";
+  Node1 [id="Node000001",label="BLAZAM.ActiveDirectory.Active\lDirectoryContext.Connect",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip="Attempts a connection to the Active Directory server."];
+  Node1 -> Node2 [id="edge1_Node000001_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="BLAZAM.ActiveDirectory.Active\lDirectoryContext.ConnectAsync",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context.html#a1ce41123999925ab6b6959e8ceade90f",tooltip="connects to an Active Directory server. It first checks the database connection status,..."];
+  Node2 -> Node3 [id="edge2_Node000002_Node000003",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="BLAZAM.ActiveDirectory.Active\lDirectoryContext.ActiveDirectory\lContext",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_b_l_a_z_a_m_1_1_active_directory_1_1_active_directory_context.html#aa938f5b0cb058b18a1e315ccdfa7ff4b",tooltip="Initializes the applications Active Directory connection. It takes the information from the ActiveDir..."];
+}

@@ -24,17 +24,7 @@ namespace BLAZAM.Services
             //ProgramEvents.PermissionsChanged += PermissionsChanged;
         }
 
-        //TODO Find a way to store the directory user in the userstate
-        //private void PermissionsChanged()
-        //{
-        //    foreach (var user in _userStateService.UserStates)
-        //    {
-        //        if (user.DirectoryUser != null)
-        //        {
-        //            LoadPermissions(user.DirectoryUser);
-        //        }
-        //    }
-        //}
+      
 
         // For every user that logs in, load their permissions
         //private async void LoadPermissionsForNewLoginUser(IApplicationUserState value)

@@ -29,14 +29,14 @@ namespace BLAZAM.Gui.UI
         [Parameter]
         public bool AllowClose
         {
-            get => Options.CloseButton==true; set
+            get => Options.CloseButton == true; set
             {
                 if (Options == null)
                     Options = new();
                 Options.DisableBackdropClick = !value;
                 Options.CloseButton = value;
                 Options.CloseOnEscapeKey = value;
-                    }
+            }
         }
         [Parameter]
         public Color Color { get; set; } = Color.Default;
@@ -101,7 +101,7 @@ namespace BLAZAM.Gui.UI
         {
             base.OnInitialized();
             if (Options == null)
-                Options = new() ;
+                Options = new();
         }
 
         public void RefreshView()
@@ -114,6 +114,7 @@ namespace BLAZAM.Gui.UI
         /// </summary>
         public IDialogReference? Show()
         {
+
             IsShown = true;
 
             return Modal?.Show();
@@ -134,6 +135,21 @@ namespace BLAZAM.Gui.UI
             else
                 Hide();
         }
-
+        /// <summary>
+        /// Sets the modal to be fullscreen, disabled by passing false.
+        /// </summary>
+        /// <param name="enabled"></param>
+        public void Fullscreen(bool enabled = true)
+        {
+            var existingOptions = Modal.Options;
+            existingOptions.FullScreen = enabled;
+            existingOptions.FullWidth = enabled;
+            if (enabled)
+            {
+                existingOptions.MaxWidth = MaxWidth.ExtraExtraLarge;
+            }
+            Modal.Options = existingOptions;
+            RefreshView();
+        }
     }
 }

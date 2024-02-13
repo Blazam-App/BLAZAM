@@ -35,7 +35,7 @@ else
     {
         await base.OnInitializedAsync();
 
-        _privateComputerInstance = Directory.GetDirectoryModelBySid(Computer.SID.ToSidString()) as IADComputer;
+        _privateComputerInstance = Directory.GetDirectoryEntryBySid(Computer.SID.ToSidString()) as IADComputer;
 
         SaveDisabled = false;
         Modal.OnYes = SaveChanges;
@@ -61,7 +61,7 @@ else
            // _privateComputerInstance.Rename(_privateComputerInstance.DisplayName);
 
            // await _privateUserInstance.CommitChangesAsync();
-            SnackBarService.Success("User has been renamed.", "User renamed");
+            SnackBarService.Success("User has been renamed.");
             User.DirectoryEntry = null;
 
             await DirectoryModelRenamed.InvokeAsync(_privateComputerInstance);
@@ -69,7 +69,7 @@ else
         }
         else
         {
-            SnackBarService.Error("That name already exists. Please choose a different name", "Name Exists");
+            SnackBarService.Error("That name already exists. Please choose a different name");
         }
         LoadingData = false;
 

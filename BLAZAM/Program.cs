@@ -1,24 +1,18 @@
-using Microsoft.AspNetCore.Localization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.Cookies;
+
 using Microsoft.Extensions.Hosting.WindowsServices;
-using System.Globalization;
 using BLAZAM.Server.Middleware;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
-using System.Diagnostics;
 using BLAZAM.Common.Data;
-using MudBlazor.Services;
 using BLAZAM.Server;
-using BLAZAM.FileSystem;
-using BLAZAM.Update;
-using System.Reflection;
-using BLAZAM.Database.Context;
-using BLAZAM.Database.Exceptions;
 using BLAZAM.Services.Background;
 using System.Net;
+using BLAZAM.Database.Context;
+using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.WebSockets;
+using BLAZAM.Database.Models;
 
 namespace BLAZAM
 {
@@ -41,8 +35,6 @@ namespace BLAZAM
 
 
 
-
-        private static IAppDatabaseFactory? _programDbFactory;
 
 
 
@@ -89,6 +81,7 @@ namespace BLAZAM
 
             builder.IntializeProperties();
 
+            _ = new Encryption(Configuration.GetValue<string>("EncryptionKey"));
 
             //Setup host logging so it can catch the earliest logs possible
 
@@ -99,10 +92,12 @@ namespace BLAZAM
 
             builder.InjectServices();
 
-            SetupKestrel(builder);
 
 
             builder.Services.AddCors();
+            
+            
+            SetupKestrel(builder);
 
 
             //Done with service injection let's build the App
@@ -110,10 +105,10 @@ namespace BLAZAM
 
             ApplicationInfo.services = AppInstance.Services;
 
-         
+
             // Configure the HTTP request pipeline.
 
-           
+
 
 
 
@@ -148,7 +143,7 @@ namespace BLAZAM
             //      .SetIsOriginAllowed((host) => true)
             //      .AllowAnyMethod()
             //      .AllowAnyHeader());
-            
+
             AppInstance.UseCookiePolicy();
             AppInstance.UseAuthentication();
             AppInstance.UseAuthorization();
@@ -169,22 +164,40 @@ namespace BLAZAM
 
         private static void SetupKestrel(WebApplicationBuilder builder)
         {
-            //Temporary if during developementt
-            if (!ApplicationInfo.isUnderIIS)
+           
+            var _programDbFactory = new AppDatabaseFactory(Configuration);
+            var kestrelContext = _programDbFactory.CreateDbContext();
+
+
+            if (!ApplicationInfo.isUnderIIS && !Debugger.IsAttached)
             {
                 var listeningAddress = Configuration.GetValue<string>("ListeningAddress");
                 var httpPort = Configuration.GetValue<int>("HTTPPort");
                 var httpsPort = Configuration.GetValue<int>("HTTPSPort");
+                AppSettings? dbSettings=null;
+                X509Certificate2? cert = null;
+                try
+                {
+                    dbSettings = kestrelContext.AppSettings.FirstOrDefault();
+
+                    var certBytes = dbSettings.SSLCertificateCipher.Decrypt<byte[]>();
+                    cert = new X509Certificate2(certBytes);
+
+                }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Error("Error collecting SSL information {@Error}", ex);
+                }
                 builder.WebHost.UseKestrel(options =>
                 {
                     if (listeningAddress == "*")
                     {
                         options.ListenAnyIP(httpPort);
-                        if (httpsPort != 0)
+                        if (httpsPort != 0 && dbSettings!=null && cert!=null && cert.HasPrivateKey)
                         {
                             options.ListenAnyIP(httpsPort, configure =>
                             {
-                                configure.UseHttps();
+                                configure.UseHttps(options=>options.ServerCertificate=cert);
                             });
                         }
                     }
@@ -192,13 +205,13 @@ namespace BLAZAM
                     else
                     {
                         var ip = IPAddress.Parse(listeningAddress);
-                        
+
                         options.Listen(ip, httpPort);
-                        if (httpsPort != 0)
+                        if (httpsPort != 0 && dbSettings != null && cert != null && cert.HasPrivateKey)
                         {
                             options.Listen(ip, httpsPort, configure =>
                             {
-                                configure.UseHttps();
+                                configure.UseHttps(options => options.ServerCertificate = cert);
                             });
                         }
                     }
@@ -243,36 +256,5 @@ namespace BLAZAM
                 return AppInstance.Environment.IsDevelopment();
             }
         }
-
-
-        //public static void CheckWritablePathPermissions()
-        //{
-
-        //    try
-        //    {
-        //        //Check permissions
-        //        File.WriteAllText(WritablePath + @"writetest.test", "writetest");
-        //        Writable = true;
-        //        File.Delete(WritablePath + @"writetest.test");
-
-        //    }
-        //    catch (UnauthorizedAccessException)
-        //    {
-        //        Writable = false;
-        //        Oops.ErrorMessage = "Applicatin Directory Error";
-        //        Oops.DetailsMessage = "The application does not have write permission to the 'writable' directory.";
-        //    }
-        //    catch (DirectoryNotFoundException)
-        //    {
-        //        Writable = false;
-
-        //        Oops.ErrorMessage = "Applicatin Directory Error";
-        //        Oops.DetailsMessage = "The application's 'writable' directory is missing!";
-        //    }
-
-        //}
-
-
-
     }
 }

@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Http;
 using BLAZAM.Services.Duo;
 using BLAZAM.Server.Helpers;
 using BLAZAM.Logger;
+using BLAZAM.Services.Audit;
 
 namespace BLAZAM.Services
 {
@@ -34,6 +35,7 @@ namespace BLAZAM.Services
             IHttpContextAccessor ca,
             IDuoClientProvider dcp,
             IEncryptionService enc,
+            AuditLogger audit,
             ApplicationInfo applicationInfo)
         {
             _applicationInfo = applicationInfo;
@@ -45,10 +47,12 @@ namespace BLAZAM.Services
             this.CurrentUser = this.GetAnonymous();
             this._httpContextAccessor = ca;
             this._duoClientProvider = dcp;
+            this._audit = audit;
         }
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IDuoClientProvider _duoClientProvider;
+        private readonly AuditLogger _audit;
         private readonly ApplicationInfo _applicationInfo;
         private readonly IEncryptionService _encryption;
         private readonly IActiveDirectoryContext _directory;
@@ -72,6 +76,7 @@ namespace BLAZAM.Services
                         context.Properties.ExpiresUtc = currentUtc.AddMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
                     }
                 };
+                
                 options.Events.OnValidatePrincipal = async (context) =>
                 {
                    if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
@@ -153,7 +158,7 @@ namespace BLAZAM.Services
         public async Task<LoginResult> Login(LoginRequest loginReq)
         {
             LoginResult loginResult = new();
-             var newUserState = _userStateService.CreateUserState(null);
+             var newUserState = _userStateService.CreateUserState(GetAnonymous());
             newUserState.IPAddress = loginReq.IPAddress;
             
 
@@ -165,7 +170,10 @@ namespace BLAZAM.Services
             if (loginReq.Impersonation
                 && CurrentUser != null
                 && !CurrentUser.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin))
+            {
+               await _audit.Logon.AttemptedPersonation(loginReq.IPAddress);
                 return loginResult.UnauthorizedImpersonation();
+            }
             //If the user is impersonating then we want to remember who we were before
             if (loginReq.Impersonation)
             {
@@ -190,6 +198,9 @@ namespace BLAZAM.Services
                 var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
                 if (loginReq.Password == adminPass)
                     result = await SetUser(this.GetLocalAdmin());
+                else
+                    await _audit.Logon.AttemptedLogin(GetLocalAdmin(),loginReq.IPAddress);
+
 
             }
             //Check if we're in demo mode and this is a demo login
@@ -217,15 +228,23 @@ namespace BLAZAM.Services
                 }
             }
             if (result?.User != null)
+            {               
                 //User claim processing is done so we can set the UserState with the new identity
                 newUserState.User = result.User;
+                
+            }
             //Pass this state to the State Service for statefulness if it's populated
             if (newUserState.User != null)
                 _userStateService.SetUserState(newUserState);
 
+
             //Return the authenticationstate
             if (result != null)
+            {
+                //await _audit.Logon.Login(result.User);
+
                 return loginResult.Success(result);
+            }
             else
                 return loginResult.BadCredentials();
 
@@ -345,9 +364,6 @@ namespace BLAZAM.Services
 
             var identity = new ClaimsIdentity();
 
-            //TODO Uncomment and store IADUser somewhere in state
-            //_newUserState.DirectoryUser = user;
-            
             
             
             //Load privilege levels for user
@@ -376,7 +392,8 @@ namespace BLAZAM.Services
                 claims.Add(new Claim(ClaimTypes.GivenName, user.GivenName));
             if (user.Surname != null)
                 claims.Add(new Claim(ClaimTypes.Surname, user.Surname));
-
+            if (user.Email != null)
+                claims.Add(new Claim(ClaimTypes.Email, user.Email));
 
 
             if (loginReq.Impersonation)

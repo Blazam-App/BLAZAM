@@ -11,11 +11,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         protected ADSearch NewSearch { get { return new ADSearch() { ObjectTypeFilter = ActiveDirectoryObjectType.OU }; } }
 
-        public async Task<IADOrganizationalUnit> GetApplicationRootOU()
+        public IADOrganizationalUnit GetApplicationRootOU()
         {
             IADOrganizationalUnit TopLevel = new ADOrganizationalUnit();
 
-            await TopLevel.Parse(Directory.GetDirectoryEntry(), Directory);
+            TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
             _ = TopLevel.SubOUs;
             return TopLevel;
         }

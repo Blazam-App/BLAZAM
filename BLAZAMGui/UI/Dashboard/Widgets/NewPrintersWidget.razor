@@ -1,0 +1,23 @@
+﻿@inherits Widget
+@attribute [Authorize]
+<NewEntriesWidgetDataGrid Items="@NewPrinters" RowClick=@GoTo T="IADPrinter" Loading=LoadingData />
+
+@code {
+    List<IADPrinter> NewPrinters
+    {
+        get => CurrentUser.State.Cache.Get<List<IADPrinter>>(this.GetType());
+        set => CurrentUser.State.Cache.Set(this.GetType(), value);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        NewPrinters = (await Directory.Printers.FindNewPrintersAsync(14, false)).Where(u => u.CanRead).ToList();
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+    }
+    void GoTo(DataGridRowClickEventArgs<IADPrinter> args)
+    {
+        Nav.NavigateTo(args.Item.SearchUri);
+    }
+}

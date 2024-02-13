@@ -10,47 +10,61 @@ namespace BLAZAM.Common.Data
 {
     public class WindowsImpersonation
     {
-        static SafeAccessTokenHandle safeAccessTokenHandle;
+        SafeAccessTokenHandle safeAccessTokenHandle;
 
-        static WindowsImpersonationUser impersonationUser;
+        WindowsImpersonationUser impersonationUser;
+        private readonly WindowsIdentity ApplicationIdentity;
 
-
-        public static SafeAccessTokenHandle ImpersonatedToken
+        public SafeAccessTokenHandle ImpersonatedToken
         {
             get
             {
-                if (safeAccessTokenHandle == null)
-                {
-                    // Call LogonUser to obtain a handle to an access token. 
-                    bool returnValue = LogonUser(impersonationUser.Username, impersonationUser.FQDN, impersonationUser.Password.ToPlainText(),
-                        LOGON32_LOGON_INTERACTIVE, LOGON32_PROVIDER_DEFAULT,
+                //Use interactive logon
+                var domain = impersonationUser.FQDN != null ? impersonationUser.FQDN : "";
+                var username = impersonationUser.Username;
+                var phPassword  = Marshal.SecureStringToGlobalAllocUnicode(impersonationUser.Password);
+                bool returnValue = LogonUser(username,
+                        domain,
+                        phPassword,
+                        LOGON32_LOGON_INTERACTIVE,
+                        LOGON32_PROVIDER_DEFAULT,
                         out safeAccessTokenHandle);
 
-                    if (false == returnValue)
-                    {
-                        int ret = Marshal.GetLastWin32Error();
-                        Loggers.ActiveDirectryLogger.Warning("LogonUser failed with error code : {0}", ret);
-                        var exception = new System.ComponentModel.Win32Exception(ret);
-                        if (exception.NativeErrorCode == 1326)
-                        {
 
-                            throw new AuthenticationException(exception.Message);
-                        }
+
+                Marshal.ZeroFreeGlobalAllocUnicode(phPassword);
+                if (false == returnValue)
+                {
+                    int ret = Marshal.GetLastWin32Error();
+                    Loggers.ActiveDirectryLogger.Warning("LogonUser failed with error code : {0}", ret);
+                    var exception = new System.ComponentModel.Win32Exception(ret);
+                    if (exception.NativeErrorCode == 1326)
+                    {
+
+                        throw new AuthenticationException(exception.Message);
                     }
                 }
                 return safeAccessTokenHandle;
 
             }
-            set => safeAccessTokenHandle = value;
         }
 
-        const int LOGON32_PROVIDER_DEFAULT = 0;
-        //This parameter causes LogonUser to create a primary token. 
+
         const int LOGON32_LOGON_INTERACTIVE = 2;
+        const int LOGON32_LOGON_NETWORK = 3;
+        const int LOGON32_LOGON_BATCH = 4;
+        const int LOGON32_LOGON_SERVICE = 5;
+        const int LOGON32_LOGON_UNLOCK = 7;
+        const int LOGON32_LOGON_NETWORK_CLEARTEXT = 8;
+        const int LOGON32_LOGON_NEW_CREDENTIALS = 9;
+        const int LOGON32_PROVIDER_DEFAULT = 0;
+        const int LOGON32_PROVIDER_WINNT50 = 3;
+        //This parameter causes LogonUser to create a primary token. 
+
 
 
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern bool LogonUser(string lpszUsername, string lpszDomain, string lpszPassword,
+        public static extern bool LogonUser(string lpszUsername, string lpszDomain, IntPtr lpszPassword,
     int dwLogonType, int dwLogonProvider, out SafeAccessTokenHandle phToken);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
@@ -59,81 +73,104 @@ namespace BLAZAM.Common.Data
         public WindowsImpersonation(WindowsImpersonationUser user)
         {
             impersonationUser = user;
+            ApplicationIdentity = WindowsIdentity.GetCurrent();
         }
-        public async Task<T> RunAsync<T>(Func<T> task) => await Task.Run(() => Run<T>(task));
-        public T Run<T>(Func<T> task)
+        public async Task<T?> RunAsync<T>(Func<T> task) => await Task.Run(() => Run<T>(task));
+        public T? Run<T>(Func<T> task)
         {
 
 
-            T success = default;
-
+            T? result = default;
             try
             {
-                if (ImpersonatedToken==null || ImpersonatedToken.IsInvalid) throw new ApplicationException("The impersonation user is invalid. Check settings.");
+                var impersonatedToken = ImpersonatedToken;
+
+
+                if (impersonatedToken == null) throw new ApplicationException("The impersonation user is invalid. Check settings.");
 
                 //Console.WriteLine("Did LogonUser Succeed? " + (returnValue ? "Yes" : "No"));
                 // Check the identity.
                 Loggers.ActiveDirectryLogger.Information("Before impersonation: " + WindowsIdentity.GetCurrent().Name);
 
-         
+                try
+                {
 
-                WindowsIdentity.RunImpersonated(
-                  ImpersonatedToken,
-                  () =>
-                  {
-                      // Check the identity.
-                      Loggers.ActiveDirectryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);
-                      success = task.Invoke();
-                  }
-                  );
+                    WindowsIdentity.RunImpersonated(
+                      impersonatedToken,
+                      () =>
+                      {
+                          // Check the identity.
+                          var impersonatedIdentity = WindowsIdentity.GetCurrent();
+                          if (impersonatedIdentity.Name.Equals(ApplicationIdentity.Name))
+                          {
+                              Loggers.ActiveDirectryLogger.Error("Impersonation running as application identity");
 
+                          }
+                          Loggers.ActiveDirectryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);
+                          result = task.Invoke();
+                      }
+                      );
+
+                }
+                catch (Exception ex)
+                {
+                    Loggers.ActiveDirectryLogger.Error("Error running impersonated action " + impersonationUser.Username + " {@Error}", ex);
+                }
+                finally
+                {
+                    impersonatedToken?.Close();
+                }
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("Error trying to impersonate " + impersonationUser.Username, ex);
+                Loggers.ActiveDirectryLogger.Error("Error trying to impersonate " + impersonationUser.Username + " {@Error}", ex);
             }
-            return success;
+
+            return result;
         }
         public async Task<string> RunProcess(string processPath, string arguments)
         {
 
-            //process.StartInfo.UserName = impersonationUser.Username+"@"+ impersonationUser.FQDN;
-            //process.StartInfo.Password = impersonationUser.Password.ToSecureString();
+
             var output = "";
-
-
-            var process = new Process
+            try
             {
-                StartInfo = new ProcessStartInfo
+
+                var process = new Process
                 {
-                    WorkingDirectory = "C:\\",
-                    FileName = processPath,
-                    Arguments = arguments,
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    LoadUserProfile = true,
-                    UserName = impersonationUser?.Username,
-                    Domain = impersonationUser?.FQDN,
-                    Password = impersonationUser?.Password,
-                }
+                    StartInfo = new ProcessStartInfo
+                    {
+                        WorkingDirectory = "C:\\",
+                        FileName = processPath,
+                        Arguments = arguments,
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        LoadUserProfile = true,
+                        UserName = impersonationUser?.Username,
+                        Domain = impersonationUser?.FQDN,
+                        Password = impersonationUser?.Password,
+                    }
 
-            };
-
-
-
-
-            process.Start();
-
-            // Reading the standard output stream of the process
-            output = await process.StandardOutput.ReadToEndAsync();
-            process.WaitForExit();
+                };
 
 
 
+
+                process.Start();
+
+                // Reading the standard output stream of the process
+                output = await process.StandardOutput.ReadToEndAsync();
+                process.WaitForExit();
+
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectryLogger.Error("Error trying to impersonate " + impersonationUser.Username + " {@Error}", ex);
+            }
             return output;
 
-            throw new Exception("Unknown exception impersonating process");
         }
 
     }

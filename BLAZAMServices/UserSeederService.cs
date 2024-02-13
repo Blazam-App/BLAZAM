@@ -36,7 +36,7 @@ namespace BLAZAM.Services
                 if (_applicationInfo.InDemoMode)
                     EnsureDemoExists();
                 using var context = _dbFactory.CreateDbContext();
-                if (context.Status != Common.Data.ServiceConnectionState.Up) return;
+                if (context.Status != ServiceConnectionState.Up) return;
                 foreach (var deleg in context.PermissionDelegate.ToList())
                 {
                     var entry = _activeDirectoryContext.FindEntryBySID(deleg.DelegateSid);
@@ -60,7 +60,7 @@ namespace BLAZAM.Services
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error attempting to synchronize directory and application users.", ex);
+                Loggers.SystemLogger.Error("Error attempting to synchronize directory and application users. {@Error}", ex);
             }
         }
         /// <summary>
@@ -82,9 +82,8 @@ namespace BLAZAM.Services
             context.SaveChanges();
         }
         /// <summary>
-        /// Checks the database for this user, if not found they are added
+        /// Checks the database for the admin user, if not found it is added
         /// </summary>
-        /// <param name="user"></param>
         private void EnsureAdminExists()
         {
             using var context = _dbFactory.CreateDbContext();
@@ -99,9 +98,8 @@ namespace BLAZAM.Services
             context.SaveChanges();
         }
         /// <summary>
-        /// Checks the database for this user, if not found they are added
+        /// Checks the database for the demo user, if not found it is added
         /// </summary>
-        /// <param name="user"></param>
         private void EnsureDemoExists()
         {
             using var context = _dbFactory.CreateDbContext();

@@ -1,0 +1,99 @@
+\doxysection{BLAZAM.\+Services.\+App\+Authentication\+State\+Provider Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider}{}\label{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider}\index{BLAZAM.Services.AppAuthenticationStateProvider@{BLAZAM.Services.AppAuthenticationStateProvider}}
+
+
+Handles login/impersonate/logout of the browser HTTPContext Identity. This identity is stored it the Application\textquotesingle{}s authentication cookie.  
+
+
+Inheritance diagram for BLAZAM.\+Services.\+App\+Authentication\+State\+Provider\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_a76d004e703cee34b7e3c40596383e7a6}\label{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_a76d004e703cee34b7e3c40596383e7a6} 
+{\bfseries App\+Authentication\+State\+Provider} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_database_1_1_context_1_1_i_app_database_factory}{IApp\+Database\+Factory}} factory, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directoy, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator}{Permission\+Applicator}} permission\+Handler, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_session_1_1_interfaces_1_1_i_application_user_state_service}{IApplication\+User\+State\+Service}} user\+State\+Service, IHttp\+Context\+Accessor ca, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_services_1_1_duo_1_1_i_duo_client_provider}{IDuo\+Client\+Provider}} dcp, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_common_1_1_data_1_1_services_1_1_i_encryption_service}{IEncryption\+Service}} enc, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_application_info}{Application\+Info}} application\+Info)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_a39c3963a58128cd01c8e6cc95f0f7111}\label{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_a39c3963a58128cd01c8e6cc95f0f7111} 
+override Task$<$ Authentication\+State $>$ {\bfseries Get\+Authentication\+State\+Async} ()
+\item 
+async Task$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_result}{Login\+Result}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_a3de5a65e4113700b2ee408d9ea573be3}{Login}} (\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request}{Login\+Request}} login\+Req)
+\begin{DoxyCompactList}\small\item\em Processes a login request. \end{DoxyCompactList}\item 
+Task$<$ Authentication\+State $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_a997d61520a8e1b2d4f10b43520b9a7a3}{Set\+User}} (Claims\+Principal claims\+Principal)
+\begin{DoxyCompactList}\small\item\em Sets the User Authentication\+State in the Authentication\+Provider. \end{DoxyCompactList}\item 
+Task$<$ Authentication\+State $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_ab8ee2308251fa1f73493335c0880692d}{Logout}} (Claims\+Principal claims\+Principal)
+\begin{DoxyCompactList}\small\item\em This may not be entirely neccessary the way I am implementin authentication and authorization Though, this likey is needed to remove the cookie to actually signout? \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_ac42899f3e663dae5174b33d2566aba84}\label{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_ac42899f3e663dae5174b33d2566aba84} 
+static Action$<$ Cookie\+Authentication\+Options $>$ {\bfseries Apply\+Authentication\+Cookie\+Options} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Handles login/impersonate/logout of the browser HTTPContext Identity. This identity is stored it the Application\textquotesingle{}s authentication cookie. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_a3de5a65e4113700b2ee408d9ea573be3}\label{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_a3de5a65e4113700b2ee408d9ea573be3} 
+\index{BLAZAM.Services.AppAuthenticationStateProvider@{BLAZAM.Services.AppAuthenticationStateProvider}!Login@{Login}}
+\index{Login@{Login}!BLAZAM.Services.AppAuthenticationStateProvider@{BLAZAM.Services.AppAuthenticationStateProvider}}
+\doxysubsubsection{\texorpdfstring{Login()}{Login()}}
+{\footnotesize\ttfamily async Task$<$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_result}{Login\+Result}} $>$ BLAZAM.\+Services.\+App\+Authentication\+State\+Provider.\+Login (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request}{Login\+Request}}}]{login\+Req }\end{DoxyParamCaption})}
+
+
+
+Processes a login request. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em login\+Req} & The authentication details and options for login\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A fully processed Authentication\+State with all Claims and application permissions applied.
+\end{DoxyReturn}
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_ab8ee2308251fa1f73493335c0880692d}\label{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_ab8ee2308251fa1f73493335c0880692d} 
+\index{BLAZAM.Services.AppAuthenticationStateProvider@{BLAZAM.Services.AppAuthenticationStateProvider}!Logout@{Logout}}
+\index{Logout@{Logout}!BLAZAM.Services.AppAuthenticationStateProvider@{BLAZAM.Services.AppAuthenticationStateProvider}}
+\doxysubsubsection{\texorpdfstring{Logout()}{Logout()}}
+{\footnotesize\ttfamily Task$<$ Authentication\+State $>$ BLAZAM.\+Services.\+App\+Authentication\+State\+Provider.\+Logout (\begin{DoxyParamCaption}\item[{Claims\+Principal}]{claims\+Principal }\end{DoxyParamCaption})}
+
+
+
+This may not be entirely neccessary the way I am implementin authentication and authorization Though, this likey is needed to remove the cookie to actually signout? 
+
+
+\begin{DoxyParams}{Parameters}
+{\em claims\+Principal} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_a997d61520a8e1b2d4f10b43520b9a7a3}\label{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider_a997d61520a8e1b2d4f10b43520b9a7a3} 
+\index{BLAZAM.Services.AppAuthenticationStateProvider@{BLAZAM.Services.AppAuthenticationStateProvider}!SetUser@{SetUser}}
+\index{SetUser@{SetUser}!BLAZAM.Services.AppAuthenticationStateProvider@{BLAZAM.Services.AppAuthenticationStateProvider}}
+\doxysubsubsection{\texorpdfstring{SetUser()}{SetUser()}}
+{\footnotesize\ttfamily Task$<$ Authentication\+State $>$ BLAZAM.\+Services.\+App\+Authentication\+State\+Provider.\+Set\+User (\begin{DoxyParamCaption}\item[{Claims\+Principal}]{claims\+Principal }\end{DoxyParamCaption})}
+
+
+
+Sets the User Authentication\+State in the Authentication\+Provider. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em claims\+Principal} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMServices/App\+Authentication\+State\+Provider.\+cs\end{DoxyCompactItemize}

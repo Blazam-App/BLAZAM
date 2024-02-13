@@ -1,6 +1,9 @@
 ﻿
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
+    /// <summary>
+    /// A searcher class for user objects in an <see cref="IActiveDirectoryContext"/>
+    /// </summary>
     public interface IADUserSearcher
     {
         List<IADUser> FindUsersByString(string? searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false);

@@ -2,25 +2,16 @@
 @using BLAZAM.Static;
 @layout LoginLayout
 
-@inject NavigationManager NavManager
-@inject IAppDatabaseFactory DbFactory
-@inject ConnMonitor tester
-@inject ApplicationInfo ApplicationInfo
-@inject IStringLocalizer<AppLocalization> Localizer
-
+@inherits AppComponentBase
 
 
 
 <MudContainer Class="py-5">
 
-    <MudText Typo="Typo.h3">
+    <FullAppName/>
+   
 
-
-        @DatabaseCache.ApplicationSettings?.AppName
-
-    </MudText>
-
-    <MudText>@Localizer["ApplicationStarting"]</MudText>
+    <MudText>@AppLocalization["ApplicationStarting"]</MudText>
     <MudProgressLinear Color="Color.Info" Indeterminate=true />
 
     <MudElement Class="brand-icon">
@@ -38,9 +29,10 @@
 </MudContainer>
 
 <style>
-    body{
+    body {
         height: 98vh;
     }
+
     .brand-icon {
         position: fixed;
         left: 5px;
@@ -71,21 +63,21 @@
             if (ApplicationInfo.InstallationCompleted)
             {
                 waitingForLoadToComplete = false;
-                if (tester.AppReady == ServiceConnectionState.Up)
+                if (Monitor.AppReady == ServiceConnectionState.Up)
                 {
-                    NavManager.NavigateTo("/home", true);
+                    Nav.NavigateTo("/home", true);
                 }
-                else if (tester.AppReady == ServiceConnectionState.Down)
+                else if (Monitor.AppReady == ServiceConnectionState.Down)
                 {
-                    NavManager.NavigateTo("/oops", true);
+                    Nav.NavigateTo("/oops", true);
 
                 }
             }
             else
             {
-                if (tester.AppReady == ServiceConnectionState.Up)
+                if (Monitor.AppReady == ServiceConnectionState.Up)
                 {
-                    NavManager.NavigateTo("/install", true);
+                    Nav.NavigateTo("/install", true);
                 }
             }
             if (!waitingForLoadToComplete)
@@ -98,23 +90,27 @@
 }
 @code {
     private bool waitingForLoadToComplete = true;
+    ServiceConnectionState? oldStatus;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        tester.OnAppReadyChanged += AppReady;
+        Monitor.OnAppReadyChanged += AppReady;
 
     }
     private void AppReady(ServiceConnectionState newStatus)
     {
-        if (newStatus == ServiceConnectionState.Up)
-
-            if (ApplicationInfo.InstallationCompleted && NavManager.ToBaseRelativePath(NavManager.Uri) == "")
+        if (newStatus == ServiceConnectionState.Up && oldStatus != newStatus)
+        {
+            if (ApplicationInfo.InstallationCompleted && Nav.ToBaseRelativePath(Nav.Uri) == "")
             {
                 waitingForLoadToComplete = false;
 
-                NavManager.NavigateTo("/home");
+                Nav.NavigateTo("/home");
 
             }
+        }
+        oldStatus = newStatus;
+
     }
 }
 

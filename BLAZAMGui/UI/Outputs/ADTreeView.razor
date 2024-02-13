@@ -13,7 +13,7 @@
              @bind-SelectedValue="SelectedOU">
     <ItemTemplate>
         <MudTreeViewItem Value="@context"
-                         Items=@(context.CachedChildren.ToHashSet())
+                         Items=@(context.Children.ToHashSet())
                          LoadingIconColor="Color.Info"
                          @bind-Expanded="@context.IsExpanded"
                           @bind-Activated=context.IsSelected
@@ -158,7 +158,7 @@
         if (RootOU is null || RootOU.Count < 1)
         {
             TopLevel = new ADOrganizationalUnit();
-            await TopLevel.Parse(Directory.GetDirectoryEntry(), Directory);
+            TopLevel.Parse(directory:Directory, directoryEntry: Directory.GetDirectoryEntry());
             _ = TopLevel.SubOUs;
             RootOU = new HashSet<IDirectoryEntryAdapter>() { TopLevel };
         }

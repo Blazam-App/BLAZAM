@@ -1,0 +1,74 @@
+﻿@inherits AppComponentBase
+
+<CascadingValue Value="Job">
+
+    <MudDialog>
+        <DialogContent>
+            <JobDetails Job="Job" />
+            @if (Job.Result == JobResult.Running)
+            {
+                <MudProgressLinear Value=@(Job.Progress.HasValue==true?Job.Progress.Value:0) Max="100" />
+            }
+            <MudStack Row=true>
+                <JobStartTime />
+                <JobElapsedTime />
+                <JobRanBy />
+            </MudStack>
+       
+        </DialogContent>
+        <DialogActions>
+
+
+            
+            @switch (Job.Result)
+            {
+                case JobResult.Cancelled:
+                case JobResult.Passed:
+                case JobResult.Failed:
+                    <MudButton Color="@Color.Primary" Variant="Variant.Filled" OnClick="Dismiss">@AppLocalization["Ok"]</MudButton>
+
+                    break;
+
+
+                default:
+                    <MudButton Color="@Color.Error" Variant="Variant.Filled" @onclick="Cancel">@AppLocalization["Cancel"]</MudButton>
+
+                    break;
+            }
+        </DialogActions>
+    </MudDialog>
+</CascadingValue>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public IJob Job { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var newOptions = MudDialog.Options;
+        newOptions.DisableBackdropClick= true;
+
+        MudDialog.SetOptions(newOptions);
+
+        base.OnInitialized();
+       
+        if (Job != null)
+        {
+            Job.OnProgressUpdated += ((value) =>
+          {
+              InvokeAsync(StateHasChanged);
+          });
+        }
+    }
+
+    private void Dismiss()
+    {
+        MudDialog.Close();
+
+    }
+    private async Task Cancel()
+    {
+        Job.Cancel();
+    }
+}

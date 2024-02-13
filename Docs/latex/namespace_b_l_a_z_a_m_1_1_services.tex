@@ -1,0 +1,21 @@
+\doxysection{BLAZAM.\+Services Namespace Reference}
+\hypertarget{namespace_b_l_a_z_a_m_1_1_services}{}\label{namespace_b_l_a_z_a_m_1_1_services}\index{BLAZAM.Services@{BLAZAM.Services}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_admin_token}{Admin\+Token}}
+\begin{DoxyCompactList}\small\item\em A token to be used to authenticate administrative api requests to this sever. The primary use case is for authorizing the self update executable. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_admin_token_service}{Admin\+Token\+Service}}
+\begin{DoxyCompactList}\small\item\em Provides an administrative token. Note that tokens expire after one hour and are static to the server, meaning every user and the server itself gets the same token. This may be considered a security risk, but the lack of any data transfer or server control via the Rest\+API mean there is no risk. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_app_authentication_state_provider}{App\+Authentication\+State\+Provider}}
+\begin{DoxyCompactList}\small\item\em Handles login/impersonate/logout of the browser HTTPContext Identity. This identity is stored it the Application\textquotesingle{}s authentication cookie. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_application_manager}{Application\+Manager}}
+\item 
+class \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_encryption_service}{Encryption\+Service}}
+\item 
+class \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_permission_applicator}{Permission\+Applicator}}
+\item 
+class \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_search_service}{Search\+Service}}
+\item 
+class \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_services_1_1_user_seeder_service}{User\+Seeder\+Service}}
+\begin{DoxyCompactList}\small\item\em Prefills the user table with all users who have login access. \end{DoxyCompactList}\end{DoxyCompactItemize}

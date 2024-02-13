@@ -1,0 +1,44 @@
+\doxysection{Free\+RDP.\+Rfx Class Reference}
+\hypertarget{class_free_r_d_p_1_1_rfx}{}\label{class_free_r_d_p_1_1_rfx}\index{FreeRDP.Rfx@{FreeRDP.Rfx}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_a82ff36cf9e93755f34762792c9533e36}\label{class_free_r_d_p_1_1_rfx_a82ff36cf9e93755f34762792c9533e36} 
+enum {\bfseries RFX\+\_\+\+PIXEL\+\_\+\+FORMAT} \{ \newline
+{\bfseries BGRA} = 0
+, {\bfseries RGBA} = 1
+, {\bfseries BGR} = 2
+, {\bfseries RGB} = 3
+, \newline
+{\bfseries BGR565\+\_\+\+LE} = 4
+, {\bfseries RGB565\+\_\+\+LE} = 5
+, {\bfseries PALETTE4\+\_\+\+PLANER} = 6
+, {\bfseries PALETTE8} = 7
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_a1f7ee6e1aa93847c797d77890e8b3512}\label{class_free_r_d_p_1_1_rfx_a1f7ee6e1aa93847c797d77890e8b3512} 
+static Int\+Ptr {\bfseries rfx\+\_\+context\+\_\+new} ()
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_abce908259db8e88b5c63d5c738f8c9d8}\label{class_free_r_d_p_1_1_rfx_abce908259db8e88b5c63d5c738f8c9d8} 
+static void {\bfseries rfx\+\_\+context\+\_\+free} (Int\+Ptr handle)
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_af00b018b4b5163bf21973a469b02f6e1}\label{class_free_r_d_p_1_1_rfx_af00b018b4b5163bf21973a469b02f6e1} 
+static void {\bfseries rfx\+\_\+context\+\_\+set\+\_\+pixel\+\_\+format} (Int\+Ptr handle, RFX\+\_\+\+PIXEL\+\_\+\+FORMAT format)
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_a72d182501b140d8c99dd8a0a3dab3aed}\label{class_free_r_d_p_1_1_rfx_a72d182501b140d8c99dd8a0a3dab3aed} 
+\mbox{\hyperlink{class_free_r_d_p_1_1_rfx_message}{Rfx\+Message}} {\bfseries Parse\+Message} (byte\mbox{[}$\,$\mbox{]} data, UInt32 length)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_free_r_d_p_1_1_rfx_a3f4046dee487a5b5d39a0b08df8e0ff8}\label{class_free_r_d_p_1_1_rfx_a3f4046dee487a5b5d39a0b08df8e0ff8} 
+Int\+Ptr {\bfseries handle}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Free\+RDP-\/\+Sharp/\+Free\+RDP/\+Codec/Rfx.\+cs\end{DoxyCompactItemize}

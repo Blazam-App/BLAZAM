@@ -1,6 +1,8 @@
 ﻿using BLAZAM.Common.Data;
+using BLAZAM.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
@@ -14,7 +16,7 @@ namespace BLAZAM.Database.Models.Templates
 
     //Sets the name column to be unique
     [Index(nameof(Name), IsUnique = true)]
-    public class DirectoryTemplate : RecoverableAppDbSetBase, ICloneable
+    public class DirectoryTemplate : RecoverableAppDbSetBase
     {
 
         public DirectoryTemplate? ParentTemplate { get; set; } = null;
@@ -25,14 +27,16 @@ namespace BLAZAM.Database.Models.Templates
 
 
         public string? Category { get; set; }
-
-
+        [DefaultValue(true)]
+        public bool Visible { get; set; } = true;
         [Required]
         public ActiveDirectoryObjectType ObjectType { get; set; } = ActiveDirectoryObjectType.User;
 
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public string? DisplayNameFormula { get; set; }
+
+        
         [NotMapped]
         public string EffectiveDisplayNameFormula
         {
@@ -167,7 +171,11 @@ namespace BLAZAM.Database.Models.Templates
                                          || (fv.CustomField != null && fv.CustomField.Equals(fieldValue.CustomField)));
         }
 
-
+        /// <summary>
+        /// Only used for GUI TreeViews
+        /// </summary>
+        [NotMapped]
+        public HashSet<DirectoryTemplate> ChildTemplates { get; set; }
 
         public string GenerateUsername(NewUserName newUser)
         {
@@ -270,12 +278,12 @@ namespace BLAZAM.Database.Models.Templates
             return Name?.ToString();
         }
 
-        public object Clone()
+        public object Clone(IDatabaseContext context)
         {
             var clone = new DirectoryTemplate
             {
                 ParentTemplate = ParentTemplate,
-                AssignedGroupSids = AssignedGroupSids,
+                //AssignedGroupSids = AssignedGroupSids,
                 Category = Category,
                 Id = 0,
                 DisplayNameFormula = DisplayNameFormula,
@@ -285,10 +293,15 @@ namespace BLAZAM.Database.Models.Templates
                 ParentOU = ParentOU,
                 PasswordFormula = PasswordFormula,
                 UsernameFormula = UsernameFormula
+
             };
             foreach (var field in FieldValues)
             {
-                clone.FieldValues.Add((DirectoryTemplateFieldValue)field.Clone());
+                clone.FieldValues.Add((DirectoryTemplateFieldValue)field.Clone(context));
+            }
+            foreach (var sid in AssignedGroupSids)
+            {
+                clone.AssignedGroupSids.Add(sid.Clone(context));
             }
             return clone;
         }

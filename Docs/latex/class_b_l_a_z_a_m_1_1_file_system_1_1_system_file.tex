@@ -1,0 +1,110 @@
+\doxysection{BLAZAM.\+File\+System.\+System\+File Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file}{}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file}\index{BLAZAM.FileSystem.SystemFile@{BLAZAM.FileSystem.SystemFile}}
+Inheritance diagram for BLAZAM.\+File\+System.\+System\+File\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_aa0760587b717edbdbfbf39fd22692208}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_aa0760587b717edbdbfbf39fd22692208} 
+{\bfseries System\+File} (string path)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a7be5df9c11dce96fba783fe49e14f11a}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a7be5df9c11dce96fba783fe49e14f11a} 
+async Task$<$ byte\mbox{[}$\,$\mbox{]}$>$ {\bfseries Read\+All\+Bytes\+Async} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a1f0ec59df45c8031aa125477e1863bad}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a1f0ec59df45c8031aa125477e1863bad} 
+byte\mbox{[}$\,$\mbox{]} {\bfseries Read\+All\+Bytes} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a65790b708ae84932d2b54a9d6b07af63}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a65790b708ae84932d2b54a9d6b07af63} 
+string {\bfseries Read\+All\+Text} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a73e7452480235b306de09cbca3f3eb75}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a73e7452480235b306de09cbca3f3eb75} 
+bool {\bfseries Write\+All\+Text} (string? text)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a594f3854c9d1c182ac43edcd77ae684a}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a594f3854c9d1c182ac43edcd77ae684a} 
+void {\bfseries Delete} ()
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a15cc1f2370b93f58bc8e5838b76b910c}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a15cc1f2370b93f58bc8e5838b76b910c} 
+File\+Stream {\bfseries Open\+Read\+Stream} ()
+\item 
+File\+Stream \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a7185ea9575aa45d3518e145292e1f5a0}{Open\+Write\+Stream}} ()
+\begin{DoxyCompactList}\small\item\em Returns an opened stream reader to this file. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a5b6953fdbef6c445162d2373ad52ec11}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a5b6953fdbef6c445162d2373ad52ec11} 
+void {\bfseries Ensure\+Created} ()
+\begin{DoxyCompactList}\small\item\em Creates the file if it does not already exist. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_file_system_base}{BLAZAM.\+File\+System.\+File\+System\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries File\+System\+Base} (string path)
+\item 
+override int {\bfseries Get\+Hash\+Code} ()
+\item 
+override? string {\bfseries To\+String} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_adb98d87b801bd871b28f36aebfbbd9ab}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_adb98d87b801bd871b28f36aebfbbd9ab} 
+bool {\bfseries Exists}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a9593d0dba42e93cf5745e864617140be}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a9593d0dba42e93cf5745e864617140be} 
+string {\bfseries Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_aa60dc003fe60319197be70c379451138}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_aa60dc003fe60319197be70c379451138} 
+string {\bfseries Extension}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_aa0def155d407760cfc81e43a4cb19a26}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_aa0def155d407760cfc81e43a4cb19a26} 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_directory}{System\+Directory}} {\bfseries Parent\+Directory}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_add676538a6a0e6d93dbe6517cbc9bad3}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_add676538a6a0e6d93dbe6517cbc9bad3} 
+Date\+Time {\bfseries Last\+Modified}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a08c2f431b5ea7a5cb569ba09b7c3a929}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a08c2f431b5ea7a5cb569ba09b7c3a929} 
+Time\+Span {\bfseries Since\+Last\+Modified}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+override bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_aa44e04b6b6bcbb19abeaa1d37e6f7737}{Writable}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Checks if the directory this file is in is writable. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_file_system_1_1_file_system_base}{BLAZAM.\+File\+System.\+File\+System\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+string {\bfseries Path}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+virtual bool {\bfseries Writable}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a7185ea9575aa45d3518e145292e1f5a0}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_a7185ea9575aa45d3518e145292e1f5a0} 
+\index{BLAZAM.FileSystem.SystemFile@{BLAZAM.FileSystem.SystemFile}!OpenWriteStream@{OpenWriteStream}}
+\index{OpenWriteStream@{OpenWriteStream}!BLAZAM.FileSystem.SystemFile@{BLAZAM.FileSystem.SystemFile}}
+\doxysubsubsection{\texorpdfstring{OpenWriteStream()}{OpenWriteStream()}}
+{\footnotesize\ttfamily File\+Stream BLAZAM.\+File\+System.\+System\+File.\+Open\+Write\+Stream (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Returns an opened stream reader to this file. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_aa44e04b6b6bcbb19abeaa1d37e6f7737}\label{class_b_l_a_z_a_m_1_1_file_system_1_1_system_file_aa44e04b6b6bcbb19abeaa1d37e6f7737} 
+\index{BLAZAM.FileSystem.SystemFile@{BLAZAM.FileSystem.SystemFile}!Writable@{Writable}}
+\index{Writable@{Writable}!BLAZAM.FileSystem.SystemFile@{BLAZAM.FileSystem.SystemFile}}
+\doxysubsubsection{\texorpdfstring{Writable}{Writable}}
+{\footnotesize\ttfamily override bool BLAZAM.\+File\+System.\+System\+File.\+Writable\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Checks if the directory this file is in is writable. 
+
+This does not check if the file itself is writable 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMFile\+System/System\+File.\+cs\end{DoxyCompactItemize}

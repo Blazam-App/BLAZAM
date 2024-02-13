@@ -1,0 +1,424 @@
+\doxysection{NFree\+RDP.\+Rdp\+Client Class Reference}
+\hypertarget{class_n_free_r_d_p_1_1_rdp_client}{}\label{class_n_free_r_d_p_1_1_rdp_client}\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+Inheritance diagram for NFree\+RDP.\+Rdp\+Client\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_n_free_r_d_p_1_1_rdp_client}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_af5126be065ae55915761ab9af4839829}{Rdp\+Client}} ()
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a587b4e77633bfe9846697acf793658c2}{Connect}} (\mbox{\hyperlink{class_n_free_r_d_p_1_1_connection_settings}{Connection\+Settings}} settings)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a20b5de80f3feff7409a30d7858b8d73c}{Disconnect}} ()
+\item 
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_ab411912391f888902758b604157c261c}\label{class_n_free_r_d_p_1_1_rdp_client_ab411912391f888902758b604157c261c} 
+void {\bfseries On\+Mouse\+Event} (UInt16 pointer\+Flags, UInt16 x, UInt16 y)
+\item 
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a98a20e61b27e33bba3dc8005a0d4f939}\label{class_n_free_r_d_p_1_1_rdp_client_a98a20e61b27e33bba3dc8005a0d4f939} 
+void {\bfseries On\+Keyboard\+Event} (UInt16 keyboard\+Flags, UInt16 key\+Code)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_adcea4eec1a4cb90462170fa704c13fe4}{Begin\+Paint}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a01437968e004392f5d43bf93bd979a4c}{End\+Paint}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_aee82f5aedbb118c8107040a1bb79386f}{Set\+Bounds}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1rdp_bounds}{rdp\+Bounds}} \texorpdfstring{$\ast$}{*}bounds)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_ac74a56e8302bc3a094582a43b720a94b}{Synchronize}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a506b92819697f40cdf194f59c93145a1}{Desktop\+Resize}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_afff7344252a3f49b3a79f4e4a7c5fa6c}{Bitmap\+Update}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_bitmap_update}{Bitmap\+Update}} \texorpdfstring{$\ast$}{*}bitmap)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_ad88af5b16f9c21dc47c4f55d21334ab5}{Palette}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_palette_update}{Palette\+Update}} \texorpdfstring{$\ast$}{*}palette)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_aa86dea8df4b7f37b299d6c86ea5d836b}{Play\+Sound}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_play_sound_update}{Play\+Sound\+Update}} \texorpdfstring{$\ast$}{*}play\+Sound)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a685a8159d1f03fa2ffd61fa44dc2cd65}{Surface\+Bits}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_surface_bits}{Surface\+Bits}} \texorpdfstring{$\ast$}{*}surface\+Bits)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a7acf3dfd9e6236285d641aad121a65a4}{Dst\+Blt}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_dst_blt_order}{Dst\+Blt\+Order}} \texorpdfstring{$\ast$}{*}dstblt)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a6267c0230dd5962ebb5c05c2a1a70f7e}{Pat\+Blt}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_pat_blt_order}{Pat\+Blt\+Order}} \texorpdfstring{$\ast$}{*}patblt)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_aa6d1c59d86fba901d65eb4d0cb293ba6}{Scr\+Blt}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_scr_blt_order}{Scr\+Blt\+Order}} \texorpdfstring{$\ast$}{*}scrblt)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_ae834db59a7b5b8cd667e8d7387c60efe}{Opaque\+Rect}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_opaque_rect_order}{Opaque\+Rect\+Order}} \texorpdfstring{$\ast$}{*}opaque\+Rect)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a3dd05cc6776f663fbe2350e04cc44025}{Draw\+Nine\+Grid}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_draw_nine_grid_order}{Draw\+Nine\+Grid\+Order}} \texorpdfstring{$\ast$}{*}draw\+Nine\+Grid)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a7238ff8bc7d0f37f11af9894aa7b21cc}{Multi\+Dst\+Blt}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_multi_dst_blt_order}{Multi\+Dst\+Blt\+Order}} \texorpdfstring{$\ast$}{*}multi\+\_\+dstblt)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_af3410e12763d53ab98b917e9918eecfd}{Multi\+Pat\+Blt}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_multi_pat_blt_order}{Multi\+Pat\+Blt\+Order}} \texorpdfstring{$\ast$}{*}multi\+\_\+patblt)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a217b0e2da5093eea6aa745b1dff1cb9c}{Multi\+Scr\+Blt}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_multi_scr_blt_order}{Multi\+Scr\+Blt\+Order}} \texorpdfstring{$\ast$}{*}multi\+\_\+scrblt)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_ad795a8efc9d5484d718a54b9bb2810dc}{Multi\+Opaque\+Rect}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_multi_opaque_rect_order}{Multi\+Opaque\+Rect\+Order}} \texorpdfstring{$\ast$}{*}multi\+\_\+opaque\+\_\+rect)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_ae4b55cf6f0710e9158a430924ec8493e}{Multi\+Draw\+Nine\+Grid}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_multi_draw_nine_grid_order}{Multi\+Draw\+Nine\+Grid\+Order}} \texorpdfstring{$\ast$}{*}multi\+\_\+draw\+\_\+nine\+\_\+grid)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a9ff39057d3898b1debbf32b33b86b88d}{Line\+To}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_line_to_order}{Line\+To\+Order}} \texorpdfstring{$\ast$}{*}line\+\_\+to)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_afc8ae7bfb8dd0b3611cba058f59ed936}{Polyline}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_polyline_order}{Polyline\+Order}} \texorpdfstring{$\ast$}{*}polyline)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_aec4cb67426f4e3f60559bf39c2125e3c}{Mem\+Blt}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_mem_blt_order}{Mem\+Blt\+Order}} \texorpdfstring{$\ast$}{*}memblt)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a292fec76321021785acbae47d074f377}{Mem3\+Blt}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_mem3_blt_order}{Mem3\+Blt\+Order}} \texorpdfstring{$\ast$}{*}mem3blt)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a3a302de22caae8a79a22cdd5b78c4fa7}{Save\+Bitmap}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_save_bitmap_order}{Save\+Bitmap\+Order}} \texorpdfstring{$\ast$}{*}save\+\_\+bitmap)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a52e7f18b967dc75d0f79c5f7dd7aa482}{Glyph\+Index}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_glyph_index_order}{Glyph\+Index\+Order}} \texorpdfstring{$\ast$}{*}glyph\+\_\+index)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a8003775576e4af617002af5b280f9387}{Fast\+Index}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_fast_index_order}{Fast\+Index\+Order}} \texorpdfstring{$\ast$}{*}fast\+\_\+index)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a7410e0f64fe100181f7445e348647cf7}{Fast\+Glyph}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_fast_glyph_order}{Fast\+Glyph\+Order}} \texorpdfstring{$\ast$}{*}fast\+\_\+glyph)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a0d48893e6940a1379c22b4d651a89ac8}{Polygon\+SC}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_polygon_s_c_order}{Polygon\+SCOrder}} \texorpdfstring{$\ast$}{*}polygon\+\_\+sc)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_a837bf8ce12433e1191b4c3b89e0b88dc}{Polygon\+CB}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_polygon_c_b_order}{Polygon\+CBOrder}} \texorpdfstring{$\ast$}{*}polygon\+\_\+cb)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_ae74f48be5e458433a1da951c4269aedb}{Ellipse\+SC}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_ellipse_s_c_order}{Ellipse\+SCOrder}} \texorpdfstring{$\ast$}{*}ellipse\+\_\+sc)
+\item 
+void \mbox{\hyperlink{class_n_free_r_d_p_1_1_rdp_client_abb4d72a3155d0c03ff664c7b26c55bbf}{Ellipse\+CB}} (\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}context, \mbox{\hyperlink{struct_free_r_d_p_1_1_ellipse_c_b_order}{Ellipse\+CBOrder}} \texorpdfstring{$\ast$}{*}ellipse\+\_\+cb)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_af5126be065ae55915761ab9af4839829}\label{class_n_free_r_d_p_1_1_rdp_client_af5126be065ae55915761ab9af4839829} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!RdpClient@{RdpClient}}
+\index{RdpClient@{RdpClient}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{RdpClient()}{RdpClient()}}
+{\footnotesize\ttfamily NFree\+RDP.\+Rdp\+Client.\+Rdp\+Client (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Instantiate RDP and Thread 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_adcea4eec1a4cb90462170fa704c13fe4}\label{class_n_free_r_d_p_1_1_rdp_client_adcea4eec1a4cb90462170fa704c13fe4} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!BeginPaint@{BeginPaint}}
+\index{BeginPaint@{BeginPaint}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{BeginPaint()}{BeginPaint()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Begin\+Paint (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_update}{Free\+RDP.\+IUpdate}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_afff7344252a3f49b3a79f4e4a7c5fa6c}\label{class_n_free_r_d_p_1_1_rdp_client_afff7344252a3f49b3a79f4e4a7c5fa6c} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!BitmapUpdate@{BitmapUpdate}}
+\index{BitmapUpdate@{BitmapUpdate}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{BitmapUpdate()}{BitmapUpdate()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Bitmap\+Update (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_bitmap_update}{Bitmap\+Update}} \texorpdfstring{$\ast$}{*}}]{bitmap }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_update}{Free\+RDP.\+IUpdate}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a587b4e77633bfe9846697acf793658c2}\label{class_n_free_r_d_p_1_1_rdp_client_a587b4e77633bfe9846697acf793658c2} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!Connect@{Connect}}
+\index{Connect@{Connect}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{Connect()}{Connect()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Connect (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_n_free_r_d_p_1_1_connection_settings}{Connection\+Settings}}}]{settings }\end{DoxyParamCaption})}
+
+Connect to \doxylink{namespace_free_r_d_p}{Free\+RDP} server, start thread \Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a506b92819697f40cdf194f59c93145a1}\label{class_n_free_r_d_p_1_1_rdp_client_a506b92819697f40cdf194f59c93145a1} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!DesktopResize@{DesktopResize}}
+\index{DesktopResize@{DesktopResize}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{DesktopResize()}{DesktopResize()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Desktop\+Resize (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_update}{Free\+RDP.\+IUpdate}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a20b5de80f3feff7409a30d7858b8d73c}\label{class_n_free_r_d_p_1_1_rdp_client_a20b5de80f3feff7409a30d7858b8d73c} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!Disconnect@{Disconnect}}
+\index{Disconnect@{Disconnect}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{Disconnect()}{Disconnect()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Disconnect (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Disconnect from \doxylink{namespace_free_r_d_p}{Free\+RDP} server, stop thread \Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a3dd05cc6776f663fbe2350e04cc44025}\label{class_n_free_r_d_p_1_1_rdp_client_a3dd05cc6776f663fbe2350e04cc44025} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!DrawNineGrid@{DrawNineGrid}}
+\index{DrawNineGrid@{DrawNineGrid}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{DrawNineGrid()}{DrawNineGrid()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Draw\+Nine\+Grid (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_draw_nine_grid_order}{Draw\+Nine\+Grid\+Order}} \texorpdfstring{$\ast$}{*}}]{draw\+Nine\+Grid }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a7acf3dfd9e6236285d641aad121a65a4}\label{class_n_free_r_d_p_1_1_rdp_client_a7acf3dfd9e6236285d641aad121a65a4} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!DstBlt@{DstBlt}}
+\index{DstBlt@{DstBlt}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{DstBlt()}{DstBlt()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Dst\+Blt (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_dst_blt_order}{Dst\+Blt\+Order}} \texorpdfstring{$\ast$}{*}}]{dstblt }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_abb4d72a3155d0c03ff664c7b26c55bbf}\label{class_n_free_r_d_p_1_1_rdp_client_abb4d72a3155d0c03ff664c7b26c55bbf} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!EllipseCB@{EllipseCB}}
+\index{EllipseCB@{EllipseCB}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{EllipseCB()}{EllipseCB()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Ellipse\+CB (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_ellipse_c_b_order}{Ellipse\+CBOrder}} \texorpdfstring{$\ast$}{*}}]{ellipse\+\_\+cb }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_ae74f48be5e458433a1da951c4269aedb}\label{class_n_free_r_d_p_1_1_rdp_client_ae74f48be5e458433a1da951c4269aedb} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!EllipseSC@{EllipseSC}}
+\index{EllipseSC@{EllipseSC}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{EllipseSC()}{EllipseSC()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Ellipse\+SC (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_ellipse_s_c_order}{Ellipse\+SCOrder}} \texorpdfstring{$\ast$}{*}}]{ellipse\+\_\+sc }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a01437968e004392f5d43bf93bd979a4c}\label{class_n_free_r_d_p_1_1_rdp_client_a01437968e004392f5d43bf93bd979a4c} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!EndPaint@{EndPaint}}
+\index{EndPaint@{EndPaint}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{EndPaint()}{EndPaint()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+End\+Paint (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_update}{Free\+RDP.\+IUpdate}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a7410e0f64fe100181f7445e348647cf7}\label{class_n_free_r_d_p_1_1_rdp_client_a7410e0f64fe100181f7445e348647cf7} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!FastGlyph@{FastGlyph}}
+\index{FastGlyph@{FastGlyph}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{FastGlyph()}{FastGlyph()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Fast\+Glyph (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_fast_glyph_order}{Fast\+Glyph\+Order}} \texorpdfstring{$\ast$}{*}}]{fast\+\_\+glyph }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a8003775576e4af617002af5b280f9387}\label{class_n_free_r_d_p_1_1_rdp_client_a8003775576e4af617002af5b280f9387} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!FastIndex@{FastIndex}}
+\index{FastIndex@{FastIndex}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{FastIndex()}{FastIndex()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Fast\+Index (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_fast_index_order}{Fast\+Index\+Order}} \texorpdfstring{$\ast$}{*}}]{fast\+\_\+index }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a52e7f18b967dc75d0f79c5f7dd7aa482}\label{class_n_free_r_d_p_1_1_rdp_client_a52e7f18b967dc75d0f79c5f7dd7aa482} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!GlyphIndex@{GlyphIndex}}
+\index{GlyphIndex@{GlyphIndex}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{GlyphIndex()}{GlyphIndex()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Glyph\+Index (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_glyph_index_order}{Glyph\+Index\+Order}} \texorpdfstring{$\ast$}{*}}]{glyph\+\_\+index }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a9ff39057d3898b1debbf32b33b86b88d}\label{class_n_free_r_d_p_1_1_rdp_client_a9ff39057d3898b1debbf32b33b86b88d} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!LineTo@{LineTo}}
+\index{LineTo@{LineTo}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{LineTo()}{LineTo()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Line\+To (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_line_to_order}{Line\+To\+Order}} \texorpdfstring{$\ast$}{*}}]{line\+\_\+to }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a292fec76321021785acbae47d074f377}\label{class_n_free_r_d_p_1_1_rdp_client_a292fec76321021785acbae47d074f377} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!Mem3Blt@{Mem3Blt}}
+\index{Mem3Blt@{Mem3Blt}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{Mem3Blt()}{Mem3Blt()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Mem3\+Blt (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_mem3_blt_order}{Mem3\+Blt\+Order}} \texorpdfstring{$\ast$}{*}}]{mem3blt }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_aec4cb67426f4e3f60559bf39c2125e3c}\label{class_n_free_r_d_p_1_1_rdp_client_aec4cb67426f4e3f60559bf39c2125e3c} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!MemBlt@{MemBlt}}
+\index{MemBlt@{MemBlt}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{MemBlt()}{MemBlt()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Mem\+Blt (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_mem_blt_order}{Mem\+Blt\+Order}} \texorpdfstring{$\ast$}{*}}]{memblt }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_ae4b55cf6f0710e9158a430924ec8493e}\label{class_n_free_r_d_p_1_1_rdp_client_ae4b55cf6f0710e9158a430924ec8493e} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!MultiDrawNineGrid@{MultiDrawNineGrid}}
+\index{MultiDrawNineGrid@{MultiDrawNineGrid}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{MultiDrawNineGrid()}{MultiDrawNineGrid()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Multi\+Draw\+Nine\+Grid (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_multi_draw_nine_grid_order}{Multi\+Draw\+Nine\+Grid\+Order}} \texorpdfstring{$\ast$}{*}}]{multi\+\_\+draw\+\_\+nine\+\_\+grid }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a7238ff8bc7d0f37f11af9894aa7b21cc}\label{class_n_free_r_d_p_1_1_rdp_client_a7238ff8bc7d0f37f11af9894aa7b21cc} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!MultiDstBlt@{MultiDstBlt}}
+\index{MultiDstBlt@{MultiDstBlt}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{MultiDstBlt()}{MultiDstBlt()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Multi\+Dst\+Blt (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_multi_dst_blt_order}{Multi\+Dst\+Blt\+Order}} \texorpdfstring{$\ast$}{*}}]{multi\+\_\+dstblt }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_ad795a8efc9d5484d718a54b9bb2810dc}\label{class_n_free_r_d_p_1_1_rdp_client_ad795a8efc9d5484d718a54b9bb2810dc} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!MultiOpaqueRect@{MultiOpaqueRect}}
+\index{MultiOpaqueRect@{MultiOpaqueRect}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{MultiOpaqueRect()}{MultiOpaqueRect()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Multi\+Opaque\+Rect (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_multi_opaque_rect_order}{Multi\+Opaque\+Rect\+Order}} \texorpdfstring{$\ast$}{*}}]{multi\+\_\+opaque\+\_\+rect }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_af3410e12763d53ab98b917e9918eecfd}\label{class_n_free_r_d_p_1_1_rdp_client_af3410e12763d53ab98b917e9918eecfd} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!MultiPatBlt@{MultiPatBlt}}
+\index{MultiPatBlt@{MultiPatBlt}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{MultiPatBlt()}{MultiPatBlt()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Multi\+Pat\+Blt (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_multi_pat_blt_order}{Multi\+Pat\+Blt\+Order}} \texorpdfstring{$\ast$}{*}}]{multi\+\_\+patblt }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a217b0e2da5093eea6aa745b1dff1cb9c}\label{class_n_free_r_d_p_1_1_rdp_client_a217b0e2da5093eea6aa745b1dff1cb9c} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!MultiScrBlt@{MultiScrBlt}}
+\index{MultiScrBlt@{MultiScrBlt}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{MultiScrBlt()}{MultiScrBlt()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Multi\+Scr\+Blt (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_multi_scr_blt_order}{Multi\+Scr\+Blt\+Order}} \texorpdfstring{$\ast$}{*}}]{multi\+\_\+scrblt }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_ae834db59a7b5b8cd667e8d7387c60efe}\label{class_n_free_r_d_p_1_1_rdp_client_ae834db59a7b5b8cd667e8d7387c60efe} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!OpaqueRect@{OpaqueRect}}
+\index{OpaqueRect@{OpaqueRect}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{OpaqueRect()}{OpaqueRect()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Opaque\+Rect (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_opaque_rect_order}{Opaque\+Rect\+Order}} \texorpdfstring{$\ast$}{*}}]{opaque\+Rect }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_ad88af5b16f9c21dc47c4f55d21334ab5}\label{class_n_free_r_d_p_1_1_rdp_client_ad88af5b16f9c21dc47c4f55d21334ab5} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!Palette@{Palette}}
+\index{Palette@{Palette}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{Palette()}{Palette()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Palette (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_palette_update}{Palette\+Update}} \texorpdfstring{$\ast$}{*}}]{palette }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_update}{Free\+RDP.\+IUpdate}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a6267c0230dd5962ebb5c05c2a1a70f7e}\label{class_n_free_r_d_p_1_1_rdp_client_a6267c0230dd5962ebb5c05c2a1a70f7e} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!PatBlt@{PatBlt}}
+\index{PatBlt@{PatBlt}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{PatBlt()}{PatBlt()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Pat\+Blt (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_pat_blt_order}{Pat\+Blt\+Order}} \texorpdfstring{$\ast$}{*}}]{patblt }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_aa86dea8df4b7f37b299d6c86ea5d836b}\label{class_n_free_r_d_p_1_1_rdp_client_aa86dea8df4b7f37b299d6c86ea5d836b} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!PlaySound@{PlaySound}}
+\index{PlaySound@{PlaySound}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{PlaySound()}{PlaySound()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Play\+Sound (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_play_sound_update}{Play\+Sound\+Update}} \texorpdfstring{$\ast$}{*}}]{play\+Sound }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_update}{Free\+RDP.\+IUpdate}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a837bf8ce12433e1191b4c3b89e0b88dc}\label{class_n_free_r_d_p_1_1_rdp_client_a837bf8ce12433e1191b4c3b89e0b88dc} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!PolygonCB@{PolygonCB}}
+\index{PolygonCB@{PolygonCB}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{PolygonCB()}{PolygonCB()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Polygon\+CB (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_polygon_c_b_order}{Polygon\+CBOrder}} \texorpdfstring{$\ast$}{*}}]{polygon\+\_\+cb }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a0d48893e6940a1379c22b4d651a89ac8}\label{class_n_free_r_d_p_1_1_rdp_client_a0d48893e6940a1379c22b4d651a89ac8} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!PolygonSC@{PolygonSC}}
+\index{PolygonSC@{PolygonSC}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{PolygonSC()}{PolygonSC()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Polygon\+SC (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_polygon_s_c_order}{Polygon\+SCOrder}} \texorpdfstring{$\ast$}{*}}]{polygon\+\_\+sc }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_afc8ae7bfb8dd0b3611cba058f59ed936}\label{class_n_free_r_d_p_1_1_rdp_client_afc8ae7bfb8dd0b3611cba058f59ed936} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!Polyline@{Polyline}}
+\index{Polyline@{Polyline}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{Polyline()}{Polyline()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Polyline (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_polyline_order}{Polyline\+Order}} \texorpdfstring{$\ast$}{*}}]{polyline }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a3a302de22caae8a79a22cdd5b78c4fa7}\label{class_n_free_r_d_p_1_1_rdp_client_a3a302de22caae8a79a22cdd5b78c4fa7} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!SaveBitmap@{SaveBitmap}}
+\index{SaveBitmap@{SaveBitmap}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{SaveBitmap()}{SaveBitmap()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Save\+Bitmap (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_save_bitmap_order}{Save\+Bitmap\+Order}} \texorpdfstring{$\ast$}{*}}]{save\+\_\+bitmap }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_aa6d1c59d86fba901d65eb4d0cb293ba6}\label{class_n_free_r_d_p_1_1_rdp_client_aa6d1c59d86fba901d65eb4d0cb293ba6} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!ScrBlt@{ScrBlt}}
+\index{ScrBlt@{ScrBlt}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{ScrBlt()}{ScrBlt()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Scr\+Blt (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_scr_blt_order}{Scr\+Blt\+Order}} \texorpdfstring{$\ast$}{*}}]{scrblt }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_primary_update}{Free\+RDP.\+IPrimary\+Update}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_aee82f5aedbb118c8107040a1bb79386f}\label{class_n_free_r_d_p_1_1_rdp_client_aee82f5aedbb118c8107040a1bb79386f} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!SetBounds@{SetBounds}}
+\index{SetBounds@{SetBounds}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{SetBounds()}{SetBounds()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Set\+Bounds (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_bounds}{rdp\+Bounds}} \texorpdfstring{$\ast$}{*}}]{bounds }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_update}{Free\+RDP.\+IUpdate}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_a685a8159d1f03fa2ffd61fa44dc2cd65}\label{class_n_free_r_d_p_1_1_rdp_client_a685a8159d1f03fa2ffd61fa44dc2cd65} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!SurfaceBits@{SurfaceBits}}
+\index{SurfaceBits@{SurfaceBits}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{SurfaceBits()}{SurfaceBits()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Surface\+Bits (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context,  }\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1_surface_bits}{Surface\+Bits}} \texorpdfstring{$\ast$}{*}}]{surface\+Bits }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_update}{Free\+RDP.\+IUpdate}}.
+
+\Hypertarget{class_n_free_r_d_p_1_1_rdp_client_ac74a56e8302bc3a094582a43b720a94b}\label{class_n_free_r_d_p_1_1_rdp_client_ac74a56e8302bc3a094582a43b720a94b} 
+\index{NFreeRDP.RdpClient@{NFreeRDP.RdpClient}!Synchronize@{Synchronize}}
+\index{Synchronize@{Synchronize}!NFreeRDP.RdpClient@{NFreeRDP.RdpClient}}
+\doxysubsubsection{\texorpdfstring{Synchronize()}{Synchronize()}}
+{\footnotesize\ttfamily void NFree\+RDP.\+Rdp\+Client.\+Synchronize (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_free_r_d_p_1_1rdp_context}{rdp\+Context}} \texorpdfstring{$\ast$}{*}}]{context }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_free_r_d_p_1_1_i_update}{Free\+RDP.\+IUpdate}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Free\+RDP-\/\+Sharp/\+NFree\+RDP/Rdp\+Client.\+cs\end{DoxyCompactItemize}

@@ -86,13 +86,13 @@
                     </MudContainer>
 
                 </MudMainContent>
-                <MudAppBar Style="height:35px;" DisableGutters=true Bottom=true Dense=true Color=Color.Dark Elevation="1">
+               <MudAppBar Style="height:35px;" DisableGutters=true Bottom=true Dense=true Color=Color.Dark Elevation="1">
                     <MudStack Class="mud-width-full pa-0 ma-0 ps-3" Row=true>
                         <AppFooter Class="align-middle"/>
-                        
-                        <AppChat />
+                        @*TODO Either break down chat to only page chat, or rebuild appchat*@
+                        @* <AppChat /> *@
                     </MudStack>
-                </MudAppBar>
+                </MudAppBar> 
                 <NotificationBroadcastListener />
             </Authorized>
             <NotAuthorized>

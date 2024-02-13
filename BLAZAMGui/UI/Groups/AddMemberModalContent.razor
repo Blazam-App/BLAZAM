@@ -66,7 +66,7 @@
         if (Entry is IGroupableDirectoryAdapter groupableEntry)
         {
             Group.AssignMember(groupableEntry);
-            SnackBarService.Warning(groupableEntry.CanonicalName + " has been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
+            SnackBarService.Warning(groupableEntry.CanonicalName + " has been assigned to " + Group.GroupName + " but changes must be saved.");
             await ModelChanged.InvokeAsync();
 
             Close();
@@ -78,7 +78,7 @@
                 Group.AssignMember(member);
 
             }
-            SnackBarService.Warning("The selected members have been assigned to " + Group.GroupName + " but changes must be saved.", "Assignment Pending");
+            SnackBarService.Warning("The selected members have been assigned to " + Group.GroupName + " but changes must be saved.");
             await ModelChanged.InvokeAsync();
 
             Close();

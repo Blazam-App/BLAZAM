@@ -9,12 +9,18 @@
     /// <summary>
     /// Closes the containing modal
     /// </summary>
-    protected void Close(){
+    protected void Close()
+    {
         Modal.Hide();
         InvokeAsync(StateHasChanged);
 
     }
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Modal.YesEnabled = ValidateModal;
+    }
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
@@ -22,9 +28,9 @@
     }
 
 
-    protected virtual bool IsValid => true;
+    protected virtual bool IsValid { get; set; } = true;
     private bool _lastIsValid;
-    protected bool ValidateModal()
+    protected virtual bool ValidateModal()
     {
         if (_lastIsValid != IsValid)
         {
