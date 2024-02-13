@@ -9,7 +9,7 @@ using BLAZAM.Nav;
 namespace BLAZAM.Gui.UI
 {
 
-    public class AppComponentBase : ComponentBase
+    public class AppComponentBase : ComponentBase,IDisposable
     {
         [Inject]
         protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }

@@ -127,6 +127,7 @@
     {
         MaxResults += 10;
         await GetResults(SearchTerm);
+        await InvokeAsync(StateHasChanged);
     }
 
     [Parameter]

@@ -83,7 +83,7 @@ namespace BLAZAM.FileSystem
         /// <summary>
         /// The full directory name
         /// </summary>
-        public string? Name => System.IO.Path.GetDirectoryName(Path);
+        public string? Name => Path.Split("\\").Last();
 
         public void ClearDirectory()
         {

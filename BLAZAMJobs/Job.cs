@@ -13,11 +13,6 @@ namespace BLAZAM.Jobs
         private DateTime scheduledRunTime = DateTime.Now;
         private Timer? runScheduler;
 
-
-        public bool StopOnFailedStep { get; set; }
-
-
-
         public string? User { get; set; }
 
         public IList<IJobStep> Steps { get; set; } = new List<IJobStep>();
@@ -98,7 +93,7 @@ namespace BLAZAM.Jobs
                 if (!Steps[i].Run() && Result != JobResult.Cancelled)
                 {
                     FailedSteps.Add(Steps[i]);
-                    if (StopOnFailedStep)
+                    if (StopOnFailedStep || Steps[i].StopOnFailedStep)
                     {
                         Result = JobResult.Failed;
                         Cancel();
@@ -151,7 +146,7 @@ namespace BLAZAM.Jobs
             }
         }
 
-        public void Cancel()
+        public override void Cancel()
         {
             if (Progress == null || Progress < 100)
             {

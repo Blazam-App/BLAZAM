@@ -2,28 +2,28 @@
 
 namespace BLAZAM.Jobs
 {
-    public class JobStepBase
+    public class JobStepBase : IJobStepBase
     {
-        protected CancellationTokenSource cancellationTokenSource = new();
+        protected  CancellationTokenSource cancellationTokenSource = new();
         private double? progress = null;
 
-        public TimeSpan? ElapsedTime
+        public virtual TimeSpan? ElapsedTime
         {
             get
             {
-                if (Result == JobResult.Running && StartTime!=null) return DateTime.Now - StartTime;
+                if (Result == JobResult.Running && StartTime != null) return DateTime.Now - StartTime;
                 if (EndTime == null) return null;
                 return EndTime - StartTime;
             }
         }
 
-        public DateTime? EndTime { get; protected set; }
-        public Exception Exception { get; protected set; }
-        public WindowsImpersonation Identity { get; set; }
+        public virtual DateTime? EndTime { get; protected set; }
+        public virtual Exception Exception { get; protected set; }
+        public virtual WindowsImpersonation Identity { get; set; }
 
         public virtual string? Name { get; set; }
-        public AppEvent<double?> OnProgressUpdated { get; set; }
-        public double? Progress
+        public virtual AppEvent<double?> OnProgressUpdated { get; set; }
+        public virtual double? Progress
         {
             get => progress; set
             {
@@ -33,17 +33,25 @@ namespace BLAZAM.Jobs
             }
         }
 
-        public JobResult Result { get; protected set; } = JobResult.NotRun;
+        public virtual JobResult Result { get; protected set; } = JobResult.NotRun;
 
-        public DateTime? StartTime { get; protected set; }
+        public virtual DateTime? StartTime { get; protected set; }
 
-        public async Task<bool> RunAsync()
+
+        public virtual bool StopOnFailedStep { get; set; }
+
+        public virtual async Task<bool> RunAsync()
         {
             return await Task.Run(() => { return Run(); });
         }
         public virtual bool Run()
         {
             throw new ApplicationException("This step contains no action.");
+        }
+
+        public virtual void Cancel()
+        {
+            throw new NotImplementedException("This job component has not implemented cancel.");
         }
     }
 }

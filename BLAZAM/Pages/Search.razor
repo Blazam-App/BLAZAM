@@ -223,7 +223,7 @@
         else
             Searcher.Cancel();
         SearchService.SearchTerm = SearchTermParameter;
-        Searcher.EnabledOnly = !SearchService.IncludeDisabled;
+        //Searcher.EnabledOnly = !SearchService.IncludeDisabled;
         Searcher.GeneralSearchTerm = SearchService.SearchTerm;
         Searcher.ObjectTypeFilter = SearchService.SeachObjectType;
         Searcher.ExactMatch = true;
