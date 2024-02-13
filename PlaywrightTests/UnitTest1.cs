@@ -12,22 +12,7 @@ namespace PlaywrightTests
             // Expects the URL to contain intro.
             await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
         }
-        [Test]
-        public async Task AppChatOpens()
-        {
-            await LogIn();
-
-            // Expects the URL to contain intro.
-            await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
-
-            // create a locator
-            //var loginButton = Page.Locator("id=main_chat_button");
-
-           
-            // Click the get started link.
-            //await loginButton.ClickAsync();
-        }
-
+       
 
 
         private async Task LogIn()

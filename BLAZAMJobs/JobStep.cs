@@ -12,6 +12,7 @@ namespace BLAZAM.Jobs
         public Func<JobStep?,bool>? Action { get; }
         public Func<JobStep?,Task<bool>>? AsyncAction { get; }
 
+
         public JobStep(string name, Func<JobStep?,bool> action)
         {
             Name = name;
@@ -27,7 +28,7 @@ namespace BLAZAM.Jobs
         {
             Identity = identity;
         }
-        public void Cancel()
+        public override void Cancel()
         {
             if (Progress == null || Progress < 100)
             {

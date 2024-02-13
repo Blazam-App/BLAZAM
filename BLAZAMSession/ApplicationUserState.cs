@@ -84,7 +84,7 @@ namespace BLAZAM.Server.Data.Services
 
             _notificationPublisher = notificationPublisher;
             _dbFactory = factory;
-            userSettings = new();
+            //userSettings = new();
             _notificationPublisher.OnNotificationPublished += (notifications) =>
             {
                 if (notifications.Select(n => n.User).Contains(Preferences))

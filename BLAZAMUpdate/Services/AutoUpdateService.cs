@@ -30,12 +30,10 @@ namespace BLAZAM.Update.Services
         public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo)
         {
             _applicationInfo = applicationInfo;
-            //email = emailService;
             this.factory = factory;
-            //Audit = auditLogger;
             this.updateService = updateService;
             updateCheckTimer = new Timer(CheckForUpdate, null, (int)TimeSpan.FromSeconds(20).TotalMilliseconds, (int)TimeSpan.FromHours(1).TotalMilliseconds);
-            directoryCleaner = new Timer(CleanDirectories, null, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, (int)TimeSpan.FromDays(1).TotalMilliseconds);
+            directoryCleaner = new Timer(CleanDirectories, null, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, (int)TimeSpan.FromHours(20).TotalMilliseconds);
         }
 
         private void CleanDirectories(object? state)
@@ -81,7 +79,7 @@ namespace BLAZAM.Update.Services
                                     return false;
                                 }))
                                 {
-                                    Loggers.UpdateLogger.Error("No identies with permission to remove old update file: " + file);
+                                    Loggers.UpdateLogger.Error("No identities with permission to remove old update file: " + file);
 
                                 }
                             }
@@ -90,7 +88,7 @@ namespace BLAZAM.Update.Services
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Loggers.UpdateLogger.Warning("Tried to delete non-existant file: " + file, ex);
+                    Loggers.UpdateLogger.Warning("Tried to delete non-existent file: " + file, ex);
                     //file.Delete();
                 }
                 catch (Exception ex)
@@ -101,29 +99,79 @@ namespace BLAZAM.Update.Services
 
             }
             //TODO Fix the staging cleanup
-            /*
-             * Disable to test strange behavior, the staging folders are deleted on shutdown
-             * during an update
+
+
             var oldStaginDirectories = ApplicationUpdate.StagingDirectory.SubDirectories;
             foreach (var dir in oldStaginDirectories)
             {
                 try
                 {
+
+
                     var dirVersion = new ApplicationVersion(dir.Name);
-                    if (dirVersion.CompareTo(Program.Version) < 0)
+                    if (dirVersion != null)
                     {
-                        Loggers.UpdateLogger.Debug("Deleting old staged update directory: " + dir);
-                        dir.Delete(true);
+                        if (dirVersion.CompareTo(_applicationInfo.RunningVersion) < 0)
+                        {
+                            if (dir.Writable)
+                            {
+
+                                Loggers.UpdateLogger.Debug("Deleting old staged update directory: " + dir);
+                                dir.Delete(true);
+                            }
+                            else
+                            {
+                                Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old staging files");
+
+                                var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault().CreateUpdateImpersonator();
+                                if (!impersonation.Run(() =>
+                                {
+                                    if (dir.Writable)
+                                    {
+
+                                        Loggers.UpdateLogger.Debug("Deleting old staged update directory: " + dir);
+                                        dir.Delete(true);
+                                        return true;
+                                    }
+                                    return false;
+                                }))
+                                {
+                                    impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault().CreateDirectoryAdminImpersonator();
+                                    if (!impersonation.Run(() =>
+                                    {
+                                        if (dir.Writable)
+                                        {
+
+                                            Loggers.UpdateLogger.Debug("Deleting old staged update directory: " + dir);
+                                            dir.Delete(true);
+                                            return true;
+
+                                        }
+                                        return false;
+                                    }))
+                                    {
+                                        Loggers.UpdateLogger.Error("No identities with permission to remove old staging files");
+
+                                    }
+                                }
+                            }
+                        }
+
+
                     }
                 }
                 catch (IndexOutOfRangeException ex)
                 {
                     Loggers.UpdateLogger.Debug("Deleting unknown directory: " + dir);
-                    dir.Delete(true);
+                    //dir.Delete(true);
                 }
-              
+                catch (Exception ex)
+                {
+                    Loggers.UpdateLogger.Error("Other error cleaning staging files {@Error}", ex);
+                    //file.Delete();
+                }
             }
-            */
+
         }
 
         private async void CheckForUpdate(object? state)
