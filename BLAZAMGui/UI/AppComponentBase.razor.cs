@@ -148,7 +148,7 @@ namespace BLAZAM.Gui.UI
 
         public virtual void Dispose()
         {
-            Context?.Dispose();
+            //Context?.Dispose();
         }
 
         public async Task CopyToClipboard(string? text)

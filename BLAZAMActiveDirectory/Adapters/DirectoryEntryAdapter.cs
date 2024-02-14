@@ -943,7 +943,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch
                 {
-                    list.Add(default(T));
+                    //list.Add(default(T));
                 }
             }
             return list;
