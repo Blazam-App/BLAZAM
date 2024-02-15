@@ -76,7 +76,10 @@
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
         await AuditLogger.Searched(OU);
-        parentOU = OU.GetParent();
+        if (OU != null)
+        {
+            parentOU = OU.GetParent();
+        }
         LoadingData = false;
         await RefreshEntryComponents();
     }
