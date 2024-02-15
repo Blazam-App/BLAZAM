@@ -3,7 +3,8 @@
 
     <SetSubHeader>
 
-        <DirectoryEntryViewHeader DirectoryEntry="@OU"
+        <DirectoryEntryViewHeader EditMode="@EditMode"
+                                  DirectoryEntry="@OU"
                                   OnDelete="@DeleteOU"
                                   OnMove="@(()=>{MoveToModal?.Show();})"
                                   OnRename="@(()=>{RenameModal?.Show();})"
@@ -33,7 +34,7 @@
 
 @if (OU != null)
 {
-  
+
 
     <MudDataGrid RowClass="cursor-pointer"
                  Dense=true
@@ -44,23 +45,23 @@
                  Items="@OU.Children.OrderBy(x=>x.CanonicalName).OrderByDescending(x=>x.ObjectType)"
                  T=IDirectoryEntryAdapter
                  RowClick="@ChildClicked">
-                 <ToolBarContent>
+        <ToolBarContent>
             <MudText>@AppLocalization["Current OU"]: @OU.CanonicalName</MudText>
 
-            <MudSpacer />
-            <MudButton StartIcon="@Icons.Material.Filled.DriveFolderUpload"
-            OnClick="@(()=>{Nav.NavigateTo(parentOU.SearchUri);})">@parentOU?.CanonicalName</MudButton>
+                <MudSpacer />
+                <MudButton StartIcon="@Icons.Material.Filled.DriveFolderUpload"
+                           OnClick="@(()=>{Nav.NavigateTo(parentOU.SearchUri);})">@parentOU?.CanonicalName</MudButton>
 
-                 </ToolBarContent>
-        <Columns>
-            <TemplateColumn Title=@AppLocalization["Type"]>
-                <CellTemplate>
-                    <MudIcon Icon="@context.Item.TypeIcon()" />
-                </CellTemplate>
-            </TemplateColumn>
-            <PropertyColumn Title="@AppLocalization["Name"]" Property="x=>x.CanonicalName" />
-        </Columns>
-    </MudDataGrid>
+            </ToolBarContent>
+            <Columns>
+                <TemplateColumn Title=@AppLocalization["Type"]>
+                    <CellTemplate>
+                        <MudIcon Icon="@context.Item.TypeIcon()" />
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Title="@AppLocalization["Name"]" Property="x=>x.CanonicalName" />
+            </Columns>
+        </MudDataGrid>
 }
 
 @if (OU.HasUnsavedChanges)
@@ -75,7 +76,10 @@
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
         await AuditLogger.Searched(OU);
-        parentOU = OU.GetParent();
+        if (OU != null)
+        {
+            parentOU = OU.GetParent();
+        }
         LoadingData = false;
         await RefreshEntryComponents();
     }

@@ -148,7 +148,9 @@ namespace BLAZAM.Gui.UI
 
         public virtual void Dispose()
         {
-            Context?.Dispose();
+            //Remove for issue #235, Dependency Injection automatically
+            //disposes of objects after they are no longer needed.
+            //Context?.Dispose();
         }
 
         public async Task CopyToClipboard(string? text)

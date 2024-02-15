@@ -9,31 +9,34 @@
 }
 
 <AppPageTitle>@User?.SamAccountName</AppPageTitle>
+
     <EditForm OnValidSubmit=SaveChanges Model="User">
-        @if (User?.NewEntry == false)
-    {
-        <SetSubHeader @ref="SubHeader">
+        <CascadingValue Value="EditMode">
 
-            <DirectoryEntryViewHeader DirectoryEntry="@User"
-                                      OnAssignTo="@(()=>{AssignToModal?.Show();})"
-                                      OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
-                                      OnDelete="@DeleteUser"
-                                      OnDisable="@(async()=>{User.Enabled=false; await RefreshEntryComponents();})"
-                                      OnEnable="@(async()=>{User.Enabled=true; await RefreshEntryComponents();})"
-                                      OnMove="@(()=>{MoveToModal?.Show();})"
-                                      OnRename="@(()=>{RenameModal?.Show();})"
-                                      OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
-                                      OnToggleEditMode="ToggleEditMode"
-                                      OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
-                                      OnUnlock="@Unlock" />
-            <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
+            @if (User?.NewEntry == false)
+        {
+            <SetSubHeader @ref="SubHeader">
 
-            </MudOverlay>
+                <DirectoryEntryViewHeader EditMode="@EditMode"
+                                          DirectoryEntry="@User"
+                                          OnAssignTo="@(()=>{AssignToModal?.Show();})"
+                                          OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
+                                          OnDelete="@DeleteUser"
+                                          OnDisable="@(async()=>{User.Enabled=false; await RefreshEntryComponents();})"
+                                          OnEnable="@(async()=>{User.Enabled=true; await RefreshEntryComponents();})"
+                                          OnMove="@(()=>{MoveToModal?.Show();})"
+                                          OnRename="@(()=>{RenameModal?.Show();})"
+                                          OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
+                                          OnToggleEditMode="ToggleEditMode"
+                                          OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
+                                          OnUnlock="@Unlock" />
+                <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
+
+                </MudOverlay>
 
 
-        </SetSubHeader>
-    }
-    <CascadingValue Value="EditMode">
+            </SetSubHeader>
+        }
         <CascadingValue Value="User">
             <FlexContainer>
 
@@ -433,7 +436,7 @@
 
 
 @code {
-    #nullable disable warnings
+#nullable disable warnings
     string password;
 
     [Parameter]
@@ -448,22 +451,22 @@
     }
 
     [Parameter]
-    public EventCallback<string> PasswordChanged{ get; set; }
+    public EventCallback<string> PasswordChanged { get; set; }
 
 
     string confirmPassword;
     [Parameter]
     public string ConfirmPassword
     {
-        get=>confirmPassword; set
+        get => confirmPassword; set
         {
-            if(confirmPassword==value)return;
-            confirmPassword=value;
+            if (confirmPassword == value) return;
+            confirmPassword = value;
             ConfirmPasswordChanged.InvokeAsync(confirmPassword);
         }
     }
     [Parameter]
-    public EventCallback<string> ConfirmPasswordChanged{ get; set; }
+    public EventCallback<string> ConfirmPasswordChanged { get; set; }
 
     bool homeDirectoryExists;
     bool showRemoveThumbnail = false;

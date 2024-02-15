@@ -140,7 +140,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                         return false;
 
-                 }
+                }
             }
             return false;
         }
@@ -696,12 +696,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return CommitChanges(commitJob);
             });
         }
-        private IJobStep CommitStep => new JobStep("Save directory entry", (step) =>
+        private IJobStep commitStep => new JobStep("Save directory entry", (step) =>
                 {
-            DirectoryEntry?.CommitChanges();
+                    DirectoryEntry?.CommitChanges();
 
-            return true;
-        });
+                    return true;
+                });
 
         public virtual IJob CommitChanges(IJob? commitJob = null)
         {
@@ -713,7 +713,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     User = CurrentUser?.AuditUsername
                 };
 
-               
+
 
                 IJobStep? propertyStep;
                 if (!NewEntry)
@@ -757,7 +757,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         commitJob.Steps.Add(propertyStep);
 
                     }
-                    commitJob.Steps.Add(CommitStep);
+                    commitJob.Steps.Add(commitStep);
 
                 }
                 else
@@ -799,11 +799,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         {
                             commitJob.Steps.Add(step);
                         }
-                       //commitJob.Steps.Add(CommitStep);
+                        //commitJob.Steps.Add(CommitStep);
 
                     }
                 }
-                commitJob.Steps.Add(CommitStep);
+                commitJob.Steps.Add(commitStep);
                 if (NewEntry)
                 {
                     if (PostCommitSteps.Count > 0)
@@ -812,7 +812,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         {
                             commitJob.Steps.Add(step);
                         }
-                        commitJob.Steps.Add(CommitStep);
+                        commitJob.Steps.Add(commitStep);
 
                     }
                 }
@@ -879,6 +879,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             DirectoryEntry = null;
             HasUnsavedChanges = false;
             NewEntryProperties = new();
+            CommitSteps.Clear();
+
+            PostCommitSteps.Clear();
             if (SearchResult != null)
                 FetchDirectoryEntry();
             else
@@ -936,14 +939,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         searcher.ClientTimeout = TimeSpan.FromMilliseconds(500);
                         searcher.ServerTimeLimit = TimeSpan.FromMilliseconds(500);
                         var searchResult = searcher.FindOne();
-                        var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
+                        if (searchResult != null)
+                        {
+                            var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
 
-                        list.Add((T)value);
+                            list.Add((T)value);
+                        }
+
                     }
                 }
                 catch
                 {
-                    list.Add(default(T));
+                    //list.Add(default(T));
                 }
             }
             return list;
