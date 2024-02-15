@@ -1,7 +1,7 @@
 ﻿@inherits AppModalContent
 
 
-<Row Background="Background.Light" Color="Color.Dark">
+<MudStack>
     
             <ADAutoComplete Label="Member" @bind-SelectedResult="@Entry" />
     
@@ -34,11 +34,8 @@
             </MudCard>
         }
     }
-</Row>
-<Row>
-    <MudButton Color="Color.Primary" OnClick="AssignToGroup">Add</MudButton>
 
-</Row>
+</MudStack>
 
 
 @code {
@@ -52,7 +49,6 @@
         Modal.OnYes = AssignToGroup;
         Modal.YesText = AppLocalization["Assign"];
         Modal.Title = "Assign Member";
-        Modal.YesEnabled = ValidateModal;
     }
 
     IDirectoryEntryAdapter? copyFrom;
@@ -84,6 +80,6 @@
             Close();
         }
     }
-    protected override bool IsValid => (Entry != null && CopyFrom != null);
+    protected override bool IsValid => (Entry != null || CopyFrom != null);
 
 }
