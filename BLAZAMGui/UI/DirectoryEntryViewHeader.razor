@@ -59,7 +59,8 @@
             {
                 <MudTooltip Text="@AppLocalization["Edit"]">
 
-                    <MudToggleIconButton ToggledChanged="@(async(state)=>{await ToggleEditMode(state);})"
+                    <MudToggleIconButton Toggled=EditMode
+                                         ToggledChanged="@(async(state)=>{await ToggleEditMode(state);})"
                                          Icon="@Icons.Material.Filled.Edit"
                                          ToggledIcon="@Icons.Material.Filled.EditOff"
                                          ToggledColor="Color.Error"
@@ -153,7 +154,7 @@
             }
             @if (DirectoryEntry.CanEdit)
             {
-                <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!_editMode);})">Edit...</MudMenuItem>
+                <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!EditMode);})">Edit...</MudMenuItem>
             }
             @if (accountEntry != null && accountEntry.LockedOut && accountEntry.CanUnlock)
             {
@@ -278,7 +279,9 @@
         await OnShowHistory.InvokeAsync();
     }
 
-    private bool _editMode = false;
+
+
+
     /// <summary>
     /// Called when the edit mode is changed
     /// </summary>
@@ -288,7 +291,7 @@
 
     private async Task ToggleEditMode(bool editEnabled)
     {
-        _editMode = editEnabled;
+        EditMode = editEnabled;
         await OnToggleEditMode.InvokeAsync(editEnabled);
     }
     private bool IsFavorite
@@ -319,7 +322,7 @@
         catch (Exception ex)
         {
             Loggers.SystemLogger.Error("Error toggling favorite entry  {@Error}", ex);
-            SnackBarService.Error("Error while trying to toggle favorite");    
+            SnackBarService.Error("Error while trying to toggle favorite");
 
         }
     }
