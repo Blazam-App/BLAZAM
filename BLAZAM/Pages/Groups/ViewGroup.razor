@@ -44,12 +44,7 @@
             }
         </AppModal> 
         
-        <AppModal Title=@AppLocalization["Rename Group"] @ref=@RenameModal>
-            @if (RenameModal?.IsShown == true)
-            {
-                <RenameGroupModalContent Group="Group" />
-            }
-        </AppModal>
+     
           <AppModal Title=@AppLocalization["Change History"] @ref=@ChangeHistoryModal Options=@(new DialogOptions(){FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
                     @if (ChangeHistoryModal?.IsShown == true)
                     {

@@ -107,7 +107,7 @@ namespace BLAZAM.Gui.UI
         protected void Renamed(IDirectoryEntryAdapter renamedEntry)
         {
 
-
+            Nav.WarnOnNavigation = false;
             Nav.NavigateTo(renamedEntry.SearchUri);
 
 

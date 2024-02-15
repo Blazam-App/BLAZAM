@@ -1,5 +1,4 @@
 ﻿@inherits AppModalContent
-<div Background="Background.Light" Color="Color.Dark">
     <Section Title=@AppLocalization["Name"]>
 
         @if (Group.CanEditField(ActiveDirectoryFields.SAMAccountName))
@@ -26,7 +25,7 @@
     }
 
     <MudButton Color=Color.Primary OnClick="SaveChanges">@AppLocalization["Save Changes"]</MudButton>
-</div>
+
 @code {
     #nullable disable warnings
     string GroupName;
@@ -38,7 +37,7 @@
     }
 
 
-    async Task SaveChanges()
+     void SaveChanges()
     {
         if(GroupName.IsNullOrEmpty()){
             SnackBarService.Warning("You must provide a group name");
