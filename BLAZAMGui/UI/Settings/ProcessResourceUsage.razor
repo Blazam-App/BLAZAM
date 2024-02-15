@@ -10,20 +10,20 @@
         <MudText>@AppLocalization["Loading"]</MudText>
     }
 
-    </SettingsField>
+</SettingsField>
 <SettingsField Label=@AppLocalization["Memory"]>
     @if (MemoryCounter != null)
     {
-                <MudText>@memoryUsage</MudText>
+        <MudText>@memoryUsage</MudText>
 
     }
     else
     {
         <MudText>@AppLocalization["Loading"]</MudText>
     }
-    </SettingsField>
+</SettingsField>
 
-    @code {
+@code {
     [Parameter]
     public Process Process { get; set; }
 
@@ -32,9 +32,10 @@
         get
 
         {
-            return Math.Round(CPUCounter.NextValue(),2).ToString();
-            Process.Refresh();
-            return Process.TotalProcessorTime.ToString();
+            var val = CPUCounter?.NextValue();
+            if (val == null) return AppLocalization["Unable to read"];
+            return Math.Round(val.Value, 2).ToString();
+
 
         }
     }
@@ -43,7 +44,9 @@
         get
 
         {
-            return new ByteSize(MemoryCounter.NextValue()).ToString();
+            var val = MemoryCounter?.NextValue();
+            if (val == null) return AppLocalization["Unable to read"];
+            return new ByteSize(val.Value).ToString();
 
 
         }
@@ -58,13 +61,21 @@
         refreshTimer = new Timer((state) => { InvokeAsync(StateHasChanged); }, null, 2000, 2000);
         await Task.Run(() =>
         {
-            CPUCounter = new PerformanceCounter("Process", "% Processor Time",
-                                    Process.ProcessName);
-            MemoryCounter = new PerformanceCounter("Process", "Working Set",
+            try
+            {
+                CPUCounter = new PerformanceCounter("Process", "% Processor Time",
+                    Process.ProcessName);
+                MemoryCounter = new PerformanceCounter("Process", "Working Set",
                                            Process.ProcessName);
-        
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error("Error creating performance counters {@Error}", ex);
+            }
+
+
         });
-      
+
     }
     public override void Dispose()
     {
