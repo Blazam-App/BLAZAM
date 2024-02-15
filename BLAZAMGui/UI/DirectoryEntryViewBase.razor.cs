@@ -17,7 +17,8 @@ namespace BLAZAM.Gui.UI
         /// <summary>
         /// Indicates whether the current page is in edit mode.
         /// </summary>
-        protected bool EditMode { get; set; }
+        [Parameter]
+        public bool EditMode { get; set; }
 
         /// <summary>
         /// A store of all custom fields defined
@@ -107,7 +108,7 @@ namespace BLAZAM.Gui.UI
         protected void Renamed(IDirectoryEntryAdapter renamedEntry)
         {
 
-
+            Nav.WarnOnNavigation = false;
             Nav.NavigateTo(renamedEntry.SearchUri);
 
 

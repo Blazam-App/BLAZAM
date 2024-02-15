@@ -21,11 +21,11 @@
 
                     
 
-                        <MudTextField Label="Organizational Unit Name" @bind-Value=@newOUName />
+                        <MudTextField Immediate=true Label="Organizational Unit Name" @bind-Value=@newOUName />
 
 
                     
-                    <MudButton Disabled=@(newOU==null || newOUName.IsNullOrEmpty()) Color="Color.Primary" OnClick="CreateNewOU">Next</MudButton>
+                    <MudButton Disabled=@(parentOU==null || newOUName.IsNullOrEmpty()) Color="Color.Primary" OnClick="CreateNewOU">Next</MudButton>
                 </MudText>
             </ChildContent>
             <TabContent>
@@ -43,7 +43,6 @@
             </TabContent>
         </MudTabPanel>
     </MudTabs>
-    <MudText>@($"Active Index: {selectedStep}")</MudText>
    
 
 </Row>

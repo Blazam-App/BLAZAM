@@ -4,17 +4,18 @@
     string _fieldMudStackClasses = "flex-wrap gap-10";
 }
 <AppPageTitle>@Printer?.CanonicalName</AppPageTitle>
-@if (Printer != null)
+    @if (Printer != null)
 {
     <EditForm OnValidSubmit=SaveChanges Context="editContext" Model="Printer">
 
         <SetSubHeader>
 
-            <DirectoryEntryViewHeader DirectoryEntry="@Printer"
-                                  OnDelete="@DeleteComputer"
-                                  OnMove="@(()=>{MoveToModal?.Show();})"
-                                  OnRename="@(()=>{RenameModal?.Show();})"
-                                  OnToggleEditMode="ToggleEditMode"/>
+            <DirectoryEntryViewHeader EditMode="@EditMode"
+                                      DirectoryEntry="@Printer"
+                                      OnDelete="@DeleteComputer"
+                                      OnMove="@(()=>{MoveToModal?.Show();})"
+                                      OnRename="@(()=>{RenameModal?.Show();})"
+                                      OnToggleEditMode="ToggleEditMode" />
             <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
             </MudOverlay>
@@ -27,7 +28,7 @@
                 <FlexContainer>
 
 
-                  
+
                     <AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
                         @if (MoveToModal?.IsShown == true)
                         {
@@ -58,7 +59,7 @@
 
                     </Section>
 
-             
+
 
 
                     @if (Printer.CanReadAnyCustomFields)
@@ -117,7 +118,7 @@
     }
 
 
-   
+
     protected override async void DiscardChanges()
     {
         if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
