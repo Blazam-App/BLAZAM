@@ -21,7 +21,7 @@
 
                     
 
-                        <MudTextField Label="Organizational Unit Name" @bind-Value=@newOUName />
+                        <MudTextField Immediate=true Label="Organizational Unit Name" @bind-Value=@newOUName />
 
 
                     
@@ -43,7 +43,6 @@
             </TabContent>
         </MudTabPanel>
     </MudTabs>
-    <MudText>@($"Active Index: {selectedStep}")</MudText>
    
 
 </Row>
