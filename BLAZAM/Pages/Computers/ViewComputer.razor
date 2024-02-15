@@ -4,13 +4,14 @@
     string _fieldMudStackClasses = "flex-wrap gap-10";
 }
 <AppPageTitle>@Computer?.CanonicalName</AppPageTitle>
-@if (Computer != null)
+    @if (Computer != null)
 {
     <EditForm OnValidSubmit=SaveChanges Context="editContext" Model="Computer">
 
         <SetSubHeader>
 
-            <DirectoryEntryViewHeader DirectoryEntry="@Computer"
+            <DirectoryEntryViewHeader EditMode="@EditMode"
+                                      DirectoryEntry="@Computer"
                                       OnAssignTo="@(()=>{AssignToModal?.Show();})"
                                       OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
                                       OnDelete="@DeleteComputer"
@@ -126,7 +127,7 @@
 
 
 
-                   
+
 
                     <Section Title=@AppLocalization["Drive Details"]>
                         <MudStack Row=true Class="@_fieldMudStackClasses">
@@ -290,7 +291,7 @@
     {
         if (await MessageService.Confirm("Are you sure you want to save the changes?"))
         {
-           var jobResults= await Computer.CommitChangesAsync();
+            var jobResults = await Computer.CommitChangesAsync();
             if (jobResults.Result == JobResult.Passed)
             {
 
@@ -305,7 +306,7 @@
             {
                 jobResults.ShowJobDetailsDialog(MessageService);
             }
-           
+
 
         }
     }
