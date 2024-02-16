@@ -5,6 +5,7 @@ using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
+using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.Update.Services
 {
@@ -167,7 +168,7 @@ namespace BLAZAM.Update.Services
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Other error cleaning staging files {@Error}", ex);
+                    Loggers.UpdateLogger.Error("Other error cleaning staging files {Directory}{@Error}",dir.Path, ex);
                     //file.Delete();
                 }
             }
