@@ -310,4 +310,9 @@
 
         }
     }
+    public override void Dispose()
+    {
+        base.Dispose();
+        Computer?.Dispose();
+    }
 }

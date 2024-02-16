@@ -101,9 +101,9 @@ namespace BLAZAM.Common.Data
                       {
                           // Check the identity.
                           var impersonatedIdentity = WindowsIdentity.GetCurrent();
-                          if (impersonatedIdentity.Name.Equals(ApplicationIdentity.Name))
+                          if (impersonationUser.Username!=ApplicationIdentity.Name && impersonatedIdentity.Name.Equals(ApplicationIdentity.Name))
                           {
-                              Loggers.ActiveDirectryLogger.Error("Impersonation running as application identity");
+                              Loggers.ActiveDirectryLogger.Error("Impersonation running as application identity  {@Error}",new ApplicationException("Impersonation running as application identity"));
 
                           }
                           Loggers.ActiveDirectryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);
