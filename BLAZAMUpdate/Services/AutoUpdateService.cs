@@ -125,7 +125,7 @@ namespace BLAZAM.Update.Services
                                 Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old staging files");
 
                                 var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault().CreateUpdateImpersonator();
-                                if (!impersonation.Run(() =>
+                                if (impersonation!=null && !impersonation.Run(() =>
                                 {
                                     if (dir.Writable)
                                     {
@@ -138,7 +138,7 @@ namespace BLAZAM.Update.Services
                                 }))
                                 {
                                     impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault().CreateDirectoryAdminImpersonator();
-                                    if (!impersonation.Run(() =>
+                                    if (impersonation != null && !impersonation.Run(() =>
                                     {
                                         if (dir.Writable)
                                         {
@@ -204,7 +204,7 @@ namespace BLAZAM.Update.Services
         {
             ScheduledUpdate = null;
             ScheduledUpdateTime = DateTime.MinValue;
-            autoUpdateApplyTimer.Dispose();
+            autoUpdateApplyTimer?.Dispose();
             autoUpdateApplyTimer = null;
         }
 
@@ -257,48 +257,63 @@ namespace BLAZAM.Update.Services
             {
                 using var context = await factory.CreateDbContextAsync();
                 var settings = context.AppSettings.FirstOrDefault();
-                if (settings.AutoUpdate)
+                if (settings != null)
                 {
-                    Loggers.UpdateLogger.Information("Applying auto-update");
-                    Loggers.UpdateLogger.Information("Current Version: " + _applicationInfo.RunningVersion);
-                    Loggers.UpdateLogger.Information("Update Version: " + ScheduledUpdate.Version);
-
-                    autoUpdateApplyTimer = null;
-                    ScheduledUpdateTime = DateTime.MinValue;
-                    var latestUpdate = await updateService.GetUpdates();
-                    try
+                    if (settings.AutoUpdate)
                     {
-                        OnAutoUpdateStarted?.Invoke();
-                        var updateJob = latestUpdate.GetUpdateJob();
-                        if (updateJob != null)
-                        {
-                            updateJob.Run();
-                            if (updateJob.Result != Jobs.JobResult.Passed)
-                                Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot. Response: " + updateJob);
-                            else
-                            {
-                                var thrownStep = updateJob.Steps.FirstOrDefault(x => x.Exception != null);
-                                if (thrownStep != null)
-                                    Loggers.UpdateLogger.Error("Failed to auto-update. {@Error}", thrownStep.Exception);
-                                else
-                                    Loggers.UpdateLogger.Error("Failed to auto-update. No exception collected from update job!");
+                        Loggers.UpdateLogger.Information("Applying auto-update");
+                        Loggers.UpdateLogger.Information("Current Version: " + _applicationInfo.RunningVersion);
+                        Loggers.UpdateLogger.Information("Update Version: " + ScheduledUpdate?.Version);
 
+                        autoUpdateApplyTimer = null;
+                        ScheduledUpdateTime = DateTime.MinValue;
+                        var latestUpdate = await updateService.GetUpdates();
+                        if (latestUpdate != null)
+                        {
+                            try
+                            {
+                                OnAutoUpdateStarted?.Invoke();
+                                var updateJob = latestUpdate.GetUpdateJob();
+                                if (updateJob != null)
+                                {
+                                    updateJob.Run();
+                                    if (updateJob.Result != Jobs.JobResult.Passed)
+                                        Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot. Response: " + updateJob);
+                                    else
+                                    {
+                                        var thrownStep = updateJob.Steps.FirstOrDefault(x => x.Exception != null);
+                                        if (thrownStep != null)
+                                            Loggers.UpdateLogger.Error("Failed to auto-update. {@Error}", thrownStep.Exception);
+                                        else
+                                            Loggers.UpdateLogger.Error("Failed to auto-update. No exception collected from update job!");
+
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                //Log.Error(ex);
+                                OnAutoUpdateFailed?.Invoke();
+                                Loggers.UpdateLogger.Error("Error trying to apply auto update {@Error}", ex);
                             }
                         }
+                        else
+                        {
+                            Loggers.UpdateLogger.Error("Unable to get latest update {@Branch}{@AutoUpdate}{@AutoUpdateTime}",settings.UpdateBranch,settings.AutoUpdate,settings.AutoUpdateTime);
+
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        //Log.Error(ex);
-                        OnAutoUpdateFailed?.Invoke();
-                        Loggers.UpdateLogger.Error("Error trying to apply auto update {@Error}", ex);
+                        //Auto Update was turned off since scheduling
+                        //Audit.System.LogMessage("Auto Update was turned off after scheduling");
+                        Loggers.UpdateLogger.Warning("Auto Update was turned off after scheduling");
+
                     }
                 }
                 else
                 {
-                    //Auto Update was turned off since scheduling
-                    //Audit.System.LogMessage("Auto Update was turned off after scheduling");
-                    Loggers.UpdateLogger.Warning("Auto Update was turned off after scheduling");
-
+                    Loggers.UpdateLogger.Error("Unable to get update database settings");
                 }
             }
             catch (Exception ex)
