@@ -123,6 +123,9 @@
   <data name="Account" xml:space="preserve">
     <value>アカウント</value>
   </data>
+  <data name="Account and Name" xml:space="preserve">
+    <value>アカウントと名前</value>
+  </data>
   <data name="Account Expiration" xml:space="preserve">
     <value>アカウントの有効期限</value>
   </data>
@@ -150,8 +153,23 @@
   <data name="Active Directory Settings" xml:space="preserve">
     <value>アクティブディレクトリ設定</value>
   </data>
+  <data name="Add" xml:space="preserve">
+    <value>足す</value>
+  </data>
+  <data name="Add Members" xml:space="preserve">
+    <value>メンバーの追加</value>
+  </data>
   <data name="Add New Access Level" xml:space="preserve">
     <value>新しいアクセスレベルの追加</value>
+  </data>
+  <data name="Add to favorites" xml:space="preserve">
+    <value>お気に入りに追加</value>
+  </data>
+  <data name="Additional Field" xml:space="preserve">
+    <value>追加フィールド</value>
+  </data>
+  <data name="Additional Fields" xml:space="preserve">
+    <value>追加フィールド</value>
   </data>
   <data name="Additonal Fields" xml:space="preserve">
     <value>追加フィールド</value>
@@ -174,8 +192,17 @@
   <data name="Allow Disabled User Access" xml:space="preserve">
     <value>無効なユーザー アクセスを許可する</value>
   </data>
+  <data name="An error has occurred while trying to create the template user" xml:space="preserve">
+    <value>テンプレート ユーザーの作成中にエラーが発生しました</value>
+  </data>
+  <data name="App Chat" xml:space="preserve">
+    <value>アプリチャット</value>
+  </data>
   <data name="Application" xml:space="preserve">
     <value>アプリケーション</value>
+  </data>
+  <data name="Application Credentials" xml:space="preserve">
+    <value>アプリケーション資格情報</value>
   </data>
   <data name="Application Name" xml:space="preserve">
     <value>アプリケーション名</value>
@@ -186,11 +213,20 @@
   <data name="ApplicationStarting" xml:space="preserve">
     <value>アプリケーションが起動しています...お待ちください。。。</value>
   </data>
+  <data name="Are you sure you want to navigate away?" xml:space="preserve">
+    <value>移動してもよろしいですか?</value>
+  </data>
+  <data name="Assign" xml:space="preserve">
+    <value>割り当てる</value>
+  </data>
   <data name="Assign Objects" xml:space="preserve">
     <value>オブジェクトの割当</value>
   </data>
   <data name="Assign To" xml:space="preserve">
     <value>割り当て先</value>
+  </data>
+  <data name="Assigned Groups" xml:space="preserve">
+    <value>割り当てられたグループ</value>
   </data>
   <data name="Attempting to connect to Active Directory." xml:space="preserve">
     <value>アクティブディレクトリに接続しようとしています。</value>
@@ -207,17 +243,41 @@
   <data name="Auto Update Time" xml:space="preserve">
     <value>自動更新時刻</value>
   </data>
+  <data name="Available Update" xml:space="preserve">
+    <value>利用可能なアップデート</value>
+  </data>
   <data name="Base DN" xml:space="preserve">
     <value>ベース DN</value>
   </data>
   <data name="BaseDN" xml:space="preserve">
     <value>ベース DN</value>
   </data>
+  <data name="Branch" xml:space="preserve">
+    <value>枝</value>
+  </data>
   <data name="Branding Icon" xml:space="preserve">
     <value>ブランディングアイコン</value>
   </data>
+  <data name="Browse" xml:space="preserve">
+    <value>ブラウズ</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="Certificate Type" xml:space="preserve">
+    <value>証明書の種類</value>
+  </data>
+  <data name="Change History" xml:space="preserve">
+    <value>変更履歴</value>
+  </data>
   <data name="Change Password" xml:space="preserve">
     <value>パスワードの変更</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>チャット</value>
   </data>
   <data name="Choose or Search..." xml:space="preserve">
     <value>選択または検索...</value>
@@ -225,14 +285,29 @@
   <data name="City" xml:space="preserve">
     <value>都市</value>
   </data>
+  <data name="Close" xml:space="preserve">
+    <value>閉める</value>
+  </data>
   <data name="Company" xml:space="preserve">
     <value>会社</value>
+  </data>
+  <data name="Completed Successfully" xml:space="preserve">
+    <value>正常に完了しました</value>
   </data>
   <data name="Computer" xml:space="preserve">
     <value>コンピュータ</value>
   </data>
+  <data name="Computer is not reachable." xml:space="preserve">
+    <value>コンピュータにアクセスできません。</value>
+  </data>
   <data name="Configure" xml:space="preserve">
     <value>構成</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>確認する</value>
+  </data>
+  <data name="Confirm New Password" xml:space="preserve">
+    <value>新しいパスワードの確認</value>
   </data>
   <data name="Confirm Password" xml:space="preserve">
     <value>パスワードの確認</value>
@@ -240,8 +315,20 @@
   <data name="Contact Info" xml:space="preserve">
     <value>連絡先情報</value>
   </data>
+  <data name="Copy template" xml:space="preserve">
+    <value>テンプレートのコピー</value>
+  </data>
+  <data name="CPU" xml:space="preserve">
+    <value>CPU(プロセッサ)</value>
+  </data>
+  <data name="CPU Chart" xml:space="preserve">
+    <value>CPU チャート</value>
+  </data>
   <data name="Create" xml:space="preserve">
     <value>創造する</value>
+  </data>
+  <data name="Create Access Level" xml:space="preserve">
+    <value>アクセスレベルの作成</value>
   </data>
   <data name="Create Group" xml:space="preserve">
     <value>グループの作成</value>
@@ -255,11 +342,32 @@
   <data name="Create User" xml:space="preserve">
     <value>ユーザーの作成</value>
   </data>
+  <data name="Created" xml:space="preserve">
+    <value>作成</value>
+  </data>
+  <data name="Current OU" xml:space="preserve">
+    <value>現在の OU</value>
+  </data>
+  <data name="Current Template:" xml:space="preserve">
+    <value>現在のテンプレート:</value>
+  </data>
+  <data name="Current Version" xml:space="preserve">
+    <value>現在のバージョン</value>
+  </data>
   <data name="Custom Login" xml:space="preserve">
     <value>カスタムログイン</value>
   </data>
+  <data name="Database" xml:space="preserve">
+    <value>データベース</value>
+  </data>
   <data name="Database server is not reachable!" xml:space="preserve">
     <value>データベース サーバーに到達できません。</value>
+  </data>
+  <data name="Database Status" xml:space="preserve">
+    <value>データベースのステータス</value>
+  </data>
+  <data name="DB Type" xml:space="preserve">
+    <value>DBタイプ</value>
   </data>
   <data name="Delegates" xml:space="preserve">
     <value>デリゲート</value>
@@ -282,14 +390,38 @@
   <data name="Description" xml:space="preserve">
     <value>形容</value>
   </data>
+  <data name="Details" xml:space="preserve">
+    <value>細部</value>
+  </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>変更を破棄する</value>
   </data>
   <data name="Display Name" xml:space="preserve">
     <value>表示名</value>
   </data>
+  <data name="Documentation" xml:space="preserve">
+    <value>ドキュメンテーション</value>
+  </data>
+  <data name="Domain" xml:space="preserve">
+    <value>ドメイン</value>
+  </data>
+  <data name="Drive Details" xml:space="preserve">
+    <value>ドライブの詳細</value>
+  </data>
+  <data name="Driver" xml:space="preserve">
+    <value>運転手</value>
+  </data>
+  <data name="Driver Version" xml:space="preserve">
+    <value>ドライバのバージョン</value>
+  </data>
   <data name="Edit" xml:space="preserve">
     <value>編集</value>
+  </data>
+  <data name="Editable" xml:space="preserve">
+    <value>編集</value>
+  </data>
+  <data name="Elapsed Time" xml:space="preserve">
+    <value>経過時間</value>
   </data>
   <data name="Email" xml:space="preserve">
     <value>電子メール</value>
@@ -306,8 +438,23 @@
   <data name="Employee Id" xml:space="preserve">
     <value>従業員 ID</value>
   </data>
+  <data name="Enable Auto Update" xml:space="preserve">
+    <value>自動更新を有効にする</value>
+  </data>
   <data name="Enabled" xml:space="preserve">
     <value>有効</value>
+  </data>
+  <data name="Encryption Seed String" xml:space="preserve">
+    <value>暗号化シード文字列</value>
+  </data>
+  <data name="Export Data" xml:space="preserve">
+    <value>データのエクスポート</value>
+  </data>
+  <data name="Export Database" xml:space="preserve">
+    <value>データベースのエクスポート</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>失敗 しました</value>
   </data>
   <data name="Field Name" xml:space="preserve">
     <value>フィールド名</value>
@@ -317,6 +464,9 @@
   </data>
   <data name="Fields" xml:space="preserve">
     <value>田畑</value>
+  </data>
+  <data name="First Initial" xml:space="preserve">
+    <value>最初のイニシャル</value>
   </data>
   <data name="First Name" xml:space="preserve">
     <value>名前</value>
@@ -363,17 +513,44 @@
   <data name="Impersonate User" xml:space="preserve">
     <value>ユーザーの偽装</value>
   </data>
+  <data name="Info" xml:space="preserve">
+    <value>情報</value>
+  </data>
+  <data name="Inheritance Tree" xml:space="preserve">
+    <value>継承ツリー</value>
+  </data>
+  <data name="Inherited from" xml:space="preserve">
+    <value>継承元</value>
+  </data>
   <data name="Inherited Permissions" xml:space="preserve">
     <value>継承されたアクセス許可</value>
   </data>
   <data name="Job Title" xml:space="preserve">
     <value>役職</value>
   </data>
+  <data name="Last Change" xml:space="preserve">
+    <value>最終変更日</value>
+  </data>
+  <data name="Last Initial" xml:space="preserve">
+    <value>最後のイニシャル</value>
+  </data>
+  <data name="Last Logon" xml:space="preserve">
+    <value>最終ログオン</value>
+  </data>
   <data name="Last Name" xml:space="preserve">
     <value>名字</value>
   </data>
-  <data name="levelValue.Name" xml:space="preserve">
-    <value>levelValue.Name</value>
+  <data name="Live Stats" xml:space="preserve">
+    <value>ライブ統計</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>積載</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>場所</value>
+  </data>
+  <data name="Lockout Time" xml:space="preserve">
+    <value>ロックアウト時間</value>
   </data>
   <data name="Log In" xml:space="preserve">
     <value>ログイン</value>
@@ -384,11 +561,29 @@
   <data name="Logins" xml:space="preserve">
     <value>ログイン</value>
   </data>
+  <data name="Logs" xml:space="preserve">
+    <value>ログ</value>
+  </data>
   <data name="Main" xml:space="preserve">
     <value>メイン</value>
   </data>
+  <data name="Manage Web Application" xml:space="preserve">
+    <value>Web アプリケーションの管理</value>
+  </data>
   <data name="Mappings" xml:space="preserve">
     <value>マッピング</value>
+  </data>
+  <data name="Member Of" xml:space="preserve">
+    <value>所属団体</value>
+  </data>
+  <data name="Members" xml:space="preserve">
+    <value>メンバーズ</value>
+  </data>
+  <data name="Memory" xml:space="preserve">
+    <value>記憶</value>
+  </data>
+  <data name="Middle Initial" xml:space="preserve">
+    <value>ミドルイニシャル</value>
   </data>
   <data name="Middle Name" xml:space="preserve">
     <value>ミドルネーム</value>
@@ -396,11 +591,41 @@
   <data name="Move" xml:space="preserve">
     <value>動く</value>
   </data>
+  <data name="Move To" xml:space="preserve">
+    <value>移動先</value>
+  </data>
+  <data name="Myrtille Web Adress" xml:space="preserve">
+    <value>Myrtille Webアドレス</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>名前</value>
   </data>
+  <data name="New Password" xml:space="preserve">
+    <value>新しいパスワード</value>
+  </data>
+  <data name="New template" xml:space="preserve">
+    <value>新しいテンプレート</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>次に</value>
+  </data>
+  <data name="Not a member of any groups" xml:space="preserve">
+    <value>どのグループにも属していない</value>
+  </data>
+  <data name="Not a valid certificate type." xml:space="preserve">
+    <value>有効な証明書の種類ではありません。</value>
+  </data>
+  <data name="Not finished" xml:space="preserve">
+    <value>未完成</value>
+  </data>
+  <data name="Not started" xml:space="preserve">
+    <value>未開始</value>
+  </data>
   <data name="Office" xml:space="preserve">
     <value>オフィス</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>わかりました</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>オンライン</value>
@@ -408,11 +633,23 @@
   <data name="Oops" xml:space="preserve">
     <value>おっと</value>
   </data>
+  <data name="Operating System" xml:space="preserve">
+    <value>オペレーティング システム</value>
+  </data>
+  <data name="or" xml:space="preserve">
+    <value>又は</value>
+  </data>
   <data name="Organization" xml:space="preserve">
     <value>組織</value>
   </data>
+  <data name="Organizational Unit" xml:space="preserve">
+    <value>組織単位</value>
+  </data>
   <data name="OU" xml:space="preserve">
     <value>又は</value>
+  </data>
+  <data name="Pass Change" xml:space="preserve">
+    <value>パスチェンジ</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>パスワード</value>
@@ -432,6 +669,21 @@
   <data name="Preferences" xml:space="preserve">
     <value>設定</value>
   </data>
+  <data name="Prepare Files" xml:space="preserve">
+    <value>ファイルの準備</value>
+  </data>
+  <data name="Previous Versions" xml:space="preserve">
+    <value>以前のバージョン</value>
+  </data>
+  <data name="Printer" xml:space="preserve">
+    <value>プリンター</value>
+  </data>
+  <data name="Printer(s) registered to Active Directory" xml:space="preserve">
+    <value>Active Directoryに登録されているプリンター</value>
+  </data>
+  <data name="Printers" xml:space="preserve">
+    <value>プリンター</value>
+  </data>
   <data name="Profile" xml:space="preserve">
     <value>プロフィール</value>
   </data>
@@ -441,11 +693,53 @@
   <data name="Profile Settings" xml:space="preserve">
     <value>プロファイル設定</value>
   </data>
+  <data name="Queued" xml:space="preserve">
+    <value>キュー</value>
+  </data>
+  <data name="Ran by" xml:space="preserve">
+    <value>蘭</value>
+  </data>
   <data name="Recycle Bin" xml:space="preserve">
     <value>ごみ箱</value>
   </data>
+  <data name="Register" xml:space="preserve">
+    <value>登録する</value>
+  </data>
+  <data name="Register Printers" xml:space="preserve">
+    <value>プリンターを登録する</value>
+  </data>
+  <data name="Register printers with Active Directory" xml:space="preserve">
+    <value>プリンタを Active Directory に登録する</value>
+  </data>
+  <data name="Release Notes" xml:space="preserve">
+    <value>リリースノート</value>
+  </data>
+  <data name="Remove field" xml:space="preserve">
+    <value>フィールドの削除</value>
+  </data>
+  <data name="Remove from favorites" xml:space="preserve">
+    <value>お気に入りから削除</value>
+  </data>
+  <data name="Remove Group" xml:space="preserve">
+    <value>グループを削除</value>
+  </data>
+  <data name="Remove template" xml:space="preserve">
+    <value>テンプレートの削除</value>
+  </data>
   <data name="Rename" xml:space="preserve">
     <value>改名する</value>
+  </data>
+  <data name="Rename Category" xml:space="preserve">
+    <value>カテゴリ名の変更</value>
+  </data>
+  <data name="Rename Group" xml:space="preserve">
+    <value>グループ名の変更</value>
+  </data>
+  <data name="Rename OU" xml:space="preserve">
+    <value>OU の名前変更</value>
+  </data>
+  <data name="Rename User" xml:space="preserve">
+    <value>ユーザー名の変更</value>
   </data>
   <data name="Reply-To Address" xml:space="preserve">
     <value>返信先アドレス</value>
@@ -456,11 +750,44 @@
   <data name="Require change" xml:space="preserve">
     <value>変更が必要</value>
   </data>
+  <data name="Require the user to change their password at next logon" xml:space="preserve">
+    <value>次回ログオン時にユーザーにパスワードの変更を要求する</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>必須</value>
+  </data>
+  <data name="Reset Password" xml:space="preserve">
+    <value>パスワードのリセット</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>戻す</value>
+  </data>
+  <data name="Restore Template" xml:space="preserve">
+    <value>テンプレートの復元</value>
+  </data>
+  <data name="Restore templates" xml:space="preserve">
+    <value>テンプレートの復元</value>
+  </data>
+  <data name="Restore:" xml:space="preserve">
+    <value>戻す：</value>
+  </data>
+  <data name="Results" xml:space="preserve">
+    <value>業績</value>
+  </data>
+  <data name="Revert to inherited value" xml:space="preserve">
+    <value>継承された値に戻す</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>ランニング</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>セーブ</value>
   </data>
   <data name="Save Changes" xml:space="preserve">
     <value>変更を保存</value>
+  </data>
+  <data name="Save Photo" xml:space="preserve">
+    <value>写真を保存</value>
   </data>
   <data name="Script Path" xml:space="preserve">
     <value>スクリプトパス</value>
@@ -468,11 +795,20 @@
   <data name="Server" xml:space="preserve">
     <value>サーバー</value>
   </data>
+  <data name="Services" xml:space="preserve">
+    <value>サービス</value>
+  </data>
   <data name="Session Timeout" xml:space="preserve">
     <value>セッションタイムアウト</value>
   </data>
+  <data name="Sessions" xml:space="preserve">
+    <value>セッション</value>
+  </data>
   <data name="Settings" xml:space="preserve">
     <value>設定</value>
+  </data>
+  <data name="Show more" xml:space="preserve">
+    <value>さらに表示</value>
   </data>
   <data name="Sign Out" xml:space="preserve">
     <value>サインアウト</value>
@@ -492,6 +828,12 @@
   <data name="SMTP Username" xml:space="preserve">
     <value>SMTP ユーザー名</value>
   </data>
+  <data name="SSL Certificate" xml:space="preserve">
+    <value>SSL証明書</value>
+  </data>
+  <data name="Start Time" xml:space="preserve">
+    <value>開始時刻</value>
+  </data>
   <data name="State" xml:space="preserve">
     <value>状態</value>
   </data>
@@ -503,6 +845,9 @@
   </data>
   <data name="Street Address" xml:space="preserve">
     <value>住所</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>成功</value>
   </data>
   <data name="System" xml:space="preserve">
     <value>制</value>
@@ -516,20 +861,50 @@
   <data name="Template Name" xml:space="preserve">
     <value>テンプレート名</value>
   </data>
+  <data name="Template(s) restored" xml:space="preserve">
+    <value>復元されたテンプレート</value>
+  </data>
   <data name="Templates" xml:space="preserve">
     <value>テンプレート</value>
   </data>
   <data name="Test Recipient" xml:space="preserve">
     <value>テスト受信者</value>
   </data>
+  <data name="There are no templates available" xml:space="preserve">
+    <value>使用可能なテンプレートはありません</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>種類</value>
+  </data>
+  <data name="Unable to read" xml:space="preserve">
+    <value>読めない</value>
+  </data>
+  <data name="UNC Path" xml:space="preserve">
+    <value>UNC パス</value>
+  </data>
+  <data name="Unknown delegate" xml:space="preserve">
+    <value>不明なデリゲート</value>
+  </data>
   <data name="Unlock" xml:space="preserve">
     <value>アンロック</value>
+  </data>
+  <data name="Up to date" xml:space="preserve">
+    <value>最新です</value>
   </data>
   <data name="Update" xml:space="preserve">
     <value>更新</value>
   </data>
+  <data name="Update Access Level" xml:space="preserve">
+    <value>アクセスレベルの更新</value>
+  </data>
   <data name="Update Branch" xml:space="preserve">
     <value>ブランチの更新</value>
+  </data>
+  <data name="Update Credential Source" xml:space="preserve">
+    <value>資格情報ソースの更新</value>
+  </data>
+  <data name="Update Credentials" xml:space="preserve">
+    <value>資格情報の更新</value>
   </data>
   <data name="Update Scheduled" xml:space="preserve">
     <value>スケジュールされた更新</value>
@@ -537,8 +912,20 @@
   <data name="Update Settings" xml:space="preserve">
     <value>更新設定</value>
   </data>
+  <data name="Upload" xml:space="preserve">
+    <value>アップロード</value>
+  </data>
+  <data name="Upload SSL Certificate" xml:space="preserve">
+    <value>SSL証明書のアップロード</value>
+  </data>
+  <data name="Upload Thumbnail" xml:space="preserve">
+    <value>サムネイルのアップロード</value>
+  </data>
   <data name="Upload Thumbnail Photo" xml:space="preserve">
     <value>サムネイル写真をアップロード</value>
+  </data>
+  <data name="Use Custom Credentials" xml:space="preserve">
+    <value>カスタム資格情報の使用</value>
   </data>
   <data name="Use SMTP Authentication" xml:space="preserve">
     <value>SMTP 認証を使用する</value>
@@ -564,11 +951,17 @@
   <data name="UseTLS" xml:space="preserve">
     <value>使用するTLS</value>
   </data>
+  <data name="Visible" xml:space="preserve">
+    <value>目に見える</value>
+  </data>
   <data name="Website FQDN" xml:space="preserve">
     <value>ウェブサイトの FQDN</value>
   </data>
   <data name="Website Name" xml:space="preserve">
     <value>ウェブサイト名</value>
+  </data>
+  <data name="You have unsaved changes" xml:space="preserve">
+    <value>変更が保存されていない</value>
   </data>
   <data name="Zip Code" xml:space="preserve">
     <value>郵便番号</value>

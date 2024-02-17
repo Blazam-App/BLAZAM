@@ -123,6 +123,9 @@
   <data name="Account" xml:space="preserve">
     <value>Conto</value>
   </data>
+  <data name="Account and Name" xml:space="preserve">
+    <value>Account e nome</value>
+  </data>
   <data name="Account Expiration" xml:space="preserve">
     <value>Scadenza dell'account</value>
   </data>
@@ -150,8 +153,23 @@
   <data name="Active Directory Settings" xml:space="preserve">
     <value>Impostazioni di Active Directory</value>
   </data>
+  <data name="Add" xml:space="preserve">
+    <value>Aggiungere</value>
+  </data>
+  <data name="Add Members" xml:space="preserve">
+    <value>Aggiunta di membri</value>
+  </data>
   <data name="Add New Access Level" xml:space="preserve">
     <value>Aggiungi nuovo livello di accesso</value>
+  </data>
+  <data name="Add to favorites" xml:space="preserve">
+    <value>Aggiungi a Preferiti</value>
+  </data>
+  <data name="Additional Field" xml:space="preserve">
+    <value>Campo aggiuntivo</value>
+  </data>
+  <data name="Additional Fields" xml:space="preserve">
+    <value>Campi aggiuntivi</value>
   </data>
   <data name="Additonal Fields" xml:space="preserve">
     <value>Campi aggiuntivi</value>
@@ -174,8 +192,17 @@
   <data name="Allow Disabled User Access" xml:space="preserve">
     <value>Consenti accesso utente disabilitato</value>
   </data>
+  <data name="An error has occurred while trying to create the template user" xml:space="preserve">
+    <value>Si è verificato un errore durante il tentativo di creare l'utente del modello</value>
+  </data>
+  <data name="App Chat" xml:space="preserve">
+    <value>Chat dell'app</value>
+  </data>
   <data name="Application" xml:space="preserve">
     <value>Applicazione</value>
+  </data>
+  <data name="Application Credentials" xml:space="preserve">
+    <value>Credenziali dell'applicazione</value>
   </data>
   <data name="Application Name" xml:space="preserve">
     <value>Nome dell'applicazione</value>
@@ -186,11 +213,20 @@
   <data name="ApplicationStarting" xml:space="preserve">
     <value>L'applicazione si sta avviando... Attendere prego...</value>
   </data>
+  <data name="Are you sure you want to navigate away?" xml:space="preserve">
+    <value>Sei sicuro di voler partire alla svolta?</value>
+  </data>
+  <data name="Assign" xml:space="preserve">
+    <value>Assegnare</value>
+  </data>
   <data name="Assign Objects" xml:space="preserve">
     <value>Assegna oggetti</value>
   </data>
   <data name="Assign To" xml:space="preserve">
     <value>Assegna a</value>
+  </data>
+  <data name="Assigned Groups" xml:space="preserve">
+    <value>Gruppi assegnati</value>
   </data>
   <data name="Attempting to connect to Active Directory." xml:space="preserve">
     <value>Tentativo di connessione ad Active Directory.</value>
@@ -207,17 +243,41 @@
   <data name="Auto Update Time" xml:space="preserve">
     <value>Tempo di aggiornamento automatico</value>
   </data>
+  <data name="Available Update" xml:space="preserve">
+    <value>Aggiornamento disponibile</value>
+  </data>
   <data name="Base DN" xml:space="preserve">
     <value>Base DN</value>
   </data>
   <data name="BaseDN" xml:space="preserve">
     <value>Base DN</value>
   </data>
+  <data name="Branch" xml:space="preserve">
+    <value>Ramo</value>
+  </data>
   <data name="Branding Icon" xml:space="preserve">
     <value>Icona di branding</value>
   </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Sfogliare</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Annullato</value>
+  </data>
+  <data name="Certificate Type" xml:space="preserve">
+    <value>Tipo di certificato</value>
+  </data>
+  <data name="Change History" xml:space="preserve">
+    <value>Cronologia delle modifiche</value>
+  </data>
   <data name="Change Password" xml:space="preserve">
     <value>Cambia password</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Chiacchierare</value>
   </data>
   <data name="Choose or Search..." xml:space="preserve">
     <value>Scegli o Cerca...</value>
@@ -225,14 +285,29 @@
   <data name="City" xml:space="preserve">
     <value>Città</value>
   </data>
+  <data name="Close" xml:space="preserve">
+    <value>Chiudere</value>
+  </data>
   <data name="Company" xml:space="preserve">
     <value>Società</value>
+  </data>
+  <data name="Completed Successfully" xml:space="preserve">
+    <value>Completata</value>
   </data>
   <data name="Computer" xml:space="preserve">
     <value>Computer</value>
   </data>
+  <data name="Computer is not reachable." xml:space="preserve">
+    <value>Il computer non è raggiungibile.</value>
+  </data>
   <data name="Configure" xml:space="preserve">
     <value>Configurare</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confermare</value>
+  </data>
+  <data name="Confirm New Password" xml:space="preserve">
+    <value>Conferma nuova password</value>
   </data>
   <data name="Confirm Password" xml:space="preserve">
     <value>Conferma password</value>
@@ -240,8 +315,20 @@
   <data name="Contact Info" xml:space="preserve">
     <value>Informazioni di contatto</value>
   </data>
+  <data name="Copy template" xml:space="preserve">
+    <value>Copia modello</value>
+  </data>
+  <data name="CPU" xml:space="preserve">
+    <value>CPU</value>
+  </data>
+  <data name="CPU Chart" xml:space="preserve">
+    <value>Grafico della CPU</value>
+  </data>
   <data name="Create" xml:space="preserve">
     <value>Creare</value>
+  </data>
+  <data name="Create Access Level" xml:space="preserve">
+    <value>Crea livello di accesso</value>
   </data>
   <data name="Create Group" xml:space="preserve">
     <value>Crea gruppo</value>
@@ -255,11 +342,32 @@
   <data name="Create User" xml:space="preserve">
     <value>Crea utente</value>
   </data>
+  <data name="Created" xml:space="preserve">
+    <value>Creato</value>
+  </data>
+  <data name="Current OU" xml:space="preserve">
+    <value>Unità organizzativa corrente</value>
+  </data>
+  <data name="Current Template:" xml:space="preserve">
+    <value>Modello attuale:</value>
+  </data>
+  <data name="Current Version" xml:space="preserve">
+    <value>Versione corrente</value>
+  </data>
   <data name="Custom Login" xml:space="preserve">
     <value>Login personalizzato</value>
   </data>
+  <data name="Database" xml:space="preserve">
+    <value>Banca dati</value>
+  </data>
   <data name="Database server is not reachable!" xml:space="preserve">
     <value>Il server di database non è raggiungibile!</value>
+  </data>
+  <data name="Database Status" xml:space="preserve">
+    <value>Stato del database</value>
+  </data>
+  <data name="DB Type" xml:space="preserve">
+    <value>Tipo DB</value>
   </data>
   <data name="Delegates" xml:space="preserve">
     <value>Delegati</value>
@@ -282,14 +390,38 @@
   <data name="Description" xml:space="preserve">
     <value>Descrizione</value>
   </data>
+  <data name="Details" xml:space="preserve">
+    <value>Dettagli</value>
+  </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>Ignora modifiche</value>
   </data>
   <data name="Display Name" xml:space="preserve">
     <value>Nome visualizzato</value>
   </data>
+  <data name="Documentation" xml:space="preserve">
+    <value>Documentazione</value>
+  </data>
+  <data name="Domain" xml:space="preserve">
+    <value>Dominio</value>
+  </data>
+  <data name="Drive Details" xml:space="preserve">
+    <value>Dettagli dell'unità</value>
+  </data>
+  <data name="Driver" xml:space="preserve">
+    <value>Autista</value>
+  </data>
+  <data name="Driver Version" xml:space="preserve">
+    <value>Versione del driver</value>
+  </data>
   <data name="Edit" xml:space="preserve">
     <value>Redigere</value>
+  </data>
+  <data name="Editable" xml:space="preserve">
+    <value>Editabile</value>
+  </data>
+  <data name="Elapsed Time" xml:space="preserve">
+    <value>Tempo trascorso</value>
   </data>
   <data name="Email" xml:space="preserve">
     <value>E-mail</value>
@@ -306,8 +438,23 @@
   <data name="Employee Id" xml:space="preserve">
     <value>ID dipendente</value>
   </data>
+  <data name="Enable Auto Update" xml:space="preserve">
+    <value>Abilita aggiornamento automatico</value>
+  </data>
   <data name="Enabled" xml:space="preserve">
     <value>Abilitato</value>
+  </data>
+  <data name="Encryption Seed String" xml:space="preserve">
+    <value>Stringa di inizializzazione della crittografiaEncryption Seed String</value>
+  </data>
+  <data name="Export Data" xml:space="preserve">
+    <value>Esporta dati</value>
+  </data>
+  <data name="Export Database" xml:space="preserve">
+    <value>Esporta database</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Fallito</value>
   </data>
   <data name="Field Name" xml:space="preserve">
     <value>Nome campo</value>
@@ -317,6 +464,9 @@
   </data>
   <data name="Fields" xml:space="preserve">
     <value>Campi</value>
+  </data>
+  <data name="First Initial" xml:space="preserve">
+    <value>Iniziale del primo</value>
   </data>
   <data name="First Name" xml:space="preserve">
     <value>Nome di battesimo</value>
@@ -363,17 +513,44 @@
   <data name="Impersonate User" xml:space="preserve">
     <value>Impersonare l'utente</value>
   </data>
+  <data name="Info" xml:space="preserve">
+    <value>Informazioni</value>
+  </data>
+  <data name="Inheritance Tree" xml:space="preserve">
+    <value>Albero dell'ereditarietà</value>
+  </data>
+  <data name="Inherited from" xml:space="preserve">
+    <value>Ereditato da</value>
+  </data>
   <data name="Inherited Permissions" xml:space="preserve">
     <value>Autorizzazioni ereditate</value>
   </data>
   <data name="Job Title" xml:space="preserve">
     <value>Titolo di lavoro</value>
   </data>
+  <data name="Last Change" xml:space="preserve">
+    <value>Ultima modifica</value>
+  </data>
+  <data name="Last Initial" xml:space="preserve">
+    <value>Ultima Iniziale</value>
+  </data>
+  <data name="Last Logon" xml:space="preserve">
+    <value>Ultimo accesso</value>
+  </data>
   <data name="Last Name" xml:space="preserve">
     <value>Cognome</value>
   </data>
-  <data name="levelValue.Name" xml:space="preserve">
-    <value>levelValue.Name</value>
+  <data name="Live Stats" xml:space="preserve">
+    <value>Statistiche in tempo reale</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Caricamento</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Ubicazione</value>
+  </data>
+  <data name="Lockout Time" xml:space="preserve">
+    <value>Tempo di blocco</value>
   </data>
   <data name="Log In" xml:space="preserve">
     <value>Accedi</value>
@@ -384,11 +561,29 @@
   <data name="Logins" xml:space="preserve">
     <value>Account</value>
   </data>
+  <data name="Logs" xml:space="preserve">
+    <value>Registri</value>
+  </data>
   <data name="Main" xml:space="preserve">
     <value>Principale</value>
   </data>
+  <data name="Manage Web Application" xml:space="preserve">
+    <value>Gestire l'applicazione Web</value>
+  </data>
   <data name="Mappings" xml:space="preserve">
     <value>Mapping</value>
+  </data>
+  <data name="Member Of" xml:space="preserve">
+    <value>Membro di</value>
+  </data>
+  <data name="Members" xml:space="preserve">
+    <value>Membri</value>
+  </data>
+  <data name="Memory" xml:space="preserve">
+    <value>Memoria</value>
+  </data>
+  <data name="Middle Initial" xml:space="preserve">
+    <value>Iniziale del secondo nome</value>
   </data>
   <data name="Middle Name" xml:space="preserve">
     <value>Secondo nome</value>
@@ -396,11 +591,41 @@
   <data name="Move" xml:space="preserve">
     <value>Sposta</value>
   </data>
+  <data name="Move To" xml:space="preserve">
+    <value>Sposta in</value>
+  </data>
+  <data name="Myrtille Web Adress" xml:space="preserve">
+    <value>Indirizzo Web Myrtille</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Nome</value>
   </data>
+  <data name="New Password" xml:space="preserve">
+    <value>Nuova password</value>
+  </data>
+  <data name="New template" xml:space="preserve">
+    <value>Nuovo modello</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Prossimo</value>
+  </data>
+  <data name="Not a member of any groups" xml:space="preserve">
+    <value>Non è membro di alcun gruppo</value>
+  </data>
+  <data name="Not a valid certificate type." xml:space="preserve">
+    <value>Tipo di certificato non valido.</value>
+  </data>
+  <data name="Not finished" xml:space="preserve">
+    <value>Non finito</value>
+  </data>
+  <data name="Not started" xml:space="preserve">
+    <value>Non iniziato</value>
+  </data>
   <data name="Office" xml:space="preserve">
     <value>Ufficio</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>Ok</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>In linea</value>
@@ -408,11 +633,23 @@
   <data name="Oops" xml:space="preserve">
     <value>Oops</value>
   </data>
+  <data name="Operating System" xml:space="preserve">
+    <value>Sistema operativo</value>
+  </data>
+  <data name="or" xml:space="preserve">
+    <value>o</value>
+  </data>
   <data name="Organization" xml:space="preserve">
     <value>Organizzazione</value>
   </data>
+  <data name="Organizational Unit" xml:space="preserve">
+    <value>Unità organizzativa</value>
+  </data>
   <data name="OU" xml:space="preserve">
     <value>O</value>
+  </data>
+  <data name="Pass Change" xml:space="preserve">
+    <value>Cambio di pass</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>Parola d’ordine</value>
@@ -432,6 +669,21 @@
   <data name="Preferences" xml:space="preserve">
     <value>Preferenze</value>
   </data>
+  <data name="Prepare Files" xml:space="preserve">
+    <value>Preparare i file</value>
+  </data>
+  <data name="Previous Versions" xml:space="preserve">
+    <value>Versioni precedenti</value>
+  </data>
+  <data name="Printer" xml:space="preserve">
+    <value>Stampante</value>
+  </data>
+  <data name="Printer(s) registered to Active Directory" xml:space="preserve">
+    <value>Stampanti registrate in Active Directory</value>
+  </data>
+  <data name="Printers" xml:space="preserve">
+    <value>Stampanti</value>
+  </data>
   <data name="Profile" xml:space="preserve">
     <value>Profilo</value>
   </data>
@@ -441,11 +693,53 @@
   <data name="Profile Settings" xml:space="preserve">
     <value>Impostazioni del profilo</value>
   </data>
+  <data name="Queued" xml:space="preserve">
+    <value>Accodati</value>
+  </data>
+  <data name="Ran by" xml:space="preserve">
+    <value>Gestito da</value>
+  </data>
   <data name="Recycle Bin" xml:space="preserve">
     <value>Cestino</value>
   </data>
+  <data name="Register" xml:space="preserve">
+    <value>Registro</value>
+  </data>
+  <data name="Register Printers" xml:space="preserve">
+    <value>Registra stampanti</value>
+  </data>
+  <data name="Register printers with Active Directory" xml:space="preserve">
+    <value>Registrare le stampanti con Active Directory</value>
+  </data>
+  <data name="Release Notes" xml:space="preserve">
+    <value>Note di rilascio</value>
+  </data>
+  <data name="Remove field" xml:space="preserve">
+    <value>Rimuovi campo</value>
+  </data>
+  <data name="Remove from favorites" xml:space="preserve">
+    <value>Rimuovi dai preferiti</value>
+  </data>
+  <data name="Remove Group" xml:space="preserve">
+    <value>Rimuovi gruppo</value>
+  </data>
+  <data name="Remove template" xml:space="preserve">
+    <value>Rimuovi modello</value>
+  </data>
   <data name="Rename" xml:space="preserve">
     <value>Ribattezzare</value>
+  </data>
+  <data name="Rename Category" xml:space="preserve">
+    <value>Rinomina categoria</value>
+  </data>
+  <data name="Rename Group" xml:space="preserve">
+    <value>Rinomina gruppo</value>
+  </data>
+  <data name="Rename OU" xml:space="preserve">
+    <value>Rinomina unità organizzativa</value>
+  </data>
+  <data name="Rename User" xml:space="preserve">
+    <value>Rinomina utente</value>
   </data>
   <data name="Reply-To Address" xml:space="preserve">
     <value>Indirizzo per le risposte</value>
@@ -456,11 +750,44 @@
   <data name="Require change" xml:space="preserve">
     <value>Richiedi modifica</value>
   </data>
+  <data name="Require the user to change their password at next logon" xml:space="preserve">
+    <value>Richiedere all'utente di modificare la password all'accesso successivo</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Obbligatorio</value>
+  </data>
+  <data name="Reset Password" xml:space="preserve">
+    <value>Reimposta password</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Restaurare</value>
+  </data>
+  <data name="Restore Template" xml:space="preserve">
+    <value>Ripristina modello</value>
+  </data>
+  <data name="Restore templates" xml:space="preserve">
+    <value>Ripristinare i modelli</value>
+  </data>
+  <data name="Restore:" xml:space="preserve">
+    <value>Restaurare:</value>
+  </data>
+  <data name="Results" xml:space="preserve">
+    <value>Risultati</value>
+  </data>
+  <data name="Revert to inherited value" xml:space="preserve">
+    <value>Ripristina il valore ereditato</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>Corsa</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Salvare</value>
   </data>
   <data name="Save Changes" xml:space="preserve">
     <value>Salva modifiche</value>
+  </data>
+  <data name="Save Photo" xml:space="preserve">
+    <value>Salva foto</value>
   </data>
   <data name="Script Path" xml:space="preserve">
     <value>Percorso di script</value>
@@ -468,11 +795,20 @@
   <data name="Server" xml:space="preserve">
     <value>Server</value>
   </data>
+  <data name="Services" xml:space="preserve">
+    <value>Servizi</value>
+  </data>
   <data name="Session Timeout" xml:space="preserve">
     <value>Timeout sessione</value>
   </data>
+  <data name="Sessions" xml:space="preserve">
+    <value>Sessioni</value>
+  </data>
   <data name="Settings" xml:space="preserve">
     <value>Impostazioni</value>
+  </data>
+  <data name="Show more" xml:space="preserve">
+    <value>Mostra di più</value>
   </data>
   <data name="Sign Out" xml:space="preserve">
     <value>Esci</value>
@@ -492,6 +828,12 @@
   <data name="SMTP Username" xml:space="preserve">
     <value>Nome utente SMTP</value>
   </data>
+  <data name="SSL Certificate" xml:space="preserve">
+    <value>Certificato SSL</value>
+  </data>
+  <data name="Start Time" xml:space="preserve">
+    <value>Ora di inizio</value>
+  </data>
   <data name="State" xml:space="preserve">
     <value>Stato</value>
   </data>
@@ -503,6 +845,9 @@
   </data>
   <data name="Street Address" xml:space="preserve">
     <value>Indirizzo</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Successo</value>
   </data>
   <data name="System" xml:space="preserve">
     <value>Sistema</value>
@@ -516,20 +861,50 @@
   <data name="Template Name" xml:space="preserve">
     <value>Nome modello</value>
   </data>
+  <data name="Template(s) restored" xml:space="preserve">
+    <value>Modello(i) ripristinato(i)</value>
+  </data>
   <data name="Templates" xml:space="preserve">
     <value>Modelli</value>
   </data>
   <data name="Test Recipient" xml:space="preserve">
     <value>Destinatario del test</value>
   </data>
+  <data name="There are no templates available" xml:space="preserve">
+    <value>Non ci sono modelli disponibili</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Digitare</value>
+  </data>
+  <data name="Unable to read" xml:space="preserve">
+    <value>Impossibile leggere</value>
+  </data>
+  <data name="UNC Path" xml:space="preserve">
+    <value>Percorso UNC</value>
+  </data>
+  <data name="Unknown delegate" xml:space="preserve">
+    <value>Delegato sconosciuto</value>
+  </data>
   <data name="Unlock" xml:space="preserve">
     <value>Aprire</value>
+  </data>
+  <data name="Up to date" xml:space="preserve">
+    <value>Aggiornato</value>
   </data>
   <data name="Update" xml:space="preserve">
     <value>Aggiornare</value>
   </data>
+  <data name="Update Access Level" xml:space="preserve">
+    <value>Aggiorna livello di accesso</value>
+  </data>
   <data name="Update Branch" xml:space="preserve">
     <value>Aggiorna ramo</value>
+  </data>
+  <data name="Update Credential Source" xml:space="preserve">
+    <value>Aggiorna origine credenziali</value>
+  </data>
+  <data name="Update Credentials" xml:space="preserve">
+    <value>Aggiorna credenziali</value>
   </data>
   <data name="Update Scheduled" xml:space="preserve">
     <value>Aggiornamento pianificato</value>
@@ -537,8 +912,20 @@
   <data name="Update Settings" xml:space="preserve">
     <value>Impostazioni di aggiornamento</value>
   </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Caricare</value>
+  </data>
+  <data name="Upload SSL Certificate" xml:space="preserve">
+    <value>Carica certificato SSL</value>
+  </data>
+  <data name="Upload Thumbnail" xml:space="preserve">
+    <value>Carica miniatura</value>
+  </data>
   <data name="Upload Thumbnail Photo" xml:space="preserve">
     <value>Carica foto in miniatura</value>
+  </data>
+  <data name="Use Custom Credentials" xml:space="preserve">
+    <value>Utilizzo di credenziali personalizzate</value>
   </data>
   <data name="Use SMTP Authentication" xml:space="preserve">
     <value>Utilizzare l'autenticazione SMTP</value>
@@ -564,11 +951,17 @@
   <data name="UseTLS" xml:space="preserve">
     <value>UseTLS</value>
   </data>
+  <data name="Visible" xml:space="preserve">
+    <value>Visibile</value>
+  </data>
   <data name="Website FQDN" xml:space="preserve">
     <value>FQDN del sito web</value>
   </data>
   <data name="Website Name" xml:space="preserve">
     <value>Nome del sito web</value>
+  </data>
+  <data name="You have unsaved changes" xml:space="preserve">
+    <value>Sono presenti modifiche non salvate</value>
   </data>
   <data name="Zip Code" xml:space="preserve">
     <value>CAP</value>

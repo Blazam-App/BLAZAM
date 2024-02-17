@@ -67,7 +67,17 @@ namespace BLAZAM.Server
                 var supportedCultures = new[]
                 {
                     new CultureInfo("en-US"),
-                    new CultureInfo("fr-FR")
+                    new CultureInfo("fr-FR"),
+                    new CultureInfo("de"),
+                    new CultureInfo("es"),
+                    new CultureInfo("hi"),
+                    new CultureInfo("it"),
+                    new CultureInfo("ja"),
+                    new CultureInfo("ko"),
+                    new CultureInfo("pl"),
+                    new CultureInfo("ru"),
+                    new CultureInfo("zh-Hans")
+                    
                  };
 
                 options.SupportedCultures = supportedCultures;
@@ -75,9 +85,9 @@ namespace BLAZAM.Server
             });
             /*
              * Uncomment this to force a language
-             *
              
-            CultureInfo culture = new CultureInfo("fr-FR");
+             
+            CultureInfo culture = new CultureInfo("ru");
             //CultureInfo culture = new CultureInfo("zh-Hans");
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
