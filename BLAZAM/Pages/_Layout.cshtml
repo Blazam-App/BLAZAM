@@ -48,11 +48,12 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.server.js"></script>
-
-    <!-- BLAZAM Dev Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-415DR9ZVBH"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
+    @if (!ApplicationInfo.InDebugMode && !Debugger.IsAttached)
+    {
+        <!-- BLAZAM Dev Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-415DR9ZVBH"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
@@ -61,8 +62,8 @@
             app_version: '@ApplicationInfo.runningVersion'
         });
     </script>
-
-    @if (DatabaseCache.ApplicationSettings?.AnalyticsId.IsNullOrEmpty() == false && !ApplicationInfo.InDebugMode && !Debugger.IsAttached )
+    }
+    @if (DatabaseCache.ApplicationSettings?.AnalyticsId.IsNullOrEmpty() == false )
     {
         <!-- Blazam Installation Google tag (gtag.js) -->
 
