@@ -397,11 +397,10 @@
                     </Section>
                 }
 
-                @if (User.CanReadAnyCustomFields)
+                @if (User.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count>0)
                 {
                     <Section Title=@AppLocalization["Additional Field"]>
-                        @if (CustomFields != null)
-                        {
+                       
                             @foreach (var field in CustomFields)
                             {
                                 @if (User.CanReadField(field))
@@ -410,7 +409,7 @@
 
                                 }
                             }
-                        }
+                        
 
                     </Section>
                 }
