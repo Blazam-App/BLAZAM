@@ -3,9 +3,10 @@
 @using BLAZAM.Database.Context;
 @using Microsoft.AspNetCore.Components.Web
 @using BLAZAM.Static
+@using System.Diagnostics
 @namespace BLAZAM.Server.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
+@inject ApplicationInfo ApplicationInfo
 
 <!DOCTYPE html>
 <html lang="en">
@@ -61,7 +62,7 @@
         });
     </script>
 
-    @if (DatabaseCache.ApplicationSettings?.AnalyticsId.IsNullOrEmpty() == false)
+    @if (DatabaseCache.ApplicationSettings?.AnalyticsId.IsNullOrEmpty() == false && !ApplicationInfo.InDebugMode && !Debugger.IsAttached )
     {
         <!-- Blazam Installation Google tag (gtag.js) -->
 
@@ -77,6 +78,7 @@
             });
         </script>
     }
+
     <script src="~/js/blazam.js"></script>
     <script src="~/lib/svg-gauge/dist/gauge.min.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
