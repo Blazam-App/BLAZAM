@@ -7,24 +7,24 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Jobs
 {
-    public class JobStep : JobStepBase, IJobStep 
+    public class JobStep : JobStepBase, IJobStep
     {
-        public Func<JobStep?,bool>? Action { get; }
-        public Func<JobStep?,Task<bool>>? AsyncAction { get; }
+        public Func<JobStep?, bool>? Action { get; }
+        public Func<JobStep?, Task<bool>>? AsyncAction { get; }
 
 
-        public JobStep(string name, Func<JobStep?,bool> action)
+        public JobStep(string name, Func<JobStep?, bool> action)
         {
             Name = name;
             Action = action;
         }
-        public JobStep(string name, Func<JobStep?,Task<bool>> asyncAction)
+        public JobStep(string name, Func<JobStep?, Task<bool>> asyncAction)
         {
             Name = name;
             AsyncAction = asyncAction;
         }
 
-        public JobStep(string name, Func<JobStep?,bool> action, WindowsImpersonation identity) : this(name, action)
+        public JobStep(string name, Func<JobStep?, bool> action, WindowsImpersonation identity) : this(name, action)
         {
             Identity = identity;
         }
@@ -65,11 +65,12 @@ namespace BLAZAM.Jobs
                 //}
 
 
-                bool actionResult=false;
+                bool actionResult = false;
                 if (Action != null)
                 {
                     actionResult = Action.Invoke(this);
-                }else if (AsyncAction != null)
+                }
+                else if (AsyncAction != null)
                 {
                     Task.Run(async () =>
                     {

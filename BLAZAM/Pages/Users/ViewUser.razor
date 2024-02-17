@@ -397,19 +397,19 @@
                     </Section>
                 }
 
-                @if (User.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count>0)
+                @if (User.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
                 {
                     <Section Title=@AppLocalization["Additional Field"]>
-                       
-                            @foreach (var field in CustomFields)
-                            {
-                                @if (User.CanReadField(field))
-                                {
-                                    <CustomDirectoryField Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="User" Field="@field" />
 
-                                }
+                        @foreach (var field in CustomFields)
+                        {
+                            @if (User.CanReadField(field))
+                            {
+                                <CustomDirectoryField Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="User" Field="@field" />
+
                             }
-                        
+                        }
+
 
                     </Section>
                 }

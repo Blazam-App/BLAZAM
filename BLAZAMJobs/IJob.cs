@@ -8,11 +8,11 @@ namespace BLAZAM.Jobs
     /// <summary>
     /// A flexible multi step Job that can have actions as trackable steps.
     /// </summary>
-    public interface IJob: IJobStepBase
+    public interface IJob : IJobStepBase
     {
 
-    
-      
+
+
 
         /// <summary>
         /// The time to run this job. Execution will wait until this time arrives.
@@ -38,14 +38,14 @@ namespace BLAZAM.Jobs
         /// Empty if all steps succeed
         /// </para>
         /// <para>
-        /// Will only contain first error if <see cref="StopOnFailedStep"/> is true
+        /// Will only contain the first error if <see cref="StopOnFailedStep"/> is true
         /// </para>
         /// 
         /// </summary>
         /// 
         IList<IJobStep> FailedSteps { get; }
-      
-       
+
+
 
         /// <summary>
         /// All the steps that executed without exception
@@ -54,9 +54,9 @@ namespace BLAZAM.Jobs
 
 
 
-       /// <summary>
-       /// Waits for the job to finish execution synchronously.
-       /// </summary>
+        /// <summary>
+        /// Waits for the job to finish execution synchronously.
+        /// </summary>
         void Wait();
     }
 }

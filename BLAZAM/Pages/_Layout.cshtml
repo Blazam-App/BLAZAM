@@ -18,7 +18,7 @@
     <link rel="icon" type="image/x-icon" href=@StaticAssets.FaviconUri>
     <link href="css/site.css" rel="stylesheet" />
     <link href="BLAZAM.styles.css" rel="stylesheet" />
-   
+
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
@@ -33,7 +33,7 @@
 
 <body>
     @RenderBody()
-   
+
     <div id="blazor-error-ui">
         @if (!ApplicationInfo.inDebugMode)
         {
@@ -54,16 +54,16 @@
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-415DR9ZVBH"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
 
-        gtag('config', 'G-415DR9ZVBH');
-        gtag('set', 'user_properties', {
-            app_version: '@ApplicationInfo.runningVersion'
-        });
-    </script>
+            gtag('config', 'G-415DR9ZVBH');
+            gtag('set', 'user_properties', {
+                app_version: '@ApplicationInfo.runningVersion'
+            });
+        </script>
     }
-    @if (DatabaseCache.ApplicationSettings?.AnalyticsId.IsNullOrEmpty() == false )
+    @if (DatabaseCache.ApplicationSettings?.AnalyticsId.IsNullOrEmpty() == false)
     {
         <!-- Blazam Installation Google tag (gtag.js) -->
 

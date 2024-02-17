@@ -200,7 +200,7 @@ namespace BLAZAM.Update.Services
 
 
                 //Test Update Credentials
-               if(TestCustomCredentials())
+                if (TestCustomCredentials())
                     return UpdateCredential.Update;
 
                 return UpdateCredential.None;
