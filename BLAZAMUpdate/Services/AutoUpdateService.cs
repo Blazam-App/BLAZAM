@@ -2,9 +2,11 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
+using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.Update.Services
@@ -125,7 +127,7 @@ namespace BLAZAM.Update.Services
                                 Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old staging files");
 
                                 var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault().CreateUpdateImpersonator();
-                                if (impersonation!=null && !impersonation.Run(() =>
+                                if (impersonation != null && !impersonation.Run(() =>
                                 {
                                     if (dir.Writable)
                                     {
@@ -168,7 +170,7 @@ namespace BLAZAM.Update.Services
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Other error cleaning staging files {Directory}{@Error}",dir.Path, ex);
+                    Loggers.UpdateLogger.Error("Other error cleaning staging files {Directory}{@Error}", dir.Path, ex);
                     //file.Delete();
                 }
             }
@@ -277,15 +279,15 @@ namespace BLAZAM.Update.Services
                                 if (updateJob != null)
                                 {
                                     updateJob.Run();
-                                    if (updateJob.Result != Jobs.JobResult.Passed)
-                                        Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot. Response: " + updateJob);
+                                    if (updateJob.Result == JobResult.Passed)
+                                        Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot.{@UpdateVersion}", latestUpdate.Version);
                                     else
                                     {
                                         var thrownStep = updateJob.Steps.FirstOrDefault(x => x.Exception != null);
                                         if (thrownStep != null)
-                                            Loggers.UpdateLogger.Error("Failed to auto-update. {@Error}", thrownStep.Exception);
+                                            Loggers.UpdateLogger.Error("Failed to auto-update. {@Error}{@UpdateVersion}", thrownStep.Exception, latestUpdate.Version);
                                         else
-                                            Loggers.UpdateLogger.Error("Failed to auto-update. No exception collected from update job!");
+                                            Loggers.UpdateLogger.Error("Failed to auto-update. No exception collected from update job!{@UpdateVersion}", latestUpdate.Version);
 
                                     }
                                 }
@@ -294,12 +296,12 @@ namespace BLAZAM.Update.Services
                             {
                                 //Log.Error(ex);
                                 OnAutoUpdateFailed?.Invoke();
-                                Loggers.UpdateLogger.Error("Error trying to apply auto update {@Error}", ex);
+                                Loggers.UpdateLogger.Error("Error trying to apply auto update {@Error}{@UpdateVersion}", ex, latestUpdate.Version);
                             }
                         }
                         else
                         {
-                            Loggers.UpdateLogger.Error("Unable to get latest update {@Branch}{@AutoUpdate}{@AutoUpdateTime}",settings.UpdateBranch,settings.AutoUpdate,settings.AutoUpdateTime);
+                            Loggers.UpdateLogger.Error("Unable to get latest update {@Branch}{@AutoUpdate}{@AutoUpdateTime}", settings.UpdateBranch, settings.AutoUpdate, settings.AutoUpdateTime);
 
                         }
                     }
