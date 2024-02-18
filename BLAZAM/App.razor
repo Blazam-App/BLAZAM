@@ -1,13 +1,12 @@
-﻿
-@inject IHttpContextAccessor context
+﻿@inject IHttpContextAccessor context
 @inject IApplicationUserStateService userStateService
-@inject ICurrentUserStateService  currentUser
+@inject ICurrentUserStateService currentUser
 <CascadingAuthenticationState>
 
 
 
     <ErrorBoundary>
-    
+
         <ChildContent>
             <Router AppAssembly="@typeof(App).Assembly">
                 <Found Context="routeData">
@@ -73,21 +72,23 @@
         try
         {
             var userTheme = currentUser.State?.Preferences?.Theme;
-            switch (userTheme)
+            if (userTheme != null)
             {
-                case "Blue":
-                default:
+                var matchingTheme = ApplicationTheme.Themes.FirstOrDefault(at => at.Name == userTheme);
+                if (matchingTheme != null)
+                {
+                    activeTheme = matchingTheme;
+                }
+                else
+                {
                     activeTheme = new BlueTheme();
-                    break;
-                case "Red":
-                    activeTheme = new RedTheme();
-                    break;
 
-
+                }
+              
             }
             darkMode = currentUser.State?.Preferences?.DarkMode == true;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Loggers.SystemLogger.Error("Error while fetching user theme: {@Error}", ex);
         }
