@@ -22,7 +22,20 @@ else
         {
             if (UserState == null) return "background-color:#0c13a7";
             int usernameHash = UserState.Username.GetAppHashCode();
-            byte[] usernameHashBytes = Helpers.ByteHelpers.ToByteArray(usernameHash, (int?)3);
+            byte[] usernameHashBytes = Helpers.ByteHelpers.ToByteArray(usernameHash, 3);
+            int totalBytes = 0;
+            for(int x = 0; x < usernameHashBytes.Length; x++)
+            {
+                totalBytes += usernameHashBytes[x];
+            }
+            var distanceFrom200 = 255 - totalBytes;
+            if (distanceFrom200 > 0)
+            {
+                for (int x = 0; x < usernameHashBytes.Length; x++)
+                {
+                    usernameHashBytes[x] += (byte)((int)usernameHashBytes[x]+distanceFrom200);
+                }
+            }
             string hexColor = "background-color:#";
             hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
             return hexColor;
