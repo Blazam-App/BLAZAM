@@ -61,7 +61,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 List<DateTime?> times = new List<DateTime?>();
                 foreach (var c in coms)
                 {
-                    times.Add(c.AdsValueToDateTime());
+                    if(c is DateTime)
+                    {
+                        times.Add(c.AdsValueToDateTime());
+                    }
                 }
                 return times.OrderByDescending(t => t).FirstOrDefault();
             }
@@ -216,7 +219,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 //Invoke("SetPassword", new[] { password.ToPlainText() });
                 //return true;
 
-                //The following works utside the domain but may havee issues with cerrts
+                //The following works outside the domain but may have issues with certs
                 using (PrincipalContext pContext = new PrincipalContext(
                     ContextType.Domain,
                     DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,

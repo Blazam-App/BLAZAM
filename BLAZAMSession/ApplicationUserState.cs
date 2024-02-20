@@ -47,7 +47,7 @@ namespace BLAZAM.Server.Data.Services
 
         public IPAddress IPAddress { get; set; }
 
-        public List<UserFavoriteEntry> FavoriteEntries => userSettings.FavoriteEntries;
+        public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries?? new List<UserFavoriteEntry>();
 
         public IList<UserNotification>? Notifications
         {
@@ -100,7 +100,7 @@ namespace BLAZAM.Server.Data.Services
 
 
 
-        public AppUser? Preferences
+        public AppUser Preferences
         {
             get
             {
@@ -157,7 +157,7 @@ namespace BLAZAM.Server.Data.Services
                     context.SaveChanges();
 
                 }
-                else if (Preferences.Email == null)
+                else if (Preferences!=null && Preferences.Email == null)
                 {
                     var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
                     if (emailClaim != null && !emailClaim.Value.IsNullOrEmpty())
@@ -423,6 +423,7 @@ namespace BLAZAM.Server.Data.Services
             }
             catch (Exception ex)
             {
+                Loggers.SystemLogger.Error("Error checking object read permissions {@Error}", ex);
                 return false;
             }
         }

@@ -127,15 +127,15 @@
         {
             SnackBarService.Warning(ex.Message);
         }
-     
+
     }
 
     private async void LoadPFX(IBrowserFile e)
     {
         pfxBytes = await e.ToByteArrayAsync(5000000);
-        
-       
-       
+
+
+
         //await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
 
@@ -147,7 +147,7 @@
     {
         crtBytes = await e.ToByteArrayAsync(5000000);
 
-        
+
         //await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
 
@@ -156,7 +156,9 @@
 
     private async void LoadKey(IBrowserFile e)
     {
-        keyBytes = await e.ToByteArrayAsync(5000000);
+        var bytes = await e.ToByteArrayAsync(5000000);
+        if(bytes!=null)
+            keyBytes=bytes;
 
         await InvokeAsync(StateHasChanged);
 

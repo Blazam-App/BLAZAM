@@ -27,7 +27,12 @@ namespace BLAZAM.Server.Middleware
                 {
 
                 }
-                currentUserStateService.State = userStateService.GetUserState(httpContext.User);
+                var state = userStateService.GetUserState(httpContext.User);
+                if (state != null)
+                {
+                    currentUserStateService.State = state;
+
+                }
                 if (httpContext.Connection != null && httpContext.Connection.RemoteIpAddress != null && currentUserStateService.State != null && currentUserStateService.State.IPAddress != httpContext.Connection.RemoteIpAddress)
                     currentUserStateService.State.IPAddress = httpContext.Connection.RemoteIpAddress;
             }

@@ -17,7 +17,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
         HashSet<IADOrganizationalUnit> CachedTreeViewSubOUs { get;}
         HashSet<IADOrganizationalUnit> TreeViewSubOUs { get; }
-        IQueryable<IADUser> ChildUsers { get; }
 
         IADGroup CreateGroup(string containerName);
         IADUser CreateUser(string containerName);

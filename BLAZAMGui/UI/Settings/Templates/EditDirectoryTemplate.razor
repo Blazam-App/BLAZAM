@@ -84,7 +84,7 @@ await ParentTemplateChanged(null);
 
                         <MudStack>
                             @{
-                            var usernameFromTemplate = GetParentOfValue(DirectoryTemplate.EffectiveUsernameFormula, template => template.UsernameFormula); 
+                            var usernameFromTemplate = GetParentOfValue(DirectoryTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
                             var displayNameFromTemplateName = GetParentOfValue(DirectoryTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
                             var passwordFromTemplateName = GetParentOfValue(DirectoryTemplate.EffectivePasswordFormula, template => template.PasswordFormula); ;
 
@@ -95,7 +95,7 @@ await ParentTemplateChanged(null);
                                     <MudTextField Label="Username Format"
                                                   @bind-Value=DirectoryTemplate.EffectiveUsernameFormula />
                                 </TemplateOverride>
-                                @if (DirectoryTemplate.ParentTemplate!=null && DirectoryTemplate.ParentTemplate.EffectiveUsernameFormula!=DirectoryTemplate.EffectiveUsernameFormula)
+                                @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveUsernameFormula != DirectoryTemplate.EffectiveUsernameFormula)
                                 {
                                     <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.UsernameFormula=null;}) />
                                 }
@@ -113,7 +113,7 @@ await ParentTemplateChanged(null);
 
 
 
-                            
+
                         </MudStack>
                         <MudStack Row=true>
 
@@ -170,7 +170,9 @@ await ParentTemplateChanged(null);
                                        }else if(field is CustomActiveDirectoryField customField){
                                        DirectoryTemplate.FieldValues.Add(new(){ CustomField=customField});
                                        }
-                                       })> <MudText Color="Color.Tertiary">@field.DisplayName</MudText></MudButton>
+                                       })>
+                                            <MudText Color="Color.Tertiary">@field.DisplayName</MudText>
+                                            </MudButton>
 
                                     }
 
@@ -264,15 +266,13 @@ await ParentTemplateChanged(null);
 
                         <TemplateOverride SourceTemplate="@ouTemplateSource">
                             <OUTreeView Label=@(AppLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
-                                        
-                                        
                                         SelectedOU=@SelectedOU
                                         SelectedOUChanged="@((ou)=>{SelectedOU=ou; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
                                         StartingSelectedOU=@SelectedOU />
                             @if (!DirectoryTemplate.ParentOU.IsNullOrEmpty() && DirectoryTemplate.ParentTemplateId != null && !DirectoryTemplate.ParentOU.IsNullOrEmpty())
                             {
                                 <RevertTemplateValueButton OnClick=@(async()=>{DirectoryTemplate.ParentOU=null;await LoadData();}) />
-                              
+
                             }
                         </TemplateOverride>
 
@@ -421,7 +421,9 @@ await ParentTemplateChanged(null);
         try
         {
             var group = SelectedGroup as IADGroup;
-            var existing = await Context.DirectoryTemplateGroups.Where(g => g.GroupSid == group.SID.ToSidString()).FirstOrDefaultAsync();
+            if (group!=null && group.SID != null && Context != null)
+            {
+                  var existing = await Context.DirectoryTemplateGroups.Where(g => g.GroupSid == group.SID.ToSidString()).FirstOrDefaultAsync();
             if (existing == null)
                 existing = new DirectoryTemplateGroup()
                     {
@@ -429,6 +431,8 @@ await ParentTemplateChanged(null);
                     };
             DirectoryTemplate.AssignedGroupSids.Add(existing);
             SelectedGroup = null;
+            }
+          
         }
         catch (Exception ex)
         {
@@ -446,7 +450,7 @@ await ParentTemplateChanged(null);
             await OnInitializedAsync();
 
         await LoadCategories();
-        if(DirectoryTemplate.ParentTemplate is null && DirectoryTemplate.ParentTemplateId > 0)
+        if (DirectoryTemplate.ParentTemplate is null && DirectoryTemplate.ParentTemplateId > 0)
         {
             using (var parentContext = await DbFactory.CreateDbContextAsync())
             {
@@ -461,9 +465,9 @@ await ParentTemplateChanged(null);
 
         }
 
-        if (DirectoryTemplate != null && !Context.EntityIsTracked(DirectoryTemplate))
+        if (DirectoryTemplate != null &&Context!=null && !Context.EntityIsTracked(DirectoryTemplate)==true)
         {
-            var matching = await Context.DirectoryTemplates.Include(dt=>dt.ParentTemplate).Where(dt => dt.Id == DirectoryTemplate.Id).FirstOrDefaultAsync();
+            var matching = await Context.DirectoryTemplates.Include(dt => dt.ParentTemplate).Where(dt => dt.Id == DirectoryTemplate.Id).FirstOrDefaultAsync();
             if (matching != null) _template = matching;
             await LoadParentOU();
         }
@@ -541,8 +545,8 @@ await ParentTemplateChanged(null);
         await LoadParentOU();
     }
 
-    protected IADOrganizationalUnit SelectedOU;
-    protected IDirectoryEntryAdapter SelectedGroup;
+    protected IADOrganizationalUnit? SelectedOU;
+    protected IDirectoryEntryAdapter? SelectedGroup;
     protected List<IDirectoryEntryAdapter> TemplateGroups = new();
     protected async Task LoadCategories()
     {

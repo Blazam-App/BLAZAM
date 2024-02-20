@@ -7,7 +7,7 @@ namespace BLAZAM.Database.Models.Templates
     {
         public ActiveDirectoryField? Field { get; set; }
         public CustomActiveDirectoryField? CustomField { get; set; }
-        public string Value { get; set; } = "";
+        public string? Value { get; set; } = "";
 
         /// <summary>
         /// Indicates whether a regular user should be able to modify

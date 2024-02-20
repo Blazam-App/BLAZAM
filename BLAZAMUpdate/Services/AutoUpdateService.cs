@@ -60,8 +60,8 @@ namespace BLAZAM.Update.Services
                         {
                             Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file: " + file);
 
-                            var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault().CreateUpdateImpersonator();
-                            if (!impersonation.Run(() =>
+                            var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
+                            if (impersonation!=null && !impersonation.Run(() =>
                             {
                                 if (file.Writable)
                                 {
@@ -71,8 +71,8 @@ namespace BLAZAM.Update.Services
                                 return false;
                             }))
                             {
-                                impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault().CreateDirectoryAdminImpersonator();
-                                if (!impersonation.Run(() =>
+                                impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
+                                if (impersonation !=null && !impersonation.Run(() =>
                                 {
                                     if (file.Writable)
                                     {
@@ -126,7 +126,7 @@ namespace BLAZAM.Update.Services
                             {
                                 Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old staging files");
 
-                                var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault().CreateUpdateImpersonator();
+                                var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
                                 if (impersonation != null && !impersonation.Run(() =>
                                 {
                                     if (dir.Writable)
@@ -139,7 +139,7 @@ namespace BLAZAM.Update.Services
                                     return false;
                                 }))
                                 {
-                                    impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault().CreateDirectoryAdminImpersonator();
+                                    impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
                                     if (impersonation != null && !impersonation.Run(() =>
                                     {
                                         if (dir.Writable)
@@ -165,7 +165,7 @@ namespace BLAZAM.Update.Services
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Loggers.UpdateLogger.Debug("Deleting unknown directory: " + dir);
+                    Loggers.UpdateLogger.Error("Deleting unknown directory: " + dir+ "{@Error}",ex);
                     //dir.Delete(true);
                 }
                 catch (Exception ex)

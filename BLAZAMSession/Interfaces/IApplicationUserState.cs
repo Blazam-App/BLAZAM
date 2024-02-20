@@ -24,7 +24,7 @@ namespace BLAZAM.Session.Interfaces
         /// <summary>
         /// Returns the name of the user
         /// </summary>
-        string Username { get; }
+        string? Username { get; }
 
         /// <summary>
         /// The user who is impersonating this web user. It is optional, obviously.

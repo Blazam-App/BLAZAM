@@ -97,40 +97,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return childrenCache;
             }
         }
-        public IQueryable<IADUser> ChildUsers
-        {
-            get
-            {
-                if (childUserCache == null)
+       
+       
 
-                    childUserCache = Directory.OUs.FindSubUsersByDN(DN).OrderBy(ou => ou.CanonicalName).AsQueryable();
-                return childUserCache;
-
-            }
-        }
-        public IQueryable<IADComputer> ChildComputers
-        {
-            get
-            {
-                if (childComputerCache == null)
-
-                    childComputerCache = Directory.OUs.FindSubComputerByDN(DN).OrderBy(ou => ou.CanonicalName).AsQueryable();
-                return childComputerCache;
-
-            }
-        }
-
-        public IQueryable<IADGroup> ChildGroups
-        {
-            get
-            {
-                if (childGroupCache == null)
-
-                    childGroupCache = Directory.OUs.FindSubGroupsByDN(DN).OrderBy(ou => ou.CanonicalName).AsQueryable();
-                return childGroupCache;
-
-            }
-        }
         public override string SearchUri => "/search/"+DN;
 
         public override string? CanonicalName

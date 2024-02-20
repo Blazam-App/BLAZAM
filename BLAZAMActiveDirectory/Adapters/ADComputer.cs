@@ -9,6 +9,7 @@ using BLAZAM.Database.Models;
 using System.Net.Sockets;
 using System.DirectoryServices;
 using System.Threading;
+using BLAZAM.Helpers;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -60,10 +61,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     OnOnlineChanged?.Invoke((bool)value);
             }
         }
-        public List<ComputerService> Services => wmiConnection.Services;
+        public List<ComputerService> Services => wmiConnection?.Services?? new ();
         public ComputerMemory Memory => wmiConnection?.Memory ?? new();
-        public int Processor => wmiConnection.Processor;
-        public double MemoryUsedPercent => wmiConnection.Memory.PercentUsed;
+        public int Processor => wmiConnection?.Processor ?? 0;
+        public double MemoryUsedPercent => wmiConnection?.Memory.PercentUsed ?? 0 ;
         public List<IADComputerDrive> GetDrives()
         {
             if (wmiConnection == null) return new();
@@ -96,7 +97,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return wmiConnection.SharePrinters;
+                return wmiConnection?.SharePrinters ?? new ();
 
             }
         }
@@ -142,7 +143,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             Ping(timeout);
                         }
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         IsOnline = false;
 
@@ -158,7 +159,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                if (IPHostEntry == null && !cts.IsCancellationRequested)
+                if (IPHostEntry == null && !cts.IsCancellationRequested && CanonicalName!=null)
                 {
                     IPHostEntry = Dns.GetHostEntry(CanonicalName);
                     Task.Delay(60000).ContinueWith((s) =>
@@ -173,7 +174,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     try
                     {
-                        if (cts.IsCancellationRequested) return;
+                        if (cts.IsCancellationRequested || CanonicalName ==null) return;
 
                         PingReply response = ping.Send(CanonicalName, timeout);
                         if (response != null)
@@ -202,7 +203,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 } while (x < retries);
 
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
 
             }

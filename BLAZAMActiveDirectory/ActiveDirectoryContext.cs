@@ -370,15 +370,15 @@ namespace BLAZAM.ActiveDirectory
                                                 return;
                                             }
                                         }
-                                        catch (Exception ex)
+                                        catch (Exception)
                                         {
-                                            if (RootDirectoryEntry != null)
-                                                _notificationPublisher.PublishNotification(new NotificationMessage()
-                                                {
-                                                    Level = NotificationLevel.Error,
-                                                    Message = "The configured BaseDN is not valid. Please correct your settings.",
-                                                    Title = "Active Directory Error"
-                                                });
+                                            //if (RootDirectoryEntry != null)
+                                                //_notificationPublisher.PublishNotification(new NotificationMessage()
+                                                //{
+                                                //    Level = NotificationLevel.Error,
+                                                //    Message = "The configured BaseDN is not valid. Please correct your settings.",
+                                                //    Title = "Active Directory Error"
+                                                //});
                                             Status = DirectoryConnectionStatus.BadConfiguration;
                                             if (FailedConnectionAttempts < 10)
                                                 FailedConnectionAttempts++;
@@ -558,7 +558,7 @@ namespace BLAZAM.ActiveDirectory
                                 {
                                    
                                     UserName = loginReq.Username,
-                                    SecurePassword = loginReq.Password.ToSecureString()
+                                    SecurePassword = loginReq.Password?.ToSecureString()
                                 };
                                 LdapConnection connection = new LdapConnection(
                                    new LdapDirectoryIdentifier(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort),
@@ -644,7 +644,7 @@ namespace BLAZAM.ActiveDirectory
                 {
                     Domain = ConnectionSettings.FQDN,
                     UserName = ConnectionSettings.Username,
-                    SecurePassword = _encryption.DecryptObject<string>(ConnectionSettings.Password).ToSecureString()
+                    SecurePassword = _encryption.DecryptObject<string>(ConnectionSettings.Password)?.ToSecureString()
                 },
                 AuthType.Negotiate);
 
