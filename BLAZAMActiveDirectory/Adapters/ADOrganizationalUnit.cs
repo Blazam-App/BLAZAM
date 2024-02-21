@@ -190,7 +190,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     DirectoryEntry = searchResult?.GetDirectoryEntry();
                 newUser.Parse(directoryEntry: DirectoryEntry.Children.Add(fullContainerName, "user"), directory: Directory);
                 newUser.NewEntry = true;
-                newUser.Enabled = true;
                 return newUser;
             }catch(Exception ex)
             {
