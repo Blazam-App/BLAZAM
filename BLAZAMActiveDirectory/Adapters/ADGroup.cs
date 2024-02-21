@@ -95,10 +95,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public override void DiscardChanges()
         {
-            base.DiscardChanges();
-
             MembersToRemove = new();
             MembersToAdd = new();
+            CachedChildren = new List<IDirectoryEntryAdapter>();
+            _groupMembersCache = new List<IADGroup>();
+            _userMembersCache = new();
+            base.DiscardChanges();
+
+           
         }
         public bool HasMembers => UserMembers.Count > 0 || GroupMembers.Count > 0;
         List<IADUser> _userMembersCache;

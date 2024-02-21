@@ -109,7 +109,7 @@ else
     [Parameter]
     public int PageSize { get; set; } = 25;
 
-    List<IGroupableDirectoryAdapter> Members = new();
+    List<IGroupableDirectoryAdapter> Members =>Group.Members;
 
     AppModal AssignMemberModal;
     protected override async Task OnInitializedAsync()
@@ -117,7 +117,7 @@ else
         await base.OnInitializedAsync();
         await Task.Run(() =>
         {
-            Members = Group.Members;
+            
             LoadingData = false;
             InvokeAsync(StateHasChanged);
 
