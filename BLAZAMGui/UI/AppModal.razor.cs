@@ -18,7 +18,7 @@ namespace BLAZAM.Gui.UI
         protected AppSnackBarService NotificationService { get; set; }
 
         /// <summary>
-        /// The modal's  databse connection
+        /// The modal's  database connection
         /// </summary>
         [Parameter]
         public IDatabaseContext? Context { get; set; }
@@ -51,6 +51,17 @@ namespace BLAZAM.Gui.UI
         /// </summary>
         protected MudDialog? Modal { get; set; }
 
+
+        private bool loadingData = false;
+        [Parameter]
+        public bool LoadingData
+        {
+            get => loadingData; set
+            {
+                loadingData = value;
+                InvokeAsync(StateHasChanged);
+            }
+        }
         //[Parameter]
         //public EventCallback OnNo { get; set; }
         [Parameter]
