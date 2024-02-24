@@ -30,20 +30,12 @@
                           Searcher.Results.Clear();Searcher.Results.Add(u);
                           }) />
 
-                    @*  <div Class="cursor-pointer" @onclick=@(()=>{Searcher.Results.Clear();Searcher.Results.Add(u);})>
-            <MudText Typo="Typo.h1">@u.ObjectType</MudText>
-            <MudText Typo="Typo.h1">@u.CanonicalName</MudText>
-            <small>@u.SamAccountName</small>
-            </div> *@
-
 
                 }
             </ItemContent>
             <Placeholder>
-                <div>
-                    <MudText Typo="Typo.h1">Loading...</MudText>
-                    <small>Loading...</small>
-                </div>
+                <MudText Typo="Typo.h1">Loading...</MudText>
+
 
             </Placeholder>
         </Virtualize>
