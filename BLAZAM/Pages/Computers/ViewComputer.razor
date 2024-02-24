@@ -21,7 +21,8 @@
                                       OnRename="@(()=>{RenameModal?.Show();})"
                                       OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
                                       OnToggleEditMode="ToggleEditMode"
-                                      OnUnlock="@Unlock" />
+                                      OnUnlock="@Unlock"
+                                      OnShowHistory="@(()=>{ChangeHistoryModal.Show();})"/>
             <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
             </MudOverlay>
