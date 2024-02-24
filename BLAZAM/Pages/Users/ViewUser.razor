@@ -64,12 +64,7 @@
                         <ChangeUserPasswordModalContent User="User" />
                     }
                 </AppModal>
-                <AppModal Title=@AppLocalization["Change History"] @ref=@ChangeHistoryModal Options=@(new DialogOptions(){FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
-                    @if (ChangeHistoryModal?.IsShown == true)
-                    {
-                        <ChangeHistoryModalContent Model="User" />
-                    }
-                </AppModal>
+               
 
 
                 <MudGrid>
