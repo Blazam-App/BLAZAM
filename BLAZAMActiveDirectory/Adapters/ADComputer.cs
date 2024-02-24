@@ -1,15 +1,10 @@
 ﻿
 using System.Net.NetworkInformation;
 using System.Net;
-using System.Management;
-using BLAZAM.Common.Data.Services;
 using BLAZAM.Logger;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using System.Net.Sockets;
-using System.DirectoryServices;
-using System.Threading;
-using BLAZAM.Helpers;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -111,8 +106,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
+
                 // Run.Process("netdom", "renamecomputer " + Name + " /newname:" + newName + " /userd:" + System.Security.Principal.WindowsIdentity.GetCurrent().Name + " /passwordd:* /securepasswordprompt /force", true);
-                return true;
+                return false;
 
             }
             catch (Exception ex)
@@ -126,7 +122,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         /// <summary>
-        /// When called this computers network reachabillity will be continusously monitored.
+        /// When called this computers network reachability will be continuously monitored.
         /// </summary>
         /// <param name="timeout"></param>
         public void MonitorOnlineStatus(int timeout = 5000)
@@ -195,9 +191,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     catch (Exception ex)
                     {
                         Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
-
-                        //MainWindow.Get.Toast("Error pinging " + destination);
-                        //Debug.WriteLine("Error pinging " + destination);
                     }
                     x++;
                 } while (x < retries);
@@ -205,7 +198,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (SocketException)
             {
-
+                // Ignore socket exceptions
             }
             catch (Exception ex)
             {
