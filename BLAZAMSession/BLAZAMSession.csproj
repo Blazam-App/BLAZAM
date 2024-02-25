@@ -13,4 +13,10 @@
     <ProjectReference Include="..\BLAZAMNotifications\BLAZAMNotifications.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ApplicationNews">
+      <HintPath>ApplicationNews.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

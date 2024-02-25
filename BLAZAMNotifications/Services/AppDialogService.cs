@@ -9,9 +9,9 @@ namespace BLAZAM.Notifications.Services
         private IDialogService _dialog { get; set; }
         DialogOptions DialogOptions { get; set; } = new DialogOptions() { };
 
-        public async Task<IDialogReference> ShowMessage<TComponent>(DialogParameters parameters , string? title = null, string? yesText = null, string? noText = null, string? cancelText = null) where TComponent : ComponentBase, new()
+        public async Task<IDialogReference> ShowMessage<TComponent>(DialogParameters parameters , string? title = null, string? yesText = null, string? noText = null, string? cancelText = null, DialogOptions? options=null) where TComponent : ComponentBase, new()
         {
-           return await _dialog.ShowAsync<TComponent>(title, parameters, DialogOptions);
+           return await _dialog.ShowAsync<TComponent>(title, parameters, options??DialogOptions);
         }
 
 

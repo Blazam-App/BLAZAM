@@ -15,6 +15,7 @@ namespace BLAZAM.Database.Models.User
         public bool SearchDisabledComputers { get; set; }
         public string? Username { get; set; }
         public List<UserNotification> Messages { get; set; } = new();
+        public List<ReadNewsItem> ReadNewsItems { get; set; } = new();
         public List<UserFavoriteEntry> FavoriteEntries { get; set; } = new();
         //public List<ChatMessage> PostedChatMessages { get; set; } = new();
         //public List<UnreadChatMessage> UnreadChatMessages { get; set; } = new();

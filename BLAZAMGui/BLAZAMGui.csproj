@@ -45,6 +45,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="ApplicationNews">
+      <HintPath>..\BLAZAMSession\ApplicationNews.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="UI\Chat\EntrySpecificChat.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>

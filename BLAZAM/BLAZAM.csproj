@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.8.9</AssemblyVersion>
-		<Version>2024.02.24.0054</Version>
+		<Version>2024.02.25.1740</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -48,15 +48,6 @@
 		<Content Include="static\img\default_logo4.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-	</ItemGroup>
-
-
-
-
-
-	<ItemGroup>
-	  <None Include="..\BLAZAMGui\UI\Modals\AuditEntryChanges.razor" Link="AuditEntryChanges.razor" />
-	  <None Include="..\BLAZAMGui\UI\Settings\ProcessCPUUsage.razor" Link="ProcessCPUUsage.razor" />
 	</ItemGroup>
 
 	<ItemGroup>

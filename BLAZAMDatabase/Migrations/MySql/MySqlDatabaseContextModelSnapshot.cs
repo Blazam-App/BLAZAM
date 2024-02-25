@@ -1245,7 +1245,6 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Value")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -1351,6 +1350,28 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.HasKey("Id");
 
                     b.ToTable("NotificationMessages");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.User.ReadNewsItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<double>("NewsItemId")
+                        .HasColumnType("double");
+
+                    b.Property<DateTime>("NewsItemUpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ReadNewsItems");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserDashboardWidget", b =>
@@ -1628,6 +1649,17 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasForeignKey("DirectoryTemplateId");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.User.ReadNewsItem", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
+                        .WithMany("ReadNewsItems")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserDashboardWidget", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
@@ -1737,6 +1769,8 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("FavoriteEntries");
 
                     b.Navigation("Messages");
+
+                    b.Navigation("ReadNewsItems");
                 });
 
             modelBuilder.Entity("BLAZAM.Server.Data.ChatMessage", b =>

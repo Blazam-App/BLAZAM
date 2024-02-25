@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using ApplicationNews;
+using BLAZAM.Gui.UI.Modals;
+using Microsoft.AspNetCore.Components.Forms;
+using MudBlazor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +25,21 @@ namespace BLAZAM.Helpers
                 }
                 return fileBytes;
             }
+
+        public static async Task<IDialogReference> ShowNewsItemDialog(this NewsItem item,AppDialogService dialogService)
+        {
+            var dialogParams = new DialogParameters
+            {
+                { "Item", item }
+            };
+            var options = new DialogOptions();
+            options.MaxWidth = MaxWidth.ExtraExtraLarge;
+            options.CloseButton = true;
+            options.CloseOnEscapeKey = true;
+            
+            return (await dialogService.ShowMessage<AppNewsItemDialog>(dialogParams, item.Title,options:options));
+
+        }
         
     }
 }

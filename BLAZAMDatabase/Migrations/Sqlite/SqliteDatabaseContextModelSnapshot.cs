@@ -1240,7 +1240,6 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Value")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -1346,6 +1345,28 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.HasKey("Id");
 
                     b.ToTable("NotificationMessages");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.User.ReadNewsItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("NewsItemId")
+                        .HasColumnType("REAL");
+
+                    b.Property<DateTime>("NewsItemUpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ReadNewsItems");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserDashboardWidget", b =>
@@ -1623,6 +1644,17 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasForeignKey("DirectoryTemplateId");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.User.ReadNewsItem", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
+                        .WithMany("ReadNewsItems")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserDashboardWidget", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
@@ -1732,6 +1764,8 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Navigation("FavoriteEntries");
 
                     b.Navigation("Messages");
+
+                    b.Navigation("ReadNewsItems");
                 });
 
             modelBuilder.Entity("BLAZAM.Server.Data.ChatMessage", b =>

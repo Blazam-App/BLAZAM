@@ -25,6 +25,7 @@ using BLAZAM.Services.Chat;
 using BLAZAM.Services.Audit;
 using BLAZAM.Common;
 using BLAZAM.Nav;
+using BLAZAM.Session;
 
 namespace BLAZAM.Server
 {
@@ -183,6 +184,8 @@ namespace BLAZAM.Server
             builder.Services.AddSingleton<PermissionApplicator>();
             
             builder.Services.AddSingleton<UserSeederService>();
+
+            builder.Services.AddSingleton<IApplicationNewsService, ApplicationNewsService>();
 
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();
