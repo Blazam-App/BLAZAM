@@ -60,6 +60,7 @@ namespace BLAZAM.Server.Data.Services
 
             }
         }
+        public IList<ReadNewsItem> ReadNewsItems => Preferences.ReadNewsItems;
         //public List<ReadChatMessage> ReadChatMessages => Preferences.ReadChatMessages.ToList();
 
         public int Id => Preferences!=null?Preferences.Id:0;
@@ -194,8 +195,9 @@ namespace BLAZAM.Server.Data.Services
                     dbUserSettings.ProfilePicture = this.Preferences?.ProfilePicture;
                     dbUserSettings.SearchDisabledUsers = this.Preferences?.SearchDisabledUsers == true;
                     dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
-                    dbUserSettings.FavoriteEntries = this.Preferences?.FavoriteEntries!=null? this.Preferences.FavoriteEntries:new();
+                    dbUserSettings.FavoriteEntries = this.Preferences?.FavoriteEntries??new();
                     dbUserSettings.Email = this.Preferences?.Email;
+                    dbUserSettings.ReadNewsItems = this.Preferences?.ReadNewsItems??new();
                     SaveDashboardWidgets(dbUserSettings);
                     OnSettingsChanged?.Invoke(dbUserSettings);
                     await context.SaveChangesAsync();

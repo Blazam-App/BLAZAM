@@ -28,6 +28,8 @@ namespace BLAZAM.Update.Services
         public bool IsUpdatedScheduled { get { return autoUpdateApplyTimer != null; } }
         public DateTime ScheduledUpdateTime { get; set; }
         public ApplicationUpdate? ScheduledUpdate { get; set; }
+        public bool IsUpdateAvailable { get; private set; }
+
         //private AuditLogger Audit;
 
         public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo)
@@ -35,7 +37,7 @@ namespace BLAZAM.Update.Services
             _applicationInfo = applicationInfo;
             this.factory = factory;
             this.updateService = updateService;
-            updateCheckTimer = new Timer(CheckForUpdate, null, (int)TimeSpan.FromSeconds(20).TotalMilliseconds, (int)TimeSpan.FromHours(1).TotalMilliseconds);
+            updateCheckTimer = new Timer(CheckForUpdate, null, (int)TimeSpan.FromSeconds(1).TotalMilliseconds, (int)TimeSpan.FromHours(1).TotalMilliseconds);
             directoryCleaner = new Timer(CleanDirectories, null, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, (int)TimeSpan.FromHours(20).TotalMilliseconds);
         }
 
@@ -186,12 +188,19 @@ namespace BLAZAM.Update.Services
                 Loggers.UpdateLogger.Information("Checking for automatic update");
 
                 var latestUpdate = await updateService.GetUpdates();
-                if (latestUpdate != null && latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
-                {
-                    ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
+                if (latestUpdate != null && latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0){
+                    IsUpdateAvailable = true;
+                    if(appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
+                    {
+                        ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
+
+                    }
+
                 }
                 else
                 {
+                    IsUpdateAvailable = false;
+                    Cancel();
                     Loggers.UpdateLogger.Information("No new updates found.");
 
                 }

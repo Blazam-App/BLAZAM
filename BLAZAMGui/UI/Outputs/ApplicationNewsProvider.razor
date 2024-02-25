@@ -1,0 +1,135 @@
+﻿@using ApplicationNews
+@using BLAZAM.Update
+@inherits AppComponentBase
+@if(readItems.Count>0 || unreadItems.Count>0){
+<MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+    <ActivatorContent>
+        @{
+            var icon = Icons.Material.Filled.Notifications;
+            var color = Color.Success;
+        }
+        @if (unreadItems.Count > 0)
+        {
+            icon = Icons.Material.Filled.NotificationImportant;
+            color = Color.Warning;
+        }
+
+        <MudTooltip Text=@("Blazam "+AppLocalization[" News"])>
+            <MudFab Size=Size.Small Color=@color Class="mx-2" StartIcon="@icon" />
+        </MudTooltip>
+
+    </ActivatorContent>
+
+    <ChildContent>
+        @foreach (var item in unreadItems)
+        {
+            <MudButton Color=@Color.Warning Variant="Variant.Filled" Style="border-radius:0px;" FullWidth=true OnClick="@((args)=>{ShowNews(item);})">
+                <MudStack Class="mud-width-full pt-1" AlignItems="AlignItems.Start">
+                    <MudStack Row=true>
+                        <MudIcon Icon="@Icons.Material.Filled.Email" /> @item.Title
+                    </MudStack>
+                    @if (item.Link != null)
+                    {
+                        <MudLink Color="Color.Secondary" Target="_blank" Href="@item.Link">@item.Link</MudLink>
+                    }
+                </MudStack>
+            </MudButton>
+        }
+        @foreach (var item in readItems)
+        {
+            <MudButton Variant="Variant.Filled" Style="border-radius:0px;" FullWidth=true OnClick="@((args)=>{ShowNews(item);})">
+                <MudStack Class="mud-width-full pt-1" AlignItems="AlignItems.Start">
+                    <MudStack Row=true>
+                        <MudBadge Overlap=true Color="@Color.Success" Icon="@Icons.Material.Filled.Check">
+                            <MudIcon Icon="@Icons.Material.Filled.Email" />
+                        </MudBadge> @item.Title
+                    </MudStack>
+                    @if (item.Link != null)
+                    {
+                        <MudLink Target="_blank" Href="@item.Link">@item.Link</MudLink>
+                    }
+                </MudStack>
+            </MudButton>
+        }
+    </ChildContent>
+</MudMenu>
+}
+@code {
+    private List<NewsItem> unreadItems = new();
+    private List<NewsItem> readItems = new();
+    private ApplicationUpdate? latestUpdate;
+    private NewsItem? appUpdateNewsItem
+    {
+        get
+        {
+            if (latestUpdate == null) return null;
+            return new NewsItem
+                {
+                    Title = AppLocalization["Update Available"],
+                    Body = AppLocalization["Version"] + " " + latestUpdate.Version,
+                    Link = "/settings/update",
+                    Published = true,
+                    UpdatedAt = DateTime.MinValue,
+                    CreatedAt = DateTime.MinValue,
+                    Id = double.Parse(latestUpdate.Version.ToString().Replace(".", ""))
+                };
+        }
+    }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ApplicationNewsService.OnNewItemsAvailable += RefreshItems;   
+        RefreshItems();
+    }
+    private void RefreshItems()
+    {
+        RefreshUnreadItems();
+        RefreshReadItems();
+        if (!ApplicationInfo.InDebugMode)
+        {
+            readItems.RemoveAll(x => x.DevOnly);
+            unreadItems.RemoveAll(x => x.DevOnly);
+
+        }
+        InvokeAsync(StateHasChanged);
+
+    }
+    private void RefreshUnreadItems()
+    {
+
+
+        unreadItems = ApplicationNewsService.GetUnreadNewsItems(CurrentUser.State);
+        if (AutoUpdateService.IsUpdateAvailable)
+        {
+            latestUpdate = UpdateService.LatestUpdate;
+
+            if (appUpdateNewsItem != null &&
+                !CurrentUser.State.ReadNewsItems.Any(
+                    x => x.NewsItemId == appUpdateNewsItem.Id
+                ))
+            {
+                    unreadItems.Insert(0, appUpdateNewsItem);
+            }
+        }
+    }
+
+    private void RefreshReadItems()
+    {
+        readItems = ApplicationNewsService.GetReadNewsItems(CurrentUser.State);
+
+        if (appUpdateNewsItem!=null && CurrentUser.State.ReadNewsItems.Any(x => x.NewsItemId == appUpdateNewsItem.Id))
+        {
+            readItems.Insert(0, appUpdateNewsItem);
+        }
+    }
+    private async void ShowNews(NewsItem Item)
+    {
+        var result = await Item.ShowNewsItemDialog(MessageService);
+        if (result.Dialog is AppNewsItemDialog dialog)
+        {
+            dialog.OnAcknowledged += RefreshItems;
+        }
+
+
+    }
+}

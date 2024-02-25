@@ -32,7 +32,7 @@ namespace BLAZAM.Themes
             darkPalette.AppbarBackground = "#134018";
             darkPalette.DrawerBackground = "#0F1E12";
             darkPalette.DrawerText = "#c7c7c7";
-            darkPalette.Secondary = "#2b5676";
+            darkPalette.Secondary = "#4CAE69";
 
 
 
