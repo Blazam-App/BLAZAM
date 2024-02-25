@@ -9,9 +9,13 @@
     </DialogContent>
     <DialogActions>
         <MudSpacer />
-        <MudLink Color="@Color.Primary"
+        @if (!Item.Link.IsNullOrEmpty())
+        {
+            <MudLink Color="@Color.Primary"
          Href="@Item.Link"
           Target="_blank">@AppLocalization["Link"]</MudLink>
+        }
+        
         <MudSpacer/>
 
 

@@ -71,7 +71,7 @@
                     Published = true,
                     UpdatedAt = DateTime.MinValue,
                     CreatedAt = DateTime.MinValue,
-                    Id = double.Parse(latestUpdate.Version.ToString().Replace(".", ""))
+                    Id = ulong.Parse(latestUpdate.Version.ToString().Replace(".", ""))
                 };
         }
     }
