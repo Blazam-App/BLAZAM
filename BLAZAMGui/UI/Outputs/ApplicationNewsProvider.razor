@@ -21,7 +21,7 @@
     </ActivatorContent>
 
     <ChildContent>
-        @foreach (var item in unreadItems)
+            @foreach (var item in unreadItems.OrderByDescending(x => x.UpdatedAt))
         {
             <MudButton Color=@Color.Warning Variant="Variant.Filled" Style="border-radius:0px;" FullWidth=true OnClick="@((args)=>{ShowNews(item);})">
                 <MudStack Class="mud-width-full pt-1" AlignItems="AlignItems.Start">
@@ -35,7 +35,7 @@
                 </MudStack>
             </MudButton>
         }
-        @foreach (var item in readItems)
+        @foreach (var item in readItems.OrderByDescending(x=>x.UpdatedAt))
         {
             <MudButton Variant="Variant.Filled" Style="border-radius:0px;" FullWidth=true OnClick="@((args)=>{ShowNews(item);})">
                 <MudStack Class="mud-width-full pt-1" AlignItems="AlignItems.Start">
