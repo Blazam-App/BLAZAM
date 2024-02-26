@@ -2,7 +2,7 @@
 @using BLAZAM.Update
 @inherits AppComponentBase
 @if(readItems.Count>0 || unreadItems.Count>0){
-<MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+<MudMenu Dense=true ListClass="py-0" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
     <ActivatorContent>
         @{
             var icon = Icons.Material.Filled.Notifications;
