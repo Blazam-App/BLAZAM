@@ -6,6 +6,7 @@ using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using System.Data;
+using System.Diagnostics;
 using System.DirectoryServices.AccountManagement;
 using System.Globalization;
 using System.Security;
@@ -19,6 +20,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         const int ADS_UF_PASSWD_CANT_CHANGE = 0x0040;
         const int ADS_UF_NORMAL_ACCOUNT = 0x0200;
         const int ADS_UF_DONT_EXPIRE_PASSWD = 0x10000;
+        const int PASSWD_NOTREQD_MASK = 0xFFDF;
+
         const int ACCOUNT_ENABLE_MASK = 0xFFFFFFD;
 
 
@@ -118,7 +121,35 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
             }
         }
+        public virtual bool PasswordNotRequired 
+        {
+            get
+            {
 
+                try
+                {
+                    return (UAC & ADS_UF_PASSWD_NOTREQD) == ADS_UF_PASSWD_NOTREQD;
+                }
+                catch
+                {
+                    // handle NullReferenceException
+                }
+                return true;
+            }
+            set
+            {
+                if (value && !PasswordNotRequired)
+                {
+                    UAC = UAC | ADS_UF_PASSWD_NOTREQD;
+                }
+                else if (!value && PasswordNotRequired)
+                {
+
+                    UAC = UAC & PASSWD_NOTREQD_MASK;
+
+                }
+            }
+        }
         protected int UAC
         {
             get
@@ -126,13 +157,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 var uacRaw= Convert.ToInt32(GetProperty<object>("userAccountControl"));
                 if(uacRaw == 0)
                 {
-                    return 546;
+                    UAC = ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
+                    return ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
                 }
                 return uacRaw;
             }
             set
             {
-                SetProperty("userAccountControl", value);
+              //  PostCommitSteps.Add(new("Set UAC", (step) => {
+                    SetProperty("userAccountControl", value);
+
+                //    return true;
+              //  }));
             }
         }
 
@@ -244,7 +280,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         up.SetPassword(password.ToPlainText());
                         if (requireChange)
                             up.ExpirePasswordNow();
-
+                        if(NewEntry)
+                            up.PasswordNotRequired = false;
                         up.Save();
 
                     }
@@ -257,10 +294,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
 
                 Loggers.ActiveDirectryLogger.Error("Error setting entry password {@Error}", ex);
-
-                throw new ApplicationException("Unable to set password", ex);
+                if (!Debugger.IsAttached)
+                    throw new ApplicationException("Unable to set password", ex);
+                else return true;
             }
-
+            
         }
 
         public void StagePasswordChange(SecureString newPassword, bool requireChange = false)

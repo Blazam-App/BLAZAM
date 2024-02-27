@@ -71,6 +71,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// If a password change is staged using <see cref="StagePasswordChange(SecureString, bool)"/>, holds the encrypted new password to be applied.
         /// </summary>
         SecureString? NewPassword { get; set; }
+        bool PasswordNotRequired { get; set; }
 
         /// <summary>
         /// Changes the password for this entry immediately

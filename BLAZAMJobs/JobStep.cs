@@ -13,13 +13,16 @@ namespace BLAZAM.Jobs
         public Func<JobStep?, Task<bool>>? AsyncAction { get; }
 
 
-        public JobStep(string name, Func<JobStep?, bool> action)
+        public JobStep(string name, Func<JobStep?, bool> action,bool stopOnError=false)
         {
+            StopOnFailedStep = stopOnError;
             Name = name;
             Action = action;
         }
-        public JobStep(string name, Func<JobStep?, Task<bool>> asyncAction)
+        public JobStep(string name, Func<JobStep?, Task<bool>> asyncAction, bool stopOnError = false)
         {
+            StopOnFailedStep = stopOnError;
+
             Name = name;
             AsyncAction = asyncAction;
         }

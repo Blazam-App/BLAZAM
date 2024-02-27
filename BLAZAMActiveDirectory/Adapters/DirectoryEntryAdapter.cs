@@ -410,7 +410,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             HasUnsavedChanges = true;
         }
 
-        public virtual string? OU { get => DirectoryTools.DnToOu(DN); }
+        public virtual string? OU { get => DirectoryTools.DnToOu(DN)??DirectoryTools.DnToOu(ADSPath); }
 
         public IADOrganizationalUnit? GetParent()
         {

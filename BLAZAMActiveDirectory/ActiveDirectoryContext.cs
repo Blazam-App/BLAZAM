@@ -149,6 +149,7 @@ namespace BLAZAM.ActiveDirectory
         }
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
         private IApplicationUserState? currentUser;
+        private IADUser? _keepAliveUser;
 
         public DirectoryConnectionStatus Status
         {
@@ -202,7 +203,6 @@ namespace BLAZAM.ActiveDirectory
             UserStateService = userStateService;
             //UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
             ConnectAsync();
-            _timer = new Timer(KeepAlive, null, 30000, 30000);
 
             Users = new ADUserSearcher(this);
             Groups = new ADGroupSearcher(this);
@@ -257,7 +257,7 @@ namespace BLAZAM.ActiveDirectory
             else if (Status == DirectoryConnectionStatus.OK)
             {
                 //Throw away query used to keep connection alive
-                _ = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
+                _keepAliveUser = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
             }
         }
 
@@ -296,6 +296,9 @@ namespace BLAZAM.ActiveDirectory
                     //No reason connecting if we're already connected
                     if (Status != DirectoryConnectionStatus.OK)
                     {
+                        _timer?.Dispose();
+                        _timer = new Timer(KeepAlive, null, 0, 30000);
+
                         //Ok get the latest settings
                         ADSettings? ad = Context?.ActiveDirectorySettings.FirstOrDefault();
                         ConnectionSettings = ad;
