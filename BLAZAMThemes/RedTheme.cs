@@ -11,51 +11,22 @@ namespace BLAZAM.Themes
             _name = "Red";
 
 
-            pallete = new()
-            {
-                TextPrimary = "#050505",
-                TextSecondary = Color.SlateGray.ToHex(),
-                ActionDefault = "#C39A9A",
-                HoverOpacity = 0,
-                Surface = Color.WhiteSmoke.ToHex(),
-                DarkContrastText = Color.WhiteSmoke.ToHex(),
-                AppbarBackground = "#D32222",
-                DrawerBackground = "#290300",
-                DrawerText = Color.WhiteSmoke.ToHex(),
-                Background = "#efefef",
-                Dark = "#001529",
-                Primary = "#D32222",
-                Secondary = "#A7A00C",
-                Info = "#46A9EF",
-                Success = Color.ForestGreen.ToHex(),
-                Warning = Color.Gold.ToHex(),
-                Error = Color.Red.ToHex(),
-                TextDisabled = Color.DarkGray.ToHex(),
-                White = Color.White.ToHex(),
-            };
+            lightPalette.ActionDefault = "#C39A9A";
+            lightPalette.AppbarBackground = "#D32222";
+            lightPalette.DrawerBackground = "#290300";
+            lightPalette.Dark = "#290500";
+            lightPalette.Primary = "#D32222";
+            lightPalette.Secondary = "#A7A00C";
 
-            darkPallete = new()
-            {
-                TextPrimary = "#c7c7c7",
-                TextSecondary = "#A77E86",
-                ActionDefault = "#B17B7E",
-                DarkContrastText = "#383b40",
-                Surface = "#545960",
-                Background = "#383b40",
-                Dark = "#0f141e",
-                Primary = "#401313",
-                AppbarBackground = "#401313",
-                DrawerBackground = "#1E0F0F",
-                DrawerText = "#c7c7c7",
-                Secondary = "#421818",
-                Info = "#1b8f7e",
-                Success = "#5fad00",
-                Warning = "#ffc270",
-                Error = "#f60066",
-                TextDisabled = Color.DarkGray.ToHex(),
-                White = Color.WhiteSmoke.ToHex(),
-                HoverOpacity = 0.25,
-            };
+
+            darkPalette.TextSecondary = "#A77E86";
+            darkPalette.ActionDefault = "#B17B7E";
+            darkPalette.Dark = "#1E110F";
+            darkPalette.Primary = "#401313";
+            darkPalette.AppbarBackground = "#401313";
+            darkPalette.DrawerBackground = "#1E0F0F";
+            darkPalette.Secondary = "#421818";
+
 
         }
     }

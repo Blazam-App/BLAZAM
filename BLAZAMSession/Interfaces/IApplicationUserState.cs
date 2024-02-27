@@ -24,7 +24,7 @@ namespace BLAZAM.Session.Interfaces
         /// <summary>
         /// Returns the name of the user
         /// </summary>
-        string Username { get; }
+        string? Username { get; }
 
         /// <summary>
         /// The user who is impersonating this web user. It is optional, obviously.
@@ -77,6 +77,8 @@ namespace BLAZAM.Session.Interfaces
         bool HasCreateOUPrivilege { get; }
         bool HasComputerPrivilege { get; }
         bool CanUnlockUsers { get;  }
+        IList<ReadNewsItem> ReadNewsItems { get; }
+
         //List<ReadChatMessage> ReadChatMessages { get; }
 
         bool CanSearchDisabled(ActiveDirectoryObjectType objectType);

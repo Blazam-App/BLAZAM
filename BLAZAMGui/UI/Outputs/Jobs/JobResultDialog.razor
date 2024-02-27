@@ -31,7 +31,7 @@
 
 
                 default:
-                    <MudButton Color="@Color.Error" Variant="Variant.Filled" @onclick="Cancel">@AppLocalization["Cancel"]</MudButton>
+                    <MudButton Color="@Color.Error" Variant="Variant.Filled" OnClick="Cancel">@AppLocalization["Cancel"]</MudButton>
 
                     break;
             }
@@ -67,7 +67,7 @@
         MudDialog.Close();
 
     }
-    private async Task Cancel()
+    private void Cancel()
     {
         Job.Cancel();
     }

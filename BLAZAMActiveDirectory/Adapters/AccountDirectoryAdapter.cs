@@ -61,7 +61,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 List<DateTime?> times = new List<DateTime?>();
                 foreach (var c in coms)
                 {
-                    times.Add(c.AdsValueToDateTime());
+                    if (c is DateTime)
+                    {
+                        times.Add(c.AdsValueToDateTime());
+                    }
                 }
                 return times.OrderByDescending(t => t).FirstOrDefault();
             }
@@ -120,7 +123,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return Convert.ToInt32(GetProperty<object>("userAccountControl"));
+                var uacRaw= Convert.ToInt32(GetProperty<object>("userAccountControl"));
+                if(uacRaw == 0)
+                {
+                    return 546;
+                }
+                return uacRaw;
             }
             set
             {
@@ -169,7 +177,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        public bool Enabled { get => !Disabled; set => Disabled = !value; }
+        public bool Enabled
+        {
+            get => !Disabled;
+            set => Disabled = !value;
+        }
         public virtual DateTime? ExpireTime
         {
             get
@@ -195,12 +207,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
-       
+
 
         public SecureString? NewPassword { get; set; }
 
 
-      
+
         public bool SetPassword(SecureString password, bool requireChange = false)
         {
             if (SamAccountName == null) throw new ApplicationException("samaccount name not found!");
@@ -212,15 +224,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             try
             {
-                var portOpen = NetworkTools.IsPortOpen(DirectorySettings.ServerAddress, 464);
+                //var portOpen = NetworkTools.IsPortOpen(DirectorySettings.ServerAddress, 464);
                 //Invoke("SetPassword", new[] { password.ToPlainText() });
                 //return true;
 
-                //The following works utside the domain but may havee issues with cerrts
+                //The following works outside the domain but may have issues with certs
                 using (PrincipalContext pContext = new PrincipalContext(
                     ContextType.Domain,
                     DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
-                    DirectorySettings.Username+"@"+DirectorySettings.FQDN,
+                    DirectorySettings.Username + "@" + DirectorySettings.FQDN,
                     directoryPassword
                     ))
                 {
@@ -243,10 +255,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                
+
                 Loggers.ActiveDirectryLogger.Error("Error setting entry password {@Error}", ex);
 
-                throw ex;
+                throw new ApplicationException("Unable to set password", ex);
             }
 
         }

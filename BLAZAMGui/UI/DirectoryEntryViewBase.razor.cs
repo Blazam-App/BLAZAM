@@ -30,6 +30,7 @@ namespace BLAZAM.Gui.UI
         protected AppModal? MoveToModal { get; set; }
         protected AppModal? RenameModal { get; set; }
         protected AppModal? ChangePasswordModal { get; set; }
+        [CascadingParameter]
         protected AppModal? ChangeHistoryModal { get; set; }
         protected SetSubHeader? SubHeader { get; set; }
 

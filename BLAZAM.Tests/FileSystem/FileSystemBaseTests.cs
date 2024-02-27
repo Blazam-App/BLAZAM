@@ -14,10 +14,12 @@ namespace BLAZAM.Tests.FileSystem
         public void Constructor_ThrowsArgumentException_WhenPathIsNull()
         {
             // Arrange
-            string path = null;
+            string? path = null;
 
             // Act and Assert
+#pragma warning disable CS8604 // Possible null reference argument.
             Assert.Throws<ArgumentException>(() => new FileSystemBase(path));
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         [Fact]

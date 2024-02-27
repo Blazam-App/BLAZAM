@@ -123,6 +123,9 @@
   <data name="Account" xml:space="preserve">
     <value>Счет</value>
   </data>
+  <data name="Account and Name" xml:space="preserve">
+    <value>Учетная запись и имя</value>
+  </data>
   <data name="Account Expiration" xml:space="preserve">
     <value>Срок действия учетной записи</value>
   </data>
@@ -150,8 +153,23 @@
   <data name="Active Directory Settings" xml:space="preserve">
     <value>Параметры Active Directory</value>
   </data>
+  <data name="Add" xml:space="preserve">
+    <value>Добавлять</value>
+  </data>
+  <data name="Add Members" xml:space="preserve">
+    <value>Добавление участников</value>
+  </data>
   <data name="Add New Access Level" xml:space="preserve">
     <value>Добавить новый уровень доступа</value>
+  </data>
+  <data name="Add to favorites" xml:space="preserve">
+    <value>Добавить в избранное</value>
+  </data>
+  <data name="Additional Field" xml:space="preserve">
+    <value>Дополнительное поле</value>
+  </data>
+  <data name="Additional Fields" xml:space="preserve">
+    <value>Дополнительные поля</value>
   </data>
   <data name="Additonal Fields" xml:space="preserve">
     <value>Дополнительные поля</value>
@@ -174,8 +192,17 @@
   <data name="Allow Disabled User Access" xml:space="preserve">
     <value>Разрешить доступ отключенных пользователей</value>
   </data>
+  <data name="An error has occurred while trying to create the template user" xml:space="preserve">
+    <value>Произошла ошибка при попытке создать пользователя шаблона</value>
+  </data>
+  <data name="App Chat" xml:space="preserve">
+    <value>Чат в приложении</value>
+  </data>
   <data name="Application" xml:space="preserve">
     <value>Приложение</value>
+  </data>
+  <data name="Application Credentials" xml:space="preserve">
+    <value>Учетные данные приложения</value>
   </data>
   <data name="Application Name" xml:space="preserve">
     <value>Имя приложения</value>
@@ -186,11 +213,20 @@
   <data name="ApplicationStarting" xml:space="preserve">
     <value>Приложение запускается... Подождите...</value>
   </data>
+  <data name="Are you sure you want to navigate away?" xml:space="preserve">
+    <value>Вы уверены, что хотите уйти?</value>
+  </data>
+  <data name="Assign" xml:space="preserve">
+    <value>Назначать</value>
+  </data>
   <data name="Assign Objects" xml:space="preserve">
     <value>Назначение объектов</value>
   </data>
   <data name="Assign To" xml:space="preserve">
     <value>Назначьте</value>
+  </data>
+  <data name="Assigned Groups" xml:space="preserve">
+    <value>Назначенные группы</value>
   </data>
   <data name="Attempting to connect to Active Directory." xml:space="preserve">
     <value>Попытка подключения к Active Directory.</value>
@@ -207,17 +243,41 @@
   <data name="Auto Update Time" xml:space="preserve">
     <value>Время автоматического обновления</value>
   </data>
+  <data name="Available Update" xml:space="preserve">
+    <value>Доступное обновление</value>
+  </data>
   <data name="Base DN" xml:space="preserve">
     <value>Базовое DN</value>
   </data>
   <data name="BaseDN" xml:space="preserve">
     <value>Базовое DN</value>
   </data>
+  <data name="Branch" xml:space="preserve">
+    <value>Ветка</value>
+  </data>
   <data name="Branding Icon" xml:space="preserve">
     <value>Значок брендинга</value>
   </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Просматривать</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Отменен</value>
+  </data>
+  <data name="Certificate Type" xml:space="preserve">
+    <value>Тип сертификата</value>
+  </data>
+  <data name="Change History" xml:space="preserve">
+    <value>История изменений</value>
+  </data>
   <data name="Change Password" xml:space="preserve">
     <value>Смена пароля</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Чат</value>
   </data>
   <data name="Choose or Search..." xml:space="preserve">
     <value>Выберите или найдите...</value>
@@ -225,14 +285,29 @@
   <data name="City" xml:space="preserve">
     <value>Город</value>
   </data>
+  <data name="Close" xml:space="preserve">
+    <value>Закрывать</value>
+  </data>
   <data name="Company" xml:space="preserve">
     <value>Компания</value>
+  </data>
+  <data name="Completed Successfully" xml:space="preserve">
+    <value>Успешно завершено</value>
   </data>
   <data name="Computer" xml:space="preserve">
     <value>Компьютер</value>
   </data>
+  <data name="Computer is not reachable." xml:space="preserve">
+    <value>Компьютер недоступен.</value>
+  </data>
   <data name="Configure" xml:space="preserve">
     <value>Настроить</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Подтверждать</value>
+  </data>
+  <data name="Confirm New Password" xml:space="preserve">
+    <value>Подтвердите новый пароль</value>
   </data>
   <data name="Confirm Password" xml:space="preserve">
     <value>Подтвердите пароль</value>
@@ -240,8 +315,20 @@
   <data name="Contact Info" xml:space="preserve">
     <value>Контактная информация</value>
   </data>
+  <data name="Copy template" xml:space="preserve">
+    <value>Скопировать шаблон</value>
+  </data>
+  <data name="CPU" xml:space="preserve">
+    <value>ЦПУ</value>
+  </data>
+  <data name="CPU Chart" xml:space="preserve">
+    <value>График ЦП</value>
+  </data>
   <data name="Create" xml:space="preserve">
     <value>Создавать</value>
+  </data>
+  <data name="Create Access Level" xml:space="preserve">
+    <value>Создание уровня доступа</value>
   </data>
   <data name="Create Group" xml:space="preserve">
     <value>Создать группу</value>
@@ -255,11 +342,32 @@
   <data name="Create User" xml:space="preserve">
     <value>Создать пользователя</value>
   </data>
+  <data name="Created" xml:space="preserve">
+    <value>Созданный</value>
+  </data>
+  <data name="Current OU" xml:space="preserve">
+    <value>Действующее подразделение</value>
+  </data>
+  <data name="Current Template:" xml:space="preserve">
+    <value>Текущий шаблон:</value>
+  </data>
+  <data name="Current Version" xml:space="preserve">
+    <value>Текущая версия</value>
+  </data>
   <data name="Custom Login" xml:space="preserve">
     <value>Пользовательский вход</value>
   </data>
+  <data name="Database" xml:space="preserve">
+    <value>База данных</value>
+  </data>
   <data name="Database server is not reachable!" xml:space="preserve">
     <value>Сервер базы данных недоступен!</value>
+  </data>
+  <data name="Database Status" xml:space="preserve">
+    <value>Состояние базы данных</value>
+  </data>
+  <data name="DB Type" xml:space="preserve">
+    <value>Тип БД</value>
   </data>
   <data name="Delegates" xml:space="preserve">
     <value>Делегаты</value>
@@ -282,14 +390,38 @@
   <data name="Description" xml:space="preserve">
     <value>Приметы:__________</value>
   </data>
+  <data name="Details" xml:space="preserve">
+    <value>Подробности</value>
+  </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>Отмена изменений</value>
   </data>
   <data name="Display Name" xml:space="preserve">
     <value>Отображаемое имя</value>
   </data>
+  <data name="Documentation" xml:space="preserve">
+    <value>Документация</value>
+  </data>
+  <data name="Domain" xml:space="preserve">
+    <value>Домен</value>
+  </data>
+  <data name="Drive Details" xml:space="preserve">
+    <value>Сведения о диске</value>
+  </data>
+  <data name="Driver" xml:space="preserve">
+    <value>Водитель</value>
+  </data>
+  <data name="Driver Version" xml:space="preserve">
+    <value>Версия драйвера</value>
+  </data>
   <data name="Edit" xml:space="preserve">
     <value>Редактировать</value>
+  </data>
+  <data name="Editable" xml:space="preserve">
+    <value>Редактируемые</value>
+  </data>
+  <data name="Elapsed Time" xml:space="preserve">
+    <value>Астрономическое время счета</value>
   </data>
   <data name="Email" xml:space="preserve">
     <value>Отправить по электронной почте</value>
@@ -306,8 +438,23 @@
   <data name="Employee Id" xml:space="preserve">
     <value>Идентификатор сотрудника</value>
   </data>
+  <data name="Enable Auto Update" xml:space="preserve">
+    <value>Включить автоматическое обновление</value>
+  </data>
   <data name="Enabled" xml:space="preserve">
     <value>Включен</value>
+  </data>
+  <data name="Encryption Seed String" xml:space="preserve">
+    <value>Начальная строка шифрования</value>
+  </data>
+  <data name="Export Data" xml:space="preserve">
+    <value>Экспорт данных</value>
+  </data>
+  <data name="Export Database" xml:space="preserve">
+    <value>Экспорт базы данных</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Неудавшийся</value>
   </data>
   <data name="Field Name" xml:space="preserve">
     <value>Имя поля</value>
@@ -317,6 +464,9 @@
   </data>
   <data name="Fields" xml:space="preserve">
     <value>Поля</value>
+  </data>
+  <data name="First Initial" xml:space="preserve">
+    <value>Первый Инициал</value>
   </data>
   <data name="First Name" xml:space="preserve">
     <value>Имя</value>
@@ -363,17 +513,44 @@
   <data name="Impersonate User" xml:space="preserve">
     <value>Выдача себя за пользователя</value>
   </data>
+  <data name="Info" xml:space="preserve">
+    <value>Информация</value>
+  </data>
+  <data name="Inheritance Tree" xml:space="preserve">
+    <value>Дерево наследования</value>
+  </data>
+  <data name="Inherited from" xml:space="preserve">
+    <value>Унаследовано от</value>
+  </data>
   <data name="Inherited Permissions" xml:space="preserve">
     <value>Унаследованные разрешения</value>
   </data>
   <data name="Job Title" xml:space="preserve">
     <value>Должность</value>
   </data>
+  <data name="Last Change" xml:space="preserve">
+    <value>Последнее изменение</value>
+  </data>
+  <data name="Last Initial" xml:space="preserve">
+    <value>Последний инициал</value>
+  </data>
+  <data name="Last Logon" xml:space="preserve">
+    <value>Последний вход в систему</value>
+  </data>
   <data name="Last Name" xml:space="preserve">
     <value>Фамилия</value>
   </data>
-  <data name="levelValue.Name" xml:space="preserve">
-    <value>levelValue.Name</value>
+  <data name="Live Stats" xml:space="preserve">
+    <value>Статистика в реальном времени</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Погрузка</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Местоположение</value>
+  </data>
+  <data name="Lockout Time" xml:space="preserve">
+    <value>Время блокировки</value>
   </data>
   <data name="Log In" xml:space="preserve">
     <value>Войти</value>
@@ -384,11 +561,29 @@
   <data name="Logins" xml:space="preserve">
     <value>Имена входа</value>
   </data>
+  <data name="Logs" xml:space="preserve">
+    <value>Журналы</value>
+  </data>
   <data name="Main" xml:space="preserve">
     <value>Главный</value>
   </data>
+  <data name="Manage Web Application" xml:space="preserve">
+    <value>Управление веб-приложением</value>
+  </data>
   <data name="Mappings" xml:space="preserve">
     <value>Сопоставления</value>
+  </data>
+  <data name="Member Of" xml:space="preserve">
+    <value>Член</value>
+  </data>
+  <data name="Members" xml:space="preserve">
+    <value>Члены</value>
+  </data>
+  <data name="Memory" xml:space="preserve">
+    <value>Память</value>
+  </data>
+  <data name="Middle Initial" xml:space="preserve">
+    <value>Средний начальный</value>
   </data>
   <data name="Middle Name" xml:space="preserve">
     <value>Отчество</value>
@@ -396,11 +591,41 @@
   <data name="Move" xml:space="preserve">
     <value>Двигаться</value>
   </data>
+  <data name="Move To" xml:space="preserve">
+    <value>Переместить в</value>
+  </data>
+  <data name="Myrtille Web Adress" xml:space="preserve">
+    <value>Веб-адрес Myrtille</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Имя</value>
   </data>
+  <data name="New Password" xml:space="preserve">
+    <value>Новый пароль</value>
+  </data>
+  <data name="New template" xml:space="preserve">
+    <value>Новый шаблон</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Следующий</value>
+  </data>
+  <data name="Not a member of any groups" xml:space="preserve">
+    <value>Не состоит ни в одной группе</value>
+  </data>
+  <data name="Not a valid certificate type." xml:space="preserve">
+    <value>Недопустимый тип сертификата.</value>
+  </data>
+  <data name="Not finished" xml:space="preserve">
+    <value>Не закончено</value>
+  </data>
+  <data name="Not started" xml:space="preserve">
+    <value>Не начато</value>
+  </data>
   <data name="Office" xml:space="preserve">
     <value>Офис</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>Хорошо</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>Онлайн</value>
@@ -408,11 +633,23 @@
   <data name="Oops" xml:space="preserve">
     <value>Ой</value>
   </data>
+  <data name="Operating System" xml:space="preserve">
+    <value>Операционная система</value>
+  </data>
+  <data name="or" xml:space="preserve">
+    <value>или</value>
+  </data>
   <data name="Organization" xml:space="preserve">
     <value>Организация</value>
   </data>
+  <data name="Organizational Unit" xml:space="preserve">
+    <value>Подразделения</value>
+  </data>
   <data name="OU" xml:space="preserve">
     <value>ИЛИ</value>
+  </data>
+  <data name="Pass Change" xml:space="preserve">
+    <value>Смена пропуска</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>Пароль</value>
@@ -432,6 +669,21 @@
   <data name="Preferences" xml:space="preserve">
     <value>Предпочтения</value>
   </data>
+  <data name="Prepare Files" xml:space="preserve">
+    <value>Подготовка файлов</value>
+  </data>
+  <data name="Previous Versions" xml:space="preserve">
+    <value>Предыдущие версии</value>
+  </data>
+  <data name="Printer" xml:space="preserve">
+    <value>Принтер</value>
+  </data>
+  <data name="Printer(s) registered to Active Directory" xml:space="preserve">
+    <value>Принтеры, зарегистрированные в Active Directory</value>
+  </data>
+  <data name="Printers" xml:space="preserve">
+    <value>Принтеры</value>
+  </data>
   <data name="Profile" xml:space="preserve">
     <value>Профиль</value>
   </data>
@@ -441,11 +693,53 @@
   <data name="Profile Settings" xml:space="preserve">
     <value>Настройки профиля</value>
   </data>
+  <data name="Queued" xml:space="preserve">
+    <value>Очереди</value>
+  </data>
+  <data name="Ran by" xml:space="preserve">
+    <value>Пробежал</value>
+  </data>
   <data name="Recycle Bin" xml:space="preserve">
     <value>Корзина</value>
   </data>
+  <data name="Register" xml:space="preserve">
+    <value>Регистрировать</value>
+  </data>
+  <data name="Register Printers" xml:space="preserve">
+    <value>Регистрация принтеров</value>
+  </data>
+  <data name="Register printers with Active Directory" xml:space="preserve">
+    <value>Регистрация принтеров в Active Directory</value>
+  </data>
+  <data name="Release Notes" xml:space="preserve">
+    <value>Примечания к выпуску</value>
+  </data>
+  <data name="Remove field" xml:space="preserve">
+    <value>Удалить поле</value>
+  </data>
+  <data name="Remove from favorites" xml:space="preserve">
+    <value>Удалить из избранного</value>
+  </data>
+  <data name="Remove Group" xml:space="preserve">
+    <value>Удалить группу</value>
+  </data>
+  <data name="Remove template" xml:space="preserve">
+    <value>Удалить шаблон</value>
+  </data>
   <data name="Rename" xml:space="preserve">
     <value>Переименовать</value>
+  </data>
+  <data name="Rename Category" xml:space="preserve">
+    <value>Переименовать категорию</value>
+  </data>
+  <data name="Rename Group" xml:space="preserve">
+    <value>Переименовать группу</value>
+  </data>
+  <data name="Rename OU" xml:space="preserve">
+    <value>Переименование подразделения</value>
+  </data>
+  <data name="Rename User" xml:space="preserve">
+    <value>Переименование пользователя</value>
   </data>
   <data name="Reply-To Address" xml:space="preserve">
     <value>Адрес для ответа</value>
@@ -456,11 +750,44 @@
   <data name="Require change" xml:space="preserve">
     <value>Требовать изменений</value>
   </data>
+  <data name="Require the user to change their password at next logon" xml:space="preserve">
+    <value>Требовать от пользователя смены пароля при следующем входе в систему</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Обязательно</value>
+  </data>
+  <data name="Reset Password" xml:space="preserve">
+    <value>Сброс пароля</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Восстанавливать</value>
+  </data>
+  <data name="Restore Template" xml:space="preserve">
+    <value>Восстановить шаблон</value>
+  </data>
+  <data name="Restore templates" xml:space="preserve">
+    <value>Восстановление шаблонов</value>
+  </data>
+  <data name="Restore:" xml:space="preserve">
+    <value>Восстанавливать:</value>
+  </data>
+  <data name="Results" xml:space="preserve">
+    <value>Результаты</value>
+  </data>
+  <data name="Revert to inherited value" xml:space="preserve">
+    <value>Возврат к унаследованному значению</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>Бег</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Спасать</value>
   </data>
   <data name="Save Changes" xml:space="preserve">
     <value>Сохранить изменения</value>
+  </data>
+  <data name="Save Photo" xml:space="preserve">
+    <value>Сохранить фото</value>
   </data>
   <data name="Script Path" xml:space="preserve">
     <value>Путь к сценарию</value>
@@ -468,11 +795,20 @@
   <data name="Server" xml:space="preserve">
     <value>Сервер</value>
   </data>
+  <data name="Services" xml:space="preserve">
+    <value>Услуги</value>
+  </data>
   <data name="Session Timeout" xml:space="preserve">
     <value>Тайм-аут сеанса</value>
   </data>
+  <data name="Sessions" xml:space="preserve">
+    <value>Сеансов</value>
+  </data>
   <data name="Settings" xml:space="preserve">
     <value>Параметры</value>
+  </data>
+  <data name="Show more" xml:space="preserve">
+    <value>ПОКАЗАТЬ БОЛЬШЕ</value>
   </data>
   <data name="Sign Out" xml:space="preserve">
     <value>Выйдите из системы</value>
@@ -492,6 +828,12 @@
   <data name="SMTP Username" xml:space="preserve">
     <value>Имя пользователя SMTP</value>
   </data>
+  <data name="SSL Certificate" xml:space="preserve">
+    <value>SSL-сертификат</value>
+  </data>
+  <data name="Start Time" xml:space="preserve">
+    <value>Время начала</value>
+  </data>
   <data name="State" xml:space="preserve">
     <value>Государство</value>
   </data>
@@ -503,6 +845,9 @@
   </data>
   <data name="Street Address" xml:space="preserve">
     <value>Адрес улицы</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Успех</value>
   </data>
   <data name="System" xml:space="preserve">
     <value>Система</value>
@@ -516,20 +861,50 @@
   <data name="Template Name" xml:space="preserve">
     <value>Имя шаблона</value>
   </data>
+  <data name="Template(s) restored" xml:space="preserve">
+    <value>Шаблон(ы) восстановлен(ы)</value>
+  </data>
   <data name="Templates" xml:space="preserve">
     <value>Шаблоны</value>
   </data>
   <data name="Test Recipient" xml:space="preserve">
     <value>Получатель теста</value>
   </data>
+  <data name="There are no templates available" xml:space="preserve">
+    <value>Нет доступных шаблонов</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="Unable to read" xml:space="preserve">
+    <value>Не умеет читать</value>
+  </data>
+  <data name="UNC Path" xml:space="preserve">
+    <value>Путь UNC</value>
+  </data>
+  <data name="Unknown delegate" xml:space="preserve">
+    <value>Неизвестный делегат</value>
+  </data>
   <data name="Unlock" xml:space="preserve">
     <value>Отпирать</value>
+  </data>
+  <data name="Up to date" xml:space="preserve">
+    <value>Современный</value>
   </data>
   <data name="Update" xml:space="preserve">
     <value>Обновлять</value>
   </data>
+  <data name="Update Access Level" xml:space="preserve">
+    <value>Уровень доступа к обновлению</value>
+  </data>
   <data name="Update Branch" xml:space="preserve">
     <value>Ветвь обновления</value>
+  </data>
+  <data name="Update Credential Source" xml:space="preserve">
+    <value>Обновление источника учетных данных</value>
+  </data>
+  <data name="Update Credentials" xml:space="preserve">
+    <value>Обновление учетных данных</value>
   </data>
   <data name="Update Scheduled" xml:space="preserve">
     <value>Обновление запланировано</value>
@@ -537,8 +912,20 @@
   <data name="Update Settings" xml:space="preserve">
     <value>Настройки обновления</value>
   </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Закачать</value>
+  </data>
+  <data name="Upload SSL Certificate" xml:space="preserve">
+    <value>Загрузить SSL-сертификат</value>
+  </data>
+  <data name="Upload Thumbnail" xml:space="preserve">
+    <value>Загрузить миниатюру</value>
+  </data>
   <data name="Upload Thumbnail Photo" xml:space="preserve">
     <value>Загрузить миниатюру фото</value>
+  </data>
+  <data name="Use Custom Credentials" xml:space="preserve">
+    <value>Использование пользовательских учетных данных</value>
   </data>
   <data name="Use SMTP Authentication" xml:space="preserve">
     <value>Использование проверки подлинности SMTP</value>
@@ -564,11 +951,17 @@
   <data name="UseTLS" xml:space="preserve">
     <value>UseTLS</value>
   </data>
+  <data name="Visible" xml:space="preserve">
+    <value>Видимый</value>
+  </data>
   <data name="Website FQDN" xml:space="preserve">
     <value>Полное доменное имя веб-сайта</value>
   </data>
   <data name="Website Name" xml:space="preserve">
     <value>Название веб-сайта</value>
+  </data>
+  <data name="You have unsaved changes" xml:space="preserve">
+    <value>У вас есть несохраненные изменения</value>
   </data>
   <data name="Zip Code" xml:space="preserve">
     <value>Почтовый индекс</value>

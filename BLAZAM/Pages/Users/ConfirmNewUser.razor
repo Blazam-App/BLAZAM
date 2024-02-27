@@ -194,24 +194,11 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 
             disableCreateUserButton = false;
             InvokeAsync(StateHasChanged);
-            if (result.FailedSteps.Count > 0)
-            {
-          
-                //SnackBarService.Success("User created with errors.");
-
-                /*foreach (var failedStep in result.FailedSteps)
-                {
-
-                    SnackBarService.Error(failedStep.Name+": "+ failedStep.Exception?.Message + " " + failedStep.Exception?.InnerException?.Message);
-                }
-                */
-
-            }
-            else
+            if (result.FailedSteps.Count == 0)
             {
 
                 SnackBarService.Success("User has been created");
-                Nav.NavigateTo("/search/" + User.SamAccountName);
+                //Nav.NavigateTo("/search/" + User.SamAccountName);
 
             }
             await AuditLogger.User.Created(User);

@@ -75,7 +75,7 @@
 
     </SettingsField>
 
-    @if (ApplicationInfo.IsUnderIIS || ApplicationInfo.InDebugMode)
+    @if (!ApplicationInfo.IsUnderIIS || ApplicationInfo.InDebugMode)
     {
         <SettingsField Label="@AppLocalization["SSL Certificate"]">
             <MudButton OnClick="()=>{uploadCertificateModal?.Show();}"

@@ -1,0 +1,86 @@
+@using BLAZAM.Database.Models.Audit
+@foreach (var change in Changes)
+{
+    <MudStack Row=true>
+        <MudChip Text=@change.Key />
+        @((MarkupString)change.Value)
+    </MudStack>
+}
+
+@code {
+    [Parameter]
+    public DirectoryEntryAuditLog AuditEntry { get; set; }
+    [Parameter]
+    public Align Align { get; set; }
+
+    private Dictionary<string, string?> Changes = new();
+    private List<string> Attributes = new();
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (AuditEntry != null)
+        {
+            foreach (var str in AuditEntry.BeforeAction.Split(";"))
+            {
+                if (!str.IsNullOrEmpty())
+                {
+                    var data = str.Split("=");
+                    var attr = data.FirstOrDefault();
+                    if (attr != null)
+                    {
+
+                        Changes.Add(attr, null);
+                    }
+                }
+            }
+            foreach(var attr in Changes.Keys)
+            {
+                try
+                {
+                    var matchingBeforeAction = AuditEntry.BeforeAction.Split(";").FirstOrDefault(s => s.StartsWith(attr));
+                    string? beforeValue = null;
+                    try
+                    {
+                        beforeValue = matchingBeforeAction.Split("=")[1];
+
+                    }
+                    catch
+                    {
+
+                    }
+                    string? matchingAfterAction=null;
+                    string? afterValue=null;
+                    try{
+                        matchingAfterAction = AuditEntry.AfterAction.Split(";").FirstOrDefault(s => s.StartsWith(attr));
+                        afterValue = matchingAfterAction.Split("=")[1];
+                    }
+                    catch
+                    {
+
+                    }
+                    string outputString = beforeValue ?? "";
+                    if (afterValue==null || !afterValue.Contains(beforeValue))
+                    {
+                        outputString = "<s>" + outputString + "</s>";
+                    }
+                    if (!afterValue.IsNullOrEmpty())
+                    {
+                        
+                        if (!beforeValue.IsNullOrEmpty())
+                            outputString += "<text style=\"display:contents;color:var(--mud-palette-success)\">" + afterValue.Replace(beforeValue, "")+"</text>";
+                            else
+                            outputString += "<text style =\"display:contents;color:var(--mud-palette-success)\">" + afterValue + "</text>";
+
+                    }
+                   
+                    Changes[attr] = outputString;
+                }
+                catch
+                {
+                    
+                }
+                
+            }
+        }
+    }
+}

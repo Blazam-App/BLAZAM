@@ -27,7 +27,7 @@
                 case JobResult.Running:
                     title += AppLocalization["Running"];
                     break;
-                 
+
 
             }
             @title
@@ -40,25 +40,25 @@
         </TemplateColumn>
         <TemplateColumn Title="Result">
             <CellTemplate>
-                <JobStepResultIcon Step="context.Item"/>
+                <JobStepResultIcon Step="context.Item" />
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="Message">
             <CellTemplate>
-               
-<JobStepResultMessage Step="context.Item" />
-              
+
+                <JobStepResultMessage Step="context.Item" />
+
             </CellTemplate>
         </TemplateColumn>
-        
+
         <TemplateColumn Title="Elapsed Time">
             <CellTemplate>
-                
-                <MudText>@(context.Item.ElapsedTime.HasValue==true?context.Item.ElapsedTime.Value.ToString("mm\\:ss"):"")</MudText>
-              
+
+                <MudText>@(context.Item.ElapsedTime.HasValue == true ? context.Item.ElapsedTime.Value.ToString("mm\\:ss") : "")</MudText>
+
             </CellTemplate>
         </TemplateColumn>
-        <HierarchyColumn ButtonDisabledFunc="@(x => x is not IJob)" />
+        <HierarchyColumn Class="" ButtonDisabledFunc="@(x => x is not IJob)" />
     </Columns>
     <ChildRowContent>
         @if (context.Item is IJob jobStep)

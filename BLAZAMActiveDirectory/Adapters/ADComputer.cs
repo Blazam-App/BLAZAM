@@ -1,14 +1,10 @@
 ﻿
 using System.Net.NetworkInformation;
 using System.Net;
-using System.Management;
-using BLAZAM.Common.Data.Services;
 using BLAZAM.Logger;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using System.Net.Sockets;
-using System.DirectoryServices;
-using System.Threading;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -60,10 +56,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     OnOnlineChanged?.Invoke((bool)value);
             }
         }
-        public List<ComputerService> Services => wmiConnection.Services;
+        public List<ComputerService> Services => wmiConnection?.Services?? new ();
         public ComputerMemory Memory => wmiConnection?.Memory ?? new();
-        public int Processor => wmiConnection.Processor;
-        public double MemoryUsedPercent => wmiConnection.Memory.PercentUsed;
+        public int Processor => wmiConnection?.Processor ?? 0;
+        public double MemoryUsedPercent => wmiConnection?.Memory.PercentUsed ?? 0 ;
         public List<IADComputerDrive> GetDrives()
         {
             if (wmiConnection == null) return new();
@@ -96,7 +92,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return wmiConnection.SharePrinters;
+                return wmiConnection?.SharePrinters ?? new ();
 
             }
         }
@@ -110,8 +106,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
+
                 // Run.Process("netdom", "renamecomputer " + Name + " /newname:" + newName + " /userd:" + System.Security.Principal.WindowsIdentity.GetCurrent().Name + " /passwordd:* /securepasswordprompt /force", true);
-                return true;
+                return false;
 
             }
             catch (Exception ex)
@@ -125,7 +122,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
         /// <summary>
-        /// When called this computers network reachabillity will be continusously monitored.
+        /// When called this computers network reachability will be continuously monitored.
         /// </summary>
         /// <param name="timeout"></param>
         public void MonitorOnlineStatus(int timeout = 5000)
@@ -142,7 +139,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             Ping(timeout);
                         }
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         IsOnline = false;
 
@@ -158,7 +155,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                if (IPHostEntry == null && !cts.IsCancellationRequested)
+                if (IPHostEntry == null && !cts.IsCancellationRequested && CanonicalName!=null)
                 {
                     IPHostEntry = Dns.GetHostEntry(CanonicalName);
                     Task.Delay(60000).ContinueWith((s) =>
@@ -173,7 +170,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     try
                     {
-                        if (cts.IsCancellationRequested) return;
+                        if (cts.IsCancellationRequested || CanonicalName ==null) return;
 
                         PingReply response = ping.Send(CanonicalName, timeout);
                         if (response != null)
@@ -194,17 +191,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     catch (Exception ex)
                     {
                         Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
-
-                        //MainWindow.Get.Toast("Error pinging " + destination);
-                        //Debug.WriteLine("Error pinging " + destination);
                     }
                     x++;
                 } while (x < retries);
 
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
-
+                // Ignore socket exceptions
             }
             catch (Exception ex)
             {

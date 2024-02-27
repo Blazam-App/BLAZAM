@@ -824,6 +824,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 if (result == true)
                 {
+                    NewEntryProperties.Clear();
+                    PostCommitSteps.Clear();
+                    CommitSteps.Clear();
                     HasUnsavedChanges = false;
 
                     OnModelCommited?.Invoke();

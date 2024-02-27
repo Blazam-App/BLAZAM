@@ -8,10 +8,10 @@ namespace BLAZAM.Jobs
     /// </summary>
     public interface IJobStep : IJobStepBase
     {
-       
-       
 
-      
+
+
+
 
     }
 }

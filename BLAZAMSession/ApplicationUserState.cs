@@ -47,7 +47,7 @@ namespace BLAZAM.Server.Data.Services
 
         public IPAddress IPAddress { get; set; }
 
-        public List<UserFavoriteEntry> FavoriteEntries => userSettings.FavoriteEntries;
+        public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries?? new List<UserFavoriteEntry>();
 
         public IList<UserNotification>? Notifications
         {
@@ -60,6 +60,7 @@ namespace BLAZAM.Server.Data.Services
 
             }
         }
+        public IList<ReadNewsItem> ReadNewsItems => Preferences.ReadNewsItems;
         //public List<ReadChatMessage> ReadChatMessages => Preferences.ReadChatMessages.ToList();
 
         public int Id => Preferences!=null?Preferences.Id:0;
@@ -100,7 +101,7 @@ namespace BLAZAM.Server.Data.Services
 
 
 
-        public AppUser? Preferences
+        public AppUser Preferences
         {
             get
             {
@@ -157,7 +158,7 @@ namespace BLAZAM.Server.Data.Services
                     context.SaveChanges();
 
                 }
-                else if (Preferences.Email == null)
+                else if (Preferences!=null && Preferences.Email == null)
                 {
                     var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
                     if (emailClaim != null && !emailClaim.Value.IsNullOrEmpty())
@@ -194,8 +195,9 @@ namespace BLAZAM.Server.Data.Services
                     dbUserSettings.ProfilePicture = this.Preferences?.ProfilePicture;
                     dbUserSettings.SearchDisabledUsers = this.Preferences?.SearchDisabledUsers == true;
                     dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
-                    dbUserSettings.FavoriteEntries = this.Preferences?.FavoriteEntries!=null? this.Preferences.FavoriteEntries:new();
+                    dbUserSettings.FavoriteEntries = this.Preferences?.FavoriteEntries??new();
                     dbUserSettings.Email = this.Preferences?.Email;
+                    dbUserSettings.ReadNewsItems = this.Preferences?.ReadNewsItems??new();
                     SaveDashboardWidgets(dbUserSettings);
                     OnSettingsChanged?.Invoke(dbUserSettings);
                     await context.SaveChangesAsync();
@@ -423,6 +425,7 @@ namespace BLAZAM.Server.Data.Services
             }
             catch (Exception ex)
             {
+                Loggers.SystemLogger.Error("Error checking object read permissions {@Error}", ex);
                 return false;
             }
         }

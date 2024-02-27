@@ -21,11 +21,11 @@
             _searchTermParameter = value;
             SearchTerm = value;
             Task.Run(async() => { 
-            await Search();
-            //Searcher.GeneralSearchTerm = value;
-            if (_searchTermParameter.IsNullOrEmpty())
-                LoadingData = false;
-            await InvokeAsync(StateHasChanged);
+                await Search();
+                //Searcher.GeneralSearchTerm = value;
+                if (_searchTermParameter.IsNullOrEmpty())
+                    LoadingData = false;
+                await InvokeAsync(StateHasChanged);
             });
         }
     }
@@ -88,13 +88,14 @@
 
     /// <summary>
     /// Should not be called directly.
-    ///  <para>Always call <see cref="Search"/> when not user intitiated.</para>
-    ///   And <see cref="SubmitSearch"/> on user intitiation.
+    ///  <para>Always call <see cref="Search"/> when not user initiated.</para>
+    ///   And <see cref="SubmitSearch"/> on user initiation.
     /// </summary>
     /// <returns>A task of the search</returns>
     /// <exception cref="ApplicationException"></exception>
     public virtual async Task InvokeSearch()
     {
+        await Task.Delay(1);
         throw new ApplicationException("Invoke search in Child component not implemented");
     }
     protected async Task SubmitSearch() => await SubmitSearch(null);

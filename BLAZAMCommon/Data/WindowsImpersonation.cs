@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using BLAZAM.Common.Exceptions;
@@ -22,7 +23,7 @@ namespace BLAZAM.Common.Data
                 //Use interactive logon
                 var domain = impersonationUser.FQDN != null ? impersonationUser.FQDN : "";
                 var username = impersonationUser.Username;
-                var phPassword  = Marshal.SecureStringToGlobalAllocUnicode(impersonationUser.Password);
+                var phPassword = Marshal.SecureStringToGlobalAllocUnicode(impersonationUser.Password);
                 bool returnValue = LogonUser(username,
                         domain,
                         phPassword,
@@ -101,9 +102,11 @@ namespace BLAZAM.Common.Data
                       {
                           // Check the identity.
                           var impersonatedIdentity = WindowsIdentity.GetCurrent();
-                          if (impersonatedIdentity.Name.Equals(ApplicationIdentity.Name))
+                          if (impersonationUser.Username != ApplicationIdentity.Name && impersonatedIdentity.Name.Equals(ApplicationIdentity.Name))
                           {
-                              Loggers.ActiveDirectryLogger.Error("Impersonation running as application identity");
+                              var exception = new ApplicationException("Impersonation running as application identity");
+                              ExceptionDispatchInfo.SetCurrentStackTrace(exception);
+                              Loggers.ActiveDirectryLogger.Error("Impersonation running as application identity  {@Error}", exception);
 
                           }
                           Loggers.ActiveDirectryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);

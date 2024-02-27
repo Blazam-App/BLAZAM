@@ -3,12 +3,15 @@
     <TitleContent>
         <MudText Typo="Typo.h6">
             @Title
+
         </MudText>
+
     </TitleContent>
     <DialogContent>
         <CascadingValue Value="this">
             <MudContainer Class="py-4 px-0">
-                    @ChildContent
+                @ChildContent
+
             </MudContainer>
         </CascadingValue>
     </DialogContent>
@@ -22,9 +25,11 @@
             var yesDisabled = !YesEnabled.Invoke();
         }
         <MudButton Disabled=@yesDisabled Color="Color.Primary" OnClick="@YesClicked">@YesText</MudButton>
-    </DialogActions>
-</MudDialog>
 
+            <LoadingData Loading=LoadingData />
+        </DialogActions>
+
+    </MudDialog>
 
 
 

@@ -25,6 +25,7 @@ using BLAZAM.Services.Chat;
 using BLAZAM.Services.Audit;
 using BLAZAM.Common;
 using BLAZAM.Nav;
+using BLAZAM.Session;
 
 namespace BLAZAM.Server
 {
@@ -67,7 +68,17 @@ namespace BLAZAM.Server
                 var supportedCultures = new[]
                 {
                     new CultureInfo("en-US"),
-                    new CultureInfo("fr-FR")
+                    new CultureInfo("fr-FR"),
+                    new CultureInfo("de"),
+                    new CultureInfo("es"),
+                    new CultureInfo("hi"),
+                    new CultureInfo("it"),
+                    new CultureInfo("ja"),
+                    new CultureInfo("ko"),
+                    new CultureInfo("pl"),
+                    new CultureInfo("ru"),
+                    new CultureInfo("zh-Hans")
+                    
                  };
 
                 options.SupportedCultures = supportedCultures;
@@ -75,9 +86,9 @@ namespace BLAZAM.Server
             });
             /*
              * Uncomment this to force a language
-             *
              
-            CultureInfo culture = new CultureInfo("fr-FR");
+             
+            CultureInfo culture = new CultureInfo("ru");
             //CultureInfo culture = new CultureInfo("zh-Hans");
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
@@ -173,6 +184,8 @@ namespace BLAZAM.Server
             builder.Services.AddSingleton<PermissionApplicator>();
             
             builder.Services.AddSingleton<UserSeederService>();
+
+            builder.Services.AddSingleton<IApplicationNewsService, ApplicationNewsService>();
 
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();
