@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using BLAZAM.Common.Exceptions;
@@ -103,7 +104,9 @@ namespace BLAZAM.Common.Data
                           var impersonatedIdentity = WindowsIdentity.GetCurrent();
                           if (impersonationUser.Username != ApplicationIdentity.Name && impersonatedIdentity.Name.Equals(ApplicationIdentity.Name))
                           {
-                              Loggers.ActiveDirectryLogger.Error("Impersonation running as application identity  {@Error}", new ApplicationException("Impersonation running as application identity"));
+                              var exception = new ApplicationException("Impersonation running as application identity");
+                              ExceptionDispatchInfo.SetCurrentStackTrace(exception);
+                              Loggers.ActiveDirectryLogger.Error("Impersonation running as application identity  {@Error}", exception);
 
                           }
                           Loggers.ActiveDirectryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);
