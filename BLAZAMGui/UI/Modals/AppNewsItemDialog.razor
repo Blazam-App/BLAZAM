@@ -51,8 +51,9 @@
             CurrentUser.State.ReadNewsItems.Add(new ReadNewsItem { NewsItemId = Item.Id, NewsItemUpdatedAt = Item.UpdatedAt, User = CurrentUser.State.Preferences });
 
         }
-        await CurrentUser.State.SaveUserSettings();
         MudDialog.Close(DialogResult.Ok(true));
+
+        await CurrentUser.State.SaveUserSettings();
         OnAcknowledged?.Invoke();
     }
 }
