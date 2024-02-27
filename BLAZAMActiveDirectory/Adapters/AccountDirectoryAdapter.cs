@@ -224,7 +224,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             try
             {
-                var portOpen = NetworkTools.IsPortOpen(DirectorySettings.ServerAddress, 464);
+                //var portOpen = NetworkTools.IsPortOpen(DirectorySettings.ServerAddress, 464);
                 //Invoke("SetPassword", new[] { password.ToPlainText() });
                 //return true;
 
@@ -258,7 +258,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 Loggers.ActiveDirectryLogger.Error("Error setting entry password {@Error}", ex);
 
-                throw ex;
+                throw new ApplicationException("Unable to set password", ex);
             }
 
         }
