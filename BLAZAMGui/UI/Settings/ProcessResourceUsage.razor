@@ -1,7 +1,7 @@
 @inherits AppComponentBase
 @using System.Diagnostics
 <SettingsField Label=@AppLocalization["CPU"]>
-    @if (CPUCounter != null)
+    @if (CPUUsage != null)
     {
         <MudText>@cpuUsage%</MudText>
     }
@@ -12,7 +12,7 @@
 
 </SettingsField>
 <SettingsField Label=@AppLocalization["Memory"]>
-    @if (MemoryCounter != null)
+    @if (MemoryUsage != null)
     {
         <MudText>@memoryUsage</MudText>
 
@@ -32,9 +32,8 @@
         get
 
         {
-            var val = CPUCounter?.NextValue();
-            if (val == null) return AppLocalization["Unable to read"];
-            return Math.Round(val.Value, 2).ToString();
+            if (CPUUsage == null) return AppLocalization["Unable to read"];
+            return Math.Round(CPUUsage.Value, 2).ToString();
 
 
         }
@@ -44,38 +43,47 @@
         get
 
         {
-            var val = MemoryCounter?.NextValue();
-            if (val == null) return AppLocalization["Unable to read"];
-            return new ByteSize(val.Value).ToString();
+            if (MemoryUsage == null) return AppLocalization["Unable to read"];
+            return new ByteSize(MemoryUsage.Value).ToString();
 
 
         }
     }
-    private PerformanceCounter? CPUCounter;
-    private PerformanceCounter? MemoryCounter;
+    private double? CPUUsage;
+    private double? MemoryUsage;
 
     private Timer? refreshTimer;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        refreshTimer = new Timer((state) => { InvokeAsync(StateHasChanged); }, null, 2000, 2000);
-        await Task.Run(() =>
-        {
-            try
-            {
-                CPUCounter = new PerformanceCounter("Process", "% Processor Time",
-                    Process.ProcessName);
-                MemoryCounter = new PerformanceCounter("Process", "Working Set",
-                                           Process.ProcessName);
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error("Error creating performance counters {@Error}", ex);
-            }
+        refreshTimer = new Timer((state) => { PollData(); }, null, 2000, 2000);
 
 
-        });
+    }
+    private TimeSpan lastProcessTime = TimeSpan.Zero;
+    private DateTime lastPollTime = DateTime.Now;
+    private void PollData()
+    {
+        Task.Run(() =>
+       {
+           try
+           {
+               Process.Refresh();
+               MemoryUsage = Process.WorkingSet64;
+               var processTimeDelta = Process.TotalProcessorTime - lastProcessTime;
+               lastProcessTime = Process.TotalProcessorTime;
+               var pollingDelta = DateTime.Now - lastPollTime;
+               CPUUsage = (processTimeDelta / pollingDelta) * 100;
+               lastPollTime = DateTime.Now;
 
+           }
+           catch (Exception ex)
+           {
+               Loggers.SystemLogger.Error("Error creating performance counters {@Error}", ex);
+           }
+
+           InvokeAsync(StateHasChanged);
+       });
     }
     public override void Dispose()
     {

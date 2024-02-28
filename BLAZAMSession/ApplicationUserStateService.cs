@@ -30,7 +30,7 @@ namespace BLAZAM.Server.Data.Services
 
         private IHttpContextAccessor _httpContextAccessor { get; set; }
 
-        private  IAppDatabaseFactory _factory;
+        private IAppDatabaseFactory _factory;
 
         private int? Timeout { get; set; }
 
@@ -38,7 +38,7 @@ namespace BLAZAM.Server.Data.Services
         /// <summary>
         /// Called when a new UserState is added to the cache.
         /// </summary>
-        public  AppEvent<IApplicationUserState> UserStateAdded { get; set; }
+        public AppEvent<IApplicationUserState> UserStateAdded { get; set; }
 
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace BLAZAM.Server.Data.Services
         /// <summary>
         /// A cached list of user states for logged in users. This allows easy, cached access to the users permissions and DirectryEntry
         /// </summary>
-        public  IList<IApplicationUserState> UserStates { get; private set; } = new List<IApplicationUserState>();
+        public IList<IApplicationUserState> UserStates { get; private set; } = new List<IApplicationUserState>();
 
 
 
@@ -153,7 +153,7 @@ namespace BLAZAM.Server.Data.Services
         /// </summary>
         /// <param name="userClaim">The users ClaimsPrincipal to match against.</param>
         /// <returns></returns>
-        public  IApplicationUserState? GetUserState(ClaimsPrincipal userClaim)
+        public IApplicationUserState? GetUserState(ClaimsPrincipal userClaim)
         {
             //Null check
             if (userClaim == null) return null;
@@ -217,7 +217,7 @@ namespace BLAZAM.Server.Data.Services
 
         public IApplicationUserState CreateUserState(ClaimsPrincipal user)
         {
-            return new ApplicationUserState(_factory,_notificationPublisher) { User = user };
+            return new ApplicationUserState(_factory, _notificationPublisher) { User = user };
         }
     }
 }

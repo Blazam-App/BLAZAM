@@ -19,9 +19,10 @@
                         <MudText Typo="Typo.caption" Align=@align>by: @ev.Username at @ev.Timestamp.ToLocalTime()</MudText>
 
                     </MudText>
-                    <MudText Align=@align Typo="Typo.body2">@ev.BeforeAction</MudText>
+                    <AuditEntryChanges Align=align AuditEntry="ev"/>
+                  @*   <MudText Align=@align Typo="Typo.body2">@ev.BeforeAction</MudText>
                     <MudText Align=@align Typo="Typo.body2">@ev.AfterAction</MudText>
-
+ *@
                 </MudTimelineItem>
             }
             @{

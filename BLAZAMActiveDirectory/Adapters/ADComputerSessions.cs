@@ -104,7 +104,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public void Dispose()
         {
-
+            foreach(var session in ConnectedSessions)
+            {
+                session.Dispose();
+            }
             ConnectedSessions.Clear();
 
         }

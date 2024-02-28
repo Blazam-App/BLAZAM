@@ -86,7 +86,7 @@
                 </MudTooltip>
 
             }
-            @if (accountEntry?.CanDisable == true)
+            @if (accountEntry?.CanDisable == true && accountEntry is not IADComputer)
             {
                 <MudTooltip Text="@AppLocalization["Change Password"]">
                     <MudIconButton OnClick="@ResetPassword"
@@ -164,7 +164,7 @@
             {
                 <MudMenuItem OnClick="@Assign">Assign To...</MudMenuItem>
             }
-            @if (accountEntry?.CanDisable == true)
+            @if (accountEntry?.CanDisable == true && accountEntry is not IADComputer)
             {
                 <MudMenuItem OnClick="@ResetPassword">Change Password...</MudMenuItem>
             }

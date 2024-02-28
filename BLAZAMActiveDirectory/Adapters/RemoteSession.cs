@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
-    public class RemoteSession : IRemoteSession, IDisposable
+    public class RemoteSession : IRemoteSession
     {
         ITerminalServicesSession _session;
         ITerminalServicesSession Session
@@ -282,7 +282,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public void Dispose()
         {
-            t.Dispose();
+            t?.Dispose();
+            Session.Server.Close();
             Session = null;
         }
     }

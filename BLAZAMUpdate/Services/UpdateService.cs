@@ -85,7 +85,8 @@ namespace BLAZAM.Update.Services
         {
             //Create a github client to get api data from repo
 
-            Octokit.Release? latestRelease = null;
+            Release? latestRelease = null;
+            Release? latestStableRelease = null;
 
             var client = new GitHubClient(new ProductHeaderValue(Publisher_Name));
 
@@ -99,6 +100,7 @@ namespace BLAZAM.Update.Services
             var stableReleases = releases.Where(r => r.TagName.Contains(ApplicationReleaseBranches.Stable, StringComparison.OrdinalIgnoreCase));
             //Get the first release,which should be the most recent
             latestRelease = branchReleases.FirstOrDefault();
+            latestStableRelease = branchReleases.FirstOrDefault();
             //Store all other releases for use later
             StableUpdates.Clear();
             foreach (var release in stableReleases)
@@ -110,7 +112,18 @@ namespace BLAZAM.Update.Services
                 StableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
 
             }
-            LatestUpdate = EncapsulateUpdate(latestRelease, SelectedBranch);
+            var latestStableUpdate = EncapsulateUpdate(latestStableRelease, ApplicationReleaseBranches.Stable);
+            var latestBranchUpdate = EncapsulateUpdate(latestRelease, SelectedBranch); 
+            //Override branch if stable has more recent release
+            if (latestStableUpdate!=null && latestStableUpdate.Version.CompareTo(latestBranchUpdate)>0)
+            {
+                LatestUpdate = latestStableUpdate;
+            }
+            else if(latestBranchUpdate!=null)
+            {
+                LatestUpdate = latestBranchUpdate;
+
+            }
         }
 
         /// <summary>
@@ -188,7 +201,7 @@ namespace BLAZAM.Update.Services
             {
                 Loggers.UpdateLogger.Information("Checking update credentials");
 
-                if (ApplicationInfo.applicationRoot.Writable)
+                if (!Debugger.IsAttached && ApplicationInfo.applicationRoot.Writable)
                     return UpdateCredential.Application;
 
                 //Test Directory Credentials
@@ -200,7 +213,7 @@ namespace BLAZAM.Update.Services
 
 
                 //Test Update Credentials
-               if(TestCustomCredentials())
+                if (TestCustomCredentials())
                     return UpdateCredential.Update;
 
                 return UpdateCredential.None;

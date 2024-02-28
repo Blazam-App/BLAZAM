@@ -410,7 +410,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             HasUnsavedChanges = true;
         }
 
-        public virtual string? OU { get => DirectoryTools.DnToOu(DN); }
+        public virtual string? OU { get => DirectoryTools.DnToOu(DN)??DirectoryTools.DnToOu(ADSPath); }
 
         public IADOrganizationalUnit? GetParent()
         {
@@ -824,6 +824,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 if (result == true)
                 {
+                    NewEntryProperties.Clear();
+                    PostCommitSteps.Clear();
+                    CommitSteps.Clear();
                     HasUnsavedChanges = false;
 
                     OnModelCommited?.Invoke();

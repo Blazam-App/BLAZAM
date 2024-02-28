@@ -149,6 +149,7 @@ namespace BLAZAM.ActiveDirectory
         }
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
         private IApplicationUserState? currentUser;
+        private IADUser? _keepAliveUser;
 
         public DirectoryConnectionStatus Status
         {
@@ -202,7 +203,6 @@ namespace BLAZAM.ActiveDirectory
             UserStateService = userStateService;
             //UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
             ConnectAsync();
-            _timer = new Timer(KeepAlive, null, 30000, 30000);
 
             Users = new ADUserSearcher(this);
             Groups = new ADGroupSearcher(this);
@@ -257,7 +257,7 @@ namespace BLAZAM.ActiveDirectory
             else if (Status == DirectoryConnectionStatus.OK)
             {
                 //Throw away query used to keep connection alive
-                _ = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
+                _keepAliveUser = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
             }
         }
 
@@ -296,6 +296,9 @@ namespace BLAZAM.ActiveDirectory
                     //No reason connecting if we're already connected
                     if (Status != DirectoryConnectionStatus.OK)
                     {
+                        _timer?.Dispose();
+                        _timer = new Timer(KeepAlive, null, 0, 30000);
+
                         //Ok get the latest settings
                         ADSettings? ad = Context?.ActiveDirectorySettings.FirstOrDefault();
                         ConnectionSettings = ad;
@@ -370,15 +373,15 @@ namespace BLAZAM.ActiveDirectory
                                                 return;
                                             }
                                         }
-                                        catch (Exception ex)
+                                        catch (Exception)
                                         {
-                                            if (RootDirectoryEntry != null)
-                                                _notificationPublisher.PublishNotification(new NotificationMessage()
-                                                {
-                                                    Level = NotificationLevel.Error,
-                                                    Message = "The configured BaseDN is not valid. Please correct your settings.",
-                                                    Title = "Active Directory Error"
-                                                });
+                                            //if (RootDirectoryEntry != null)
+                                                //_notificationPublisher.PublishNotification(new NotificationMessage()
+                                                //{
+                                                //    Level = NotificationLevel.Error,
+                                                //    Message = "The configured BaseDN is not valid. Please correct your settings.",
+                                                //    Title = "Active Directory Error"
+                                                //});
                                             Status = DirectoryConnectionStatus.BadConfiguration;
                                             if (FailedConnectionAttempts < 10)
                                                 FailedConnectionAttempts++;
@@ -558,7 +561,7 @@ namespace BLAZAM.ActiveDirectory
                                 {
                                    
                                     UserName = loginReq.Username,
-                                    SecurePassword = loginReq.Password.ToSecureString()
+                                    SecurePassword = loginReq.Password?.ToSecureString()
                                 };
                                 LdapConnection connection = new LdapConnection(
                                    new LdapDirectoryIdentifier(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort),
@@ -644,7 +647,7 @@ namespace BLAZAM.ActiveDirectory
                 {
                     Domain = ConnectionSettings.FQDN,
                     UserName = ConnectionSettings.Username,
-                    SecurePassword = _encryption.DecryptObject<string>(ConnectionSettings.Password).ToSecureString()
+                    SecurePassword = _encryption.DecryptObject<string>(ConnectionSettings.Password)?.ToSecureString()
                 },
                 AuthType.Negotiate);
 

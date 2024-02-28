@@ -64,12 +64,7 @@
                         <ChangeUserPasswordModalContent User="User" />
                     }
                 </AppModal>
-                <AppModal Title=@AppLocalization["Change History"] @ref=@ChangeHistoryModal Options=@(new DialogOptions(){FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
-                    @if (ChangeHistoryModal?.IsShown == true)
-                    {
-                        <ChangeHistoryModalContent Model="User" />
-                    }
-                </AppModal>
+               
 
 
                 <MudGrid>
@@ -397,20 +392,19 @@
                     </Section>
                 }
 
-                @if (User.CanReadAnyCustomFields)
+                @if (User.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
                 {
                     <Section Title=@AppLocalization["Additional Field"]>
-                        @if (CustomFields != null)
-                        {
-                            @foreach (var field in CustomFields)
-                            {
-                                @if (User.CanReadField(field))
-                                {
-                                    <CustomDirectoryField Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="User" Field="@field" />
 
-                                }
+                        @foreach (var field in CustomFields)
+                        {
+                            @if (User.CanReadField(field))
+                            {
+                                <CustomDirectoryField Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="User" Field="@field" />
+
                             }
                         }
+
 
                     </Section>
                 }

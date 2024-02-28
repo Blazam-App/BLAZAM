@@ -1,0 +1,59 @@
+﻿@using ApplicationNews
+@inherits AppComponentBase
+
+    
+<MudDialog>
+    <DialogContent>
+        @((MarkupString)Item.Body)
+
+    </DialogContent>
+    <DialogActions>
+        <MudSpacer />
+        @if (!Item.Link.IsNullOrEmpty())
+        {
+            <MudLink Color="@Color.Primary"
+         Href="@Item.Link"
+          Target="_blank">@AppLocalization["Link"]</MudLink>
+        }
+        
+        <MudSpacer/>
+
+
+
+        <MudButton Color="@Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="@Acknowledge">@AppLocalization["Ok"]</MudButton>
+
+
+
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter]
+    public NewsItem Item { get; set; }
+
+    public AppEvent? OnAcknowledged { get; set; }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+    }
+    private async void Acknowledge()
+    {
+        var existingReadItem = CurrentUser.State.ReadNewsItems.FirstOrDefault(x => x.NewsItemId == Item.Id);
+        if (existingReadItem!=null)
+        {
+            existingReadItem.NewsItemUpdatedAt = Item.UpdatedAt;
+        }
+        else
+        {
+            CurrentUser.State.ReadNewsItems.Add(new ReadNewsItem { NewsItemId = Item.Id, NewsItemUpdatedAt = Item.UpdatedAt, User = CurrentUser.State.Preferences });
+
+        }
+        MudDialog.Close(DialogResult.Ok(true));
+
+        await CurrentUser.State.SaveUserSettings();
+        OnAcknowledged?.Invoke();
+    }
+}

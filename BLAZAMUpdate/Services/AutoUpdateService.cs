@@ -2,9 +2,12 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
+using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
+using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.Update.Services
 {
@@ -25,6 +28,8 @@ namespace BLAZAM.Update.Services
         public bool IsUpdatedScheduled { get { return autoUpdateApplyTimer != null; } }
         public DateTime ScheduledUpdateTime { get; set; }
         public ApplicationUpdate? ScheduledUpdate { get; set; }
+        public bool IsUpdateAvailable { get; private set; }
+
         //private AuditLogger Audit;
 
         public AutoUpdateService(IAppDatabaseFactory factory, UpdateService updateService, ApplicationInfo applicationInfo)
@@ -32,7 +37,7 @@ namespace BLAZAM.Update.Services
             _applicationInfo = applicationInfo;
             this.factory = factory;
             this.updateService = updateService;
-            updateCheckTimer = new Timer(CheckForUpdate, null, (int)TimeSpan.FromSeconds(20).TotalMilliseconds, (int)TimeSpan.FromHours(1).TotalMilliseconds);
+            updateCheckTimer = new Timer(CheckForUpdate, null, (int)TimeSpan.FromSeconds(1).TotalMilliseconds, (int)TimeSpan.FromHours(1).TotalMilliseconds);
             directoryCleaner = new Timer(CleanDirectories, null, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, (int)TimeSpan.FromHours(20).TotalMilliseconds);
         }
 
@@ -57,8 +62,8 @@ namespace BLAZAM.Update.Services
                         {
                             Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file: " + file);
 
-                            var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault().CreateUpdateImpersonator();
-                            if (!impersonation.Run(() =>
+                            var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
+                            if (impersonation!=null && !impersonation.Run(() =>
                             {
                                 if (file.Writable)
                                 {
@@ -68,8 +73,8 @@ namespace BLAZAM.Update.Services
                                 return false;
                             }))
                             {
-                                impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault().CreateDirectoryAdminImpersonator();
-                                if (!impersonation.Run(() =>
+                                impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
+                                if (impersonation !=null && !impersonation.Run(() =>
                                 {
                                     if (file.Writable)
                                     {
@@ -123,8 +128,8 @@ namespace BLAZAM.Update.Services
                             {
                                 Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old staging files");
 
-                                var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault().CreateUpdateImpersonator();
-                                if (!impersonation.Run(() =>
+                                var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
+                                if (impersonation != null && !impersonation.Run(() =>
                                 {
                                     if (dir.Writable)
                                     {
@@ -136,8 +141,8 @@ namespace BLAZAM.Update.Services
                                     return false;
                                 }))
                                 {
-                                    impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault().CreateDirectoryAdminImpersonator();
-                                    if (!impersonation.Run(() =>
+                                    impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
+                                    if (impersonation != null && !impersonation.Run(() =>
                                     {
                                         if (dir.Writable)
                                         {
@@ -162,12 +167,12 @@ namespace BLAZAM.Update.Services
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Loggers.UpdateLogger.Debug("Deleting unknown directory: " + dir);
+                    Loggers.UpdateLogger.Error("Deleting unknown directory: " + dir+ "{@Error}",ex);
                     //dir.Delete(true);
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Other error cleaning staging files {@Error}", ex);
+                    Loggers.UpdateLogger.Error("Other error cleaning staging files {Directory}{@Error}", dir.Path, ex);
                     //file.Delete();
                 }
             }
@@ -183,12 +188,19 @@ namespace BLAZAM.Update.Services
                 Loggers.UpdateLogger.Information("Checking for automatic update");
 
                 var latestUpdate = await updateService.GetUpdates();
-                if (latestUpdate != null && latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0 && appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
-                {
-                    ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
+                if (latestUpdate != null && latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0){
+                    IsUpdateAvailable = true;
+                    if(appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
+                    {
+                        ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
+
+                    }
+
                 }
                 else
                 {
+                    IsUpdateAvailable = false;
+                    Cancel();
                     Loggers.UpdateLogger.Information("No new updates found.");
 
                 }
@@ -203,7 +215,7 @@ namespace BLAZAM.Update.Services
         {
             ScheduledUpdate = null;
             ScheduledUpdateTime = DateTime.MinValue;
-            autoUpdateApplyTimer.Dispose();
+            autoUpdateApplyTimer?.Dispose();
             autoUpdateApplyTimer = null;
         }
 
@@ -256,48 +268,63 @@ namespace BLAZAM.Update.Services
             {
                 using var context = await factory.CreateDbContextAsync();
                 var settings = context.AppSettings.FirstOrDefault();
-                if (settings.AutoUpdate)
+                if (settings != null)
                 {
-                    Loggers.UpdateLogger.Information("Applying auto-update");
-                    Loggers.UpdateLogger.Information("Current Version: " + _applicationInfo.RunningVersion);
-                    Loggers.UpdateLogger.Information("Update Version: " + ScheduledUpdate.Version);
-
-                    autoUpdateApplyTimer = null;
-                    ScheduledUpdateTime = DateTime.MinValue;
-                    var latestUpdate = await updateService.GetUpdates();
-                    try
+                    if (settings.AutoUpdate)
                     {
-                        OnAutoUpdateStarted?.Invoke();
-                        var updateJob = latestUpdate.GetUpdateJob();
-                        if (updateJob != null)
-                        {
-                            updateJob.Run();
-                            if (updateJob.Result != Jobs.JobResult.Passed)
-                                Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot. Response: " + updateJob);
-                            else
-                            {
-                                var thrownStep = updateJob.Steps.FirstOrDefault(x => x.Exception != null);
-                                if (thrownStep != null)
-                                    Loggers.UpdateLogger.Error("Failed to auto-update. {@Error}", thrownStep.Exception);
-                                else
-                                    Loggers.UpdateLogger.Error("Failed to auto-update. No exception collected from update job!");
+                        Loggers.UpdateLogger.Information("Applying auto-update");
+                        Loggers.UpdateLogger.Information("Current Version: " + _applicationInfo.RunningVersion);
+                        Loggers.UpdateLogger.Information("Update Version: " + ScheduledUpdate?.Version);
 
+                        autoUpdateApplyTimer = null;
+                        ScheduledUpdateTime = DateTime.MinValue;
+                        var latestUpdate = await updateService.GetUpdates();
+                        if (latestUpdate != null)
+                        {
+                            try
+                            {
+                                OnAutoUpdateStarted?.Invoke();
+                                var updateJob = latestUpdate.GetUpdateJob();
+                                if (updateJob != null)
+                                {
+                                    updateJob.Run();
+                                    if (updateJob.Result == JobResult.Passed)
+                                        Loggers.UpdateLogger.Information("Auto-update applied. Application will now reboot.{@UpdateVersion}", latestUpdate.Version);
+                                    else
+                                    {
+                                        var thrownStep = updateJob.Steps.FirstOrDefault(x => x.Exception != null);
+                                        if (thrownStep != null)
+                                            Loggers.UpdateLogger.Error("Failed to auto-update. {@Error}{@UpdateVersion}", thrownStep.Exception, latestUpdate.Version);
+                                        else
+                                            Loggers.UpdateLogger.Error("Failed to auto-update. No exception collected from update job!{@UpdateVersion}", latestUpdate.Version);
+
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                //Log.Error(ex);
+                                OnAutoUpdateFailed?.Invoke();
+                                Loggers.UpdateLogger.Error("Error trying to apply auto update {@Error}{@UpdateVersion}", ex, latestUpdate.Version);
                             }
                         }
+                        else
+                        {
+                            Loggers.UpdateLogger.Error("Unable to get latest update {@Branch}{@AutoUpdate}{@AutoUpdateTime}", settings.UpdateBranch, settings.AutoUpdate, settings.AutoUpdateTime);
+
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        //Log.Error(ex);
-                        OnAutoUpdateFailed?.Invoke();
-                        Loggers.UpdateLogger.Error("Error trying to apply auto update {@Error}", ex);
+                        //Auto Update was turned off since scheduling
+                        //Audit.System.LogMessage("Auto Update was turned off after scheduling");
+                        Loggers.UpdateLogger.Warning("Auto Update was turned off after scheduling");
+
                     }
                 }
                 else
                 {
-                    //Auto Update was turned off since scheduling
-                    //Audit.System.LogMessage("Auto Update was turned off after scheduling");
-                    Loggers.UpdateLogger.Warning("Auto Update was turned off after scheduling");
-
+                    Loggers.UpdateLogger.Error("Unable to get update database settings");
                 }
             }
             catch (Exception ex)

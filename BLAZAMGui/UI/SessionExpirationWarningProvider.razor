@@ -3,14 +3,14 @@
 @inject IJSRuntime JSRuntime
 
 
-<AppModal Title="Your session is about to expire" 
-    @ref="ExpirationWarningModal"
-    AllowClose=false
-    YesText="Refresh Session" 
-    OnYes=@(()=>{
-        JSRuntime.InvokeVoidAsync("updateCookieExpiration");
-        ExpirationWarningModal?.Hide();
-    })>
+<AppModal Title=@AppLocalization["Your session is about to expire"]
+          @ref="ExpirationWarningModal"
+          AllowClose=false
+          YesText=@AppLocalization["Refresh Session"]
+          OnYes=@(()=>{
+          JSRuntime.InvokeVoidAsync("updateCookieExpiration");
+          ExpirationWarningModal?.Hide();
+          })>
 
     @if (ExpirationWarningModal?.IsShown == true)
     {
@@ -42,22 +42,25 @@
         }
 
         <MudText>
-            Session expires in @formattedTimeLeft
+            @AppLocalization["Session expires in"] @formattedTimeLeft
         </MudText>
 
 
     }
 
 </AppModal>
-<AppModal Title="Session Expired" @ref="ExpiredModal" YesText="Log In" OnYes="@(()=>{Refresh();})">
+<AppModal Title=@AppLocalization["Session Expired"]
+          @ref="ExpiredModal"
+          YesText=@AppLocalization["Log In"]
+          OnYes="@(()=>{Refresh();})">
 
 
-    <MudText>Your session has expired.</MudText>
+    <MudText>@AppLocalization["Your session has expired."]</MudText>
 
 
 </AppModal>
-@code {
-    private Timer _t;
+    @code {
+    private Timer? sessionTimeoutCheckTimer;
     AppModal? ExpirationWarningModal;
     AppModal? ExpiredModal;
     AuthenticationTicket? _ticket;
@@ -65,7 +68,7 @@
     {
         await base.OnInitializedAsync();
 
-        _t = new Timer(CheckExpiration, null, 30000, 30000);
+        sessionTimeoutCheckTimer = new Timer(CheckExpiration, null, 30000, 30000);
     }
     private async void CheckExpiration(object? obj)
     {
@@ -79,5 +82,10 @@
 
             }
         }
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        sessionTimeoutCheckTimer?.Dispose();
     }
 }

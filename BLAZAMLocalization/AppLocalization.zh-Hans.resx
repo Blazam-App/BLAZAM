@@ -123,6 +123,9 @@
   <data name="Account" xml:space="preserve">
     <value>帐户</value>
   </data>
+  <data name="Account and Name" xml:space="preserve">
+    <value>帐户和名称</value>
+  </data>
   <data name="Account Expiration" xml:space="preserve">
     <value>帐户过期</value>
   </data>
@@ -150,8 +153,23 @@
   <data name="Active Directory Settings" xml:space="preserve">
     <value>活动目录设置</value>
   </data>
+  <data name="Add" xml:space="preserve">
+    <value>加</value>
+  </data>
+  <data name="Add Members" xml:space="preserve">
+    <value>添加成员</value>
+  </data>
   <data name="Add New Access Level" xml:space="preserve">
     <value>添加新的访问权限级别</value>
+  </data>
+  <data name="Add to favorites" xml:space="preserve">
+    <value>添加到收藏夹</value>
+  </data>
+  <data name="Additional Field" xml:space="preserve">
+    <value>其他字段</value>
+  </data>
+  <data name="Additional Fields" xml:space="preserve">
+    <value>其他字段</value>
   </data>
   <data name="Additonal Fields" xml:space="preserve">
     <value>附加字段</value>
@@ -174,8 +192,17 @@
   <data name="Allow Disabled User Access" xml:space="preserve">
     <value>允许禁用的用户访问</value>
   </data>
+  <data name="An error has occurred while trying to create the template user" xml:space="preserve">
+    <value>尝试创建模板用户时出错</value>
+  </data>
+  <data name="App Chat" xml:space="preserve">
+    <value>应用聊天</value>
+  </data>
   <data name="Application" xml:space="preserve">
     <value>应用</value>
+  </data>
+  <data name="Application Credentials" xml:space="preserve">
+    <value>应用程序凭据</value>
   </data>
   <data name="Application Name" xml:space="preserve">
     <value>应用程序名称</value>
@@ -186,11 +213,20 @@
   <data name="ApplicationStarting" xml:space="preserve">
     <value>应用程序正在启动...请稍候。。。</value>
   </data>
+  <data name="Are you sure you want to navigate away?" xml:space="preserve">
+    <value>您确定要离开吗？</value>
+  </data>
+  <data name="Assign" xml:space="preserve">
+    <value>分配</value>
+  </data>
   <data name="Assign Objects" xml:space="preserve">
     <value>分配对象</value>
   </data>
   <data name="Assign To" xml:space="preserve">
     <value>分配给</value>
+  </data>
+  <data name="Assigned Groups" xml:space="preserve">
+    <value>分配的组</value>
   </data>
   <data name="Attempting to connect to Active Directory." xml:space="preserve">
     <value>正在尝试连接到活动目录。</value>
@@ -207,17 +243,41 @@
   <data name="Auto Update Time" xml:space="preserve">
     <value>自动更新时间</value>
   </data>
+  <data name="Available Update" xml:space="preserve">
+    <value>可用更新</value>
+  </data>
   <data name="Base DN" xml:space="preserve">
     <value>基本 DN</value>
   </data>
   <data name="BaseDN" xml:space="preserve">
     <value>基本 DN</value>
   </data>
+  <data name="Branch" xml:space="preserve">
+    <value>分支</value>
+  </data>
   <data name="Branding Icon" xml:space="preserve">
     <value>品牌图标</value>
   </data>
+  <data name="Browse" xml:space="preserve">
+    <value>浏览</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="Certificate Type" xml:space="preserve">
+    <value>证书类型</value>
+  </data>
+  <data name="Change History" xml:space="preserve">
+    <value>更改历史记录</value>
+  </data>
   <data name="Change Password" xml:space="preserve">
     <value>更改密码</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>聊天</value>
   </data>
   <data name="Choose or Search..." xml:space="preserve">
     <value>选择或搜索...</value>
@@ -225,14 +285,29 @@
   <data name="City" xml:space="preserve">
     <value>城市</value>
   </data>
+  <data name="Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
   <data name="Company" xml:space="preserve">
     <value>公司</value>
+  </data>
+  <data name="Completed Successfully" xml:space="preserve">
+    <value>成功完成</value>
   </data>
   <data name="Computer" xml:space="preserve">
     <value>计算机</value>
   </data>
+  <data name="Computer is not reachable." xml:space="preserve">
+    <value>无法访问计算机。</value>
+  </data>
   <data name="Configure" xml:space="preserve">
     <value>配置</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>确认</value>
+  </data>
+  <data name="Confirm New Password" xml:space="preserve">
+    <value>确认新密码</value>
   </data>
   <data name="Confirm Password" xml:space="preserve">
     <value>确认密码</value>
@@ -240,8 +315,20 @@
   <data name="Contact Info" xml:space="preserve">
     <value>联系方式</value>
   </data>
+  <data name="Copy template" xml:space="preserve">
+    <value>复制模板</value>
+  </data>
+  <data name="CPU" xml:space="preserve">
+    <value>中央处理器</value>
+  </data>
+  <data name="CPU Chart" xml:space="preserve">
+    <value>CPU 图表</value>
+  </data>
   <data name="Create" xml:space="preserve">
     <value>创造</value>
+  </data>
+  <data name="Create Access Level" xml:space="preserve">
+    <value>创建访问级别</value>
   </data>
   <data name="Create Group" xml:space="preserve">
     <value>创建组</value>
@@ -255,11 +342,32 @@
   <data name="Create User" xml:space="preserve">
     <value>创建用户</value>
   </data>
+  <data name="Created" xml:space="preserve">
+    <value>创建</value>
+  </data>
+  <data name="Current OU" xml:space="preserve">
+    <value>当前 OU</value>
+  </data>
+  <data name="Current Template:" xml:space="preserve">
+    <value>当前模板：</value>
+  </data>
+  <data name="Current Version" xml:space="preserve">
+    <value>目前版本</value>
+  </data>
   <data name="Custom Login" xml:space="preserve">
     <value>自定义登录</value>
   </data>
+  <data name="Database" xml:space="preserve">
+    <value>数据库</value>
+  </data>
   <data name="Database server is not reachable!" xml:space="preserve">
     <value>无法访问数据库服务器！</value>
+  </data>
+  <data name="Database Status" xml:space="preserve">
+    <value>数据库状态</value>
+  </data>
+  <data name="DB Type" xml:space="preserve">
+    <value>数据库类型</value>
   </data>
   <data name="Delegates" xml:space="preserve">
     <value>代表</value>
@@ -282,14 +390,38 @@
   <data name="Description" xml:space="preserve">
     <value>描述</value>
   </data>
+  <data name="Details" xml:space="preserve">
+    <value>详</value>
+  </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>放弃更改</value>
   </data>
   <data name="Display Name" xml:space="preserve">
     <value>显示名称</value>
   </data>
+  <data name="Documentation" xml:space="preserve">
+    <value>文档</value>
+  </data>
+  <data name="Domain" xml:space="preserve">
+    <value>域</value>
+  </data>
+  <data name="Drive Details" xml:space="preserve">
+    <value>驱动器详细信息</value>
+  </data>
+  <data name="Driver" xml:space="preserve">
+    <value>司机</value>
+  </data>
+  <data name="Driver Version" xml:space="preserve">
+    <value>驱动程序版本</value>
+  </data>
   <data name="Edit" xml:space="preserve">
     <value>编辑</value>
+  </data>
+  <data name="Editable" xml:space="preserve">
+    <value>编辑</value>
+  </data>
+  <data name="Elapsed Time" xml:space="preserve">
+    <value>经过的时间</value>
   </data>
   <data name="Email" xml:space="preserve">
     <value>电子邮件</value>
@@ -306,8 +438,23 @@
   <data name="Employee Id" xml:space="preserve">
     <value>员工编号</value>
   </data>
+  <data name="Enable Auto Update" xml:space="preserve">
+    <value>启用自动更新</value>
+  </data>
   <data name="Enabled" xml:space="preserve">
     <value>启用</value>
+  </data>
+  <data name="Encryption Seed String" xml:space="preserve">
+    <value>加密种子字符串</value>
+  </data>
+  <data name="Export Data" xml:space="preserve">
+    <value>导出数据</value>
+  </data>
+  <data name="Export Database" xml:space="preserve">
+    <value>导出数据库</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>失败</value>
   </data>
   <data name="Field Name" xml:space="preserve">
     <value>字段名称</value>
@@ -317,6 +464,9 @@
   </data>
   <data name="Fields" xml:space="preserve">
     <value>领域</value>
+  </data>
+  <data name="First Initial" xml:space="preserve">
+    <value>第一个首字母</value>
   </data>
   <data name="First Name" xml:space="preserve">
     <value>名字</value>
@@ -363,17 +513,44 @@
   <data name="Impersonate User" xml:space="preserve">
     <value>模拟用户</value>
   </data>
+  <data name="Info" xml:space="preserve">
+    <value>信息</value>
+  </data>
+  <data name="Inheritance Tree" xml:space="preserve">
+    <value>继承树</value>
+  </data>
+  <data name="Inherited from" xml:space="preserve">
+    <value>继承自</value>
+  </data>
   <data name="Inherited Permissions" xml:space="preserve">
     <value>继承的权限</value>
   </data>
   <data name="Job Title" xml:space="preserve">
     <value>职称</value>
   </data>
+  <data name="Last Change" xml:space="preserve">
+    <value>上次更改</value>
+  </data>
+  <data name="Last Initial" xml:space="preserve">
+    <value>最后一个初始值</value>
+  </data>
+  <data name="Last Logon" xml:space="preserve">
+    <value>上次登录</value>
+  </data>
   <data name="Last Name" xml:space="preserve">
     <value>姓</value>
   </data>
-  <data name="levelValue.Name" xml:space="preserve">
-    <value>levelValue.Name</value>
+  <data name="Live Stats" xml:space="preserve">
+    <value>实时统计</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>装载</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>位置</value>
+  </data>
+  <data name="Lockout Time" xml:space="preserve">
+    <value>锁定时间</value>
   </data>
   <data name="Log In" xml:space="preserve">
     <value>登录</value>
@@ -384,11 +561,29 @@
   <data name="Logins" xml:space="preserve">
     <value>登录</value>
   </data>
+  <data name="Logs" xml:space="preserve">
+    <value>原木</value>
+  </data>
   <data name="Main" xml:space="preserve">
     <value>主要</value>
   </data>
+  <data name="Manage Web Application" xml:space="preserve">
+    <value>管理 Web 应用程序</value>
+  </data>
   <data name="Mappings" xml:space="preserve">
     <value>映射</value>
+  </data>
+  <data name="Member Of" xml:space="preserve">
+    <value>成员</value>
+  </data>
+  <data name="Members" xml:space="preserve">
+    <value>成员</value>
+  </data>
+  <data name="Memory" xml:space="preserve">
+    <value>记忆</value>
+  </data>
+  <data name="Middle Initial" xml:space="preserve">
+    <value>中间首字母</value>
   </data>
   <data name="Middle Name" xml:space="preserve">
     <value>中间名</value>
@@ -396,11 +591,41 @@
   <data name="Move" xml:space="preserve">
     <value>移动</value>
   </data>
+  <data name="Move To" xml:space="preserve">
+    <value>移至</value>
+  </data>
+  <data name="Myrtille Web Adress" xml:space="preserve">
+    <value>Myrtille 网页地址</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>名字</value>
   </data>
+  <data name="New Password" xml:space="preserve">
+    <value>新密码</value>
+  </data>
+  <data name="New template" xml:space="preserve">
+    <value>新建模板</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>下一个</value>
+  </data>
+  <data name="Not a member of any groups" xml:space="preserve">
+    <value>不是任何组的成员</value>
+  </data>
+  <data name="Not a valid certificate type." xml:space="preserve">
+    <value>证书类型无效。</value>
+  </data>
+  <data name="Not finished" xml:space="preserve">
+    <value>未完成</value>
+  </data>
+  <data name="Not started" xml:space="preserve">
+    <value>未启动</value>
+  </data>
   <data name="Office" xml:space="preserve">
     <value>办公室</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>还行</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>在线</value>
@@ -408,11 +633,23 @@
   <data name="Oops" xml:space="preserve">
     <value>哎呀</value>
   </data>
+  <data name="Operating System" xml:space="preserve">
+    <value>操作系统</value>
+  </data>
+  <data name="or" xml:space="preserve">
+    <value>或</value>
+  </data>
   <data name="Organization" xml:space="preserve">
     <value>组织</value>
   </data>
+  <data name="Organizational Unit" xml:space="preserve">
+    <value>组织单位</value>
+  </data>
   <data name="OU" xml:space="preserve">
     <value>或</value>
+  </data>
+  <data name="Pass Change" xml:space="preserve">
+    <value>通行证变更</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>密码</value>
@@ -432,6 +669,21 @@
   <data name="Preferences" xml:space="preserve">
     <value>偏好</value>
   </data>
+  <data name="Prepare Files" xml:space="preserve">
+    <value>准备文件</value>
+  </data>
+  <data name="Previous Versions" xml:space="preserve">
+    <value>以前的版本</value>
+  </data>
+  <data name="Printer" xml:space="preserve">
+    <value>打印机</value>
+  </data>
+  <data name="Printer(s) registered to Active Directory" xml:space="preserve">
+    <value>注册到 Active Directory 的打印机</value>
+  </data>
+  <data name="Printers" xml:space="preserve">
+    <value>打印机</value>
+  </data>
   <data name="Profile" xml:space="preserve">
     <value>轮廓</value>
   </data>
@@ -441,11 +693,53 @@
   <data name="Profile Settings" xml:space="preserve">
     <value>配置文件设置</value>
   </data>
+  <data name="Queued" xml:space="preserve">
+    <value>排队</value>
+  </data>
+  <data name="Ran by" xml:space="preserve">
+    <value>跑过</value>
+  </data>
   <data name="Recycle Bin" xml:space="preserve">
     <value>回收站</value>
   </data>
+  <data name="Register" xml:space="preserve">
+    <value>注册</value>
+  </data>
+  <data name="Register Printers" xml:space="preserve">
+    <value>注册打印机</value>
+  </data>
+  <data name="Register printers with Active Directory" xml:space="preserve">
+    <value>将打印机注册到 Active Directory</value>
+  </data>
+  <data name="Release Notes" xml:space="preserve">
+    <value>发行说明</value>
+  </data>
+  <data name="Remove field" xml:space="preserve">
+    <value>删除字段</value>
+  </data>
+  <data name="Remove from favorites" xml:space="preserve">
+    <value>从收藏夹中删除</value>
+  </data>
+  <data name="Remove Group" xml:space="preserve">
+    <value>删除组</value>
+  </data>
+  <data name="Remove template" xml:space="preserve">
+    <value>删除模板</value>
+  </data>
   <data name="Rename" xml:space="preserve">
     <value>重命名</value>
+  </data>
+  <data name="Rename Category" xml:space="preserve">
+    <value>重命名类别</value>
+  </data>
+  <data name="Rename Group" xml:space="preserve">
+    <value>重命名组</value>
+  </data>
+  <data name="Rename OU" xml:space="preserve">
+    <value>重命名 OU</value>
+  </data>
+  <data name="Rename User" xml:space="preserve">
+    <value>重命名用户</value>
   </data>
   <data name="Reply-To Address" xml:space="preserve">
     <value>回复地址</value>
@@ -456,11 +750,44 @@
   <data name="Require change" xml:space="preserve">
     <value>需要更改</value>
   </data>
+  <data name="Require the user to change their password at next logon" xml:space="preserve">
+    <value>要求用户在下次登录时更改其密码</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>必填</value>
+  </data>
+  <data name="Reset Password" xml:space="preserve">
+    <value>重置密码</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>恢复</value>
+  </data>
+  <data name="Restore Template" xml:space="preserve">
+    <value>还原模板</value>
+  </data>
+  <data name="Restore templates" xml:space="preserve">
+    <value>还原模板</value>
+  </data>
+  <data name="Restore:" xml:space="preserve">
+    <value>恢复：</value>
+  </data>
+  <data name="Results" xml:space="preserve">
+    <value>结果</value>
+  </data>
+  <data name="Revert to inherited value" xml:space="preserve">
+    <value>还原为继承的值</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>运行</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>救</value>
   </data>
   <data name="Save Changes" xml:space="preserve">
     <value>保存更改</value>
+  </data>
+  <data name="Save Photo" xml:space="preserve">
+    <value>保存照片</value>
   </data>
   <data name="Script Path" xml:space="preserve">
     <value>脚本路径</value>
@@ -468,11 +795,20 @@
   <data name="Server" xml:space="preserve">
     <value>服务器</value>
   </data>
+  <data name="Services" xml:space="preserve">
+    <value>服务业</value>
+  </data>
   <data name="Session Timeout" xml:space="preserve">
     <value>会话超时</value>
   </data>
+  <data name="Sessions" xml:space="preserve">
+    <value>会话</value>
+  </data>
   <data name="Settings" xml:space="preserve">
     <value>设置</value>
+  </data>
+  <data name="Show more" xml:space="preserve">
+    <value>显示更多</value>
   </data>
   <data name="Sign Out" xml:space="preserve">
     <value>登出</value>
@@ -492,6 +828,12 @@
   <data name="SMTP Username" xml:space="preserve">
     <value>短信用户名</value>
   </data>
+  <data name="SSL Certificate" xml:space="preserve">
+    <value>SSL证书</value>
+  </data>
+  <data name="Start Time" xml:space="preserve">
+    <value>开始时间</value>
+  </data>
   <data name="State" xml:space="preserve">
     <value>州</value>
   </data>
@@ -503,6 +845,9 @@
   </data>
   <data name="Street Address" xml:space="preserve">
     <value>街道地址</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>成功</value>
   </data>
   <data name="System" xml:space="preserve">
     <value>系统</value>
@@ -516,20 +861,50 @@
   <data name="Template Name" xml:space="preserve">
     <value>模板名称</value>
   </data>
+  <data name="Template(s) restored" xml:space="preserve">
+    <value>已恢复的模板</value>
+  </data>
   <data name="Templates" xml:space="preserve">
     <value>模板</value>
   </data>
   <data name="Test Recipient" xml:space="preserve">
     <value>测试收件人</value>
   </data>
+  <data name="There are no templates available" xml:space="preserve">
+    <value>没有可用的模板</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>类型</value>
+  </data>
+  <data name="Unable to read" xml:space="preserve">
+    <value>无法读取</value>
+  </data>
+  <data name="UNC Path" xml:space="preserve">
+    <value>UNC 路径</value>
+  </data>
+  <data name="Unknown delegate" xml:space="preserve">
+    <value>未知委托</value>
+  </data>
   <data name="Unlock" xml:space="preserve">
     <value>开锁</value>
+  </data>
+  <data name="Up to date" xml:space="preserve">
+    <value>最新的</value>
   </data>
   <data name="Update" xml:space="preserve">
     <value>更新</value>
   </data>
+  <data name="Update Access Level" xml:space="preserve">
+    <value>更新访问级别</value>
+  </data>
   <data name="Update Branch" xml:space="preserve">
     <value>更新分支</value>
+  </data>
+  <data name="Update Credential Source" xml:space="preserve">
+    <value>更新凭据源</value>
+  </data>
+  <data name="Update Credentials" xml:space="preserve">
+    <value>更新凭据</value>
   </data>
   <data name="Update Scheduled" xml:space="preserve">
     <value>已计划更新</value>
@@ -537,8 +912,20 @@
   <data name="Update Settings" xml:space="preserve">
     <value>更新设置</value>
   </data>
+  <data name="Upload" xml:space="preserve">
+    <value>上传</value>
+  </data>
+  <data name="Upload SSL Certificate" xml:space="preserve">
+    <value>上传SSL证书</value>
+  </data>
+  <data name="Upload Thumbnail" xml:space="preserve">
+    <value>上传缩略图</value>
+  </data>
   <data name="Upload Thumbnail Photo" xml:space="preserve">
     <value>上传缩略图照片</value>
+  </data>
+  <data name="Use Custom Credentials" xml:space="preserve">
+    <value>使用自定义凭据</value>
   </data>
   <data name="Use SMTP Authentication" xml:space="preserve">
     <value>使用 SMTP 身份验证</value>
@@ -564,11 +951,17 @@
   <data name="UseTLS" xml:space="preserve">
     <value>使用TLS</value>
   </data>
+  <data name="Visible" xml:space="preserve">
+    <value>可见</value>
+  </data>
   <data name="Website FQDN" xml:space="preserve">
     <value>网站 FQDN</value>
   </data>
   <data name="Website Name" xml:space="preserve">
     <value>网站名称</value>
+  </data>
+  <data name="You have unsaved changes" xml:space="preserve">
+    <value>您有未保存的更改</value>
   </data>
   <data name="Zip Code" xml:space="preserve">
     <value>邮政编码</value>

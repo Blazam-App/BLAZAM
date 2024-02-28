@@ -5,12 +5,12 @@
 @using BLAZAM.Gui.Helper
 @using BLAZAM.Gui.UI.Outputs.Jobs;
 @{
-    string testValue="";
-    Type valueType =testValue.GetType();
+    string testValue = "";
+    Type valueType = testValue.GetType();
 }
 <AppPageTitle>@AppLocalization["Home"]</AppPageTitle>
 
-@if (MOTD.HasValue && MOTD.Value.ToString() != "")
+    @if (MOTD.HasValue && MOTD.Value.ToString() != "")
 {
     <MudAlert Class="mb-6" ShowCloseIcon=false Elevation="3">
 
@@ -19,7 +19,10 @@
 
     </MudAlert>
 }
-<CurrentUserDashboardWidgets/>
+
+
+<CurrentUserDashboardWidgets />
+
 
 @if (ApplicationInfo.InDebugMode)
 {
@@ -47,7 +50,15 @@
         {
             IJob job = new Job("Test Job");
             IJob job2 = new Job("Nested Job");
-            IJobStep step1 = new JobStep("Regular Step Passes", (step) => { Task.Delay(2000).Wait(); return true; });
+            IJobStep step1 = new JobStep("Regular Step Passes", (step) =>
+            {
+                for (int x = 1; x < 6; x++)
+                {
+                    Task.Delay(400).Wait();
+                    step.Progress = (x / 5.0) * 100.0;
+                }
+                return true;
+            });
             IJobStep step2 = new JobStep("Regular Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
             IJobStep step3 = new JobStep("Regular Step Throws", (step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); return false; });
             IJobStep step4 = new JobStep("Nested Step Passes", (step) => { Task.Delay(2000).Wait(); return true; });

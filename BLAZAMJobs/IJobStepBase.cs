@@ -3,7 +3,7 @@ using BLAZAM.Common.Data.Interfaces;
 
 namespace BLAZAM.Jobs
 {
-    public interface IJobStepBase: IProgressTracker<double?>
+    public interface IJobStepBase : IProgressTracker<double?>
     {
 
         /// <summary>

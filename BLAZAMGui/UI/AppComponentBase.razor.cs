@@ -36,7 +36,10 @@ namespace BLAZAM.Gui.UI
         protected IJSRuntime JS { get; set; }
 
         [Inject]
-        public IApplicationUserStateService UserStateService { get; set; }
+        public IApplicationUserStateService UserStateService { get; set; } 
+        
+        [Inject]
+        public IApplicationNewsService ApplicationNewsService { get; set; }
 
         [Inject]
         public ICurrentUserStateService CurrentUser { get; set; }

@@ -156,7 +156,7 @@ namespace BLAZAM.Jobs
                     step.Cancel();
                 }
                 Result = JobResult.Cancelled;
-               // EndTime = DateTime.Now;
+                // EndTime = DateTime.Now;
                 Progress = 100;
             }
         }
