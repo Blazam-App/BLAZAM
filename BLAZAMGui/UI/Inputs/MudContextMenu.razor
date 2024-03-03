@@ -1,0 +1,52 @@
+﻿<div class="pa-0 ma-0 " @oncontextmenu="ShowContextMenu" @oncontextmenu:preventDefault="true">
+    @if (Text != null)
+    {
+        @Text
+    }
+    @ChildContent
+</div>
+<MudMenu Class="@(IsMenuShown?"absolute":"d-none")" @ref=contextMenu>
+    @MenuContents
+</MudMenu>
+@code{
+    private MudMenu? contextMenu;
+    [Parameter]
+    public bool IsMenuShown
+    {
+        get { return contextMenu?.IsOpen ?? false; }
+        set
+        {
+            if (value)
+            {
+                if (!IsMenuShown)
+                {
+                    contextMenu?.OpenMenu(null);
+                }
+            }
+            else
+            {
+                if (IsMenuShown)
+                {
+                    contextMenu?.CloseMenu();
+                }
+            }
+        }
+    }
+    [Parameter]
+    public EventCallback<bool> IsMenuShownChanged{ get => contextMenu.IsOpenChanged; set => contextMenu.IsOpenChanged = value; }
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public string? Text { get; set; } = null;
+    [Parameter]
+    public RenderFragment MenuContents { get; set; }
+
+
+    private async void ShowContextMenu(MouseEventArgs? args = null)
+    {
+        // contextMenu?.Activate(activator, args);
+        contextMenu?.OpenMenu(args);
+        await InvokeAsync(StateHasChanged);
+    }
+}
+
