@@ -17,9 +17,27 @@
     <Columns>
         <TemplateColumn Title="Name">
             <CellTemplate>
+                <MudContextMenu>
+
+                        <ChildContent>
+
                 <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
-                    <MudText>@context.Item?.CanonicalName</MudText>
-                </MudTooltip>
+                            <MudText>@context.Item?.CanonicalName</MudText>
+                        </MudTooltip>
+
+                        </ChildContent>
+                    <MenuContents>
+
+                            @if (@context.Item.CanUnlock)
+                            {
+                            <MudMenuItem OnClick="(()=>{UnlockAccount(context.Item);})" Icon="@Icons.Outlined.LockOpen">
+                                @AppLocalization["Unlock User"]
+                                </MudMenuItem>
+
+                                }
+
+                        </MenuContents>
+                    </MudContextMenu>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="Locked Out">
@@ -49,13 +67,41 @@
         await base.OnInitializedAsync();
 
         Title = "Locked Out Users";
+        await RefreshUsers();
+    }
+
+    async Task RefreshUsers()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
         LockedUsers = (await Directory.Users.FindLockedOutUsersAsync()).OrderByDescending(u => u.LockoutTime).Where(u => u.CanRead).ToList();
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
     }
+
     void GoTo(DataGridRowClickEventArgs<IADUser> args)
     {
         Nav.NavigateTo(args.Item.SearchUri);
     }
+    async void UnlockAccount(IADUser userToUnlock)
+    {
+        if (userToUnlock.LockedOut){
 
+            userToUnlock.LockedOut=false;
+            var changes = userToUnlock.Changes;
+
+            var unlockJob = await userToUnlock.CommitChangesAsync();
+            await AuditLogger.User.Changed(userToUnlock, changes);
+            if(unlockJob.Result== JobResult.Passed)
+            {
+                await RefreshUsers();
+
+                SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" unlocked"]);
+            }
+            else
+            {
+                SnackBarService.Error("Could not unlock: "+unlockJob.Exception?.Message);
+            }
+        }
+    }
 }

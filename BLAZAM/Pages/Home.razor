@@ -26,6 +26,14 @@
 
 @if (ApplicationInfo.InDebugMode)
 {
+    <MudContextMenu Text="Test Context Menu">
+        <MenuContents>
+
+            <MudMenuItem>Test Item</MudMenuItem>
+            <MudMenuItem>Test Item</MudMenuItem>
+            <MudMenuItem>Test Item</MudMenuItem>
+        </MenuContents>
+    </MudContextMenu><br/>
     <MudButton Variant="Variant.Filled" OnClick="testJob">Run Test Job</MudButton>
 }
 
