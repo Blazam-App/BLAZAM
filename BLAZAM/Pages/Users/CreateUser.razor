@@ -30,11 +30,11 @@
             {
                 <MudPaper Width="300px">
                     <MudText>@AppLocalization["There are no templates available"]</MudText>
-                    <AuthorizeView Roles="@UserRoles.SuperAdmin">
-                        <MudLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">Create One</MudLink>
+                        <AuthorizeView Roles="@UserRoles.SuperAdmin">
+                            <MudLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">Create One</MudLink>
 
-                    </AuthorizeView>
-                </MudPaper>
+                        </AuthorizeView>
+                    </MudPaper>
             }
             <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true; newUser=null; SelectedTemplate=null; SelectedStep=4;})">Custom</MudButton>
 
@@ -51,7 +51,7 @@
 
 
             <NewUserNameEntry @bind-NewUserName=@newUserName OnNext="CreateTemplateUser" OnBack="@(()=>{SelectedStep=0;})" />
-            
+
 
 
         </ChildContent>
@@ -110,7 +110,7 @@
         </TabContent>
         <ChildContent>
             @*TODO: The following binding cause the next button to not update when validation is reached, updates are controlled from
-                this element
+            this element
             *@
             <ViewUser DirectoryEntry="@newUser" @bind-ConfirmPassword=@customConfirmPassword @bind-Password=customPassword />
             <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=4;})">Back</MudButton>
@@ -204,8 +204,12 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
             {
                 if (newUser == null)
                 {
-                    newUser = selectedOU.CreateUser(customUserDisplayName.Trim());
-                    newUser.DisplayName = customUserDisplayName;
+                    if (customUserDisplayName == null) SnackBarService.Error(AppLocalization["No display name was set"]);
+                    else
+                    {
+                        newUser = selectedOU.CreateUser(customUserDisplayName.Trim());
+                        newUser.DisplayName = customUserDisplayName;
+                    }
                 }
                 else
                 {
@@ -240,22 +244,22 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
             {
                 try
                 {
-                    if (fieldValue.Field != null)
+                    if (fieldValue.Field != null && fieldValue.Value != null)
                         if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
                             newUser.HomeDirectory = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
                         else
                             newUser.NewEntryProperties[fieldValue.Field.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
-                    else if (fieldValue.CustomField != null)
+                    else if (fieldValue.CustomField != null && fieldValue.Value != null)
                         newUser.NewEntryProperties[fieldValue.CustomField.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value.ToString() + " {@Error}", ex);
+                    Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value?.ToString() + " {@Error}", ex);
                 }
 
             }
-            var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName,false);
-            if (conflictingEntry != null)
+            var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName, false);
+            if (conflictingEntry != null && conflictingEntry.SamAccountName?.Equals(newUser.SamAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
             {
                 newUser = null;
                 SnackBarService.Warning("An account with that name already exists! " + conflictingEntry.SamAccountName);
@@ -278,7 +282,8 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
                 SelectedStep = 6;
 
             }
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
 
             Loggers.ActiveDirectryLogger.Error("Error while creating template user {@Error}", ex);
