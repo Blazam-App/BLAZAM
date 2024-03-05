@@ -1,7 +1,8 @@
 ﻿@inject IAppDatabaseFactory factory
+@inject IActiveDirectoryContextFactory directoryFactory
+@inherits AppComponentBase
 @page "/benchmark"
 
-@inject IActiveDirectoryContext Dir
 
 <h3>Benchmark</h3>
 <p>Number of cycles</p>
@@ -16,17 +17,17 @@
 <p>User Bench</p>
 <p>email: @userBench?.SamAccountName</p>
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     ActiveDirectoryContext ad;
     bool Running = false;
-    int runCount;
+    int runCount = 1;
     int cycle;
     double elapsed;
     double elapsed2;
     IADUser userBench;
     protected override void OnInitialized()
     {
-       // ad = new ActiveDirectory(factory, true);
+        // ad = new ActiveDirectory(factory, true);
     }
     async Task Benchmark1()
     {
@@ -39,8 +40,9 @@
             for (cycle = 0; cycle < runCount; cycle++)
             {
                 DateTime start = DateTime.Now;
+                var dir = Directory as ActiveDirectoryContext;
 
-
+                var user = dir.Authenticate(new() { Username = "johnsoncontrols", Password = "bburg123" });
                 runs[cycle] = (DateTime.Now - start).TotalSeconds;
                 InvokeAsync(StateHasChanged);
 
@@ -79,7 +81,9 @@
 
                 DateTime start = DateTime.Now;
 
-                Dir.Users.FindUsersByString("cja");
+                var dir = Directory as ActiveDirectoryContext;
+                var user = dir.Authenticate_Alt(new() { Username = "johnsoncontrols", Password = "bburg123" });
+
                 runs[cycle] = (DateTime.Now - start).TotalSeconds;
                 
                 InvokeAsync(StateHasChanged);
