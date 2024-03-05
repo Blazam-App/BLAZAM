@@ -5,10 +5,12 @@
     }
     @ChildContent
 </div>
-<MudMenu Class="@(IsMenuShown?"absolute":"d-none")" @ref=contextMenu>
+<MudMenu Dense=true
+         Class="@(IsMenuShown?"absolute":"d-none")"
+         @ref=contextMenu>
     @MenuContents
 </MudMenu>
-@code{
+@code {
     private MudMenu? contextMenu;
     [Parameter]
     public bool IsMenuShown
@@ -33,7 +35,7 @@
         }
     }
     [Parameter]
-    public EventCallback<bool> IsMenuShownChanged{ get => contextMenu.IsOpenChanged; set => contextMenu.IsOpenChanged = value; }
+    public EventCallback<bool> IsMenuShownChanged { get => contextMenu.IsOpenChanged; set => contextMenu.IsOpenChanged = value; }
     [Parameter]
     public RenderFragment ChildContent { get; set; }
     [Parameter]
