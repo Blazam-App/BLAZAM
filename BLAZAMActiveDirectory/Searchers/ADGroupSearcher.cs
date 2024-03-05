@@ -130,7 +130,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
             List<IADGroup> foundGroups = new List<IADGroup>();
             if (list != null)
             {
-                string query = "";
 
                 foreach (string groupDN in list)
                 {
