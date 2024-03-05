@@ -199,9 +199,10 @@ namespace BLAZAM.Server.Data.Services
                     dbUserSettings.Email = this.Preferences?.Email;
                     dbUserSettings.ReadNewsItems = this.Preferences?.ReadNewsItems??new();
                     SaveDashboardWidgets(dbUserSettings);
-                    OnSettingsChanged?.Invoke(dbUserSettings);
                     await context.SaveChangesAsync();
                     GetUserSettingFromDB();
+                    OnSettingsChanged?.Invoke(dbUserSettings);
+
                     return true;
                 }
 
