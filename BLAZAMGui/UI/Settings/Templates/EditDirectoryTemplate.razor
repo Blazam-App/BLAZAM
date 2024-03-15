@@ -11,6 +11,9 @@
             <MudStack>
                 <MudText Class="mt-5" Typo="Typo.h6">@AppLocalization["Current Template:"] @originalTemplate.Name</MudText>
                     <MudSelectList T="DirectoryTemplate"
+                                   AnchorOrigin="Origin.BottomCenter"
+                                   TransformOrigin="Origin.TopCenter"
+                                   FullWidth=true
                                    HelperText="@(dropdownTemplates.IsNullOrEmpty()?"There are no other templates":null)"
                                    Disabled=@(dropdownTemplates.IsNullOrEmpty())
                                    Clearable=true
@@ -18,7 +21,7 @@
 await ParentTemplateChanged(null);
 })"
                                    Label="Parent Template"
-                                   Values="@dropdownTemplates"
+                                   Values="@dropdownTemplates.OrderBy(t=>t.Name)"
                                    Value="@DirectoryTemplate.ParentTemplate"
                                    ValueChanged="@ParentTemplateChanged" />
 
@@ -28,19 +31,13 @@ await ParentTemplateChanged(null);
 
 
                     <MudSelectList T="string"
+                                   AnchorOrigin="Origin.BottomCenter"
+                                   TransformOrigin="Origin.TopCenter"
                                    Clearable=true
-                                   Values="categories"
+                                   Values="categories.OrderBy(t=>t)"
                                    ValueChanged="@((value)=>{DirectoryTemplate.Category=value;})"
                                    @bind-Text=DirectoryTemplate.Category
                                    Label="@AppLocalization["Template Category"]" />
-                    @*      <MudAutocomplete CoerceValue=true
-            CoerceText=false
-            Clearable=true
-
-            SearchFunc="SearchCategories"
-            @bind-Text=DirectoryTemplate.Category
-            Label="@AppLocalization["Template Category"]" />
-            *@
 
                     <MudSwitch Label="@AppLocalization["Visible"]"
                                Color="@(DirectoryTemplate.Visible==true?Color.Success:Color.Warning)"
@@ -421,18 +418,18 @@ await ParentTemplateChanged(null);
         try
         {
             var group = SelectedGroup as IADGroup;
-            if (group!=null && group.SID != null && Context != null)
+            if (group != null && group.SID != null && Context != null)
             {
-                  var existing = await Context.DirectoryTemplateGroups.Where(g => g.GroupSid == group.SID.ToSidString()).FirstOrDefaultAsync();
-            if (existing == null)
-                existing = new DirectoryTemplateGroup()
-                    {
-                        GroupSid = group.SID.ToSidString()
-                    };
-            DirectoryTemplate.AssignedGroupSids.Add(existing);
-            SelectedGroup = null;
+                var existing = await Context.DirectoryTemplateGroups.Where(g => g.GroupSid == group.SID.ToSidString()).FirstOrDefaultAsync();
+                if (existing == null)
+                    existing = new DirectoryTemplateGroup()
+                        {
+                            GroupSid = group.SID.ToSidString()
+                        };
+                DirectoryTemplate.AssignedGroupSids.Add(existing);
+                SelectedGroup = null;
             }
-          
+
         }
         catch (Exception ex)
         {
@@ -465,7 +462,7 @@ await ParentTemplateChanged(null);
 
         }
 
-        if (DirectoryTemplate != null &&Context!=null && !Context.EntityIsTracked(DirectoryTemplate)==true)
+        if (DirectoryTemplate != null && Context != null && !Context.EntityIsTracked(DirectoryTemplate) == true)
         {
             var matching = await Context.DirectoryTemplates.Include(dt => dt.ParentTemplate).Where(dt => dt.Id == DirectoryTemplate.Id).FirstOrDefaultAsync();
             if (matching != null) _template = matching;
@@ -590,7 +587,12 @@ await ParentTemplateChanged(null);
     {
         if (Context == null)
             throw new ApplicationException("Database not available");
-        DirectoryTemplate.ParentOU = SelectedOU.DN;
+        DirectoryTemplate.ParentOU = SelectedOU?.DN;
+        if (DirectoryTemplate.ParentTemplate != null)
+        {
+            DirectoryTemplate.ParentTemplate = await Context.DirectoryTemplates.FirstOrDefaultAsync(x => x.Id == DirectoryTemplate.ParentTemplate.Id);
+        }
+
         if (DirectoryTemplate.Id == 0)
         {
             try
@@ -607,7 +609,6 @@ await ParentTemplateChanged(null);
                     field.Field = Context.ActiveDirectoryFields.FirstOrDefault(f => f.Id == field.Field.Id);
                 }
                 DirectoryTemplate.AssignedGroupSids = trackedGroups;
-                DirectoryTemplate.ParentTemplate = null;
                 await Context.DirectoryTemplates.AddAsync(DirectoryTemplate);
                 var result = await Context.SaveChangesAsync();
 

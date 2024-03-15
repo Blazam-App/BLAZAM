@@ -248,6 +248,7 @@ namespace BLAZAM.Update.Services
 
         private bool TestDirectoryCredentials()
         {
+            if(_dbFactory == null)return false;
             using var context = _dbFactory.CreateDbContext();
             //Prepare impersonation
             WindowsImpersonation? impersonation = null;

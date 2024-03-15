@@ -78,7 +78,7 @@ namespace BLAZAM.Database.Models
                         case "description":
                         case "displayName":
                         case "distinguishedName":
-                        case "employeedId":
+                        case "employeeId":
                         case "givenname":
                         case "homeDirectory":
                         case "homeDrive":

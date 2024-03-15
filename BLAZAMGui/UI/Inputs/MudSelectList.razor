@@ -2,6 +2,7 @@
 @typeparam T
 
 <MudSelect T="T"
+    
            @bind-SelectedValues=@SelectedValues
            @bind-Text=@Text
            Value=@Value
@@ -21,8 +22,10 @@
            AutoFocus=@AutoFocus
            Disabled=@Disabled
            Clearable=@Clearable
-           ListClass=@(ListClass+"w-min")
-           Style="@(Style+" min-width:100px;")">
+           ListClass=@(ListClass)
+           Style="@(Style+" min-width:100px;")"
+           AnchorOrigin="AnchorOrigin"
+           TransformOrigin="TransformOrigin">
     @if (Values != null && Values.Count() > 0)
     {
         @foreach (var val in Values)

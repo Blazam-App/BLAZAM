@@ -200,7 +200,7 @@ namespace BLAZAM.Services.Chat
 
         public async Task<ChatRoom?> GetChatRoom(ChatRoom? chatRoom)
         {
-            chatRoom = ChatRooms.Where(cr => cr.Equals(chatRoom)).FirstOrDefault();
+            chatRoom = await ChatRooms.Where(cr => cr.Equals(chatRoom)).FirstOrDefaultAsync();
             //var context = Context;
             // return null;
             //chatRoom = await context.ChatRooms.Where(cr => cr.Equals(chatRoom)).FirstOrDefaultAsync();
