@@ -127,7 +127,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public override IJob CommitChanges(IJob? commitJob=null)
         {
-            //dcr ??= new DirectoryChangeResult();
             if (ToAssignTo.Count > 0)
             {
                 PostCommitSteps.Add(new Jobs.JobStep("Assign to groups", (step) =>
@@ -135,7 +134,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     ToAssignTo.ForEach(g =>
                     {
                         g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
-                        //dcr.AssignedGroups.Add(g.Group);
 
                     });
                     return true;
@@ -148,7 +146,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     ToUnassignFrom.ForEach(g =>
                     {
                         g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
-                       // dcr.UnassignedGroups.Add(g.Group);
                     });
                     return true;
                 }));

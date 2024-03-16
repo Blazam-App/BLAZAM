@@ -8,10 +8,8 @@
         <Row>
 
             @{
-                string adminEnabledHelperText = "";
                 if (IsAdmin)
                 {
-                    adminEnabledHelperText = "Field unlocked because you are admin.";
                     <MudAlert Class="mud-alert-info">
                         All fields are editable because you are an admin.
                     </MudAlert>
