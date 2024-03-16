@@ -40,7 +40,7 @@
 
                 <MudIconButton Color=Color.Tertiary
                                Class="align-middle"
-                               OnClick="@(()=>{SelectedTemplate = new();Nav.NavigateTo("/templates");})"
+                               OnClick="@(()=>{SelectedTemplate = new(); TemplateIdParameter=null; Nav.NavigateTo("/templates/0");})"
                                Icon="@Icons.Material.Filled.AddCard" />
 
             </MudTooltip>
@@ -50,7 +50,7 @@
             <MudTooltip Text="@AppLocalization["New template"]">
                 <MudIconButton Color=Color.Tertiary
                                Class="align-middle"
-                               OnClick="@(()=>{SelectedTemplate = new();Nav.NavigateTo("/templates");})"
+                               OnClick="@(()=>{SelectedTemplate = new();})"
                                Icon="@Icons.Material.Filled.AddCard" />
 
             </MudTooltip>
