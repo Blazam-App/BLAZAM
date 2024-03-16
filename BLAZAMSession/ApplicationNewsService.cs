@@ -16,6 +16,7 @@ namespace BLAZAM.Session
     {
         private HttpClient _httpClient;
         private Timer? _pollingTimer;
+        private bool _pollCompleted = false;
         private List<NewsItem> _allNewsItems = new List<NewsItem>();
         private List<NewsItem> activeNewsItems => _allNewsItems.Where(x=>x.DeletedAt==null && x.Published==true && (x.ScheduledAt==null||x.ScheduledAt<DateTime.Now)&&(x.ExpiresAt==null||x.ExpiresAt>DateTime.Now)).ToList();
         public AppEvent OnNewItemsAvailable { get; set; }
@@ -39,6 +40,7 @@ namespace BLAZAM.Session
         {
             try
             {
+                _pollCompleted = false;
                 var apiResponse = await _httpClient.GetAsync("newsItems");
                 if (apiResponse != null && apiResponse.IsSuccessStatusCode)
                 {
@@ -47,6 +49,8 @@ namespace BLAZAM.Session
                     if (allNewsItems != null)
                     {
                         _allNewsItems = allNewsItems;
+                _pollCompleted = true;
+
                         OnNewItemsAvailable?.Invoke();
                     }
                 }
@@ -60,13 +64,17 @@ namespace BLAZAM.Session
         {
             var activeItems = activeNewsItems;
             var unreadItems = activeItems.Where(x => !user.ReadNewsItems.Any(r=>r.NewsItemId==x.Id)||user.ReadNewsItems.Any(r=>r.NewsItemId==x.Id&& r.NewsItemUpdatedAt<x.UpdatedAt)).ToList();
-            var staleItems = user.ReadNewsItems.Where(x => x.NewsItemId<100000000000 && !activeItems.Any(a => a.Id == x.NewsItemId)).ToList();
-            if (staleItems.Count > 0)
+            if (_pollCompleted)
             {
-                staleItems.ForEach(x => {
-                    user.ReadNewsItems.Remove(x);
-                });
-                user.SaveUserSettings();
+                var staleItems = user.ReadNewsItems.Where(x => x.NewsItemId < 100000000000 && !activeItems.Any(a => a.Id == x.NewsItemId)).ToList();
+                if (staleItems.Count > 0)
+                {
+                    staleItems.ForEach(x =>
+                    {
+                        user.ReadNewsItems.Remove(x);
+                    });
+                    user.SaveUserSettings();
+                }
             }
             return unreadItems;
 

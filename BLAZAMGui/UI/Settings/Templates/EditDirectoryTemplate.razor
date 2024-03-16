@@ -34,6 +34,10 @@ await ParentTemplateChanged(null);
                                    AnchorOrigin="Origin.BottomCenter"
                                    TransformOrigin="Origin.TopCenter"
                                    Clearable=true
+                                   Adornment="Adornment.End"
+                                   AdornmentIcon="@Icons.Material.Filled.Add"
+                                   AdornmentColor="@Color.Success"
+                                   OnAdornmentClick="@(()=>{ })"
                                    Values="categories.OrderBy(t=>t)"
                                    ValueChanged="@((value)=>{DirectoryTemplate.Category=value;})"
                                    @bind-Text=DirectoryTemplate.Category
