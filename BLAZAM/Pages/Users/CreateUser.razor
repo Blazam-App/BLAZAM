@@ -4,7 +4,6 @@
 
 
 <AppPageTitle>Create User</AppPageTitle>
-
 <MudTabs PanelClass="mx-auto mud-container mud-container-maxwidth-sm" @ref=Tabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="SelectedStep" Centered=true>
 
     <MudTabPanel>
@@ -30,11 +29,11 @@
             {
                 <MudPaper Width="300px">
                     <MudText>@AppLocalization["There are no templates available"]</MudText>
-                        <AuthorizeView Roles="@UserRoles.SuperAdmin">
-                            <MudLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">Create One</MudLink>
+                    <AuthorizeView Roles="@UserRoles.SuperAdmin">
+                        <MudLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">Create One</MudLink>
 
-                        </AuthorizeView>
-                    </MudPaper>
+                    </AuthorizeView>
+                </MudPaper>
             }
             <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true; newUser=null; SelectedTemplate=null; SelectedStep=4;})">Custom</MudButton>
 
@@ -65,7 +64,6 @@
         <ChildContent>
             <NewTemplateUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
             <MudButton Disabled=LoadingData Color=Color.Primary OnClick="@(()=>{SelectedStep=1;})">Back</MudButton>
-            <MudButton Color=Color.Success OnClick="@(()=>{SelectedStep=3;})">Next</MudButton>
 
         </ChildContent>
 
@@ -141,7 +139,6 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
 
     </MudTabPanel>
 </MudTabs>
-
 
 
 
