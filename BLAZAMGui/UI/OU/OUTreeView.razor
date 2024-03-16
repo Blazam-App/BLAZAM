@@ -9,7 +9,7 @@
              Dense="true"
              Hover="true"
              MaxHeight="400px"
-             Color="Color.Success"
+             Color="Color.Primary"
              @bind-SelectedValue="SelectedOU">
     <ItemTemplate>
         <MudTreeViewItem Value="@context"
@@ -19,6 +19,7 @@
                           @bind-Activated=context.IsSelected
                          Text="@context.CanonicalName"
                          Icon="@Icons.Material.Filled.Folder"
+                         IconColor="@(context.IsSelected==true?Color.Primary:Color.Default)"
                          Class="minw-max w-100"
                          CanExpand=context.HasChildren
                          EndText="@EndText?.Invoke(context)">
