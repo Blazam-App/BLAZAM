@@ -148,7 +148,9 @@ a, .btn-link {
 .left-0 {
     left: 0px !important;
 }
-
+.animate-width {
+    transition: width 0.5s;
+}
 
 @media(max-width:600px) {
     .app-subheader {

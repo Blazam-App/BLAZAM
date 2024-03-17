@@ -39,7 +39,7 @@
     {
         <MudIconButton Disabled=@(!accountEntry.CanUnlock) OnClick=Unlock Icon=@Icons.Material.Filled.Lock />
     }
-    <MudHidden Breakpoint="Breakpoint.Xs">
+    <MudHidden Breakpoint="Breakpoint.SmAndDown">
         <MudToolBar Class="align-middle" Style="height:32px" DisableGutters Dense>
             @if (accountEntry != null && ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable)))
 
@@ -126,27 +126,35 @@
             @if (DirectoryEntry.CanEdit)
             {
                 <MudTooltip Text="@AppLocalization["Change History"]">
-                    <MudIconButton OnClick="@ShowHistory" Icon="@Icons.Material.Filled.History" />
+                    <MudIconButton OnClick="@ShowHistory"
+                                   Icon="@Icons.Material.Filled.History" />
                 </MudTooltip>
 
             }
 
             <MudTooltip Text="@(IsFavorite==true?AppLocalization["Remove from favorites"]:AppLocalization["Add to favorites"])">
-                <MudIconButton OnClick="@ToggleFavorite" Icon="@(IsFavorite==true?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)" Color="@(IsFavorite==true?Color.Warning:Color.Default)" />
+                <MudIconButton OnClick="@ToggleFavorite"
+                               Icon="@(IsFavorite==true?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
+                               Color="@(IsFavorite==true?Color.Warning:Color.Default)" />
             </MudTooltip>
         </MudToolBar>
     </MudHidden>
     <MudSpacer />
     <EntrySpecificChat Entry="DirectoryEntry" />
-    <MudHidden Breakpoint="Breakpoint.SmAndUp">
+    <MudHidden Breakpoint="Breakpoint.MdAndUp">
 
-        <MudMenu Class="align-self-end" StartIcon="@Icons.Material.Filled.Settings">
+        <MudMenu Class="align-self-end"
+        IconColor="@Color.Surface"
+                 StartIcon="@Icons.Material.Filled.Settings">
             @if (accountEntry != null)
             {
                 @if ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable))
                 {
                     <MudMenuItem>
-                        <MudSwitch Color=Color.Success Label="Account Enabled" @bind-Checked=@(accountEntry.Enabled) Disabled=@((accountEntry.Disabled && !accountEntry.CanEnable)||(accountEntry.Enabled && !accountEntry.CanDisable)) />
+                        <MudSwitch Color=Color.Success
+                                   Label="Account Enabled"
+                                   @bind-Checked=@(accountEntry.Enabled)
+                                   Disabled=@((accountEntry.Disabled && !accountEntry.CanEnable)||(accountEntry.Enabled && !accountEntry.CanDisable)) />
 
                     </MudMenuItem>
                 }

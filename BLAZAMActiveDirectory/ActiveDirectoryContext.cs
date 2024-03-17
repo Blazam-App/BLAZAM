@@ -178,6 +178,7 @@ namespace BLAZAM.ActiveDirectory
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
         private IApplicationUserState? currentUser;
         private IADUser? _keepAliveUser;
+        private bool _keepAlive;
 
         public DirectoryConnectionStatus Status
         {
@@ -276,16 +277,21 @@ namespace BLAZAM.ActiveDirectory
         public List<DomainController> DomainControllers { get; private set; } = new();
 
 
-        private async void KeepAlive(object? state)
+        private async void KeepAlive(object? state=null)
         {
-            if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
+            _keepAlive = true;
+            while (_keepAlive)
             {
-                await ConnectAsync();
-            }
-            else if (Status == DirectoryConnectionStatus.OK)
-            {
-                //Throw away query used to keep connection alive
-                _keepAliveUser = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
+                if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
+                {
+                    await ConnectAsync();
+                }
+                else if (Status == DirectoryConnectionStatus.OK)
+                {
+                    //Throw away query used to keep connection alive
+                    _keepAliveUser = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
+                }
+                await Task.Delay(30000);
             }
         }
 
@@ -307,6 +313,8 @@ namespace BLAZAM.ActiveDirectory
         {
             //Set status flag
             Status = DirectoryConnectionStatus.Connecting;
+            _timer?.Dispose();
+
             Loggers.ActiveDirectryLogger.Information("Initiating Active Directory connection");
             try
             {
@@ -324,9 +332,7 @@ namespace BLAZAM.ActiveDirectory
                     //No reason connecting if we're already connected
                     if (Status != DirectoryConnectionStatus.OK)
                     {
-                        _timer?.Dispose();
-                        _timer = new Timer(KeepAlive, null, 0, 30000);
-
+                      
                         //Ok get the latest settings
                         ADSettings? ad = Context?.ActiveDirectorySettings.FirstOrDefault();
                         ConnectionSettings = ad;
@@ -412,6 +418,8 @@ namespace BLAZAM.ActiveDirectory
                                                 Loggers.ActiveDirectryLogger.Information("Active Directory test passed");
 
                                                 Status = DirectoryConnectionStatus.OK;
+                                                //_timer = new Timer(KeepAlive, null, 0, 30000);
+                                                KeepAlive();
                                                 TryGetDomainControllers();
                                                 FailedConnectionAttempts = 0;
                                             }
@@ -532,6 +540,7 @@ namespace BLAZAM.ActiveDirectory
         public void Dispose()
         {
             _timer.Dispose();
+            _keepAlive = false;
         }
 
         public IADUser? Authenticate_Alt(LoginRequest loginReq)

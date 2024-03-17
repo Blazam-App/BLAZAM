@@ -1,4 +1,5 @@
-﻿@using Microsoft.Extensions.Localization;
+﻿@using BLAZAM.Gui.Navs.Buttons
+@using Microsoft.Extensions.Localization;
 @inherits AppComponentBase
 @{
 
@@ -8,58 +9,73 @@
 
 
 
-<MudNavMenu Color="Color.Success" Bordered="true" Style="width:180px;" Class="py-3">
-    <MudStack Row=true>
-        <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
-        <MudText Align="Align.Center" Class="align-middle"> @DatabaseCache.ApplicationSettings?.AppAbbreviation</MudText>
+<MudNavMenu Color="Color.Success"
+            Bordered="true"
+            
+            Class="py-3 w-100">
+    <MudBreakpointProvider>
+        <MudHidden Breakpoint="Breakpoint.MdAndUp">
+            <MudStack Row=true>
+                <MudImage Class="app-icon"
+                          Src="@StaticAssets.ApplicationIconUri" />
+                <MudText Align="Align.Center"
+                         Class="align-middle"> @DatabaseCache.ApplicationSettings?.AppAbbreviation</MudText>
 
-        </MudStack>
-        <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/home");})" Icon="@Icons.Material.Filled.Dashboard">@AppLocalization["Home"]</MudNavLink>
-        <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/browse");})" Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up) Icon="@Icons.Material.Filled.ViewList">@AppLocalization["Browse"]</MudNavLink>
-        <AuthorizeView Context="createContext" Roles=@createRole>
-            <MudNavGroup Icon="@Icons.Material.Filled.Create" Title="@AppLocalization["Create"]" Expanded="false" Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)>
-                <AuthorizeView Roles="@UserRoles.CreateUsers">
-                    <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/users/create");})">@AppLocalization["Create User"]</MudNavLink>
-                </AuthorizeView>
-                <AuthorizeView Roles="@UserRoles.CreateGroups">
-                    <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/groups/create");})">@AppLocalization["Create Group"]</MudNavLink>
-                </AuthorizeView>
-                <AuthorizeView Roles="@UserRoles.CreateOUs">
-                    <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/ou/create");})">@AppLocalization["Create OU"]</MudNavLink>
-                </AuthorizeView>
-            </MudNavGroup>
-        </AuthorizeView>
-        <AuthorizeView Roles=@UserRoles.SuperAdmin>
-            <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/recyclebin");})"
-                        Icon="@Icons.Material.Filled.DeleteOutline"
-                        Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)>
-                @AppLocalization["Recycle Bin"]
+            </MudStack>
+        </MudHidden>
+    </MudBreakpointProvider>
+    <NavHomeButton />
+    <NavBrowseButton SelectedEntryChanged=@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);}) BrowseExpandedChanged=@((value)=>{BrowseExpandedChanged.InvokeAsync(value);}) />
+    <AuthorizeView Context="createContext" Roles=@createRole>
+        <MudNavGroup Icon="@Icons.Material.Filled.Create"
+                     Title="@AppLocalization["Create"]"
+                     Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)>
+            <AuthorizeView Roles="@UserRoles.CreateUsers">
+                <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/users/create");})">@AppLocalization["Create User"]</MudNavLink>
+            </AuthorizeView>
+            <AuthorizeView Roles="@UserRoles.CreateGroups">
+                <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/groups/create");})">@AppLocalization["Create Group"]</MudNavLink>
+            </AuthorizeView>
+            <AuthorizeView Roles="@UserRoles.CreateOUs">
+                <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/ou/create");})">@AppLocalization["Create OU"]</MudNavLink>
+            </AuthorizeView>
+        </MudNavGroup>
+    </AuthorizeView>
+    <AuthorizeView Roles=@UserRoles.SuperAdmin>
+        <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/recyclebin");})"
+                    Icon="@Icons.Material.Filled.DeleteOutline"
+                    Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)>
+            @AppLocalization["Recycle Bin"]
         </MudNavLink>
 
-        <MudNavGroup Title="@AppLocalization["Configure"]" Icon="@Icons.Material.Filled.Handyman" Expanded="false">
+        <MudNavGroup Title="@AppLocalization["Configure"]" Icon="@Icons.Material.Filled.Handyman">
             <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/settings");})">@AppLocalization["Settings"]</MudNavLink>
-                <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/permissions");})">@AppLocalization["Permissions"]</MudNavLink>
-                <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/fields");})">@AppLocalization["Fields"]</MudNavLink>
-                <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">@AppLocalization["Templates"]</MudNavLink>
-                <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/audit");})">@AppLocalization["Audit"]</MudNavLink>
-            </MudNavGroup>
-        </AuthorizeView>
+            <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/permissions");})">@AppLocalization["Permissions"]</MudNavLink>
+            <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/fields");})">@AppLocalization["Fields"]</MudNavLink>
+            <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">@AppLocalization["Templates"]</MudNavLink>
+            <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/audit");})">@AppLocalization["Audit"]</MudNavLink>
+        </MudNavGroup>
+    </AuthorizeView>
 
 
 
-    </MudNavMenu>
+</MudNavMenu>
 
 
 
 
 
-    <ScheduledUpdateAnnouncer />
+<ScheduledUpdateAnnouncer />
 
 
-    @code {
+@code {
     private bool collapseNavMenu = true;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    [Parameter]
+    public EventCallback<bool> BrowseExpandedChanged { get; set; }
 
+    [Parameter]
+    public EventCallback<IDirectoryEntryAdapter> SelectedEntryChanged { get; set; }
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -69,7 +85,11 @@
 
     }
 
-
+    public async void GotoEntry(IDirectoryEntryAdapter entry)
+    {
+        
+        Nav.NavigateTo(entry.SearchUri);
+    }
 
     private void ToggleNavMenu()
     {

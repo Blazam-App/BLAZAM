@@ -240,6 +240,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Usually only used for <see cref="IADOrganizationalUnit"/>'s
         /// </remarks>
         IEnumerable<IDirectoryEntryAdapter> Children { get; }
+        IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
 
         /// <summary>
         /// Sends all staged changes to the Active Directory server

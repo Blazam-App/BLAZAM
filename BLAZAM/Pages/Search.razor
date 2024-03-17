@@ -147,7 +147,7 @@
        });
         Searcher.ResultsCollected += ((batch) =>
              {
-                 results.AddRange(batch);
+                 results.AddRange(batch.Where(r=>r.CanRead));
              });
     }
     /// <summary>

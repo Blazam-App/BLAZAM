@@ -2,6 +2,7 @@
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics.Contracts;
 using System.DirectoryServices;
 using System.Reflection.PortableExecutable;
@@ -10,14 +11,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADOrganizationalUnit : DirectoryEntryAdapter, IADOrganizationalUnit
     {
-        private IEnumerable<IADOrganizationalUnit>? childrenCache;
+        private IEnumerable<IADOrganizationalUnit>? childOUCache;
         private IQueryable<IADUser>? childUserCache;
         private IQueryable<IADComputer>? childComputerCache;
         private IQueryable<IADGroup>? childGroupCache;
 
-        public override bool HasChildren=> SubOUs.Any();
 
-        
+
         public async Task<bool> HasChildrenAsync()
         {
             return await Task.Run(() =>
@@ -43,64 +43,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return CachedTreeViewSubOUs;
             }
         }
-        public override  IEnumerable<IDirectoryEntryAdapter> Children { get {
-                List<IDirectoryEntryAdapter>directoryEntries = new List<IDirectoryEntryAdapter>();
-                var children = DirectoryEntry.Children;
-                DirectoryEntryAdapter? thisObject=null;
-                foreach (System.DirectoryServices.DirectoryEntry child in children)
-                {
-                        
-                    if (child.Properties["objectClass"].Contains("top"))
-                    {
-                        if (child.Properties["objectClass"].Contains("computer"))
-                        {
-                            thisObject = new ADComputer();
-                        }
-                        else if (child.Properties["objectClass"].Contains("user"))
-                        {
-                            thisObject = new ADUser();
-                        }
-                        else if (child.Properties["objectClass"].Contains("organizationalUnit"))
-                        {
-                            thisObject = new ADOrganizationalUnit();
-                        }
-                        else if (child.Properties["objectClass"].Contains("group"))
-                        {
-                            thisObject = new ADGroup();
-                        }
-                        else if (child.Properties["objectClass"].Contains("printQueue"))
-                        {
-                            thisObject = new ADPrinter();
-                        }
-                        if (thisObject != null)
-                        {
-                            thisObject.Parse(directory: ActiveDirectoryContext.Instance, directoryEntry: child);
-                            directoryEntries.Add(thisObject);
 
-                        }
-
-                    }
-                    thisObject = null;
-
-                }
-                CachedChildren = directoryEntries;
-                return CachedChildren;
-            } }
         public IEnumerable<IADOrganizationalUnit> SubOUs
         {
             get
             {
-                if (childrenCache == null)
-                    childrenCache = Directory.OUs.FindSubOusByDN(DN).OrderBy(ou => ou.CanonicalName).AsQueryable();
+                if (childOUCache == null)
+                    childOUCache = Directory.OUs.FindSubOusByDN(DN).OrderBy(ou => ou.CanonicalName).AsQueryable();
 
 
-                return childrenCache;
+                return childOUCache;
             }
         }
-       
-       
 
-        public override string SearchUri => "/search/"+DN;
+
+
+        public override string SearchUri => "/search/" + DN;
 
         public override string? CanonicalName
         {
@@ -192,9 +150,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 newUser.NewEntry = true;
                 newUser.Enabled = true;
                 return newUser;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("Error while attempting to create user: "+fullContainerName + " {@Error}", ex);
+                Loggers.ActiveDirectryLogger.Error("Error while attempting to create user: " + fullContainerName + " {@Error}", ex);
                 throw ex;
             }
         }
@@ -226,13 +185,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// </summary>
         /// <param name="containerName">The container name of the new printer</param>
         /// <returns>An uncommited printer</returns>
-        public IADPrinter CreatePrinter(string containerName,string uncPath,string shortServerName)
+        public IADPrinter CreatePrinter(string containerName, string uncPath, string shortServerName)
         {
 
             IADPrinter newPrinter = new ADPrinter();
             if (DirectoryEntry == null)
                 DirectoryEntry = searchResult?.GetDirectoryEntry();
-            newPrinter.Parse(directoryEntry: DirectoryEntry.Children.Add("CN=" + shortServerName+ "-"+ containerName.Trim(), "printQueue"),directory: Directory);
+            newPrinter.Parse(directoryEntry: DirectoryEntry.Children.Add("CN=" + shortServerName + "-" + containerName.Trim(), "printQueue"), directory: Directory);
             newPrinter.NewEntry = true;
             newPrinter.UncName = uncPath;
             newPrinter.PrinterName = containerName.Trim();
@@ -252,13 +211,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             IADPrinter newPrinter = new ADPrinter();
             if (DirectoryEntry == null)
                 DirectoryEntry = searchResult?.GetDirectoryEntry();
-            newPrinter.Parse(directoryEntry: DirectoryEntry.Children.Add("CN=" + sharedPrinter.Host.CanonicalName+ "-" + sharedPrinter.ShareName.Trim(), "printQueue"),directory: Directory);
+            newPrinter.Parse(directoryEntry: DirectoryEntry.Children.Add("CN=" + sharedPrinter.Host.CanonicalName + "-" + sharedPrinter.ShareName.Trim(), "printQueue"), directory: Directory);
             newPrinter.NewEntry = true;
-            newPrinter.UncName = "\\\\"+sharedPrinter.Host.CanonicalName+"\\"+ sharedPrinter.ShareName;
+            newPrinter.UncName = "\\\\" + sharedPrinter.Host.CanonicalName + "\\" + sharedPrinter.ShareName;
             newPrinter.PrinterName = sharedPrinter.Name.Trim();
             newPrinter.ShortServerName = sharedPrinter.Host.CanonicalName;
             newPrinter.ServerName = sharedPrinter.Host.CanonicalName;
-            newPrinter.VersionNumber = 4; 
+            newPrinter.VersionNumber = 4;
             newPrinter.Location = sharedPrinter.Location.Trim();
             newPrinter.DriverName = sharedPrinter.DriverName.Trim();
             newPrinter.PortName = sharedPrinter.PortName.Trim();
