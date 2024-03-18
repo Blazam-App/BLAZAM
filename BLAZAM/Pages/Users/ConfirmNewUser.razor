@@ -178,7 +178,7 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
     bool InDirectoryTemplate(ActiveDirectoryField field)
     {
         if (DirectoryTemplate == null) return true;
-        return DirectoryTemplate?.FieldValues.Any(f => f.Field.FieldName == field.FieldName) == true;
+        return DirectoryTemplate?.FieldValues.Any(f => f.Field?.FieldName == field.FieldName) == true;
     }
     bool confirmed = false;
     bool disableCreateUserButton=false;
@@ -200,7 +200,7 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
             var result = await User.CommitChangesAsync(createUserJob);
 
             disableCreateUserButton = false;
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
             if (result.FailedSteps.Count == 0)
             {
                 var newUser = Directory.Users.FindUsersByContainerName(User.CanonicalName, false, true);

@@ -199,15 +199,15 @@ namespace BLAZAM.ActiveDirectory
 
         public IAppDatabaseFactory Factory { get; private set; }
 
-        public ADSettings? ConnectionSettings { get; private set; }
+        public ADSettings ConnectionSettings { get; private set; }
 
         public IApplicationUserStateService UserStateService { get; set; }
 
-        public WindowsImpersonation Impersonation
+        public WindowsImpersonation? Impersonation
         {
             get
             {
-                return ConnectionSettings.CreateDirectoryAdminImpersonator();
+                return ConnectionSettings?.CreateDirectoryAdminImpersonator();
             }
         }
         /// <summary>
@@ -693,7 +693,7 @@ namespace BLAZAM.ActiveDirectory
                                 var test2 = _authenticatedContext.Children.GetEnumerator();
                                 test2.MoveNext();
                                 var test3 = test2.Current as DirectoryEntry;
-                                var test4 = test3.Parent;
+                                var test4 = test3?.Parent;
                               
                                 _authenticatedContext.Dispose();
                                 return findUser;

@@ -60,12 +60,12 @@ namespace BLAZAM.Server.Pages
                // return new ObjectResult(result.Status);
 
             }
-            catch (Exception ex)
+            catch 
             {
 
                 //return new ObjectResult(ex.Message);
             }
-            if (req.ReturnUrl.IsUrlLocalToHost())
+            if (req.ReturnUrl!=null && req.ReturnUrl.IsUrlLocalToHost())
             {
                 return Redirect(req.ReturnUrl);
             }

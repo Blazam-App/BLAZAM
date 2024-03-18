@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.8.9</AssemblyVersion>
-		<Version>2024.03.17.2302</Version>
+		<Version>2024.03.17.2331</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -26,10 +26,6 @@
 		<None Remove="static\img\default_logo2.png" />
 		<None Remove="static\img\default_logo3.png" />
 		<None Remove="static\img\default_logo4.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Include="..\BLAZAMGui\UI\DirectoryModelComponent.razor.cs" Link="DirectoryModelComponent.razor.cs" />
 	</ItemGroup>
 
 	

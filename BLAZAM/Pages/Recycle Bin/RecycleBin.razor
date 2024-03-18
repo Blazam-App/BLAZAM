@@ -19,7 +19,7 @@
     <ToolBarContent>
         <MudText Typo="Typo.h6">Recycle Bin</MudText>
         <MudSpacer />
-        <MudButton Color="Color.Primary" Variant="@Variant.Outlined" OnClick="@(async()=>{await RestoreSelected();})">Restore Selected</MudButton>
+        <MudButton Color="Color.Primary" Variant="@Variant.Outlined" OnClick="@(()=>{RestoreSelected();})">Restore Selected</MudButton>
 
     </ToolBarContent>
     <Columns>
@@ -73,25 +73,9 @@
 
         await InvokeAsync(StateHasChanged);
     }
-    async Task Restore(IDirectoryEntryAdapter entryToRestore)
-    {
-        if (await MessageService.Confirm("Are you sure you want to restore " + entryToRestore.CanonicalName + " to " + entryToRestore.LastKnownParent.CanonicalName, "Restore?"))
-        {
-            if (Directory.RestoreTombstone(entryToRestore, entryToRestore.LastKnownParent))
-            {
-                SnackBarService.Success(entryToRestore.CanonicalName + " restored successfully");
-                await GetDeletedEntries();
-            }
-            else
-            {
-                SnackBarService.Error(entryToRestore.CanonicalName + " could not be restored");
 
-            }
-
-        }
-    }
     //TODO stop the confimation message on batch restore
-    async Task RestoreSelected()
+    private void RestoreSelected()
     {
         IJob batchRestore = new Job(AppLocalization["Restore"]);
         foreach (var entry in selectedEntries)
@@ -107,4 +91,23 @@
         batchRestore.Run();
         batchRestore.ShowJobDetailsDialog(MessageService);
     }
+    async Task Restore(IDirectoryEntryAdapter entryToRestore)
+    {
+        if(entryToRestore.LastKnownParent==null) throw new ApplicationException("Tombstone item has no  LastKnownParent");
+        if (await MessageService.Confirm("Are you sure you want to restore " + entryToRestore.CanonicalName + " to " + entryToRestore.LastKnownParent?.CanonicalName, "Restore?"))
+        {
+            if (entryToRestore.LastKnownParent!=null && Directory.RestoreTombstone(entryToRestore, entryToRestore.LastKnownParent))
+            {
+                SnackBarService.Success(entryToRestore.CanonicalName + " restored successfully");
+                await GetDeletedEntries();
+            }
+            else
+            {
+                SnackBarService.Error(entryToRestore.CanonicalName + " could not be restored");
+
+            }
+
+        }
+    }
+  
 }
