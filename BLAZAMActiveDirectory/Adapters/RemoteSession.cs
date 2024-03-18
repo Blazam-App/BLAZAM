@@ -20,74 +20,77 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (_session == value) return;
                 _session = value;
-                Host.Directory.Impersonation.Run(() =>
+                if (_session != null)
                 {
-                    if (!_session.Server.IsOpen)
-                        _session.Server.Open();
-                    try
+                    Host.Directory.Impersonation.Run(() =>
                     {
+                        if (!_session.Server.IsOpen)
+                            _session.Server.Open();
+                        try
+                        {
 
-                        _user = _session.UserAccount;
-                    }
-                    catch
-                    {
+                            _user = _session.UserAccount;
+                        }
+                        catch
+                        {
 
-                    }
-                    try
-                    {
+                        }
+                        try
+                        {
 
-                        _sessionId = _session.SessionId;
+                            _sessionId = _session.SessionId;
 
-                    }
-                    catch
-                    {
+                        }
+                        catch
+                        {
 
-                    }
-                    try
-                    {
+                        }
+                        try
+                        {
 
-                        _idleTime = _session.IdleTime;
+                            _idleTime = _session.IdleTime;
 
-                    }
-                    catch
-                    {
+                        }
+                        catch
+                        {
 
-                    }
-                    try
-                    {
+                        }
+                        try
+                        {
 
-                        _connectionState = _session.ConnectionState;
+                            _connectionState = _session.ConnectionState;
 
-                    }
-                    catch
-                    {
+                        }
+                        catch
+                        {
 
-                    }
-                    try
-                    {
+                        }
+                        try
+                        {
 
-                        _connectTime = _session.ConnectTime;
-                    }
-                    catch
-                    {
+                            _connectTime = _session.ConnectTime;
+                        }
+                        catch
+                        {
 
-                    }
-                    try
-                    {
+                        }
+                        try
+                        {
 
-                        _clientIPAddress = _session.ClientIPAddress;
+                            _clientIPAddress = _session.ClientIPAddress;
 
-                    }
-                    catch
-                    {
+                        }
+                        catch
+                        {
 
-                    }
+                        }
 
 
 
-                    return true;
+                        return true;
 
-                });
+                    });
+                }
             }
         }
 
