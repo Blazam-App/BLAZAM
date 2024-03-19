@@ -105,7 +105,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             if (token != null) cancellationToken = token;
             else cancellationToken = new CancellationToken();
-            if (cancellationToken?.IsCancellationRequested == true) return new();
+            if (cancellationToken?.IsCancellationRequested == true) 
+                return new();
             DateTime startTime = NewMethod();
             DirectorySearcher searcher;
             try
@@ -117,6 +118,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 {
                     //TODO Ensure bbroken
                     //Make sure this is not  usable
+                    //Seems to never pull ou's
                     //VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset),
                     Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
                 };
@@ -175,11 +177,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                         break;
                 }
-                if (EnabledOnly == true)
-                {
-                    //searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + "(!userAccountControl:1.2.840.113556.1.4.803:= 2))";
-                }
-
+              
 
                 if (!FilterQuery.IsNullOrEmpty() && ExactMatch)
                     FilterQuery = FilterQuery.Replace("*", "");
@@ -187,7 +185,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 if (GeneralSearchTerm == null)
                 {
                     FilterQuery = "";
-                    //FilterQuery = "(&(";
 
                     if (!Fields.CN.IsNullOrEmpty())
                         FilterQuery += $"(cn=*{Fields.CN}*)";
@@ -210,30 +207,35 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
 
 
-                    //FilterQuery += ")";
 
                 }
-                if (cancellationToken?.IsCancellationRequested == true) return new();
+                if (cancellationToken?.IsCancellationRequested == true) 
+                    return new();
 
                 PrepareSearcher(searcher);
-                if (cancellationToken?.IsCancellationRequested == true) return new();
+                if (cancellationToken?.IsCancellationRequested == true) 
+                    return new();
 
                 SearchTime = DateTime.Now - startTime;
 
                 PerformSearch<TObject, TInterface>(startTime, searcher, PageSize);
 
-                if (cancellationToken?.IsCancellationRequested == true) return new();
+                if (cancellationToken?.IsCancellationRequested == true) 
+                    return new();
 
                 SearchState = SearchState.Completed;
                 SearchTime = DateTime.Now - startTime;
 
+
+
+                if (cancellationToken?.IsCancellationRequested == true) 
+                    return new();
+
                 OnSearchCompleted?.Invoke();
 
 
-                //return Results;
                 return Results.Cast<TInterface>().ToList();
 
-                // return result;
 
             }
             catch (Exception ex)
@@ -247,7 +249,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
             OnSearchCompleted?.Invoke();
 
             return new List<TInterface>();
-            // Set the filter to look for a specific user
 
 
         }
@@ -340,10 +341,13 @@ namespace BLAZAM.ActiveDirectory.Searchers
             LdapQuery = searcher.Filter;
             searcher.Sort = new SortOption("cn", SortDirection.Ascending);
         }
-
+        /// <summary>
+        /// Cancels the current search if still running
+        /// </summary>
         public void Cancel()
         {
             Results.Clear();
+
             cancellationToken = new CancellationToken(true);
 
         }

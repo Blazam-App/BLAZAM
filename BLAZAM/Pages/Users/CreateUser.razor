@@ -115,8 +115,8 @@
             <MudButton Color=Color.Success
                        OnClick="@(()=>{
 SelectedStep=6;
-if(newUser.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
-newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
+if(newUser?.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
+newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
 })"
                        Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
 
@@ -171,7 +171,6 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
     bool? custom = false;
 
     NewUserName newUserName = new NewUserName();
-    bool collapseVisible = false;
     IADOrganizationalUnit? selectedOU;
     IADUser? newUser;
 
@@ -218,11 +217,13 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
     }
     async void CreateTemplateUser()
     {
+        if (SelectedTemplate?.ParentOU == null) throw new ApplicationException("Parent OU for template user was not set on creation!");
         try
         {
             LoadingData = true;
             await InvokeAsync(StateHasChanged);
             var ou = Directory.OUs.FindOuByString(SelectedTemplate.ParentOU).FirstOrDefault();
+            if (ou == null) throw new ApplicationException("OU could not be found for new user");
             newUser = ou.CreateUser(SelectedTemplate.GenerateDisplayName(newUserName));
 
             newUser.SamAccountName = SelectedTemplate.GenerateUsername(newUserName);

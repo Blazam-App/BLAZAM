@@ -276,7 +276,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        public virtual string DN
+        public virtual string? DN
         {
             get
             {
@@ -327,9 +327,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var children = DirectoryEntry.Children;
-                var entries = children.Encapsulate();
-                return entries.Count > 0;
+                if (CachedChildren == null)
+                {
+                    EnsureDirectoryEntry();
+                    var children = DirectoryEntry.Children;
+                    CachedChildren = children.Encapsulate();
+                }
+                var hasChildren = CachedChildren.Count() > 0;
+                return hasChildren;
             }
         }
         public virtual DateTime? LastChanged
@@ -587,8 +592,56 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public bool IsSelected { get; set; }
 
-        public virtual IEnumerable<IDirectoryEntryAdapter> CachedChildren { get; protected set; } = new List<IDirectoryEntryAdapter>();
-        public virtual IEnumerable<IDirectoryEntryAdapter> Children => new List<IDirectoryEntryAdapter>();
+        public virtual IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
+        public virtual IEnumerable<IDirectoryEntryAdapter> Children {
+            get
+            {
+                if (CachedChildren == null)
+                {
+                    List<IDirectoryEntryAdapter> directoryEntries = new List<IDirectoryEntryAdapter>();
+                    var children = DirectoryEntry.Children;
+                    DirectoryEntryAdapter? thisObject = null;
+                    foreach (DirectoryEntry child in children)
+                    {
+
+                        if (child.Properties["objectClass"].Contains("top"))
+                        {
+                            if (child.Properties["objectClass"].Contains("computer"))
+                            {
+                                thisObject = new ADComputer();
+                            }
+                            else if (child.Properties["objectClass"].Contains("user"))
+                            {
+                                thisObject = new ADUser();
+                            }
+                            else if (child.Properties["objectClass"].Contains("organizationalUnit"))
+                            {
+                                thisObject = new ADOrganizationalUnit();
+                            }
+                            else if (child.Properties["objectClass"].Contains("group"))
+                            {
+                                thisObject = new ADGroup();
+                            }
+                            else if (child.Properties["objectClass"].Contains("printQueue"))
+                            {
+                                thisObject = new ADPrinter();
+                            }
+                            if (thisObject != null)
+                            {
+                                thisObject.Parse(directory: Directory, directoryEntry: child);
+                                directoryEntries.Add(thisObject);
+
+                            }
+
+                        }
+                        thisObject = null;
+
+                    }
+                    CachedChildren = directoryEntries;
+                }
+                return CachedChildren;
+            }
+        }
 
         public virtual bool CanReadField(IActiveDirectoryField field)
         {
@@ -991,7 +1044,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (InvalidCastException ex)
                 {
-                    throw ex;
+                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName,ex);
                 }
                 catch (Exception ex)
                 {
@@ -1019,7 +1072,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (InvalidCastException ex)
             {
-                throw ex;
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName,ex);
+
             }
             catch
             {
@@ -1040,7 +1094,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (InvalidCastException ex)
             {
-                throw ex;
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName,ex);
+
             }
 
             catch

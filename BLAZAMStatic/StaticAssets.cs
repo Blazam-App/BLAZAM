@@ -4,9 +4,18 @@ using BLAZAM.Database.Context;
 
 namespace BLAZAM.Static
 {
+    /// <summary>
+    /// A store of static uri's for things like icons and images
+    /// </summary>
     public class StaticAssets
     {
+        /// <summary>
+        /// "/static/img/appicon.png"
+        /// </summary>
         public static string ApplicationIconUri = "/static/img/appicon.png";
+        /// <summary>
+        /// "/static/img/favicon.ico"
+        /// </summary>
         public static string FaviconUri = "/static/img/favicon.ico";
 
         public static byte[]? AppIcon(int size = 250)

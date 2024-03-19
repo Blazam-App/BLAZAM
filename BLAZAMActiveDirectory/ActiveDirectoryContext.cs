@@ -47,10 +47,11 @@ namespace BLAZAM.ActiveDirectory
                 AuthenticationTypes _authType = AuthenticationTypes.Secure;
                 var context = Factory.CreateDbContext();
                 ADSettings? ad = context?.ActiveDirectorySettings.FirstOrDefault();
-                ConnectionSettings = ad;
 
                 if (ad != null)
                 {
+                    ConnectionSettings = ad;
+
                     Loggers.ActiveDirectryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
                     //We need to determine what security options to use when authenticating
                     //based on the settings in the DB
@@ -92,7 +93,7 @@ namespace BLAZAM.ActiveDirectory
         {
             if (baseDN == null || baseDN == "")
                 baseDN = ConnectionSettings?.ApplicationBaseDN;
-            
+
             return new DirectoryEntry(
                 "LDAP://" + ConnectionSettings?.ServerAddress + ":" + ConnectionSettings?.ServerPort + "/" + baseDN,
                 ConnectionSettings?.Username,
@@ -135,7 +136,6 @@ namespace BLAZAM.ActiveDirectory
             return found;
         }
 
-        private Timer _timer;
 
         /// <summary>
 
@@ -178,6 +178,7 @@ namespace BLAZAM.ActiveDirectory
         private DirectoryConnectionStatus _status = DirectoryConnectionStatus.Connecting;
         private IApplicationUserState? currentUser;
         private IADUser? _keepAliveUser;
+        private bool _keepAlive;
 
         public DirectoryConnectionStatus Status
         {
@@ -189,7 +190,7 @@ namespace BLAZAM.ActiveDirectory
             }
         }
         public AppEvent<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
-        
+
         /// <summary>
         /// Called when a new user login matches an Active Directory user
         /// </summary>
@@ -198,15 +199,15 @@ namespace BLAZAM.ActiveDirectory
 
         public IAppDatabaseFactory Factory { get; private set; }
 
-        public ADSettings? ConnectionSettings { get; private set; }
+        public ADSettings ConnectionSettings { get; private set; }
 
         public IApplicationUserStateService UserStateService { get; set; }
 
-        public WindowsImpersonation Impersonation
+        public WindowsImpersonation? Impersonation
         {
             get
             {
-                return ConnectionSettings.CreateDirectoryAdminImpersonator();
+                return ConnectionSettings?.CreateDirectoryAdminImpersonator();
             }
         }
         /// <summary>
@@ -276,16 +277,21 @@ namespace BLAZAM.ActiveDirectory
         public List<DomainController> DomainControllers { get; private set; } = new();
 
 
-        private async void KeepAlive(object? state)
+        private async void KeepAlive(object? state = null)
         {
-            if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
+            _keepAlive = true;
+            while (_keepAlive)
             {
-                await ConnectAsync();
-            }
-            else if (Status == DirectoryConnectionStatus.OK)
-            {
-                //Throw away query used to keep connection alive
-                _keepAliveUser = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
+                if (Status != DirectoryConnectionStatus.OK && Status != DirectoryConnectionStatus.Connecting)
+                {
+                    await ConnectAsync();
+                }
+                else if (Status == DirectoryConnectionStatus.OK)
+                {
+                    //Throw away query used to keep connection alive
+                    _keepAliveUser = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
+                }
+                await Task.Delay(30000);
             }
         }
 
@@ -307,6 +313,7 @@ namespace BLAZAM.ActiveDirectory
         {
             //Set status flag
             Status = DirectoryConnectionStatus.Connecting;
+
             Loggers.ActiveDirectryLogger.Information("Initiating Active Directory connection");
             try
             {
@@ -324,19 +331,18 @@ namespace BLAZAM.ActiveDirectory
                     //No reason connecting if we're already connected
                     if (Status != DirectoryConnectionStatus.OK)
                     {
-                        _timer?.Dispose();
-                        _timer = new Timer(KeepAlive, null, 0, 30000);
 
                         //Ok get the latest settings
                         ADSettings? ad = Context?.ActiveDirectorySettings.FirstOrDefault();
-                        ConnectionSettings = ad;
 
                         if (ad != null)
                         {
+                            ConnectionSettings = ad;
+
                             Loggers.ActiveDirectryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
                             //We need to determine what security options to use when authenticating
                             //based on the settings in the DB
-                           
+
 
                             if (ad != null && ad.FQDN != null && ad.Username != null)
                             {
@@ -412,6 +418,8 @@ namespace BLAZAM.ActiveDirectory
                                                 Loggers.ActiveDirectryLogger.Information("Active Directory test passed");
 
                                                 Status = DirectoryConnectionStatus.OK;
+                                                //_timer = new Timer(KeepAlive, null, 0, 30000);
+                                                KeepAlive();
                                                 TryGetDomainControllers();
                                                 FailedConnectionAttempts = 0;
                                             }
@@ -531,7 +539,7 @@ namespace BLAZAM.ActiveDirectory
 
         public void Dispose()
         {
-            _timer.Dispose();
+            _keepAlive = false;
         }
 
         public IADUser? Authenticate_Alt(LoginRequest loginReq)
@@ -684,11 +692,11 @@ namespace BLAZAM.ActiveDirectory
                                 var test2 = _authenticatedContext.Children.GetEnumerator();
                                 test2.MoveNext();
                                 var test3 = test2.Current as DirectoryEntry;
-                                var test4 = test3.Parent;
-                              
+                                var test4 = test3?.Parent;
+
                                 _authenticatedContext.Dispose();
                                 return findUser;
-                                
+
 
 
 

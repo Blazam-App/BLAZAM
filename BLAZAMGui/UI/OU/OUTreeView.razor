@@ -2,8 +2,7 @@
 
 <MudText>@Label</MudText>
 
-<MudTreeView 
-    T="IADOrganizationalUnit"
+<MudTreeView T="IADOrganizationalUnit"
              ServerData="GetChildrenAsync"
              Items="RootOU"
              Dense="true"
@@ -13,10 +12,10 @@
              @bind-SelectedValue="SelectedOU">
     <ItemTemplate>
         <MudTreeViewItem Value="@context"
-             Items=@(context.IsExpanded?context.TreeViewSubOUs:context.CachedTreeViewSubOUs)
+                         Items=@(context.IsExpanded?context.TreeViewSubOUs:context.CachedTreeViewSubOUs)
                          LoadingIconColor="Color.Info"
                          @bind-Expanded="@context.IsExpanded"
-                          @bind-Activated=context.IsSelected
+                         @bind-Activated=context.IsSelected
                          Text="@context.CanonicalName"
                          Icon="@Icons.Material.Filled.Folder"
                          IconColor="@(context.IsSelected==true?Color.Primary:Color.Default)"
@@ -63,7 +62,7 @@
 
 
 @code {
-    #nullable disable warnings
+#nullable disable warnings
     Dictionary<IADOrganizationalUnit, bool> OULoadingStates = new();
 
     [Parameter]
@@ -160,7 +159,7 @@
         if (RootOU is null || RootOU.Count < 1)
         {
             TopLevel = new ADOrganizationalUnit();
-            TopLevel.Parse( directory: Directory,directoryEntry: Directory.GetDirectoryEntry());
+            TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
             _ = TopLevel.SubOUs;
             RootOU = new HashSet<IADOrganizationalUnit>() { TopLevel };
         }
@@ -175,11 +174,9 @@
     }
     void OpenToSelected()
     {
-        //ExpandedNodes.Clear();
-        //var newExpandedNodes = new List<IADOrganizationalUnit>(ExpandedNodes);
+       
         if (StartRootExpanded)
         {
-            //newExpandedNodes.Add(TopLevel);
             if (!SelectedOU.Equals(RootOU))
             {
                 IADOrganizationalUnit? openThis = RootOU.First();
@@ -195,17 +192,15 @@
                     else
                     {
                         var matchingOU = openThis.SubOUs.Where(c => SelectedOU.DN.Equals(c.DN)).FirstOrDefault();
-                        if (matchingOU!=null)
+                        if (matchingOU != null)
                             matchingOU.IsSelected = true;
                         break;
                     }
 
-                        
-                    //newExpandedNodes.Add(openThis);
+
                 }
             }
         }
-        //ExpandedNodes = newExpandedNodes;
         //InvokeAsync(StateHasChanged);
 
 
