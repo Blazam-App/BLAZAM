@@ -210,7 +210,7 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
                 }
                 SnackBarService.Success("User has been created");
                 confirmed = true;
-                Confirmed.InvokeAsync();
+                await Confirmed.InvokeAsync();
                 //Nav.NavigateTo("/search/" + User.SamAccountName);
 
             }

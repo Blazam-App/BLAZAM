@@ -276,7 +276,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        public virtual string DN
+        public virtual string? DN
         {
             get
             {
@@ -1044,7 +1044,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (InvalidCastException ex)
                 {
-                    throw ex;
+                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName,ex);
                 }
                 catch (Exception ex)
                 {
@@ -1072,7 +1072,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (InvalidCastException ex)
             {
-                throw ex;
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName,ex);
+
             }
             catch
             {
@@ -1093,7 +1094,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (InvalidCastException ex)
             {
-                throw ex;
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName,ex);
+
             }
 
             catch

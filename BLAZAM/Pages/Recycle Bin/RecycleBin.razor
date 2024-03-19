@@ -12,6 +12,7 @@
              @bind-SelectedItems=@selectedEntries
              Square=true
              MultiSelection=true
+             Height="80vh"
              Items="@deletedObjects"
              Filterable="false"
              SortMode="@SortMode.Multiple"
@@ -75,28 +76,32 @@
     }
 
     //TODO stop the confimation message on batch restore
-    private void RestoreSelected()
+    private async void RestoreSelected()
     {
-        IJob batchRestore = new Job(AppLocalization["Restore"]);
-        foreach (var entry in selectedEntries)
+        if (await MessageService.Confirm("Are you sure you want to restore the selected entries", "Restore?"))
         {
-            IJobStep restoreEntryStep = new JobStep(AppLocalization["Restore: "] + entry.CanonicalName, async (step) =>
+            IJob batchRestore = new Job(AppLocalization["Restore"]);
+            foreach (var entry in selectedEntries)
             {
-                await Restore(entry);
-                return true;
+                IJobStep restoreEntryStep = new JobStep(AppLocalization["Restore: "] + entry.CanonicalName, (step) =>
+                {
+                    if (RestoreEntry(entry))
+                        return true;
+                    return false;
 
-            });
-            batchRestore.Steps.Add(restoreEntryStep);
+                });
+                batchRestore.Steps.Add(restoreEntryStep);
+            }
+            batchRestore.Run();
+            batchRestore.ShowJobDetailsDialog(MessageService);
         }
-        batchRestore.Run();
-        batchRestore.ShowJobDetailsDialog(MessageService);
     }
     async Task Restore(IDirectoryEntryAdapter entryToRestore)
     {
-        if(entryToRestore.LastKnownParent==null) throw new ApplicationException("Tombstone item has no  LastKnownParent");
+        if (entryToRestore.LastKnownParent == null) throw new ApplicationException("Tombstone item has no  LastKnownParent");
         if (await MessageService.Confirm("Are you sure you want to restore " + entryToRestore.CanonicalName + " to " + entryToRestore.LastKnownParent?.CanonicalName, "Restore?"))
         {
-            if (entryToRestore.LastKnownParent!=null && Directory.RestoreTombstone(entryToRestore, entryToRestore.LastKnownParent))
+            if (RestoreEntry(entryToRestore))
             {
                 SnackBarService.Success(entryToRestore.CanonicalName + " restored successfully");
                 await GetDeletedEntries();
@@ -109,5 +114,9 @@
 
         }
     }
-  
+    bool RestoreEntry(IDirectoryEntryAdapter entry)
+    {
+        return (entry.LastKnownParent != null && Directory.RestoreTombstone(entry, entry.LastKnownParent));
+    }
+
 }

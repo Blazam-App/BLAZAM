@@ -6,6 +6,15 @@
 <MudAppBar Color=Color.Default Elevation="1">
 
     <MudBreakpointProvider>
+        @if (mainLayout != null)
+        {
+            <MudHidden Breakpoint="@(mainLayout.BrowseExpanded?Breakpoint.None:Breakpoint.XlAndUp)">
+                <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                               Color="Color.Inherit"
+                               Edge="Edge.Start"
+                               OnClick="@((e) => {mainLayout.DrawerOpen=!mainLayout.DrawerOpen; })" />
+            </MudHidden>
+        }
         <MudLink OnClick="@(()=>{Nav.NavigateTo(Nav.Uri);})">
             <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
         </MudLink>
@@ -15,18 +24,10 @@
         </MudHidden>
 
 
-        @if (mainLayout != null)
-        {
-            <MudHidden Breakpoint="Breakpoint.XlAndUp">
-                <MudIconButton Icon="@Icons.Material.Filled.Menu"
-                               Color="Color.Inherit"
-                               Edge="Edge.Start"
-                               OnClick="@((e) => {mainLayout.DrawerOpen=!mainLayout.DrawerOpen; })" />
-            </MudHidden>
-        }
+ 
     </MudBreakpointProvider>
     <MudSpacer />
-
+ 
     @if (mainLayout?.Header != null)
     {
         @mainLayout.Header.ChildContent

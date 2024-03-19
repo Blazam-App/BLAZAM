@@ -36,14 +36,14 @@
                 }
 
 
-                <MudDrawer Width=@(_browseExpanded==false?"185px":"385px")
+                <MudDrawer Width=@(BrowseExpanded==false?"185px":"385px")
                            @bind-Open=@DrawerOpen
                            Class="animate-width"
-                           Variant=@(_browseExpanded==false?DrawerVariant.Responsive:DrawerVariant.Temporary)
+                           Variant=@(BrowseExpanded==false?DrawerVariant.Responsive:DrawerVariant.Temporary)
                            Elevation="3"
                            ClipMode="DrawerClipMode.Docked">
                     <NavMenu SelectedEntryChanged=GotoEntry BrowseExpandedChanged="@(async(value)=>{
-_browseExpanded=value;
+BrowseExpanded=value;
 await Task.Delay(100);
 await InvokeAsync(StateHasChanged);
 })" />
@@ -162,7 +162,7 @@ await InvokeAsync(StateHasChanged);
     AppModal? dataBrowser;
     bool _drawerOpen = true;
     bool _devDrawerOpen = false;
-    private bool _browseExpanded = false;
+    public bool BrowseExpanded = false;
 
     public bool DrawerOpen
     {

@@ -114,8 +114,13 @@ namespace BLAZAM.Server.Data.Services
                 {
                     return GetUserState(_httpContextAccessor.HttpContext?.User);
                 }
+                catch (NullReferenceException)
+                {
+                    return null;
+                }
                 catch (Exception ex)
                 {
+                    Loggers.SystemLogger.Error("Unexpected error trying to retrieve current user state from httpContext{@Error}", ex);
                     return null;
                 }
 

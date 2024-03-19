@@ -2,7 +2,6 @@
 @typeparam T
 
 <MudSelect T="T"
-    
            @bind-SelectedValues=@SelectedValues
            @bind-Text=@Text
            Value=@Value
@@ -54,8 +53,27 @@
 @code {
     [Parameter]
     public Color Color { get; set; }
-
+    private IEnumerable<T> _values;
     [Parameter]
-    public IEnumerable<T> Values { get; set; }
+    public IEnumerable<T> Values
+    {
+        get => _values; set
+        {
+            _values = value;
+            Text = "";
+            if(_values!=null && _values.Count() > 0)
+            {
+                foreach(var item in _values)
+                {
+                    if (item != null)
+                    {
+                        Text += ToStringFunc.Invoke(item) + ", ";
+                    }
+                }
+                Text = Text.Substring(0, Text.Length - 2);
+            }
+
+        }
+    }
 }
 

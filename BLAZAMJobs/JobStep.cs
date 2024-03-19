@@ -12,13 +12,25 @@ namespace BLAZAM.Jobs
         public Func<JobStep?, bool>? Action { get; }
         public Func<JobStep?, Task<bool>>? AsyncAction { get; }
 
-
+        /// <summary>
+        /// Creates a new step to be added to a <see cref="IJob"/>
+        /// </summary>
+        /// <param name="name">The name of the step</param>
+        /// <param name="action">The action to perform during step execution</param>
+        /// <param name="stopOnError"></param>
         public JobStep(string name, Func<JobStep?, bool> action,bool stopOnError=false)
         {
             StopOnFailedStep = stopOnError;
             Name = name;
             Action = action;
         }
+
+        /// <summary>
+        /// Creates a new step to be added to a <see cref="IJob"/>
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="asyncAction"></param>
+        /// <param name="stopOnError"></param>
         public JobStep(string name, Func<JobStep?, Task<bool>> asyncAction, bool stopOnError = false)
         {
             StopOnFailedStep = stopOnError;

@@ -26,7 +26,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// This entry's Distinguished Name
         /// </summary>
-        string DN { get; set; }
+        string? DN { get; set; }
 
         /// <summary>
         /// The date and time in UTC that this entry was created

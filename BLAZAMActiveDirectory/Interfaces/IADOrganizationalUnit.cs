@@ -8,7 +8,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
     {
 
-        string Name { get; set; }
+        string? Name { get; set; }
         List<PermissionMapping> InheritedPermissionMappings { get; }
         IQueryable<PermissionMapping> AppliedPermissionMappings { get; }
         List<PermissionMapping> DirectPermissionMappings { get; }

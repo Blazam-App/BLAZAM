@@ -135,7 +135,7 @@
                                     <MudSpacer />
                                     <LastLogonTime DirectoryEntry="User" />
                                 </MudStack>
-                                @if (User.LockedOut)
+                                @if (User?.LockedOut==true)
                                 {
                                     <MudStack Row=true>
                                         <MudText Typo="Typo.subtitle2">@AppLocalization["Lockout Time"]:</MudText>
@@ -147,7 +147,7 @@
                                     <MudText Typo="Typo.subtitle2">@AppLocalization["OU"]:</MudText>
                                     <MudSpacer />
 
-                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.OU.ToPrettyOu()</MudText>
+                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User?.OU.ToPrettyOu()</MudText>
                                 </MudStack>
 
 
@@ -215,7 +215,7 @@
 
 
 
-                                        @if (User.NewEntry)
+                                        @if (User?.NewEntry==true)
                                         {
                                             <DynamicMudInput T=string
                                                              Label="@AppLocalization["Password"]"
@@ -232,7 +232,7 @@
                                         <MudStack Row=true Spacing="0">
                                             <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"
                                                              @bind-Value="@User.Email"
-                                                             Disabled=!User.NewEntry />
+                                                             Disabled=@(User?.NewEntry==false) />
                                             <AppCopyButton TextToCopy=@User.Email />
 
                                         </MudStack>
@@ -465,7 +465,6 @@
 
     bool homeDirectoryExists;
     bool showRemoveThumbnail = false;
-    DateTime? userLastLogonTime;
     IADUser User => DirectoryEntry as IADUser;
 
     protected override async Task OnInitializedAsync()

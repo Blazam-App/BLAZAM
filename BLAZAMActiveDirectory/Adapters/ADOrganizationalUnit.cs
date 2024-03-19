@@ -12,9 +12,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
     public class ADOrganizationalUnit : DirectoryEntryAdapter, IADOrganizationalUnit
     {
         private IEnumerable<IADOrganizationalUnit>? childOUCache;
-        private IQueryable<IADUser>? childUserCache;
-        private IQueryable<IADComputer>? childComputerCache;
-        private IQueryable<IADGroup>? childGroupCache;
+        //private IQueryable<IADUser>? childUserCache;
+        //private IQueryable<IADComputer>? childComputerCache;
+        //private IQueryable<IADGroup>? childGroupCache;
 
 
 
@@ -65,7 +65,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get => Name;
             set => Name = value;
         }
-        public string Name
+        public string? Name
         {
             get
             {
@@ -144,8 +144,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
                 IADUser newUser = new ADUser();
-                if (DirectoryEntry == null)
-                    DirectoryEntry = searchResult?.GetDirectoryEntry();
+                EnsureDirectoryEntry();
                 newUser.Parse(directoryEntry: DirectoryEntry.Children.Add(fullContainerName, "user"), directory: Directory);
                 newUser.NewEntry = true;
                 newUser.Enabled = true;
@@ -167,7 +166,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <returns>An uncommited group</returns>
         public IADGroup CreateGroup(string containerName)
         {
-
+            EnsureDirectoryEntry();
             IADGroup newGroup = new ADGroup();
             if (DirectoryEntry == null)
                 DirectoryEntry = searchResult?.GetDirectoryEntry();

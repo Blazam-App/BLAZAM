@@ -585,7 +585,7 @@ await ParentTemplateChanged(null);
     }
     private async Task CancelNewTemplate()
     {
-        ClearSelectedTemplate.InvokeAsync();
+        await ClearSelectedTemplate.InvokeAsync();
     }
     protected async Task SaveTemplate()
     {
