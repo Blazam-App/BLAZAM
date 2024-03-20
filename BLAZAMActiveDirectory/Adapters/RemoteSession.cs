@@ -13,8 +13,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class RemoteSession : IRemoteSession
     {
-        ITerminalServicesSession _session;
-        ITerminalServicesSession Session
+        ITerminalServicesSession? _session;
+        ITerminalServicesSession? Session
         {
             get => _session; set
             {
@@ -115,7 +115,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             GetNewSessionState();
         }
 
-        public ITerminalServer Server => _session.Server;
+        public ITerminalServer? Server => _session?.Server;
 
         NTAccount _user;
         public NTAccount User
@@ -187,10 +187,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             Host.Directory.Impersonation.Run(() =>
             {
-                if (!_session.Server.IsOpen)
+                if (_session?.Server.IsOpen==false)
                     _session.Server.Open();
-                _session.Logoff(synchronous);
-                _session.Server.Close();
+                _session?.Logoff(synchronous);
+                _session?.Server.Close();
                 return true;
 
             });
@@ -286,7 +286,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public void Dispose()
         {
             t?.Dispose();
-            Session.Server.Close();
+            if(Session!=null && Session.Server!=null)
+                Session.Server.Close();
             Session = null;
         }
     }
