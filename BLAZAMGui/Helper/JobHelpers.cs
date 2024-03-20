@@ -21,9 +21,9 @@ namespace BLAZAM.Gui.Helper
             return parameters;
         } 
         
-        public static void ShowJobDetailsDialog(this IJob job, AppDialogService MessageService)
+        public static async Task ShowJobDetailsDialog(this IJob job, AppDialogService MessageService)
         {
-            MessageService.ShowMessage<JobResultDialog>(job.ToDialogParameters(), job.Name);
+           await MessageService.ShowMessage<JobResultDialog>(job.ToDialogParameters(), job.Name);
         }
     }
 }

@@ -211,19 +211,12 @@
     {
         return await Task.Run(() =>
             {
-                return GetChildren(parentNode);
+                return parentNode.TreeViewSubOUs;
 
             });
     }
 
-    HashSet<IADOrganizationalUnit> GetChildren(IADOrganizationalUnit parentNode)
-    {
-
-        var children = parentNode.TreeViewSubOUs;
-
-        return children;
-
-    }
+   
 
 
 

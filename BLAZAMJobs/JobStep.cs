@@ -68,18 +68,7 @@ namespace BLAZAM.Jobs
                 StartTime = DateTime.Now;
                 Result = JobResult.Running;
                 OnProgressUpdated?.Invoke(0);
-                //We can't track progress from outside the action
-                //so trying to say we can is pointless
-                //if (Progress == 0)
-                //{
-                //    OnProgressUpdated?.Invoke(0);
-                //}
-                //else
-                //{
-                //    Progress = 0;
-                //}
-
-
+   
                 bool actionResult = false;
                 if (Action != null)
                 {
