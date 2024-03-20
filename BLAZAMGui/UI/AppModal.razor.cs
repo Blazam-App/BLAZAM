@@ -114,7 +114,9 @@ namespace BLAZAM.Gui.UI
             if (Options == null)
                 Options = new();
         }
-
+        /// <summary>
+        /// Re-renders the modal with the latest property values
+        /// </summary>
         public void RefreshView()
         {
             InvokeAsync(StateHasChanged);
