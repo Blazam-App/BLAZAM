@@ -74,9 +74,13 @@ namespace BLAZAM.Gui.UI
             set
             {
                 _templateIdParameter = value;
-                if (value > 0)
+                if (value == null||value > 0 )
                 {
-                    SelectedTemplate = Templates.Where(t => t.Id == value).FirstOrDefault();
+                    var cachedTemplate = Templates.Where(t => t.Id == value).FirstOrDefault();
+                    if(cachedTemplate != null)
+                    {
+                        SelectedTemplate = cachedTemplate;
+                    }
                 }
                 else if (value == 0)
                 {

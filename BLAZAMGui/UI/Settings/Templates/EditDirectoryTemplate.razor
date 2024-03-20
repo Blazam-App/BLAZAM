@@ -668,8 +668,12 @@ await ParentTemplateChanged(null);
         var templateValue = valueSelector.Invoke(templateCursor);
         if (templateValue != null && templateValue.Equals(value))
             return null;
-        while (templateCursor.ParentTemplate != null)
+        while (templateCursor?.ParentTemplateId != null)
         {
+            if (templateCursor.ParentTemplate == null)
+            {
+                templateCursor.ParentTemplate = Context.DirectoryTemplates.FirstOrDefault(t => t.Id == templateCursor.ParentTemplateId);
+            }
             templateCursor = templateCursor.ParentTemplate;
 
             var templateCursorValue = valueSelector.Invoke(templateCursor);

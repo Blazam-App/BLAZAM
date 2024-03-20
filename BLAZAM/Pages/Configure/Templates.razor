@@ -40,7 +40,7 @@
 
                 <MudIconButton Color=Color.Tertiary
                                Class="align-middle"
-                               OnClick="@(()=>{SelectedTemplate = new(); TemplateIdParameter=null; Nav.NavigateTo("/templates/0");})"
+                               OnClick="@(NewTemplate)"
                                Icon="@Icons.Material.Filled.AddCard" />
 
             </MudTooltip>
@@ -50,7 +50,7 @@
             <MudTooltip Text="@AppLocalization["New template"]">
                 <MudIconButton Color=Color.Tertiary
                                Class="align-middle"
-                               OnClick="@(()=>{SelectedTemplate = new();})"
+                                 OnClick="@(NewTemplate)"
                                Icon="@Icons.Material.Filled.AddCard" />
 
             </MudTooltip>
@@ -119,7 +119,7 @@
 </SetHeader>
 @if (Templates.Count() > 0)
 {
-    
+
     <MudCard Elevation="2">
         <MudExpansionPanel Text="@AppLocalization["Inheritance Tree"]">
             <TemplateInheritanceTreeView RootTemplate="CreateTemplateHash"
@@ -149,13 +149,13 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        
+
         if (Templates?.Count() < 1)
         {
 
             await Task.Delay(1000);
             createFirstTemplateTooltipVisible = true;
-            
+
 
 
 
@@ -187,6 +187,13 @@
         RenameModal?.Hide();
         await RefreshComponents();
 
+    }
+    private async void NewTemplate()
+    {
+        SelectedTemplate = new();
+        TemplateIdParameter = null;
+        SelectedTemplate = new();
+        Nav.NavigateTo("/templates/0",true);
     }
     private HashSet<DirectoryTemplate> CreateTemplateHash
     {

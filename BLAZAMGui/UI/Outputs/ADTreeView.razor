@@ -22,18 +22,7 @@
                          CanExpand=@(context is IADOrganizationalUnit)
                          EndText="@EndText?.Invoke(context)"
                          Context="itemContext">
-            @*     <BodyContent>
-            <MudStack Row=true Spacing="0" Class="mud-input mud-input-underline cursor-pointer minw-max w-100">
-            <MudText Color="@TextColor">@context.CanonicalName</MudText>
-            <MudSpacer/>
-
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Medium" Color="Color.Inherit" />
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" Color="Color.Inherit" />
-
-
-            </MudStack>
-            </BodyContent> *@
-
+         
         </MudTreeViewItem>
     </ItemTemplate>
 
@@ -142,7 +131,6 @@
         //Wait a few milliseconds to trip the async into acutally awaiting
         await Task.Delay(50);
 
-        //ApplicationBaseOUs = Directory.OUs.FindSubOusByDN(null);
 
 
         if (RootOU is null || RootOU.Count < 1)
