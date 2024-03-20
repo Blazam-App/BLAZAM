@@ -1,0 +1,30 @@
+﻿@inherits AppModalContent
+<MudForm>
+    <MudTextField T="string" @bind-Value=newCategory Validation="!newCategory.IsNullOrEmpty()"/>
+</MudForm>
+@code {
+    string newCategory;
+
+    [Parameter]
+    public IEnumerable<string> Categories { get; set; }
+
+    [Parameter]
+    public EventCallback<string> CategoryAdded{ get; set; }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Modal.OnYes = Submit;
+        Modal.YesText = AppLocalization["Add"];
+        Modal.RefreshView();
+    }
+    private async void Submit()
+    {
+        if (Categories.Contains(newCategory))
+        {
+            SnackBarService.Warning(AppLocalization["A category with that name already exists."]);
+        }
+        CategoryAdded.InvokeAsync(newCategory);
+        
+        Close();
+    }
+}

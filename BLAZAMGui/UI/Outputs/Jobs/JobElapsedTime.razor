@@ -4,17 +4,21 @@
 @code {
     [CascadingParameter]
     public IJob Job { get; set; }
-    Timer timer;
+    Timer? timer;
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        timer = new Timer((state) => {InvokeAsync(StateHasChanged);}, null, 600, 600);
+        Job.OnProgressUpdated += (progress) =>
+        {
+            InvokeAsync(StateHasChanged);
+        };
+        //timer = new Timer((state) => {InvokeAsync(StateHasChanged);}, null, 600, 600);
     }
 
     public override void Dispose()
     {
         base.Dispose();
-        timer.Dispose();
+        timer?.Dispose();
     }
 
     private string ElapsedTime
@@ -23,6 +27,10 @@
         {
             //if (Job.Result == JobResult.Cancelled) return AppLocalization["Cancelled"];
             if (Job.ElapsedTime == null || !Job.ElapsedTime.HasValue) return AppLocalization["Not finished"];
+            if (Job.ElapsedTime.Value.TotalSeconds < 1)
+            {
+                return Job.ElapsedTime.Value.TotalMilliseconds + "ms";   
+            }
             return (int)Job.ElapsedTime.Value.TotalMinutes + "m " + (int)(Job.ElapsedTime.Value.TotalMinutes % 1 * 60) + "s";
         }
     }

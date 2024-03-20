@@ -13,81 +13,84 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class RemoteSession : IRemoteSession
     {
-        ITerminalServicesSession _session;
-        ITerminalServicesSession Session
+        ITerminalServicesSession? _session;
+        ITerminalServicesSession? Session
         {
             get => _session; set
             {
                 if (_session == value) return;
                 _session = value;
-                Host.Directory.Impersonation.Run(() =>
+                if (_session != null)
                 {
-                    if (!_session.Server.IsOpen)
-                        _session.Server.Open();
-                    try
+                    Host.Directory.Impersonation.Run(() =>
                     {
+                        if (!_session.Server.IsOpen)
+                            _session.Server.Open();
+                        try
+                        {
 
-                        _user = _session.UserAccount;
-                    }
-                    catch
-                    {
+                            _user = _session.UserAccount;
+                        }
+                        catch
+                        {
 
-                    }
-                    try
-                    {
+                        }
+                        try
+                        {
 
-                        _sessionId = _session.SessionId;
+                            _sessionId = _session.SessionId;
 
-                    }
-                    catch
-                    {
+                        }
+                        catch
+                        {
 
-                    }
-                    try
-                    {
+                        }
+                        try
+                        {
 
-                        _idleTime = _session.IdleTime;
+                            _idleTime = _session.IdleTime;
 
-                    }
-                    catch
-                    {
+                        }
+                        catch
+                        {
 
-                    }
-                    try
-                    {
+                        }
+                        try
+                        {
 
-                        _connectionState = _session.ConnectionState;
+                            _connectionState = _session.ConnectionState;
 
-                    }
-                    catch
-                    {
+                        }
+                        catch
+                        {
 
-                    }
-                    try
-                    {
+                        }
+                        try
+                        {
 
-                        _connectTime = _session.ConnectTime;
-                    }
-                    catch
-                    {
+                            _connectTime = _session.ConnectTime;
+                        }
+                        catch
+                        {
 
-                    }
-                    try
-                    {
+                        }
+                        try
+                        {
 
-                        _clientIPAddress = _session.ClientIPAddress;
+                            _clientIPAddress = _session.ClientIPAddress;
 
-                    }
-                    catch
-                    {
+                        }
+                        catch
+                        {
 
-                    }
+                        }
 
 
 
-                    return true;
+                        return true;
 
-                });
+                    });
+                }
             }
         }
 
@@ -112,7 +115,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             GetNewSessionState();
         }
 
-        public ITerminalServer Server => _session.Server;
+        public ITerminalServer? Server => _session?.Server;
 
         NTAccount _user;
         public NTAccount User
@@ -184,10 +187,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             Host.Directory.Impersonation.Run(() =>
             {
-                if (!_session.Server.IsOpen)
+                if (_session?.Server.IsOpen==false)
                     _session.Server.Open();
-                _session.Logoff(synchronous);
-                _session.Server.Close();
+                _session?.Logoff(synchronous);
+                _session?.Server.Close();
                 return true;
 
             });
@@ -283,7 +286,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public void Dispose()
         {
             t?.Dispose();
-            Session.Server.Close();
+            if(Session!=null && Session.Server!=null)
+                Session.Server.Close();
             Session = null;
         }
     }

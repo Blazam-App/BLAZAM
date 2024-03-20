@@ -12,13 +12,25 @@ namespace BLAZAM.Jobs
         public Func<JobStep?, bool>? Action { get; }
         public Func<JobStep?, Task<bool>>? AsyncAction { get; }
 
-
+        /// <summary>
+        /// Creates a new step to be added to a <see cref="IJob"/>
+        /// </summary>
+        /// <param name="name">The name of the step</param>
+        /// <param name="action">The action to perform during step execution</param>
+        /// <param name="stopOnError"></param>
         public JobStep(string name, Func<JobStep?, bool> action,bool stopOnError=false)
         {
             StopOnFailedStep = stopOnError;
             Name = name;
             Action = action;
         }
+
+        /// <summary>
+        /// Creates a new step to be added to a <see cref="IJob"/>
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="asyncAction"></param>
+        /// <param name="stopOnError"></param>
         public JobStep(string name, Func<JobStep?, Task<bool>> asyncAction, bool stopOnError = false)
         {
             StopOnFailedStep = stopOnError;
@@ -56,18 +68,7 @@ namespace BLAZAM.Jobs
                 StartTime = DateTime.Now;
                 Result = JobResult.Running;
                 OnProgressUpdated?.Invoke(0);
-                //We can't track progress from outside the action
-                //so trying to say we can is pointless
-                //if (Progress == 0)
-                //{
-                //    OnProgressUpdated?.Invoke(0);
-                //}
-                //else
-                //{
-                //    Progress = 0;
-                //}
-
-
+   
                 bool actionResult = false;
                 if (Action != null)
                 {

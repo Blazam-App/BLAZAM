@@ -20,16 +20,19 @@
         base.OnInitialized();
         if (AuditEntry != null)
         {
-            foreach (var str in AuditEntry.BeforeAction.Split(";"))
+            if (!AuditEntry.BeforeAction.IsNullOrEmpty())
             {
-                if (!str.IsNullOrEmpty())
+                foreach (var str in AuditEntry.BeforeAction.Split(";"))
                 {
-                    var data = str.Split("=");
-                    var attr = data.FirstOrDefault();
-                    if (attr != null)
+                    if (!str.IsNullOrEmpty())
                     {
+                        var data = str.Split("=");
+                        var attr = data.FirstOrDefault();
+                        if (attr != null)
+                        {
 
-                        Changes.Add(attr, null);
+                            Changes.Add(attr, null);
+                        }
                     }
                 }
             }

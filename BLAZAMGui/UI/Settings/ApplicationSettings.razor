@@ -24,7 +24,7 @@
 
     <SettingsField Label="@AppLocalization["Force Https"]">
 
-            <MudSwitch Label="@AppLocalization["Enabled"]" TValue="bool" @bind-Checked="@settings.ForceHTTPS" />
+            <MudSwitch Label="@AppLocalization["Enabled"]" TValue="bool" @bind-Value="@settings.ForceHTTPS" />
 
     </SettingsField>
 
@@ -114,7 +114,6 @@
 @code {
     AppSettings settings = new AppSettings();
 
-    AppModal? rdpModal;
     AppModal? uploadCertificateModal;
     protected override async Task OnInitializedAsync()
     {

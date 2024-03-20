@@ -13,7 +13,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         string? HomeDrive { get; set; }
         string? HomePhone { get; set; }
         string? MiddleName { get; set; }
-        DateTime? PasswordLastSet { get; }
         string? PhysicalDeliveryOfficeName { get; set; }
         string? ProfilePath { get; set; }
         string? ScriptPath { get; set; }
@@ -30,7 +29,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
       
         byte[]? ThumbnailPhoto { get; set; }
 
-        bool SetPassword(SecureString password, bool requireChange);
-        void StagePasswordChange(SecureString newPassword, bool requireChange);
+
     }
 }

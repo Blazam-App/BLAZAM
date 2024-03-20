@@ -101,7 +101,7 @@ namespace BLAZAM.Server.Data.Services
 
 
 
-        public AppUser Preferences
+        public AppUser? Preferences
         {
             get
             {

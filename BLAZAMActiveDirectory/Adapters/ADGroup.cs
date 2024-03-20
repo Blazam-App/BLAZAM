@@ -12,7 +12,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected List<GroupMembership> MembersToRemove = new List<GroupMembership>();
         protected List<GroupMembership> MembersToAdd = new List<GroupMembership>();
         public override string? DisplayName { get => base.CanonicalName; set => base.CanonicalName = value; }
-        public string GroupName
+        public string? GroupName
         {
 
             get
@@ -162,7 +162,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return temp;
             }
         }
-        public List<string> MembersAsStrings
+        public List<string>? MembersAsStrings
         {
             get
             {
@@ -196,7 +196,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 ADSearch search = new ADSearch();
 
                 List<IGroupableDirectoryAdapter> members = new List<IGroupableDirectoryAdapter>();
-                temp.ForEach(t =>
+                temp?.ForEach(t =>
                 {
                     search.Results.Clear();
                     search.Fields.DN = t;

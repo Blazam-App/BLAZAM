@@ -33,7 +33,7 @@
             var result = await Group.CommitChangesAsync(createGroupJob);
 
             disableCreateGroupButton = false;
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
             if (result.FailedSteps.Count == 0)
             {
 

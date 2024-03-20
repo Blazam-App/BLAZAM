@@ -13,7 +13,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         TimeSpan? IdleTime { get; }
         DateTime? LoginTime { get; }
         bool Monitoring { get; }
-        ITerminalServer Server { get; }
+        ITerminalServer? Server { get; }
         int SessionId { get; }
         NTAccount User { get; }
         AppEvent<IRemoteSession> OnSessionDown { get; set; }

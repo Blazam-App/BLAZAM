@@ -126,7 +126,7 @@
     async Task ShowMoreResults()
     {
         MaxResults += 10;
-        await GetResults(SearchTerm);
+        await GetResults(SearchTerm,new());
         await InvokeAsync(StateHasChanged);
     }
 
@@ -188,7 +188,7 @@
 
 
 
-    private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText ,CancellationToken token = new())
+    private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText ,CancellationToken token)
     {
         return await Task.Run(() =>
          {
@@ -224,7 +224,7 @@
                                  temp = filteredResults;
                              }
                          }
-                         if (!token.IsCancellationRequested)
+                        if (!token.IsCancellationRequested)
                          {
                              SearchResults = temp;
                              return SearchResults;
