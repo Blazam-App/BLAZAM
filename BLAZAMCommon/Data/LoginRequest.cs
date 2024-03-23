@@ -54,6 +54,6 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// The remote IP of the login attempt
         /// </summary>
-        public IPAddress IPAddress { get; set; }
+        public IPAddress? IPAddress { get; set; }
     }
 }
