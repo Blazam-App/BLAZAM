@@ -63,7 +63,7 @@ namespace BLAZAM.Server.Pages
                     await HttpContext.SignInAsync(result.AuthenticationState.User);
                     await AuditLogger.Logon.Login(result.AuthenticationState.User,req.IPAddress);
                 }
-                return new ObjectResult(result.Status);
+                return new ObjectResult(result?.Status);
 
             }
             catch (Exception ex)

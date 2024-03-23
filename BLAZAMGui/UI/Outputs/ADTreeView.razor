@@ -197,7 +197,7 @@
     {
         if (parent.IsExpanded || parent.CachedChildren != null)
         {
-            var items = parent.Children.MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.OU);
+            var items = parent.Children.Where(c=>c.ObjectType == ActiveDirectoryObjectType.OU || c.CanRead).MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.OU);
             var hashst = items.ToHashSet();
             return hashst;
         }

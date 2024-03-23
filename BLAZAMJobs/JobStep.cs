@@ -9,8 +9,8 @@ namespace BLAZAM.Jobs
 {
     public class JobStep : JobStepBase, IJobStep
     {
-        public Func<JobStep?, bool>? Action { get; }
-        public Func<JobStep?, Task<bool>>? AsyncAction { get; }
+        public Func<JobStep, bool>? Action { get; }
+        public Func<JobStep, Task<bool>>? AsyncAction { get; }
 
         /// <summary>
         /// Creates a new step to be added to a <see cref="IJob"/>
@@ -18,7 +18,7 @@ namespace BLAZAM.Jobs
         /// <param name="name">The name of the step</param>
         /// <param name="action">The action to perform during step execution</param>
         /// <param name="stopOnError"></param>
-        public JobStep(string name, Func<JobStep?, bool> action,bool stopOnError=false)
+        public JobStep(string name, Func<JobStep, bool> action,bool stopOnError=false)
         {
             StopOnFailedStep = stopOnError;
             Name = name;
@@ -31,7 +31,7 @@ namespace BLAZAM.Jobs
         /// <param name="name"></param>
         /// <param name="asyncAction"></param>
         /// <param name="stopOnError"></param>
-        public JobStep(string name, Func<JobStep?, Task<bool>> asyncAction, bool stopOnError = false)
+        public JobStep(string name, Func<JobStep, Task<bool>> asyncAction, bool stopOnError = false)
         {
             StopOnFailedStep = stopOnError;
 
@@ -39,7 +39,7 @@ namespace BLAZAM.Jobs
             AsyncAction = asyncAction;
         }
 
-        public JobStep(string name, Func<JobStep?, bool> action, WindowsImpersonation identity) : this(name, action)
+        public JobStep(string name, Func<JobStep, bool> action, WindowsImpersonation identity) : this(name, action)
         {
             Identity = identity;
         }

@@ -64,7 +64,7 @@
         </MudDataGrid>
 }
 
-@if (OU.HasUnsavedChanges)
+@if (OU!=null && OU.CanEdit && OU.HasUnsavedChanges)
 {
     <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
 }
