@@ -323,15 +323,30 @@ namespace BLAZAM.ActiveDirectory.Adapters
             private set { _isDeleted = value; }
 
         }
+        private bool? _cachedHasChildren;
         public virtual bool HasChildren
         {
             get
             {
                 if (CachedChildren == null)
                 {
-                    EnsureDirectoryEntry();
-                    var children = DirectoryEntry.Children;
-                    CachedChildren = children.Encapsulate();
+                    if (_cachedHasChildren == null)
+                    {
+                        EnsureDirectoryEntry();
+                        _cachedHasChildren = DirectoryEntry?.Children.GetEnumerator().MoveNext();
+                    }
+                    
+                
+                    return _cachedHasChildren==true;
+                    //try{
+                    //    return cursor.Current != null;
+
+                    //}
+                    //catch (InvalidOperationException)
+                    //{
+                    //    return false;
+                    //}
+                    //CachedChildren = children.Encapsulate();
                 }
                 var hasChildren = CachedChildren.Count() > 0;
                 return hasChildren;
