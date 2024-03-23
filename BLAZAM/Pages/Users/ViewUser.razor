@@ -418,7 +418,7 @@
         </CascadingValue>
 
     </EditForm>
-    @if (User.HasUnsavedChanges && !User.NewEntry)
+    @if (User.CanEdit && User.HasUnsavedChanges && !User.NewEntry)
     {
         <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
     }

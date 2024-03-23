@@ -112,7 +112,7 @@
 
 
 
-            @if (Group.HasUnsavedChanges)
+            @if (Group.CanEdit && Group.HasUnsavedChanges)
         {
             <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
         }
@@ -154,7 +154,7 @@
             }
             else
             {
-                jobResults.ShowJobDetailsDialog(MessageService);
+                await jobResults.ShowJobDetailsDialogAsync(MessageService);
             }
 
 

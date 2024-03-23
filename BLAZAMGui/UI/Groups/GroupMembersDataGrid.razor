@@ -13,7 +13,7 @@
         <Columns>
             <TemplateColumn Context="templateContext">
                 <HeaderTemplate>
-                    Type
+                    @AppLocalization["Type"]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     @{
@@ -37,7 +37,7 @@
             </TemplateColumn>
             <TemplateColumn Sortable=true Filterable=true Context="templateContext">
                 <HeaderTemplate>
-                    Name
+                    @AppLocalization["Name"]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     <MudLink OnClick="@(()=>{Nav.NavigateTo(cellContext.Item.SearchUri);})">
@@ -47,7 +47,7 @@
             </TemplateColumn>
             <TemplateColumn Sortable=true Filterable=true Context="templateContext">
                 <HeaderTemplate>
-                    OU
+                    @AppLocalization["OU"]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     <MudText>
@@ -57,17 +57,17 @@
             </TemplateColumn>
             <TemplateColumn Context="templateContext">
                 <HeaderTemplate>
-                    Remove Member
+                    @AppLocalization["Remove Member"]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
-                    <MudTooltip ShowOnFocus=@(!cellContext.Item.CanUnassign)
-                                ShowOnClick=@(!cellContext.Item.CanUnassign)
-                                ShowOnHover=@(!cellContext.Item.CanUnassign)
+                    <MudTooltip 
+                                ShowOnClick=@(!cellContext.Item.CanEdit || !cellContext.Item.CanUnassign)
+                                ShowOnHover=@(!cellContext.Item.CanEdit || !cellContext.Item.CanUnassign)
                                 Text="You don't have permission to remove this group member">
-                        <MudButton Disabled=@(!cellContext.Item.CanUnassign)
+                        <MudButton Disabled=@(!cellContext.Item.CanEdit || !cellContext.Item.CanUnassign)
                                    Color="Color.Error"
                                    OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
-                            Remove
+                            @AppLocalization["Remove"]
                         </MudButton>
                     </MudTooltip>
                 </CellTemplate>

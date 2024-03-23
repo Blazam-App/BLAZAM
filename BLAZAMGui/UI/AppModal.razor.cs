@@ -16,7 +16,8 @@ namespace BLAZAM.Gui.UI
 #nullable disable warnings
         [Inject]
         protected AppSnackBarService NotificationService { get; set; }
-
+        [Inject]
+        protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }
         /// <summary>
         /// The modal's  database connection
         /// </summary>
@@ -69,11 +70,22 @@ namespace BLAZAM.Gui.UI
 
         [Parameter]
         public OnYesEvent OnYes { get; set; }
-
+        public void SetOnYes(OnYesEvent onYes)
+        {
+            OnYes=onYes;
+        }
         [Parameter]
-        public string YesText { get; set; } = "Ok";
+        public string YesText { get; set; }
+        public void SetYesText(string text)
+        {
+            YesText = text;
+        }
         [Parameter]
         public string CancelText { get; set; }
+        public void SetCancelText(string text)
+        {
+            CancelText = text;
+        }
 
 
 
@@ -111,6 +123,7 @@ namespace BLAZAM.Gui.UI
         protected override void OnInitialized()
         {
             base.OnInitialized();
+            YesText = AppLocalization["Ok"]; 
             if (Options == null)
                 Options = new();
         }
