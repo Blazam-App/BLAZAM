@@ -12,7 +12,7 @@
              @bind-SelectedValue="SelectedOU">
     <ItemTemplate>
         <MudTreeViewItem Value="@context"
-                         Items=@(context.IsExpanded?context.TreeViewSubOUs:context.CachedTreeViewSubOUs)
+                         Items=@(GetChildren(context))
                          LoadingIconColor="Color.Info"
                          @bind-Expanded="@context.IsExpanded"
                          @bind-Activated=context.IsSelected
@@ -20,7 +20,7 @@
                          Icon="@Icons.Material.Filled.Folder"
                          IconColor="@(context.IsSelected==true?Color.Primary:Color.Default)"
                          Class="minw-max w-100"
-                         CanExpand=context.HasChildren
+                         CanExpand=@CanExpand(context)
                          EndText="@EndText?.Invoke(context)">
             @*<Content>
             @{
@@ -62,7 +62,7 @@
 
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     Dictionary<IADOrganizationalUnit, bool> OULoadingStates = new();
 
     [Parameter]
@@ -174,7 +174,7 @@
     }
     void OpenToSelected()
     {
-       
+
         if (StartRootExpanded)
         {
             if (!SelectedOU.Equals(RootOU))
@@ -187,6 +187,7 @@
                     if (child != null)
                     {
                         child.IsExpanded = true;
+                        _ = child.TreeViewSubOUs;
                         openThis = child;
                     }
                     else
@@ -205,8 +206,22 @@
 
 
     }
-
-
+    bool CanExpand(IADOrganizationalUnit context)
+    {
+        var result = context.HasChildren;
+        return result;
+    }
+    HashSet<IADOrganizationalUnit> GetChildren(IADOrganizationalUnit context)
+    {
+        if (context.IsExpanded)
+        {
+            return context.TreeViewSubOUs;
+        }
+        else
+        {
+            return context.CachedTreeViewSubOUs;
+        }
+    }
     async Task<HashSet<IADOrganizationalUnit>> GetChildrenAsync(IADOrganizationalUnit parentNode)
     {
         return await Task.Run(() =>
@@ -216,7 +231,7 @@
             });
     }
 
-   
+
 
 
 
