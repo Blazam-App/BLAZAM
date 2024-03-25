@@ -84,7 +84,7 @@
 		<PackageReference Include="Octokit" Version="10.0.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
-		<PackageReference Include="SixLabors.ImageSharp.Web" Version="3.1.0" />
+		<PackageReference Include="SixLabors.ImageSharp.Web" Version="3.1.1" />
 		<PackageReference Include="System.DirectoryServices" Version="8.0.0" />
 
 		<PackageReference Include="System.DirectoryServices.AccountManagement" Version="8.0.0" />
