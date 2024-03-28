@@ -63,8 +63,8 @@ namespace BLAZAM.Session
         public List<NewsItem> GetUnreadNewsItems(IApplicationUserState user)
         {
             var activeItems = activeNewsItems;
-            var unreadItems = activeItems.Where(x => !user.ReadNewsItems.Any(r=>r.NewsItemId==x.Id)||user.ReadNewsItems.Any(r=>r.NewsItemId==x.Id&& r.NewsItemUpdatedAt<x.UpdatedAt)).ToList();
-            if (_pollCompleted)
+            var unreadItems = activeItems.Where(x => user.ReadNewsItems?.Any(r=>r.NewsItemId==x.Id)==false||user.ReadNewsItems?.Any(r=>r.NewsItemId==x.Id&& r.NewsItemUpdatedAt<x.UpdatedAt)==false).ToList();
+            if (_pollCompleted && user.ReadNewsItems != null)
             {
                 var staleItems = user.ReadNewsItems.Where(x => x.NewsItemId < 100000000000 && !activeItems.Any(a => a.Id == x.NewsItemId)).ToList();
                 if (staleItems.Count > 0)
@@ -84,9 +84,13 @@ namespace BLAZAM.Session
         public List<NewsItem> GetReadNewsItems(IApplicationUserState user)
         {
             var activeItems = activeNewsItems;
-            var readItems = activeItems.Where(x => user.ReadNewsItems.Any(r => r.NewsItemId == x.Id && r.NewsItemUpdatedAt>=x.UpdatedAt)).ToList();
-            
-            return readItems;
+            if (user.ReadNewsItems != null)
+            {
+                var readItems = activeItems.Where(x => user.ReadNewsItems.Any(r => r.NewsItemId == x.Id && r.NewsItemUpdatedAt >= x.UpdatedAt)).ToList();
+
+                return readItems;
+            }
+            return new();
 
         }
         public void Dispose()
