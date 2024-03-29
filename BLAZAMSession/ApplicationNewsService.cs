@@ -63,7 +63,21 @@ namespace BLAZAM.Session
         public List<NewsItem> GetUnreadNewsItems(IApplicationUserState user)
         {
             var activeItems = activeNewsItems;
-            var unreadItems = activeItems.Where(x => user.ReadNewsItems?.Any(r=>r.NewsItemId==x.Id)==false||user.ReadNewsItems?.Any(r=>r.NewsItemId==x.Id&& r.NewsItemUpdatedAt<x.UpdatedAt)==false).ToList();
+            var unreadItems = new List<NewsItem>();
+            foreach(var item in activeItems)
+            {
+                if (user.ReadNewsItems != null)
+                {
+                    if(!user.ReadNewsItems.Any(x=>x.NewsItemId == item.Id))
+                        unreadItems.Add(item);
+                    if(user.ReadNewsItems.Any(r => r.NewsItemId == item.Id && r.NewsItemUpdatedAt < item.UpdatedAt))
+                        unreadItems.Add(item);
+
+
+
+                }
+            }
+           // var unreadItems = activeItems.Where(x => user.ReadNewsItems?.Any(r=>r.NewsItemId==x.Id)==false||user.ReadNewsItems?.Any(r=>r.NewsItemId==x.Id&& r.NewsItemUpdatedAt<x.UpdatedAt)==false).ToList();
             if (_pollCompleted && user.ReadNewsItems != null)
             {
                 var staleItems = user.ReadNewsItems.Where(x => x.NewsItemId < 100000000000 && !activeItems.Any(a => a.Id == x.NewsItemId)).ToList();

@@ -130,7 +130,7 @@ namespace BLAZAM.Server.Data.Services
                     GetUserSettingFromDB();
                     if (userSettings != null)
                     {
-                        OnSettingsChanged?.Invoke(userSettings)
+                        OnSettingsChanged?.Invoke(userSettings);
                     }
 
                     return true;
