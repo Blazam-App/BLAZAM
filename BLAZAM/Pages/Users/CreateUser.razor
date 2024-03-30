@@ -4,151 +4,182 @@
 
 
 <AppPageTitle>Create User</AppPageTitle>
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudTabs PanelClass="mx-auto w-100"
+             @ref=Tabs
+             Elevation="0"
+             Outlined="true"
+             @bind-ActivePanelIndex="SelectedStep"
+             Centered=true>
 
-<MudTabs PanelClass="mx-auto mud-container mud-container-maxwidth-sm" @ref=Tabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="SelectedStep" Centered=true>
+        <MudTabPanel>
+            <TabContent>
+                Template
+            </TabContent>
+            <ChildContent>
 
-    <MudTabPanel>
-        <TabContent>
-            Template
-        </TabContent>
-        <ChildContent>
-            @if (Templates != null && Templates.Count(t => t.DeletedAt == null && t.Visible) > 0)
-            {
-                <MudSelectList Values="TemplateCategories"
-                               @bind-Value=SelectedCategory />
+                @if (TemplateCategories != null && Templates != null && Templates.Count(t => t.DeletedAt == null && t.Visible) > 0)
+                {
+                    @* <MudSelectList Values="TemplateCategories"
+                @bind-Value=SelectedCategory /> *@
 
-                <MudPaper Width="300px">
-                    <MudList SelectedItemChanged=@SetTemplate Clickable="true">
-                        @foreach (var template in Templates.Where(t => t.DeletedAt == null && t.Visible))
-                        {
-                            <MudListItem Text="@template.Name" Value="template" />
-                        }
-                    </MudList>
-                </MudPaper>
-            }
-            else
-            {
-                <MudPaper Width="300px">
-                    <MudText>@AppLocalization["There are no templates available"]</MudText>
-                    <AuthorizeView Roles="@UserRoles.SuperAdmin">
-                        <MudLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">Create One</MudLink>
+                    <MudCarousel Style="height:50vh"
+                                 ShowArrows=false
+                                 ShowBullets=false
+                                 EnableSwipeGesture=false
+                                 AutoCycle=false
+                                 @bind-SelectedIndex=_templateCarouselIndex
+                                 TData="object">
+                        <MudCarouselItem Class="pa-5">
+                            <FlexContainer>
+                                @foreach (var category in TemplateCategories)
+                                {
+                                    <MudButton OnClick=@(()=>{SelectedCategory=category; _templateCarouselIndex=1;}) Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">@category</MudButton>
+                                }
 
-                    </AuthorizeView>
-                </MudPaper>
-            }
-            <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true; newUser=null; SelectedTemplate=null; SelectedStep=4;})">Custom</MudButton>
+                            </FlexContainer>
+                        </MudCarouselItem>
 
-            <MudButton Disabled=@(SelectedTemplate is null && custom!=true) Color=Color.Success OnClick="@(()=>{if(custom==true)SelectedStep=4;else selectedStep=1;})">Next</MudButton>
-        </ChildContent>
+                        <MudCarouselItem Class="pa-5">
+                            <MudFab StartIcon="@Icons.Material.Filled.ArrowBack"
+                                    Size="Size.Small"
+                                    OnClick="@(()=>{_templateCarouselIndex=0;})"
+                                    Color="Color.Primary" />
+                            <FlexContainer>
 
-    </MudTabPanel>
+                                @foreach (var template in Templates.Where(t => t.DeletedAt == null && t.Visible))
+                                {
+                                    <MudButton OnClick=@(()=>{SetTemplate(template);}) Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">@template.Name</MudButton>
 
-    <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled=@( SelectedTemplate==null)>
-        <TabContent>
-            @AppLocalization["Name"]
-        </TabContent>
-        <ChildContent>
+                                }
+                            </FlexContainer>
 
+                        </MudCarouselItem>
+                    </MudCarousel>
 
-            <NewUserNameEntry @bind-NewUserName=@newUserName OnNext="CreateTemplateUser" OnBack="@(()=>{SelectedStep=0;})" />
-            
+                }
+                else
+                {
+                    <MudPaper Width="300px">
+                        <MudText>@AppLocalization["There are no templates available"]</MudText>
+                        <AuthorizeView Roles="@UserRoles.SuperAdmin">
+                            <MudLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">Create One</MudLink>
 
+                        </AuthorizeView>
+                    </MudPaper>
+                }
+                <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true; newUser=null; SelectedTemplate=null; SelectedStep=4;})">Custom</MudButton>
 
-        </ChildContent>
+                <MudButton Disabled=@(SelectedTemplate is null && custom!=true) Color=Color.Success OnClick="@(()=>{if(custom==true)SelectedStep=4;else selectedStep=1;})">Next</MudButton>
+            </ChildContent>
 
-    </MudTabPanel>
+        </MudTabPanel>
 
-    <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null)">
-        <TabContent>
-            @AppLocalization["Fields"]
-        </TabContent>
-        <ChildContent>
-            <NewTemplateUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
-            <MudButton Disabled=LoadingData Color=Color.Primary OnClick="@(()=>{SelectedStep=1;})">Back</MudButton>
-            <MudButton Color=Color.Success OnClick="@(()=>{SelectedStep=3;})">Next</MudButton>
-
-        </ChildContent>
-
-    </MudTabPanel>
-
-    <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null)">
-        <TabContent>
-            @AppLocalization["Groups"]
-        </TabContent>
-        <ChildContent>
-            <MemberOfList Model="@newUser" />
-
-            <MudButton Disabled=LoadingData Color=Color.Primary OnClick="@(()=>{SelectedStep=2;})">Back</MudButton>
-            <MudButton Color=Color.Success OnClick="@(()=>{SelectedStep=6;})">Next</MudButton>
-
-        </ChildContent>
-
-    </MudTabPanel>
+        <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled=@( SelectedTemplate==null)>
+            <TabContent>
+                @AppLocalization["Name"]
+            </TabContent>
+            <ChildContent>
 
 
-    <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(custom==false)">
-        <TabContent>
-            @AppLocalization["OU"]
-        </TabContent>
-        <ChildContent>
-            <OUTreeView SelectedOUChanged="OUSelected" />
-
-            <MudTextField Label="@AppLocalization["Display Name"]" @bind-Value="@customUserDisplayName" />
+                <NewUserNameEntry @bind-NewUserName=@newUserName OnNext="CreateTemplateUser" OnBack="@(()=>{SelectedStep=0;})" />
 
 
 
-            <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=0;})">Back</MudButton>
-            <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()&& selectedOU!=null) Color=Color.Success OnClick="@(async()=>{await CreateCustomUser();selectedStep=5;})">Next</MudButton>
+            </ChildContent>
+
+        </MudTabPanel>
+
+        <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null)">
+            <TabContent>
+                @AppLocalization["Fields"]
+            </TabContent>
+            <ChildContent>
+                <NewTemplateUser OnValidSubmit=@(()=>{SelectedStep=3;}) User="@newUser" DirectoryTemplate="SelectedTemplate" />
+                <MudButton Disabled=LoadingData Color=Color.Primary OnClick="@(()=>{SelectedStep=1;})">Back</MudButton>
+
+            </ChildContent>
+
+        </MudTabPanel>
+
+        <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null)">
+            <TabContent>
+                @AppLocalization["Groups"]
+            </TabContent>
+            <ChildContent>
+                <MemberOfList Model="@newUser" />
+
+                <MudButton Disabled=LoadingData Color=Color.Primary OnClick="@(()=>{SelectedStep=2;})">Back</MudButton>
+                <MudButton Color=Color.Success OnClick="@(()=>{SelectedStep=6;})">Next</MudButton>
+
+            </ChildContent>
+
+        </MudTabPanel>
 
 
-        </ChildContent>
+        <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(custom==false)">
+            <TabContent>
+                @AppLocalization["OU"]
+            </TabContent>
+            <ChildContent>
+                <OUTreeView SelectedOUChanged="OUSelected" />
 
-    </MudTabPanel>
-    <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(newUser==null)">
-        <TabContent>
-            @AppLocalization["Details"]
-        </TabContent>
-        <ChildContent>
-            @*TODO: The following binding cause the next button to not update when validation is reached, updates are controlled from
+                <MudTextField Label="@AppLocalization["Display Name"]" @bind-Value="@customUserDisplayName" />
+
+
+
+                <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=0;})">Back</MudButton>
+                <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()&& selectedOU!=null) Color=Color.Success OnClick="@(async()=>{await CreateCustomUser();selectedStep=5;})">Next</MudButton>
+
+
+            </ChildContent>
+
+        </MudTabPanel>
+        <MudTabPanel Class=@(custom==true?"":"d-none") Disabled="@(newUser==null)">
+            <TabContent>
+                @AppLocalization["Details"]
+            </TabContent>
+            <ChildContent>
+                @*TODO: The following binding cause the next button to not update when validation is reached, updates are controlled from
                 this element
-            *@
-            <ViewUser DirectoryEntry="@newUser" @bind-ConfirmPassword=@customConfirmPassword @bind-Password=customPassword />
-            <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=4;})">Back</MudButton>
-            <MudButton Color=Color.Success
-                       OnClick="@(()=>{
+                *@
+                <ViewUser DirectoryEntry="@newUser" @bind-ConfirmPassword=@customConfirmPassword @bind-Password=customPassword />
+                <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=4;})">Back</MudButton>
+                <MudButton Color=Color.Success
+                           OnClick="@(()=>{
 SelectedStep=6;
-if(newUser.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
-newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
+if(newUser?.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
+newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
 })"
-                       Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
+                           Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
 
-                @AppLocalization["Next"]
-            </MudButton>
-        </ChildContent>
+                    @AppLocalization["Next"]
+                </MudButton>
+            </ChildContent>
 
-    </MudTabPanel>
-
-
-    <MudTabPanel Disabled=@(newUser==null)>
-        <TabContent>
-
-            @AppLocalization["Confirm"]
-        </TabContent>
-        <ChildContent>
-            <ConfirmNewUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
-
-        </ChildContent>
-
-    </MudTabPanel>
-</MudTabs>
+        </MudTabPanel>
 
 
+        <MudTabPanel Disabled=@(newUser==null)>
+            <TabContent>
 
+                @AppLocalization["Confirm"]
+            </TabContent>
+            <ChildContent>
+                <ConfirmNewUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
+
+            </ChildContent>
+
+        </MudTabPanel>
+    </MudTabs>
+
+</MudContainer>
 
 
 @code {
     string customConfirmPassword;
     string customPassword;
+    int _templateCarouselIndex = 0;
     int selectedStep;
     int SelectedStep
     {
@@ -174,7 +205,6 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
     bool? custom = false;
 
     NewUserName newUserName = new NewUserName();
-    bool collapseVisible = false;
     IADOrganizationalUnit? selectedOU;
     IADUser? newUser;
 
@@ -204,8 +234,12 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
             {
                 if (newUser == null)
                 {
-                    newUser = selectedOU.CreateUser(customUserDisplayName.Trim());
-                    newUser.DisplayName = customUserDisplayName;
+                    if (customUserDisplayName == null) SnackBarService.Error(AppLocalization["No display name was set"]);
+                    else
+                    {
+                        newUser = selectedOU.CreateUser(customUserDisplayName.Trim());
+                        newUser.DisplayName = customUserDisplayName;
+                    }
                 }
                 else
                 {
@@ -217,11 +251,13 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
     }
     async void CreateTemplateUser()
     {
+        if (SelectedTemplate?.ParentOU == null) throw new ApplicationException("Parent OU for template user was not set on creation!");
         try
         {
             LoadingData = true;
             await InvokeAsync(StateHasChanged);
             var ou = Directory.OUs.FindOuByString(SelectedTemplate.ParentOU).FirstOrDefault();
+            if (ou == null) throw new ApplicationException("OU could not be found for new user");
             newUser = ou.CreateUser(SelectedTemplate.GenerateDisplayName(newUserName));
 
             newUser.SamAccountName = SelectedTemplate.GenerateUsername(newUserName);
@@ -240,22 +276,22 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
             {
                 try
                 {
-                    if (fieldValue.Field != null)
+                    if (fieldValue.Field != null && fieldValue.Value != null)
                         if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
                             newUser.HomeDirectory = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
                         else
                             newUser.NewEntryProperties[fieldValue.Field.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
-                    else if (fieldValue.CustomField != null)
+                    else if (fieldValue.CustomField != null && fieldValue.Value != null)
                         newUser.NewEntryProperties[fieldValue.CustomField.FieldName] = SelectedTemplate.ReplaceVariables(fieldValue.Value, newUserName);
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value.ToString() + " {@Error}", ex);
+                    Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value?.ToString() + " {@Error}", ex);
                 }
 
             }
-            var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName,false);
-            if (conflictingEntry != null)
+            var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName, false);
+            if (conflictingEntry != null && conflictingEntry.SamAccountName?.Equals(newUser.SamAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
             {
                 newUser = null;
                 SnackBarService.Warning("An account with that name already exists! " + conflictingEntry.SamAccountName);
@@ -278,7 +314,8 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
                 SelectedStep = 6;
 
             }
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
 
             Loggers.ActiveDirectryLogger.Error("Error while creating template user {@Error}", ex);
@@ -290,10 +327,11 @@ newUser.StagePasswordChange(customConfirmPassword.ToSecureString());
         await InvokeAsync(StateHasChanged);
     }
 
-    async Task SetTemplate(MudListItem selectedTemplate)
+    async Task SetTemplate(DirectoryTemplate selectedTemplate)
     {
-        SelectedTemplate = selectedTemplate.Value as DirectoryTemplate;
+        SelectedTemplate = selectedTemplate;
         custom = false;
+        SelectedStep = 1;
         await InvokeAsync(StateHasChanged);
     }
 

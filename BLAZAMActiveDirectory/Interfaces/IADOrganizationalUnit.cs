@@ -8,7 +8,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
     {
 
-        string Name { get; set; }
+        string? Name { get; set; }
         List<PermissionMapping> InheritedPermissionMappings { get; }
         IQueryable<PermissionMapping> AppliedPermissionMappings { get; }
         List<PermissionMapping> DirectPermissionMappings { get; }
@@ -17,6 +17,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
         HashSet<IADOrganizationalUnit> CachedTreeViewSubOUs { get;}
         HashSet<IADOrganizationalUnit> TreeViewSubOUs { get; }
+        bool CanReadInSubOus { get; }
 
         IADGroup CreateGroup(string containerName);
         IADUser CreateUser(string containerName);

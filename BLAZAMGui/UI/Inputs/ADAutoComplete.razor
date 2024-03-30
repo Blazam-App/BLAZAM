@@ -99,6 +99,8 @@
 
     private MudAutocomplete<IDirectoryEntryAdapter>? AutoComplete { get; set; }
 
+    private List<CancellationTokenSource> _cancellationList = new();
+
     [Parameter]
     public Func<IDirectoryEntryAdapter, bool> CustomResultsFilter { get; set; }
     @*
@@ -126,7 +128,7 @@
     async Task ShowMoreResults()
     {
         MaxResults += 10;
-        await GetResults(SearchTerm);
+        await GetResults(SearchTerm,new());
         await InvokeAsync(StateHasChanged);
     }
 
@@ -188,11 +190,20 @@
 
 
 
-    private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText ,CancellationToken token = new())
+    private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText ,CancellationToken token)
     {
+        var newSource = new CancellationTokenSource();
+        token = newSource.Token;
+        foreach(var source in _cancellationList)
+        {
+            source.Cancel();
+        }
+
+        _cancellationList.Add(newSource);
+
         return await Task.Run(() =>
          {
-            
+ 
              if (!token.IsCancellationRequested && searchText != null)
              {
                  SearchResults = new List<IDirectoryEntryAdapter>();
@@ -224,7 +235,7 @@
                                  temp = filteredResults;
                              }
                          }
-                         if (!token.IsCancellationRequested)
+                        if (!token.IsCancellationRequested)
                          {
                              SearchResults = temp;
                              return SearchResults;

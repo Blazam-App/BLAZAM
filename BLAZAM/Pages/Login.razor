@@ -16,24 +16,50 @@
 
 
 <MudContainer Class="py-5">
-       <FullAppName/>
+    <FullAppName />
 
 
-   
-    <form onsubmit="@(()=>{AttemptSignIn();})" class="login-form" method="post" action="/signin" id="login-form">
-        <MudContainer Style="max-width:300px;" Class="py-4">
+
+    <form onsubmit="@(()=>{AttemptSignIn();})"
+          class="login-form"
+          method="post"
+          action="/signin"
+          id="login-form">
+        <MudContainer Style="max-width:300px;"
+                      Class="py-4">
             @if (!ApplicationInfo.InDemoMode || DemoCustomLogin)
             {
 
 
 
-                <MudTextField @ref=_usernameTextField Disabled=@attemptingSignIn Class="justify-center" AutoFocus Label="Username" name="Username" @bind-Value=LoginRequest.Username />
+                <MudTextField @ref=_usernameTextField
+                              Disabled=@attemptingSignIn
+                              Class="justify-center"
+                              AutoFocus=true
+                              Label=@AppLocalization["Username"]
+                              name="Username"
+                              @bind-Value=LoginRequest.Username />
 
-                <MudTextField @ref=_passwordTextField Disabled=@attemptingSignIn Class="justify-center" Label="Password" name="Password" InputType="InputType.Password" @bind-Value=LoginRequest.Password />
-                <MudTextField Class="d-none" name="ReturnUrl" Value="@redirectUrl" />
-                <MudButton OnClick=@(()=>{attemptingSignIn=true;}) Class="my-5" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</MudButton>
+                <MudTextField @ref=_passwordTextField
+                              Disabled=@attemptingSignIn
+                              Class="justify-center"
+                              Label=@AppLocalization["Password"]
+                              name="Password"
+                              InputType="InputType.Password"
+                              @bind-Value=LoginRequest.Password />
 
-          
+                <MudTextField Class="d-none"
+                              name="ReturnUrl"
+                              Value="@redirectUrl" />
+
+                <MudButton OnClick=@(()=>{attemptingSignIn=true;})
+                           Class="my-5"
+                           ButtonType=ButtonType.Submit
+                           Color="Color.Primary">
+                    @AppLocalization["Log In"]
+                </MudButton>
+
+
 
             }
             else if (ApplicationInfo.InDemoMode)
@@ -59,12 +85,14 @@
 
         </MudContainer>
 
-        <MudOverlay Visible="attemptingSignIn" DarkBackground="true" Absolute="true">
+        <MudOverlay Visible="attemptingSignIn"
+                    DarkBackground="true"
+                    Absolute="true">
             @*<MudProgressCircular Color="Color.Secondary" Indeterminate="true" />*@
         </MudOverlay>
     </form>
-    <MudElement Class="d-flex mud-width-full justify-end">  
-        <Copyright Style="font-size:0.8em;"/>
+    <MudElement Class="d-flex mud-width-full justify-end">
+        <Copyright Style="font-size:0.8em;" />
 
     </MudElement>
 </MudContainer>

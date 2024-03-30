@@ -1,4 +1,16 @@
-﻿<MudSelect Label="@Label" T="string" @bind-Value="@Value" Disabled=@Disabled>
+﻿@inherits MudSelect<string>
+<MudSelect Label="@Label"
+           T="string"
+           @bind-Value="@Value"
+           Disabled=@Disabled
+           Adornment="@Adornment"
+           AdornmentIcon="@AdornmentIcon"
+           Required=@Required
+           AutoFocus=@AutoFocus
+           CheckedIcon="@CheckedIcon"
+           Clearable=@Clearable
+           HelperText="@HelperText"
+           HelperTextOnFocus=@HelperTextOnFocus>
     <MudSelectItem Value="String.Empty"></MudSelectItem>
     @for (var i = 'D'; i <= 'Z'; i++)
     {
@@ -8,29 +20,5 @@
 </MudSelect>
 
 @code {
-    private IEnumerable<string> selectedValue => new List<string>() { Value };
 
-    private string _value;
-    [Parameter]
-    public string Value
-    {
-        get => _value; set
-        {
-            if (_value == value) return;
-            _value = value;
-            ValueChanged.InvokeAsync(value);
-        }
-    }
-    [Parameter]
-    public EventCallback<string> ValueChanged { get; set; }
-
-    [Parameter]
-    public string Label{ get; set; }
-    [Parameter]
-    public bool Disabled{ get; set; }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
 }

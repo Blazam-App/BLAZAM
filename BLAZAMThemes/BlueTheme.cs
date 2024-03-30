@@ -16,11 +16,11 @@ namespace BLAZAM.Themes
             lightPalette.ActionDefault = "#9aafc3";
 
             lightPalette.AppbarBackground = "#2261d3";
-            lightPalette.DrawerBackground = "#001529";
-
+            lightPalette.DrawerBackground = "#cfd6dc";
+            lightPalette.DrawerText = "#0f141e";
             lightPalette.Dark = "#001529";
             lightPalette.Primary = "#2261d3";
-            lightPalette.Secondary = "#0c13a7";
+            lightPalette.Secondary = "#40449D";
 
 
 

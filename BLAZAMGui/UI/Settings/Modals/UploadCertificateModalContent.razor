@@ -110,7 +110,7 @@
                         var cipher = rawCert2?.Encrypt();
                         AppSettings.SSLCertificateCipher = cipher;
 
-                        var byteArray = cipher.Decrypt<byte[]>();
+                        var byteArray = cipher?.Decrypt<byte[]>();
                         var cert3 = new X509Certificate2(byteArray);
                         Close();
                     }

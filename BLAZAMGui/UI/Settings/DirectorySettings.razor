@@ -11,7 +11,7 @@
     <SettingsField Label="@AppLocalization["Server"]">
 
 
-        @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername != "admin" && ApplicationInfo.InstallationCompleted)
+        @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
         {
 
             <MudTextField  Label="@AppLocalization["Server"]"
@@ -26,7 +26,7 @@
             <MudTextField Label="@AppLocalization["Server"]"
                       HelperText="Can be your domain name in most environments"
                       For="(()=>settings.ServerAddress)"
-                      @bind-Value="@settings.ServerAddress">
+                      @bind-Value="@(settings.ServerAddress)">
 
 
 
@@ -49,7 +49,7 @@
         <MudIcon Icon="IconName.QuestionCircle" Color="Color.Info" />
         </MudTooltip>*@
 
-        @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername != "admin" && ApplicationInfo.InstallationCompleted)
+        @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
         {
             <MudNumericField HelperText="@helperText"
                          Label="@AppLocalization["Port"]"

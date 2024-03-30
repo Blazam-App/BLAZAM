@@ -77,7 +77,6 @@ else
     }
     IRemoteSession sessionToMessage;
     AppModal? sessionMessageModal;
-    SendMessageModalContent? sendMessageContent;
     MudTextField<string>? messageTextField;
 
 
@@ -165,5 +164,8 @@ else
     {
         base.Dispose();
         t?.Dispose();
+        Sessions.ForEach(s => {
+            s.Dispose();
+        });
     }
 }

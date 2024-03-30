@@ -1,6 +1,6 @@
 @inject IStringLocalizer<AppLocalization> AppLocalization
 <CascadingValue Value="ChangeHistoryModal">
-@switch (DirectoryEntry.ObjectType)
+@switch (DirectoryEntry?.ObjectType)
 {
     case ActiveDirectoryObjectType.User:
         <ViewUser DirectoryEntry="DirectoryEntry" />
@@ -31,5 +31,5 @@
     [Parameter]
     public IDirectoryEntryAdapter? DirectoryEntry { get; set; }
 
-    protected AppModal ChangeHistoryModal{ get; set; }
+    protected AppModal? ChangeHistoryModal{ get; set; }
 }

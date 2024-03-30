@@ -100,7 +100,7 @@ namespace BLAZAM.Update.Services
             var stableReleases = releases.Where(r => r.TagName.Contains(ApplicationReleaseBranches.Stable, StringComparison.OrdinalIgnoreCase));
             //Get the first release,which should be the most recent
             latestRelease = branchReleases.FirstOrDefault();
-            latestStableRelease = branchReleases.FirstOrDefault();
+            latestStableRelease = stableReleases.FirstOrDefault();
             //Store all other releases for use later
             StableUpdates.Clear();
             foreach (var release in stableReleases)
@@ -115,7 +115,7 @@ namespace BLAZAM.Update.Services
             var latestStableUpdate = EncapsulateUpdate(latestStableRelease, ApplicationReleaseBranches.Stable);
             var latestBranchUpdate = EncapsulateUpdate(latestRelease, SelectedBranch); 
             //Override branch if stable has more recent release
-            if (latestStableUpdate!=null && latestStableUpdate.Version.CompareTo(latestBranchUpdate)>0)
+            if (latestStableUpdate!=null && latestStableUpdate.Version.CompareTo(latestBranchUpdate.Version)>0)
             {
                 LatestUpdate = latestStableUpdate;
             }
@@ -248,6 +248,7 @@ namespace BLAZAM.Update.Services
 
         private bool TestDirectoryCredentials()
         {
+            if(_dbFactory == null)return false;
             using var context = _dbFactory.CreateDbContext();
             //Prepare impersonation
             WindowsImpersonation? impersonation = null;

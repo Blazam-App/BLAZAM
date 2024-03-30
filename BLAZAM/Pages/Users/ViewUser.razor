@@ -7,104 +7,105 @@
     EditMode = true;
 
 }
-
-<AppPageTitle>@User?.SamAccountName</AppPageTitle>
+@if (User != null)
+{
+    <AppPageTitle>@User?.SamAccountName</AppPageTitle>
 
     <EditForm OnValidSubmit=SaveChanges Model="User">
         <CascadingValue Value="EditMode">
 
             @if (User?.NewEntry == false)
-        {
-            <SetSubHeader @ref="SubHeader">
+            {
+                <SetSubHeader @ref="SubHeader">
 
-                <DirectoryEntryViewHeader EditMode="@EditMode"
-                                          DirectoryEntry="@User"
-                                          OnAssignTo="@(()=>{AssignToModal?.Show();})"
-                                          OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
-                                          OnDelete="@DeleteUser"
-                                          OnDisable="@(async()=>{User.Enabled=false; await RefreshEntryComponents();})"
-                                          OnEnable="@(async()=>{User.Enabled=true; await RefreshEntryComponents();})"
-                                          OnMove="@(()=>{MoveToModal?.Show();})"
-                                          OnRename="@(()=>{RenameModal?.Show();})"
-                                          OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
-                                          OnToggleEditMode="ToggleEditMode"
-                                          OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
-                                          OnUnlock="@Unlock" />
-                <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
+                    <DirectoryEntryViewHeader EditMode="@EditMode"
+                                              DirectoryEntry="@User"
+                                              OnAssignTo="@(()=>{AssignToModal?.Show();})"
+                                              OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
+                                              OnDelete="@DeleteUser"
+                                              OnDisable="@(async()=>{User.Enabled=false; await RefreshEntryComponents();})"
+                                              OnEnable="@(async()=>{User.Enabled=true; await RefreshEntryComponents();})"
+                                              OnMove="@(()=>{MoveToModal?.Show();})"
+                                              OnRename="@(()=>{RenameModal?.Show();})"
+                                              OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
+                                              OnToggleEditMode="ToggleEditMode"
+                                              OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
+                                              OnUnlock="@Unlock" />
+                    <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
-                </MudOverlay>
-
-
-            </SetSubHeader>
-        }
-        <CascadingValue Value="User">
-            <FlexContainer>
-
-                <AppModal Color="Color.Dark" Title=@AppLocalization["Upload Thumbnail"] @ref=@UploadThumbnailModal>
-                    <UploadThumbnailModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
-                </AppModal>
-                <AppModal Color="Color.Dark" Title=@AppLocalization["Assign To"] @ref=@AssignToModal>
-                    <AssignToModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
-                </AppModal>
-                <AppModal Color="Color.Dark" Title=@AppLocalization["Move To"] @ref=@MoveToModal>
-                    @if (MoveToModal?.IsShown == true)
-                    {
-                        <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
-                    }
-                </AppModal>
-                <AppModal Title=@AppLocalization["Rename User"] @ref=@RenameModal>
-                    @if (RenameModal?.IsShown == true)
-                    {
-                        <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) User="User" />
-                    }
-                </AppModal>
-                <AppModal Title=@AppLocalization["Reset Password"] @ref=@ChangePasswordModal>
-                    @if (ChangePasswordModal?.IsShown == true)
-                    {
-                        <ChangeUserPasswordModalContent User="User" />
-                    }
-                </AppModal>
-               
+                    </MudOverlay>
 
 
-                <MudGrid>
-                    <MudItem xs="12" md="3">
-                        <Section FullWidth=false>
+                </SetSubHeader>
+            }
+            <CascadingValue Value="User">
+                <FlexContainer>
 
-                            <MudCard Elevation="2"
-                                     Style="width:fit-content;height:fit-content"
-                                     Class="relative mx-auto my-auto d-block p-1"
-                                     @onmouseenter=@(()=>{showRemoveThumbnail=true;})
-                                     @onmouseleave=@(()=>{showRemoveThumbnail=false;})>
-                                @if (User?.ThumbnailPhoto != null)
-                                {
-                                    <Base64Image Style="max-height:150px;max-width:150px;" Data="User.ThumbnailPhoto.ReizeRawImage(150)" />
-                                    @if (showRemoveThumbnail && User.CanEditField(ActiveDirectoryFields.Thumbnail))
+                    <AppModal Color="Color.Dark" Title=@AppLocalization["Upload Thumbnail"] @ref=@UploadThumbnailModal>
+                        <UploadThumbnailModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
+                    </AppModal>
+                    <AppModal Color="Color.Dark" Title=@AppLocalization["Assign To"] @ref=@AssignToModal>
+                        <AssignToModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
+                    </AppModal>
+                    <AppModal Color="Color.Dark" Title=@AppLocalization["Move To"] @ref=@MoveToModal>
+                        @if (MoveToModal?.IsShown == true)
+                        {
+                            <MoveToOUModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
+                        }
+                    </AppModal>
+                    <AppModal Title=@AppLocalization["Rename User"] @ref=@RenameModal>
+                        @if (RenameModal?.IsShown == true)
+                        {
+                            <RenameUserModalContent DirectoryModelRenamed=@((renamedUser)=>{Renamed(renamedUser);}) User="User" />
+                        }
+                    </AppModal>
+                    <AppModal Title=@AppLocalization["Reset Password"] @ref=@ChangePasswordModal>
+                        @if (ChangePasswordModal?.IsShown == true)
+                        {
+                            <ChangeUserPasswordModalContent User="User" />
+                        }
+                    </AppModal>
+
+
+
+                    <MudGrid>
+                        <MudItem xs="12" md="3">
+                            <Section FullWidth=false>
+
+                                <MudCard Elevation="2"
+                                         Style="width:fit-content;height:fit-content"
+                                         Class="relative mx-auto my-auto d-block p-1"
+                                         @onmouseenter=@(()=>{showRemoveThumbnail=true;})
+                                         @onmouseleave=@(()=>{showRemoveThumbnail=false;})>
+                                    @if (User?.ThumbnailPhoto != null)
                                     {
+                                        <Base64Image Style="max-height:150px;max-width:150px;" Data="User.ThumbnailPhoto.ReizeRawImage(150)" />
+                                        @if (showRemoveThumbnail && User.CanEditField(ActiveDirectoryFields.Thumbnail))
+                                        {
 
-                                        <MudIconButton OnClick=RemoveThumbnail
-                                                       Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;left:10px"
-                                                       Color=Color.Error
-                                                       Icon="@Icons.Material.Filled.Delete" />
+                                            <MudIconButton OnClick=RemoveThumbnail
+                                                           Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;left:10px"
+                                                           Color=Color.Error
+                                                           Icon="@Icons.Material.Filled.Delete" />
+                                        }
+
                                     }
+                                    else
+                                    {
+                                        <MudIcon Style="height:150px;width:150px;" Icon="@Icons.Material.Filled.Person" />
 
-                                }
-                                else
-                                {
-                                    <MudIcon Style="height:150px;width:150px;" Icon="@Icons.Material.Filled.Person" />
+                                    }
+                                    @if (showRemoveThumbnail && User?.CanEditField(ActiveDirectoryFields.Thumbnail) == true)
+                                    {
+                                        <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.Show();})
+                                                       Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
+                                                       Color=Color.Primary
+                                                       Icon="@Icons.Material.Filled.Upload" />
+                                    }
+                                </MudCard>
 
-                                }
-                                @if (showRemoveThumbnail && User.CanEditField(ActiveDirectoryFields.Thumbnail))
-                                {
-                                    <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.Show();})
-                                                   Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
-                                                   Color=Color.Primary
-                                                   Icon="@Icons.Material.Filled.Upload" />
-                                }
-                            </MudCard>
-
-                            <MudStack Row=true>
-                                <MudText Typo="Typo.subtitle2">@AppLocalization["Created"]:</MudText>
+                                <MudStack Row=true>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization["Created"]:</MudText>
                                     <MudSpacer />
                                     <DateWithTimeTooltip DateTime="User?.Created" />
 
@@ -134,298 +135,298 @@
                                     <MudSpacer />
                                     <LastLogonTime DirectoryEntry="User" />
                                 </MudStack>
-                                @if (User.LockedOut)
-                            {
-                                <MudStack Row=true>
-                                    <MudText Typo="Typo.subtitle2">@AppLocalization["Lockout Time"]:</MudText>
+                                @if (User?.LockedOut==true)
+                                {
+                                    <MudStack Row=true>
+                                        <MudText Typo="Typo.subtitle2">@AppLocalization["Lockout Time"]:</MudText>
                                         <MudSpacer />
                                         <DateWithTimeTooltip DateTime="User?.LockoutTime" />
                                     </MudStack>
-                            }
-                            <MudStack Row=true>
-                                <MudText Typo="Typo.subtitle2">@AppLocalization["OU"]:</MudText>
+                                }
+                                <MudStack Row=true>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization["OU"]:</MudText>
                                     <MudSpacer />
 
-                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User.OU.ToPrettyOu()</MudText>
+                                    <MudText Style="text-align:end;" Typo="Typo.caption">@User?.OU.ToPrettyOu()</MudText>
                                 </MudStack>
 
 
 
                                 @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
-                            {
-                                <MudStack>
-                                    <MudText Typo="Typo.subtitle2">@AppLocalization["Groups"]</MudText>
+                                {
+                                    <MudStack>
+                                        <MudText Typo="Typo.subtitle2">@AppLocalization["Groups"]</MudText>
                                         <MemberOfList AssignToClicked=@(()=>{AssignToModal?.Show();}) Model="User" />
 
                                     </MudStack>
 
 
 
-                            }
-
-
-                        </Section>
-                    </MudItem>
-                    <MudItem xs=12 md="9">
-                        <MudStack>
-
-                            <Section FullWidth=false Title=@AppLocalization["Name"]>
-
-
-                                <MudStack Row Class="@_fieldMudStackClasses">
-
-
-                                     <DynamicMudInput T=string Label="@AppLocalization["First Name"]" @bind-Value="@User.GivenName" Disabled=!User.NewEntry />
-
-                                     <DynamicMudInput T=string Label="@AppLocalization["Middle Name"]" @bind-Value="@User.MiddleName" Disabled=!User.NewEntry />
-
-                                     <DynamicMudInput T=string Label="@AppLocalization["Last Name"]" @bind-Value="@User.Surname" Disabled=!User.NewEntry />
-
-                                     <DynamicMudInput T=string Label="@AppLocalization["Display Name"]" @bind-Value="@User.DisplayName" Disabled=!User.NewEntry />
-
-
-                                 </MudStack>
-                                 @if (EditMode && !User.NewEntry)
-                                {
-                                    <MudText>
-                                        To modify the user's name click the rename button in the toolbar/gear menu
-                                    </MudText>
                                 }
+
+
                             </Section>
+                        </MudItem>
+                        <MudItem xs=12 md="9">
+                            <MudStack>
+
+                                <Section FullWidth=false Title=@AppLocalization["Name"]>
 
 
-
-                            <Section Title="@AppLocalization["Account"]">
-
-                                <MudStack Row Class="@_fieldMudStackClasses">
+                                    <MudStack Row Class="@_fieldMudStackClasses">
 
 
+                                        <DynamicMudInput T=string Label="@AppLocalization["First Name"]" @bind-Value="@User.GivenName" Disabled=!User.NewEntry />
 
+                                        <DynamicMudInput T=string Label="@AppLocalization["Middle Name"]" @bind-Value="@User.MiddleName" Disabled=!User.NewEntry />
 
-                                     <MudStack Row=true Spacing="0">
+                                        <DynamicMudInput T=string Label="@AppLocalization["Last Name"]" @bind-Value="@User.Surname" Disabled=!User.NewEntry />
 
+                                        <DynamicMudInput T=string Label="@AppLocalization["Display Name"]" @bind-Value="@User.DisplayName" Disabled=!User.NewEntry />
 
-                                         <DynamicMudInput T=string Label="@AppLocalization["Username"]"
-                                                          @bind-Value="@User.SamAccountName"
-                                                          Disabled=!User.NewEntry />
-                                         <AppCopyButton TextToCopy=@User.SamAccountName />
-
-                                     </MudStack>
-
-
-
-                                     @if (User.NewEntry)
-                                    {
-                                        <DynamicMudInput T=string
-                                                         Label="@AppLocalization["Password"]"
-                                                         @bind-Value="@Password"
-                                                         InputType="InputType.Password" />
-
-                                        <DynamicMudInput T=string
-                                                         Label="@AppLocalization["Confirm Password"]"
-                                                         @bind-Value="@ConfirmPassword"
-                                                         InputType="InputType.Password" />
-                                    }
-
-
-                                    <MudStack Row=true Spacing="0">
-                                        <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"
-                                                         @bind-Value="@User.Email"
-                                                         Disabled=!User.NewEntry />
-                                        <AppCopyButton TextToCopy=@User.Email />
 
                                     </MudStack>
-
-
-
-                                    @if (User.CanReadField(ActiveDirectoryFields.AccountExpires))
+                                    @if (EditMode && User?.NewEntry==false)
                                     {
-                                        <DynamicMudInput T=DateTime?
-                                                              Clearable
-                                                          Label="@AppLocalization["Account Expiration"]"
-                                                          @bind-Value="@User.ExpireTime"
-                                                          Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.AccountExpires)) />
+                                        <MudText>
+                                            To modify the user's name click the rename button in the toolbar/gear menu
+                                        </MudText>
+                                    }
+                                </Section>
 
+
+
+                                <Section Title="@AppLocalization["Account"]">
+
+                                    <MudStack Row Class="@_fieldMudStackClasses">
+
+
+
+
+                                        <MudStack Row=true Spacing="0">
+
+
+                                            <DynamicMudInput T=string Label="@AppLocalization["Username"]"
+                                                             @bind-Value="@User.SamAccountName"
+                                                             Disabled=!User.NewEntry />
+                                            <AppCopyButton TextToCopy=@User.SamAccountName />
+
+                                        </MudStack>
+
+
+
+                                        @if (User?.NewEntry==true)
+                                        {
+                                            <DynamicMudInput T=string
+                                                             Label="@AppLocalization["Password"]"
+                                                             @bind-Value="@Password"
+                                                             InputType="InputType.Password" />
+
+                                            <DynamicMudInput T=string
+                                                             Label="@AppLocalization["Confirm Password"]"
+                                                             @bind-Value="@ConfirmPassword"
+                                                             InputType="InputType.Password" />
+                                        }
+
+
+                                        <MudStack Row=true Spacing="0">
+                                            <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"
+                                                             @bind-Value="@User.Email"
+                                                             Disabled=@(User?.NewEntry==false) />
+                                            <AppCopyButton TextToCopy=@User.Email />
+
+                                        </MudStack>
+
+
+
+                                        @if (User.CanReadField(ActiveDirectoryFields.AccountExpires))
+                                        {
+                                            <DynamicMudInput T=DateTime?
+                                                             Clearable
+                                                             Label="@AppLocalization["Account Expiration"]"
+                                                             @bind-Value="@User.ExpireTime"
+                                                             Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.AccountExpires)) />
+
+
+                                        }
+                                    </MudStack>
+                                    @if (EditMode && !User.NewEntry)
+                                    {
+
+
+                                        <MudText>
+                                            To modify the user's accounts click the rename button in the toolbar/gear menu
+                                        </MudText>
 
                                     }
-                                </MudStack>
-                                @if (EditMode && !User.NewEntry)
-                                {
 
-
-                                    <MudText>
-                                        To modify the user's accounts click the rename button in the toolbar/gear menu
-                                    </MudText>
-
-                                }
-
-                            </Section>
+                                </Section>
 
 
 
-                        </MudStack>
+                            </MudStack>
 
-                    </MudItem>
-                </MudGrid>
+                        </MudItem>
+                    </MudGrid>
 
 
 
-                @if (User.CanReadField(ActiveDirectoryFields.EmployeeId) ||
+                    @if (User.CanReadField(ActiveDirectoryFields.EmployeeId) ||
                 User.CanReadField(ActiveDirectoryFields.Department) ||
                 User.CanReadField(ActiveDirectoryFields.Company) ||
                 User.CanReadField(ActiveDirectoryFields.Title) ||
                 User.CanReadField(ActiveDirectoryFields.PhysicalDeliveryOffice)
                 )
-                {
-                    <Section Title=@AppLocalization["Organization"]>
-                        <MudStack Row Class="@_fieldMudStackClasses">
+                    {
+                        <Section Title=@AppLocalization["Organization"]>
+                            <MudStack Row Class="@_fieldMudStackClasses">
 
-                             @if (User.CanReadField(ActiveDirectoryFields.Description))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["Description"]" @bind-Value="@User.Description" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Description)) />
-                            }
-                            @if (User.CanReadField(ActiveDirectoryFields.EmployeeId))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["Employee Id"]" @bind-Value="@User.EmployeeId" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.EmployeeId)) />
-                            }
-                            @if (User.CanReadField(ActiveDirectoryFields.Department))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["Department"]" @bind-Value="@User.Department" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Department)) />
-                            }
-                            @if (User.CanReadField(ActiveDirectoryFields.Company))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["Company"]" @bind-Value="@User.Company" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Company)) />
-                            }
-                            @if (User.CanReadField(ActiveDirectoryFields.Title))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["Job Title"]" @bind-Value="@User.Title" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Title)) />
-                            }
-                            @if (User.CanReadField(ActiveDirectoryFields.PhysicalDeliveryOffice))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["Office"]" @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
-                            }
-                        </MudStack>
-                    </Section>
-                }
+                                @if (User.CanReadField(ActiveDirectoryFields.Description))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["Description"]" @bind-Value="@User.Description" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Description)) />
+                                }
+                                @if (User.CanReadField(ActiveDirectoryFields.EmployeeId))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["Employee Id"]" @bind-Value="@User.EmployeeId" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.EmployeeId)) />
+                                }
+                                @if (User.CanReadField(ActiveDirectoryFields.Department))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["Department"]" @bind-Value="@User.Department" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Department)) />
+                                }
+                                @if (User.CanReadField(ActiveDirectoryFields.Company))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["Company"]" @bind-Value="@User.Company" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Company)) />
+                                }
+                                @if (User.CanReadField(ActiveDirectoryFields.Title))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["Job Title"]" @bind-Value="@User.Title" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.Title)) />
+                                }
+                                @if (User.CanReadField(ActiveDirectoryFields.PhysicalDeliveryOffice))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["Office"]" @bind-Value="@User.PhysicalDeliveryOfficeName" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
+                                }
+                            </MudStack>
+                        </Section>
+                    }
 
-                @if (User.CanReadField(ActiveDirectoryFields.HomePhone) ||
+                    @if (User.CanReadField(ActiveDirectoryFields.HomePhone) ||
                 User.CanReadField(ActiveDirectoryFields.StreetAddress) ||
                 User.CanReadField(ActiveDirectoryFields.POBox) ||
                 User.CanReadField(ActiveDirectoryFields.City) ||
                 User.CanReadField(ActiveDirectoryFields.State) ||
                 User.CanReadField(ActiveDirectoryFields.PostalCode)
                 )
-                {
-                    <Section Title=@AppLocalization["Contact Info"]>
-                        <MudStack Row Class="@_fieldMudStackClasses">
+                    {
+                        <Section Title=@AppLocalization["Contact Info"]>
+                            <MudStack Row Class="@_fieldMudStackClasses">
 
-                             @if (User.CanReadField(ActiveDirectoryFields.HomePhone))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["Home Phone"]" @bind-Value="@User.HomePhone" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomePhone)) />
+                                @if (User.CanReadField(ActiveDirectoryFields.HomePhone))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["Home Phone"]" @bind-Value="@User.HomePhone" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomePhone)) />
 
-                            }
-                            @if (User.CanReadField(ActiveDirectoryFields.StreetAddress))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["Street Address"]" @bind-Value="@User.StreetAddress" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.StreetAddress)) />
-                            }
-                            @if (User.CanReadField(ActiveDirectoryFields.POBox))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["PO Box"]" @bind-Value="@User.POBox" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.POBox)) />
-                            }
-                            @if (User.CanReadField(ActiveDirectoryFields.City))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["City"]" @bind-Value="@User.City" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.City)) />
-                            }
-                            @if (User.CanReadField(ActiveDirectoryFields.State))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["State"]" @bind-Value="@User.State" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.State)) />
-                            }
-                            @if (User.CanReadField(ActiveDirectoryFields.PostalCode))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["Zip Code"]" @bind-Value="@User.Zip" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PostalCode)) />
-                            }
-                        </MudStack>
+                                }
+                                @if (User.CanReadField(ActiveDirectoryFields.StreetAddress))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["Street Address"]" @bind-Value="@User.StreetAddress" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.StreetAddress)) />
+                                }
+                                @if (User.CanReadField(ActiveDirectoryFields.POBox))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["PO Box"]" @bind-Value="@User.POBox" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.POBox)) />
+                                }
+                                @if (User.CanReadField(ActiveDirectoryFields.City))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["City"]" @bind-Value="@User.City" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.City)) />
+                                }
+                                @if (User.CanReadField(ActiveDirectoryFields.State))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["State"]" @bind-Value="@User.State" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.State)) />
+                                }
+                                @if (User.CanReadField(ActiveDirectoryFields.PostalCode))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["Zip Code"]" @bind-Value="@User.Zip" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.PostalCode)) />
+                                }
+                            </MudStack>
 
-                    </Section>
-                }
+                        </Section>
+                    }
 
 
-                @if (User.CanReadField(ActiveDirectoryFields.HomeDirectory) ||
+                    @if (User.CanReadField(ActiveDirectoryFields.HomeDirectory) ||
                 User.CanReadField(ActiveDirectoryFields.HomeDrive) ||
                 User.CanReadField(ActiveDirectoryFields.ScriptPath) ||
                 User.CanReadField(ActiveDirectoryFields.ProfilePath)
                 )
-                {
-                    <Section Title=@AppLocalization["Profile"]>
-                        <MudStack Row Class="@_fieldMudStackClasses">
+                    {
+                        <Section Title=@AppLocalization["Profile"]>
+                            <MudStack Row Class="@_fieldMudStackClasses">
 
-                             @if (User.CanReadField(ActiveDirectoryFields.HomeDirectory))
+                                @if (User.CanReadField(ActiveDirectoryFields.HomeDirectory))
+                                {
+                                    <MudStack Row=true Spacing="0">
+
+                                        <DynamicMudInput T=string Label="@AppLocalization["Home Directory"]"
+                                                         @bind-Value="@User.HomeDirectory"
+                                                         Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
+                                        @if (!User.HomeDirectory.IsNullOrEmpty())
+                                        {
+
+                                            <MudIcon Class="align-middle" Icon="@(homeDirectoryExists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
+                                                     Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
+                                        }
+                                        <AppCopyButton TextToCopy=@User.HomeDirectory />
+                                    </MudStack>
+                                }
+                                @if (User.CanReadField(ActiveDirectoryFields.HomeDrive))
+                                {
+                                    <HomeDriveSelect Label="@AppLocalization["Home Drive"]" @bind-Value="@User.HomeDrive" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDrive)) />
+                                }
+                                @if (User.CanReadField(ActiveDirectoryFields.ScriptPath))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["Script Path"]" @bind-Value="@User.ScriptPath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ScriptPath)) />
+                                }
+                                @if (User.CanReadField(ActiveDirectoryFields.ProfilePath))
+                                {
+                                    <DynamicMudInput T=string Label="@AppLocalization["Profile Path"]" @bind-Value="@User.ProfilePath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) />
+                                }
+                            </MudStack>
+
+                        </Section>
+                    }
+
+                    @if (User.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
+                    {
+                        <Section Title=@AppLocalization["Additional Field"]>
+
+                            @foreach (var field in CustomFields)
                             {
-                                <MudStack Row=true Spacing="0">
+                                @if (User.CanReadField(field))
+                                {
+                                    <CustomDirectoryField Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="User" Field="@field" />
 
-                                    <DynamicMudInput T=string Label="@AppLocalization["Home Directory"]"
-                                                     @bind-Value="@User.HomeDirectory"
-                                                     Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDirectory)) />
-                                    @if (!User.HomeDirectory.IsNullOrEmpty())
-                                    {
-
-                                        <MudIcon Class="align-middle" Icon="@(homeDirectoryExists?Icons.Material.Filled.Check:Icons.Material.Filled.Error)"
-                                                 Color="@(homeDirectoryExists?Color.Success:Color.Error)" />
-                                    }
-                                    <AppCopyButton TextToCopy=@User.HomeDirectory />
-                                </MudStack>
+                                }
                             }
-                            @if (User.CanReadField(ActiveDirectoryFields.HomeDrive))
-                            {
-                                <HomeDriveSelect Label="@AppLocalization["Home Drive"]" @bind-Value="@User.HomeDrive" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDrive)) />
-                            }
-                            @if (User.CanReadField(ActiveDirectoryFields.ScriptPath))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["Script Path"]" @bind-Value="@User.ScriptPath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ScriptPath)) />
-                            }
-                            @if (User.CanReadField(ActiveDirectoryFields.ProfilePath))
-                            {
-                                <DynamicMudInput T=string Label="@AppLocalization["Profile Path"]" @bind-Value="@User.ProfilePath" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) />
-                            }
-                        </MudStack>
-
-                    </Section>
-                }
-
-                @if (User.CanReadAnyCustomFields && CustomFields != null && CustomFields.Count > 0)
-                {
-                    <Section Title=@AppLocalization["Additional Field"]>
-
-                        @foreach (var field in CustomFields)
-                        {
-                            @if (User.CanReadField(field))
-                            {
-                                <CustomDirectoryField Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="User" Field="@field" />
-
-                            }
-                        }
 
 
-                    </Section>
-                }
+                        </Section>
+                    }
 
 
 
 
-            </FlexContainer>
+                </FlexContainer>
+            </CascadingValue>
         </CascadingValue>
-    </CascadingValue>
 
-</EditForm>
-@if (User.HasUnsavedChanges && !User.NewEntry)
-{
-    <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
+    </EditForm>
+    @if (User.CanEdit && User.HasUnsavedChanges && !User.NewEntry)
+    {
+        <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
+    }
+    <MudOverlay Visible="SavingChanges" DarkBackground="true" Absolute="true">
+        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+    </MudOverlay>
+
 }
-<MudOverlay Visible="SavingChanges" DarkBackground="true" Absolute="true">
-    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
-</MudOverlay>
-
-
 
 
 
@@ -464,7 +465,6 @@
 
     bool homeDirectoryExists;
     bool showRemoveThumbnail = false;
-    DateTime? userLastLogonTime;
     IADUser User => DirectoryEntry as IADUser;
 
     protected override async Task OnInitializedAsync()
@@ -550,10 +550,11 @@
     }
     async Task DeleteUser()
     {
-        SavingChanges = true;
-        await InvokeAsync(StateHasChanged);
         if (await MessageService.Confirm("Are you sure you want to delete " + User.DisplayName + "?", "Delete User"))
         {
+            SavingChanges = true;
+            await InvokeAsync(StateHasChanged);
+
             try
             {
                 User.Delete();
@@ -564,6 +565,7 @@
             {
                 SnackBarService.Error(ex.Message);
             }
+            SavingChanges = false;
 
             await RefreshEntryComponents();
         }

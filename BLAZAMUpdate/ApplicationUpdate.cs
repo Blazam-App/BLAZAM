@@ -246,6 +246,7 @@ namespace BLAZAM.Update
                 }
                 catch (ApplicationException ex)
                 {
+                    Loggers.UpdateLogger.Error("Unable to apply files {@Error}", ex);
                     return false;
                 }
 

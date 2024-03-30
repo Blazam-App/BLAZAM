@@ -6,6 +6,7 @@
                  Filterable="false"
                  Dense=true
                  Loading=@LoadingData
+                 Virtualize=true
                  Height="300px"
                  FixedHeader=true
                  SortMode="@SortMode.None"
@@ -13,7 +14,7 @@
         <Columns>
             <TemplateColumn Context="templateContext">
                 <HeaderTemplate>
-                    Type
+                    @AppLocalization["Type"]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     @{
@@ -37,7 +38,7 @@
             </TemplateColumn>
             <TemplateColumn Sortable=true Filterable=true Context="templateContext">
                 <HeaderTemplate>
-                    Name
+                    @AppLocalization["Name"]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     <MudLink OnClick="@(()=>{Nav.NavigateTo(cellContext.Item.SearchUri);})">
@@ -47,7 +48,7 @@
             </TemplateColumn>
             <TemplateColumn Sortable=true Filterable=true Context="templateContext">
                 <HeaderTemplate>
-                    OU
+                    @AppLocalization["OU"]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     <MudText>
@@ -57,17 +58,17 @@
             </TemplateColumn>
             <TemplateColumn Context="templateContext">
                 <HeaderTemplate>
-                    Remove Member
+                    @AppLocalization["Remove Member"]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
-                    <MudTooltip ShowOnFocus=@(!cellContext.Item.CanUnassign)
-                                ShowOnClick=@(!cellContext.Item.CanUnassign)
-                                ShowOnHover=@(!cellContext.Item.CanUnassign)
+                    <MudTooltip 
+                                ShowOnClick=@(!cellContext.Item.CanEdit || !cellContext.Item.CanUnassign)
+                                ShowOnHover=@(!cellContext.Item.CanEdit || !cellContext.Item.CanUnassign)
                                 Text="You don't have permission to remove this group member">
-                        <MudButton Disabled=@(!cellContext.Item.CanUnassign)
+                        <MudButton Disabled=@(!cellContext.Item.CanEdit || !cellContext.Item.CanUnassign)
                                    Color="Color.Error"
                                    OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
-                            Remove
+                            @AppLocalization["Remove"]
                         </MudButton>
                     </MudTooltip>
                 </CellTemplate>
@@ -83,7 +84,9 @@
     @if (Group.CanAssign)
     {
 
-        <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.GroupAdd" OnClick="@(()=>{AssignMemberModal.Show();})" />
+        <MudIconButton Color="Color.Primary" 
+        Icon="@Icons.Material.Filled.GroupAdd" 
+        OnClick="@(()=>{AssignMemberModal.Show();})" />
     }
     <AppModal Color="Color.Dark" Title="Add Member..." @ref=@AssignMemberModal>
         <AddMemberModalContent ModelChanged=@(()=>{InvokeAsync(OnInitializedAsync);}) Group="Group" />
@@ -91,7 +94,7 @@
 }
 else
 {
-    <MudOverlay Visible=true Absolute=true DarkBackground=true>
+    <MudOverlay Visible=true Absolute=true DarkBackground=false>
         <MudProgressCircular Indeterminate Color=Color.Primary />
     </MudOverlay>
 }
@@ -109,15 +112,16 @@ else
     [Parameter]
     public int PageSize { get; set; } = 25;
 
-    List<IGroupableDirectoryAdapter> Members =>Group.Members;
+    List<IGroupableDirectoryAdapter> Members{ get; set; }
+
 
     AppModal AssignMemberModal;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await Task.Run(() =>
+        _=Task.Run(() =>
         {
-            
+            Members = Group.Members;
             LoadingData = false;
             InvokeAsync(StateHasChanged);
 

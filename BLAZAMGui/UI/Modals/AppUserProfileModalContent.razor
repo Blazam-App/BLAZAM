@@ -24,6 +24,20 @@
                     <MudText>Change Profile Icon</MudText>
                 }
             </MudButton>
+            @if (CurrentUser.State.Preferences.ProfilePicture != null)
+            {
+                <MudButton OnClick="@(async ()=>{
+CurrentUser.State.Preferences.ProfilePicture=null;
+await CurrentUser.State.SaveUserSettings();
+})"
+                           Variant="Variant.Filled"
+                           Color="Color.Error"
+                           StartIcon="@Icons.Material.Filled.Remove">
+                    Remove
+                </MudButton>
+
+            }
+
         </ButtonTemplate>
     </MudFileUpload>
     <MudTextField T="string" @bind-Text=@CurrentUser.State.Preferences.Email Label=@AppLocalization["Email"] />
@@ -34,7 +48,12 @@
                 @theme.Name
             </MudButton>
         }
-        <MudSwitch Checked="@CurrentUser.State.Preferences.DarkMode" CheckedChanged=@((state)=>{mainLayout.SetDarkMode(state);}) Color="Color.Primary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode" />
+        <MudSwitch Value="@CurrentUser.State.Preferences.DarkMode"
+                   ValueChanged=@((state)=>{mainLayout.SetDarkMode(state);})
+                   Color="Color.Primary"
+                   Class="ma-4"
+                   T="bool"
+                   Label="Toggle Light/Dark Mode" />
 
 
     </MudNavGroup>

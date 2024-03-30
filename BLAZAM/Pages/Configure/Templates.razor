@@ -3,14 +3,14 @@
 @inherits TemplateComponent
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
-<AppPageTitle>Templates</AppPageTitle>
+<AppPageTitle>@AppLocalization["Templates"]</AppPageTitle>
 
 <SetHeader @ref=Header>
 
 
     <MudStack Row=true>
         <MudText Align="Align.Center">
-            Templates
+            @AppLocalization["Templates"]
 
         </MudText>
 
@@ -40,7 +40,7 @@
 
                 <MudIconButton Color=Color.Tertiary
                                Class="align-middle"
-                               OnClick="@(()=>{SelectedTemplate = new();Nav.NavigateTo("/templates");})"
+                               OnClick="@(NewTemplate)"
                                Icon="@Icons.Material.Filled.AddCard" />
 
             </MudTooltip>
@@ -50,7 +50,7 @@
             <MudTooltip Text="@AppLocalization["New template"]">
                 <MudIconButton Color=Color.Tertiary
                                Class="align-middle"
-                               OnClick="@(()=>{SelectedTemplate = new();Nav.NavigateTo("/templates");})"
+                                 OnClick="@(NewTemplate)"
                                Icon="@Icons.Material.Filled.AddCard" />
 
             </MudTooltip>
@@ -86,7 +86,7 @@
         {
             <MudTooltip Text="@AppLocalization["Restore templates"]">
 
-                <MudIconButton OnClick=@(async()=>{RestoreModal.Show();})
+                <MudIconButton OnClick=@(async()=>{RestoreModal?.Show();})
                                Color="Color.Warning"
                                Icon="@Icons.Material.Filled.RestoreFromTrash" />
             </MudTooltip>
@@ -119,7 +119,7 @@
 </SetHeader>
 @if (Templates.Count() > 0)
 {
-    
+
     <MudCard Elevation="2">
         <MudExpansionPanel Text="@AppLocalization["Inheritance Tree"]">
             <TemplateInheritanceTreeView RootTemplate="CreateTemplateHash"
@@ -149,13 +149,13 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        
+
         if (Templates?.Count() < 1)
         {
 
             await Task.Delay(1000);
             createFirstTemplateTooltipVisible = true;
-            
+
 
 
 
@@ -173,20 +173,32 @@
     async Task RenameSelectedCategory()
     {
         var temp = Context?.DirectoryTemplates.Where(t => t.Category == SelectedCategory).ToList();
-        foreach (var template in temp)
+        if (temp != null)
         {
-            template.Category = newCategoryName;
+            foreach (var template in temp)
+            {
+                template.Category = newCategoryName;
+            }
         }
-        if (SelectedTemplate.Category == SelectedCategory)
+        if (SelectedTemplate!=null && SelectedTemplate.Category == SelectedCategory)
             SelectedTemplate.Category = newCategoryName;
-        Context?.SaveChanges();
+        if (Context != null && await Context.SaveChangesAsync() > 0)
+        {
 
-        SnackBarService.Success("Renamed category " + SelectedCategory + " to " + newCategoryName);
-        SelectedCategory = newCategoryName;
-        await FetchTemplates();
-        RenameModal?.Hide();
+            SnackBarService.Success(AppLocalization["Renamed category"] + ": " + SelectedCategory + " to " + newCategoryName);
+            SelectedCategory = newCategoryName;
+            await FetchTemplates();
+            RenameModal?.Hide();
+        }
         await RefreshComponents();
 
+    }
+    private void NewTemplate()
+    {
+        SelectedTemplate = new();
+        TemplateIdParameter = null;
+        SelectedTemplate = new();
+        Nav.NavigateTo("/templates/0",true);
     }
     private HashSet<DirectoryTemplate> CreateTemplateHash
     {

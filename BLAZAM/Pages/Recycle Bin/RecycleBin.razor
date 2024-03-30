@@ -6,12 +6,15 @@
 
 <MudDataGrid T="IDirectoryEntryAdapter"
              Virtualize=true
+             RowsPerPage=10
              ColumnResizeMode="ResizeMode.Container"
              Class=""
+             Loading=@LoadingData
              Hideable=true
              @bind-SelectedItems=@selectedEntries
              Square=true
              MultiSelection=true
+             Height="80vh"
              Items="@deletedObjects"
              Filterable="false"
              SortMode="@SortMode.Multiple"
@@ -19,9 +22,12 @@
     <ToolBarContent>
         <MudText Typo="Typo.h6">Recycle Bin</MudText>
         <MudSpacer />
-        <MudButton Color="Color.Primary" Variant="@Variant.Outlined" OnClick="@(async()=>{await RestoreSelected();})">Restore Selected</MudButton>
-
+        <MudButton Color="Color.Primary" Variant="@Variant.Outlined" OnClick="@(()=>{RestoreSelected();})">Restore Selected</MudButton>
+ 
     </ToolBarContent>
+    <PagerContent>
+        <MudDataGridPager T="IDirectoryEntryAdapter" />
+    </PagerContent>
     <Columns>
         <SelectColumn T="IDirectoryEntryAdapter" ShowInFooter=false ShowInHeader=true />
         <TemplateColumn Title="Type">
@@ -70,14 +76,37 @@
         var search = new ADSearch() { SearchRoot = Directory.GetDeleteObjectsEntry() };
         search.SearchDeleted = true;
         deletedObjects = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
-
+        LoadingData = false;
         await InvokeAsync(StateHasChanged);
+    }
+
+    //TODO stop the confimation message on batch restore
+    private async void RestoreSelected()
+    {
+        if (await MessageService.Confirm("Are you sure you want to restore the selected entries", "Restore?"))
+        {
+            IJob batchRestore = new Job(AppLocalization["Restore"]);
+            foreach (var entry in selectedEntries)
+            {
+                IJobStep restoreEntryStep = new JobStep(AppLocalization["Restore: "] + entry.CanonicalName, (step) =>
+                {
+                    if (RestoreEntry(entry))
+                        return true;
+                    return false;
+
+                });
+                batchRestore.Steps.Add(restoreEntryStep);
+            }
+            batchRestore.Run();
+            batchRestore.ShowJobDetailsDialog(MessageService);
+        }
     }
     async Task Restore(IDirectoryEntryAdapter entryToRestore)
     {
-        if (await MessageService.Confirm("Are you sure you want to restore " + entryToRestore.CanonicalName + " to " + entryToRestore.LastKnownParent.CanonicalName, "Restore?"))
+        if (entryToRestore.LastKnownParent == null) throw new ApplicationException("Tombstone item has no  LastKnownParent");
+        if (await MessageService.Confirm("Are you sure you want to restore " + entryToRestore.CanonicalName + " to " + entryToRestore.LastKnownParent?.CanonicalName, "Restore?"))
         {
-            if (Directory.RestoreTombstone(entryToRestore, entryToRestore.LastKnownParent))
+            if (RestoreEntry(entryToRestore))
             {
                 SnackBarService.Success(entryToRestore.CanonicalName + " restored successfully");
                 await GetDeletedEntries();
@@ -90,21 +119,9 @@
 
         }
     }
-    //TODO stop the confimation message on batch restore
-    async Task RestoreSelected()
+    bool RestoreEntry(IDirectoryEntryAdapter entry)
     {
-        IJob batchRestore = new Job(AppLocalization["Restore"]);
-        foreach (var entry in selectedEntries)
-        {
-            IJobStep restoreEntryStep = new JobStep(AppLocalization["Restore: "] + entry.CanonicalName, async (step) =>
-            {
-                await Restore(entry);
-                return true;
-
-            });
-            batchRestore.Steps.Add(restoreEntryStep);
-        }
-        batchRestore.Run();
-        batchRestore.ShowJobDetailsDialog(MessageService);
+        return (entry.LastKnownParent != null && Directory.RestoreTombstone(entry, entry.LastKnownParent));
     }
+
 }

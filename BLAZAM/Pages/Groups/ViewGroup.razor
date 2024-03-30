@@ -46,12 +46,7 @@
         </AppModal>
 
 
-        <AppModal Title=@AppLocalization["Change History"] @ref=@ChangeHistoryModal Options=@(new DialogOptions(){FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
-            @if (ChangeHistoryModal?.IsShown == true)
-            {
-                <ChangeHistoryModalContent Model="Group" />
-            }
-        </AppModal>
+      
 
 
         <MudGrid>
@@ -117,7 +112,7 @@
 
 
 
-            @if (Group.HasUnsavedChanges)
+            @if (Group.CanEdit && Group.HasUnsavedChanges)
         {
             <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
         }
@@ -159,7 +154,7 @@
             }
             else
             {
-                jobResults.ShowJobDetailsDialog(MessageService);
+                await jobResults.ShowJobDetailsDialogAsync(MessageService);
             }
 
 

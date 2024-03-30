@@ -1,5 +1,6 @@
 ﻿@page "/search"
 @page "/search/{SearchTermParameter}"
+@using System.Web
 
 @inherits AppComponentBase
 @attribute [Authorize(Roles = (UserRoles.SearchOUs + "," + UserRoles.SearchComputers + "," + UserRoles.SearchGroups + "," + UserRoles.SearchUsers + "," + UserRoles.SuperAdmin))]
@@ -22,7 +23,7 @@
             Time elapsed: @Searcher.SearchTime
         </MudStack>
 
-        <Virtualize Items="results" TItem="IDirectoryEntryAdapter" Context="u" OverscanCount="30">
+        <Virtualize Items="Searcher.Results" TItem="IDirectoryEntryAdapter" Context="u" OverscanCount="30">
             <ItemContent>
                 @if (u.CanRead)
                 {
@@ -93,10 +94,10 @@
     {
         get => _searchTermParameter; set
         {
-            if (_searchTermParameter == value) return;
+            if (_searchTermParameter == HttpUtility.UrlDecode(value)) return;
             LoadingData = true;
             Searcher?.Cancel();
-            _searchTermParameter = value;
+            _searchTermParameter = HttpUtility.UrlDecode(value);
             Task.Run(async () =>
             {
                 await PerformSearch();
@@ -147,7 +148,7 @@
        });
         Searcher.ResultsCollected += ((batch) =>
              {
-                 results.AddRange(batch);
+                 results.AddRange(batch.Where(r=>r.CanRead));
              });
     }
     /// <summary>

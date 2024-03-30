@@ -153,8 +153,15 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 
 </Row>
 
+@if (!confirmed)
+{
+    <MudButton Disabled=@disableCreateUserButton Color="Color.Success" OnClick="ConfirmUser">Create User</MudButton>
 
-<MudButton Disabled=@disableCreateUserButton Color="Color.Success" OnClick="ConfirmUser">Create User</MudButton>
+}else{
+    <MudButton Color="Color.Primary" OnClick="@(()=>{Nav.NavigateTo(User.SearchUri);})">Go To User</MudButton>
+    <MudButton Color="Color.Success" OnClick="@(()=>{Nav.NavigateTo("/create/user");})">Create Another</MudButton>
+
+}
 <MudButton StartIcon="@Icons.Material.Filled.Print" Color="Color.Info" OnClick="Print">Print</MudButton>
 
 @code {
@@ -171,9 +178,9 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
     bool InDirectoryTemplate(ActiveDirectoryField field)
     {
         if (DirectoryTemplate == null) return true;
-        return DirectoryTemplate?.FieldValues.Any(f => f.Field.FieldName == field.FieldName) == true;
+        return DirectoryTemplate?.FieldValues.Any(f => f.Field?.FieldName == field.FieldName) == true;
     }
-
+    bool confirmed = false;
     bool disableCreateUserButton=false;
     /// <summary>
     /// Triggered when the user confirms the creation of this
@@ -193,11 +200,17 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
             var result = await User.CommitChangesAsync(createUserJob);
 
             disableCreateUserButton = false;
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
             if (result.FailedSteps.Count == 0)
             {
-
+                var newUser = Directory.Users.FindUsersByContainerName(User.CanonicalName, false, true);
+                if (newUser != null)
+                {
+                    User = newUser;
+                }
                 SnackBarService.Success("User has been created");
+                confirmed = true;
+                await Confirmed.InvokeAsync();
                 //Nav.NavigateTo("/search/" + User.SamAccountName);
 
             }

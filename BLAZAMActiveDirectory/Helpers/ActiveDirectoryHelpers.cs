@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,30 @@ namespace BLAZAM.Helpers
 
             return services;
         }
+        public static IEnumerable<IDirectoryEntryAdapter> MoveToTop(this IEnumerable<IDirectoryEntryAdapter> enumerable, Func<IDirectoryEntryAdapter,bool>matchingPredicate)
+        {
+            var list = enumerable.ToList();
+            if (list.Count() < 1) return list;
+            List<IDirectoryEntryAdapter> mathingItems=new List<IDirectoryEntryAdapter>();
+            for (int x =1; x < list.Count(); x++)
+            {
 
+                if (matchingPredicate.Invoke(list[x]))
+                {
+                    var toMove = list[x];
+                    list.RemoveAt(x);
+                    x--;
+                    mathingItems.Add(toMove);
+                    
+                }
+            }
+            if(mathingItems.Count > 0)
+            {
+                list.InsertRange(0,mathingItems.OrderBy(x=>x.CanonicalName));
+            }
+            return list.AsEnumerable();
+            return default;
+        }
 
         public static Process? Shadow(this IRemoteSession session, bool withoutPermission = false)
         {
@@ -81,7 +105,7 @@ namespace BLAZAM.Helpers
             return string.Join(",", ouComponents);
         }
 
-      
+
 
         public static string? ParentOU(string? dN)
         {

@@ -35,38 +35,48 @@
                     </AuthorizeView>
                 }
 
+                <MudBreakpointProvider @ref=_mudBreakPoint>
 
-                <MudDrawer Width="185px" @bind-Open=@DrawerOpen Elevation="3">
-                    <MudDrawerContainer Style="width:100%;height:100%;">
-                        <NavMenu />
+                    <MudDrawer Width=@(BrowseExpanded==false?"185px":"385px")
+                               @bind-Open=@DrawerOpen
+                               Class="animate-width"
+                               Variant=@navDrawerVariant
+                               Elevation="3"
+                               ClipMode="DrawerClipMode.Docked">
+                        <NavMenu SelectedEntryChanged=GotoEntry BrowseExpandedChanged="@(async(value)=>{
+BrowseExpanded=value;
+await Task.Delay(100);
+await InvokeAsync(StateHasChanged);
+})" />
                         @if (ApplicationInfo.InDebugMode)
                         {
                             <AuthorizeView Roles="@UserRoles.SuperAdmin">
                                 <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
-                                       OnClick="@(()=>{_devDrawerOpen=!_devDrawerOpen;InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
+                                           OnClick="@(()=>{_devDrawerOpen=!_devDrawerOpen;InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
 
-                            <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
-                                       OnClick="@(()=>{dataBrowser?.Show();})">Data Browser</MudButton>
-                                       <AppModal @ref=dataBrowser>
-                                           <DatabaseBrowserModalContent/>
-                                       </AppModal>
-                        </AuthorizeView>
+                                <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
+                                           OnClick="@(()=>{dataBrowser?.Show();})">Data Browser</MudButton>
+                                <AppModal @ref=dataBrowser>
+                                    <DatabaseBrowserModalContent />
+                                </AppModal>
+                            </AuthorizeView>
                         }
-                    </MudDrawerContainer>
-                </MudDrawer>
+                        <MudSpacer />
+                        <AppFooter Class="ps-2 align-middle" />
+
+                    </MudDrawer>
+                </MudBreakpointProvider>
 
 
+                <MudMainContent Class=" mud-height-full">
 
-                <MudMainContent Class="mud-height-full">
-                    @if (SubHeader != null)
-                    {
-                        <MudAppBar Color=Color.Default Class="app-subheader" Elevation="1">
-                            @SubHeader?.ChildContent
-                        </MudAppBar>
-                        topMarginForContent = "margin-top:64px;";
-                    }
 
                     @{
+                        // if (SubHeader != null)
+                        // {
+                        //     topMarginForContent = "margin-top:64px;";
+
+                        // }
                         var maxWidth = MaxWidth.Large;
                         if (Nav.Uri.Contains("/home"))
                         {
@@ -74,11 +84,28 @@
                         }
                     }
                     <MudContainer Style="@topMarginForContent"
-                                  MaxWidth="MaxWidth.ExtraLarge"
-                                  Class="pt-5 pb-10 mud-height-full">
+                                  MaxWidth="MaxWidth.ExtraExtraLarge"
+                                  Class="px-0 pb-10 mud-height-full">
 
 
-                        @Body
+
+
+
+
+                        @if (SubHeader != null)
+                        {
+                            <MudAppBar Fixed=false Dense=true Elevation="1" Class="mb-5 sticky" Style="position: fixed !important;">
+                                @SubHeader?.ChildContent
+
+                            </MudAppBar>
+
+                            <MudElement Class="d-block" Style="height:50px">&nbsp;</MudElement>
+                        }
+
+                        <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+                            @Body
+
+                        </MudContainer>
 
                         <AppUserPageTracker />
                         <DirectoryConnectingIndicator />
@@ -86,13 +113,16 @@
                     </MudContainer>
 
                 </MudMainContent>
-               <MudAppBar Style="height:35px;" DisableGutters=true Bottom=true Dense=true Color=Color.Dark Elevation="1">
-                    <MudStack Class="mud-width-full pa-0 ma-0 ps-3" Row=true>
-                        <AppFooter Class="align-middle"/>
-                        @*TODO Either break down chat to only page chat, or rebuild appchat*@
-                        @* <AppChat /> *@
-                    </MudStack>
-                </MudAppBar> 
+                @*   <MudAppBar Color=Color.Secondary Style="height:35px;"
+                DisableGutters=true
+                Bottom=true
+                Dense=true
+                Elevation="1">
+                <MudStack Class="mud-width-full pa-0 ma-0 ps-3" Row=true>
+                TODO Either break down chat to only page chat, or rebuild appchat
+                <AppChat />
+                </MudStack>
+                </MudAppBar> *@
                 <NotificationBroadcastListener />
             </Authorized>
             <NotAuthorized>
@@ -125,14 +155,16 @@
     }
     catch
     {
-        
+
     }
 }
 
 @code {
+    MudBreakpointProvider? _mudBreakPoint;
     AppModal? dataBrowser;
     bool _drawerOpen = true;
     bool _devDrawerOpen = false;
+    public bool BrowseExpanded = false;
 
     public bool DrawerOpen
     {
@@ -206,5 +238,32 @@
             SnackBarService.Error(ex.Message);
         }
     }
+    public async void GotoEntry(IDirectoryEntryAdapter entry)
+    {
+        DrawerOpen = false;
+        Nav.NavigateTo(entry.SearchUri);
+    }
 
+    private DrawerVariant navDrawerVariant
+    {
+        get
+
+        {
+            if(BrowseExpanded == false)
+            {
+                if (_mudBreakPoint?.Breakpoint == Breakpoint.Sm ||
+                _mudBreakPoint?.Breakpoint == Breakpoint.Xs)
+                {
+                    return DrawerVariant.Responsive;
+                }
+                else
+                {
+                    return DrawerVariant.Responsive;
+                }
+            }else{
+                return DrawerVariant.Temporary;
+            } 
+
+        }
+    }
 } 

@@ -5,8 +5,8 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
-		<AssemblyVersion>0.8.9</AssemblyVersion>
-		<Version>2024.02.27.2343</Version>
+		<AssemblyVersion>0.9.0</AssemblyVersion>
+		<Version>2024.03.30.1734</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -27,6 +27,8 @@
 		<None Remove="static\img\default_logo3.png" />
 		<None Remove="static\img\default_logo4.png" />
 	</ItemGroup>
+
+	
 
 
 
@@ -53,36 +55,35 @@
 	<ItemGroup>
 		<PackageReference Include="BlazorTemplater" Version="1.5.1" />
 		<PackageReference Include="Cassia" Version="2.0.0.60" />
-		<PackageReference Include="Core.System.Configuration.Install" Version="1.1.0" />
 		<PackageReference Include="DuoUniversal" Version="1.2.2" />
-		<PackageReference Include="MailKit" Version="4.3.0" />
+		<PackageReference Include="MailKit" Version="4.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.27" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.27" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.27" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.28" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.28" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.28" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.27" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.16" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.16" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.16" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.16" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.16" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.16">
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.17" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.17" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.17" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.17" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.17" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.17">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.3" />
 		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="8.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
 		<PackageReference Include="MudBlazor.Markdown" Version="0.1.3" />
-		<PackageReference Include="MudBlazor.ThemeManager" Version="1.0.8" />
+		<PackageReference Include="MudBlazor.ThemeManager" Version="1.0.9" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Octokit" Version="10.0.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
-		<PackageReference Include="SixLabors.ImageSharp.Web" Version="3.1.0" />
+		<PackageReference Include="SixLabors.ImageSharp.Web" Version="3.1.1" />
 		<PackageReference Include="System.DirectoryServices" Version="8.0.0" />
 
 		<PackageReference Include="System.DirectoryServices.AccountManagement" Version="8.0.0" />

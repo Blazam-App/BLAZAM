@@ -86,7 +86,10 @@
     {
         LoadingData = true;
         await InvokeAsync(StateHasChanged);
-        ADFields = await Context.CustomActiveDirectoryFields.Where(x => x.DeletedAt == null).ToListAsync();
+        if (Context != null)
+        {
+            ADFields = await Context.CustomActiveDirectoryFields.Where(x => x.DeletedAt == null).ToListAsync();
+        }
         LoadingData = false;
         var data = new GridData<CustomActiveDirectoryField>();
         data.Items = ADFields;
@@ -104,7 +107,7 @@
         if (await MessageService.Confirm("Are you sure you want to delete " + field.DisplayName + "?", "Delete " + field.DisplayName + "?"))
         {
             field.DeletedAt = DateTime.UtcNow;
-            if (await Context.SaveChangesAsync() > 0)
+            if (Context != null && await Context.SaveChangesAsync() > 0)
             {
                 await fieldGrid?.ReloadServerData();
 

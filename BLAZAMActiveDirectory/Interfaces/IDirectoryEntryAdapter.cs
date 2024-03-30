@@ -26,7 +26,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// This entry's Distinguished Name
         /// </summary>
-        string DN { get; set; }
+        string? DN { get; set; }
 
         /// <summary>
         /// The date and time in UTC that this entry was created
@@ -240,6 +240,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Usually only used for <see cref="IADOrganizationalUnit"/>'s
         /// </remarks>
         IEnumerable<IDirectoryEntryAdapter> Children { get; }
+        IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
 
         /// <summary>
         /// Sends all staged changes to the Active Directory server

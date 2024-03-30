@@ -18,6 +18,8 @@ using System.DirectoryServices.ActiveDirectory;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -30,7 +32,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return "/search/" + CanonicalName;
+                return "/search/" + HttpUtility.UrlEncode(DN);
             }
         }
 
@@ -276,7 +278,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        public virtual string DN
+        public virtual string? DN
         {
             get
             {
@@ -323,13 +325,33 @@ namespace BLAZAM.ActiveDirectory.Adapters
             private set { _isDeleted = value; }
 
         }
+        private bool? _cachedHasChildren;
         public virtual bool HasChildren
         {
             get
             {
-                var children = DirectoryEntry.Children;
-                var entries = children.Encapsulate();
-                return entries.Count > 0;
+                if (CachedChildren == null)
+                {
+                    if (_cachedHasChildren == null)
+                    {
+                        EnsureDirectoryEntry();
+                        _cachedHasChildren = DirectoryEntry?.Children.GetEnumerator().MoveNext();
+                    }
+
+
+                    return _cachedHasChildren == true;
+                    //try{
+                    //    return cursor.Current != null;
+
+                    //}
+                    //catch (InvalidOperationException)
+                    //{
+                    //    return false;
+                    //}
+                    //CachedChildren = children.Encapsulate();
+                }
+                var hasChildren = CachedChildren.Count() > 0;
+                return hasChildren;
             }
         }
         public virtual DateTime? LastChanged
@@ -410,7 +432,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             HasUnsavedChanges = true;
         }
 
-        public virtual string? OU { get => DirectoryTools.DnToOu(DN)??DirectoryTools.DnToOu(ADSPath); }
+        public virtual string? OU { get => DirectoryTools.DnToOu(DN) ?? DirectoryTools.DnToOu(ADSPath); }
 
         public IADOrganizationalUnit? GetParent()
         {
@@ -433,7 +455,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <param name="allowSelector"></param>
         /// <param name="denySelector"></param>
         /// <returns></returns>
-        protected virtual bool HasPermission(Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null)
+        protected virtual bool HasPermission(Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null, bool nestedSearch = false)
         {
             if (CurrentUser == null) return false;
 
@@ -444,8 +466,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     + " did not load a distinguished name." + " {@Error}", new ApplicationException());
                 return false;
             }
-            var baseSearch = CurrentUser.PermissionMappings
-                .Where(pm => DN.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length);
+            IOrderedEnumerable<PermissionMapping>? baseSearch = null;
+            if (!nestedSearch)
+            {
+                baseSearch = CurrentUser.PermissionMappings
+       .Where(pm => DN.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length);
+
+            }
+            else
+            {
+                baseSearch = CurrentUser.PermissionMappings
+       .Where(pm => pm.OU.Contains(DN)).OrderByDescending(pm => pm.OU.Length);
+
+            }
 
             if (baseSearch == null)
             {
@@ -587,8 +620,57 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public bool IsSelected { get; set; }
 
-        public virtual IEnumerable<IDirectoryEntryAdapter> CachedChildren { get; protected set; } = new List<IDirectoryEntryAdapter>();
-        public virtual IEnumerable<IDirectoryEntryAdapter> Children => new List<IDirectoryEntryAdapter>();
+        public virtual IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
+        public virtual IEnumerable<IDirectoryEntryAdapter> Children
+        {
+            get
+            {
+                if (CachedChildren == null)
+                {
+                    List<IDirectoryEntryAdapter> directoryEntries = new List<IDirectoryEntryAdapter>();
+                    var children = DirectoryEntry.Children;
+                    DirectoryEntryAdapter? thisObject = null;
+                    foreach (DirectoryEntry child in children)
+                    {
+
+                        if (child.Properties["objectClass"].Contains("top"))
+                        {
+                            if (child.Properties["objectClass"].Contains("computer"))
+                            {
+                                thisObject = new ADComputer();
+                            }
+                            else if (child.Properties["objectClass"].Contains("user"))
+                            {
+                                thisObject = new ADUser();
+                            }
+                            else if (child.Properties["objectClass"].Contains("organizationalUnit"))
+                            {
+                                thisObject = new ADOrganizationalUnit();
+                            }
+                            else if (child.Properties["objectClass"].Contains("group"))
+                            {
+                                thisObject = new ADGroup();
+                            }
+                            else if (child.Properties["objectClass"].Contains("printQueue"))
+                            {
+                                thisObject = new ADPrinter();
+                            }
+                            if (thisObject != null)
+                            {
+                                thisObject.Parse(directory: Directory, directoryEntry: child);
+                                directoryEntries.Add(thisObject);
+
+                            }
+
+                        }
+                        thisObject = null;
+
+                    }
+                    CachedChildren = directoryEntries;
+                }
+                return CachedChildren;
+            }
+        }
 
         public virtual bool CanReadField(IActiveDirectoryField field)
         {
@@ -991,7 +1073,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (InvalidCastException ex)
                 {
-                    throw ex;
+                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
                 }
                 catch (Exception ex)
                 {
@@ -1019,7 +1101,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (InvalidCastException ex)
             {
-                throw ex;
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+
             }
             catch
             {
@@ -1040,7 +1123,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (InvalidCastException ex)
             {
-                throw ex;
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
+
             }
 
             catch
