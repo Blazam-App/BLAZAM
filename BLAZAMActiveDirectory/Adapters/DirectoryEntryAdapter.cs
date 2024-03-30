@@ -337,9 +337,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         EnsureDirectoryEntry();
                         _cachedHasChildren = DirectoryEntry?.Children.GetEnumerator().MoveNext();
                     }
-                    
-                
-                    return _cachedHasChildren==true;
+
+
+                    return _cachedHasChildren == true;
                     //try{
                     //    return cursor.Current != null;
 
@@ -432,7 +432,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             HasUnsavedChanges = true;
         }
 
-        public virtual string? OU { get => DirectoryTools.DnToOu(DN)??DirectoryTools.DnToOu(ADSPath); }
+        public virtual string? OU { get => DirectoryTools.DnToOu(DN) ?? DirectoryTools.DnToOu(ADSPath); }
 
         public IADOrganizationalUnit? GetParent()
         {
@@ -455,7 +455,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <param name="allowSelector"></param>
         /// <param name="denySelector"></param>
         /// <returns></returns>
-        protected virtual bool HasPermission(Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null)
+        protected virtual bool HasPermission(Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null, bool nestedSearch = false)
         {
             if (CurrentUser == null) return false;
 
@@ -466,8 +466,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     + " did not load a distinguished name." + " {@Error}", new ApplicationException());
                 return false;
             }
-            var baseSearch = CurrentUser.PermissionMappings
-                .Where(pm => DN.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length);
+            IOrderedEnumerable<PermissionMapping>? baseSearch = null;
+            if (!nestedSearch)
+            {
+                baseSearch = CurrentUser.PermissionMappings
+       .Where(pm => DN.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length);
+
+            }
+            else
+            {
+                baseSearch = CurrentUser.PermissionMappings
+       .Where(pm => pm.OU.Contains(DN)).OrderByDescending(pm => pm.OU.Length);
+
+            }
 
             if (baseSearch == null)
             {
@@ -610,7 +621,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public bool IsSelected { get; set; }
 
         public virtual IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
-        public virtual IEnumerable<IDirectoryEntryAdapter> Children {
+        public virtual IEnumerable<IDirectoryEntryAdapter> Children
+        {
             get
             {
                 if (CachedChildren == null)
@@ -1061,7 +1073,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (InvalidCastException ex)
                 {
-                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName,ex);
+                    throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
                 }
                 catch (Exception ex)
                 {
@@ -1089,7 +1101,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (InvalidCastException ex)
             {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName,ex);
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
 
             }
             catch
@@ -1111,7 +1123,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (InvalidCastException ex)
             {
-                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName,ex);
+                throw new InvalidCastException("Bad casting attempt for " + propertyName + " to type " + typeof(T).FullName, ex);
 
             }
 

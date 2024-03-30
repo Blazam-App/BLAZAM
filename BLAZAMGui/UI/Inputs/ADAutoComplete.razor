@@ -99,6 +99,8 @@
 
     private MudAutocomplete<IDirectoryEntryAdapter>? AutoComplete { get; set; }
 
+    private List<CancellationTokenSource> _cancellationList = new();
+
     [Parameter]
     public Func<IDirectoryEntryAdapter, bool> CustomResultsFilter { get; set; }
     @*
@@ -190,9 +192,18 @@
 
     private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText ,CancellationToken token)
     {
+        var newSource = new CancellationTokenSource();
+        token = newSource.Token;
+        foreach(var source in _cancellationList)
+        {
+            source.Cancel();
+        }
+
+        _cancellationList.Add(newSource);
+
         return await Task.Run(() =>
          {
-            
+ 
              if (!token.IsCancellationRequested && searchText != null)
              {
                  SearchResults = new List<IDirectoryEntryAdapter>();
