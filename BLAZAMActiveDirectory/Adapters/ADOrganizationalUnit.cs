@@ -87,9 +87,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-               
-                   return AppliedPermissionMappings.Where(m => m.OU.Equals(DN)).ToList();
- 
+
+                return AppliedPermissionMappings.Where(m => m.OU.Equals(DN)).ToList();
+
             }
         }
 
@@ -122,7 +122,25 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
+        public virtual bool CanReadInSubOus
+        {
+            get
+            {
+                return HasPermission(p => p.Where(pm =>
+                pm.AccessLevels.Any(al =>
+                al.ObjectMap.Any(om =>
+                om.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level
+                ))),
+                p => p.Where(pm =>
+                pm.AccessLevels.Any(al =>
+                al.ObjectMap.Any(om =>
+                om.ObjectAccessLevel.Level == ObjectAccessLevels.Deny.Level
+                ))),
+                true
+                );
+            }
 
+        }
 
         /// <summary>
         /// Creates a new OU under this OU. Note that the returned Directory object

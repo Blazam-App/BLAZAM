@@ -17,6 +17,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
         HashSet<IADOrganizationalUnit> CachedTreeViewSubOUs { get;}
         HashSet<IADOrganizationalUnit> TreeViewSubOUs { get; }
+        bool CanReadInSubOus { get; }
 
         IADGroup CreateGroup(string containerName);
         IADUser CreateUser(string containerName);
