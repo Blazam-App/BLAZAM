@@ -6,6 +6,7 @@
                  Filterable="false"
                  Dense=true
                  Loading=@LoadingData
+                 Virtualize=true
                  Height="300px"
                  FixedHeader=true
                  SortMode="@SortMode.None"
@@ -93,7 +94,7 @@
 }
 else
 {
-    <MudOverlay Visible=true Absolute=true DarkBackground=true>
+    <MudOverlay Visible=true Absolute=true DarkBackground=false>
         <MudProgressCircular Indeterminate Color=Color.Primary />
     </MudOverlay>
 }
@@ -111,15 +112,16 @@ else
     [Parameter]
     public int PageSize { get; set; } = 25;
 
-    List<IGroupableDirectoryAdapter> Members =>Group.Members;
+    List<IGroupableDirectoryAdapter> Members{ get; set; }
+
 
     AppModal AssignMemberModal;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await Task.Run(() =>
+        _=Task.Run(() =>
         {
-            
+            Members = Group.Members;
             LoadingData = false;
             InvokeAsync(StateHasChanged);
 

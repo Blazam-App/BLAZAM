@@ -77,7 +77,7 @@ namespace BLAZAM.Session.Interfaces
         bool HasCreateOUPrivilege { get; }
         bool HasComputerPrivilege { get; }
         bool CanUnlockUsers { get;  }
-        IList<ReadNewsItem> ReadNewsItems { get; }
+        IList<ReadNewsItem>? ReadNewsItems { get; }
 
         //List<ReadChatMessage> ReadChatMessages { get; }
 

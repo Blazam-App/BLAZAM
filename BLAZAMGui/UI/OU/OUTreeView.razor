@@ -20,8 +20,10 @@
                          Icon="@Icons.Material.Filled.Folder"
                          IconColor="@(context.IsSelected==true?Color.Primary:Color.Default)"
                          Class="minw-max w-100"
-                         CanExpand=@CanExpand(context)
+                         CanExpand=@(context is IADOrganizationalUnit)
+                          Context="treeContext"
                          EndText="@EndText?.Invoke(context)">
+                         
             @*<Content>
             @{
             string itemIcon = Icons.Material.Filled.Folder;
@@ -226,7 +228,8 @@
     {
         return await Task.Run(() =>
             {
-                return parentNode.TreeViewSubOUs;
+                return GetChildren(parentNode);
+
 
             });
     }

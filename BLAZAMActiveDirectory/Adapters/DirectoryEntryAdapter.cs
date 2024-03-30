@@ -18,6 +18,8 @@ using System.DirectoryServices.ActiveDirectory;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -30,7 +32,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return "/search/" + CanonicalName;
+                return "/search/" + HttpUtility.UrlEncode(DN);
             }
         }
 

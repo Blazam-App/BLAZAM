@@ -2,7 +2,7 @@
 
 <UserNotificationPopover UserState="@UserState" @bind-Open="@NotificationsOpen" />
 
-<MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+<MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" ListClass="py-0">
     <ActivatorContent>
         @{
             
@@ -21,9 +21,10 @@
 
     </ActivatorContent>
     <ChildContent>
-        <MudText Typo=Typo.caption Class="my-1" Style="text-align:center">
+        <MudText Typo=Typo.body2 Color="Color.Dark" Align=Align.Center Class="py-3 w-100 " Style="text-align:center;    background-color: var(--mud-palette-drawer-background);">
             @CurrentUser.Username
         </MudText>
+        <MudDivider/>
         @if (UserState?.Notifications?.Count > 0)
         {
             <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})">Notifications</MudMenuItem>

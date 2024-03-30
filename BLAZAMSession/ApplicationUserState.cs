@@ -128,7 +128,10 @@ namespace BLAZAM.Server.Data.Services
                 if (result == 1)
                 {
                     GetUserSettingFromDB();
-                    OnSettingsChanged?.Invoke(userSettings);
+                    if (userSettings != null)
+                    {
+                        OnSettingsChanged?.Invoke(userSettings);
+                    }
 
                     return true;
                 }
@@ -222,11 +225,11 @@ namespace BLAZAM.Server.Data.Services
             {
                 foreach (var widget in Preferences.DashboardWidgets)
                 {
-                    var matchingWidgt = dbUserSettings?.DashboardWidgets.FirstOrDefault(w => w.WidgetType == widget.WidgetType);
-                    if (matchingWidgt != null)
+                    var matchingWidget = dbUserSettings?.DashboardWidgets.FirstOrDefault(w => w.WidgetType == widget.WidgetType);
+                    if (matchingWidget != null)
                     {
-                        matchingWidgt.Slot = widget.Slot;
-                        matchingWidgt.Order = widget.Order;
+                        matchingWidget.Slot = widget.Slot;
+                        matchingWidget.Order = widget.Order;
                     }
                     else
                     {

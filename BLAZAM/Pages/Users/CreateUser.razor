@@ -18,7 +18,7 @@
             </TabContent>
             <ChildContent>
 
-                @if (Templates != null && Templates.Count(t => t.DeletedAt == null && t.Visible) > 0)
+                @if (TemplateCategories != null && Templates != null && Templates.Count(t => t.DeletedAt == null && t.Visible) > 0)
                 {
                     @* <MudSelectList Values="TemplateCategories"
                 @bind-Value=SelectedCategory /> *@
@@ -95,7 +95,7 @@
                 @AppLocalization["Fields"]
             </TabContent>
             <ChildContent>
-                <NewTemplateUser User="@newUser" DirectoryTemplate="SelectedTemplate" />
+                <NewTemplateUser OnValidSubmit=@(()=>{SelectedStep=3;}) User="@newUser" DirectoryTemplate="SelectedTemplate" />
                 <MudButton Disabled=LoadingData Color=Color.Primary OnClick="@(()=>{SelectedStep=1;})">Back</MudButton>
 
             </ChildContent>
@@ -329,7 +329,7 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
 
     async Task SetTemplate(DirectoryTemplate selectedTemplate)
     {
-        SelectedTemplate = selectedTemplate; 
+        SelectedTemplate = selectedTemplate;
         custom = false;
         SelectedStep = 1;
         await InvokeAsync(StateHasChanged);

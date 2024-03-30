@@ -16,10 +16,33 @@
 
 <p>User Bench</p>
 <p>email: @userBench?.SamAccountName</p>
+
+
+
+
+
+
+
+
+@* 
+<h3>Tree View</h3>
+<MudSwitch @bind-Value=adTree Label="OU/AD"/>
+@if (!adTree)
+{
+    <OUTreeView StartRootExpanded=true
+                EndText="@((context)=>context.DirectPermissionMappings.Any()?context.DirectPermissionMappings.Count().ToString():null)" />
+
+}
+else
+{
+    <ADTreeView TextColor="Color.Surface" EndText="@((context)=>context is IADOrganizationalUnit ou?ou.DirectPermissionMappings.Any()?ou.DirectPermissionMappings.Count().ToString():null:null)" />
+
+} *@
 @code {
     #nullable disable warnings
     ActiveDirectoryContext ad;
     bool Running = false;
+    bool adTree;
     int runCount = 1;
     int cycle;
     double elapsed;
@@ -63,7 +86,7 @@
         Random r = new Random();
 
         userBench = dir.Users.FindUsersByString("c").First();
-        if (userBench==null) result = false;
+        if (userBench == null) result = false;
         else result = true;
 
         dir.Dispose();
@@ -85,7 +108,7 @@
                 var user = dir.Authenticate_Alt(new() { Username = "johnsoncontrols", Password = "bburg123" });
 
                 runs[cycle] = (DateTime.Now - start).TotalSeconds;
-                
+
                 InvokeAsync(StateHasChanged);
 
             }
