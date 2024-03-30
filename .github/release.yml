@@ -19,3 +19,6 @@ changelog:
     - title: Fixes 🏗
       labels:
         - bug
+    - title: Dependencies 🔌
+      labels:
+        - dependencies
