@@ -34,10 +34,14 @@
 
 }
 
-
-
-@code {
+@code{
     #nullable disable warnings
+    /// <summary>
+    /// If true all directory entry types will be listed.
+    /// If false, only OU's will bee shown.
+    /// </summary>
+    [Parameter]
+    public bool ShowAllEntries { get; set; } = true;
 
     [Parameter]
     public bool StartRootExpanded { get; set; } = true;
@@ -90,16 +94,16 @@
                 var cache = _selectedNode;
 
                 _selectedNode = value;
-                if (cache==null && value == RootOU.First())return;
+                if (cache == null && value == RootOU.First()) return;
 
 
-                    SelectedEntryChanged.InvokeAsync(value);
+                SelectedEntryChanged.InvokeAsync(value);
 
-                
+
                 //if (TopLevel == null)
                 //    OnInitializedAsync();
                 OpenToSelected();
-               
+
             }
         }
 
@@ -162,18 +166,18 @@
                 while (openThis != null)
                 {
                     var child = openThis.Children.Where(c => SelectedEntry.DN.Contains(c.DN) && !SelectedEntry.DN.Equals(c.DN)).FirstOrDefault();
-                   if (child != null)
-                   {
-                       child.IsExpanded = true;
-                       openThis = child;
-                   }
-                   else
-                   {
+                    if (child != null)
+                    {
+                        child.IsExpanded = true;
+                        openThis = child;
+                    }
+                    else
+                    {
                         var matchingOU = openThis.Children.Where(c => SelectedEntry.DN.Equals(c.DN)).FirstOrDefault();
-                       if (matchingOU!=null)
-                           matchingOU.IsSelected = true;
-                       break;
-                   }
+                        if (matchingOU != null)
+                            matchingOU.IsSelected = true;
+                        break;
+                    }
 
 
                 }
@@ -196,7 +200,12 @@
     {
         if (parent.IsExpanded || parent.CachedChildren != null)
         {
-            var items = parent.Children.Where(c=>c.ObjectType == ActiveDirectoryObjectType.OU || c.CanRead).MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.OU);
+
+            var items = parent.Children.Where(c => c.ObjectType == ActiveDirectoryObjectType.OU || c.CanRead).MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.OU);
+            if (!ShowAllEntries)
+            {
+                items = items.Where(i => i.ObjectType == ActiveDirectoryObjectType.OU);
+            }
             var hashst = items.ToHashSet();
             return hashst;
         }
@@ -214,27 +223,23 @@
     HashSet<IDirectoryEntryAdapter> GetChildren(IDirectoryEntryAdapter parentNode)
     {
 
-        var children = parentNode.Children.ToHashSet();
+        if (ShowAllEntries)
+        {
+            var children = parentNode.Children.ToHashSet();
+            return children;
 
-        return children;
+        }
+        else if(parentNode is IADOrganizationalUnit ou)
+        {
+
+            var children = ou.Children.Where(c=>c.ObjectType==ActiveDirectoryObjectType.OU).ToHashSet();
+            return children;
+        }
+        return new();
+
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
+
+
