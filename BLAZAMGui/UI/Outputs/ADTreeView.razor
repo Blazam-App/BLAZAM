@@ -98,7 +98,7 @@
                 
                 //if (TopLevel == null)
                 //    OnInitializedAsync();
-                //OpenToSelected();
+                OpenToSelected();
                
             }
         }
@@ -111,7 +111,6 @@
     ADOrganizationalUnit TopLevel;
 
 
-    MudTreeView<IDirectoryEntryAdapter>? OUTree { get; set; }
 
 
     IList<IDirectoryEntryAdapter> ExpandedNodes = new List<IDirectoryEntryAdapter>();
@@ -160,24 +159,24 @@
             {
                 IDirectoryEntryAdapter? openThis = RootOU.First();
                 openThis.IsExpanded = true;
-                //while (openThis != null)
-                //{
-                //    var child = openThis.Children.Where(c => SelectedOU.DN.Contains(c.DN) && !SelectedOU.DN.Equals(c.DN)).FirstOrDefault();
-                //    if (child != null)
-                //    {
-                //        child.IsExpanded = true;
-                //        openThis = child;
-                //    }
-                //    else
-                //    {
-                //        var matchingOU = openThis.Children.Where(c => SelectedOU.DN.Equals(c.DN)).FirstOrDefault();
-                //        if (matchingOU!=null)
-                //            matchingOU.IsSelected = true;
-                //        break;
-                //    }
+                while (openThis != null)
+                {
+                    var child = openThis.Children.Where(c => SelectedEntry.DN.Contains(c.DN) && !SelectedEntry.DN.Equals(c.DN)).FirstOrDefault();
+                   if (child != null)
+                   {
+                       child.IsExpanded = true;
+                       openThis = child;
+                   }
+                   else
+                   {
+                        var matchingOU = openThis.Children.Where(c => SelectedEntry.DN.Equals(c.DN)).FirstOrDefault();
+                       if (matchingOU!=null)
+                           matchingOU.IsSelected = true;
+                       break;
+                   }
 
 
-                //}
+                }
             }
         }
 
