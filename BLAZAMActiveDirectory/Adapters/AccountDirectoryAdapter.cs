@@ -261,34 +261,40 @@ namespace BLAZAM.ActiveDirectory.Adapters
             try
             {
                 //var portOpen = NetworkTools.IsPortOpen(DirectorySettings.ServerAddress, 464);
-                //Invoke("SetPassword", new[] { password.ToPlainText() });
-                //return true;
-
-                //The following works outside the domain but may have issues with certs
-                using (PrincipalContext pContext = new PrincipalContext(
-                    ContextType.Domain,
-                    DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
-                    DirectorySettings.Username + "@" + DirectorySettings.FQDN,
-                    directoryPassword
-                    ))
+                try
                 {
-
-
-                    UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
-                    if (up != null)
+                    Invoke("SetPassword", new[] { password.ToPlainText() });
+                    return true;
+                }catch (Exception ex)
+                {
+                    Loggers.ActiveDirectryLogger.Warning("Could not set password via Invoke {@Error}", ex);
+                    //The following works outside the domain but may have issues with certs
+                    using (PrincipalContext pContext = new PrincipalContext(
+                        ContextType.Domain,
+                        DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
+                        DirectorySettings.Username + "@" + DirectorySettings.FQDN,
+                        directoryPassword
+                        ))
                     {
-                        up.SetPassword(password.ToPlainText());
-                        if (requireChange)
-                            up.ExpirePasswordNow();
-                        if(NewEntry)
-                            up.PasswordNotRequired = false;
-                        up.Save();
 
+
+                        UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SamAccountName);
+                        if (up != null)
+                        {
+                            up.SetPassword(password.ToPlainText());
+                            if (requireChange)
+                                up.ExpirePasswordNow();
+                            if (NewEntry)
+                                up.PasswordNotRequired = false;
+                            up.Save();
+
+                        }
                     }
+
+
+                    return true;
                 }
-
-
-                return true;
+     
             }
             catch (Exception ex)
             {
