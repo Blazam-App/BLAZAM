@@ -3,14 +3,14 @@
 @inherits TemplateComponent
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
-<AppPageTitle>Templates</AppPageTitle>
+<AppPageTitle>@AppLocalization["Templates"]</AppPageTitle>
 
 <SetHeader @ref=Header>
 
 
     <MudStack Row=true>
         <MudText Align="Align.Center">
-            Templates
+            @AppLocalization["Templates"]
 
         </MudText>
 
@@ -86,7 +86,7 @@
         {
             <MudTooltip Text="@AppLocalization["Restore templates"]">
 
-                <MudIconButton OnClick=@(async()=>{RestoreModal.Show();})
+                <MudIconButton OnClick=@(async()=>{RestoreModal?.Show();})
                                Color="Color.Warning"
                                Icon="@Icons.Material.Filled.RestoreFromTrash" />
             </MudTooltip>
@@ -173,22 +173,27 @@
     async Task RenameSelectedCategory()
     {
         var temp = Context?.DirectoryTemplates.Where(t => t.Category == SelectedCategory).ToList();
-        foreach (var template in temp)
+        if (temp != null)
         {
-            template.Category = newCategoryName;
+            foreach (var template in temp)
+            {
+                template.Category = newCategoryName;
+            }
         }
-        if (SelectedTemplate.Category == SelectedCategory)
+        if (SelectedTemplate!=null && SelectedTemplate.Category == SelectedCategory)
             SelectedTemplate.Category = newCategoryName;
-        Context?.SaveChanges();
+        if (Context != null && await Context.SaveChangesAsync() > 0)
+        {
 
-        SnackBarService.Success("Renamed category " + SelectedCategory + " to " + newCategoryName);
-        SelectedCategory = newCategoryName;
-        await FetchTemplates();
-        RenameModal?.Hide();
+            SnackBarService.Success(AppLocalization["Renamed category"] + ": " + SelectedCategory + " to " + newCategoryName);
+            SelectedCategory = newCategoryName;
+            await FetchTemplates();
+            RenameModal?.Hide();
+        }
         await RefreshComponents();
 
     }
-    private async void NewTemplate()
+    private void NewTemplate()
     {
         SelectedTemplate = new();
         TemplateIdParameter = null;

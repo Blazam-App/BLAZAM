@@ -20,8 +20,8 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Modal.OnYes = Add;
-        Modal.YesText = AppLocalization["Add"];
+        Modal.SetOnYes(Add);
+        Modal.SetYesText(AppLocalization["Add"]);
         foreach(var objectType in Enum.GetValues<ActiveDirectoryObjectType>().Where(ot=>ot!=ActiveDirectoryObjectType.All))
         {
             assignedObjectTypes.Add(objectType.ToString(), false);

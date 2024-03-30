@@ -22,7 +22,7 @@
                                       OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
                                       OnToggleEditMode="ToggleEditMode"
                                       OnUnlock="@Unlock"
-                                      OnShowHistory="@(()=>{ChangeHistoryModal.Show();})"/>
+                                      OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"/>
             <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
             </MudOverlay>
@@ -252,7 +252,7 @@
 
     async Task Unlock()
     {
-        if (await MessageService.Confirm("Are you sure you want to unlock " + Computer?.CanonicalName + "?", "Unlock Computer"))
+        if (Computer!=null && await MessageService.Confirm("Are you sure you want to unlock " + Computer?.CanonicalName + "?", "Unlock Computer"))
         {
             Computer.LockedOut = false;
         }
@@ -260,7 +260,7 @@
     }
     protected override async void DiscardChanges()
     {
-        if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
+        if (Computer != null && await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
         {
             Computer.DiscardChanges();
             EditMode = false;
@@ -271,7 +271,7 @@
     }
     async Task DeleteComputer()
     {
-        if (await MessageService.Confirm("Are you sure you want to delete " + Computer?.CanonicalName + "?", "Delete Computer"))
+        if (Computer != null && await MessageService.Confirm("Are you sure you want to delete " + Computer?.CanonicalName + "?", "Delete Computer"))
         {
             try
             {
@@ -290,7 +290,7 @@
     }
     async void SaveChanges()
     {
-        if (await MessageService.Confirm("Are you sure you want to save the changes?"))
+        if (Computer != null && await MessageService.Confirm("Are you sure you want to save the changes?"))
         {
             var jobResults = await Computer.CommitChangesAsync();
             if (jobResults.Result == JobResult.Passed)
@@ -305,7 +305,7 @@
             }
             else
             {
-                jobResults.ShowJobDetailsDialog(MessageService);
+                await jobResults.ShowJobDetailsDialogAsync(MessageService);
             }
 
 

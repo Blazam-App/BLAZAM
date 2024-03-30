@@ -44,7 +44,7 @@
     {
         try
         {
-            MOTD = (MarkupString)Context.AppSettings.FirstOrDefault().MOTD;
+            MOTD = (MarkupString)Context?.AppSettings.FirstOrDefault().MOTD;
         }
         catch
         {

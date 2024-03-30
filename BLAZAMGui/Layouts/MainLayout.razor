@@ -35,36 +35,37 @@
                     </AuthorizeView>
                 }
 
+                <MudBreakpointProvider @ref=_mudBreakPoint>
 
-                <MudDrawer Width=@(BrowseExpanded==false?"185px":"385px")
-                           @bind-Open=@DrawerOpen
-                           Class="animate-width"
-                           Variant=@(BrowseExpanded==false?DrawerVariant.Responsive:DrawerVariant.Temporary)
-                           Elevation="3"
-                           ClipMode="DrawerClipMode.Docked">
-                    <NavMenu SelectedEntryChanged=GotoEntry BrowseExpandedChanged="@(async(value)=>{
+                    <MudDrawer Width=@(BrowseExpanded==false?"185px":"385px")
+                               @bind-Open=@DrawerOpen
+                               Class="animate-width"
+                               Variant=@navDrawerVariant
+                               Elevation="3"
+                               ClipMode="DrawerClipMode.Docked">
+                        <NavMenu SelectedEntryChanged=GotoEntry BrowseExpandedChanged="@(async(value)=>{
 BrowseExpanded=value;
 await Task.Delay(100);
 await InvokeAsync(StateHasChanged);
 })" />
-                    @if (ApplicationInfo.InDebugMode)
-                    {
-                        <AuthorizeView Roles="@UserRoles.SuperAdmin">
-                            <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
-                                       OnClick="@(()=>{_devDrawerOpen=!_devDrawerOpen;InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
+                        @if (ApplicationInfo.InDebugMode)
+                        {
+                            <AuthorizeView Roles="@UserRoles.SuperAdmin">
+                                <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
+                                           OnClick="@(()=>{_devDrawerOpen=!_devDrawerOpen;InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
 
-                            <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
-                                       OnClick="@(()=>{dataBrowser?.Show();})">Data Browser</MudButton>
-                            <AppModal @ref=dataBrowser>
-                                <DatabaseBrowserModalContent />
-                            </AppModal>
-                        </AuthorizeView>
-                    }
-                    <MudSpacer />
-                    <AppFooter Class="ps-2 align-middle" />
+                                <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
+                                           OnClick="@(()=>{dataBrowser?.Show();})">Data Browser</MudButton>
+                                <AppModal @ref=dataBrowser>
+                                    <DatabaseBrowserModalContent />
+                                </AppModal>
+                            </AuthorizeView>
+                        }
+                        <MudSpacer />
+                        <AppFooter Class="ps-2 align-middle" />
 
-                </MudDrawer>
-
+                    </MudDrawer>
+                </MudBreakpointProvider>
 
 
                 <MudMainContent Class=" mud-height-full">
@@ -159,6 +160,7 @@ await InvokeAsync(StateHasChanged);
 }
 
 @code {
+    MudBreakpointProvider? _mudBreakPoint;
     AppModal? dataBrowser;
     bool _drawerOpen = true;
     bool _devDrawerOpen = false;
@@ -240,5 +242,28 @@ await InvokeAsync(StateHasChanged);
     {
         DrawerOpen = false;
         Nav.NavigateTo(entry.SearchUri);
+    }
+
+    private DrawerVariant navDrawerVariant
+    {
+        get
+
+        {
+            if(BrowseExpanded == false)
+            {
+                if (_mudBreakPoint?.Breakpoint == Breakpoint.Sm ||
+                _mudBreakPoint?.Breakpoint == Breakpoint.Xs)
+                {
+                    return DrawerVariant.Responsive;
+                }
+                else
+                {
+                    return DrawerVariant.Responsive;
+                }
+            }else{
+                return DrawerVariant.Temporary;
+            } 
+
+        }
     }
 } 

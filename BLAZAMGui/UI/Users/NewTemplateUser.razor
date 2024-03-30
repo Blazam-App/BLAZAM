@@ -311,7 +311,7 @@
 
         </Row>
         <Row>
-            <MudButton Color=Color.Success ButtonType="ButtonType.Submit">Next</MudButton>
+            <MudButton Color=Color.Success Disabled=@(IsValid) OnClick="@(()=>{OnValidSubmit.InvokeAsync();})">Next</MudButton>
 
         </Row>
 

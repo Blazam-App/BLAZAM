@@ -5,25 +5,27 @@
 
     <MudGrid>
         <MudItem xs="12" sm="3" md="4">
-            <OUTreeView @ref=@OUTree StartRootExpanded @bind-SelectedOU="SelectedNode" EndText="@((context)=>context.DirectPermissionMappings.Any()?context.DirectPermissionMappings.Count().ToString():null)">
-               @* <EndAdornment>
-                    @if (@context.DirectPermissionMappings.Count() > 0)
-                    {
-                        <MudBadge Overlap
-                                  Color="Color.Secondary"
-                                  Content="@context.DirectPermissionMappings.Count()"
-                                  Class="ml-6 my-4 mud-theme-secondary" />
+            <OUTreeView @ref=@OUTree StartRootExpanded=true
+                        @bind-SelectedOU="SelectedNode"
+                        EndText="@((context)=>context.DirectPermissionMappings.Any()?context.DirectPermissionMappings.Count().ToString():null)">
+                 <EndAdornment>
+                @if (@context.DirectPermissionMappings.Count() > 0)
+                {
+                <MudBadge Overlap
+                Color="Color.Secondary"
+                Content="@context.DirectPermissionMappings.Count()"
+                Class="ml-6 my-4 mud-theme-secondary" />
 
-                    }
-                    @if (@context.OffspringPermissionMappings.Count() > 0)
-                    {
-                        <MudBadge Overlap
-                                  Color="Color.Tertiary"
-                                  Content="@context.OffspringPermissionMappings.Count()"
-                                  Class="ml-6 mr-6 my-0 mud-theme-tertiary" />
+                }
+                @if (@context.OffspringPermissionMappings.Count() > 0)
+                {
+                <MudBadge Overlap
+                Color="Color.Tertiary"
+                Content="@context.OffspringPermissionMappings.Count()"
+                Class="ml-6 mr-6 my-0 mud-theme-tertiary" />
 
-                    }
-                </EndAdornment>*@
+                }
+                </EndAdornment>
             </OUTreeView>
         </MudItem>
         <MudItem xs="12" sm="9" md="8">
@@ -55,13 +57,13 @@
 
         //ApplicationBaseOUs = Directory.OUs.FindSubOusByDN(null);
         ADOrganizationalUnit TopLevel = new ADOrganizationalUnit();
-        TopLevel.Parse(directory:Directory,directoryEntry: Directory.GetDirectoryEntry());
+        TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
         _ = TopLevel.SubOUs;
         ApplicationBaseOUs.Add(TopLevel);
 
         ExpandedNodes.Add(TopLevel);
         selectedNode = TopLevel;
-       
+
         //OUTree.RootOU = ApplicationBaseOUs;
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
@@ -73,5 +75,5 @@
         await InvokeAsync(StateHasChanged);
     }
 
-   
+
 }
