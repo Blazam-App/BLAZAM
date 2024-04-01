@@ -1,0 +1,71 @@
+﻿@inherits Widget
+@attribute [Authorize]
+
+<MudDataGrid T="IDirectoryEntryAdapter"
+             Items="deletedObjects"
+             RowClick="@RowClicked"
+             RowClass="cursor-pointer"
+             Dense=true
+             Filterable=true
+             RowsPerPage="5"
+             FilterMode="DataGridFilterMode.Simple"
+             Loading=@LoadingData
+             Square=true
+             ColumnResizeMode="ResizeMode.Column"
+             Virtualize=true
+             Class="py-0"
+             SortMode="SortMode.Single">
+    <Columns>
+        <TemplateColumn Style="width:100px;" Title="Type">
+            <CellTemplate>
+                <MudIcon Icon="@context.Item.TypeIcon()" />
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Name">
+            <CellTemplate>
+                <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                    <MudText>@context.Item?.CanonicalName</MudText>
+                </MudTooltip>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x=>x.LastChanged" Title="Deleted" />
+
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="IDirectoryEntryAdapter" />
+    </PagerContent>
+</MudDataGrid>
+
+
+<MudOverlay Visible=LoadingData>
+    <MudProgressLinear Indeterminate=true />
+</MudOverlay>
+@code {
+    List<IDirectoryEntryAdapter> deletedObjects { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var search = new ADSearch() { SearchRoot = Directory.GetDeleteObjectsEntry() };
+        search.SearchDeleted = true;
+        search.Fields.Changed = DateTime.Now.AddDays(-14);
+        deletedObjects = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
+                LoadingData = false;
+                await InvokeAsync(StateHasChanged);
+          
+
+    }
+    void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
+    {
+        if (args.Item != null)
+        {
+            GoTo(args.Item);
+        }
+    }
+  
+    void GoTo(IDirectoryEntryAdapter args)
+    {
+        Nav.NavigateTo(args.SearchUri);
+    }
+}
