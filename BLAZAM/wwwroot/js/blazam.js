@@ -20,16 +20,21 @@ window.updateCookieExpiration = async () => {
     }
 };
 
-window.attemptSignIn = async () => {
+window.attemptSignIn = async (loginReq) => {
     //Get the form from the current page
     var form = document.querySelector("form");
+
     var formData = new FormData();
+    for (var key in loginReq) {
+        formData.append(key, loginReq[key]);
+    }
+
     //Load the form data
-    for (var x = 0; x < form.length; x++) {
+    //for (var x = 0; x < form.length; x++) {
         //console.log(form[x].name);
         //console.log(form[x].value);
-        formData.append(form[x].name,form[x].value)
-    }
+     //   formData.append(form[x].name,form[x].value)
+    //}
     //var data = Array.from(formData);
     //console.log(data);
     

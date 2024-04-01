@@ -8,6 +8,7 @@ namespace BLAZAM.Common.Data
 {
     public class LoginRequest
     {
+        public Guid Id { get; set; }= Guid.NewGuid();
         private SecureString? password;
         /// <summary>
         /// The username provided during the app login attempt

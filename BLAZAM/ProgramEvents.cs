@@ -29,5 +29,8 @@ namespace BLAZAM.Server
         {
             TemplatesChanged?.Invoke();
         }
+
+
+      
     }
 }

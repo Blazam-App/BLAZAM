@@ -138,6 +138,7 @@ namespace BLAZAM.Server.Data.Services
             }
             return false;
         }
+
         private void GetUserSettingFromDB()
         {
             try
@@ -334,6 +335,8 @@ namespace BLAZAM.Server.Data.Services
         public bool HasComputerPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Computer);
 
         public bool CanUnlockUsers => HasObjectActionPermission(ActiveDirectoryObjectType.User,ObjectActions.Unlock);
+
+        public string DuoAuthState { get; set; } = "";
 
         private bool HasObjectActionPermission(ActiveDirectoryObjectType objectType, ObjectAction actionType)
         {

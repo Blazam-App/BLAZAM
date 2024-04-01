@@ -19,6 +19,10 @@ using BLAZAM.Services.Duo;
 using BLAZAM.Server.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Components;
+using BLAZAM.Nav;
+using System.Net.WebSockets;
 
 namespace BLAZAM.Services
 {
@@ -44,8 +48,10 @@ namespace BLAZAM.Services
             this._factory = factory;
             this._permissionHandler = permissionHandler;
             this._userStateService = userStateService;
-            this.CurrentUser = this.GetAnonymous();
             this._httpContextAccessor = ca;
+
+            this.CurrentUser = this.GetAnonymous(ca.HttpContext?.Session.Id);
+
             this._duoClientProvider = dcp;
             this._audit = audit;
         }
@@ -55,6 +61,7 @@ namespace BLAZAM.Services
         private readonly AuditLogger _audit;
         private readonly ApplicationInfo _applicationInfo;
         private readonly IEncryptionService _encryption;
+        private readonly AppNavigationManager _nav;
         private readonly IActiveDirectoryContext _directory;
         private readonly IAppDatabaseFactory _factory;
         private readonly PermissionApplicator _permissionHandler;
@@ -111,15 +118,15 @@ namespace BLAZAM.Services
         /// before login.
         /// </summary>
         /// <returns>An unauthenticated annonymous User ClaimsPrincipal</returns>
-        private ClaimsPrincipal GetAnonymous()
+        private ClaimsPrincipal GetAnonymous(string? sessionId=null)
         {
-
+           
             var identity = new ClaimsIdentity(new[]
            {
-                    new Claim(ClaimTypes.Sid, "0"),
+                    new Claim(ClaimTypes.Sid, sessionId.IsNullOrEmpty()==true?"0":sessionId),
                     new Claim(ClaimTypes.Name, "Anonymous"),
                     new Claim(ClaimTypes.Role, "Anonymous"),
-                    new Claim(ClaimTypes.Actor,"0")
+                    new Claim(ClaimTypes.Actor,sessionId.IsNullOrEmpty()==true?"0":sessionId)
                 }, null);
 
             return new ClaimsPrincipal(identity);
@@ -158,7 +165,7 @@ namespace BLAZAM.Services
         public async Task<LoginResult> Login(LoginRequest loginReq)
         {
             LoginResult loginResult = new();
-             var newUserState = _userStateService.CreateUserState(GetAnonymous());
+             var newUserState = _userStateService.CreateUserState(GetAnonymous(_httpContextAccessor.HttpContext?.Session.Id));
             newUserState.IPAddress = loginReq.IPAddress;
             
 
@@ -265,8 +272,7 @@ namespace BLAZAM.Services
             if (!loginReq.Impersonation)
             {
                 user = _directory.Authenticate(loginReq);
-                /*
-                 * Duo Authentication if i ever get it working with blazor server
+ 
                 if (user != null)
                 {
                     //Check if we need to perform MFA
@@ -280,20 +286,25 @@ namespace BLAZAM.Services
                             authSettings.DuoApiHost != null
                             )
                         {
+                            var mfaRRedirect = await PerformDuoAuthentication(loginUser);
                             //Settings are configured so
-                            if (!(await PerformDuoAuthentication(loginReq)))
+                            if (mfaRRedirect.IsNullOrEmpty())
                             {
                                 //Duo authentication failed;
 
                                 return null;
 
                             }
-                            //Duo authentication succeeded
+                            _userStateService.SetUserState(loginUser);
+                            ServiceEvents.InvokeMFARequested(loginReq.Id,mfaRRedirect);
+                            var principal = await CreateDirectoryPrincipal(loginUser, user, loginReq);
+                            //return ;
+                            //Duo authentication requested
 
                         }
                     }
                 }
-                */
+                
             }
             else
                 user = _directory.Users.FindUsersByString(loginReq.Username, true, true).FirstOrDefault();
@@ -304,7 +315,7 @@ namespace BLAZAM.Services
 
         }
 
-        private async Task<bool> PerformDuoAuthentication(LoginRequest loginReq)
+        private async Task<string> PerformDuoAuthentication(IApplicationUserState loginUser)
         {
             // Initiate the Duo authentication for a specific username
 
@@ -317,18 +328,21 @@ namespace BLAZAM.Services
 
             // Generate a random state value to tie the authentication steps together
             string state = Client.GenerateState();
+
+            loginUser.DuoAuthState  = state; 
             // Save the state and username in the session for later
             //HttpContext.Session.SetString(STATE_SESSION_KEY, state);
             //HttpContext.Session.SetString(USERNAME_SESSION_KEY, username);
 
             // Get the URI of the Duo prompt from the client.  This includes an embedded authentication request.
-            string promptUri = duoClient.GenerateAuthUri(loginReq.Username, state);
-
+            string promptUri = duoClient.GenerateAuthUri(loginUser.Username, state);
+            
             // Redirect the user's browser to the Duo prompt.
             // The Duo prompt, after authentication, will redirect back to the configured Redirect URI to complete the authentication flow.
             // In this example, that is /duo_callback, which is implemented in Callback.cshtml.cs.
             // return new RedirectResult(promptUri);
-            return true;
+            
+            return promptUri;
         }
 
         /// <summary>
@@ -394,8 +408,7 @@ namespace BLAZAM.Services
                 claims.Add(new Claim(ClaimTypes.Surname, user.Surname));
             if (user.Email != null)
                 claims.Add(new Claim(ClaimTypes.Email, user.Email));
-
-
+            
             if (loginReq.Impersonation)
             {
                 //Handle Impersonated login
@@ -495,7 +508,7 @@ namespace BLAZAM.Services
         public Task<AuthenticationState> Logout(ClaimsPrincipal claimsPrincipal)
         {
             _userStateService.RemoveUserState(claimsPrincipal);
-            this.CurrentUser = this.GetAnonymous();
+            this.CurrentUser = this.GetAnonymous(_httpContextAccessor.HttpContext?.Session.Id);
             var task = this.GetAuthenticationStateAsync();
             this.NotifyAuthenticationStateChanged(task);
             return task;

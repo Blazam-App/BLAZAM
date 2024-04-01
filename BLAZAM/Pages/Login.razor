@@ -1,6 +1,6 @@
 ﻿@page "/login"
 @using BLAZAM.Static;
-
+@inject IHttpContextAccessor HttpContextAccessor
 @inherits ValidatedForm
 @inject IJSRuntime JSRuntime
 @layout LoginLayout
@@ -96,7 +96,11 @@
 
     </MudElement>
 </MudContainer>
-
+<AppModal @ref=_mfaModal Title="MFA" Options="new(){ MaxWidth=MaxWidth.Large, FullWidth=true}">
+    <ChildContent>
+        <iframe class="w-100" style="height:70vh" src="@_modalUri"></iframe>
+    </ChildContent>
+</AppModal>
 <style>
     .brand-icon {
         position: fixed;
@@ -119,18 +123,27 @@
 @code {
     MudTextField<string>? _usernameTextField;
     MudTextField<string>? _passwordTextField;
-
+    string? _modalUri;
     bool attemptingSignIn = false;
     string redirectUrl;
-
+    AppModal? _mfaModal;
     bool DemoCustomLogin = false;
     LoginRequest LoginRequest = new();
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         redirectUrl = Nav.Uri;
+        ServiceEvents.MFARequested += MFARequested;
         if (Monitor.AppReady != ServiceConnectionState.Up)
             Monitor.OnAppReadyChanged += AppReadyChanged;
+    }
+    async void MFARequested(Guid id, string uri)
+    {
+        if (LoginRequest.Id == id)
+        {
+            _modalUri = uri;
+            InvokeAsync(()=>_mfaModal?.Show());
+        }
     }
 
     async void AppReadyChanged(ServiceConnectionState state)
@@ -148,7 +161,7 @@
         if (ValidateInput(out authenticationResult))
             try
             {
-                authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn", null);
+                authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn", LoginRequest);
             }
             catch (Exception ex)
             {

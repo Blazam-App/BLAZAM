@@ -34,7 +34,7 @@ namespace BLAZAM.Services.Duo
                     ClientId = auth.DuoClientId;
                     ClientSecret = auth.DuoClientSecret;
                     ApiHost = auth.DuoApiHost;
-                    RedirectUri = "https://localhost/test";
+                    RedirectUri = "https://localhost/mfacallback";
 
                 }
             }
