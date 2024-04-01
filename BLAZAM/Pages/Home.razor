@@ -44,7 +44,7 @@
     {
         try
         {
-            MOTD = (MarkupString)Context?.AppSettings.FirstOrDefault().MOTD;
+            MOTD = (MarkupString)Context?.AppSettings.FirstOrDefault()?.MOTD;
         }
         catch
         {
@@ -68,10 +68,10 @@
                 return true;
             });
             IJobStep step2 = new JobStep("Regular Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
-            IJobStep step3 = new JobStep("Regular Step Throws", (step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); return false; });
+            IJobStep step3 = new JobStep("Regular Step Throws", bool(step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); });
             IJobStep step4 = new JobStep("Nested Step Passes", (step) => { Task.Delay(2000).Wait(); return true; });
             IJobStep step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
-            IJobStep step6 = new JobStep("Nested Step Throws", (step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); return false; });
+            IJobStep step6 = new JobStep("Nested Step Throws", bool(step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); });
 
             job.Steps.Add(step1);
             job.Steps.Add(step2);
