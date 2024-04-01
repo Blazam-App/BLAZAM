@@ -53,7 +53,7 @@
 
 </MudForm>
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     AuthenticationSettings settings = new AuthenticationSettings();
     string newAdminPassword;
     string adminPasswordInDb;
@@ -62,7 +62,10 @@
     string _timeoutString = "Loading...";
     protected override async Task OnInitializedAsync()
     {
-        LoadingData = true;
+
+        Task.Run(async() =>
+        {
+             LoadingData = true;
         await InvokeAsync(StateHasChanged);
 
         duoHealthCheckResult = await Duo.GetDuoClient().DoHealthCheck();
@@ -76,6 +79,9 @@
         newAdminPassword = adminPasswordInDb;
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
+        
+        });
+       
 
     }
     private void UpdateTimeoutDisplay()
