@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
+using BLAZAM.Session.Interfaces;
 using DuoUniversal;
 using Microsoft.EntityFrameworkCore;
 

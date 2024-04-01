@@ -64,6 +64,10 @@
             }
             else if (ApplicationInfo.InDemoMode)
             {
+                LoginRequest.Username = "demo";
+                LoginRequest.Password = "demo";
+
+
                 <MudContainer Class="d-none">
 
                     <MudTextField name="username" Value=@("demo") hidden />
@@ -133,18 +137,11 @@
     {
         await base.OnInitializedAsync();
         redirectUrl = Nav.Uri;
-        ServiceEvents.MFARequested += MFARequested;
+        LoginRequest.ReturnUrl = Nav.Uri;
         if (Monitor.AppReady != ServiceConnectionState.Up)
             Monitor.OnAppReadyChanged += AppReadyChanged;
     }
-    async void MFARequested(Guid id, string uri)
-    {
-        if (LoginRequest.Id == id)
-        {
-            _modalUri = uri;
-            InvokeAsync(()=>_mfaModal?.Show());
-        }
-    }
+
 
     async void AppReadyChanged(ServiceConnectionState state)
     {
@@ -157,11 +154,12 @@
     {
         attemptingSignIn = true;
         await InvokeAsync(StateHasChanged);
-        string? authenticationResult;
+        LoginRequest? authenticationResult;
         if (ValidateInput(out authenticationResult))
             try
             {
-                authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn", LoginRequest);
+                var response = await JSRuntime.InvokeAsync<string>("attemptSignIn", LoginRequest);
+                authenticationResult = JsonConvert.DeserializeObject<LoginRequest>(response);
             }
             catch (Exception ex)
             {
@@ -171,11 +169,10 @@
 
         attemptingSignIn = false;
 
-        if (!authenticationResult.IsNullOrEmpty())
+        if (authenticationResult!=null)
         {
-            int resultCode = int.Parse(authenticationResult);
 
-            switch ((LoginResultStatus)resultCode)
+            switch (authenticationResult.AuthenticationResult)
             {
 
                 case LoginResultStatus.NoUsername:
@@ -203,9 +200,16 @@
                     SnackBarService.Error("Unknown error while attempting to log in");
 
                     break;
+                case LoginResultStatus.MFARequested:
+                    attemptingSignIn = true;
+                    Nav.NavigateTo(authenticationResult.MFARedirect);
+                    break;
                 case LoginResultStatus.OK:
                     attemptingSignIn = true;
-                    Nav.NavigateTo(redirectUrl, true);
+                    if (!_mfaModal.IsShown)
+                    {
+                        Nav.NavigateTo(redirectUrl, true);
+                    }
                     break;
             }
 
@@ -213,16 +217,16 @@
 
         await InvokeAsync(StateHasChanged);
     }
-    bool ValidateInput(out string? validationResult)
+    bool ValidateInput(out LoginRequest? validationResult)
     {
         validationResult = null;
         if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !DemoCustomLogin)) return true;
 
 
         if (LoginRequest.Password.IsNullOrEmpty())
-            validationResult = ((int)LoginResultStatus.NoPassword).ToString();
+            validationResult.AuthenticationResult = LoginResultStatus.NoPassword;
         if (LoginRequest.Username.IsNullOrEmpty())
-            validationResult = ((int)LoginResultStatus.NoUsername).ToString();
+            validationResult.AuthenticationResult = LoginResultStatus.NoUsername;
         return false;
     }
 

@@ -51,7 +51,7 @@ namespace BLAZAM.Server.Data.Services
             {
                 State = _applicationUserStateService.GetUserState(_httpContextAccessor.HttpContext?.User);
                 if (State != null && State.IsAuthenticated)
-                    State.IPAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
+                    State.IPAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
                 _retryTimer?.Dispose();
 
             }

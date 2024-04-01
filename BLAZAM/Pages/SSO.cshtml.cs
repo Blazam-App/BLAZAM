@@ -52,7 +52,7 @@ namespace BLAZAM.Server.Pages
             try
             {
                 var result = await Auth.Login(req);
-                if (result != null && result.Status == LoginResultStatus.OK)
+                if (result != null && result.AuthenticationResult == LoginResultStatus.OK)
                 {
                     await HttpContext.SignInAsync(result.AuthenticationState.User);
                     await AuditLogger.Logon.Login(result.AuthenticationState.User);

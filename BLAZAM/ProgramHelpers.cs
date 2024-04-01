@@ -26,6 +26,9 @@ using BLAZAM.Services.Audit;
 using BLAZAM.Common;
 using BLAZAM.Nav;
 using BLAZAM.Session;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Org.BouncyCastle.Ocsp;
 
 namespace BLAZAM.Server
 {
@@ -106,11 +109,13 @@ namespace BLAZAM.Server
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            builder.Services.AddAuthentication(
-                CookieAuthenticationDefaults.AuthenticationScheme)
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(AppAuthenticationStateProvider.ApplyAuthenticationCookieOptions());
 
-
+            builder.Services.Configure<AuthenticationOptions>(options =>
+            {
+                options.RequireAuthenticatedSignIn = false;
+            });
             /*
             Keeping  this here for a possible API in the future
             It's some original test code from before AppAuthenticatinProvider was
@@ -265,5 +270,6 @@ namespace BLAZAM.Server
 
             return builder;
         }
+
     }
 }

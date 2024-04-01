@@ -63,7 +63,7 @@ namespace BLAZAM.Session.Interfaces
         IList<UserNotification>? Notifications { get; }
         IApplicationUserSessionCache Cache { get; set; }
 
-        IPAddress IPAddress { get; set; }
+        string? IPAddress { get; set; }
 
         string LastUri { get; set; }
         bool IsAuthenticated { get; }

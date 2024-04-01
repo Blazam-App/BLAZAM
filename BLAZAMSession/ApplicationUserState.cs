@@ -45,7 +45,7 @@ namespace BLAZAM.Server.Data.Services
         public DateTime LastAccessed { get; set; } = DateTime.UtcNow;
 
 
-        public IPAddress IPAddress { get; set; }
+        public string? IPAddress { get; set; }
 
         public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries?? new List<UserFavoriteEntry>();
 
@@ -60,7 +60,7 @@ namespace BLAZAM.Server.Data.Services
 
             }
         }
-        public IList<ReadNewsItem> ReadNewsItems => Preferences.ReadNewsItems;
+        public IList<ReadNewsItem> ReadNewsItems => Preferences?.ReadNewsItems??new();
         //public List<ReadChatMessage> ReadChatMessages => Preferences.ReadChatMessages.ToList();
 
         public int Id => Preferences!=null?Preferences.Id:0;
