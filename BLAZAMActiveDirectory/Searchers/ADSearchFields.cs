@@ -20,7 +20,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public DateTime? Created { get; set; }
 
-        public string? Changed { get; set; }
+        public DateTime? Changed { get; set; }
 
         public string? PasswordLastSet { get; set; }
 

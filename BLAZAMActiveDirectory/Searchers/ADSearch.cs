@@ -188,8 +188,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                     if (!Fields.CN.IsNullOrEmpty())
                         FilterQuery += $"(cn=*{Fields.CN}*)";
-                    if (!Fields.Changed.IsNullOrEmpty())
-                        FilterQuery += $"(whenChanged>={Fields.Changed})";
+                    if (Fields.Changed != null)
+                        FilterQuery += $"(whenChanged>={Fields.Changed.Value.ToString("yyyyMMddHHmmss.fZ")})";
                     if (Fields.Created != null)
                         FilterQuery += $"(whenCreated>={Fields.Created.Value.ToString("yyyyMMddHHmmss.fZ")})";
                     if (!Fields.SamAccountName.IsNullOrEmpty())
