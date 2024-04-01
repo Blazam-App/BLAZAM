@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
+using BLAZAM.Session.Interfaces;
 using DuoUniversal;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,7 +35,7 @@ namespace BLAZAM.Services.Duo
                     ClientId = auth.DuoClientId;
                     ClientSecret = auth.DuoClientSecret;
                     ApiHost = auth.DuoApiHost;
-                    RedirectUri = "https://localhost/test";
+                    RedirectUri = "https://localhost/mfacallback";
 
                 }
             }

@@ -39,7 +39,7 @@ namespace BLAZAM.Services.Audit
                     Action = action,
                     Target = searchedComputer.CanonicalName,
                     Username = UserStateService?.CurrentUsername,
-                    IpAddress = UserStateService?.CurrentUserState.IPAddress.ToString()
+                    IpAddress = UserStateService?.CurrentUserState?.IPAddress
 
                 });
                 context.SaveChanges();

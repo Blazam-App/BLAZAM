@@ -147,7 +147,7 @@ namespace BLAZAM
             AppInstance.UseCookiePolicy();
             AppInstance.UseAuthentication();
             AppInstance.UseAuthorization();
-
+            AppInstance.UseSession();
             //AppInstance.MapControllers();
             AppInstance.MapBlazorHub();
             AppInstance.MapFallbackToPage("/_Host");

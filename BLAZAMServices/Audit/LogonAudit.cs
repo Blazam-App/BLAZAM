@@ -12,25 +12,25 @@ namespace BLAZAM.Services.Audit
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
-        public async Task<bool> AttemptedPersonation(IPAddress iPAddress)
+        public async Task<bool> AttemptedPersonation(string? iPAddress=null)
         {
             CurrentUser = UserStateService.CurrentUserState;
             return await Log("Attempted Personation", iPAddress);
         }
 
-        public async Task<bool> AttemptedLogin(ClaimsPrincipal user, IPAddress iPAddress)
+        public async Task<bool> AttemptedLogin(ClaimsPrincipal user, string? iPAddress=null)
         {
             CurrentUser = UserStateService.CreateUserState(user);
             return await Log("Attempted Login", iPAddress);
         }
-        public async Task<bool> Login(ClaimsPrincipal user,IPAddress? ipAddress=null)
+        public async Task<bool> Login(ClaimsPrincipal user,string? ipAddress=null)
         {
             CurrentUser = UserStateService.CreateUserState(user);
             return await Log("Login", ipAddress);
         }
         public async Task<bool> Logout() => await Log("Logout");
 
-        private async Task<bool> Log(string action,IPAddress ipAddress=null)
+        private async Task<bool> Log(string action,string ipAddress=null)
         {
 
             try
@@ -42,9 +42,9 @@ namespace BLAZAM.Services.Audit
                     Username = CurrentUser.AuditUsername,
                 };
                 if (ipAddress != null)
-                    newAuditEntry.IpAddress = ipAddress.ToString();
+                    newAuditEntry.IpAddress = ipAddress;
                 else
-                    newAuditEntry.IpAddress = CurrentUser.IPAddress?.ToString();
+                    newAuditEntry.IpAddress = CurrentUser.IPAddress;
 
                 context.LogonAuditLog.Add(newAuditEntry);
                 await context.SaveChangesAsync();

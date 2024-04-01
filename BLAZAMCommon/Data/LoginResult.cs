@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 namespace BLAZAM.Common.Data
 {
     public enum LoginResultStatus { OK,BadCredentials,UnauthorizedImpersonation, NoData,NoUsername, NoPassword, UnknownFailure,
-        DeniedLogin
+        DeniedLogin, MFARequested
     }
     public class LoginResult
     {
@@ -17,7 +17,13 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
+        public LoginResult MFARequested(AuthenticationState state)
+        {
+            AuthenticationState = state;
+            Status = LoginResultStatus.MFARequested;
 
+            return this;
+        }
 
         public LoginResult BadCredentials()
         {

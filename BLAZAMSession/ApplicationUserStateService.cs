@@ -34,6 +34,7 @@ namespace BLAZAM.Server.Data.Services
 
         private int? Timeout { get; set; }
 
+        private Dictionary<string, IApplicationUserState> _mfaLoginQueue = new();
 
         /// <summary>
         /// Called when a new UserState is added to the cache.
@@ -192,6 +193,23 @@ namespace BLAZAM.Server.Data.Services
             UserStates.Add(state);
             //Invoke event so Active Directory can populate DirectoryUser if required
             //UserStateAdded?.Invoke(state);
+        }
+        public void SetMFAUserState(string mfaToken,IApplicationUserState state)
+        {
+            _mfaLoginQueue.Add(mfaToken, state);
+            Task.Delay(60000).ContinueWith((val) => {
+                _mfaLoginQueue.Remove(mfaToken);
+            });
+            SetUserState(state);
+        }
+        public IApplicationUserState? GetMFAUser(string mfaToken)
+        {
+            var user= _mfaLoginQueue.FirstOrDefault(q=>q.Key== mfaToken).Value;
+            if(user != null)
+            {
+                _mfaLoginQueue.Remove(mfaToken );
+            }
+            return user;
         }
         public void SetUserState(IApplicationUserState state)
         {

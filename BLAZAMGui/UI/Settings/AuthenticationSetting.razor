@@ -1,5 +1,6 @@
+@using BLAZAM.Services.Duo
 @inherits SettingsComponents
-
+@inject IDuoClientProvider Duo
 
 
 
@@ -17,27 +18,30 @@
         <MudNumericField Label="@AppLocalization["Session Timeout"]" HelperText="Time in minute" T="int?" @bind-Value="@settings.SessionTimeout" />
 
     </SettingsField>
-    @*
-    <MudText>Duo Security MFA (optional)</MudText>
-    <br />
+    <MudDivider Class="my-6"/>
+    <SettingsField Label="@AppLocalization["Duo Security MFA (optional)"]">
+
+        <StatusCheck Status=duoHealthCheckResult Text="@AppLocalization["Duo Health Check"]" />
+    </SettingsField>
+
     <SettingsField Label="Duo ClientID">
 
-    <MudTextField Label="Duo ClientID" InputType="InputType.Password" @bind-Value="@settings.DuoClientId" />
+        <MudTextField Label="Duo ClientID" InputType="InputType.Password" @bind-Value="@settings.DuoClientId" />
 
     </SettingsField>
     <SettingsField Label="Duo ClientSecret">
 
-    <MudTextField Label="Duo ClientSecret" InputType="InputType.Password" @bind-Value="@settings.DuoClientSecret" />
+        <MudTextField Label="Duo ClientSecret" InputType="InputType.Password" @bind-Value="@settings.DuoClientSecret" />
 
     </SettingsField>
     <SettingsField Label="Duo ApiHost">
 
-    <MudTextField Label="Duo ApiHost" InputType="InputType.Password" @bind-Value="@settings.DuoApiHost" />
+        <MudTextField Label="Duo ApiHost" InputType="InputType.Password" @bind-Value="@settings.DuoApiHost" />
 
-    </SettingsField>*@
+    </SettingsField>
 
 
-   
+
 
     <SettingsField>
 
@@ -53,7 +57,7 @@
     AuthenticationSettings settings = new AuthenticationSettings();
     string newAdminPassword;
     string adminPasswordInDb;
-
+    bool? duoHealthCheckResult = null;
 
     string _timeoutString = "Loading...";
     protected override async Task OnInitializedAsync()
@@ -61,7 +65,7 @@
         LoadingData = true;
         await InvokeAsync(StateHasChanged);
 
-
+        duoHealthCheckResult = await Duo.GetDuoClient().DoHealthCheck();
         originalSettings = await Context.AuthenticationSettings.AsNoTracking().FirstOrDefaultAsync();
 
         settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
@@ -90,7 +94,7 @@
             adminPasswordInDb = settings.AdminPassword;
 
         }
-       
+
         await AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
         base.Save();
         await InvokeAsync(StateHasChanged);

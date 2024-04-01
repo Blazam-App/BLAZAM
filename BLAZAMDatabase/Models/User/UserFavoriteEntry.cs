@@ -14,9 +14,9 @@ namespace BLAZAM.Database.Models.User
 
         public override bool Equals(object? obj)
         {
-            if(obj is UserFavoriteEntry)
+            if(obj is UserFavoriteEntry user)
             {
-                var user = obj as UserFavoriteEntry;
+                if (user.DN == null) return false;            
                 return user.DN.Equals(DN) && user.UserId.Equals(UserId);
             }
             return false;
