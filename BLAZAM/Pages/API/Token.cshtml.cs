@@ -27,7 +27,7 @@ namespace BLAZAM.Server.Pages.API
         public JsonResult OnGet()
         {
             JwtTokenHandler = new JwtSecurityTokenHandler();
-            var user = this.User.Identity.Name;
+            var user = this.User.Identity?.Name;
             if (string.IsNullOrEmpty(user))
             {
                 throw new InvalidOperationException("Name is not specified.");

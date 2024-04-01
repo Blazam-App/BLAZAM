@@ -100,11 +100,6 @@
 
     </MudElement>
 </MudContainer>
-<AppModal @ref=_mfaModal Title="MFA" Options="new(){ MaxWidth=MaxWidth.Large, FullWidth=true}">
-    <ChildContent>
-        <iframe class="w-100" style="height:70vh" src="@_modalUri"></iframe>
-    </ChildContent>
-</AppModal>
 <style>
     .brand-icon {
         position: fixed;
@@ -125,9 +120,8 @@
 </style>
 
 @code {
-    MudTextField<string>? _usernameTextField;
-    MudTextField<string>? _passwordTextField;
-    string? _modalUri;
+    MudTextField<string?> _usernameTextField;
+    MudTextField<string?> _passwordTextField;
     bool attemptingSignIn = false;
     string redirectUrl;
     AppModal? _mfaModal;
@@ -154,8 +148,8 @@
     {
         attemptingSignIn = true;
         await InvokeAsync(StateHasChanged);
-        LoginRequest? authenticationResult;
-        if (ValidateInput(out authenticationResult))
+        LoginRequest? authenticationResult=null;
+        if (ValidateInput(LoginRequest))
             try
             {
                 var response = await JSRuntime.InvokeAsync<string>("attemptSignIn", LoginRequest);
@@ -206,10 +200,9 @@
                     break;
                 case LoginResultStatus.OK:
                     attemptingSignIn = true;
-                    if (!_mfaModal.IsShown)
-                    {
-                        Nav.NavigateTo(redirectUrl, true);
-                    }
+
+                    Nav.NavigateTo(redirectUrl, true);
+
                     break;
             }
 
@@ -217,9 +210,12 @@
 
         await InvokeAsync(StateHasChanged);
     }
-    bool ValidateInput(out LoginRequest? validationResult)
+    bool ValidateInput(LoginRequest? validationResult)
     {
-        validationResult = null;
+        if(validationResult == null)
+        {
+            validationResult = new();
+        }
         if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !DemoCustomLogin)) return true;
 
 

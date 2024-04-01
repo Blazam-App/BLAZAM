@@ -40,7 +40,7 @@
                     <MudPaper Class="overflow-auto mud-typography-nowrap">
                         Stack Trace: <br>
                         @(
-                                (MarkupString)_error.StackTrace.Replace("\n", "<br><br>")
+                                (MarkupString)_error.StackTrace?.Replace("\n", "<br><br>")
                                 )
                     </MudPaper>
                 </MudCard>

@@ -121,7 +121,7 @@
     }
     async Task SaveChanges()
     {
-        if (await Context.SaveChangesAsync() > 0)
+        if (Context != null && await Context.SaveChangesAsync() > 0)
         {
             SnackBarService.Success("Field Updated");
         }

@@ -81,7 +81,7 @@ namespace BLAZAM
 
             builder.IntializeProperties();
 
-            _ = new Encryption(Configuration.GetValue<string>("EncryptionKey"));
+            _ = new Encryption(Configuration?.GetValue<string>("EncryptionKey"));
 
             //Setup host logging so it can catch the earliest logs possible
 

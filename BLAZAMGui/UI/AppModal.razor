@@ -10,7 +10,10 @@
     <DialogContent>
         <CascadingValue Value="this">
             <MudContainer Class="py-4 px-0">
-                @ChildContent
+                @if (IsShown)
+                {
+                    @ChildContent
+                }
 
             </MudContainer>
         </CascadingValue>

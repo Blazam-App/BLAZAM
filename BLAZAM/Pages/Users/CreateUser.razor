@@ -49,7 +49,7 @@
 
                                 @foreach (var template in Templates.Where(t => t.DeletedAt == null && t.Visible))
                                 {
-                                    <MudButton OnClick=@(()=>{SetTemplate(template);}) Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">@template.Name</MudButton>
+                                    <MudButton OnClick=@(async()=>{await SetTemplate(template);}) Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">@template.Name</MudButton>
 
                                 }
                             </FlexContainer>

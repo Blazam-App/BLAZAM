@@ -208,7 +208,7 @@
 
                                             <DynamicMudInput T=string Label="@AppLocalization["Username"]"
                                                              @bind-Value="@User.SamAccountName"
-                                                             Disabled=!User.NewEntry />
+                                                             Disabled=@(User?.NewEntry==false) />
                                             <AppCopyButton TextToCopy=@User.SamAccountName />
 
                                         </MudStack>

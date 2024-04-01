@@ -106,7 +106,7 @@
     {
         LoadingData = true;
         await InvokeAsync(StateHasChanged);
-        newGroup = parentOU.CreateGroup(newGroupName);
+        newGroup = parentOU?.CreateGroup(newGroupName);
 
 
 
