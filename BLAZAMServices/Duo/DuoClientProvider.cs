@@ -38,7 +38,7 @@ namespace BLAZAM.Services.Duo
                     ClientId = auth.DuoClientId;
                     ClientSecret = auth.DuoClientSecret;
                     ApiHost = auth.DuoApiHost;
-                    RedirectUri = "";
+                    RedirectUri = "blank";
 
                 }
             }

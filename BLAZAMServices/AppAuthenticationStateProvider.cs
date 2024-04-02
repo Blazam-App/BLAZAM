@@ -23,6 +23,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Components;
 using BLAZAM.Nav;
 using System.Net.WebSockets;
+using BLAZAM.Database.Models;
 
 namespace BLAZAM.Services
 {
@@ -200,46 +201,45 @@ namespace BLAZAM.Services
                 if (loginReq.Username.IsNullOrEmpty()) return loginReq.NoUsername();
             }
             //Pull the authentication settings from the database so we can check admin credentials
-            var settings = _factory.CreateDbContext().AuthenticationSettings.FirstOrDefault();
-            //Check admin credentials
-            if (settings != null
-                && loginReq.Username != null
-                && loginReq.Username.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            using (var context = _factory.CreateDbContext())
             {
-                var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
-                if (loginReq.Password == adminPass)
-                    authenticationState = await SetUser(this.GetLocalAdmin());
-                else
-                    await _audit.Logon.AttemptedLogin(GetLocalAdmin(), loginReq.IPAddress);
 
-
-            }
-            //Check if we're in demo mode and this is a demo login
-            else if (_applicationInfo.InDemoMode && settings != null
-                && loginReq.Username != null
-                && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
-            {
-                authenticationState = await SetUser(this.GetDemoUser());
-
-            }
-            else
-            {
-                try
+                var settings = context.AuthenticationSettings.FirstOrDefault();
+                //Check admin credentials
+                if (settings != null
+                    && loginReq.Username != null
+                    && loginReq.Username.Equals("admin", StringComparison.OrdinalIgnoreCase))
                 {
-                    //Login username is not "admin" or "demo" or we're not in demo mode, so we'll try active directory
-                    var userClaim = await AttemptADLogin(newUserState, loginReq);
+                    var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
+                    if (loginReq.Password == adminPass)
+                        authenticationState = await SetUser(this.GetLocalAdmin());
+                    else
+                        await _audit.Logon.AttemptedLogin(GetLocalAdmin(), loginReq.IPAddress);
 
-                    if (userClaim != null)
+
+                }
+                //Check if we're in demo mode and this is a demo login
+                else if (_applicationInfo.InDemoMode && settings != null
+                    && loginReq.Username != null
+                    && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
+                {
+                    authenticationState = await SetUser(this.GetDemoUser());
+
+                }
+                else
+                {
+                    try
                     {
-                        //Check if we need to perform MFA
-                        using (var context = _factory.CreateDbContext())
+                        //Login username is not "admin" or "demo" or we're not in demo mode, so we'll try active directory
+                        var userClaim = await AttemptADLogin(newUserState, loginReq);
+
+                        if (userClaim != null)
                         {
-                            //Get settings from DB
-                            var authSettings = context.AuthenticationSettings.FirstOrDefault();
-                            if (authSettings != null &&
-                                authSettings.DuoClientSecret != null &&
-                                authSettings.DuoClientId != null &&
-                                authSettings.DuoApiHost != null
+                            if (settings != null &&
+                                settings.DuoEnabled &&
+                                settings.DuoClientSecret != null &&
+                                settings.DuoClientId != null &&
+                                settings.DuoApiHost != null
                                 )
                             {
                                 var mfaRRedirect = await PerformDuoAuthentication(loginReq);
@@ -259,20 +259,21 @@ namespace BLAZAM.Services
                                 //Duo authentication requested
 
                             }
+
+
+
+                            //If active directory login/impersonation succeeded the userClaim will be popluated
+                            if (userClaim.Identity?.IsAuthenticated == true)
+                                //Set the user in the authentication provider
+                                authenticationState = await SetUser(userClaim);
                         }
-
-
-                        //If active directory login/impersonation succeeded the userClaim will be popluated
-                        if (userClaim.Identity?.IsAuthenticated == true)
-                            //Set the user in the authentication provider
-                            authenticationState = await SetUser(userClaim);
                     }
-                }
-                catch (DeniedLoginException)
-                {
-                    return loginReq.DeniedLogin();
-                }
+                    catch (DeniedLoginException)
+                    {
+                        return loginReq.DeniedLogin();
+                    }
 
+                }
             }
             if (authenticationState?.User != null)
             {
@@ -325,32 +326,49 @@ namespace BLAZAM.Services
 
         private async Task<string> PerformDuoAuthentication(LoginRequest loginReq)
         {
-            // Initiate the Duo authentication for a specific username
+            using (var context = _factory.CreateDbContext())
+            {
 
-            // Get a Duo client
-            Client duoClient = _duoClientProvider.GetDuoClient(loginReq.CallbackBaseUri + "/mfacallback");
+                var settings = context.AuthenticationSettings.FirstOrDefault();
+                if (settings == null) throw new ApplicationException("Could not get settings");
 
-            // Check if Duo seems to be healthy and able to service authentications.
-            // If Duo were unhealthy, you could possibly send user to an error page, or implement a fail mode
-            var isDuoHealthy = await duoClient.DoHealthCheck();
 
-            // Generate a random state value to tie the authentication steps together
-            string state = Client.GenerateState();
 
-            loginReq.MFAToken = state;
-            // Save the state and username in the session for later
-            //HttpContext.Session.SetString(STATE_SESSION_KEY, state);
-            //HttpContext.Session.SetString(USERNAME_SESSION_KEY, username);
 
-            // Get the URI of the Duo prompt from the client.  This includes an embedded authentication request.
-            string promptUri = duoClient.GenerateAuthUri(loginReq.Username, state);
-            loginReq.MFARedirect = promptUri;
-            // Redirect the user's browser to the Duo prompt.
-            // The Duo prompt, after authentication, will redirect back to the configured Redirect URI to complete the authentication flow.
-            // In this example, that is /duo_callback, which is implemented in Callback.cshtml.cs.
-            // return new RedirectResult(promptUri);
 
-            return promptUri;
+                // Initiate the Duo authentication for a specific username
+
+                // Get a Duo client
+                Client duoClient = _duoClientProvider.GetDuoClient(loginReq.CallbackBaseUri + "/mfacallback");
+
+                // Check if Duo seems to be healthy and able to service authentications.
+                // If Duo were unhealthy, you could possibly send user to an error page, or implement a fail mode
+                var isDuoHealthy = await duoClient.DoHealthCheck();
+                if(!isDuoHealthy && settings.DuoUnreachableBehavior== DuoUnreachableBehavior.Bypass)
+                {
+                    return String.Empty;
+                }
+                // Generate a random state value to tie the authentication steps together
+                string state = Client.GenerateState();
+
+                loginReq.MFAToken = state;
+                // Save the state and username in the session for later
+                //HttpContext.Session.SetString(STATE_SESSION_KEY, state);
+                //HttpContext.Session.SetString(USERNAME_SESSION_KEY, username);
+
+                // Get the URI of the Duo prompt from the client.  This includes an embedded authentication request.
+                string promptUri = duoClient.GenerateAuthUri(loginReq.Username, state);
+                loginReq.MFARedirect = promptUri;
+                // Redirect the user's browser to the Duo prompt.
+                // The Duo prompt, after authentication, will redirect back to the configured Redirect URI to complete the authentication flow.
+                // In this example, that is /duo_callback, which is implemented in Callback.cshtml.cs.
+                // return new RedirectResult(promptUri);
+
+                return promptUri;
+
+
+
+            }
         }
 
         /// <summary>
