@@ -5,8 +5,10 @@ using BLAZAM.Services.Duo;
 using BLAZAM.Session.Interfaces;
 using DuoUniversal;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Identity.Client;
 using Octokit;
 using Org.BouncyCastle.Ocsp;
@@ -62,15 +64,21 @@ namespace BLAZAM.Pages
                         // Get the Duo client again.  This can be either be cached in the session or newly built.
                         // The only stateful information in the Client is your configuration, so you could even use the same client for multiple
                         // user authentications if desired.
-                        Client duoClient = _duoClientProvider.GetDuoClient();
+                        Client duoClient = _duoClientProvider.GetDuoClient(Request.Scheme+"://"+Request.Host+"/mfacallback");
                         var username = user.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value;
                         // Get a summary of the authentication from Duo.  This will trigger an exception if the username does not match.
-                        IdToken token = await duoClient.ExchangeAuthorizationCodeFor2faResult(code, username);
-                        if (token.AuthResult.Result.Equals("allow", StringComparison.InvariantCultureIgnoreCase))
+                        try
                         {
-                            var authenticatedState = await _auth.SetUser(user.User);
-                            await HttpContext.SignInAsync(user.User);
-                            await _audit.Logon.Login(user.User,HttpContext.Connection.RemoteIpAddress?.ToString());
+                            IdToken token = await duoClient.ExchangeAuthorizationCodeFor2faResult(code, username);
+                            if (token.AuthResult.Result.Equals("allow", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                var authenticatedState = await _auth.SetUser(user.User);
+                                await HttpContext.SignInAsync(user.User);
+                                await _audit.Logon.Login(user.User, HttpContext.Connection.RemoteIpAddress?.ToString());
+                                return new RedirectResult("/");
+                            }
+                        }catch (Exception ex)
+                        {
                             return new RedirectResult("/");
                         }
                 

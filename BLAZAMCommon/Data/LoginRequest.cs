@@ -32,6 +32,12 @@ namespace BLAZAM.Common.Data
         public string? ReturnUrl { get; set; } = "/";
 
         /// <summary>
+        /// The base address to callback MFA requests
+        /// </summary>
+        public string? CallbackBaseUri { get; set; }
+
+
+        /// <summary>
         /// Returns true if the username and password are both present.
         /// </summary>
         public bool Valid
