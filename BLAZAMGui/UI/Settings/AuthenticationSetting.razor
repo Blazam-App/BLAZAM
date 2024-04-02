@@ -4,7 +4,8 @@
 
 
 
-<MudText Typo="Typo.h4">@AppLocalization["Authentication Settings"]</MudText>
+<MudText Typo="Typo.h4">@AppLocalization["Authentication Settings"] <AppDocumentationButton Page="/admin/settings/authentication" /></MudText>
+    
 <MudForm @onsubmit=Save>
 
 
@@ -68,7 +69,7 @@
              LoadingData = true;
         await InvokeAsync(StateHasChanged);
 
-        duoHealthCheckResult = await Duo.GetDuoClient().DoHealthCheck();
+            duoHealthCheckResult = await Duo.DoHealthCheckAsync();
         originalSettings = await Context.AuthenticationSettings.AsNoTracking().FirstOrDefaultAsync();
 
         settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
