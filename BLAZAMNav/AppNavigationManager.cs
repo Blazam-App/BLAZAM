@@ -1,5 +1,6 @@
 ﻿
 using BLAZAM.Localization;
+using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
@@ -44,7 +45,13 @@ namespace BLAZAM.Nav
         {
             Nav = nav;
             JS = js;
-            Nav.LocationChanged += (args, other) => { LocationChanged?.Invoke(args, other); };
+            try
+            {
+                Nav.LocationChanged += (args, other) => { LocationChanged?.Invoke(args, other); };
+            }catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error("Error trying to listen for location changes {@Error}", ex);
+            }
             MessageService = messageService;
             AppLocalization = appLocalization;
         }

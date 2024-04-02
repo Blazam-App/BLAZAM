@@ -194,7 +194,7 @@ namespace BLAZAM.Database.Models.Templates
             {
                 toParse = toParse
             .Replace("{mn}", newUser.MiddleName)
-                 .Replace("{mi}", newUser.MiddleName[0].ToString());
+                 .Replace("{mi}", newUser.MiddleName?[0].ToString());
             }
             if (!newUser.Surname.IsNullOrEmpty())
             {

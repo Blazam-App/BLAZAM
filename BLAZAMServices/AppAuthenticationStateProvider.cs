@@ -40,7 +40,8 @@ namespace BLAZAM.Services
             IDuoClientProvider dcp,
             IEncryptionService enc,
             AuditLogger audit,
-            ApplicationInfo applicationInfo)
+            ApplicationInfo applicationInfo,
+            NavigationManager nav)
         {
             _applicationInfo = applicationInfo;
             this._encryption = enc;
@@ -49,7 +50,7 @@ namespace BLAZAM.Services
             this._permissionHandler = permissionHandler;
             this._userStateService = userStateService;
             this._httpContextAccessor = ca;
-
+            this._nav = nav;
             this.CurrentUser = this.GetAnonymous(ca.HttpContext?.Session.Id);
 
             this._duoClientProvider = dcp;
@@ -61,7 +62,7 @@ namespace BLAZAM.Services
         private readonly AuditLogger _audit;
         private readonly ApplicationInfo _applicationInfo;
         private readonly IEncryptionService _encryption;
-        private readonly AppNavigationManager _nav;
+        private readonly NavigationManager _nav;
         private readonly IActiveDirectoryContext _directory;
         private readonly IAppDatabaseFactory _factory;
         private readonly PermissionApplicator _permissionHandler;
@@ -327,7 +328,7 @@ namespace BLAZAM.Services
             // Initiate the Duo authentication for a specific username
 
             // Get a Duo client
-            Client duoClient = _duoClientProvider.GetDuoClient();
+            Client duoClient = _duoClientProvider.GetDuoClient(loginReq.CallbackBaseUri + "/mfacallback");
 
             // Check if Duo seems to be healthy and able to service authentications.
             // If Duo were unhealthy, you could possibly send user to an error page, or implement a fail mode
@@ -410,7 +411,7 @@ namespace BLAZAM.Services
 
             }
             if (user.UserPrincipalName != null)
-                claims.Add(new Claim(ClaimTypes.WindowsAccountName, user.UserPrincipalName));
+                claims.Add(new Claim(ClaimTypes.WindowsAccountName, user.SamAccountName));
             if (user.GivenName != null)
                 claims.Add(new Claim(ClaimTypes.GivenName, user.GivenName));
             if (user.Surname != null)

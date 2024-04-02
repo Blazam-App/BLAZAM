@@ -132,6 +132,8 @@
         await base.OnInitializedAsync();
         redirectUrl = Nav.Uri;
         LoginRequest.ReturnUrl = Nav.Uri;
+        var currentUri = new Uri(Nav.Uri);
+        LoginRequest.CallbackBaseUri = currentUri.Scheme+"://" + currentUri.Authority;
         if (Monitor.AppReady != ServiceConnectionState.Up)
             Monitor.OnAppReadyChanged += AppReadyChanged;
     }

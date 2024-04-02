@@ -4,7 +4,6 @@
 @code {
     [CascadingParameter]
     public IJob Job { get; set; }
-    Timer? timer;
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -12,20 +11,17 @@
         {
             InvokeAsync(StateHasChanged);
         };
-        //timer = new Timer((state) => {InvokeAsync(StateHasChanged);}, null, 600, 600);
     }
 
     public override void Dispose()
     {
         base.Dispose();
-        timer?.Dispose();
     }
 
     private string ElapsedTime
     {
         get
         {
-            //if (Job.Result == JobResult.Cancelled) return AppLocalization["Cancelled"];
             if (Job.ElapsedTime == null || !Job.ElapsedTime.HasValue) return AppLocalization["Not finished"];
             if (Job.ElapsedTime.Value.TotalSeconds < 1)
             {

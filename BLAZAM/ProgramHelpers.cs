@@ -221,7 +221,7 @@ namespace BLAZAM.Server
 
 
             //Provide DuoSecurity service
-            builder.Services.AddSingleton<IDuoClientProvider, DuoClientProvider>();
+            builder.Services.AddScoped<IDuoClientProvider, DuoClientProvider>();
 
             //Provide encyption service
             //There's no benefit to filling memory with identical instances of this, so singleton

@@ -47,9 +47,9 @@
                 case -2146232060:
                     if (Context != null)
                     {
-                        var confilctingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
-                        if (confilctingDelegate != null)
-                            if (confilctingDelegate.DeletedAt == null)
+                        var conflictingDelegate = Context.PermissionDelegate.Where(pd => pd.DelegateSid == selectedDelegate.SID).FirstOrDefault();
+                        if (conflictingDelegate != null)
+                            if (conflictingDelegate.DeletedAt == null)
                                 NotificationService.Error("That delegate already exists.");
                             else
                                 NotificationService.Error("That delegate already exists. It has been deleted. Restore it from the trash.");
