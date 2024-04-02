@@ -62,7 +62,7 @@
     string _timeoutString = "Loading...";
     protected override async Task OnInitializedAsync()
     {
-
+        await base.OnInitializedAsync();
         Task.Run(async() =>
         {
              LoadingData = true;
