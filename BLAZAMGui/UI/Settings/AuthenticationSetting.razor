@@ -26,12 +26,22 @@
     </SettingsField>
     <SettingsField Label="@AppLocalization["Duo Enabled"]">
 
-        <MudSwitch Label=@AppLocalization["Duo Enabled"] T="bool" @bind-Value="@settings.DuoEnabled" UnCheckedColor="Color.Error" Color="Color.Success" Disabled=@(duoHealthCheckResult!=true) />
+        <MudSwitch Label=@AppLocalization["Duo Enabled"]
+                   T="bool" @bind-Value="@settings.DuoEnabled"
+                   UnCheckedColor="Color.Error"
+                   Color="Color.Success"
+                   Disabled=@(settings.DuoEnabled!=true && duoHealthCheckResult!=true) />
 
     </SettingsField>
     <SettingsField Label="@AppLocalization["Duo Unreachable Behavior"]">
 
-        <MudSwitch Label=@settings.DuoUnreachableBehavior.ToString() T="DuoUnreachableBehavior" Converter=@(new BehaviorConverter()) @bind-Value="@settings.DuoUnreachableBehavior" UnCheckedColor="Color.Error" Color="Color.Success" Disabled=@(duoHealthCheckResult!=true)/>
+        <MudSwitch Label=@settings.DuoUnreachableBehavior.ToString()
+                   T="DuoUnreachableBehavior"
+                   Converter=@(new BehaviorConverter())
+                   @bind-Value="@settings.DuoUnreachableBehavior"
+                   UnCheckedColor="Color.Error"
+                   Color="Color.Success"
+                   Disabled=@(duoHealthCheckResult!=true) />
 
     </SettingsField>
     <SettingsField Label=@AppLocalization["Duo ClientID"]>
@@ -88,12 +98,19 @@
             newAdminPassword = adminPasswordInDb;
             LoadingData = false;
             await InvokeAsync(StateHasChanged);
-            duoHealthCheckResult = await Duo.DoHealthCheckAsync();
-            await InvokeAsync(StateHasChanged);
+            DoDuoHealthCheck();
 
         });
 
 
+    }
+    private async void DoDuoHealthCheck()
+    {
+        duoHealthCheckResult = null;
+        await InvokeAsync(StateHasChanged);
+
+        duoHealthCheckResult = await Duo.DoHealthCheckAsync();
+        await InvokeAsync(StateHasChanged);
     }
     private void UpdateTimeoutDisplay()
     {
@@ -115,7 +132,7 @@
         await AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
         base.Save();
         await InvokeAsync(StateHasChanged);
-
+        DoDuoHealthCheck();
     }
 
     public class BehaviorConverter : BoolConverter<DuoUnreachableBehavior>
@@ -131,7 +148,7 @@
         {
             try
             {
-                return (value==true)?DuoUnreachableBehavior.Bypass:DuoUnreachableBehavior.Block;
+                return (value == true) ? DuoUnreachableBehavior.Bypass : DuoUnreachableBehavior.Block;
             }
             catch (Exception e)
             {
@@ -146,8 +163,8 @@
                 return null;
             try
             {
-                    return (int)arg==1;
-                
+                return (int)arg == 1;
+
             }
             catch (FormatException e)
             {
@@ -159,6 +176,6 @@
     }
     private bool? DuoUnreachableBehaviorConverter(DuoUnreachableBehavior val)
     {
-        return (int)val==1;
+        return (int)val == 1;
     }
 }
