@@ -16,7 +16,7 @@ namespace BLAZAM.Common.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.15")
+                .HasAnnotation("ProductVersion", "7.0.17")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
@@ -705,6 +705,12 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<string>("DuoClientSecret")
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("DuoEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("DuoUnreachableBehavior")
+                        .HasColumnType("int");
+
                     b.Property<int?>("SessionTimeout")
                         .HasColumnType("int");
 
@@ -721,6 +727,8 @@ namespace BLAZAM.Common.Migrations.MySql
                         {
                             Id = 1,
                             AdminPassword = "password",
+                            DuoEnabled = false,
+                            DuoUnreachableBehavior = 0,
                             SessionTimeout = 15
                         });
                 });
