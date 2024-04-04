@@ -3,7 +3,7 @@
     var messages = 0;
     try
     {
-    messages = UserState.Notifications.Count;
+    messages = UserState.Notifications?.Count??0;
     }
     catch
     {
@@ -64,12 +64,13 @@
         } }
     [Parameter]
     public EventCallback<bool> OpenChanged { get; set; } 
-    
+
     [Parameter]
     public IApplicationUserState UserState { get; set; }
 
     async Task MarkAllRead()
     {
+        if (UserState.Notifications == null) return;
         foreach (var message in UserState.Notifications)
         {
             await UserState.MarkRead(message);

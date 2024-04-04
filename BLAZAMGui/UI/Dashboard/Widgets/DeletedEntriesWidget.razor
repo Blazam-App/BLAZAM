@@ -2,7 +2,7 @@
 @attribute [Authorize]
 
 <MudDataGrid T="IDirectoryEntryAdapter"
-             Items="FavoriteEntries"
+             Items="deletedObjects"
              RowClick="@RowClicked"
              RowClass="cursor-pointer"
              Dense=true
@@ -28,7 +28,7 @@
                 </MudTooltip>
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="x=>x.LastChanged" Title="Changed" />
+        <PropertyColumn Property="x=>x.LastChanged" Title="Deleted" />
 
     </Columns>
     <PagerContent>
@@ -41,30 +41,19 @@
     <MudProgressLinear Indeterminate=true />
 </MudOverlay>
 @code {
-    List<IDirectoryEntryAdapter> FavoriteEntries { get; set; } = new();
+    List<IDirectoryEntryAdapter> deletedObjects { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await Task.Run(() =>
-        {
-            foreach (var entry in CurrentUser.State.Preferences.FavoriteEntries)
-            {
-                IDirectoryEntryAdapter match = Directory.GetDirectoryEntryByDN(entry.DN);
-                if (match == null)
-                {
 
-                }
-                else if (match.CanRead)
-                {
-                    FavoriteEntries.Add(match);
-                }
-            }
-
-            LoadingData = false;
-            InvokeAsync(StateHasChanged);
-
-        });
+        var search = new ADSearch() { SearchRoot = Directory.GetDeleteObjectsEntry() };
+        search.SearchDeleted = true;
+        search.Fields.Changed = DateTime.Now.AddDays(-14);
+        deletedObjects = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
+                LoadingData = false;
+                await InvokeAsync(StateHasChanged);
+          
 
     }
     void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)

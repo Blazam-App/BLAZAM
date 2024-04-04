@@ -4,6 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Database.Models
 {
+    public enum DuoUnreachableBehavior
+    {
+        Block,
+        Bypass
+    }
     public class AuthenticationSettings : AppDbSetBase
     {
         /// <summary>
@@ -17,9 +22,10 @@ namespace BLAZAM.Database.Models
         [Required]
         [Compare(nameof(AdminPassword))]
         public string AdminPasswordConfirmed { get; set; }
-
+        public bool DuoEnabled { get; set; }
         public string? DuoClientId { get; set; }
         public string? DuoClientSecret { get; set; }
         public string? DuoApiHost { get; set; }
+        public DuoUnreachableBehavior DuoUnreachableBehavior { get; set; } = DuoUnreachableBehavior.Block;
     }
 }

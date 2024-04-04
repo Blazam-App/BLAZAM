@@ -3,7 +3,8 @@
 @inherits SettingsComponents
 
 
-<MudText Typo="Typo.h4">@AppLocalization["Update Settings"]</MudText>
+
+<MudText Typo="Typo.h4">@AppLocalization["Update Settings"] <AppDocumentationButton Page="/update/self/" /></MudText>
 <MudForm @onsubmit="Save">
 
 
@@ -118,8 +119,11 @@
         <ManualApplicationUpdater @ref=appUpdateComponent />
 
         <SettingsField Label="@AppLocalization["Enable Auto Update"]">
+            <MudStack Row=true>
+                <MudSwitch Label="@AppLocalization["Enable Auto Update"]" @bind-Value=@(settings.AutoUpdate) /> 
+                <AppDocumentationButton Page="/update/auto/" />
 
-            <MudSwitch Label="@AppLocalization["Enable Auto Update"]" @bind-Value=@(settings.AutoUpdate) />
+            </MudStack>
 
         </SettingsField>
 
@@ -151,7 +155,6 @@
 @code {
     string? newUpdatePassword;
     string? updatePasswordInDb;
-    bool applicationIdentityCanWrite;
     UpdateCredential? updateCredential=null;
     ManualApplicationUpdater? appUpdateComponent;
     AppSettings? settings = new AppSettings();

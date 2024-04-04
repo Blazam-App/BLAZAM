@@ -26,7 +26,7 @@ namespace BLAZAM.FileSystem
                 List<SystemDirectory> dirs = new();
                 try
                 {
-                    if (Directory.Exists(Path))
+                    if (Exists)
                     {
                         foreach (var directory in Directory.GetDirectories(Path))
                         {
@@ -60,7 +60,7 @@ namespace BLAZAM.FileSystem
                 List<SystemFile> files = new();
                 try
                 {
-                    if (Directory.Exists(Path))
+                    if (Exists)
                     {
                         foreach (var file in Directory.GetFiles(Path))
                         {
@@ -108,7 +108,7 @@ namespace BLAZAM.FileSystem
                 copyingDownTree = true;
             }
 
-            if (Directory.Exists(Path))
+            if (Exists)
             {
 
                 var directories = Directory.GetDirectories(Path, "*", SearchOption.AllDirectories).AsEnumerable();
@@ -141,7 +141,10 @@ namespace BLAZAM.FileSystem
         /// <param name="recursive"></param>
         public void Delete(bool recursive = false)
         {
-            Directory.Delete(Path, recursive);
+            if (Exists)
+            {
+                Directory.Delete(Path, recursive);
+            }
         }
         /// <summary>
         /// Creates the directory if it does not already exist

@@ -1,5 +1,4 @@
 ﻿@inherits AppComponentBase
-@inject IJSRuntime JS
 <MudIconButton Icon="@Icons.Material.Filled.ContentCopy" OnClick="@(async()=>{await CopyToClipboard(TextToCopy);})" />
 
 @code {

@@ -63,7 +63,7 @@ namespace BLAZAM.Services.Audit
                     BeforeAction = beforeAction,
                     AfterAction = afterAction,
                     Username = CurrentUser.AuditUsername,
-                    IpAddress = CurrentUser.IPAddress?.ToString(),
+                    IpAddress = CurrentUser.IPAddress,
                 };
                 table.Add(auditEntry);
                 context.SaveChanges();

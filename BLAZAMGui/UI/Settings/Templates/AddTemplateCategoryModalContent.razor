@@ -23,7 +23,7 @@
         {
             SnackBarService.Warning(AppLocalization["A category with that name already exists."]);
         }
-        CategoryAdded.InvokeAsync(newCategory);
+        await CategoryAdded.InvokeAsync(newCategory);
         
         Close();
     }

@@ -1,25 +1,36 @@
 ﻿
 
 
-<MudIcon Icon="@_classes"></MudIcon>
+<MudChip Color=@Color Icon="@Icon" >@Text</MudChip>
 
 @code {
     [Parameter]
-    public bool Status { get; set; } = false;
-
-    private string _trueClasses = "fa-solid fa-check text-primary";
-    private string _falseClasses = "fa-solid fa-times text-danger";
-    private string _classes = "fa-solid fa-times text-danger";
+    public bool? Status { get; set; } = false;  
+    [Parameter]
+    public string? Text { get; set; }
+    private Color Color = Color.Error;
+    private string Icon = Icons.Material.Filled.Close;
 
 
 
     protected override async void OnParametersSet()
     {
 
-        if (Status)
-            _classes = _trueClasses;
+        if (Status == true)
+        {
+            Color=Color.Success;
+            Icon = Icons.Material.Filled.Check;
+        }
+        else if(Status ==false)
+        {
+            Color = Color.Error;
+            Icon = Icons.Material.Filled.Close;
+        }
         else
-            _classes = _falseClasses;
+        {
+            Color = Color.Warning;
+            Icon = Icons.Material.Filled.QuestionMark;
+        }
 
         await InvokeAsync(StateHasChanged);
 

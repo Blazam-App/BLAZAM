@@ -19,6 +19,11 @@ using BLAZAM.Services.Duo;
 using BLAZAM.Server.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Components;
+using BLAZAM.Nav;
+using System.Net.WebSockets;
+using BLAZAM.Database.Models;
 
 namespace BLAZAM.Services
 {
@@ -36,7 +41,8 @@ namespace BLAZAM.Services
             IDuoClientProvider dcp,
             IEncryptionService enc,
             AuditLogger audit,
-            ApplicationInfo applicationInfo)
+            ApplicationInfo applicationInfo,
+            NavigationManager nav)
         {
             _applicationInfo = applicationInfo;
             this._encryption = enc;
@@ -44,8 +50,10 @@ namespace BLAZAM.Services
             this._factory = factory;
             this._permissionHandler = permissionHandler;
             this._userStateService = userStateService;
-            this.CurrentUser = this.GetAnonymous();
             this._httpContextAccessor = ca;
+            this._nav = nav;
+            this.CurrentUser = this.GetAnonymous(ca.HttpContext?.Session.Id);
+
             this._duoClientProvider = dcp;
             this._audit = audit;
         }
@@ -55,6 +63,7 @@ namespace BLAZAM.Services
         private readonly AuditLogger _audit;
         private readonly ApplicationInfo _applicationInfo;
         private readonly IEncryptionService _encryption;
+        private readonly NavigationManager _nav;
         private readonly IActiveDirectoryContext _directory;
         private readonly IAppDatabaseFactory _factory;
         private readonly PermissionApplicator _permissionHandler;
@@ -69,17 +78,17 @@ namespace BLAZAM.Services
 
                 options.Events.OnSigningIn = async (context) =>
                 {
-                   if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                    if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
                     {
                         var currentUtc = DateTimeOffset.UtcNow;
                         context.Properties.IssuedUtc = currentUtc;
                         context.Properties.ExpiresUtc = currentUtc.AddMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
                     }
                 };
-                
+
                 options.Events.OnValidatePrincipal = async (context) =>
                 {
-                   if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
+                    if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
                     {
                         var currentUtc = DateTimeOffset.UtcNow;
                         context.Properties.IssuedUtc = currentUtc;
@@ -91,7 +100,7 @@ namespace BLAZAM.Services
                 if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
                     options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
                 else
-                  options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
+                    options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
 
                 options.SlidingExpiration = true;
             };
@@ -111,16 +120,20 @@ namespace BLAZAM.Services
         /// before login.
         /// </summary>
         /// <returns>An unauthenticated annonymous User ClaimsPrincipal</returns>
-        private ClaimsPrincipal GetAnonymous()
+        private ClaimsPrincipal GetAnonymous(string? sessionId = null, string? mfaToken = null)
         {
 
             var identity = new ClaimsIdentity(new[]
            {
-                    new Claim(ClaimTypes.Sid, "0"),
+                    new Claim(ClaimTypes.Sid, sessionId.IsNullOrEmpty()==true?"0":sessionId),
                     new Claim(ClaimTypes.Name, "Anonymous"),
                     new Claim(ClaimTypes.Role, "Anonymous"),
-                    new Claim(ClaimTypes.Actor,"0")
+                    new Claim(ClaimTypes.Actor,sessionId.IsNullOrEmpty()==true?"0":sessionId)
                 }, null);
+            if (mfaToken != null)
+            {
+                identity.AddClaim(new Claim(ClaimTypes.Rsa, mfaToken));
+            }
 
             return new ClaimsPrincipal(identity);
         }
@@ -155,14 +168,13 @@ namespace BLAZAM.Services
         /// </summary>
         /// <param name="loginReq">The authentication details and options for login</param>
         /// <returns>A fully processed AuthenticationState with all Claims and application permissions applied.</returns>
-        public async Task<LoginResult> Login(LoginRequest loginReq)
+        public async Task<LoginRequest> Login(LoginRequest loginReq)
         {
-            LoginResult loginResult = new();
-             var newUserState = _userStateService.CreateUserState(GetAnonymous());
+            var newUserState = _userStateService.CreateUserState(GetAnonymous(_httpContextAccessor.HttpContext?.Session.Id));
             newUserState.IPAddress = loginReq.IPAddress;
-            
 
-            AuthenticationState? result = null;
+
+            AuthenticationState? authenticationState = null;
 
             //Set the current user from the HttpContext which gets it from the user's browser cookie
             CurrentUser = _httpContextAccessor?.HttpContext?.User;
@@ -171,8 +183,8 @@ namespace BLAZAM.Services
                 && CurrentUser != null
                 && !CurrentUser.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin))
             {
-               await _audit.Logon.AttemptedPersonation(loginReq.IPAddress);
-                return loginResult.UnauthorizedImpersonation();
+                await _audit.Logon.AttemptedPersonation(loginReq.IPAddress);
+                return loginReq.UnauthorizedImpersonation();
             }
             //If the user is impersonating then we want to remember who we were before
             if (loginReq.Impersonation)
@@ -185,53 +197,89 @@ namespace BLAZAM.Services
             }
             else
             {
-                if (loginReq == null) return loginResult.NoData();
-                if (loginReq.Username.IsNullOrEmpty()) return loginResult.NoUsername();
+                if (loginReq == null) return loginReq.NoData();
+                if (loginReq.Username.IsNullOrEmpty()) return loginReq.NoUsername();
             }
             //Pull the authentication settings from the database so we can check admin credentials
-            var settings = _factory.CreateDbContext().AuthenticationSettings.FirstOrDefault();
-            //Check admin credentials
-            if (settings != null 
-                && loginReq.Username!=null 
-                && loginReq.Username.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            using (var context = _factory.CreateDbContext())
             {
-                var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
-                if (loginReq.Password == adminPass)
-                    result = await SetUser(this.GetLocalAdmin());
+
+                var settings = context.AuthenticationSettings.FirstOrDefault();
+                //Check admin credentials
+                if (settings != null
+                    && loginReq.Username != null
+                    && loginReq.Username.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    var adminPass = _encryption.DecryptObject<string>(settings.AdminPassword);
+                    if (loginReq.Password == adminPass)
+                        authenticationState = await SetUser(this.GetLocalAdmin());
+                    else
+                        await _audit.Logon.AttemptedLogin(GetLocalAdmin(), loginReq.IPAddress);
+
+
+                }
+                //Check if we're in demo mode and this is a demo login
+                else if (_applicationInfo.InDemoMode && settings != null
+                    && loginReq.Username != null
+                    && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
+                {
+                    authenticationState = await SetUser(this.GetDemoUser());
+
+                }
                 else
-                    await _audit.Logon.AttemptedLogin(GetLocalAdmin(),loginReq.IPAddress);
-
-
-            }
-            //Check if we're in demo mode and this is a demo login
-            else if (_applicationInfo.InDemoMode && settings != null 
-                && loginReq.Username != null 
-                && loginReq.Username.Equals("demo", StringComparison.OrdinalIgnoreCase) && loginReq.Password == "demo")
-            {
-                result = await SetUser(this.GetDemoUser());
-
-            }
-            else
-            {
-                try
                 {
-                    //Login username is not "admin" or "demo" or we're not in demo mode, so we'll try active directory
-                    var userClaim = await AttemptADLogin(newUserState, loginReq);
-                    //If active directory login/impersonation succeeded the userClaim will be popluated
-                    if (userClaim != null && userClaim.Identity?.IsAuthenticated == true)
-                        //Set the user in the authentication provider
-                        result = await SetUser(userClaim);
-                }
-                catch (DeniedLoginException)
-                {
-                    return loginResult.DeniedLogin();
+                    try
+                    {
+                        //Login username is not "admin" or "demo" or we're not in demo mode, so we'll try active directory
+                        var userClaim = await AttemptADLogin(newUserState, loginReq);
+
+                        if (userClaim != null)
+                        {
+                            if (settings != null &&
+                                settings.DuoEnabled &&
+                                settings.DuoClientSecret != null &&
+                                settings.DuoClientId != null &&
+                                settings.DuoApiHost != null
+                                )
+                            {
+                                var mfaRRedirect = await PerformDuoAuthentication(loginReq);
+                                //Settings are configured so
+                                if (!mfaRRedirect.IsNullOrEmpty())
+                                {
+                                    var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
+                                    var authResult = await SetUser(twostepState);
+                                    newUserState.User = userClaim;
+                                    _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState);
+                                    authenticationState = authResult;
+                                    return loginReq.MFARequested(authenticationState);
+
+                                }
+                                // var principal = await CreateDirectoryPrincipal(loginUser, user, loginReq);
+                                //return ;
+                                //Duo authentication requested
+
+                            }
+
+
+
+                            //If active directory login/impersonation succeeded the userClaim will be popluated
+                            if (userClaim.Identity?.IsAuthenticated == true)
+                                //Set the user in the authentication provider
+                                authenticationState = await SetUser(userClaim);
+                        }
+                    }
+                    catch (DeniedLoginException)
+                    {
+                        return loginReq.DeniedLogin();
+                    }
+
                 }
             }
-            if (result?.User != null)
-            {               
+            if (authenticationState?.User != null)
+            {
                 //User claim processing is done so we can set the UserState with the new identity
-                newUserState.User = result.User;
-                
+                newUserState.User = authenticationState.User;
+
             }
             //Pass this state to the State Service for statefulness if it's populated
             if (newUserState.User != null)
@@ -239,14 +287,14 @@ namespace BLAZAM.Services
 
 
             //Return the authenticationstate
-            if (result != null)
+            if (authenticationState != null)
             {
                 //await _audit.Logon.Login(result.User);
 
-                return loginResult.Success(result);
+                return loginReq.Success(authenticationState);
             }
             else
-                return loginResult.BadCredentials();
+                return loginReq.BadCredentials();
 
 
         }
@@ -265,35 +313,7 @@ namespace BLAZAM.Services
             if (!loginReq.Impersonation)
             {
                 user = _directory.Authenticate(loginReq);
-                /*
-                 * Duo Authentication if i ever get it working with blazor server
-                if (user != null)
-                {
-                    //Check if we need to perform MFA
-                    using (var context = _factory.CreateDbContext())
-                    {
-                        //Get settings from DB
-                        var authSettings = context.AuthenticationSettings.FirstOrDefault();
-                        if (authSettings != null &&
-                            authSettings.DuoClientSecret != null &&
-                            authSettings.DuoClientId != null &&
-                            authSettings.DuoApiHost != null
-                            )
-                        {
-                            //Settings are configured so
-                            if (!(await PerformDuoAuthentication(loginReq)))
-                            {
-                                //Duo authentication failed;
 
-                                return null;
-
-                            }
-                            //Duo authentication succeeded
-
-                        }
-                    }
-                }
-                */
             }
             else
                 user = _directory.Users.FindUsersByString(loginReq.Username, true, true).FirstOrDefault();
@@ -304,31 +324,51 @@ namespace BLAZAM.Services
 
         }
 
-        private async Task<bool> PerformDuoAuthentication(LoginRequest loginReq)
+        private async Task<string> PerformDuoAuthentication(LoginRequest loginReq)
         {
-            // Initiate the Duo authentication for a specific username
+            using (var context = _factory.CreateDbContext())
+            {
 
-            // Get a Duo client
-            Client duoClient = _duoClientProvider.GetDuoClient();
+                var settings = context.AuthenticationSettings.FirstOrDefault();
+                if (settings == null) throw new ApplicationException("Could not get settings");
 
-            // Check if Duo seems to be healthy and able to service authentications.
-            // If Duo were unhealthy, you could possibly send user to an error page, or implement a fail mode
-            var isDuoHealthy = await duoClient.DoHealthCheck();
 
-            // Generate a random state value to tie the authentication steps together
-            string state = Client.GenerateState();
-            // Save the state and username in the session for later
-            //HttpContext.Session.SetString(STATE_SESSION_KEY, state);
-            //HttpContext.Session.SetString(USERNAME_SESSION_KEY, username);
 
-            // Get the URI of the Duo prompt from the client.  This includes an embedded authentication request.
-            string promptUri = duoClient.GenerateAuthUri(loginReq.Username, state);
 
-            // Redirect the user's browser to the Duo prompt.
-            // The Duo prompt, after authentication, will redirect back to the configured Redirect URI to complete the authentication flow.
-            // In this example, that is /duo_callback, which is implemented in Callback.cshtml.cs.
-            // return new RedirectResult(promptUri);
-            return true;
+
+                // Initiate the Duo authentication for a specific username
+
+                // Get a Duo client
+                Client duoClient = _duoClientProvider.GetDuoClient(loginReq.CallbackBaseUri + "/mfacallback");
+
+                // Check if Duo seems to be healthy and able to service authentications.
+                // If Duo were unhealthy, you could possibly send user to an error page, or implement a fail mode
+                var isDuoHealthy = await duoClient.DoHealthCheck();
+                if(!isDuoHealthy && settings.DuoUnreachableBehavior== DuoUnreachableBehavior.Bypass)
+                {
+                    return String.Empty;
+                }
+                // Generate a random state value to tie the authentication steps together
+                string state = Client.GenerateState();
+
+                loginReq.MFAToken = state;
+                // Save the state and username in the session for later
+                //HttpContext.Session.SetString(STATE_SESSION_KEY, state);
+                //HttpContext.Session.SetString(USERNAME_SESSION_KEY, username);
+
+                // Get the URI of the Duo prompt from the client.  This includes an embedded authentication request.
+                string promptUri = duoClient.GenerateAuthUri(loginReq.Username, state);
+                loginReq.MFARedirect = promptUri;
+                // Redirect the user's browser to the Duo prompt.
+                // The Duo prompt, after authentication, will redirect back to the configured Redirect URI to complete the authentication flow.
+                // In this example, that is /duo_callback, which is implemented in Callback.cshtml.cs.
+                // return new RedirectResult(promptUri);
+
+                return promptUri;
+
+
+
+            }
         }
 
         /// <summary>
@@ -346,7 +386,7 @@ namespace BLAZAM.Services
 
             if (user != null)
             {
-                principal = new ClaimsPrincipal(await CreateDirectoryIdentity(loginUser,user, loginReq));
+                principal = new ClaimsPrincipal(await CreateDirectoryIdentity(loginUser, user, loginReq));
             }
 
             return principal;
@@ -364,10 +404,10 @@ namespace BLAZAM.Services
 
             var identity = new ClaimsIdentity();
 
-            
-            
+
+
             //Load privilege levels for user
-            await _permissionHandler.LoadPermissions(loginUser,user);
+            await _permissionHandler.LoadPermissions(loginUser, user);
             var userRoles = TransformUserRoles(loginUser);
             //TransformUserRoles returns an empty list if the user has no login rights
             if (userRoles.Count < 1)
@@ -383,18 +423,19 @@ namespace BLAZAM.Services
             {
                 claims.Add(new Claim(ClaimTypes.Name, user.DisplayName));
             }
-            else
+            else if(user.SamAccountName != null)
             {
                 claims.Add(new Claim(ClaimTypes.Name, user.SamAccountName));
 
             }
+            if (user.UserPrincipalName != null)
+                claims.Add(new Claim(ClaimTypes.WindowsAccountName, user.SamAccountName));
             if (user.GivenName != null)
                 claims.Add(new Claim(ClaimTypes.GivenName, user.GivenName));
             if (user.Surname != null)
                 claims.Add(new Claim(ClaimTypes.Surname, user.Surname));
             if (user.Email != null)
                 claims.Add(new Claim(ClaimTypes.Email, user.Email));
-
 
             if (loginReq.Impersonation)
             {
@@ -438,7 +479,7 @@ namespace BLAZAM.Services
             {
                 userRoles.AddSuperAdmin();
                 userRoles.AddAllRoles();
-               
+
             }
             else
             {
@@ -495,7 +536,7 @@ namespace BLAZAM.Services
         public Task<AuthenticationState> Logout(ClaimsPrincipal claimsPrincipal)
         {
             _userStateService.RemoveUserState(claimsPrincipal);
-            this.CurrentUser = this.GetAnonymous();
+            this.CurrentUser = this.GetAnonymous(_httpContextAccessor.HttpContext?.Session.Id);
             var task = this.GetAuthenticationStateAsync();
             this.NotifyAuthenticationStateChanged(task);
             return task;

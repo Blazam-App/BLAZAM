@@ -15,7 +15,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.15");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.17");
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
                 {
@@ -702,6 +702,12 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<string>("DuoClientSecret")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("DuoEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DuoUnreachableBehavior")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("SessionTimeout")
                         .HasColumnType("INTEGER");
 
@@ -717,6 +723,8 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         {
                             Id = 1,
                             AdminPassword = "password",
+                            DuoEnabled = false,
+                            DuoUnreachableBehavior = 0,
                             SessionTimeout = 15
                         });
                 });
