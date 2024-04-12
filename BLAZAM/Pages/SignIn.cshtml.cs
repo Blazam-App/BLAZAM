@@ -50,6 +50,10 @@ namespace BLAZAM.Server.Pages
             try
             {
                 req.IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                if (User != null)
+                {
+                    req.ImpersonatorClaims = User;
+                }
             }
             catch (Exception ex)
             {
@@ -67,6 +71,8 @@ namespace BLAZAM.Server.Pages
                     await HttpContext.SignInAsync(result.AuthenticationState.User);
                     if (result.AuthenticationState.User.Identity?.IsAuthenticated == true)
                         await AuditLogger.Logon.Login(result.AuthenticationState.User, req.IPAddress);
+                    req.AuthenticationState = null;
+                    req.ImpersonatorClaims = null;
                 }
                 return new JsonResult(req);
 

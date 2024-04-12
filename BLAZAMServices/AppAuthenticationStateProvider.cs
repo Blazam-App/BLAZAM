@@ -239,7 +239,8 @@ namespace BLAZAM.Services
                                 settings.DuoEnabled &&
                                 settings.DuoClientSecret != null &&
                                 settings.DuoClientId != null &&
-                                settings.DuoApiHost != null
+                                settings.DuoApiHost != null &&
+                                !loginReq.Impersonation
                                 )
                             {
                                 var mfaRRedirect = await PerformDuoAuthentication(loginReq);
