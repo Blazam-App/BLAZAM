@@ -22,7 +22,12 @@ namespace BLAZAM.Helpers
             }
             return pingable;
         }
-
+        /// <summary>
+        /// Checks if the following TCP port is currently open and reachable by the host machine
+        /// </summary>
+        /// <param name="hostNameOrAddress">The hostname, FQDN, or IP of the host to check</param>
+        /// <param name="port">The port number to check</param>
+        /// <returns>True if the port is open, otherwise false</returns>
         public static bool IsPortOpen(string hostNameOrAddress, int port)
         {
             return IsAnyPortOpen(hostNameOrAddress, new int[] { port });
