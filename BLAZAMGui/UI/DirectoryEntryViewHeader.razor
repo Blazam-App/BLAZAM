@@ -41,7 +41,7 @@
     }
     <MudHidden Breakpoint="Breakpoint.SmAndDown">
         <MudToolBar Class="align-middle" Style="height:32px" DisableGutters Dense>
-            @if (accountEntry != null && ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable)))
+            @if (accountEntry != null)
 
             {
                 <MudTooltip Text="@AppLocalization[accountEntry.Enabled==true?"Disable":"Enable"]">
@@ -49,6 +49,7 @@
                     <MudToggleIconButton @bind-Toggled="@accountEntry.Enabled"
                                          Icon="@Icons.Material.Filled.PersonOff"
                                          Color="Color.Error"
+                                         Disabled=@(!(accountEntry.Enabled && accountEntry.CanDisable) && !(accountEntry.Disabled && accountEntry.CanEnable))
                                          ToggledIcon="@Icons.Material.Filled.Person"
                                          ToggledColor="Color.Success" />
                 </MudTooltip>
