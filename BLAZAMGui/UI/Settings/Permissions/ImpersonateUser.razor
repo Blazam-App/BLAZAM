@@ -11,8 +11,6 @@
             SearchObjectType="ActiveDirectoryObjectType.User" 
             @bind-SelectedResult=User />
 
-        <MudTextField T="string" name="Impersonation" Text="true" Class="d-none" />
-            <MudTextField T="string" Text="@User?.SamAccountName" Class="d-none" name="Username"/>
 
             <MudButton Disabled=@attemptingImpersonation 
                 Color=Color.Primary 
@@ -23,11 +21,6 @@
     
 </SettingsField>
 
-@*Hidden Login form to send impersonation login data*@
-
-    <input type="text" class="d-none" name="Username" value="@User?.SamAccountName" />
-    <input type="text" class="d-none" name="Passowrd" value="impersonate" />
-    <input type="text" class="d-none" name="Impersonation" value="true"/>
 
 </form>
 @code {
