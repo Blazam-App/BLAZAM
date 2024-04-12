@@ -28,7 +28,14 @@
                 </MudTooltip>
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="x=>x.LastChanged" Title="Changed" />
+        <TemplateColumn Title=@AppLocalization["Changed"]>
+            <CellTemplate>
+                @if (context.Item?.LastChanged != null)
+                {
+                    <MudText>@context.Item.LastChanged?.ToLocalTime()</MudText>
+                }
+            </CellTemplate>
+        </TemplateColumn>
 
     </Columns>
     <PagerContent>
