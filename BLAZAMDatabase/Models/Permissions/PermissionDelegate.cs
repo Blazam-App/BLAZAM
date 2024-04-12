@@ -24,17 +24,7 @@ namespace BLAZAM.Database.Models.Permissions
         {
             return Id.ToString().GetHashCode();
         }
-        public override bool Equals(object? obj)
-        {
-            if (obj is PermissionDelegate l)
-            {
-                if (l.Id == Id || l.DelegateSid == DelegateSid)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+   
 
         public override string? ToString()
         {

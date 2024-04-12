@@ -1,4 +1,5 @@
-﻿@inherits AppComponentBase
+﻿@using Newtonsoft.Json
+@inherits AppComponentBase
 @inject IJSRuntime JSRuntime
 
 <form action="" @onsubmit=@AttemptSignIn id="login-form">
@@ -10,8 +11,6 @@
             SearchObjectType="ActiveDirectoryObjectType.User" 
             @bind-SelectedResult=User />
 
-        <MudTextField T="string" name="Impersonation" Text="true" Class="d-none" />
-            <MudTextField T="string" Text="@User?.SamAccountName" Class="d-none" name="Username"/>
 
             <MudButton Disabled=@attemptingImpersonation 
                 Color=Color.Primary 
@@ -22,40 +21,39 @@
     
 </SettingsField>
 
-@*Hidden Login form to send impersonation login data*@
-
-    <input type="text" class="d-none" name="Username" value="@User?.SamAccountName" />
-    <input type="text" class="d-none" name="Passowrd" value="impersonate" />
-    <input type="text" class="d-none" name="Impersonation" value="true"/>
 
 </form>
 @code {
+    private LoginRequest imperonationRequest = new(){ Impersonation=true};
     public IDirectoryEntryAdapter? User { get; set; }
     bool attemptingImpersonation;
     async void AttemptSignIn()
     {
-        string? authenticationResult=null;
+        imperonationRequest.Username = User?.SamAccountName;
+        imperonationRequest.Password = "impersonate";
+        LoginRequest? authenticationResult = null;
         if (User != null)
         {
             try
             {
-                authenticationResult = await JSRuntime.InvokeAsync<string>("attemptSignIn", null);
+                var response = await JSRuntime.InvokeAsync<string>("attemptSignIn", imperonationRequest);
+                authenticationResult = JsonConvert.DeserializeObject<LoginRequest>(response);
 
             }
-            catch
+            catch (Exception ex)
             {
-                
+                Loggers.SystemLogger.Error("Error attempting to impersonate " + User.CanonicalName + "{@Error}", ex);
             }
         }
 
 
 
-        if (!authenticationResult.IsNullOrEmpty())
+        if (authenticationResult!=null)
         {
-            int resultCode = int.Parse(authenticationResult);
+            
             attemptingImpersonation = false;
 
-            switch ((LoginResultStatus)resultCode)
+            switch (authenticationResult.AuthenticationResult)
             {
 
                 case LoginResultStatus.NoUsername:
@@ -79,7 +77,7 @@
 
                     break;
                 case LoginResultStatus.DeniedLogin:
-                    SnackBarService.Error("You are not authorized to login");
+                    SnackBarService.Error("That account is not authorized to login");
 
                     break;
                 case LoginResultStatus.UnknownFailure:
