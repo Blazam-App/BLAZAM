@@ -2,36 +2,56 @@
 
 <MudStack Row=true>
     <MudStack>
-        <ADAutoComplete Class=""
-                        Disabled=@(copyFrom!=null)
-                        Label="Group Name"
-                        SearchObjectType="ActiveDirectoryObjectType.Group"
-                        @bind-SelectedResult=@Group
-                        CustomResultsFilter=@((result)=>{
-                        if(result is IADGroup){
-                        return !DirectoryModel.MemberOf.Contains(result as IADGroup);
-                        }
-                        return true;
-                        }) />
-        @foreach (var group in additionalGroups)
-        {
-           
-                <MudStack Row=true>
+        @{
+            var count = additionalGroups.Count;
+            var x = 1;
 
-                    <ADAutoComplete Class=""
+        }
+        <MudStack Row=true>
+            <ADAutoComplete Class=""
                             Disabled=@(copyFrom!=null)
                             Label="Group Name"
                             SearchObjectType="ActiveDirectoryObjectType.Group"
-                            SelectedResult=@group.Value 
-                            SelectedResultChanged="@((newValue)=>{additionalGroups[group.Key]=newValue;})"/>
-                  
-                    <MudIconButton Icon=@Icons.Material.Filled.Delete OnClick=@(()=>{additionalGroups.Remove(group.Key);}) />
+                            @bind-SelectedResult=@Group
+                            CustomResultsFilter=@((result)=>{
+                            if(result is IADGroup){
+                            return !DirectoryModel.MemberOf.Contains(result as IADGroup);
+                            }
+                            return true;
+                            }) />
+            @if (count == 0)
+            {
+                <MudIconButton Icon=@Icons.Material.Filled.PlusOne OnClick=@AddGroupInput />
+            }
 
-                </MudStack>
-            
-            
+        </MudStack>
+
+        @foreach (var group in additionalGroups)
+        {
+
+            <MudStack Row=true>
+
+                <ADAutoComplete Class=""
+                                Disabled=@(copyFrom!=null)
+                                Label="Group Name"
+                                SearchObjectType="ActiveDirectoryObjectType.Group"
+                                SelectedResult=@group.Value
+                                SelectedResultChanged="@((newValue)=>{additionalGroups[group.Key]=newValue;})" />
+
+
+                <MudIconButton Icon=@Icons.Material.Filled.Delete OnClick=@(()=>{additionalGroups.Remove(group.Key);}) />
+                @{
+                    if (count == x)
+                    {
+                        <MudIconButton Icon=@Icons.Material.Filled.PlusOne OnClick=@AddGroupInput />
+
+                    }
+                    x++;
+
+                }
+            </MudStack>
+
         }
-        <MudIconButton Icon=@Icons.Material.Filled.PlusOne OnClick=@AddGroupInput />
         <MudText Class="my-3" Align="Align.Center">@AppLocalization["or"]</MudText>
         <ADAutoComplete Disabled=@(Group!=null)
                         Label="Copy Memberships From"
@@ -96,7 +116,7 @@
 
 @code {
 
-    #nullable disable warnings
+#nullable disable warnings
     [Parameter]
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
 
@@ -106,7 +126,7 @@
     [Parameter]
     public IGroupableDirectoryAdapter DirectoryModel { get; set; }
 
-    private Dictionary<int,IDirectoryEntryAdapter?> additionalGroups = new Dictionary<int,IDirectoryEntryAdapter?>();
+    private Dictionary<int, IDirectoryEntryAdapter?> additionalGroups = new Dictionary<int, IDirectoryEntryAdapter?>();
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -123,7 +143,7 @@
     new IDirectoryEntryAdapter Group { get; set; }
     async void AddGroupInput()
     {
-        additionalGroups.Add(additionalGroups.Count,null);
+        additionalGroups.Add(additionalGroups.Count, null);
         await InvokeAsync(StateHasChanged);
     }
     async void AssignToGroup()
@@ -134,10 +154,10 @@
             DirectoryModel.AssignTo(group);
             if (additionalGroups.Count > 0)
             {
-                foreach(var g in additionalGroups)
+                foreach (var g in additionalGroups)
                 {
-                    if(g.Value is IADGroup gr)
-                    DirectoryModel.AssignTo(gr);
+                    if (g.Value is IADGroup gr)
+                        DirectoryModel.AssignTo(gr);
                 }
             }
             SnackBarService.Warning(DirectoryModel.CanonicalName + " has been assigned to the selected group(s) but changes must be saved.");
