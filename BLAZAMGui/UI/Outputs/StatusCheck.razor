@@ -1,7 +1,16 @@
 ﻿
 
+@if (Text.IsNullOrEmpty())
+{
+    <MudAvatar Size="Size.Small" Color="@Color" Variant="Variant.Filled">
+    <MudIcon Icon="@Icon"/>
+    </MudAvatar>
+}
+else
+{
+    <MudChip Color=@Color Icon="@Icon">@Text</MudChip>
 
-<MudChip Color=@Color Icon="@Icon" >@Text</MudChip>
+}
 
 @code {
     [Parameter]
