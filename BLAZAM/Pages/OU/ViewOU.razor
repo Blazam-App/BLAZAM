@@ -69,7 +69,7 @@
     <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
 }
 @code {
-    IADOrganizationalUnit OU => DirectoryEntry as IADOrganizationalUnit;
+    IADOrganizationalUnit? OU => DirectoryEntry as IADOrganizationalUnit;
     IADOrganizationalUnit? parentOU;
     protected override async Task OnInitializedAsync()
     {

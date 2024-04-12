@@ -63,7 +63,7 @@ namespace BLAZAM.Session.Interfaces
         IList<UserNotification>? Notifications { get; }
         IApplicationUserSessionCache Cache { get; set; }
 
-        IPAddress IPAddress { get; set; }
+        string? IPAddress { get; set; }
 
         string LastUri { get; set; }
         bool IsAuthenticated { get; }
@@ -76,7 +76,9 @@ namespace BLAZAM.Session.Interfaces
         bool HasOUPrivilege { get; }
         bool HasCreateOUPrivilege { get; }
         bool HasComputerPrivilege { get; }
-        bool CanUnlockUsers { get;  }
+        bool CanUnlockUsers { get; }
+        string DuoAuthState { get; set; }
+
         IList<ReadNewsItem>? ReadNewsItems { get; }
 
         //List<ReadChatMessage> ReadChatMessages { get; }

@@ -82,7 +82,7 @@
             </MudTooltip>
         }
 
-        @if (Templates.Any(t => t.DeletedAt != null))
+        @if (Templates?.Any(t => t.DeletedAt != null)==true)
         {
             <MudTooltip Text="@AppLocalization["Restore templates"]">
 
@@ -91,6 +91,8 @@
                                Icon="@Icons.Material.Filled.RestoreFromTrash" />
             </MudTooltip>
         }
+        <MudSpacer/>
+        <AppDocumentationButton Page="/admin/templates" />
     </MudStack>
 
     <AppModal @ref=RenameModal Title=@AppLocalization["Rename Category"]>
@@ -227,10 +229,13 @@
     }
     private async Task DeleteTemplate()
     {
-        SelectedTemplate.DeletedAt = DateTime.Now;
-        await Context.SaveChangesAsync();
-        SelectedTemplate = null;
-        await InvokeAsync(StateHasChanged);
+        if (SelectedTemplate != null)
+        {
+            SelectedTemplate.DeletedAt = DateTime.Now;
+            await Context.SaveChangesAsync();
+            SelectedTemplate = null;
+            await InvokeAsync(StateHasChanged);
+        }
     }
     private async void RestoreSelectedTemplates()
     {

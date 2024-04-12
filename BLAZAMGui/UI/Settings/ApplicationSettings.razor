@@ -4,7 +4,7 @@
 @inherits SettingsComponents
 
 
-<MudText Typo="Typo.h4">@AppLocalization["Application Settings"]</MudText>
+<MudText Typo="Typo.h4">@AppLocalization["Application Settings"] <AppDocumentationButton Page="/admin/settings/application" /></MudText>
 <EditForm Context="editContext" OnValidSubmit="Save" Model="settings">
 
 

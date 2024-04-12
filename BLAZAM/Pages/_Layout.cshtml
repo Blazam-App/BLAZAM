@@ -48,7 +48,7 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.server.js"></script>
-    @if (!ApplicationInfo.InDebugMode && !Debugger.IsAttached)
+    @if (!!ApplicationInfo.InDemoMode && !ApplicationInfo.InDebugMode && !Debugger.IsAttached)
     {
         <!-- BLAZAM Dev Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-415DR9ZVBH"></script>
@@ -67,7 +67,7 @@
     {
         <!-- Blazam Installation Google tag (gtag.js) -->
 
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-415DR9ZVBH"></script>
+        <script async src=@("https://www.googletagmanager.com/gtag/js?id="+@DatabaseCache.ApplicationSettings.AnalyticsId)></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag() { dataLayer.push(arguments); }

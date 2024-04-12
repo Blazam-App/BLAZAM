@@ -16,7 +16,7 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Title="Type">
+        <TemplateColumn Style="width:100px;" Title="Type">
             <CellTemplate>
                 <MudIcon Icon="@context.Item.TypeIcon()" />
             </CellTemplate>
@@ -28,8 +28,14 @@
                 </MudTooltip>
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="x=>x.LastChanged" Title="Changed" />
-
+        <TemplateColumn Title=@AppLocalization["Changed"]>
+            <CellTemplate>
+                @if (context.Item?.LastChanged != null)
+                {
+                    <MudText>@context.Item.LastChanged?.ToLocalTime()</MudText>
+                }
+            </CellTemplate>
+        </TemplateColumn>
     </Columns>
     <PagerContent>
         <MudDataGridPager T="IDirectoryEntryAdapter" />

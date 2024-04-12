@@ -1,14 +1,16 @@
 ﻿@using Microsoft.EntityFrameworkCore;
 
 @inherits AppComponentBase
-<h3>Delegates</h3>
-<p> Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) will be allowed to log in to the applicaiton.</p>
-<p> The acceess allowed to each delegate is controlled by the mapped access level.</p>
+<MudText Typo="Typo.h3">Delegates  <AppDocumentationButton Page="/admin/permissions" /></MudText>
+<MudText> Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) will be allowed to log in to the application.</MudText>
+<MudText> The access allowed to each delegate is controlled by the mapped access level.</MudText>
 
 <MudStack Row=true>
-    <MudTextField Display=Display.InlineFlex Placeholder="Filter Delegates" @bind-Value="@DelegateFilter" />
+    <MudTextField Placeholder="Filter Delegates"
+                  @bind-Value="@DelegateFilter" />
     <MudSpacer />
-    <MudButton Color=Color.Secondary OnClick="(()=>{trashModal.Show();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
+    <MudButton Color=Color.Secondary
+               OnClick="(()=>{trashModal.Show();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
 </MudStack>
 
 
@@ -37,10 +39,10 @@
         <MudContainer>
             <b>@model?.ObjectType</b><br />
             <MudText>@model?.CanonicalName</MudText>
-            <MudText>@deleg.DeletedAt</MudText>
-            <MudButton Float="Float.End" Color="Color.Primary" OnClick="(async()=>{await RestoreDelegate(deleg);})">Restore</MudButton>
+                <MudText>@deleg.DeletedAt</MudText>
+                <MudButton Float="Float.End" Color="Color.Primary" OnClick="(async()=>{await RestoreDelegate(deleg);})">Restore</MudButton>
 
-        </MudContainer>
+            </MudContainer>
     }
 </AppModal>
 <AppModal @ref=@addGroupModal

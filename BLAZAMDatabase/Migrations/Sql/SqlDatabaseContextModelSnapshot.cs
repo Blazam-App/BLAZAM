@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.Sql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.15")
+                .HasAnnotation("ProductVersion", "7.0.17")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -724,6 +724,12 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<string>("DuoClientSecret")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("DuoEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("DuoUnreachableBehavior")
+                        .HasColumnType("int");
+
                     b.Property<int?>("SessionTimeout")
                         .HasColumnType("int");
 
@@ -740,6 +746,8 @@ namespace BLAZAM.Common.Migrations.Sql
                         {
                             Id = 1,
                             AdminPassword = "password",
+                            DuoEnabled = false,
+                            DuoUnreachableBehavior = 0,
                             SessionTimeout = 15
                         });
                 });

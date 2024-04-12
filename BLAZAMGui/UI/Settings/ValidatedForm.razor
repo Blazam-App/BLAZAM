@@ -20,7 +20,7 @@
         {
             try
             {
-                if (ApplicationInfo.InDemoMode && ApplicationInfo.InstallationCompleted && !UserStateService.CurrentUsername.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                if (ApplicationInfo.InDemoMode && ApplicationInfo.InstallationCompleted && UserStateService.CurrentUsername.Equals("demo", StringComparison.OrdinalIgnoreCase))
                 {
                     SnackBarService.Warning("Settings changes are not allowed in the demo");
                     return;

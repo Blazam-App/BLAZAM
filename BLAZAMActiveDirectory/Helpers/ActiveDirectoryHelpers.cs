@@ -64,7 +64,7 @@ namespace BLAZAM.Helpers
 
         public static Process? Shadow(this IRemoteSession session, bool withoutPermission = false)
         {
-            if (session == null) return null;
+            if (session == null || session.Server==null) return null;
             string command = "mstsc.exe";
             string arguments = "/v:" + session.Server.ServerName + " /shadow:" + session.SessionId;
             if (withoutPermission) arguments += " /noConsentPrompt";
@@ -109,7 +109,7 @@ namespace BLAZAM.Helpers
 
         public static string? ParentOU(string? dN)
         {
-            return dN.Substring(dN.IndexOf("OU="));
+            return dN!=null?dN.Substring(dN.IndexOf("OU=")):null;
         }
         /// <summary>
         /// Takes a raw OU DN and removes all OU='s and separates by /'s

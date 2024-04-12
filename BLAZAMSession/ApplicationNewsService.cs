@@ -62,50 +62,64 @@ namespace BLAZAM.Session
         }
         public List<NewsItem> GetUnreadNewsItems(IApplicationUserState user)
         {
-            var activeItems = activeNewsItems;
-            var unreadItems = new List<NewsItem>();
-            foreach(var item in activeItems)
+            try
             {
-                if (user.ReadNewsItems != null)
+                var activeItems = activeNewsItems;
+                var unreadItems = new List<NewsItem>();
+                foreach (var item in activeItems)
                 {
-                    if(!user.ReadNewsItems.Any(x=>x.NewsItemId == item.Id))
-                        unreadItems.Add(item);
-                    if(user.ReadNewsItems.Any(r => r.NewsItemId == item.Id && r.NewsItemUpdatedAt < item.UpdatedAt))
-                        unreadItems.Add(item);
-
-
-
-                }
-            }
-           // var unreadItems = activeItems.Where(x => user.ReadNewsItems?.Any(r=>r.NewsItemId==x.Id)==false||user.ReadNewsItems?.Any(r=>r.NewsItemId==x.Id&& r.NewsItemUpdatedAt<x.UpdatedAt)==false).ToList();
-            if (_pollCompleted && user.ReadNewsItems != null)
-            {
-                var staleItems = user.ReadNewsItems.Where(x => x.NewsItemId < 100000000000 && !activeItems.Any(a => a.Id == x.NewsItemId)).ToList();
-                if (staleItems.Count > 0)
-                {
-                    staleItems.ForEach(x =>
+                    if (user?.ReadNewsItems != null)
                     {
-                        user.ReadNewsItems.Remove(x);
-                    });
-                    user.SaveUserSettings();
-                }
-            }
-            return unreadItems;
+                        if (!user.ReadNewsItems.Any(x => x.NewsItemId == item.Id))
+                            unreadItems.Add(item);
+                        if (user.ReadNewsItems.Any(r => r.NewsItemId == item.Id && r.NewsItemUpdatedAt < item.UpdatedAt))
+                            unreadItems.Add(item);
 
+
+
+                    }
+                }
+                // var unreadItems = activeItems.Where(x => user.ReadNewsItems?.Any(r=>r.NewsItemId==x.Id)==false||user.ReadNewsItems?.Any(r=>r.NewsItemId==x.Id&& r.NewsItemUpdatedAt<x.UpdatedAt)==false).ToList();
+                if (_pollCompleted && user.ReadNewsItems != null)
+                {
+                    var staleItems = user.ReadNewsItems.Where(x => x.NewsItemId < 100000000000 && !activeItems.Any(a => a.Id == x.NewsItemId)).ToList();
+                    if (staleItems.Count > 0)
+                    {
+                        staleItems.ForEach(x =>
+                        {
+                            user.ReadNewsItems.Remove(x);
+                        });
+                        user.SaveUserSettings();
+                    }
+                }
+                return unreadItems;
+            }catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error("Error while trying to get unread news items for user. {@Error}", ex);
+                return new();
+            }
         }
 
 
         public List<NewsItem> GetReadNewsItems(IApplicationUserState user)
         {
-            var activeItems = activeNewsItems;
-            if (user.ReadNewsItems != null)
+            try
             {
-                var readItems = activeItems.Where(x => user.ReadNewsItems.Any(r => r.NewsItemId == x.Id && r.NewsItemUpdatedAt >= x.UpdatedAt)).ToList();
 
-                return readItems;
+                var activeItems = activeNewsItems;
+                if (user.ReadNewsItems != null)
+                {
+                    var readItems = activeItems.Where(x => user.ReadNewsItems.Any(r => r.NewsItemId == x.Id && r.NewsItemUpdatedAt >= x.UpdatedAt)).ToList();
+
+                    return readItems;
+                }
+
+                return new();
+
+            }catch  (Exception ex) {
+                Loggers.SystemLogger.Error("Error while trying to get read news items for user. {@Error}", ex);
+                return new();
             }
-            return new();
-
         }
         public void Dispose()
         {

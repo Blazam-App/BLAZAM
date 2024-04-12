@@ -71,18 +71,7 @@ await InvokeAsync(StateHasChanged);
                 <MudMainContent Class=" mud-height-full">
 
 
-                    @{
-                        // if (SubHeader != null)
-                        // {
-                        //     topMarginForContent = "margin-top:64px;";
-
-                        // }
-                        var maxWidth = MaxWidth.Large;
-                        if (Nav.Uri.Contains("/home"))
-                        {
-                            maxWidth = MaxWidth.False;
-                        }
-                    }
+                  
                     <MudContainer Style="@topMarginForContent"
                                   MaxWidth="MaxWidth.ExtraExtraLarge"
                                   Class="px-0 pb-10 mud-height-full">
@@ -238,7 +227,7 @@ await InvokeAsync(StateHasChanged);
             SnackBarService.Error(ex.Message);
         }
     }
-    public async void GotoEntry(IDirectoryEntryAdapter entry)
+    public void GotoEntry(IDirectoryEntryAdapter entry)
     {
         DrawerOpen = false;
         Nav.NavigateTo(entry.SearchUri);
