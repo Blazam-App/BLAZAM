@@ -32,7 +32,7 @@
                                  TData="object">
                         <MudCarouselItem Class="pa-5">
                             <FlexContainer>
-                                @foreach (var category in TemplateCategories)
+                                @foreach (var category in TemplateCategoriesUserCanUse)
                                 {
                                     <MudButton OnClick=@(()=>{SelectedCategory=category; _templateCarouselIndex=1;}) Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">@category</MudButton>
                                 }
@@ -47,7 +47,7 @@
                                     Color="Color.Primary" />
                             <FlexContainer>
 
-                                @foreach (var template in Templates.Where(t => t.DeletedAt == null && t.Visible))
+                                @foreach (var template in TemplatesUserCanUse.Where(t => t.DeletedAt == null && t.Visible))
                                 {
                                     <MudButton OnClick=@(async()=>{await SetTemplate(template);}) Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">@template.Name</MudButton>
 
