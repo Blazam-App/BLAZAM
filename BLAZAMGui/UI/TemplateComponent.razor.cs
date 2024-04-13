@@ -1,4 +1,5 @@
 ﻿
+using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Gui.UI.Settings;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,29 @@ namespace BLAZAM.Gui.UI
             }
             set => templates = value;
         }
+
+        public IEnumerable<DirectoryTemplate> TemplatesUserCanUse { get { 
+            var list = new List<DirectoryTemplate>();
+                foreach (var template in Templates)
+                {
+                    if (CurrentUser.State.HasActionPermission(template.ParentOU, ObjectActions.Create, ActiveDirectoryObjectType.User))
+                    {
+                        list.Add(template);
+
+                    }
+                  
+                }
+                return list;
+            } }
         protected IEnumerable<string?> TemplateCategories { get; private set; }
+        protected IEnumerable<string?> TemplateCategoriesUserCanUse { get {
+                var cats =  TemplatesUserCanUse.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().ToList();
+                if (cats != null)
+                {
+                    cats.Prepend("All");
+                }
+                return cats;
+            } }
 
         public DirectoryTemplate? SelectedTemplate
         {
