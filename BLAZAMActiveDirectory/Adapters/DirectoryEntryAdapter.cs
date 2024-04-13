@@ -458,67 +458,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected virtual bool HasPermission(Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null, bool nestedSearch = false)
         {
             if (CurrentUser == null) return false;
-
-            if (CurrentUser.IsSuperAdmin) return true;
             if (DN == null)
             {
                 Loggers.ActiveDirectryLogger.Error("The directory object " + ADSPath
                     + " did not load a distinguished name." + " {@Error}", new ApplicationException());
                 return false;
             }
-            IOrderedEnumerable<PermissionMapping>? baseSearch = null;
-            if (!nestedSearch)
-            {
-                baseSearch = CurrentUser.PermissionMappings
-       .Where(pm => DN.Contains(pm.OU)).OrderByDescending(pm => pm.OU.Length);
-
-            }
-            else
-            {
-                baseSearch = CurrentUser.PermissionMappings
-       .Where(pm => pm.OU.Contains(DN)).OrderByDescending(pm => pm.OU.Length);
-
-            }
-
-            if (baseSearch == null)
-            {
-                Loggers.ActiveDirectryLogger.Error("The active user state for " + DN + " could not" +
-                    "be found in the application cache." + " {@Error}", new ApplicationException());
-                return false;
-            }
-            try
-            {
-                var possibleReads = allowSelector.Invoke(baseSearch).ToList();
-                if (denySelector != null)
-                {
-                    var possibleDenys = denySelector.Invoke(baseSearch).ToList();
-
-                    if (possibleReads != null && possibleReads.Count > 0)
-                    {
-                        if (possibleDenys != null && possibleDenys.Count > 0)
-                        {
-                            foreach (var d in possibleDenys)
-                            {
-                                if (d.OU.Length > possibleReads.OrderByDescending(r => r.OU.Length).First().OU.Length)
-                                    return false;
-                            }
-                        }
-                        else
-                        {
-                            return true;
-                        }
-                    }
-                }
-                else
-                {
-                    return possibleReads?.Count > 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error(ex.Message);
-            }
-            return false;
+            return CurrentUser.HasPermission(DN,allowSelector, denySelector, nestedSearch);
+           
         }
 
         public virtual bool CanRead
@@ -586,19 +533,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual bool CanCreate { get => HasActionPermission(ObjectActions.Create); }
 
 
-        protected virtual bool HasActionPermission(ObjectAction action)
+        protected virtual bool HasActionPermission(ObjectAction action,ActiveDirectoryObjectType? objectType=null)
         {
-            return HasPermission(p => p.Where(pm =>
-               pm.AccessLevels.Any(al => al.ActionMap.Any(am =>
-              am.AllowOrDeny && am.ObjectAction.Id == action.Id &&
-              am.ObjectType == ObjectType
-               ))),
-               p => p.Where(pm =>
-               pm.AccessLevels.Any(al => al.ActionMap.Any(am =>
-              !am.AllowOrDeny && am.ObjectAction.Id == action.Id &&
-              am.ObjectType == ObjectType
-               )))
-               );
+            if (objectType == null) objectType = ObjectType; 
+            return CurrentUser.HasActionPermission(DN,action, objectType.Value);
         }
 
         public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }

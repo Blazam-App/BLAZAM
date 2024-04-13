@@ -23,6 +23,12 @@ namespace BLAZAM.Services.Audit
             CurrentUser = UserStateService.CreateUserState(user);
             return await Log("Attempted Login", iPAddress);
         }
+        public async Task<bool> Impersonate(ClaimsPrincipal impersonator, ClaimsPrincipal impersonateee, string? ipAddress = null)
+        {
+            CurrentUser = UserStateService.CreateUserState(impersonateee);
+            CurrentUser.Impersonator = impersonator;
+            return await Log("Impersonation", ipAddress);
+        }
         public async Task<bool> Login(ClaimsPrincipal user,string? ipAddress=null)
         {
             CurrentUser = UserStateService.CreateUserState(user);

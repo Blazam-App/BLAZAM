@@ -126,6 +126,7 @@ namespace BLAZAM.Gui.UI
             YesText = AppLocalization["Ok"]; 
             if (Options == null)
                 Options = new();
+            AllowClose=true;
         }
         /// <summary>
         /// Re-renders the modal with the latest property values
@@ -143,7 +144,7 @@ namespace BLAZAM.Gui.UI
 
             IsShown = true;
 
-            return Modal?.Show();
+            return Modal?.Show(null,Options);
         }
 
         /// <summary>

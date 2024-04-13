@@ -93,5 +93,7 @@ namespace BLAZAM.Session.Interfaces
         /// <returns></returns>
         Task<bool> SaveUserSettings();
         Task<bool> MarkRead(UserNotification notification);
+        bool HasPermission(string dnTarget, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector, bool nestedSearch);
+        bool HasActionPermission(string dnTarget, ObjectAction action, ActiveDirectoryObjectType objectType);
     }
 }

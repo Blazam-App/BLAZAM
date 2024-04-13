@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
@@ -138,6 +139,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 ))),
                 true
                 );
+            }
+
+        }
+        public virtual bool CanCreateUser
+        {
+            get
+            {
+                return HasActionPermission(ObjectActions.Create,ActiveDirectoryObjectType.User);
             }
 
         }
