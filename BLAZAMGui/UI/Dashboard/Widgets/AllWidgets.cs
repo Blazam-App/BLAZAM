@@ -22,7 +22,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
                      || applicationUser.HasRole(UserRoles.SearchGroups)
                      || applicationUser.HasRole(UserRoles.SearchPrinters)
                       || applicationUser.HasRole(UserRoles.SearchComputers))
-                    widgets.Add(new ChangedEntriesWidget() { WidgetType = DashboardWidgetType.ChangedEntries, Title = "Entries changed in the last 24 hhours" });
+                    widgets.Add(new ChangedEntriesWidget() { WidgetType = DashboardWidgetType.ChangedEntries, Title = "Entries changed in the last 24 hours" });
 
 
                 if (applicationUser.IsSuperAdmin || applicationUser.HasRole(UserRoles.SearchOUs))
