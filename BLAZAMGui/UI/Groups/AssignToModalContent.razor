@@ -8,7 +8,8 @@
 
         }
         <MudStack Row=true>
-            <ADAutoComplete Class=""
+            <ADAutoComplete AutoFocus="true"
+                            Class=""
                             Disabled=@(copyFrom!=null)
                             Label="Group Name"
                             SearchObjectType="ActiveDirectoryObjectType.Group"
@@ -53,15 +54,15 @@
 
         }
         <MudText Class="my-3" Align="Align.Center">@AppLocalization["or"]</MudText>
-        <ADAutoComplete Disabled=@(Group!=null)
-                        Label="Copy Memberships From"
-                        SearchObjectType="ActiveDirectoryObjectType.All"
-                        @bind-SelectedResult=@copyFrom
-                        CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
+            <ADAutoComplete Disabled=@(Group!=null)
+                            Label="Copy Memberships From"
+                            SearchObjectType="ActiveDirectoryObjectType.All"
+                            @bind-SelectedResult=@copyFrom
+                            CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
 
 
-    </MudStack>
-    @if (CopyFrom != null)
+        </MudStack>
+        @if (CopyFrom != null)
     {
         <MudStack>
 

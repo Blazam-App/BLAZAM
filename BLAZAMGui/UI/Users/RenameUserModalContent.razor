@@ -3,7 +3,7 @@
 {
         @if (User.CanReadField(ActiveDirectoryFields.GivenName))
         {
-            <MudTextField Label="@AppLocalization["First Name"]" @bind-Value="@_privateUserInstance.GivenName" />
+            <MudTextField AutoFocus=true Label="@AppLocalization["First Name"]" @bind-Value="@_privateUserInstance.GivenName" />
 
 
 

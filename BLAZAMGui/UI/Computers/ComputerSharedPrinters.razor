@@ -20,7 +20,7 @@
                 <CellTemplate>
                     @if (context.Item.ADPrinter != null)
                     {
-                        <MudLink OnClick="@(()=>{Nav.NavigateTo("/search/"+context.Item.ADPrinter.CanonicalName);})">@context.Item.ShareName</MudLink>
+                        <MudLink OnClick="@(()=>{Nav.NavigateTo(context.Item.ADPrinter.SearchUri);})">@context.Item.ShareName</MudLink>
                     }
                     else
                     {
