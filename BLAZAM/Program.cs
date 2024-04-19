@@ -117,9 +117,19 @@ namespace BLAZAM
             ApplicationInfo.services = AppInstance.Services;
 
 
+            try
+            {
+                var context = AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
+                if(context!=null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
+                {
+                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
 
+                }
 
-
+            }catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
             Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
 
 

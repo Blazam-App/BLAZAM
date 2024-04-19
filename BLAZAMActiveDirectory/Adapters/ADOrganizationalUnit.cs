@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics.Contracts;
 using System.DirectoryServices;
 using System.Reflection.PortableExecutable;
+using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -59,7 +60,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        //public override string SearchUri => "/search/" + DN;
+        public override string SearchUri => "/search/" + HttpUtility.UrlEncode(DN);
 
         public override string? CanonicalName
         {

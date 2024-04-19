@@ -14,6 +14,7 @@ namespace BLAZAM.Logger
         public static string LogPath => _logPath;
         private static string _logPath;
         private static string _applicationVersion;
+        public static bool SendToSeqServer { get; set; } = true;
         public static string SeqServerUri { get; set; }
         public static string SeqAPIKey { get; set; }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -33,7 +34,7 @@ namespace BLAZAM.Logger
             ActiveDirectryLogger = SetupLogger(logPath + @"activedirectory\activedirectory.txt");
             UpdateLogger = SetupLogger(logPath + @"update\update.txt", RollingInterval.Month);
 
-            Log.Logger = new LoggerConfiguration()
+            var systemLoggerBuilder = new LoggerConfiguration()
                     .Enrich.FromLogContext()
                    .Enrich.WithMachineName()
                    .Enrich.WithEnvironmentName()
@@ -50,9 +51,12 @@ namespace BLAZAM.Logger
                     {
                         //lc.WriteTo.Console();
                         lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
-                    })
-                    .WriteTo.Seq(SeqServerUri, apiKey: SeqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning)
-                    .CreateLogger();
+                    });
+            if (SendToSeqServer)
+            {
+                systemLoggerBuilder.WriteTo.Seq(SeqServerUri, apiKey: SeqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning);
+            }
+            Log.Logger = systemLoggerBuilder.CreateLogger();
             SystemLogger = Log.Logger;
 
             //Serilog.Debugging.SelfLog.Enable(Console.Error);
@@ -79,10 +83,12 @@ namespace BLAZAM.Logger
                     //lc.WriteTo.Console();
                     lc.Filter.ByExcluding(e => e.Level == LogEventLevel.Information).WriteTo.Console();
                 });
-            if()
-            loggerBuilder.WriteTo.Seq(SeqServerUri, apiKey: SeqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning)
+            if (SendToSeqServer)
+            {
+                loggerBuilder.WriteTo.Seq(SeqServerUri, apiKey: SeqAPIKey, restrictedToMinimumLevel: LogEventLevel.Warning);
+            }
 
-             
+            return loggerBuilder.CreateLogger();
         }
 
     }
