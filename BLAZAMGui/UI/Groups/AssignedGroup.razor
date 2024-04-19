@@ -1,11 +1,10 @@
 ﻿@inherits DirectoryModelComponent
 
-<MudCard Background="Background.Light" Color="Color.Dark">
+<MudCard>
     @if (Group != null)
     {
-        var linkAdd = "/groups/search/" + Group.GroupName;
         <MudCardHeader>
-            <MudText Style="cursor:pointer;" Display=Display.InlineBlock onclick="@(()=>{
+            <MudText Style="cursor:pointer;" @onclick="@(()=>{
             if(AllowNavigation)
              Nav.NavigateTo(Group.SearchUri);
             })">
@@ -14,7 +13,7 @@
             </MudText>
             @if (AllowUnassign)
             {
-                <MudButton Float=Float.End Color="Color.Error" OnClick="RemoveFromGroup"><MudIcon Icon="@("fa-times")" /></MudButton>
+                <MudButton Color="Color.Error" OnClick="RemoveFromGroup"><MudIcon Icon="@("fa-times")" /></MudButton>
             }
         </MudCardHeader>
     }
