@@ -457,15 +457,19 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <returns></returns>
         protected virtual bool HasPermission(Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null, bool nestedSearch = false)
         {
-            if (CurrentUser == null) return false;
-            if (DN == null)
+            try
             {
-                Loggers.ActiveDirectryLogger.Error("The directory object " + ADSPath
-                    + " did not load a distinguished name." + " {@Error}", new ApplicationException());
+                if (CurrentUser == null) return false;
+                if (DN == null)
+                {
+                    throw new ApplicationException("The directory object " + ADSPath+ " did not load a distinguished name.");
+                }
+                return CurrentUser.HasPermission(DN, allowSelector, denySelector, nestedSearch);
+            }catch(Exception ex)
+            {
+                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
                 return false;
             }
-            return CurrentUser.HasPermission(DN,allowSelector, denySelector, nestedSearch);
-           
         }
 
         public virtual bool CanRead
