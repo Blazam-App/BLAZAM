@@ -24,7 +24,10 @@
 
     <SettingsField Label="@AppLocalization["Force Https"]">
 
-            <MudSwitch Label="@AppLocalization["Enabled"]" TValue="bool" @bind-Value="@settings.ForceHTTPS" />
+            <MudSwitch Label="@AppLocalization["Enabled"]"
+                   Color="Color.Success"
+                   UnCheckedColor="Color.Error" 
+                   @bind-Value="@settings.ForceHTTPS" />
 
     </SettingsField>
 

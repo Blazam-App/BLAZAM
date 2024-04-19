@@ -57,7 +57,10 @@
 
         <SettingsField Label="@AppLocalization["Update Credentials"]">
 
-            <MudSwitch @bind-Value=@settings.UseUpdateCredentials Label="@AppLocalization["Use Custom Credentials"]" />
+            <MudSwitch @bind-Value=@settings.UseUpdateCredentials
+                       Color="Color.Success"
+                       UnCheckedColor="Color.Error" 
+                       Label="@AppLocalization["Use Custom Credentials"]" />
             @if (settings.UseUpdateCredentials)
             {
                 <MudText>Configure custom update credentials.</MudText>
@@ -120,7 +123,10 @@
 
         <SettingsField Label="@AppLocalization["Enable Auto Update"]">
             <MudStack Row=true>
-                <MudSwitch Label="@AppLocalization["Enable Auto Update"]" @bind-Value=@(settings.AutoUpdate) /> 
+                <MudSwitch Label="@AppLocalization["Enable Auto Update"]" 
+                Color="Color.Success"
+                UnCheckedColor="Color.Error"
+                @bind-Value=@(settings.AutoUpdate) /> 
                 <AppDocumentationButton Page="/update/auto/" />
 
             </MudStack>

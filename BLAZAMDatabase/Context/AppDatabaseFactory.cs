@@ -4,7 +4,6 @@ using BLAZAM.Database.Exceptions;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Runtime.CompilerServices;
 
 namespace BLAZAM.Database.Context
 {

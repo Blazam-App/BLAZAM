@@ -1,8 +1,19 @@
 @inherits SettingsComponents
 <MudText Typo="Typo.h4">@AppLocalization["System Settings"]</MudText>
-    <MudForm @onsubmit="Save">
-        @if (settings != null)
+<MudForm @onsubmit="Save">
+    @if (settings != null)
     {
+
+        <SettingsField Label="@AppLocalization["Developer Analytics"]">
+            <MudText>
+                We ask that you allow developer analytics so we can understand how our app is used to focus our
+                efforts on what our users think matters most.
+            </MudText>
+            <MudSwitch Label="@AppLocalization["Enabled"]"
+                       Color="Color.Success"
+                       @bind-Value="@settings.SendDeveloperAnalytics" />
+
+        </SettingsField>
         <SettingsField Label="@AppLocalization["Google Analytics ID"]">
 
             <MudTextField Label="@AppLocalization["Google Analytics ID"]" @bind-Value="@settings.AnalyticsId" />
@@ -15,34 +26,48 @@
 
         </SettingsField>
     }
-   
-        <SettingsField Label=@AppLocalization["Logs"]>
 
-            <MudLink Href="/download/logs" Target="Target.Blank">
-                <MudButton Variant=Variant.Outlined Color="Color.Primary">Download Logs</MudButton>
-            </MudLink>
+    <SettingsField Label=@AppLocalization["Logs"]>
+
+        <MudLink Href="/download/logs" Target="Target.Blank">
+            <MudButton Variant=Variant.Outlined Color="Color.Primary">Download Logs</MudButton>
+        </MudLink>
         <MudText>Log Directory: @Loggers.LogPath</MudText>
 
-        </SettingsField>
-
-        <ProcessResourceUsage Process="@ApplicationInfo.RunningProcess" />
+    </SettingsField>
 
 
 
-        <SettingsField Label="@AppLocalization["Encryption Seed String"]">
+    <SettingsField Label="@AppLocalization["Send logs to developer"]">
+        <MudText>
+            We ask that you allow developer logging so we can quickly and transparently improve Blazam and to aid in our developement efforts.
+        </MudText>
+        <MudSwitch Label="@AppLocalization["Enabled"]"
+                   Color="Color.Success"
+                   @bind-Value="@settings.SendLogsToDeveloper" />
 
-            <MudTextField Label="@AppLocalization["Encryption Seed String"]" Disabled=true Value="@(ApplicationInfo.InDemoMode&&CurrentUser.Username=="Demo"?AppLocalization["Private"]:Encryption.Instance?.KeySeedString)" />
-
-        </SettingsField>
+    </SettingsField>
 
 
-        <SettingsField>
 
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+    <ProcessResourceUsage Process="@ApplicationInfo.RunningProcess" />
 
-        </SettingsField>
-    </MudForm>
-    @code {
+
+
+    <SettingsField Label="@AppLocalization["Encryption Seed String"]">
+
+        <MudTextField Label="@AppLocalization["Encryption Seed String"]" Disabled=true Value="@(ApplicationInfo.InDemoMode&&CurrentUser.Username=="Demo"?AppLocalization["Private"]:Encryption.Instance?.KeySeedString)" />
+
+    </SettingsField>
+
+
+    <SettingsField>
+
+        <MudButton ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+    </SettingsField>
+</MudForm>
+@code {
 #nullable disable warnings
     AppSettings? settings = new AppSettings();
 
@@ -66,7 +91,7 @@
 
     [Inject] ApplicationManager applicationManager { get; set; }
 
-   
+
     async Task RestartApplication()
     {
         if (await MessageService.Confirm("Are you sure you want to restart the application? All connected users will be disconnected.", "Restart Application"))

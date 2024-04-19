@@ -15,7 +15,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.17");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.18");
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
                 {
@@ -448,6 +448,12 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.Property<string>("SSLCertificateCipher")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("SendDeveloperAnalytics")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("SendLogsToDeveloper")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UpdateBranch")
                         .IsRequired()
