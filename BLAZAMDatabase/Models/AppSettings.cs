@@ -45,6 +45,19 @@ namespace BLAZAM.Database.Models
         /// </summary>
         public bool ForceHTTPS { get; set; }
 
+
+        /// <summary>
+        /// Whether to send error and debug logs to the dev log seq destination
+        /// </summary>
+        [DefaultValue(true)]
+        public bool SendLogsToDeveloper { get; set; } = true;
+
+        /// <summary>
+        /// Whether to send usage analytics to the dev gooogle analytics destination
+        /// </summary>
+        [DefaultValue(true)]
+        public bool SendDeveloperAnalytics { get; set; } = true;
+
         [ValidFQDN]
         public string? AppFQDN { get; set; }
 
