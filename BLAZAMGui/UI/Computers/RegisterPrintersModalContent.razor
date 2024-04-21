@@ -23,7 +23,7 @@
             </MudDataGrid>
         </MudTabPanel>
         <MudTabPanel Text="@AppLocalization["OU"]">
-            <OUTreeView SelectedOU="destinationOU" SelectedOUChanged="destinationOUChanged" StartingSelectedOU="null" StartRootExpanded=true />
+            <OUTreeView SelectedEntry="destinationOU" SelectedOUChanged="destinationOUChanged" StartingSelectedOU="null" StartRootExpanded=true />
         </MudTabPanel>
 
     </MudTabs>
@@ -84,23 +84,26 @@
 
     }
 
-    private void destinationOUChanged(IADOrganizationalUnit newDestinationOU)
+    private void destinationOUChanged(IDirectoryEntryAdapter newDst)
     {
-        if (destinationOU == newDestinationOU) return;
-        destinationOU = newDestinationOU;
-        if (destinationOU != null && selectedPrinters != null && selectedPrinters.Count > 0)
+        if (newDst is IADOrganizationalUnit newDestinationOU)
         {
-            validated = true;
-            Modal.YesText = AppLocalization["Register"];
-            Modal.OnYes = RegisterSelectedPrinters;
-            Modal.RefreshView();
-        }
-        else
-        {
-            Modal.YesText = AppLocalization["Next"];
-            Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); });
-            Modal.RefreshView();
+            if (destinationOU == newDestinationOU) return;
+            destinationOU = newDestinationOU;
+            if (destinationOU != null && selectedPrinters != null && selectedPrinters.Count > 0)
+            {
+                validated = true;
+                Modal.YesText = AppLocalization["Register"];
+                Modal.OnYes = RegisterSelectedPrinters;
+                Modal.RefreshView();
+            }
+            else
+            {
+                Modal.YesText = AppLocalization["Next"];
+                Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); });
+                Modal.RefreshView();
 
+            }
         }
     }
     // protected override bool ValidateModal()

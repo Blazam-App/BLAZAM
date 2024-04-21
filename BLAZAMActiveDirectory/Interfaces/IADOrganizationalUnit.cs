@@ -13,17 +13,18 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         IQueryable<PermissionMapping> AppliedPermissionMappings { get; }
         List<PermissionMapping> DirectPermissionMappings { get; }
         IQueryable<PermissionMapping> OffspringPermissionMappings { get; }
-        IEnumerable<IADOrganizationalUnit> SubOUs { get; }
+        IEnumerable<IDirectoryEntryAdapter> SubOUs { get; }
 
-        HashSet<IADOrganizationalUnit> CachedTreeViewSubOUs { get;}
-        HashSet<IADOrganizationalUnit> TreeViewSubOUs { get; }
+        HashSet<IDirectoryEntryAdapter> CachedTreeViewSubOUs { get;}
+        HashSet<IDirectoryEntryAdapter> TreeViewSubOUs { get; }
         bool CanReadInSubOus { get; }
         bool CanCreateUser { get; }
+        bool CanReadUsers { get; }
 
         IADGroup CreateGroup(string containerName);
         IADUser CreateUser(string containerName);
         IADOrganizationalUnit CreateOU(string containerName);
-        Task<IEnumerable<IADOrganizationalUnit>> GetChildrenAsync();
+        Task<IEnumerable<IDirectoryEntryAdapter>> GetChildrenAsync();
         Task<bool> HasChildrenAsync();
         IADPrinter CreatePrinter(string containerName, string uncPath, string shortServerName);
         IADPrinter CreatePrinter(SharedPrinter sharedPrinter);

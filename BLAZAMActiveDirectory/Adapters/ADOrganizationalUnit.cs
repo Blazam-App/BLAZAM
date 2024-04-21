@@ -14,9 +14,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
     public class ADOrganizationalUnit : DirectoryEntryAdapter, IADOrganizationalUnit
     {
         private IEnumerable<IADOrganizationalUnit>? childOUCache;
-        //private IQueryable<IADUser>? childUserCache;
-        //private IQueryable<IADComputer>? childComputerCache;
-        //private IQueryable<IADGroup>? childGroupCache;
 
 
 
@@ -27,7 +24,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return HasChildren;
             });
         }
-        public async Task<IEnumerable<IADOrganizationalUnit>> GetChildrenAsync()
+        public async Task<IEnumerable<IDirectoryEntryAdapter>> GetChildrenAsync()
         {
             return await Task.Run(() =>
             {
@@ -35,9 +32,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             });
         }
 
-        public HashSet<IADOrganizationalUnit> CachedTreeViewSubOUs { get; private set; } = new();
+        public HashSet<IDirectoryEntryAdapter> CachedTreeViewSubOUs { get; private set; } = new();
 
-        public HashSet<IADOrganizationalUnit> TreeViewSubOUs
+        public HashSet<IDirectoryEntryAdapter> TreeViewSubOUs
         {
             get
             {
@@ -46,7 +43,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public IEnumerable<IADOrganizationalUnit> SubOUs
+        public IEnumerable<IDirectoryEntryAdapter> SubOUs
         {
             get
             {
@@ -140,6 +137,26 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 ))),
                 true
                 );
+            }
+
+        }
+        public virtual bool CanReadUsers
+        {
+            get
+            {
+                return HasPermission(p => p.Where(pm =>
+              pm.AccessLevels.Any(al =>
+              al.ObjectMap.Any(om =>
+              om.ObjectType == ActiveDirectoryObjectType.User &&
+              om.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level
+              ))),
+              p => p.Where(pm =>
+              pm.AccessLevels.Any(al =>
+              al.ObjectMap.Any(om =>
+              om.ObjectType == ActiveDirectoryObjectType.User &&
+              om.ObjectAccessLevel.Level == ObjectAccessLevels.Deny.Level
+              )))
+              );
             }
 
         }
