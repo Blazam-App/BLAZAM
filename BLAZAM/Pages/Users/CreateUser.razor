@@ -122,14 +122,18 @@
                 @AppLocalization["OU"]
             </TabContent>
             <ChildContent>
-                <OUTreeView SelectedOUChanged="OUSelected" />
+                @* <ADTreeView ShowAllEntries=false SelectedEntryChanged="OUSelected"/> *@
+                <OUTreeView StartRootExpanded=true SelectedOUChanged="OUSelected" /> 
 
                 <MudTextField Label="@AppLocalization["Display Name"]" @bind-Value="@customUserDisplayName" />
 
 
 
                 <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=0;})">Back</MudButton>
-                <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()&& selectedOU!=null) Color=Color.Success OnClick="@(async()=>{await CreateCustomUser();selectedStep=5;})">Next</MudButton>
+                <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()&& selectedOU!=null) Color=Color.Success OnClick="@(async()=>{
+await CreateCustomUser();
+selectedStep=5;
+})">Next</MudButton>
 
 
             </ChildContent>
@@ -214,15 +218,17 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
         await InvokeAsync(StateHasChanged);
     }
 
-    async void OUSelected(IADOrganizationalUnit ou)
+    async void OUSelected(IDirectoryEntryAdapter entry)
     {
-        if (selectedOU == null)
+        if (entry is IADOrganizationalUnit ou)
         {
+            if (selectedOU == null)
+            {
+                selectedOU = ou;
+                return;
+            }
             selectedOU = ou;
-            return;
         }
-        selectedOU = ou;
-
 
         await InvokeAsync(StateHasChanged);
     }
