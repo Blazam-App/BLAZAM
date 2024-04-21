@@ -1,0 +1,66 @@
+﻿@inherits OUTreeViewBase
+
+<MudText>@Label</MudText>
+
+<MudTreeView T="IDirectoryEntryAdapter"
+             ServerData="GetChildrenAsync"
+             Items="RootOU"
+             Dense="true"
+             Hover="true"
+             MaxHeight="400px"
+             Color="Color.Primary"
+             @bind-SelectedValue="SelectedEntry">
+    <ItemTemplate>
+        <MudTreeViewItem Value="@context"
+                         Items=@(GetChildren(context))
+                         LoadingIconColor="Color.Info"
+                         @bind-Expanded="@context.IsExpanded"
+                         @bind-Activated=context.IsSelected
+                         Text="@context.CanonicalName"
+                         Icon="@Icons.Material.Filled.Folder"
+                         IconColor="@(context.IsSelected==true?Color.Primary:Color.Default)"
+                         Class="minw-max w-100"
+                         CanExpand=@(context is IADOrganizationalUnit)
+                          Context="treeContext"
+                         EndText="@EndText?.Invoke(context)">
+                         
+            @*<Content>
+            @{
+            string itemIcon = Icons.Material.Filled.Folder;
+            }
+            @if (context.IsExpanded)
+            {
+            itemIcon = Icons.Material.Filled.FolderOpen;
+            }
+            @if (Badge != null)
+            {
+            <MudBadge Content="Badge" Overlap="true" Class="mx-6 my-4">
+            <MudTreeViewItemToggleButton  Loading=@context.IsLoadingChildren @bind-Expanded="@context.IsExpanded" Visible="@context.HasChildren()" />
+            <MudIcon Icon="@itemIcon" Class="ml-0 mr-2" Color="@Color.Default" />
+            <MudText>@context.CanonicalName</MudText>
+
+            @EndAdornment?.Invoke(context)
+
+            </MudBadge>
+            }
+            else
+            {
+            <MudTreeViewItemToggleButton Loading=@context.IsLoadingChildren @bind-Expanded="@context.IsExpanded" Visible="@context.HasChildren()" />
+            <MudIcon Icon="@itemIcon" Class="ml-0 mr-2" Color="@Color.Default" />
+            <MudText>@context.CanonicalName</MudText>
+            @EndAdornment?.Invoke(context)
+            }
+            </Content>*@
+        </MudTreeViewItem>
+    </ItemTemplate>
+</MudTreeView>
+
+@if (RootOU == null || !RootOU.Any() || LoadingData)
+{
+    <MudProgressLinear Color="Color.Secondary" Indeterminate="true" />
+
+}
+
+
+
+

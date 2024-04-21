@@ -4,18 +4,17 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using System.Data.SQLite;
 using System.Diagnostics.Contracts;
 using System.DirectoryServices;
 using System.Reflection.PortableExecutable;
+using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADOrganizationalUnit : DirectoryEntryAdapter, IADOrganizationalUnit
     {
         private IEnumerable<IADOrganizationalUnit>? childOUCache;
-        //private IQueryable<IADUser>? childUserCache;
-        //private IQueryable<IADComputer>? childComputerCache;
-        //private IQueryable<IADGroup>? childGroupCache;
 
 
 
@@ -26,7 +25,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return HasChildren;
             });
         }
-        public async Task<IEnumerable<IADOrganizationalUnit>> GetChildrenAsync()
+        public async Task<IEnumerable<IDirectoryEntryAdapter>> GetChildrenAsync()
         {
             return await Task.Run(() =>
             {
@@ -34,9 +33,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             });
         }
 
-        public HashSet<IADOrganizationalUnit> CachedTreeViewSubOUs { get; private set; } = new();
+        public HashSet<IDirectoryEntryAdapter> CachedTreeViewSubOUs { get; private set; } = new();
 
-        public HashSet<IADOrganizationalUnit> TreeViewSubOUs
+        public HashSet<IDirectoryEntryAdapter> TreeViewSubOUs
         {
             get
             {
@@ -45,7 +44,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public IEnumerable<IADOrganizationalUnit> SubOUs
+        public IEnumerable<IDirectoryEntryAdapter> SubOUs
         {
             get
             {
@@ -59,7 +58,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        //public override string SearchUri => "/search/" + DN;
+        public override string SearchUri => "/search/" + HttpUtility.UrlEncode(DN);
 
         public override string? CanonicalName
         {
@@ -123,7 +122,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public virtual bool CanReadInSubOus
+        public virtual bool CanReadUsersInSubOus
         {
             get
             {
@@ -142,11 +141,125 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
 
         }
+        public virtual bool CanReadNonOUs
+        {
+            get
+            {
+                if (CanReadUsers) return true;
+                if (CanReadGroups) return true;
+                if (CanReadComputers) return true;
+                if (CanReadPrinters) return true;
+                return false;
+            }
+        }
+        public virtual bool CanReadPrinters
+        {
+            get
+            {
+                return HasPermission(p => p.Where(pm =>
+              pm.AccessLevels.Any(al =>
+              al.ObjectMap.Any(om =>
+              om.ObjectType == ActiveDirectoryObjectType.Printer &&
+              om.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level
+              ))),
+              p => p.Where(pm =>
+              pm.AccessLevels.Any(al =>
+              al.ObjectMap.Any(om =>
+              om.ObjectType == ActiveDirectoryObjectType.Printer &&
+              om.ObjectAccessLevel.Level == ObjectAccessLevels.Deny.Level
+              )))
+              );
+            }
+
+        }
+        public virtual bool CanReadComputers
+        {
+            get
+            {
+                return HasPermission(p => p.Where(pm =>
+              pm.AccessLevels.Any(al =>
+              al.ObjectMap.Any(om =>
+              om.ObjectType == ActiveDirectoryObjectType.Computer &&
+              om.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level
+              ))),
+              p => p.Where(pm =>
+              pm.AccessLevels.Any(al =>
+              al.ObjectMap.Any(om =>
+              om.ObjectType == ActiveDirectoryObjectType.Computer &&
+              om.ObjectAccessLevel.Level == ObjectAccessLevels.Deny.Level
+              )))
+              );
+            }
+
+        }
+        public virtual bool CanReadGroups
+        {
+            get
+            {
+                return HasPermission(p => p.Where(pm =>
+              pm.AccessLevels.Any(al =>
+              al.ObjectMap.Any(om =>
+              om.ObjectType == ActiveDirectoryObjectType.Group &&
+              om.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level
+              ))),
+              p => p.Where(pm =>
+              pm.AccessLevels.Any(al =>
+              al.ObjectMap.Any(om =>
+              om.ObjectType == ActiveDirectoryObjectType.Group &&
+              om.ObjectAccessLevel.Level == ObjectAccessLevels.Deny.Level
+              )))
+              );
+            }
+
+        }
+        public virtual bool CanReadUsers
+        {
+            get
+            {
+                return HasPermission(p => p.Where(pm =>
+              pm.AccessLevels.Any(al =>
+              al.ObjectMap.Any(om =>
+              om.ObjectType == ActiveDirectoryObjectType.User &&
+              om.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level
+              ))),
+              p => p.Where(pm =>
+              pm.AccessLevels.Any(al =>
+              al.ObjectMap.Any(om =>
+              om.ObjectType == ActiveDirectoryObjectType.User &&
+              om.ObjectAccessLevel.Level == ObjectAccessLevels.Deny.Level
+              )))
+              );
+            }
+
+        }
         public virtual bool CanCreateUser
         {
             get
             {
-                return HasActionPermission(ObjectActions.Create,ActiveDirectoryObjectType.User);
+                return HasActionPermission(ObjectActions.Create, ActiveDirectoryObjectType.User);
+            }
+
+        }
+        public virtual bool CanCreateUserInSubOUs
+        {
+            get
+            {
+
+                return HasPermission(p => p.Where(pm =>
+                pm.AccessLevels.Any(al =>
+                al.ActionMap.Any(am=>
+                am.ObjectType==ActiveDirectoryObjectType.User &&
+                am.ObjectAction.Id==ObjectActions.Create.Id &&
+                am.AllowOrDeny==true))),
+                p => p.Where(pm =>
+                pm.AccessLevels.Any(al =>
+                al.ActionMap.Any(am =>
+                am.ObjectType == ActiveDirectoryObjectType.User &&
+                am.ObjectAction.Id == ObjectActions.Create.Id &&
+                am.AllowOrDeny == false))),
+                true
+                );
+
             }
 
         }

@@ -270,8 +270,8 @@ await ParentTemplateChanged(null);
 
                         <TemplateOverride SourceTemplate="@ouTemplateSource">
                             <OUTreeView Label=@(AppLocalization["OU"]+": "+ SelectedOU?.CanonicalName)
-                                        SelectedOU=@SelectedOU
-                                        SelectedOUChanged="@((ou)=>{SelectedOU=ou; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
+                                        SelectedEntry=@SelectedOU
+                                        SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(DirectoryTemplate.EffectiveParentOU!=ou.DN)DirectoryTemplate.ParentOU = ou.DN;})"
                                         StartingSelectedOU=@SelectedOU />
                             @if (!DirectoryTemplate.ParentOU.IsNullOrEmpty() && DirectoryTemplate.ParentTemplateId != null && !DirectoryTemplate.ParentOU.IsNullOrEmpty())
                             {
@@ -644,6 +644,10 @@ await ParentTemplateChanged(null);
         }
         else
         {
+            if (Context.EntityIsTracked(DirectoryTemplate))
+            {
+                
+            }
             var result = await Context.SaveChangesAsync();
             if (result > 0)
             {

@@ -1,0 +1,40 @@
+﻿@inherits OUTreeViewBase
+
+<MudText>@Label</MudText>
+
+<MudTreeView T="IDirectoryEntryAdapter"
+             ServerData="GetChildrenAsync"
+             Items="RootOU"
+             Dense="true"
+             Hover="true"
+             Color="Color.Success"
+             @bind-SelectedValue="SelectedEntry">
+    <ItemTemplate>
+        <MudTreeViewItem Value="@context"
+                        
+                         Items=@GetItems(context)
+                         LoadingIconColor="Color.Info"
+                         @bind-Expanded="@context.IsExpanded"
+                         @bind-Activated=context.IsSelected
+                         Text="@context.CanonicalName"
+                         Icon="@context.TypeIcon()"
+                         IconColor=@GetItemColor(context)
+                         Class="minw-max w-100 overflow-x-auto"
+                         CanExpand=@(context is IADOrganizationalUnit)
+                         EndText="@EndText?.Invoke(context)"
+                         Context="itemContext">
+
+        </MudTreeViewItem>
+    </ItemTemplate>
+
+</MudTreeView>
+
+@if (RootOU == null || !RootOU.Any() || LoadingData)
+{
+    <MudProgressLinear Style="min-width:200px;" Color="Color.Secondary" Indeterminate="true" />
+
+}
+
+
+
+
