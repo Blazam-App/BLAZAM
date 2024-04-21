@@ -378,7 +378,7 @@
                                 }
                                 @if (User.CanReadField(ActiveDirectoryFields.HomeDrive))
                                 {
-                                    <HomeDriveSelect Label="@AppLocalization["Home Drive"]" @bind-Value="@User.HomeDrive" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDrive)) />
+                                    <HomeDriveSelect Label="@AppLocalization["Home Drive"]" @bind-DriveLetter="@User.HomeDrive" Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.HomeDrive)) />
                                 }
                                 @if (User.CanReadField(ActiveDirectoryFields.ScriptPath))
                                 {
