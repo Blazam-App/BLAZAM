@@ -10,7 +10,7 @@
                           T="UserDashboardWidget" Items="CurrentUser.State?.Preferences?.DashboardWidgets.OrderBy(uw => uw.Slot).ThenBy(uw => uw.Order)"
                           ItemsSelector="ItemSelector"
                           ItemDropped="ItemDropped"
-                          Class="d-flex flex-wrap flex-grow-1 mud-width-full ">
+                          Class="d-flex flex-wrap flex-grow-1 mud-width-full  mt-5">
             <ChildContent>
 
                 <FlexContainer Spacing="4" Class="mx-auto">
@@ -57,12 +57,23 @@
     }
     else
     {
-        <MudText> It's lonely in here. Click the + button to add some widgets...</MudText>
+        <MudContainer Class="d-flex flex-wrap flex-grow-1 mud-width-full mt-5 ">
+
+            <FlexContainer Spacing="4" Class="mx-auto">
+                <MudCard>
+                    <MudCardContent>
+                        It's lonely in here. Click the + button to add some widgets...
+                    </MudCardContent>
+                </MudCard>
+            </FlexContainer>
+        </MudContainer>
+
     }
-    <MudMenu Class="d-flex" Style="justify-content: flex-end;" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.BottomRight">
+   
+    <MudMenu Class="d-flex" Style="justify-content: flex-end;" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
         <ActivatorContent>
             <MudTooltip Text="Add Widget">
-                <MudFab StartIcon="@Icons.Material.Filled.AddBox" />
+                <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
             </MudTooltip>
         </ActivatorContent>
         <ChildContent>
