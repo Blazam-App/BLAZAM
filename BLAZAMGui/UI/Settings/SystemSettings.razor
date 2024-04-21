@@ -3,40 +3,32 @@
 <MudForm @onsubmit="Save">
     @if (settings != null)
     {
+        <MudText Typo="Typo.h6">@AppLocalization["Manage Web Application"]</MudText>
+        <SettingsField Label="@AppLocalization["Restart Web Application"]">
 
-        <SettingsField Label="@AppLocalization["Developer Analytics"]">
-            <MudText>
-                We ask that you allow developer analytics so we can understand how our app is used to focus our
-                efforts on what our users think matters most.
-            </MudText>
-            <MudSwitch Label="@AppLocalization["Enabled"]"
-                       Color="Color.Success"
-                       @bind-Value="@settings.SendDeveloperAnalytics" />
+            <MudButton Color="Color.Error" Variant=Variant.Outlined OnClick=RestartApplication>@AppLocalization["Restart Web Application"]</MudButton>
+
 
         </SettingsField>
         <SettingsField Label="@AppLocalization["Google Analytics ID"]">
-
+            <MudText>Set up a GA4 account and enter your tracking ID here to collect data on the usage of your installation.</MudText>
             <MudTextField Label="@AppLocalization["Google Analytics ID"]" @bind-Value="@settings.AnalyticsId" />
 
         </SettingsField>
-        <SettingsField Label="@AppLocalization["Manage Web Application"]">
 
-            <MudButton Color="Color.Error" Variant=Variant.Outlined OnClick=RestartApplication>Restart Web Application</MudButton>
+        <SettingsField Label="@AppLocalization["Encryption Seed String"]">
 
+            <MudTextField Label="@AppLocalization["Encryption Seed String"]" ReadOnly=true Value="@(ApplicationInfo.InDemoMode&&CurrentUser.Username=="Demo"?AppLocalization["Private"]:Encryption.Instance?.KeySeedString)" />
 
         </SettingsField>
     }
 
-    <SettingsField Label=@AppLocalization["Logs"]>
 
-        <MudLink Href="/download/logs" Target="Target.Blank">
-            <MudButton Variant=Variant.Outlined Color="Color.Primary">Download Logs</MudButton>
-        </MudLink>
-        <MudText>Log Directory: @Loggers.LogPath</MudText>
-
-    </SettingsField>
+    <MudDivider Class="my-6" />
+    <MudText Typo="Typo.h6">@AppLocalization["Data Collection Settings"]</MudText>
 
 
+  
 
     <SettingsField Label="@AppLocalization["Send logs to developer"]">
         <MudText>
@@ -48,17 +40,47 @@
 
     </SettingsField>
 
+    <SettingsField Label="@AppLocalization["Developer Analytics"]">
+        <MudText>
+            We ask that you allow developer analytics so we can understand how our app is used to focus our
+            efforts on what our users think matters most.
+        </MudText>
+        <MudSwitch Label="@AppLocalization["Enabled"]"
+                   Color="Color.Success"
+                   @bind-Value="@settings.SendDeveloperAnalytics" />
+
+    </SettingsField>
+
+    <MudDivider Class="my-6" />
+    <MudText Typo="Typo.h6">@AppLocalization["Logging"]</MudText>
+
+
+    <SettingsField Label="@AppLocalization["Installation Id"]">
+
+        <MudTextField ReadOnly=true Label="@AppLocalization["Installation Id"]" Value="@ApplicationInfo.InstallationId" />
+    </SettingsField>
+
+    <SettingsField Label=@AppLocalization["Logs"]>
+       
+
+        <MudLink Href="/download/logs" Target="Target.Blank">
+            <MudButton Variant=Variant.Outlined Color="Color.Primary">Download Logs</MudButton>
+        </MudLink>
+        <MudText>Log Directory: @Loggers.LogPath</MudText>
+
+    </SettingsField>
+
+
+
+    <MudDivider Class="my-6" />
+    <MudText Typo="Typo.h6">@AppLocalization["Resource Usage"]</MudText>
 
 
     <ProcessResourceUsage Process="@ApplicationInfo.RunningProcess" />
 
 
 
-    <SettingsField Label="@AppLocalization["Encryption Seed String"]">
-
-        <MudTextField Label="@AppLocalization["Encryption Seed String"]" Disabled=true Value="@(ApplicationInfo.InDemoMode&&CurrentUser.Username=="Demo"?AppLocalization["Private"]:Encryption.Instance?.KeySeedString)" />
-
-    </SettingsField>
+   
 
 
     <SettingsField>
