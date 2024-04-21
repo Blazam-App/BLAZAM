@@ -3,11 +3,9 @@
 
 <MudText>Choose OU</MudText>
 
-@* <OUTreeView @bind-StartingSelectedOU=@StartingOU @bind-SelectedOU=@SelectedOU>
+<OUTreeView @bind-StartingSelectedOU=@StartingOU @bind-SelectedEntry=@SelectedOU />
 
-</OUTreeView> *@
 
-<ADTreeView ShowAllEntries=false StartingSelectedOU=@StartingOU @bind-SelectedEntry=@SelectedOU/>
 
 
 @code {
@@ -48,7 +46,7 @@
 
             DirectoryModel.MoveTo(ouToMoveTo);
 
-            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been moved to " + SelectedOU.CanonicalName + ", but changes need to be saved.");
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been moved to " + ouToMoveTo.CanonicalName + ", but changes need to be saved.");
             await ModelChanged.InvokeAsync();
             Close();
             return;

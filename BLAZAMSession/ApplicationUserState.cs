@@ -507,7 +507,7 @@ namespace BLAZAM.Server.Data.Services
             }
             return false;
         }
-
+        
         public bool HasActionPermission(string dnTarget, ObjectAction action, ActiveDirectoryObjectType objectType)
         {
             return HasPermission(dnTarget, p => p.Where(pm =>

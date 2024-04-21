@@ -3,9 +3,9 @@
 
         @if (Group.CanEditField(ActiveDirectoryFields.SAMAccountName))
         {
-            
 
-                    <MudTextField Label="@AppLocalization["Group Name"]" @bind-Value="@GroupName" />
+
+        <MudTextField AutoFocus=true Label="@AppLocalization["Group Name"]" @bind-Value="@GroupName" />
 
                 
             
