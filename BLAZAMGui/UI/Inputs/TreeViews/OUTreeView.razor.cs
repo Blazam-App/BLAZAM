@@ -22,11 +22,11 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             {
                 if (ou.IsExpanded)
                 {
-                    return ou.TreeViewSubOUs;
+                    return ou.TreeViewSubOUs.Where(o=>ShouldShowOU(o)).ToHashSet();
                 }
                 else
                 {
-                    return ou.CachedTreeViewSubOUs;
+                    return ou.CachedTreeViewSubOUs.Where(o => ShouldShowOU(o)).ToHashSet();
                 }
             }
             return new HashSet<IDirectoryEntryAdapter>();

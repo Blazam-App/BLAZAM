@@ -54,7 +54,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             get => _selectedEntry; set
             {
                 if (value == _selectedEntry) return;
-                if (value != null && value.CanRead)
+                if (value != null)
                 {
                     var cache = _selectedEntry;
 
@@ -104,15 +104,15 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 TopLevel = new ADOrganizationalUnit();
                 TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
                 _ = TopLevel.SubOUs;
-                RootOU = new HashSet<IDirectoryEntryAdapter>() { TopLevel };
+                RootOU = new HashSet<IDirectoryEntryAdapter>() { TopLevel as IDirectoryEntryAdapter };
             }
             if (StartingSelectedOU == null)
             {
-                SelectedEntry = TopLevel;
-                SelectedEntry.IsExpanded = true;
+                StartingSelectedOU = TopLevel;
+
             }
-            else
-                OpenToSelected();
+
+            OpenToSelected();
             LoadingData = false;
             await InvokeAsync(StateHasChanged);
         }
@@ -174,17 +174,18 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
 
         }
-
+        [Parameter]
+        public Func<IDirectoryEntryAdapter,bool>? AdditionalVisibilityFilters { get; set; }
         protected bool ShouldShowOU(IDirectoryEntryAdapter entry)
         {
             if (entry is IADOrganizationalUnit ou)
             {
                 if (ou.CanRead)
                     return true;
-                if (ou.CanReadInSubOus)
-                    return true;
-                if (ou.CanReadUsers)
-                    return true;
+                if (AdditionalVisibilityFilters != null)
+                {
+                    if(AdditionalVisibilityFilters(entry)) return true;
+                }
             }
             return false;
         }

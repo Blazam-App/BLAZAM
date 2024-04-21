@@ -17,9 +17,14 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
         HashSet<IDirectoryEntryAdapter> CachedTreeViewSubOUs { get;}
         HashSet<IDirectoryEntryAdapter> TreeViewSubOUs { get; }
-        bool CanReadInSubOus { get; }
+        bool CanReadUsersInSubOus { get; }
         bool CanCreateUser { get; }
+        bool CanCreateUserInSubOUs { get; }
         bool CanReadUsers { get; }
+        bool CanReadNonOUs { get; }
+        bool CanReadComputers { get; }
+        bool CanReadGroups { get; }
+        bool CanReadPrinters { get; }
 
         IADGroup CreateGroup(string containerName);
         IADUser CreateUser(string containerName);

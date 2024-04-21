@@ -8,8 +8,7 @@
              Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)
              Title="@AppLocalization["Browse"]"
              Icon="@Icons.Material.Filled.ViewList">
-    <ADTreeView TextColor="Color.Surface"
-                 SelectedEntryChanged="@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);})"/>
+    <ADTreeView AdditionalVisibilityFilters=@((entry)=>{if(entry is IADOrganizationalUnit ou) return (ou.CanReadUsersInSubOus || ou.CanReadNonOUs); return false;}) SelectedEntryChanged="@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);})" />
 </MudNavGroup>
 
 @code {

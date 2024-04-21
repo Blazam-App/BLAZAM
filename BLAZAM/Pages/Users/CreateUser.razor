@@ -123,14 +123,14 @@
             </TabContent>
             <ChildContent>
                 @* <ADTreeView ShowAllEntries=false SelectedEntryChanged="OUSelected"/> *@
-                <OUTreeView StartRootExpanded=true SelectedOUChanged="OUSelected" /> 
+                <OUTreeView AdditionalVisibilityFilters=@(AdditionalShow) StartRootExpanded=true SelectedEntryChanged="OUSelected" />
 
                 <MudTextField Label="@AppLocalization["Display Name"]" @bind-Value="@customUserDisplayName" />
 
 
 
                 <MudButton Color=Color.Primary OnClick="@(()=>{SelectedStep=0;})">Back</MudButton>
-                <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()&& selectedOU!=null) Color=Color.Success OnClick="@(async()=>{
+                <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()|| selectedOU==null) Color=Color.Success OnClick="@(async()=>{
 await CreateCustomUser();
 selectedStep=5;
 })">Next</MudButton>
@@ -222,12 +222,12 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
     {
         if (entry is IADOrganizationalUnit ou)
         {
-            if (selectedOU == null)
-            {
+            if(ou.CanCreateUser)
                 selectedOU = ou;
-                return;
+            else
+            {
+                SnackBarService.Warning(AppLocalization["You do not have permission to create users in that location"]);
             }
-            selectedOU = ou;
         }
 
         await InvokeAsync(StateHasChanged);
@@ -340,5 +340,13 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
         SelectedStep = 1;
         await InvokeAsync(StateHasChanged);
     }
-
+    bool AdditionalShow(IDirectoryEntryAdapter entry)
+    {
+        if(entry is IADOrganizationalUnit ou)
+        {
+            if (ou.CanCreateUser) return true;
+            if (ou.CanCreateUserInSubOUs) return true;
+        }
+        return false;
+    }
 }
