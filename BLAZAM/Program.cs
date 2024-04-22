@@ -81,7 +81,11 @@ namespace BLAZAM
 
             builder.IntializeProperties();
 
+            //Create and discard a new instance of Encryption to inject the encryption seed string
             _ = new Encryption(Configuration?.GetValue<string>("EncryptionKey"));
+
+            //Assign installation ID
+            Loggers.InstallationId = ApplicationInfo.installationId.ToString();
 
             //Setup host logging so it can catch the earliest logs possible
             Loggers.SeqServerUri = "http://logs.blazam.org:5341";
