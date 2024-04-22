@@ -1,4 +1,5 @@
-﻿@inherits AppComponentBase
+﻿
+@inherits AppComponentBase
 <MudCard Elevation="2">
     <h3>OU Privilege Mapper</h3>
 
@@ -6,8 +7,22 @@
     <MudGrid>
         <MudItem xs="12" sm="3" md="4">
             <OUTreeView @ref=@OUTree StartRootExpanded=true
-                        @bind-SelectedOU="SelectedNode"
-                        EndText="@((context)=>context.DirectPermissionMappings.Any()?context.DirectPermissionMappings.Count().ToString():null)">
+                        @bind-SelectedEntry="SelectedNode">
+                      
+            </OUTreeView>
+        </MudItem>
+        <MudItem xs="12" sm="9" md="8">
+            <OUPermissionsEditor MappingsChanged="@MappingsChanged" OU="SelectedOU" />
+        </MudItem>
+    </MudGrid>
+</MudCard>
+
+
+
+
+@*
+
+  EndText="@((context)=>context.DirectPermissionMappings.Any()?context.DirectPermissionMappings.Count().ToString():null)">
                  <EndAdornment>
                 @if (@context.DirectPermissionMappings.Count() > 0)
                 {
@@ -26,19 +41,13 @@
 
                 }
                 </EndAdornment>
-            </OUTreeView>
-        </MudItem>
-        <MudItem xs="12" sm="9" md="8">
-            <OUPermissionsEditor MappingsChanged="@MappingsChanged" OU="SelectedNode" />
-        </MudItem>
-    </MudGrid>
-</MudCard>
+*@
 @code {
 
-#nullable disable warnings
+    #nullable disable warnings
     OUTreeView? OUTree { get; set; }
-    IADOrganizationalUnit selectedNode;
-    IADOrganizationalUnit SelectedNode
+    IDirectoryEntryAdapter selectedNode;
+    IDirectoryEntryAdapter SelectedNode
     {
         get => selectedNode; set
         {
@@ -48,7 +57,7 @@
 
         }
     }
-
+    IADOrganizationalUnit SelectedOU => SelectedNode as IADOrganizationalUnit;
     IList<IADOrganizationalUnit> ExpandedNodes = new List<IADOrganizationalUnit>();
     HashSet<IADOrganizationalUnit> ApplicationBaseOUs = new HashSet<IADOrganizationalUnit>();
     protected override async Task OnInitializedAsync()

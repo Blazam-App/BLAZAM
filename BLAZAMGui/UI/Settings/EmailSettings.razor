@@ -7,7 +7,9 @@
 <MudForm @onsubmit="Save">
 
     <SettingsField Label="@AppLocalization["Email Enabled"]">
-        <MudSwitch @bind-Checked="settings.Enabled" />
+        <MudSwitch @bind-Value="settings.Enabled"
+                   Color="Color.Success"
+                   UnCheckedColor="Color.Error" />
     </SettingsField>
 
 
@@ -28,13 +30,19 @@
 
     <SettingsField Label="@AppLocalization["Use TLS"]">
 
-        <MudSwitch Label="@AppLocalization["Enabled"]" @bind-Checked="settings.UseTLS" />
+        <MudSwitch Label="@AppLocalization["Enabled"]"
+                   Color="Color.Success"
+                   UnCheckedColor="Color.Error" 
+                   @bind-Value="settings.UseTLS" />
 
     </SettingsField>
 
     <SettingsField Label="@AppLocalization["Use SMTP Authentication"]">
 
-        <MudSwitch Label="@AppLocalization["Enabled"]" @bind-Checked="settings.UseSMTPAuth" />
+        <MudSwitch Label="@AppLocalization["Enabled"]"
+                Color="Color.Success"
+                UnCheckedColor="Color.Error"
+                   @bind-Value="settings.UseSMTPAuth" />
 
     </SettingsField>
 

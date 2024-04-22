@@ -2,8 +2,8 @@
 @inherits AppComponentBase
 <MudCard>
     <MudCardHeader>
-        Active Directory Connection Status
-    </MudCardHeader>
+        @AppLocalization["Active Directory Connection Status"]
+        </MudCardHeader>
     @if (showProgress)
     {
         <MudStack Row=true>
@@ -11,68 +11,78 @@
 
         </MudStack>
     }
-   
-        <MudStack Row=true>
-                Server Port Open
-                <StatusCheck Status="_portStatus" />
 
-        </MudStack>
-             <MudStack Row=true>
+    <MudStack Row=true>
+       @AppLocalization["Server Port Open"]
+        <StatusCheck Status="_portStatus" />
 
-                Credentials OK
-                <StatusCheck Status="_credStatus" />
+    </MudStack>
+    <MudStack Row=true>
 
-        </MudStack>
-             <MudStack Row=true>
-                Connected
+        @AppLocalization["Credentials OK"]
+        <StatusCheck Status="_credStatus" />
 
-                <StatusCheck Status="Directory.Status==DirectoryConnectionStatus.OK" />
+    </MudStack>
+    <MudStack Row=true>
+        @AppLocalization["Connected"]
 
-  
-        </MudStack>
+        <StatusCheck Status="Directory.Status==DirectoryConnectionStatus.OK" />
+
+
+    </MudStack>
+    <MudStack Row=true Class="align-center">
+        @AppLocalization["Connection Type"]
+
+        <StatusCheck Status=@(Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.Encryption)||
+        Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.SecureSocketsLayer)||
+        Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.Secure))
+        Text="@(Directory.AppRootDirectoryEntry.AuthenticationType.ToString())" />
+
+
+    </MudStack>
     @*
     @if (_credStatus)
     {
-       var firstDC = Directory.DomainControllers.FirstOrDefault();
-        if(firstDC!=null){
-            <MudStack>
-            <MudStack Row=true>
-                <MudText>Domain</MudText>
-                <MudText>@firstDC.Domain.Name</MudText>
-            </MudStack>
+    var firstDC = Directory.DomainControllers.FirstOrDefault();
+    if(firstDC!=null){
+    <MudStack>
+    <MudStack Row=true>
+    <MudText>Domain</MudText>
+    <MudText>@firstDC.Domain.Name</MudText>
+    </MudStack>
 
-            <MudStack Row=true>
-                <MudText>Domain Mode</MudText>
-                <MudText>@firstDC.Domain.DomainMode</MudText>
-            </MudStack>
+    <MudStack Row=true>
+    <MudText>Domain Mode</MudText>
+    <MudText>@firstDC.Domain.DomainMode</MudText>
+    </MudStack>
 
-            <MudStack Row=true>
-                <MudText>Domain Level</MudText>
-                <MudText>@firstDC.Domain.DomainModeLevel</MudText>
-            </MudStack>
+    <MudStack Row=true>
+    <MudText>Domain Level</MudText>
+    <MudText>@firstDC.Domain.DomainModeLevel</MudText>
+    </MudStack>
 
-            <MudStack Row=true>
-                <MudText>Primary Domain Controller</MudText>
-                <MudText>@firstDC.Domain.PdcRoleOwner</MudText>
-            </MudStack>
+    <MudStack Row=true>
+    <MudText>Primary Domain Controller</MudText>
+    <MudText>@firstDC.Domain.PdcRoleOwner</MudText>
+    </MudStack>
 
-            <MudStack Row=true>
-                <MudText>Domain</MudText>
-                <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.Forest.RootDomain.Name</MudText>
-            </MudStack>
-            </MudStack> 
-        }
-        else
-        {
-            <MudText>Could not reach Domain Controllers directly from application server. Please check DNS.</MudText>
-        }
+    <MudStack Row=true>
+    <MudText>Domain</MudText>
+    <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.Forest.RootDomain.Name</MudText>
+    </MudStack>
+    </MudStack>
+    }
+    else
+    {
+    <MudText>Could not reach Domain Controllers directly from application server. Please check DNS.</MudText>
+    }
 
     }
     *@
-    </MudCard>
+</MudCard>
 
 @code {
-    #nullable disable warnings
+#nullable disable warnings
 
     [Parameter]
     public EventCallback DirectoryConnected { get; set; }
@@ -173,7 +183,7 @@
                     else
                     {
 
-                        showProgress =false;
+                        showProgress = false;
                     }
 
                     await InvokeAsync(StateHasChanged);
