@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -51,6 +52,17 @@ namespace BLAZAM.Helpers
                     url[1] != '/' && url[1] != '\\') ||   // "/" or "/foo" but not "//" or "/\"
                     url.Length > 1 &&
                      url[0] == '~' && url[1] == '/';   // "~/" or "~/foo"
+        }
+
+        public static Guid ToGuid(this string input)
+        {
+            // Use MD5 hash to get a 16-byte hash of the string
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] hash = md5.ComputeHash(Encoding.Default.GetBytes(input));
+                // Create a new Guid using the hash
+                return new Guid(hash);
+            }
         }
 
         public static string ToPlainText(this SecureString? secureString)

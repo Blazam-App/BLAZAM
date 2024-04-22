@@ -46,13 +46,12 @@ namespace BLAZAM.Server
             try
             {
                 ApplicationInfo.installationId = GetInstallationId();
-            }catch (UnauthorizedAccessException ex)
+
+
+            }catch (Exception ex)
             {
-                Loggers.SystemLogger.Warning("Cannot access OS WMI to get UUID {@Error}", ex);
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Warning("Unexpected exception trying to access OS WMI to get UUID {@Error}", ex);
+                ApplicationInfo.installationId = Environment.MachineName.ToGuid();
+
             }
             //Set application directories
             //Program.RootDirectory = new SystemDirectory(builder.Environment.ContentRootPath);
@@ -78,6 +77,7 @@ namespace BLAZAM.Server
             //Try and get os id
             try
             {
+                throw new ApplicationException("TEST");
                 string ComputerName = "localhost";
                 ManagementScope Scope;
                 Scope = new ManagementScope(String.Format("\\\\{0}\\root\\CIMV2", ComputerName), null);
