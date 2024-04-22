@@ -86,7 +86,7 @@ else
             await InvokeAsync(StateHasChanged);
             try
             {
-                if (await DbFactory.ApplyDatabaseMigrations(true))
+                if (await DbFactory.ApplyDatabaseMigrationsAsync(true))
                 {
                     Completed = true;
                     await InvokeAsync(StepCompleted.InvokeAsync);
