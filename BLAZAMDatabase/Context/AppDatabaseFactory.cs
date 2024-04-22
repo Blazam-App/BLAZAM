@@ -140,21 +140,17 @@ namespace BLAZAM.Database.Context
                 : databaseContext;
         }
 
-        /// <summary>
-        /// Applies all pending database migrations
-        /// <para>
-        /// <paramref name="force"/>: If true, the updates will happen 
-        /// even if the database is seeded. If false, no updates will 
-        /// be applied if seeding has already occurred.
-        /// </para>
-        /// </summary>
-        /// <param name="force">If true, the updates will happen even if the database is seeded. If false, no updates will be applied if seeding has already occurred.</param>
-        /// <returns></returns>
-        public async Task<bool> ApplyDatabaseMigrations(bool force = false)
+        public async Task<bool> ApplyDatabaseMigrationsAsync(bool force = false)
+        {
+            return await Task.Run(() => {
+                return ApplyDatabaseMigrations(force);
+            });
+
+        }
+        public bool ApplyDatabaseMigrations(bool force = false)
         {
 
-            return await Task.Run(() =>
-            {
+     
                 try
                 {
                     using (var context = CreateDbContext())
@@ -187,7 +183,7 @@ namespace BLAZAM.Database.Context
                     Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!! {@Error}", ex);
                     throw ex;
                 }
-            });
+    
 
 
         }
