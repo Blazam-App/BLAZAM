@@ -38,7 +38,7 @@ namespace BLAZAM.Server
         public static WebApplicationBuilder IntializeProperties(this WebApplicationBuilder builder)
         {
             //Set DebugMode flag from configuration
-            //ApplicationInfo ApplicationInfo = new(builder);
+            ApplicationInfo ApplicationInfo = new(builder);
             ApplicationInfo.inDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
             ApplicationInfo.inDemoMode = builder.Configuration.GetValue<bool>("DemoMode");
 
