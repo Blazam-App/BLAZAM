@@ -43,8 +43,17 @@ namespace BLAZAM.Server
             ApplicationInfo.inDemoMode = builder.Configuration.GetValue<bool>("DemoMode");
 
             //Set the installation ID
-            ApplicationInfo.installationId =GetInstallationId();
-
+            try
+            {
+                ApplicationInfo.installationId = GetInstallationId();
+            }catch (UnauthorizedAccessException ex)
+            {
+                Loggers.SystemLogger.Warning("Cannot access OS WMI to get UUID {@Error}", ex);
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Warning("Unexpected exception trying to access OS WMI to get UUID {@Error}", ex);
+            }
             //Set application directories
             //Program.RootDirectory = new SystemDirectory(builder.Environment.ContentRootPath);
             //Program.TempDirectory = new SystemDirectory(Path.GetTempPath() + "Blazam\\");
