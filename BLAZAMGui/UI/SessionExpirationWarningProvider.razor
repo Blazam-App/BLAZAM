@@ -52,13 +52,18 @@
 <AppModal Title=@AppLocalization["Session Expired"]
           @ref="ExpiredModal"
           YesText=@AppLocalization["Log In"]
-          OnYes="@(()=>{Refresh();})">
+          OnYes="@(()=>{Refresh();})"
+          Options=@(new DialogOptions{
+          ClassBackground="blur-background",
+          CloseButton=false,
+          CloseOnEscapeKey=false,
+          DisableBackdropClick=true})>
 
 
     <MudText>@AppLocalization["Your session has expired."]</MudText>
 
 
-</AppModal>
+    </AppModal>
     @code {
     private Timer? sessionTimeoutCheckTimer;
     AppModal? ExpirationWarningModal;

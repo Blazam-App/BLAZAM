@@ -32,7 +32,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return "/search/" + HttpUtility.UrlEncode(CanonicalName);
+                return "/search/" + CanonicalName;
             }
         }
 
