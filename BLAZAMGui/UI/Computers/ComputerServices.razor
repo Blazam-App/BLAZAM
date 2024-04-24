@@ -1,0 +1,110 @@
+@using BLAZAM.Common.Exceptions;
+@using System.Diagnostics;
+@inherits ComputerViewBase
+
+@implements IDisposable
+@if (Computer.IsOnline == true)
+{
+
+
+    if (sessionsErrorMessage == null)
+    {
+        <MudDataGrid Dense=true
+                     HorizontalScrollbar=true
+                     Elevation=0
+                     Virtualize=true
+                     OverscanCount="15"
+                     FixedHeader=true
+                     Height="350px"
+                     Items="services">
+
+            <Columns>
+                <TemplateColumn StickyLeft=true
+                                Title="Name">
+                    <CellTemplate>
+                        <MudBadge Icon="@Icons.Material.Filled.Warning"
+                                  Color=Color.Warning
+                                  Visible=@(context.Item.Status!="OK")>
+                            @if (context.Item.DisplayName != null)
+                            {
+                                <MudText>@context.Item.DisplayName</MudText>
+                            }
+                            else
+                            {
+                                <MudText>@context.Item.Name</MudText>
+
+                            }
+                        </MudBadge>
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="Description">
+                    <CellTemplate>
+
+                        <MudText Style="min-width:200px;max-width:400px;overflow-y:scroll;height:24px;">@context.Item.Description</MudText>
+
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Property="x=>x.State" />
+                <PropertyColumn Property="x=>x.StartName" />
+                <PropertyColumn Property="x=>x.PathName" />
+
+            </Columns>
+        </MudDataGrid>
+    }
+    else
+    {
+        <div>
+            @sessionsErrorMessage
+        </div>
+    }
+}
+else
+{
+    <MudText>Computer is not reachable.</MudText>
+}
+
+
+@code {
+    string? sessionsErrorMessage;
+    Timer? t;
+    List<ComputerService> services = new();
+
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        t = new Timer(RefreshServices, null, 1000, 10000);
+
+
+
+    }
+
+
+    async void RefreshServices(object? state)
+    {
+        try
+        {
+            if (Computer != null && Computer.IsOnline==true)
+            {
+                services = Computer.Services;
+
+                sessionsErrorMessage = null;
+            }
+            else
+                sessionsErrorMessage = "No Computer";
+
+        }
+        catch (AuthenticationException ex)
+        {
+            sessionsErrorMessage = ex.Message;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        t?.Dispose();
+    }
+}

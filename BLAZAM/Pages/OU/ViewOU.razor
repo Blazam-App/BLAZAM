@@ -1,133 +1,105 @@
-﻿@inherits DirectoryModelComponent
+﻿@inherits DirectoryEntryViewBase
+<AppPageTitle>@OU?.CanonicalName</AppPageTitle>
 
-<SetSubHeader>
-    <Bar Mode="BarMode.Horizontal"
-         CollapseMode="BarCollapseMode.Small"
-         Breakpoint="Breakpoint.Desktop"
-         NavigationBreakpoint="Breakpoint.Tablet"
-         ThemeContrast="ThemeContrast.Dark"
-         Padding="Padding.Is2.OnX"
-         Background="Background.Dark"
-         TextColor="TextColor.Light"
-         VerticalAlignment="VerticalAlignment.Middle">
-        <BarBrand Width=Width.Is100>
-            <Row>
-                <Column ColumnSize="ColumnSize.Is11.OnTablet.Is10">
+    <SetSubHeader>
 
-                    <Row>
-                        <Column ColumnSize="ColumnSize.Is4.OnTablet">
-                            @OU.CanonicalName
+        <DirectoryEntryViewHeader EditMode="@EditMode"
+                                  DirectoryEntry="@OU"
+                                  OnDelete="@DeleteOU"
+                                  OnMove="@(()=>{MoveToModal?.Show();})"
+                                  OnRename="@(()=>{RenameModal?.Show();})"
+                                  OnToggleEditMode="ToggleEditMode" />
+        <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
+
+        </MudOverlay>
 
 
-                        </Column>
-                        <Column ColumnSize="ColumnSize.Is8.OnTablet">
-                            <Small TextWeight="TextWeight.Light">@DirectoryTools.PrettifyOu(OU.OU) </Small>
-
-                        </Column>
-                    </Row>
-                </Column>
-
-                
-                <Column Float=Float.End ColumnSize="ColumnSize.Is1.OnTablet.Is2">
-
-                    <Dropdown>
-                        <DropdownToggle Color="Color.Primary">
-                            <Icon Name=@("fa-gear") />
-                        </DropdownToggle>
-                        <DropdownMenu>
-                           
-                            @if (OU.CanEdit)
-                            {
-                                <DropdownItem Clicked="ToggleEditMode">Edit...</DropdownItem>
-                            }
-                           
-                            @if (OU.CanRename)
-                            {
-                                <DropdownItem Clicked="@(()=>{RenameModal?.Show();})">Rename...</DropdownItem>
-
-                            }
-                            @if (OU.CanMove)
-                            {
-                                <DropdownItem Clicked="@(()=>{MoveToModal?.Show();})">Move To...</DropdownItem>
-                            }
-                            @if (OU.CanDelete)
-                            {
-                                <DropdownItem Clicked="@DeleteOU">Delete...</DropdownItem>
-                            }
-                        </DropdownMenu>
-                    </Dropdown>
-                </Column>
-            </Row>
-
-        </BarBrand>
-
-    </Bar>
-
-</SetSubHeader>
+    </SetSubHeader>
 
 
 
-<AppModal TextColor="TextColor.Dark" Title="Move To" @ref=@MoveToModal>
-    @if (MoveToModal.IsShown)
+    <AppModal Color="Color.Dark" Title="Move To" @ref=@MoveToModal>
+        @if (MoveToModal?.IsShown == true)
     {
-        <BLAZAM.Server.Shared.UI.OU.MoveToOUModalContent DirectoryModel="OU" />
+        <MoveToOUModalContent DirectoryModel="OU" />
     }
 </AppModal>
 <AppModal Title="Rename OU" @ref=@RenameModal>
-    @if (RenameModal.IsShown)
+    @if (RenameModal?.IsShown == true)
     {
         <RenameOUModalContent OU="OU" />
     }
 </AppModal>
 
 
-@if(OU!=null){
-    <Card>
-        <CardHeader>
-            @OU.CanonicalName
-        </CardHeader>
-        <CardBody>
-        @foreach(var childOU in OU.Children)
-        {
-            <ViewOU OU=childOU/>
-        }
-    </CardBody>
-    </Card>
+@if (OU != null)
+{
+
+
+    <MudDataGrid RowClass="cursor-pointer"
+                 Dense=true
+                 Filterable=true
+                 Virtualize=true
+                 Class="py-0"
+                 SortMode="SortMode.Single"
+                 Items="@OU.Children.OrderBy(x=>x.CanonicalName).OrderByDescending(x=>x.ObjectType)"
+                 T=IDirectoryEntryAdapter
+                 RowClick="@ChildClicked">
+        <ToolBarContent>
+            <MudText>@AppLocalization["Current OU"]: @OU.CanonicalName</MudText>
+
+                <MudSpacer />
+                <MudButton StartIcon="@Icons.Material.Filled.DriveFolderUpload"
+                           OnClick="@(()=>{Nav.NavigateTo(parentOU.SearchUri);})">@parentOU?.CanonicalName</MudButton>
+
+            </ToolBarContent>
+            <Columns>
+                <TemplateColumn Title=@AppLocalization["Type"]>
+                    <CellTemplate>
+                        <MudIcon Icon="@context.Item.TypeIcon()" />
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Title="@AppLocalization["Name"]" Property="x=>x.CanonicalName" />
+            </Columns>
+        </MudDataGrid>
 }
 
-@if (OU.HasUnsavedChanges)
+@if (OU!=null && OU.CanEdit && OU.HasUnsavedChanges)
 {
-        <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
+    <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
 }
 @code {
+    IADOrganizationalUnit? OU => DirectoryEntry as IADOrganizationalUnit;
+    IADOrganizationalUnit? parentOU;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        if (!OU.NewEntry)
-            AuditLogger.OU.Searched(OU);
+        await InvokeAsync(StateHasChanged);
+        await AuditLogger.Searched(OU);
+        if (OU != null)
+        {
+            parentOU = OU.GetParent();
+        }
+        LoadingData = false;
+        await RefreshEntryComponents();
     }
     async void SaveChanges()
     {
         if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
         {
-            OU.CommitChanges();
+            await OU.CommitChangesAsync();
             EditMode = false;
-            NotificationService.Success("The changes made to this ou have been saved.", "Changes Saved");
-            InvokeAsync(StateHasChanged);
+            Nav.WarnOnNavigation = false;
+            SnackBarService.Success("The changes made to this ou have been saved.");
+            await RefreshEntryComponents();
+
 
         }
 
     }
-    async void DiscardChanges()
+    void ChildClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
     {
-        if (await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
-        {
-            OU.DiscardChanges();
-            EditMode = false;
-            InvokeAsync(StateHasChanged);
-
-        }
-
+        Nav.NavigateTo(args?.Item.SearchUri);
     }
     async Task DeleteOU()
     {
@@ -136,18 +108,18 @@
             try
             {
                 OU.Delete();
-                NotificationService.Success(OU.CanonicalName+ " has been deleted.", "OU Deleted");
+                SnackBarService.Success(OU.CanonicalName + " has been deleted.");
 
-                OU = null;
+
                 Nav.NavigateTo("/ou/search");
 
             }
             catch (ApplicationException ex)
             {
-                NotificationService.Error(ex.Message);
+                SnackBarService.Error(ex.Message);
             }
-       
-            InvokeAsync(StateHasChanged);
+
+            await InvokeAsync(StateHasChanged);
         }
     }
 }

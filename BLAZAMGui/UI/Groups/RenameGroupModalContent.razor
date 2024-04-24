@@ -1,0 +1,60 @@
+﻿@inherits AppModalContent
+    <Section Title=@AppLocalization["Name"]>
+
+        @if (Group.CanEditField(ActiveDirectoryFields.SAMAccountName))
+        {
+
+
+        <MudTextField AutoFocus=true Label="@AppLocalization["Group Name"]" @bind-Value="@GroupName" />
+
+                
+            
+        }
+
+      
+    </Section>
+
+    @if (Group.CanEditField(ActiveDirectoryFields.Mail))
+    {
+        
+
+                <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@Group.Email" />
+
+            
+        
+    }
+
+    <MudButton Color=Color.Primary OnClick="SaveChanges">@AppLocalization["Save Changes"]</MudButton>
+
+@code {
+    #nullable disable warnings
+    string GroupName;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        GroupName = Group.CanonicalName;
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+     void SaveChanges()
+    {
+        if(GroupName.IsNullOrEmpty()){
+            SnackBarService.Warning("You must provide a group name");
+            GroupName = Group.CanonicalName;
+        }
+        try{
+            Group.Rename(GroupName);
+            SnackBarService.Success("The group has been renamed.");
+            
+            Close();
+        }
+        catch(Exception ex)
+        {
+            Loggers.ActiveDirectryLogger.Error("Error attempting to rename a group {@Error}",ex);
+            SnackBarService.Error("The group could not be renamed.");
+        }
+
+    }
+
+}

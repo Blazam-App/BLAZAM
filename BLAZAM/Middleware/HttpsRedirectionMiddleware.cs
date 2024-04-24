@@ -1,6 +1,5 @@
-﻿using BLAZAM.Server.Background;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+﻿using BLAZAM.Database.Context;
+using BLAZAM.Services.Background;
 
 namespace BLAZAM.Server.Middleware
 {
@@ -22,14 +21,21 @@ namespace BLAZAM.Server.Middleware
             bool forceHttps;
             // If the value is not cached, retrieve it from the database.
 
-            forceHttps = _monitor.RedirectToHttps;
-
+            try
+            {
+                forceHttps = DatabaseCache.ApplicationSettings.ForceHTTPS;
+            }catch (NullReferenceException ex)
+            {
+                Loggers.SystemLogger.Warning("Error while checking database cache for Force HTTPS {@Error}", ex);
+                forceHttps = false;
+            }
 
 
 
 
             // If the ForceHttps flag is set to true, redirect to HTTPS.
-            if (forceHttps && !context.Request.IsHttps)
+            if (forceHttps 
+                && !context.Request.IsHttps)
             {
                 string httpsUrl = "https://" + context.Request.Host + context.Request.Path;
                 context.Response.Redirect(httpsUrl);

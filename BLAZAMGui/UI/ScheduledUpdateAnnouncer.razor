@@ -1,0 +1,28 @@
+@inherits AppComponentBase
+
+@if (SchedueledUpdateTime != null && SchedueledUpdateTime != DateTime.MinValue)
+{
+
+    var timeLeft = (SchedueledUpdateTime - DateTime.Now).Value;
+    @if (timeLeft.TotalMinutes <= 60)
+    {
+
+        <MudBadge Color="Color.Warning">
+            Auto-update scheduled! The application will shutdown and update in @timeLeft.Minutes:@timeLeft.Seconds
+        </MudBadge>
+
+        Task.Delay(400).ContinueWith((s) => { InvokeAsync(StateHasChanged); });
+    }
+}
+
+
+@code {
+    DateTime? SchedueledUpdateTime { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        SchedueledUpdateTime = AutoUpdateService.ScheduledUpdateTime;
+        AutoUpdateService.OnAutoUpdateQueued += ((time) => { SchedueledUpdateTime = time; });
+        await InvokeAsync(StateHasChanged);
+    }
+}

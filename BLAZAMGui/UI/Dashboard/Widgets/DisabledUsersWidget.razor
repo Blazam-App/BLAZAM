@@ -1,0 +1,36 @@
+﻿@inherits Widget
+@attribute [Authorize]
+<div>
+
+    <h3>Disabled users changed in the last 90 days</h3>
+
+    <div Overflow="Overflow.Auto" Style="max-height:350px;">
+        @foreach (var user in LockedUsers)
+        {
+
+            <MudCard  @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
+
+
+                @user.DisplayName <br>
+                @user.SamAccountName <br>
+                @DirectoryTools.PrettifyOu(user.OU) <br>
+
+                @user.LastChanged <br>
+            </MudCard>
+
+        }
+    </div>
+</div>
+@code {
+    List<IADUser> LockedUsers = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Title = "Disabled Users";
+        LockedUsers = (await Directory.Users.FindChangedUsersAsync(false)).Where(u => u.Disabled).ToList();
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+    }
+}

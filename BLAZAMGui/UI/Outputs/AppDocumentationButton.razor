@@ -1,0 +1,34 @@
+﻿@inject IStringLocalizer<AppLocalization> AppLocalization
+@if (!Page.IsNullOrEmpty())
+{
+    <MudTooltip Text=@AppLocalization["Click to view help documentation"] RootClass="d-inline align-middle"> 
+        <MudFab StartIcon="@Icon"
+                Href=@("https://docs.blazam.org"+@Page)
+                Target="_blank"
+                Class="ma-4"
+                DisableElevation=true
+                Size="@Size"
+                IconSize="@IconSize"
+                IconColor="@IconColor"
+                Color="@Color" />
+    </MudTooltip>
+}
+@code {
+    [Parameter]
+    public string Icon { get; set; } = Icons.Material.Filled.QuestionMark;
+
+    [Parameter]
+    public string? Page { get; set; }
+
+    [Parameter]
+    public Color IconColor { get; set; } = Color.Surface;
+
+    [Parameter]
+    public Color Color { get; set; } = Color.Tertiary;
+
+    [Parameter]
+    public Size Size { get; set; }
+
+    [Parameter]
+    public Size IconSize { get; set; }
+}

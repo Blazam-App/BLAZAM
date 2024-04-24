@@ -1,0 +1,34 @@
+﻿@inherits ChatComponentBase
+
+
+<MudBadge Color="Color.Info" Content="@OtherViewers.Count()" Overlap=true>
+    <MudMenu AnchorOrigin="@Origin.BottomRight"
+             TransformOrigin=Origin.TopRight
+             Icon="@Icons.Material.Filled.People">
+        @if (ChatRoom?.Messages.Count < 1)
+        {
+            <MudMenuItem IconSize=Size.Small
+                         Icon="@Icons.Material.Filled.ChatBubble"
+                         OnClick="@OnClick">
+                Start Chat
+            </MudMenuItem>
+        }
+        <MudList>
+            <MudListSubheader>Other Viewers:</MudListSubheader>
+            @foreach (var user in OtherViewers)
+            {
+                <MudListItem>@user.Username</MudListItem>
+
+            }
+        </MudList>
+
+    </MudMenu>
+</MudBadge>
+@code {
+    [Parameter]
+    public IEnumerable<IApplicationUserState> OtherViewers { get; set; } = new List<IApplicationUserState>();
+
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+}

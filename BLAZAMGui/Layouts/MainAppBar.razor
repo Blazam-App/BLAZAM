@@ -1,0 +1,56 @@
+﻿@inject IStringLocalizer<AppLocalization> AppLocalization
+@inject IApplicationUserStateService UserStateService
+@inject NavigationManager Nav
+
+
+<MudAppBar Color=Color.Default Elevation="1">
+
+    <MudBreakpointProvider>
+        @if (mainLayout != null)
+        {
+            <MudHidden Breakpoint="@(mainLayout.BrowseExpanded?Breakpoint.None:Breakpoint.XlAndUp)">
+                <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                               Color="Color.Inherit"
+                               Edge="Edge.Start"
+                               OnClick="@((e) => {mainLayout.DrawerOpen=!mainLayout.DrawerOpen; })" />
+            </MudHidden>
+        }
+        <MudLink OnClick="@(()=>{Nav.NavigateTo(Nav.Uri);})">
+            <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+        </MudLink>
+        <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert=true>
+            <MudText Align="Align.Center" Class="px-3 align-middle"> @DatabaseCache.ApplicationSettings?.AppAbbreviation</MudText>
+
+        </MudHidden>
+
+
+ 
+    </MudBreakpointProvider>
+    <MudSpacer />
+ 
+    @if (mainLayout?.Header != null)
+    {
+        @mainLayout.Header.ChildContent
+
+    }
+    else
+    {
+        <SearchPageHeader/>
+    }
+
+    <MudSpacer />
+    <AuthorizeView Roles=@(UserRoles.SuperAdmin)>
+        <ApplicationNewsProvider />
+    </AuthorizeView>
+    <AppUserButton />
+
+</MudAppBar>
+
+
+@code {
+
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+
+
+}

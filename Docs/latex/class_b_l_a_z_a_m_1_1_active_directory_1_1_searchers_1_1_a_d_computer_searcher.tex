@@ -1,0 +1,111 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Searchers.\+ADComputer\+Searcher Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher}{}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher}\index{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher@{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher}}
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Searchers.\+ADComputer\+Searcher\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.564246cm]{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_a1b08286d597914db8c885d88970c7b56}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_a1b08286d597914db8c885d88970c7b56} 
+{\bfseries ADComputer\+Searcher} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory, \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_services_1_1_wmi_factory}{Wmi\+Factory}} wmi\+Factory)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}{IADComputer}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_ad9e568b00a914b03212f3e59408b6b45}{Find\+By\+String\+Async}} (string search\+Term, bool ignore\+Disabled=true)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}{IADComputer}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_ac437443aaccf6311810f1131b7dc5879}{Find\+By\+String}} (string search\+Term, bool ignore\+Disabled=true)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}{IADComputer}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_afb2ea5dac25fc23a379f1bf6112ff5a9}{Find\+New\+Computers\+Async}} (int max\+Age\+In\+Days=14, bool ignore\+Disabled\+Computers=false)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}{IADComputer}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_a07ba93a86e1953723612ef79a57b2db6}{Find\+New\+Computers}} (int max\+Age\+In\+Days=14, bool ignore\+Disabled\+Computers=false)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries ADSearcher} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_services_1_1_wmi_factory}{Wmi\+Factory}} \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_a8b14f5ba55bd9324772d6b76b615e6ef}{Wmi\+Factory}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Properties inherited from \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer\+Searcher}}}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual Search\+Result\+Collection {\bfseries Search\+Objects} (string field\+Query, Active\+Directory\+Object\+Type search\+Type, int return\+Count=5, bool? enabled\+Only=true)
+\item 
+virtual Search\+Result\+Collection {\bfseries Search\+Objects} (string? search\+Base\+DN, string field\+Query, Active\+Directory\+Object\+Type? search\+Type, int return\+Count=5, bool? enabled\+Only=true, Search\+Scope search\+Scope=Search\+Scope.\+Subtree)
+\item 
+Search\+Result\+Collection {\bfseries Search\+Object\+By\+SID} (string sid)
+\item 
+List$<$ T $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_a1c5b8c87363140052743cc42141df205}{Convert\+To$<$ T $>$}} (Search\+Result\+Collection r)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} {\bfseries Directory}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_ac437443aaccf6311810f1131b7dc5879}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_ac437443aaccf6311810f1131b7dc5879} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher@{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher}!FindByString@{FindByString}}
+\index{FindByString@{FindByString}!BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher@{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher}}
+\doxysubsubsection{\texorpdfstring{FindByString()}{FindByString()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}{IADComputer}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADComputer\+Searcher.\+Find\+By\+String (\begin{DoxyParamCaption}\item[{string}]{search\+Term,  }\item[{bool}]{ignore\+Disabled = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_ad9e568b00a914b03212f3e59408b6b45}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_ad9e568b00a914b03212f3e59408b6b45} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher@{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher}!FindByStringAsync@{FindByStringAsync}}
+\index{FindByStringAsync@{FindByStringAsync}!BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher@{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher}}
+\doxysubsubsection{\texorpdfstring{FindByStringAsync()}{FindByStringAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}{IADComputer}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADComputer\+Searcher.\+Find\+By\+String\+Async (\begin{DoxyParamCaption}\item[{string}]{search\+Term,  }\item[{bool}]{ignore\+Disabled = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_a07ba93a86e1953723612ef79a57b2db6}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_a07ba93a86e1953723612ef79a57b2db6} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher@{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher}!FindNewComputers@{FindNewComputers}}
+\index{FindNewComputers@{FindNewComputers}!BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher@{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher}}
+\doxysubsubsection{\texorpdfstring{FindNewComputers()}{FindNewComputers()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}{IADComputer}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADComputer\+Searcher.\+Find\+New\+Computers (\begin{DoxyParamCaption}\item[{int}]{max\+Age\+In\+Days = {\ttfamily 14},  }\item[{bool}]{ignore\+Disabled\+Computers = {\ttfamily false} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_afb2ea5dac25fc23a379f1bf6112ff5a9}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_afb2ea5dac25fc23a379f1bf6112ff5a9} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher@{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher}!FindNewComputersAsync@{FindNewComputersAsync}}
+\index{FindNewComputersAsync@{FindNewComputersAsync}!BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher@{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher}}
+\doxysubsubsection{\texorpdfstring{FindNewComputersAsync()}{FindNewComputersAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer}{IADComputer}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADComputer\+Searcher.\+Find\+New\+Computers\+Async (\begin{DoxyParamCaption}\item[{int}]{max\+Age\+In\+Days = {\ttfamily 14},  }\item[{bool}]{ignore\+Disabled\+Computers = {\ttfamily false} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer\+Searcher}}.
+
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_a8b14f5ba55bd9324772d6b76b615e6ef}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_computer_searcher_a8b14f5ba55bd9324772d6b76b615e6ef} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher@{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher}!WmiFactory@{WmiFactory}}
+\index{WmiFactory@{WmiFactory}!BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher@{BLAZAM.ActiveDirectory.Searchers.ADComputerSearcher}}
+\doxysubsubsection{\texorpdfstring{WmiFactory}{WmiFactory}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_services_1_1_wmi_factory}{Wmi\+Factory}} BLAZAM.\+Active\+Directory.\+Searchers.\+ADComputer\+Searcher.\+Wmi\+Factory\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_computer_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADComputer\+Searcher}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Searchers/ADComputer\+Searcher.\+cs\end{DoxyCompactItemize}

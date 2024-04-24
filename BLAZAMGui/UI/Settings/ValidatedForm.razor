@@ -1,0 +1,46 @@
+﻿@inherits AppComponentBase
+
+
+@code {
+    bool _saveDisabled = false;
+    protected bool SaveDisabled
+    {
+        get
+        {
+            return _saveDisabled;
+        }
+        set => _saveDisabled = value;
+    }
+    [Parameter]
+    public EventCallback OnValidSubmit{ get; set; }
+
+    protected virtual async void Save()
+    {
+        if (Context != null)
+        {
+            try
+            {
+                if (ApplicationInfo.InDemoMode && ApplicationInfo.InstallationCompleted && UserStateService.CurrentUsername.Equals("demo", StringComparison.OrdinalIgnoreCase))
+                {
+                    SnackBarService.Warning("Settings changes are not allowed in the demo");
+                    return;
+
+                }
+                await Context.SaveChangesAsync();
+                SnackBarService.Success("Settings have been saved");
+            }
+            catch (Exception ex)
+            {
+                SnackBarService.Error(ex.Message);
+
+            }
+            await InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            SnackBarService.Success("Database not available");
+
+        }
+    }
+
+}

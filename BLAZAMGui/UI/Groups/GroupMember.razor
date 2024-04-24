@@ -1,0 +1,38 @@
+﻿@inherits DirectoryModelComponent
+
+    @if (Member != null)
+    {
+
+    <MudText Style="cursor:pointer;" Display=Display.InlineBlock onclick="@(()=>{Nav.NavigateTo(Member.SearchUri);})">
+                @Member.CanonicalName
+
+            </MudText>
+
+    <MudIcon Icon="@("fa-times")" OnClick="RemoveFromGroup" Float=Float.End Color="Color.Error" Style="cursor:pointer;" />
+
+      
+    }
+
+
+@code {
+#nullable disable warnings
+    [Parameter]
+    public string To { get; set; }
+
+
+    [Parameter]
+    public IGroupableDirectoryAdapter Member { get; set; }
+
+    [Parameter]
+    public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
+    async Task RemoveFromGroup()
+    {
+      
+            Group.UnassignMember(Member);
+            await OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group));
+
+           // Notifications.Success("Removed from " + Group.DisplayName, "Sucess", options => options.IntervalBeforeClose = 5000);
+        
+    }
+
+}

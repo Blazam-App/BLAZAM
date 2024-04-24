@@ -1,0 +1,30 @@
+@inherits AppComponentBase
+<MudText>
+    @Message
+</MudText>
+@code {
+    [Parameter]
+    public IJobStep Step { get; set; }
+
+    private string Message
+    {
+        get
+        {
+            switch (Step.Result)
+            {
+                case JobResult.Passed:
+                    return AppLocalization["Completed Successfully"];
+                case JobResult.Failed:
+                    return Step.Exception?.Message;
+                case JobResult.Cancelled:
+                    return AppLocalization["Cancelled"];
+                case JobResult.Running:
+                    return AppLocalization["Running"];
+                case JobResult.NotRun:
+                    return AppLocalization["Queued"];
+                default:
+                    return "";
+            }
+        }
+    }
+}

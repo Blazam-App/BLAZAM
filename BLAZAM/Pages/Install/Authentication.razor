@@ -2,94 +2,100 @@
 @using System.Net
 @using System.Diagnostics
 @using Microsoft.EntityFrameworkCore;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
 @layout InstallLayout
 @inherits ValidatedForm
 
-<Heading Size="HeadingSize.Is3">Authentication</Heading>
-<Div>
-    <Heading Size="HeadingSize.Is6">
-        Please set a secure admin password.
+<MudText Typo="Typo.h3" Size="HeadingSize.Is3">Authentication</MudText>
+<MudText Typo="Typo.h6">
+    Please set a secure admin password.
 
-    </Heading>
-    <Heading Size="HeadingSize.Is6">
+</MudText>
+<MudText Typo="Typo.h6">
 
-        This account will have total application access.
-    </Heading>
-    <Form @onsubmit="SubmitForm">
-        <SettingsField>
-            <FieldLabel>Username</FieldLabel>
-            <FieldBody>
-                <TextEdit Text="admin" Disabled />
-            </FieldBody>
-        </SettingsField>
-        <Validations Model=adminPassword StatusChanged="OnValidation">
-            <Validation Validator="AppValidationRule.IsValidPassword">
-                <SettingsField>
-                    <FieldLabel>Password</FieldLabel>
-                    <FieldBody>
-                        <TextEdit Role="TextRole.Password" @bind-Text=adminPassword>
-                            <Feedback>
-                                <ValidationError>
-                                    The password does not meet the minimum complexity requirements.
-                                </ValidationError>
-                            </Feedback>
-                            </TextEdit>
-                    </FieldBody>
-                </SettingsField>
-            </Validation>
-            <Validation Validator="Matches">
-                <SettingsField>
-                    <FieldLabel>Confirm Password</FieldLabel>
-                    <FieldBody>
-                        <TextEdit Role="TextRole.Password">
-                            <Feedback>
-                                <ValidationError>
-                                    The passwords do not match.
-                                </ValidationError>
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
-                </SettingsField>
-            </Validation>
-        </Validations>
+    This account will have total application access.
+</MudText>
+<EditForm Model=settings OnValidSubmit="SubmitForm">
+    <SettingsField>
+        <FieldLabel>
+            @AppLocalization["Username"]
+        </FieldLabel>
+        <ChildContent>
+            <MudTextField Label="Username" Text="admin" T=string Disabled />
+        </ChildContent>
+    </SettingsField>
+    <SettingsField>
+        <FieldLabel>
+            @AppLocalization["Password"]
+        </FieldLabel>
+        <ChildContent>
+            <MudTextField Label="Password"
+                          AutoFocus=true
+                          Immediate=true
+                          HelperText="Must be 6 characters or longer containing at least one letter,numer and special character."
+                          InputType="InputType.Password"
+                          For="@(() => settings.AdminPassword)"
+                          @bind-Value=settings.AdminPassword />
+        </ChildContent>
+
+    </SettingsField>
+    <SettingsField>
+        <FieldLabel>
+            @AppLocalization["Password"]
+        </FieldLabel>
+        <ChildContent>
+            <MudTextField For="@(() => settings.AdminPasswordConfirmed)"
+                          Immediate=true
+                          @bind-Value=settings.AdminPasswordConfirmed
+                          Label="Confirm Password"
+                          InputType="InputType.Password"
+                          T="string" />
+        </ChildContent>
+
+    </SettingsField>
 
 
-        <Button Disabled=saveDisabled Color="Color.Primary" Type="ButtonType.Submit">Save Password</Button>
-    </Form>
-
-</Div>
+    <MudButton Disabled=SaveDisabled Color="Color.Primary" ButtonType="ButtonType.Submit">Save Password</MudButton>
+</EditForm>
 
 
 @code {
     [Parameter]
     public EventCallback StepCompleted { get; set; }
 
-    private string errorText = "";
-    private string showError = "d-none";
-    public string adminPassword = "";
+    AuthenticationSettings settings = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
+
+        if (settings !=null && settings.AdminPassword == "password")
+            settings.AdminPassword = "";
+
+            
+        await InvokeAsync(StateHasChanged);
+
+    }
+
     public async void SubmitForm()
     {
-        DatabaseContext context = DbFactory.CreateDbContext();
         try
         {
-            context.AuthenticationSettings.FirstOrDefault().AdminPassword = adminPassword;
 
-            await context.SaveChangesAsync();
-            StepCompleted.InvokeAsync();
+            if (settings.Id == 0)
+                Context.AuthenticationSettings.Add(settings);
+
+            settings.AdminPassword = settings.AdminPasswordConfirmed.Encrypt();
+            await Context.SaveChangesAsync();
+            await StepCompleted.InvokeAsync();
 
         }
         catch (Exception ex)
         {
-            errorText = ex.Message + " " + ex.InnerException?.Message;
-            showError = "";
+            await MessageService.Error(ex.Message + " " + ex.InnerException?.Message);
+
 
         }
         await InvokeAsync(StateHasChanged);
-    }
-    async void Matches(ValidatorEventArgs e)
-    {
-        e.Status = ((adminPassword.Equals(e.Value as string)) ? ValidationStatus.Success : ValidationStatus.Error);
     }
 }

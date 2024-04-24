@@ -1,0 +1,181 @@
+@using BLAZAM.Services.Duo
+@inherits SettingsComponents
+@inject IDuoClientProvider Duo
+
+
+
+<MudText Typo="Typo.h4">@AppLocalization["Authentication Settings"] <AppDocumentationButton Page="/admin/settings/authentication" /></MudText>
+
+<MudForm @onsubmit=Save>
+
+
+    <SettingsField Label="@AppLocalization["Admin Password"]">
+
+        <MudTextField Label="@AppLocalization["Admin Password"]" InputType="InputType.Password" @bind-Value="newAdminPassword" />
+    </SettingsField>
+
+    <SettingsField Label="@AppLocalization["Session Timeout"]">
+
+        <MudNumericField Label="@AppLocalization["Session Timeout"]" HelperText="Time in minute" T="int?" @bind-Value="@settings.SessionTimeout" />
+
+    </SettingsField>
+    <MudDivider Class="my-6" />
+    <SettingsField Label="@AppLocalization["Duo Security MFA (optional)"]">
+
+        <StatusCheck Status=duoHealthCheckResult Text="@AppLocalization["Duo Health Check"]" />
+    </SettingsField>
+    <SettingsField Label="@AppLocalization["Duo Enabled"]">
+
+        <MudSwitch Label=@AppLocalization["Duo Enabled"]
+                   T="bool" @bind-Value="@settings.DuoEnabled"
+                   UnCheckedColor="Color.Error"
+                   Color="Color.Success"
+                   Disabled=@(settings.DuoEnabled!=true && duoHealthCheckResult!=true) />
+
+    </SettingsField>
+    <SettingsField Label="@AppLocalization["Duo Unreachable Behavior"]">
+
+        <MudSwitch Label=@settings.DuoUnreachableBehavior.ToString()
+                   T="DuoUnreachableBehavior"
+                   Converter=@(new BehaviorConverter())
+                   @bind-Value="@settings.DuoUnreachableBehavior"
+                   UnCheckedColor="Color.Error"
+                   Color="Color.Success"
+                   Disabled=@(duoHealthCheckResult!=true) />
+
+    </SettingsField>
+    <SettingsField Label=@AppLocalization["Duo ClientID"]>
+
+        <MudTextField Label=@AppLocalization["Duo ClientID"] InputType="InputType.Text" @bind-Value="@settings.DuoClientId" />
+
+    </SettingsField>
+    <SettingsField Label=@AppLocalization["Duo ClientSecret"]>
+
+        <MudTextField Label=@AppLocalization["Duo ClientSecret"] InputType="InputType.Password" @bind-Value="@settings.DuoClientSecret" />
+
+    </SettingsField>
+    <SettingsField Label=@AppLocalization["Duo ApiHost"]>
+
+        <MudTextField Label=@AppLocalization["Duo ApiHost"] InputType="InputType.Text" @bind-Value="@settings.DuoApiHost" />
+
+    </SettingsField>
+
+
+
+
+    <SettingsField>
+
+        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+    </SettingsField>
+
+
+
+</MudForm>
+@code {
+    #nullable disable warnings
+    AuthenticationSettings settings = new AuthenticationSettings();
+    string newAdminPassword;
+    string adminPasswordInDb;
+    bool? duoHealthCheckResult = null;
+
+    string _timeoutString = "Loading...";
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Task.Run(async () =>
+        {
+            LoadingData = true;
+            await InvokeAsync(StateHasChanged);
+
+            originalSettings = await Context.AuthenticationSettings.AsNoTracking().FirstOrDefaultAsync();
+
+            settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
+            _timeoutString = settings.SessionTimeout.ToString() + " Minutes";
+
+            //Pull encrypted admin pass and store encrypted value
+            adminPasswordInDb = settings?.AdminPassword;
+            newAdminPassword = adminPasswordInDb;
+            LoadingData = false;
+            await InvokeAsync(StateHasChanged);
+            DoDuoHealthCheck();
+
+        });
+
+
+    }
+    private async void DoDuoHealthCheck()
+    {
+        duoHealthCheckResult = null;
+        await InvokeAsync(StateHasChanged);
+
+        duoHealthCheckResult = await Duo.DoHealthCheckAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+    private void UpdateTimeoutDisplay()
+    {
+        _timeoutString = settings.SessionTimeout.ToString() + " Minutes";
+        InvokeAsync(StateHasChanged);
+
+    }
+    protected override async void Save()
+    {
+        if (!newAdminPassword.Equals(adminPasswordInDb))
+        {
+
+            settings.AdminPassword = newAdminPassword.Encrypt();
+
+            adminPasswordInDb = settings.AdminPassword;
+
+        }
+
+        await AuditLogger.System.SettingsChanged("Authentication", settings.GetChanges(originalSettings));
+        base.Save();
+        await InvokeAsync(StateHasChanged);
+        DoDuoHealthCheck();
+    }
+
+    public class BehaviorConverter : BoolConverter<DuoUnreachableBehavior>
+    {
+
+        public BehaviorConverter()
+        {
+            SetFunc = OnSet;
+            GetFunc = OnGet;
+        }
+
+        private DuoUnreachableBehavior OnGet(bool? value)
+        {
+            try
+            {
+                return (value == true) ? DuoUnreachableBehavior.Bypass : DuoUnreachableBehavior.Block;
+            }
+            catch (Exception e)
+            {
+                UpdateGetError("Conversion error: " + e.Message);
+                return default;
+            }
+        }
+
+        private bool? OnSet(DuoUnreachableBehavior arg)
+        {
+            if (arg == null)
+                return null;
+            try
+            {
+                return (int)arg == 1;
+
+            }
+            catch (FormatException e)
+            {
+                UpdateSetError("Conversion error: " + e.Message);
+                return null;
+            }
+        }
+
+    }
+    private bool? DuoUnreachableBehaviorConverter(DuoUnreachableBehavior val)
+    {
+        return (int)val == 1;
+    }
+}

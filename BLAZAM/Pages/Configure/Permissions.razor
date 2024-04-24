@@ -1,22 +1,76 @@
 ﻿@page "/permissions"
+@page "/permissions/{ActiveTab}"
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
-@inherits AppComponentBase
+@inherits TabbedAppComponentBase
+
+<AppPageTitle>Permissions</AppPageTitle>
 <AuthorizeView Roles=@UserRoles.SuperAdmin>
 
-    <h2>Permissions</h2>
-    @if (Monitor.DirectoryConnected == ConnectionState.Up)
-    {
-        <BLAZAM.Server.Shared.UI.Settings.Permissions.PrivilegeLevelEditor />
-    }
-    <BLAZAM.Server.Shared.UI.Settings.Permissions.AccessLevelEditor />
-    @if (Monitor.DirectoryConnected == ConnectionState.Up)
-    {
-        <BLAZAM.Server.Shared.UI.Settings.Permissions.ImpersonateUser />
-        <BLAZAM.Server.Shared.UI.Settings.Permissions.PrivilegeMapper />
+    <SetHeader>
+    </SetHeader>
 
-    }
+
+
+
+    <MudTabs ActivePanelIndex="@ActiveTab">
+        <MudTabPanel>
+            <ChildContent>
+
+
+                @if (Monitor.DirectoryConnectionStatus == ServiceConnectionState.Up)
+                {
+                    <DelegateEditor />
+                }
+
+
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Delegates"]
+            </TabContent>
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
+
+
+                <AccessLevelEditor />
+
+
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Access Levels"]
+            </TabContent>
+
+        </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
+
+                @if (Monitor.DirectoryConnectionStatus == ServiceConnectionState.Up)
+                {
+                    <ImpersonateUser />
+                    <PermissionMapper />
+
+                }
+
+
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Mappings"]
+            </TabContent>
+
+        </MudTabPanel>
+       
+    </MudTabs>
+
+
+    
 </AuthorizeView>
-@code {
 
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        BaseUri = "/permissions";
+    }
 }

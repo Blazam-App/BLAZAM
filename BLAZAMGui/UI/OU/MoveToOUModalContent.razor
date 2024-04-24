@@ -1,0 +1,62 @@
+﻿@inherits AppModalContent
+
+
+<MudText>Choose OU</MudText>
+
+<OUTreeView @bind-StartingSelectedOU=@StartingOU @bind-SelectedEntry=@SelectedOU />
+
+
+
+
+@code {
+
+
+    #nullable disable warnings
+
+    [Parameter]
+    public IDirectoryEntryAdapter DirectoryModel { get; set; }
+
+    IDirectoryEntryAdapter SelectedOU { get; set; }
+    IADOrganizationalUnit StartingOU { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        StartingOU = DirectoryModel.GetParent();
+        Modal.OnYes = MoveTo;
+        Modal.YesText = AppLocalization["Move"];
+        Modal.Title = "Move To";
+
+    }
+
+    async void MoveTo()
+    {
+        if (SelectedOU.DN.Equals(DirectoryModel.OU))
+        {
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " is already in that OU.");
+            return;
+        }
+        if (SelectedOU is IADOrganizationalUnit ouToMoveTo)
+        {
+
+
+            // if (await MessageService.Confirm("Are you sure you want to move this " + DirectoryModel.ObjectType.ToString().ToLower() + " to " + SelectedOU.CanonicalName, "Confirm move"))
+            // {
+
+
+            DirectoryModel.MoveTo(ouToMoveTo);
+
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been moved to " + ouToMoveTo.CanonicalName + ", but changes need to be saved.");
+            await ModelChanged.InvokeAsync();
+            Close();
+            return;
+
+
+            //}
+        }
+
+    }
+    protected override bool IsValid => SelectedOU != null;
+
+
+}

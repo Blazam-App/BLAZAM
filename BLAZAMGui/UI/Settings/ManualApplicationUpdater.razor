@@ -1,0 +1,200 @@
+@using BLAZAM.FileSystem;
+@using BLAZAM.Update;
+@inherits AppComponentBase
+
+@if (ApplicationInfo.InDebugMode)
+{
+
+    <code>
+        Working Directory: @ApplicationInfo.ApplicationRoot
+    </code>
+    <code>
+        PID: @ApplicationInfo.RunningProcess.Id
+    </code>
+}
+@if (AutoUpdateService.IsUpdatedScheduled)
+{
+    <MudAlert Class="mud-alert-filled-info">
+        <MudText Typo="Typo.h6">@AppLocalization["Update Scheduled"]</MudText>
+        <MudText>
+            The application will be updated to version @AutoUpdateService.ScheduledUpdate?.Version at @AutoUpdateService.ScheduledUpdateTime
+        </MudText>
+    </MudAlert>
+}
+@if (LoadingData)
+{
+    <MudText>Checking for update..</MudText>
+
+}
+
+
+@{
+    if (LatestAvailableVersion != null)
+    {
+        var value = updateStage;
+        switch (updateStage)
+        {
+            case UpdateStage.Downloading:
+                <MudText>Downloading Update...</MudText>
+                @if (DownladProgress != null)
+                {
+
+                    <MudProgressLinear Value="@DownladProgress.FilePercentage">
+                        @(DownladProgress?.CompletedBytes / 1024 / 1024)MB
+                    </MudProgressLinear>
+                }
+                <MudButton Color=Color.Error OnClick=@(()=>{ LatestAvailableVersion.Cancel(); })>Cancel</MudButton>
+                break;
+            case UpdateStage.Staging:
+                <MudText>Staging update, please wait a moment...</MudText>
+                <MudProgressLinear Animated Striped />
+                break;
+            case UpdateStage.BackingUp:
+                <MudText>Backing up current version, please wait a moment...</MudText>
+                <MudProgressLinear Animated Striped />
+
+                break;
+            case UpdateStage.Applying:
+                <MudText>Applying update, please wait a moment...</MudText>
+                <MudProgressLinear Animated Striped />
+
+                break;
+            case UpdateStage.None:
+            default:
+
+
+                <MudTimeline TimelineAlign="TimelineAlign.Default" TimelinePosition="TimelinePosition.Top">
+                    @{
+                        int i = 0;
+                    }
+
+                    <MudTimelineItem Color="Color.Info" Size="Size.Small">
+                        <ItemOpposite>
+                            <MudText Color="Color.Info" Typo="Typo.h5">@AppLocalization["Previous Versions"]</MudText>
+                        </ItemOpposite>
+                        <ItemContent>
+                            <MudCard Class="pa-3">
+
+
+                                <MudButton Class="mx-6" OnClick="(()=>{ShowAllUpdates=!ShowAllUpdates;})" Color="Color.Success">@(ShowAllUpdates == false ? "Show Previous Updates" : "Hide Previous Updates")</MudButton>
+
+
+
+                                </MudCard>
+
+
+                            </ItemContent>
+                        </MudTimelineItem>
+
+
+
+                        @if (ShowAllUpdates)
+                    {
+                        @foreach (var update in UpdateService.StableUpdates.OrderBy(x => x.Version))
+                        {
+
+
+                            <AvailableUpdate Update=@update OnApply="ApplyUpdate" Disabled="@(!ApplicationInfo.InDebugMode)" Even=@(i%2==0) />
+
+                            i++;
+
+                        }
+                    }
+                    @if (UpdateService.LatestUpdate.Version.CompareTo(ApplicationInfo.RunningVersion) > -1)
+                    {
+                        <AvailableUpdate Update=@UpdateService.LatestUpdate OnApply="ApplyUpdate" Even=@(i%2==0) />
+
+                    }
+
+                    @if (LatestAvailableVersion != null && LatestAvailableVersion.Version.CompareTo(ApplicationInfo.RunningVersion) < 1)
+                    {
+                        <MudTimelineItem Color="Color.Success" Size="Size.Small">
+                            <ItemOpposite>
+                                <MudText Color="Color.Success" Typo="Typo.h5">@AppLocalization["Up to date"]</MudText>
+                            </ItemOpposite>
+                            <ItemContent>
+
+                            </ItemContent>
+                        </MudTimelineItem>
+                    }
+
+                </MudTimeline>
+
+                @if (AutoUpdateService.IsUpdatedScheduled)
+                {
+                    <MudButton OnClick=@(()=>{AutoUpdateService.Cancel();}) Color="Color.Error">Cancel Auto Update</MudButton>
+                }
+
+
+                break;
+
+        }
+    }
+}
+
+
+
+
+@code {
+    ApplicationUpdate? LatestAvailableVersion { get; set; }
+
+    UpdateStage updateStage = UpdateStage.None;
+
+    FileProgress? DownladProgress { get; set; } = null;
+
+    private bool ShowAllUpdates { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await GetLatestUpdate();
+    }
+    public async Task GetLatestUpdate()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        try
+        {
+            LatestAvailableVersion = await UpdateService.GetUpdates();
+        }
+        catch (Exception ex)
+        {
+            SnackBarService.Error(ex.Message);
+        }
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    async Task ApplyUpdate()
+    {
+        if (await MessageService.Confirm("Would you like to apply the update?"))
+        {
+            var output = LatestAvailableVersion.GetUpdateJob();
+            if (output != null)
+            {
+                MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization["Update"]);
+                await output.RunAsync();
+                // SnackBarService.Success("Update started successfully. The web application will restart and update momentarily.");
+
+            }
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    async void UpdateDownloadPercentage(FileProgress? progress)
+    {
+
+        DownladProgress = progress;
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    void TestAutoUpdate()
+    {
+        if (LatestAvailableVersion != null)
+            AutoUpdateService.ScheduleUpdate(DateTime.Now.TimeOfDay + TimeSpan.FromSeconds(60), LatestAvailableVersion);
+    }
+
+
+}

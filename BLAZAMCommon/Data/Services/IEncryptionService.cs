@@ -1,8 +1,12 @@
-﻿namespace BLAZAM.Server.Data.Services
+﻿using BLAZAM.Common.Data;
+
+namespace BLAZAM.Common.Data.Services
 {
     public interface IEncryptionService
     {
-        T DecryptObject<T>(string cipherText);
+        ServiceConnectionState Status { get; }
+
+        T? DecryptObject<T>(string? cipherText);
         string EncryptObject(object obj);
     }
 }

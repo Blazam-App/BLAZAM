@@ -1,20 +1,51 @@
 ﻿@page "/oops"
+@using BLAZAM.Gui.UI.Dev
 
 @layout ErrorLayout
+@inject ApplicationInfo ApplicationInfo
 @inject IStringLocalizer<AppLocalization> Loc
 
-@if (Program.IsDevelopment)
-{
-    <DevTools />
-}
 
-<h3>@Loc["Oops"]</h3>
-<h6>@ErrorMessage</h6>
-<p>@Loc["Please report to"] yourself</p>
+
+<PageTitle>Oops</PageTitle>
+<MudText Align="Align.Center">
+    <h3>@Loc["Oops"]</h3>
+
+    @if (Exception is null)
+    {
+        <h6>@ErrorMessage</h6>
+        <p>@DetailsMessage</p>
+        <p>@HelpMessage</p>
+    }
+    else
+    {
+        <h4>@Exception.GetType().Name</h4>
+        <p>@Exception?.Message</p>
+        <p>@Exception?.InnerException?.Message</p>
+        <p>@Exception?.HelpLink</p>
+    }
+
+    <p>@Loc["Please report to"] your system administrator</p>
+
+
+</MudText>
+
 @code {
 
-    public static string ErrorMessage {get;set;}
-    public static string DetailsMessage {get;set;}
-    public static string HelpMessage {get;set;}
-
+    public static string? ErrorMessage { get; set; }
+    public static string? DetailsMessage { get; set; }
+    public static string? HelpMessage { get; set; }
+    public static Exception? Exception { get; set; }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (AppDatabaseFactory.FatalError != null)
+        {
+            Exception = AppDatabaseFactory.FatalError;
+        }
+        if (AppDatabaseFactory.DatabaseCreationFailureReason != null)
+        {
+            Exception = AppDatabaseFactory.DatabaseCreationFailureReason;
+        }
+    }
 }

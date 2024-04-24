@@ -1,0 +1,217 @@
+﻿@using BLAZAM.Update;
+@using System.Security.Principal;
+@inherits SettingsComponents
+
+
+
+<MudText Typo="Typo.h4">@AppLocalization["Update Settings"] <AppDocumentationButton Page="/update/self/" /></MudText>
+<MudForm @onsubmit="Save">
+
+
+    @if (settings != null)
+    {
+
+        if (updateCredential.HasValue)
+        {
+            @switch (updateCredential.Value)
+            {
+                case UpdateCredential.Application:
+                    <MudAlert Icon="@Icons.Material.Filled.Warning" Class="mud-alert-filled-warning">
+                        The account running Blazam can write to the application directory.
+                        This exposes the host machine to unneccessary risk. Change the application identity
+                        to a lower privileged account to improve security.
+                    </MudAlert>
+                    break;
+                case UpdateCredential.Active_Directory:
+                    <MudAlert Icon="@Icons.Material.Filled.Check" Class="mud-alert-filled-success">
+                        The Active Directory Credentials are validated for updating.
+                    </MudAlert>
+                   
+                    break;
+                case UpdateCredential.Update:
+                    <MudAlert Icon="@Icons.Material.Filled.Check" Class="mud-alert-filled-success">
+                        The Update Credentials are validated for updating.
+                    </MudAlert>
+                   
+                    break;
+                case UpdateCredential.None:
+                    <MudAlert Icon="@Icons.Material.Filled.Error" Class="mud-alert-filled-error">
+                        There are no credentials configured with write permission to the application directory!
+                        Try configuring custom update credentials.
+                    </MudAlert>
+                    break;
+
+              
+            }
+
+        }
+        <SettingsField Label="@AppLocalization["Application Credentials"]">
+
+            <MudTextField T="string" Label="@AppLocalization["Application Credentials"]" Disabled=true Value="@WindowsIdentity.GetCurrent().Name.ToString().Replace('_',' ')" />
+        </SettingsField>
+
+        <SettingsField Label="@AppLocalization["Update Credential Source"]">
+
+            <MudTextField T="string" Label="@AppLocalization["Update Credential Source"]" Disabled=true Value="@updateCredential?.ToString().Replace('_',' ')" />
+        </SettingsField>
+
+        <SettingsField Label="@AppLocalization["Update Credentials"]">
+
+            <MudSwitch @bind-Value=@settings.UseUpdateCredentials
+                       Color="Color.Success"
+                       UnCheckedColor="Color.Error" 
+                       Label="@AppLocalization["Use Custom Credentials"]" />
+            @if (settings.UseUpdateCredentials)
+            {
+                <MudText>Configure custom update credentials.</MudText>
+
+                <MudCard>
+                    <SettingsField Label="@AppLocalization["Domain"]">
+
+                        <MudTextField Label="@AppLocalization["Domain"]" @bind-Value="settings.UpdateDomain" />
+                    </SettingsField>
+
+                    <SettingsField Label="@AppLocalization["Username"]">
+
+                        <MudTextField Label="@AppLocalization["Username"]" @bind-Value="settings.UpdateUsername" />
+                    </SettingsField>
+
+                    <SettingsField Label="@AppLocalization["Password"]">
+
+                        <MudTextField Label="@AppLocalization["Password"]" InputType="InputType.Password" @bind-Value="newUpdatePassword" />
+                    </SettingsField>
+                </MudCard>
+            }
+
+
+        </SettingsField>
+        <SettingsField Label="@AppLocalization["Update Branch"]">
+
+            <MudSelect Label="@AppLocalization["Update Branch"]" @bind-Value=@settings.UpdateBranch HelperText="The stable branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers.">
+                @foreach (var val in updateBranches)
+                {
+                    <MudSelectItem Value="@val">@val</MudSelectItem>
+                }
+            </MudSelect>
+
+
+
+        </SettingsField>
+
+
+
+        <SettingsField Label="@AppLocalization["Update"]">
+
+            <FieldLabel>
+                <MudText>
+                    @AppLocalization["Update"]
+                </MudText>
+                <MudIconButton Color="Color.Primary"
+                               OnClick=@(async()=>{await appUpdateComponent?.GetLatestUpdate();})
+                               Icon="@Icons.Material.Filled.Refresh" />
+
+            </FieldLabel>
+            <ChildContent>
+
+               
+
+            </ChildContent>
+
+        </SettingsField>
+
+        <ManualApplicationUpdater @ref=appUpdateComponent />
+
+        <SettingsField Label="@AppLocalization["Enable Auto Update"]">
+            <MudStack Row=true>
+                <MudSwitch Label="@AppLocalization["Enable Auto Update"]" 
+                Color="Color.Success"
+                UnCheckedColor="Color.Error"
+                @bind-Value=@(settings.AutoUpdate) /> 
+                <AppDocumentationButton Page="/update/auto/" />
+
+            </MudStack>
+
+        </SettingsField>
+
+
+        @if (settings?.AutoUpdate == true)
+        {
+            <SettingsField Label="@AppLocalization["Auto Update Time"]">
+
+                <MudTimePicker HelperText="The time of each day to automatically apply an update."
+                @bind-Time="@settings.AutoUpdateTime" />
+
+
+            </SettingsField>
+
+
+        }
+
+    }
+    <SettingsField>
+
+        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+    </SettingsField>
+
+    <MudOverlay Visible=LoadingData DarkBackground=true>
+        <MudProgressLinear Indeterminate="true" />
+    </MudOverlay>
+</MudForm>
+@code {
+    string? newUpdatePassword;
+    string? updatePasswordInDb;
+    UpdateCredential? updateCredential=null;
+    ManualApplicationUpdater? appUpdateComponent;
+    AppSettings? settings = new AppSettings();
+    List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev };
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (Context != null)
+        {
+            originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
+
+            settings = await Context.AppSettings.FirstOrDefaultAsync();
+            await InvokeAsync(StateHasChanged);
+
+            //Pull encrypted update pass and store encrypted value
+            await Task.Run(() =>
+            
+            {
+                updatePasswordInDb = settings?.UpdatePassword;
+                newUpdatePassword = updatePasswordInDb;
+                updateCredential = UpdateService.UpdateCredential;
+            });
+
+
+        }
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    protected override async void Save()
+    {
+        if ((newUpdatePassword == null && updatePasswordInDb is null) == false)
+        {
+
+
+            if (!newUpdatePassword.Equals(updatePasswordInDb))
+            {
+
+                settings.UpdatePassword = newUpdatePassword.Encrypt();
+
+                updatePasswordInDb = settings.UpdatePassword;
+
+            }
+        }
+        await AuditLogger.System.SettingsChanged("Update", settings.GetChanges(originalSettings));
+        base.Save();
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+
+}
+

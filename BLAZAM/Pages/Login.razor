@@ -1,75 +1,105 @@
 ﻿@page "/login"
-@using BLAZAM.Common.Data;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
+@using BLAZAM.Static;
+@inject IHttpContextAccessor HttpContextAccessor
 @inherits ValidatedForm
+@inject IJSRuntime JSRuntime
 @layout LoginLayout
-@{
-    var redirectUrl = Nav.Uri;
-}
-<Heading Padding="Padding.Is4.FromBottom">
-
-
-    @DatabaseCache.ApplicationSettings?.AppName
-
-</Heading>
-
-
-
-<Div class="brand-icon">
-    <Image Source="@StaticAssets.ApplicationIconUri" />
-
-</Div>
-
-@if (!Program.InDemoMode || DemoCustomLogin)
+@if (attemptingSignIn)
 {
-    <Form Class="login-form" method="post" action="/signin" TextAlignment="TextAlignment.Center" >
-
-        <Field>
-            <FieldBody>
-                <TextEdit Autofocus TextAlignment="TextAlignment.Center" Placeholder="Username" name="username" @bind-Text=LoginRequest.Username>
-                    <Feedback>
-                        <ValidationError />
-                    </Feedback>
-                </TextEdit>
-            </FieldBody>
-        </Field>
-        <Field>
-            <FieldBody>
-                <TextEdit TextAlignment="TextAlignment.Center" Placeholder="Password" name="password" Role="TextRole.Password" @bind-Text=LoginRequest.Password>
-                    <Feedback>
-                        <ValidationError />
-                    </Feedback>
-                </TextEdit>
-            </FieldBody>
-                </Field>        
-                <TextEdit Visibility=Visibility.Invisible name="ReturnUrl" Text="@redirectUrl" />
-
-
-        <Button Margin=Margin.IsAuto.OnX.Is2.FromTop Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In"]</Button><br />
-    </Form>
-
+    <MudProgressLinear Color="Color.Info" Indeterminate=true />
 }
-@if (Program.InDemoMode)
-{
-    <Form Class="login-form" method="post" action="/signin" TextAlignment="TextAlignment.Center">
 
-        <TextEdit Autofocus TextAlignment="TextAlignment.Center" name="username" Text="demo" Display="Display.None" />
-        <TextEdit TextAlignment="TextAlignment.Center" name="password" Role="TextRole.Password" Text="demo" Display="Display.None" />
-        <TextEdit Visibility=Visibility.Invisible name="ReturnUrl" Text="@redirectUrl" />
+<MudElement Class="brand-icon">
+    <MudImage Src="@StaticAssets.ApplicationIconUri" />
 
-        <Dropdown Margin=Margin.IsAuto.OnX.Is2.FromTop>
-        <Button Type=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</Button>
-        <DropdownToggle Color="Color.Primary" Split />
-            <DropdownMenu>
-                <DropdownItem Clicked=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</DropdownItem>
-            </DropdownMenu>
-        </Dropdown>
+</MudElement>
 
-    </Form>
 
-}
-<Copyright Margin=Margin.IsAuto.OnX Padding="Padding.Is5.FromTop" />
+<MudContainer Class="py-5">
+    <FullAppName />
+
+
+
+    <form onsubmit="@(()=>{AttemptSignIn();})"
+          class="login-form"
+          method="post"
+          action="/signin"
+          id="login-form">
+        <MudContainer Style="max-width:300px;"
+                      Class="py-4">
+            @if (!ApplicationInfo.InDemoMode || DemoCustomLogin)
+            {
+
+
+
+                <MudTextField @ref=_usernameTextField
+                              Disabled=@attemptingSignIn
+                              Class="justify-center"
+                              AutoFocus=true
+                              Label=@AppLocalization["Username"]
+                              name="Username"
+                              @bind-Value=LoginRequest.Username />
+
+                <MudTextField @ref=_passwordTextField
+                              Disabled=@attemptingSignIn
+                              Class="justify-center"
+                              Label=@AppLocalization["Password"]
+                              name="Password"
+                              InputType="InputType.Password"
+                              @bind-Value=LoginRequest.Password />
+
+                <MudTextField Class="d-none"
+                              name="ReturnUrl"
+                              Value="@redirectUrl" />
+
+                <MudButton OnClick=@(()=>{attemptingSignIn=true;})
+                           Class="my-5"
+                           ButtonType=ButtonType.Submit
+                           Color="Color.Primary">
+                    @AppLocalization["Log In"]
+                </MudButton>
+
+
+
+            }
+            else if (ApplicationInfo.InDemoMode)
+            {
+                LoginRequest.Username = "demo";
+                LoginRequest.Password = "demo";
+
+
+                <MudContainer Class="d-none">
+
+                    <MudTextField name="username" Value=@("demo") hidden />
+                    <MudTextField name="password" InputType="InputType.Password" Value=@("demo") hidden />
+                    <MudTextField name="ReturnUrl" Value="@redirectUrl" />
+                </MudContainer>
+                <LoginConnectionWarnings />
+                <MudButtonGroup Color=Color.Primary Variant="Variant.Outlined">
+
+
+                    <MudButton Disabled=@attemptingSignIn Class="my-6" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
+
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                        <MudMenuItem OnClick=@(()=>{ DemoCustomLogin=true;InvokeAsync(StateHasChanged); })>@AppLocalization["Custom Login"]</MudMenuItem>
+                    </MudMenu>
+                </MudButtonGroup>
+
+            }
+
+        </MudContainer>
+
+        <MudOverlay Visible="attemptingSignIn"
+                    DarkBackground="true"
+                    Absolute="true">
+            @*<MudProgressCircular Color="Color.Secondary" Indeterminate="true" />*@
+        </MudOverlay>
+    </form>
+    <MudElement Class="d-flex mud-width-full justify-end">
+        <Copyright Style="font-size:0.8em;" />
+
+    </MudElement>
+</MudContainer>
 <style>
     .brand-icon {
         position: fixed;
@@ -90,24 +120,112 @@
 </style>
 
 @code {
+    MudTextField<string?> _usernameTextField;
+    MudTextField<string?> _passwordTextField;
+    bool attemptingSignIn = false;
+    string redirectUrl;
+    AppModal? _mfaModal;
     bool DemoCustomLogin = false;
     LoginRequest LoginRequest = new();
-    AppSettings AppSettings;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        if (Monitor.AppReady != ConnectionState.Up)
+        redirectUrl = Nav.Uri;
+        LoginRequest.ReturnUrl = Nav.Uri;
+        var currentUri = new Uri(Nav.Uri);
+        LoginRequest.CallbackBaseUri = currentUri.Scheme+"://" + currentUri.Authority;
+        if (Monitor.AppReady != ServiceConnectionState.Up)
             Monitor.OnAppReadyChanged += AppReadyChanged;
-        Monitor.OnDirectoryConnectionChanged += ((state) => { InvokeAsync(StateHasChanged); });
     }
 
-    async void AppReadyChanged(ConnectionState state)
+
+    async void AppReadyChanged(ServiceConnectionState state)
     {
-        if (state == ConnectionState.Up)
+        if (state == ServiceConnectionState.Up)
             await InvokeAsync(StateHasChanged);
 
 
     }
+    async void AttemptSignIn()
+    {
+        attemptingSignIn = true;
+        await InvokeAsync(StateHasChanged);
+        LoginRequest? authenticationResult=null;
+        if (ValidateInput(LoginRequest))
+            try
+            {
+                var response = await JSRuntime.InvokeAsync<string>("attemptSignIn", LoginRequest);
+                authenticationResult = JsonConvert.DeserializeObject<LoginRequest>(response);
+            }
+            catch (Exception ex)
+            {
 
+                SnackBarService.Info(ex.Message);
+            }
+
+        attemptingSignIn = false;
+
+        if (authenticationResult!=null)
+        {
+
+            switch (authenticationResult.AuthenticationResult)
+            {
+
+                case LoginResultStatus.NoUsername:
+                    SnackBarService.Info("Username is missing");
+                    break;
+                case LoginResultStatus.NoPassword:
+                    SnackBarService.Info("Password is missing");
+                    break;
+                case LoginResultStatus.NoData:
+                    SnackBarService.Warning("Login request is missing");
+
+                    break;
+                case LoginResultStatus.BadCredentials:
+                    SnackBarService.Warning("Username or password not correct");
+                    break;
+                case LoginResultStatus.UnauthorizedImpersonation:
+                    SnackBarService.Error("Unauthorized Impersonation Attempt");
+
+                    break;
+                case LoginResultStatus.DeniedLogin:
+                    SnackBarService.Error("You are not authorized to login");
+
+                    break;
+                case LoginResultStatus.UnknownFailure:
+                    SnackBarService.Error("Unknown error while attempting to log in");
+
+                    break;
+                case LoginResultStatus.MFARequested:
+                    attemptingSignIn = true;
+                    Nav.NavigateTo(authenticationResult.MFARedirect);
+                    break;
+                case LoginResultStatus.OK:
+                    attemptingSignIn = true;
+
+                    Nav.NavigateTo(redirectUrl, true);
+
+                    break;
+            }
+
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+    bool ValidateInput(LoginRequest? validationResult)
+    {
+        if(validationResult == null)
+        {
+            validationResult = new();
+        }
+        if (LoginRequest.Valid || (ApplicationInfo.InDemoMode && !DemoCustomLogin)) return true;
+
+
+        if (LoginRequest.Password.IsNullOrEmpty())
+            validationResult.AuthenticationResult = LoginResultStatus.NoPassword;
+        if (LoginRequest.Username.IsNullOrEmpty())
+            validationResult.AuthenticationResult = LoginResultStatus.NoUsername;
+        return false;
+    }
 
 }

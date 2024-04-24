@@ -1,0 +1,113 @@
+﻿@using BLAZAM.Database.Models.Audit;
+@using BLAZAM.Services.Audit;
+@inherits AppModalContent
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
+    @if (_events.Count > 0)
+    {
+        <MudTimeline Class="mud-width-full pa-0">
+
+            @{
+                int i = 0;
+            }
+            @for (i = 0; i < _events.Count; i++)
+            {
+                var ev = _events[i];
+                var align = i % 2 == 1 ? Align.End : Align.Start;
+                <MudTimelineItem Size=Size.Small Color="@(i==0 ? Color.Primary : Color.Default)">
+                    <MudText Align=@align Typo="Typo.h6">@ev.Action</MudText>
+                    <MudText Align="@align">
+                        <MudText Typo="Typo.caption" Align=@align>by: @ev.Username at @ev.Timestamp.ToLocalTime()</MudText>
+
+                    </MudText>
+                    <AuditEntryChanges Align=align AuditEntry="ev" />
+                    @*   <MudText Align=@align Typo="Typo.body2">@ev.BeforeAction</MudText>
+            <MudText Align=@align Typo="Typo.body2">@ev.AfterAction</MudText>
+            *@
+                </MudTimelineItem>
+            }
+            @{
+                i++;
+            }
+            <MudTimelineItem Size=Size.Small Color="Color.Default">
+                <MudText Align=@(i % 2 == 0 ? Align.End : Align.Start) Typo="Typo.h6">Start of history</MudText>
+
+
+            </MudTimelineItem>
+        </MudTimeline>
+    }
+    else
+    {
+        <MudText>There is no history for this entry.</MudText>
+    }
+</MudContainer>
+
+@code {
+    List<DirectoryEntryAuditLog> _events = new();
+    int _count;
+    [Parameter]
+    public IDirectoryEntryAdapter Model { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        Modal.Options.FullWidth = true;
+        await base.OnInitializedAsync();
+        _events = await Context.DirectoryEntryAuditLogs.Where(l => l.Action != AuditActions.Computer_Searched
+            && l.Action != AuditActions.User_Searched
+            && l.Action != AuditActions.Group_Searched
+            && l.Action != AuditActions.OU_Searched
+            && l.Sid.Equals(Model.SID.ToSidString())).OrderByDescending(l => l.Timestamp).ToListAsync();
+        if (Model.Created.HasValue)
+        {
+            _events.Add(new()
+                {
+                    Timestamp = Model.Created.Value,
+                    Target = Model.SamAccountName,
+                    Action = Model.ObjectType.ToString() + " created",
+                    Username = AppLocalization["Active Directory"]
+        });
+        }
+
+        if (Model is IAccountDirectoryAdapter account)
+        {
+            if (account.PasswordLastSet.HasValue)
+            {
+                if (!_events.Any(e => e.Timestamp.Date.Equals(account.PasswordLastSet.Value.Date) && e.Timestamp.Hour.Equals(account.PasswordLastSet.Value.Hour) && e.Timestamp.Minute.Equals(account.PasswordLastSet.Value.Minute)))
+                {
+                                 _events.Add(new()
+                    {
+                        Timestamp =account.PasswordLastSet.Value,
+                        Target = Model.SamAccountName,
+                        Action = Model.ObjectType.ToString() + " "+AppLocalization["password changed"]+".",
+                        Username = AppLocalization["Active Directory"]
+                    });
+                }
+
+   
+            }
+            if (account.LockoutTime.HasValue)
+            {
+                _events.Add(new()
+                    {
+                        Timestamp = account.LockoutTime.Value,
+                        Target = Model.SamAccountName,
+                        Action = Model.ObjectType.ToString() + " " + AppLocalization["locked out"] + ".",
+                        Username = AppLocalization["Active Directory"]
+                    });
+            }
+            if (account.LastChanged.HasValue)
+            {
+                if (!_events.Any(e => e.Timestamp.Date.Equals(account.LastChanged.Value.Date) && e.Timestamp.Hour.Equals(account.LastChanged.Value.Hour) && e.Timestamp.Minute.Equals(account.LastChanged.Value.Minute)))
+                {
+                _events.Add(new()
+                    {
+                        Timestamp = account.LastChanged.Value,
+                        Target = Model.SamAccountName,
+                        Action = Model.ObjectType.ToString() + " " + AppLocalization["last changed"] + ".",
+                        Username = AppLocalization["Active Directory"]
+                    });
+                }
+            }
+        }
+        _events = _events.OrderByDescending(e=>e.Timestamp).ToList();
+        _count = _events.Count;
+    }
+}

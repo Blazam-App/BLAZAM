@@ -1,0 +1,128 @@
+﻿@using Microsoft.AspNetCore.Components.Forms;
+@inherits AppModalContent
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mud-width-full pa-0">
+    <MudTabs @bind-ActivePanelIndex="activePanel" Elevation="0" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+        <MudTabPanel Text="Shared Printers">
+            <MudDataGrid @bind-SelectedItems=selectedPrinters
+                         Elevation=0
+                         Items="Printers.Where(p=>p.ADPrinter==null)"
+                         HorizontalScrollbar=true
+                         MultiSelection=true>
+                <Columns>
+                    <SelectColumn />
+                    <PropertyColumn Property="x=>x.ShareName" />
+                    <PropertyColumn Property="x=>x.Location" />
+                    <PropertyColumn Property="x=>x.Comment" />
+                    <TemplateColumn>
+                        <CellTemplate>
+                            <MudButton OnClick="@(()=>{activePanel=1;})">@AppLocalization["Next"]</MudButton>
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                </Columns>
+            </MudDataGrid>
+        </MudTabPanel>
+        <MudTabPanel Text="@AppLocalization["OU"]">
+            <OUTreeView SelectedEntry="destinationOU" SelectedOUChanged="destinationOUChanged" StartingSelectedOU="null" StartRootExpanded=true />
+        </MudTabPanel>
+
+    </MudTabs>
+
+
+</MudContainer>
+@code {
+    bool validated;
+    int activePanel = 0;
+    IADOrganizationalUnit destinationOU;
+    [Parameter]
+    public List<SharedPrinter> Printers { get; set; }
+    public HashSet<SharedPrinter> selectedPrinters { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Modal.Options.FullWidth = true;
+        Modal.Options.MaxWidth = MaxWidth.Large;
+
+        // Modal.OnYes = SaveChanges;
+        Modal.YesText = AppLocalization["Next"];
+        Modal.Title = "Register Printers";
+        Modal.YesEnabled = ValidateModal;
+        Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); });
+        base.OnInitialized();
+
+
+    }
+
+
+    private void RegisterSelectedPrinters()
+    {
+
+        foreach (var printer in selectedPrinters.Where(p => p.ADPrinter == null))
+        {
+            IJob registerJob = new Job(AppLocalization["Register Printers"],CurrentUser.State.AuditUsername);
+            var newPrinter = destinationOU.CreatePrinter(printer);
+            registerJob = newPrinter.CommitChanges(registerJob);
+            if (registerJob.FailedSteps.Count == 0)
+            {
+                SnackBarService.Success(AppLocalization["Printer(s) registered to Active Directory"]); 
+                this.Close();
+
+            }
+            else
+            {
+                MessageService.ShowMessage<JobResultDialog>(registerJob.ToDialogParameters(), registerJob.Name);
+                return;
+            }
+
+
+
+
+        }
+
+
+
+
+    }
+
+    private void destinationOUChanged(IDirectoryEntryAdapter newDst)
+    {
+        if (newDst is IADOrganizationalUnit newDestinationOU)
+        {
+            if (destinationOU == newDestinationOU) return;
+            destinationOU = newDestinationOU;
+            if (destinationOU != null && selectedPrinters != null && selectedPrinters.Count > 0)
+            {
+                validated = true;
+                Modal.YesText = AppLocalization["Register"];
+                Modal.OnYes = RegisterSelectedPrinters;
+                Modal.RefreshView();
+            }
+            else
+            {
+                Modal.YesText = AppLocalization["Next"];
+                Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); });
+                Modal.RefreshView();
+
+            }
+        }
+    }
+    // protected override bool ValidateModal()
+    // {
+
+    //     if (!validated && destinationOU != null && selectedPrinters != null && selectedPrinters.Count > 0)
+    //     {
+    //         validated = true;
+    //         Modal.YesText = AppLocalization["Register"];
+    //         Modal.OnYes = RegisterSelectedPrinters;
+    //         Modal.RefreshView();
+    //     }
+    //     else if(validated)
+    //     {
+    //         Modal.YesText = AppLocalization["Next"];
+    //         Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); });
+    //         Modal.RefreshView();
+
+    //     }
+    //     return true;
+    // }
+}

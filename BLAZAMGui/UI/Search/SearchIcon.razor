@@ -1,0 +1,27 @@
+<MudElement Style="display:table" Class="mt-16 mud-width-full mud-height-full mx-auto" >
+    <MudElement  Class="w-min" Style="text-align:center; display:table-cell">
+       
+            <MudIcon Style="font-size:4em;opacity:20%" Icon=@Icon/>
+            <MudElement Style="width:0px;height:0px;" Class="relative ma-auto">
+                <MudIcon Style="font-size:12em;opacity:20%;position: absolute;left: -78px;top:-109px;" Icon=@Icons.Material.Filled.Search/>
+            </MudElement>
+      
+        <MudText Typo ="Typo.h4">@Text</MudText>
+        <MudText Color="Color.Default">@Subtext</MudText>
+        <MudProgressLinear Indeterminate />
+
+    </MudElement>
+</MudElement>
+
+@code{
+    [Parameter]
+    public string? Icon { get; set; }
+    [Parameter]
+    public string? Text  { get; set; }
+    [Parameter]
+    public string? Subtext { get; set; }
+
+    /// <summary>
+    /// Displays the specified icon inside a magnifying glass icon
+    /// </summary>
+}

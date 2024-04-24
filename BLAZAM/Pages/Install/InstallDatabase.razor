@@ -1,49 +1,74 @@
-@using Microsoft.EntityFrameworkCore
 @layout InstallLayout
 @inherits AppComponentBase
 @{
-    string connString;
+    string? connString;
 
     using (var context = DbFactory.CreateDbContext())
     {
         connString = context.Database.GetConnectionString();
+        if (connString != null && connString.Contains(";"))
+        {
+            // Censor Password
+            string[] keyValuePairs = connString.Split(';');
 
-        // Censor Password
-        string[] keyValuePairs = connString.Split(';');
+            // Remove the key-value pair for the Password parameter
+            keyValuePairs = keyValuePairs.Where(x => !x.StartsWith("Password=")).ToArray();
 
-        // Remove the key-value pair for the Password parameter
-        keyValuePairs = keyValuePairs.Where(x => !x.StartsWith("Password=")).ToArray();
-
-        // Join the list back into a single connection string
-        connString = string.Join(";", keyValuePairs);
+            // Join the list back into a single connection string
+            connString = string.Join(";", keyValuePairs);
+        }
 
     }
 
 }
-<Heading Size="HeadingSize.Is3">Database</Heading>
+<MudText Typo="Typo.h3">Database</MudText>
 @if (!Completed && Monitor.DatabaseUpdatePending)
 {
-    <Div>
-    <Heading Size="HeadingSize.Is5">The database is ready to install.</Heading>
-        <Heading Size="HeadingSize.Is5">Type</Heading><Text>@(Context.Database.IsSqlServer() ? "SQL" : "SQLite")</Text>
-        <Heading Size="HeadingSize.Is5">Server</Heading><Text>@DatabaseContext.ConnectionString.ServerAddress</Text>
-        <Heading Size="HeadingSize.Is5">Port</Heading><Text>@DatabaseContext.ConnectionString.ServerPort</Text>
-        <Heading Size="HeadingSize.Is5">Database</Heading><Text>@DatabaseContext.ConnectionString.Database</Text>
-<Divider/>
-    <Help>Make sure the settings above are as intended. The application should be provided a
-        dedicated database. If you are using SQLite as your database option you don't need to worry about this.
-    </Help>
-        <Progress Max="100" Value="@progressValue" Animated Striped/>
-        <br />
-        <Button Color="Color.Primary" @onclick="InstallDB">Install</Button>
-    </Div>
+    <MudContainer>
+        <MudText Class="mb-5" Typo="Typo.h4">The database is ready to install.</MudText>
+        <MudStack Row=true>
+            <MudText Style="width:140px;" Typo="Typo.h5">Type</MudText>
+            <MudText>@Context?.ConnectionString?.DatabaseType</MudText>
+        </MudStack>
+
+        <MudStack Row=true>
+            <MudText Style="width:140px;" Typo="Typo.h5">Server</MudText>
+            <MudText>@Context?.ConnectionString?.ServerAddress</MudText>
+        </MudStack>
+
+        <MudStack Row=true>
+            <MudText Style="width:140px;" Typo="Typo.h5">Port</MudText>
+            <MudText>@Context?.ConnectionString?.ServerPort</MudText>
+        </MudStack>
+
+        <MudStack Row=true>
+            <MudText Style="width:140px;" Typo="Typo.h5">Database</MudText>
+            <MudText>@Context?.ConnectionString?.Database</MudText>
+        </MudStack>
+
+
+        <MudDivider Class="my-5" />
+        <MudText>
+            Make sure the settings above are as intended. The application should be provided a
+            dedicated database. If you are using SQLite as your database option you don't need to worry about this.
+        </MudText>
+        @if (progressValue > 0)
+            {
+                <MudProgressLinear Value="@progressValue"
+                                          Indeterminate />
+            }
+        <MudContainer Style="width:fit-content">
+            <MudButton Class="mx-auto" Variant="Variant.Filled" Color="Color.Primary" @onclick="InstallDB">Install</MudButton>
+        </MudContainer>
+
+    </MudContainer>
+
 }
 
 else
 {
-    <Div>
-    <Heading Size="HeadingSize.Is6">Installed</Heading>
-    </Div>
+    <MudText Typo="Typo.h4">Installed</MudText>
+
 }
 
 @code {
@@ -51,7 +76,7 @@ else
     public bool Completed { get; set; }
     [Parameter]
     public EventCallback StepCompleted { get; set; }
-    int? progressValue = 0;
+    double progressValue = 0;
     protected void InstallDB()
     {
         Task.Run(async () =>
@@ -59,14 +84,20 @@ else
 
             progressValue = 100;
             await InvokeAsync(StateHasChanged);
-            if (await Program.ApplyDatabaseMigrations(true))
+            try
             {
-                Completed = true;
-                InvokeAsync(StepCompleted.InvokeAsync);
+                if (await DbFactory.ApplyDatabaseMigrationsAsync(true))
+                {
+                    Completed = true;
+                    await InvokeAsync(StepCompleted.InvokeAsync);
 
+                }
+                progressValue = 0;
             }
-            progressValue = 0;
-
+            catch (Exception ex)
+            {
+                await MessageService.Error(ex.Message, ex.GetType().FullName);
+            }
             await InvokeAsync(StateHasChanged);
 
         });

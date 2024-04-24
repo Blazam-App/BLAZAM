@@ -1,34 +1,18 @@
-using BLAZAM.Server.Background;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.Cookies;
+
 using Microsoft.Extensions.Hosting.WindowsServices;
-using Newtonsoft.Json;
-using System.Globalization;
-using Blazorise;
-using Blazorise.Icons.FontAwesome;
-using Blazorise.Bootstrap5;
 using BLAZAM.Server.Middleware;
-using BLAZAM.Server.Data.Services;
-using BLAZAM.Server.Data.Services.Duo;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Common.Data.ActiveDirectory;
-using BLAZAM.Common;
-using BLAZAM.Server.Data;
-using BLAZAM.Common.Data.Database;
-using Microsoft.Extensions.Localization;
-using BLAZAM.Server.Shared.ResourceFiles;
-using BLAZAM.Common.Data.ActiveDirectory.Models;
-using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-using Microsoft.AspNetCore.Components.Server.Circuits;
-using BLAZAM.Server.Data.Services.Email;
-using BLAZAM.Server.Data.Services.Update;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using BLAZAM.Server;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
+using BLAZAM.Common.Data;
+using BLAZAM.Server;
+using BLAZAM.Services.Background;
+using System.Net;
+using BLAZAM.Database.Context;
+using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.WebSockets;
+using BLAZAM.Database.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Serilog.Events;
@@ -45,97 +29,43 @@ namespace BLAZAM
 
     public class Program
     {
-        /// <summary>
-        /// The root directory of the running web application
-        /// </summary>
-        /// <returns>
-        /// eg: C:\inetpub\blazam\
-        /// </returns>
-        /// 
-        internal static SystemDirectory RootDirectory { get; set; }
+
         /// <summary>
         /// The writable directry
         /// </summary>
         /// <returns>
         /// eg: C:\inetpub\blazam\writable\
         /// </returns>
-        internal static SystemDirectory WritablePath => new SystemDirectory(Program.TempDirectory + @"writable\");
-        /// <summary>
-        /// The temporary file directry
-        /// </summary>
-        /// <returns>
-        /// eg: C:\Users\user\appdata\temp\
-        /// </returns>
-        internal static SystemDirectory TempDirectory { get; private set; }
-        public static SystemDirectory AppDataDirectory { get; private set; }
-
-  
-        /// <summary>
-        /// The running Blazam version
-        /// </summary>
-        internal static ApplicationVersion Version { get; } = new ApplicationVersion();
-        /// <summary>
-        /// A collection of active listening address's with port
-        /// </summary>
-        /// <returns>
-        /// A list of address strings eg: {"https://localhost:7900/","http://localhost:5900/"}
-        /// </returns>
-        internal static List<string> ListeningAddresses { get; private set; } = new List<string>();
-
-        private static IDbContextFactory<DatabaseContext> _programDbFactory;
+        internal static SystemDirectory WritablePath => new SystemDirectory(ApplicationInfo.tempDirectory + @"writable\");
 
 
 
-        static bool? installationCompleted = null;
-        /// <summary>
-        /// Indicates the Installation status
-        /// </summary>
-        internal static bool InstallationCompleted
-        {
-            get
-            {
-                using (var context = _programDbFactory.CreateDbContext())
-                {
-                    if (installationCompleted != true)
-                    {
-                        if (!context.Seeded()) installationCompleted=false;
-                        else installationCompleted=(DatabaseCache.ApplicationSettings?.InstallationCompleted == true);
-                    }
-                    return installationCompleted != false;
-                }
-            }
-        }
+        public static SystemDirectory AppDataDirectory { get; set; }
+
+
+
+
+
+
+
+
+
+
 
         /// <summary>
-        /// Flag for checking if the application is running in Debug Mode.
-        /// </summary>
-        internal static bool InDebugMode;
-
-        /// <summary>
-        /// Flag for checking if the application is running in Demo Mode.
-        /// </summary>
-        internal static bool InDemoMode;
-
-        /// <summary>
-        /// Can be used for JWT Token signing
-        /// </summary>
-        internal static SymmetricSecurityKey TokenKey;
-
-        /// <summary>
-        /// A static reference for the current asp
-        /// net core application instance
+        /// A static reference for the current ASP
+        /// Net Core application instance
         /// </summary>
         public static WebApplication AppInstance { get; private set; }
         /// <summary>
         /// A static reference to the asp net 
         /// core application configuration
         /// </summary>
-        public static ConfigurationManager Configuration { get; private set; }
+        public static ConfigurationManager? Configuration { get; set; }
         /// <summary>
         /// Indicates whether the Account running the website can wrrite to the writable path
         /// </summary>
         public static bool Writable { get; private set; }
-
 
 
         /// <summary>
@@ -145,7 +75,7 @@ namespace BLAZAM
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-
+            Console.WriteLine("Working Directory: " + Environment.CurrentDirectory);
 
 
             //Build the application and allow it to run as a service
@@ -155,260 +85,73 @@ namespace BLAZAM
                 Args = args
             });
 
-            //Set DebugMode flag from configuration
-            InDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
-            InDemoMode = builder.Configuration.GetValue<bool>("DemoMode");
+            if (builder.Configuration is null)
+                throw new ApplicationException("The appsettings.json configuration file was not loaded");
 
+            builder.IntializeProperties();
 
-            //Set application directories
-            RootDirectory = new SystemDirectory(builder.Environment.ContentRootPath);
-            TempDirectory = new SystemDirectory(Path.GetTempPath() + "Blazam\\");
-            AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "Blazam\\");
+            //Create and discard a new instance of Encryption to inject the encryption seed string
+            _ = new Encryption(Configuration?.GetValue<string>("EncryptionKey"));
 
-
-            //Store the configuration so other pages/objects can easily access it
-            Configuration = builder.Configuration;
-
-
-            CheckWritablePathPermissions();
-
+            //Assign installation ID
+            Loggers.InstallationId = ApplicationInfo.installationId.ToString();
 
             //Setup host logging so it can catch the earliest logs possible
+            Loggers.SeqServerUri = "http://logs.blazam.org:5341";
+            if (Debugger.IsAttached)
+            {
+                Loggers.SeqAPIKey = "xE50e1ljqtgLzHcu8pYC";
 
-            Loggers.SetupLoggers(WritablePath + @"logs\");
+            }
+            else
+            {
+                Loggers.SeqAPIKey = "8TeLknA8XBk5ybamT5m9";
+
+            }
+            
+
+            Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
             builder.Host.UseSerilog(Log.Logger);
 
-            Log.Information("Application Starting");
+
+            Log.Warning("Application Starting {@ProcessName}", ApplicationInfo.runningProcess.ProcessName);
+
+            builder.InjectServices();
 
 
 
-            //Set up string localization
-            builder.Services.AddLocalization();
-            builder.Services.Configure<RequestLocalizationOptions>(options =>
-            {
-                var supportedCultures = new[]
-                {
-                    new CultureInfo("en-US"),
-                    new CultureInfo("fr-FR")
-                 };
-
-                options.DefaultRequestCulture = new RequestCulture("fr-FR");
-                options.SupportedCultures = supportedCultures;
-                options.SupportedUICultures = supportedCultures;
-            });
-            /*
-             * Uncomment this to force a language
-             * 
-            CultureInfo culture = new CultureInfo("fr-FR");
-            CultureInfo.DefaultThreadCurrentCulture = culture;
-            CultureInfo.DefaultThreadCurrentUICulture = culture;
-            */
-
-            //Grab the connection string and store it in the context statically
-            //This can obviously only be changed on app restart
-            DatabaseContext.ConnectionString = new DatabaseConnectionString(builder.Configuration.GetConnectionString("SQLConnectionString"));
-
-
-
-
-            //Add the httpcontext to services so we can detect the users login status
-            builder.Services.AddHttpContextAccessor();
-
-            //Set up authentication and api token authentication
-            builder.Services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-            var test = builder.Services.AddAuthentication(
-                CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-
-                    options.Events.OnCheckSlidingExpiration = async (context) =>
-                    {
-                        if (DatabaseCache.AuthenticationSettings?.SessionTimeout != null)
-                            context.Options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
-                        var shouldRenew = context.ShouldRenew;
-                    };
-                    options.Events.OnSigningIn = async (context) =>
-                    {
-                        //Use session timeout from settings in database
-                        if (DatabaseCache.AuthenticationSettings.SessionTimeout != null)
-                            context.Options.ExpireTimeSpan = TimeSpan.FromMinutes((double)DatabaseCache.AuthenticationSettings.SessionTimeout);
-
-                    };
-                    options.LoginPath = new PathString("/login");
-                    options.LogoutPath = new PathString("/logout");
-                    options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
-                    options.SlidingExpiration = true;
-                });
-
-         
-            /*
-            Keeping  this here for a possible API in the future
-            It's some original test code from before AppAuthenticatinProvider was
-            completed so it may not be usable as is
-
-            builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-            .AddNegotiate().AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters =
-                    new TokenValidationParameters
-                    {
-                        ValidateAudience = false,
-                        ValidateIssuer = false,
-                        ValidateActor = false,
-                        ValidateLifetime = true,
-                        IssuerSigningKey = TokenKey
-                    };
-            });
+            builder.Services.AddCors();
             
-          
-            builder.Services.AddAuthorization(options =>
-            {
-                // By default, all incoming requests will be authorized according to the default policy.
-                options.FallbackPolicy = options.DefaultPolicy;
-            });
-            */
-
-
-            //Enable razor pages
-            builder.Services.AddRazorPages();
-
-            //Run as server side blazor with detailed errors controlled by DebugMode configuration
-            builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = InDebugMode; });
-
-            //Inject the database as a service
-            builder.Services.AddDbContextFactory<DatabaseContext>(opt =>
-                opt.UseSqlServer(
-                    builder.Configuration.GetConnectionString("SQLConnectionString"),
-                        sqlServerOptionsAction: sqlOptions =>
-                            {
-                                sqlOptions.EnableRetryOnFailure();
-
-                            }
-                            ).EnableSensitiveDataLogging()
-
-                );
-            //Provide an Http client as a service with custom construction via api service class
-            builder.Services.AddHttpClient();
-            //Also keeping this here for a possible future API, though this would be for internal use
-            //builder.Services.AddTransient<ApiService>();
-            //builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>().HttpContext.User);
-
-            //Provide a way to get the current HTTP userPrincipal as a service
-            builder.Services.AddHttpContextAccessor();
-
-            //This probably don't need to be here
-            builder.Services.AddSingleton<WmiFactoryService>();
-
-            //Provide updating as a service, may be a little much for one page using it
-            builder.Services.AddSingleton<UpdateService>();
-
-            //Provide the email client as a service
-            builder.Services.AddSingleton<EmailService>();
-
-
-            //Provide a primary Active Directory connection as a service
-            //We run this as a singleton so each user connection doesn't have to wait for connection verification to happen
-            builder.Services.AddSingleton<IActiveDirectory, ActiveDirectoryContext>();
-
-
-            builder.Services.Configure<Saml2Configuration>(Configuration.GetSection("Saml2"));
-
-            builder.Services.Configure<Saml2Configuration>(saml2Configuration =>
-            {
-                saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
-
-                var entityDescriptor = new EntityDescriptor();
-               /*
-                entityDescriptor.ReadIdPSsoDescriptorFromUrl(new Uri(Configuration["Saml2:IdPMetadata"]));
-                if (entityDescriptor.IdPSsoDescriptor != null)
-                {
-                    saml2Configuration.SingleSignOnDestination = entityDescriptor.IdPSsoDescriptor.SingleSignOnServices.First().Location;
-                    saml2Configuration.SignatureValidationCertificates.AddRange(entityDescriptor.IdPSsoDescriptor.SigningCertificates);
-                }
-                else
-                {
-                    throw new Exception("IdPSsoDescriptor not loaded from metadata.");
-                }
-               */
-            });
-
-            builder.Services.AddSaml2();
-
-
-
-            //Provide an ApplicationManager as a service
-            builder.Services.AddScoped<ApplicationManager>();
-
-            //Provide a PermissionHandler as a service
-            builder.Services.AddScoped<PermissionHandler>();
-
-            //Provide a AuditLogger as a service
-            builder.Services.AddScoped<AuditLogger>();
-
-
-            //Add custom Auth
-            builder.Services.AddScoped<AppAuthenticationStateProvider, AppAuthenticationStateProvider>();
-
-            //Add web user application search as a service
-            builder.Services.AddScoped<SearchService>();
-
-
-            //Provide DuoSecurity service
-            builder.Services.AddSingleton<IDuoClientProvider, DuoClientProvider>();
-
-            //Provide encyption service
-            //There's no benefit to filling memory with identical instances of this, so singleton
-            builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
-
-            //Provide database and active directory monitoring service
-            //This serivice runs a Timer, and so singleton
-            builder.Services.AddSingleton<ConnMonitor>();
-
-            //Provide UserStates as a service
-            //This service is a "hack" for Blazor Server not having, in a real sense, sessions
-            //It allows data to persist between refreshes/reloading page navigations per logged
-            //in user principal
-            builder.Services.AddSingleton<IApplicationUserStateService, ApplicationUserStateService>();
-
-            //Provide Automatic Updates as a service
-            //This service runs checks every 4 hours for an update and if found, schedules an
-            //update at a time of day specified in the database
-            builder.Services.AddSingleton<AutoUpdateService>();
-
-
-
-
-            //builder.Services.AddBlazoredSessionStorage(); 
-            //builder.Services.AddScoped<LoginRedirector>();
-
-            //Add Blazorize UI framework
-
-            builder.Services.AddBlazorise(options =>
-                {
-                    options.Immediate = true;
-
-                })
-                .AddBootstrap5Providers()
-                .AddFontAwesomeIcons()
-                .AddLogging();
-
-
-            builder.Services.AddBlazoriseRichTextEdit();
-
-
-            builder.Host.UseWindowsService();
+            
+            SetupKestrel(builder);
 
 
             //Done with service injection let's build the App
             AppInstance = builder.Build();
 
+            ApplicationInfo.services = AppInstance.Services;
 
-            //Perform database auto update
-            ApplyDatabaseMigrations();
+
+            try
+            {
+                var context = AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
+                if(context!=null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
+                {
+                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
+
+                }
+
+            }catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+            Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
+
+
+
+            // Configure the HTTP request pipeline.
+
+
 
 
 
@@ -416,7 +159,7 @@ namespace BLAZAM
             AppInstance.UseSerilogRequestLogging(configureOptions => configureOptions.Logger = Loggers.RequestLogger);
 
             // Configure the HTTP request pipeline.
-            if (!AppInstance.Environment.IsDevelopment() && !InDebugMode)
+            if (!AppInstance.Environment.IsDevelopment() && !ApplicationInfo.inDebugMode)
             {
 
                 AppInstance.UseExceptionHandler("/Error");
@@ -428,20 +171,26 @@ namespace BLAZAM
             {
                 AppInstance.Environment.EnvironmentName = "Development";
                 AppInstance.UseDeveloperExceptionPage();
-                AppInstance.UseDeveloperExceptionPage();
             }
 
 
 
 
-
+            AppInstance.UseMiddleware<UserStateMiddleware>();
             AppInstance.UseMiddleware<HttpsRedirectionMiddleware>();
             AppInstance.UseMiddleware<ApplicationStatusRedirectMiddleware>();
             AppInstance.UseStaticFiles();
             AppInstance.UseRouting();
+            //AppInstance.UseCors(builder =>
+            //      builder.AllowAnyOrigin()
+            //      .SetIsOriginAllowed((host) => true)
+            //      .AllowAnyMethod()
+            //      .AllowAnyHeader());
+
             AppInstance.UseCookiePolicy();
             AppInstance.UseAuthentication();
             AppInstance.UseAuthorization();
+            AppInstance.UseSession();
             AppInstance.UseSaml2();
             //AppInstance.MapControllers();
             AppInstance.MapBlazorHub();
@@ -450,39 +199,103 @@ namespace BLAZAM
             {
                 endpoints.MapRazorPages();
 
-                endpoints.MapControllerRoute(
-                    
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
-          
-
-            //Start the database cache
-            using (var scope = AppInstance.Services.CreateScope())
-            {
-                _programDbFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DatabaseContext>>();
-                DatabaseCache.Start(_programDbFactory, Loggers.DatabaseLogger);
-            }
-
 
             AppInstance.Start();
-            var server = AppInstance.Services.GetService<IServer>();
-            var addressFeature = server.Features.Get<IServerAddressesFeature>();
-            foreach (var address in addressFeature.Addresses)
-            {
-                ListeningAddresses.Add(address);
-            }
-
-            Task.Delay(5000).ContinueWith(t =>
-            {
-                new AutoLauncher(AppInstance.Services.GetService<IHttpClientFactory>());
-            });
+            GetRunningWebServerConfiguration();
+            ScheduleAutoLoad();
 
             AppInstance.WaitForShutdown();
             Log.Information("Application Shutting Down");
             //AppInstance.Run();
 
         }
+
+        private static void SetupKestrel(WebApplicationBuilder builder)
+        {
+           
+            var _programDbFactory = new AppDatabaseFactory(Configuration);
+            var kestrelContext = _programDbFactory.CreateDbContext();
+
+
+            if (!ApplicationInfo.isUnderIIS && !Debugger.IsAttached)
+            {
+                var listeningAddress = Configuration.GetValue<string>("ListeningAddress");
+                var httpPort = Configuration.GetValue<int>("HTTPPort");
+                var httpsPort = Configuration.GetValue<int>("HTTPSPort");
+                AppSettings? dbSettings=null;
+                X509Certificate2? cert = null;
+                try
+                {
+                    dbSettings = kestrelContext.AppSettings.FirstOrDefault();
+
+                    var certBytes = dbSettings.SSLCertificateCipher.Decrypt<byte[]>();
+                    cert = new X509Certificate2(certBytes);
+
+                }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Error("Error collecting SSL information {@Error}", ex);
+                }
+                builder.WebHost.UseKestrel(options =>
+                {
+                    if (listeningAddress == "*")
+                    {
+                        options.ListenAnyIP(httpPort);
+                        if (httpsPort != 0 && dbSettings!=null && cert!=null && cert.HasPrivateKey)
+                        {
+                            options.ListenAnyIP(httpsPort, configure =>
+                            {
+                                configure.UseHttps(options=>options.ServerCertificate=cert);
+                            });
+                        }
+                    }
+
+                    else
+                    {
+                        var ip = IPAddress.Parse(listeningAddress);
+
+                        options.Listen(ip, httpPort);
+                        if (httpsPort != 0 && dbSettings != null && cert != null && cert.HasPrivateKey)
+                        {
+                            options.Listen(ip, httpsPort, configure =>
+                            {
+                                configure.UseHttps(options => options.ServerCertificate = cert);
+                            });
+                        }
+                    }
+                });
+            }
+
+        }
+
+        private static void ScheduleAutoLoad()
+        {
+            Task.Delay(5000).ContinueWith(t =>
+            {
+                new AutoLauncher(AppInstance.Services.GetService<IHttpClientFactory>(), AppInstance.Services.GetService<ApplicationInfo>());
+            });
+        }
+
+        private static void GetRunningWebServerConfiguration()
+        {
+            var server = AppInstance.Services.GetService<IServer>();
+            if (server != null)
+            {
+                var addressFeature = server.Features.Get<IServerAddressesFeature>();
+                if (addressFeature != null)
+                {
+
+                    foreach (var address in addressFeature.Addresses)
+                    {
+                        ApplicationInfo.listeningAddresses.Append(address);
+                        Loggers.SystemLogger.Debug("Listening on: " + address);
+                    }
+                }
+            }
+        }
+
+
+
 
         public static bool IsDevelopment
         {
@@ -491,60 +304,5 @@ namespace BLAZAM
                 return AppInstance.Environment.IsDevelopment();
             }
         }
-
-
-        public static void CheckWritablePathPermissions()
-        {
-
-            try
-            {
-                //Check permissions
-                File.WriteAllText(WritablePath + @"writetest.test", "writetest");
-                Writable = true;
-                File.Delete(WritablePath + @"writetest.test");
-
-            }
-            catch (UnauthorizedAccessException)
-            {
-                Writable = false;
-                Oops.ErrorMessage = "Applicatin Directory Error";
-                Oops.DetailsMessage = "The application does not have write permission to the 'writable' directory.";
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                Writable = false;
-
-                Oops.ErrorMessage = "Applicatin Directory Error";
-                Oops.DetailsMessage = "The application's 'writable' directory is missing!";
-            }
-
-        }
-
-        internal static async Task<bool> ApplyDatabaseMigrations(bool force = false)
-        {
-            return await Task.Run(() =>
-            {
-
-                try
-                {
-                    using (var scope = AppInstance.Services.CreateScope())
-                    {
-                        var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-                        if (context != null)
-                            if(context.Seeded()||force)
-                                if (context.Database.GetPendingMigrations().Count() > 0)
-                                    context.Database.Migrate();
-
-                    }
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!!", ex);
-                    return false;
-                }
-            });
-        }
-
     }
 }

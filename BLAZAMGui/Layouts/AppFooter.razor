@@ -1,0 +1,48 @@
+@using System.Diagnostics
+@inherits AppComponentBase
+<MudStack Row=true Class=@("relative mud-width-full "+Class)>
+
+    <Copyright />
+    @if (AutoUpdateService.IsUpdatedScheduled)
+    {
+        <AuthorizeView Roles="@UserRoles.SuperAdmin">
+            <Authorized>
+                <MudTooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/update");})
+                            Class="mud-theme-info"
+                          
+                            Style="width:max-content"
+                            Text="An automatic update is scheduled. Click for details">
+
+                    <MudIcon Color="@Color.Success" Icon=@Icons.Material.Filled.ArrowCircleUp />
+                </MudTooltip>
+            </Authorized>
+            <NotAuthorized>
+                <MudTooltip Class="mud-theme-info"
+                            Style="width:max-content"
+                            Text="An automatic update is scheduled.">
+
+                    <MudIcon Color="@Color.Success" Icon=@Icons.Material.Filled.ArrowCircleUp />
+                </MudTooltip>
+            </NotAuthorized>
+        </AuthorizeView>
+
+    }
+    <MudSpacer />
+    @*
+    <MudTooltip Class="mud-theme-info" Style="width:max-content" Text="@ApplicationInfo.RunningVersion.Version">
+
+    Version: @ApplicationInfo.RunningVersion.ShortVersion
+    </MudTooltip>*@
+
+
+</MudStack>
+@code {
+    [Parameter]
+    public string? Class { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+    }
+}

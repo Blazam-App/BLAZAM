@@ -1,0 +1,33 @@
+@inherits AppComponentBase
+<MudText Typo="Typo.caption">@AppLocalization["Elapsed Time"]: @ElapsedTime </MudText>
+
+@code {
+    [CascadingParameter]
+    public IJob Job { get; set; }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Job.OnProgressUpdated += (progress) =>
+        {
+            InvokeAsync(StateHasChanged);
+        };
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+    }
+
+    private string ElapsedTime
+    {
+        get
+        {
+            if (Job.ElapsedTime == null || !Job.ElapsedTime.HasValue) return AppLocalization["Not finished"];
+            if (Job.ElapsedTime.Value.TotalSeconds < 1)
+            {
+                return Job.ElapsedTime.Value.TotalMilliseconds + "ms";   
+            }
+            return (int)Job.ElapsedTime.Value.TotalMinutes + "m " + (int)(Job.ElapsedTime.Value.TotalMinutes % 1 * 60) + "s";
+        }
+    }
+}

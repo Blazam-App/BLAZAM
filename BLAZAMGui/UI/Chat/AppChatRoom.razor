@@ -1,0 +1,131 @@
+@inherits ChatComponentBase
+<MudContainer Class=@("d-flex flex-column "+Class)>
+    @if (ChatRoom != null)
+    {
+        @if (ShowHeader)
+        {
+            var chatRoomName = "";
+            if (ChatRoom.Name == "/")
+                chatRoomName = @AppLocalization["App Chat"];
+            else if (ChatRoom.Name.StartsWith("/"))
+                chatRoomName = @AppLocalization["App Chat"];
+            else
+
+                chatRoomName = ChatRoom.Name + " " + @AppLocalization["Chat"];
+            <MudText Typo="Typo.h6">@chatRoomName</MudText>
+        }
+        <MudStack Row=true Spacing="2">
+            @foreach (var member in ChatRoom.Members)
+            {
+                <MudText Typo=Typo.caption>@member.Username</MudText>
+            }
+        </MudStack>
+        <MudStack id="@ChatRoom.ElementId" Style="height:300px;" Class="overflow-y-auto">
+            @foreach (var message in ChatRoom.Messages)
+            {
+                Chat.MessageRead(message, CurrentUser.State.Preferences);
+
+                <ChatRoomMessage ChatRoom="ChatRoom" Message="message" />
+
+            }
+        </MudStack>
+        <MudStack Row=true>
+
+            <MudTextField @ref=messageTextField
+                      AutoFocus=true
+                      UserAttributes=@(new Dictionary<string, object>(){{"autocomplete","off"}})
+                      Adornment=Adornment.Start
+                      AdornmentIcon="@Icons.Material.Filled.Message"
+                      Immediate="true"
+                      OnKeyUp=@(async(args)=>{if(args.Key.ToLower()=="enter") await PostMessage();})
+                      T="string"
+                      @bind-Text=@draftMessage />
+
+            <MudIconButton OnClick=@PostMessage
+                        Title="Post Message"
+                       Icon="@Icons.Material.Filled.Send"
+                       ButtonType="ButtonType.Submit" Class="align-middle" />
+
+        </MudStack>
+        <MudButton OnClick="@(()=>{OnCloseClicked.InvokeAsync();})"
+               Class="ml-auto mr-n3 mb-1"
+               Color="Color.Error">
+            @AppLocalization["Close"]
+        </MudButton>
+    }
+</MudContainer>
+@code {
+    MudTextField<string>? messageTextField;
+    string? draftMessage;
+
+
+    [Parameter]
+    public EventCallback OnCloseClicked { get; set; }
+    [Parameter]
+    public string? Class { get; set; }
+    [Parameter]
+    public bool ShowHeader { get; set; } = false;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+            ScrollToBottom();
+
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Chat.OnMessagePosted += async (ChatMessage message) =>
+        {
+            if (message.ChatRoomId == ChatRoom?.Id)
+            {
+                //if (message.User != CurrentUser.State.Preferences)
+                //{
+                    await Task.Delay(100);
+                    //ChatRoom.Messages.Add(message);
+                    await InvokeAsync(StateHasChanged);
+
+                //}
+                ScrollToBottom();
+
+            }
+        };
+    }
+    private void ScrollToBottom()
+    {
+        if (ChatRoom != null)
+        {
+            var param = new object[] { ChatRoom.ElementId };
+            JS.InvokeVoidAsync("scrollToBottom", param);
+        }
+    }
+    private async Task PostMessage()
+    {
+        if (!draftMessage.IsNullOrEmpty())
+        {
+            await Task.Delay(5);
+            var message = new ChatMessage()
+                {
+                    User = CurrentUser.State.Preferences,
+                    Message = draftMessage,
+                    ChatRoom = ChatRoom,
+
+                };
+            //ChatRoom.Messages.Add(message);
+            Chat.PostMessage(message);
+            //await RefreshChatRooms();
+            draftMessage = "";
+            //messageTextField.Value = "";
+            await messageTextField?.Clear();
+            await InvokeAsync(StateHasChanged);
+            ScrollToBottom();
+
+        }
+    }
+
+}
+

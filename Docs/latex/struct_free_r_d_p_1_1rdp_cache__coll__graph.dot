@@ -1,0 +1,21 @@
+digraph "FreeRDP.rdpCache"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node1 [id="Node000001",label="FreeRDP.rdpCache",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip=" "];
+  Node2 -> Node1 [id="edge7_Node000001_Node000002",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" glyph",fontcolor="grey" ];
+  Node2 [id="Node000002",label="FreeRDP.rdpGlyphCache",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_glyph_cache.html",tooltip=" "];
+  Node3 -> Node1 [id="edge8_Node000001_Node000003",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" brush",fontcolor="grey" ];
+  Node3 [id="Node000003",label="FreeRDP.rdpBrushCache",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_brush_cache.html",tooltip=" "];
+  Node4 -> Node1 [id="edge9_Node000001_Node000004",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" pointer",fontcolor="grey" ];
+  Node4 [id="Node000004",label="FreeRDP.rdpPointerCache",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_pointer_cache.html",tooltip=" "];
+  Node5 -> Node1 [id="edge10_Node000001_Node000005",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" bitmap",fontcolor="grey" ];
+  Node5 [id="Node000005",label="FreeRDP.rdpBitmapCache",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_bitmap_cache.html",tooltip=" "];
+  Node6 -> Node1 [id="edge11_Node000001_Node000006",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" offscreen",fontcolor="grey" ];
+  Node6 [id="Node000006",label="FreeRDP.rdpOffscreenCache",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_offscreen_cache.html",tooltip=" "];
+  Node7 -> Node1 [id="edge12_Node000001_Node000007",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" palette",fontcolor="grey" ];
+  Node7 [id="Node000007",label="FreeRDP.rdpPaletteCache",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",URL="$struct_free_r_d_p_1_1rdp_palette_cache.html",tooltip=" "];
+}

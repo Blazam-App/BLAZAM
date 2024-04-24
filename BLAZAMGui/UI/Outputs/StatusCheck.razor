@@ -1,0 +1,47 @@
+﻿
+
+@if (Text.IsNullOrEmpty())
+{
+    <MudAvatar Size="Size.Small" Color="@Color" Variant="Variant.Filled">
+    <MudIcon Icon="@Icon"/>
+    </MudAvatar>
+}
+else
+{
+    <MudChip Size=Size.Small Color=@Color Icon="@Icon">@Text</MudChip>
+
+}
+
+@code {
+    [Parameter]
+    public bool? Status { get; set; } = false;  
+    [Parameter]
+    public string? Text { get; set; }
+    private Color Color = Color.Error;
+    private string Icon = Icons.Material.Filled.Close;
+
+
+
+    protected override async void OnParametersSet()
+    {
+
+        if (Status == true)
+        {
+            Color=Color.Success;
+            Icon = Icons.Material.Filled.Check;
+        }
+        else if(Status ==false)
+        {
+            Color = Color.Error;
+            Icon = Icons.Material.Filled.Close;
+        }
+        else
+        {
+            Color = Color.Warning;
+            Icon = Icons.Material.Filled.QuestionMark;
+        }
+
+        await InvokeAsync(StateHasChanged);
+
+    }
+}

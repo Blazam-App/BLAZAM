@@ -1,0 +1,133 @@
+@inherits AppComponentBase
+@if (Members != null)
+{
+    <MudDataGrid Elevation=0
+                 Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
+                 Filterable="false"
+                 Dense=true
+                 Loading=@LoadingData
+                 Virtualize=true
+                 Height="300px"
+                 FixedHeader=true
+                 SortMode="@SortMode.None"
+                 Groupable="false">
+        <Columns>
+            <TemplateColumn Context="templateContext">
+                <HeaderTemplate>
+                    @AppLocalization["Type"]
+                </HeaderTemplate>
+                <CellTemplate Context="cellContext">
+                    @{
+                        var icon = Icons.Material.Filled.Person;
+                        switch (cellContext.Item.ObjectType)
+                        {
+                            case ActiveDirectoryObjectType.Group:
+                                icon = Icons.Material.Filled.People;
+                                break;
+                            case ActiveDirectoryObjectType.Computer:
+                                icon = Icons.Material.Filled.Computer;
+                                break;
+                        }
+
+                    }
+                    <MudTooltip Text="@cellContext.Item.ObjectType.ToString()">
+                        <MudIcon Icon="@icon" />
+                    </MudTooltip>
+
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Sortable=true Filterable=true Context="templateContext">
+                <HeaderTemplate>
+                    @AppLocalization["Name"]
+                </HeaderTemplate>
+                <CellTemplate Context="cellContext">
+                    <MudLink OnClick="@(()=>{Nav.NavigateTo(cellContext.Item.SearchUri);})">
+                        @cellContext.Item.CanonicalName
+                    </MudLink>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Sortable=true Filterable=true Context="templateContext">
+                <HeaderTemplate>
+                    @AppLocalization["OU"]
+                </HeaderTemplate>
+                <CellTemplate Context="cellContext">
+                    <MudText>
+                        @cellContext.Item.OU.ToPrettyOu()
+                    </MudText>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Context="templateContext">
+                <HeaderTemplate>
+                    @AppLocalization["Remove Member"]
+                </HeaderTemplate>
+                <CellTemplate Context="cellContext">
+                    <MudTooltip 
+                                ShowOnClick=@(!cellContext.Item.CanEdit || !cellContext.Item.CanUnassign)
+                                ShowOnHover=@(!cellContext.Item.CanEdit || !cellContext.Item.CanUnassign)
+                                Text="You don't have permission to remove this group member">
+                        <MudButton Disabled=@(!cellContext.Item.CanEdit || !cellContext.Item.CanUnassign)
+                                   Color="Color.Error"
+                                   OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
+                            @AppLocalization["Remove"]
+                        </MudButton>
+                    </MudTooltip>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+    if (Members.Where(m => !m.CanRead).Count() > 0)
+    {
+        <MudAlert Class="mud-alert-filled-info">
+            The group has more members you don't have access to
+        </MudAlert>
+    }
+    @if (Group.CanAssign)
+    {
+
+        <MudIconButton Color="Color.Primary" 
+        Icon="@Icons.Material.Filled.GroupAdd" 
+        OnClick="@(()=>{AssignMemberModal.Show();})" />
+    }
+    <AppModal Color="Color.Dark" Title="Add Member..." @ref=@AssignMemberModal>
+        <AddMemberModalContent ModelChanged=@(()=>{InvokeAsync(OnInitializedAsync);}) Group="Group" />
+    </AppModal>
+}
+else
+{
+    <MudOverlay Visible=true Absolute=true DarkBackground=false>
+        <MudProgressCircular Indeterminate Color=Color.Primary />
+    </MudOverlay>
+}
+
+
+@code {
+    [Parameter]
+    public IADGroup Group { get; set; }
+    /// <summary>
+    /// Number of membes per page
+    /// </summary>
+    /// <remarks>
+    /// Default value is 25
+    /// </remarks>
+    [Parameter]
+    public int PageSize { get; set; } = 25;
+
+    List<IGroupableDirectoryAdapter> Members{ get; set; }
+
+
+    AppModal AssignMemberModal;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _=Task.Run(() =>
+        {
+            Members = Group.Members;
+            LoadingData = false;
+            InvokeAsync(StateHasChanged);
+
+        });
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+}

@@ -1,0 +1,208 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher}{}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher}\index{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}}
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.651917cm]{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a0ba60fe03331dd657359fb55d1c656d4}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a0ba60fe03331dd657359fb55d1c656d4} 
+{\bfseries ADGroup\+Searcher} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a468ef6c597e5b4bb5b51121c8873cde8}{Find\+Group\+By\+String\+Async}} (string search\+Term, bool exact\+Match=false)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_aa0133eea9e583221d6a36ff3910d186d}{Find\+Group\+By\+DN}} (string dn)
+\begin{DoxyCompactList}\small\item\em Find all matching groups by Distinguished Name fragment. This is not always an exact match search. For exact match, be sure to use the entire group\textquotesingle{}s Distinguished Name including the CN=. This is a limitation of LDAP. \end{DoxyCompactList}\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a22c53fdf47c9abea48b8f9b140627b81}{Find\+Group\+By\+String}} (string search\+Term, bool exact\+Match=false)
+\item 
+async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_adb6fa855c093f8a398762ee187dd6c11}{Find\+New\+Groups\+Async}} (int max\+Age\+In\+Days=14)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_ac665a61453872f3e2373530764c2bdcc}{Find\+New\+Groups}} (int max\+Age\+In\+Days=14)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter}{IGroupable\+Directory\+Adapter}} $>$? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a1470c3b766c17e806e7a31947fd21646}{Get\+All\+Nested\+Members}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} group)
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}}? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a5e6965e11c3895890d81d0b41aa5a7a1}{Find\+Group\+By\+SID}} (byte\mbox{[}$\,$\mbox{]} group\+SID)
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}}? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_ad5b8e30fa45643c48444013c83af02ed}{Find\+Group\+By\+SID}} (string group\+SID)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a5d4265ae7dc8c2b0e06b7c3fcd84a5ea}{Find\+Groups\+By\+DN}} (List$<$ string $>$? list)
+\begin{DoxyCompactList}\small\item\em Find all matching groups by Distinguished Name fragments. This is not always an exact match search. For exact match, be sure to use the entire group\textquotesingle{}s Distinguished Name including the CN=. \end{DoxyCompactList}\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_af58690ba0ee58c89bad8c52efa27fdbf}{Get\+Direct\+User\+Members}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} group, bool ignore\+Disabled\+Users=true)
+\item 
+List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a47f90a8a1db83ab7b63a24f936f9cadb}{Get\+Group\+Members}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} group)
+\item 
+bool \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_ab74eee8504608a996d8b055b9620f960}{Is\+AMember\+Of}} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}}? group, \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter}{IGroupable\+Directory\+Adapter}}? user\+Or\+Group, bool v, bool ignore\+Disabled\+Users=true)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries ADSearcher} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual Search\+Result\+Collection {\bfseries Search\+Objects} (string field\+Query, Active\+Directory\+Object\+Type search\+Type, int return\+Count=5, bool? enabled\+Only=true)
+\item 
+virtual Search\+Result\+Collection {\bfseries Search\+Objects} (string? search\+Base\+DN, string field\+Query, Active\+Directory\+Object\+Type? search\+Type, int return\+Count=5, bool? enabled\+Only=true, Search\+Scope search\+Scope=Search\+Scope.\+Subtree)
+\item 
+Search\+Result\+Collection {\bfseries Search\+Object\+By\+SID} (string sid)
+\item 
+List$<$ T $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_a1c5b8c87363140052743cc42141df205}{Convert\+To$<$ T $>$}} (Search\+Result\+Collection r)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} {\bfseries Directory}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_aa0133eea9e583221d6a36ff3910d186d}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_aa0133eea9e583221d6a36ff3910d186d} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}!FindGroupByDN@{FindGroupByDN}}
+\index{FindGroupByDN@{FindGroupByDN}!BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}}
+\doxysubsubsection{\texorpdfstring{FindGroupByDN()}{FindGroupByDN()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher.\+Find\+Group\+By\+DN (\begin{DoxyParamCaption}\item[{string}]{dn }\end{DoxyParamCaption})}
+
+
+
+Find all matching groups by Distinguished Name fragment. This is not always an exact match search. For exact match, be sure to use the entire group\textquotesingle{}s Distinguished Name including the CN=. This is a limitation of LDAP. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dn} & The Distinguished Name fragment to find in groups\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+All groups with the distinguished name fragment in their own distinguished name
+\end{DoxyReturn}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a5e6965e11c3895890d81d0b41aa5a7a1}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a5e6965e11c3895890d81d0b41aa5a7a1} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}!FindGroupBySID@{FindGroupBySID}}
+\index{FindGroupBySID@{FindGroupBySID}!BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}}
+\doxysubsubsection{\texorpdfstring{FindGroupBySID()}{FindGroupBySID()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}}? BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher.\+Find\+Group\+By\+SID (\begin{DoxyParamCaption}\item[{byte\mbox{[}$\,$\mbox{]}}]{group\+SID }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_ad5b8e30fa45643c48444013c83af02ed}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_ad5b8e30fa45643c48444013c83af02ed} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}!FindGroupBySID@{FindGroupBySID}}
+\index{FindGroupBySID@{FindGroupBySID}!BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}}
+\doxysubsubsection{\texorpdfstring{FindGroupBySID()}{FindGroupBySID()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}}? BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher.\+Find\+Group\+By\+SID (\begin{DoxyParamCaption}\item[{string}]{group\+SID }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a22c53fdf47c9abea48b8f9b140627b81}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a22c53fdf47c9abea48b8f9b140627b81} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}!FindGroupByString@{FindGroupByString}}
+\index{FindGroupByString@{FindGroupByString}!BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}}
+\doxysubsubsection{\texorpdfstring{FindGroupByString()}{FindGroupByString()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher.\+Find\+Group\+By\+String (\begin{DoxyParamCaption}\item[{string}]{search\+Term,  }\item[{bool}]{exact\+Match = {\ttfamily false} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a468ef6c597e5b4bb5b51121c8873cde8}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a468ef6c597e5b4bb5b51121c8873cde8} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}!FindGroupByStringAsync@{FindGroupByStringAsync}}
+\index{FindGroupByStringAsync@{FindGroupByStringAsync}!BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}}
+\doxysubsubsection{\texorpdfstring{FindGroupByStringAsync()}{FindGroupByStringAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher.\+Find\+Group\+By\+String\+Async (\begin{DoxyParamCaption}\item[{string}]{search\+Term,  }\item[{bool}]{exact\+Match = {\ttfamily false} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a5d4265ae7dc8c2b0e06b7c3fcd84a5ea}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a5d4265ae7dc8c2b0e06b7c3fcd84a5ea} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}!FindGroupsByDN@{FindGroupsByDN}}
+\index{FindGroupsByDN@{FindGroupsByDN}!BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}}
+\doxysubsubsection{\texorpdfstring{FindGroupsByDN()}{FindGroupsByDN()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher.\+Find\+Groups\+By\+DN (\begin{DoxyParamCaption}\item[{List$<$ string $>$?}]{list }\end{DoxyParamCaption})}
+
+
+
+Find all matching groups by Distinguished Name fragments. This is not always an exact match search. For exact match, be sure to use the entire group\textquotesingle{}s Distinguished Name including the CN=. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & A list of Distinguished Name fragments\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+All groups with any of the distinguished name fragments in their own distinguished name
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_ac665a61453872f3e2373530764c2bdcc}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_ac665a61453872f3e2373530764c2bdcc} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}!FindNewGroups@{FindNewGroups}}
+\index{FindNewGroups@{FindNewGroups}!BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}}
+\doxysubsubsection{\texorpdfstring{FindNewGroups()}{FindNewGroups()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$? BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher.\+Find\+New\+Groups (\begin{DoxyParamCaption}\item[{int}]{max\+Age\+In\+Days = {\ttfamily 14} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_adb6fa855c093f8a398762ee187dd6c11}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_adb6fa855c093f8a398762ee187dd6c11} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}!FindNewGroupsAsync@{FindNewGroupsAsync}}
+\index{FindNewGroupsAsync@{FindNewGroupsAsync}!BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}}
+\doxysubsubsection{\texorpdfstring{FindNewGroupsAsync()}{FindNewGroupsAsync()}}
+{\footnotesize\ttfamily async Task$<$ List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher.\+Find\+New\+Groups\+Async (\begin{DoxyParamCaption}\item[{int}]{max\+Age\+In\+Days = {\ttfamily 14} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a1470c3b766c17e806e7a31947fd21646}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a1470c3b766c17e806e7a31947fd21646} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}!GetAllNestedMembers@{GetAllNestedMembers}}
+\index{GetAllNestedMembers@{GetAllNestedMembers}!BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}}
+\doxysubsubsection{\texorpdfstring{GetAllNestedMembers()}{GetAllNestedMembers()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter}{IGroupable\+Directory\+Adapter}} $>$? BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher.\+Get\+All\+Nested\+Members (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}}}]{group }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_af58690ba0ee58c89bad8c52efa27fdbf}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_af58690ba0ee58c89bad8c52efa27fdbf} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}!GetDirectUserMembers@{GetDirectUserMembers}}
+\index{GetDirectUserMembers@{GetDirectUserMembers}!BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}}
+\doxysubsubsection{\texorpdfstring{GetDirectUserMembers()}{GetDirectUserMembers()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_user}{IADUser}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher.\+Get\+Direct\+User\+Members (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}}}]{group,  }\item[{bool}]{ignore\+Disabled\+Users = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a47f90a8a1db83ab7b63a24f936f9cadb}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_a47f90a8a1db83ab7b63a24f936f9cadb} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}!GetGroupMembers@{GetGroupMembers}}
+\index{GetGroupMembers@{GetGroupMembers}!BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}}
+\doxysubsubsection{\texorpdfstring{GetGroupMembers()}{GetGroupMembers()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}} $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher.\+Get\+Group\+Members (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}}}]{group }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher}}.
+
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_ab74eee8504608a996d8b055b9620f960}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_group_searcher_ab74eee8504608a996d8b055b9620f960} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}!IsAMemberOf@{IsAMemberOf}}
+\index{IsAMemberOf@{IsAMemberOf}!BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher@{BLAZAM.ActiveDirectory.Searchers.ADGroupSearcher}}
+\doxysubsubsection{\texorpdfstring{IsAMemberOf()}{IsAMemberOf()}}
+{\footnotesize\ttfamily bool BLAZAM.\+Active\+Directory.\+Searchers.\+ADGroup\+Searcher.\+Is\+AMember\+Of (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group}{IADGroup}}?}]{group,  }\item[{\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_groupable_directory_adapter}{IGroupable\+Directory\+Adapter}}?}]{user\+Or\+Group,  }\item[{bool}]{v,  }\item[{bool}]{ignore\+Disabled\+Users = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_a_d_group_searcher}{BLAZAM.\+Active\+Directory.\+Interfaces.\+IADGroup\+Searcher}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Searchers/ADGroup\+Searcher.\+cs\end{DoxyCompactItemize}

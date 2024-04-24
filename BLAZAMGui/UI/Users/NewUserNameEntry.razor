@@ -1,0 +1,57 @@
+﻿@inherits AppComponentBase
+<EditForm Model="NewUserName">
+
+    <Section Title=@AppLocalization["Name"]>
+
+
+
+        <MudTextField AutoFocus=true Label="@AppLocalization["First Name"]" @bind-Value="@NewUserName.GivenName" />
+
+
+
+
+
+        <MudTextField Label="@AppLocalization["Middle Name"]" @bind-Value="@NewUserName.MiddleName" />
+
+
+
+
+
+        <MudTextField Label="@AppLocalization["Last Name"]" @bind-Value="@NewUserName.Surname" />
+
+
+
+
+    </Section>
+</EditForm>
+<MudButton Color=Color.Primary
+           OnClick="OnBack">Back</MudButton>
+<MudButton Color="Color.Success"
+           OnClick="OnNext"
+           Disabled=@(newUserName is null || (newUserName.Surname.IsNullOrEmpty() && newUserName.GivenName.IsNullOrEmpty()))>Next</MudButton>
+
+
+@code {
+
+#nullable disable warnings
+    NewUserName newUserName;
+
+    [Parameter]
+    public NewUserName NewUserName
+    {
+        get => newUserName; set
+        {
+            if (value == newUserName) return;
+            newUserName = value;
+            NewUserNameChanged.InvokeAsync(newUserName);
+
+        }
+    }
+
+    [Parameter]
+    public EventCallback<NewUserName> NewUserNameChanged { get; set; }
+    [Parameter]
+    public EventCallback OnNext { get; set; }
+    [Parameter]
+    public EventCallback OnBack { get; set; }
+}

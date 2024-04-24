@@ -1,0 +1,55 @@
+﻿@using BLAZAM.Database.Models.Audit;
+@inherits AppModalContent
+@inject IHttpClientFactory ClientFactory
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="pa-0" Style="min-width:640px;min-height:480px">
+   <iframe style="width:640px;height:480px;" src=@rdpUrl />
+</MudContainer>
+<MudTextField Label="Computer Name" @bind-Value=computerName/>
+<MudButton OnClick=@Connect>Connect</MudButton>
+<MudButton OnClick=@GetPasswordHash>Get Hash</MudButton>
+@code {
+    private string baseRdpUrl = "/";
+    private string rdpUrl = "/";
+    private string computerName="";
+    protected override void OnInitialized()
+    {
+        Modal.Options.MaxWidth = MaxWidth.ExtraExtraLarge;
+        Modal.Options.FullWidth = true;
+        base.OnInitialized();
+        baseRdpUrl = Context.AppSettings.FirstOrDefault().MyrtilleURL;
+        rdpUrl = baseRdpUrl;
+    }
+
+    protected async Task<string> GetPasswordHash()
+    {
+        var plaintext = Context.ActiveDirectorySettings.FirstOrDefault().Password.Decrypt();
+
+
+        var request = new HttpRequestMessage(HttpMethod.Get,
+           baseRdpUrl + "/GetHash.aspx?password=" + plaintext);
+        request.Headers.Add("Accept", "application/vnd.github.v3+json");
+        request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+        var client = ClientFactory.CreateClient();
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var hash = await response.Content.ReadAsStringAsync();
+            return hash;
+        }
+        else
+        {
+        }
+        return "";
+    }
+
+    protected async void Connect()
+    {
+        var hash = await GetPasswordHash();
+        rdpUrl = Context.AppSettings.FirstOrDefault().MyrtilleURL + "?__EVENTTARGET=&__EVENTARGUMENT=server=" + computerName + "&user=" + Context.ActiveDirectorySettings.FirstOrDefault().Username + "&passwordHash=" + hash + "&connect=Connect%21";
+        //rdpUrl = Context.AppSettings.FirstOrDefault().MyrtilleURL + "?__EVENTTARGET=&__EVENTARGUMENT=server=" + computerName + "&user=" + Context.ActiveDirectorySettings.FirstOrDefault().Username + "&password=" + hash;
+        await InvokeAsync(StateHasChanged);
+    }
+}

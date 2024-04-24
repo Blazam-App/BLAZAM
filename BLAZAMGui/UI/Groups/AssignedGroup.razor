@@ -1,0 +1,98 @@
+﻿@inherits DirectoryModelComponent
+
+<MudCard>
+    @if (Group != null)
+    {
+        <MudCardHeader>
+            <MudText Style="cursor:pointer;" @onclick="@(()=>{
+            if(AllowNavigation)
+             Nav.NavigateTo(Group.SearchUri);
+            })">
+                @Group.GroupName
+
+            </MudText>
+            @if (AllowUnassign)
+            {
+                <MudButton Color="Color.Error" OnClick="RemoveFromGroup"><MudIcon Icon="@("fa-times")" /></MudButton>
+            }
+        </MudCardHeader>
+    }
+
+    else
+    {
+        <MudCardHeader>
+
+                        <MudText Typo ="Typo.h5">
+
+                            <MudButton OnClick="@(()=>collapse1Visible = !collapse1Visible)">
+                                @Group.GroupName
+                                @if (AllowUnassign)
+                                {
+                                    <MudButton Color="Color.Error" OnClick="RemoveFromGroup"><MudIcon Icon="@("fa-times")" /></MudButton>
+
+                                }
+
+                            </MudButton>
+
+                        </MudText>
+
+               
+                        @if (collapse1Visible && Group?.IsAGroupMember==true)
+                        {
+                            var deniedRead = false;
+
+                            @foreach (var group in Group.MemberOf)
+                            {
+                                if (group.CanRead)
+                                {
+                                    <AssignedGroup AllowUnassign=AllowUnassign AllowNavigation=AllowNavigation Group="group" Member="Group" />
+                                }
+                                else
+                                {
+                                    deniedRead = true;
+                                }
+                            }
+
+                            if (deniedRead)
+                            {
+                                <MudText>
+                                    The user is in more groups you don't have access to
+                                </MudText>
+                            }
+
+
+                        }
+                   
+        </MudCardHeader>
+
+    }
+</MudCard>
+
+@code {
+
+#nullable disable warnings
+    bool collapse1Visible = false;
+
+    [Parameter]
+    public bool AllowNavigation { get; set; } = true; 
+    
+    [Parameter]
+    public bool AllowUnassign { get; set; } = true;
+
+
+    [Parameter]
+    public IGroupableDirectoryAdapter Member { get; set; }
+
+    [Parameter]
+    public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
+    async Task RemoveFromGroup()
+    {
+
+        Member.UnassignFrom(Group);
+        SnackBarService.Warning(Member.CanonicalName + " removed from " + Group.CanonicalName + ". Don't forget to save your changes.");
+
+        await OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group));
+
+    }
+
+}

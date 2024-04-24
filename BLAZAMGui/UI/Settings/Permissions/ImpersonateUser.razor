@@ -1,0 +1,103 @@
+﻿@using Newtonsoft.Json
+@using System.Diagnostics
+@inherits AppComponentBase
+@inject IJSRuntime JSRuntime
+@if ((CurrentUser.State.IsSuperAdmin && CurrentUser.Username != "Demo") || (CurrentUser.State.IsSuperAdmin|| Debugger.IsAttached))
+{
+    <form action="" @onsubmit=@AttemptSignIn id="login-form">
+
+        <SettingsField>
+
+            <ADAutoComplete Disabled=@attemptingImpersonation 
+            Label="@AppLocalization["Impersonate User"]" 
+            SearchObjectType="ActiveDirectoryObjectType.User" 
+            @bind-SelectedResult=User />
+
+
+            <MudButton Disabled=@attemptingImpersonation 
+            Color=Color.Primary 
+            ButtonType="ButtonType.Submit">
+                Impersonate User
+            </MudButton>
+
+
+        </SettingsField>
+
+
+    </form>
+}
+else
+{
+    <MudText Class="ma-5 align-center justify-center">Impersonation is not available in demo mode.</MudText>
+}
+@code {
+    private LoginRequest imperonationRequest = new(){ Impersonation=true};
+    public IDirectoryEntryAdapter? User { get; set; }
+    bool attemptingImpersonation;
+    async void AttemptSignIn()
+    {
+        imperonationRequest.Username = User?.SamAccountName;
+        imperonationRequest.Password = "impersonate";
+        LoginRequest? authenticationResult = null;
+        if (User != null)
+        {
+            try
+            {
+                var response = await JSRuntime.InvokeAsync<string>("attemptSignIn", imperonationRequest);
+                authenticationResult = JsonConvert.DeserializeObject<LoginRequest>(response);
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error("Error attempting to impersonate " + User.CanonicalName + "{@Error}", ex);
+            }
+        }
+
+
+
+        if (authenticationResult!=null)
+        {
+            
+            attemptingImpersonation = false;
+
+            switch (authenticationResult.AuthenticationResult)
+            {
+
+                case LoginResultStatus.NoUsername:
+                    SnackBarService.Info("Username is missing");
+
+                    break;
+                case LoginResultStatus.NoPassword:
+                    SnackBarService.Info("Password is missing");
+
+                    break;
+                case LoginResultStatus.NoData:
+                    SnackBarService.Warning("Login request is missing");
+
+                    break;
+                case LoginResultStatus.BadCredentials:
+                    SnackBarService.Warning("Username or password not correct");
+
+                    break;
+                case LoginResultStatus.UnauthorizedImpersonation:
+                    SnackBarService.Error("Unauthorized Impersonation Attempt");
+
+                    break;
+                case LoginResultStatus.DeniedLogin:
+                    SnackBarService.Error("That account is not authorized to login");
+
+                    break;
+                case LoginResultStatus.UnknownFailure:
+                    SnackBarService.Error("Unknown error while attempting to log in");
+
+                    break;
+                case LoginResultStatus.OK:
+                    attemptingImpersonation = true;
+                    Nav.NavigateTo("/home", true);
+                    break;
+            }
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

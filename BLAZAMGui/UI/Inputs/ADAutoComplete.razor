@@ -1,0 +1,263 @@
+﻿@inherits AutoCompleteComponentBase
+<MudAutocomplete Class="@Class"
+                 Style="@Style"
+                 Disabled=@Disabled
+                 T="IDirectoryEntryAdapter"
+                 Label="@Label"
+                 AnchorOrigin="@AnchorOrigin"
+                 TransformOrigin="@TransformOrigin"
+                 @bind-Value="SelectedResult"
+                 @bind-Text=@SearchTerm
+                 @ref=AutoComplete
+                 AutoFocus=@AutoFocus
+                 SearchFuncWithCancel="@GetResults"
+                 DebounceInterval=500
+                 ResetValueOnEmptyText="true"
+                 Validation="@Validation"
+                 CoerceText="@AllowCustomInput"
+                 CoerceValue="true"
+                 MaxItems=@MaxResults
+                 Clearable=true
+                 Dense=true
+                 ShowProgressIndicator=true
+                 ToStringFunc="item=>item?.CanonicalName"
+                 AdornmentColor="Color.Tertiary"
+                 ProgressIndicatorColor="Color.Secondary"
+                 Adornment="Adornment.Start"
+                 AdornmentIcon="@AdornmentIcon"
+                 Variant="@Variant">
+    <ItemTemplate>
+        <ADAutoCompleteResult Entry="context" />
+
+    </ItemTemplate>
+    <BeforeItemsTemplate>
+        <MudText>
+
+            @SearchResults.Count() @AppLocalization["Results"]
+        </MudText>
+
+    </BeforeItemsTemplate>
+    <NoItemsTemplate>
+        @if (SearchTerm.IsNullOrEmpty())
+        {
+            <MudText>
+
+                Start typing to search...
+            </MudText>
+
+        }
+        else
+        {
+            <MudText>
+                Sorry no result were found 😒
+            </MudText>
+
+        }
+
+    </NoItemsTemplate>
+    <MoreItemsTemplate>
+        <MudButton OnClick="ShowMoreResults" Color="Color.Primary">@AppLocalization["Show more"]</MudButton>
+            <MudText>
+                More results than shown...
+            </MudText>
+        </MoreItemsTemplate>
+    </MudAutocomplete>
+
+    @code {
+#nullable disable warnings
+    [Parameter]
+    public Func<object> Validation { get; set; }
+    [Parameter]
+    public string? Label { get; set; }
+    [Parameter]
+    public string? Style { get; set; }
+    [Parameter]
+    public Variant Variant { get; set; }
+    [Parameter]
+    public string? Class { get; set; }
+    [Parameter]
+    public string AdornmentIcon { get; set; } = Icons.Material.Filled.Search;
+    [Parameter]
+    public Origin TransformOrigin { get; set; } = Origin.TopCenter;
+
+    [Parameter]
+    public Origin AnchorOrigin { get; set; } = Origin.BottomCenter;
+
+    [Parameter]
+    public bool Disabled { get; set; }
+    [Parameter]
+    public bool AutoFocus { get; set; }
+
+    /// <summary>
+    /// The maximum number of results to show in the autocomplete suggestion list
+    /// </summary>
+    /// <remarks>
+    /// Defaults to 10
+    /// </remarks>
+    [Parameter]
+    public int MaxResults { get; set; } = 10;
+
+    [Parameter]
+    public bool AllowCustomInput { get; set; }
+
+    private MudAutocomplete<IDirectoryEntryAdapter>? AutoComplete { get; set; }
+
+    private List<CancellationTokenSource> _cancellationList = new();
+
+    [Parameter]
+    public Func<IDirectoryEntryAdapter, bool> CustomResultsFilter { get; set; }
+    @*
+    [Parameter]
+    public IFluentDisplay Display { get; set; }*@
+
+    [CascadingParameter]
+    public SearchService SearchParameters { get; set; }
+
+    IEnumerable<IDirectoryEntryAdapter> _searchResults = new List<IDirectoryEntryAdapter>();
+    bool _searchDisabled;
+    [Parameter]
+    public bool SearchDisabled
+    {
+        get => _searchDisabled;
+        set
+        {
+            if (_searchDisabled == value)
+                return;
+            _searchDisabled = value;
+        }
+    }
+
+
+    async Task ShowMoreResults()
+    {
+        MaxResults += 10;
+        await GetResults(SearchTerm, new());
+        await InvokeAsync(StateHasChanged);
+    }
+
+    [Parameter]
+    public ActiveDirectoryObjectType? SearchObjectType { get; set; }
+
+
+    [Parameter]
+    public IEnumerable<IDirectoryEntryAdapter> SearchResults
+    {
+        get => _searchResults;
+        set
+        {
+            if (_searchResults == value)
+                return;
+            _searchResults = value;
+            SearchResultsChanged.InvokeAsync(value);
+        }
+    }
+
+
+    [Parameter]
+    public EventCallback<IEnumerable<IDirectoryEntryAdapter>> SearchResultsChanged { get; set; }
+
+    private IDirectoryEntryAdapter _selectedResult;
+    [Parameter]
+    public IDirectoryEntryAdapter SelectedResult
+    {
+        get => _selectedResult;
+        set
+        {
+            if (_selectedResult == value)
+                return;
+
+            SearchResults = new List<IDirectoryEntryAdapter>
+                {
+                    value
+                };
+            _selectedResult = value;
+
+            SearchService.SearchTerm = _selectedResult != null ? _selectedResult.CanonicalName : "";
+
+            SelectedResultChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<IDirectoryEntryAdapter> SelectedResultChanged { get; set; }
+
+
+
+
+
+    public List<IDirectoryEntryAdapter> _selectedResults;
+
+
+    List<string> SelectedResultNames = new();
+
+
+
+
+    private async Task<IEnumerable<IDirectoryEntryAdapter>> GetResults(string searchText, CancellationToken token)
+    {
+        var newSource = new CancellationTokenSource();
+        token = newSource.Token;
+        foreach (var source in _cancellationList)
+        {
+            source.Cancel();
+        }
+
+        _cancellationList.Add(newSource);
+
+        return await Task.Run(() =>
+         {
+
+             if (!token.IsCancellationRequested && searchText != null)
+             {
+                 SearchResults = new List<IDirectoryEntryAdapter>();
+
+                 var search = new ADSearch();
+
+                 search.ObjectTypeFilter = SearchObjectType;
+                 search.GeneralSearchTerm = searchText.Replace(" ", "*");
+                 search.EnabledOnly = !SearchDisabled;
+                 search.MaxResults = MaxResults + 1;
+                 if (!search.GeneralSearchTerm.Equals(String.Empty))
+                 {
+
+                     var temp = (search.Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>(token)).Where(r => r.CanRead);
+
+                     if (!token.IsCancellationRequested)
+                     {
+
+                         if (CustomResultsFilter != null)
+                         {
+                             List<IDirectoryEntryAdapter> filteredResults = new();
+                             foreach (var result in temp)
+                             {
+                                 if (CustomResultsFilter.Invoke(result))
+                                     filteredResults.Add(result);
+                             }
+                             if (!token.IsCancellationRequested)
+                             {
+                                 temp = filteredResults;
+                             }
+                         }
+                         if (!token.IsCancellationRequested)
+                         {
+                             SearchResults = temp;
+                             return SearchResults;
+                         }
+
+                     }
+                 }
+
+             }
+             return new List<IDirectoryEntryAdapter>();
+         });
+
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+
+}

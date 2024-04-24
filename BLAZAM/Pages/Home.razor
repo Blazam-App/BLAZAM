@@ -1,78 +1,89 @@
 ﻿@attribute [Authorize]
 @inherits AppComponentBase
 @page "/Home"
-@using BLAZAM.Server.Shared.UI.Dashboard.Widgets;
-@using BLAZAM.Common.Data.ActiveDirectory.Interfaces;
-@using BLAZAM.Server.Data.Services.Email;
-@if (MOTD.HasValue && MOTD.Value.ToString()!="")
-{
-    <Alert Background="Background.Light" TextColor="TextColor.Dark" Visible>
+@using BLAZAM.Gui.UI.Dashboard
+@using BLAZAM.Gui.Helper
+@using BLAZAM.Gui.UI.Outputs.Jobs;
+@{
+    string testValue = "";
+    Type valueType = testValue.GetType();
+}
+<AppPageTitle>@AppLocalization["Home"]</AppPageTitle>
 
-    <AlertMessage>
+    @if (MOTD.HasValue && MOTD.Value.ToString() != "")
+{
+    <MudAlert Class="mb-6" ShowCloseIcon=false Elevation="3">
+
+
         @MOTD.Value
 
-    </AlertMessage>
-</Alert>
+    </MudAlert>
 }
-<DropContainer @ref=widgetContainer TItem="Widget" @bind-Items="widgets" ItemsFilter="@((item, dropZone) => item.Slot == dropZone)" ItemDropped="@ItemDropped" Flex="Flex.Wrap.Grow.Is1">
-    <ChildContent>
-        <DropZone TItem="Widget" Name="slot1" AllowReorder Border="Border.Rounded" Background="Background.Light" Margin="Margin.Is3" Flex="Flex.Grow.Is1" />
-        <DropZone TItem="Widget" Name="slot2" AllowReorder Border="Border.Rounded" Background="Background.Light" Margin="Margin.Is3" Flex="Flex.Grow.Is1" />
-        <DropZone TItem="Widget" Name="slot3" AllowReorder Border="Border.Rounded" Background="Background.Light" Margin="Margin.Is3" Flex="Flex.Grow.Is1" />
-
-    </ChildContent>
-    <ItemTemplate>
-        <Card Shadow="Shadow.Default" Margin="Margin.Is3.OnY" Background="Background.Secondary" TextColor="TextColor.Light">
-            <CardBody>
-                <DynamicComponent Type="@context.GetType()" />
-                <AppCloseButton Clicked=@(()=>{RemoveWidget(context);}) Position="Position.Absolute" style="right:10px;top:15px" />
-            </CardBody>
-        </Card>
-    </ItemTemplate>
-    </DropContainer>
 
 
+<CurrentUserDashboardWidgets />
 
 
+@if (ApplicationInfo.InDebugMode)
+{
+   
+    <MudButton Variant="Variant.Filled" OnClick="testJob">Run Test Job</MudButton>
+}
 
-
-
-
-
-
-    @code {
+@code {
     MarkupString? MOTD;
-    DropContainer<Widget>? widgetContainer;
-    List<Widget> widgets = new List<Widget>();
-    private Task ItemDropped(DraggableDroppedEventArgs<AppComponent> dropItem)
-    {
-        return Task.CompletedTask;
-    }
 
     protected override Task OnInitializedAsync()
     {
-        widgets = new List<Widget>(Widgets.Available(UserStateService.CurrentUserState));
         try
         {
-            MOTD = (MarkupString)Context.AppSettings.FirstOrDefault().MOTD;
+            MOTD = (MarkupString)Context?.AppSettings.FirstOrDefault()?.MOTD;
         }
         catch
         {
-            
+
         }
         return base.OnInitializedAsync();
     }
+    private IJob TestJob
+    {
+        get
+        {
+            IJob job = new Job("Test Job");
+            IJob job2 = new Job("Nested Job");
+            IJobStep step1 = new JobStep("Regular Step Passes", (step) =>
+            {
+                for (int x = 1; x < 6; x++)
+                {
+                    Task.Delay(400).Wait();
+                    step.Progress = (x / 5.0) * 100.0;
+                }
+                return true;
+            });
+            IJobStep step2 = new JobStep("Regular Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
+            IJobStep step3 = new JobStep("Regular Step Throws", bool(step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); });
+            IJobStep step4 = new JobStep("Nested Step Passes", (step) => { Task.Delay(2000).Wait(); return true; });
+            IJobStep step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
+            IJobStep step6 = new JobStep("Nested Step Throws", bool(step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); });
 
-    private Task ItemDropped(DraggableDroppedEventArgs<Widget> dropItem)
-    {
-        dropItem.Item.Slot = dropItem.DropZoneName;
-        return Task.CompletedTask;
+            job.Steps.Add(step1);
+            job.Steps.Add(step2);
+            job.Steps.Add(step3);
+            job2.Steps.Add(step4);
+            job2.Steps.Add(step5);
+            job2.Steps.Add(step6);
+            job.Steps.Add((IJobStep)job2);
+            return job;
+        }
     }
-    async Task RemoveWidget(Widget widget)
+    private async Task testJob()
     {
-        widgets.Remove(widget);
-        await InvokeAsync(StateHasChanged);
-        widgetContainer.Refresh();
+        var test = TestJob;
+        test.ShowJobDetailsDialog(MessageService);
+        //await MessageService.ShowMessage<JobResultDialog>(test.ToDialogParameters(), "Test Job");
+        var result = await test.RunAsync();
+
+
     }
 
 }

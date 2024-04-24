@@ -15,14 +15,26 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Setup .NET Core SDK
+      - name: Setup .NET Core SDK 6
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.x
+      - name: Setup .NET Core SDK 8
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 8.x
       - name: Restore dependencies
         run: dotnet restore
-      - name: Build application
-        run: dotnet publish -c Release -o bin\Publish
+      - name: Build application (Debug)
+        run: dotnet build -c Debug
+      - name: Setup Playwright
+        shell: pwsh
+        run: |
+          PlaywrightTests/bin/Debug/net8.0/playwright.ps1 install; 
+      - name: Test application
+        run: dotnet test -c Release
+      - name: Build application (Release)
+        run: dotnet publish -c Release -o bin/publish BLAZAM/BLAZAM.csproj    
       - name: Set assembly version as environment variable
         shell: pwsh
         id: get_version
@@ -45,7 +57,7 @@ jobs:
         with:
           tag_name: Stable-v${{ env.ASSEMBLY_VERSION }}
           release_name: Stable - v${{ env.ASSEMBLY_VERSION }}
-          body: Automated release created by GitHub Actions
+          body: ""
           draft: true
           prerelease: true
       - name: Upload Release Asset

@@ -2,7 +2,7 @@
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
-namespace BLAZAM.Common.Helpers
+namespace BLAZAM.Helpers
 {
     public class NetworkTools
     {
@@ -22,7 +22,12 @@ namespace BLAZAM.Common.Helpers
             }
             return pingable;
         }
-
+        /// <summary>
+        /// Checks if the following TCP port is currently open and reachable by the host machine
+        /// </summary>
+        /// <param name="hostNameOrAddress">The hostname, FQDN, or IP of the host to check</param>
+        /// <param name="port">The port number to check</param>
+        /// <returns>True if the port is open, otherwise false</returns>
         public static bool IsPortOpen(string hostNameOrAddress, int port)
         {
             return IsAnyPortOpen(hostNameOrAddress, new int[] { port });
@@ -30,7 +35,7 @@ namespace BLAZAM.Common.Helpers
         public static bool IsAnyPortOpen(string hostNameOrAddress, int[] ports)
         {
             bool portOpen = false;
-            IPAddress ip;
+            IPAddress? ip;
             IPAddress.TryParse(hostNameOrAddress, out ip);
 
             foreach (int port in ports)

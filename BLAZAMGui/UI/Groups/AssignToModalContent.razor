@@ -1,0 +1,186 @@
+﻿@inherits AppModalContent
+
+<MudStack Row=true>
+    <MudStack>
+        @{
+            var count = additionalGroups.Count;
+            var x = 1;
+
+        }
+        <MudStack Row=true>
+            <ADAutoComplete AutoFocus="true"
+                            Class=""
+                            Disabled=@(copyFrom!=null)
+                            Label="Group Name"
+                            SearchObjectType="ActiveDirectoryObjectType.Group"
+                            @bind-SelectedResult=@Group
+                            CustomResultsFilter=@((result)=>{
+                            if(result is IADGroup){
+                            return !DirectoryModel.MemberOf.Contains(result as IADGroup);
+                            }
+                            return true;
+                            }) />
+            @if (count == 0)
+            {
+                <MudIconButton Icon=@Icons.Material.Filled.PlusOne OnClick=@AddGroupInput />
+            }
+
+        </MudStack>
+
+        @foreach (var group in additionalGroups)
+        {
+
+            <MudStack Row=true>
+
+                <ADAutoComplete Class=""
+                                Disabled=@(copyFrom!=null)
+                                Label="Group Name"
+                                SearchObjectType="ActiveDirectoryObjectType.Group"
+                                SelectedResult=@group.Value
+                                SelectedResultChanged="@((newValue)=>{additionalGroups[group.Key]=newValue;})" />
+
+
+                <MudIconButton Icon=@Icons.Material.Filled.Delete OnClick=@(()=>{additionalGroups.Remove(group.Key);}) />
+                @{
+                    if (count == x)
+                    {
+                        <MudIconButton Icon=@Icons.Material.Filled.PlusOne OnClick=@AddGroupInput />
+
+                    }
+                    x++;
+
+                }
+            </MudStack>
+
+        }
+        <MudText Class="my-3" Align="Align.Center">@AppLocalization["or"]</MudText>
+            <ADAutoComplete Disabled=@(Group!=null)
+                            Label="Copy Memberships From"
+                            SearchObjectType="ActiveDirectoryObjectType.All"
+                            @bind-SelectedResult=@copyFrom
+                            CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
+
+
+        </MudStack>
+        @if (CopyFrom != null)
+    {
+        <MudStack>
+
+            @{
+                var existingGroups = DirectoryModel.MemberOf;
+            }
+            @if (CopyFrom.MemberOf.Any(g => existingGroups.Contains(g)))
+            {
+                <MudText>Already a member of...</MudText>
+                <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
+                    @foreach (var group in CopyFrom.MemberOf.Where(g => existingGroups.Contains(g)))
+                    {
+                        <MudListItem>
+
+                            <MudIcon Color=Color.Success Icon=@Icons.Material.Filled.PlaylistAddCheck />
+
+
+                            @group.GroupName
+
+                        </MudListItem>
+                    }
+                </MudList>
+            }
+            @if (CopyFrom.MemberOf.Any(g => !existingGroups.Contains(g)))
+            {
+                <MudText>Will be added to...</MudText>
+                <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
+
+                    @foreach (var group in CopyFrom.MemberOf.Where(g => !existingGroups.Contains(g)))
+                    {
+                        <MudListItem>
+
+
+
+                            <MudIcon Color=Color.Info Icon="@Icons.Material.Filled.PlaylistAdd" />
+
+                            @group.GroupName
+
+                        </MudListItem>
+
+                    }
+                </MudList>
+
+            }
+
+
+        </MudStack>
+    }
+</MudStack>
+
+
+
+@code {
+
+#nullable disable warnings
+    [Parameter]
+    public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
+
+    /// <summary>
+    /// The directory entry that we are assigning
+    /// </summary>
+    [Parameter]
+    public IGroupableDirectoryAdapter DirectoryModel { get; set; }
+
+    private Dictionary<int, IDirectoryEntryAdapter?> additionalGroups = new Dictionary<int, IDirectoryEntryAdapter?>();
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Modal.OnYes = AssignToGroup;
+        Modal.YesText = AppLocalization["Assign"];
+        Modal.Title = "Assign To";
+        Modal.YesEnabled = ValidateModal;
+    }
+
+
+    IDirectoryEntryAdapter copyFrom;
+    public IGroupableDirectoryAdapter CopyFrom { get => (IGroupableDirectoryAdapter)copyFrom; set => copyFrom = value; }
+
+    new IDirectoryEntryAdapter Group { get; set; }
+    async void AddGroupInput()
+    {
+        additionalGroups.Add(additionalGroups.Count, null);
+        await InvokeAsync(StateHasChanged);
+    }
+    async void AssignToGroup()
+    {
+
+        if (Group is IADGroup group)
+        {
+            DirectoryModel.AssignTo(group);
+            if (additionalGroups.Count > 0)
+            {
+                foreach (var g in additionalGroups)
+                {
+                    if (g.Value is IADGroup gr)
+                        DirectoryModel.AssignTo(gr);
+                }
+            }
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been assigned to the selected group(s) but changes must be saved.");
+            await ModelChanged.InvokeAsync();
+
+            Close();
+
+        }
+        if (CopyFrom != null)
+        {
+            foreach (var g in CopyFrom.MemberOf)
+            {
+                DirectoryModel.AssignTo(g);
+
+            }
+            SnackBarService.Warning(DirectoryModel.CanonicalName + " has been assigned to the selected groups but changes must be saved.");
+            await ModelChanged.InvokeAsync();
+
+            Close();
+        }
+    }
+
+    protected override bool IsValid => (CopyFrom != null || Group != null);
+
+}

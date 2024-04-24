@@ -1,0 +1,181 @@
+\chapter{SVG Gauge}
+\hypertarget{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e}{}\label{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e}\index{SVG Gauge@{SVG Gauge}}
+\label{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md56}%
+\Hypertarget{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md56}%
+Minmalistic, configurable, animated SVG gauge. Zero dependencies\hypertarget{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md57}{}\doxysection{\texorpdfstring{Buy me a coffee ☕}{Buy me a coffee ☕}}\label{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md57}
+If you like my work please consider making a small donation
+
+\href{https://ko-fi.com/Z8Z01L1TS}{\texttt{ }}\hypertarget{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md58}{}\doxysection{\texorpdfstring{Migration from 1.\+0.\+2}{Migration from 1.\+0.\+2}}\label{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md58}
+The new gauge uses a viewbox of 100x100 as opposed to previous 1000x1000. All the stroke and font values have to be adjusted accordingly in your CSS. Just divide those by 10\hypertarget{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md59}{}\doxysection{\texorpdfstring{Demo}{Demo}}\label{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md59}
+Check out the \href{http://codepen.io/naikus/pen/BzkoLL}{\texttt{ live demo}} for various options and styling tips for this gauge\hypertarget{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md60}{}\doxysection{\texorpdfstring{Usage}{Usage}}\label{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md60}
+HTML 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{<div\ id="{}cpuSpeed"{}\ class="{}gauge-\/container"{}></div>}
+
+\end{DoxyCode}
+ CSS 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{.gauge-\/container\ \{}
+\DoxyCodeLine{\ \ width:\ 150px;}
+\DoxyCodeLine{\ \ height:\ 150px;}
+\DoxyCodeLine{\ \ display:\ block;}
+\DoxyCodeLine{\ \ padding:\ 10px;}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{.gauge-\/container\ >\ .gauge\ .dial\ \{}
+\DoxyCodeLine{\ \ stroke:\ \#eee;}
+\DoxyCodeLine{\ \ stroke-\/width:\ 2;}
+\DoxyCodeLine{\ \ fill:\ rgba(0,0,0,0);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{.gauge-\/container\ >\ .gauge\ .value\ \{}
+\DoxyCodeLine{\ \ stroke:\ rgb(47,\ 227,\ 255);}
+\DoxyCodeLine{\ \ stroke-\/width:\ 2;}
+\DoxyCodeLine{\ \ fill:\ rgba(0,0,0,0);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{.gauge-\/container\ >\ .gauge\ .value-\/text\ \{}
+\DoxyCodeLine{\ \ fill:\ rgb(47,\ 227,\ 255);}
+\DoxyCodeLine{\ \ font-\/family:\ sans-\/serif;}
+\DoxyCodeLine{\ \ font-\/weight:\ bold;}
+\DoxyCodeLine{\ \ font-\/size:\ 1em;}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ Javascript 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//\ npm\ install}
+\DoxyCodeLine{npm\ install\ svg-\/gauge}
+\DoxyCodeLine{}
+\DoxyCodeLine{//\ Require\ JS}
+\DoxyCodeLine{var\ Gauge\ =\ require("{}svg-\/gauge"{});}
+\DoxyCodeLine{}
+\DoxyCodeLine{//\ Standalone}
+\DoxyCodeLine{var\ Gauge\ =\ window.Gauge;}
+\DoxyCodeLine{}
+\DoxyCodeLine{//\ Create\ a\ new\ Gauge}
+\DoxyCodeLine{var\ cpuGauge\ =\ Gauge(document.getElementById("{}cpuSpeed"{}),\ \{}
+\DoxyCodeLine{\ \ \ \ max:\ 100,}
+\DoxyCodeLine{\ \ \ \ //\ custom\ label\ renderer}
+\DoxyCodeLine{\ \ \ \ label:\ function(value)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ return\ Math.round(value)\ +\ "{}/"{}\ +\ this.max;}
+\DoxyCodeLine{\ \ \ \ \},}
+\DoxyCodeLine{\ \ \ \ value:\ 50,}
+\DoxyCodeLine{\ \ \ \ //\ Custom\ dial\ colors\ (Optional)}
+\DoxyCodeLine{\ \ \ \ color:\ function(value)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ if(value\ <\ 20)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ return\ "{}\#5ee432"{};\ //\ green}
+\DoxyCodeLine{\ \ \ \ \ \ \}else\ if(value\ <\ 40)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ return\ "{}\#fffa50"{};\ //\ yellow}
+\DoxyCodeLine{\ \ \ \ \ \ \}else\ if(value\ <\ 60)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ return\ "{}\#f7aa38"{};\ //\ orange}
+\DoxyCodeLine{\ \ \ \ \ \ \}else\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ return\ "{}\#ef4655"{};\ //\ red}
+\DoxyCodeLine{\ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\});}
+\DoxyCodeLine{}
+\DoxyCodeLine{//\ Set\ gauge\ value}
+\DoxyCodeLine{cpuGauge.setValue(75);}
+\DoxyCodeLine{}
+\DoxyCodeLine{//\ Set\ value\ and\ animate\ (value,\ animation\ duration\ in\ seconds)}
+\DoxyCodeLine{cpuGauge.setValueAnimated(90,\ 1);}
+
+\end{DoxyCode}
+\hypertarget{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md61}{}\doxysubsubsection{\texorpdfstring{Options}{Options}}\label{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md61}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description    }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description    }\\\cline{1-2}
+\endhead
+{\ttfamily dial\+Start\+Angle}   &The angle in degrees to start the dial ({\ttfamily 135})    \\\cline{1-2}
+{\ttfamily dial\+End\+Angle}   &The angle in degrees to end the dial. This MUST be less than dial\+Start\+Angle ({\ttfamily 45})    \\\cline{1-2}
+{\ttfamily radius}   &The radius of the gauge ({\ttfamily 40})    \\\cline{1-2}
+{\ttfamily min}   &The minimum value for the gauge. This can be a negative value ({\ttfamily 0})    \\\cline{1-2}
+{\ttfamily max}   &The maximum value for the gauge ({\ttfamily 100})    \\\cline{1-2}
+{\ttfamily label}   &Optional function that returns a string label that will be rendered in the center. This function will be passed the current value    \\\cline{1-2}
+{\ttfamily show\+Value}   &Whether to show the value at the center of the gauge ({\ttfamily true})    \\\cline{1-2}
+{\ttfamily gauge\+Class}   &The CSS class of the gauge ({\ttfamily gauge})    \\\cline{1-2}
+{\ttfamily dial\+Class}   &The CSS class of the gauge\textquotesingle{}s dial ({\ttfamily dial})    \\\cline{1-2}
+{\ttfamily value\+Dial\+Class}   &The CSS class of the gauge\textquotesingle{}s fill (value dial) ({\ttfamily value})    \\\cline{1-2}
+{\ttfamily value\+Class}   &The CSS class of the gauge\textquotesingle{}s text ({\ttfamily value-\/text})    \\\cline{1-2}
+{\ttfamily color (new)}   &An optional function that can return a color for current value {\ttfamily function(value) \{\}}    \\\cline{1-2}
+{\ttfamily view\+Box (new)}   &An optional string that specifies the crop region ({\ttfamily 0 0 100 100})   \\\cline{1-2}
+\end{longtabu}
+\hypertarget{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md62}{}\doxysection{\texorpdfstring{That\textquotesingle{}s all good, but what about React?}{That\textquotesingle{}s all good, but what about React?}}\label{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md62}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{import\ React,\ \{\ useEffect,\ useRef\ \}\ from\ "{}react"{};}
+\DoxyCodeLine{import\ SvgGauge\ from\ "{}svg-\/gauge"{};}
+\DoxyCodeLine{}
+\DoxyCodeLine{const\ defaultOptions\ =\ \{}
+\DoxyCodeLine{\ \ animDuration:\ 1,}
+\DoxyCodeLine{\ \ showValue:\ true,}
+\DoxyCodeLine{\ \ initialValue:\ 0,}
+\DoxyCodeLine{\ \ max:\ 100}
+\DoxyCodeLine{\ \ //\ Put\ any\ other\ defaults\ you\ want.\ e.g.\ dialStartAngle,\ dialEndAngle,\ radius,\ etc.}
+\DoxyCodeLine{\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{const\ Gauge\ =\ props\ =>\ \{}
+\DoxyCodeLine{\ \ const\ gaugeEl\ =\ useRef(null);}
+\DoxyCodeLine{\ \ const\ gaugeRef\ =\ useRef(null);}
+\DoxyCodeLine{\ \ useEffect(()\ =>\ \{}
+\DoxyCodeLine{\ \ \ \ if\ (!gaugeRef.current)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ const\ options\ =\ \{\ ...defaultOptions,\ ...props\ \};}
+\DoxyCodeLine{\ \ \ \ \ \ gaugeRef.current\ =\ SvgGauge(gaugeEl.current,\ options);}
+\DoxyCodeLine{\ \ \ \ \ \ gaugeRef.current.setValue(options.initialValue);}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ gaugeRef.current.setValueAnimated(props.value,\ 1);}
+\DoxyCodeLine{\ \ \},\ [props]);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ return\ <div\ ref=\{gaugeEl\}\ className="{}gauge-\/container"{}\ />;}
+\DoxyCodeLine{\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{export\ default\ Gauge;}
+\DoxyCodeLine{}
+\DoxyCodeLine{//\ to\ render:}
+\DoxyCodeLine{const\ renderGauge\ =\ ()\ =>\ (}
+\DoxyCodeLine{\ \ <Gauge}
+\DoxyCodeLine{\ \ \ \ value=\{42\}}
+\DoxyCodeLine{\ \ \ \ //\ any\ other\ options\ you\ want}
+\DoxyCodeLine{\ \ />}
+\DoxyCodeLine{);}
+
+\end{DoxyCode}
+\hypertarget{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md63}{}\doxysection{\texorpdfstring{React w/ Type\+Script?}{React w/ Type\+Script?}}\label{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md63}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{import\ \{\ useEffect,\ useRef\ \}\ from\ 'react'}
+\DoxyCodeLine{import\ SvgGauge,\ \{\ GaugeOptions,\ GaugeInstance\ \}\ from\ 'svg-\/gauge'}
+\DoxyCodeLine{}
+\DoxyCodeLine{const\ Gauge\ =\ (\{\ value\ \}:\ Props)\ =>\ \{}
+\DoxyCodeLine{\ \ const\ gaugeEl\ =\ useRef<HTMLDivElement>(null)}
+\DoxyCodeLine{\ \ const\ gaugeRef\ =\ useRef<GaugeInstance\ |\ null>(null)}
+\DoxyCodeLine{\ \ useEffect(()\ =>\ \{}
+\DoxyCodeLine{\ \ \ \ if\ (!gaugeRef.current)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ if\ (!gaugeEl.current)\ return}
+\DoxyCodeLine{\ \ \ \ \ \ const\ options:\ GaugeOptions\ =\ \{\ color:\ value\ =>\ (value\ <\ 30\ ?\ 'green'\ :\ 'red')\ \}}
+\DoxyCodeLine{\ \ \ \ \ \ gaugeRef.current\ =\ SvgGauge(gaugeEl.current,\ options)}
+\DoxyCodeLine{\ \ \ \ \ \ gaugeRef.current?.setValue(1)}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ gaugeRef.current?.setValueAnimated(value,\ 1)}
+\DoxyCodeLine{\ \ \},\ [value])}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ return\ (}
+\DoxyCodeLine{\ \ \ \ <div\ style=\{\{\ width:\ '500px',\ height:\ '500px'\ \}\}>}
+\DoxyCodeLine{\ \ \ \ \ \ <div\ ref=\{gaugeEl\}\ />}
+\DoxyCodeLine{\ \ \ \ </div>}
+\DoxyCodeLine{\ \ )}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{interface\ Props\ \{}
+\DoxyCodeLine{\ \ value:\ number}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{export\ default\ Gauge}
+
+\end{DoxyCode}
+\hypertarget{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md64}{}\doxysection{\texorpdfstring{And Angular?}{And Angular?}}\label{md__b_l_a_z_a_m_2wwwroot_2lib_2svg-gauge_2_r_e_a_d_m_e_autotoc_md64}
+Ha! \href{https://github.com/mattlewis92/angular-gauge}{\texttt{ It\textquotesingle{}s already there}} 

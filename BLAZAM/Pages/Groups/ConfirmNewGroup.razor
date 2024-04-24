@@ -1,0 +1,48 @@
+@inherits AppComponentBase
+<AppPageTitle>Confirm Group Creation</AppPageTitle>
+
+@if (Group != null)
+{
+    <MudCard>
+        @Group.ADSPath
+        
+    </MudCard>
+    <MudButton Disabled=@disableCreateGroupButton Color=Color.Success OnClick="CommitChanges">Create...</MudButton>
+}
+@code {
+
+    #nullable disable warnings
+
+    private bool disableCreateGroupButton = false;
+
+    [Parameter]
+    public EventCallback<IADGroup> Confirmed { get; set; }
+
+    [Parameter]
+    public IADGroup Group { get; set; }
+
+    async Task CommitChanges()
+    {
+        if (await MessageService.Confirm("Are you sure you want to create this group?", "Create group"))
+        {
+            disableCreateGroupButton = true;
+            await InvokeAsync(StateHasChanged);
+            IJob createGroupJob = new Job(AppLocalization["Create User"]);
+            createGroupJob.StopOnFailedStep = true;
+            createGroupJob.ShowJobDetailsDialog(MessageService);
+            var result = await Group.CommitChangesAsync(createGroupJob);
+
+            disableCreateGroupButton = false;
+            await InvokeAsync(StateHasChanged);
+            if (result.FailedSteps.Count == 0)
+            {
+
+                SnackBarService.Success("Group created");
+
+            }
+            await AuditLogger.Group.Created(Group);
+            var commitJob = Group.CommitChanges();
+            await Confirmed.InvokeAsync(Group);
+        }
+    }
+}

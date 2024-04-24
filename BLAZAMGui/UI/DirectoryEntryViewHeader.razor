@@ -1,0 +1,337 @@
+@using BLAZAM.Gui.UI.Chat
+@inherits DirectoryEntryViewBase
+@{
+
+    IAccountDirectoryAdapter? accountEntry;
+    accountEntry = DirectoryEntry as IAccountDirectoryAdapter;
+
+
+    IGroupableDirectoryAdapter? groupableEntry;
+    groupableEntry = DirectoryEntry as IGroupableDirectoryAdapter;
+
+}
+<MudStack Row=true Class="mud-width-full">
+
+    <MudStack Spacing="1">
+        @if (groupableEntry != null && DirectoryEntry is not IADComputer)
+        {
+            <MudText Class="align-middle">
+                @groupableEntry.DisplayName
+            </MudText>
+        }
+        else
+        {
+            <MudText Class="align-middle">
+                @DirectoryEntry.CanonicalName
+            </MudText>
+        }
+        @if (!DirectoryEntry.OU.IsNullOrEmpty())
+        {
+            <MudText Typo="Typo.caption" Class="align-middle mt">@DirectoryTools.PrettifyOu(DirectoryEntry.OU) </MudText>
+
+        }
+
+
+    </MudStack>
+
+
+    @if (accountEntry?.LockedOut == true)
+    {
+        <MudIconButton Disabled=@(!accountEntry.CanUnlock) OnClick=Unlock Icon=@Icons.Material.Filled.Lock />
+    }
+    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+        <MudToolBar Class="align-middle" Style="height:32px" DisableGutters Dense>
+            @if (accountEntry != null)
+
+            {
+                <MudTooltip Text="@AppLocalization[accountEntry.Enabled==true?"Disable":"Enable"]">
+
+                    <MudToggleIconButton @bind-Toggled="@accountEntry.Enabled"
+                                         Icon="@Icons.Material.Filled.PersonOff"
+                                         Color="Color.Error"
+                                         Disabled=@(!(accountEntry.Enabled && accountEntry.CanDisable) && !(accountEntry.Disabled && accountEntry.CanEnable))
+                                         ToggledIcon="@Icons.Material.Filled.Person"
+                                         ToggledColor="Color.Success" />
+                </MudTooltip>
+            }
+
+
+
+            <MudTooltip Text="@AppLocalization["Edit"]">
+
+                <MudToggleIconButton Toggled=EditMode
+                                     ToggledChanged="@(async(state)=>{await ToggleEditMode(state);})"
+                                     Icon="@Icons.Material.Filled.Edit"
+                                     ToggledIcon="@Icons.Material.Filled.EditOff"
+                                     ToggledColor="Color.Error"
+                                     Disabled=@(!DirectoryEntry.CanEdit)
+                                     ToggledTitle="End Edit" />
+            </MudTooltip>
+
+            @if (accountEntry != null && accountEntry.LockedOut)
+            {
+                <MudTooltip Text="@AppLocalization["Unlock"]">
+
+                    <MudIconButton OnClick="Unlock"
+                                   Icon="@Icons.Material.Filled.LockOpen"
+                                   Disabled=@(!accountEntry.CanUnlock)
+                                   aria-label="unlock" />
+                </MudTooltip>
+            }
+            @if (groupableEntry != null)
+            {
+                <MudTooltip Text="@AppLocalization["Assign To"]">
+
+                    <MudIconButton OnClick="@Assign"
+                                   Disabled=@(!groupableEntry.CanAssign)
+                                   Icon="@Icons.Material.Filled.GroupAdd"
+                                   aria-label="assign to" />
+                </MudTooltip>
+
+            }
+            @if (accountEntry != null && accountEntry is not IADComputer)
+            {
+                <MudTooltip Text="@AppLocalization["Change Password"]">
+                    <MudIconButton OnClick="@ResetPassword"
+                                   Disabled=@(!accountEntry.CanDisable)
+                                   Icon="@Icons.Material.Filled.Password"
+                                   aria-label="change password" />
+                </MudTooltip>
+            }
+            <MudTooltip Text="@AppLocalization["Rename"]">
+
+                <MudIconButton OnClick="@Rename"
+                               Disabled=@(!DirectoryEntry.CanRename)
+                               Icon="@Icons.Material.Filled.DriveFileRenameOutline"
+                               aria-label="rename" />
+
+            </MudTooltip>
+
+            <MudTooltip Text="@AppLocalization["Move"]">
+
+                <MudIconButton OnClick="@Move"
+                               Disabled=@(!DirectoryEntry.CanMove)
+                               Icon="@Icons.Material.Filled.DriveFileMove"
+                               aria-label="move" />
+            </MudTooltip>
+            <MudTooltip Text="@AppLocalization["Delete"]">
+
+                <MudIconButton OnClick="@DeleteUser"
+                               Color="Color.Error"
+                               Disabled=@(!DirectoryEntry.CanDelete)
+                               Icon="@Icons.Material.Filled.Delete"
+                               aria-label="change password" />
+            </MudTooltip>
+
+            <MudTooltip Text="@AppLocalization["Change History"]">
+                <MudIconButton OnClick="@ShowHistory"
+                               Disabled=@(!DirectoryEntry.CanEdit)
+                               Icon="@Icons.Material.Filled.History" />
+            </MudTooltip>
+
+
+
+            <MudTooltip Text="@(IsFavorite==true?AppLocalization["Remove from favorites"]:AppLocalization["Add to favorites"])">
+                <MudIconButton OnClick="@ToggleFavorite"
+                               Icon="@(IsFavorite==true?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
+                               Color="@(IsFavorite==true?Color.Warning:Color.Default)" />
+            </MudTooltip>
+        </MudToolBar>
+    </MudHidden>
+    <MudSpacer />
+    <EntrySpecificChat Entry="DirectoryEntry" />
+    <MudHidden Breakpoint="Breakpoint.MdAndUp">
+
+        <MudMenu Class="align-self-end"
+                 IconColor="@Color.Surface"
+                 StartIcon="@Icons.Material.Filled.Settings">
+            @if (accountEntry != null)
+            {
+                @if ((accountEntry.Enabled && accountEntry.CanDisable) || (accountEntry.Disabled && accountEntry.CanEnable))
+                {
+                    <MudMenuItem>
+                        <MudSwitch Color=Color.Success
+                                   Label="Account Enabled"
+                                   @bind-Checked=@(accountEntry.Enabled)
+                                   Disabled=@((accountEntry.Disabled && !accountEntry.CanEnable)||(accountEntry.Enabled && !accountEntry.CanDisable)) />
+
+                    </MudMenuItem>
+                }
+
+            }
+            @if (DirectoryEntry.CanEdit)
+            {
+                <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!EditMode);})">Edit...</MudMenuItem>
+            }
+            @if (accountEntry != null && accountEntry.LockedOut && accountEntry.CanUnlock)
+            {
+                <MudMenuItem OnClick="@Unlock">Unlock...</MudMenuItem>
+            }
+            @if (groupableEntry?.CanAssign == true)
+            {
+                <MudMenuItem OnClick="@Assign">Assign To...</MudMenuItem>
+            }
+            @if (accountEntry?.CanDisable == true && accountEntry is not IADComputer)
+            {
+                <MudMenuItem OnClick="@ResetPassword">Change Password...</MudMenuItem>
+            }
+            @if (DirectoryEntry.CanRename)
+            {
+                <MudMenuItem OnClick="@(Rename)">Rename...</MudMenuItem>
+                @if (DirectoryEntry is IADUser userEntry)
+                {
+                    if (userEntry.ThumbnailPhoto == null)
+                    {
+                        <MudMenuItem OnClick="@ChangeThumbnail">Upload Photo...</MudMenuItem>
+
+                    }
+                    else
+                    {
+                        <MudMenuItem OnClick="@ChangeThumbnail">Replace Photo...</MudMenuItem>
+
+                    }
+                }
+            }
+            @if (DirectoryEntry.CanMove)
+            {
+                <MudMenuItem OnClick="@Move">Move To...</MudMenuItem>
+            }
+            @if (DirectoryEntry.CanDelete)
+            {
+                <MudMenuItem OnClick="@DeleteUser">Delete...</MudMenuItem>
+            }
+            @if (DirectoryEntry.CanEdit)
+            {
+                <MudMenuItem OnClick="@ShowHistory">Change History</MudMenuItem>
+            }
+        </MudMenu>
+    </MudHidden>
+</MudStack>
+
+
+
+@code {
+
+
+    [Parameter]
+    public EventCallback OnDelete { get; set; }
+    private async Task DeleteUser()
+    {
+        await OnDelete.InvokeAsync();
+    }
+
+    [Parameter]
+    public EventCallback OnMove { get; set; }
+
+    private async Task Move()
+    {
+        await OnMove.InvokeAsync();
+    }
+    [Parameter]
+    public EventCallback OnRename { get; set; }
+    private async Task Rename()
+    {
+        await OnRename.InvokeAsync();
+    }
+
+    [Parameter]
+    public EventCallback OnChangeThumbnail { get; set; }
+
+    private async Task ChangeThumbnail()
+    {
+        await OnChangeThumbnail.InvokeAsync();
+    }
+
+    [Parameter]
+    public EventCallback OnResetPassword { get; set; }
+    private async Task ResetPassword()
+    {
+        await OnResetPassword.InvokeAsync();
+    }
+
+    [Parameter]
+    public EventCallback OnAssignTo { get; set; }
+    private async Task Assign()
+    {
+        await OnAssignTo.InvokeAsync();
+    }
+
+    [Parameter]
+    public EventCallback OnUnlock { get; set; }
+    private async Task Unlock()
+    {
+        await OnUnlock.InvokeAsync();
+    }
+
+    [Parameter]
+    public EventCallback OnEnable { get; set; }
+    private async Task Enable()
+    {
+        await OnEnable.InvokeAsync();
+    }
+
+    [Parameter]
+    public EventCallback OnDisable { get; set; }
+
+
+    private async Task Disable()
+    {
+        await OnDisable.InvokeAsync();
+    }
+
+    [Parameter]
+    public EventCallback OnShowHistory { get; set; }
+    private async Task ShowHistory()
+    {
+        await OnShowHistory.InvokeAsync();
+    }
+
+
+
+
+    /// <summary>
+    /// Called when the edit mode is changed
+    /// </summary>
+    [Parameter]
+    public EventCallback<bool> OnToggleEditMode { get; set; }
+
+
+    private async Task ToggleEditMode(bool editEnabled)
+    {
+        EditMode = editEnabled;
+        await OnToggleEditMode.InvokeAsync(editEnabled);
+    }
+    private bool IsFavorite
+    {
+        get
+        {
+            UserFavoriteEntry newFavorrite = new UserFavoriteEntry { DN = DirectoryEntry.DN, UserId = CurrentUser.State.Id };
+
+            return CurrentUser.State.Preferences.FavoriteEntries.Contains(newFavorrite);
+        }
+    }
+    private async Task ToggleFavorite()
+    {
+        try
+        {
+            UserFavoriteEntry? newFavorrite = new UserFavoriteEntry { DN = DirectoryEntry.DN, UserId = CurrentUser.State.Id };
+            if (CurrentUser.State.Preferences.FavoriteEntries.Contains(newFavorrite))
+            {
+                newFavorrite = CurrentUser.State.Preferences.FavoriteEntries.Where(u => newFavorrite.Equals(u)).FirstOrDefault();
+                CurrentUser.State.Preferences.FavoriteEntries.Remove(newFavorrite);
+            }
+            else
+            {
+                CurrentUser.State.Preferences.FavoriteEntries.Add(newFavorrite);
+            }
+            await CurrentUser.State.SaveUserSettings();
+        }
+        catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error("Error toggling favorite entry  {@Error}", ex);
+            SnackBarService.Error("Error while trying to toggle favorite");
+
+        }
+    }
+
+}

@@ -1,0 +1,20 @@
+@inherits AppComponentBase
+@if (Monitor.DirectoryConnectionStatus == ServiceConnectionState.Connecting)
+{
+    <MudAlert Class="mud-alert-filled-warning">
+
+        <Row>
+            Connecting to Active Directory... Some features are disabled...
+            <MudProgressLinear Indeterminate=true/>
+        </Row>
+    </MudAlert>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Monitor.OnDirectoryConnectionChanged += ((state) => InvokeAsync(StateHasChanged));
+
+    }
+}

@@ -1,0 +1,52 @@
+\doxysection{BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}{}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}\index{BLAZAM.ActiveDirectory.Searchers.ADSearcher@{BLAZAM.ActiveDirectory.Searchers.ADSearcher}}
+Inheritance diagram for BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=0.625698cm]{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_abd278bbc1ef2ae97b2801ceba0772337}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_abd278bbc1ef2ae97b2801ceba0772337} 
+{\bfseries ADSearcher} (\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} directory)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_a243ad39036d5da658a97b23dc649bac4}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_a243ad39036d5da658a97b23dc649bac4} 
+virtual Search\+Result\+Collection {\bfseries Search\+Objects} (string field\+Query, Active\+Directory\+Object\+Type search\+Type, int return\+Count=5, bool? enabled\+Only=true)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_ade12657a289c873fe24c7fe2ca6ee34c}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_ade12657a289c873fe24c7fe2ca6ee34c} 
+virtual Search\+Result\+Collection {\bfseries Search\+Objects} (string? search\+Base\+DN, string field\+Query, Active\+Directory\+Object\+Type? search\+Type, int return\+Count=5, bool? enabled\+Only=true, Search\+Scope search\+Scope=Search\+Scope.\+Subtree)
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_a6b970bc67dfdc9a84325f65797232632}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_a6b970bc67dfdc9a84325f65797232632} 
+Search\+Result\+Collection {\bfseries Search\+Object\+By\+SID} (string sid)
+\item 
+List$<$ T $>$ \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_a1c5b8c87363140052743cc42141df205}{Convert\+To$<$ T $>$}} (Search\+Result\+Collection r)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_af9b9e8a5cfe0a72262018cd84e8ef47f}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_af9b9e8a5cfe0a72262018cd84e8ef47f} 
+\mbox{\hyperlink{interface_b_l_a_z_a_m_1_1_active_directory_1_1_interfaces_1_1_i_active_directory_context}{IActive\+Directory\+Context}} {\bfseries Directory}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_a1c5b8c87363140052743cc42141df205}\label{class_b_l_a_z_a_m_1_1_active_directory_1_1_searchers_1_1_a_d_searcher_a1c5b8c87363140052743cc42141df205} 
+\index{BLAZAM.ActiveDirectory.Searchers.ADSearcher@{BLAZAM.ActiveDirectory.Searchers.ADSearcher}!ConvertTo$<$ T $>$@{ConvertTo$<$ T $>$}}
+\index{ConvertTo$<$ T $>$@{ConvertTo$<$ T $>$}!BLAZAM.ActiveDirectory.Searchers.ADSearcher@{BLAZAM.ActiveDirectory.Searchers.ADSearcher}}
+\doxysubsubsection{\texorpdfstring{ConvertTo$<$ T $>$()}{ConvertTo< T >()}}
+{\footnotesize\ttfamily List$<$ T $>$ BLAZAM.\+Active\+Directory.\+Searchers.\+ADSearcher.\+Convert\+To$<$ T $>$ (\begin{DoxyParamCaption}\item[{Search\+Result\+Collection}]{r }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em IDirectory\+Entry\+Adapter}]\item[{\em T} : {\em new()}]\end{description}
+\end{Desc}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMActive\+Directory/\+Searchers/ADSearcher.\+cs\end{DoxyCompactItemize}

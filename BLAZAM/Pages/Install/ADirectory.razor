@@ -1,23 +1,26 @@
 @page "/install/directory"
 @layout InstallLayout
 @inherits AppComponentBase
-@inject NavigationManager Nav;
 @{
 }
     <div>
-    <BLAZAM.Server.Shared.UI.Settings.DirectorySettings />
+    <DirectorySettings SettingsSaved="@(()=>{directoryStatusPanel.ResetStatus();})" />
 
-        <BLAZAM.Server.Shared.UI.Settings.ActiveDirectoryStatusPanel DirectoryConnected="ShowNext"/>
+        <ActiveDirectoryStatusPanel @ref=directoryStatusPanel DirectoryConnected="@(()=>{disableNext=false;})"/>
         <br/>
         <br/>
-        <Button Color="Color.Success" @onclick="Refresh" Disabled="@disableNext">Proceed</Button>
+        <MudButton Color="Color.Success" @onclick="ShowNext" Disabled="@disableNext">Proceed</MudButton>
     </div>
 
 @code {
+    #nullable disable warnings
     [Parameter]
     public EventCallback StepCompleted { get; set; }
 
+    ActiveDirectoryStatusPanel directoryStatusPanel;
     ADSettings currentSettings;
+
+
 
     bool disableNext = true;
 
@@ -47,6 +50,7 @@
     private void ShowNext()
     {
         disableNext = false;
+        StepCompleted.InvokeAsync();
         InvokeAsync(StateHasChanged);
     }
 

@@ -1,0 +1,96 @@
+@using System.IO.Compression
+@inherits SettingsComponents
+
+
+
+
+<MudText Typo="Typo.h4">@AppLocalization["Database Status"]</MudText>
+<MudForm>
+    <MudText>To change these settings, modify appsettings.json in the application directory.</MudText>
+    <SettingsField Label="@AppLocalization["DB Type"]">
+        <MudTextField Disabled=true Label="@AppLocalization["DB Type"]" Value="@Context?.ConnectionString?.DatabaseType" />
+    </SettingsField>
+    @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
+    {
+        <SettingsField Label="@AppLocalization["Server"]">
+            <MudTextField Disabled=true Label="@AppLocalization["Server"]" Value=@("Private") />
+        </SettingsField>
+    }
+    else
+    {
+        <SettingsField Label="@AppLocalization["Server"]">
+            <MudTextField Disabled=true Label="@AppLocalization["Server"]" Value="@Context?.ConnectionString?.ServerAddress" />
+        </SettingsField>
+    }
+    @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
+    {
+        <SettingsField Label="@AppLocalization["Port"]">
+            <MudTextField Disabled=true Label="@AppLocalization["Port"]" Value=@("Private") />
+        </SettingsField>
+    }
+    else
+    {
+        <SettingsField Label="@AppLocalization["Port"]">
+            <MudTextField Disabled=true Label="@AppLocalization["Port"]" Value="@Context?.ConnectionString?.ServerPort" />
+        </SettingsField>
+    }
+    @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
+    {
+        <SettingsField Label="@AppLocalization["Database"]">
+            <MudTextField Disabled=true Label="@AppLocalization["Database"]" Value=@("Private") />
+        </SettingsField>
+    }
+    else
+    {
+        <SettingsField Label="@AppLocalization["Database"]">
+            <MudTextField Disabled=true Label="@AppLocalization["Database"]" Value="@Context?.ConnectionString?.Database" />
+        </SettingsField>
+    }
+    <SettingsField Label="@AppLocalization["Export Database"]">
+
+        <MudButton OnClick="Export" Color="Color.Success">Export</MudButton>
+
+    </SettingsField>
+
+</MudForm>
+@code {
+    #nullable disable warnings
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+
+
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+    }
+    async void Export()
+    {
+   
+            MemoryStream memoryStream = new MemoryStream();
+
+            IJob exportJob = new Job(AppLocalization["Export Database"], CurrentUser.Username);
+            IJobStep exportData = new JobStep(AppLocalization["Export Data"], (step) =>
+        {
+            Context.Export("export");
+            return true;
+
+        });
+            IJobStep packageData = new JobStep(AppLocalization["Prepare Files"], (step) =>
+    {
+        ZipArchive exportZip = new ZipArchive(memoryStream, ZipArchiveMode.Create);
+        var exportDir = new SystemDirectory("export");
+        exportZip.AddToZip(exportDir, exportDir.Path);
+        memoryStream.SaveTo(new SystemFile("export/" + DatabaseCache.ApplicationSettings.AppName + "-" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".zip"));
+        return true;
+
+    });
+            exportJob.Steps.Add(exportData);
+            exportJob.Steps.Add(packageData);
+            exportJob.ShowJobDetailsDialog(MessageService);
+            await InvokeAsync(StateHasChanged);
+            await exportJob.RunAsync();
+
+
+    }
+}

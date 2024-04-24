@@ -1,0 +1,33 @@
+﻿@if (!_loadingLogonTime)
+{
+    <MudTooltip Text="@userLastLogonTime?.ToLocalTime().TimeOfDay.ToString()">
+
+        <MudText Style="text-align:end;" Typo="Typo.caption">@userLastLogonTime?.ToLocalTime().ToShortDateString()</MudText>
+    </MudTooltip>
+}
+else
+{
+    <MudProgressLinear Color="Color.Primary" Style="max-width:100px;" Indeterminate=true />
+}
+@code {
+    bool _loadingLogonTime = true;
+    int polledDCs;
+    DateTime? userLastLogonTime;
+    [Parameter]
+    public IAccountDirectoryAdapter DirectoryEntry { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+
+        await Task.Run(() =>
+         {
+
+             userLastLogonTime = DirectoryEntry.LastLogonTime;
+             _loadingLogonTime = false;
+
+             InvokeAsync(StateHasChanged);
+
+         });
+    }
+}

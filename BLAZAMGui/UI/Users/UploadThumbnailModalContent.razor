@@ -1,0 +1,78 @@
+﻿@using Microsoft.AspNetCore.Components.Forms;
+@inherits AppModalContent
+<div Background="Background.Light" Color="Color.Dark">
+    @if (newThumbnail != null)
+    {
+        <Base64Image Data="newThumbnail" />
+
+    }
+    <MudText>
+        @AppLocalization["Upload Thumbnail Photo"]
+    </MudText>
+    <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
+        <ButtonTemplate>
+            <MudButton HtmlTag="label"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       for="@context"
+                       Disabled=LoadingData>
+                Upload Files
+            </MudButton>
+        </ButtonTemplate>
+    </MudFileUpload>
+
+
+
+</div>
+@code {
+    byte[]? newThumbnail;
+    [Parameter]
+    public IADUser DirectoryModel { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Modal.OnYes = SaveChanges;
+        Modal.YesText = AppLocalization["Save Photo"];
+        Modal.Title = "Change Thumbnail";
+        await InvokeAsync(StateHasChanged);
+    }
+    private async void LoadIcon(IBrowserFile e)
+    {
+
+        using (var stream = e.OpenReadStream(5000000))
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await stream.CopyToAsync(memoryStream);
+                newThumbnail = memoryStream.ToArray().ReizeRawImage(250);
+                //settings.AppIcon = memoryStream.ToArray();
+            }
+        }
+
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+
+    void SaveChanges()
+    {
+        try
+        {
+            DirectoryModel.ThumbnailPhoto = newThumbnail;
+
+            SnackBarService.Warning("Thumbnail changed for " + DirectoryModel.DisplayName + " but changes need to be saved.");
+        }
+        catch
+        {
+            SnackBarService.Error("Unable to set thumbnail for " + DirectoryModel.DisplayName);
+
+        }
+        Close();
+
+    }
+    protected override bool IsValid => newThumbnail != null;
+
+
+}

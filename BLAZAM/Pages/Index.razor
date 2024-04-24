@@ -1,55 +1,117 @@
 ﻿@page "/"
-@layout MinLayout
+@using BLAZAM.Static;
+@layout LoginLayout
 
-@inject NavigationManager NavManager
-@inject IDbContextFactory<DatabaseContext> DbFactory
-@inject ConnMonitor tester
-@inject IStringLocalizer<AppLocalization> Localizer
-<h2>
-    @Localizer["ApplicationStarting"]
+@inherits AppComponentBase
+
+
+
+<MudContainer Class="py-5">
+
+    <FullAppName/>
    
-</h2>
-<progress />
+
+    <MudText>@AppLocalization["ApplicationStarting"]</MudText>
+    <MudProgressLinear Color="Color.Info" Indeterminate=true />
+
+    <MudElement Class="brand-icon">
+        <MudImage Src="@StaticAssets.ApplicationIconUri" />
+
+    </MudElement>
+    <MudContainer Style="max-width:300px;" Class="py-4">
+
+
+    </MudContainer>
+
+
+
+    <Copyright Class="mx-auto" />
+</MudContainer>
+
+<style>
+    body {
+        height: 98vh;
+    }
+
+    .brand-icon {
+        position: fixed;
+        left: 5px;
+        top: 5px;
+    }
+
+        .brand-icon img {
+            max-width: 65px;
+            max-height: 65px;
+        }
+
+    .login-form input {
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+
+
 @{
-    
-    Task.Run(async () => {
-        while (NavManager.ToBaseRelativePath(NavManager.Uri) == "")
+
+    Task.Run(async () =>
+    {
+        while (waitingForLoadToComplete)
         {
-            if (Program.InstallationCompleted)
+
+            if (ApplicationInfo.InstallationCompleted)
             {
-                if (tester.AppReady == ConnectionState.Up)
+                waitingForLoadToComplete = false;
+                if (Monitor.AppReady == ServiceConnectionState.Up)
                 {
-                    NavManager.NavigateTo("/home", true);
+                    Nav.NavigateTo("/home", true);
                 }
-                else if (tester.AppReady == ConnectionState.Down)
+                else if (Monitor.AppReady == ServiceConnectionState.Down)
                 {
-                    NavManager.NavigateTo("/oops", true);
+                    Nav.NavigateTo("/oops", true);
 
                 }
             }
-            Task.Delay(1000).Wait();
+            else
+            {
+                if (Monitor.AppReady == ServiceConnectionState.Up)
+                {
+                    Nav.NavigateTo("/install", true);
+                }
+            }
+            if (!waitingForLoadToComplete)
+                Task.Delay(1000).Wait();
+
         }
 
     });
-    
+
 }
-@code{
+@code {
+    private bool waitingForLoadToComplete = true;
+    ServiceConnectionState? oldStatus;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        tester.OnAppReadyChanged += AppReady;
-       
+        Monitor.OnAppReadyChanged += AppReady;
+
     }
-    private void AppReady(ConnectionState newStatus)
+    private void AppReady(ServiceConnectionState newStatus)
     {
-        if (newStatus == ConnectionState.Up)
+        if (newStatus == ServiceConnectionState.Up && oldStatus != newStatus)
         {
-            if (NavManager.ToBaseRelativePath(NavManager.Uri) == "")
+            if (ApplicationInfo.InstallationCompleted && Nav.ToBaseRelativePath(Nav.Uri) == "")
             {
-                NavManager.NavigateTo("/home");
+                waitingForLoadToComplete = false;
+
+                Nav.NavigateTo("/home");
 
             }
         }
+        oldStatus = newStatus;
+
     }
 }
+
 

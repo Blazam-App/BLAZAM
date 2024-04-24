@@ -1,32 +1,56 @@
-﻿@inject IDbContextFactory<DatabaseContext> factory
+﻿@inject IAppDatabaseFactory factory
+@inject IActiveDirectoryContextFactory directoryFactory
+@inherits AppComponentBase
 @page "/benchmark"
 
-@inject IActiveDirectory Dir
 
 <h3>Benchmark</h3>
 <p>Number of cycles</p>
-<NumericEdit @bind-Value=runCount />
+<MudNumericField HideSpinButtons="true" @bind-Value=runCount />
 <br />
 <p>Cycle: @cycle</p>
-<Button Disabled=Running Clicked="Benchmark1">Benchmark One</Button>
+<MudButton Disabled=Running OnClick="Benchmark1">Benchmark One</MudButton>
 <p>@elapsed</p>
-<Button Disabled=Running Clicked="Benchmark2">Benchmark Two</Button>
+<MudButton Disabled=Running OnClick="Benchmark2">Benchmark Two</MudButton>
 <p>@elapsed2</p>
 
 <p>User Bench</p>
 <p>email: @userBench?.SamAccountName</p>
-<PageProgress Visible="Running" />
+
+
+
+
+
+
+
+
+@* 
+<h3>Tree View</h3>
+<MudSwitch @bind-Value=adTree Label="OU/AD"/>
+@if (!adTree)
+{
+    <OUTreeView StartRootExpanded=true
+                EndText="@((context)=>context.DirectPermissionMappings.Any()?context.DirectPermissionMappings.Count().ToString():null)" />
+
+}
+else
+{
+    <ADTreeView TextColor="Color.Surface" EndText="@((context)=>context is IADOrganizationalUnit ou?ou.DirectPermissionMappings.Any()?ou.DirectPermissionMappings.Count().ToString():null:null)" />
+
+} *@
 @code {
-    ActiveDirectoryContext ad;
+    #nullable disable warnings
+    //ActiveDirectoryContext ad;
     bool Running = false;
-    int runCount;
+    //bool adTree;
+    int runCount = 1;
     int cycle;
     double elapsed;
     double elapsed2;
     IADUser userBench;
     protected override void OnInitialized()
     {
-       // ad = new ActiveDirectory(factory, true);
+        // ad = new ActiveDirectory(factory, true);
     }
     async Task Benchmark1()
     {
@@ -39,8 +63,9 @@
             for (cycle = 0; cycle < runCount; cycle++)
             {
                 DateTime start = DateTime.Now;
+                var dir = Directory as ActiveDirectoryContext;
 
-
+                var user = dir.Authenticate(new() { Username = "johnsoncontrols", Password = "bburg123" });
                 runs[cycle] = (DateTime.Now - start).TotalSeconds;
                 InvokeAsync(StateHasChanged);
 
@@ -53,7 +78,7 @@
 
 
     }
-    bool DirectoryTest(IActiveDirectory dir)
+    bool DirectoryTest(IActiveDirectoryContext dir)
     {
 
         bool result = false;
@@ -61,7 +86,7 @@
         Random r = new Random();
 
         userBench = dir.Users.FindUsersByString("c").First();
-        if (userBench==null) result = false;
+        if (userBench == null) result = false;
         else result = true;
 
         dir.Dispose();
@@ -79,9 +104,11 @@
 
                 DateTime start = DateTime.Now;
 
-                Dir.Users.FindUsersByString("cja");
+                var dir = Directory as ActiveDirectoryContext;
+                var user = dir.Authenticate_Alt(new() { Username = "johnsoncontrols", Password = "bburg123" });
+
                 runs[cycle] = (DateTime.Now - start).TotalSeconds;
-                
+
                 InvokeAsync(StateHasChanged);
 
             }

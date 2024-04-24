@@ -1,0 +1,158 @@
+﻿@using BLAZAM.Gui.UI.Settings.Modals
+@using Microsoft.AspNetCore.Components.Forms;
+@using System.Security.Cryptography.X509Certificates
+@inherits SettingsComponents
+
+
+<MudText Typo="Typo.h4">@AppLocalization["Application Settings"] <AppDocumentationButton Page="/admin/settings/application" /></MudText>
+<EditForm Context="editContext" OnValidSubmit="Save" Model="settings">
+
+
+    <SettingsField Label="@AppLocalization["Application Name"]">
+
+            <MudTextField Class="mt-0" Label=@AppLocalization["Application Name"] @bind-Value="@settings.AppName" />
+
+    </SettingsField>
+
+    <SettingsField Label="@AppLocalization["Homepage Message"]">
+
+
+            <MudTextField Label="@AppLocalization["Homepage Message"]" T="string" Variant="Variant.Text" @bind-Text="@settings.MOTD" Lines="5" Placeholder="Place a custom welcome message for your users on the dashboard" />
+
+    </SettingsField>
+
+
+    <SettingsField Label="@AppLocalization["Force Https"]">
+
+            <MudSwitch Label="@AppLocalization["Enabled"]"
+                   Color="Color.Success"
+                   UnCheckedColor="Color.Error" 
+                   @bind-Value="@settings.ForceHTTPS" />
+
+    </SettingsField>
+
+    <SettingsField Label="@AppLocalization["User Helpdesk URL"]">
+
+            <MudTextField Label="@AppLocalization["User Helpdesk URL"]" Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
+                <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
+                    <MudBadge>!</MudBadge>
+                </MudTooltip>
+
+
+            </MudTextField>
+
+    </SettingsField>
+
+
+
+    <SettingsField Label="@AppLocalization["Branding Icon"]">
+
+            <MudContainer>
+
+                @if (settings != null && settings.AppIcon != null && settings.AppIcon.Length > 0)
+                {
+                    <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+                    <MudTooltip Text="Remove custom icon">
+                        <AppCloseButton OnClick="@(()=>{settings.AppIcon=null;})" />
+                    </MudTooltip>
+                }
+            </MudContainer>
+            <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon" Accept="image/*">
+                <ButtonTemplate>
+                    <MudButton HtmlTag="label"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           for="@context.Id">
+                        Upload Icon
+                    </MudButton>
+                </ButtonTemplate>
+            </MudFileUpload>
+    </SettingsField>
+
+
+
+    <SettingsField Label="@AppLocalization["Website FQDN"]">
+
+            <MudTextField Label="@AppLocalization["Website FQDN"]" For=@(()=> settings.AppFQDN) ErrorText="Must be a valid domain name" HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
+
+    </SettingsField>
+
+    @if (!ApplicationInfo.IsUnderIIS || ApplicationInfo.InDebugMode)
+    {
+        <SettingsField Label="@AppLocalization["SSL Certificate"]">
+            <MudButton OnClick="()=>{uploadCertificateModal?.Show();}"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       >
+                Upload Certificate
+            </MudButton>
+        
+    </SettingsField>
+    <AppModal @ref="uploadCertificateModal" Title=@AppLocalization["Upload SSL Certificate"]>
+        <UploadCertificateModalContent AppSettings="settings"/>
+    </AppModal>
+    }
+
+    @*
+    <SettingsField Label="@AppLocalization["Myrtille Web Adress"]">
+
+        <MudTextField Label="@AppLocalization["Myrtille Web Adress"]" For=@(()=> settings.MyrtilleURL) ErrorText="Must be a valid url" HelperText="Enter the url of the Myrtille server. (eg: http://localhost:8080)" Placeholder="Enter the url of the Myrtille server" @bind-Value="@settings.MyrtilleURL" />
+
+    </SettingsField>
+     <MudButton OnClick=@(()=>{rdpModal.Show();}) >Test Myrtille Connection</MudButton>
+    <AppModal @ref=rdpModal Title="Test Myrtille">
+        <RDPModal/>
+    </AppModal> *@
+    <SettingsField>
+        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+    </SettingsField>
+
+
+</EditForm>
+<MudOverlay Visible="LoadingData" DarkBackground="true" Absolute="true">
+    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
+@code {
+    AppSettings settings = new AppSettings();
+
+    AppModal? uploadCertificateModal;
+    protected override async Task OnInitializedAsync()
+    {
+        originalSettings = await Context.AppSettings.AsNoTracking().FirstOrDefaultAsync();
+
+        settings = await Context.AppSettings.FirstOrDefaultAsync();
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+
+    private async void LoadIcon(IBrowserFile e)
+    {
+        byte[] fileBytes;
+        using (var stream = e.OpenReadStream(5000000))
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await stream.CopyToAsync(memoryStream);
+                fileBytes = memoryStream.ToArray();
+            }
+        }
+
+        settings.AppIcon = await e.ToByteArrayAsync(5000000);
+        //await Context.SaveChangesAsync();
+        await InvokeAsync(StateHasChanged);
+
+
+    }
+  
+
+    protected override void Save()
+    {
+        AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
+        base.Save();
+    }
+
+}

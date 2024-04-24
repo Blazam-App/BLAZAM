@@ -1,0 +1,83 @@
+@using BLAZAM.Email.Services;
+@inject EmailService email
+@inject ApplicationInfo ApplicationInfo
+@inject IAppDatabaseFactory factory
+@inject NavigationManager Nav
+<PageTitle>Error</PageTitle>
+
+
+
+
+
+
+<MudAlert Elevation="5"
+    Square
+    ShowCloseIcon 
+    
+    CloseIconClicked=@(()=>{Nav.NavigateTo(Nav.Uri,true);}) 
+    Class="mud-alert-outlined-error" 
+    ContentAlignment="HorizontalAlignment.Center">
+    <MudContainer>
+    <MudText Typo="Typo.h4">
+        Something terrible has happened...
+
+    </MudText>
+    @try
+        {
+            @if (ApplicationInfo.InDebugMode)
+            {
+
+                <MudCard      
+        Square Class="mud-border-error mx-auto">
+                <MudCardHeader Class="mud-error">
+                @Error.Source : @Error.GetType()
+                </MudCardHeader>
+                <MudPaper        
+            Square
+                    >
+                        Error Message: @Error?.Message
+                    </MudPaper Square>
+                    <MudPaper Class="overflow-auto mud-typography-nowrap">
+                        Stack Trace: <br>
+                        @(
+                                (MarkupString)_error.StackTrace?.Replace("\n", "<br><br>")
+                                )
+                    </MudPaper>
+                </MudCard>
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error("Error on unexpected error page: {@Error}", ex);
+        }
+    </MudContainer>
+
+</MudAlert>
+
+
+
+@code {
+    private Exception? _error;
+    private List<string> StackTrace { get; set; } = new();
+    [Parameter]
+    public Exception? Error
+    {
+        get => _error; set
+
+        {
+            if (value == _error) return;
+            _error = value;
+            if (_error != null)
+            {
+                try{
+                    Loggers.SystemLogger.Error("Unhandled exception {@Error}", _error);
+                }
+                catch
+                {
+                    
+                }
+            }
+        }
+    }
+}

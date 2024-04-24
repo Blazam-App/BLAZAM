@@ -1,0 +1,171 @@
+@using BLAZAM.Common.Exceptions;
+@using System.Diagnostics;
+@inherits ComputerViewBase
+
+@implements IDisposable
+@if (Computer.IsOnline == true)
+{
+    if (sessionsErrorMessage == null)
+    {
+        <MudDataGrid HorizontalScrollbar=true Elevation=0 Items="sessions">
+            <Columns>
+                <PropertyColumn Property="x=>x.User" />
+                <PropertyColumn Property="x=>x.ConnectionState" />
+                <PropertyColumn Property="x=>x.ClientIPAddress" />
+                <TemplateColumn Title="Connected">
+                    <CellTemplate>
+                        @if (context.Item.ConnectTime != null)
+                        {
+                            <MudText>@context.Item.ConnectTime.Value.ToLocalTime()</MudText>
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Property="x=>x.IdleTime" />
+                <TemplateColumn Title="Message">
+                    <CellTemplate>
+                        @if (context.Item.ConnectionState.ToString() == "Active")
+                        {
+                            <MudButton Color="Color.Info" OnClick=@(()=>{
+                           sessionToMessage=context.Item;
+                           sessionMessageModal?.Show();
+                           })>Send Message</MudButton>
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+
+                <TemplateColumn Title="Manage">
+                    <CellTemplate>
+                        @if (context.Item.ConnectionState.ToString() == "Active")
+                        {
+                            <MudButton Color="Color.Warning" OnClick=@(()=>{DisconnectSession(context.Item);})>Disconnect</MudButton>
+                        }
+                        <MudButton Color="Color.Error" OnClick=@(()=>{LogoffSession(context.Item);})>Logoff</MudButton>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>   <AppModal @ref=@sessionMessageModal AllowClose=true Title="Send Message">
+            <SendMessageModalContent Session="@sessionToMessage" />
+        </AppModal>
+
+    }
+    else
+    {
+        <div>
+            @sessionsErrorMessage
+        </div>
+    }
+}
+else
+{
+    <MudText>Computer is not reachable.</MudText>
+}
+
+
+
+@code {
+    IRemoteSession? _selectedSession;
+    IRemoteSession? selectedSession
+    {
+        get => _selectedSession; set
+
+        {
+            if (_selectedSession == value) return;
+            _selectedSession = value;
+
+
+        }
+    }
+    IRemoteSession sessionToMessage;
+    AppModal? sessionMessageModal;
+    MudTextField<string>? messageTextField;
+
+
+
+
+
+
+
+    string? sessionsErrorMessage;
+    Timer? t;
+    List<IRemoteSession> sessions = new();
+    List<IRemoteSession> Sessions
+    {
+        get
+        {
+
+            return sessions;
+
+
+
+        }
+        set => sessions = value;
+    }
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        t = new Timer(RefreshSessions, null, 1000, 10000);
+
+    }
+    async void LogoffSession(IRemoteSession session)
+    {
+
+        if (await MessageService.Confirm("Are you sure you want to log off " + session.User.ToString(), "Logoff User"))
+        {
+            session.Logoff();
+            sessions.Remove(session);
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    async void DisconnectSession(IRemoteSession session)
+    {
+        if (await MessageService.Confirm("Are you sure you want to disconnect " + session.User.ToString(), "Disconnect User"))
+        {
+            session.Disconnect();
+
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    async void RefreshSessions(object? state)
+    {
+        try
+        {
+            if (Computer != null && Computer.IsOnline == true)
+            {
+                sessions = await Computer.GetRemoteSessionsAsync();
+                sessions.ForEach(s =>
+                {
+                    s.OnSessionDown += ((s) =>
+                    {
+                        sessions.Remove(s);
+                    });
+                    s.OnSessionUpdated += ((s) =>
+                    {
+                        InvokeAsync(StateHasChanged);
+                    });
+
+                });
+                sessionsErrorMessage = null;
+            }
+
+        }
+        catch (AuthenticationException ex)
+        {
+            sessionsErrorMessage = ex.Message;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        t?.Dispose();
+        Sessions.ForEach(s => {
+            s.Dispose();
+        });
+    }
+}

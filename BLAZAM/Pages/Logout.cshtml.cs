@@ -1,6 +1,9 @@
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Server.Data;
 using BLAZAM.Server.Data.Services;
+using BLAZAM.Services;
+using BLAZAM.Services.Audit;
+using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +13,7 @@ namespace BLAZAM.Server.Pages
 {
     public class LogOutModel : PageModel
     {
-        public LogOutModel(AppAuthenticationStateProvider auth, NavigationManager _nav, AuditLogger logger,IApplicationUserStateService uss)
+        public LogOutModel(AppAuthenticationStateProvider auth, NavigationManager _nav, AuditLogger logger, IApplicationUserStateService uss)
         {
             Auth = auth;
             Nav = _nav;
@@ -30,7 +33,8 @@ namespace BLAZAM.Server.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            var state = UserStateService.CurrentUserState;
+            var user = this.User;
+            var state = UserStateService.GetUserState(user);
             if (state.User.Identity.IsAuthenticated)
             {
                 await AuditLogger.Logon.Logout();

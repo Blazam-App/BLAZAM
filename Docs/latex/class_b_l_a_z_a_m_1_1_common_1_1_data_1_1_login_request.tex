@@ -1,0 +1,46 @@
+\doxysection{BLAZAM.\+Common.\+Data.\+Login\+Request Class Reference}
+\hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request}{}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request}\index{BLAZAM.Common.Data.LoginRequest@{BLAZAM.Common.Data.LoginRequest}}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_a715461b62d944f6f7eb5b82ad07db0c7}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_a715461b62d944f6f7eb5b82ad07db0c7} 
+string? {\bfseries Username}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The username provided during the app login attempt. \end{DoxyCompactList}\item 
+string? \mbox{\hyperlink{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_a82b0c7ec72a4e3d6eaa9aaab4d80fbc4}{Password}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The password provided during the app login attempt. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_a4be9d94c7db273d02b4bc90d2b66a9c2}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_a4be9d94c7db273d02b4bc90d2b66a9c2} 
+Secure\+String? {\bfseries Secure\+Password}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_ad4385d89f3cb60f4472be61d1a316843}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_ad4385d89f3cb60f4472be61d1a316843} 
+string? {\bfseries Return\+Url} = "{}/"{}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The relative url to return to after login success. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_a83f6fd92046b64d7196f996026ea209f}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_a83f6fd92046b64d7196f996026ea209f} 
+bool {\bfseries Valid}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if the username and password are both present. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_a4b4bfa72f0ed8d0f1b7c573a49c26f72}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_a4b4bfa72f0ed8d0f1b7c573a49c26f72} 
+bool {\bfseries Impersonation} = false\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if the login attempt is an impersonation request, hence no password is actually checked. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_ad1903f1090d019b8a3cf84ed1ed0d714}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_ad1903f1090d019b8a3cf84ed1ed0d714} 
+Claims\+Principal? {\bfseries Impersonator\+Claims}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em To prevent a security hole, the impersonator identity is passed as a check to ensure this is not a XSS attack or an user without the appropriate privileges. \end{DoxyCompactList}\item 
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_a4e6e5696f6677fd61ef82404127046fd}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_a4e6e5696f6677fd61ef82404127046fd} 
+IPAddress {\bfseries IPAddress}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The remote IP of the login attempt. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Property Documentation}
+\Hypertarget{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_a82b0c7ec72a4e3d6eaa9aaab4d80fbc4}\label{class_b_l_a_z_a_m_1_1_common_1_1_data_1_1_login_request_a82b0c7ec72a4e3d6eaa9aaab4d80fbc4} 
+\index{BLAZAM.Common.Data.LoginRequest@{BLAZAM.Common.Data.LoginRequest}!Password@{Password}}
+\index{Password@{Password}!BLAZAM.Common.Data.LoginRequest@{BLAZAM.Common.Data.LoginRequest}}
+\doxysubsubsection{\texorpdfstring{Password}{Password}}
+{\footnotesize\ttfamily string? BLAZAM.\+Common.\+Data.\+Login\+Request.\+Password\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The password provided during the app login attempt. 
+
+This value is automatically stored as Secure\+String to prevent memory sniff exposure 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+BLAZAMCommon/\+Data/Login\+Request.\+cs\end{DoxyCompactItemize}

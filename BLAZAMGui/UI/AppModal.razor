@@ -1,0 +1,38 @@
+﻿@inherits MudDialog
+<MudDialog @ref="Modal" Options="@Options">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            @Title
+
+        </MudText>
+
+    </TitleContent>
+    <DialogContent>
+        <CascadingValue Value="this">
+            <MudContainer Class="py-4 px-0">
+                @if (IsShown)
+                {
+                    @ChildContent
+                }
+
+            </MudContainer>
+        </CascadingValue>
+    </DialogContent>
+    <DialogActions>
+        @if (!CancelText.IsNullOrEmpty())
+        {
+            <MudButton OnClick="@(()=>{OnCancel.Invoke();})">@CancelText</MudButton>
+
+        }
+        @{
+            var yesDisabled = !YesEnabled.Invoke();
+        }
+        <MudButton Disabled=@yesDisabled Color="Color.Primary" OnClick="@YesClicked">@YesText</MudButton>
+
+            <LoadingData Loading=LoadingData />
+        </DialogActions>
+
+    </MudDialog>
+
+
+
