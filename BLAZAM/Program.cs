@@ -16,12 +16,9 @@ using BLAZAM.Database.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Serilog.Events;
-using Blazorise.RichTextEdit;
-using BLAZAM.Server.Pages.Error;
 using ITfoxtec.Identity.Saml2.Schemas.Metadata;
 using ITfoxtec.Identity.Saml2;
 using ITfoxtec.Identity.Saml2.MvcCore.Configuration;
-using Microsoft.TeamFoundation.TestManagement.WebApi;
 
 namespace BLAZAM
 {
@@ -108,7 +105,7 @@ namespace BLAZAM
                 Loggers.SeqAPIKey = "8TeLknA8XBk5ybamT5m9";
 
             }
-            
+
 
             Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
             builder.Host.UseSerilog(Log.Logger);
@@ -121,8 +118,8 @@ namespace BLAZAM
 
 
             builder.Services.AddCors();
-            
-            
+
+
             SetupKestrel(builder);
 
 
@@ -135,13 +132,14 @@ namespace BLAZAM
             try
             {
                 var context = AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
-                if(context!=null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
+                if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
                 {
                     Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
 
                 }
 
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
@@ -198,7 +196,7 @@ namespace BLAZAM
             AppInstance.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
-
+            });
 
             AppInstance.Start();
             GetRunningWebServerConfiguration();
@@ -212,7 +210,7 @@ namespace BLAZAM
 
         private static void SetupKestrel(WebApplicationBuilder builder)
         {
-           
+
             var _programDbFactory = new AppDatabaseFactory(Configuration);
             var kestrelContext = _programDbFactory.CreateDbContext();
 
@@ -222,7 +220,7 @@ namespace BLAZAM
                 var listeningAddress = Configuration.GetValue<string>("ListeningAddress");
                 var httpPort = Configuration.GetValue<int>("HTTPPort");
                 var httpsPort = Configuration.GetValue<int>("HTTPSPort");
-                AppSettings? dbSettings=null;
+                AppSettings? dbSettings = null;
                 X509Certificate2? cert = null;
                 try
                 {
@@ -241,11 +239,11 @@ namespace BLAZAM
                     if (listeningAddress == "*")
                     {
                         options.ListenAnyIP(httpPort);
-                        if (httpsPort != 0 && dbSettings!=null && cert!=null && cert.HasPrivateKey)
+                        if (httpsPort != 0 && dbSettings != null && cert != null && cert.HasPrivateKey)
                         {
                             options.ListenAnyIP(httpsPort, configure =>
                             {
-                                configure.UseHttps(options=>options.ServerCertificate=cert);
+                                configure.UseHttps(options => options.ServerCertificate = cert);
                             });
                         }
                     }

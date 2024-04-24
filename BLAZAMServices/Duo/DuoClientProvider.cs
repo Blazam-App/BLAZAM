@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
+using BLAZAM.Logger;
 using BLAZAM.Nav;
 using BLAZAM.Session.Interfaces;
 using DuoUniversal;
@@ -44,15 +45,20 @@ namespace BLAZAM.Services.Duo
             }
             if (string.IsNullOrWhiteSpace(ClientId))
             {
-                throw new DuoException("A 'Client ID' configuration value is required in the appsettings file.");
+                Loggers.SystemLogger.Debug("A 'Client ID' configuration value is required in the appsettings file.");
+                return false;
             }
             if (string.IsNullOrWhiteSpace(ClientSecret))
             {
-                throw new DuoException("A 'Client Secret' configuration value is required in the appsettings file.");
+                Loggers.SystemLogger.Debug("A 'Client Secret' configuration value is required in the appsettings file.");
+                return false;
+
             }
             if (string.IsNullOrWhiteSpace(ApiHost))
             {
-                throw new DuoException("An 'Api Host' configuration value is required in the appsettings file.");
+                Loggers.SystemLogger.Debug("An 'Api Host' configuration value is required in the appsettings file.");
+                return false;
+
             }
             var client = new ClientBuilder(ClientId, ClientSecret, ApiHost, RedirectUri).Build();
             return await client.DoHealthCheck();
