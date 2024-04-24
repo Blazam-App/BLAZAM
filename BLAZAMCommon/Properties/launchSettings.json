@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "BLAZAMCommon": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:53610;http://localhost:53611"
+    }
+  }
+}

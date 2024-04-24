@@ -13,6 +13,15 @@ using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.WebSockets;
 using BLAZAM.Database.Models;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Logging;
+using Serilog.Events;
+using Blazorise.RichTextEdit;
+using BLAZAM.Server.Pages.Error;
+using ITfoxtec.Identity.Saml2.Schemas.Metadata;
+using ITfoxtec.Identity.Saml2;
+using ITfoxtec.Identity.Saml2.MvcCore.Configuration;
+using Microsoft.TeamFoundation.TestManagement.WebApi;
 
 namespace BLAZAM
 {
@@ -100,8 +109,10 @@ namespace BLAZAM
 
             }
             
+
             Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
             builder.Host.UseSerilog(Log.Logger);
+
 
             Log.Warning("Application Starting {@ProcessName}", ApplicationInfo.runningProcess.ProcessName);
 
@@ -180,9 +191,14 @@ namespace BLAZAM
             AppInstance.UseAuthentication();
             AppInstance.UseAuthorization();
             AppInstance.UseSession();
+            AppInstance.UseSaml2();
             //AppInstance.MapControllers();
             AppInstance.MapBlazorHub();
             AppInstance.MapFallbackToPage("/_Host");
+            AppInstance.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+
 
             AppInstance.Start();
             GetRunningWebServerConfiguration();
