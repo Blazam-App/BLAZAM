@@ -1,7 +1,7 @@
 # BLAZAM
 
 ## Introducing Blazam's new Logo
-![New logo for Blazam](https://blazam.org/img/default_logo.png "Blazam")
+![New logo for Blazam](https://raw.githubusercontent.com/Blazam-App/BLAZAM/Beta-Dev/BLAZAM/static/img/default_logo5.png "Blazam")
 
 ## Website
 [blazam.org](https://blazam.org)
