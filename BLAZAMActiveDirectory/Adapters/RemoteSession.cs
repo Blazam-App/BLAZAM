@@ -263,7 +263,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Log.Error("An error occured while refreshing a computer session state.", ex); 
+                Log.Error("An error occurred while refreshing a computer session state.", ex); 
                 this.Dispose();
             }
         }

@@ -1,5 +1,8 @@
 # BLAZAM
 
+## Introducing Blazam's new Logo
+![New logo for Blazam](https://blazam.org/img/default_logo.png "Blazam")
+
 ## Website
 [blazam.org](https://blazam.org)
 

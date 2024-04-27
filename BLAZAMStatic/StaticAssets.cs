@@ -40,7 +40,7 @@ namespace BLAZAM.Static
 
         private static byte[]? GetDefaultIcon()
         {
-            var defaultIconFilePath = Path.GetFullPath(ApplicationInfo.applicationRoot + @"static\img\default_logo4.png");
+            var defaultIconFilePath = Path.GetFullPath(ApplicationInfo.applicationRoot + @"static\img\default_logo5.png");
             if (File.Exists(defaultIconFilePath))
                 return File.ReadAllBytes(defaultIconFilePath);
             return null;
