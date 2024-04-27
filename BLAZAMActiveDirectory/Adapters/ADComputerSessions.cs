@@ -109,7 +109,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 session.Dispose();
             }
             ConnectedSessions.Clear();
-
+          
         }
 
 

@@ -99,7 +99,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public AppEvent<IRemoteSession> OnSessionUpdated { get; set; }
 
         Timer t;
-        public RemoteSession(ITerminalServicesSession session,IADComputer host)
+        public RemoteSession(ITerminalServicesSession session, IADComputer host)
         {
             Host = host;
 
@@ -187,7 +187,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             Host.Directory.Impersonation.Run(() =>
             {
-                if (_session?.Server.IsOpen==false)
+                if (_session?.Server.IsOpen == false)
                     _session.Server.Open();
                 _session?.Logoff(synchronous);
                 _session?.Server.Close();
@@ -201,10 +201,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             Host.Directory.Impersonation.Run(() =>
             {
-                if (!_session.Server.IsOpen)
+                if (_session?.Server.IsOpen == false)
                     _session.Server.Open();
-                _session.Disconnect(synchronous);
-                _session.Server.Close();
+                _session?.Disconnect(synchronous);
+                _session?.Server.Close();
                 return true;
             });
 
@@ -216,10 +216,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             Host.Directory.Impersonation.Run(() =>
             {
-                if (!_session.Server.IsOpen)
+                if (_session?.Server.IsOpen == false)
                     _session.Server.Open();
-                _session.MessageBox(message, "Administrator Message");
-                _session.Server.Close();
+                _session?.MessageBox(message, "Administrator Message");
+                _session?.Server.Close();
                 return true;
             });
 
@@ -235,9 +235,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 Host.Directory.Impersonation.Run(() =>
                 {
-                    if (!_session.Server.IsOpen)
+                    if (_session?.Server.IsOpen == false)
                         _session.Server.Open();
-                    if (_session.Server.IsOpen)
+                    if (_session?.Server.IsOpen == true)
                     {
                         int id = _session.SessionId;
                         ITerminalServicesSession updated = _session.Server.GetSession(id);
@@ -252,7 +252,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Win32Exception ex)
             {
-                if (ex.Message == "The system cannot find the file specified.")
+                //The system cannot find the file specified
+                if (ex.ErrorCode == -2147467259)
                 {
 
                     OnSessionDown?.Invoke(this);
@@ -262,7 +263,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Log.Error("An error occured while refreshing a computer session state.", ex);
+                Log.Error("An error occurred while refreshing a computer session state.", ex); 
+                this.Dispose();
             }
         }
 
@@ -286,7 +288,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public void Dispose()
         {
             t?.Dispose();
-            if(Session!=null && Session.Server!=null)
+            if (Session != null && Session.Server != null)
                 Session.Server.Close();
             Session = null;
         }

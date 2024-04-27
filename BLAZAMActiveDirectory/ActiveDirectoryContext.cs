@@ -290,7 +290,22 @@ namespace BLAZAM.ActiveDirectory
                 else if (Status == DirectoryConnectionStatus.OK)
                 {
                     //Throw away query used to keep connection alive
-                    _keepAliveUser = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
+                    try
+                    {
+                        _keepAliveUser = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
+
+                    }catch(DirectoryServicesCOMException ex)
+                    {
+                        //not usernam or password is incorrect
+                        if (ex.HResult != -2147023570)
+                        {
+                            Loggers.ActiveDirectryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
+
+                        }
+                    }
+                    catch (Exception ex) {
+                        Loggers.ActiveDirectryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
+                    }
                 }
                 await Task.Delay(30000);
             }
