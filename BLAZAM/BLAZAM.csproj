@@ -26,6 +26,7 @@
 		<None Remove="static\img\default_logo2.png" />
 		<None Remove="static\img\default_logo3.png" />
 		<None Remove="static\img\default_logo4.png" />
+		<None Remove="static\img\default_logo5.png" />
 	</ItemGroup>
 
 	
@@ -49,6 +50,9 @@
 		</Content>
 		<Content Include="static\img\default_logo4.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="static\img\default_logo5.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 
