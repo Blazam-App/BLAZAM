@@ -15,51 +15,59 @@
                 color = Color.Warning;
             }
 
-            <MudTooltip Text=@("Blazam "+AppLocalization[" News"])>
+            <MudTooltip Text=@("Blazam "+AppLocalization["News"])>
                 <MudFab Size=Size.Small Color=@color Class="mx-2" StartIcon="@icon" />
             </MudTooltip>
 
         </ActivatorContent>
 
         <ChildContent>
-            <MudSwitch @bind-Value=showRead Class=" pa-2 w-100" Label="@AppLocalization["Show read"]"/>
-            @foreach (var item in unreadItems.OrderByDescending(x => x.UpdatedAt))
-            {
-                <MudButton Color=@Color.Warning Variant="Variant.Filled" Style="border-radius:0px;" FullWidth=true OnClick="@((args)=>{ShowNews(item);})">
-                    <MudStack Class="mud-width-full pt-1" AlignItems="AlignItems.Start">
-                        <MudStack Row=true>
-                            <MudIcon Icon="@Icons.Material.Filled.Email" /> @item.Title
-                        </MudStack>
-                        @if (item.Link != null)
-                        {
-                            <MudLink Color="Color.Secondary" Target="_blank" Href="@item.Link">@item.Link</MudLink>
-                        }
-                    </MudStack>
-                </MudButton>
-            }
-            @if (showRead)
-            {
-                foreach (var item in readItems.OrderByDescending(x => x.UpdatedAt))
+            <MudContainer Class="px-0" Style="width:300px;">
+                @if (readItems.Count > 0)
+                {
+                    <MudSwitch @bind-Value=showRead Class="ps-2 w-100" Label="@AppLocalization["Show read"]" />
+                }
+                @foreach (var item in unreadItems.OrderByDescending(x => x.UpdatedAt))
                 {
                     <MudButton Variant="Variant.Filled" Style="border-radius:0px;" FullWidth=true OnClick="@((args)=>{ShowNews(item);})">
                         <MudStack Class="mud-width-full pt-1" AlignItems="AlignItems.Start">
                             <MudStack Row=true>
-                                <MudBadge Overlap=true Color="@Color.Success" Icon="@Icons.Material.Filled.Check">
-                                    <MudIcon Icon="@Icons.Material.Filled.Email" />
-                                </MudBadge> @item.Title
+                                <MudIcon Color=@Color.Warning Icon="@Icons.Material.Filled.Email" /> @item.Title
                             </MudStack>
                             @if (item.Link != null)
                             {
-                                <MudLink Target="_blank" Href="@item.Link">@item.Link</MudLink>
+                                <MudLink Color="Color.Secondary" Target="_blank" Href="@item.Link">@item.Link</MudLink>
                             }
                         </MudStack>
                     </MudButton>
                 }
-            }
-            else
-            {
-                <MudText Class="w-100 align-center pa-2">@AppLocalization["There is nothing new to see here"]</MudText>
-            }
+                @if (showRead)
+                {
+                    foreach (var item in readItems.OrderByDescending(x => x.UpdatedAt))
+                    {
+                        <MudButton Variant="Variant.Filled" Style="border-radius:0px;" FullWidth=true OnClick="@((args)=>{ShowNews(item);})">
+                            <MudStack Class="mud-width-full pt-1" AlignItems="AlignItems.Start">
+                                <MudStack Row=true>
+                                    <MudBadge Overlap=true Color="@Color.Success" Icon="@Icons.Material.Filled.Check">
+                                        <MudIcon Icon="@Icons.Material.Filled.Email" />
+                                    </MudBadge> @item.Title
+                                </MudStack>
+                                @if (item.Link != null)
+                                {
+                                    <MudLink Target="_blank" Href="@item.Link">@item.Link</MudLink>
+                                }
+                            </MudStack>
+                        </MudButton>
+                    }
+                }
+                else
+                {
+                    if (unreadItems.Count == 0)
+                    {
+                        <MudText Class="w-100 align-center pa-2">@AppLocalization["There is nothing new to see here"]</MudText>
+                    }
+                }
+            </MudContainer>
         </ChildContent>
     </MudMenu>
 }
