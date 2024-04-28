@@ -77,7 +77,6 @@ namespace BLAZAM.Server
             //Try and get os id
             try
             {
-                
                 string ComputerName = "localhost";
                 ManagementScope Scope;
                 Scope = new ManagementScope(String.Format("\\\\{0}\\root\\CIMV2", ComputerName), null);
