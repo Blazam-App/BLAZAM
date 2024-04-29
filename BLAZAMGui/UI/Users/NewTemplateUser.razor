@@ -249,7 +249,7 @@
 
 
                         <HomeDriveSelect Label="@AppLocalization["Home Drive"]" 
-                        @bind-Value="@User.HomeDrive"
+                        @bind-DriveLetter="@User.HomeDrive"
                                          Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.HomeDrive))
                                          Required=@(IsRequiredTemplateField(ActiveDirectoryFields.HomeDrive)) />
 
