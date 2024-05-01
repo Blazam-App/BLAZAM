@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.9.2</AssemblyVersion>
-		<Version>2024.05.01.1841</Version>
+		<Version>2024.05.01.2106</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -26,6 +26,7 @@
 		<None Remove="static\img\default_logo2.png" />
 		<None Remove="static\img\default_logo3.png" />
 		<None Remove="static\img\default_logo4.png" />
+		<None Remove="static\img\default_logo5.png" />
 	</ItemGroup>
 
 	
@@ -106,6 +107,12 @@
 		<ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
 		<ProjectReference Include="..\BLAZAMStatic\BLAZAMStatic.csproj" />
 		<ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="static\img\default_logo5.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 
 	<ItemGroup>
