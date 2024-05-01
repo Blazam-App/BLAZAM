@@ -227,7 +227,9 @@
                                                              @bind-Value="@ConfirmPassword"
                                                              InputType="InputType.Password" />
                                         }
-
+                                         <DynamicMudInput T=bool Label="@AppLocalization["Require Password Change"]"
+                                                             @bind-Value="@User.RequirePasswordChange"
+                                                             Disabled=@(!EditMode || !User.CanUnlock)  />
 
                                         <MudStack Row=true Spacing="0">
                                             <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"

@@ -1268,6 +1268,9 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<string>("PasswordFormula")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool?>("RequirePasswordChange")
+                        .HasColumnType("bit");
+
                     b.Property<string>("UsernameFormula")
                         .HasColumnType("nvarchar(max)");
 
