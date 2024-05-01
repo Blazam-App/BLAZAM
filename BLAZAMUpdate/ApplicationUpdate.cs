@@ -385,7 +385,6 @@ namespace BLAZAM.Update
                     {
                         var zip = new ZipArchive(streamToReadFrom);
                         zip.ExtractToDirectory(UpdateStagingDirectory.Path, true);
-                        
                         Loggers.UpdateLogger?.Debug(UpdateFile + " unzipped successfully to " + UpdateStagingDirectory);
 
                         return true;
