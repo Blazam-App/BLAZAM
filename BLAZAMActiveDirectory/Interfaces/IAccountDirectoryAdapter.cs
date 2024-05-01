@@ -85,5 +85,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
 
         void StagePasswordChange(SecureString newPassword, bool requireChange = false);
+        void StageRequirePasswordChange(bool requireChange);
     }
 }

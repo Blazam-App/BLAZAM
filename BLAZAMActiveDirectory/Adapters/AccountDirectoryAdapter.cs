@@ -233,7 +233,16 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty("accountExpires", value?.ToUniversalTime().ToFileTime().ToString());
             }
         }
+        public void StageRequirePasswordChange(bool requireChange)
+        {
+            PostCommitSteps.Add(new JobStep("Require Password Change", (JobStep? step) =>
+            {
 
+                RequirePasswordChange = requireChange;
+                return true;
+            }));
+
+        }
         public virtual bool RequirePasswordChange
         {
             get
