@@ -27,6 +27,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
+        public virtual bool CanSetPassword { get => HasActionPermission(ObjectActions.SetPassword); }
+
         public virtual bool CanEnable { get => HasActionPermission(ObjectActions.Enable); }
 
         public virtual bool CanDisable { get => HasActionPermission(ObjectActions.Disable); }

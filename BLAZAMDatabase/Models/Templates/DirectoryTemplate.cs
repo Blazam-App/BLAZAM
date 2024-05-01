@@ -38,11 +38,11 @@ namespace BLAZAM.Database.Models.Templates
 
         
         [NotMapped]
-        public string EffectiveDisplayNameFormula
+        public string? EffectiveDisplayNameFormula
         {
             get
             {
-                return GetEffectiveValue(t => t.DisplayNameFormula, t => t.EffectiveDisplayNameFormula);
+                return GetEffectiveValue<string>(t => t.DisplayNameFormula, t => t.EffectiveDisplayNameFormula);
            
             }
             set => DisplayNameFormula = value;
@@ -50,23 +50,35 @@ namespace BLAZAM.Database.Models.Templates
 
         public string? PasswordFormula { get; set; }
         [NotMapped]
-        public string EffectivePasswordFormula
+        public string? EffectivePasswordFormula
         {
             get
             {
-                return GetEffectiveValue(t => t.PasswordFormula, t => t.EffectivePasswordFormula);
+                return GetEffectiveValue<string>(t => t.PasswordFormula, t => t.EffectivePasswordFormula);
              
             }
             set => PasswordFormula = value;
         }
 
-        public string? UsernameFormula { get; set; }
+        public bool? RequirePasswordChange { get; set; }
         [NotMapped]
-        public string EffectiveUsernameFormula
+        public bool? EffectiveRequirePasswordChange
         {
             get
             {
-                return GetEffectiveValue(t => t.UsernameFormula, t => t.EffectiveUsernameFormula);
+                return GetEffectiveValue<bool?>(t => t.RequirePasswordChange, t => t.EffectiveRequirePasswordChange);
+
+            }
+            set => RequirePasswordChange = value;
+        }
+
+        public string? UsernameFormula { get; set; }
+        [NotMapped]
+        public string? EffectiveUsernameFormula
+        {
+            get
+            {
+                return GetEffectiveValue<string>(t => t.UsernameFormula, t => t.EffectiveUsernameFormula);
               
             }
             set => UsernameFormula = value;
@@ -74,23 +86,23 @@ namespace BLAZAM.Database.Models.Templates
 
         public string? ParentOU { get; set; }
         [NotMapped]
-        public string EffectiveParentOU
+        public string? EffectiveParentOU
         {
             get
             {
-                return GetEffectiveValue(t=>t.ParentOU,t=>t.EffectiveParentOU);
+                return GetEffectiveValue<string>(t=>t.ParentOU,t=>t.EffectiveParentOU);
             }
             set => ParentOU = value;
         }
 
-        private string GetEffectiveValue(Func<DirectoryTemplate,string?>localSelector, Func<DirectoryTemplate, string?> effectiveSelector)
+        private T? GetEffectiveValue<T>(Func<DirectoryTemplate,T?>localSelector, Func<DirectoryTemplate, T?> effectiveSelector)
         {
             if (localSelector.Invoke(this) == null)
             {
-                if (ParentTemplate == null) return "";
+                if (ParentTemplate == null) return default(T);
                var effectiveValue = effectiveSelector.Invoke(ParentTemplate);
                 if (effectiveValue == null)
-                    return "";
+                    return default(T);
                 else
                     return effectiveValue;
             }
