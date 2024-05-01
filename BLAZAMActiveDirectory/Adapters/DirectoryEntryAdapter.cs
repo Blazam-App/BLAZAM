@@ -983,7 +983,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             return list;
         }
 
-
         protected virtual T? GetProperty<T>(string propertyName)
         {
             try

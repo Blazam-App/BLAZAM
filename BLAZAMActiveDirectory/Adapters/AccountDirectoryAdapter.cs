@@ -27,6 +27,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
+        public virtual bool CanSetPassword { get => HasActionPermission(ObjectActions.SetPassword); }
+
         public virtual bool CanEnable { get => HasActionPermission(ObjectActions.Enable); }
 
         public virtual bool CanDisable { get => HasActionPermission(ObjectActions.Disable); }
@@ -45,7 +47,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-
 
         public virtual DateTime? LockoutTime
         {
@@ -121,7 +122,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
             }
         }
-        public virtual bool PasswordNotRequired 
+        public virtual bool PasswordNotRequired
         {
             get
             {
@@ -154,8 +155,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var uacRaw= Convert.ToInt32(GetProperty<object>("userAccountControl"));
-                if(uacRaw == 0)
+                var uacRaw = Convert.ToInt32(GetProperty<object>("userAccountControl"));
+                if (uacRaw == 0)
                 {
                     UAC = ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
                     return ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
@@ -164,11 +165,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-              //  PostCommitSteps.Add(new("Set UAC", (step) => {
-                    SetProperty("userAccountControl", value);
+                //  PostCommitSteps.Add(new("Set UAC", (step) => {
+                SetProperty("userAccountControl", value);
 
                 //    return true;
-              //  }));
+                //  }));
             }
         }
 
@@ -232,14 +233,69 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty("accountExpires", value?.ToUniversalTime().ToFileTime().ToString());
             }
         }
+        public void StageRequirePasswordChange(bool requireChange)
+        {
+            PostCommitSteps.Add(new JobStep("Require Password Change", (JobStep? step) =>
+            {
+
+                RequirePasswordChange = requireChange;
+                return true;
+            }));
+
+        }
+        public virtual bool RequirePasswordChange
+        {
+            get
+            {
+                //var pwdLastSetRaw = GetProperty<long>("pwdLastSet");
+                if (PasswordLastSet == null) return true;
+                return PasswordLastSet == DateTime.MinValue;
+            }
+            set
+            {
+                if (value)
+                {
+                    PasswordLastSet = null;
+                }
+                else
+                {
 
 
+                    PasswordLastSet = DateTime.Now;
+
+
+                }
+
+            }
+        }
         public DateTime? PasswordLastSet
         {
             get
             {
+                var dateTime = GetDateTimeProperty("pwdLastSet")?.AdsValueToDateTime();
+                if (dateTime.HasValue)
+                {
+                    return dateTime.Value;
 
-                return GetDateTimeProperty("pwdLastSet");
+                }
+                var rawValue = GetProperty<Int32>("pwdLastSet");
+                if (rawValue == -1)
+                {
+                    return DateTime.UtcNow;
+                }
+                if (rawValue == 0)
+                {
+                    return null;
+                }
+                return null;
+            }
+            set
+            {
+                if (value == null)
+                    SetProperty("pwdLastSet", 0);
+                else
+                    SetProperty("pwdLastSet", -1);
+
             }
 
         }
@@ -265,7 +321,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     Invoke("SetPassword", new[] { password.ToPlainText() });
                     return true;
-                }catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Loggers.ActiveDirectryLogger.Warning("Could not set password via Invoke {@Error}", ex);
                     //The following works outside the domain but may have issues with certs
@@ -294,7 +351,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     return true;
                 }
-     
+
             }
             catch (Exception ex)
             {
@@ -304,7 +361,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     throw new ApplicationException("Unable to set password", ex);
                 else return true;
             }
-            
+
         }
 
         public void StagePasswordChange(SecureString newPassword, bool requireChange = false)

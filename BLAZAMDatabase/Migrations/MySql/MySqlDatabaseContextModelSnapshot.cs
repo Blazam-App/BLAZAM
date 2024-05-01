@@ -1221,6 +1221,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<string>("PasswordFormula")
                         .HasColumnType("longtext");
 
+                    b.Property<bool?>("RequirePasswordChange")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("UsernameFormula")
                         .HasColumnType("longtext");
 

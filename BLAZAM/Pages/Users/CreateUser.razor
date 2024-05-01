@@ -270,7 +270,9 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
             newUser.DisplayName = SelectedTemplate.GenerateDisplayName(newUserName);
             //newUser.SetPassword(SelectedTemplate.GeneratePassword().ToSecureString(),false);
             //newUser.CanonicalName = SelectedTemplate.GenerateDisplayName(newUserName);
-            newUser.StagePasswordChange(SelectedTemplate.GeneratePassword().ToSecureString(), true);
+            newUser.StagePasswordChange(SelectedTemplate.GeneratePassword().ToSecureString());
+            if (SelectedTemplate.EffectiveRequirePasswordChange == true)
+                newUser.StageRequirePasswordChange(true);
             if (!newUserName.GivenName.IsNullOrEmpty())
                 newUser.GivenName = newUserName.GivenName;
             if (!newUserName.MiddleName.IsNullOrEmpty())
