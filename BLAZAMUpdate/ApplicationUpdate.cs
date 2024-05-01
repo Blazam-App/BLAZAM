@@ -195,9 +195,9 @@ namespace BLAZAM.Update
 
 
             //Update the updater first
-            Loggers.UpdateLogger.Debug("Copying updater script");
-            Loggers.UpdateLogger.Debug("Source: " + UpdateStagingDirectory + "\\updater\\*");
-            Loggers.UpdateLogger.Debug("Dest: " + _applicationRootDirectory + "updater\\");
+            Loggers.UpdateLogger?.Debug("Copying updater script");
+            Loggers.UpdateLogger?.Debug("Source: " + UpdateStagingDirectory + "\\updater\\*");
+            Loggers.UpdateLogger?.Debug("Dest: " + _applicationRootDirectory + "updater\\");
 
 
             using var context = await _dbFactory.CreateDbContextAsync();
@@ -205,14 +205,14 @@ namespace BLAZAM.Update
 
             if (_applicationRootDirectory.Writable)
             {
-                Loggers.UpdateLogger.Warning("The application user has write permission to the application directory!");
+                Loggers.UpdateLogger?.Warning("The application user has write permission to the application directory!");
                 try
                 {
                     return ApplyFiles();
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Error applying update: {@Error}", ex);
+                    Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
 
                 }
                 return false;
@@ -236,7 +236,7 @@ namespace BLAZAM.Update
                         }
                         catch (Exception ex)
                         {
-                            Loggers.UpdateLogger.Error("Error applying update: {@Error}", ex);
+                            Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
 
                         }
                         return false;
@@ -246,7 +246,7 @@ namespace BLAZAM.Update
                 }
                 catch (ApplicationException ex)
                 {
-                    Loggers.UpdateLogger.Error("Unable to apply files {@Error}", ex);
+                    Loggers.UpdateLogger?.Error("Unable to apply files {@Error}", ex);
                     return false;
                 }
 
@@ -259,8 +259,8 @@ namespace BLAZAM.Update
 
         private bool ApplyFiles()
         {
-            Loggers.UpdateLogger.Information("Running update as: " + WindowsIdentity.GetCurrent().Name);
-            Loggers.UpdateLogger.Information("Updating updater");
+            Loggers.UpdateLogger?.Information("Running update as: " + WindowsIdentity.GetCurrent().Name);
+            Loggers.UpdateLogger?.Information("Updating updater");
 
             
 
@@ -268,13 +268,13 @@ namespace BLAZAM.Update
             SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.Path + "updater\\");
             updaterDirFromStagedUpdate.CopyTo(updaterDir);
             //File.Copy(UpdateStagingDirectory + "\\updater\\", _applicationRootDirectory + "updater\\", true);
-            Loggers.UpdateLogger.Information("Updater updated");
+            Loggers.UpdateLogger?.Information("Updater updated");
             //If the updater updated we can  run the updater
             var updaterRan = InvokeUpdateExecutable();
 
             if (updaterRan)
             {
-                Loggers.UpdateLogger.Information("Update process started");
+                Loggers.UpdateLogger?.Information("Update process started");
 
                 return true;
             }
@@ -313,18 +313,18 @@ namespace BLAZAM.Update
 
         public async Task<bool> Backup(JobStep? step)
         {
-            Loggers.UpdateLogger.Information("Attempting backup of current version to: " + BackupPath);
+            Loggers.UpdateLogger?.Information("Attempting backup of current version to: " + BackupPath);
             try
             {
                 var result = await Task.Run(() => { return _applicationRootDirectory.CopyTo(BackupDirectory); });
 
-                Loggers.UpdateLogger.Debug("Backup result: " + result.ToString());
+                Loggers.UpdateLogger?.Debug("Backup result: " + result.ToString());
 
                 return result;
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("Backup of current version failed: " + ex.Message);
+                Loggers.UpdateLogger?.Error("Backup of current version failed: " + ex.Message);
                 return false;
             }
         }
@@ -334,7 +334,7 @@ namespace BLAZAM.Update
         {
             return await Task.Run(() =>
             {
-                Loggers.UpdateLogger.Information("Attempting cleaning of download folder: " + UpdateFile);
+                Loggers.UpdateLogger?.Information("Attempting cleaning of download folder: " + UpdateFile);
 
                 try
                 {
@@ -345,7 +345,7 @@ namespace BLAZAM.Update
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Error while cleaning of download folder: " + UpdateFile + " {@Error}", ex);
+                    Loggers.UpdateLogger?.Error("Error while cleaning of download folder: " + UpdateFile + " {@Error}", ex);
 
                     return false;
                 }
@@ -363,7 +363,7 @@ namespace BLAZAM.Update
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Error while cleaning staging directory. {@Error}", ex);
+                    Loggers.UpdateLogger?.Error("Error while cleaning staging directory. {@Error}", ex);
                     return true;
                 }
             });
@@ -375,7 +375,7 @@ namespace BLAZAM.Update
 
                 if (!UpdateFile.Exists) return false;
 
-                Loggers.UpdateLogger.Debug("Attempting unzip of " + UpdateFile);
+                Loggers.UpdateLogger?.Debug("Attempting unzip of " + UpdateFile);
 
                 UpdateStagingDirectory.EnsureCreated();
 
@@ -386,13 +386,13 @@ namespace BLAZAM.Update
                         var zip = new ZipArchive(streamToReadFrom);
                         zip.ExtractToDirectory(UpdateStagingDirectory.Path, true);
                         
-                        Loggers.UpdateLogger.Debug(UpdateFile + " unzipped successfully to " + UpdateStagingDirectory);
+                        Loggers.UpdateLogger?.Debug(UpdateFile + " unzipped successfully to " + UpdateStagingDirectory);
 
                         return true;
                     }
                     catch (Exception ex)
                     {
-                        Loggers.UpdateLogger.Error("Error while extracting update zip {@Error}", ex);
+                        Loggers.UpdateLogger?.Error("Error while extracting update zip {@Error}", ex);
 
                         return false;
                     }
