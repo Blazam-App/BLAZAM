@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.Sql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.17")
+                .HasAnnotation("ProductVersion", "7.0.18")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -457,6 +457,12 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.Property<string>("SSLCertificateCipher")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("SendDeveloperAnalytics")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("SendLogsToDeveloper")
+                        .HasColumnType("bit");
 
                     b.Property<string>("UpdateBranch")
                         .IsRequired()
@@ -1261,6 +1267,9 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.Property<string>("PasswordFormula")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("RequirePasswordChange")
+                        .HasColumnType("bit");
 
                     b.Property<string>("UsernameFormula")
                         .HasColumnType("nvarchar(max)");

@@ -108,8 +108,14 @@
     {
         duoHealthCheckResult = null;
         await InvokeAsync(StateHasChanged);
-
-        duoHealthCheckResult = await Duo.DoHealthCheckAsync();
+        try
+        {
+            duoHealthCheckResult = await Duo.DoHealthCheckAsync();
+        }
+        catch
+        {
+            
+        }
         await InvokeAsync(StateHasChanged);
     }
     private void UpdateTimeoutDisplay()

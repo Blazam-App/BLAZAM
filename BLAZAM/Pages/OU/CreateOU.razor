@@ -11,7 +11,7 @@
                     
 
                         <OUTreeView Label="Parent Organizational Unit"
-                                    SelectedOUChanged="OUSelected">
+                                SelectedEntryChanged="OUSelected">
                            @* <NodeContent>
                                 @context.Name
                             </NodeContent>*@
@@ -84,18 +84,22 @@
         return false;
     }
     */
-    async void OUSelected(IADOrganizationalUnit ou)
+    async void OUSelected(IDirectoryEntryAdapter entry)
     {
-        if (parentOU == null)
+        if (entry is IADOrganizationalUnit ou)
         {
+            if (parentOU == null)
+            {
+                parentOU = ou;
+                return;
+            }
             parentOU = ou;
-            return;
+
+
+            await InvokeAsync(StateHasChanged);
         }
-        parentOU = ou;
-
-
-        await InvokeAsync(StateHasChanged);
     }
+
 
     async void CreateNewOU()
     {

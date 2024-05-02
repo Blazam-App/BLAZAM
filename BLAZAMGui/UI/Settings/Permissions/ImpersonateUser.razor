@@ -1,28 +1,35 @@
 ﻿@using Newtonsoft.Json
+@using System.Diagnostics
 @inherits AppComponentBase
 @inject IJSRuntime JSRuntime
+@if ((CurrentUser.State.IsSuperAdmin && CurrentUser.Username != "Demo") || (CurrentUser.State.IsSuperAdmin|| Debugger.IsAttached))
+{
+    <form action="" @onsubmit=@AttemptSignIn id="login-form">
 
-<form action="" @onsubmit=@AttemptSignIn id="login-form">
+        <SettingsField>
 
-<SettingsField>
-    
             <ADAutoComplete Disabled=@attemptingImpersonation 
-                Label="@AppLocalization["Impersonate User"]" 
+            Label="@AppLocalization["Impersonate User"]" 
             SearchObjectType="ActiveDirectoryObjectType.User" 
             @bind-SelectedResult=User />
 
 
             <MudButton Disabled=@attemptingImpersonation 
-                Color=Color.Primary 
-                ButtonType="ButtonType.Submit">
+            Color=Color.Primary 
+            ButtonType="ButtonType.Submit">
                 Impersonate User
             </MudButton>
 
-    
-</SettingsField>
+
+        </SettingsField>
 
 
-</form>
+    </form>
+}
+else
+{
+    <MudText Class="ma-5 align-center justify-center">Impersonation is not available in demo mode.</MudText>
+}
 @code {
     private LoginRequest imperonationRequest = new(){ Impersonation=true};
     public IDirectoryEntryAdapter? User { get; set; }

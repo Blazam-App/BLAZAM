@@ -81,10 +81,25 @@ namespace BLAZAM
 
             builder.IntializeProperties();
 
+            //Create and discard a new instance of Encryption to inject the encryption seed string
             _ = new Encryption(Configuration?.GetValue<string>("EncryptionKey"));
 
-            //Setup host logging so it can catch the earliest logs possible
+            //Assign installation ID
+            Loggers.InstallationId = ApplicationInfo.installationId.ToString();
 
+            //Setup host logging so it can catch the earliest logs possible
+            Loggers.SeqServerUri = "http://logs.blazam.org:5341";
+            if (Debugger.IsAttached)
+            {
+                Loggers.SeqAPIKey = "xE50e1ljqtgLzHcu8pYC";
+
+            }
+            else
+            {
+                Loggers.SeqAPIKey = "8TeLknA8XBk5ybamT5m9";
+
+            }
+            
             Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
             builder.Host.UseSerilog(Log.Logger);
 
@@ -104,6 +119,23 @@ namespace BLAZAM
             AppInstance = builder.Build();
 
             ApplicationInfo.services = AppInstance.Services;
+
+
+            try
+            {
+                var context = AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
+                if(context!=null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
+                {
+                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
+
+                }
+
+            }catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+            Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
+
 
 
             // Configure the HTTP request pipeline.

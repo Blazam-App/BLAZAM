@@ -15,20 +15,26 @@ namespace BLAZAM.Session
     public class ApplicationNewsService : IApplicationNewsService
     {
         private HttpClient _httpClient;
+        private HttpClient _secondaryHttpClient;
         private Timer? _pollingTimer;
         private bool _pollCompleted = false;
         private List<NewsItem> _allNewsItems = new List<NewsItem>();
-        private List<NewsItem> activeNewsItems => _allNewsItems.Where(x=>x.DeletedAt==null && x.Published==true && (x.ScheduledAt==null||x.ScheduledAt<DateTime.Now)&&(x.ExpiresAt==null||x.ExpiresAt>DateTime.Now)).ToList();
+        private List<NewsItem> activeNewsItems => _allNewsItems.Where(x => x.DeletedAt == null && x.Published == true && (x.ScheduledAt == null || x.ScheduledAt < DateTime.Now) && (x.ExpiresAt == null || x.ExpiresAt > DateTime.Now)).ToList();
         public AppEvent OnNewItemsAvailable { get; set; }
         public ApplicationNewsService()
         {
             _httpClient = new HttpClient
             {
+                BaseAddress = new Uri("https://blazam.org/api/"),
+                Timeout = TimeSpan.FromSeconds(60)
+            };
+            _secondaryHttpClient = new HttpClient
+            {
                 BaseAddress = new Uri("https://blazam-news.azurewebsites.net/api/"),
                 Timeout = TimeSpan.FromSeconds(60)
             };
             _pollingTimer = new Timer(Tick, null, 10, 1000 * 60 * 15);
-           // GetAllNewsItems();
+            // GetAllNewsItems();
         }
 
         private async void Tick(object? state)
@@ -41,17 +47,36 @@ namespace BLAZAM.Session
             try
             {
                 _pollCompleted = false;
-                var apiResponse = await _httpClient.GetAsync("newsItems");
-                if (apiResponse != null && apiResponse.IsSuccessStatusCode)
+                try
                 {
-                    var content = await apiResponse.Content.ReadAsStringAsync();
-                    var allNewsItems = JsonSerializer.Deserialize<List<NewsItem>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    if (allNewsItems != null)
+                    var apiResponse = await _httpClient.GetAsync("newsItems");
+                    if (apiResponse != null && apiResponse.IsSuccessStatusCode)
                     {
-                        _allNewsItems = allNewsItems;
-                _pollCompleted = true;
+                        var content = await apiResponse.Content.ReadAsStringAsync();
+                        var allNewsItems = JsonSerializer.Deserialize<List<NewsItem>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        if (allNewsItems != null)
+                        {
+                            _allNewsItems = allNewsItems;
+                            _pollCompleted = true;
 
-                        OnNewItemsAvailable?.Invoke();
+                            OnNewItemsAvailable?.Invoke();
+                        }
+                    }
+                }
+                catch
+                {
+                    var apiResponse = await _secondaryHttpClient.GetAsync("newsItems");
+                    if (apiResponse != null && apiResponse.IsSuccessStatusCode)
+                    {
+                        var content = await apiResponse.Content.ReadAsStringAsync();
+                        var allNewsItems = JsonSerializer.Deserialize<List<NewsItem>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        if (allNewsItems != null)
+                        {
+                            _allNewsItems = allNewsItems;
+                            _pollCompleted = true;
+
+                            OnNewItemsAvailable?.Invoke();
+                        }
                     }
                 }
             }
@@ -93,7 +118,8 @@ namespace BLAZAM.Session
                     }
                 }
                 return unreadItems;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Loggers.SystemLogger.Error("Error while trying to get unread news items for user. {@Error}", ex);
                 return new();
@@ -116,7 +142,9 @@ namespace BLAZAM.Session
 
                 return new();
 
-            }catch  (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Loggers.SystemLogger.Error("Error while trying to get read news items for user. {@Error}", ex);
                 return new();
             }

@@ -1,6 +1,6 @@
 ﻿@inherits Widget
 @attribute [Authorize]
-<div Background="Background.Secondary" >
+<div>
 
     <h3>Disabled users changed in the last 90 days</h3>
 
@@ -8,7 +8,7 @@
         @foreach (var user in LockedUsers)
         {
 
-            <MudCard Background="Background.Dark"  @onclick="@(()=>{Nav.NavigateTo("/users/search/" + user.SamAccountName);})">
+            <MudCard  @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
 
 
                 @user.DisplayName <br>

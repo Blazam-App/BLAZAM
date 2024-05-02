@@ -1,7 +1,7 @@
 ﻿@inherits MudSelect<string>
 <MudSelect Label="@Label"
            T="string"
-           @bind-Value="@Value"
+           @bind-Value="@DriveLetter"
            Disabled=@Disabled
            Adornment="@Adornment"
            AdornmentIcon="@AdornmentIcon"
@@ -20,5 +20,18 @@
 </MudSelect>
 
 @code {
+    private string _driveLetter="D:";
+    [Parameter]
+    public string DriveLetter
+    {
+        get => _driveLetter; set
+        {
+            if (_driveLetter == value) return;
+            _driveLetter = value;
+            DriveLetterChanged.InvokeAsync(value);
 
+        }
+    }
+    [Parameter]
+    public EventCallback<string> DriveLetterChanged{ get; set; }
 }

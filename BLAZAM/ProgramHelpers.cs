@@ -29,6 +29,7 @@ using BLAZAM.Session;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Org.BouncyCastle.Ocsp;
+using System.Management;
 
 namespace BLAZAM.Server
 {
@@ -40,8 +41,18 @@ namespace BLAZAM.Server
             ApplicationInfo ApplicationInfo = new(builder);
             ApplicationInfo.inDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
             ApplicationInfo.inDemoMode = builder.Configuration.GetValue<bool>("DemoMode");
-            
 
+            //Set the installation ID
+            try
+            {
+                ApplicationInfo.installationId = GetInstallationId();
+
+
+            }catch (Exception ex)
+            {
+                ApplicationInfo.installationId = Environment.MachineName.ToGuid();
+
+            }
             //Set application directories
             //Program.RootDirectory = new SystemDirectory(builder.Environment.ContentRootPath);
             //Program.TempDirectory = new SystemDirectory(Path.GetTempPath() + "Blazam\\");
@@ -59,6 +70,35 @@ namespace BLAZAM.Server
 
 
             return builder;
+        }
+
+        private static Guid GetInstallationId()
+        {
+            //Try and get os id
+            try
+            {
+                string ComputerName = "localhost";
+                ManagementScope Scope;
+                Scope = new ManagementScope(String.Format("\\\\{0}\\root\\CIMV2", ComputerName), null);
+                Scope.Connect();
+                ObjectQuery Query = new ObjectQuery("SELECT UUID FROM Win32_ComputerSystemProduct");
+                ManagementObjectSearcher Searcher = new ManagementObjectSearcher(Scope, Query);
+
+                foreach (ManagementObject WmiObject in Searcher.Get())
+                {
+                    return Guid.Parse(WmiObject["UUID"].ToString());
+                                     
+                }
+                throw new ApplicationException("Searched but could not find a CSProduct UUID");
+            }
+        
+            catch (Exception ex)
+                {
+                    Console.WriteLine("Failed to get client ID (GUID). Error: " + ex.Message);
+                    throw ex;
+                }
+           
+
         }
 
         public static WebApplicationBuilder InjectServices(this WebApplicationBuilder builder)

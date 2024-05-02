@@ -59,6 +59,10 @@ namespace BLAZAM.Common.Data
         /// A static access to <see cref="InDemoMode"/>
         /// </summary>
         public static bool inDemoMode;
+        /// <summary>
+        /// A static access to <see cref="InstallationId"/>
+        /// </summary>
+        public static Guid installationId = Guid.Empty;
 
         /// <summary>
         /// Indicates whether Blazam is running under IIS or as a service
@@ -142,6 +146,7 @@ namespace BLAZAM.Common.Data
         {
             get;set;
         }
+        public Guid InstallationId { get => installationId; set => installationId = value; } 
 
         /// <summary>
         /// Use only for UnitTests

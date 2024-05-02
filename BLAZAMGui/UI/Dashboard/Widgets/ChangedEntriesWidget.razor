@@ -2,7 +2,7 @@
 @attribute [Authorize]
 
 <MudDataGrid T="IDirectoryEntryAdapter"
-             Items="deletedObjects"
+             Items="changdEntries"
              RowClick="@RowClicked"
              RowClass="cursor-pointer"
              Dense=true
@@ -48,18 +48,23 @@
     <MudProgressLinear Indeterminate=true />
 </MudOverlay>
 @code {
-    List<IDirectoryEntryAdapter> deletedObjects { get; set; } = new();
+    List<IDirectoryEntryAdapter> changdEntries { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        Task.Run(async () =>
 
-        var search = new ADSearch();
-        search.Fields.Changed = DateTime.Now.AddDays(-1);
-        deletedObjects = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
-                LoadingData = false;
-                await InvokeAsync(StateHasChanged);
-          
+        {
+            var search = new ADSearch();
+            search.Fields.Changed = DateTime.Now.AddDays(-1);
+            changdEntries = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>()).Where(x => x.CanRead).ToList();
+            LoadingData = false;
+            await InvokeAsync(StateHasChanged);
+
+        });
+
+
 
     }
     void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
@@ -69,7 +74,7 @@
             GoTo(args.Item);
         }
     }
-  
+
     void GoTo(IDirectoryEntryAdapter args)
     {
         Nav.NavigateTo(args.SearchUri);

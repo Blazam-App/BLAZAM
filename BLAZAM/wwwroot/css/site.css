@@ -8,6 +8,9 @@ html, body {
 h1:focus {
     outline: none;
 }
+.blur-background {
+    backdrop-filter: blur(10px);
+}
 .app-icon{
     margin-left:0.5rem;
     max-height:2.5rem;

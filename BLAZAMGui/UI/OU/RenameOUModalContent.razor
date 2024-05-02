@@ -5,9 +5,9 @@
 
     @if (OU.CanReadField(ActiveDirectoryFields.CanonicalName))
     {
-        
-            
-                    <MudTextField Label="@AppLocalization["Name"]" @bind-Value="@OU.CanonicalName" />
+
+
+            <MudTextField AutoFocus=true Label="@AppLocalization["Name"]" @bind-Value="@OU.CanonicalName" />
 
             
         

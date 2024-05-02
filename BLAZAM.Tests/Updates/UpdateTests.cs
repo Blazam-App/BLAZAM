@@ -34,17 +34,17 @@ namespace BLAZAM.Tests.Updates
                 await latest.Download(null);
 
             Assert.True(latest?.UpdateFile.Exists);
-            Update_Stages_OK(latest);
-            Update_Cleanup_OK(latest);
+            await Update_Stages_OK(latest);
+            await Update_Cleanup_OK(latest);
         }
-        private async void Update_Stages_OK(ApplicationUpdate latest)
+        private async Task Update_Stages_OK(ApplicationUpdate latest)
         {
 
             await latest.ExtractFiles(null);
             Assert.True(latest.UpdateStagingDirectory.Files.Count > 2);
 
         }
-        private async void Update_Cleanup_OK(ApplicationUpdate latest)
+        private async Task Update_Cleanup_OK(ApplicationUpdate latest)
         {
 
             await latest.CleanStaging(null);
