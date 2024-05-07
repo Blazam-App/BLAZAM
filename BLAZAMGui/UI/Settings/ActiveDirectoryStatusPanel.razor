@@ -33,10 +33,11 @@
     <MudStack Row=true Class="align-center">
         @AppLocalization["Connection Type"]
 
-        <StatusCheck Status=@(Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.Encryption)||
+        <StatusCheck Status=@(Directory.AppRootDirectoryEntry !=null &&(
+            Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.Encryption)||
         Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.SecureSocketsLayer)||
-        Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.Secure))
-        Text="@(Directory.AppRootDirectoryEntry.AuthenticationType.ToString())" />
+        Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.Secure)))
+        Text="@(Directory.AppRootDirectoryEntry?.AuthenticationType.ToString())" />
 
 
     </MudStack>
