@@ -4,6 +4,11 @@ using System.Text.RegularExpressions;
 
 namespace BLAZAM.Common.Data
 {
+
+    /// <summary>
+    /// Appears to be for Blazorise
+    /// </summary>
+    [Obsolete("Old Validation rules for Blazorise")]
     public static class AppValidationRule
     {
         //
@@ -19,6 +24,8 @@ namespace BLAZAM.Common.Data
         //
         // Returns:
         //     True if they are equal.
+        [Obsolete("Old Validation rules for Blazorise")]
+
         public static bool IsEqual(string value, string compare)
         {
             try
@@ -47,6 +54,8 @@ namespace BLAZAM.Common.Data
         //
         // Returns:
         //     True if string length is in the range.
+        [Obsolete("Old Validation rules for Blazorise")]
+
         public static bool IsLength(string value, int min, int max)
         {
             return value.Length>min && value.Length<max;
@@ -66,6 +75,8 @@ namespace BLAZAM.Common.Data
         // Returns:
         //     True if string length is long enough and has at least
         //     one leter, number, and special character.
+        [Obsolete("Old Validation rules for Blazorise")]
+
         public static bool IsValidPassword(string value, int min = 6)
         {
             Regex regex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{" + min + ",}$");
@@ -77,6 +88,8 @@ namespace BLAZAM.Common.Data
         //
         // Parameters:
         //   value:
+        [Obsolete("Old Validation rules for Blazorise")]
+
         public static bool IsEmpty(string value)
         {
             return value.IsNullOrEmpty();
@@ -88,6 +101,7 @@ namespace BLAZAM.Common.Data
         //
         // Parameters:
         //   value:
+        [Obsolete("Old Validation rules for Blazorise")]
         public static bool IsNotEmpty(string value)
         {
             return !value.IsNullOrEmpty();
@@ -99,6 +113,7 @@ namespace BLAZAM.Common.Data
         //
         // Parameters:
         //   value:
+        [Obsolete("Old Validation rules for Blazorise")]
         public static bool IsEmail(string value)
         {
             if (value.IsNullOrEmpty())
@@ -126,6 +141,7 @@ namespace BLAZAM.Common.Data
         //
         // Parameters:
         //   value:
+        [Obsolete("Old Validation rules for Blazorise")]
         public static bool IsFqdn(string value)
         {
             if (value != null)
@@ -142,6 +158,7 @@ namespace BLAZAM.Common.Data
         //
         // Parameters:
         //   value:
+        [Obsolete("Old Validation rules for Blazorise")]
         public static bool IsAlpha(string value)
         {
             if (string.IsNullOrEmpty(value))
@@ -162,6 +179,7 @@ namespace BLAZAM.Common.Data
         //
         // Parameters:
         //   value:
+        [Obsolete("Old Validation rules for Blazorise")]
         public static bool IsAlphanumeric(string value)
         {
             if (string.IsNullOrEmpty(value))
@@ -182,6 +200,7 @@ namespace BLAZAM.Common.Data
         //
         // Parameters:
         //   value:
+        [Obsolete("Old Validation rules for Blazorise")]
         public static bool IsAlphanumericWithUnderscore(string value)
         {
             if (string.IsNullOrEmpty(value))
@@ -202,6 +221,7 @@ namespace BLAZAM.Common.Data
         //
         // Parameters:
         //   value:
+        [Obsolete("Old Validation rules for Blazorise")]
         public static bool IsUppercase(string value)
         {
             if (string.IsNullOrEmpty(value))
@@ -222,6 +242,7 @@ namespace BLAZAM.Common.Data
         //
         // Parameters:
         //   value:
+        [Obsolete("Old Validation rules for Blazorise")]
         public static bool IsLowercase(string value)
         {
             if (string.IsNullOrEmpty(value))
