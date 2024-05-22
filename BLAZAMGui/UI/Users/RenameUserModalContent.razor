@@ -1,34 +1,30 @@
 ﻿@inherits AppModalContent
 @if (User != null && _privateUserInstance != null)
 {
-        @if (User.CanReadField(ActiveDirectoryFields.GivenName))
-        {
+       
             <MudTextField AutoFocus=true Label="@AppLocalization["First Name"]" @bind-Value="@_privateUserInstance.GivenName" />
 
 
 
-        }
-        @if (User.CanReadField(ActiveDirectoryFields.MiddleName))
-        {
+        
+
             <MudTextField Label="@AppLocalization["Middle Name"]" @bind-Value="@_privateUserInstance.MiddleName" />
 
 
 
-        }
-        @if (User.CanReadField(ActiveDirectoryFields.SN))
-        {
+        
+       
             <MudTextField Label="@AppLocalization["Last Name"]" @bind-Value="@_privateUserInstance.Surname" />
 
 
 
-        }
-        @if (User.CanReadField(ActiveDirectoryFields.DisplayName))
-        {
+        
+      
             <MudTextField T="string" Label="@AppLocalization["Display Name"]" Text="@_privateUserInstance.DisplayName" TextChanged="DisplayNameChanged" />
 
 
 
-        }
+        
 
 
     @if (User.CanEditField(ActiveDirectoryFields.SAMAccountName))
