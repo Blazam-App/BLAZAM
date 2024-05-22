@@ -35,6 +35,11 @@ namespace BLAZAM.Server
 {
     public static class ProgramHelpers
     {
+        /// <summary>
+        /// Sets up the core configuration like debug, installation id, and running process and version
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static WebApplicationBuilder IntializeProperties(this WebApplicationBuilder builder)
         {
             //Set DebugMode flag from configuration
@@ -45,25 +50,27 @@ namespace BLAZAM.Server
             //Set the installation ID
             try
             {
+                //Attempts to get the windows installation GUID
                 ApplicationInfo.installationId = GetInstallationId();
 
 
-            }catch (Exception ex)
+            }catch
             {
+                //Default to a hash type method on the machine name
                 ApplicationInfo.installationId = Environment.MachineName.ToGuid();
 
             }
-            //Set application directories
-            //Program.RootDirectory = new SystemDirectory(builder.Environment.ContentRootPath);
-            //Program.TempDirectory = new SystemDirectory(Path.GetTempPath() + "Blazam\\");
+            
             Program.AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Blazam\\");
 
 
             //Store the configuration so other pages/objects can easily access it
             Program.Configuration = builder.Configuration;
 
-
+            //Captures the running process
             ApplicationInfo.runningProcess = Process.GetCurrentProcess();
+
+            //Gets the application version from he running assembly version
             ApplicationInfo.runningVersion = new ApplicationVersion(Assembly.GetExecutingAssembly()) ;
 
 
@@ -208,6 +215,7 @@ namespace BLAZAM.Server
 
             //Provide an Http client as a service with custom construction via api service class
             builder.Services.AddHttpClient();
+
             //Also keeping this here for a possible future API, though this would be for internal use
             //builder.Services.AddTransient<ApiService>();
             //builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>().HttpContext.User);
@@ -225,7 +233,7 @@ namespace BLAZAM.Server
             //Provide chat as a service
             builder.Services.AddSingleton<IChatService,ChatService>();
 
-
+            //Sets up Active Directory communications
             builder.Services.AddActiveDirectoryServices();
 
 
@@ -252,7 +260,8 @@ namespace BLAZAM.Server
             builder.Services.AddScoped<SearchService>();
 
 
-
+            //A substitue Navigation Manager for the app to enable navigation warning on unsaved
+            //changes
             builder.Services.AddScoped<AppNavigationManager>();
 
 
