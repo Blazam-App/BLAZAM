@@ -56,7 +56,7 @@
 
                     <MudTextField Label="@AppLocalization["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
 
-                    <MudTextField Label="@AppLocalization["Description"]" @bind-Value="@Group.Description" Disabled />
+                    <MudTextField Label="@AppLocalization["Description"]" @bind-Value="@Group.Description" Disabled=@(!EditMode || !Group.CanEdit) />
 
 
                     <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
