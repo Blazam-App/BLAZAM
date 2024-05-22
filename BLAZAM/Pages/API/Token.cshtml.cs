@@ -42,16 +42,7 @@ namespace BLAZAM.Server.Pages.API
             {
                 userSettings.APIToken = Token;
             }
-            else
-            {
-                userSettings = new AppUser
-                {
-                    UserGUID = User.Identity.Name,
-                    APIToken = Token
-                };
-                    Context.UserSettings.Add(userSettings);
-                
-            }
+           
             Context.SaveChanges();
             return new JsonResult(userSettings);
         }
