@@ -22,8 +22,16 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
+    /// <summary>
+    /// Represents the state of the search process.
+    /// </summary>
     public enum SearchState { Ready, Started, Collecting, Completed };
 
+    /// <summary>
+    /// The ADSearch class provides a powerful and flexible mechanism for performing searches within an Active Directory environment.
+    /// By configuring various search parameters, users can query the directory for specific types of objects, such as users, groups, 
+    /// computers, organizational units, and more. This class leverages LDAP queries to retrieve and filter results efficiently.
+    /// </summary>
     public class ADSearch : SearchBase
     {
 
@@ -107,7 +115,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             else cancellationToken = new CancellationToken();
             if (cancellationToken?.IsCancellationRequested == true) 
                 return new();
-            DateTime startTime = NewMethod();
+            DateTime startTime = InitializeSearch();
             DirectorySearcher searcher;
             try
             {
@@ -120,6 +128,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     //Make sure this is not  usable
                     //Seems to never pull ou's
                     //VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset),
+                    SearchScope=SearchScope,
+                    SizeLimit= MaxResults,
                     Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
                 };
                 if (EnabledOnly != true)
@@ -253,7 +263,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         }
 
-        private DateTime NewMethod()
+        private DateTime InitializeSearch()
         {
             var startTime = DateTime.Now;
             SearchState = SearchState.Started;

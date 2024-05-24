@@ -24,7 +24,12 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
         [Parameter]
         public string? Label { get; set; }
-
+        /// <summary>
+        /// The root ou of this TreeView
+        /// </summary>
+        /// <remarks>
+        /// Defaults to the App Base root
+        /// </remarks>
         [Parameter]
         public HashSet<IDirectoryEntryAdapter> RootOU { get; set; } = new HashSet<IDirectoryEntryAdapter>();
         [Parameter]
@@ -78,6 +83,9 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
         [Parameter]
         public EventCallback<IDirectoryEntryAdapter> SelectedEntryChanged { get; set; }
+        /// <summary>
+        /// Text to show at the end of the TreeView item
+        /// </summary>
         [Parameter]
         public Func<IDirectoryEntryAdapter, string>? EndText { get; set; }
         
@@ -174,8 +182,14 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
 
         }
+        /// <summary>
+        /// Defines a function to determine whether an Active Directory object should be
+        /// displayed in the tree view or not
+        /// </summary>
         [Parameter]
         public Func<IDirectoryEntryAdapter,bool>? AdditionalVisibilityFilters { get; set; }
+
+
         protected bool ShouldShowOU(IDirectoryEntryAdapter entry)
         {
             if (entry is IADOrganizationalUnit ou)

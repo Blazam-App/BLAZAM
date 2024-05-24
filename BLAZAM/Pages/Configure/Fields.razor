@@ -61,13 +61,13 @@
                 <CellTemplate>
                     <MudCheckBox Size="@Size.Small"
                              ReadOnly=true
-                             Value="@(context.Item?.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)" />
+                             Value="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)" />
                 </CellTemplate>
             </TemplateColumn>
         }
         <TemplateColumn CellClass="d-flex justify-end" Title=@AppLocalization["Delete"] Sortable="false">
             <CellTemplate>
-                <MudIconButton Disabled=@(context.Item?.Id>100000)
+                <MudIconButton Disabled=@(context.Item.Id>100000)
                                Size="@Size.Small"
                                Icon="@Icons.Material.Outlined.Delete"
                                OnClick="@(async()=>{await Delete(context.Item);})" />
@@ -109,9 +109,9 @@
         if (await MessageService.Confirm("Are you sure you want to delete " + field.DisplayName + "?", "Delete " + field.DisplayName + "?"))
         {
             field.DeletedAt = DateTime.UtcNow;
-            if (Context != null && await Context.SaveChangesAsync() > 0)
+            if (Context != null && await Context.SaveChangesAsync() > 0 && fieldGrid!=null)
             {
-                await fieldGrid?.ReloadServerData();
+                await fieldGrid.ReloadServerData();
 
                 SnackBarService.Success(field.DisplayName + " deleted");
             }

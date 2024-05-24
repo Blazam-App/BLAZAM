@@ -17,7 +17,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             Directory = directory;
         }
-        protected virtual SearchResultCollection SearchObjects(
+        protected virtual List<IDirectoryEntryAdapter>? SearchObjects(
             string fieldQuery,
             ActiveDirectoryObjectType searchType,
             int returnCount = 5,
@@ -30,7 +30,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
 
 
-        protected virtual SearchResultCollection SearchObjects(
+        protected virtual List<IDirectoryEntryAdapter>? SearchObjects(
             string? searchBaseDN,
             string fieldQuery,
             ActiveDirectoryObjectType? searchType,
@@ -44,15 +44,12 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
 
 
-            //if (enabledOnly == false) Don't do this to allow disabled only searches
-            //if trying to find disabled users, set to null to include both enabled and disabled
-            //enabledOnly = null;
             DirectorySearcher searcher;
             try
             {
 
 
-                /*
+                
 
                   ADSearch search = new ADSearch();
 
@@ -62,13 +59,14 @@ namespace BLAZAM.ActiveDirectory.Searchers
                   search.MaxResults = returnCount;
                   search.SearchScope = searchScope;
                   search.EnabledOnly = enabledOnly;
-                  return search.Search();
+                  var results = search.Search();
+                return results;
 
 
+                  
 
-                  */
-
-
+                /*
+                 * Obsoleete code from previous searcher method
                 searcher = new DirectorySearcher(Directory.GetDirectoryEntry(searchBaseDN));
                 searcher.Filter = "(&(objectClass=*))";
                 switch (searchType)
@@ -118,11 +116,12 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 searcher.Filter = searcher.Filter.Substring(0, searcher.Filter.Length - 1) + fieldQuery + ")";
                 var result = searcher.FindAll();
 
-                return result;
+                //return result;
+                */
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("Directory Entry failed to connect {@Error}", ex);
+                Loggers.ActiveDirectryLogger.Error("Search failed {@Error}", ex);
             }
             return null;
             // Set the filter to look for a specific user
@@ -137,7 +136,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
 
 
-        protected SearchResultCollection SearchObjectBySID(string sid) => SearchObjects(null, "(objectSid=" + sid + ")", null, 1, false);
+        protected List<IDirectoryEntryAdapter>? SearchObjectBySID(string sid) => SearchObjects(null, "(objectSid=" + sid + ")", null, 1, false);
 
         protected List<T> ConvertTo<T>(SearchResultCollection r) where T : IDirectoryEntryAdapter, new()
         {
