@@ -91,7 +91,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             var tstamp = threeMonthsAgo.ToString("yyyyMMddHHmmss.fZ");
             string PrintersearchFieldsQuery = "(whenChanged>=" + tstamp + ")";
 
-            return new List<IADPrinter>(ConvertTo<ADPrinter>(SearchObjects(PrintersearchFieldsQuery, ActiveDirectoryObjectType.User, 1000, ignoreDisabledPrinters)).OrderByDescending(u => u.LastChanged));
+            return SearchObjects(PrintersearchFieldsQuery, ActiveDirectoryObjectType.User, 1000, ignoreDisabledPrinters).Cast<IADPrinter>().OrderByDescending(u => u.LastChanged).ToList();
 
         }
 

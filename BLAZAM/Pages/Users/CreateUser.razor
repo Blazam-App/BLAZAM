@@ -41,15 +41,18 @@
                         </MudCarouselItem>
 
                         <MudCarouselItem Class="pa-5">
-                            <MudFab StartIcon="@Icons.Material.Filled.ArrowBack"
-                                    Size="Size.Small"
-                                    OnClick="@(()=>{_templateCarouselIndex=0;})"
-                                    Color="Color.Primary" />
+                          
                             <FlexContainer>
-
+                                  <MudFab StartIcon="@Icons.Material.Filled.ArrowBack"
+                                    Size="Size.Small"
+                                    OnClick="@(()=>{_templateCarouselIndex=0; SelectedCategory=null;})"
+                                    Color="Color.Primary" />
                                 @foreach (var template in TemplatesUserCanUse.Where(t => t.DeletedAt == null && t.Visible))
                                 {
-                                    <MudButton OnClick=@(async()=>{await SetTemplate(template);}) Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">@template.Name</MudButton>
+                                    <MudButton OnClick=@(async()=>{await SetTemplate(template);})
+                                        Variant="Variant.Filled" 
+                                        Color="Color.Primary"
+                                        Size="Size.Large">@template.Name</MudButton>
 
                                 }
                             </FlexContainer>

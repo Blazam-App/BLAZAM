@@ -77,8 +77,9 @@ namespace BLAZAM.Pages
                                 await _audit.Logon.Login(user.User, HttpContext.Connection.RemoteIpAddress?.ToString());
                                 return new RedirectResult("/");
                             }
-                        }catch (Exception ex)
+                        }catch
                         {
+                            
                             return new RedirectResult("/");
                         }
                 

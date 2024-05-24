@@ -5,34 +5,34 @@
 
 
 
-    <EditForm Model="Group">
+<EditForm Model="Group">
 
 
-        <SetSubHeader>
-            <DirectoryEntryViewHeader EditMode="@EditMode"
-                                      DirectoryEntry="@Group"
-                                      OnAssignTo="@(()=>{AssignToModal?.Show();})"
-                                      OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
-                                      OnDelete="@DeleteGroup"
-                                      OnMove="@(()=>{MoveToModal?.Show();})"
-                                      OnRename="@(()=>{RenameModal?.Show();})"
-                                      OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
-                                      OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
-                                      OnToggleEditMode="@ToggleEditMode" />
-            <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true" />
-        </SetSubHeader>
+    <SetSubHeader>
+        <DirectoryEntryViewHeader EditMode="@EditMode"
+                                  DirectoryEntry="@Group"
+                                  OnAssignTo="@(()=>{AssignToModal?.Show();})"
+                                  OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
+                                  OnDelete="@DeleteGroup"
+                                  OnMove="@(()=>{MoveToModal?.Show();})"
+                                  OnRename="@(()=>{RenameModal?.Show();})"
+                                  OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
+                                  OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
+                                  OnToggleEditMode="@ToggleEditMode" />
+        <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true" />
+    </SetSubHeader>
 
-        <CascadingValue Value="EditMode">
+    <CascadingValue Value="EditMode">
 
 
-            <AppModal Title=@AppLocalization["Assign To"] @ref=@AssignToModal>
-                <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignToModal?.Hide(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
-            </AppModal>
-            <AppModal Title=@AppLocalization["Add Members"] @ref=@AssignMemberModal>
-                <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal?.Hide();InvokeAsync(StateHasChanged);}) Group="Group" />
-            </AppModal>
-            <AppModal Title=@AppLocalization["Move To"] @ref=@MoveToModal>
-                @if (MoveToModal?.IsShown == true)
+        <AppModal Title=@AppLocalization["Assign To"] @ref=@AssignToModal>
+            <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignToModal?.Hide(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
+        </AppModal>
+        <AppModal Title=@AppLocalization["Add Members"] @ref=@AssignMemberModal>
+            <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal?.Hide();InvokeAsync(StateHasChanged);}) Group="Group" />
+        </AppModal>
+        <AppModal Title=@AppLocalization["Move To"] @ref=@MoveToModal>
+            @if (MoveToModal?.IsShown == true)
             {
                 <MoveToOUModalContent DirectoryModel="Group" />
             }
@@ -46,7 +46,7 @@
         </AppModal>
 
 
-      
+
 
 
         <MudGrid>
@@ -54,56 +54,53 @@
                 <Section Style="min-height:200px;" Title="Group Details">
                     <MudTextField Label="@AppLocalization["Group Name"]" @bind-Value="@Group.CanonicalName" Disabled />
 
-                     <MudTextField Label="@AppLocalization["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
+                    <MudTextField Label="@AppLocalization["Account Name"]" @bind-Value="@Group.SamAccountName" Disabled />
+
+                    <MudTextField Label="@AppLocalization["Description"]" @bind-Value="@Group.Description" Disabled=@(!EditMode || !Group.CanEdit) />
 
 
-                     <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
+                    <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@Group.Email" Disabled=@(!EditMode || !Group.CanEditField(ActiveDirectoryFields.Mail)) />
 
-                     <MudStack Row=true>
-                         <MudText Typo="Typo.subtitle2">@AppLocalization["Created"]:</MudText>
-                            <MudSpacer />
-                            <DateWithTimeTooltip DateTime="Group?.Created" />
+                    <MudStack Row=true>
+                        <MudText Typo="Typo.subtitle2">@AppLocalization["Created"]:</MudText>
+                        <MudSpacer />
+                        <DateWithTimeTooltip DateTime="Group?.Created" />
 
-                        </MudStack>
+                    </MudStack>
 
-                        <MudStack Row=true>
+                    <MudStack Row=true>
 
-                            <MudText Typo="Typo.subtitle2">@AppLocalization["Last Change"]:</MudText>
-                            <MudSpacer />
+                        <MudText Typo="Typo.subtitle2">@AppLocalization["Last Change"]:</MudText>
+                        <MudSpacer />
 
-                            <DateWithTimeTooltip DateTime="Group?.LastChanged" />
+                        <DateWithTimeTooltip DateTime="Group?.LastChanged" />
 
-                        </MudStack>
-
-
-                        <MudStack Row=true>
-                            <MudText Typo="Typo.subtitle2">@AppLocalization["OU"]:</MudText>
-                            <MudSpacer />
-
-                            <MudText Style="text-align:end;" Typo="Typo.caption">@Group.OU.ToPrettyOu()</MudText>
-                        </MudStack>
+                    </MudStack>
 
 
-                    </Section>
-                </MudItem>
-                <MudItem xs="12" md="6">
-                    <Section Style="min-height:200px;" Title=@AppLocalization["Parent Groups"]>
-                        <MemberOfList Model="Group" />
+                    <MudStack Row=true>
+                        <MudText Typo="Typo.subtitle2">@AppLocalization["OU"]:</MudText>
+                        <MudSpacer />
 
-                    </Section>
-                </MudItem>
-                <MudItem xs="12" md="12">
-                    <Section Style="min-height:200px;" Title=@AppLocalization["Members"]>
-                        <GroupMembersDataGrid Group="Group" />
-
-                    </Section>
-                </MudItem>
-            </MudGrid>
+                        <MudText Style="text-align:end;" Typo="Typo.caption">@Group.OU.ToPrettyOu()</MudText>
+                    </MudStack>
 
 
+                </Section>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <Section Style="min-height:200px;" Title=@AppLocalization["Parent Groups"]>
+                    <MemberOfList Model="Group" />
 
+                </Section>
+            </MudItem>
+            <MudItem xs="12" md="12">
+                <Section Style="min-height:200px;" Title=@AppLocalization["Members"]>
+                    <GroupMembersDataGrid Group="Group" />
 
-
+                </Section>
+            </MudItem>
+        </MudGrid>
 
 
 
@@ -112,7 +109,12 @@
 
 
 
-            @if (Group.CanEdit && Group.HasUnsavedChanges)
+
+
+
+
+
+        @if (Group.CanEdit && Group.HasUnsavedChanges)
         {
             <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
         }
