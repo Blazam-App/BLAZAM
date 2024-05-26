@@ -1,4 +1,7 @@
-﻿using System;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Identity.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +11,7 @@ namespace BLAZAM.ActiveDirectory.Data
 {
     public class LogonHours
     {
+   
         private int timeZoneOffset;
 
         private const int TotalBits = 168;
