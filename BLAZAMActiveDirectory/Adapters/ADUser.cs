@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory;
+using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
@@ -52,6 +53,30 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
                 SetProperty(ActiveDirectoryFields.GivenName.FieldName, value);
+            }
+        }
+        public string? LogOnTo
+        {
+            get
+            {
+                return GetStringProperty(ActiveDirectoryFields.LogOnTo.FieldName);
+            }
+            set
+            {
+                SetProperty(ActiveDirectoryFields.LogOnTo.FieldName, value);
+            }
+        }
+        public LogonHours? LogonHours
+        {
+            get
+            {
+                var raw= GetProperty<byte[]>(ActiveDirectoryFields.LogonHours.FieldName);
+                var decoded = new LogonHours(raw);
+                return decoded;
+            }
+            set
+            {
+                SetProperty(ActiveDirectoryFields.LogonHours.FieldName, value.EncodeLogonHours());
             }
         }
         public string? MiddleName

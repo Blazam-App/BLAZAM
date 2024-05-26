@@ -179,7 +179,7 @@ await ParentTemplateChanged(null);
                                field.FieldName != "objectSID" &&
                                !DirectoryTemplate.InheritedFieldValues.Any(f => f.Field?.Equals(field) == true) &&
                                !DirectoryTemplate.InheritedFieldValues.Any(f => f.CustomField?.Equals(field) == true) &&
-                               field.IsActionAppropriateForObject(DirectoryTemplate.ObjectType))
+                               field.IsFieldAppropriateForObject(DirectoryTemplate.ObjectType))
                                     {
                                         <MudButton Class=" my-0" OnClick=@(()=>{
                                        if(field is ActiveDirectoryField adField){

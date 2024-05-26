@@ -65,7 +65,18 @@
                             <ChangeUserPasswordModalContent User="User" />
                         }
                     </AppModal>
-
+                    <AppModal Title=@AppLocalization["Log On To"] @ref=@LogOnToModal>
+                        @if (LogOnToModal?.IsShown == true)
+                        {
+                            <LogOnToModalContent User="User" />
+                        }
+                    </AppModal>
+                    <AppModal Title=@AppLocalization["Logon Hours"] @ref=@LogonHoursModal  Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
+                        @if (LogonHoursModal?.IsShown == true)
+                        {
+                            <LogonHoursModalContent User="User" />
+                        }
+                    </AppModal>
 
 
                     <MudGrid>
@@ -135,7 +146,7 @@
                                     <MudSpacer />
                                     <LastLogonTime DirectoryEntry="User" />
                                 </MudStack>
-                                @if (User?.LockedOut==true)
+                                @if (User?.LockedOut == true)
                                 {
                                     <MudStack Row=true>
                                         <MudText Typo="Typo.subtitle2">@AppLocalization["Lockout Time"]:</MudText>
@@ -186,7 +197,7 @@
 
 
                                     </MudStack>
-                                    @if (EditMode && User?.NewEntry==false)
+                                    @if (EditMode && User?.NewEntry == false)
                                     {
                                         <MudText>
                                             To modify the user's name click the rename button in the toolbar/gear menu
@@ -215,7 +226,7 @@
 
 
 
-                                        @if (User?.NewEntry==true)
+                                        @if (User?.NewEntry == true)
                                         {
                                             <DynamicMudInput T=string
                                                              Label="@AppLocalization["Password"]"
@@ -227,7 +238,7 @@
                                                              @bind-Value="@ConfirmPassword"
                                                              InputType="InputType.Password" />
                                         }
-                  
+
 
                                         <MudStack Row=true Spacing="0">
                                             <DynamicMudInput T=string Label="@AppLocalization["Email Address"]"
@@ -249,13 +260,40 @@
 
 
                                         }
+
+                                        <MudStack Row=true Spacing="0" Class="mud-width-full">
+
+                                            @if (User.CanReadField(ActiveDirectoryFields.LogOnTo))
+                                            {
+                                                <MudButton Variant="Variant.Filled"
+                                                           Color="@(User.LogOnTo == null || User.LogOnTo == String.Empty?Color.Primary:Color.Warning)"
+                                                           OnClick="@(()=>{LogOnToModal?.Show();})"
+                                                           Disabled=@(!EditMode)>
+                                                    @AppLocalization["Log On To"]
+                                                </MudButton>
+
+                                            } 
+                                            
+                                            @if (User.CanReadField(ActiveDirectoryFields.LogonHours))
+                                            {
+                                                <MudButton Variant="Variant.Filled"
+                                                           Color="@(Color.Primary)"
+                                                           OnClick="@(()=>{LogonHoursModal?.Show();})"
+                                                           Disabled=@(!EditMode)>
+                                                    @AppLocalization["Logon Hours"]
+                                                </MudButton>
+
+                                            }
+                                        </MudStack>
+
+
                                     </MudStack>
                                     @if (EditMode && !User.NewEntry)
                                     {
 
 
-                                        <MudText>
-                                            To modify the user's accounts click the rename button in the toolbar/gear menu
+                                        <MudText Class="py-4">
+                                            To modify the account name or email click the rename button in the toolbar/gear menu
                                         </MudText>
 
                                     }

@@ -445,6 +445,20 @@ namespace BLAZAM.Database.Context
                     FieldName = "thumbnail",
                     DisplayName = "Photo",
                     FieldType = ActiveDirectoryFieldType.RawData
+                },
+                new ActiveDirectoryField
+                {
+                    Id = 36,
+                    FieldName = "userWorkstations",
+                    DisplayName = "Log On To",
+                    FieldType = ActiveDirectoryFieldType.Text
+                },
+                new ActiveDirectoryField
+                {
+                    Id = 37,
+                    FieldName = "logonHours",
+                    DisplayName = "Logon Hours",
+                    FieldType = ActiveDirectoryFieldType.RawData
                 }
 
 
