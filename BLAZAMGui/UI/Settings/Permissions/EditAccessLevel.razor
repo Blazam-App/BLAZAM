@@ -394,7 +394,7 @@
             if (map.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
             {
                 if (!excludedFields.Contains(field.FieldName))
-                    return field.IsActionAppropriateForObject(objectType);
+                    return field.IsFieldAppropriateForObject(objectType);
             }
         }
         return false;

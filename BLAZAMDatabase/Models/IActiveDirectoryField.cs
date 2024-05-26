@@ -32,7 +32,7 @@ namespace BLAZAM.Database.Models
         /// </summary>
         /// <param name="objectType">The Active Directory object type</param>
         /// <returns>True if this field should apply, otherwise false</returns>
-        bool IsActionAppropriateForObject(ActiveDirectoryObjectType objectType);
+        bool IsFieldAppropriateForObject(ActiveDirectoryObjectType objectType);
 
         /// <summary>
         /// 

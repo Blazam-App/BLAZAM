@@ -55,7 +55,7 @@ namespace BLAZAM.Database.Models
 
 
         
-        public bool IsActionAppropriateForObject(ActiveDirectoryObjectType objectType)
+        public bool IsFieldAppropriateForObject(ActiveDirectoryObjectType objectType)
         {
             return ObjectTypes.Any(ot => ot.ObjectType == objectType);
 

@@ -1,4 +1,5 @@
-﻿using System.Security;
+﻿using BLAZAM.ActiveDirectory.Data;
+using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -28,7 +29,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
       
       
         byte[]? ThumbnailPhoto { get; set; }
-
-
+        string? LogOnTo { get; set; }
+        LogonHours? LogonHours { get; set; }
     }
 }

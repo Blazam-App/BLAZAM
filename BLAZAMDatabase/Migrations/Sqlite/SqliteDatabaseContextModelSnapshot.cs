@@ -382,6 +382,20 @@ namespace BLAZAM.Common.Migrations.Sqlite
                             DisplayName = "Photo",
                             FieldName = "thumbnail",
                             FieldType = 2
+                        },
+                        new
+                        {
+                            Id = 36,
+                            DisplayName = "Log On To",
+                            FieldName = "userWorkstations",
+                            FieldType = 0
+                        },
+                        new
+                        {
+                            Id = 37,
+                            DisplayName = "Logon Hours",
+                            FieldName = "logonHours",
+                            FieldType = 2
                         });
                 });
 

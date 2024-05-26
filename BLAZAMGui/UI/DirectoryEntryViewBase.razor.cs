@@ -29,6 +29,8 @@ namespace BLAZAM.Gui.UI
         protected AppModal? AssignToModal { get; set; }
         protected AppModal? MoveToModal { get; set; }
         protected AppModal? RenameModal { get; set; }
+        protected AppModal? LogonHoursModal { get; set; }
+        protected AppModal? LogOnToModal { get; set; }
         protected AppModal? ChangePasswordModal { get; set; }
         [CascadingParameter]
         protected AppModal? ChangeHistoryModal { get; set; }
@@ -83,6 +85,9 @@ namespace BLAZAM.Gui.UI
             {
                 DirectoryEntry.DiscardChanges();
                 EditMode = false;
+
+                Nav.WarnOnNavigation = false;
+
                 await RefreshEntryComponents();
 
             }
