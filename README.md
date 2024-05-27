@@ -30,7 +30,17 @@ Blazam's Web Installer is the recommended installation method.
 ## What is Blazam?
 * Blazam is a flexible Active Directory management portal.
 * The key feature is it's permissions system which allows you to empower your users to manage the groups, users, ou's, and computers you allow them to.
-* Manage user group assignents, reset passwords, unlock, disable, and enable accounts.
-* Configurable user creation templates to share with your users to ensure the proper infomation is provided.
+* Manage user group assignments, reset passwords, unlock, disable, and enable accounts.
+* Configurable user creation templates to share with your users to ensure the proper information is provided.
 * Manage user thumbnail photo.
 * Access Active Directory recycle bin from any web browser.
+
+## But why would I want this?
+* Blazam's target audience is the IT team that wants to enable non-IT users
+  to perform specific actions in Active Directory.
+* Even for experienced IT administrators, the tools provided by Blazam
+  not only replicate the functionality provided by Microsoft's GUI, but improve
+  upon them in addition to entirely new features and functionality (like copy group memberships from another user).
+* Being able to access these tools from a phone while assisting another user is another huge benefit provided. But that is
+  not particular to Blazam.
+* It's free.
