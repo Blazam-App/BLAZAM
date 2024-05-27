@@ -61,7 +61,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.29" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.29" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.29" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.30" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.29" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.19" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.19" />
