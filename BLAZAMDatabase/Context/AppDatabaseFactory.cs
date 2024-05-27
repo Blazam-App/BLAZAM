@@ -1,9 +1,11 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Exceptions;
+using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Net.WebSockets;
 
 namespace BLAZAM.Database.Context
 {
@@ -40,15 +42,71 @@ namespace BLAZAM.Database.Context
                 OnFatalError?.Invoke(ex);
 
             }
+            SeedData();
             StartDatabaseCache();
 
         }
-        private  void StartDatabaseCache()
+        /// <summary>
+        /// Seeds any data that can't be covered in a migration
+        /// </summary>
+        /// <remarks>
+        /// Each seed should have a check requirement to ensure it is needed
+        /// </remarks>
+        /// <exception cref="NotImplementedException"></exception>
+        private void SeedData()
+        {
+            var seedContext = this.CreateDbContext();
+
+
+            SetupDenyAll(seedContext);
+
+        }
+
+        private void SetupDenyAll(IDatabaseContext seedContext)
+        {
+            bool saveRequired = false;
+            var denyAll = seedContext.AccessLevels.First(x => x.Id == 1);
+            if (denyAll != null)
+            {
+                foreach (var adObjectType in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
+                {
+                    if ((ActiveDirectoryObjectType)adObjectType != ActiveDirectoryObjectType.All)
+                    {
+                        if (denyAll.ObjectMap.Any(x => x.ObjectType == (ActiveDirectoryObjectType)adObjectType))
+                        {
+                            var eexisingObjectMap = denyAll.ObjectMap.First(x => x.ObjectType == (ActiveDirectoryObjectType)adObjectType);
+                            if (eexisingObjectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
+                            {
+                                denyAll.ObjectMap.Remove(eexisingObjectMap);
+                                saveRequired = true;
+                            }
+                        }
+                        if (!denyAll.ObjectMap.Any(x => x.ObjectType == (ActiveDirectoryObjectType)adObjectType && x.ObjectAccessLevel.Id == ObjectAccessLevels.Deny.Id))
+                        {
+                            denyAll.ObjectMap.Add(new()
+                            {
+                                ObjectType = (ActiveDirectoryObjectType)adObjectType,
+                                ObjectAccessLevelId = ObjectAccessLevels.Deny.Id,
+                            });
+                            saveRequired = true;
+
+                        }
+                    }
+                }
+
+            }
+            if (saveRequired)
+            {
+                seedContext.SaveChanges();
+            }
+        }
+
+        private void StartDatabaseCache()
         {
             //Start the database cache
-            
-                DatabaseCache.Start(this);
-           
+
+            DatabaseCache.Start(this);
+
         }
 
         /// <summary>
@@ -81,9 +139,10 @@ namespace BLAZAM.Database.Context
                             {
                                 Loggers.DatabaseLogger.Error("There was an error checking the installation flag in the database. {@Error}", ex);
                             }
-                            
+
                         }
-                    }catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         throw new DatabaseException("The database could not be checked for installation.", ex);
                     }
@@ -142,7 +201,8 @@ namespace BLAZAM.Database.Context
 
         public async Task<bool> ApplyDatabaseMigrationsAsync(bool force = false)
         {
-            return await Task.Run(() => {
+            return await Task.Run(() =>
+            {
                 return ApplyDatabaseMigrations(force);
             });
 
@@ -150,40 +210,40 @@ namespace BLAZAM.Database.Context
         public bool ApplyDatabaseMigrations(bool force = false)
         {
 
-     
-                try
+
+            try
+            {
+                using (var context = CreateDbContext())
                 {
-                    using (var context = CreateDbContext())
-                    {
-                        if (context != null && context.Status == ServiceConnectionState.Up)
-                            if (context.IsSeeded() || force)
-                                if (!context.SeedMismatch)
-                                {
-                                    if (context.Database.GetPendingMigrations().Count() > 0)
-                                        Migrate(context);
-                                }
-                                else
-                                {
-                                    throw new DatabaseException("Database incompatible with current application version.");
-                                }
-                        //context.Database.Migrate();
+                    if (context != null && context.Status == ServiceConnectionState.Up)
+                        if (context.IsSeeded() || force)
+                            if (!context.SeedMismatch)
+                            {
+                                if (context.Database.GetPendingMigrations().Count() > 0)
+                                    Migrate(context);
+                            }
+                            else
+                            {
+                                throw new DatabaseException("Database incompatible with current application version.");
+                            }
+                    //context.Database.Migrate();
 
 
-                        return true;
-                    }
+                    return true;
                 }
-                catch (DatabaseException ex)
-                {
-                    OnFatalError?.Invoke(ex);
-                    FatalError = ex;
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!! {@Error}", ex);
-                    throw ex;
-                }
-    
+            }
+            catch (DatabaseException ex)
+            {
+                OnFatalError?.Invoke(ex);
+                FatalError = ex;
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                Loggers.DatabaseLogger.Error("Database Auto-Update Failed!!!! {@Error}", ex);
+                throw ex;
+            }
+
 
 
         }

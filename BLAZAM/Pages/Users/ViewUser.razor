@@ -439,7 +439,7 @@
                             {
                                 @if (User.CanReadField(field))
                                 {
-                                    <CustomDirectoryField Disabled=@(!EditMode || !User.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="User" Field="@field" />
+                                    <CustomDirectoryField Disabled=@(!EditMode || !User.CanEditField(field)) Entry="User" Field="@field" />
 
                                 }
                             }

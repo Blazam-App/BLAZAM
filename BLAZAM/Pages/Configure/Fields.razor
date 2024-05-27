@@ -51,17 +51,17 @@
             <TemplateColumn Title="@objectType.ToString()" Sortable="false">
                 <EditTemplate>
                     <MudCheckBox T="bool"
-                             Label="@objectType.ToString()"
-                             Size="@Size.Small"
-                             Value="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)"
-                             ValueChanged="@((val)=>{
+                                 Label="@objectType.ToString()"
+                                 Size="@Size.Small"
+                                 Value="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)"
+                                 ValueChanged="@((val)=>{
                                  ToggleObjectType(context.Item,objectType,val);
                                 })" />
                 </EditTemplate>
                 <CellTemplate>
                     <MudCheckBox Size="@Size.Small"
-                             ReadOnly=true
-                             Value="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)" />
+                                 ReadOnly=true
+                                 Value="@(context.Item.ObjectTypes.Where(ot=>ot.ObjectType==objectType).Any()==true)" />
                 </CellTemplate>
             </TemplateColumn>
         }
@@ -109,7 +109,7 @@
         if (await MessageService.Confirm("Are you sure you want to delete " + field.DisplayName + "?", "Delete " + field.DisplayName + "?"))
         {
             field.DeletedAt = DateTime.UtcNow;
-            if (Context != null && await Context.SaveChangesAsync() > 0 && fieldGrid!=null)
+            if (Context != null && await Context.SaveChangesAsync() > 0 && fieldGrid != null)
             {
                 await fieldGrid.ReloadServerData();
 
@@ -123,11 +123,25 @@
     }
     async Task SaveChanges()
     {
-        if (Context != null && await Context.SaveChangesAsync() > 0)
+        if (Context != null)
         {
-            SnackBarService.Success("Field Updated");
+            foreach (var field in ADFields)
+            {
+                for (int x=0; x < field.ObjectTypes.Count;x++)
+                {
+                    var trackedObjType = Context.ActiveDirectoryFieldObjectMappings.First(x => x.Id == field.Id);
+                    field.ObjectTypes[x] = trackedObjType;
+                }
+            }
+            if (await Context.SaveChangesAsync() > 0)
+            {
+                SnackBarService.Success("Field Updated");
+            }
+            else
+            {
+                SnackBarService.Error("Field could nt be updated");
+            }
         }
-        SnackBarService.Success("Field could nt be updated");
 
     }
 

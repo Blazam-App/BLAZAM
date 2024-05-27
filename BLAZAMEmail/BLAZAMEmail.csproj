@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="BlazorTemplater" Version="1.5.1" />
-    <PackageReference Include="MailKit" Version="4.5.0" />
+    <PackageReference Include="MailKit" Version="4.6.0" />
   </ItemGroup>
 
   <ItemGroup>
