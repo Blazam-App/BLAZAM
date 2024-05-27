@@ -282,6 +282,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <returns>True if the current user can read the field, otherwise false</returns>
         bool CanReadField(IActiveDirectoryField field);
 
+
+
         /// <summary>
         /// Properly disposes of this entry from memory
         /// </summary>
