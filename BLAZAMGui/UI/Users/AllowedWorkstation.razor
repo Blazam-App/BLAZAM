@@ -1,0 +1,72 @@
+<MudStack Row=true Class="mud-width-full">
+    @if (_editMode)
+    {
+
+        <MudTextField @bind-Value=@Value Class="ma-0 pa-0 align-self-center">@Value</MudTextField>
+    }
+    else
+    {
+        <MudText Class="align-self-center">@Value</MudText>
+
+    }
+    <MudSpacer />
+    @if (_editMode)
+    {
+        <MudIcon Class="align-self-center" @onclick=SaveChanges Icon="@Icons.Material.Filled.Save" Size=Size.Small Color=Color.Success />
+
+    }
+    @if (User.CanEditField(ActiveDirectoryFields.LogOnTo))
+    {
+        <MudIcon Class="align-self-center" Icon="@(_editMode==true?Icons.Material.Filled.Cancel:Icons.Material.Filled.Edit)" @onclick="@(()=>{_editMode=!_editMode; _value=_originalValue;})" Size=Size.Small Color=Color.Primary />
+        <MudIcon Class="align-self-center" Icon="@Icons.Material.Filled.Delete" Size=Size.Small Color=Color.Error @onclick=Remove />
+    }
+</MudStack>
+
+
+@code {
+    [Parameter]
+    public IADUser User { get; set; }
+
+    bool _editMode = false;
+
+    [Parameter]
+    public List<string> List { get; set; } = new();
+
+    private string _originalValue { get; set; }
+    private string _value;
+    [Parameter]
+    public string Value
+    {
+        get => _value; set
+        {
+            if (value == _value) return;
+            if (_originalValue == null)
+            {
+                _originalValue = value;
+            }
+            _value = value;
+        }
+    }
+    [Parameter]
+    public EventCallback<List<string>> ListChanged { get; set; }
+
+    private void Remove()
+    {
+        List.Remove(_originalValue);
+        ListChanged.InvokeAsync(List);
+
+    }
+    private void SaveChanges()
+    {
+        if (_value!=_originalValue && List.Contains(_originalValue))
+        {
+
+            List.Remove(_originalValue);
+            List.Add(_value);
+            List.Sort();
+            ListChanged.InvokeAsync(List);
+            _editMode = false;
+            _originalValue = _value;
+        }
+    }
+}

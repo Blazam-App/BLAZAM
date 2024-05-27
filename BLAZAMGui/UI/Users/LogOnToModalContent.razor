@@ -1,0 +1,78 @@
+﻿@inherits AppModalContent
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    @if (User.CanEditField(ActiveDirectoryFields.LogOnTo))
+    {
+        <MudText>Add a computer</MudText>
+        <MudStack Row=true>
+            <ADAutoComplete @ref=_searchBox AllowCustomInput=true SearchObjectType="ActiveDirectoryObjectType.Computer" />
+            <MudSpacer />
+            <MudFab Size="Size.Small" Color="Color.Success" StartIcon="@Icons.Material.Filled.Add" OnClick="AddComputer" />
+        </MudStack>
+    }
+    <MudStack Spacing=3 Class="py-3 mud-width-full">
+        @if (allowedWorkstations.Count > 0)
+        {
+            <MudText>The following computers</MudText>
+            @foreach (var workstation in allowedWorkstations)
+            {
+                <AllowedWorkstation @bind-List="@allowedWorkstations" Value="@workstation" User="User" />
+            }
+            @if (User.CanEditField(ActiveDirectoryFields.LogOnTo))
+            {
+                <MudButton Color="Color.Primary"
+                           Variant="Variant.Filled"
+                           OnClick="@(()=>{AllowAll();})">Allow all</MudButton>
+            }
+        }
+    </MudStack>
+</MudContainer>
+@code {
+    List<string> allowedWorkstations = new();
+    ADAutoComplete? _searchBox;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Modal.OnYes = SaveChanges;
+        Modal.Title = "Log On To";
+        var data = User.LogOnTo?.Split(',');
+        if (data != null)
+        {
+            allowedWorkstations.AddRange(data);
+        }
+
+
+    }
+    private void AddWorkstation(string name)
+    {
+        allowedWorkstations.Add(name);
+    }
+    private void RemoveWorkstation(string name)
+    {
+        allowedWorkstations.Remove(name);
+    }
+    public async void SaveChanges()
+    {
+        string? newValue = null;
+        if (allowedWorkstations.Count > 0)
+        {
+            newValue = String.Join(',', allowedWorkstations);
+        }
+        User.LogOnTo = newValue;
+        Close();
+
+    }
+    private void AddComputer()
+    {
+        if (_searchBox != null)
+        {
+            allowedWorkstations.Add(_searchBox.SearchTerm);
+            _searchBox.Clear();
+        }
+    }
+    private void AllowAll()
+    {
+        allowedWorkstations = new();
+        SaveChanges();
+    }
+}
