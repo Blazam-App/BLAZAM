@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.9.3</AssemblyVersion>
-		<Version>2024.05.27.2021</Version>
+		<Version>2024.05.27.2131</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -57,17 +57,17 @@
 		<PackageReference Include="BlazorTemplater" Version="1.5.1" />
 		<PackageReference Include="Cassia" Version="2.0.0.60" />
 		<PackageReference Include="DuoUniversal" Version="1.2.4" />
-		<PackageReference Include="MailKit" Version="4.5.0" />
+		<PackageReference Include="MailKit" Version="4.6.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.29" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.29" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.30" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.30" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.30" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.29" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.30" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.19" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.19" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.19" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.18" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.19" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.19" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.19">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -75,7 +75,7 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.5" />
 		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="8.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
 		<PackageReference Include="MudBlazor.Markdown" Version="0.1.3" />
