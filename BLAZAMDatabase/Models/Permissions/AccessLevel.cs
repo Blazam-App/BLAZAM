@@ -7,6 +7,9 @@ namespace BLAZAM.Database.Models.Permissions
     {
         [Required]
         public string Name { get; set; }
+        /// <summary>
+        /// All the applied object access mappings for Deny,Read
+        /// </summary>
         public List<ObjectAccessMapping> ObjectMap { get; set; } = new();
         public List<ActionAccessMapping> ActionMap { get; set; } = new();
         public List<FieldAccessMapping> FieldMap { get; set; } = new();
