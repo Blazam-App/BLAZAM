@@ -63,7 +63,7 @@ namespace BLAZAM.Database.Models
             return false;
         }
         
-        public bool IsActionAppropriateForObject(ActiveDirectoryObjectType objectType)
+        public bool IsFieldAppropriateForObject(ActiveDirectoryObjectType objectType)
         {
 
             switch (objectType)
@@ -74,7 +74,7 @@ namespace BLAZAM.Database.Models
                         case "l":
                         case "cn":
                         case "company":
-                        case "depatment":
+                        case "department":
                         case "description":
                         case "displayName":
                         case "distinguishedName":
@@ -83,6 +83,7 @@ namespace BLAZAM.Database.Models
                         case "homeDirectory":
                         case "homeDrive":
                         case "homePhone":
+                        case "logonHours":
                         case "manager":
                         case "mail":
                         case "memberOf":
@@ -103,6 +104,8 @@ namespace BLAZAM.Database.Models
                         case "title":
                         case "thumbnail":
                         case "userPrincipalName":
+                        case "userWorkstations":
+
                             return true;
                     }
                     break;

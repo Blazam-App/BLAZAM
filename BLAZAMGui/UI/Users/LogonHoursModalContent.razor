@@ -1,0 +1,134 @@
+﻿@inherits AppModalContent
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    @if (User.CanEditField(ActiveDirectoryFields.LogonHours))
+    {
+        <MudSimpleTable Dense=true Hover="true">
+            <thead>
+                <tr>
+                    <th>@AppLocalization["Day"]</th>
+                    @foreach (var hour in Enumerable.Range(0, 24))
+                    {
+
+                        <th class="ma-0 pa-0 d-grid" style="min-width:20px;">
+                            @*    @if (hour % 2 == 0)
+                    { *@
+                            @if (hour == 0 || hour == 12)
+                            {
+                                <MudText Align="Align.Center">
+                                    12
+                                </MudText>
+                            }
+                            else if (hour < 12)
+                            {
+                                <MudText Align="Align.Center">
+
+                                    @hour
+                                </MudText>
+
+                            }
+                            else if (hour >= 12)
+                            {
+                                <MudText Align="Align.Center">
+
+                                    @(hour - 12)
+                                </MudText>
+
+                            }
+                            @*  }
+                    else
+                    {
+                    @("-")
+                    } *@
+                        </th>
+
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var day in Enum.GetValues<DayOfWeek>())
+                {
+                    <tr>
+                        <td>@AppLocalization[day.ToString()]</td>
+                        @foreach (var hour in Enumerable.Range(0, 24))
+                        {
+                            <td @onmousedown="() => StartSelection(day, hour)"
+                                @onmouseover="(e) => UpdateSelection(day, hour, e)"
+                                @onmouseup="EndSelection"
+                                class="ma-0 pa-0"
+                                style="background-color:@(GetHourColor(day, hour))">
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+
+
+    }
+
+</MudContainer>
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+
+        await base.OnInitializedAsync();
+        Modal.OnYes = SaveChanges;
+        Modal.AllowClose = true;
+        Modal.YesEnabled = ()=> { return User.CanEditField(ActiveDirectoryFields.LogonHours); };
+        Modal.YesText = AppLocalization["Save Changes"];
+        Modal.Title = AppLocalization["Logon Hours"];
+        schedule = User.LogonHours;
+        Modal.RefreshView();
+
+    }
+
+    public async void SaveChanges()
+    {
+        var rawSchedule = schedule.EncodeLogonHours();
+        User.LogonHours = schedule;
+        Close();
+
+    }
+    private LogonHours schedule = new();
+    private bool isSelecting = false;
+    private bool selectionValue = false;
+
+    private void ToggleHour(DayOfWeek day, int hour)
+    {
+        if (User.CanEditField(ActiveDirectoryFields.LogonHours))
+        {
+            schedule.ToggleHour(day, hour);
+        }
+    }
+
+    private void StartSelection(DayOfWeek day, int hour)
+    {
+        isSelecting = true;
+        selectionValue = !schedule.GetLogonHour(day, hour);
+        UpdateSelection(day, hour, null);
+    }
+
+    private void UpdateSelection(DayOfWeek day, int hour, MouseEventArgs e)
+    {
+        if (User.CanEditField(ActiveDirectoryFields.LogonHours))
+        {
+            if (isSelecting)
+            {
+                schedule.SetLogonHour(day, hour, selectionValue);
+            }
+        }
+    }
+
+    private void EndSelection()
+    {
+        isSelecting = false;
+    }
+
+    private string GetHourColor(DayOfWeek day, int hour)
+    {
+        return schedule.GetLogonHour(day, hour) ? "#4caf50" : "#f44336";
+    }
+
+
+}

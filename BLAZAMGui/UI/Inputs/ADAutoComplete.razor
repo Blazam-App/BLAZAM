@@ -14,7 +14,7 @@
                  DebounceInterval=500
                  ResetValueOnEmptyText="true"
                  Validation="@Validation"
-                 CoerceText="@AllowCustomInput"
+                 CoerceText="@(!AllowCustomInput)"
                  CoerceValue="true"
                  MaxItems=@MaxResults
                  Clearable=true
@@ -181,8 +181,14 @@
     [Parameter]
     public EventCallback<IDirectoryEntryAdapter> SelectedResultChanged { get; set; }
 
-
-
+    /// <summary>
+    /// Clears the results and entered search term
+    /// </summary>
+    public void Clear()
+    {
+        SearchTerm = String.Empty;
+        SearchResults = new List<IDirectoryEntryAdapter>();
+    }
 
 
     public List<IDirectoryEntryAdapter> _selectedResults;

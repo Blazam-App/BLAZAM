@@ -3,7 +3,7 @@
 
 
 <MudStack Row=true>
-    <MudTextField Label="@AppLocalization["Name"]" @bind-Value=WorkingModel.Name />
+    <MudTextField Disabled=@(WorkingModel.Id==1) Label="@AppLocalization["Name"]" @bind-Value=WorkingModel.Name />
 
 
     <MudItem>
@@ -49,15 +49,15 @@
             <MudCardHeader>
                 <MudText Typo="Typo.h4">@name</MudText>
                 <MudSpacer />
-                <MudSelect T="int" ValueChanged="(int value)=>SetObjectMapAccess(objectMap,value)" Value="objectMap.ObjectAccessLevelId">
+                <MudSelect Disabled=@(WorkingModel.Id==1) T="int" ValueChanged="(int value)=>SetObjectMapAccess(objectMap,value)" Value="objectMap.ObjectAccessLevelId">
 
                     @foreach (ObjectAccessLevel levelValue in ObjectAccessLevels.Levels)
                     {
-                        <MudSelectItem Value="levelValue.Id">@AppLocalization[levelValue.Name]</MudSelectItem>
+                        <MudSelectItem Disabled=@(WorkingModel.Id==1) Value="levelValue.Id">@AppLocalization[levelValue.Name]</MudSelectItem>
 
                     }
                 </MudSelect>
-                <AppCloseButton OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
+                <AppCloseButton Disabled=@(WorkingModel.Id==1) OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
 
             </MudCardHeader>
             <MudCardContent>
@@ -205,7 +205,7 @@
                 else
                 {
 
-                    <MudText Style="width:471px;">Change @name access to Allow to set permissions</MudText>
+                    <MudText Style="width:471px;">Change @name access to Read to set permissions</MudText>
                 }
             </MudCardContent>
         </MudCard>
@@ -219,10 +219,10 @@
     if (Model.Id > 0)
         buttonLabel = AppLocalization["Update Access Level"];
 }
-<MudButton Color=Color.Success Margin=Margin.IsAuto.OnX Disabled=SaveDisabled OnClick="SaveAccessLevel">@buttonLabel</MudButton>
+<MudButton  Disabled=@(SaveDisabled || WorkingModel.Id==1)  Color=Color.Success Margin=Margin.IsAuto.OnX  OnClick="SaveAccessLevel">@buttonLabel</MudButton>
 @if (WorkingModel.Id != 0)
 {
-    <MudButton Color=Color.Error Margin=Margin.IsAuto.OnX OnClick="DeleteAccessLevel">@AppLocalization["Delete Access Level"]</MudButton>
+    <MudButton Disabled=@(WorkingModel.Id==1) Color=Color.Error Margin=Margin.IsAuto.OnX OnClick="DeleteAccessLevel">@AppLocalization["Delete Access Level"]</MudButton>
 }
 @code {
 
@@ -394,7 +394,7 @@
             if (map.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
             {
                 if (!excludedFields.Contains(field.FieldName))
-                    return field.IsActionAppropriateForObject(objectType);
+                    return field.IsFieldAppropriateForObject(objectType);
             }
         }
         return false;
