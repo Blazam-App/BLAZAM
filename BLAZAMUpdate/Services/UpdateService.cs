@@ -124,6 +124,13 @@ namespace BLAZAM.Update.Services
                 LatestUpdate = latestBranchUpdate;
 
             }
+            if (Debugger.IsAttached)
+            {
+                ApplicationUpdate? testUpdate = EncapsulateUpdate(latestRelease, SelectedBranch);
+
+                latestBranchUpdate.Version = new ApplicationVersion("1.0.0");
+                LatestUpdate = latestBranchUpdate;
+            }
         }
 
         /// <summary>

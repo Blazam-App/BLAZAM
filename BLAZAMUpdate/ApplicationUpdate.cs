@@ -35,7 +35,7 @@ namespace BLAZAM.Update
         /// <summary>
         /// The version of this update
         /// </summary>
-        public ApplicationVersion Version { get => Release.Version; }
+        public ApplicationVersion Version { get => Release.Version; set=>Release.Version=value; }
 
         public string Branch { get => Release.Branch; }
 
