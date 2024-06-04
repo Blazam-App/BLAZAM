@@ -9,6 +9,9 @@ using BLAZAM.Database.Context;
 using System.Security.Principal;
 using System.Reflection.Metadata.Ecma335;
 using System.Diagnostics;
+using BLAZAM.Localization;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 
 namespace BLAZAM.Update.Services
 {
@@ -23,7 +26,8 @@ namespace BLAZAM.Update.Services
 
     public class UpdateService : UpdateServiceBase
     {
-
+        [Inject]
+        protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }
         /// <summary>
         /// The latest available update for the configured <see cref="SelectedBranch"/>
         /// </summary>
@@ -169,6 +173,7 @@ namespace BLAZAM.Update.Services
             latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
 
 
+            
 
 
             if (latestRelease != null && latestVer != null)
@@ -180,8 +185,28 @@ namespace BLAZAM.Update.Services
                     Version = latestVer,
 
                 };
-                return new ApplicationUpdate(_applicationInfo, _dbFactory) { Release = release };
+                var update = new ApplicationUpdate(_applicationInfo, _dbFactory) { Release = release };
+                if(latestVer.NewerThan(new ApplicationVersion("0.9.99")))
+                {
+                    update.PreRequisiteChecks.Add(new(() => {
+                        if (PrerequisiteChecker.CheckForAspCore())
+                        {
+                            update.Disabled = true;
+                            update.DisabledMessage = AppLocalization["ASP NET Core 8 Runtime is missing."];
+                         return false;
 
+                        }
+                        if (PrerequisiteChecker.CheckForAspCoreHosting())
+                        {
+                            update.Disabled = true;
+                            update.DisabledMessage = AppLocalization["ASP NET Core 8 Web Hosting Bundle is missing."];
+                            return false;
+
+                        }
+                        return true;
+                    }));
+                }
+                return update;
             }
             return null;
         }
@@ -288,7 +313,6 @@ namespace BLAZAM.Update.Services
         /// Returns true if any configured credentials have write permission to the app directory
         /// </summary>
         public bool HasWritePermission => UpdateCredential != UpdateCredential.None;
-
 
     }
 }

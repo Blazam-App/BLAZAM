@@ -19,19 +19,23 @@
                     <MudMarkdown OverrideHeaderTypo=ConvertHeaders Value="@Update.Release.ReleaseNotes" />
                 </MudExpansionPanel>
             </MudExpansionPanels>
-            @if (Update.Newer && !Disabled)
+            @if (Update.Newer && !Update.Disabled)
             {
                 <MudButton Class="mx-6" Variant=Variant.Filled Color=Color.Success OnClick="(()=>{OnApply.InvokeAsync();})">Apply Update</MudButton>
                 @if (ApplicationInfo.InDebugMode)
-                {
+                { 
                     <MudButton Class="mx-6" Disabled=@(AutoUpdateService.IsUpdatedScheduled) OnClick="(()=>{OnSchedule.InvokeAsync();})" Color="Color.Success">Test Auto Update</MudButton>
 
 
                 }
             }
-            else if (Disabled)
+            else if (Update.Disabled)
             {
-                <MudText>@DisabledMessage</MudText>
+                <MudStack Row=true>
+                    <MudIcon Color=Color.Error Icon="@Icons.Material.Filled.Error"/>
+                    <MudText>@AppLocalization["Unable to update!"]</MudText>
+                </MudStack>
+                <MudText>@Update.DisabledMessage</MudText>
             }
         </MudCard>
 
@@ -42,10 +46,7 @@
     [Parameter]
     public ApplicationUpdate Update { get; set; }
 
-    private string DisabledMessage;
 
-    [Parameter]
-    public bool Disabled { get; set; } = false;
     [Parameter]
     public bool Even { get; set; } = false;
 
@@ -135,20 +136,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        if(Update.Version.NewerThan(new ApplicationVersion("0.9.99")))
-        {
-            if(PrerequisiteChecker.CheckForAspCore())
-            {
-                Disabled=true;
-                DisabledMessage = AppLocalization["ASP NET Core 8 Runtime is missing."];
-            }
-            if(PrerequisiteChecker.CheckForAspCoreHosting())
-            {
-                Disabled=true;
-                DisabledMessage = AppLocalization["ASP NET Core 8 Web Hosting Bundle is missing."];
-
-            }
-        }
+      
     }
 
 }

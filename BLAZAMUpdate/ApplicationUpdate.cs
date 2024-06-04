@@ -12,6 +12,7 @@ using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using System.Security.Principal;
 using BLAZAM.Jobs;
+using Microsoft.Extensions.Localization;
 
 namespace BLAZAM.Update
 {
@@ -130,6 +131,7 @@ namespace BLAZAM.Update
         Process _runningProcess;
         SystemDirectory _applicationRootDirectory;
 
+
         public ApplicationUpdate(ApplicationInfo applicationInfo, IAppDatabaseFactory dbFactory)
         {
             _dbFactory = dbFactory;
@@ -150,8 +152,25 @@ namespace BLAZAM.Update
 
         public IApplicationRelease Release { get; set; }
 
-      
+        public List<Func<bool>> PreRequisiteChecks { get; private set; } = new();
 
+        public bool PassesPrerequisiteChecks
+        {
+            get
+            {
+                foreach (var check in PreRequisiteChecks)
+                {
+                    if (!check.Invoke())
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+        public bool Disabled { get; internal set; }
+        public LocalizedString DisabledMessage { get; internal set; }
 
         public IJob GetUpdateJob()
         {
