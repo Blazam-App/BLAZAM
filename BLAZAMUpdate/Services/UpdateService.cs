@@ -132,8 +132,23 @@ namespace BLAZAM.Update.Services
             {
                 ApplicationUpdate? testUpdate = EncapsulateUpdate(latestRelease, SelectedBranch);
 
-                latestBranchUpdate.Version = new ApplicationVersion("1.0.0");
-                LatestUpdate = latestBranchUpdate;
+                testUpdate.PreRequisiteChecks.Add(new(() => {
+                    if (PrerequisiteChecker.CheckForAspCore())
+                    {
+                        testUpdate.PrequisiteMessage = "ASP NET Core 8 Runtime is missing.";
+                        return false;
+
+                    }
+                    if (PrerequisiteChecker.CheckForAspCoreHosting())
+                    {
+                        testUpdate.PrequisiteMessage = "ASP NET Core 8 Web Hosting Bundle is missing.";
+                        return false;
+
+                    }
+                    return true;
+                }));
+                    testUpdate.Version=new ApplicationVersion("1.0.0.2024.07.01.0000");
+                LatestUpdate = testUpdate;
             }
         }
 
@@ -162,44 +177,42 @@ namespace BLAZAM.Update.Services
             if (SelectedBranch == null) SelectedBranch = ApplicationReleaseBranches.Stable;
         }
 
-        private ApplicationUpdate? EncapsulateUpdate(Release? latestRelease, string Branch)
+        private ApplicationUpdate? EncapsulateUpdate(Release? releaseToEncapsulate, string Branch)
         {
-            ApplicationVersion? latestVer = null;
+            ApplicationVersion? releaseVersion = null;
 
             //Get the release filename to prepare a version object
-            var filename = Path.GetFileNameWithoutExtension(latestRelease?.Assets.FirstOrDefault()?.Name);
+            var filename = Path.GetFileNameWithoutExtension(releaseToEncapsulate?.Assets.FirstOrDefault()?.Name);
             //Create that version object
             if (filename == null) throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
-            latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
+            releaseVersion = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
 
 
             
 
 
-            if (latestRelease != null && latestVer != null)
+            if (releaseToEncapsulate != null && releaseVersion != null)
             {
                 IApplicationRelease release = new ApplicationRelease
                 {
                     Branch = Branch,
-                    GitHubRelease = latestRelease,
-                    Version = latestVer,
+                    GitHubRelease = releaseToEncapsulate,
+                    Version = releaseVersion,
 
                 };
                 var update = new ApplicationUpdate(_applicationInfo, _dbFactory) { Release = release };
-                if(latestVer.NewerThan(new ApplicationVersion("0.9.99")))
+                if(releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
                 {
                     update.PreRequisiteChecks.Add(new(() => {
                         if (PrerequisiteChecker.CheckForAspCore())
                         {
-                            update.Disabled = true;
-                            update.DisabledMessage = AppLocalization["ASP NET Core 8 Runtime is missing."];
+                            update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Runtime is missing."];
                          return false;
 
                         }
                         if (PrerequisiteChecker.CheckForAspCoreHosting())
                         {
-                            update.Disabled = true;
-                            update.DisabledMessage = AppLocalization["ASP NET Core 8 Web Hosting Bundle is missing."];
+                            update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Web Hosting Bundle is missing."];
                             return false;
 
                         }

@@ -19,7 +19,7 @@
                     <MudMarkdown OverrideHeaderTypo=ConvertHeaders Value="@Update.Release.ReleaseNotes" />
                 </MudExpansionPanel>
             </MudExpansionPanels>
-            @if (Update.Newer && !Update.Disabled)
+            @if (Update.Newer && Update.PassesPrerequisiteChecks)
             {
                 <MudButton Class="mx-6" Variant=Variant.Filled Color=Color.Success OnClick="(()=>{OnApply.InvokeAsync();})">Apply Update</MudButton>
                 @if (ApplicationInfo.InDebugMode)
@@ -29,13 +29,13 @@
 
                 }
             }
-            else if (Update.Disabled)
+            else if (Update.Newer && !Update.PassesPrerequisiteChecks)
             {
                 <MudStack Row=true>
                     <MudIcon Color=Color.Error Icon="@Icons.Material.Filled.Error"/>
                     <MudText>@AppLocalization["Unable to update!"]</MudText>
                 </MudStack>
-                <MudText>@Update.DisabledMessage</MudText>
+                <MudText>@Update.PrequisiteMessage</MudText>
             }
         </MudCard>
 

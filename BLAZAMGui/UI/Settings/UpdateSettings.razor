@@ -45,13 +45,13 @@
             }
 
         }
-        if (UpdateService.LatestUpdate.Disabled)
+        if (UpdateService.LatestUpdate.PassesPrerequisiteChecks)
         {
             <MudStack Row=true>
                 <MudIcon Color=Color.Error Icon="@Icons.Material.Filled.Error" />
                 <MudText>@AppLocalization["Unable to update!"]</MudText>
             </MudStack>
-            <MudText>@(UpdateService.LatestUpdate.DisabledMessage)</MudText>
+            <MudText>@(UpdateService.LatestUpdate.PrequisiteMessage)</MudText>
         }
         <SettingsField Label="@AppLocalization["Application Credentials"]">
 

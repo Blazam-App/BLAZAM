@@ -36,7 +36,7 @@ namespace BLAZAM.Update
         /// <summary>
         /// The version of this update
         /// </summary>
-        public ApplicationVersion Version { get => Release.Version; set=>Release.Version=value; }
+        public ApplicationVersion Version { get => Release.Version; set => Release.Version = value; }
 
         public string Branch { get => Release.Branch; }
 
@@ -126,7 +126,7 @@ namespace BLAZAM.Update
 
         public AppEvent<FileProgress?> DownloadPercentageChanged { get; set; }
 
-       
+
         ApplicationVersion _runningVersion;
         Process _runningProcess;
         SystemDirectory _applicationRootDirectory;
@@ -158,6 +158,7 @@ namespace BLAZAM.Update
         {
             get
             {
+                if (PreRequisiteChecks.Count == 0) return true;
                 foreach (var check in PreRequisiteChecks)
                 {
                     if (!check.Invoke())
@@ -169,16 +170,15 @@ namespace BLAZAM.Update
             }
         }
 
-        public bool Disabled { get; internal set; }
-        public LocalizedString DisabledMessage { get; internal set; }
+        public string PrequisiteMessage { get; internal set; }
 
         public IJob GetUpdateJob()
         {
-            
+
             if (cancellationTokenSource == null || cancellationTokenSource.IsCancellationRequested)
                 cancellationTokenSource = new CancellationTokenSource();
 
-           
+
             IJob updateJob = new Job("Applying application update", "System", cancellationTokenSource);
             updateJob.StopOnFailedStep = true;
             var cleanDownloadStep = new JobStep("Cleaning previous downloads", CleanDownload);
@@ -187,7 +187,7 @@ namespace BLAZAM.Update
             var stageStep = new JobStep("Extract files", ExtractFiles);
             var stagingCheckStep = new JobStep("Check prepared files", (step) => { return UpdateStagingDirectory.Exists; });
             var bakupStep = new JobStep("Create backup", Backup);
-            var updateUpdaterStep = new JobStep("Apply Files", InitiateFileCopy) ;
+            var updateUpdaterStep = new JobStep("Apply Files", InitiateFileCopy);
             updateJob.Steps.Add(cleanDownloadStep);
             updateJob.Steps.Add(downloadStep);
             updateJob.Steps.Add(cleanStageStep);
@@ -196,11 +196,11 @@ namespace BLAZAM.Update
             updateJob.Steps.Add(bakupStep);
             updateJob.Steps.Add(updateUpdaterStep);
             return updateJob;
-           
-             
 
-          
-           
+
+
+
+
 
 
 
@@ -281,7 +281,7 @@ namespace BLAZAM.Update
             Loggers.UpdateLogger?.Information("Running update as: " + WindowsIdentity.GetCurrent().Name);
             Loggers.UpdateLogger?.Information("Updating updater");
 
-            
+
 
             SystemDirectory updaterDirFromStagedUpdate = new SystemDirectory(UpdateStagingDirectory.Path + "\\updater\\");
             SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.Path + "updater\\");
@@ -347,7 +347,7 @@ namespace BLAZAM.Update
                 return false;
             }
         }
-      
+
 
         public async Task<bool> CleanDownload(IJobStep? step)
         {
@@ -358,7 +358,7 @@ namespace BLAZAM.Update
                 try
                 {
                     UpdateDownloadDirectory.ClearDirectory();
-                    
+
                     return true;
 
                 }
@@ -462,11 +462,11 @@ namespace BLAZAM.Update
                                     await streamToWriteTo.WriteAsync(buffer, 0, bytesRead);
                                     totalBytesRead += bytesRead;
                                     progress.CompletedBytes = totalBytesRead;
-                                    if (step != null )
+                                    if (step != null)
                                     {
                                         step.Progress = progress.FilePercentage;
                                     }
-                                    
+
                                     DownloadPercentageChanged?.Invoke(progress);
                                 }
                                 else
