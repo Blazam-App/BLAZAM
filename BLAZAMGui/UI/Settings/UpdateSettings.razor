@@ -45,6 +45,14 @@
             }
 
         }
+        if (UpdateService.LatestUpdate.PassesPrerequisiteChecks)
+        {
+            <MudStack Row=true>
+                <MudIcon Color=Color.Error Icon="@Icons.Material.Filled.Error" />
+                <MudText>@AppLocalization["Unable to update!"]</MudText>
+            </MudStack>
+            <MudText>@(UpdateService.LatestUpdate.PrequisiteMessage)</MudText>
+        }
         <SettingsField Label="@AppLocalization["Application Credentials"]">
 
             <MudTextField T="string" Label="@AppLocalization["Application Credentials"]" Disabled=true Value="@WindowsIdentity.GetCurrent().Name.ToString().Replace('_',' ')" />

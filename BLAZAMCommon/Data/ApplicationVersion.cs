@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.Localization;
+using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography.Xml;
 
 namespace BLAZAM.Common.Data
 {
@@ -30,7 +32,9 @@ namespace BLAZAM.Common.Data
         /// The full version number in string form
         /// </summary>
         public string Version { get => AssemblyVersion.ToString() + "." + BuildNumber; }
-        
+
+       
+
         /// <summary>
         /// Only the first three . segments of the version number
         /// </summary>
@@ -103,10 +107,10 @@ namespace BLAZAM.Common.Data
             {
                 DateTime release = DateTime.MinValue;
                 var buildNumberParts = BuildNumber.Split('.');
-                string year="";
-                string month="";
-                string day="";
-                string time="";
+                string year = "";
+                string month = "";
+                string day = "";
+                string time = "";
                 for (int x = 0; x < buildNumberParts.Length; x++)
                 {
                     switch (x)
@@ -124,14 +128,16 @@ namespace BLAZAM.Common.Data
                             break;
                         case 3:
                             time = buildNumberParts[x];
-                            time=time.Insert(2, ":");
+                            time = time.Insert(2, ":");
                             break;
                     }
                 }
-                DateTime.TryParse((month+"/"+day+"/"+year + " "+ time+" Z"), out release);
+                DateTime.TryParse((month + "/" + day + "/" + year + " " + time + " Z"), out release);
                 return release;
             }
         }
+
+
 
         public override int GetHashCode()
         {
@@ -143,7 +149,10 @@ namespace BLAZAM.Common.Data
             return Version;
         }
 
-
+        public bool NewerThan(ApplicationVersion version)
+        {
+            return CompareTo(version) > 0;
+        }
 
         public int CompareTo(object? obj)
         {
