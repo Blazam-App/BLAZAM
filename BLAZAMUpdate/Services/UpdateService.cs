@@ -128,28 +128,7 @@ namespace BLAZAM.Update.Services
                 LatestUpdate = latestBranchUpdate;
 
             }
-            if (Debugger.IsAttached)
-            {
-                ApplicationUpdate? testUpdate = EncapsulateUpdate(latestRelease, SelectedBranch);
-
-                testUpdate.PreRequisiteChecks.Add(new(() => {
-                    if (PrerequisiteChecker.CheckForAspCore())
-                    {
-                        testUpdate.PrequisiteMessage = "ASP NET Core 8 Runtime is missing.";
-                        return false;
-
-                    }
-                    if (PrerequisiteChecker.CheckForAspCoreHosting())
-                    {
-                        testUpdate.PrequisiteMessage = "ASP NET Core 8 Web Hosting Bundle is missing.";
-                        return false;
-
-                    }
-                    return true;
-                }));
-                    testUpdate.Version=new ApplicationVersion("1.0.0.2024.07.01.0000");
-                LatestUpdate = testUpdate;
-            }
+            
         }
 
         /// <summary>
