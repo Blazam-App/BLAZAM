@@ -43,7 +43,7 @@ namespace BLAZAM.Common.Data
                     {
                         foreach (var possibleKey in possibleAspKeys)
                         {
-                            if (possibleKey.Contains("Microsoft .NET 6") && possibleKey.Contains("Hosting"))
+                            if (possibleKey.Contains("Microsoft .NET 8") && possibleKey.Contains("Hosting"))
                             {
                                 return true;
                             }

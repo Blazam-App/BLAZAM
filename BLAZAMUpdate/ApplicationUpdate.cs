@@ -147,7 +147,7 @@ namespace BLAZAM.Update
         /// </summary>
         public bool Newer
         {
-            get { return Version.CompareTo(_runningVersion) > 0; }
+            get { return Version.NewerThan(_runningVersion); }
         }
 
         public IApplicationRelease Release { get; set; }

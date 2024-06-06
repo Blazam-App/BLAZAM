@@ -119,7 +119,7 @@ namespace BLAZAM.Update.Services
             var latestStableUpdate = EncapsulateUpdate(latestStableRelease, ApplicationReleaseBranches.Stable);
             var latestBranchUpdate = EncapsulateUpdate(latestRelease, SelectedBranch); 
             //Override branch if stable has more recent release
-            if (latestStableUpdate!=null && latestStableUpdate.Version.CompareTo(latestBranchUpdate.Version)>0)
+            if (latestStableUpdate!=null && latestStableUpdate.Version.NewerThan(latestBranchUpdate.Version))
             {
                 LatestUpdate = latestStableUpdate;
             }
@@ -128,7 +128,28 @@ namespace BLAZAM.Update.Services
                 LatestUpdate = latestBranchUpdate;
 
             }
-            
+            if (Debugger.IsAttached)
+            {
+                ApplicationUpdate? testUpdate = EncapsulateUpdate(latestRelease, SelectedBranch);
+
+                testUpdate.PreRequisiteChecks.Add(new(() => {
+                    if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
+                    {
+                        testUpdate.PrequisiteMessage = "ASP NET Core 8 Runtime is missing.";
+                        return false;
+
+                    }
+                    if (ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCoreHosting())
+                    {
+                        testUpdate.PrequisiteMessage = "ASP NET Core 8 Web Hosting Bundle is missing.";
+                        return false;
+
+                    }
+                    return true;
+                }));
+                testUpdate.Version = new ApplicationVersion("1.0.0.2024.07.01.0000");
+                LatestUpdate = testUpdate;
+            }
         }
 
         /// <summary>
@@ -183,13 +204,13 @@ namespace BLAZAM.Update.Services
                 if(releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
                 {
                     update.PreRequisiteChecks.Add(new(() => {
-                        if (PrerequisiteChecker.CheckForAspCore())
+                        if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
                         {
                             update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Runtime is missing."];
                          return false;
 
                         }
-                        if (PrerequisiteChecker.CheckForAspCoreHosting())
+                        if (ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCoreHosting())
                         {
                             update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Web Hosting Bundle is missing."];
                             return false;

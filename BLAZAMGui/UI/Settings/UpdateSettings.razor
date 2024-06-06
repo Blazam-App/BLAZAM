@@ -26,13 +26,13 @@
                     <MudAlert Icon="@Icons.Material.Filled.Check" Class="mud-alert-filled-success">
                         The Active Directory Credentials are validated for updating.
                     </MudAlert>
-                   
+
                     break;
                 case UpdateCredential.Update:
                     <MudAlert Icon="@Icons.Material.Filled.Check" Class="mud-alert-filled-success">
                         The Update Credentials are validated for updating.
                     </MudAlert>
-                   
+
                     break;
                 case UpdateCredential.None:
                     <MudAlert Icon="@Icons.Material.Filled.Error" Class="mud-alert-filled-error">
@@ -41,17 +41,17 @@
                     </MudAlert>
                     break;
 
-              
+
             }
 
         }
         if (!UpdateService.LatestUpdate.PassesPrerequisiteChecks)
         {
-            <MudStack Row=true>
-                <MudIcon Color=Color.Error Icon="@Icons.Material.Filled.Error" />
-                <MudText>@AppLocalization["Unable to update!"]</MudText>
-            </MudStack>
-            <MudText>@(UpdateService.LatestUpdate.PrequisiteMessage)</MudText>
+            <MudAlert Icon="@Icons.Material.Filled.Error" Class="mud-alert-filled-error">
+                @AppLocalization["Unable to update!"]
+                <MudText>@(UpdateService.LatestUpdate.PrequisiteMessage)</MudText>
+
+            </MudAlert>
         }
         <SettingsField Label="@AppLocalization["Application Credentials"]">
 
@@ -67,7 +67,7 @@
 
             <MudSwitch @bind-Value=@settings.UseUpdateCredentials
                        Color="Color.Success"
-                       UnCheckedColor="Color.Error" 
+                       UnCheckedColor="Color.Error"
                        Label="@AppLocalization["Use Custom Credentials"]" />
             @if (settings.UseUpdateCredentials)
             {
@@ -121,7 +121,7 @@
             </FieldLabel>
             <ChildContent>
 
-               
+
 
             </ChildContent>
 
@@ -131,10 +131,10 @@
 
         <SettingsField Label="@AppLocalization["Enable Auto Update"]">
             <MudStack Row=true>
-                <MudSwitch Label="@AppLocalization["Enable Auto Update"]" 
-                Color="Color.Success"
-                UnCheckedColor="Color.Error"
-                @bind-Value=@(settings.AutoUpdate) /> 
+                <MudSwitch Label="@AppLocalization["Enable Auto Update"]"
+                           Color="Color.Success"
+                           UnCheckedColor="Color.Error"
+                           @bind-Value=@(settings.AutoUpdate) />
                 <AppDocumentationButton Page="/update/auto/" />
 
             </MudStack>
@@ -147,7 +147,7 @@
             <SettingsField Label="@AppLocalization["Auto Update Time"]">
 
                 <MudTimePicker HelperText="The time of each day to automatically apply an update."
-                @bind-Time="@settings.AutoUpdateTime" />
+                               @bind-Time="@settings.AutoUpdateTime" />
 
 
             </SettingsField>
@@ -169,7 +169,7 @@
 @code {
     string? newUpdatePassword;
     string? updatePasswordInDb;
-    UpdateCredential? updateCredential=null;
+    UpdateCredential? updateCredential = null;
     ManualApplicationUpdater? appUpdateComponent;
     AppSettings? settings = new AppSettings();
     List<string> updateBranches = new() { ApplicationReleaseBranches.Stable, ApplicationReleaseBranches.Nightly, ApplicationReleaseBranches.Dev };
@@ -185,7 +185,7 @@
 
             //Pull encrypted update pass and store encrypted value
             await Task.Run(() =>
-            
+
             {
                 updatePasswordInDb = settings?.UpdatePassword;
                 newUpdatePassword = updatePasswordInDb;

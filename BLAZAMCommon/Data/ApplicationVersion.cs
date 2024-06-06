@@ -154,6 +154,27 @@ namespace BLAZAM.Common.Data
             return CompareTo(version) > 0;
         }
 
+        public bool OlderThan(ApplicationVersion version)
+        {
+            return CompareTo(version) < 0;
+        }
+
+
+        public bool SameVersionAs(ApplicationVersion version)
+        {
+            return CompareTo(version) < 0;
+        }
+        /// <summary>
+        /// <para>
+        /// If return is greater than one this version is newer
+        /// </para>
+        /// <para>
+        /// If return is less than one this version is older
+        /// </para>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public int CompareTo(object? obj)
         {
             if (obj is ApplicationVersion other)
