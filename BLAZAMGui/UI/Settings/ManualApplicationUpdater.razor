@@ -106,7 +106,7 @@
 
                     }
 
-                    @if (LatestAvailableVersion != null && LatestAvailableVersion.Version.OlderThan(ApplicationInfo.RunningVersion))
+                    @if (LatestAvailableVersion != null && LatestAvailableVersion.Version.SameVersionAs(ApplicationInfo.RunningVersion))
                     {
                         <MudTimelineItem Color="Color.Success" Size="Size.Small">
                             <ItemOpposite>
