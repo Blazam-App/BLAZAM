@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.Sql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.18")
+                .HasAnnotation("ProductVersion", "7.0.19")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -1257,6 +1257,9 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<bool?>("AllowCustomGroups")
                         .HasColumnType("bit");
 
+                    b.Property<bool?>("AskForAlternateEmail")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
 
@@ -1283,6 +1286,9 @@ namespace BLAZAM.Common.Migrations.Sql
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("RequirePasswordChange")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("SendWelcomeEmail")
                         .HasColumnType("bit");
 
                     b.Property<string>("UsernameFormula")

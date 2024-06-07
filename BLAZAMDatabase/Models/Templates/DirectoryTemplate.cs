@@ -161,6 +161,7 @@ namespace BLAZAM.Database.Models.Templates
         {
             get
             {
+                return GetEffectiveValue<bool?>(t => t.AllowCustomGroups, t => t.EffectiveAllowCustomGroups);
                 if (AllowCustomGroups == null)
                     return ParentTemplate?.EffectiveAllowCustomGroups;
                 else
@@ -169,9 +170,39 @@ namespace BLAZAM.Database.Models.Templates
             set => AllowCustomGroups = value;
         }
 
+        public bool? AskForAlternateEmail { get; set; }
+        [NotMapped]
+        public bool? EffectiveAskForAlternateEmail
+        {
+            get
+            {
+
+                return GetEffectiveValue<bool?>(t => t.AskForAlternateEmail, t => t.EffectiveAskForAlternateEmail);
+
+                if (AskForAlternateEmail == null)
+                    return ParentTemplate?.EffectiveAskForAlternateEmail;
+                else
+                    return AskForAlternateEmail;
+            }
+            set => AskForAlternateEmail = value;
+        }
 
 
+        public bool? SendWelcomeEmail { get; set; }
+        [NotMapped]
+        public bool? EffectiveSendWelcomeEmail
+        {
+            get
+            {
+                return GetEffectiveValue<bool?>(t => t.SendWelcomeEmail, t => t.EffectiveSendWelcomeEmail);
 
+                if (SendWelcomeEmail == null)
+                    return ParentTemplate?.EffectiveSendWelcomeEmail;
+                else
+                    return SendWelcomeEmail;
+            }
+            set => SendWelcomeEmail = value;
+        }
 
 
         public bool IsValueOverriden(DirectoryTemplateFieldValue fieldValue)
