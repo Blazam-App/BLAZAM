@@ -37,6 +37,7 @@
 
     </SettingsField>
 
+
     <SettingsField Label="@AppLocalization["Use SMTP Authentication"]">
 
         <MudSwitch Label="@AppLocalization["Enabled"]"
@@ -89,7 +90,14 @@
     <MudTextField Label="@AppLocalization["Test Recipient"]" Disabled=@(!settings.Enabled) @bind-Value=testRecipient />
 
     <MudButton Disabled=@(!settings.Enabled && !settings.Valid()) @onclick="SendTestEmail" Color="Color.Success">Send Test Email</MudButton>
-
+    @if (ApplicationInfo.InDebugMode)
+    {
+        <MudContainer MaxWidth
+        ="MaxWidth.Large" Style
+        ="min-height:500px;">
+            @((MarkupString)emailPreview)
+    </MudContainer>
+    }
     <SettingsField>
 
         <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
@@ -97,7 +105,8 @@
     </SettingsField>
 </MudForm>
 @code {
-#nullable disable warnings
+    #nullable disable warnings
+    string emailPreview;
     BLAZAM.Database.Models.EmailSettings settings = new BLAZAM.Database.Models.EmailSettings();
     string testRecipient;
     protected override async Task OnInitializedAsync()
@@ -114,6 +123,7 @@
                 settings = set;
             }
         }
+        emailPreview = EmailService.BuildGenericMessage("BLAZAM Test Email", "to@test.com", (MarkupString)"Success", (MarkupString)"Your email settings are correct.").HtmlBody;
 
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
@@ -135,6 +145,7 @@
     {
         if (settings.Id == 0 && Context != null)
         {
+            settings.Id = 1;
             Context.EmailSettings.Add(settings);
         }
         AuditLogger.System.SettingsChanged("Email", settings.GetChanges(originalSettings));

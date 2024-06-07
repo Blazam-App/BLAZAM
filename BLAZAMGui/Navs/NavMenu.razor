@@ -50,6 +50,7 @@
 
         <MudNavGroup Title="@AppLocalization["Configure"]" Icon="@Icons.Material.Filled.Handyman">
             <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/settings");})">@AppLocalization["Settings"]</MudNavLink>
+            <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/notifications");})">@AppLocalization["Notifications"]</MudNavLink>
             <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/permissions");})">@AppLocalization["Permissions"]</MudNavLink>
             <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/fields");})">@AppLocalization["Fields"]</MudNavLink>
             <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">@AppLocalization["Templates"]</MudNavLink>
