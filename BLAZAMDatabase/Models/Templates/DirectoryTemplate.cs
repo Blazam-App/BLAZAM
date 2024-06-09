@@ -131,7 +131,7 @@ namespace BLAZAM.Database.Models.Templates
         public List<DirectoryTemplateFieldValue> FieldValues { get; set; } = new();
         [NotMapped]
 
-        public List<DirectoryTemplateFieldValue> InheritedFieldValues
+        public List<DirectoryTemplateFieldValue> EffectiveFieldValues
         {
             get
             {
@@ -139,7 +139,7 @@ namespace BLAZAM.Database.Models.Templates
 
                 if (ParentTemplate != null)
                 {
-                    foreach (var fieldvalue in ParentTemplate.InheritedFieldValues)
+                    foreach (var fieldvalue in ParentTemplate.EffectiveFieldValues)
                     {
                         if (!allFieldValues.Any(fv => (fv.Field != null && fv.Field.Equals(fieldvalue.Field))
                         || (fv.CustomField != null && fv.CustomField.Equals(fieldvalue.CustomField))))
@@ -209,7 +209,7 @@ namespace BLAZAM.Database.Models.Templates
         {
             return ParentTemplate != null
                                          && FieldValues.Contains(fieldValue)
-                                         && ParentTemplate.InheritedFieldValues.Any(fv =>
+                                         && ParentTemplate.EffectiveFieldValues.Any(fv =>
                                          (fv.Field != null && fv.Field.Equals(fieldValue.Field))
                                          || (fv.CustomField != null && fv.CustomField.Equals(fieldValue.CustomField)));
         }
@@ -305,7 +305,7 @@ namespace BLAZAM.Database.Models.Templates
         }
         public bool HasEmptyFields()
         {
-            return InheritedFieldValues.Any(fv => fv.Editable);
+            return EffectiveFieldValues.Any(fv => fv.Editable);
         }
         public string GenerateDisplayName(NewUserName newUser)
         {

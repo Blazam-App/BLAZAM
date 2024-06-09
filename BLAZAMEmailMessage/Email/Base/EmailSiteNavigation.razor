@@ -1,11 +1,19 @@
-<table id="u_content_menu_1" style="font-family:'Open Sans',sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-    <tbody>
-        <tr>
-            <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:'Open Sans',sans-serif;" align="left">
-                <div class="menu" style="text-align:center; color:white;">
-                    Blazam
+  <div class="menu" style="text-align:center; color:white;">
+                    @if (DatabaseCache.ApplicationSettings != null && DatabaseCache.ApplicationSettings.AppFQDN != null && DatabaseCache.ApplicationSettings.AppFQDN != String.Empty)
+                    {
+                        var appURL = DatabaseCache.ApplicationSettings.AppFQDN;
+                        if (DatabaseCache.ApplicationSettings.ForceHTTPS)
+                        {
+                            appURL = "https://" + appURL;
+                        }
+                        else
+                        {
+                            appURL = "http://" + appURL;
+                        }
+                        <MudLink Style="color:white;" Color=Color.Surface Href="@appURL">Blazam</MudLink>
+                    }
+                    else
+                    {
+                        <MudText>Blazam</MudText>
+                    }
                 </div>
-            </td>
-        </tr>
-    </tbody>
-</table>

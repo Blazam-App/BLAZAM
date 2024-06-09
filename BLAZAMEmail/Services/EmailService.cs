@@ -17,6 +17,8 @@ using BLAZAM.EmailMessage.Email;
 using BLAZAM.Common.Data;
 using BLAZAM.Static;
 using PreMailer.Net;
+using BLAZAM.FileSystem;
+using BLAZAM.EmailMessage.Email.Base;
 
 namespace BLAZAM.Email.Services
 {
@@ -105,7 +107,7 @@ namespace BLAZAM.Email.Services
             return Factory.CreateDbContext().EmailSettings.FirstOrDefault();
         }
 
-        private MimeMessage BuildMessage<T>(string subject, string to, string? cc = null, string? bcc = null, EmailTemplate? template = null) where T : IComponent
+        public MimeMessage BuildMessage<T>(string subject, string to, string? cc = null, string? bcc = null, EmailTemplate? template = null) where T : IComponent
         {
             var htmlBody = WrapMessage<T>();
             return BuildMessage(subject, to, htmlBody, cc, bcc, template);
@@ -143,8 +145,7 @@ namespace BLAZAM.Email.Services
                 image.ContentId = MimeUtils.GenerateMessageId();
                 //Replace logo placeholder in template with referenced img tag
                 body = body.Replace("{{ApplicationLogo}}", "<img src=\"cid:" + image.ContentId + "\">");
-                var preMailer = new PreMailer.Net.PreMailer(body);
-                body = preMailer.MoveCssInline().Html;
+                body = PrepareHTMLForEmail(body);
                 builder.HtmlBody = body;
                 //Compile body
                 email.Body = builder.ToMessageBody();
@@ -160,7 +161,13 @@ namespace BLAZAM.Email.Services
             throw new ApplicationException("Unknown error creating email message.");
         }
 
-
+        public string PrepareHTMLForEmail(string body)
+        {
+            SystemFile css = new SystemFile(ApplicationInfo.applicationRoot + "\\wwwroot\\lib\\mudblazor\\css\\mudblazor.min.css");
+            var preMailer = new PreMailer.Net.PreMailer(body);
+            body = preMailer.MoveCssInline(stripIdAndClassAttributes: true,css:css.ReadAllText()).Html;
+            return body;
+        }
 
         public async Task<bool> SendMessage(string subject, string to, MarkupString header, MarkupString body, string? cc = null, string? bcc = null)
         {
@@ -206,6 +213,28 @@ namespace BLAZAM.Email.Services
 
             }
         }
+        public async Task<bool> SendMessage(string subject, EmailTemplateComponent body, string to, string? cc = null, string? bcc = null)
+        {
+            try
+            {
+                var client = await GetSmtpClientAsync();
+
+
+                var message = BuildMessage(subject, to,body.Render(), cc, bcc);
+
+                return await TrySend(client, message);
+            }
+            catch (EmailException ex)
+            {
+                throw ex;
+
+
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
         public async Task<bool> SendTestEmail(string to)
         {
             try
@@ -213,7 +242,8 @@ namespace BLAZAM.Email.Services
                 var client = await GetSmtpClientAsync();
 
 
-                var message = BuildGenericMessage("BLAZAM Test Email", to, (MarkupString)"Success", (MarkupString)"Your email settings are correct.");
+                var message = BuildMessage<TestEmailMessage>("BLAZAM Test Email", to);
+                //var message = BuildGenericMessage("BLAZAM Test Email", to, (MarkupString)"Success", (MarkupString)"Your email settings are correct.");
 
                 return await TrySend(client, message);
             }
@@ -226,26 +256,6 @@ namespace BLAZAM.Email.Services
 
         }
 
-        private static string ConvertToEmailCompatibleHtml(string originalHtml)
-        {
-            // Modify the originalHtml to make it email-compatible
-            // For example, inline styles and use tables for layout
 
-            // Example: Convert <div class="my-styled-div"> to <div style="color: red;">
-            var emailCompatibleHtml = originalHtml.Replace("<div class=\"my-styled-div\">", "<div style=\"color: red;\">");
-
-            // Example: Replace complex CSS selectors with simple inline styles
-            emailCompatibleHtml = emailCompatibleHtml.Replace(".my-complex-selector", "font-size: 14px;");
-
-            // Example: Use tables for layout
-            emailCompatibleHtml = $@"
-            <table width=""100%"" cellpadding=""0"" cellspacing=""0"">
-                <tr>
-                    <td>{emailCompatibleHtml}</td>
-                </tr>
-            </table>";
-
-            return emailCompatibleHtml;
-        }
     }
 }

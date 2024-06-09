@@ -1,3 +1,4 @@
+@using BLAZAM.EmailMessage.Email
 @inherits SettingsComponents
 
 
@@ -89,7 +90,7 @@
 
     <MudTextField Label="@AppLocalization["Test Recipient"]" Disabled=@(!settings.Enabled) @bind-Value=testRecipient />
 
-    <MudButton Disabled=@(!settings.Enabled && !settings.Valid()) @onclick="SendTestEmail" Color="Color.Success">Send Test Email</MudButton>
+    <MudButton Disabled=@((!settings.Enabled && !settings.Valid())||LoadingData) @onclick="SendTestEmail" Color="Color.Success">Send Test Email</MudButton>
     @if (ApplicationInfo.InDebugMode)
     {
         <MudContainer MaxWidth
@@ -97,12 +98,17 @@
         ="min-height:500px;">
             @((MarkupString)emailPreview)
     </MudContainer>
+
+
     }
     <SettingsField>
 
         <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
 
     </SettingsField>
+    <MudOverlay DarkBackground=true Visible=LoadingData>
+        <MudProgressCircular Indeterminate=true Color=Color.Primary/>
+    </MudOverlay>
 </MudForm>
 @code {
     #nullable disable warnings
@@ -123,7 +129,12 @@
                 settings = set;
             }
         }
-        emailPreview = EmailService.BuildGenericMessage("BLAZAM Test Email", "to@test.com", (MarkupString)"Success", (MarkupString)"Your email settings are correct.").HtmlBody;
+        //NewUserWelcomeEmailMessage message = new NewUserWelcomeEmailMessage();
+        //var user= Directory.Users.FindUserByUsername("cjacobsen");
+        //message.User = user;
+        //var html = message.Render();
+        //emailPreview = EmailService.PrepareHTMLForEmail(html);
+        emailPreview = EmailService.BuildMessage<TestEmailMessage>("BLAZAM Test Email", "to@test.com").HtmlBody;
 
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
@@ -132,14 +143,18 @@
     {
         try
         {
+            LoadingData = true;
+            await InvokeAsync(StateHasChanged);
             await EmailService.SendTestEmail(testRecipient);
             await MessageService.Success("A test email was sent to " + testRecipient, "Test Email Sent");
-
+       
         }
         catch (Exception ex)
         {
             await MessageService.Error(ex.Message, "Test Failed");
         }
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
     }
     protected override void Save()
     {
