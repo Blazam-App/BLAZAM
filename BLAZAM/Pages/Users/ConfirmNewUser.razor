@@ -1,3 +1,5 @@
+@using BLAZAM.EmailMessage.Email
+@using System.Security
 @inherits DirectoryModelComponent
 @inject IJSRuntime JSRuntime
 <AppPageTitle>Confirm User Creation</AppPageTitle>
@@ -54,12 +56,12 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 }
 
 @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone) ||
-         InDirectoryTemplate(ActiveDirectoryFields.StreetAddress) ||
-         InDirectoryTemplate(ActiveDirectoryFields.POBox) ||
-         InDirectoryTemplate(ActiveDirectoryFields.City) ||
-         InDirectoryTemplate(ActiveDirectoryFields.State) ||
-         InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
-         )
+       InDirectoryTemplate(ActiveDirectoryFields.StreetAddress) ||
+       InDirectoryTemplate(ActiveDirectoryFields.POBox) ||
+       InDirectoryTemplate(ActiveDirectoryFields.City) ||
+       InDirectoryTemplate(ActiveDirectoryFields.State) ||
+       InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
+       )
 {
     <Section Title=@AppLocalization["Contact Info"]>
 
@@ -98,10 +100,10 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
     <MudTextField Label="@AppLocalization["Site"]" @bind-Value="@User.Site" Disabled=true />
 }
 @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory) ||
-         InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
-         InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
-         InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
-         )
+       InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
+       InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
+       InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
+       )
 {
     <Section Title=@AppLocalization["Profile"]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
@@ -157,17 +159,24 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 {
     <MudButton Disabled=@disableCreateUserButton Color="Color.Success" OnClick="ConfirmUser">Create User</MudButton>
 
-}else{
+}
+else
+{
     <MudButton Color="Color.Primary" OnClick="@(()=>{Nav.NavigateTo(User.SearchUri);})">Go To User</MudButton>
     <MudButton Color="Color.Success" OnClick="@(()=>{Nav.NavigateTo("/create/user");})">Create Another</MudButton>
 
 }
 <MudButton StartIcon="@Icons.Material.Filled.Print" Color="Color.Info" OnClick="Print">Print</MudButton>
+<MudButton Color="Color.Success" OnClick="@(()=>{SendWelcomeModal?.Show();})">Test</MudButton>
 
+<AppModal @ref=SendWelcomeModal Title="@AppLocalization["Send login credentials"]">
+    <SendNewUserWelcomeToModalContent OnSubmitEmail="SendWelcomeEmail" />
+</AppModal>
 @code {
     [Parameter]
     public DirectoryTemplate? DirectoryTemplate { get; set; }
 
+    AppModal? SendWelcomeModal;
     [Parameter]
     public EventCallback<IADUser> Confirmed { get; set; }
     /// <summary>
@@ -181,7 +190,9 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
         return DirectoryTemplate?.FieldValues.Any(f => f.Field?.FieldName == field.FieldName) == true;
     }
     bool confirmed = false;
-    bool disableCreateUserButton=false;
+    bool disableCreateUserButton = false;
+    SecureString? _userPassword;
+    string? _username;
     /// <summary>
     /// Triggered when the user confirms the creation of this
     /// Active Directory User
@@ -192,22 +203,24 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 
         try
         {
-            disableCreateUserButton =true;
+            disableCreateUserButton = true;
             await InvokeAsync(StateHasChanged);
             IJob createUserJob = new Job(AppLocalization["Create User"]);
             createUserJob.StopOnFailedStep = true;
             createUserJob.ShowJobDetailsDialog(MessageService);
+            _username = User.SamAccountName;
+            _userPassword = User.NewPassword;
             var result = await User.CommitChangesAsync(createUserJob);
 
             disableCreateUserButton = false;
             await InvokeAsync(StateHasChanged);
             if (result.FailedSteps.Count == 0)
             {
-                var newUser = Directory.Users.FindUsersByContainerName(User.CanonicalName, false, true);
-                if (newUser != null)
-                {
-                    User = newUser;
-                }
+                // var newUser = Directory.Users.FindUsersByContainerName(User.CanonicalName, false, true);
+                // if (newUser != null)
+                // {
+                //     User = newUser;
+                // }
                 SnackBarService.Success("User has been created");
                 confirmed = true;
                 await Confirmed.InvokeAsync();
@@ -215,6 +228,27 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 
             }
             await AuditLogger.User.Created(User);
+
+            try
+            {
+                if (DirectoryTemplate.EffectiveSendWelcomeEmail == true)
+                {
+                    if (DirectoryTemplate.EffectiveAskForAlternateEmail == true || User.Email.IsNullOrEmpty())
+                    {
+                        SendWelcomeModal?.Show();
+                    }
+                    else
+                    {
+                        SendWelcomeEmail(User.Email);
+                    }
+
+                }
+            }
+            catch
+            {
+
+            }
+
 
         }
         catch (ApplicationException ex)
@@ -224,7 +258,24 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 
 
     }
-
+    async Task SendWelcomeEmail(string to)
+    {
+        try{
+            NewUserWelcomeEmailMessage message = new NewUserWelcomeEmailMessage();
+            message.Domain = User.Directory.ConnectionSettings.FQDN;
+            message.Username = _username;
+            message.Password = _userPassword;
+            var html = message.Render();
+            EmailService.SendMessage(AppLocalization["New Account Details"], message,to);
+            SnackBarService.Info(AppLocalization["Welcome Email Sent to "] + to);
+            SendWelcomeModal.Close();
+        }catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error("Error sending welcome email {@Error}", ex);
+            SnackBarService.Error(ex.Message);
+        }
+        //emailPreview = EmailService.PrepareHTMLForEmail(html);
+    }
     async Task Print()
     {
         await JSRuntime.InvokeVoidAsync("printPage", null);

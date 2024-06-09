@@ -16,6 +16,9 @@ using BLAZAM.EmailMessage;
 using BLAZAM.EmailMessage.Email;
 using BLAZAM.Common.Data;
 using BLAZAM.Static;
+using PreMailer.Net;
+using BLAZAM.FileSystem;
+using BLAZAM.EmailMessage.Email.Base;
 
 namespace BLAZAM.Email.Services
 {
@@ -69,39 +72,34 @@ namespace BLAZAM.Email.Services
             {
                 try
                 {
+                    client.RequireTLS = settings.UseTLS;
+
+                    // Connect to the server
                     await client.ConnectAsync(settings.SMTPServer, settings.SMTPPort, settings.UseTLS);
 
-
                     if (settings.UseSMTPAuth)
-                        try
-                        {
-                            await client.AuthenticateAsync(settings.SMTPUsername, settings.SMTPPassword);
-                        }
-                        catch (Exception ex)
-                        {
-                            Loggers.SystemLogger.Error(ex, "SMTP Authentication failure");
-                        }
+                    {
+                        // Authenticate with the server
+                        await client.AuthenticateAsync(settings.SMTPUsername, settings.SMTPPassword);
+                    }
+
                     return client;
                 }
                 catch (SslHandshakeException ex)
                 {
-                    switch (ex.HResult)
-                    {
-                        case -2146233088:
-                            throw new EmailException("An error occurred while attempting to establish" +
-                                " an SSL or TLS connection.\r\n\r\nWhen connecting to an SMTP service, port" +
-                                " 587 is typically reserved for plain-text connections. If you intended" +
-                                " to connect to SMTP on the SSL port, try connecting to port 465 instead.");
-                    }
+                    throw new EmailException("SSL Handshake Exception: " + ex.Message, ex);
                 }
-                catch
+                catch (MailKit.Security.AuthenticationException ex)
                 {
-
+                    throw new EmailException("Authentication Exception: " + ex.Message, ex);
                 }
-
+                catch (Exception ex)
+                {
+                    throw new ApplicationException("Unknown error building email client: " + ex.Message, ex);
+                }
             }
-            throw new ApplicationException("Unknown error building email client");
 
+            throw new ApplicationException("Invalid email settings");
         }
 
         private EmailSettings? GetSettings()
@@ -109,13 +107,13 @@ namespace BLAZAM.Email.Services
             return Factory.CreateDbContext().EmailSettings.FirstOrDefault();
         }
 
-        private MimeMessage BuildMessage<T>(string subject, string to, string? cc = null, string? bcc = null, EmailTemplate? template = null) where T : IComponent
+        public MimeMessage BuildMessage<T>(string subject, string to, string? cc = null, string? bcc = null, EmailTemplate? template = null) where T : IComponent
         {
             var htmlBody = WrapMessage<T>();
             return BuildMessage(subject, to, htmlBody, cc, bcc, template);
         }
 
-        private MimeMessage BuildGenericMessage(string subject, string to, MarkupString header, MarkupString body, string? cc = null, string? bcc = null, EmailTemplate? template = null)
+        public MimeMessage BuildGenericMessage(string subject, string to, MarkupString header, MarkupString body, string? cc = null, string? bcc = null, EmailTemplate? template = null)
         {
             var htmlBody = WrapGenericMessage(header, body);
             return BuildMessage(subject, to, htmlBody, cc, bcc, template);
@@ -146,7 +144,9 @@ namespace BLAZAM.Email.Services
                 //Generate attachment ID
                 image.ContentId = MimeUtils.GenerateMessageId();
                 //Replace logo placeholder in template with referenced img tag
-                builder.HtmlBody = body.Replace("{{ApplicationLogo}}", "<img src=\"cid:" + image.ContentId + "\">");
+                body = body.Replace("{{ApplicationLogo}}", "<img src=\"cid:" + image.ContentId + "\">");
+                body = PrepareHTMLForEmail(body);
+                builder.HtmlBody = body;
                 //Compile body
                 email.Body = builder.ToMessageBody();
 
@@ -161,7 +161,13 @@ namespace BLAZAM.Email.Services
             throw new ApplicationException("Unknown error creating email message.");
         }
 
-
+        public string PrepareHTMLForEmail(string body)
+        {
+            SystemFile css = new SystemFile(ApplicationInfo.applicationRoot + "\\wwwroot\\lib\\mudblazor\\css\\mudblazor.min.css");
+            var preMailer = new PreMailer.Net.PreMailer(body);
+            body = preMailer.MoveCssInline(stripIdAndClassAttributes: true,css:css.ReadAllText()).Html;
+            return body;
+        }
 
         public async Task<bool> SendMessage(string subject, string to, MarkupString header, MarkupString body, string? cc = null, string? bcc = null)
         {
@@ -207,6 +213,28 @@ namespace BLAZAM.Email.Services
 
             }
         }
+        public async Task<bool> SendMessage(string subject, EmailTemplateComponent body, string to, string? cc = null, string? bcc = null)
+        {
+            try
+            {
+                var client = await GetSmtpClientAsync();
+
+
+                var message = BuildMessage(subject, to,body.Render(), cc, bcc);
+
+                return await TrySend(client, message);
+            }
+            catch (EmailException ex)
+            {
+                throw ex;
+
+
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
         public async Task<bool> SendTestEmail(string to)
         {
             try
@@ -214,7 +242,8 @@ namespace BLAZAM.Email.Services
                 var client = await GetSmtpClientAsync();
 
 
-                var message = BuildGenericMessage("BLAZAM Test Email", to, (MarkupString)"Success", (MarkupString)"Your email settings are correct.");
+                var message = BuildMessage<TestEmailMessage>("BLAZAM Test Email", to);
+                //var message = BuildGenericMessage("BLAZAM Test Email", to, (MarkupString)"Success", (MarkupString)"Your email settings are correct.");
 
                 return await TrySend(client, message);
             }
@@ -226,5 +255,7 @@ namespace BLAZAM.Email.Services
             }
 
         }
+
+
     }
 }

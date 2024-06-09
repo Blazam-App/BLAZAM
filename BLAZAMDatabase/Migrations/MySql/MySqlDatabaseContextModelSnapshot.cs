@@ -16,7 +16,7 @@ namespace BLAZAM.Common.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.18")
+                .HasAnnotation("ProductVersion", "7.0.19")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
@@ -1210,6 +1210,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<bool?>("AllowCustomGroups")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool?>("AskForAlternateEmail")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Category")
                         .HasColumnType("longtext");
 
@@ -1236,6 +1239,9 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasColumnType("longtext");
 
                     b.Property<bool?>("RequirePasswordChange")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool?>("SendWelcomeEmail")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UsernameFormula")
