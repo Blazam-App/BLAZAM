@@ -41,12 +41,17 @@
                     }
                     @if (InDirectoryTemplate(ActiveDirectoryFields.Mail))
                     {
-
+                        @if (DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true &&
+                       (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id) && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
+                        {
+                           
+                        }
 
                         <MudTextField Label="@AppLocalization["Email Address"]"
                                       @bind-Value="User.Email"
                                       Disabled=@(!IsAdmin && !IsEditableTemplateField(ActiveDirectoryFields.Mail))
-                                      Required=@(IsRequiredTemplateField(ActiveDirectoryFields.Mail)) />
+                                      Required=@((DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true)||
+                                      IsRequiredTemplateField(ActiveDirectoryFields.Mail)) />
 
 
 
@@ -288,7 +293,7 @@
             @if (User.CanReadAnyCustomFields)
             {
                 <Section Title=@AppLocalization["Additional Fields"]>
-                    @foreach (var field in DirectoryTemplate.InheritedFieldValues.Where(f => f.CustomField != null))
+                    @foreach (var field in DirectoryTemplate.EffectiveFieldValues.Where(f => f.CustomField != null))
                     {
                         @if (field.CustomField != null)
                         {
@@ -338,7 +343,7 @@
 
     bool InDirectoryTemplate(IActiveDirectoryField field)
     {
-        return DirectoryTemplate.InheritedFieldValues.Any(f => (f.Field != null && f.Field.FieldName == field.FieldName) || (f.CustomField != null && f.CustomField.FieldName == field.FieldName));
+        return DirectoryTemplate.EffectiveFieldValues.Any(f => (f.Field != null && f.Field.FieldName == field.FieldName) || (f.CustomField != null && f.CustomField.FieldName == field.FieldName));
     }
     bool IsEditableTemplateField(IActiveDirectoryField field)
     {
@@ -346,9 +351,9 @@
         //if (IsAdmin) return true;
 
         if (field is ActiveDirectoryField)
-            return DirectoryTemplate.InheritedFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Editable);
+            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Editable);
         else
-            return DirectoryTemplate.InheritedFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Editable);
+            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Editable);
 
     }
     bool IsRequiredTemplateField(IActiveDirectoryField field)
@@ -356,9 +361,9 @@
 
 
         if (field is ActiveDirectoryField)
-            return DirectoryTemplate.InheritedFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Required);
+            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.Field.FieldName == field.FieldName && f.Required);
         else
-            return DirectoryTemplate.InheritedFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Required);
+            return DirectoryTemplate.EffectiveFieldValues.Any(f => f.CustomField.FieldName == field.FieldName && f.Required);
     }
 
 

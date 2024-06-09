@@ -26,10 +26,10 @@
 
 
         <AppModal Title=@AppLocalization["Assign To"] @ref=@AssignToModal>
-            <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignToModal?.Hide(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
+            <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignToModal?.Close(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
         </AppModal>
         <AppModal Title=@AppLocalization["Add Members"] @ref=@AssignMemberModal>
-            <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal?.Hide();InvokeAsync(StateHasChanged);}) Group="Group" />
+            <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal?.Close();InvokeAsync(StateHasChanged);}) Group="Group" />
         </AppModal>
         <AppModal Title=@AppLocalization["Move To"] @ref=@MoveToModal>
             @if (MoveToModal?.IsShown == true)

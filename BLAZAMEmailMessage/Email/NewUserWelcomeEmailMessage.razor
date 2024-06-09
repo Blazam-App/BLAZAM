@@ -1,0 +1,53 @@
+﻿@using BLAZAM.ActiveDirectory.Interfaces
+@using BLAZAM.Helpers
+@using System.Security
+@inherits EmailTemplateComponent
+
+    <EmailTemplateHeader>
+    <strong>@AppLocalization["Welcome"]</strong>
+    </EmailTemplateHeader>
+   
+    <EmailTemplateBody>
+    @(AppLocalization["You have a new account in the "]+Domain+AppLocalization[" domain. Find your logon details below."])
+    <br/>
+    <MudSimpleTable Class="mx-auto" >
+        <tr>
+            <td class="mx-2">
+                @AppLocalization["Username"]
+            </td>
+            <td class="mx-2">
+                @Username
+            </td>
+        </tr>
+        <tr>
+            <td class="mx-2">
+                @AppLocalization["Password"]
+            </td>
+            <td class="mx-2">
+                @Password?.ToPlainText()
+            </td>
+        </tr>
+    </MudSimpleTable>
+   
+    </EmailTemplateBody>
+
+
+@code{
+    [Parameter]
+ public string? Domain{get;set;}
+    [Parameter]
+ public string? Username{get;set;}
+    [Parameter]
+
+ public SecureString? Password{get;set;}
+ 
+    public override string Render() => new ComponentRenderer<NewUserWelcomeEmailMessage>()
+            .UseLayout<DefaultEmailLayout>()
+            .AddServiceProvider(ApplicationInfo.services)
+            .Set(c => c.Domain, Domain)
+            .Set(c => c.Username, Username)
+            .Set(c => c.Password, Password).Render();
+}
+
+
+

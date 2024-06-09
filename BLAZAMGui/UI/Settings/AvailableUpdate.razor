@@ -19,15 +19,23 @@
                     <MudMarkdown OverrideHeaderTypo=ConvertHeaders Value="@Update.Release.ReleaseNotes" />
                 </MudExpansionPanel>
             </MudExpansionPanels>
-            @if (Update.Newer && !Disabled)
+            @if (Update.Newer && Update.PassesPrerequisiteChecks)
             {
                 <MudButton Class="mx-6" Variant=Variant.Filled Color=Color.Success OnClick="(()=>{OnApply.InvokeAsync();})">Apply Update</MudButton>
                 @if (ApplicationInfo.InDebugMode)
-                {
+                { 
                     <MudButton Class="mx-6" Disabled=@(AutoUpdateService.IsUpdatedScheduled) OnClick="(()=>{OnSchedule.InvokeAsync();})" Color="Color.Success">Test Auto Update</MudButton>
 
 
                 }
+            }
+            else if (Update.Newer && !Update.PassesPrerequisiteChecks)
+            {
+                <MudStack Row=true>
+                    <MudIcon Color=Color.Error Icon="@Icons.Material.Filled.Error"/>
+                    <MudText>@AppLocalization["Unable to update!"]</MudText>
+                </MudStack>
+                <MudText>@Update.PrequisiteMessage</MudText>
             }
         </MudCard>
 
@@ -38,8 +46,7 @@
     [Parameter]
     public ApplicationUpdate Update { get; set; }
 
-    [Parameter]
-    public bool Disabled { get; set; } = false;
+
     [Parameter]
     public bool Even { get; set; } = false;
 
@@ -124,7 +131,11 @@
         }
     }
 
-    private bool CurrentVersion => ApplicationInfo.RunningVersion.CompareTo(Update.Version) == 0;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+      
+    }
 
 }

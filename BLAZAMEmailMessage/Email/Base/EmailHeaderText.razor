@@ -1,30 +1,11 @@
-<!--[if (mso)|(IE)]>
-                                <td align="center" width="725" class="v-col-padding v-col-background-color v-col-border" style="width: 725px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top">
-                                   <![endif]-->
-<div class="u-col u-col-66p67" style="max-width: 725px;min-width: 700px;display: table-cell;vertical-align: top;">
-    <div class="v-col-background-color" style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-        <!--[if (!mso)&(!IE)]><!-->
-        <div class="v-col-padding v-col-border" style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-            <!--<![endif]-->
-            <table id="u_content_heading_6" style="font-family:'Open Sans',sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-                <tbody>
-                    <tr>
-                        <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 10px;font-family:'Open Sans',sans-serif;" align="left">
-                            <h1 class="v-color v-text-align v-font-size" style="margin: 0px; color: #ffffff; line-height: 140%; text-align: center; word-wrap: break-word; font-family: Oswald; font-size: 35px; ">
-                                <strong>@emailHeaderText<br></strong>
-                            </h1>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <!--[if (!mso)&(!IE)]><!-->
-        </div>
-        <!--<![endif]-->
-    </div>
-</div>
-<!--[if (mso)|(IE)]>
-</td>
-<![endif]-->
+
+<MudText Typo="Typo.h1"
+         Align="Align.Center"
+         Class="v-color v-text-align v-font-size pa-3 my-auto mud-width-full"
+         Style="color: #ffffff; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 35px; ">
+    <strong>@emailHeaderText<br></strong>
+</MudText>
+
 @code {
     string? emailHeaderText;
     protected override void OnInitialized()
@@ -41,4 +22,4 @@
 
 
     }
-                            }
+}

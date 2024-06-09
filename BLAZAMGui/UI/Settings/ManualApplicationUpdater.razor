@@ -63,7 +63,7 @@
             default:
 
 
-                <MudTimeline TimelineAlign="TimelineAlign.Default" TimelinePosition="TimelinePosition.Top">
+                <MudTimeline TimelineAlign="TimelineAlign.Default" TimelinePosition="TimelinePosition.Top" Style="max-height:600px;" Class="overflow-y-auto">
                     @{
                         int i = 0;
                     }
@@ -94,19 +94,19 @@
                         {
 
 
-                            <AvailableUpdate Update=@update OnApply="ApplyUpdate" Disabled="@(!ApplicationInfo.InDebugMode)" Even=@(i%2==0) />
+                            <AvailableUpdate Update=@update OnApply="ApplyUpdate" Even=@(i%2==0) />
 
                             i++;
 
                         }
                     }
-                    @if (UpdateService.LatestUpdate.Version.CompareTo(ApplicationInfo.RunningVersion) > -1)
+                    @if (UpdateService.LatestUpdate.Version.NewerThan(ApplicationInfo.RunningVersion))
                     {
                         <AvailableUpdate Update=@UpdateService.LatestUpdate OnApply="ApplyUpdate" Even=@(i%2==0) />
 
                     }
 
-                    @if (LatestAvailableVersion != null && LatestAvailableVersion.Version.CompareTo(ApplicationInfo.RunningVersion) < 1)
+                    @if (LatestAvailableVersion != null && !LatestAvailableVersion.Version.OlderThan(ApplicationInfo.RunningVersion))
                     {
                         <MudTimelineItem Color="Color.Success" Size="Size.Small">
                             <ItemOpposite>

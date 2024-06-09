@@ -1,11 +1,22 @@
 ﻿namespace BLAZAM.Database.Models
 {
+
+    public enum EmailTemplateType
+    {
+        NewUserWelcome,
+        EntryCreated,
+        EntryRenamed,
+        EntryEdited,
+        EntryEnabledOrDisabled,
+        EntryAssignedOrUnassigned,
+        EntryDeleted,
+        EntryPasswordChanged
+    }
     public class EmailTemplate : AppDbSetBase
     {
-        public string TemplateName { get; set; }
+        public EmailTemplateType TemplateType { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
-        public string CC { get; set; }
-        public string BCC { get; set; }
     }
+    
 }
