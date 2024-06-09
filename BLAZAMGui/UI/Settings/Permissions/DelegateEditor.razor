@@ -102,7 +102,7 @@
         SnackBarService.Success("Delegate restored");
         if (AllDelegates.Where(l => l.DeletedAt != null).Count() < 1)
         {
-            trashModal.Hide();
+            trashModal.Close();
         }
     }
     private async void DelegatesChanged()

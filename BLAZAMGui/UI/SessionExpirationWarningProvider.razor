@@ -9,7 +9,7 @@
           YesText=@AppLocalization["Refresh Session"]
           OnYes=@(()=>{
           JSRuntime.InvokeVoidAsync("updateCookieExpiration");
-          ExpirationWarningModal?.Hide();
+          ExpirationWarningModal?.Close();
           })>
 
     @if (ExpirationWarningModal?.IsShown == true)
@@ -18,7 +18,7 @@
         var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
         if (timeLeft.HasValue && timeLeft.Value.TotalMilliseconds < 0)
         {
-            ExpirationWarningModal.Hide();
+            ExpirationWarningModal.Close();
             if (ExpiredModal != null)
             {
                 ExpiredModal.AllowClose = false;

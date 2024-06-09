@@ -1,0 +1,17 @@
+﻿@inherits AppComponentBase
+<h3>NotificationTemplates</h3>
+<MudSelectList Values="templates" @bind-SelectedValues=selectedValues/>
+@code {
+    List<EmailTemplate> templates = new();
+    IEnumerable<EmailTemplate> selectedValues;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var temp = await Context.EmailTemplates.ToListAsync();
+        if(temp!=null && temp.Count > 0)
+        {
+            templates = temp;
+        }
+    }
+}

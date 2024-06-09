@@ -1,0 +1,27 @@
+﻿@inherits AppModalContent
+
+<MudContainer MaxWidth="MaxWidth.Large">
+  
+        <MudText>@AppLocalization["Send login credentials to"]</MudText>
+            <MudTextField @bind-Value=sendToEmail InputType="InputType.Email"/>
+            
+  
+</MudContainer>
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Modal.OnYes = OnSubmit;
+    }
+    string sendToEmail;
+
+    [Parameter]
+    public EventCallback<string> OnSubmitEmail { get; set; }
+
+    private void OnSubmit()
+    {
+        
+        OnSubmitEmail.InvokeAsync(sendToEmail);
+
+    }
+}
