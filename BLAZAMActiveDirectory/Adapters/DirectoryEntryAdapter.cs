@@ -608,6 +608,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         thisObject = null;
 
                     }
+                    directoryEntries.OrderBy(x=>x.CanonicalName).OrderBy(x=>x.ObjectType);
                     CachedChildren = directoryEntries;
                 }
                 return CachedChildren;
