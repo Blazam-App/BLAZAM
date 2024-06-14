@@ -70,7 +70,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: Dev-v1
+          tag_name: Dev1
           name: 'v1-Dev'
           prerelease: true
           body: This release is highly unstable. Expect bugs and crashes on this branch. Developers Only!
