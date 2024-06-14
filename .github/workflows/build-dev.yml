@@ -74,8 +74,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: Dev
-          name: 'Dev'
+          tag_name: BetaDev
+          name: 'BetaDev'
           prerelease: true
           body: This release is highly unstable. Expect bugs and crashes on this branch. Developers Only!
           files: |
