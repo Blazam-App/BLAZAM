@@ -61,6 +61,7 @@
             <MudTooltip Text="@AppLocalization["Rename Category"]">
                 <MudIconButton OnClick=@(()=>{RenameModal?.Show();})
                                Color="Color.Tertiary"
+                               Class="align-middle"
                                Icon="@Icons.Material.Filled.ChangeCircle" />
             </MudTooltip>
         }
@@ -70,6 +71,7 @@
 
                 <MudIconButton OnClick=@(async()=>{await DuplicateTemplate(SelectedTemplate);})
                                Color="Color.Tertiary"
+                               Class="align-middle"
                                Icon="@Icons.Material.Filled.FileCopy" />
             </MudTooltip>
             <MudTooltip Text="@AppLocalization["Remove template"]">
@@ -88,6 +90,7 @@
 
                 <MudIconButton OnClick=@(async()=>{RestoreModal?.Show();})
                                Color="Color.Warning"
+                               Class="align-middle"
                                Icon="@Icons.Material.Filled.RestoreFromTrash" />
             </MudTooltip>
         }
@@ -190,7 +193,7 @@
             SnackBarService.Success(AppLocalization["Renamed category"] + ": " + SelectedCategory + " to " + newCategoryName);
             SelectedCategory = newCategoryName;
             await FetchTemplates();
-            RenameModal?.Hide();
+            RenameModal?.Close();
         }
         await RefreshComponents();
 
@@ -253,7 +256,7 @@
             }
         }
         var result = await Context.SaveChangesAsync();
-        RestoreModal?.Hide();
+        RestoreModal?.Close();
         SnackBarService.Success(AppLocalization["Template(s) restored"]);
     }
 }

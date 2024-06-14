@@ -18,6 +18,7 @@
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
     <ProjectReference Include="..\BLAZAMFileSystem\BLAZAMFileSystem.csproj" />
     <ProjectReference Include="..\BLAZAMJobs\BLAZAMJobs.csproj" />
+    <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
     <ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
   </ItemGroup>
 

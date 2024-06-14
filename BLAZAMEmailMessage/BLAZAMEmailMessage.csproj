@@ -14,10 +14,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.6" />
+    <PackageReference Include="MudBlazor" Version="6.17.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BLAZAMActiveDirectory\BLAZAMActiveDirectory.csproj" />
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
+    <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
     <ProjectReference Include="..\BLAZAMStatic\BLAZAMStatic.csproj" />
   </ItemGroup>
 

@@ -570,7 +570,10 @@ namespace BLAZAM.Database.Context
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
 
             });
-            modelBuilder.Entity<AuthenticationSettings>(entity =>
+          
+
+          
+         modelBuilder.Entity<AuthenticationSettings>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 

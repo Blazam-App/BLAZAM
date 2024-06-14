@@ -265,7 +265,7 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
         {
             LoadingData = true;
             await InvokeAsync(StateHasChanged);
-            var ou = Directory.OUs.FindOuByString(SelectedTemplate.ParentOU).FirstOrDefault();
+            var ou = Directory.OUs.FindOuByString(SelectedTemplate.EffectiveParentOU).FirstOrDefault();
             if (ou == null) throw new ApplicationException("OU could not be found for new user");
             newUser = ou.CreateUser(SelectedTemplate.GenerateDisplayName(newUserName));
 
@@ -283,7 +283,7 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
             if (!newUserName.Surname.IsNullOrEmpty())
                 newUser.Surname = newUserName.Surname;
 
-            foreach (var fieldValue in SelectedTemplate.InheritedFieldValues)
+            foreach (var fieldValue in SelectedTemplate.EffectiveFieldValues)
             {
                 try
                 {
@@ -331,7 +331,7 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
 
             Loggers.ActiveDirectryLogger.Error("Error while creating template user {@Error}", ex);
 
-            SnackBarService.Error(AppLocalization["An error has occurred while trying to create the template user"]);
+            SnackBarService.Error(AppLocalization["An error has occurred while trying to create the template user: "] + ex.Message);
         }
         LoadingData = false;
 

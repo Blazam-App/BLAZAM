@@ -147,10 +147,11 @@ namespace BLAZAM.Gui.UI
             return Modal?.Show(null,Options);
         }
 
+
         /// <summary>
         /// Hide this modal
         /// </summary>
-        public void Hide()
+        public void Close()
         {
             IsShown = false;
             Modal?.Close();
@@ -160,7 +161,7 @@ namespace BLAZAM.Gui.UI
             if (OnYes != null)
                 OnYes?.Invoke();
             else
-                Hide();
+                Close();
         }
         /// <summary>
         /// Sets the modal to be fullscreen, disabled by passing false.
