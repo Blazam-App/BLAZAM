@@ -2,8 +2,8 @@
 {
     public class ApplicationReleaseBranches
     {
-        public const string Stable = "v1-Stable";
-        public const string Nightly = "v1-Nightly";
-        public const string Dev = "v1-Dev";
+        public const string Stable = "Release";
+        public const string Nightly = "Nightly1";
+        public const string Dev = "Dev1";
     }
 }
