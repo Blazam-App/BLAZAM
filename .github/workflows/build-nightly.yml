@@ -1,4 +1,4 @@
-name: Build Nightly
+name: Build v1 Nightly
 
 on:
   workflow_dispatch:
@@ -72,8 +72,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: v${{ env.ASSEMBLY_VERSION }}-Nightly
-          name: 'v1-Nightly'
+          tag_name: 'Nightly1'
+          name: 'Nightly1'
           prerelease: true
           body: This release is always the latest nightly release. These versions are unstable and may break your application. You've been warned.
           files: |

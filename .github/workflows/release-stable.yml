@@ -1,4 +1,4 @@
-name: Publish and Release Stable
+name: Publish and Release v1 Stable
 
 on:
   workflow_dispatch:

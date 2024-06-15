@@ -1,4 +1,4 @@
-name: Build Dev
+name: Build v1 Dev
 
 on:
   workflow_dispatch:
@@ -22,10 +22,6 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-      - name: Setup .NET Core SDK 6
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.x
       - name: Setup .NET Core SDK 8
         uses: actions/setup-dotnet@v1
         with:
@@ -74,9 +70,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: v${{ env.ASSEMBLY_VERSION }}-Dev
-          name: 'v1-Dev'
-          prerelease: true
+          tag_name: 'Dev1'
+          name: 'Dev1'
+          prerelease: false
           body: This release is highly unstable. Expect bugs and crashes on this branch. Developers Only!
           files: |
             ./blazam-dev-v${{ env.ASSEMBLY_VERSION }}.zip
