@@ -166,6 +166,15 @@ namespace BLAZAM.Update.Services
                 {
                     using var context = await _dbFactory.CreateDbContextAsync();
                     SelectedBranch = context.AppSettings.FirstOrDefault()?.UpdateBranch;
+                    //Update to v1 branches
+                    if (!SelectedBranch.StartsWith("v1"))
+                    {
+                        var branch = SelectedBranch.Split("-")[1];
+
+                        SelectedBranch = "v1-" + branch;
+                        context.AppSettings.FirstOrDefault().UpdateBranch = SelectedBranch;
+                        await context.SaveChangesAsync();
+                    }
                 }
                 catch (Exception ex)
                 {

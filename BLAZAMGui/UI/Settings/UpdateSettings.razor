@@ -45,7 +45,7 @@
             }
 
         }
-        if (!UpdateService.LatestUpdate.PassesPrerequisiteChecks)
+    if (UpdateService.LatestUpdate!=null &&  !UpdateService.LatestUpdate.PassesPrerequisiteChecks)
         {
             <MudAlert Icon="@Icons.Material.Filled.Error" Class="mud-alert-filled-error">
                 @AppLocalization["Unable to update!"]
