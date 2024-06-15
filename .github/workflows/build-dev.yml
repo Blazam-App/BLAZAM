@@ -72,7 +72,7 @@ jobs:
         with:
           tag_name: 'Pepper'
           name: 'Pepper'
-          prerelease: true
+          prerelease: false
           body: This release is highly unstable. Expect bugs and crashes on this branch. Developers Only!
           files: |
             ./blazam-dev-v${{ env.ASSEMBLY_VERSION }}.zip
