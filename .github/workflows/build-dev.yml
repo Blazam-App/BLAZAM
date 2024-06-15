@@ -70,8 +70,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: 'Pepper'
-          name: 'Pepper'
+          tag_name: 'Dev1'
+          name: 'Dev1'
           prerelease: false
           body: This release is highly unstable. Expect bugs and crashes on this branch. Developers Only!
           files: |
