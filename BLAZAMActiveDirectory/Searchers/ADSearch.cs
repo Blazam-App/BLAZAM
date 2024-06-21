@@ -179,6 +179,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
                             FilterQuery = "(|(samaccountname=*" + GeneralSearchTerm + "*)(anr=*" + GeneralSearchTerm + "*)(distinguishedName=*" + GeneralSearchTerm + "*))";
 
                         break;
+                    case ActiveDirectoryObjectType.BitLocker:
+                        searcher.Filter = "(&(objectCategory=*ms-FVE-RecoveryInformation*))";
+                        break;
                     case ActiveDirectoryObjectType.OU:
                         searcher.VirtualListView = null;
                         searcher.Filter = "(&(objectCategory=organizationalUnit))";
@@ -214,7 +217,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(objectSid={Fields.SID})";
                     if (Fields.NestedMemberOf != null)
                         FilterQuery += $"(memberOf:1.2.840.113556.1.4.1941:={Fields.NestedMemberOf.DN})";
-
+                    if (Fields.BitLockerRecoveryId != null)
+                        FilterQuery += $"(name=*{Fields.BitLockerRecoveryId}*)";
 
 
 

@@ -49,6 +49,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         List<SharedPrinter> SharedPrinters { get; }
 
+        Task<List<IADBitLockerRecovery>?> GetBitLockerRecoveryAsync();
+
         /// <summary>
         /// Gets the drive details from this computer
         /// </summary>

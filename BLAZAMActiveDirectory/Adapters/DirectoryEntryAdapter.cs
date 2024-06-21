@@ -192,6 +192,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         return ActiveDirectoryObjectType.Printer;
                     }
+                    if (Classes.Contains("ms-FVE-RecoveryInformation"))
+                    {
+                        return ActiveDirectoryObjectType.Printer;
+
+                    }
 
                 }
                 return ActiveDirectoryObjectType.OU;
@@ -577,25 +582,31 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                         if (child.Properties["objectClass"].Contains("top"))
                         {
-                            if (child.Properties["objectClass"].Contains("computer"))
+                            var objectClass = child.Properties["objectClass"];
+                            if (objectClass.Contains("computer"))
                             {
                                 thisObject = new ADComputer();
                             }
-                            else if (child.Properties["objectClass"].Contains("user"))
+                            else if (objectClass.Contains("user"))
                             {
                                 thisObject = new ADUser();
                             }
-                            else if (child.Properties["objectClass"].Contains("organizationalUnit"))
+                            else if (objectClass.Contains("organizationalUnit"))
                             {
                                 thisObject = new ADOrganizationalUnit();
                             }
-                            else if (child.Properties["objectClass"].Contains("group"))
+                            else if (objectClass.Contains("group"))
                             {
                                 thisObject = new ADGroup();
                             }
-                            else if (child.Properties["objectClass"].Contains("printQueue"))
+                            else if (objectClass.Contains("printQueue"))
                             {
                                 thisObject = new ADPrinter();
+                            }
+
+                            else if (objectClass.Contains("msFVE-RecoveryInformation"))
+                            {
+                                thisObject = new ADBitLockerRecovery();
                             }
                             if (thisObject != null)
                             {

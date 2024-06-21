@@ -27,6 +27,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
 
+        public async Task<List<IADBitLockerRecovery>?> GetBitLockerRecoveryAsync() {
+           var recovery= await Directory.BitLocker.FindByComputerAsync(this);
+            return recovery;
+        }
+
         public string? OperatingSystem
         {
             get

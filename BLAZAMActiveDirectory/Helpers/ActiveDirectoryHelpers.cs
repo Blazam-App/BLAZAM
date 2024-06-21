@@ -164,6 +164,10 @@ namespace BLAZAM.Helpers
                         {
                             thisObject = new ADPrinter();
                         }
+                        else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
+                        {
+                            thisObject = new ADBitLockerRecovery();
+                        }
                         if (thisObject != null)
                         {
                             thisObject.Parse(directory: ActiveDirectoryContext.Instance, searchResult: sr);
@@ -219,6 +223,10 @@ namespace BLAZAM.Helpers
                         else if (sr.Properties["objectClass"].Contains("printQueue"))
                         {
                             thisObject = new ADPrinter();
+                        }
+                        else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
+                        {
+                            thisObject = new ADBitLockerRecovery();
                         }
                         if (thisObject != null)
                         {
