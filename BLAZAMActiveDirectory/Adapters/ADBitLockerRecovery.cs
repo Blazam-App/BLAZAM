@@ -5,6 +5,7 @@ using BLAZAM.Logger;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using System.Net.Sockets;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -31,5 +32,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return GetStringProperty("msFVE-RecoveryPassword");
             }
         }
+
+       // public override ActiveDirectoryObjectType ObjectType =>  ActiveDirectoryObjectType.BitLocker;
     }
 }

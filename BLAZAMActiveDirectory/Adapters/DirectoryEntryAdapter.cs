@@ -166,7 +166,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public ActiveDirectoryObjectType ObjectType
+        public virtual ActiveDirectoryObjectType ObjectType
         {
             get
             {
@@ -192,9 +192,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         return ActiveDirectoryObjectType.Printer;
                     }
-                    if (Classes.Contains("ms-FVE-RecoveryInformation"))
+                    if (Classes.Contains("msFVE-RecoveryInformation"))
                     {
-                        return ActiveDirectoryObjectType.Printer;
+                        return ActiveDirectoryObjectType.BitLocker;
 
                     }
 

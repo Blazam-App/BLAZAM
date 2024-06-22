@@ -1,7 +1,7 @@
 ﻿
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
-    public interface IADBitLockerRecovery
+    public interface IADBitLockerRecovery:IDirectoryEntryAdapter
     {
         Guid? RecoveryId { get;  }
         string? RecoveryPassword { get; }

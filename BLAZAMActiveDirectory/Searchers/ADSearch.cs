@@ -180,7 +180,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                         break;
                     case ActiveDirectoryObjectType.BitLocker:
-                        searcher.Filter = "(&(objectCategory=*ms-FVE-RecoveryInformation*))";
+                        searcher.Filter = "(&(objectCategory=*msFVE-RecoveryInformation*))";
+                        if (GeneralSearchTerm != null)
+
+                            searcher.Filter = $"(name=*{GeneralSearchTerm}*)";
+
                         break;
                     case ActiveDirectoryObjectType.OU:
                         searcher.VirtualListView = null;

@@ -4,7 +4,7 @@
     string _fieldMudStackClasses = "flex-wrap gap-10";
 }
 <AppPageTitle>@Computer?.CanonicalName</AppPageTitle>
-    @if (Computer != null)
+@if (Computer != null)
 {
     <EditForm OnValidSubmit=SaveChanges Context="editContext" Model="Computer">
 
@@ -22,7 +22,7 @@
                                       OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
                                       OnToggleEditMode="ToggleEditMode"
                                       OnUnlock="@Unlock"
-                                      OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"/>
+                                      OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})" />
             <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
             </MudOverlay>
@@ -113,19 +113,21 @@
 
                                     </MudStack>
                                 </Section>
+                                @if (CurrentUser.State.IsSuperAdmin)
+                                {
+                                    <Section Title=@AppLocalization["BitLocker"]>
 
-                                <Section Title=@AppLocalization["BitLocker"]>
+                                        <MudStack Row=true Class="@_fieldMudStackClasses">
+                                            <MudDataGrid T=IADBitLockerRecovery Items="_recoveries">
+                                                <Columns>
+                                                    <PropertyColumn Property="x=>x.RecoveryId" Title="@AppLocalization["Recovery Id"]" />
+                                                    <PropertyColumn Property="x=>x.RecoveryPassword" Title="@AppLocalization["Recovery Password"]" />
+                                                </Columns>
+                                            </MudDataGrid>
 
-                                    <MudStack Row=true Class="@_fieldMudStackClasses">
-                                        <MudDataGrid T=IADBitLockerRecovery Items="_recoveries">
-                                            <Columns>
-                                                <PropertyColumn Property="x=>x.RecoveryId"/>
-                                                <PropertyColumn Property="x=>x.RecoveryPassword"/>
-                                            </Columns>
-                                        </MudDataGrid>
-                                       
-                                    </MudStack>
-                                </Section>
+                                        </MudStack>
+                                    </Section>
+                                }
                             </MudStack>
 
                         </MudItem>
@@ -167,7 +169,10 @@
                         <MudStack Row=true Class="@_fieldMudStackClasses">
                             @if (Computer.IsOnline == true)
                             {
-                                <ComputerSessions Computer="Computer" />
+                                if (CurrentUser.State.IsSuperAdmin)
+                                {
+                                    <ComputerSessions Computer="Computer" />
+                                }
                             }
                             else
                             {
@@ -266,7 +271,7 @@
 
     async Task Unlock()
     {
-        if (Computer!=null && await MessageService.Confirm("Are you sure you want to unlock " + Computer?.CanonicalName + "?", "Unlock Computer"))
+        if (Computer != null && await MessageService.Confirm("Are you sure you want to unlock " + Computer?.CanonicalName + "?", "Unlock Computer"))
         {
             Computer.LockedOut = false;
         }
