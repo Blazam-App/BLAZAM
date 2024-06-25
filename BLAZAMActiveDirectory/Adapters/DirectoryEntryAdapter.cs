@@ -439,13 +439,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual string? OU { get => DirectoryTools.DnToOu(DN) ?? DirectoryTools.DnToOu(ADSPath); }
 
-        public IADOrganizationalUnit? GetParent()
+        public IDirectoryEntryAdapter? GetParent()
         {
             if (DirectoryEntry == null || DirectoryEntry.Parent == null) return null;
 
-            var parent = new ADOrganizationalUnit();
+            var parent = DirectoryEntry.Parent.Encapsulate();
 
-            parent.Parse(Directory, DirectoryEntry.Parent);
             return parent;
 
 

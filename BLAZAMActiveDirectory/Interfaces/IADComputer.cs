@@ -20,6 +20,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Null indicates that the check has not yet completed.
         /// </summary>
         bool? IsOnline { get; }
+        bool CanReadBitLocker { get; }
         /// <summary>
         /// If this computer is online, this is the resolved IP address from the server.
         /// Otherwise, this is null

@@ -5,7 +5,7 @@
 }
 
 
-
+<BitLockerViewer Computer="_computer"/>
 <MudOverlay Visible="LoadingData" DarkBackground="true" Absolute="true">
     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
 </MudOverlay>
@@ -21,6 +21,7 @@
 @code {
     IADBitLockerRecovery? BitLocker=> DirectoryEntry as IADBitLockerRecovery;
     List<IADBitLockerRecovery> _recoveries = new();
+    IADComputer _computer;
     protected override async Task OnInitializedAsync()
     {
 
@@ -28,7 +29,7 @@
         await InvokeAsync(StateHasChanged);
 
 
-        var computer = BitLocker.GetParent();
+        _computer = (IADComputer)BitLocker.GetParent();
 
         LoadingData = false;
         await RefreshEntryComponents();

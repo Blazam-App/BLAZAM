@@ -113,20 +113,9 @@
 
                                     </MudStack>
                                 </Section>
-                                @if (CurrentUser.State.IsSuperAdmin)
+                                @if (Computer.CanReadBitLocker)
                                 {
-                                    <Section Title=@AppLocalization["BitLocker"]>
-
-                                        <MudStack Row=true Class="@_fieldMudStackClasses">
-                                            <MudDataGrid T=IADBitLockerRecovery Items="_recoveries">
-                                                <Columns>
-                                                    <PropertyColumn Property="x=>x.RecoveryId" Title="@AppLocalization["Recovery Id"]" />
-                                                    <PropertyColumn Property="x=>x.RecoveryPassword" Title="@AppLocalization["Recovery Password"]" />
-                                                </Columns>
-                                            </MudDataGrid>
-
-                                        </MudStack>
-                                    </Section>
+                                    <BitLockerViewer Computer="Computer"/>
                                 }
                             </MudStack>
 
@@ -248,7 +237,6 @@
 
 @code {
     IADComputer? Computer => DirectoryEntry as IADComputer;
-    List<IADBitLockerRecovery> _recoveries = new();
     protected override async Task OnInitializedAsync()
     {
         Computer?.MonitorOnlineStatus();
@@ -261,7 +249,6 @@
                 RefreshEntryComponents();
             });
         }
-        _recoveries = await Computer.GetBitLockerRecoveryAsync();
         await AuditLogger.Searched(Computer);
 
         LoadingData = false;
