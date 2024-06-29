@@ -97,7 +97,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             return Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         }
-
+        
         public async Task<List<IDirectoryEntryAdapter>> SearchAsync()
         {
             return await SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
