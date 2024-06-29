@@ -20,6 +20,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Null indicates that the check has not yet completed.
         /// </summary>
         bool? IsOnline { get; }
+        bool CanReadBitLocker { get; }
         /// <summary>
         /// If this computer is online, this is the resolved IP address from the server.
         /// Otherwise, this is null
@@ -48,6 +49,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// All shared printers on this computer
         /// </summary>
         List<SharedPrinter> SharedPrinters { get; }
+
+        Task<List<IADBitLockerRecovery>?> GetBitLockerRecoveryAsync();
 
         /// <summary>
         /// Gets the drive details from this computer

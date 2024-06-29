@@ -138,27 +138,18 @@ namespace BLAZAM.ActiveDirectory
         }
 
 
-        /// <summary>
 
-        /// </summary>
         public IADUserSearcher Users { get; }
 
-        /// <summary>
-
-        /// </summary>
         public IADGroupSearcher Groups { get; }
 
-        /// <summary>
-
-        /// </summary>
         public IADOUSearcher OUs { get; }
-        /// </summary>
+
         public IADPrinterSearcher Printers { get; }
 
-        /// <summary>
-
-        /// </summary>
         public IADComputerSearcher Computers { get; }
+
+        public IADBitLockerSearcher BitLocker { get; }
 
         public IDatabaseContext? Context { get; private set; }
 
@@ -238,6 +229,7 @@ namespace BLAZAM.ActiveDirectory
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
             Printers = new ADPrinterSearcher(this);
+            BitLocker = new ADBitLockerSearcher(this);
             Computers = new ADComputerSearcher(this, _wmiFactory);
         }
         /// <summary>
@@ -265,7 +257,7 @@ namespace BLAZAM.ActiveDirectory
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
             Printers = new ADPrinterSearcher(this);
-
+            BitLocker = new ADBitLockerSearcher(this);
             Computers = new ADComputerSearcher(this, activeDirectoryContextSeed._wmiFactory);
         }
         private DirectoryContext DirectoryContext => new DirectoryContext(
