@@ -9,6 +9,9 @@ using BLAZAM.Database.Context;
 using System.Security.Principal;
 using System.Reflection.Metadata.Ecma335;
 using System.Diagnostics;
+using BLAZAM.Localization;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 
 namespace BLAZAM.Update.Services
 {
@@ -23,7 +26,8 @@ namespace BLAZAM.Update.Services
 
     public class UpdateService : UpdateServiceBase
     {
-
+        [Inject]
+        protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }
         /// <summary>
         /// The latest available update for the configured <see cref="SelectedBranch"/>
         /// </summary>
@@ -115,7 +119,7 @@ namespace BLAZAM.Update.Services
             var latestStableUpdate = EncapsulateUpdate(latestStableRelease, ApplicationReleaseBranches.Stable);
             var latestBranchUpdate = EncapsulateUpdate(latestRelease, SelectedBranch); 
             //Override branch if stable has more recent release
-            if (latestStableUpdate!=null && latestStableUpdate.Version.CompareTo(latestBranchUpdate.Version)>0)
+            if (latestStableUpdate!=null && latestStableUpdate.Version.NewerThan(latestBranchUpdate.Version))
             {
                 LatestUpdate = latestStableUpdate;
             }
@@ -124,13 +128,28 @@ namespace BLAZAM.Update.Services
                 LatestUpdate = latestBranchUpdate;
 
             }
-            if (Debugger.IsAttached)
-            {
-                ApplicationUpdate? testUpdate = EncapsulateUpdate(latestRelease, SelectedBranch);
+            //if (Debugger.IsAttached)
+            //{
+            //    ApplicationUpdate? testUpdate = EncapsulateUpdate(latestRelease, SelectedBranch);
 
-                latestBranchUpdate.Version = new ApplicationVersion("1.0.0");
-                LatestUpdate = latestBranchUpdate;
-            }
+            //    testUpdate.PreRequisiteChecks.Add(new(() => {
+            //        if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
+            //        {
+            //            testUpdate.PrequisiteMessage = "ASP NET Core 8 Runtime is missing.";
+            //            return false;
+
+            //        }
+            //        if (ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCoreHosting())
+            //        {
+            //            testUpdate.PrequisiteMessage = "ASP NET Core 8 Web Hosting Bundle is missing.";
+            //            return false;
+
+            //        }
+            //        return true;
+            //    }));
+            //    testUpdate.Version = new ApplicationVersion("1.0.0.2024.07.01.0000");
+            //    LatestUpdate = testUpdate;
+            //}
         }
 
         /// <summary>
@@ -158,30 +177,49 @@ namespace BLAZAM.Update.Services
             if (SelectedBranch == null) SelectedBranch = ApplicationReleaseBranches.Stable;
         }
 
-        private ApplicationUpdate? EncapsulateUpdate(Release? latestRelease, string Branch)
+        private ApplicationUpdate? EncapsulateUpdate(Release? releaseToEncapsulate, string Branch)
         {
-            ApplicationVersion? latestVer = null;
+            ApplicationVersion? releaseVersion = null;
 
             //Get the release filename to prepare a version object
-            var filename = Path.GetFileNameWithoutExtension(latestRelease?.Assets.FirstOrDefault()?.Name);
+            var filename = Path.GetFileNameWithoutExtension(releaseToEncapsulate?.Assets.FirstOrDefault()?.Name);
             //Create that version object
             if (filename == null) throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
-            latestVer = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
+            releaseVersion = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
 
 
+            
 
 
-            if (latestRelease != null && latestVer != null)
+            if (releaseToEncapsulate != null && releaseVersion != null)
             {
                 IApplicationRelease release = new ApplicationRelease
                 {
                     Branch = Branch,
-                    GitHubRelease = latestRelease,
-                    Version = latestVer,
+                    GitHubRelease = releaseToEncapsulate,
+                    Version = releaseVersion,
 
                 };
-                return new ApplicationUpdate(_applicationInfo, _dbFactory) { Release = release };
+                var update = new ApplicationUpdate(_applicationInfo, _dbFactory) { Release = release };
+                if(releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
+                {
+                    update.PreRequisiteChecks.Add(new(() => {
+                        if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
+                        {
+                            update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Runtime is missing."];
+                         return false;
 
+                        }
+                        if (ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCoreHosting())
+                        {
+                            update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Web Hosting Bundle is missing."];
+                            return false;
+
+                        }
+                        return true;
+                    }));
+                }
+                return update;
             }
             return null;
         }
@@ -288,7 +326,6 @@ namespace BLAZAM.Update.Services
         /// Returns true if any configured credentials have write permission to the app directory
         /// </summary>
         public bool HasWritePermission => UpdateCredential != UpdateCredential.None;
-
 
     }
 }

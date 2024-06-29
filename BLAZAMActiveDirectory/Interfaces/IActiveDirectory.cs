@@ -62,6 +62,10 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Provides Computer search functions
         /// </summary>
         IADComputerSearcher Computers { get; }
+        /// <summary>
+        /// Provides Computer search functions
+        /// </summary>
+        IADBitLockerSearcher BitLocker { get; }
 
         /// <summary>
         /// Called when the connection state of the Active Directory server has

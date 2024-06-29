@@ -15,7 +15,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.18");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.19");
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
                 {
@@ -1205,6 +1205,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<bool?>("AllowCustomGroups")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool?>("AskForAlternateEmail")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Category")
                         .HasColumnType("TEXT");
 
@@ -1231,6 +1234,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<bool?>("RequirePasswordChange")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool?>("SendWelcomeEmail")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UsernameFormula")

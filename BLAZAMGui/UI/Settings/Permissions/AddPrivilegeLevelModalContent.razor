@@ -45,7 +45,7 @@ return result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==Ac
             Context.PermissionDelegate.Add(NewPermissionDelegate);
             await Context.SaveChangesAsync();
             NewPermissionDelegate = new PermissionDelegate();
-            Modal?.Hide();
+            Modal?.Close();
             await DelegateAdded.InvokeAsync();
             return;
         }

@@ -5,6 +5,8 @@ using BLAZAM.Logger;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using System.Net.Sockets;
+using BLAZAM.Database.Models.Permissions;
+using BLAZAM.Common.Data;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -17,7 +19,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 if (CanonicalName == null) return null;
-                return new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName),this);
+                return new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
             }
         }
         private CancellationTokenSource cts;
@@ -25,6 +27,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public ADComputer()
         {
 
+        }
+
+        public async Task<List<IADBitLockerRecovery>?> GetBitLockerRecoveryAsync()
+        {
+            var recovery = await Directory.BitLocker.FindByComputerAsync(this);
+            return recovery;
         }
 
         public string? OperatingSystem
@@ -56,10 +64,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     OnOnlineChanged?.Invoke((bool)value);
             }
         }
-        public List<ComputerService> Services => wmiConnection?.Services?? new ();
+        public List<ComputerService> Services => wmiConnection?.Services ?? new();
         public ComputerMemory Memory => wmiConnection?.Memory ?? new();
         public int Processor => wmiConnection?.Processor ?? 0;
-        public double MemoryUsedPercent => wmiConnection?.Memory.PercentUsed ?? 0 ;
+        public double MemoryUsedPercent => wmiConnection?.Memory.PercentUsed ?? 0;
         public List<IADComputerDrive> GetDrives()
         {
             if (wmiConnection == null) return new();
@@ -92,9 +100,30 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return wmiConnection?.SharePrinters ?? new ();
+                return wmiConnection?.SharePrinters ?? new();
 
             }
+        }
+
+        public bool CanReadBitLocker
+        {
+            get
+            {
+                return HasPermission(p => p.Where(pm =>
+                pm.AccessLevels.Any(al =>
+                al.ObjectMap.Any(om =>
+                om.ObjectType == ActiveDirectoryObjectType.BitLocker &&
+                om.ObjectAccessLevel.Level > ObjectAccessLevels.Deny.Level
+                ))),
+                p => p.Where(pm =>
+                pm.AccessLevels.Any(al =>
+                al.ObjectMap.Any(om =>
+                om.ObjectType == ActiveDirectoryObjectType.BitLocker &&
+                om.ObjectAccessLevel.Level == ObjectAccessLevels.Deny.Level
+                )))
+                );
+            }
+
         }
 
 
@@ -113,7 +142,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}",ex);
+                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
             }
             return false;
 
@@ -155,7 +184,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                if (IPHostEntry == null && !cts.IsCancellationRequested && CanonicalName!=null)
+                if (IPHostEntry == null && !cts.IsCancellationRequested && CanonicalName != null)
                 {
                     IPHostEntry = Dns.GetHostEntry(CanonicalName);
                     Task.Delay(60000).ContinueWith((s) =>
@@ -170,7 +199,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     try
                     {
-                        if (cts.IsCancellationRequested || CanonicalName ==null) return;
+                        if (cts.IsCancellationRequested || CanonicalName == null) return;
 
                         PingReply response = ping.Send(CanonicalName, timeout);
                         if (response != null)
@@ -202,11 +231,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex );
+                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
 
             }
         }
-      
+
         public override void Dispose()
         {
             base.Dispose();

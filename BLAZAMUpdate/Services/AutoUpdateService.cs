@@ -49,7 +49,7 @@ namespace BLAZAM.Update.Services
                 try
                 {
                     var fileVersion = new ApplicationVersion(file.Name);
-                    if (fileVersion.CompareTo(_applicationInfo.RunningVersion) < 0 && file.SinceLastModified > TimeSpan.FromDays(1))
+                    if (fileVersion.OlderThan(_applicationInfo.RunningVersion) && file.SinceLastModified > TimeSpan.FromDays(1))
                     {
                         if (file.Writable)
                         {
@@ -116,7 +116,7 @@ namespace BLAZAM.Update.Services
                     var dirVersion = new ApplicationVersion(dir.Name);
                     if (dirVersion != null)
                     {
-                        if (dirVersion.CompareTo(_applicationInfo.RunningVersion) < 0)
+                        if (dirVersion.OlderThan(_applicationInfo.RunningVersion))
                         {
                             if (dir.Writable)
                             {
@@ -188,7 +188,7 @@ namespace BLAZAM.Update.Services
                 Loggers.UpdateLogger.Information("Checking for automatic update");
 
                 var latestUpdate = await updateService.GetUpdates();
-                if (latestUpdate != null && latestUpdate.Version.CompareTo(_applicationInfo.RunningVersion) > 0){
+                if (latestUpdate != null && latestUpdate.Version.NewerThan(_applicationInfo.RunningVersion)){
                     IsUpdateAvailable = true;
                     if(appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
                     {
