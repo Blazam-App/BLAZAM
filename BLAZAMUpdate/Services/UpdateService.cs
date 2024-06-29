@@ -128,28 +128,28 @@ namespace BLAZAM.Update.Services
                 LatestUpdate = latestBranchUpdate;
 
             }
-            if (Debugger.IsAttached)
-            {
-                ApplicationUpdate? testUpdate = EncapsulateUpdate(latestRelease, SelectedBranch);
+            //if (Debugger.IsAttached)
+            //{
+            //    ApplicationUpdate? testUpdate = EncapsulateUpdate(latestRelease, SelectedBranch);
 
-                testUpdate.PreRequisiteChecks.Add(new(() => {
-                    if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
-                    {
-                        testUpdate.PrequisiteMessage = "ASP NET Core 8 Runtime is missing.";
-                        return false;
+            //    testUpdate.PreRequisiteChecks.Add(new(() => {
+            //        if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
+            //        {
+            //            testUpdate.PrequisiteMessage = "ASP NET Core 8 Runtime is missing.";
+            //            return false;
 
-                    }
-                    if (ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCoreHosting())
-                    {
-                        testUpdate.PrequisiteMessage = "ASP NET Core 8 Web Hosting Bundle is missing.";
-                        return false;
+            //        }
+            //        if (ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCoreHosting())
+            //        {
+            //            testUpdate.PrequisiteMessage = "ASP NET Core 8 Web Hosting Bundle is missing.";
+            //            return false;
 
-                    }
-                    return true;
-                }));
-                testUpdate.Version = new ApplicationVersion("1.0.0.2024.07.01.0000");
-                LatestUpdate = testUpdate;
-            }
+            //        }
+            //        return true;
+            //    }));
+            //    testUpdate.Version = new ApplicationVersion("1.0.0.2024.07.01.0000");
+            //    LatestUpdate = testUpdate;
+            //}
         }
 
         /// <summary>

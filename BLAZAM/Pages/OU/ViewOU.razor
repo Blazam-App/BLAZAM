@@ -78,7 +78,7 @@
         await AuditLogger.Searched(OU);
         if (OU != null)
         {
-            parentOU = OU.GetParent();
+            parentOU = (IADOrganizationalUnit)OU.GetParent();
         }
         LoadingData = false;
         await RefreshEntryComponents();
