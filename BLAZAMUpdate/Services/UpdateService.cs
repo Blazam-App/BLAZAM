@@ -48,12 +48,13 @@ namespace BLAZAM.Update.Services
         protected readonly IHttpClientFactory httpClientFactory;
         private readonly ApplicationInfo _applicationInfo;
 
-        public UpdateService(IHttpClientFactory _clientFactory, ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null)
+        public UpdateService(IHttpClientFactory _clientFactory, ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null, IStringLocalizer<AppLocalization> appLocalization=null)
         {
             _dbFactory = dbFactory;
             httpClientFactory = _clientFactory;
             _updateCheckTimer = new Timer(CheckForUpdate, null, TimeSpan.FromSeconds(20), TimeSpan.FromHours(1));
             _applicationInfo = applicationInfo;
+            AppLocalization = appLocalization;
         }
         /// <summary>
         /// Polls Github for the latest release in the selected branch
@@ -166,6 +167,12 @@ namespace BLAZAM.Update.Services
                 {
                     using var context = await _dbFactory.CreateDbContextAsync();
                     SelectedBranch = context.AppSettings.FirstOrDefault()?.UpdateBranch;
+                    if(SelectedBranch == "Stable")
+                    {
+                        context.AppSettings.FirstOrDefault().UpdateBranch= ApplicationReleaseBranches.Stable;
+                        SelectedBranch = ApplicationReleaseBranches.Stable;
+                        context.SaveChanges();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -204,15 +211,24 @@ namespace BLAZAM.Update.Services
                 if(releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
                 {
                     update.PreRequisiteChecks.Add(new(() => {
-                        if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
+                            if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
                         {
+                            if(AppLocalization!=null)
                             update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Runtime is missing."];
-                         return false;
+                            else
+                                update.PrequisiteMessage = "ASP NET Core 8 Runtime is missing.";
+
+                            return false;
 
                         }
                         if (ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCoreHosting())
                         {
-                            update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Web Hosting Bundle is missing."];
+                            if (AppLocalization != null)
+
+                                update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Web Hosting Bundle is missing."];
+                            else
+                                update.PrequisiteMessage = "ASP NET Core 8 Web Hosting Bundle is missing.";
+
                             return false;
 
                         }
