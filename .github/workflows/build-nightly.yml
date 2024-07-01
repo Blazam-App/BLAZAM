@@ -10,6 +10,7 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    permissions: write-all
    
         
     steps:
@@ -63,7 +64,7 @@ jobs:
       - name: Update nightly release
         uses: andelf/nightly-release@main
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: Nightly
           name: 'Nightly'
