@@ -108,6 +108,24 @@ namespace BLAZAM.Update.Services
             latestStableRelease = stableReleases.FirstOrDefault();
             //Store all other releases for use later
             StableUpdates.Clear();
+            try {
+                var betaStableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
+
+                foreach (var release in betaStableReleases)
+                {
+                    //Get the release filename to prepare a version object
+                    var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
+                    //Create that version object
+                    if (fn == null) continue;
+                    StableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.UpdateLogger.Error("Error trying to get beta releases {@Error}", ex);
+            }
+           
             foreach (var release in stableReleases)
             {
                 //Get the release filename to prepare a version object
