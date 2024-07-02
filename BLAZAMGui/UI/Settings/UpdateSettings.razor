@@ -45,13 +45,17 @@
             }
 
         }
-        if (!UpdateService.LatestUpdate.PassesPrerequisiteChecks)
+        if (UpdateService.IncompatibleUpdates.Count > 0)
         {
-            <MudAlert Icon="@Icons.Material.Filled.Error" Class="mud-alert-filled-error">
-                @AppLocalization["Unable to update!"]
-                <MudText>@(UpdateService.LatestUpdate.PrequisiteMessage)</MudText>
+            var latestIncompatibleUpdate = UpdateService.IncompatibleUpdates.Where(x => x.Newer).OrderByDescending(x => x.Release.ReleaseTime).FirstOrDefault();
+            if (latestIncompatibleUpdate != null)
+            {
+                <MudAlert Icon="@Icons.Material.Filled.Error" Class="mud-alert-filled-error">
+                    @AppLocalization["Unable to update!"]
+                    <MudText>@(latestIncompatibleUpdate.PrequisiteMessage)</MudText>
 
-            </MudAlert>
+                </MudAlert>
+            }
         }
         <SettingsField Label="@AppLocalization["Application Credentials"]">
 

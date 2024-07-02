@@ -12,6 +12,7 @@ using System.Diagnostics;
 using BLAZAM.Localization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
+using System.Net.WebSockets;
 
 namespace BLAZAM.Update.Services
 {
@@ -105,7 +106,6 @@ namespace BLAZAM.Update.Services
             var stableReleases = releases.Where(r => r.TagName.Contains(ApplicationReleaseBranches.Stable, StringComparison.OrdinalIgnoreCase));
             //Get the first release,which should be the most recent
             latestRelease = branchReleases.FirstOrDefault();
-            latestStableRelease = stableReleases.FirstOrDefault();
             //Store all other releases for use later
             StableUpdates.Clear();
             try {
@@ -135,12 +135,15 @@ namespace BLAZAM.Update.Services
                 StableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
 
             }
-            var latestStableUpdate = EncapsulateUpdate(latestStableRelease, ApplicationReleaseBranches.Stable);
+
+            var latestStableUpdate = StableUpdates.Where(x=>x.PassesPrerequisiteChecks).OrderByDescending(x=>x.Release.ReleaseTime).FirstOrDefault();
+            IncompatibleUpdates = StableUpdates.Where(x => !x.PassesPrerequisiteChecks).ToList();
             var latestBranchUpdate = EncapsulateUpdate(latestRelease, SelectedBranch); 
             //Override branch if stable has more recent release
-            if (latestStableUpdate!=null && latestStableUpdate.Version.NewerThan(latestBranchUpdate.Version))
+            if (latestStableUpdate!=null)
             {
                 LatestUpdate = latestStableUpdate;
+
             }
             else if(latestBranchUpdate!=null)
             {
@@ -361,5 +364,6 @@ namespace BLAZAM.Update.Services
         /// </summary>
         public bool HasWritePermission => UpdateCredential != UpdateCredential.None;
 
+        public List<ApplicationUpdate> IncompatibleUpdates { get; private set; } = new();
     }
 }

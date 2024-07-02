@@ -80,17 +80,17 @@
 
 
 
-                                </MudCard>
+                            </MudCard>
 
 
-                            </ItemContent>
-                        </MudTimelineItem>
+                        </ItemContent>
+                    </MudTimelineItem>
 
 
 
-                        @if (ShowAllUpdates)
+                    @if (ShowAllUpdates)
                     {
-                        @foreach (var update in UpdateService.StableUpdates.Where(x=>x.Version.OlderThan(LatestAvailableVersion.Version)).OrderBy(x => x.Version))
+                        @foreach (var update in UpdateService.StableUpdates.Where(x => x.Version.OlderThan(LatestAvailableVersion.Version)).OrderBy(x => x.Version))
                         {
 
 
@@ -102,7 +102,7 @@
                     }
                     @if (UpdateService.LatestUpdate.Version.NewerThan(ApplicationInfo.RunningVersion))
                     {
-                        <AvailableUpdate Update=@UpdateService.LatestUpdate OnApply="ApplyUpdate" Even=@(i%2==0) />
+                        <AvailableUpdate Update=@UpdateService.LatestUpdate OnApply="ApplyUpdate" Even=true />
 
                     }
 
@@ -117,7 +117,15 @@
                             </ItemContent>
                         </MudTimelineItem>
                     }
+                    @if (UpdateService.IncompatibleUpdates.Count > 0)
+                    {
+                        var latestIncompatibleUpdate = UpdateService.IncompatibleUpdates.Where(x => x.Newer).OrderByDescending(x => x.Release.ReleaseTime).FirstOrDefault();
+                        if (latestIncompatibleUpdate != null)
+                        {
+                            <AvailableUpdate Update=@latestIncompatibleUpdate OnApply="ApplyUpdate" Even=true />
 
+                        }
+                    }
                 </MudTimeline>
 
                 @if (AutoUpdateService.IsUpdatedScheduled)
