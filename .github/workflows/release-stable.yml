@@ -1,10 +1,10 @@
-name: Publish and Release Stable
+name: Publish and Release v1 Stable
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - Beta-Stable
+      - v1-Stable
     
 
 jobs:
@@ -16,10 +16,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Setup .NET Core SDK 6
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.x
       - name: Setup .NET Core SDK 8
         uses: actions/setup-dotnet@v1
         with:
@@ -56,8 +52,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
         with:
-          tag_name: Stable-v${{ env.ASSEMBLY_VERSION }}
-          release_name: Stable - v${{ env.ASSEMBLY_VERSION }}
+          tag_name: Release-v${{ env.ASSEMBLY_VERSION }}
+          release_name: Release - v${{ env.ASSEMBLY_VERSION }}
           body: ""
           draft: true
           prerelease: true
