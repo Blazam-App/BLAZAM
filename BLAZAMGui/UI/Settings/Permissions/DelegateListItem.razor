@@ -3,15 +3,11 @@
     <TitleContent>
         <MudStack Row=true>
             <MudText Typo="Typo.h6">
-               @if(Group!=null){
-                @Group?.CanonicalName
-               }else {
-                    @("Group not found")
-
-                }
+                @Delegate.DelegateName
+             
                 </MudText>
 
-            <MudSwitch Label="Super User Group" Checked="Level?.IsSuperAdmin" Disabled />
+            <MudSwitch Label="Super User Group" Checked="Delegate?.IsSuperAdmin" Disabled />
         </MudStack>
 
 
@@ -23,7 +19,7 @@
 
             <ADAutoComplete Label="@AppLocalization["Delgate Name"]"
                             SearchObjectType="ActiveDirectoryObjectType.All"
-                            @bind-SelectedResult=@Group
+                            @bind-SelectedResult=@_delegateEntry
                             CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
             @*<ADGroupAutoComplete @bind-SelectedGroup="@Group"/>*@
 
@@ -31,7 +27,7 @@
 
 
 
-            <MudSwitch Label="Super User Group" Disabled=@(ApplicationInfo.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Level.IsSuperAdmin" />
+            <MudSwitch Label="Super User Group" Disabled=@(ApplicationInfo.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Delegate.IsSuperAdmin" />
 
 
 
@@ -49,9 +45,9 @@
 @code {
 
     #nullable disable warnings
-    IDirectoryEntryAdapter? Group;
+    IDirectoryEntryAdapter? _delegateEntry;
     [Parameter]
-    public PermissionDelegate Level { get; set; }
+    public PermissionDelegate Delegate { get; set; }
     [Parameter]
     public new IDatabaseContext Context { get; set; }
 
@@ -61,20 +57,33 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Group = Directory.FindEntryBySID(Level.DelegateSid);
+        _delegateEntry = Directory.FindEntryBySID(Delegate.DelegateSid);
+        if(_delegateEntry != null)
+        {
+            if(Delegate.DelegateName!= _delegateEntry.CanonicalName)
+            {
+                Delegate.DelegateName = _delegateEntry.CanonicalName;
+                var result = await Context.SaveChangesAsync();
+            }
+        }
+        else
+        {
+            Delegate.DelegateName = ("(" +Delegate.DelegateSid.ToSidString()+")").Trim();
+            var result = await Context.SaveChangesAsync();
+        }
     }
 
 
     async Task DeleteDelegate()
     {
-        Level.DeletedAt = DateTime.UtcNow;
+        Delegate.DeletedAt = DateTime.UtcNow;
         await Context.SaveChangesAsync();
         SnackBarService.Success("Permission Delegate removed.");
         await DelegateDeleted.InvokeAsync();
     }
     protected async override void Save()
     {
-        Level.DelegateSid = Group.SID;
+        Delegate.DelegateSid = _delegateEntry.SID;
         await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
     }

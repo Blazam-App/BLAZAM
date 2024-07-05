@@ -16,7 +16,7 @@ namespace BLAZAM.Common.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.19")
+                .HasAnnotation("ProductVersion", "7.0.20")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
@@ -884,15 +884,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("BCC")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CC")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -900,9 +892,8 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("TemplateName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("TemplateType")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1164,6 +1155,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("DelegateName")
+                        .HasColumnType("longtext");
 
                     b.Property<byte[]>("DelegateSid")
                         .IsRequired()

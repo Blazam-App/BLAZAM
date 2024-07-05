@@ -7,16 +7,16 @@
 
         @if (!ReadOnly && _permissionDelegates != null)
         {
-
             <MudSelectList Validation="@(_permissionDelegates?.Count>0)"
                            Values=@_permissionDelegates
                            Placeholder=@AppLocalization["Choose or Search..."]
                            T="PermissionDelegate"
                            ToStringFunc=DelegateToString
                            Label="@AppLocalization["Delegates"]"
-                              MultiSelection
-             @bind-Text=@selectedPermissionDelegateNames
-             @bind-SelectedValues=@Map.PermissionDelegates />
+                           MultiSelection=true
+                           @bind-Text=@selectedPermissionDelegateNames
+                           @bind-SelectedValues=@Map.PermissionDelegates />
+         
 
 
             <MudSelectList Validation="@(_permissionDelegates?.Count>0)"
@@ -140,7 +140,7 @@
                             concatenatd += sid.ToSidString()+", ";
                         }
                     }
-                   
+
                     if (concatenatd != "")
                         concatenatd = concatenatd.Substring(0, concatenatd.Length - 2);
 
@@ -173,9 +173,10 @@
 
     string DelegateToString(PermissionDelegate deleg)
     {
+        return deleg?.DelegateName;
         if (deleg == null) return AppLocalization["Unknown delegate"];
         if (deleg.DelegateSid != null)
-            return Directory.FindEntryBySID(deleg?.DelegateSid)?.CanonicalName;
+            return Directory.FindEntryBySID(deleg?.DelegateSid)?.CanonicalName??deleg.DelegateSid.ToSidString();
         else
             return "Loading...";
     }
