@@ -12,6 +12,7 @@ using System.Diagnostics;
 using BLAZAM.Localization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
+using System.Net.WebSockets;
 
 namespace BLAZAM.Update.Services
 {
@@ -48,12 +49,13 @@ namespace BLAZAM.Update.Services
         protected readonly IHttpClientFactory httpClientFactory;
         private readonly ApplicationInfo _applicationInfo;
 
-        public UpdateService(IHttpClientFactory _clientFactory, ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null)
+        public UpdateService(IHttpClientFactory _clientFactory, ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null, IStringLocalizer<AppLocalization> appLocalization=null)
         {
             _dbFactory = dbFactory;
             httpClientFactory = _clientFactory;
             _updateCheckTimer = new Timer(CheckForUpdate, null, TimeSpan.FromSeconds(20), TimeSpan.FromHours(1));
             _applicationInfo = applicationInfo;
+            AppLocalization = appLocalization;
         }
         /// <summary>
         /// Polls Github for the latest release in the selected branch
@@ -104,9 +106,26 @@ namespace BLAZAM.Update.Services
             var stableReleases = releases.Where(r => r.TagName.Contains(ApplicationReleaseBranches.Stable, StringComparison.OrdinalIgnoreCase));
             //Get the first release,which should be the most recent
             latestRelease = branchReleases.FirstOrDefault();
-            latestStableRelease = stableReleases.FirstOrDefault();
             //Store all other releases for use later
             StableUpdates.Clear();
+            try {
+                var betaStableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
+
+                foreach (var release in betaStableReleases)
+                {
+                    //Get the release filename to prepare a version object
+                    var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
+                    //Create that version object
+                    if (fn == null) continue;
+                    StableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.UpdateLogger.Error("Error trying to get beta releases {@Error}", ex);
+            }
+           
             foreach (var release in stableReleases)
             {
                 //Get the release filename to prepare a version object
@@ -116,12 +135,15 @@ namespace BLAZAM.Update.Services
                 StableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
 
             }
-            var latestStableUpdate = EncapsulateUpdate(latestStableRelease, ApplicationReleaseBranches.Stable);
+
+            var latestStableUpdate = StableUpdates.Where(x=>x.PassesPrerequisiteChecks).OrderByDescending(x=>x.Release.ReleaseTime).FirstOrDefault();
+            IncompatibleUpdates = StableUpdates.Where(x => !x.PassesPrerequisiteChecks).ToList();
             var latestBranchUpdate = EncapsulateUpdate(latestRelease, SelectedBranch); 
             //Override branch if stable has more recent release
-            if (latestStableUpdate!=null && latestStableUpdate.Version.NewerThan(latestBranchUpdate.Version))
+            if (latestStableUpdate!=null)
             {
                 LatestUpdate = latestStableUpdate;
+
             }
             else if(latestBranchUpdate!=null)
             {
@@ -166,6 +188,12 @@ namespace BLAZAM.Update.Services
                 {
                     using var context = await _dbFactory.CreateDbContextAsync();
                     SelectedBranch = context.AppSettings.FirstOrDefault()?.UpdateBranch;
+                    if(SelectedBranch == "Stable")
+                    {
+                        context.AppSettings.FirstOrDefault().UpdateBranch= ApplicationReleaseBranches.Stable;
+                        SelectedBranch = ApplicationReleaseBranches.Stable;
+                        context.SaveChanges();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -204,15 +232,24 @@ namespace BLAZAM.Update.Services
                 if(releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
                 {
                     update.PreRequisiteChecks.Add(new(() => {
-                        if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
+                            if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
                         {
+                            if(AppLocalization!=null)
                             update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Runtime is missing."];
-                         return false;
+                            else
+                                update.PrequisiteMessage = "ASP NET Core 8 Runtime is missing.";
+
+                            return false;
 
                         }
                         if (ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCoreHosting())
                         {
-                            update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Web Hosting Bundle is missing."];
+                            if (AppLocalization != null)
+
+                                update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Web Hosting Bundle is missing."];
+                            else
+                                update.PrequisiteMessage = "ASP NET Core 8 Web Hosting Bundle is missing.";
+
                             return false;
 
                         }
@@ -327,5 +364,6 @@ namespace BLAZAM.Update.Services
         /// </summary>
         public bool HasWritePermission => UpdateCredential != UpdateCredential.None;
 
+        public List<ApplicationUpdate> IncompatibleUpdates { get; private set; } = new();
     }
 }
