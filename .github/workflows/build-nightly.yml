@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - v1-Nightly
+      - Beta-Nightly
     
 
 jobs:
@@ -66,8 +66,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: 'Nightly1'
-          name: 'Nightly1'
+          tag_name: 'Nightly'
+          name: 'Nightly'
           prerelease: true
           body: This release is always the latest nightly release. These versions are unstable and may break your application. You've been warned.
           files: |
