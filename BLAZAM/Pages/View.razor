@@ -1,0 +1,218 @@
+﻿@page "/view"
+@page "/view/{SearchTermParameter}"
+@using System.Web
+
+@inherits AppComponentBase
+@attribute [Authorize(Roles = (UserRoles.SearchOUs + "," + UserRoles.SearchComputers + "," + UserRoles.SearchGroups + "," + UserRoles.SearchUsers + "," + UserRoles.SuperAdmin))]
+<AuthorizeView Roles="@(UserRoles.SearchOUs + ","+UserRoles.SearchComputers + ","+UserRoles.SearchGroups + "," +UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
+
+
+    @if (ApplicationInfo.InDemoMode)
+    {
+        <MudAlert>
+            Try searching Moore, Howard, Evans, Manny...
+        </MudAlert>
+    }
+
+
+
+    @if (Searcher.Results.Count > 1)
+    {
+        <MudStack Row=true>
+            Results found: @Searcher.Results.Count
+            Time elapsed: @Searcher.SearchTime
+        </MudStack>
+
+        <Virtualize Items="Searcher.Results" TItem="IDirectoryEntryAdapter" Context="u" OverscanCount="30">
+            <ItemContent>
+                @if (u.CanRead)
+                {
+                    <SearchResult Entry="u" OnSelected=@(()=>{
+                          Searcher.Results.Clear();Searcher.Results.Add(u);
+                          }) />
+
+
+                }
+            </ItemContent>
+            <Placeholder>
+                <MudText Typo="Typo.h1">Loading...</MudText>
+
+
+            </Placeholder>
+        </Virtualize>
+    }
+    else if (Searcher.Results.Count == 1)
+    {
+
+        var result = Searcher.Results[0];
+        if (result.CanRead)
+        {
+            result.OnModelDeleted = (() => { InvokeAsync(StateHasChanged); });
+
+            @if (result.IsDeleted)
+            {
+                <MudText>Deleted</MudText>
+            }
+            else
+            {
+                <ViewDirectoryEntry DirectoryEntry="result" />
+            }
+        }
+        @*        else
+    {
+    <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
+
+    }
+    *@
+    }
+
+    else if (LoadingData)
+    {
+        <SearchIcon Icon="@SearchIcon" Text="@ModelsTypeName" />
+    }
+    else if (Searcher.Results.Count == 0)
+    {
+        <MudAlert Class="mud-alert-filled-info">
+            No results were found.
+        </MudAlert>
+    }
+
+</AuthorizeView>
+@code {
+
+    [CascadingParameter]
+    public SearchService SearchParameters { get; set; }
+
+    string ModelsTypeName = "Search";
+    protected string SearchIcon { get; set; } = "";
+    string? _searchTermParameter;
+    /// <summary>
+    /// The search term that comes from the URI
+    /// </summary>
+    [Parameter]
+    public virtual string? SearchTermParameter
+    {
+        get => _searchTermParameter; set
+        {
+            if (_searchTermParameter == HttpUtility.UrlDecode(value)) return;
+            LoadingData = true;
+            Searcher?.Cancel();
+            _searchTermParameter = HttpUtility.UrlDecode(value);
+            Task.Run(async () =>
+            {
+                await PerformSearch();
+                if (_searchTermParameter.IsNullOrEmpty())
+                    LoadingData = false;
+            });
+
+
+        }
+    }
+
+
+    public ADSearch Searcher { get; set; } = new ADSearch();
+
+
+    [CascadingParameter]
+    public MainLayout? MainLayout { get; set; }
+
+    /// <summary>
+    /// The search term that comes from the search text box
+    /// </summary>
+    [CascadingParameter]
+    public string? SearchTerm { get; set; }
+
+    /// <summary>
+    /// Standard search page initializer that copies the url search term to the
+    /// text search term if it is set.
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Searcher = new ADSearch();
+        SearchService.SearchTerm = SearchTermParameter;
+        Searcher.GeneralSearchTerm = SearchTermParameter;
+
+        await base.OnInitializedAsync();
+
+
+
+        Searcher.OnSearchStarted += (() =>
+       {
+           InvokeAsync(StateHasChanged);
+       });
+        Searcher.OnSearchCompleted += (() =>
+       {
+           InvokeAsync(StateHasChanged);
+       });
+        Searcher.ResultsCollected += ((batch) =>
+             {
+                 results.AddRange(batch.Where(r=>r.CanRead));
+             });
+    }
+    /// <summary>
+    /// Filter for searching objects of only this type
+    /// </summary>
+    [CascadingParameter]
+    public ActiveDirectoryObjectType? SearchObjectType { get; set; }
+
+    protected virtual List<IDirectoryEntryAdapter> results { get; set; } = new List<IDirectoryEntryAdapter>();
+
+
+    /// <summary>
+    /// Called internally to start a search
+    /// </summary>
+    /// <remarks>
+    /// This method in turn calls <see cref="InvokeSearch"/>
+    /// if the <see cref="SearchTermParameter"/> is not
+    /// null or empty.
+    /// </remarks>
+    /// <returns></returns>
+    protected async Task PerformSearch()
+    {
+        results.Clear();
+
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        if (!SearchTermParameter.IsNullOrEmpty() && SearchTermParameter?.Length > 0)
+            await InvokeSearch();
+        else
+            Searcher.Results.Clear();
+        LoadingData = false;
+
+        await InvokeAsync(StateHasChanged);
+
+
+
+    }
+
+    /// <summary>
+    /// Invokes the actual search function
+    /// that processes the current <see cref="SearchService"/>
+    /// settings.
+    /// </summary>
+    /// <returns></returns>
+    protected async Task InvokeSearch()
+    {
+        if (Searcher == null)
+            Searcher = new ADSearch();
+        else
+            Searcher.Cancel();
+        SearchService.SearchTerm = SearchTermParameter;
+        //Searcher.EnabledOnly = !SearchService.IncludeDisabled;
+        Searcher.GeneralSearchTerm = SearchService.SearchTerm;
+        //Searcher.ObjectTypeFilter = SearchService.SeachObjectType;
+        Searcher.ExactMatch = true;
+
+        //Try exact  match search first
+        await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
+        if (Searcher.Results.Count < 1)
+        {
+            Searcher.ExactMatch = false;
+            results = await Searcher.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
+
+        }
+    }
+
+}

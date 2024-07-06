@@ -32,7 +32,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return "/search/" + CanonicalName;
+                return "/view/" + CanonicalName;
             }
         }
 
