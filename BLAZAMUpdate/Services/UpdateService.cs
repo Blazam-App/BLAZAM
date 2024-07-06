@@ -36,7 +36,7 @@ namespace BLAZAM.Update.Services
         /// <summary>
         /// All updates released under the stable branch
         /// </summary>
-        public List<ApplicationUpdate> StableUpdates { get; set; } = new();
+        public List<ApplicationUpdate> AvailableUpdates { get; set; } = new();
 
         /// <summary>
         /// The branch configured in the database
@@ -72,7 +72,7 @@ namespace BLAZAM.Update.Services
 
                 await SetBranch();
                 await GetReleases();
-                return LatestUpdate;
+                return NewestAvailableUpdate;
 
             }
             catch (Octokit.RateLimitExceededException ex)
@@ -91,7 +91,7 @@ namespace BLAZAM.Update.Services
         {
             //Create a github client to get api data from repo
 
-            Release? latestRelease = null;
+            Release? latestBranchRelease = null;
             Release? latestStableRelease = null;
 
             var client = new GitHubClient(new ProductHeaderValue(Publisher_Name));
@@ -105,9 +105,9 @@ namespace BLAZAM.Update.Services
             var branchReleases = releases.Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
             var stableReleases = releases.Where(r => r.TagName.Contains(ApplicationReleaseBranches.Stable, StringComparison.OrdinalIgnoreCase));
             //Get the first release,which should be the most recent
-            latestRelease = branchReleases.FirstOrDefault();
+            latestBranchRelease = branchReleases.FirstOrDefault();
             //Store all other releases for use later
-            StableUpdates.Clear();
+            AvailableUpdates.Clear();
             try {
                 var betaStableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
 
@@ -117,7 +117,7 @@ namespace BLAZAM.Update.Services
                     var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
                     //Create that version object
                     if (fn == null) continue;
-                    StableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+                    AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
 
                 }
             }
@@ -132,24 +132,48 @@ namespace BLAZAM.Update.Services
                 var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
                 //Create that version object
                 if (fn == null) continue;
-                StableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+                AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
 
             }
 
-            var latestStableUpdate = StableUpdates.Where(x=>x.PassesPrerequisiteChecks).OrderByDescending(x=>x.Release.ReleaseTime).FirstOrDefault();
-            IncompatibleUpdates = StableUpdates.Where(x => !x.PassesPrerequisiteChecks).ToList();
-            var latestBranchUpdate = EncapsulateUpdate(latestRelease, SelectedBranch); 
-            //Override branch if stable has more recent release
-            if (latestStableUpdate!=null)
+            var latestBranchUpdate = EncapsulateUpdate(latestBranchRelease, SelectedBranch);
+            if (latestBranchUpdate.Branch != ApplicationReleaseBranches.Stable && latestBranchUpdate.Branch != "Stable")
             {
-                LatestUpdate = latestStableUpdate;
-
+                    if (!AvailableUpdates.Contains(latestBranchUpdate))
+                    {
+                        AvailableUpdates.Add(latestBranchUpdate);
+                    }
+             
             }
-            else if(latestBranchUpdate!=null)
+            IncompatibleUpdates = AvailableUpdates.Where(x => !x.PassesPrerequisiteChecks).ToList();
+            foreach (var release in IncompatibleUpdates)
             {
-                LatestUpdate = latestBranchUpdate;
-
+                AvailableUpdates.Remove(release);
             }
+            ////Override branch if stable has more recent release
+            //if (latestStableUpdate!=null)
+            //{
+            //    if(latestBranchUpdate!=null)
+            //    {
+            //        if (latestStableUpdate.Version.NewerThan(latestBranchUpdate.Version))
+            //        {
+            //            LatestUpdate = latestStableUpdate;
+
+            //        }
+            //        else
+            //        {
+            //            LatestUpdate = latestBranchUpdate;
+
+            //        }
+
+            //    }
+            //    else
+            //    {
+            //        LatestUpdate = latestStableUpdate;
+
+            //    }
+
+            //}
             //if (Debugger.IsAttached)
             //{
             //    ApplicationUpdate? testUpdate = EncapsulateUpdate(latestRelease, SelectedBranch);
@@ -365,5 +389,6 @@ namespace BLAZAM.Update.Services
         public bool HasWritePermission => UpdateCredential != UpdateCredential.None;
 
         public List<ApplicationUpdate> IncompatibleUpdates { get; private set; } = new();
+        public ApplicationUpdate? NewestAvailableUpdate => AvailableUpdates.OrderByDescending(x => x.Version).FirstOrDefault();
     }
 }
