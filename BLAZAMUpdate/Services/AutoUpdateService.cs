@@ -63,7 +63,7 @@ namespace BLAZAM.Update.Services
                             Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file: " + file);
 
                             var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
-                            if (impersonation!=null && !impersonation.Run(() =>
+                            if (impersonation != null && !impersonation.Run(() =>
                             {
                                 if (file.Writable)
                                 {
@@ -74,7 +74,7 @@ namespace BLAZAM.Update.Services
                             }))
                             {
                                 impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
-                                if (impersonation !=null && !impersonation.Run(() =>
+                                if (impersonation != null && !impersonation.Run(() =>
                                 {
                                     if (file.Writable)
                                     {
@@ -167,7 +167,7 @@ namespace BLAZAM.Update.Services
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Loggers.UpdateLogger.Error("Deleting unknown directory: " + dir+ "{@Error}",ex);
+                    Loggers.UpdateLogger.Error("Deleting unknown directory: " + dir + "{@Error}", ex);
                     //dir.Delete(true);
                 }
                 catch (Exception ex)
@@ -188,12 +188,18 @@ namespace BLAZAM.Update.Services
                 Loggers.UpdateLogger.Information("Checking for automatic update");
 
                 var latestUpdate = await updateService.GetUpdates();
-                if (latestUpdate != null && latestUpdate.Version.NewerThan(_applicationInfo.RunningVersion)){
+                if (latestUpdate != null && latestUpdate.Version.NewerThan(_applicationInfo.RunningVersion))
+                {
                     IsUpdateAvailable = true;
-                    if(appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
+                    if (appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
                     {
-                        ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
+                        if (latestUpdate.PassesPrerequisiteChecks)
+                            ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
+                        else
+                        {
+                            Loggers.UpdateLogger.Warning("Update failed prerequisite check, cancelling scheduling {@Error}", latestUpdate.PrequisiteMessage);
 
+                        }
                     }
 
                 }

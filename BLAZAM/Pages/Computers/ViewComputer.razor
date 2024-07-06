@@ -4,7 +4,7 @@
     string _fieldMudStackClasses = "flex-wrap gap-10";
 }
 <AppPageTitle>@Computer?.CanonicalName</AppPageTitle>
-    @if (Computer != null)
+@if (Computer != null)
 {
     <EditForm OnValidSubmit=SaveChanges Context="editContext" Model="Computer">
 
@@ -22,7 +22,7 @@
                                       OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
                                       OnToggleEditMode="ToggleEditMode"
                                       OnUnlock="@Unlock"
-                                      OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"/>
+                                      OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})" />
             <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
             </MudOverlay>
@@ -113,7 +113,10 @@
 
                                     </MudStack>
                                 </Section>
-
+                                @if (Computer.CanReadBitLocker)
+                                {
+                                    <BitLockerViewer Computer="Computer"/>
+                                }
                             </MudStack>
 
                         </MudItem>
@@ -155,7 +158,10 @@
                         <MudStack Row=true Class="@_fieldMudStackClasses">
                             @if (Computer.IsOnline == true)
                             {
-                                <ComputerSessions Computer="Computer" />
+                                if (CurrentUser.State.IsSuperAdmin)
+                                {
+                                    <ComputerSessions Computer="Computer" />
+                                }
                             }
                             else
                             {
@@ -252,7 +258,7 @@
 
     async Task Unlock()
     {
-        if (Computer!=null && await MessageService.Confirm("Are you sure you want to unlock " + Computer?.CanonicalName + "?", "Unlock Computer"))
+        if (Computer != null && await MessageService.Confirm("Are you sure you want to unlock " + Computer?.CanonicalName + "?", "Unlock Computer"))
         {
             Computer.LockedOut = false;
         }

@@ -38,8 +38,8 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 {
                     items = items.Where(i => i.ObjectType == ActiveDirectoryObjectType.OU);
                 }
-                var hashst = items.ToHashSet();
-                return hashst;
+                var hashset = items.ToHashSet();
+                return hashset;
             }
             return null;
         }

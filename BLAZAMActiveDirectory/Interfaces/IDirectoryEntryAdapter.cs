@@ -309,7 +309,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Get's the parent <see cref="IADOrganizationalUnit"/> of this entry
         /// </summary>
         /// <returns></returns>
-        IADOrganizationalUnit? GetParent();
+        IDirectoryEntryAdapter? GetParent();
 
         /// <summary>
         /// Wrapper method for the base <see cref="DirectoryEntry"/>
