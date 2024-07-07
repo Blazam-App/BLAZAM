@@ -1,5 +1,6 @@
 @using BLAZAM.EmailMessage.Email
 @using System.Security
+@using BLAZAM.EmailMessage.Email.Notifications
 @inherits DirectoryModelComponent
 @inject IJSRuntime JSRuntime
 <AppPageTitle>Confirm User Creation</AppPageTitle>
@@ -266,7 +267,7 @@ else
             message.Username = _username;
             message.Password = _userPassword;
             var html = message.Render();
-            EmailService.SendMessage(AppLocalization["New Account Details"], message,to);
+            await EmailService.SendMessage(AppLocalization["New Account Details"], message,to);
             SnackBarService.Info(AppLocalization["Welcome Email Sent to "] + to);
             SendWelcomeModal.Close();
         }catch (Exception ex)

@@ -895,6 +895,32 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.ToTable("EmailTemplates");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Block")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NotificationType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("OU")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("NotificationSubscriptions");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
                 {
                     b.Property<int>("Id")
@@ -1589,6 +1615,17 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .IsRequired();
 
                     b.Navigation("ChatMessage");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ActionAccessMapping", b =>

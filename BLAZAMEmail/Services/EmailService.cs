@@ -213,7 +213,7 @@ namespace BLAZAM.Email.Services
 
             }
         }
-        public async Task<bool> SendMessage(string subject, EmailTemplateComponent body, string to, string? cc = null, string? bcc = null)
+        public async Task<bool> SendMessage(string subject, NotificationTemplateComponent body, string to, string? cc = null, string? bcc = null)
         {
             try
             {

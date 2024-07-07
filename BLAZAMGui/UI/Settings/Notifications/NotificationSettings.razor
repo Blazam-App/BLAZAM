@@ -1,0 +1,66 @@
+﻿@inherits AppComponentBase
+<h3>NotificationSettings</h3>
+<MudAutocomplete @bind-Value=_selectedUser MaxItems="50" SearchFunc="SearchUsers" T="AppUser" Label="@AppLocalization["User"]" />
+@if (_selectedUser != null)
+{
+    <MudCard>
+        <MudStack Row=true>
+            <OUTreeView @bind-SelectedEntry=_selectedOU />
+            <MudContainer>
+                @if (_selectedOU != null)
+                {
+                    var subscription = _selectedUser.NotificationSubscriptions.Where(x => x.OU.Equals(_selectedOU.DN, StringComparison.InvariantCultureIgnoreCase));
+
+                    <MudSimpleTable>
+
+
+
+                        <tr>
+
+
+                            @foreach (var type in Enum.GetValues(typeof(NotificationType)))
+                            {
+                                var originalEnum = (NotificationType)type;
+                                <th>
+                                    @originalEnum.ToString()
+                                </th>
+                            }
+                        </tr>
+
+                        @foreach (var sub in subscription)
+                        {
+                            <tr>
+                                @foreach (var type in Enum.GetValues(typeof(NotificationType)))
+                                {
+                                    var originalEnum = (NotificationType)type;
+                                    <td>
+
+                                        <MudCheckBox Value="@(sub!=null && !sub.Block)" />
+
+
+                                    </td>
+                                }
+                            </tr>
+                        }
+
+                    </MudSimpleTable>
+                }
+            </MudContainer>
+        </MudStack>
+    </MudCard>
+}
+@code {
+    IDirectoryEntryAdapter? _selectedOU = null;
+    IList<AppUser> Users = new List<AppUser>();
+    AppUser? _selectedUser = null;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Users = await Context.UserSettings.ToListAsync();
+    }
+    private async Task<IEnumerable<AppUser>> SearchUsers(string value)
+    {
+        if (value == null) value = String.Empty;
+        return Users.Where(x => x.Username.Contains(value));
+    }
+}
