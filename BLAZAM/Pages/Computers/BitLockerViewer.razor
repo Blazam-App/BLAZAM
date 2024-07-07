@@ -1,0 +1,40 @@
+@inherits AppComponentBase
+<Section Title=@AppLocalization["BitLocker"]>
+
+    <MudStack Row=true Class="@Class">
+        <MudDataGrid T=IADBitLockerRecovery Items="_recoveries">
+            <Columns>
+                <PropertyColumn Property="x=>x.RecoveryId" Title="@AppLocalization["Recovery Id"]" />
+                <PropertyColumn Property="x=>x.RecoveryPassword" Title="@AppLocalization["Recovery Password"]" />
+            </Columns>
+        </MudDataGrid>
+
+    </MudStack>
+</Section>
+
+@code{
+    [Parameter]
+    public string Class{ get; set; }
+
+    private IADComputer _computer;
+    [Parameter]
+    public IADComputer Computer{ get=>_computer; set
+        {
+            if (_computer == value) return;
+            _computer = value;
+            GetRecoveries();
+
+        } }
+
+    List<IADBitLockerRecovery> _recoveries = new();
+
+    protected override async Task OnInitializedAsync(){
+        await base.OnInitializedAsync();
+
+
+    }
+    private async void GetRecoveries(){
+        _recoveries = await Computer.GetBitLockerRecoveryAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+}

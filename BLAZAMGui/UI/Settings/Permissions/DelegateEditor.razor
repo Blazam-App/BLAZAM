@@ -24,7 +24,7 @@
   .Contains(DelegateFilter, StringComparison.OrdinalIgnoreCase))*@;
     @foreach (var pl in delegates)
     {
-        <DelegateListItem Level="pl" Context="Context" DelegateDeleted="DelegatesChanged" />
+        <DelegateListItem Delegate="pl" Context="Context" DelegateDeleted="DelegatesChanged" />
     }
 }
 
@@ -35,7 +35,7 @@
 <AppModal @ref=@trashModal Title="Deleted Delegates">
     @foreach (var deleg in AllDelegates.Where(l => l.DeletedAt != null))
     {
-        var model = @Directory.FindEntryBySID(deleg.DelegateSid);
+        var model = Directory.FindEntryBySID(deleg.DelegateSid);
         <MudContainer>
             <b>@model?.ObjectType</b><br />
             <MudText>@model?.CanonicalName</MudText>

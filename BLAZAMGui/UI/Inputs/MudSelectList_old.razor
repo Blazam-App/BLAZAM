@@ -1,0 +1,81 @@
+@inherits MudSelect<T>
+@typeparam T
+
+<MudSelect T="T"
+           @bind-SelectedValues=@SelectedValues
+           @bind-Text=@Text
+           Value=@Value
+           ValueChanged="(val)=>{Value=val;ValueChanged.InvokeAsync(val);}"
+           FullWidth=@FullWidth
+           Dense=@Dense
+           Variant="@Variant"
+           MultiSelection=@MultiSelection
+           MultiSelectionTextFunc="@MultiSelectionTextFunc"
+           Label="@Label"
+           HelperText="@HelperText"
+           HelperTextOnFocus=@HelperTextOnFocus
+           Placeholder="@Placeholder"
+           Class=@Class
+           OnClearButtonClick=@OnClearButtonClick
+           Adornment=@Adornment
+           AdornmentIcon=@AdornmentIcon
+           OnAdornmentClick="@OnAdornmentClick"
+           AutoFocus=@AutoFocus
+           Disabled=@Disabled
+           Clearable=@Clearable
+           ListClass=@(ListClass)
+           Style="@(Style+" min-width:100px;")"
+           AnchorOrigin="AnchorOrigin"
+           TransformOrigin="TransformOrigin">
+    @if (Values != null && Values.Count() > 0)
+    {
+        @foreach (var val in Values)
+        {
+            <MudSelectItem Value="@val">
+                <MudText Color="@Color">
+                    @if (ToStringFunc != null)
+                    {
+                        <MudElement>
+                            @ToStringFunc.Invoke(val)
+                        </MudElement>
+                    }
+                    else
+                    {
+                        <MudElement>
+                            @val?.ToString()
+                        </MudElement>
+                    }
+                </MudText>
+            </MudSelectItem>
+        }
+    }
+</MudSelect>
+
+
+@code {
+    [Parameter]
+    public Color Color { get; set; }
+    private IEnumerable<T> _values;
+    [Parameter]
+    public IEnumerable<T> Values
+    {
+        get => _values; set
+        {
+            _values = value;
+            Text = "";
+            if(_values!=null && _values.Count() > 0)
+            {
+                foreach(var item in _values)
+                {
+                    if (item != null)
+                    {
+                        Text += ToStringFunc.Invoke(item) + ", ";
+                    }
+                }
+                Text = Text.Substring(0, Text.Length - 2);
+            }
+
+        }
+    }
+}
+

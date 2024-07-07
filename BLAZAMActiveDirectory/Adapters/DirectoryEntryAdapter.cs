@@ -32,7 +32,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return "/search/" + CanonicalName;
+                return "/view/" + CanonicalName;
             }
         }
 
@@ -166,7 +166,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public ActiveDirectoryObjectType ObjectType
+        public virtual ActiveDirectoryObjectType ObjectType
         {
             get
             {
@@ -191,6 +191,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     if (Classes.Contains("printQueue"))
                     {
                         return ActiveDirectoryObjectType.Printer;
+                    }
+                    if (Classes.Contains("msFVE-RecoveryInformation"))
+                    {
+                        return ActiveDirectoryObjectType.BitLocker;
+
                     }
 
                 }
@@ -434,13 +439,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual string? OU { get => DirectoryTools.DnToOu(DN) ?? DirectoryTools.DnToOu(ADSPath); }
 
-        public IADOrganizationalUnit? GetParent()
+        public IDirectoryEntryAdapter? GetParent()
         {
             if (DirectoryEntry == null || DirectoryEntry.Parent == null) return null;
 
-            var parent = new ADOrganizationalUnit();
+            var parent = DirectoryEntry.Parent.Encapsulate();
 
-            parent.Parse(Directory, DirectoryEntry.Parent);
             return parent;
 
 
@@ -577,25 +581,31 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                         if (child.Properties["objectClass"].Contains("top"))
                         {
-                            if (child.Properties["objectClass"].Contains("computer"))
+                            var objectClass = child.Properties["objectClass"];
+                            if (objectClass.Contains("computer"))
                             {
                                 thisObject = new ADComputer();
                             }
-                            else if (child.Properties["objectClass"].Contains("user"))
+                            else if (objectClass.Contains("user"))
                             {
                                 thisObject = new ADUser();
                             }
-                            else if (child.Properties["objectClass"].Contains("organizationalUnit"))
+                            else if (objectClass.Contains("organizationalUnit"))
                             {
                                 thisObject = new ADOrganizationalUnit();
                             }
-                            else if (child.Properties["objectClass"].Contains("group"))
+                            else if (objectClass.Contains("group"))
                             {
                                 thisObject = new ADGroup();
                             }
-                            else if (child.Properties["objectClass"].Contains("printQueue"))
+                            else if (objectClass.Contains("printQueue"))
                             {
                                 thisObject = new ADPrinter();
+                            }
+
+                            else if (objectClass.Contains("msFVE-RecoveryInformation"))
+                            {
+                                thisObject = new ADBitLockerRecovery();
                             }
                             if (thisObject != null)
                             {
@@ -608,6 +618,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         thisObject = null;
 
                     }
+                    directoryEntries.OrderBy(x=>x.CanonicalName).OrderBy(x=>x.ObjectType);
                     CachedChildren = directoryEntries;
                 }
                 return CachedChildren;

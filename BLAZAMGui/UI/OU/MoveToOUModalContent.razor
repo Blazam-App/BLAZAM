@@ -22,7 +22,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        StartingOU = DirectoryModel.GetParent();
+        StartingOU = (IADOrganizationalUnit)DirectoryModel.GetParent();
         Modal.OnYes = MoveTo;
         Modal.YesText = AppLocalization["Move"];
         Modal.Title = "Move To";

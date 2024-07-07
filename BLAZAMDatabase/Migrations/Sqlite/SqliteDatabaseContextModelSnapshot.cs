@@ -15,7 +15,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.19");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.20");
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
                 {
@@ -879,15 +879,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("BCC")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CC")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -895,9 +887,8 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("TemplateName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("TemplateType")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -1159,6 +1150,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("DelegateName")
+                        .HasColumnType("TEXT");
 
                     b.Property<byte[]>("DelegateSid")
                         .IsRequired()
