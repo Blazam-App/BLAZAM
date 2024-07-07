@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
+    <ProjectReference Include="..\BLAZAMEmailMessage\BLAZAMEmailMessage.csproj" />
   </ItemGroup>
 
 </Project>
