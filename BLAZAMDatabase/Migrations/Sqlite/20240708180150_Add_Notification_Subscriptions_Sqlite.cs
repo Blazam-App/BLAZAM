@@ -17,7 +17,6 @@ namespace BLAZAM.Database.Migrations.Sqlite
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    NotificationType = table.Column<int>(type: "INTEGER", nullable: false),
                     OU = table.Column<string>(type: "TEXT", nullable: false),
                     Block = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
@@ -32,15 +31,43 @@ namespace BLAZAM.Database.Migrations.Sqlite
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "SubscriptionNotificationType",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    NotificationSubscriptionId = table.Column<int>(type: "INTEGER", nullable: false),
+                    NotificationType = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubscriptionNotificationType", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SubscriptionNotificationType_NotificationSubscriptions_NotificationSubscriptionId",
+                        column: x => x.NotificationSubscriptionId,
+                        principalTable: "NotificationSubscriptions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_NotificationSubscriptions_UserId",
                 table: "NotificationSubscriptions",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubscriptionNotificationType_NotificationSubscriptionId",
+                table: "SubscriptionNotificationType",
+                column: "NotificationSubscriptionId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "SubscriptionNotificationType");
+
             migrationBuilder.DropTable(
                 name: "NotificationSubscriptions");
         }

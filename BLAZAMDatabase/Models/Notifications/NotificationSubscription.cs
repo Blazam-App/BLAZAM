@@ -9,8 +9,9 @@ namespace BLAZAM.Database.Models.Notifications
 {
     public class NotificationSubscription:AppDbSetBase
     {
+        public int UserId { get; set; }
         public AppUser User { get; set; }
-        public NotificationType NotificationType { get; set; }
+        public List<SubscriptionNotificationType> NotificationTypes { get; set; } = new();
         public string OU { get; set; }
         public bool Block { get; set; } = false;
     }

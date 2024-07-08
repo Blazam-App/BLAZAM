@@ -147,7 +147,7 @@ namespace BLAZAM.Server.Data.Services
                 if (User == null) return;
                 using var context = _dbFactory.CreateDbContext();
 
-                userSettings = context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
+                userSettings = context.UserSettings.Include(x=>x.NotificationSubscriptions).Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
                 if (userSettings == null)
                 {
                     userSettings = new AppUser();

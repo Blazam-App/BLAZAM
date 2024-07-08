@@ -9,8 +9,12 @@
             <MudContainer>
                 @if (_selectedOU != null)
                 {
-                    var subscription = _selectedUser.NotificationSubscriptions.Where(x => x.OU.Equals(_selectedOU.DN, StringComparison.InvariantCultureIgnoreCase));
-
+                    var subscription = _selectedUser.NotificationSubscriptions.Where(x => x.OU.Equals(_selectedOU.DN, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                    if (subscription == null)
+                    {
+                        subscription = new();
+                        subscription.UserId = _selectedUser.Id;
+                    }
                     <MudSimpleTable>
 
 
@@ -25,23 +29,30 @@
                                     @originalEnum.ToString()
                                 </th>
                             }
+                            <th>
+                                @AppLocalization["Block"]
+                            </th>
                         </tr>
 
-                        @foreach (var sub in subscription)
-                        {
                             <tr>
                                 @foreach (var type in Enum.GetValues(typeof(NotificationType)))
                                 {
                                     var originalEnum = (NotificationType)type;
                                     <td>
-
-                                        <MudCheckBox Value="@(sub!=null && !sub.Block)" />
+                                        @{
+                                       
+                                        }
+                                    <MudCheckBox Value="@(subscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)" />
 
 
                                     </td>
                                 }
+                                <td>
+                                <MudCheckBox Value="@(subscription.Block)" />
+
+                                </td>
                             </tr>
-                        }
+                        
 
                     </MudSimpleTable>
                 }

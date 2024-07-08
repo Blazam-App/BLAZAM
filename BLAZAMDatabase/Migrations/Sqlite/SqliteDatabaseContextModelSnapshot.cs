@@ -904,9 +904,6 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<bool>("Block")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("NotificationType")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("OU")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -919,6 +916,25 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.HasIndex("UserId");
 
                     b.ToTable("NotificationSubscriptions");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionNotificationType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NotificationSubscriptionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NotificationType")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotificationSubscriptionId");
+
+                    b.ToTable("SubscriptionNotificationType");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
@@ -1620,12 +1636,23 @@ namespace BLAZAM.Common.Migrations.Sqlite
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
-                        .WithMany()
+                        .WithMany("NotificationSubscriptions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionNotificationType", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Notifications.NotificationSubscription", "NotificationSubscription")
+                        .WithMany("NotificationTypes")
+                        .HasForeignKey("NotificationSubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NotificationSubscription");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ActionAccessMapping", b =>
@@ -1808,6 +1835,11 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Navigation("ObjectTypes");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
+                {
+                    b.Navigation("NotificationTypes");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
                 {
                     b.Navigation("ActionMap");
@@ -1832,6 +1864,8 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Navigation("FavoriteEntries");
 
                     b.Navigation("Messages");
+
+                    b.Navigation("NotificationSubscriptions");
 
                     b.Navigation("ReadNewsItems");
                 });

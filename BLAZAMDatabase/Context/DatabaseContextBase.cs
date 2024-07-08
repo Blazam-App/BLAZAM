@@ -612,7 +612,7 @@ namespace BLAZAM.Database.Context
                 entity.Navigation(e => e.ReadNewsItems).AutoInclude();
                 entity.Navigation(e => e.FavoriteEntries).AutoInclude();
                 entity.Navigation(e => e.DashboardWidgets).AutoInclude();
-                entity.Navigation(e => e.NotificationSubscriptions).AutoInclude();
+               // entity.Navigation(e => e.NotificationSubscriptions).AutoInclude();
 
                 //entity.Navigation(e => e.UnreadChatMessages).AutoInclude();
 
@@ -641,7 +641,12 @@ namespace BLAZAM.Database.Context
                 entity.Navigation(e => e.User).AutoInclude();
 
             });
+            modelBuilder.Entity<NotificationSubscription>(entity =>
+            {
 
+                entity.Navigation(e => e.NotificationTypes).AutoInclude();
+
+            });
             modelBuilder.Entity<UnreadChatMessage>(entity =>
          {
              entity.Navigation(e => e.ChatMessage).AutoInclude();
