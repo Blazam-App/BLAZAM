@@ -5,16 +5,14 @@
 {
     <MudCard>
         <MudStack Row=true>
-            <OUTreeView @bind-SelectedEntry=_selectedOU />
+            <OUTreeView SelectedEntry=_selectedOU SelectedEntryChanged="ouChanged"/>
             <MudContainer>
                 @if (_selectedOU != null)
                 {
-                    var subscription = _selectedUser.NotificationSubscriptions.Where(x => x.OU.Equals(_selectedOU.DN, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-                    if (subscription == null)
-                    {
-                        subscription = new();
-                        subscription.UserId = _selectedUser.Id;
-                    }
+                    var subscriptions = Context.NotificationSubscriptions.Include(x=>x.NotificationTypes).Where(x =>x.UserId==_selectedUser.Id && x.OU.Equals(_selectedOU.DN)).ToList();
+
+                    newSubscription.UserId = _selectedUser.Id;
+                    newSubscription.OU = _selectedOU.DN;
                     <MudSimpleTable>
 
 
@@ -32,27 +30,63 @@
                             <th>
                                 @AppLocalization["Block"]
                             </th>
+                            <th>
+                                @AppLocalization["Save"]
+                            </th>
                         </tr>
+                        @if (subscriptions != null && subscriptions.Count > 0)
+                        {
+                            foreach (var sub in subscriptions)
+                            {
+                                <tr>
+                                    @foreach (var type in Enum.GetValues(typeof(NotificationType)))
+                                    {
+                                        var originalEnum = (NotificationType)type;
+                                        <td>
+                                            @{
 
-                            <tr>
-                                @foreach (var type in Enum.GetValues(typeof(NotificationType)))
-                                {
-                                    var originalEnum = (NotificationType)type;
+                                            }
+                                            <MudCheckBox Value="@(sub.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)" />
+
+
+                                        </td>
+                                    }
                                     <td>
-                                        @{
-                                       
-                                        }
-                                    <MudCheckBox Value="@(subscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)" />
-
+                                        <MudCheckBox @bind-Value="@(sub.Block)" />
 
                                     </td>
-                                }
+                                    <td>
+                                        <MudFab Color=@Color.Success
+                                                StartIcon="@Icons.Material.Filled.Save" />
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        <tr>
+                            @foreach (var type in Enum.GetValues(typeof(NotificationType)))
+                            {
+                                var originalEnum = (NotificationType)type;
                                 <td>
-                                <MudCheckBox Value="@(subscription.Block)" />
+                                    @{
+
+                                    }
+                                    <MudCheckBox Value="@(newSubscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)" />
+
 
                                 </td>
-                            </tr>
-                        
+                            }
+                            <td>
+                                <MudCheckBox @bind-Value="@(newSubscription.Block)" />
+
+                            </td>
+                            <td>
+                                <MudFab Color=@Color.Tertiary
+                                        StartIcon="@Icons.Material.Filled.Add"
+                                        OnClick="AddSubscription" />
+                            </td>
+                        </tr>
+
+
 
                     </MudSimpleTable>
                 }
@@ -64,6 +98,7 @@
     IDirectoryEntryAdapter? _selectedOU = null;
     IList<AppUser> Users = new List<AppUser>();
     AppUser? _selectedUser = null;
+    NotificationSubscription newSubscription = new();
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -73,5 +108,29 @@
     {
         if (value == null) value = String.Empty;
         return Users.Where(x => x.Username.Contains(value));
+    }
+    private async void ouChanged(IDirectoryEntryAdapter entry)
+    {
+        var ou = (IADOrganizationalUnit)entry;  
+        if(ou!=null)
+        {
+            _selectedOU = ou;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+    private async void AddSubscription()
+    {
+        await Context.NotificationSubscriptions.AddAsync(newSubscription);
+        var changes = await Context.SaveChangesAsync();
+        if (changes > 0)
+        {
+            newSubscription = new();
+            SnackBarService.Success(AppLocalization["Saved notification subscription"]);
+        }
+        else
+        {
+            SnackBarService.Warning(AppLocalization["Unable to save notification subscription"]);
+
+        }
     }
 }
