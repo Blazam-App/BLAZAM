@@ -71,7 +71,7 @@
                             <LogOnToModalContent User="User" />
                         }
                     </AppModal>
-                    <AppModal Title=@AppLocalization["Logon Hours"] @ref=@LogonHoursModal  Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
+                    <AppModal Title=@AppLocalization["Logon Hours"] @ref=@LogonHoursModal Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
                         @if (LogonHoursModal?.IsShown == true)
                         {
                             <LogonHoursModalContent User="User" />
@@ -163,17 +163,21 @@
 
 
 
-                                @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
-                                {
-                                    <MudStack>
-                                        <MudText Typo="Typo.subtitle2">@AppLocalization["Groups"]</MudText>
+
+                                <MudStack>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization["Groups"]</MudText>
+                                    @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
+                                    {
                                         <MemberOfList AssignToClicked=@(()=>{AssignToModal?.Show();}) Model="User" />
+                                    }
+                                    else
+                                    {
+                                        <NoAccess/>
+                                    }
+                                </MudStack>
 
-                                    </MudStack>
 
 
-
-                                }
 
 
                             </Section>
@@ -272,8 +276,8 @@
                                                     @AppLocalization["Log On To"]
                                                 </MudButton>
 
-                                            } 
-                                            
+                                            }
+
                                             @if (User.CanReadField(ActiveDirectoryFields.LogonHours))
                                             {
                                                 <MudButton Variant="Variant.Filled"

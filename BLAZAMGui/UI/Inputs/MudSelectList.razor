@@ -42,6 +42,7 @@
                         @if (MultiSelection)
                         {
                             <MudCheckBox T=bool
+                                         ValueChanged="@(()=>{ToggleSelected(val);})"
                                          Value="SelectedValues.Contains(val)" />
                         }
                         @if (ToStringFunc != null)
