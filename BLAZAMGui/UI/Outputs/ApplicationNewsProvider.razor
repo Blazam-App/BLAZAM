@@ -3,7 +3,7 @@
 @inherits AppComponentBase
 @if (readItems.Count > 0 || unreadItems.Count > 0)
 {
-    <MudMenu Dense=true ListClass="py-0" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+    <MudMenu @ref=newsMenu Dense=true ListClass="py-0" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
         <ActivatorContent>
             @{
                 var icon = Icons.Material.Filled.Notifications;
@@ -23,10 +23,7 @@
 
         <ChildContent>
             <MudContainer Class="px-0" Style="width:300px;">
-                @if (readItems.Count > 0)
-                {
-                    <MudSwitch @bind-Value=showRead Class="ps-2 w-100" Label="@AppLocalization["Show read"]" />
-                }
+              
                 @foreach (var item in unreadItems.OrderByDescending(x => x.UpdatedAt))
                 {
                     <MudButton Variant="Variant.Filled" Style="border-radius:0px;" FullWidth=true OnClick="@((args)=>{ShowNews(item);})">
@@ -67,6 +64,14 @@
                         <MudText Class="w-100 align-center pa-2">@AppLocalization["There is nothing new to see here"]</MudText>
                     }
                 }
+                @if (readItems.Count > 0)
+                {
+                    <MudStack Row=true>
+                        <MudSwitch @bind-Value=showRead Class="ps-2" Label="@AppLocalization["Show read"]" />
+                        <MudButton Size="Size.Small" OnClick="MarkAllRead">@AppLocalization["Mark all read"]</MudButton>
+
+                    </MudStack>
+                }
             </MudContainer>
         </ChildContent>
     </MudMenu>
@@ -75,6 +80,7 @@
     private bool showRead;
     private List<NewsItem> unreadItems = new();
     private List<NewsItem> readItems = new();
+    private MudMenu? newsMenu;
     private ApplicationUpdate? latestUpdate;
     private NewsItem? appUpdateNewsItem
     {
@@ -93,11 +99,41 @@
                 };
         }
     }
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
         ApplicationNewsService.OnNewItemsAvailable += RefreshItems;
         RefreshItems();
+        await InvokeAsync(StateHasChanged);
+
+
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender && unreadItems.Count > 0)
+        {
+            newsMenu?.OpenMenu(new());
+        }
+    }
+    private async void MarkAllRead()
+    {
+        foreach(var newsItem in unreadItems)
+        {
+            try{
+                CurrentUser.State.ReadNewsItems.Add(new ReadNewsItem { NewsItemId = newsItem.Id, NewsItemUpdatedAt = newsItem.UpdatedAt, User = CurrentUser.State.Preferences });
+            }
+            catch
+            {
+                
+            }
+        }
+        await CurrentUser.State.SaveUserSettings();
+        RefreshItems();
+        await InvokeAsync(StateHasChanged);
+
     }
     private void RefreshItems()
     {

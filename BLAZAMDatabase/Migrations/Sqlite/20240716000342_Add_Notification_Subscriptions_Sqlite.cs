@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -18,7 +19,10 @@ namespace BLAZAM.Database.Migrations.Sqlite
                         .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<int>(type: "INTEGER", nullable: false),
                     OU = table.Column<string>(type: "TEXT", nullable: false),
-                    Block = table.Column<bool>(type: "INTEGER", nullable: false)
+                    InApp = table.Column<bool>(type: "INTEGER", nullable: false),
+                    ByEmail = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Block = table.Column<bool>(type: "INTEGER", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
