@@ -313,6 +313,7 @@ namespace BLAZAM.Server
 
             builder.Services.AddScoped<AppDialogService>();
 
+            builder.Services.AddSingleton<OUNotificationService>();
 
 
             builder.Host.UseWindowsService();
@@ -320,5 +321,50 @@ namespace BLAZAM.Server
             return builder;
         }
 
+        public static void PreRun(this WebApplication application)
+        {
+            //Setup Seq logging if allowed by admin
+            try
+            {
+                var context = Program.AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
+                if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
+                {
+                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+            PreloadServices();
+
+        }
+
+        private static void PreloadServices()
+        {
+            try
+            {
+                var context = Program.AppInstance.Services.GetRequiredService<OUNotificationService>();
+
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+            try
+            {
+                var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
+
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+
+        }
     }
 }

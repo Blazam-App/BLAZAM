@@ -22,13 +22,16 @@ namespace BLAZAM.Services
             _applicationInfo = applicationInfo;
             _activeDirectoryContext = adFactory.CreateActiveDirectoryContext();
             _dbFactory = dbFactory;
-            
+
             //TODO Move ProgramEvents to Common
             //ProgramEvents.PermissionsChanged += SeedUsers;
-            SeedUsers();
+            Task.Delay(30000).ContinueWith(task => {
+                SeedUsers();
+            });
+            //SeedUsers();
         }
 
-        private void SeedUsers()
+        private void SeedUsers(object obj=null)
         {
             try
             {
@@ -37,7 +40,7 @@ namespace BLAZAM.Services
                     EnsureDemoExists();
                 using var context = _dbFactory.CreateDbContext();
                 if (context.Status != ServiceConnectionState.Up) return;
-                foreach (var deleg in context.PermissionDelegate.ToList())
+                foreach (var deleg in context.PermissionDelegate.Where(x=>x.DeletedAt==null).ToList())
                 {
                     var entry = _activeDirectoryContext.FindEntryBySID(deleg.DelegateSid);
                     if (entry != null)
