@@ -789,10 +789,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                              DirectoryEntry.CommitChanges();
                              return true;
                          });
-                        commitJob.Steps.Add(propertyStep);
+                        commitJob.AddStep(propertyStep);
 
                     }
-                    commitJob.Steps.Add(commitStep);
+                    commitJob.AddStep(commitStep);
 
                 }
                 else
@@ -814,7 +814,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             DirectoryEntry.Properties[p.Key].Value = p.Value;
                             return true;
                         });
-                        commitJob.Steps.Add(propertyStep);
+                        commitJob.AddStep(propertyStep);
                     }
                 }
 
@@ -822,7 +822,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 //Inject custom commit steps
                 foreach (var step in CommitSteps)
                 {
-                    commitJob.Steps.Add(step);
+                    commitJob.AddStep(step);
+                    commitJob.AddStep(step);
 
 
                 }
@@ -832,22 +833,23 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         foreach (var step in PostCommitSteps)
                         {
-                            commitJob.Steps.Add(step);
+                            commitJob.AddStep(step);
                         }
                         //commitJob.Steps.Add(CommitStep);
 
                     }
                 }
-                commitJob.Steps.Add(commitStep);
+                commitJob.AddStep(commitStep);
+                commitJob.AddStep(commitStep);
                 if (NewEntry)
                 {
                     if (PostCommitSteps.Count > 0)
                     {
                         foreach (var step in PostCommitSteps)
                         {
-                            commitJob.Steps.Add(step);
+                            commitJob.AddStep(step);
                         }
-                        commitJob.Steps.Add(commitStep);
+                        commitJob.AddStep(commitStep);
 
                     }
                 }
