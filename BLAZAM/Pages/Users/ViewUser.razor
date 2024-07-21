@@ -469,7 +469,7 @@
 
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     string password;
 
     [Parameter]
@@ -553,6 +553,7 @@
 
 
                     await AuditLogger.User.Changed(User, changes);
+                    _ = OUNotificationService.PostAsync(User, NotificationType.Modify);
                     EditMode = false;
                     Nav.WarnOnNavigation = false;
                     SnackBarService.Success("The changes made to this user have been saved.");

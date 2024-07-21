@@ -11,6 +11,8 @@ namespace BLAZAM.Gui.UI
     /// </summary>
     public class DirectoryEntryViewBase : AppComponentBase
     {
+        [Inject]
+        public OUNotificationService OUNotificationService { get; set; }
         [Parameter]
         public IDirectoryEntryAdapter DirectoryEntry { get; set; }
 

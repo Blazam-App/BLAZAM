@@ -313,6 +313,7 @@ namespace BLAZAM.Server
 
             builder.Services.AddScoped<AppDialogService>();
 
+            builder.Services.AddSingleton<OUNotificationService>();
 
 
             builder.Host.UseWindowsService();
@@ -337,10 +338,26 @@ namespace BLAZAM.Server
             {
                 Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
+            PreloadServices();
+
+        }
+
+        private static void PreloadServices()
+        {
+            try
+            {
+                var context = Program.AppInstance.Services.GetRequiredService<OUNotificationService>();
+
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
             try
             {
                 var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
-               
+
 
             }
             catch (Exception ex)
@@ -349,6 +366,5 @@ namespace BLAZAM.Server
             }
 
         }
-
     }
 }

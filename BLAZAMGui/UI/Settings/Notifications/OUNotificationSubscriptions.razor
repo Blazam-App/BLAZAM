@@ -1,5 +1,5 @@
 @inherits AppComponentBase
-
+@inject OUNotificationService ouNotificationService
 <MudSimpleTable>
 
 
@@ -205,65 +205,10 @@
 
     private void CalculateEffectiveSubscriptions()
     {
-        effectiveInAppSubscription = new();
-        effectiveInAppSubscription.OU = OU.DN;
-        effectiveInAppSubscription.User = User;
-        effectiveInAppSubscription.InApp = true;
-        effectiveByEmailSubscription = new();
-        effectiveByEmailSubscription.OU = OU.DN;
-        effectiveByEmailSubscription.User = User;
-        effectiveByEmailSubscription.ByEmail = true;
-        var userSubscriptions = Context.NotificationSubscriptions.Where(x => x.DeletedAt == null && x.UserId == User.Id).ToList();
-        userSubscriptions = userSubscriptions.OrderBy(x => x.OU).ToList();
-        foreach (var sub in userSubscriptions)
-        {
-            if (OU.DN.Contains(sub.OU))
-            {
-                if (sub.Block)
-                {
-                    if (sub.InApp)
-                    {
-                        foreach (var type in sub.NotificationTypes)
-                        {
-                            effectiveInAppSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
-                        }
-                    }
-                    if (sub.ByEmail)
-                    {
-                        foreach (var type in sub.NotificationTypes)
-                        {
-                            effectiveByEmailSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
-                        }
-                    }
-                }
-                else
-                {
-                    if (sub.InApp)
-                    {
-                        foreach (var type in sub.NotificationTypes)
-                        {
-                            if (!effectiveInAppSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType))
-                            {
-                                effectiveInAppSubscription.NotificationTypes.Add(new() { NotificationType = type.NotificationType });
-                            }
-                        }
-                    }
-                    if (sub.ByEmail)
-                    {
-
-                        foreach (var type in sub.NotificationTypes)
-                        {
-                            if (!effectiveByEmailSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType))
-                            {
-                                effectiveByEmailSubscription.NotificationTypes.Add(new() { NotificationType = type.NotificationType });
-                            }
-                        }
-                    }
-
-
-                }
-            }
-        }
+        effectiveInAppSubscription = ouNotificationService.CalculateEffectiveInAppSubscriptions(User, OU);
+        effectiveByEmailSubscription = ouNotificationService.CalculateEffectiveEmailSubscriptions(User, OU);
+        return;
+      
     }
     private async void AddSubscription()
     {
