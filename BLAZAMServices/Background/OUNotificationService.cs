@@ -3,6 +3,7 @@ using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Localization;
+using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -101,36 +102,42 @@ namespace BLAZAM.Services.Background
             userSubscriptions = userSubscriptions.OrderBy(x => x.OU).ToList();
             foreach (var sub in userSubscriptions)
             {
-                if (ou.DN.Contains(sub.OU))
+                try
                 {
-                    if (sub.Block)
+                    if (ou.DN.Contains(sub.OU))
                     {
-
-                        if (sub.ByEmail)
-                        {
-                            foreach (var type in sub.NotificationTypes)
-                            {
-                                effectiveByEmailSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
-                            }
-                        }
-                    }
-                    else
-                    {
-
-                        if (sub.ByEmail)
+                        if (sub.Block)
                         {
 
-                            foreach (var type in sub.NotificationTypes)
+                            if (sub.ByEmail)
                             {
-                                if (!effectiveByEmailSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType))
+                                foreach (var type in sub.NotificationTypes)
                                 {
-                                    effectiveByEmailSubscription.NotificationTypes.Add(new() { NotificationType = type.NotificationType });
+                                    effectiveByEmailSubscription.NotificationTypes.RemoveAll(x => x.NotificationType == type.NotificationType);
                                 }
                             }
                         }
+                        else
+                        {
+
+                            if (sub.ByEmail)
+                            {
+
+                                foreach (var type in sub.NotificationTypes)
+                                {
+                                    if (!effectiveByEmailSubscription.NotificationTypes.Any(x => x.NotificationType == type.NotificationType))
+                                    {
+                                        effectiveByEmailSubscription.NotificationTypes.Add(new() { NotificationType = type.NotificationType });
+                                    }
+                                }
+                            }
 
 
+                        }
                     }
+                }catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Error("Error while parsing users for notification broadcast {@Error}", ex);
                 }
             }
             return effectiveByEmailSubscription;

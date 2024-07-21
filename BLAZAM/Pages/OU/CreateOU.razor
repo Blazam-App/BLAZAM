@@ -1,6 +1,8 @@
 ﻿@page "/ou/create"
 @inherits TabbedAppComponentBase
 @attribute [Authorize]
+@inject OUNotificationService OUNotificationService
+
 <AppPageTitle>Create OU</AppPageTitle>
 
 <Row>
@@ -119,5 +121,7 @@
     async Task OUCreated(IADOrganizationalUnit ou)
     {
         await AuditLogger.OU.Created(ou);
+        _ = OUNotificationService.PostAsync(ou, NotificationType.Create);
+
     }
 }

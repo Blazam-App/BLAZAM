@@ -553,7 +553,8 @@
 
 
                     await AuditLogger.User.Changed(User, changes);
-                    _ = OUNotificationService.PostAsync(User, NotificationType.Modify);
+                    if((changes.Count==1 && changes.First().Field==ActiveDirectoryFields.MemberOf.FieldName)==false)
+                        _ = OUNotificationService.PostAsync(User, NotificationType.Modify);
                     EditMode = false;
                     Nav.WarnOnNavigation = false;
                     SnackBarService.Success("The changes made to this user have been saved.");
@@ -597,8 +598,11 @@
             try
             {
                 User.Delete();
+
                 SnackBarService.Success(User.DisplayName + " has been deleted.");
                 await AuditLogger.User.Deleted(User);
+                _ = OUNotificationService.PostAsync(User, NotificationType.Delete);
+
             }
             catch (ApplicationException ex)
             {
