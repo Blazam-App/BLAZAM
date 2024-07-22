@@ -70,7 +70,6 @@ namespace BLAZAM.Jobs
         }
         public void AddStep(IJobStep step)
         {
-            if (Steps.Contains(step)) return;
             if(User != null && step is IJob jobStep)
             {
                 jobStep.User = User;
