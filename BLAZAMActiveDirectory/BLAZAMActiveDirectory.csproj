@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>BLAZAM.ActiveDirectory</RootNamespace>
@@ -15,7 +15,6 @@
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
     <ProjectReference Include="..\BLAZAMJobs\BLAZAMJobs.csproj" />
     <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
-    <ProjectReference Include="..\BLAZAMNotifications\BLAZAMNotifications.csproj" />
     <ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
   </ItemGroup>
 

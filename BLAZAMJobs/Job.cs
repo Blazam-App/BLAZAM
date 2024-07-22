@@ -15,7 +15,9 @@ namespace BLAZAM.Jobs
 
         public string? User { get; set; }
 
-        public IList<IJobStep> Steps { get; set; } = new List<IJobStep>();
+        private IList<IJobStep> _steps = new List<IJobStep>();
+
+        public IList<IJobStep> Steps => _steps;
 
         public DateTime ScheduledRunTime
         {
@@ -31,7 +33,8 @@ namespace BLAZAM.Jobs
         public IList<IJobStep> PassedSteps { get; protected set; } = new List<IJobStep>();
 
 
-
+        public Guid Id{ get; set; }
+        public bool NestedJob { get; set; } = false;
 
         public Job(string? title = null, string? requestingUser = null, CancellationTokenSource? externalCancellationToken = null)
         {
@@ -41,6 +44,8 @@ namespace BLAZAM.Jobs
             {
                 cancellationTokenSource = externalCancellationToken;
             }
+            Id= Guid.NewGuid();
+            JobMonitor.AddJob(this);
         }
 
 
@@ -63,7 +68,16 @@ namespace BLAZAM.Jobs
             return Execute();
 
         }
+        public void AddStep(IJobStep step)
+        {
+            if(User != null && step is IJob jobStep)
+            {
+                jobStep.User = User;
+                jobStep.NestedJob = true;
+            }
+            Steps.Add(step);
 
+        }
         private bool Execute()
         {
             var cancelToken = cancellationTokenSource.Token;
@@ -161,7 +175,14 @@ namespace BLAZAM.Jobs
             }
         }
 
-
+        public override bool Equals(object? obj)
+        {
+            if(obj is IJob job)
+            {
+                return job.Id.Equals(Id);
+            }
+            return false;
+        }
     }
 
 

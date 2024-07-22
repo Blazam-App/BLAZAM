@@ -1,0 +1,273 @@
+@inherits AppComponentBase
+@inject OUNotificationService ouNotificationService
+<MudSimpleTable>
+
+
+
+    <tr>
+
+
+        @foreach (var type in Enum.GetValues(typeof(NotificationType)))
+        {
+            var originalEnum = (NotificationType)type;
+            <th class="align-self-center">
+                @originalEnum.ToString()
+            </th>
+        }
+        <th>
+            @AppLocalization["In App"]
+        </th>
+        <th>
+            @AppLocalization["To Email"]
+        </th>
+        <th>
+            @AppLocalization["Block"]
+        </th>
+        <th>
+            @AppLocalization["Save"]
+        </th>
+        <th>
+            @AppLocalization["Delete"]
+        </th>
+    </tr>
+    @if (subscriptions != null && subscriptions.Count > 0)
+    {
+        foreach (var sub in subscriptions)
+        {
+            <EditNotificationSubscriptionRow Subscription="sub"
+                                             Context="Context"
+                                             OnSaved="SaveExisting"
+                                             OnDeleted="DeleteExisting" />
+
+        }
+    }
+    <EditNotificationSubscriptionRow @bind-Subscription="newSubscription"
+                                     Context="Context"
+                                     OnAdded="AddSubscription" />
+
+
+
+</MudSimpleTable>
+
+<MudSimpleTable>
+
+    <tr>
+        <th colspan="10">
+            @AppLocalization["Effective Notification Settings"]
+        </th>
+
+    </tr>
+    <tr>
+
+        @foreach (var type in Enum.GetValues(typeof(NotificationType)))
+        {
+            var originalEnum = (NotificationType)type;
+            <th>
+                @originalEnum.ToString()
+            </th>
+        }
+        <th>
+            @AppLocalization["In App"]
+        </th>
+        <th>
+            @AppLocalization["To Email"]
+        </th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+
+    </tr>
+
+    <tr>
+        @foreach (var type in Enum.GetValues(typeof(NotificationType)))
+        {
+            var originalEnum = (NotificationType)type;
+            <td>
+                @{
+
+                }
+                <MudCheckBox Style="align-items:center;"
+                             Disabled=true
+                             Value="@(effectiveInAppSubscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)" />
+
+
+            </td>
+        }
+
+        <td>
+            @{
+
+            }
+            <MudCheckBox Style="align-items:center;"
+                         Disabled=true
+                         Value="@(effectiveInAppSubscription.InApp)" />
+
+
+        </td>
+        <td>
+            @{
+
+            }
+            <MudCheckBox Style="align-items:center;"
+                         Disabled=true
+                         Value="@(effectiveInAppSubscription.ByEmail)" />
+
+
+        </td>
+
+    </tr>
+
+
+    <tr>
+        @foreach (var type in Enum.GetValues(typeof(NotificationType)))
+        {
+            var originalEnum = (NotificationType)type;
+            <td>
+                @{
+
+                }
+                <MudCheckBox Style="align-items:center;"
+                             Disabled=true
+                             Value="@(effectiveByEmailSubscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)" />
+
+
+            </td>
+        }
+
+        <td>
+            @{
+
+            }
+            <MudCheckBox Style="align-items:center;"
+                         Disabled=true
+                         Value="@(effectiveByEmailSubscription.InApp)" />
+
+
+        </td>
+        <td>
+            @{
+
+            }
+            <MudCheckBox Style="align-items:center;"
+                         Disabled=true
+                         Value="@(effectiveByEmailSubscription.ByEmail)" />
+
+
+        </td>
+    </tr>
+
+</MudSimpleTable>
+
+@code
+{
+    private IDirectoryEntryAdapter? _ou = null;
+    [Parameter]
+    public IDirectoryEntryAdapter? OU
+    {
+        get => _ou; set
+        {
+            if (_ou?.Equals(value) == true) return;
+            _ou = value;
+            ouChanged(_ou);
+        }
+    }
+
+    [Parameter]
+    public AppUser User { get; set; }
+
+
+    NotificationSubscription newSubscription = new();
+    NotificationSubscription effectiveInAppSubscription = new();
+    NotificationSubscription effectiveByEmailSubscription = new();
+    List<NotificationSubscription> subscriptions = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        UpdateSubscriptions();
+    }
+
+    private async void ouChanged(IDirectoryEntryAdapter entry)
+    {
+        var ou = (IADOrganizationalUnit)entry;
+        if (ou != null)
+        {
+            if (User != null)
+            {
+                newSubscription.UserId = User.Id;
+                newSubscription.OU = ou.DN;
+                if (Context != null)
+                    UpdateSubscriptions();
+            }
+
+        }
+    }
+
+    private void CalculateEffectiveSubscriptions()
+    {
+        effectiveInAppSubscription = ouNotificationService.CalculateEffectiveInAppSubscriptions(User, OU);
+        effectiveByEmailSubscription = ouNotificationService.CalculateEffectiveEmailSubscriptions(User, OU);
+        return;
+      
+    }
+    private async void AddSubscription()
+    {
+
+        var changes = await Context.SaveChangesAsync();
+        if (changes > 0)
+        {
+            newSubscription = new();
+            SnackBarService.Success(AppLocalization["Saved notification subscription"]);
+            UpdateSubscriptions();
+
+
+        }
+        else
+        {
+            SnackBarService.Warning(AppLocalization["Unable to save notification subscription"]);
+
+        }
+
+    }
+
+    private async void SaveExisting()
+    {
+        var result = await Context.SaveChangesAsync();
+        if (result > 0)
+        {
+            SnackBarService.Success("Subscription saved.");
+            UpdateSubscriptions();
+        }
+        else
+        {
+            SnackBarService.Warning("Subscription could not be saved.");
+
+        }
+    }
+    private async void DeleteExisting(NotificationSubscription subscription)
+    {
+        subscription.DeletedAt = DateTime.UtcNow;
+        var result = await Context.SaveChangesAsync();
+        if (result > 0)
+        {
+            SnackBarService.Success("Subscription deleted.");
+        }
+        else
+        {
+            SnackBarService.Warning("Subscription could not be deleted.");
+
+        }
+        UpdateSubscriptions();
+
+
+    }
+    private async void UpdateSubscriptions()
+    {
+        subscriptions = Context.NotificationSubscriptions.Include(x => x.NotificationTypes).Where(x => x.DeletedAt == null && x.UserId == User.Id && x.OU.Equals(OU.DN)).ToList();
+
+
+        CalculateEffectiveSubscriptions();
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

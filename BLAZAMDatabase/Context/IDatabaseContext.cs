@@ -3,6 +3,7 @@ using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Database.Models.Chat;
+using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
@@ -62,6 +63,7 @@ namespace BLAZAM.Database.Context
         DbSet<ChatMessage> ChatMessages { get; set; }
         DbSet<UnreadChatMessage> UnreadChatMessages { get; set; }
         DbSet<ActiveDirectoryFieldObjectType> ActiveDirectoryFieldObjectMappings { get; set; }
+        DbSet<NotificationSubscription> NotificationSubscriptions { get; set; }
 
         void Export(string directory);
     }

@@ -55,8 +55,8 @@ namespace BLAZAM.Email.Services
         protected string WrapMessage<TComponent>() where TComponent : IComponent => GetRenderer<TComponent>().Render();
 
         protected string WrapGenericMessage(MarkupString header, MarkupString body) => GetRenderer<GenericEmailMessage>()
-                .Set(c => c.Header, header)
-                .Set(c => c.Body, body).Render();
+                .Set(c => c.EmailMessageHeader, header)
+                .Set(c => c.EmailMessageBody, body).Render();
 
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace BLAZAM.Email.Services
 
             }
         }
-        public async Task<bool> SendMessage(string subject, EmailTemplateComponent body, string to, string? cc = null, string? bcc = null)
+        public async Task<bool> SendMessage(string subject, NotificationTemplateComponent body, string to, string? cc = null, string? bcc = null)
         {
             try
             {

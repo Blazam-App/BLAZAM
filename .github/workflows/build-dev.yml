@@ -1,10 +1,10 @@
-name: Build v1 Dev
+name: Build Dev
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - v1-Dev
+      - Beta-Dev
     
 
 jobs:
@@ -15,6 +15,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Setup .NET Core SDK 6
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.x
       - name: Setup .NET Core SDK 8
         uses: actions/setup-dotnet@v1
         with:
@@ -63,8 +67,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: 'Dev1'
-          name: 'Dev1'
+          tag_name: 'Dev'
+          name: 'Dev'
           prerelease: true
           body: This release is highly unstable. Expect bugs and crashes on this branch. Developers Only!
           files: |

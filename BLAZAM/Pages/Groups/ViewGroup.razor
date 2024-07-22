@@ -150,6 +150,8 @@
             {
                 await AuditLogger.Group.Changed(Group, Group.Changes);
 
+                _ = OUNotificationService.PostAsync(Group, NotificationType.Modify);
+
                 EditMode = false;
                 Nav.WarnOnNavigation = false;
                 SnackBarService.Success("The changes made to this group have been saved.");
@@ -173,6 +175,8 @@
             {
                 Group.Delete();
                 SnackBarService.Success(Group.CanonicalName + " has been deleted.");
+                await AuditLogger.Group.Deleted(Group);
+                _ = OUNotificationService.PostAsync(Group, NotificationType.Delete);
 
                 //Group = null;
                 Nav.NavigateTo("/groups/search");

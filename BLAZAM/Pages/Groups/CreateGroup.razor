@@ -1,6 +1,7 @@
 ﻿@page "/groups/create"
 @inherits TabbedAppComponentBase
 @attribute [Authorize]
+@inject OUNotificationService OUNotificationService
 <AppPageTitle>Create Group</AppPageTitle>
 
 <Row>
@@ -123,5 +124,7 @@
     async Task GroupCreated(IADGroup ou)
     {
         await AuditLogger.Group.Created(ou);
+        _ = OUNotificationService.PostAsync(ou, NotificationType.Create);
+
     }
 }
