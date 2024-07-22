@@ -36,12 +36,20 @@
             </MudStack>
             @if (lockoutBadgeVisible)
             {
-                <MudChip Size=Size.Small Disabled=true Overlap=false Color="Color.Warning" Text=@("Locked") />
+                <MudChip T="string"
+                    Size=Size.Small 
+                    Disabled=true
+                    Color="Color.Warning" 
+                    Text=@("Locked") />
 
             }
             @if (disabledBadgeVisible)
             {
-                <MudChip Size=Size.Small Disabled=true Overlap=false Color="Color.Error" Text=@("Disabled") />
+                <MudChip T="string"
+                    Size=Size.Small
+                    Disabled=true
+                    Color="Color.Error" 
+                    Text=@("Disabled") />
 
             }
         </MudStack>

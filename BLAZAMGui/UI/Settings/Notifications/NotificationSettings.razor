@@ -32,7 +32,7 @@
         await base.OnInitializedAsync();
         Users = await Context.UserSettings.ToListAsync();
     }
-    private async Task<IEnumerable<AppUser>> SearchUsers(string value)
+    private async Task<IEnumerable<AppUser>> SearchUsers(string value,CancellationToken token)
     {
         if (value == null) value = String.Empty;
         return Users.Where(x => x.Username.Contains(value));
