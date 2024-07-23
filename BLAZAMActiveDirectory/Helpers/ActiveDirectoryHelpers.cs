@@ -43,7 +43,7 @@ namespace BLAZAM.Helpers
             var list = enumerable.ToList();
             if (list.Count() < 1) return list;
             List<IDirectoryEntryAdapter> mathingItems=new List<IDirectoryEntryAdapter>();
-            for (int x =1; x < list.Count(); x++)
+            for (int x =0; x < list.Count(); x++)
             {
 
                 if (matchingPredicate.Invoke(list[x]))
