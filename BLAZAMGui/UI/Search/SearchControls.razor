@@ -29,6 +29,10 @@
             <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Printer; })>@AppLocalization["Printer"]</MudMenuItem>
 
         </AuthorizeView>
+        <AuthorizeView Roles="@(UserRoles.SuperAdmin)">
+            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.BitLocker; })>@AppLocalization["BitLocker"]</MudMenuItem>
+
+        </AuthorizeView>
     </CascadingAuthenticationState>
 
 </MudMenu>
@@ -72,6 +76,9 @@
             break;
         case ActiveDirectoryObjectType.Printer:
             adornmentIcon = Icons.Material.Filled.Print;
+            break;
+        case ActiveDirectoryObjectType.BitLocker:
+            adornmentIcon = Icons.Material.Filled.EnhancedEncryption;
             break;
     }
 }

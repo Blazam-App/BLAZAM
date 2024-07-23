@@ -17,6 +17,9 @@
     case ActiveDirectoryObjectType.Printer:
         <ViewPrinter DirectoryEntry="DirectoryEntry" />
         break;
+    case ActiveDirectoryObjectType.BitLocker:
+        <ViewBitLocker DirectoryEntry="DirectoryEntry" />
+        break;
 }
 </CascadingValue>
 <AppModal Title=@AppLocalization["Change History"] @ref=@ChangeHistoryModal Options=@(new DialogOptions(){FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>

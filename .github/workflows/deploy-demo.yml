@@ -13,6 +13,7 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    permissions: write-all
 
     steps:
       - uses: actions/checkout@v2

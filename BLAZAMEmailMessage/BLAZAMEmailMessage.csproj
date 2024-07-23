@@ -13,12 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.30" />
-    <PackageReference Include="MudBlazor" Version="6.17.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.30" />
+    <PackageReference Include="MudBlazor" Version="6.20.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BLAZAMActiveDirectory\BLAZAMActiveDirectory.csproj" />
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
     <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
     <ProjectReference Include="..\BLAZAMStatic\BLAZAMStatic.csproj" />

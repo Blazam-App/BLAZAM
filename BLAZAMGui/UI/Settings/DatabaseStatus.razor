@@ -54,7 +54,7 @@
 
 </MudForm>
 @code {
-    #nullable disable warnings
+#nullable disable warnings
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -66,30 +66,30 @@
     }
     async void Export()
     {
-   
-            MemoryStream memoryStream = new MemoryStream();
 
-            IJob exportJob = new Job(AppLocalization["Export Database"], CurrentUser.Username);
-            IJobStep exportData = new JobStep(AppLocalization["Export Data"], (step) =>
-        {
-            Context.Export("export");
-            return true;
+        MemoryStream memoryStream = new MemoryStream();
 
-        });
-            IJobStep packageData = new JobStep(AppLocalization["Prepare Files"], (step) =>
+        IJob exportJob = new Job(AppLocalization["Export Database"], CurrentUser.Username);
+        IJobStep exportData = new JobStep(AppLocalization["Export Data"], (step) =>
     {
-        ZipArchive exportZip = new ZipArchive(memoryStream, ZipArchiveMode.Create);
-        var exportDir = new SystemDirectory("export");
-        exportZip.AddToZip(exportDir, exportDir.Path);
-        memoryStream.SaveTo(new SystemFile("export/" + DatabaseCache.ApplicationSettings.AppName + "-" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".zip"));
+        Context.Export("export");
         return true;
 
     });
-            exportJob.Steps.Add(exportData);
-            exportJob.Steps.Add(packageData);
-            exportJob.ShowJobDetailsDialog(MessageService);
-            await InvokeAsync(StateHasChanged);
-            await exportJob.RunAsync();
+        IJobStep packageData = new JobStep(AppLocalization["Prepare Files"], (step) =>
+    {
+    ZipArchive exportZip = new ZipArchive(memoryStream, ZipArchiveMode.Create);
+    var exportDir = new SystemDirectory("export");
+    exportZip.AddToZip(exportDir, exportDir.Path);
+    memoryStream.SaveTo(new SystemFile("export/" + DatabaseCache.ApplicationSettings.AppName + "-" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".zip"));
+    return true;
+
+    });
+        exportJob.AddStep(exportData);
+        exportJob.AddStep(packageData);
+        exportJob.ShowJobDetailsDialog(MessageService);
+        await InvokeAsync(StateHasChanged);
+        await exportJob.RunAsync();
 
 
     }

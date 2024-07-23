@@ -45,13 +45,17 @@
             }
 
         }
-        if (!UpdateService.LatestUpdate.PassesPrerequisiteChecks)
+        if (UpdateService.IncompatibleUpdates.Count > 0)
         {
-            <MudAlert Icon="@Icons.Material.Filled.Error" Class="mud-alert-filled-error">
-                @AppLocalization["Unable to update!"]
-                <MudText>@(UpdateService.LatestUpdate.PrequisiteMessage)</MudText>
+            var latestIncompatibleUpdate = UpdateService.IncompatibleUpdates.Where(x => x.Newer).OrderByDescending(x => x.Release.ReleaseTime).FirstOrDefault();
+            if (latestIncompatibleUpdate != null)
+            {
+                <MudAlert Icon="@Icons.Material.Filled.Error" Class="mud-alert-filled-error">
+                    @AppLocalization["Unable to update!"]
+                    <MudText>@(latestIncompatibleUpdate.PrequisiteMessage)</MudText>
 
-            </MudAlert>
+                </MudAlert>
+            }
         }
         <SettingsField Label="@AppLocalization["Application Credentials"]">
 
@@ -86,7 +90,9 @@
 
                     <SettingsField Label="@AppLocalization["Password"]">
 
-                        <MudTextField Label="@AppLocalization["Password"]" InputType="InputType.Password" @bind-Value="newUpdatePassword" />
+                        <MudTextField Label="@AppLocalization["Password"]"
+                                      InputType="InputType.Password"
+                                      @bind-Value="newUpdatePassword" />
                     </SettingsField>
                 </MudCard>
             }
@@ -95,7 +101,9 @@
         </SettingsField>
         <SettingsField Label="@AppLocalization["Update Branch"]">
 
-            <MudSelect Label="@AppLocalization["Update Branch"]" @bind-Value=@settings.UpdateBranch HelperText="The stable branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers.">
+            <MudSelect Label="@AppLocalization["Update Branch"]"
+                       @bind-Value=@settings.UpdateBranch
+                       HelperText="The rerlease branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers.">
                 @foreach (var val in updateBranches)
                 {
                     <MudSelectItem Value="@val">@val</MudSelectItem>

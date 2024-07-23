@@ -7,9 +7,6 @@
     <RootNamespace>BLAZAM.Nav</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.30" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />

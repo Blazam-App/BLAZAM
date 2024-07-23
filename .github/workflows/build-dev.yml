@@ -10,18 +10,11 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-   
+    permissions: write-all
         
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Cache Nuget Packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
       - name: Setup .NET Core SDK 6
         uses: actions/setup-dotnet@v1
         with:
@@ -72,9 +65,9 @@ jobs:
       - name: Update dev release
         uses: andelf/nightly-release@main
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: Dev
+          tag_name: 'Dev'
           name: 'Dev'
           prerelease: true
           body: This release is highly unstable. Expect bugs and crashes on this branch. Developers Only!

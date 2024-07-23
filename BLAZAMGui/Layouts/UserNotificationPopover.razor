@@ -37,7 +37,7 @@
                     <MudText Typo="Typo.subtitle2">@notification.Notification.Title</MudText>
                 }
                  <MudText Typo="Typo.caption">
-                        @notification.Notification.Message
+                        @((MarkupString)notification.Notification.Message)
                     </MudText>
             </MudAlert>
         }
