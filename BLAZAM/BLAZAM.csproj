@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>0.9.4</AssemblyVersion>
-		<Version>2024.07.21.2146</Version>
+		<Version>2024.07.23.0006</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -156,3 +156,4 @@
 		<Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />
 	</Target>
 </Project>
+
