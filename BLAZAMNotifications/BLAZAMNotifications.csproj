@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
+    <ProjectReference Include="..\BLAZAMEmailMessage\BLAZAMEmailMessage.csproj" />
   </ItemGroup>
 
 </Project>

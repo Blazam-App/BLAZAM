@@ -2,6 +2,7 @@
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Chat;
+using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
@@ -146,7 +147,7 @@ namespace BLAZAM.Server.Data.Services
                 if (User == null) return;
                 using var context = _dbFactory.CreateDbContext();
 
-                userSettings = context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
+                userSettings = context.UserSettings.Include(x=>x.NotificationSubscriptions).Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
                 if (userSettings == null)
                 {
                     userSettings = new AppUser();
@@ -337,6 +338,7 @@ namespace BLAZAM.Server.Data.Services
         public bool CanUnlockUsers => HasObjectActionPermission(ActiveDirectoryObjectType.User,ObjectActions.Unlock);
 
         public string DuoAuthState { get; set; } = "";
+        public List<NotificationSubscription> NotificationSubscriptions { get => userSettings?.NotificationSubscriptions; set { userSettings.NotificationSubscriptions=value; } }
 
         private bool HasObjectActionPermission(ActiveDirectoryObjectType objectType, ObjectAction actionType)
         {

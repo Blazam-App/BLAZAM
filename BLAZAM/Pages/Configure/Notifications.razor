@@ -1,0 +1,27 @@
+﻿@page "/notifications"
+@using BLAZAM.Gui.UI.Settings.Notifications
+@attribute [Authorize(Roles = UserRoles.SuperAdmin)]
+
+@inherits TabbedAppComponentBase
+
+<AppPageTitle>@AppLocalization["Notifications"]</AppPageTitle>
+<AuthorizeView Roles=@UserRoles.SuperAdmin>
+
+    <SetHeader>
+    </SetHeader>
+
+
+
+
+
+                <NotificationSettings />
+
+
+
+
+</AuthorizeView>
+
+
+@code {
+
+}

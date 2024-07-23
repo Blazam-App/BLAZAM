@@ -1,6 +1,7 @@
 ﻿
 
 using BLAZAM.Database.Models.Chat;
+using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Server.Data;
 
 namespace BLAZAM.Database.Models.User
@@ -22,8 +23,15 @@ namespace BLAZAM.Database.Models.User
         //public List<ChatRoom> ChatRooms{ get; set; } = new();
 
         public List<UserDashboardWidget> DashboardWidgets { get; set; }= new();
+        public List<NotificationSubscription> NotificationSubscriptions { get; set; }= new();
         public byte[]? ProfilePicture { get; set; }
         public string? Email { get; set; }
+
+        public override string? ToString()
+        {
+            return Username
+                ;
+        }
     }
 
 }

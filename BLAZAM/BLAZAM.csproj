@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
-		<AssemblyVersion>0.9.3</AssemblyVersion>
-		<Version>2024.07.06.2008</Version>
+		<AssemblyVersion>0.9.4</AssemblyVersion>
+		<Version>2024.07.23.0006</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -116,6 +116,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Include="..\BLAZAMGui\UI\Settings\JobsMonitor.razor" Link="JobsMonitor.razor" />
+	  <None Include="..\BLAZAMGui\UI\Settings\Notifications\EditNotificationSubscriptionRow.razor" Link="EditNotificationSubscriptionRow.razor" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Update="Properties\Resources.Designer.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
@@ -151,3 +156,4 @@
 		<Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File $(ProjectDir)\IncrementBuildNumber.ps1 -ProjectDir $(ProjectDir) -ProjectPath $(ProjectPath)" />
 	</Target>
 </Project>
+
