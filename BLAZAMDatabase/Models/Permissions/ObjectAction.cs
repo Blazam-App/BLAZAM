@@ -26,15 +26,14 @@ namespace BLAZAM.Database.Models.Permissions
             switch (type)
             {
                 case ActiveDirectoryObjectType.User:
-                    return true;
                 case ActiveDirectoryObjectType.Computer:
                     switch (Name)
                     {
+                        case "Lock":
+                        case "Unlock":
                         case "Move":
                         case "Delete":
                         case "Create":
-                        case "UnAssign":
-                        case "Assign":
                         case "Enable":
                         case "Disable":
                         case "Rename":
