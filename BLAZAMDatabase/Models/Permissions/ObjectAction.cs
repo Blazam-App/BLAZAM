@@ -66,7 +66,15 @@ namespace BLAZAM.Database.Models.Permissions
                         default:
                             return false;
                     }
-                
+                case ActiveDirectoryObjectType.BitLocker:
+                    switch (Name)
+                    {
+                        case "Delete":
+                            return true;
+                        default:
+                            return false;
+                    }
+
                 default:
                     return false;
             }
