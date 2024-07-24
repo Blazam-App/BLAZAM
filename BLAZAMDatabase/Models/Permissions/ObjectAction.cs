@@ -54,6 +54,7 @@ namespace BLAZAM.Database.Models.Permissions
                         default:
                             return false;
                     }
+                case ActiveDirectoryObjectType.Printer:
                 case ActiveDirectoryObjectType.OU:
                     switch (Name)
                     {
@@ -65,7 +66,7 @@ namespace BLAZAM.Database.Models.Permissions
                         default:
                             return false;
                     }
-
+                
                 default:
                     return false;
             }
