@@ -10,7 +10,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
-    <ProjectReference Include="..\BLAZAMNotifications\BLAZAMNotifications.csproj" />
   </ItemGroup>
 
   <ItemGroup>

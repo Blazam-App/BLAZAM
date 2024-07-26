@@ -1,7 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models.User;
-using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Components;
+﻿
 
 namespace BLAZAM.Jobs
 {

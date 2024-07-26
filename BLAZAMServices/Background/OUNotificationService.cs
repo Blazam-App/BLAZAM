@@ -2,17 +2,14 @@
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.User;
+using BLAZAM.EmailMessage.Email.Base;
+using BLAZAM.EmailMessage.Email.Notifications;
+using BLAZAM.Helpers;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
+using BLAZAM.Notifications.Notifications;
 using BLAZAM.Notifications.Services;
-using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Localization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Services.Background
 {
@@ -21,12 +18,14 @@ namespace BLAZAM.Services.Background
         private IAppDatabaseFactory _databaseFactory;
         private readonly INotificationPublisher _notificationPublisher;
         private readonly IStringLocalizer<AppLocalization> _appLocalization;
+        private readonly EmailService _emailService;
 
-        public OUNotificationService(IAppDatabaseFactory databaseFactory,INotificationPublisher notificationPublisher, IStringLocalizer<AppLocalization>appLocalization)
+        public OUNotificationService(IAppDatabaseFactory databaseFactory,INotificationPublisher notificationPublisher, IStringLocalizer<AppLocalization>appLocalization,EmailService emailService)
         {
             _databaseFactory = databaseFactory;
             _notificationPublisher = notificationPublisher;
             _appLocalization = appLocalization;
+            _emailService=emailService;
         }
         private IDatabaseContext Context => _databaseFactory.CreateDbContext();
         public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType)
@@ -37,6 +36,7 @@ namespace BLAZAM.Services.Background
             notificationTitle = _appLocalization[source.ObjectType.ToString()] + " ";
 
             string notificationBody;
+            NotificationTemplateComponent? emailMessage=null;
             notificationBody = "<a href=\"" + source.SearchUri + "\">" + source.CanonicalName + "</a> ";
 
             switch (notificationType)
@@ -44,26 +44,30 @@ namespace BLAZAM.Services.Background
                 case NotificationType.Create:
                     notificationTitle += _appLocalization["Created"];
                     notificationBody += _appLocalization["was created at"] + source.Created.Value.ToLocalTime();
-
+                    emailMessage = NotificationType.Create.ToNotification<EntryCreatedEmailMessage>();
                     break;
                     case NotificationType.Delete:
                     notificationTitle += _appLocalization["Deleted"];
                     notificationBody += _appLocalization["was deleted at"] + source.LastChanged.Value.ToLocalTime();
+                    emailMessage = NotificationType.Delete.ToNotification<EntryDeletedEmailMessage>();
 
                     break;
                 case NotificationType.Modify:
                     notificationTitle += _appLocalization["Modified"];
                     notificationBody += _appLocalization["was modified at"] + source.LastChanged.Value.ToLocalTime();
+                    emailMessage = NotificationType.Modify.ToNotification<EntryEditedEmailMessage>();
 
                     break;
                 case NotificationType.GroupAssignment:
                     notificationTitle += _appLocalization["Group Membership Changed"];
                     notificationBody += _appLocalization["was modified at"] + source.LastChanged.Value.ToLocalTime();
+                    emailMessage = NotificationType.GroupAssignment.ToNotification<EntryGroupAssignmentEmailMessage>();
 
                     break;
                 case NotificationType.PasswordChange:
                     notificationTitle += _appLocalization["Password Reset"];
                     notificationBody += _appLocalization["had a password reset at"] + source.LastChanged.Value.ToLocalTime();
+                    emailMessage = NotificationType.PasswordChange.ToNotification<PasswordChangedEmailMessage>();
 
                     break;
                     
@@ -74,14 +78,34 @@ namespace BLAZAM.Services.Background
             notification.Dismissable = true;
             notification.Created = DateTime.Now;
             notification.Level = NotificationLevel.Info;
-
-            foreach (var user in Context.UserSettings.ToList())
+            var _emailConfigured = false;
+            if (_emailService.IsConfigured)
+            {
+                _emailConfigured = true;
+            }
+                foreach (var user in Context.UserSettings.ToList())
             {
                 var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
                 var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
                 if (effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                 {
                     _notificationPublisher.PublishNotification(user, notification);
+                }
+                if (effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
+                {
+                    if (emailMessage != null)
+                    {
+                        if (_emailConfigured && !user.Email.IsNullOrEmpty())
+                        {
+                            await _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
+
+                        }
+                    }
+                    else
+                    {
+                        var error = new ApplicationException();
+                        Loggers.SystemLogger.Error("Email message template was not found! {@Error}",error);
+                    }
                 }
             }
         }
