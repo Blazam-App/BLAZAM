@@ -3,7 +3,6 @@ using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
 using BLAZAM.Logger;
-using BLAZAM.Notifications.Services;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Http;
@@ -24,7 +23,6 @@ namespace BLAZAM.Server.Data.Services
     /// </summary>
     public class ApplicationUserStateService : IApplicationUserStateService
     {
-        private INotificationPublisher _notificationPublisher;
 
         public static IApplicationUserStateService Instance { get; private set; }
 
@@ -68,10 +66,8 @@ namespace BLAZAM.Server.Data.Services
         /// <param name="httpContextAccessor">An HTTP Context Accessor to get the current ClaimsPrincipal of the current session.
         /// This Principal is persisted via the browser authentication cookie</param>
         /// <param name="factory">Database Context Factory for accessing the Authentication Setting - SessionTimeout</param>
-        public ApplicationUserStateService(IHttpContextAccessor httpContextAccessor, IAppDatabaseFactory factory,
-            INotificationPublisher notificationPublisher)
+        public ApplicationUserStateService(IHttpContextAccessor httpContextAccessor, IAppDatabaseFactory factory)
         {
-            _notificationPublisher = notificationPublisher;
             Instance = this;
             _httpContextAccessor = httpContextAccessor;
             _factory = factory;
@@ -240,7 +236,7 @@ namespace BLAZAM.Server.Data.Services
 
         public IApplicationUserState CreateUserState(ClaimsPrincipal user)
         {
-            return new ApplicationUserState(_factory, _notificationPublisher) { User = user };
+            return new ApplicationUserState(_factory) { User = user };
         }
     }
 }
