@@ -1,4 +1,4 @@
-
+@inject IStringLocalizer<AppLocalization> AppLocalization
 <tr>
     @foreach (var type in Enum.GetValues(typeof(NotificationType)))
     {
@@ -10,7 +10,6 @@
             <MudCheckBox Style="align-items:center;"
                          ValueChanged=@((bool val)=>{ToggleType(originalEnum,val);})
                          Value="@(Subscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)" />
-
 
         </td>
     }
@@ -29,9 +28,13 @@
     @if (Subscription.Id == 0)
     {
         <td colspan="2">
-            <MudFab Color=@Color.Tertiary
-                    StartIcon="@Icons.Material.Filled.Add"
-                    OnClick="@(AddSubscription)" />
+            <MudButton Color=@Color.Tertiary
+                       Disabled=@((!Subscription.ByEmail&&!Subscription.InApp)||Subscription.NotificationTypes.Count==0)
+                       Style="align-items:center;"
+                       StartIcon="@Icons.Material.Filled.Add"
+                       OnClick="@(AddSubscription)">
+                @AppLocalization["Create"]
+            </MudButton>
         </td>
     }
     else
@@ -40,10 +43,12 @@
         <td>
             <MudFab Color=@Color.Success
                     OnClick="@(OnSaved)"
+                    Size="Size.Small"
                     StartIcon="@Icons.Material.Filled.Save" />
         </td>
         <td>
             <MudFab Color=@Color.Error
+                    Size="Size.Small"
                     OnClick="@(()=>{OnDeleted.InvokeAsync(Subscription);})"
                     StartIcon="@Icons.Material.Filled.Delete" />
         </td>
