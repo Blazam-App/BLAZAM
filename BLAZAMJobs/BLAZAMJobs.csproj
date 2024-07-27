@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MudBlazor" Version="6.21.0" />
+    <PackageReference Include="MudBlazor" Version="7.4.0" />
     <PackageReference Include="PreMailer.Net" Version="2.6.0" />
   </ItemGroup>
 
