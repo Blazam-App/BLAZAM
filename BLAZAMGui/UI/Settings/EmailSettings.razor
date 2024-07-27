@@ -134,7 +134,8 @@
         //message.User = user;
         //var html = message.Render();
         //emailPreview = EmailService.PrepareHTMLForEmail(html);
-        emailPreview = EmailService.BuildMessage<TestEmailMessage>("BLAZAM Test Email", "to@test.com").HtmlBody;
+        if(EmailService.IsConfigured)
+            emailPreview = EmailService.BuildMessage<TestEmailMessage>("BLAZAM Test Email", "to@test.com").HtmlBody;
 
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
