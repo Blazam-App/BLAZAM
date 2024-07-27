@@ -91,7 +91,7 @@
     <MudTextField Label="@AppLocalization["Test Recipient"]" Disabled=@(!settings.Enabled) @bind-Value=testRecipient />
 
     <MudButton Disabled=@((!settings.Enabled && !settings.Valid())||LoadingData) @onclick="SendTestEmail" Color="Color.Success">Send Test Email</MudButton>
-    @if (ApplicationInfo.InDebugMode)
+    @if (ApplicationInfo.InDebugMode && emailPreview!=null)
     {
         <MudContainer MaxWidth
         ="MaxWidth.Large" Style
@@ -112,7 +112,7 @@
 </MudForm>
 @code {
     #nullable disable warnings
-    string emailPreview;
+    string? emailPreview=null;
     BLAZAM.Database.Models.EmailSettings settings = new BLAZAM.Database.Models.EmailSettings();
     string testRecipient;
     protected override async Task OnInitializedAsync()
