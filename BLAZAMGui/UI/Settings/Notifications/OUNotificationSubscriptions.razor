@@ -262,7 +262,7 @@
         {
             newSubscription = new();
             newSubscription.UserId = User.Id;
-            newSubscription.OU = ou.DN;
+            newSubscription.OU = OU.DN;
             SnackBarService.Success(AppLocalization["Saved notification subscription"]);
             UpdateSubscriptions();
 

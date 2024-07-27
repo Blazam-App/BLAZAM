@@ -5,4 +5,16 @@
     public RenderFragment? WidgetContent { get; set; }
     public string Title{ get; set; }
     public DashboardWidgetType WidgetType{ get; set; }
+
+    protected virtual void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
+    {
+        if (args.Item != null)
+        {
+            GoTo(args.Item);
+        }
+    }
+    protected virtual void GoTo(IDirectoryEntryAdapter args)
+    {
+        Nav.NavigateTo(args.SearchUri);
+    }
 }
