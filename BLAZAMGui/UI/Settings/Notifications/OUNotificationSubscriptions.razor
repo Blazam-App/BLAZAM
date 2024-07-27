@@ -2,28 +2,52 @@
 @inject OUNotificationService ouNotificationService
 <MudSimpleTable>
 
+    <tr>
+        <th colspan="10" class="mb-6">
+            <MudText Typo="Typo.h5" Class="pb-6">@(AppLocalization["Notification Settings for "]+_ou.CanonicalName)</MudText>
 
+        </th>
 
+    </tr>
+    <tr>
+        
+        <th style="border-left:solid;border-right:solid;" colspan="5">
+            @AppLocalization["Events"]
+        </th>
+        <th style="border-right:solid;" colspan="2">
+            @AppLocalization["Delivery"]
+        </th>
+        <th style="border-right:solid;">
+            @AppLocalization[" "]
+        </th>
+        <th colpan="2">
+            @AppLocalization[" "]
+        </th>
+    </tr>
     <tr>
 
-
+        @{
+            bool first = true;
+        }
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
         {
             var originalEnum = (NotificationType)type;
-            <th class="align-self-center">
+            <th style="@(first==true?"border-left:solid;":"")" class="align-self-center">
                 @originalEnum.ToString()
             </th>
+            first=false;
+            
         }
-        <th>
+        <th style="border-left:solid;">
             @AppLocalization["In App"]
         </th>
         <th>
             @AppLocalization["To Email"]
         </th>
-        <th>
+        <th style="border-left:solid;">
             @AppLocalization["Block"]
         </th>
-        <th>
+        <th style="border-left:solid;">
             @AppLocalization["Save"]
         </th>
         <th>
@@ -37,10 +61,24 @@
             <EditNotificationSubscriptionRow Subscription="sub"
                                              Context="Context"
                                              OnSaved="SaveExisting"
-                                             OnDeleted="DeleteExisting" />
+            OnDeleted="DeleteExisting" />
 
         }
     }
+    else
+    {
+
+        <tr>
+            <td colspan="10">
+                <MudText Align="Align.Center" Class="py-5">@AppLocalization["No subscriptions are set for this OU"]</MudText>
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="10">
+            <MudDivider  Class="my-3"/>
+        </td>
+    </tr>
     <EditNotificationSubscriptionRow @bind-Subscription="newSubscription"
                                      Context="Context"
                                      OnAdded="AddSubscription" />
@@ -50,10 +88,16 @@
 </MudSimpleTable>
 
 <MudSimpleTable>
-
     <tr>
         <th colspan="10">
-            @AppLocalization["Effective Notification Settings"]
+           <MudDivider Class="my-10"/>
+        </th>
+
+    </tr>
+    <tr>
+        <th colspan="10" class="mb-6">
+            <MudText Typo="Typo.h5" Class="pb-6">@(AppLocalization["Effective Notification Settings for "]+_ou.CanonicalName)</MudText>
+            
         </th>
 
     </tr>

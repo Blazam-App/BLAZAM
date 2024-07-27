@@ -5,28 +5,37 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Components;
 using MimeKit;
-using MimeKit.Text;
 using MimeKit.Utils;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Common.Exceptions;
-using BLAZAM.Logger;
 using BLAZAM.EmailMessage;
 using BLAZAM.EmailMessage.Email;
 using BLAZAM.Common.Data;
 using BLAZAM.Static;
-using PreMailer.Net;
 using BLAZAM.FileSystem;
 using BLAZAM.EmailMessage.Email.Base;
 
-namespace BLAZAM.Email.Services
+namespace BLAZAM.Services.Background
 {
     public class EmailService
     {
         public static EmailService? Instance { get; set; }
         private IAppDatabaseFactory Factory { get; set; }
+        public bool IsConfigured
+        {
+            get
+            {
+                EmailSettings? settings = GetSettings();
+                if (settings != null && settings.Valid())
+                {
+                    return true;
+                }
+                return false;
 
+            }
+        }
 
         public EmailService(IAppDatabaseFactory factory)
         {
@@ -48,7 +57,7 @@ namespace BLAZAM.Email.Services
         /// renders it, and returns the raw HTML
         /// </summary>
         /// <remarks>
-        /// The <see cref="IComponent"/> provided can not have any Blazorise components, only base Blazor
+        /// The <see cref="IComponent"/> provided can use basic MudBlazor components and Blazor components
         /// </remarks>
         /// <typeparam name="TComponent"></typeparam>
         /// <returns></returns>
@@ -122,9 +131,10 @@ namespace BLAZAM.Email.Services
         {
 
             var email = new MimeMessage();
-            EmailSettings? settings = GetSettings();
-            if (settings != null && settings.Valid())
+            if (IsConfigured)
             {
+                EmailSettings? settings = GetSettings();
+
                 if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty()) email.From.Add(MailboxAddress.Parse(settings.SMTPUsername));
                 else email.From.Add(MailboxAddress.Parse(settings.FromAddress));
 
@@ -165,7 +175,7 @@ namespace BLAZAM.Email.Services
         {
             SystemFile css = new SystemFile(ApplicationInfo.applicationRoot + "\\wwwroot\\lib\\mudblazor\\css\\mudblazor.min.css");
             var preMailer = new PreMailer.Net.PreMailer(body);
-            body = preMailer.MoveCssInline(stripIdAndClassAttributes: true,css:css.ReadAllText()).Html;
+            body = preMailer.MoveCssInline(stripIdAndClassAttributes: true, css: css.ReadAllText()).Html;
             return body;
         }
 
@@ -220,7 +230,7 @@ namespace BLAZAM.Email.Services
                 var client = await GetSmtpClientAsync();
 
 
-                var message = BuildMessage(subject, to,body.Render(), cc, bcc);
+                var message = BuildMessage(subject, to, body.Render(), cc, bcc);
 
                 return await TrySend(client, message);
             }
@@ -230,7 +240,7 @@ namespace BLAZAM.Email.Services
 
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
