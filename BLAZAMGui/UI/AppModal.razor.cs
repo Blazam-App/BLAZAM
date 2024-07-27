@@ -131,9 +131,9 @@ namespace BLAZAM.Gui.UI
         /// <summary>
         /// Re-renders the modal with the latest property values
         /// </summary>
-        public void RefreshView()
+        public async Task RefreshView()
         {
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
         }
 
         /// <summary>
