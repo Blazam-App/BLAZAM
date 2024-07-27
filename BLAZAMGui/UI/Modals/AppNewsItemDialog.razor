@@ -1,7 +1,7 @@
 ﻿@using ApplicationNews
 @inherits AppComponentBase
 
-    
+
 <MudDialog>
     <DialogContent>
         @((MarkupString)Item.Body)
@@ -12,11 +12,11 @@
         @if (!Item.Link.IsNullOrEmpty())
         {
             <MudLink Color="@Color.Primary"
-         Href="@Item.Link"
-          Target="_blank">@AppLocalization["Link"]</MudLink>
+                     Href="@Item.Link"
+                     Target="_blank">@Item.Link</MudLink>
         }
-        
-        <MudSpacer/>
+
+        <MudSpacer />
 
 
 
@@ -42,7 +42,7 @@
     private async void Acknowledge()
     {
         var existingReadItem = CurrentUser.State.ReadNewsItems.FirstOrDefault(x => x.NewsItemId == Item.Id);
-        if (existingReadItem!=null)
+        if (existingReadItem != null)
         {
             existingReadItem.NewsItemUpdatedAt = Item.UpdatedAt;
         }

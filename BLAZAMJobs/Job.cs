@@ -10,7 +10,7 @@ namespace BLAZAM.Jobs
         private DateTime scheduledRunTime = DateTime.Now;
         private Timer? runScheduler;
 
-        public string? User { get; set; }
+        public string? User { get; set; } = "System";
 
         private IList<IJobStep> _steps = new List<IJobStep>();
 
