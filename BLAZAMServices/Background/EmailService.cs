@@ -16,6 +16,7 @@ using BLAZAM.Common.Data;
 using BLAZAM.Static;
 using BLAZAM.FileSystem;
 using BLAZAM.EmailMessage.Email.Base;
+using System.Configuration;
 
 namespace BLAZAM.Services.Background
 {
@@ -135,9 +136,10 @@ namespace BLAZAM.Services.Background
             {
                 EmailSettings? settings = GetSettings();
 
-                if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty()) email.From.Add(MailboxAddress.Parse(settings.SMTPUsername));
-                else email.From.Add(MailboxAddress.Parse(settings.FromAddress));
-
+                if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty()) email.Sender=MailboxAddress.Parse(settings.SMTPUsername);
+                else email.Sender=MailboxAddress.Parse(settings.FromAddress);
+                if(!settings.FromName.IsNullOrEmpty()) email.Sender.Name = settings.FromName;
+                email.From.Add(email.Sender);
                 if (to != null) email.To.Add(MailboxAddress.Parse(to));
                 if (cc != null) email.Cc.Add(MailboxAddress.Parse(cc));
                 if (bcc != null) email.Bcc.Add(MailboxAddress.Parse(bcc));
