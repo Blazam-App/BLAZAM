@@ -11,15 +11,12 @@ using BLAZAM.Database.Models.User;
 using BLAZAM.Logger;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using BLAZAM.Database.Models.Chat;
 using BLAZAM.Server.Data;
-using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using BLAZAM.FileSystem;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using BLAZAM.Database.Models.Notifications;
 
 namespace BLAZAM.Database.Context

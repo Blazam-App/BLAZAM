@@ -56,16 +56,7 @@
           
 
     }
-    void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
-    {
-        if (args.Item != null)
-        {
-            GoTo(args.Item);
-        }
-    }
+ 
   
-    void GoTo(IDirectoryEntryAdapter args)
-    {
-        Nav.NavigateTo(args.SearchUri);
-    }
+
 }

@@ -1,0 +1,34 @@
+<MudCard>
+    <MudStack Row=true>
+        <OUTreeView SelectedEntry=_selectedOU
+                    SelectedEntryChanged="ouChanged" />
+        <MudContainer>
+            @if (_selectedOU != null)
+            {
+                <OUNotificationSubscriptions User="@User"
+                                             OU=@_selectedOU />
+
+
+            }
+        </MudContainer>
+    </MudStack>
+</MudCard>
+
+@code{
+    [Parameter]
+    public AppUser User {get;set;}
+
+    IDirectoryEntryAdapter? _selectedOU = null;
+
+
+    private async void ouChanged(IDirectoryEntryAdapter entry)
+    {
+        var ou = (IADOrganizationalUnit)entry;
+        if (ou != null)
+        {
+            _selectedOU = ou;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

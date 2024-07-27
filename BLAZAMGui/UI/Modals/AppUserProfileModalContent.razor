@@ -27,9 +27,9 @@
             @if (CurrentUser.State.Preferences.ProfilePicture != null)
             {
                 <MudButton OnClick="@(async ()=>{
-CurrentUser.State.Preferences.ProfilePicture=null;
-await CurrentUser.State.SaveUserSettings();
-})"
+                                    CurrentUser.State.Preferences.ProfilePicture=null;
+
+                                    })"
                            Variant="Variant.Filled"
                            Color="Color.Error"
                            StartIcon="@Icons.Material.Filled.Remove">
@@ -57,10 +57,37 @@ await CurrentUser.State.SaveUserSettings();
 
 
     </MudNavGroup>
+    <LoadingData Loading=LoadingData />
 </MudStack>
 @code {
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Modal.SetYesText(AppLocalization["Save"]);
+        Modal.OnYes += SaveSettings;
+        Modal.YesEnabled = () => { return !LoadingData; };
+    }
+    private async void SaveSettings()
+    {
+        LoadingData = true;
+        await Modal.RefreshView();
+        if (await CurrentUser.State.SaveUserSettings())
+        {
+            SnackBarService.Success(AppLocalization["Settings saved"]);
+
+        }
+        else
+        {
+            SnackBarService.Warning(AppLocalization["Failed to save settings"]);
+
+        }
+        LoadingData = false;
+        await Modal.RefreshView();
+
+
+    }
 #nullable disable warnings
     async Task UploadProfilePicture(IBrowserFile profilePictureFile)
     {
@@ -69,7 +96,6 @@ await CurrentUser.State.SaveUserSettings();
         if (rawBytes != null)
         {
             CurrentUser.State.Preferences.ProfilePicture = rawBytes.ReizeRawImage(100, true);
-            await CurrentUser.State.SaveUserSettings();
         }
     }
 }

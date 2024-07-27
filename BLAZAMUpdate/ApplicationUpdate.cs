@@ -188,6 +188,7 @@ namespace BLAZAM.Update
             var stagingCheckStep = new JobStep("Check prepared files", (step) => { return UpdateStagingDirectory.Exists; });
             var bakupStep = new JobStep("Create backup", Backup);
             var updateUpdaterStep = new JobStep("Apply Files", InitiateFileCopy);
+            var waitForRestart = new JobStep("Wait for completion...",Wait);
             updateJob.AddStep(cleanDownloadStep);
             updateJob.AddStep(downloadStep);
             updateJob.AddStep(cleanStageStep);
@@ -207,8 +208,14 @@ namespace BLAZAM.Update
             throw new ApplicationUpdateException("An unknown error caused the update to fail.");
 
         }
-
-        private async Task<bool> InitiateFileCopy(JobStep? step)
+        private async Task<bool> Wait(JobStep? step)
+        {
+            while (true)
+            {
+                await Task.Delay(1000);
+            }
+        }
+            private async Task<bool> InitiateFileCopy(JobStep? step)
         {
             //All prerequisites met
 
