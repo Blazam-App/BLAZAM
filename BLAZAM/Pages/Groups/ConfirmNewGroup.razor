@@ -1,4 +1,6 @@
 @inherits AppComponentBase
+@inject OUNotificationService OUNotificationService
+
 <AppPageTitle>Confirm Group Creation</AppPageTitle>
 
 @if (Group != null)
@@ -41,6 +43,8 @@
 
             }
             await AuditLogger.Group.Created(Group);
+            _ = OUNotificationService.PostAsync(Group, NotificationType.Create);
+
             var commitJob = Group.CommitChanges();
             await Confirmed.InvokeAsync(Group);
         }

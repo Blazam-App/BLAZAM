@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MudBlazor" Version="6.21.0" />
+    <PackageReference Include="PreMailer.Net" Version="2.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
     <ProjectReference Include="..\BLAZAMSession\BLAZAMSession.csproj" />
   </ItemGroup>

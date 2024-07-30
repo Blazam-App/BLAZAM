@@ -43,7 +43,7 @@ namespace BLAZAM.Helpers
             var list = enumerable.ToList();
             if (list.Count() < 1) return list;
             List<IDirectoryEntryAdapter> mathingItems=new List<IDirectoryEntryAdapter>();
-            for (int x =1; x < list.Count(); x++)
+            for (int x =0; x < list.Count(); x++)
             {
 
                 if (matchingPredicate.Invoke(list[x]))
@@ -63,15 +63,7 @@ namespace BLAZAM.Helpers
             return default;
         }
 
-        public static Process? Shadow(this IRemoteSession session, bool withoutPermission = false)
-        {
-            if (session == null || session.Server==null) return null;
-            string command = "mstsc.exe";
-            string arguments = "/v:" + session.Server.ServerName + " /shadow:" + session.SessionId;
-            if (withoutPermission) arguments += " /noConsentPrompt";
-            return Process.Start(command, arguments);
-            //Debug.TrackEvent("Shadow (Consent)", properties);
-        }
+        
 
         public static string FqdnToDn(string fqdn)
         {

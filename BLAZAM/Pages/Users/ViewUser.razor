@@ -546,6 +546,7 @@
             await RefreshEntryComponents();
             try
             {
+
                 var changes = User.Changes;
                 var jobResults = await User.CommitChangesAsync();
                 if (jobResults.Result == JobResult.Passed)
@@ -553,8 +554,12 @@
 
 
                     await AuditLogger.User.Changed(User, changes);
-                    if((changes.Count==1 && changes.First().Field==ActiveDirectoryFields.MemberOf.FieldName)==false)
+                    if(changes.Any(c=>c.Field!=ActiveDirectoryFields.MemberOf.FieldName))
                         _ = OUNotificationService.PostAsync(User, NotificationType.Modify);
+                    else
+                    {
+                        
+                    }
                     EditMode = false;
                     Nav.WarnOnNavigation = false;
                     SnackBarService.Success("The changes made to this user have been saved.");

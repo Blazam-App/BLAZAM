@@ -1,0 +1,28 @@
+﻿@using BLAZAM.Helpers
+@using System.Security
+@inherits NotificationTemplateComponent
+
+    <EmailTemplateHeader>
+    <strong>@AppLocalization["Object deleted"]</strong>
+    </EmailTemplateHeader>
+   
+    <EmailTemplateBody>
+    @( EntryName + AppLocalization[" has been deltted."])
+    <br/>
+   
+   
+    </EmailTemplateBody>
+
+
+@code{
+    [Parameter]
+    public string EntryName { get; set; }
+ 
+    public override string Render() => new ComponentRenderer<EntryDeletedEmailMessage>()
+            .UseLayout<DefaultEmailLayout>()
+            .AddServiceProvider(ApplicationInfo.services)
+            .Set(c => c.EntryName, EntryName).Render();
+}
+
+
+

@@ -7,7 +7,6 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using BLAZAM.Notifications.Services;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
@@ -78,20 +77,13 @@ namespace BLAZAM.Server.Data.Services
         public DateTime lastDataRefresh;
         public AppUser? userSettings { get; set; }
 
-        private readonly INotificationPublisher _notificationPublisher;
         private readonly IAppDatabaseFactory _dbFactory;
 
-        public ApplicationUserState(IAppDatabaseFactory factory, INotificationPublisher notificationPublisher)
+        public ApplicationUserState(IAppDatabaseFactory factory)
         {
 
-            _notificationPublisher = notificationPublisher;
             _dbFactory = factory;
-            //userSettings = new();
-            _notificationPublisher.OnNotificationPublished += (notifications) =>
-            {
-                if (notifications.Select(n => n.User).Contains(Preferences))
-                    GetUserSettingFromDB();
-            };
+           
             OnSettingsChanged += (state) => { 
                 if (Id == state.Id)
                 {
