@@ -1,9 +1,4 @@
 ﻿using BLAZAM.Database.Models.Notifications;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Notifications.Notifications
 {
@@ -17,6 +12,19 @@ namespace BLAZAM.Notifications.Notifications
                 case NotificationType.PasswordChange:
                     notificationTemplate = new PasswordChangedEmailMessage();
                     break;
+                case NotificationType.Create:
+                    notificationTemplate = new EntryCreatedEmailMessage();
+                    break;
+                case NotificationType.Delete:
+                    notificationTemplate = new EntryDeletedEmailMessage();
+                    break;
+                case NotificationType.Modify:
+                    notificationTemplate = new EntryEditedEmailMessage();
+                    break;
+                case NotificationType.GroupAssignment:
+                    notificationTemplate = new EntryGroupAssignmentEmailMessage();
+                    break;
+               
             }
             if(notificationTemplate != null)
             {

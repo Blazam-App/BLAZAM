@@ -27,7 +27,7 @@
 
         <ChildContent>
             <MudContainer Class="px-0" Style="width:300px;">
-
+                <MudText  Class="py-2" Align="Align.Center">Blazam @AppLocalization["News"]</MudText>
                 @foreach (var item in unreadItems.OrderByDescending(x => x.UpdatedAt))
                 {
                     <MudButton Variant="Variant.Filled"
@@ -38,10 +38,10 @@
                             <MudStack Row=true>
                                 <MudIcon Color=@Color.Warning Icon="@Icons.Material.Filled.Email" /> @item.Title
                             </MudStack>
-                            @if (item.Link != null)
+                          @*   @if (item.Link != null)
                             {
                                 <MudLink Color="Color.Secondary" Target="_blank" Href="@item.Link">@item.Link</MudLink>
-                            }
+                            } *@
                         </MudStack>
                     </MudButton>
                 }

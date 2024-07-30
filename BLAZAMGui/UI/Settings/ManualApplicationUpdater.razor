@@ -186,7 +186,6 @@
             {
                 MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization["Update"]);
                 await output.RunAsync();
-                // SnackBarService.Success("Update started successfully. The web application will restart and update momentarily.");
 
             }
             await InvokeAsync(StateHasChanged);

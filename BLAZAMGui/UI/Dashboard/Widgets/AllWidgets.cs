@@ -41,7 +41,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
                     widgets.Add(new NewComputersWidget() { WidgetType = DashboardWidgetType.NewComputers, Title = "Computers created in the last 14 days" });
                 if (applicationUser.IsSuperAdmin)
                 {
-                    widgets.Add(new ChangedPasswordsWidget() { WidgetType = DashboardWidgetType.PasswordsChanged, Title = "Password Changed" });
+                    //widgets.Add(new ChangedPasswordsWidget() { WidgetType = DashboardWidgetType.PasswordsChanged, Title = "Password Changed" });
                     widgets.Add(new DeletedEntriesWidget() { WidgetType = DashboardWidgetType.DeletedEntries, Title = "Entries deleted in the last 14 days" });
                 }
 

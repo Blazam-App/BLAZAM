@@ -1,18 +1,15 @@
 ﻿
 using Octokit;
-using BLAZAM.Common;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.Logger;
 using BLAZAM.Helpers;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using System.Security.Principal;
-using System.Reflection.Metadata.Ecma335;
 using System.Diagnostics;
 using BLAZAM.Localization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
-using System.Net.WebSockets;
 
 namespace BLAZAM.Update.Services
 {
@@ -49,7 +46,7 @@ namespace BLAZAM.Update.Services
         protected readonly IHttpClientFactory httpClientFactory;
         private readonly ApplicationInfo _applicationInfo;
 
-        public UpdateService(IHttpClientFactory _clientFactory, ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null, IStringLocalizer<AppLocalization> appLocalization=null)
+        public UpdateService(IHttpClientFactory _clientFactory, ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null, IStringLocalizer<AppLocalization> appLocalization = null)
         {
             _dbFactory = dbFactory;
             httpClientFactory = _clientFactory;
@@ -108,7 +105,8 @@ namespace BLAZAM.Update.Services
             latestBranchRelease = branchReleases.FirstOrDefault();
             //Store all other releases for use later
             AvailableUpdates.Clear();
-            try {
+            try
+            {
                 var betaStableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
 
                 foreach (var release in betaStableReleases)
@@ -125,7 +123,7 @@ namespace BLAZAM.Update.Services
             {
                 Loggers.UpdateLogger.Error("Error trying to get beta releases {@Error}", ex);
             }
-           
+
             foreach (var release in stableReleases)
             {
                 //Get the release filename to prepare a version object
@@ -139,63 +137,18 @@ namespace BLAZAM.Update.Services
             var latestBranchUpdate = EncapsulateUpdate(latestBranchRelease, SelectedBranch);
             if (latestBranchUpdate.Branch != ApplicationReleaseBranches.Stable && latestBranchUpdate.Branch != "Stable")
             {
-                    if (!AvailableUpdates.Contains(latestBranchUpdate))
-                    {
-                        AvailableUpdates.Add(latestBranchUpdate);
-                    }
-             
+                if (!AvailableUpdates.Contains(latestBranchUpdate))
+                {
+                    AvailableUpdates.Add(latestBranchUpdate);
+                }
+
             }
             IncompatibleUpdates = AvailableUpdates.Where(x => !x.PassesPrerequisiteChecks).ToList();
             foreach (var release in IncompatibleUpdates)
             {
                 AvailableUpdates.Remove(release);
             }
-            ////Override branch if stable has more recent release
-            //if (latestStableUpdate!=null)
-            //{
-            //    if(latestBranchUpdate!=null)
-            //    {
-            //        if (latestStableUpdate.Version.NewerThan(latestBranchUpdate.Version))
-            //        {
-            //            LatestUpdate = latestStableUpdate;
 
-            //        }
-            //        else
-            //        {
-            //            LatestUpdate = latestBranchUpdate;
-
-            //        }
-
-            //    }
-            //    else
-            //    {
-            //        LatestUpdate = latestStableUpdate;
-
-            //    }
-
-            //}
-            //if (Debugger.IsAttached)
-            //{
-            //    ApplicationUpdate? testUpdate = EncapsulateUpdate(latestRelease, SelectedBranch);
-
-            //    testUpdate.PreRequisiteChecks.Add(new(() => {
-            //        if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
-            //        {
-            //            testUpdate.PrequisiteMessage = "ASP NET Core 8 Runtime is missing.";
-            //            return false;
-
-            //        }
-            //        if (ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCoreHosting())
-            //        {
-            //            testUpdate.PrequisiteMessage = "ASP NET Core 8 Web Hosting Bundle is missing.";
-            //            return false;
-
-            //        }
-            //        return true;
-            //    }));
-            //    testUpdate.Version = new ApplicationVersion("1.0.0.2024.07.01.0000");
-            //    LatestUpdate = testUpdate;
-            //}
         }
 
         /// <summary>
@@ -212,9 +165,9 @@ namespace BLAZAM.Update.Services
                 {
                     using var context = await _dbFactory.CreateDbContextAsync();
                     SelectedBranch = context.AppSettings.FirstOrDefault()?.UpdateBranch;
-                    if(SelectedBranch == "Stable")
+                    if (SelectedBranch == "Stable")
                     {
-                        context.AppSettings.FirstOrDefault().UpdateBranch= ApplicationReleaseBranches.Stable;
+                        context.AppSettings.FirstOrDefault().UpdateBranch = ApplicationReleaseBranches.Stable;
                         SelectedBranch = ApplicationReleaseBranches.Stable;
                         context.SaveChanges();
                     }
@@ -240,7 +193,7 @@ namespace BLAZAM.Update.Services
             releaseVersion = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
 
 
-            
+
 
 
             if (releaseToEncapsulate != null && releaseVersion != null)
@@ -253,13 +206,14 @@ namespace BLAZAM.Update.Services
 
                 };
                 var update = new ApplicationUpdate(_applicationInfo, _dbFactory) { Release = release };
-                if(releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
+                if (releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
                 {
-                    update.PreRequisiteChecks.Add(new(() => {
-                            if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
+                    update.PreRequisiteChecks.Add(new(() =>
+                    {
+                        if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
                         {
-                            if(AppLocalization!=null)
-                            update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Runtime is missing."];
+                            if (AppLocalization != null)
+                                update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Runtime is missing."];
                             else
                                 update.PrequisiteMessage = "ASP NET Core 8 Runtime is missing.";
 
@@ -354,7 +308,7 @@ namespace BLAZAM.Update.Services
 
         private bool TestDirectoryCredentials()
         {
-            if(_dbFactory == null)return false;
+            if (_dbFactory == null) return false;
             using var context = _dbFactory.CreateDbContext();
             //Prepare impersonation
             WindowsImpersonation? impersonation = null;
