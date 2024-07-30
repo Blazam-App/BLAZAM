@@ -7,7 +7,7 @@
              
                 </MudText>
 
-            <MudSwitch Label="Super User Group" Checked="Delegate?.IsSuperAdmin" Disabled />
+            <MudSwitch T=bool Label="Super User Group" Checked="Delegate?.IsSuperAdmin" Disabled />
         </MudStack>
 
 
@@ -27,7 +27,7 @@
 
 
 
-            <MudSwitch Label="Super User Group" Disabled=@(ApplicationInfo.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Delegate.IsSuperAdmin" />
+            <MudSwitch T=bool Label="Super User Group" Disabled=@(ApplicationInfo.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Delegate.IsSuperAdmin" />
 
 
 

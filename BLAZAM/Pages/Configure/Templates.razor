@@ -59,7 +59,7 @@
         @if (SelectedCategory != null && SelectedCategory != "All")
         {
             <MudTooltip Text="@AppLocalization["Rename Category"]">
-                <MudIconButton OnClick=@(()=>{RenameModal?.Show();})
+                <MudIconButton OnClick=@(()=>{RenameModal?.ShowAsync();})
                                Color="Color.Tertiary"
                                Class="align-middle"
                                Icon="@Icons.Material.Filled.ChangeCircle" />
@@ -88,7 +88,7 @@
         {
             <MudTooltip Text="@AppLocalization["Restore templates"]">
 
-                <MudIconButton OnClick=@(async()=>{RestoreModal?.Show();})
+                <MudIconButton OnClick=@(async()=>{RestoreModal?.ShowAsync();})
                                Color="Color.Warning"
                                Class="align-middle"
                                Icon="@Icons.Material.Filled.RestoreFromTrash" />
