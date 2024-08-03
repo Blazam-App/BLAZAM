@@ -133,8 +133,8 @@ namespace BLAZAM.Common.Data
 
                 using StreamReader streamReader = new StreamReader(cryptoStream);
 
-                return JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
-
+                var decrypted= JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+                return decrypted;
 
 
 
@@ -168,7 +168,7 @@ namespace BLAZAM.Common.Data
             try
             {
                 var newDecrypted = DecryptSaltedObject<T>(cipherText);
-                if (newDecrypted != null) return newDecrypted;
+                return newDecrypted;
 
                 throw new ApplicationException("Unable to decrypt cipherText");
 
