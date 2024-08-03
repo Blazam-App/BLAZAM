@@ -201,7 +201,11 @@ namespace BLAZAM
                     dbSettings = kestrelContext.AppSettings.FirstOrDefault();
 
                     var certBytes = dbSettings.SSLCertificateCipher.Decrypt<byte[]>();
-                    cert = new X509Certificate2(certBytes);
+                    if(certBytes!= null)
+                    {
+                        cert = new X509Certificate2(certBytes);
+
+                    }
 
                 }
                 catch (Exception ex)
