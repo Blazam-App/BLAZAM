@@ -46,13 +46,15 @@ namespace BLAZAM.Server.Data.Services
 
         private void RetryGetCurrentUserState(object? state = null)
         {
-
+            Loggers.SystemLogger.Information("Attempting to get user state from HTTPContext {UserName}", _httpContextAccessor.HttpContext?.User?.Identity?.Name);
             try
             {
                 State = _applicationUserStateService.GetUserState(_httpContextAccessor.HttpContext?.User);
                 if (State != null && State.IsAuthenticated)
+                {
                     State.IPAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
-                _retryTimer?.Dispose();
+                    _retryTimer?.Dispose();
+                }
 
             }
             catch (Exception ex)
@@ -60,6 +62,7 @@ namespace BLAZAM.Server.Data.Services
                 Loggers.SystemLogger.Error("Error trying to get current user state {@Error}", ex);
                 return;
             }
+            Loggers.SystemLogger.Information("State Null:{StateNull} Username:{StateUsername}",State==null,State?.Username);
 
 
         }

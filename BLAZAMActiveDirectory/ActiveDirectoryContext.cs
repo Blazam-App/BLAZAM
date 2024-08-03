@@ -29,7 +29,8 @@ namespace BLAZAM.ActiveDirectory
             get
             {
                 if (currentUser != null) return currentUser;
-                throw new ApplicationException("Current User State was not provided to this directory entry");
+                //throw new ApplicationException("Current User State was not provided to this directory entry");
+                return null;
             }
             set => currentUser = value;
         }
@@ -53,7 +54,7 @@ namespace BLAZAM.ActiveDirectory
                 {
                     ConnectionSettings = ad;
 
-                    Loggers.ActiveDirectryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
+                    //Loggers.ActiveDirectryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
                     //We need to determine what security options to use when authenticating
                     //based on the settings in the DB
 
