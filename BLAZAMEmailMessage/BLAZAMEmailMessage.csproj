@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.30" />
-    <PackageReference Include="MudBlazor" Version="6.20.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.32" />
+    <PackageReference Include="MudBlazor" Version="6.21.0" />
   </ItemGroup>
 
   <ItemGroup>
