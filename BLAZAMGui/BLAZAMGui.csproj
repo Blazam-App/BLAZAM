@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>BLAZAM.Gui</RootNamespace>
@@ -24,10 +24,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.32" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.20" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.7" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.7" />
 		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.7" />
-		<PackageReference Include="MudBlazor" Version="6.21.0" />
+		<PackageReference Include="MudBlazor" Version="7.3.0" />
 		<PackageReference Include="MudBlazor.Markdown" Version="1.0.2" />
 		<PackageReference Include="System.Diagnostics.PerformanceCounter" Version="8.0.0" />
 		<PackageReference Include="System.Drawing.Common" Version="8.0.7" />

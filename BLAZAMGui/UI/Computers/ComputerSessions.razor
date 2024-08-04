@@ -27,7 +27,7 @@
                         {
                             <MudButton Color="Color.Info" OnClick=@(()=>{
                            sessionToMessage=context.Item;
-                           sessionMessageModal?.Show();
+                           sessionMessageModal?.ShowAsync();
                            })>Send Message</MudButton>
                         }
                     </CellTemplate>

@@ -15,27 +15,27 @@
     [Parameter]
     public bool IsMenuShown
     {
-        get { return contextMenu?.IsOpen ?? false; }
+        get { return contextMenu?.Open ?? false; }
         set
         {
             if (value)
             {
                 if (!IsMenuShown)
                 {
-                    contextMenu?.OpenMenu(null);
+                    contextMenu?.OpenMenuAsync(null);
                 }
             }
             else
             {
                 if (IsMenuShown)
                 {
-                    contextMenu?.CloseMenu();
+                    contextMenu?.OpenMenuAsync(null);
                 }
             }
         }
     }
     [Parameter]
-    public EventCallback<bool> IsMenuShownChanged { get => contextMenu.IsOpenChanged; set => contextMenu.IsOpenChanged = value; }
+    public EventCallback<bool> IsMenuShownChanged { get => contextMenu.OpenChanged; set => contextMenu.OpenChanged = value; }
     [Parameter]
     public RenderFragment ChildContent { get; set; }
     [Parameter]
@@ -47,7 +47,7 @@
     private async void ShowContextMenu(MouseEventArgs? args = null)
     {
         // contextMenu?.Activate(activator, args);
-        contextMenu?.OpenMenu(args);
+        contextMenu?.OpenMenuAsync(args);
         await InvokeAsync(StateHasChanged);
     }
 }

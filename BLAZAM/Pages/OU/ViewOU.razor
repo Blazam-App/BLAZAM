@@ -8,8 +8,8 @@
         <DirectoryEntryViewHeader EditMode="@EditMode"
                                   DirectoryEntry="@OU"
                                   OnDelete="@DeleteOU"
-                                  OnMove="@(()=>{MoveToModal?.Show();})"
-                                  OnRename="@(()=>{RenameModal?.Show();})"
+                                  OnMove="@(()=>{MoveToModal?.ShowAsync();})"
+                                  OnRename="@(()=>{RenameModal?.ShowAsync();})"
                                   OnToggleEditMode="ToggleEditMode" />
         <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 

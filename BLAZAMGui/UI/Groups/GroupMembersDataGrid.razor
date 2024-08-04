@@ -86,7 +86,7 @@
 
         <MudIconButton Color="Color.Primary" 
         Icon="@Icons.Material.Filled.GroupAdd" 
-        OnClick="@(()=>{AssignMemberModal.Show();})" />
+        OnClick="@(()=>{AssignMemberModal.ShowAsync();})" />
     }
     <AppModal Color="Color.Dark" Title="Add Member..." @ref=@AssignMemberModal>
         <AddMemberModalContent ModelChanged=@(()=>{InvokeAsync(OnInitializedAsync);}) Group="Group" />

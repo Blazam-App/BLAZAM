@@ -11,13 +11,13 @@
     <SetSubHeader>
         <DirectoryEntryViewHeader EditMode="@EditMode"
                                   DirectoryEntry="@Group"
-                                  OnAssignTo="@(()=>{AssignToModal?.Show();})"
-                                  OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
+                                  OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
+                                  OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
                                   OnDelete="@DeleteGroup"
-                                  OnMove="@(()=>{MoveToModal?.Show();})"
-                                  OnRename="@(()=>{RenameModal?.Show();})"
-                                  OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
-                                  OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
+                                  OnMove="@(()=>{MoveToModal?.ShowAsync();})"
+                                  OnRename="@(()=>{RenameModal?.ShowAsync();})"
+                                  OnResetPassword="@(()=>{ChangePasswordModal?.ShowAsync();})"
+                                  OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
                                   OnToggleEditMode="@ToggleEditMode" />
         <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true" />
     </SetSubHeader>
