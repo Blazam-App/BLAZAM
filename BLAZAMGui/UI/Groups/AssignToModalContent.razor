@@ -54,15 +54,15 @@
 
         }
         <MudText Class="my-3" Align="Align.Center">@AppLocalization["or"]</MudText>
-            <ADAutoComplete Disabled=@(Group!=null)
-                            Label="Copy Memberships From"
-                            SearchObjectType="ActiveDirectoryObjectType.All"
-                            @bind-SelectedResult=@copyFrom
-                            CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
+        <ADAutoComplete Disabled=@(Group!=null)
+                        Label="Copy Memberships From"
+                        SearchObjectType="ActiveDirectoryObjectType.All"
+                        @bind-SelectedResult=@copyFrom
+                        CustomResultsFilter="(result)=>result is IGroupableDirectoryAdapter" />
 
 
-        </MudStack>
-        @if (CopyFrom != null)
+    </MudStack>
+    @if (CopyFrom != null)
     {
         <MudStack>
 
@@ -72,7 +72,10 @@
             @if (CopyFrom.MemberOf.Any(g => existingGroups.Contains(g)))
             {
                 <MudText>Already a member of...</MudText>
-                <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
+                <MudList T="string"
+                         Dense=true
+                         Style="max-height:200px;"
+                         Class="overflow-auto">
                     @foreach (var group in CopyFrom.MemberOf.Where(g => existingGroups.Contains(g)))
                     {
                         <MudListItem>
@@ -89,7 +92,10 @@
             @if (CopyFrom.MemberOf.Any(g => !existingGroups.Contains(g)))
             {
                 <MudText>Will be added to...</MudText>
-                <MudList Dense=true Style="max-height:200px;" Class="overflow-auto">
+                <MudList T="string"
+                         Dense=true
+                         Style="max-height:200px;"
+                         Class="overflow-auto">
 
                     @foreach (var group in CopyFrom.MemberOf.Where(g => !existingGroups.Contains(g)))
                     {

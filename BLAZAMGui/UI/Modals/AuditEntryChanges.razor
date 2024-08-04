@@ -2,7 +2,7 @@
 @foreach (var change in Changes)
 {
     <MudStack Row=true>
-        <MudChip Text=@change.Key />
+        <MudChip T="string" Text=@change.Key />
         @((MarkupString)change.Value)
     </MudStack>
 }

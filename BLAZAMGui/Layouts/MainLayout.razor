@@ -55,7 +55,7 @@ await InvokeAsync(StateHasChanged);
                                            OnClick="@(()=>{_devDrawerOpen=!_devDrawerOpen;InvokeAsync(StateHasChanged);})">Dev Panel</MudButton>
 
                                 <MudButton StartIcon="@Icons.Material.Filled.DeveloperMode" Color="Color.Primary"
-                                           OnClick="@(()=>{dataBrowser?.Show();})">Data Browser</MudButton>
+                                           OnClick="@(()=>{dataBrowser?.ShowAsync();})">Data Browser</MudButton>
                                 <AppModal @ref=dataBrowser>
                                     <DatabaseBrowserModalContent />
                                 </AppModal>

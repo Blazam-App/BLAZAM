@@ -171,7 +171,7 @@ else
 
 }
 <MudButton StartIcon="@Icons.Material.Filled.Print" Color="Color.Info" OnClick="Print">Print</MudButton>
-<MudButton Color="Color.Success" OnClick="@(()=>{SendWelcomeModal?.Show();})">Test</MudButton>
+<MudButton Color="Color.Success" OnClick="@(()=>{SendWelcomeModal?.ShowAsync();})">Test</MudButton>
 
 <AppModal @ref=SendWelcomeModal Title="@AppLocalization["Send login credentials"]">
     <SendNewUserWelcomeToModalContent OnSubmitEmail="SendWelcomeEmail" />
@@ -240,7 +240,7 @@ else
                 {
                     if (DirectoryTemplate.EffectiveAskForAlternateEmail == true || User.Email.IsNullOrEmpty())
                     {
-                        SendWelcomeModal?.Show();
+                        SendWelcomeModal?.ShowAsync();
                     }
                     else
                     {

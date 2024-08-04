@@ -4,9 +4,8 @@
     @if (Model.MemberOf.Count > 0)
     {
         <MudList Disabled=false
+                 T="string"
          Dense=true
-         Clickable="false"
-         DisableGutters=true
          Style="max-height:200px; overflow-y:auto;">
             @foreach (IADGroup g in Model.MemberOf.Where(group => group.CanRead).OrderBy(g => g.CanonicalName))
             {

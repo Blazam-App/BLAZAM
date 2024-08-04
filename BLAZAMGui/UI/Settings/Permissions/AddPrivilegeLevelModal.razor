@@ -7,7 +7,7 @@
         @bind-SelectedResult=@selectedDelegate
                         CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
 
-        <MudSwitch Label="Super User" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=ApplicationInfo.inDemoMode />
+        <MudSwitch T=bool Label="Super User" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=ApplicationInfo.inDemoMode />
         <MudText>Will have complete and total acceess to the application if enabled</MudText>
 
     </MudStack>

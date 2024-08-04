@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>BLAZAM.Themes</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MudBlazor" Version="6.21.0" />
-    <PackageReference Include="MudBlazor.ThemeManager" Version="1.1.0" />
+    <PackageReference Include="MudBlazor" Version="7.3.0" />
+    <PackageReference Include="MudBlazor.ThemeManager" Version="2.0.0" />
   </ItemGroup>
 
 </Project>

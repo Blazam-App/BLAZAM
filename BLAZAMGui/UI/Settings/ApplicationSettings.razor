@@ -81,7 +81,7 @@
     @if (!ApplicationInfo.IsUnderIIS || ApplicationInfo.InDebugMode)
     {
         <SettingsField Label="@AppLocalization["SSL Certificate"]">
-            <MudButton OnClick="()=>{uploadCertificateModal?.Show();}"
+            <MudButton OnClick="()=>{uploadCertificateModal?.ShowAsync();}"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.CloudUpload"

@@ -20,16 +20,16 @@
 
                     <DirectoryEntryViewHeader EditMode="@EditMode"
                                               DirectoryEntry="@User"
-                                              OnAssignTo="@(()=>{AssignToModal?.Show();})"
-                                              OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
+                                              OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
+                                              OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
                                               OnDelete="@DeleteUser"
                                               OnDisable="@(async()=>{User.Enabled=false; await RefreshEntryComponents();})"
                                               OnEnable="@(async()=>{User.Enabled=true; await RefreshEntryComponents();})"
-                                              OnMove="@(()=>{MoveToModal?.Show();})"
-                                              OnRename="@(()=>{RenameModal?.Show();})"
-                                              OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
+                                              OnMove="@(()=>{MoveToModal?.ShowAsync();})"
+                                              OnRename="@(()=>{RenameModal?.ShowAsync();})"
+                                              OnResetPassword="@(()=>{ChangePasswordModal?.ShowAsync();})"
                                               OnToggleEditMode="ToggleEditMode"
-                                              OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
+                                              OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
                                               OnUnlock="@Unlock" />
                     <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
@@ -108,7 +108,7 @@
                                     }
                                     @if (showRemoveThumbnail && User?.CanEditField(ActiveDirectoryFields.Thumbnail) == true)
                                     {
-                                        <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.Show();})
+                                        <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.ShowAsync();})
                                                        Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
                                                        Color=Color.Primary
                                                        Icon="@Icons.Material.Filled.Upload" />
@@ -167,7 +167,7 @@
                                 {
                                     <MudStack>
                                         <MudText Typo="Typo.subtitle2">@AppLocalization["Groups"]</MudText>
-                                        <MemberOfList AssignToClicked=@(()=>{AssignToModal?.Show();}) Model="User" />
+                                        <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="User" />
 
                                     </MudStack>
 
@@ -267,7 +267,7 @@
                                             {
                                                 <MudButton Variant="Variant.Filled"
                                                            Color="@(User.LogOnTo == null || User.LogOnTo == String.Empty?Color.Primary:Color.Warning)"
-                                                           OnClick="@(()=>{LogOnToModal?.Show();})"
+                                                           OnClick="@(()=>{LogOnToModal?.ShowAsync();})"
                                                            Disabled=@(!EditMode)>
                                                     @AppLocalization["Log On To"]
                                                 </MudButton>
@@ -278,7 +278,7 @@
                                             {
                                                 <MudButton Variant="Variant.Filled"
                                                            Color="@(Color.Primary)"
-                                                           OnClick="@(()=>{LogonHoursModal?.Show();})"
+                                                           OnClick="@(()=>{LogonHoursModal?.ShowAsync();})"
                                                            Disabled=@(!EditMode)>
                                                     @AppLocalization["Logon Hours"]
                                                 </MudButton>
