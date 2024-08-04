@@ -548,18 +548,29 @@
             {
 
                 var changes = User.Changes;
+                var assignTo = User.ToAssignTo;
+                var unassignFrom = User.ToUnassignFrom;
                 var jobResults = await User.CommitChangesAsync();
                 if (jobResults.Result == JobResult.Passed)
                 {
 
-
-                    await AuditLogger.User.Changed(User, changes);
-                    if(changes.Any(c=>c.Field!=ActiveDirectoryFields.MemberOf.FieldName))
-                        _ = OUNotificationService.PostAsync(User, NotificationType.Modify);
-                    else
+                    foreach(var assignment in assignTo)
                     {
-                        
+                        await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
+                        await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
                     }
+
+                    foreach (var assignment in unassignFrom)
+                    {
+                        await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
+                        await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
+                    }
+                    if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
+                    {
+                        _ = OUNotificationService.PostAsync(User, NotificationType.Modify);
+                        await AuditLogger.User.Changed(User, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
+                    }
+                   
                     EditMode = false;
                     Nav.WarnOnNavigation = false;
                     SnackBarService.Success("The changes made to this user have been saved.");

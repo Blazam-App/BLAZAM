@@ -35,6 +35,8 @@
         public const string Group_Searched = "Group Searched";
         public const string Group_Assigned = "Group Assigned";
         public const string Group_Unassigned = "Group Unassigned";
+        public const string Group_Member_Added = "Group Member Added";
+        public const string Group_Member_Removed = "Group Member Removed";
         public const string Group_Created = "Group Created";
         public const string Group_Deleted = "Group Deleted";
         public const string Group_Moved = "Group Moved";
@@ -55,6 +57,10 @@
         public const string Printer_Deleted = "Printer Deleted";
         public const string Printer_Moved = "Printer Moved";
         public const string Printer_Edited = "Printer Edited";
+
+
+        //BitLocker Actions
+        public const string BitLocker_Searched = "BitLocker Searched";
 
         //Settings Actions
         public const string Settings_Edited = "Settings Edited";
