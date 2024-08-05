@@ -64,7 +64,7 @@
                                      Icon="@Icons.Material.Filled.Edit"
                                      ToggledIcon="@Icons.Material.Filled.EditOff"
                                      ToggledColor="Color.Error"
-                                     Disabled=@(!DirectoryEntry.CanEdit)
+                                     Disabled=@(!DirectoryEntry.CanEdit && !CurrentUser.State.CanAssign)
                                      ToggledTitle="End Edit" />
             </MudTooltip>
 
