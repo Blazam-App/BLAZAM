@@ -32,7 +32,7 @@
 	  </PackageReference>
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	  <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
-	  <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+	  <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
 	  <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
 	  <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
 	  <PackageReference Include="System.DirectoryServices.AccountManagement" Version="8.0.0" />
