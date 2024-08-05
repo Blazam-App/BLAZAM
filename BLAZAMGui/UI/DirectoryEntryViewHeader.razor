@@ -64,8 +64,8 @@
                                      Icon="@Icons.Material.Filled.Edit"
                                      ToggledIcon="@Icons.Material.Filled.EditOff"
                                      ToggledColor="Color.Error"
-                                     Disabled=@(!DirectoryEntry.CanEdit)
-                                     ToggledTitle="End Edit" />
+                                     Disabled=@(!DirectoryEntry.CanEdit && !CurrentUser.State.CanAssign)
+                                     />
             </MudTooltip>
 
             @if (accountEntry != null && accountEntry.LockedOut)

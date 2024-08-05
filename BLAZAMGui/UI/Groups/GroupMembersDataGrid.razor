@@ -65,7 +65,7 @@
                                 ShowOnClick=@(!cellContext.Item.CanUnassign)
                                 ShowOnHover=@(!cellContext.Item.CanUnassign)
                                 Text="You don't have permission to remove this group member">
-                        <MudButton Disabled=@(!cellContext.Item.CanUnassign)
+                        <MudButton Disabled=@(!Group.CanUnassign)
                                    Color="Color.Error"
                                    OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
                             @AppLocalization["Remove"]
