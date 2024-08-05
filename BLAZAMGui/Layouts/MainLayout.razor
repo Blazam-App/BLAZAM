@@ -102,16 +102,6 @@ await InvokeAsync(StateHasChanged);
                     </MudContainer>
 
                 </MudMainContent>
-                @*   <MudAppBar Color=Color.Secondary Style="height:35px;"
-                DisableGutters=true
-                Bottom=true
-                Dense=true
-                Elevation="1">
-                <MudStack Class="mud-width-full pa-0 ma-0 ps-3" Row=true>
-                TODO Either break down chat to only page chat, or rebuild appchat
-                <AppChat />
-                </MudStack>
-                </MudAppBar> *@
                 <NotificationBroadcastListener />
             </Authorized>
             <NotAuthorized>
@@ -175,9 +165,8 @@ await InvokeAsync(StateHasChanged);
 
             Header.OnRefreshRequested += (async () => { await InvokeAsync(StateHasChanged); });
 
-        //StateHasChanged();
+       
         InvokeAsync(StateHasChanged);
-        //Update();
     }
     SetSubHeader? SubHeader;
     public void SetSubHeader(SetSubHeader? setSubHeader)
@@ -186,9 +175,7 @@ await InvokeAsync(StateHasChanged);
         if (SubHeader != null)
             SubHeader.OnRefreshRequested += (async () => { await InvokeAsync(StateHasChanged); });
 
-        //StateHasChanged();
         InvokeAsync(StateHasChanged);
-        //Update();
     }
 
     public void Update() => StateHasChanged();

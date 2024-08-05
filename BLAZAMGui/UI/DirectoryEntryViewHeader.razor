@@ -37,10 +37,15 @@
 
     @if (accountEntry?.LockedOut == true)
     {
-        <MudIconButton Disabled=@(!accountEntry.CanUnlock) OnClick=Unlock Icon=@Icons.Material.Filled.Lock />
+        <MudIconButton Disabled=@(!accountEntry.CanUnlock)
+                       OnClick=Unlock
+                       Icon=@Icons.Material.Filled.Lock />
     }
     <MudHidden Breakpoint="Breakpoint.SmAndDown">
-        <MudToolBar Class="align-middle" Style="height:32px" DisableGutters Dense>
+        <MudToolBar Class="align-middle"
+                    Style="height:32px"
+                    Gutters=false
+                    Dense=true>
             @if (accountEntry != null)
 
             {
@@ -64,8 +69,7 @@
                                      Icon="@Icons.Material.Filled.Edit"
                                      ToggledIcon="@Icons.Material.Filled.EditOff"
                                      ToggledColor="Color.Error"
-                                     Disabled=@(!DirectoryEntry.CanEdit && !CurrentUser.State.CanAssign)
-                                     />
+                                     Disabled=@(!DirectoryEntry.CanEdit && !CurrentUser.State.CanAssign) />
             </MudTooltip>
 
             @if (accountEntry != null && accountEntry.LockedOut)

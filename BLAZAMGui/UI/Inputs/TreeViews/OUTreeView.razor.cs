@@ -19,15 +19,8 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         List<TreeItemData<IDirectoryEntryAdapter>> GetChildren(IDirectoryEntryAdapter context)
         {
             if (context is IADOrganizationalUnit ou)
-            {
-                if (ou.IsExpanded)
-                {
+            {            
                     return ou.TreeViewSubOUs.Where(o=>ShouldShowOU(o)).ToTreeItemData();
-                }
-                else
-                {
-                    return ou.CachedTreeViewSubOUs.Where(o => ShouldShowOU(o)).ToTreeItemData();
-                }
             }
             return new List<TreeItemData<IDirectoryEntryAdapter>>();
         }

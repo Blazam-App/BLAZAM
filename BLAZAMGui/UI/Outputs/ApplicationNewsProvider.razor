@@ -71,12 +71,18 @@
                         <MudText Class="w-100 align-center pa-2">@AppLocalization["There is nothing new to see here"]</MudText>
                     }
                 }
-                @if (readItems.Count > 0)
+                @if (readItems.Count > 0 || unreadItems.Count >0)
                 {
                     <MudStack Row=true>
-                        <MudSwitch @bind-Value=showRead Class="ps-2" Label="@AppLocalization["Show read"]" />
+                        @if (readItems.Count > 0)
+                        {
+                            <MudSwitch @bind-Value=showRead Class="ps-2" Label="@AppLocalization["Show read"]" />
+                        }
+                        @if (unreadItems.Count > 0)
+                        {
+                            <MudSpacer/>
                         <MudButton Size="Size.Small" OnClick="MarkAllRead">@AppLocalization["Mark all read"]</MudButton>
-
+                        }
                     </MudStack>
                 }
             </MudContainer>
