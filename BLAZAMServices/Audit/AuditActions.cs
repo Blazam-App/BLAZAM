@@ -39,7 +39,8 @@
         public const string Group_Deleted = "Group Deleted";
         public const string Group_Moved = "Group Moved";
         public const string Group_Edited = "Group Edited";
-
+        public const string Group_Member_Added = "Group Member Added";
+        public const string Group_Member_Removed = "Group Member Removed";
 
         //OU Actions
         public const string OU_Searched = "OU Searched";
@@ -55,6 +56,9 @@
         public const string Printer_Deleted = "Printer Deleted";
         public const string Printer_Moved = "Printer Moved";
         public const string Printer_Edited = "Printer Edited";
+
+        //BitLocker Actions
+        public const string BitLocker_Searched = "BitLocker Searched";
 
         //Settings Actions
         public const string Settings_Edited = "Settings Edited";

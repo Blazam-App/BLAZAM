@@ -49,11 +49,14 @@
     protected override async Task OnInitializedAsync()
     {
         Modal.Options.FullWidth = true;
+        Modal.Options.CloseButton = true;
         await base.OnInitializedAsync();
         _events = await Context.DirectoryEntryAuditLogs.Where(l => l.Action != AuditActions.Computer_Searched
             && l.Action != AuditActions.User_Searched
             && l.Action != AuditActions.Group_Searched
             && l.Action != AuditActions.OU_Searched
+             && l.Action != AuditActions.Printer_Searched
+            && l.Action != AuditActions.BitLocker_Searched
             && l.Sid.Equals(Model.SID.ToSidString())).OrderByDescending(l => l.Timestamp).ToListAsync();
         if (Model.Created.HasValue)
         {

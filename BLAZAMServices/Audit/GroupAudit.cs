@@ -23,7 +23,7 @@ namespace BLAZAM.Services.Audit
                AuditActions.Group_Assigned,
             member,
                null,
-               "Assigned to" + parent.DN);
+               "Assigned to " + parent.DN);
             await Log(c => c.DirectoryEntryAuditLogs,
               AuditActions.Group_Assigned,
            parent,
@@ -31,6 +31,26 @@ namespace BLAZAM.Services.Audit
               "Added member " + member.DN);
             return true;
         }
+
+        public async Task<bool> MemberAdded(IDirectoryEntryAdapter parent, IDirectoryEntryAdapter member)
+        {
+            await Log(c => c.DirectoryEntryAuditLogs,
+                 AuditActions.Group_Member_Added,
+              parent,
+                 null,
+                 "Added member " + member.DN);
+            return true;
+        }
+        public async Task<bool> MemberRemoved(IDirectoryEntryAdapter parent, IDirectoryEntryAdapter member)
+        {
+            await Log(c => c.DirectoryEntryAuditLogs,
+                 AuditActions.Group_Member_Added,
+              parent,
+                 null,
+                 "Removed member " + member.DN);
+            return true;
+        }
+
         public override async Task<bool> Changed(IDirectoryEntryAdapter changedGroup, List<AuditChangeLog> changes)
         {
 
