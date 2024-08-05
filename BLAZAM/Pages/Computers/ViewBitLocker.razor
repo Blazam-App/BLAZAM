@@ -32,6 +32,8 @@
         _computer = (IADComputer)BitLocker.GetParent();
 
         LoadingData = false;
+        await AuditLogger.Searched(BitLocker);
+
         await RefreshEntryComponents();
     }
 
