@@ -7,7 +7,7 @@
         @bind-SelectedResult=@selectedDelegate
                         CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
 
-        <MudSwitch T=bool Label="Super User" @bind-Checked="@NewPermissionDelegate.IsSuperAdmin" Disabled=ApplicationInfo.inDemoMode />
+        <MudSwitch T=bool Label="Super User" @bind-Value="@NewPermissionDelegate.IsSuperAdmin" Disabled=ApplicationInfo.inDemoMode />
         <MudText>Will have complete and total acceess to the application if enabled</MudText>
 
     </MudStack>
@@ -37,7 +37,7 @@
             Context.PermissionDelegate.Add(NewPermissionDelegate);
             await Context.SaveChangesAsync();
             NewPermissionDelegate = new PermissionDelegate();
-            Modal?.Close();
+            Modal?.CloseAsync();
             await DelegateAdded.InvokeAsync();
         }
         catch (DbUpdateException ex)

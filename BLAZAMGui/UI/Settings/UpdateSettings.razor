@@ -71,7 +71,7 @@
 
             <MudSwitch @bind-Value=@settings.UseUpdateCredentials
                        Color="Color.Success"
-                       UnCheckedColor="Color.Error"
+                       UncheckedColor="Color.Error"
                        Label="@AppLocalization["Use Custom Credentials"]" />
             @if (settings.UseUpdateCredentials)
             {
@@ -141,7 +141,7 @@
             <MudStack Row=true>
                 <MudSwitch Label="@AppLocalization["Enable Auto Update"]"
                            Color="Color.Success"
-                           UnCheckedColor="Color.Error"
+                           UncheckedColor="Color.Error"
                            @bind-Value=@(settings.AutoUpdate) />
                 <AppDocumentationButton Page="/update/auto/" />
 

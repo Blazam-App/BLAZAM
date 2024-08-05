@@ -54,10 +54,10 @@
           YesText=@AppLocalization["Log In"]
           OnYes="@(()=>{Refresh();})"
           Options=@(new DialogOptions{
-          ClassBackground="blur-background",
+          BackgroundClass="blur-background",
           CloseButton=false,
           CloseOnEscapeKey=false,
-          DisableBackdropClick=true})>
+          BackdropClick=false})>
 
 
     <MudText>@AppLocalization["Your session has expired."]</MudText>

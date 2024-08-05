@@ -28,7 +28,7 @@
 
         <MudSwitch Label=@AppLocalization["Duo Enabled"]
                    T="bool" @bind-Value="@settings.DuoEnabled"
-                   UnCheckedColor="Color.Error"
+                   UncheckedColor="Color.Error"
                    Color="Color.Success"
                    Disabled=@(settings.DuoEnabled!=true && duoHealthCheckResult!=true) />
 
@@ -39,7 +39,7 @@
                    T="DuoUnreachableBehavior"
                    Converter=@(new BehaviorConverter())
                    @bind-Value="@settings.DuoUnreachableBehavior"
-                   UnCheckedColor="Color.Error"
+                   UncheckedColor="Color.Error"
                    Color="Color.Success"
                    Disabled=@(duoHealthCheckResult!=true) />
 

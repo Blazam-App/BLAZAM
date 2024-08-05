@@ -23,10 +23,10 @@
 
 
     <SettingsField Label="@AppLocalization["Force Https"]">
-
+   
             <MudSwitch Label="@AppLocalization["Enabled"]"
                    Color="Color.Success"
-                   UnCheckedColor="Color.Error" 
+                   UncheckedColor="Color.Error" 
                    @bind-Value="@settings.ForceHTTPS" />
 
     </SettingsField>
@@ -58,15 +58,14 @@
                 }
             </MudContainer>
             <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon" Accept="image/*">
-                <ButtonTemplate>
+                <ActivatorContent>
                     <MudButton HtmlTag="label"
                                Variant="Variant.Filled"
                                Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.CloudUpload"
-                           for="@context.Id">
+                           StartIcon="@Icons.Material.Filled.CloudUpload">
                         Upload Icon
                     </MudButton>
-                </ButtonTemplate>
+                </ActivatorContent>
             </MudFileUpload>
     </SettingsField>
 

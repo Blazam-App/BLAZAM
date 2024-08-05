@@ -7,13 +7,12 @@
     }
     <MudFileUpload T="IBrowserFile"
                    FilesChanged="UploadProfilePicture">
-        <ButtonTemplate>
+        <ActivatorContent>
 
             <MudButton HtmlTag="label"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.CloudUpload"
-                       for="@context">
+                       StartIcon="@Icons.Material.Filled.CloudUpload">
                 @if (CurrentUser.State.Preferences.ProfilePicture == null)
                 {
                     <MudText>Upload Profile Icon</MudText>
@@ -38,7 +37,7 @@
 
             }
 
-        </ButtonTemplate>
+        </ActivatorContent>
     </MudFileUpload>
     <MudTextField T="string" @bind-Text=@CurrentUser.State.Preferences.Email Label=@AppLocalization["Email"] />
     <MudNavGroup Title="Themes">
