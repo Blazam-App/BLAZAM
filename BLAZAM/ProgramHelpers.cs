@@ -344,8 +344,10 @@ namespace BLAZAM.Server
             }
             try
             {
-                var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
-
+                if (ApplicationInfo.installationCompleted)
+                {
+                    var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
+                }
 
             }
             catch (Exception ex)

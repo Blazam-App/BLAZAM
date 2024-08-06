@@ -91,7 +91,7 @@
         Member.UnassignFrom(Group);
         SnackBarService.Warning(Member.CanonicalName + " removed from " + Group.CanonicalName + ". Don't forget to save your changes.");
 
-        await OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group));
+        await OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group, GroupMembershipAction.Unassign));
 
     }
 

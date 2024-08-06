@@ -328,6 +328,7 @@ namespace BLAZAM.Server.Data.Services
         public bool HasComputerPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Computer);
 
         public bool CanUnlockUsers => HasObjectActionPermission(ActiveDirectoryObjectType.User,ObjectActions.Unlock);
+        public bool CanAssign=> HasObjectActionPermission(ActiveDirectoryObjectType.Group, ObjectActions.Assign);
 
         public string DuoAuthState { get; set; } = "";
         public List<NotificationSubscription> NotificationSubscriptions { get => userSettings?.NotificationSubscriptions; set { userSettings.NotificationSubscriptions=value; } }

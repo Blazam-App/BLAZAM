@@ -10,9 +10,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class GroupableDirectoryAdapter : DirectoryEntryAdapter, IGroupableDirectoryAdapter
     {
-      
-        protected List<GroupMembership> ToAssignTo = new List<GroupMembership>();
-        protected List<GroupMembership> ToUnassignFrom = new List<GroupMembership>();
+
+        public List<GroupMembership> ToAssignTo { get; protected set; } = new List<GroupMembership>();
+        public List<GroupMembership> ToUnassignFrom { get; protected set; } = new List<GroupMembership>();
 
         public virtual bool CanAssign => HasActionPermission(ObjectActions.Assign);
 

@@ -31,12 +31,18 @@ namespace BLAZAM.Services.Audit
                AuditActions.User_Assigned,
             member,
                null,
-               "Assigned to" + parent.DN);
+               "Assigned to " + parent.DN);
+
+            return true;
+        }
+        public async Task<bool> Unassigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
+        {
             await Log(c => c.DirectoryEntryAuditLogs,
-              AuditActions.User_Assigned,
-           parent,
-              null,
-              "Added member " + member.DN);
+               AuditActions.User_Unassigned,
+            member,
+               null,
+               "Unassigned from " + parent.DN);
+
             return true;
         }
 
