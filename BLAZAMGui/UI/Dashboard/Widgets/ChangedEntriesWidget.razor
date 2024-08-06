@@ -57,7 +57,7 @@
 
         {
             var search = new ADSearch();
-            search.Fields.PasswordLastSet = DateTime.Now.AddDays(-1).ToFileTimeUtc().ToString();
+            search.Fields.Changed = DateTime.Now.AddDays(-1);
             changdEntries = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>()).Where(x => x.CanRead).ToList();
             LoadingData = false;
             await InvokeAsync(StateHasChanged);
