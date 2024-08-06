@@ -16,7 +16,7 @@ namespace BLAZAM.Common.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.19")
+                .HasAnnotation("ProductVersion", "7.0.20")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
@@ -884,15 +884,7 @@ namespace BLAZAM.Common.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("BCC")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CC")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -900,13 +892,63 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("TemplateName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("TemplateType")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("EmailTemplates");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Block")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("ByEmail")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("InApp")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("OU")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("NotificationSubscriptions");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionNotificationType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("NotificationSubscriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NotificationType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotificationSubscriptionId");
+
+                    b.ToTable("SubscriptionNotificationType");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
@@ -1164,6 +1206,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("DelegateName")
+                        .HasColumnType("longtext");
 
                     b.Property<byte[]>("DelegateSid")
                         .IsRequired()
@@ -1602,6 +1647,28 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("ChatMessage");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
+                        .WithMany("NotificationSubscriptions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionNotificationType", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Notifications.NotificationSubscription", "NotificationSubscription")
+                        .WithMany("NotificationTypes")
+                        .HasForeignKey("NotificationSubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NotificationSubscription");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ActionAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Permissions.AccessLevel", null)
@@ -1782,6 +1849,11 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("ObjectTypes");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
+                {
+                    b.Navigation("NotificationTypes");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
                 {
                     b.Navigation("ActionMap");
@@ -1806,6 +1878,8 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("FavoriteEntries");
 
                     b.Navigation("Messages");
+
+                    b.Navigation("NotificationSubscriptions");
 
                     b.Navigation("ReadNewsItems");
                 });

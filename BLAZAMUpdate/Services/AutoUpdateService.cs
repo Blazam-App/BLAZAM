@@ -63,7 +63,7 @@ namespace BLAZAM.Update.Services
                             Loggers.UpdateLogger.Warning("Attempting Update credentials to delete old update file: " + file);
 
                             var impersonation = factory.CreateDbContext().AppSettings.FirstOrDefault()?.CreateUpdateImpersonator();
-                            if (impersonation!=null && !impersonation.Run(() =>
+                            if (impersonation != null && !impersonation.Run(() =>
                             {
                                 if (file.Writable)
                                 {
@@ -74,7 +74,7 @@ namespace BLAZAM.Update.Services
                             }))
                             {
                                 impersonation = factory.CreateDbContext().ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
-                                if (impersonation !=null && !impersonation.Run(() =>
+                                if (impersonation != null && !impersonation.Run(() =>
                                 {
                                     if (file.Writable)
                                     {
@@ -167,7 +167,7 @@ namespace BLAZAM.Update.Services
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Loggers.UpdateLogger.Error("Deleting unknown directory: " + dir+ "{@Error}",ex);
+                    Loggers.UpdateLogger.Error("Deleting unknown directory: " + dir + "{@Error}", ex);
                     //dir.Delete(true);
                 }
                 catch (Exception ex)
@@ -181,35 +181,47 @@ namespace BLAZAM.Update.Services
 
         private async void CheckForUpdate(object? state)
         {
-            try
-            {
-                var appSettings = (await factory.CreateDbContextAsync()).AppSettings.FirstOrDefault();
+            IJob updateCheckJob = new Job("Check for Update");
+            IJobStep checkForUpdateStep = new JobStep("Execute", async(step) => {
+                try
+                {
+                    var appSettings = (await factory.CreateDbContextAsync()).AppSettings.FirstOrDefault();
 
-                Loggers.UpdateLogger.Information("Checking for automatic update");
+                    Loggers.UpdateLogger.Information("Checking for automatic update");
 
-                var latestUpdate = await updateService.GetUpdates();
-                if (latestUpdate != null && latestUpdate.Version.NewerThan(_applicationInfo.RunningVersion)){
-                    IsUpdateAvailable = true;
-                    if(appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
+                    var latestUpdate = await updateService.GetUpdates();
+                    if (latestUpdate != null && latestUpdate.Version.NewerThan(_applicationInfo.RunningVersion))
                     {
-                        ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
+                        IsUpdateAvailable = true;
+                        if (appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
+                        {
+                            if (latestUpdate.PassesPrerequisiteChecks)
+                                ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
+                            else
+                            {
+                                Loggers.UpdateLogger.Warning("Update failed prerequisite check, cancelling scheduling {@Error}", latestUpdate.PrequisiteMessage);
+
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        IsUpdateAvailable = false;
+                        Cancel();
+                        Loggers.UpdateLogger.Information("No new updates found.");
 
                     }
 
                 }
-                else
+                catch (Exception ex)
                 {
-                    IsUpdateAvailable = false;
-                    Cancel();
-                    Loggers.UpdateLogger.Information("No new updates found.");
-
+                    Loggers.UpdateLogger.Error("Error while checking for auto update {@Error}", ex);
                 }
-
-            }
-            catch (Exception ex)
-            {
-                Loggers.UpdateLogger.Error("Error while checking for auto update {@Error}", ex);
-            }
+                return true; 
+            });
+            updateCheckJob.AddStep(checkForUpdateStep);
+            await updateCheckJob.RunAsync();
         }
         public void Cancel()
         {
@@ -221,44 +233,51 @@ namespace BLAZAM.Update.Services
 
         public void ScheduleUpdate(TimeSpan updateTimeOfDay, ApplicationUpdate updateToInstall)
         {
-            try
+            IJob scheduleUpdatteJob = new Job("Schedule Update");
+            IJobStep scheduleStep = new JobStep("Execute", async (step) =>
             {
-                bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall;
-                if (ScheduledUpdate != updateToInstall)
+                try
                 {
-                    Loggers.UpdateLogger.Information("New update found: " + updateToInstall.Version);
-
-                    //Update availabled
-                    var now = DateTime.Now;
-                    ScheduledUpdateTime = new DateTime(now.Year, now.Month, now.Day, updateTimeOfDay.Hours, updateTimeOfDay.Minutes, updateTimeOfDay.Seconds);
-
-
-                    //Check if we're past the scheduled time this day
-                    if (ScheduledUpdateTime < now)
+                    bool justScheduled = ScheduledUpdateTime == DateTime.MinValue && ScheduledUpdate != updateToInstall;
+                    if (ScheduledUpdate != updateToInstall)
                     {
-                        ScheduledUpdateTime = ScheduledUpdateTime.AddDays(1);
+                        Loggers.UpdateLogger.Information("New update found: " + updateToInstall.Version);
+
+                        //Update availabled
+                        var now = DateTime.Now;
+                        ScheduledUpdateTime = new DateTime(now.Year, now.Month, now.Day, updateTimeOfDay.Hours, updateTimeOfDay.Minutes, updateTimeOfDay.Seconds);
+
+
+                        //Check if we're past the scheduled time this day
+                        if (ScheduledUpdateTime < now)
+                        {
+                            ScheduledUpdateTime = ScheduledUpdateTime.AddDays(1);
+                        }
+
+
+                        TimeSpan timeUntilUpdate = ScheduledUpdateTime - now;
+
+                        ScheduledUpdate = updateToInstall;
+
+                        autoUpdateApplyTimer = new Timer(Update, null, (int)timeUntilUpdate.TotalMilliseconds, Timeout.Infinite);
+                        Loggers.UpdateLogger.Information("Auto-update scheduled: " + timeUntilUpdate.TotalMinutes + "mins from now at " + ScheduledUpdateTime);
+                        if (justScheduled)
+                        {
+                            Loggers.UpdateLogger.Debug("Update just scheduled");
+                            OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
+
+                        }
+
                     }
-
-
-                    TimeSpan timeUntilUpdate = ScheduledUpdateTime - now;
-
-                    ScheduledUpdate = updateToInstall;
-
-                    autoUpdateApplyTimer = new Timer(Update, null, (int)timeUntilUpdate.TotalMilliseconds, Timeout.Infinite);
-                    Loggers.UpdateLogger.Information("Auto-update scheduled: " + timeUntilUpdate.TotalMinutes + "mins from now at " + ScheduledUpdateTime);
-                    if (justScheduled)
-                    {
-                        Loggers.UpdateLogger.Debug("Update just scheduled");
-                        OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
-
-                    }
-
                 }
-            }
-            catch (Exception ex)
-            {
-                Loggers.UpdateLogger.Error("Error during auto update scheduling {@Error}", ex);
-            }
+                catch (Exception ex)
+                {
+                    Loggers.UpdateLogger.Error("Error during auto update scheduling {@Error}", ex);
+                }
+                return true;
+            });
+            scheduleUpdatteJob.AddStep(scheduleStep);
+             scheduleUpdatteJob.Run();
         }
 
         private async void Update(object? state)

@@ -13,7 +13,7 @@
     <ToolBarContent>
         <MudText Typo="Typo.h6">Fields</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="@(()=>{addFieldModal?.Show();})" />
+        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="@(()=>{addFieldModal?.ShowAsync();})" />
         <AppDocumentationButton Page="/admin/fields" />
 
     </ToolBarContent>
@@ -127,10 +127,14 @@
         {
             foreach (var field in ADFields)
             {
-                for (int x=0; x < field.ObjectTypes.Count;x++)
+
+                for (int x = 0; x < field.ObjectTypes.Count; x++)
                 {
-                    var trackedObjType = Context.ActiveDirectoryFieldObjectMappings.First(x => x.Id == field.Id);
-                    field.ObjectTypes[x] = trackedObjType;
+                    var trackedObjType = Context.ActiveDirectoryFieldObjectMappings.FirstOrDefault(oType => oType.ObjectType == field.ObjectTypes[x].ObjectType);
+                    if (trackedObjType != null)
+                    {
+                        field.ObjectTypes[x] = trackedObjType;
+                    }
                 }
             }
             if (await Context.SaveChangesAsync() > 0)

@@ -2,6 +2,7 @@
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Logger;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace BLAZAM.Helpers
             var list = enumerable.ToList();
             if (list.Count() < 1) return list;
             List<IDirectoryEntryAdapter> mathingItems=new List<IDirectoryEntryAdapter>();
-            for (int x =1; x < list.Count(); x++)
+            for (int x =0; x < list.Count(); x++)
             {
 
                 if (matchingPredicate.Invoke(list[x]))
@@ -62,15 +63,7 @@ namespace BLAZAM.Helpers
             return default;
         }
 
-        public static Process? Shadow(this IRemoteSession session, bool withoutPermission = false)
-        {
-            if (session == null || session.Server==null) return null;
-            string command = "mstsc.exe";
-            string arguments = "/v:" + session.Server.ServerName + " /shadow:" + session.SessionId;
-            if (withoutPermission) arguments += " /noConsentPrompt";
-            return Process.Start(command, arguments);
-            //Debug.TrackEvent("Shadow (Consent)", properties);
-        }
+        
 
         public static string FqdnToDn(string fqdn)
         {
@@ -164,6 +157,10 @@ namespace BLAZAM.Helpers
                         {
                             thisObject = new ADPrinter();
                         }
+                        else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
+                        {
+                            thisObject = new ADBitLockerRecovery();
+                        }
                         if (thisObject != null)
                         {
                             thisObject.Parse(directory: ActiveDirectoryContext.Instance, searchResult: sr);
@@ -180,14 +177,65 @@ namespace BLAZAM.Helpers
             return objects;
         }
         /// <summary>
-        /// Encapsulates a raw DirectoryEntry search's <see cref="DirectoryEntries"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
+        /// Encapsulates a raw DirectoryEntry within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
         /// </summary>
-        /// <remarks>
-        /// This is used when getting child ojects from a OU
-        /// </remarks>
         /// <param name="r"></param>
-        /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
-        public static List<IDirectoryEntryAdapter> Encapsulate(this DirectoryEntries r)
+        /// <returns>A <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
+
+        public static IDirectoryEntryAdapter? Encapsulate(this DirectoryEntry sr)
+        {
+            IDirectoryEntryAdapter? thisObject = null;
+
+            if (sr.Properties["objectClass"].Contains("top"))
+            {
+                if (sr.Properties["objectClass"].Contains("computer"))
+                {
+                    thisObject = new ADComputer();
+                }
+                else if (sr.Properties["objectClass"].Contains("user"))
+                {
+                    thisObject = new ADUser();
+                }
+                else if (sr.Properties["objectClass"].Contains("organizationalUnit"))
+                {
+                    thisObject = new ADOrganizationalUnit();
+                }
+                else if (sr.Properties["objectClass"].Contains("group"))
+                {
+                    thisObject = new ADGroup();
+                }
+                else if (sr.Properties["objectClass"].Contains("printQueue"))
+                {
+                    thisObject = new ADPrinter();
+                }
+                else if (sr.Properties["objectClass"].Contains("msFVE-RecoveryInformation"))
+                {
+                    thisObject = new ADBitLockerRecovery();
+                }
+                if (thisObject != null)
+                {
+                    thisObject.Parse(directory: ActiveDirectoryContext.Instance, directoryEntry: sr);
+
+                    return thisObject;
+
+                }
+                else
+                {
+                    Loggers.ActiveDirectryLogger.Warning("Unable to match ad object type. {Object}", sr);
+                    
+                }
+            }
+            return null;
+        }
+            /// <summary>
+            /// Encapsulates a raw DirectoryEntry search's <see cref="DirectoryEntries"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
+            /// </summary>
+            /// <remarks>
+            /// This is used when getting child ojects from a OU
+            /// </remarks>
+            /// <param name="r"></param>
+            /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
+            public static List<IDirectoryEntryAdapter> Encapsulate(this DirectoryEntries r)
         {
             List<IDirectoryEntryAdapter> objects = new();
 
@@ -195,40 +243,11 @@ namespace BLAZAM.Helpers
             if (r != null)
             {
 
-                IDirectoryEntryAdapter? thisObject = null;
                 foreach (DirectoryEntry sr in r)
                 {
-                    if (sr.Properties["objectClass"].Contains("top"))
-                    {
-                        if (sr.Properties["objectClass"].Contains("computer"))
-                        {
-                            thisObject = new ADComputer();
-                        }
-                        else if (sr.Properties["objectClass"].Contains("user"))
-                        {
-                            thisObject = new ADUser();
-                        }
-                        else if (sr.Properties["objectClass"].Contains("organizationalUnit"))
-                        {
-                            thisObject = new ADOrganizationalUnit();
-                        }
-                        else if (sr.Properties["objectClass"].Contains("group"))
-                        {
-                            thisObject = new ADGroup();
-                        }
-                        else if (sr.Properties["objectClass"].Contains("printQueue"))
-                        {
-                            thisObject = new ADPrinter();
-                        }
-                        if (thisObject != null)
-                        {
-                            thisObject.Parse(directory: ActiveDirectoryContext.Instance, directoryEntry: sr);
-
-                            objects.Add(thisObject);
-
-                        }
-                    }
-                    thisObject = null;
+                   var encapsulated = Encapsulate(sr);
+                    if(encapsulated != null)
+                         objects.Add(encapsulated);
 
                 }
             }

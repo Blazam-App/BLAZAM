@@ -16,7 +16,7 @@
                 <FlexContainer Spacing="4" Class="mx-auto">
 
                     <MudCard Class="pa-0 mx-auto" Elevation="1">
-                        <MudList Clickable="true"
+                        <MudList T="MudDropZone<UserDashboardWidget>"
                                  Class="d-flex flex-column ma-0 mx-auto py-0">
                             <MudDropZone AllowReorder=true
                                          T="UserDashboardWidget"
@@ -26,7 +26,7 @@
                         </MudList>
                     </MudCard>
                     <MudCard Class="pa-0 mx-auto" Elevation="2">
-                        <MudList Clickable="true"
+                        <MudList T="MudDropZone<UserDashboardWidget>"
                                  Class="d-flex flex-column ma-0 mx-auto py-0">
                             <MudDropZone AllowReorder=true
                                          T="UserDashboardWidget"
@@ -40,18 +40,33 @@
             </ChildContent>
             <ItemRenderer>
                 @{
-                    var widget = allWidgets.First(w => w.WidgetType == context.WidgetType);
+
+
+                    Widget? widget =null;
+                    try
+                    {
+                        widget = allWidgets.First(w => w.WidgetType == context.WidgetType);
+
+                    }
+                    catch
+                    {
+
+                    }
+                    if (widget != null)
+                    {
+                        <MudCard Class="my-5 " Elevation="1">
+                            <MudCardHeader>
+                                <MudText Typo="Typo.h6"> @widget.Title</MudText>
+                                <MudSpacer />
+                                <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
+
+                            </MudCardHeader>
+
+                            <DynamicComponent Type="@widget.GetType()" />
+                        </MudCard>
+                    }
                 }
-                <MudCard Class="my-5 " Elevation="1">
-                    <MudCardHeader>
-                        <MudText Typo="Typo.h6"> @widget.Title</MudText>
-                        <MudSpacer />
-                        <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
-
-                    </MudCardHeader>
-
-                    <DynamicComponent Type="@widget.GetType()" />
-                </MudCard>
+               
             </ItemRenderer>
         </MudDropContainer>
     }

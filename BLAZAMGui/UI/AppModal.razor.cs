@@ -34,7 +34,7 @@ namespace BLAZAM.Gui.UI
             {
                 if (Options == null)
                     Options = new();
-                Options.DisableBackdropClick = !value;
+                Options.BackdropClick = value;
                 Options.CloseButton = value;
                 Options.CloseOnEscapeKey = value;
             }
@@ -72,7 +72,7 @@ namespace BLAZAM.Gui.UI
         public OnYesEvent OnYes { get; set; }
         public void SetOnYes(OnYesEvent onYes)
         {
-            OnYes=onYes;
+            OnYes = onYes;
         }
         [Parameter]
         public string YesText { get; set; }
@@ -100,18 +100,19 @@ namespace BLAZAM.Gui.UI
         [Parameter]
         public EventCallback<MudMessageBox>? ModalChanged { get; set; }
 
+
         /// <summary>
         /// Indicates whether this modal is currently shown
         /// </summary>
         [Parameter]
         public bool IsShown
         {
-            get => Modal.IsVisible;
+            get => Modal.Visible;
             set
             {
-                if (value == Modal.IsVisible)
+                if (value == Modal.Visible)
                     return;
-                Modal.IsVisible = value;
+                Modal.Visible = value;
                 IsShownChanged.InvokeAsync(value);
             }
         }
@@ -123,28 +124,28 @@ namespace BLAZAM.Gui.UI
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            YesText = AppLocalization["Ok"]; 
+            YesText = AppLocalization["Ok"];
             if (Options == null)
                 Options = new();
-            AllowClose=true;
+            AllowClose = true;
         }
         /// <summary>
         /// Re-renders the modal with the latest property values
         /// </summary>
-        public void RefreshView()
+        public async Task RefreshView()
         {
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
         }
 
         /// <summary>
         /// Show this modal
         /// </summary>
-        public IDialogReference? Show()
+        public async Task<IDialogReference?> ShowAsync()
         {
 
             IsShown = true;
 
-            return Modal?.Show(null,Options);
+            return await Modal?.ShowAsync(null, Options);
         }
 
 
@@ -154,7 +155,7 @@ namespace BLAZAM.Gui.UI
         public void Close()
         {
             IsShown = false;
-            Modal?.Close();
+            Modal?.CloseAsync();
         }
         private void YesClicked()
         {

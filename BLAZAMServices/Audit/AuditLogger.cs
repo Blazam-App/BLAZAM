@@ -20,6 +20,7 @@ namespace BLAZAM.Services.Audit
         public OUAudit OU;
         public PrinterAudit Printer;
         public LogonAudit Logon;
+        public BitLockerAudit BitLocker;
 
         public AuditLogger(IAppDatabaseFactory factory, IApplicationUserStateService userStateService)
         {
@@ -30,6 +31,7 @@ namespace BLAZAM.Services.Audit
             OU = new OUAudit(factory, userStateService);
             Printer = new PrinterAudit(factory, userStateService);
             Logon = new LogonAudit(factory, userStateService);
+            BitLocker = new BitLockerAudit(factory, userStateService);
         }
         public async Task Searched(IDirectoryEntryAdapter searchedEntry)
         {
@@ -43,6 +45,8 @@ namespace BLAZAM.Services.Audit
                 await OU.Searched(searchedEntry);
             else if (searchedEntry is IADPrinter)
                 await Printer.Searched(searchedEntry);
+            else if (searchedEntry is IADBitLockerRecovery)
+                await BitLocker.Searched(searchedEntry);
         }
 
     }

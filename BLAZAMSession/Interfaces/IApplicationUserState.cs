@@ -1,6 +1,7 @@
 ﻿
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Chat;
+using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Server.Data;
@@ -69,6 +70,7 @@ namespace BLAZAM.Session.Interfaces
         bool IsAuthenticated { get; }
         List<PermissionDelegate> PermissionDelegates { get; set; }
         List<PermissionMapping> PermissionMappings { get; set; }
+        List<NotificationSubscription> NotificationSubscriptions { get; set; }
         bool HasUserPrivilege { get; }
         bool HasCreateUserPrivilege { get; }
         bool HasGroupPrivilege { get; }
@@ -77,6 +79,7 @@ namespace BLAZAM.Session.Interfaces
         bool HasCreateOUPrivilege { get; }
         bool HasComputerPrivilege { get; }
         bool CanUnlockUsers { get; }
+        bool CanAssign { get; }
         string DuoAuthState { get; set; }
 
         IList<ReadNewsItem>? ReadNewsItems { get; }

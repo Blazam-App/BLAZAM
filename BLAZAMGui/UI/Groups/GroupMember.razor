@@ -29,7 +29,7 @@
     {
       
             Group.UnassignMember(Member);
-            await OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group));
+            await OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group,GroupMembershipAction.Unassign));
 
            // Notifications.Success("Removed from " + Group.DisplayName, "Sucess", options => options.IntervalBeforeClose = 5000);
         

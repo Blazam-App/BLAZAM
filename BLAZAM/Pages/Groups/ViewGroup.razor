@@ -11,13 +11,13 @@
     <SetSubHeader>
         <DirectoryEntryViewHeader EditMode="@EditMode"
                                   DirectoryEntry="@Group"
-                                  OnAssignTo="@(()=>{AssignToModal?.Show();})"
-                                  OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
+                                  OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
+                                  OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
                                   OnDelete="@DeleteGroup"
-                                  OnMove="@(()=>{MoveToModal?.Show();})"
-                                  OnRename="@(()=>{RenameModal?.Show();})"
-                                  OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
-                                  OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
+                                  OnMove="@(()=>{MoveToModal?.ShowAsync();})"
+                                  OnRename="@(()=>{RenameModal?.ShowAsync();})"
+                                  OnResetPassword="@(()=>{ChangePasswordModal?.ShowAsync();})"
+                                  OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
                                   OnToggleEditMode="@ToggleEditMode" />
         <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true" />
     </SetSubHeader>
@@ -114,7 +114,7 @@
 
 
 
-        @if (Group.CanEdit && Group.HasUnsavedChanges)
+        @if ((Group.CanEdit || Group.CanUnassign || Group.CanAssign) && Group.HasUnsavedChanges)
         {
             <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
         }
@@ -150,6 +150,8 @@
             {
                 await AuditLogger.Group.Changed(Group, Group.Changes);
 
+                _ = OUNotificationService.PostAsync(Group, NotificationType.Modify);
+
                 EditMode = false;
                 Nav.WarnOnNavigation = false;
                 SnackBarService.Success("The changes made to this group have been saved.");
@@ -173,6 +175,8 @@
             {
                 Group.Delete();
                 SnackBarService.Success(Group.CanonicalName + " has been deleted.");
+                await AuditLogger.Group.Deleted(Group);
+                _ = OUNotificationService.PostAsync(Group, NotificationType.Delete);
 
                 //Group = null;
                 Nav.NavigateTo("/groups/search");

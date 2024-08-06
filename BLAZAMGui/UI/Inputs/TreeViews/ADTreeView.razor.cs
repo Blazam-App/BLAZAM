@@ -26,7 +26,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
       
        
 
-        private HashSet<IDirectoryEntryAdapter>? GetItems(IDirectoryEntryAdapter parent)
+        private IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(IDirectoryEntryAdapter parent)
         {
             if (parent.IsExpanded || parent.CachedChildren != null)
             {
@@ -38,16 +38,16 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 {
                     items = items.Where(i => i.ObjectType == ActiveDirectoryObjectType.OU);
                 }
-                var hashst = items.ToHashSet();
-                return hashst;
+                var treeBranchh = items.ToTreeItemData();
+                return treeBranchh;
             }
             return null;
         }
-        protected async Task<HashSet<IDirectoryEntryAdapter>> GetChildrenAsync(IDirectoryEntryAdapter parentNode)
+        protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>> GetChildrenAsync(IDirectoryEntryAdapter parentNode)
         {
             return await Task.Run(() =>
             {
-                return GetChildren(parentNode);
+                return GetChildren(parentNode).ToTreeItemData();
 
             });
         }

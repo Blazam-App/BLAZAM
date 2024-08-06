@@ -12,8 +12,8 @@ namespace BLAZAM.Jobs
     {
 
 
-
-
+        bool NestedJob { get; set; }
+        Guid Id { get; }
         /// <summary>
         /// The time to run this job. Execution will wait until this time arrives.
         /// </summary>
@@ -30,7 +30,7 @@ namespace BLAZAM.Jobs
         /// <remarks>
         /// Some steps may be <see cref="Job"/>'s themselves
         /// </remarks>
-        IList<IJobStep> Steps { get; set; }
+        IList<IJobStep> Steps { get; }
 
         /// <summary>
         /// A list of all failed steps
@@ -51,6 +51,8 @@ namespace BLAZAM.Jobs
         /// All the steps that executed without exception
         /// </summary>
         IList<IJobStep> PassedSteps { get; }
+
+        void AddStep(IJobStep step);
 
 
 

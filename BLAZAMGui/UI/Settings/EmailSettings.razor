@@ -10,7 +10,7 @@
     <SettingsField Label="@AppLocalization["Email Enabled"]">
         <MudSwitch @bind-Value="settings.Enabled"
                    Color="Color.Success"
-                   UnCheckedColor="Color.Error" />
+                   UncheckedColor="Color.Error" />
     </SettingsField>
 
 
@@ -33,7 +33,7 @@
 
         <MudSwitch Label="@AppLocalization["Enabled"]"
                    Color="Color.Success"
-                   UnCheckedColor="Color.Error" 
+                   UncheckedColor="Color.Error"
                    @bind-Value="settings.UseTLS" />
 
     </SettingsField>
@@ -43,7 +43,7 @@
 
         <MudSwitch Label="@AppLocalization["Enabled"]"
                 Color="Color.Success"
-                UnCheckedColor="Color.Error"
+                   UncheckedColor="Color.Error"
                    @bind-Value="settings.UseSMTPAuth" />
 
     </SettingsField>
@@ -91,7 +91,7 @@
     <MudTextField Label="@AppLocalization["Test Recipient"]" Disabled=@(!settings.Enabled) @bind-Value=testRecipient />
 
     <MudButton Disabled=@((!settings.Enabled && !settings.Valid())||LoadingData) @onclick="SendTestEmail" Color="Color.Success">Send Test Email</MudButton>
-    @if (ApplicationInfo.InDebugMode)
+    @if (ApplicationInfo.InDebugMode && emailPreview!=null)
     {
         <MudContainer MaxWidth
         ="MaxWidth.Large" Style
@@ -112,7 +112,7 @@
 </MudForm>
 @code {
     #nullable disable warnings
-    string emailPreview;
+    string? emailPreview=null;
     BLAZAM.Database.Models.EmailSettings settings = new BLAZAM.Database.Models.EmailSettings();
     string testRecipient;
     protected override async Task OnInitializedAsync()
@@ -134,7 +134,8 @@
         //message.User = user;
         //var html = message.Render();
         //emailPreview = EmailService.PrepareHTMLForEmail(html);
-        emailPreview = EmailService.BuildMessage<TestEmailMessage>("BLAZAM Test Email", "to@test.com").HtmlBody;
+        if(EmailService.IsConfigured)
+            emailPreview = EmailService.BuildMessage<TestEmailMessage>("BLAZAM Test Email", "to@test.com").HtmlBody;
 
         LoadingData = false;
         await InvokeAsync(StateHasChanged);

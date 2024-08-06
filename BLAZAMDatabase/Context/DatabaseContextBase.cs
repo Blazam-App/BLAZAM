@@ -11,15 +11,13 @@ using BLAZAM.Database.Models.User;
 using BLAZAM.Logger;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using BLAZAM.Database.Models.Chat;
 using BLAZAM.Server.Data;
-using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using BLAZAM.FileSystem;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using BLAZAM.Database.Models.Notifications;
 
 namespace BLAZAM.Database.Context
 {
@@ -112,6 +110,7 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<UserFavoriteEntry> UserFavoriteEntries { get; set; }
         public virtual DbSet<UserDashboardWidget> UserDashboardWidgets { get; set; }
         public virtual DbSet<NotificationMessage> NotificationMessages { get; set; }
+        public virtual DbSet<NotificationSubscription> NotificationSubscriptions { get; set; }
 
 
         //Audit Logs
@@ -519,6 +518,7 @@ namespace BLAZAM.Database.Context
                 entity.Navigation(e => e.Field).AutoInclude();
                 entity.Navigation(e => e.CustomField).AutoInclude();
             });
+        
             modelBuilder.Entity<ObjectAction>().HasData(
                   new ObjectAction() { Id = 1, Name = "Assign", Action = ActiveDirectoryObjectAction.Assign },
                   new ObjectAction() { Id = 2, Name = "UnAssign", Action = ActiveDirectoryObjectAction.Unassign },
@@ -609,6 +609,8 @@ namespace BLAZAM.Database.Context
                 entity.Navigation(e => e.ReadNewsItems).AutoInclude();
                 entity.Navigation(e => e.FavoriteEntries).AutoInclude();
                 entity.Navigation(e => e.DashboardWidgets).AutoInclude();
+               // entity.Navigation(e => e.NotificationSubscriptions).AutoInclude();
+
                 //entity.Navigation(e => e.UnreadChatMessages).AutoInclude();
 
             });
@@ -636,7 +638,12 @@ namespace BLAZAM.Database.Context
                 entity.Navigation(e => e.User).AutoInclude();
 
             });
+            modelBuilder.Entity<NotificationSubscription>(entity =>
+            {
 
+                entity.Navigation(e => e.NotificationTypes).AutoInclude();
+
+            });
             modelBuilder.Entity<UnreadChatMessage>(entity =>
          {
              entity.Navigation(e => e.ChatMessage).AutoInclude();

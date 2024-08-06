@@ -80,17 +80,17 @@
 
 
 
-                                </MudCard>
+                            </MudCard>
 
 
-                            </ItemContent>
-                        </MudTimelineItem>
+                        </ItemContent>
+                    </MudTimelineItem>
 
 
 
-                        @if (ShowAllUpdates)
+                    @if (ShowAllUpdates)
                     {
-                        @foreach (var update in UpdateService.StableUpdates.OrderBy(x => x.Version))
+                        @foreach (var update in UpdateService.AvailableUpdates.Where(x => x.Version.OlderThan(LatestAvailableVersion.Version)).OrderBy(x => x.Version))
                         {
 
 
@@ -100,24 +100,35 @@
 
                         }
                     }
-                    @if (UpdateService.LatestUpdate.Version.NewerThan(ApplicationInfo.RunningVersion))
+                    @if (UpdateService.NewestAvailableUpdate != null)
                     {
-                        <AvailableUpdate Update=@UpdateService.LatestUpdate OnApply="ApplyUpdate" Even=@(i%2==0) />
+                        if (UpdateService.NewestAvailableUpdate.Version.NewerThan(ApplicationInfo.RunningVersion))
+                        {
+                            <AvailableUpdate Update=@UpdateService.NewestAvailableUpdate OnApply="ApplyUpdate" Even=true />
 
+                        }
+                        else
+                        {
+                            <MudTimelineItem Color="Color.Success" Size="Size.Small">
+                                <ItemOpposite>
+                                    <MudText Color="Color.Success" Typo="Typo.h5">@AppLocalization["Up to date"]</MudText>
+                                </ItemOpposite>
+                                <ItemContent>
+
+                                </ItemContent>
+                            </MudTimelineItem>
+                        }
                     }
-
-                    @if (LatestAvailableVersion != null && !LatestAvailableVersion.Version.OlderThan(ApplicationInfo.RunningVersion))
+                  
+                    @if (UpdateService.IncompatibleUpdates.Count > 0)
                     {
-                        <MudTimelineItem Color="Color.Success" Size="Size.Small">
-                            <ItemOpposite>
-                                <MudText Color="Color.Success" Typo="Typo.h5">@AppLocalization["Up to date"]</MudText>
-                            </ItemOpposite>
-                            <ItemContent>
+                        var latestIncompatibleUpdate = UpdateService.IncompatibleUpdates.Where(x => x.Newer).OrderByDescending(x => x.Release.ReleaseTime).FirstOrDefault();
+                        if (latestIncompatibleUpdate != null)
+                        {
+                            <AvailableUpdate Update=@latestIncompatibleUpdate OnApply="ApplyUpdate" Even=true />
 
-                            </ItemContent>
-                        </MudTimelineItem>
+                        }
                     }
-
                 </MudTimeline>
 
                 @if (AutoUpdateService.IsUpdatedScheduled)
@@ -175,7 +186,6 @@
             {
                 MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization["Update"]);
                 await output.RunAsync();
-                // SnackBarService.Success("Update started successfully. The web application will restart and update momentarily.");
 
             }
             await InvokeAsync(StateHasChanged);

@@ -1,65 +1,65 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>BLAZAM.Gui</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>BLAZAM.Gui</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Helpers\**" />
-    <Compile Remove="UI\General\**" />
-    <Content Remove="Helpers\**" />
-    <Content Remove="UI\General\**" />
-    <EmbeddedResource Remove="Helpers\**" />
-    <EmbeddedResource Remove="UI\General\**" />
-    <None Remove="Helpers\**" />
-    <None Remove="UI\General\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Helpers\**" />
+		<Compile Remove="UI\General\**" />
+		<Content Remove="Helpers\**" />
+		<Content Remove="UI\General\**" />
+		<EmbeddedResource Remove="Helpers\**" />
+		<EmbeddedResource Remove="UI\General\**" />
+		<None Remove="Helpers\**" />
+		<None Remove="UI\General\**" />
+	</ItemGroup>
 
 
-  <ItemGroup>
-    <SupportedPlatform Include="browser" />
-  </ItemGroup>
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.6" />
-    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.6" />
-    <PackageReference Include="MudBlazor" Version="6.17.0" />
-    <PackageReference Include="MudBlazor.Markdown" Version="0.1.3" />
-    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="8.0.0" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.7" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.7" />
+		<PackageReference Include="MudBlazor" Version="7.3.0" />
+		<PackageReference Include="MudBlazor.Markdown" Version="1.0.2" />
+		<PackageReference Include="System.Diagnostics.PerformanceCounter" Version="8.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.7" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
-    <ProjectReference Include="..\BLAZAMEmail\BLAZAMEmail.csproj" />
-    <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
-    <ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
-    <ProjectReference Include="..\BLAZAMNav\BLAZAMNav.csproj" />
-    <ProjectReference Include="..\BLAZAMServices\BLAZAMServices.csproj" />
-    <ProjectReference Include="..\BLAZAMThemes\BLAZAMThemes.csproj" />
-    <ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
+		<ProjectReference Include="..\BLAZAMEmail\BLAZAMEmail.csproj" />
+		<ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
+		<ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
+		<ProjectReference Include="..\BLAZAMNav\BLAZAMNav.csproj" />
+		<ProjectReference Include="..\BLAZAMServices\BLAZAMServices.csproj" />
+		<ProjectReference Include="..\BLAZAMThemes\BLAZAMThemes.csproj" />
+		<ProjectReference Include="..\BlazamUpdate\BLAZAMUpdate.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="ApplicationNews">
-      <HintPath>..\BLAZAMSession\ApplicationNews.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="ApplicationNews">
+			<HintPath>..\BLAZAMSession\ApplicationNews.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Update="UI\Chat\EntrySpecificChat.razor">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </Content>
-    <Content Update="UI\FlexContainer.razor">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </Content>
-    <Content Update="UI\Section.razor">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </Content>
-  </ItemGroup>
+	<ItemGroup>
+		<Content Update="UI\Chat\EntrySpecificChat.razor">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</Content>
+		<Content Update="UI\FlexContainer.razor">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</Content>
+		<Content Update="UI\Section.razor">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</Content>
+	</ItemGroup>
 
 </Project>

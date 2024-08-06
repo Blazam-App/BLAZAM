@@ -9,10 +9,8 @@ namespace BLAZAM.Database.Models.Permissions
         public byte[] DelegateSid { get; set; }
         public bool IsSuperAdmin { get; set; }
         public List<PermissionMapping> PermissionsMaps { get; set; }
-
-
-        [NotMapped]
         public string? DelegateName { get; set; }
+
 
         public int CompareTo(object? obj)
         {

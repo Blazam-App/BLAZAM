@@ -1,4 +1,5 @@
 ﻿using ApplicationNews;
+using BLAZAM.Database.Models.Templates;
 using BLAZAM.Gui.UI.Modals;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
@@ -40,6 +41,18 @@ namespace BLAZAM.Helpers
             return (await dialogService.ShowMessage<AppNewsItemDialog>(dialogParams, item.Title,options:options));
 
         }
-        
+
+        public static List<TreeItemData<T>> ToTreeItemData<T>(this IEnumerable<T> items)
+        {
+            List<TreeItemData<T>> treeData = new();
+
+            items.ForEach(x =>
+            {
+                treeData.Add(new() { Value = x });
+
+            });
+            return treeData;
+        }
+       
     }
 }

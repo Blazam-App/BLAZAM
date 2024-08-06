@@ -62,12 +62,12 @@
                         {
                             int unreadRoomMessageCount = Chat.GetUnreadMessages(currentUserState.Preferences, chatRoom).Count();
                             <MudBadge Class="ms-4"
-                            Overlap=true
-                            Visible=@(unreadRoomMessageCount>0)
-                            Origin=Origin.CenterLeft
-                            Max="99"
-                            Content="unreadRoomMessageCount"
-                            Color="Color.Error">
+                                      Overlap=true
+                                      Visible=@(unreadRoomMessageCount>0)
+                                      Origin=Origin.CenterLeft
+                                      Max="99"
+                                      Content="unreadRoomMessageCount"
+                                      Color="Color.Error">
                                 <MudNavLink OnClick="@(()=>{SwitchTo(chatRoom);})">@chatRoom.Name</MudNavLink>
 
                             </MudBadge>
@@ -112,7 +112,8 @@
             </MudNavGroup>
             @if (ApplicationInfo.InDebugMode && IsAdmin)
             {
-                <MudNavLink OnClick="@(()=>{Chat.DeleteAllChatRooms();})" Icon="@Icons.Material.Filled.Clear">Delete All Chat Rooms</MudNavLink>
+                <MudNavLink OnClick="@(()=>{Chat.DeleteAllChatRooms();})"
+                            Icon="@Icons.Material.Filled.Clear">Delete All Chat Rooms</MudNavLink>
             }
         </MudNavMenu>
     </MudDrawer>
@@ -175,9 +176,9 @@
     {
 
         await base.OnInitializedAsync();
-        await Task.Run(async() =>
+        await Task.Run(async () =>
         {
-            
+
             currentUserState = CurrentUser.State;
 
             if (ChatUri.IsNullOrEmpty())
@@ -234,7 +235,7 @@
         });
 
         });
-       
+
 
     }
     void SwitchTo(ChatRoom room)

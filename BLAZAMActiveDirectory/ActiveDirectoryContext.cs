@@ -29,7 +29,8 @@ namespace BLAZAM.ActiveDirectory
             get
             {
                 if (currentUser != null) return currentUser;
-                throw new ApplicationException("Current User State was not provided to this directory entry");
+                //throw new ApplicationException("Current User State was not provided to this directory entry");
+                return null;
             }
             set => currentUser = value;
         }
@@ -53,7 +54,7 @@ namespace BLAZAM.ActiveDirectory
                 {
                     ConnectionSettings = ad;
 
-                    Loggers.ActiveDirectryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
+                    //Loggers.ActiveDirectryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
                     //We need to determine what security options to use when authenticating
                     //based on the settings in the DB
 
@@ -138,27 +139,18 @@ namespace BLAZAM.ActiveDirectory
         }
 
 
-        /// <summary>
 
-        /// </summary>
         public IADUserSearcher Users { get; }
 
-        /// <summary>
-
-        /// </summary>
         public IADGroupSearcher Groups { get; }
 
-        /// <summary>
-
-        /// </summary>
         public IADOUSearcher OUs { get; }
-        /// </summary>
+
         public IADPrinterSearcher Printers { get; }
 
-        /// <summary>
-
-        /// </summary>
         public IADComputerSearcher Computers { get; }
+
+        public IADBitLockerSearcher BitLocker { get; }
 
         public IDatabaseContext? Context { get; private set; }
 
@@ -238,6 +230,7 @@ namespace BLAZAM.ActiveDirectory
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
             Printers = new ADPrinterSearcher(this);
+            BitLocker = new ADBitLockerSearcher(this);
             Computers = new ADComputerSearcher(this, _wmiFactory);
         }
         /// <summary>
@@ -265,7 +258,7 @@ namespace BLAZAM.ActiveDirectory
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
             Printers = new ADPrinterSearcher(this);
-
+            BitLocker = new ADBitLockerSearcher(this);
             Computers = new ADComputerSearcher(this, activeDirectoryContextSeed._wmiFactory);
         }
         private DirectoryContext DirectoryContext => new DirectoryContext(

@@ -26,7 +26,7 @@
                     var name = Enum.GetName(typeof(ActiveDirectoryObjectType), adObjectType);
 
                     <MudButton Disabled=buttonDisabled
-                       OnClick="()=>AddObjectTypeAccess(adObjectType)">
+                               OnClick="()=>AddObjectTypeAccess(adObjectType)">
                         @AppLocalization[name]
                     </MudButton>
 
@@ -49,15 +49,20 @@
             <MudCardHeader>
                 <MudText Typo="Typo.h4">@name</MudText>
                 <MudSpacer />
-                <MudSelect Disabled=@(WorkingModel.Id==1) T="int" ValueChanged="(int value)=>SetObjectMapAccess(objectMap,value)" Value="objectMap.ObjectAccessLevelId">
+                <MudSelect Disabled=@(WorkingModel.Id==1)
+                           T="int"
+                           ValueChanged="(int value)=>SetObjectMapAccess(objectMap,value)"
+                           Value="objectMap.ObjectAccessLevelId">
 
                     @foreach (ObjectAccessLevel levelValue in ObjectAccessLevels.Levels)
                     {
-                        <MudSelectItem Disabled=@(WorkingModel.Id==1) Value="levelValue.Id">@AppLocalization[levelValue.Name]</MudSelectItem>
+                        <MudSelectItem Disabled=@(WorkingModel.Id==1)
+                                       Value="levelValue.Id">@AppLocalization[levelValue.Name]</MudSelectItem>
 
                     }
                 </MudSelect>
-                <AppCloseButton Disabled=@(WorkingModel.Id==1) OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
+                <AppCloseButton Disabled=@(WorkingModel.Id==1)
+                                OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
 
             </MudCardHeader>
             <MudCardContent>
@@ -66,7 +71,9 @@
 
                 @if (objectMap.ObjectType == ActiveDirectoryObjectType.User && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
                 {
-                    <MudSwitch Label="@AppLocalization["Allow Disabled User Access"]" @bind-Checked=objectMap.AllowDisabled />
+                    <MudSwitch T=bool
+                               Label="@AppLocalization["Allow Disabled User Access"]"
+                               @bind-Value=objectMap.AllowDisabled />
                 }
 
 
@@ -79,18 +86,20 @@
 
 
                     <MudDataGrid Items="@WorkingModel.ActionMap.Where(am=>am.ObjectType==objectMap.ObjectType)"
-                         Elevation="0">
+                                 Elevation="0">
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">
                                 @name Actions
                             </MudText>
                             <MudSpacer />
-                            <MudMenu MaxHeight="200" Color="Color.Success" Icon="@Icons.Material.Outlined.Add">
+                            <MudMenu MaxHeight="200"
+                                     Color="Color.Success"
+                                     Icon="@Icons.Material.Outlined.Add">
                                 @foreach (var action in actions.OrderBy(f => f.Name))
                                 {
                                     if (action.IsActionAppropriateForObject(objectMap.ObjectType))
                                     {
-                                        if (!WorkingModel.ActionMap.Any(a => a.ObjectType==objectMap.ObjectType && a.ObjectAction == action))
+                                        if (!WorkingModel.ActionMap.Any(a => a.ObjectType == objectMap.ObjectType && a.ObjectAction == action))
                                         {
 
 
@@ -103,12 +112,13 @@
                             </MudMenu>
                         </ToolBarContent>
                         <Columns>
-                            <PropertyColumn Property="x => x.ObjectAction.Name" Title="Action" />
+                            <PropertyColumn Property="x => x.ObjectAction.Name"
+                                            Title="Action" />
                             <TemplateColumn Title="Access">
                                 <CellTemplate>
-                                    <MudRadioGroup T="bool" @bind-SelectedOption=context.Item.AllowOrDeny>
-                                        <MudRadio T="bool" Option="false">@AppLocalization["Deny"]</MudRadio>
-                                        <MudRadio T="bool" Option="true">@AppLocalization["Allow"]</MudRadio>
+                                    <MudRadioGroup T="bool" @bind-Value=context.Item.AllowOrDeny>
+                                        <MudRadio T="bool" Value="false">@AppLocalization["Deny"]</MudRadio>
+                                        <MudRadio T="bool" Value="true">@AppLocalization["Allow"]</MudRadio>
 
                                     </MudRadioGroup>
                                 </CellTemplate>
@@ -116,8 +126,8 @@
                             <TemplateColumn Title="Remove">
                                 <CellTemplate>
                                     <MudIconButton Icon="@Icons.Material.Filled.Close"
-                                           Color="Color.Error"
-                                           OnClick="@(()=>{RemoveActionAccess(context.Item);})" />
+                                                   Color="Color.Error"
+                                                   OnClick="@(()=>{RemoveActionAccess(context.Item);})" />
                                 </CellTemplate>
                             </TemplateColumn>
                         </Columns>
@@ -127,22 +137,24 @@
 
 
                     <MudDataGrid T="FieldAccessMapping"
-                         Elevation="0"
-                         Items="@WorkingModel.FieldMap.Where(am=>am.ObjectType==objectMap.ObjectType)">
+                                 Elevation="0"
+                                 Items="@WorkingModel.FieldMap.Where(am=>am.ObjectType==objectMap.ObjectType)">
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">
                                 @name Fields
                             </MudText>
                             <MudSpacer />
-                            <MudMenu MaxHeight="200" Color="Color.Success" Icon="@Icons.Material.Outlined.Add">
+                            <MudMenu MaxHeight="200"
+                                     Color="Color.Success"
+                                     Icon="@Icons.Material.Outlined.Add">
                                 @foreach (var field in fields.OrderBy(f => f.DisplayName))
                                 {
 
                                     if (ShowField(field, objectMap.ObjectType))
                                     {
-                                        var existingFieldAccess = WorkingModel.FieldMap.Where(m =>m.ObjectType.Equals(objectMap.ObjectType)
-                                        && ( m.Field?.Equals(field)==true 
-                                        || m.CustomField?.Equals(field)==true)).FirstOrDefault();
+                                        var existingFieldAccess = WorkingModel.FieldMap.Where(m => m.ObjectType.Equals(objectMap.ObjectType)
+                                        && (m.Field?.Equals(field) == true
+                                        || m.CustomField?.Equals(field) == true)).FirstOrDefault();
                                         if (existingFieldAccess == null)
                                         {
 
@@ -219,7 +231,7 @@
     if (Model.Id > 0)
         buttonLabel = AppLocalization["Update Access Level"];
 }
-<MudButton  Disabled=@(SaveDisabled || WorkingModel.Id==1)  Color=Color.Success Margin=Margin.IsAuto.OnX  OnClick="SaveAccessLevel">@buttonLabel</MudButton>
+<MudButton Disabled=@(SaveDisabled || WorkingModel.Id==1) Color=Color.Success Margin=Margin.IsAuto.OnX OnClick="SaveAccessLevel">@buttonLabel</MudButton>
 @if (WorkingModel.Id != 0)
 {
     <MudButton Disabled=@(WorkingModel.Id==1) Color=Color.Error Margin=Margin.IsAuto.OnX OnClick="DeleteAccessLevel">@AppLocalization["Delete Access Level"]</MudButton>
@@ -233,7 +245,7 @@
         get
         {
             return WorkingModel.ObjectMap.AsQueryable().Any(om => om.ObjectAccessLevelId > ObjectAccessLevels.Deny.Id);
-          
+
         }
     }
 
@@ -327,7 +339,7 @@
 
         StateHasChanged();
     }
-    private void AddFieldAccess(IActiveDirectoryField fieldToAdd,ActiveDirectoryObjectType objectType)
+    private void AddFieldAccess(IActiveDirectoryField fieldToAdd, ActiveDirectoryObjectType objectType)
     {
         if (fieldToAdd is ActiveDirectoryField adField)
         {
@@ -335,7 +347,7 @@
                 {
                     Field = adField,
                     FieldAccessLevelId = FieldAccessLevels.Read.Id,
-                    ObjectType=objectType
+                    ObjectType = objectType
                 });
         }
         else if (fieldToAdd is CustomActiveDirectoryField customField)

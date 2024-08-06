@@ -9,19 +9,18 @@
              Hover="true"
              Color="Color.Success"
              @bind-SelectedValue="SelectedEntry">
-    <ItemTemplate>
-        <MudTreeViewItem Value="@context"
-                        
-                         Items=@GetItems(context)
+     <ItemTemplate>
+        <MudTreeViewItem Value="@context.Value"
+                         Items=@GetItems(context.Value)
                          LoadingIconColor="Color.Info"
-                         @bind-Expanded="@context.IsExpanded"
-                         @bind-Activated=context.IsSelected
-                         Text="@context.CanonicalName"
-                         Icon="@context.TypeIcon()"
-                         IconColor=@GetItemColor(context)
+                         @bind-Expanded="@context.Expanded"
+                         @bind-Activated=context.Selected
+                         Text="@context.Value.CanonicalName"
+                         Icon="@context.Value.TypeIcon()"
+                         IconColor=@GetItemColor(context.Value)
                          Class="minw-max w-100 overflow-x-auto"
-                         CanExpand=@(context is IADOrganizationalUnit)
-                         EndText="@EndText?.Invoke(context)"
+                         CanExpand=@(context.Value is IADOrganizationalUnit)
+                         EndText="@EndText?.Invoke(context.Value)"
                          Context="itemContext">
 
         </MudTreeViewItem>

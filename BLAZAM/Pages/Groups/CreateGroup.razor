@@ -53,7 +53,7 @@
         <MudTabPanel Disabled=@(newGroup==null || newGroupName.IsNullOrEmpty())>
             <ChildContent>
                 <MudText>
-                    <ConfirmNewGroup Group="@newGroup" Confirmed="GroupCreated" />
+                    <ConfirmNewGroup Group="@newGroup" />
                     
                 </MudText>
             </ChildContent>
@@ -119,9 +119,5 @@
         LoadingData = true;
 
         await InvokeAsync(StateHasChanged);
-    }
-    async Task GroupCreated(IADGroup ou)
-    {
-        await AuditLogger.Group.Created(ou);
     }
 }

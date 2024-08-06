@@ -1,34 +1,22 @@
 ﻿
 using BLAZAM.Common.Data.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Localization;
 using MudBlazor.Services;
 using System.Globalization;
 using MudBlazor;
-using BLAZAM.Server.Data;
-using BLAZAM.Update.Services;
-using BLAZAM.Update;
 using BLAZAM.Database.Context;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory;
 using BLAZAM.Session.Interfaces;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Common.Data;
-using BLAZAM.Services.Background;
-using BLAZAM.Email.Services;
 using BLAZAM.Services;
 using BLAZAM.Services.Duo;
-using BLAZAM.Server.Data.Services;
 using System.Diagnostics;
 using System.Reflection;
 using BLAZAM.Services.Chat;
 using BLAZAM.Services.Audit;
-using BLAZAM.Common;
 using BLAZAM.Nav;
 using BLAZAM.Session;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Org.BouncyCastle.Ocsp;
 using System.Management;
 
 namespace BLAZAM.Server
@@ -313,6 +301,7 @@ namespace BLAZAM.Server
 
             builder.Services.AddScoped<AppDialogService>();
 
+            builder.Services.AddSingleton<OUNotificationService>();
 
 
             builder.Host.UseWindowsService();
@@ -320,5 +309,52 @@ namespace BLAZAM.Server
             return builder;
         }
 
+        public static void PreRun(this WebApplication application)
+        {
+            //Setup Seq logging if allowed by admin
+            try
+            {
+                var context = Program.AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
+                if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
+                {
+                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+            PreloadServices();
+
+        }
+
+        private static void PreloadServices()
+        {
+            try
+            {
+                var context = Program.AppInstance.Services.GetRequiredService<OUNotificationService>();
+
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+            try
+            {
+                if (ApplicationInfo.installationCompleted)
+                {
+                    var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+
+        }
     }
 }

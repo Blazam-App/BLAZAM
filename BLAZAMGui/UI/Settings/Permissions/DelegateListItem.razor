@@ -3,15 +3,14 @@
     <TitleContent>
         <MudStack Row=true>
             <MudText Typo="Typo.h6">
-               @if(Group!=null){
-                @Group?.CanonicalName
-               }else {
-                    @("Group not found")
+                @Delegate.DelegateName
 
-                }
-                </MudText>
+            </MudText>
 
-            <MudSwitch Label="Super User Group" Checked="Level?.IsSuperAdmin" Disabled />
+            <MudSwitch T=bool
+                Label="Super User Group"
+                 Value="Delegate.IsSuperAdmin"
+                 Disabled=true />
         </MudStack>
 
 
@@ -23,7 +22,7 @@
 
             <ADAutoComplete Label="@AppLocalization["Delgate Name"]"
                             SearchObjectType="ActiveDirectoryObjectType.All"
-                            @bind-SelectedResult=@Group
+                            @bind-SelectedResult=@_delegateEntry
                             CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
             @*<ADGroupAutoComplete @bind-SelectedGroup="@Group"/>*@
 
@@ -31,14 +30,20 @@
 
 
 
-            <MudSwitch Label="Super User Group" Disabled=@(ApplicationInfo.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Level.IsSuperAdmin" />
+            <MudSwitch T=bool
+                       Label="Super User Group"
+                       Disabled=@(ApplicationInfo.InDebugMode && UserStateService.CurrentUsername !="admin")
+                       @bind-Value="Delegate.IsSuperAdmin" />
 
 
 
 
 
-            <MudButton VerticalAlignment="VerticalAlignment.Middle" @onclick="Save" Color="Color.Success">Save Changes</MudButton>
-            <AppCloseButton VerticalAlignment="VerticalAlignment.Middle" @onclick="DeleteDelegate" Color="Color.Success" />
+            <MudButton Variant="Variant.Outlined"
+                       @onclick="Save"
+                       Color="Color.Success">Save Changes</MudButton>
+            <AppCloseButton @onclick="DeleteDelegate"
+                            Color="Color.Success" />
         </MudStack>
 
 
@@ -48,33 +53,46 @@
 
 @code {
 
-    #nullable disable warnings
-    IDirectoryEntryAdapter? Group;
+#nullable disable warnings
+    IDirectoryEntryAdapter? _delegateEntry;
     [Parameter]
-    public PermissionDelegate Level { get; set; }
+    public PermissionDelegate Delegate { get; set; }
     [Parameter]
     public new IDatabaseContext Context { get; set; }
 
     [Parameter]
-    public EventCallback DelegateDeleted{ get; set; }
+    public EventCallback DelegateDeleted { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Group = Directory.FindEntryBySID(Level.DelegateSid);
+        _delegateEntry = Directory.FindEntryBySID(Delegate.DelegateSid);
+        if (_delegateEntry != null)
+        {
+            if (Delegate.DelegateName != _delegateEntry.CanonicalName)
+            {
+                Delegate.DelegateName = _delegateEntry.CanonicalName;
+                var result = await Context.SaveChangesAsync();
+            }
+        }
+        else
+        {
+            Delegate.DelegateName = ("(" + Delegate.DelegateSid.ToSidString() + ")").Trim();
+            var result = await Context.SaveChangesAsync();
+        }
     }
 
 
     async Task DeleteDelegate()
     {
-        Level.DeletedAt = DateTime.UtcNow;
+        Delegate.DeletedAt = DateTime.UtcNow;
         await Context.SaveChangesAsync();
         SnackBarService.Success("Permission Delegate removed.");
         await DelegateDeleted.InvokeAsync();
     }
     protected async override void Save()
     {
-        Level.DelegateSid = Group.SID;
+        Delegate.DelegateSid = _delegateEntry.SID;
         await Context.SaveChangesAsync();
         await InvokeAsync(StateHasChanged);
     }
