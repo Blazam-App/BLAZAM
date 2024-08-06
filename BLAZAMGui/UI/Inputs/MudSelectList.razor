@@ -23,7 +23,8 @@
                     </MudElement>
                 }
                 <MudSpacer />
-                <MudIcon Class="align-end" Icon="@(_selectMenu?.Open==true?Icons.Material.Filled.ArrowDropUp:Icons.Material.Filled.ArrowDropDown)" />
+                <MudIcon Class="align-end"
+                         Icon="@(_selectMenu?.Open==true?Icons.Material.Filled.ArrowDropUp:Icons.Material.Filled.ArrowDropDown)" />
             </MudStack>
         </MudField>
     </ActivatorContent>
@@ -42,17 +43,20 @@
                         @if (MultiSelection)
                         {
                             <MudCheckBox T=bool
+                                         ValueChanged="@(()=>{ToggleSelected(val);})"
                                          Value="SelectedValues.Contains(val)" />
                         }
                         @if (ToStringFunc != null)
                         {
-                            <MudText Class="align-middle" Style="min-width:max-content;min-height:24px;">
+                            <MudText Class="align-middle"
+                                     Style="min-width:max-content;min-height:24px;">
                                 @ToStringFunc.Invoke(val)
                             </MudText>
                         }
                         else
                         {
-                            <MudText Class="align-middle" Style="min-width:max-content;min-height:24px;">
+                            <MudText Class="align-middle"
+                                     Style="min-width:max-content;min-height:24px;">
                                 @val?.ToString()
                             </MudText>
                         }

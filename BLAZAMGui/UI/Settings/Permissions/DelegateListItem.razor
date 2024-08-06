@@ -4,10 +4,13 @@
         <MudStack Row=true>
             <MudText Typo="Typo.h6">
                 @Delegate.DelegateName
-             
-                </MudText>
 
-            <MudSwitch T=bool Label="Super User Group" Checked="Delegate?.IsSuperAdmin" Disabled />
+            </MudText>
+
+            <MudSwitch T=bool
+                Label="Super User Group"
+                 Value="Delegate.IsSuperAdmin"
+                 Disabled=true />
         </MudStack>
 
 
@@ -27,14 +30,20 @@
 
 
 
-            <MudSwitch T=bool Label="Super User Group" Disabled=@(ApplicationInfo.InDebugMode && UserStateService.CurrentUsername !="admin") @bind-Checked="Delegate.IsSuperAdmin" />
+            <MudSwitch T=bool
+                       Label="Super User Group"
+                       Disabled=@(ApplicationInfo.InDebugMode && UserStateService.CurrentUsername !="admin")
+                       @bind-Value="Delegate.IsSuperAdmin" />
 
 
 
 
 
-            <MudButton VerticalAlignment="VerticalAlignment.Middle" @onclick="Save" Color="Color.Success">Save Changes</MudButton>
-            <AppCloseButton VerticalAlignment="VerticalAlignment.Middle" @onclick="DeleteDelegate" Color="Color.Success" />
+            <MudButton Variant="Variant.Outlined"
+                       @onclick="Save"
+                       Color="Color.Success">Save Changes</MudButton>
+            <AppCloseButton @onclick="DeleteDelegate"
+                            Color="Color.Success" />
         </MudStack>
 
 
@@ -44,7 +53,7 @@
 
 @code {
 
-    #nullable disable warnings
+#nullable disable warnings
     IDirectoryEntryAdapter? _delegateEntry;
     [Parameter]
     public PermissionDelegate Delegate { get; set; }
@@ -52,15 +61,15 @@
     public new IDatabaseContext Context { get; set; }
 
     [Parameter]
-    public EventCallback DelegateDeleted{ get; set; }
+    public EventCallback DelegateDeleted { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         _delegateEntry = Directory.FindEntryBySID(Delegate.DelegateSid);
-        if(_delegateEntry != null)
+        if (_delegateEntry != null)
         {
-            if(Delegate.DelegateName!= _delegateEntry.CanonicalName)
+            if (Delegate.DelegateName != _delegateEntry.CanonicalName)
             {
                 Delegate.DelegateName = _delegateEntry.CanonicalName;
                 var result = await Context.SaveChangesAsync();
@@ -68,7 +77,7 @@
         }
         else
         {
-            Delegate.DelegateName = ("(" +Delegate.DelegateSid.ToSidString()+")").Trim();
+            Delegate.DelegateName = ("(" + Delegate.DelegateSid.ToSidString() + ")").Trim();
             var result = await Context.SaveChangesAsync();
         }
     }

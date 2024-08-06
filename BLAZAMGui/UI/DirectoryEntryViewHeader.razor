@@ -157,7 +157,7 @@
                         <MudSwitch T=bool
                                    Color=Color.Success
                                    Label="Account Enabled"
-                                   @bind-Checked=@(accountEntry.Enabled)
+                                   @bind-Value=@(accountEntry.Enabled)
                                    Disabled=@((accountEntry.Disabled && !accountEntry.CanEnable)||(accountEntry.Enabled && !accountEntry.CanDisable)) />
 
                     </MudMenuItem>

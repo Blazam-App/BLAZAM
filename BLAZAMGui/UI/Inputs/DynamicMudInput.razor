@@ -15,44 +15,42 @@
     case "double":
     case "long":
     case "float":
-        <MudNumericField HelperText="@HelperText" 
-            T=T
-            Label="@Label"
-            
-                 Immediate=@Immediate
-            HideSpinButtons="false" 
-            @bind-Value="@Value" 
-            Clearable=@Clearable />
+        <MudNumericField HelperText="@HelperText"
+                         T=T
+                         Label="@Label"
+                         Immediate=@Immediate
+                         HideSpinButtons="false"
+                         @bind-Value="@Value"
+                         Clearable=@Clearable />
         break;
 
     case "String":
         <MudTextField Label="@Label" T=T
-              HelperText="@HelperText"
-              Immediate=@Immediate
-              Clearable=@Clearable
-              Value=Value
-              ValueChanged="@((changed)=>{Value =changed;})"
-              Disabled=@Disabled
-              InputType="@InputType" />
+                      HelperText="@HelperText"
+                      Immediate=@Immediate
+                      Clearable=@Clearable
+                      Value=Value
+                      ValueChanged="@((changed)=>{Value =changed;})"
+                      Disabled=@Disabled
+                      InputType="@InputType" />
         break;
     case "Boolean":
-    <MudStack>
-        <MudSwitch Color=@Color
-                       T="bool"
-            Label=@Label 
-            @bind-Checked=@Value 
-            Disabled=@Disabled />
-            <MudText  Typo="Typo.caption">@HelperText</MudText>
+        <MudStack>
+            <MudSwitch Color=@Color
+                       T="T"
+                       Label=@Label
+                       @bind-Value=@Value
+                       Disabled=@Disabled />
+            <MudText Typo="Typo.caption">@HelperText</MudText>
         </MudStack>
         break;
     case "DateTime":
         <MudDatePicker Clearable=@Clearable
-
-               HelperText="@HelperText"
-            Label="@Label"
-            Date="@dateValue"
-            DateChanged=@((date) =>{dateValue = date;}) 
-            Disabled=@Disabled />
+                       HelperText="@HelperText"
+                       Label="@Label"
+                       Date="@dateValue"
+                       DateChanged=@((date) =>{dateValue = date;})
+                       Disabled=@Disabled />
 
         break;
     default:
