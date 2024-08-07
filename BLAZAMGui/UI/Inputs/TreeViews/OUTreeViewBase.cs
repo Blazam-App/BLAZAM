@@ -87,9 +87,9 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         /// Text to show at the end of the TreeView item
         /// </summary>
         [Parameter]
-        public Func<IDirectoryEntryAdapter, string>? EndText { get; set; }
+        public Func<IDirectoryEntryAdapter?, string>? EndText { get; set; }
         
-        protected Color GetItemColor(IDirectoryEntryAdapter item)
+        protected Color GetItemColor(IDirectoryEntryAdapter? item)
         {
             if (item is IAccountDirectoryAdapter account)
             {

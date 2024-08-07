@@ -422,7 +422,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual void MoveTo(IADOrganizationalUnit parentOUToMoveTo)
         {
-            CommitSteps.Add(new Jobs.JobStep("Move to OU", (JobStep? step) =>
+            CommitSteps.Add(new JobStep("Move to OU", (JobStep step) =>
               {
                   parentOUToMoveTo.EnsureDirectoryEntry();
                   if (parentOUToMoveTo.DirectoryEntry != null)
@@ -543,6 +543,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected virtual bool HasActionPermission(ObjectAction action,ActiveDirectoryObjectType? objectType=null)
         {
+            if(CurrentUser==null)return false;
             if (objectType == null) objectType = ObjectType; 
             return CurrentUser.HasActionPermission(DN,action, objectType.Value);
         }

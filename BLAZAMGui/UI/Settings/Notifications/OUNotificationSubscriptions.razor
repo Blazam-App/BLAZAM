@@ -4,7 +4,7 @@
 
     <tr>
         <th colspan="10" class="mb-6">
-            <MudText Typo="Typo.h5" Class="pb-6">@(AppLocalization["Notification Settings for "]+_ou.CanonicalName)</MudText>
+            <MudText Typo="Typo.h5" Class="pb-6">@(AppLocalization["Notification Settings for "]+_ou?.CanonicalName)</MudText>
 
         </th>
 
@@ -96,7 +96,7 @@
     </tr>
     <tr>
         <th colspan="10" class="mb-6">
-            <MudText Typo="Typo.h5" Class="pb-6">@(AppLocalization["Effective Notification Settings for "]+_ou.CanonicalName)</MudText>
+            <MudText Typo="Typo.h5" Class="pb-6">@(AppLocalization["Effective Notification Settings for "]+_ou?.CanonicalName)</MudText>
             
         </th>
 
@@ -231,9 +231,9 @@
         UpdateSubscriptions();
     }
 
-    private async void ouChanged(IDirectoryEntryAdapter entry)
+    private async void ouChanged(IDirectoryEntryAdapter? entry)
     {
-        var ou = (IADOrganizationalUnit)entry;
+        var ou = (IADOrganizationalUnit?)entry;
         if (ou != null)
         {
             if (User != null)
@@ -241,7 +241,7 @@
                 newSubscription.UserId = User.Id;
                 newSubscription.OU = ou.DN;
                 if (Context != null)
-                    UpdateSubscriptions();
+                    await UpdateSubscriptions();
             }
 
         }
@@ -252,68 +252,77 @@
         effectiveInAppSubscription = ouNotificationService.CalculateEffectiveInAppSubscriptions(User, OU);
         effectiveByEmailSubscription = ouNotificationService.CalculateEffectiveEmailSubscriptions(User, OU);
         return;
-      
+
     }
     private async void AddSubscription()
     {
-
-        var changes = await Context.SaveChangesAsync();
-        if (changes > 0)
+        if (Context != null)
         {
-            newSubscription = new();
-            newSubscription.UserId = User.Id;
-            newSubscription.OU = OU.DN;
-            SnackBarService.Success(AppLocalization["Saved notification subscription"]);
-            UpdateSubscriptions();
+            var changes = await Context.SaveChangesAsync();
+            if (changes > 0)
+            {
+                newSubscription = new();
+                newSubscription.UserId = User.Id;
+                newSubscription.OU = OU?.DN;
+                SnackBarService.Success(AppLocalization["Saved notification subscription"]);
+                UpdateSubscriptions();
 
 
+            }
+            else
+            {
+                SnackBarService.Warning(AppLocalization["Unable to save notification subscription"]);
+
+            }
         }
-        else
-        {
-            SnackBarService.Warning(AppLocalization["Unable to save notification subscription"]);
-
-        }
-
     }
 
     private async void SaveExisting()
     {
-        var result = await Context.SaveChangesAsync();
-        if (result > 0)
+        if (Context != null)
         {
-            SnackBarService.Success("Subscription saved.");
-            UpdateSubscriptions();
-        }
-        else
-        {
-            SnackBarService.Warning("Subscription could not be saved.");
+            var result = await Context.SaveChangesAsync();
+            if (result > 0)
+            {
+                SnackBarService.Success("Subscription saved.");
+                UpdateSubscriptions();
+            }
+            else
+            {
+                SnackBarService.Warning("Subscription could not be saved.");
 
+            }
         }
     }
     private async void DeleteExisting(NotificationSubscription subscription)
     {
-        subscription.DeletedAt = DateTime.UtcNow;
-        var result = await Context.SaveChangesAsync();
-        if (result > 0)
+        if (Context != null)
         {
-            SnackBarService.Success("Subscription deleted.");
-        }
-        else
-        {
-            SnackBarService.Warning("Subscription could not be deleted.");
+            subscription.DeletedAt = DateTime.UtcNow;
+            var result = await Context.SaveChangesAsync();
+            if (result > 0)
+            {
+                SnackBarService.Success("Subscription deleted.");
+            }
+            else
+            {
+                SnackBarService.Warning("Subscription could not be deleted.");
 
+            }
+            UpdateSubscriptions();
         }
-        UpdateSubscriptions();
-
 
     }
-    private async void UpdateSubscriptions()
+    private async Task UpdateSubscriptions()
     {
-        subscriptions = Context.NotificationSubscriptions.Include(x => x.NotificationTypes).Where(x => x.DeletedAt == null && x.UserId == User.Id && x.OU.Equals(OU.DN)).ToList();
+        if (Context != null)
+        {
+            subscriptions = Context.NotificationSubscriptions.Include(x => x.NotificationTypes).Where(x => x.DeletedAt == null && x.UserId == User.Id && x.OU.Equals(OU.DN)).ToList();
 
 
-        CalculateEffectiveSubscriptions();
-        await InvokeAsync(StateHasChanged);
+            CalculateEffectiveSubscriptions();
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
 }
