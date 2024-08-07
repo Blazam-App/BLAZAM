@@ -2,7 +2,7 @@
 
 <MudCard>
     <MudCardHeader>
-        @OU?.Name
+        @Node?.CanonicalName
     </MudCardHeader>
     @if (inheritedMappings.Count > 0)
     {
@@ -34,15 +34,15 @@
 @code {
     #nullable disable warnings
 
-    IADOrganizationalUnit _ou;
+    IDirectoryEntryAdapter _node;
     [Parameter]
-    public IADOrganizationalUnit OU
+    public IDirectoryEntryAdapter Node
     {
-        get => _ou; set
+        get => _node; set
         {
-            if (_ou == value) return;
-            _ou = value;
-            OnOUChanged(_ou);
+            if (_node == value) return;
+            _node = value;
+            OnOUChanged(_node);
 
         }
     }
@@ -57,10 +57,10 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await OnOUChanged(OU);
+        await OnOUChanged(Node);
     }
 
-    async Task OnOUChanged(IADOrganizationalUnit? newOU)
+    async Task OnOUChanged(IDirectoryEntryAdapter? newOU)
     {
         if (Context != null && newOU != null)
         {
@@ -69,13 +69,13 @@
     }
     async Task RefreshData()
     {
-        appliedMappings = OU.DirectPermissionMappings;
-        inheritedMappings = OU.InheritedPermissionMappings;
+        appliedMappings = Node.DirectPermissionMappings;
+        inheritedMappings = Node.InheritedPermissionMappings;
         NewMapping = null;
         await InvokeAsync(StateHasChanged);
     }
     void AddNewMapping()
     {
-        NewMapping = new() { OU = OU.DN };
+        NewMapping = new() { OU = Node.DN };
     }
 }
