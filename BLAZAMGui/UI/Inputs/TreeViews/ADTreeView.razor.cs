@@ -26,22 +26,29 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
       
        
 
-        private IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(IDirectoryEntryAdapter parent)
+        private IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(IDirectoryEntryAdapter? parent)
         {
-            if (parent.IsExpanded || parent.CachedChildren != null)
-            {
-
-                var items = parent.Children
-                    .Where(c => (c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c)) || c.CanRead)
-                    .MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.OU);
-                if (!ShowAllEntries)
+            try{
+                if (parent.IsExpanded || parent.CachedChildren != null)
                 {
-                    items = items.Where(i => i.ObjectType == ActiveDirectoryObjectType.OU);
+
+                    var items = parent.Children
+                        .Where(c => (c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c)) || c.CanRead)
+                        .MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.OU);
+                    if (!ShowAllEntries)
+                    {
+                        items = items.Where(i => i.ObjectType == ActiveDirectoryObjectType.OU);
+                    }
+                    var treeBranchh = items.ToTreeItemData();
+                    return treeBranchh;
                 }
-                var treeBranchh = items.ToTreeItemData();
-                return treeBranchh;
+            }
+            catch(Exception) {
+                return null;
+
             }
             return null;
+
         }
         protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>> GetChildrenAsync(IDirectoryEntryAdapter parentNode)
         {

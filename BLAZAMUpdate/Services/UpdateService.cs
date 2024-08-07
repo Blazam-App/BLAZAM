@@ -105,24 +105,26 @@ namespace BLAZAM.Update.Services
             latestBranchRelease = branchReleases.FirstOrDefault();
             //Store all other releases for use later
             AvailableUpdates.Clear();
-            try
-            {
-                var betaStableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
 
-                foreach (var release in betaStableReleases)
+            var betaStableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
+
+            foreach (var release in betaStableReleases)
+            {
+                //Get the release filename to prepare a version object
+                var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
+                //Create that version object
+                if (fn == null) continue;
+                try
                 {
-                    //Get the release filename to prepare a version object
-                    var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
-                    //Create that version object
-                    if (fn == null) continue;
                     AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
 
                 }
+                catch (Exception ex)
+                {
+                    Loggers.UpdateLogger.Error("Error trying to get beta releases {@Error}{@Release}", ex,release?.Name);
+                }
             }
-            catch (Exception ex)
-            {
-                Loggers.UpdateLogger.Error("Error trying to get beta releases {@Error}", ex);
-            }
+
 
             foreach (var release in stableReleases)
             {
@@ -130,8 +132,14 @@ namespace BLAZAM.Update.Services
                 var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
                 //Create that version object
                 if (fn == null) continue;
-                AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
-
+                try
+                {
+                    AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+                }
+                catch (Exception ex)
+                {
+                    Loggers.UpdateLogger.Error("Error trying to get v1 releases {@Error}{@Release}", ex, release?.Name);
+                }
             }
 
             var latestBranchUpdate = EncapsulateUpdate(latestBranchRelease, SelectedBranch);
