@@ -76,7 +76,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.LogonHours.FieldName, value.EncodeLogonHours());
+                SetProperty(ActiveDirectoryFields.LogonHours.FieldName, value?.EncodeLogonHours());
             }
         }
         public string? MiddleName
@@ -150,11 +150,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (value == null || value == "") return;
 
                
-                PostCommitSteps.Add(new Jobs.JobStep("Create home directory", (JobStep? step) =>
+                PostCommitSteps.Add(new JobStep("Create home directory", (JobStep step) =>
                 {
                     return Directory.Impersonation.Run(() =>
                     {
-                        if (HomeDirectory.IsNullOrEmpty()) return true;
+                        if (HomeDirectory==null || HomeDirectory.IsNullOrEmpty()) return true;
                         var homeDirectory = new SystemDirectory(HomeDirectory);
                         if (!homeDirectory.Exists)
                             homeDirectory.EnsureCreated();

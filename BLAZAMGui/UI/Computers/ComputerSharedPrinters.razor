@@ -10,7 +10,7 @@
                 
             
             <MudButton StartIcon="@Icons.Material.Filled.AppRegistration"
-                       OnClick=@(()=>{_registerPrintersModal.ShowAsync();})
+                       OnClick=@(()=>{_registerPrintersModal?.ShowAsync();})
                        IconSize="Size.Medium"
                        Class="mt-0">@AppLocalization["Register printers with Active Directory"]</MudButton>
             }

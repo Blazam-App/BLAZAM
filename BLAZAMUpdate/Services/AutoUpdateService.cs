@@ -186,33 +186,34 @@ namespace BLAZAM.Update.Services
                 try
                 {
                     var appSettings = (await factory.CreateDbContextAsync()).AppSettings.FirstOrDefault();
-
-                    Loggers.UpdateLogger.Information("Checking for automatic update");
-
-                    var latestUpdate = await updateService.GetUpdates();
-                    if (latestUpdate != null && latestUpdate.Version.NewerThan(_applicationInfo.RunningVersion))
+                    if (appSettings != null)
                     {
-                        IsUpdateAvailable = true;
-                        if (appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
+                        Loggers.UpdateLogger.Information("Checking for automatic update");
+
+                        var latestUpdate = await updateService.GetUpdates();
+                        if (latestUpdate != null && latestUpdate.Version.NewerThan(_applicationInfo.RunningVersion))
                         {
-                            if (latestUpdate.PassesPrerequisiteChecks)
-                                ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
-                            else
+                            IsUpdateAvailable = true;
+                            if (appSettings.AutoUpdate && appSettings.AutoUpdateTime != null)
                             {
-                                Loggers.UpdateLogger.Warning("Update failed prerequisite check, cancelling scheduling {@Error}", latestUpdate.PrequisiteMessage);
+                                if (latestUpdate.PassesPrerequisiteChecks)
+                                    ScheduleUpdate(appSettings.AutoUpdateTime.Value, latestUpdate);
+                                else
+                                {
+                                    Loggers.UpdateLogger.Warning("Update failed prerequisite check, cancelling scheduling {@Error}", latestUpdate.PrequisiteMessage);
 
+                                }
                             }
+
                         }
+                        else
+                        {
+                            IsUpdateAvailable = false;
+                            Cancel();
+                            Loggers.UpdateLogger.Information("No new updates found.");
 
+                        }
                     }
-                    else
-                    {
-                        IsUpdateAvailable = false;
-                        Cancel();
-                        Loggers.UpdateLogger.Information("No new updates found.");
-
-                    }
-
                 }
                 catch (Exception ex)
                 {
@@ -243,7 +244,7 @@ namespace BLAZAM.Update.Services
                     {
                         Loggers.UpdateLogger.Information("New update found: " + updateToInstall.Version);
 
-                        //Update availabled
+                        //Update available
                         var now = DateTime.Now;
                         ScheduledUpdateTime = new DateTime(now.Year, now.Month, now.Day, updateTimeOfDay.Hours, updateTimeOfDay.Minutes, updateTimeOfDay.Seconds);
 

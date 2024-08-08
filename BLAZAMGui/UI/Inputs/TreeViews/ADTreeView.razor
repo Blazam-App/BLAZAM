@@ -15,8 +15,8 @@
                          LoadingIconColor="Color.Info"
                          @bind-Expanded="@context.Expanded"
                          @bind-Activated=context.Selected
-                         Text="@context.Value.CanonicalName"
-                         Icon="@context.Value.TypeIcon()"
+                         Text="@context.Value?.CanonicalName"
+                         Icon="@context.Value?.TypeIcon()"
                          IconColor=@GetItemColor(context.Value)
                          Class="minw-max w-100 overflow-x-auto"
                          CanExpand=@(context.Value is IADOrganizationalUnit)

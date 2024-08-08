@@ -9,10 +9,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     {
 
         string? Name { get; set; }
-        List<PermissionMapping> InheritedPermissionMappings { get; }
-        IQueryable<PermissionMapping> AppliedPermissionMappings { get; }
-        List<PermissionMapping> DirectPermissionMappings { get; }
-        IQueryable<PermissionMapping> OffspringPermissionMappings { get; }
+        
         IEnumerable<IDirectoryEntryAdapter> SubOUs { get; }
 
         HashSet<IDirectoryEntryAdapter> CachedTreeViewSubOUs { get;}

@@ -422,7 +422,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual void MoveTo(IADOrganizationalUnit parentOUToMoveTo)
         {
-            CommitSteps.Add(new Jobs.JobStep("Move to OU", (JobStep? step) =>
+            CommitSteps.Add(new JobStep("Move to OU", (JobStep step) =>
               {
                   parentOUToMoveTo.EnsureDirectoryEntry();
                   if (parentOUToMoveTo.DirectoryEntry != null)
@@ -543,11 +543,60 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected virtual bool HasActionPermission(ObjectAction action,ActiveDirectoryObjectType? objectType=null)
         {
+            if(CurrentUser==null)return false;
             if (objectType == null) objectType = ObjectType; 
             return CurrentUser.HasActionPermission(DN,action, objectType.Value);
         }
 
         public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }
+
+
+        public List<PermissionMapping> InheritedPermissionMappings
+        {
+            get
+            {
+                return AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
+            }
+        }
+        public List<PermissionMapping> DirectPermissionMappings
+        {
+            get
+            {
+
+                return AppliedPermissionMappings.Where(m => m.OU.Equals(DN)).ToList();
+
+            }
+        }
+
+        private IQueryable<PermissionMapping> _appliedPermissionMappings;
+
+        public IQueryable<PermissionMapping> AppliedPermissionMappings
+        {
+            get
+            {
+                if (_appliedPermissionMappings == null)
+                {
+
+                    _appliedPermissionMappings = DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length);
+                }
+                return _appliedPermissionMappings;
+            }
+        }
+        private IQueryable<PermissionMapping> _offspringPermissionMappings;
+        public IQueryable<PermissionMapping> OffspringPermissionMappings
+        {
+            get
+            {
+                if (_offspringPermissionMappings == null)
+                {
+
+                    _offspringPermissionMappings = DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
+                }
+                return _offspringPermissionMappings;
+            }
+        }
+
+
 
 
         public virtual bool HasUnsavedChanges

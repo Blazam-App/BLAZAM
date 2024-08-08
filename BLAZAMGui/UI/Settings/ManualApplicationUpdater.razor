@@ -90,7 +90,7 @@
 
                     @if (ShowAllUpdates)
                     {
-                        @foreach (var update in UpdateService.AvailableUpdates.Where(x => x.Version.OlderThan(LatestAvailableVersion.Version)).OrderBy(x => x.Version))
+                        @foreach (var update in UpdateService.AvailableUpdates.Where(x => x.Version.OlderThan(ApplicationInfo.RunningVersion)).OrderBy(x => x.Version))
                         {
 
 

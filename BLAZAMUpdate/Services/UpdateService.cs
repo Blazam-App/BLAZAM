@@ -105,43 +105,59 @@ namespace BLAZAM.Update.Services
             latestBranchRelease = branchReleases.FirstOrDefault();
             //Store all other releases for use later
             AvailableUpdates.Clear();
-            try
-            {
-                var betaStableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
 
-                foreach (var release in betaStableReleases)
+            var betaStableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
+
+            foreach (var release in betaStableReleases)
+            {
+                if (release!=null)
                 {
                     //Get the release filename to prepare a version object
                     var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
                     //Create that version object
                     if (fn == null) continue;
-                    AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+                    try
+                    {
+                        AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
 
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.UpdateLogger.Error("Error trying to get beta releases {@Error}{@Release}", ex, release?.Name);
+                    }
                 }
             }
-            catch (Exception ex)
-            {
-                Loggers.UpdateLogger.Error("Error trying to get beta releases {@Error}", ex);
-            }
+
 
             foreach (var release in stableReleases)
             {
-                //Get the release filename to prepare a version object
-                var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
-                //Create that version object
-                if (fn == null) continue;
-                AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
-
-            }
-
-            var latestBranchUpdate = EncapsulateUpdate(latestBranchRelease, SelectedBranch);
-            if (latestBranchUpdate.Branch != ApplicationReleaseBranches.Stable && latestBranchUpdate.Branch != "Stable")
-            {
-                if (!AvailableUpdates.Contains(latestBranchUpdate))
+                if (release != null)
                 {
-                    AvailableUpdates.Add(latestBranchUpdate);
+                    //Get the release filename to prepare a version object
+                    var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
+                    //Create that version object
+                    if (fn == null) continue;
+                    try
+                    {
+                        AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.UpdateLogger.Error("Error trying to get v1 releases {@Error}{@Release}", ex, release?.Name);
+                    }
                 }
+            }
+            if (latestBranchRelease != null)
+            {
+                var latestBranchUpdate = EncapsulateUpdate(latestBranchRelease, SelectedBranch);
+                if (latestBranchUpdate != null && latestBranchUpdate.Branch != ApplicationReleaseBranches.Stable && latestBranchUpdate.Branch != "Stable")
+                {
+                    if (!AvailableUpdates.Contains(latestBranchUpdate))
+                    {
+                        AvailableUpdates.Add(latestBranchUpdate);
+                    }
 
+                }
             }
             IncompatibleUpdates = AvailableUpdates.Where(x => !x.PassesPrerequisiteChecks).ToList();
             foreach (var release in IncompatibleUpdates)
@@ -191,7 +207,8 @@ namespace BLAZAM.Update.Services
             //Get the release filename to prepare a version object
             var filename = Path.GetFileNameWithoutExtension(releaseToEncapsulate?.Assets.FirstOrDefault()?.Name);
             //Create that version object
-            if (filename == null) throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
+            if (filename == null)
+                throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
             releaseVersion = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
 
 

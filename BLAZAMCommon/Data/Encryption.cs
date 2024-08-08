@@ -15,10 +15,9 @@ namespace BLAZAM.Common.Data
         private void SetSalt(int maximumSaltLength = 32)
         {
             var salt = new byte[maximumSaltLength];
-            using (var random = new RNGCryptoServiceProvider())
-            {
-                random.GetNonZeroBytes(salt);
-            }
+
+            RandomNumberGenerator.Create().GetNonZeroBytes(salt);
+            
 
             Salt = salt;
         }
