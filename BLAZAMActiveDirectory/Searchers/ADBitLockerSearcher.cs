@@ -18,7 +18,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             var searchFields  = new ADSearchFields();
             searchFields.BitLockerRecoveryId = searchTerm;
-            return new ADSearch()
+            return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.BitLocker,
                 EnabledOnly = false,
@@ -39,15 +39,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             var children = computer.Children;
             return children.Where(c => c is IADBitLockerRecovery).Cast<IADBitLockerRecovery>().ToList();
-            var searchFields = new ADSearchFields();
-            searchFields.CN = "*"+computer.DN;
-            return new ADSearch()
-            {
-                ObjectTypeFilter = ActiveDirectoryObjectType.BitLocker,
-                EnabledOnly = false,
-                Fields = searchFields
-
-            }.Search<ADBitLockerRecovery, IADBitLockerRecovery>();
+           
         }
 
         public async Task<List<IADBitLockerRecovery>> FindByComputerAsync(IADComputer computer)

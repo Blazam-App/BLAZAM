@@ -9,7 +9,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
     public class ADOUSearcher : ADSearcher, IADOUSearcher
     {
 
-        protected ADSearch NewSearch { get { return new ADSearch() { ObjectTypeFilter = ActiveDirectoryObjectType.OU }; } }
+        protected ADSearch NewSearch { get { return new ADSearch(Directory) { ObjectTypeFilter = ActiveDirectoryObjectType.OU }; } }
 
         public IADOrganizationalUnit GetApplicationRootOU()
         {
@@ -77,7 +77,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
 
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
-            var results = new ADSearch()
+            var results = new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.OU,
                 Fields = new()

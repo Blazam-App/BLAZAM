@@ -43,7 +43,7 @@
     };
 
 
-    public ADSearch Searcher { get; set; } = new ADSearch();
+    public ADSearch Searcher { get; set; }
 
 
 
@@ -57,7 +57,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
+        Searcher = new(Directory);
         Searcher.ResultsCollected += ((batch) => { InvokeAsync(StateHasChanged); });
         Searcher.OnSearchCompleted += (() =>
         {

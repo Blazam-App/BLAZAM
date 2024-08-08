@@ -20,22 +20,14 @@ namespace BLAZAM.Services
             _userStateService = userStateService;
             _factory = factory;
             _directory = directory;
-            //directory.OnNewLoginUser += LoadPermissionsForNewLoginUser;
-            //ProgramEvents.PermissionsChanged += PermissionsChanged;
         }
 
       
 
-        // For every user that logs in, load their permissions
-        //private async void LoadPermissionsForNewLoginUser(IApplicationUserState value)
-        //{
-        //    if (value.DirectoryUser != null)
-        //        await LoadPermissions(value.DirectoryUser);
-
-        //}
+      
 
         /// <summary>
-        /// Reads the current database settings and applys the assign permissions for the
+        /// Reads the current database settings and applies the assign permissions for the
         /// provided directory user
         /// </summary>
         /// <param name="user"></param>
@@ -47,7 +39,7 @@ namespace BLAZAM.Services
                 var cursor = await Context.PermissionDelegate.Include(pl => pl.PermissionsMaps).ToListAsync();
                 foreach (var l in cursor)
                 {
-                    var permissiondelegate = ActiveDirectoryContext.Instance.FindEntryBySID(l.DelegateSid);
+                    var permissiondelegate = ActiveDirectoryContext.SystemInstance.FindEntryBySID(l.DelegateSid);
                     if (permissiondelegate != null)
                     {
                         if (permissiondelegate is IADGroup && directoryUser.IsAMemberOf(permissiondelegate as IADGroup)

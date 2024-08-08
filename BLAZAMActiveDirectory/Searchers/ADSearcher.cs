@@ -50,7 +50,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 
 
-                  ADSearch search = new ADSearch();
+                  ADSearch search = new ADSearch(Directory);
 
                   search.ObjectTypeFilter = searchType;
                   search.SearchRoot = Directory.GetDirectoryEntry(searchBaseDN);

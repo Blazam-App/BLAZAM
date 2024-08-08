@@ -23,7 +23,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public List<IADUser> FindUsersByString(string? searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
         {
-            return new ADSearch()
+            return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
@@ -34,7 +34,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         }
         public IADUser? FindUserByUsername(string? searchTerm, bool? ignoreDisabledUsers = true)
         {
-            return new ADSearch()
+            return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
@@ -58,7 +58,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public List<IADUser> FindLockedOutUsers(bool? ignoreDisabledUsers = true)
         {
-            return new ADSearch()
+            return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
@@ -85,7 +85,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
 
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
-            var results = new ADSearch()
+            var results = new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,
@@ -139,7 +139,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public IADUser? FindUserBySID(string? sid)
         {
             if (sid == null) return null;
-            return new ADSearch()
+            return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = false,
@@ -152,7 +152,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public IADUser? FindUsersByContainerName(string? searchTerm, bool? ignoreDisabledUsers = true, bool exactMatch = false)
         {
 
-            return new ADSearch()
+            return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.User,
                 EnabledOnly = ignoreDisabledUsers,

@@ -23,7 +23,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         }
         public List<IADComputer> FindByString(string searchTerm, bool ignoreDisabled = true)
         {
-            return new ADSearch()
+            return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Computer,
                 EnabledOnly = ignoreDisabled,
@@ -45,7 +45,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
 
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
-            var results = new ADSearch()
+            var results = new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Computer,
                 EnabledOnly = ignoreDisabledComputers,

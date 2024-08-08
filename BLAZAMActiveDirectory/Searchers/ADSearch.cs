@@ -81,6 +81,12 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public List<IDirectoryEntryAdapter> Results { get; set; } = new();
         public string LdapQuery { get; private set; }
         public bool SearchDeleted { get; set; } = false;
+        private IActiveDirectoryContext? _currentUserActiveDirectoryContext;
+
+        public ADSearch(IActiveDirectoryContext? currentUserActiveDirectoryContext)
+        {
+            _currentUserActiveDirectoryContext = currentUserActiveDirectoryContext;
+        }
 
         public async Task<List<I>> SearchAsync<T, I>(CancellationToken? token = null) where T : I, IDirectoryEntryAdapter, new()
         {
@@ -119,7 +125,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             DirectorySearcher searcher;
             try
             {
-                SearchRoot ??= ActiveDirectoryContext.Instance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
+                SearchRoot ??= ActiveDirectoryContext.SystemInstance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
                 var pageOffset = 1;
                 
                 searcher = new DirectorySearcher(SearchRoot)
@@ -369,11 +375,21 @@ namespace BLAZAM.ActiveDirectory.Searchers
             cancellationToken = new CancellationToken(true);
 
         }
+
+
+
         private void AddResults<T, I>(SearchResultCollection lastResults) where T : I, IDirectoryEntryAdapter, new()
         {
+            List<IDirectoryEntryAdapter> last = new();
+            if (_currentUserActiveDirectoryContext != null)
+            {
+                last = lastResults.Encapsulate(_currentUserActiveDirectoryContext);
 
-
-            var last = lastResults.Encapsulate();
+            }
+            else
+            {
+                last = lastResults.Encapsulate(ActiveDirectoryContext.SystemInstance);
+            }
             Results.AddRange(last);
 
             ResultsCollected?.Invoke(last);
