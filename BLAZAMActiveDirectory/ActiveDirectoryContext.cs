@@ -38,7 +38,7 @@ namespace BLAZAM.ActiveDirectory
         private WmiFactory _wmiFactory;
         IEncryptionService _encryption;
         private INotificationPublisher _notificationPublisher;
-        public static ActiveDirectoryContext Instance;
+        public static ActiveDirectoryContext SystemInstance;
 
         public int FailedConnectionAttempts { get; set; } = 0;
 
@@ -220,7 +220,6 @@ namespace BLAZAM.ActiveDirectory
             _wmiFactory = new(this);
             _encryption = encryptionService;
             _notificationPublisher = notificationPublisher;
-            Instance = this;
             Factory = factory;
             UserStateService = userStateService;
             //UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
@@ -241,7 +240,7 @@ namespace BLAZAM.ActiveDirectory
         {
             _encryption = activeDirectoryContextSeed._encryption;
             _notificationPublisher = activeDirectoryContextSeed._notificationPublisher;
-            Instance = this;
+            SystemInstance = this;
             Factory = activeDirectoryContextSeed.Factory;
             UserStateService = activeDirectoryContextSeed.UserStateService;
             ConnectionSettings = activeDirectoryContextSeed.ConnectionSettings;
@@ -376,7 +375,7 @@ namespace BLAZAM.ActiveDirectory
                                         //Perform Auth check
                                         Loggers.ActiveDirectryLogger.Information("Performing Active Directory connection test");
 
-                                        var search = new ADSearch()
+                                        var search = new ADSearch(this)
                                         {
                                             ObjectTypeFilter = ActiveDirectoryObjectType.User,
                                             SearchRoot = RootDirectoryEntry,
@@ -856,7 +855,7 @@ namespace BLAZAM.ActiveDirectory
         public IDirectoryEntryAdapter? FindEntryBySID(byte[] sid) => GetDirectoryEntryBySid(sid.ToSidString());
         public IDirectoryEntryAdapter? GetDirectoryEntryBySid(string sid)
         {
-            var searcher = new ADSearch();
+            var searcher = new ADSearch(this);
             searcher.SearchRoot = RootDirectoryEntry;
             searcher.Fields.SID = sid;
             var result = searcher.Search().FirstOrDefault();
@@ -865,7 +864,7 @@ namespace BLAZAM.ActiveDirectory
 
         public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string dn)
         {
-            var searcher = new ADSearch();
+            var searcher = new ADSearch(this);
             searcher.SearchRoot = RootDirectoryEntry;
             searcher.Fields.DN = dn;
             var result = searcher.Search().FirstOrDefault();

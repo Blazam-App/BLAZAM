@@ -217,7 +217,7 @@
              {
                  SearchResults = new List<IDirectoryEntryAdapter>();
 
-                 var search = new ADSearch();
+                 var search = new ADSearch(Directory);
 
                  search.ObjectTypeFilter = SearchObjectType;
                  search.GeneralSearchTerm = searchText.Replace(" ", "*");

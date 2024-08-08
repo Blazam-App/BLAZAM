@@ -73,7 +73,7 @@
     {
 
 
-        var search = new ADSearch() { SearchRoot = Directory.GetDeleteObjectsEntry() };
+        var search = new ADSearch(Directory) { SearchRoot = Directory.GetDeleteObjectsEntry() };
         search.SearchDeleted = true;
         deletedObjects = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         LoadingData = false;

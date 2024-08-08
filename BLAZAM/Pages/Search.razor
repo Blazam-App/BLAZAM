@@ -110,7 +110,7 @@
     }
 
 
-    public ADSearch Searcher { get; set; } = new ADSearch();
+    public ADSearch Searcher { get; set; }
 
 
     [CascadingParameter]
@@ -130,7 +130,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Searcher = new ADSearch();
+        Searcher = new ADSearch(Directory);
         SearchService.SearchTerm = SearchTermParameter;
         Searcher.GeneralSearchTerm = SearchTermParameter;
 
@@ -212,7 +212,7 @@
     protected async Task InvokeSearch()
     {
         if (Searcher == null)
-            Searcher = new ADSearch();
+            Searcher = new ADSearch(Directory);
         else
             Searcher.Cancel();
         SearchService.SearchTerm = SearchTermParameter;

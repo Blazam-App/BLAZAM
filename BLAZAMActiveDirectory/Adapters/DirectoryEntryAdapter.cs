@@ -443,7 +443,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (DirectoryEntry == null || DirectoryEntry.Parent == null) return null;
 
-            var parent = DirectoryEntry.Parent.Encapsulate();
+            var parent = DirectoryEntry.Parent.Encapsulate(Directory);
 
             return parent;
 
