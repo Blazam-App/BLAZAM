@@ -133,15 +133,17 @@ namespace BLAZAM.Update.Services
                 AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
 
             }
-
-            var latestBranchUpdate = EncapsulateUpdate(latestBranchRelease, SelectedBranch);
-            if (latestBranchUpdate.Branch != ApplicationReleaseBranches.Stable && latestBranchUpdate.Branch != "Stable")
+            if (latestBranchRelease != null)
             {
-                if (!AvailableUpdates.Contains(latestBranchUpdate))
+                var latestBranchUpdate = EncapsulateUpdate(latestBranchRelease, SelectedBranch);
+                if (latestBranchUpdate.Branch != ApplicationReleaseBranches.Stable && latestBranchUpdate.Branch != "Stable")
                 {
-                    AvailableUpdates.Add(latestBranchUpdate);
-                }
+                    if (!AvailableUpdates.Contains(latestBranchUpdate))
+                    {
+                        AvailableUpdates.Add(latestBranchUpdate);
+                    }
 
+                }
             }
             IncompatibleUpdates = AvailableUpdates.Where(x => !x.PassesPrerequisiteChecks).ToList();
             foreach (var release in IncompatibleUpdates)
@@ -189,7 +191,8 @@ namespace BLAZAM.Update.Services
             //Get the release filename to prepare a version object
             var filename = Path.GetFileNameWithoutExtension(releaseToEncapsulate?.Assets.FirstOrDefault()?.Name);
             //Create that version object
-            if (filename == null) throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
+            if (filename == null) 
+                throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
             releaseVersion = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
 
 
