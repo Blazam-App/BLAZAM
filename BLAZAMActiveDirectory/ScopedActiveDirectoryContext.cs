@@ -1,5 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data.Services;
 using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.ActiveDirectory

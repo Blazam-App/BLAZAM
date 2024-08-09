@@ -1,7 +1,5 @@
-﻿using BLAZAM.ActiveDirectory;
-using BLAZAM.ActiveDirectory.Data;
+﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
@@ -9,11 +7,6 @@ using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
-using System.DirectoryServices.AccountManagement;
-using System.DirectoryServices.ActiveDirectory;
-using System.DirectoryServices.Protocols;
-using System.Net;
-using System.Security;
 using System.Security.AccessControl;
 using System.Text;
 

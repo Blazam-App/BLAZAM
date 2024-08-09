@@ -2,23 +2,11 @@
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.DirectoryServices;
-using System.DirectoryServices.Protocols;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -61,7 +49,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// <summary>
         /// Indicates whether the search is single level or recursive default is recursive
         /// </summary>
-        public System.DirectoryServices.SearchScope SearchScope { get; set; } = System.DirectoryServices.SearchScope.Subtree;
+        public SearchScope SearchScope { get; set; } = SearchScope.Subtree;
 
         /// <summary>
         /// The realtime results of this search. 

@@ -1,14 +1,11 @@
 ﻿
 
 using Serilog;
-using System.IO;
-using System.Security.Permissions;
-using System.Security;
 
 namespace BLAZAM.FileSystem
 {
     /// <summary>
-    /// Represents a diretory in the filesystem
+    /// Represents a directory in the filesystem
     /// </summary>
     public class SystemDirectory : FileSystemBase
     {
