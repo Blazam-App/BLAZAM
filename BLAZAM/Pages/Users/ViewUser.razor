@@ -71,7 +71,7 @@
                             <LogOnToModalContent User="User" />
                         }
                     </AppModal>
-                    <AppModal Title=@AppLocalization["Logon Hours"] @ref=@LogonHoursModal  Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
+                    <AppModal Title=@AppLocalization["Logon Hours"] @ref=@LogonHoursModal Options=@(new DialogOptions(){CloseButton=true, FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
                         @if (LogonHoursModal?.IsShown == true)
                         {
                             <LogonHoursModalContent User="User" />
@@ -272,8 +272,8 @@
                                                     @AppLocalization["Log On To"]
                                                 </MudButton>
 
-                                            } 
-                                            
+                                            }
+
                                             @if (User.CanReadField(ActiveDirectoryFields.LogonHours))
                                             {
                                                 <MudButton Variant="Variant.Filled"
@@ -469,7 +469,7 @@
 
 
 @code {
-    #nullable disable warnings
+#nullable disable warnings
     string password;
 
     [Parameter]
@@ -554,7 +554,7 @@
                 if (jobResults.Result == JobResult.Passed)
                 {
 
-                    foreach(var assignment in assignTo)
+                    foreach (var assignment in assignTo)
                     {
                         await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
                         await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
@@ -570,7 +570,7 @@
                         _ = OUNotificationService.PostAsync(User, NotificationType.Modify);
                         await AuditLogger.User.Changed(User, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
                     }
-                   
+
                     EditMode = false;
                     Nav.WarnOnNavigation = false;
                     SnackBarService.Success("The changes made to this user have been saved.");
