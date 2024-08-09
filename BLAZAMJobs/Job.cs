@@ -2,17 +2,18 @@
 
 namespace BLAZAM.Jobs
 {
+
     /// <summary>
-    /// 
+    /// A flexible multi step Job that can have actions as trackable steps.
     /// </summary>
-    public class Job : JobStepBase, IJob, IJobStep
+    public class Job : JobStepBase, IJob, IJobStep, IEquatable<IJob?>
     {
         private DateTime scheduledRunTime = DateTime.Now;
         private Timer? runScheduler;
 
         public string? User { get; set; } = "System";
 
-        private IList<IJobStep> _steps = new List<IJobStep>();
+        private IList<IJobStep> _steps = [];
 
         public IList<IJobStep> Steps => _steps;
 
@@ -172,13 +173,26 @@ namespace BLAZAM.Jobs
             }
         }
 
-        public override bool Equals(object? obj)
+
+        public bool Equals(IJob? other)
         {
-            if(obj is IJob job)
-            {
-                return job.Id.Equals(Id);
-            }
-            return false;
+            return other is not null &&
+                   Id.Equals(other.Id);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id);
+        }
+
+        public static bool operator ==(Job? left, IJob? right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Job? left, IJob? right)
+        {
+            return !(left == right);
         }
     }
 

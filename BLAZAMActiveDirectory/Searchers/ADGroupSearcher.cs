@@ -205,9 +205,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 ExactMatch = false
 
             }.Search<ADUser, IADUser>().Count>0;
-            string UserSearchFieldsQuery = "(&(memberOf:1.2.840.113556.1.4.1941:=" + group.DN + ")(distinguishedName=" + userOrGroup.DN + "))";
-            return SearchObjects(UserSearchFieldsQuery, userOrGroup.ObjectType, 50, ignoreDisabledUsers)?.Count > 0;
-
+          
         }
     }
 }

@@ -144,7 +144,7 @@ namespace BLAZAM.Common.Data
             return Version.GetHashCode();
         }
 
-        public override string? ToString()
+        public override string ToString()
         {
             return Version;
         }

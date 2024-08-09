@@ -2,7 +2,6 @@
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
@@ -13,11 +12,9 @@ using BLAZAM.Session.Interfaces;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Net;
-using System.Security.Claims;
 using BLAZAM.Helpers;
 using System.DirectoryServices.ActiveDirectory;
 using System.Security.Cryptography;
-using System.Diagnostics.Eventing.Reader;
 using System.Security.Principal;
 
 namespace BLAZAM.ActiveDirectory
