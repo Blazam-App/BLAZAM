@@ -1,4 +1,4 @@
-name: Build v1 Dev
+name: Build Dev v1
 
 on:
   workflow_dispatch:
@@ -10,18 +10,11 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-   
+    permissions: write-all
         
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Cache Nuget Packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
       - name: Setup .NET Core SDK 8
         uses: actions/setup-dotnet@v1
         with:
@@ -68,10 +61,10 @@ jobs:
       - name: Update dev release
         uses: andelf/nightly-release@main
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: 'Dev1'
-          name: 'Dev1'
+          name: 'v1-Dev'
           prerelease: true
           body: This release is highly unstable. Expect bugs and crashes on this branch. Developers Only!
           files: |

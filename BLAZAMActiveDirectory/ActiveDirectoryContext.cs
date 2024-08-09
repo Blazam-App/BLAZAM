@@ -2,7 +2,6 @@
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
@@ -13,11 +12,9 @@ using BLAZAM.Session.Interfaces;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Net;
-using System.Security.Claims;
 using BLAZAM.Helpers;
 using System.DirectoryServices.ActiveDirectory;
 using System.Security.Cryptography;
-using System.Diagnostics.Eventing.Reader;
 using System.Security.Principal;
 
 namespace BLAZAM.ActiveDirectory
@@ -29,7 +26,8 @@ namespace BLAZAM.ActiveDirectory
             get
             {
                 if (currentUser != null) return currentUser;
-                throw new ApplicationException("Current User State was not provided to this directory entry");
+                //throw new ApplicationException("Current User State was not provided to this directory entry");
+                return null;
             }
             set => currentUser = value;
         }
@@ -37,7 +35,7 @@ namespace BLAZAM.ActiveDirectory
         private WmiFactory _wmiFactory;
         IEncryptionService _encryption;
         private INotificationPublisher _notificationPublisher;
-        public static ActiveDirectoryContext Instance;
+        public static ActiveDirectoryContext SystemInstance;
 
         public int FailedConnectionAttempts { get; set; } = 0;
 
@@ -53,7 +51,7 @@ namespace BLAZAM.ActiveDirectory
                 {
                     ConnectionSettings = ad;
 
-                    Loggers.ActiveDirectryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
+                    //Loggers.ActiveDirectryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
                     //We need to determine what security options to use when authenticating
                     //based on the settings in the DB
 
@@ -138,27 +136,18 @@ namespace BLAZAM.ActiveDirectory
         }
 
 
-        /// <summary>
 
-        /// </summary>
         public IADUserSearcher Users { get; }
 
-        /// <summary>
-
-        /// </summary>
         public IADGroupSearcher Groups { get; }
 
-        /// <summary>
-
-        /// </summary>
         public IADOUSearcher OUs { get; }
-        /// </summary>
+
         public IADPrinterSearcher Printers { get; }
 
-        /// <summary>
-
-        /// </summary>
         public IADComputerSearcher Computers { get; }
+
+        public IADBitLockerSearcher BitLocker { get; }
 
         public IDatabaseContext? Context { get; private set; }
 
@@ -228,7 +217,6 @@ namespace BLAZAM.ActiveDirectory
             _wmiFactory = new(this);
             _encryption = encryptionService;
             _notificationPublisher = notificationPublisher;
-            Instance = this;
             Factory = factory;
             UserStateService = userStateService;
             //UserStateService.UserStateAdded += PopulateUserStateDirectoryUser;
@@ -238,6 +226,7 @@ namespace BLAZAM.ActiveDirectory
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
             Printers = new ADPrinterSearcher(this);
+            BitLocker = new ADBitLockerSearcher(this);
             Computers = new ADComputerSearcher(this, _wmiFactory);
         }
         /// <summary>
@@ -248,7 +237,7 @@ namespace BLAZAM.ActiveDirectory
         {
             _encryption = activeDirectoryContextSeed._encryption;
             _notificationPublisher = activeDirectoryContextSeed._notificationPublisher;
-            Instance = this;
+            SystemInstance = this;
             Factory = activeDirectoryContextSeed.Factory;
             UserStateService = activeDirectoryContextSeed.UserStateService;
             ConnectionSettings = activeDirectoryContextSeed.ConnectionSettings;
@@ -265,7 +254,7 @@ namespace BLAZAM.ActiveDirectory
             Groups = new ADGroupSearcher(this);
             OUs = new ADOUSearcher(this);
             Printers = new ADPrinterSearcher(this);
-
+            BitLocker = new ADBitLockerSearcher(this);
             Computers = new ADComputerSearcher(this, activeDirectoryContextSeed._wmiFactory);
         }
         private DirectoryContext DirectoryContext => new DirectoryContext(
@@ -383,7 +372,7 @@ namespace BLAZAM.ActiveDirectory
                                         //Perform Auth check
                                         Loggers.ActiveDirectryLogger.Information("Performing Active Directory connection test");
 
-                                        var search = new ADSearch()
+                                        var search = new ADSearch(this)
                                         {
                                             ObjectTypeFilter = ActiveDirectoryObjectType.User,
                                             SearchRoot = RootDirectoryEntry,
@@ -863,7 +852,7 @@ namespace BLAZAM.ActiveDirectory
         public IDirectoryEntryAdapter? FindEntryBySID(byte[] sid) => GetDirectoryEntryBySid(sid.ToSidString());
         public IDirectoryEntryAdapter? GetDirectoryEntryBySid(string sid)
         {
-            var searcher = new ADSearch();
+            var searcher = new ADSearch(this);
             searcher.SearchRoot = RootDirectoryEntry;
             searcher.Fields.SID = sid;
             var result = searcher.Search().FirstOrDefault();
@@ -872,7 +861,7 @@ namespace BLAZAM.ActiveDirectory
 
         public IDirectoryEntryAdapter? GetDirectoryEntryByDN(string dn)
         {
-            var searcher = new ADSearch();
+            var searcher = new ADSearch(this);
             searcher.SearchRoot = RootDirectoryEntry;
             searcher.Fields.DN = dn;
             var result = searcher.Search().FirstOrDefault();

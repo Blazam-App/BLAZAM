@@ -1,0 +1,44 @@
+﻿@using BLAZAM.Gui.UI.Computers
+@inherits DirectoryEntryViewBase
+
+
+
+<BitLockerViewer Computer="_computer"/>
+<MudOverlay Visible="LoadingData" DarkBackground="true" Absolute="true">
+    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
+
+
+
+
+
+
+
+
+
+@code {
+    IADBitLockerRecovery? BitLocker=> DirectoryEntry as IADBitLockerRecovery;
+    List<IADBitLockerRecovery> _recoveries = new();
+    IADComputer? _computer;
+    protected override async Task OnInitializedAsync()
+    {
+
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+
+        if (BitLocker != null)
+        {
+
+            _computer = (IADComputer?)BitLocker.GetParent();
+
+
+            await AuditLogger.Searched(BitLocker);
+        }
+        LoadingData = false;
+
+        await RefreshEntryComponents();
+    }
+
+
+   
+}

@@ -2,11 +2,11 @@
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Chat;
+using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using BLAZAM.Notifications.Services;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
@@ -77,20 +77,13 @@ namespace BLAZAM.Server.Data.Services
         public DateTime lastDataRefresh;
         public AppUser? userSettings { get; set; }
 
-        private readonly INotificationPublisher _notificationPublisher;
         private readonly IAppDatabaseFactory _dbFactory;
 
-        public ApplicationUserState(IAppDatabaseFactory factory, INotificationPublisher notificationPublisher)
+        public ApplicationUserState(IAppDatabaseFactory factory)
         {
 
-            _notificationPublisher = notificationPublisher;
             _dbFactory = factory;
-            //userSettings = new();
-            _notificationPublisher.OnNotificationPublished += (notifications) =>
-            {
-                if (notifications.Select(n => n.User).Contains(Preferences))
-                    GetUserSettingFromDB();
-            };
+           
             OnSettingsChanged += (state) => { 
                 if (Id == state.Id)
                 {
@@ -146,7 +139,7 @@ namespace BLAZAM.Server.Data.Services
                 if (User == null) return;
                 using var context = _dbFactory.CreateDbContext();
 
-                userSettings = context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
+                userSettings = context.UserSettings.Include(x=>x.NotificationSubscriptions).Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
                 if (userSettings == null)
                 {
                     userSettings = new AppUser();
@@ -335,8 +328,10 @@ namespace BLAZAM.Server.Data.Services
         public bool HasComputerPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Computer);
 
         public bool CanUnlockUsers => HasObjectActionPermission(ActiveDirectoryObjectType.User,ObjectActions.Unlock);
+        public bool CanAssign => HasObjectActionPermission(ActiveDirectoryObjectType.Group, ObjectActions.Assign);
 
         public string DuoAuthState { get; set; } = "";
+        public List<NotificationSubscription> NotificationSubscriptions { get => userSettings?.NotificationSubscriptions; set { userSettings.NotificationSubscriptions=value; } }
 
         private bool HasObjectActionPermission(ActiveDirectoryObjectType objectType, ObjectAction actionType)
         {

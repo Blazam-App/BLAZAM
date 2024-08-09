@@ -1,21 +1,21 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models.User;
-using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Components;
+﻿
 
 namespace BLAZAM.Jobs
 {
+
     /// <summary>
-    /// 
+    /// A flexible multi step Job that can have actions as trackable steps.
     /// </summary>
-    public class Job : JobStepBase, IJob, IJobStep
+    public class Job : JobStepBase, IJob, IJobStep, IEquatable<IJob?>
     {
         private DateTime scheduledRunTime = DateTime.Now;
         private Timer? runScheduler;
 
-        public string? User { get; set; }
+        public string? User { get; set; } = "System";
 
-        public IList<IJobStep> Steps { get; set; } = new List<IJobStep>();
+        private IList<IJobStep> _steps = [];
+
+        public IList<IJobStep> Steps => _steps;
 
         public DateTime ScheduledRunTime
         {
@@ -31,7 +31,8 @@ namespace BLAZAM.Jobs
         public IList<IJobStep> PassedSteps { get; protected set; } = new List<IJobStep>();
 
 
-
+        public Guid Id{ get; set; }
+        public bool NestedJob { get; set; } = false;
 
         public Job(string? title = null, string? requestingUser = null, CancellationTokenSource? externalCancellationToken = null)
         {
@@ -41,6 +42,8 @@ namespace BLAZAM.Jobs
             {
                 cancellationTokenSource = externalCancellationToken;
             }
+            Id= Guid.NewGuid();
+            JobMonitor.AddJob(this);
         }
 
 
@@ -63,7 +66,16 @@ namespace BLAZAM.Jobs
             return Execute();
 
         }
+        public void AddStep(IJobStep step)
+        {
+            if(User != null && step is IJob jobStep)
+            {
+                jobStep.User = User;
+                jobStep.NestedJob = true;
+            }
+            Steps.Add(step);
 
+        }
         private bool Execute()
         {
             var cancelToken = cancellationTokenSource.Token;
@@ -162,6 +174,26 @@ namespace BLAZAM.Jobs
         }
 
 
+        public bool Equals(IJob? other)
+        {
+            return other is not null &&
+                   Id.Equals(other.Id);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id);
+        }
+
+        public static bool operator ==(Job? left, IJob? right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Job? left, IJob? right)
+        {
+            return !(left == right);
+        }
     }
 
 

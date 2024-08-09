@@ -272,7 +272,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (obj is IRemoteSession other)
             {
-                if (other.SessionId.Equals(SessionId) && other.Server.ServerName.Equals(Server.ServerName))
+                if (other.SessionId.Equals(SessionId) && other.Server.ServerName.Equals(Server?.ServerName))
                 {
                     return true;
                 }
@@ -282,7 +282,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public override int GetHashCode()
         {
-            return (SessionId + Server.ServerName).GetHashCode();
+            return (SessionId + Server?.ServerName).GetHashCode();
         }
 
         public void Dispose()

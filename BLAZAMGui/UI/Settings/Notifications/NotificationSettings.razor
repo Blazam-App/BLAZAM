@@ -1,0 +1,29 @@
+﻿@inherits AppComponentBase
+<h3>@AppLocalization["Manage Notifications"]</h3>
+<MudAutocomplete @bind-Value=_selectedUser
+                 MaxItems="50"
+                 SearchFunc="SearchUsers"
+                 T="AppUser"
+                 Label="@AppLocalization["User"]" />
+@if (_selectedUser != null)
+{
+ <NotificaionSubscriptionEditor User=_selectedUser/>
+}
+@code {
+    IList<AppUser> Users = new List<AppUser>();
+    AppUser? _selectedUser = null;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Users = await Context.UserSettings.ToListAsync();
+    }
+    private async Task<IEnumerable<AppUser>> SearchUsers(string value,CancellationToken token)
+    {
+        if (value == null) value = String.Empty;
+        return Users.Where(x => x.Username.Contains(value));
+    }
+    
+
+
+
+}

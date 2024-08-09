@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.Sql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.19")
+                .HasAnnotation("ProductVersion", "7.0.20")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -911,15 +911,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BCC")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CC")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -927,13 +919,67 @@ namespace BLAZAM.Common.Migrations.Sql
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TemplateName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TemplateType")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("EmailTemplates");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Block")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ByEmail")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("InApp")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OU")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("NotificationSubscriptions");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionNotificationType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("NotificationSubscriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NotificationType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotificationSubscriptionId");
+
+                    b.ToTable("SubscriptionNotificationType");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
@@ -1207,6 +1253,9 @@ namespace BLAZAM.Common.Migrations.Sql
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DelegateName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("DelegateSid")
                         .IsRequired()
@@ -1667,6 +1716,28 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Navigation("ChatMessage");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
+                        .WithMany("NotificationSubscriptions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionNotificationType", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Notifications.NotificationSubscription", "NotificationSubscription")
+                        .WithMany("NotificationTypes")
+                        .HasForeignKey("NotificationSubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NotificationSubscription");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ActionAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Permissions.AccessLevel", null)
@@ -1847,6 +1918,11 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Navigation("ObjectTypes");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
+                {
+                    b.Navigation("NotificationTypes");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
                 {
                     b.Navigation("ActionMap");
@@ -1871,6 +1947,8 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Navigation("FavoriteEntries");
 
                     b.Navigation("Messages");
+
+                    b.Navigation("NotificationSubscriptions");
 
                     b.Navigation("ReadNewsItems");
                 });

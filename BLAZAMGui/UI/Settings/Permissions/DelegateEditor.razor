@@ -10,7 +10,7 @@
                   @bind-Value="@DelegateFilter" />
     <MudSpacer />
     <MudButton Color=Color.Secondary
-               OnClick="(()=>{trashModal.Show();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
+               OnClick="(()=>{trashModal.ShowAsync();})"><MudIcon Icon=@Icons.Material.Filled.RestoreFromTrash /></MudButton>
 </MudStack>
 
 
@@ -24,18 +24,18 @@
   .Contains(DelegateFilter, StringComparison.OrdinalIgnoreCase))*@;
     @foreach (var pl in delegates)
     {
-        <DelegateListItem Level="pl" Context="Context" DelegateDeleted="DelegatesChanged" />
+        <DelegateListItem Delegate="pl" Context="Context" DelegateDeleted="DelegatesChanged" />
     }
 }
 
-<MudButton Color=Color.Success OnClick="@(()=>{addGroupModal?.Show();})">
+<MudButton Color=Color.Success OnClick="@(()=>{addGroupModal?.ShowAsync();})">
     @AppLocalization["Create New Delegation Target"]
 </MudButton>
 
 <AppModal @ref=@trashModal Title="Deleted Delegates">
     @foreach (var deleg in AllDelegates.Where(l => l.DeletedAt != null))
     {
-        var model = @Directory.FindEntryBySID(deleg.DelegateSid);
+        var model = Directory.FindEntryBySID(deleg.DelegateSid);
         <MudContainer>
             <b>@model?.ObjectType</b><br />
             <MudText>@model?.CanonicalName</MudText>

@@ -22,7 +22,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public List<IADPrinter> FindPrintersByString(string? searchTerm, bool? ignoreDisabledPrinters = true, bool exactMatch = false)
         {
-            return new ADSearch()
+            return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Printer,
                 EnabledOnly = ignoreDisabledPrinters,
@@ -33,7 +33,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         }
         public IADPrinter? FindPrinterByName(string? searchTerm, bool? ignoreDisabledPrinters = true)
         {
-            return new ADSearch()
+            return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Printer,
                 EnabledOnly = ignoreDisabledPrinters,
@@ -62,7 +62,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
 
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
-            var results = new ADSearch()
+            var results = new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Printer,
                 EnabledOnly = ignoreDisabledPrinters,
@@ -99,7 +99,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public IADPrinter? FindPrintersByContainerName(string? searchTerm, bool? ignoreDisabledPrinters = true, bool exactMatch = false)
         {
 
-            return new ADSearch()
+            return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Printer,
                 EnabledOnly = ignoreDisabledPrinters,

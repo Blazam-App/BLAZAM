@@ -31,7 +31,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         /// Defaults to the App Base root
         /// </remarks>
         [Parameter]
-        public HashSet<IDirectoryEntryAdapter> RootOU { get; set; } = new HashSet<IDirectoryEntryAdapter>();
+        public IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? RootOU { get; set; } = new List<TreeItemData<IDirectoryEntryAdapter>>();
         [Parameter]
         public IADOrganizationalUnit? StartingSelectedOU
         {
@@ -87,9 +87,9 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         /// Text to show at the end of the TreeView item
         /// </summary>
         [Parameter]
-        public Func<IDirectoryEntryAdapter, string>? EndText { get; set; }
+        public Func<IDirectoryEntryAdapter?, string>? EndText { get; set; }
         
-        protected Color GetItemColor(IDirectoryEntryAdapter item)
+        protected Color GetItemColor(IDirectoryEntryAdapter? item)
         {
             if (item is IAccountDirectoryAdapter account)
             {
@@ -112,7 +112,9 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 TopLevel = new ADOrganizationalUnit();
                 TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
                 _ = TopLevel.SubOUs;
-                RootOU = new HashSet<IDirectoryEntryAdapter>() { TopLevel as IDirectoryEntryAdapter };
+                var TopLevelList = new List<IDirectoryEntryAdapter>() { TopLevel };
+               // RootOU = new HashSet<IDirectoryEntryAdapter>() { TopLevel as IDirectoryEntryAdapter };
+                RootOU = TopLevelList.ToTreeItemData();
             }
             if (StartingSelectedOU == null)
             {
@@ -151,9 +153,10 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             {
                 if (!SelectedEntry.Equals(RootOU))
                 {
-                    IDirectoryEntryAdapter? firstThing = RootOU.First();
-                    if (firstThing is IADOrganizationalUnit openThis)
+                    var firstThing = RootOU.First();
+                    if (firstThing.Value is IADOrganizationalUnit openThis)
                     {
+                        
                         openThis.IsExpanded = true;
                         while (openThis != null)
                         {

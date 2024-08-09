@@ -58,7 +58,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-        public override string SearchUri => "/search/" + HttpUtility.UrlEncode(DN);
+        public override string SearchUri => "/view/" + HttpUtility.UrlEncode(DN);
 
         public override string? CanonicalName
         {
@@ -76,52 +76,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty("name", value);
             }
         }
-        public List<PermissionMapping> InheritedPermissionMappings
-        {
-            get
-            {
-                return AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
-            }
-        }
-        public List<PermissionMapping> DirectPermissionMappings
-        {
-            get
-            {
-
-                return AppliedPermissionMappings.Where(m => m.OU.Equals(DN)).ToList();
-
-            }
-        }
-
-        private IQueryable<PermissionMapping> _appliedPermissionMappings;
-
-        public IQueryable<PermissionMapping> AppliedPermissionMappings
-        {
-            get
-            {
-                if (_appliedPermissionMappings == null)
-                {
-
-                    _appliedPermissionMappings = DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length);
-                }
-                return _appliedPermissionMappings;
-            }
-        }
-        private IQueryable<PermissionMapping> _offspringPermissionMappings;
-        public IQueryable<PermissionMapping> OffspringPermissionMappings
-        {
-            get
-            {
-                if (_offspringPermissionMappings == null)
-                {
-
-                    _offspringPermissionMappings = DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
-                }
-                return _offspringPermissionMappings;
-            }
-        }
-
-
+      
         public virtual bool CanReadUsersInSubOus
         {
             get

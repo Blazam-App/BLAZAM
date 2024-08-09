@@ -28,7 +28,7 @@
 
         <MudSwitch Label=@AppLocalization["Duo Enabled"]
                    T="bool" @bind-Value="@settings.DuoEnabled"
-                   UnCheckedColor="Color.Error"
+                   UncheckedColor="Color.Error"
                    Color="Color.Success"
                    Disabled=@(settings.DuoEnabled!=true && duoHealthCheckResult!=true) />
 
@@ -39,7 +39,7 @@
                    T="DuoUnreachableBehavior"
                    Converter=@(new BehaviorConverter())
                    @bind-Value="@settings.DuoUnreachableBehavior"
-                   UnCheckedColor="Color.Error"
+                   UncheckedColor="Color.Error"
                    Color="Color.Success"
                    Disabled=@(duoHealthCheckResult!=true) />
 
@@ -114,7 +114,7 @@
         }
         catch
         {
-            
+
         }
         await InvokeAsync(StateHasChanged);
     }
@@ -126,7 +126,8 @@
     }
     protected override async void Save()
     {
-        if (!newAdminPassword.Equals(adminPasswordInDb))
+        var decryptedPass = adminPasswordInDb.Decrypt<string>();
+        if (!newAdminPassword.Equals(adminPasswordInDb) || decryptedPass.Equals(adminPasswordInDb))
         {
 
             settings.AdminPassword = newAdminPassword.Encrypt();
@@ -165,8 +166,7 @@
 
         private bool? OnSet(DuoUnreachableBehavior arg)
         {
-            if (arg == null)
-                return null;
+            
             try
             {
                 return (int)arg == 1;

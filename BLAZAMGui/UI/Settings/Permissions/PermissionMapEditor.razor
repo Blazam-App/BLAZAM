@@ -7,16 +7,16 @@
 
         @if (!ReadOnly && _permissionDelegates != null)
         {
-
             <MudSelectList Validation="@(_permissionDelegates?.Count>0)"
                            Values=@_permissionDelegates
                            Placeholder=@AppLocalization["Choose or Search..."]
                            T="PermissionDelegate"
                            ToStringFunc=DelegateToString
                            Label="@AppLocalization["Delegates"]"
-                              MultiSelection
-             @bind-Text=@selectedPermissionDelegateNames
-             @bind-SelectedValues=@Map.PermissionDelegates />
+                           MultiSelection=true
+                           @bind-Text=@selectedPermissionDelegateNames
+                           @bind-SelectedValues=@Map.PermissionDelegates />
+         
 
 
             <MudSelectList Validation="@(_permissionDelegates?.Count>0)"
@@ -93,9 +93,7 @@
         await base.OnInitializedAsync();
 
         await RefreshData();
-        LoadingData = false;
 
-        await InvokeAsync(StateHasChanged);
     }
 
     async Task RefreshData()
@@ -130,13 +128,19 @@
 
                     selectedAccessLevelNames = concatenatd;
                     concatenatd = "";
-                    Map.PermissionDelegates.Select(
-                         a => Directory.FindEntryBySID(a.DelegateSid).CanonicalName)
-                         .ToList().ForEach(s =>
-                         {
-                             concatenatd += s + ", ";
+                    var sids = Map.PermissionDelegates.Select(a => a.DelegateSid).ToList();
+                    foreach(var sid in sids)
+                    {
+                        try
+                        {
+                            concatenatd += Directory.FindEntryBySID(sid) + ", ";
+                        }
+                        catch (Exception)
+                        {
+                            concatenatd += sid.ToSidString()+", ";
+                        }
+                    }
 
-                         });
                     if (concatenatd != "")
                         concatenatd = concatenatd.Substring(0, concatenatd.Length - 2);
 
@@ -146,6 +150,7 @@
 
         }
         LoadingData = false;
+        await InvokeAsync(StateHasChanged);
 
     }
     async Task DeleteMapping()
@@ -168,9 +173,10 @@
 
     string DelegateToString(PermissionDelegate deleg)
     {
+        return deleg?.DelegateName;
         if (deleg == null) return AppLocalization["Unknown delegate"];
         if (deleg.DelegateSid != null)
-            return Directory.FindEntryBySID(deleg?.DelegateSid)?.CanonicalName;
+            return Directory.FindEntryBySID(deleg?.DelegateSid)?.CanonicalName??deleg.DelegateSid.ToSidString();
         else
             return "Loading...";
     }

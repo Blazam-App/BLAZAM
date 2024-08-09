@@ -32,7 +32,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                return "/search/" + CanonicalName;
+                return "/view/" + CanonicalName;
             }
         }
 
@@ -166,7 +166,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public ActiveDirectoryObjectType ObjectType
+        public virtual ActiveDirectoryObjectType ObjectType
         {
             get
             {
@@ -191,6 +191,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     if (Classes.Contains("printQueue"))
                     {
                         return ActiveDirectoryObjectType.Printer;
+                    }
+                    if (Classes.Contains("msFVE-RecoveryInformation"))
+                    {
+                        return ActiveDirectoryObjectType.BitLocker;
+
                     }
 
                 }
@@ -417,7 +422,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual void MoveTo(IADOrganizationalUnit parentOUToMoveTo)
         {
-            CommitSteps.Add(new Jobs.JobStep("Move to OU", (JobStep? step) =>
+            CommitSteps.Add(new JobStep("Move to OU", (JobStep step) =>
               {
                   parentOUToMoveTo.EnsureDirectoryEntry();
                   if (parentOUToMoveTo.DirectoryEntry != null)
@@ -434,13 +439,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual string? OU { get => DirectoryTools.DnToOu(DN) ?? DirectoryTools.DnToOu(ADSPath); }
 
-        public IADOrganizationalUnit? GetParent()
+        public IDirectoryEntryAdapter? GetParent()
         {
             if (DirectoryEntry == null || DirectoryEntry.Parent == null) return null;
 
-            var parent = new ADOrganizationalUnit();
+            var parent = DirectoryEntry.Parent.Encapsulate(Directory);
 
-            parent.Parse(Directory, DirectoryEntry.Parent);
             return parent;
 
 
@@ -539,11 +543,60 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected virtual bool HasActionPermission(ObjectAction action,ActiveDirectoryObjectType? objectType=null)
         {
+            if(CurrentUser==null)return false;
             if (objectType == null) objectType = ObjectType; 
             return CurrentUser.HasActionPermission(DN,action, objectType.Value);
         }
 
         public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }
+
+
+        public List<PermissionMapping> InheritedPermissionMappings
+        {
+            get
+            {
+                return AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
+            }
+        }
+        public List<PermissionMapping> DirectPermissionMappings
+        {
+            get
+            {
+
+                return AppliedPermissionMappings.Where(m => m.OU.Equals(DN)).ToList();
+
+            }
+        }
+
+        private IQueryable<PermissionMapping> _appliedPermissionMappings;
+
+        public IQueryable<PermissionMapping> AppliedPermissionMappings
+        {
+            get
+            {
+                if (_appliedPermissionMappings == null)
+                {
+
+                    _appliedPermissionMappings = DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length);
+                }
+                return _appliedPermissionMappings;
+            }
+        }
+        private IQueryable<PermissionMapping> _offspringPermissionMappings;
+        public IQueryable<PermissionMapping> OffspringPermissionMappings
+        {
+            get
+            {
+                if (_offspringPermissionMappings == null)
+                {
+
+                    _offspringPermissionMappings = DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
+                }
+                return _offspringPermissionMappings;
+            }
+        }
+
+
 
 
         public virtual bool HasUnsavedChanges
@@ -577,25 +630,31 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                         if (child.Properties["objectClass"].Contains("top"))
                         {
-                            if (child.Properties["objectClass"].Contains("computer"))
+                            var objectClass = child.Properties["objectClass"];
+                            if (objectClass.Contains("computer"))
                             {
                                 thisObject = new ADComputer();
                             }
-                            else if (child.Properties["objectClass"].Contains("user"))
+                            else if (objectClass.Contains("user"))
                             {
                                 thisObject = new ADUser();
                             }
-                            else if (child.Properties["objectClass"].Contains("organizationalUnit"))
+                            else if (objectClass.Contains("organizationalUnit"))
                             {
                                 thisObject = new ADOrganizationalUnit();
                             }
-                            else if (child.Properties["objectClass"].Contains("group"))
+                            else if (objectClass.Contains("group"))
                             {
                                 thisObject = new ADGroup();
                             }
-                            else if (child.Properties["objectClass"].Contains("printQueue"))
+                            else if (objectClass.Contains("printQueue"))
                             {
                                 thisObject = new ADPrinter();
+                            }
+
+                            else if (objectClass.Contains("msFVE-RecoveryInformation"))
+                            {
+                                thisObject = new ADBitLockerRecovery();
                             }
                             if (thisObject != null)
                             {
@@ -608,6 +667,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         thisObject = null;
 
                     }
+                    directoryEntries.OrderBy(x=>x.CanonicalName).OrderBy(x=>x.ObjectType);
                     CachedChildren = directoryEntries;
                 }
                 return CachedChildren;
@@ -778,10 +838,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                              DirectoryEntry.CommitChanges();
                              return true;
                          });
-                        commitJob.Steps.Add(propertyStep);
+                        commitJob.AddStep(propertyStep);
 
                     }
-                    commitJob.Steps.Add(commitStep);
+                    commitJob.AddStep(commitStep);
 
                 }
                 else
@@ -803,7 +863,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             DirectoryEntry.Properties[p.Key].Value = p.Value;
                             return true;
                         });
-                        commitJob.Steps.Add(propertyStep);
+                        commitJob.AddStep(propertyStep);
                     }
                 }
 
@@ -811,7 +871,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 //Inject custom commit steps
                 foreach (var step in CommitSteps)
                 {
-                    commitJob.Steps.Add(step);
+                    commitJob.AddStep(step);
+                    commitJob.AddStep(step);
 
 
                 }
@@ -821,22 +882,23 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         foreach (var step in PostCommitSteps)
                         {
-                            commitJob.Steps.Add(step);
+                            commitJob.AddStep(step);
                         }
                         //commitJob.Steps.Add(CommitStep);
 
                     }
                 }
-                commitJob.Steps.Add(commitStep);
+                commitJob.AddStep(commitStep);
+                commitJob.AddStep(commitStep);
                 if (NewEntry)
                 {
                     if (PostCommitSteps.Count > 0)
                     {
                         foreach (var step in PostCommitSteps)
                         {
-                            commitJob.Steps.Add(step);
+                            commitJob.AddStep(step);
                         }
-                        commitJob.Steps.Add(commitStep);
+                        commitJob.AddStep(commitStep);
 
                     }
                 }

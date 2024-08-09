@@ -6,12 +6,10 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
 using BLAZAM.Common.Data;
 using BLAZAM.Server;
-using BLAZAM.Services.Background;
 using System.Net;
 using BLAZAM.Database.Context;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
-using System.Net.WebSockets;
 using BLAZAM.Database.Models;
 
 namespace BLAZAM
@@ -120,20 +118,8 @@ namespace BLAZAM
 
             ApplicationInfo.services = AppInstance.Services;
 
-
-            try
-            {
-                var context = AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
-                if(context!=null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
-                {
-                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
-
-                }
-
-            }catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-            }
+            AppInstance.PreRun();
+          
             Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
 
 
@@ -213,7 +199,11 @@ namespace BLAZAM
                     dbSettings = kestrelContext.AppSettings.FirstOrDefault();
 
                     var certBytes = dbSettings.SSLCertificateCipher.Decrypt<byte[]>();
-                    cert = new X509Certificate2(certBytes);
+                    if(certBytes!= null)
+                    {
+                        cert = new X509Certificate2(certBytes);
+
+                    }
 
                 }
                 catch (Exception ex)

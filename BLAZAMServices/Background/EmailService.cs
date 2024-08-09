@@ -5,28 +5,38 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Components;
 using MimeKit;
-using MimeKit.Text;
 using MimeKit.Utils;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Common.Exceptions;
-using BLAZAM.Logger;
 using BLAZAM.EmailMessage;
 using BLAZAM.EmailMessage.Email;
 using BLAZAM.Common.Data;
 using BLAZAM.Static;
-using PreMailer.Net;
 using BLAZAM.FileSystem;
 using BLAZAM.EmailMessage.Email.Base;
+using System.Configuration;
 
-namespace BLAZAM.Email.Services
+namespace BLAZAM.Services.Background
 {
     public class EmailService
     {
         public static EmailService? Instance { get; set; }
         private IAppDatabaseFactory Factory { get; set; }
+        public bool IsConfigured
+        {
+            get
+            {
+                EmailSettings? settings = GetSettings();
+                if (settings != null && settings.Valid())
+                {
+                    return true;
+                }
+                return false;
 
+            }
+        }
 
         public EmailService(IAppDatabaseFactory factory)
         {
@@ -48,15 +58,15 @@ namespace BLAZAM.Email.Services
         /// renders it, and returns the raw HTML
         /// </summary>
         /// <remarks>
-        /// The <see cref="IComponent"/> provided can not have any Blazorise components, only base Blazor
+        /// The <see cref="IComponent"/> provided can use basic MudBlazor components and Blazor components
         /// </remarks>
         /// <typeparam name="TComponent"></typeparam>
         /// <returns></returns>
         protected string WrapMessage<TComponent>() where TComponent : IComponent => GetRenderer<TComponent>().Render();
 
         protected string WrapGenericMessage(MarkupString header, MarkupString body) => GetRenderer<GenericEmailMessage>()
-                .Set(c => c.Header, header)
-                .Set(c => c.Body, body).Render();
+                .Set(c => c.EmailMessageHeader, header)
+                .Set(c => c.EmailMessageBody, body).Render();
 
 
         /// <summary>
@@ -122,12 +132,14 @@ namespace BLAZAM.Email.Services
         {
 
             var email = new MimeMessage();
-            EmailSettings? settings = GetSettings();
-            if (settings != null && settings.Valid())
+            if (IsConfigured)
             {
-                if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty()) email.From.Add(MailboxAddress.Parse(settings.SMTPUsername));
-                else email.From.Add(MailboxAddress.Parse(settings.FromAddress));
+                EmailSettings? settings = GetSettings();
 
+                if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty()) email.Sender=MailboxAddress.Parse(settings.SMTPUsername);
+                else email.Sender=MailboxAddress.Parse(settings.FromAddress);
+                if(!settings.FromName.IsNullOrEmpty()) email.Sender.Name = settings.FromName;
+                email.From.Add(email.Sender);
                 if (to != null) email.To.Add(MailboxAddress.Parse(to));
                 if (cc != null) email.Cc.Add(MailboxAddress.Parse(cc));
                 if (bcc != null) email.Bcc.Add(MailboxAddress.Parse(bcc));
@@ -165,7 +177,7 @@ namespace BLAZAM.Email.Services
         {
             SystemFile css = new SystemFile(ApplicationInfo.applicationRoot + "\\wwwroot\\lib\\mudblazor\\css\\mudblazor.min.css");
             var preMailer = new PreMailer.Net.PreMailer(body);
-            body = preMailer.MoveCssInline(stripIdAndClassAttributes: true,css:css.ReadAllText()).Html;
+            body = preMailer.MoveCssInline(stripIdAndClassAttributes: true, css: css.ReadAllText()).Html;
             return body;
         }
 
@@ -213,14 +225,14 @@ namespace BLAZAM.Email.Services
 
             }
         }
-        public async Task<bool> SendMessage(string subject, EmailTemplateComponent body, string to, string? cc = null, string? bcc = null)
+        public async Task<bool> SendMessage(string subject, NotificationTemplateComponent body, string to, string? cc = null, string? bcc = null)
         {
             try
             {
                 var client = await GetSmtpClientAsync();
 
 
-                var message = BuildMessage(subject, to,body.Render(), cc, bcc);
+                var message = BuildMessage(subject, to, body.Render(), cc, bcc);
 
                 return await TrySend(client, message);
             }
@@ -230,7 +242,7 @@ namespace BLAZAM.Email.Services
 
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }

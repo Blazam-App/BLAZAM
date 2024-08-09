@@ -4,9 +4,8 @@
     @if (Model.MemberOf.Count > 0)
     {
         <MudList Disabled=false
+                 T="string"
          Dense=true
-         Clickable="false"
-         DisableGutters=true
          Style="max-height:200px; overflow-y:auto;">
             @foreach (IADGroup g in Model.MemberOf.Where(group => group.CanRead).OrderBy(g => g.CanonicalName))
             {
@@ -28,7 +27,7 @@
                                 <MudSpacer />
                                 @if (EditMode)
                                 {
-                                    <MudIconButton OnClick="@(()=>{Model.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
+                                    <MudIconButton Size="Size.Small" OnClick="@(()=>{Model.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
                                 }
                             </MudStack>
                         </ChildContent>

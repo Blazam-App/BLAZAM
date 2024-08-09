@@ -38,7 +38,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// <returns>All groups with the distinguished name fragment in their own distinguished name</returns>
         public List<IADGroup> FindGroupByDN(string dn)
         {
-            return new ADSearch()
+            return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Group,
                 EnabledOnly = false,
@@ -54,7 +54,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public List<IADGroup> FindGroupByString(string searchTerm, bool exactMatch = false)
         {
-            return new ADSearch()
+            return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Group,
                 GeneralSearchTerm = searchTerm,
@@ -78,7 +78,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
 
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(maxAgeInDays);
-            var results = new ADSearch()
+            var results = new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Group,
                 Fields = new()
@@ -104,7 +104,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public IADGroup? FindGroupBySID(string groupSID)
         {
-            return new ADSearch()
+            return new ADSearch(Directory)
             {
                 ObjectTypeFilter = ActiveDirectoryObjectType.Group,
                 Fields = new()
@@ -133,7 +133,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 foreach (string groupDN in list)
                 {
-                    var group = new ADSearch()
+                    var group = new ADSearch(Directory)
                     {
                         ObjectTypeFilter = ActiveDirectoryObjectType.Group,
                         Fields = new()
@@ -193,12 +193,19 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         }
 
-        public bool IsAMemberOf(IADGroup? group, IGroupableDirectoryAdapter? userOrGroup, bool v, bool ignoreDisabledUsers = true)
+        public bool IsAMemberOf(IADGroup group, IGroupableDirectoryAdapter? userOrGroup, bool v, bool ignoreDisabledUsers = true)
         {
+            return new ADSearch(Directory)
+            {
+                Fields = new()
+                {
+                    DN = userOrGroup.DN,
+                    NestedMemberOf = group
+                },
+                ExactMatch = false
 
-            string UserSearchFieldsQuery = "(&(memberOf:1.2.840.113556.1.4.1941:=" + group.DN + ")(distinguishedName=" + userOrGroup.DN + "))";
-            return SearchObjects(UserSearchFieldsQuery, userOrGroup.ObjectType, 50, ignoreDisabledUsers)?.Count > 0;
-
+            }.Search<ADUser, IADUser>().Count>0;
+          
         }
     }
 }

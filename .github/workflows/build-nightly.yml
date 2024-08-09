@@ -1,4 +1,4 @@
-name: Build v1 Nightly
+name: Build Nightly
 
 on:
   workflow_dispatch:
@@ -10,22 +10,12 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    permissions: write-all
    
         
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Cache Nuget Packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-      - name: Setup .NET Core SDK 6
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.x
       - name: Setup .NET Core SDK 8
         uses: actions/setup-dotnet@v1
         with:
@@ -70,10 +60,10 @@ jobs:
       - name: Update nightly release
         uses: andelf/nightly-release@main
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: 'Nightly1'
-          name: 'Nightly1'
+          name: 'v1-Nightly'
           prerelease: true
           body: This release is always the latest nightly release. These versions are unstable and may break your application. You've been warned.
           files: |

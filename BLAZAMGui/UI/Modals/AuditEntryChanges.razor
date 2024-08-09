@@ -1,8 +1,9 @@
 @using BLAZAM.Database.Models.Audit
+@inject IStringLocalizer<AppLocalization> AppLocalization
 @foreach (var change in Changes)
 {
     <MudStack Row=true>
-        <MudChip Text=@change.Key />
+        <MudChip T="string" Text=@change.Key />
         @((MarkupString)change.Value)
     </MudStack>
 }
@@ -22,67 +23,117 @@
         {
             if (!AuditEntry.BeforeAction.IsNullOrEmpty())
             {
-                foreach (var str in AuditEntry.BeforeAction.Split(";"))
+                if (AuditEntry.BeforeAction?.Contains(";") == true)
                 {
-                    if (!str.IsNullOrEmpty())
+                    foreach (var str in AuditEntry.BeforeAction.Split(";"))
                     {
-                        var data = str.Split("=");
-                        var attr = data.FirstOrDefault();
-                        if (attr != null)
+                        if (!str.IsNullOrEmpty())
                         {
+                            var data = str.Split("=");
+                            var attr = data.FirstOrDefault();
+                            if (attr != null)
+                            {
 
-                            Changes.Add(attr, null);
+                                Changes.Add(attr, null);
+                            }
                         }
                     }
                 }
+                else
+                {
+                    Changes.Add(AppLocalization["Action"], null);
+                }
             }
-            foreach(var attr in Changes.Keys)
+            else if (!AuditEntry.AfterAction.IsNullOrEmpty())
+            {
+                if (AuditEntry.AfterAction?.Contains(";") == true)
+                {
+                    foreach (var str in AuditEntry.AfterAction.Split(";"))
+                    {
+                        if (!str.IsNullOrEmpty())
+                        {
+                            var data = str.Split("=");
+                            var attr = data.FirstOrDefault();
+                            if (attr != null)
+                            {
+
+                                Changes.Add(attr, null);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Changes.Add(AppLocalization["Action"], null);
+                }
+            }
+            foreach (var attr in Changes.Keys)
             {
                 try
                 {
-                    var matchingBeforeAction = AuditEntry.BeforeAction.Split(";").FirstOrDefault(s => s.StartsWith(attr));
                     string? beforeValue = null;
                     try
                     {
-                        beforeValue = matchingBeforeAction.Split("=")[1];
+                        if (AuditEntry.BeforeAction?.Contains(";") == true)
+                        {
+                            var matchingBeforeAction = AuditEntry.BeforeAction.Split(";").FirstOrDefault(s => s.StartsWith(attr));
+
+                            beforeValue = matchingBeforeAction.Split("=")[1];
+                        }
+                        else
+                        {
+                            beforeValue = AuditEntry.BeforeAction;
+                        }
+
 
                     }
                     catch
                     {
 
                     }
-                    string? matchingAfterAction=null;
-                    string? afterValue=null;
-                    try{
-                        matchingAfterAction = AuditEntry.AfterAction.Split(";").FirstOrDefault(s => s.StartsWith(attr));
-                        afterValue = matchingAfterAction.Split("=")[1];
+                    string? matchingAfterAction = null;
+                    string? afterValue = null;
+                    try
+                    {
+
+                        if (AuditEntry.AfterAction?.Contains(";") == true)
+                        {
+                            matchingAfterAction = AuditEntry.AfterAction.Split(";").FirstOrDefault(s => s.StartsWith(attr));
+
+                            afterValue = matchingAfterAction.Split("=")[1];
+                        }
+                        else
+                        {
+                            afterValue = AuditEntry.AfterAction;
+                        }
+
                     }
                     catch
                     {
 
                     }
                     string outputString = beforeValue ?? "";
-                    if (afterValue==null || !afterValue.Contains(beforeValue))
+                    if (afterValue == null || beforeValue == null || !afterValue.Contains(beforeValue))
                     {
                         outputString = "<s>" + outputString + "</s>";
                     }
                     if (!afterValue.IsNullOrEmpty())
                     {
-                        
+
                         if (!beforeValue.IsNullOrEmpty())
-                            outputString += "<text style=\"display:contents;color:var(--mud-palette-success)\">" + afterValue.Replace(beforeValue, "")+"</text>";
-                            else
+                            outputString += "<text style=\"display:contents;color:var(--mud-palette-success)\">" + afterValue.Replace(beforeValue, "") + "</text>";
+                        else
                             outputString += "<text style =\"display:contents;color:var(--mud-palette-success)\">" + afterValue + "</text>";
 
                     }
-                   
+
                     Changes[attr] = outputString;
                 }
                 catch
                 {
-                    
+
                 }
-                
+
             }
         }
     }

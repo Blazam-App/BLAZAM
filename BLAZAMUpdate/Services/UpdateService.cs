@@ -1,13 +1,11 @@
 ﻿
 using Octokit;
-using BLAZAM.Common;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.Logger;
 using BLAZAM.Helpers;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using System.Security.Principal;
-using System.Reflection.Metadata.Ecma335;
 using System.Diagnostics;
 using BLAZAM.Localization;
 using Microsoft.AspNetCore.Components;
@@ -35,7 +33,7 @@ namespace BLAZAM.Update.Services
         /// <summary>
         /// All updates released under the stable branch
         /// </summary>
-        public List<ApplicationUpdate> StableUpdates { get; set; } = new();
+        public List<ApplicationUpdate> AvailableUpdates { get; set; } = new();
 
         /// <summary>
         /// The branch configured in the database
@@ -48,12 +46,13 @@ namespace BLAZAM.Update.Services
         protected readonly IHttpClientFactory httpClientFactory;
         private readonly ApplicationInfo _applicationInfo;
 
-        public UpdateService(IHttpClientFactory _clientFactory, ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null)
+        public UpdateService(IHttpClientFactory _clientFactory, ApplicationInfo applicationInfo, IAppDatabaseFactory? dbFactory = null, IStringLocalizer<AppLocalization> appLocalization = null)
         {
             _dbFactory = dbFactory;
             httpClientFactory = _clientFactory;
             _updateCheckTimer = new Timer(CheckForUpdate, null, TimeSpan.FromSeconds(20), TimeSpan.FromHours(1));
             _applicationInfo = applicationInfo;
+            AppLocalization = appLocalization;
         }
         /// <summary>
         /// Polls Github for the latest release in the selected branch
@@ -70,7 +69,7 @@ namespace BLAZAM.Update.Services
 
                 await SetBranch();
                 await GetReleases();
-                return LatestUpdate;
+                return NewestAvailableUpdate;
 
             }
             catch (Octokit.RateLimitExceededException ex)
@@ -89,7 +88,7 @@ namespace BLAZAM.Update.Services
         {
             //Create a github client to get api data from repo
 
-            Release? latestRelease = null;
+            Release? latestBranchRelease = null;
             Release? latestStableRelease = null;
 
             var client = new GitHubClient(new ProductHeaderValue(Publisher_Name));
@@ -103,53 +102,69 @@ namespace BLAZAM.Update.Services
             var branchReleases = releases.Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
             var stableReleases = releases.Where(r => r.TagName.Contains(ApplicationReleaseBranches.Stable, StringComparison.OrdinalIgnoreCase));
             //Get the first release,which should be the most recent
-            latestRelease = branchReleases.FirstOrDefault();
-            latestStableRelease = stableReleases.FirstOrDefault();
+            latestBranchRelease = branchReleases.FirstOrDefault();
             //Store all other releases for use later
-            StableUpdates.Clear();
+            AvailableUpdates.Clear();
+
+            var betaStableReleases = releases.Where(r => r.TagName.Contains("Stable", StringComparison.OrdinalIgnoreCase));
+
+            foreach (var release in betaStableReleases)
+            {
+                if (release!=null)
+                {
+                    //Get the release filename to prepare a version object
+                    var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
+                    //Create that version object
+                    if (fn == null) continue;
+                    try
+                    {
+                        AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.UpdateLogger.Error("Error trying to get beta releases {@Error}{@Release}", ex, release?.Name);
+                    }
+                }
+            }
+
+
             foreach (var release in stableReleases)
             {
-                //Get the release filename to prepare a version object
-                var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
-                //Create that version object
-                if (fn == null) continue;
-                StableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
-
-            }
-            var latestStableUpdate = EncapsulateUpdate(latestStableRelease, ApplicationReleaseBranches.Stable);
-            var latestBranchUpdate = EncapsulateUpdate(latestRelease, SelectedBranch); 
-            //Override branch if stable has more recent release
-            if (latestStableUpdate!=null && latestStableUpdate.Version.NewerThan(latestBranchUpdate.Version))
-            {
-                LatestUpdate = latestStableUpdate;
-            }
-            else if(latestBranchUpdate!=null)
-            {
-                LatestUpdate = latestBranchUpdate;
-
-            }
-            if (Debugger.IsAttached)
-            {
-                ApplicationUpdate? testUpdate = EncapsulateUpdate(latestRelease, SelectedBranch);
-
-                testUpdate.PreRequisiteChecks.Add(new(() => {
-                    if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
+                if (release != null)
+                {
+                    //Get the release filename to prepare a version object
+                    var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
+                    //Create that version object
+                    if (fn == null) continue;
+                    try
                     {
-                        testUpdate.PrequisiteMessage = "ASP NET Core 8 Runtime is missing.";
-                        return false;
-
+                        AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
                     }
-                    if (ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCoreHosting())
+                    catch (Exception ex)
                     {
-                        testUpdate.PrequisiteMessage = "ASP NET Core 8 Web Hosting Bundle is missing.";
-                        return false;
-
+                        Loggers.UpdateLogger.Error("Error trying to get v1 releases {@Error}{@Release}", ex, release?.Name);
                     }
-                    return true;
-                }));
-                testUpdate.Version = new ApplicationVersion("1.0.0.2024.07.01.0000");
-                LatestUpdate = testUpdate;
+                }
             }
+            if (latestBranchRelease != null)
+            {
+                var latestBranchUpdate = EncapsulateUpdate(latestBranchRelease, SelectedBranch);
+                if (latestBranchUpdate != null && latestBranchUpdate.Branch != ApplicationReleaseBranches.Stable && latestBranchUpdate.Branch != "Stable")
+                {
+                    if (!AvailableUpdates.Contains(latestBranchUpdate))
+                    {
+                        AvailableUpdates.Add(latestBranchUpdate);
+                    }
+
+                }
+            }
+            IncompatibleUpdates = AvailableUpdates.Where(x => !x.PassesPrerequisiteChecks).ToList();
+            foreach (var release in IncompatibleUpdates)
+            {
+                AvailableUpdates.Remove(release);
+            }
+
         }
 
         /// <summary>
@@ -166,7 +181,6 @@ namespace BLAZAM.Update.Services
                 {
                     using var context = await _dbFactory.CreateDbContextAsync();
                     SelectedBranch = context.AppSettings.FirstOrDefault()?.UpdateBranch;
-                    //Update to v1 branches
                     if (!SelectedBranch.StartsWith("v1"))
                     {
                         var branch = SelectedBranch.Split("-")[1];
@@ -193,11 +207,12 @@ namespace BLAZAM.Update.Services
             //Get the release filename to prepare a version object
             var filename = Path.GetFileNameWithoutExtension(releaseToEncapsulate?.Assets.FirstOrDefault()?.Name);
             //Create that version object
-            if (filename == null) throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
+            if (filename == null)
+                throw new ApplicationUpdateException("Filename could not be retrieved from GitHub");
             releaseVersion = new ApplicationVersion(filename.Substring(filename.IndexOf("-v") + 2));
 
 
-            
+
 
 
             if (releaseToEncapsulate != null && releaseVersion != null)
@@ -210,18 +225,28 @@ namespace BLAZAM.Update.Services
 
                 };
                 var update = new ApplicationUpdate(_applicationInfo, _dbFactory) { Release = release };
-                if(releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
+                if (releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
                 {
-                    update.PreRequisiteChecks.Add(new(() => {
+                    update.PreRequisiteChecks.Add(new(() =>
+                    {
                         if (!ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCore())
                         {
-                            update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Runtime is missing."];
-                         return false;
+                            if (AppLocalization != null)
+                                update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Runtime is missing."];
+                            else
+                                update.PrequisiteMessage = "ASP NET Core 8 Runtime is missing.";
+
+                            return false;
 
                         }
                         if (ApplicationInfo.isUnderIIS && !PrerequisiteChecker.CheckForAspCoreHosting())
                         {
-                            update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Web Hosting Bundle is missing."];
+                            if (AppLocalization != null)
+
+                                update.PrequisiteMessage = AppLocalization["ASP NET Core 8 Web Hosting Bundle is missing."];
+                            else
+                                update.PrequisiteMessage = "ASP NET Core 8 Web Hosting Bundle is missing.";
+
                             return false;
 
                         }
@@ -302,7 +327,7 @@ namespace BLAZAM.Update.Services
 
         private bool TestDirectoryCredentials()
         {
-            if(_dbFactory == null)return false;
+            if (_dbFactory == null) return false;
             using var context = _dbFactory.CreateDbContext();
             //Prepare impersonation
             WindowsImpersonation? impersonation = null;
@@ -336,5 +361,7 @@ namespace BLAZAM.Update.Services
         /// </summary>
         public bool HasWritePermission => UpdateCredential != UpdateCredential.None;
 
+        public List<ApplicationUpdate> IncompatibleUpdates { get; private set; } = new();
+        public ApplicationUpdate? NewestAvailableUpdate => AvailableUpdates.OrderByDescending(x => x.Version).FirstOrDefault();
     }
 }

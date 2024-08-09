@@ -3,6 +3,7 @@ using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Exceptions;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Net.WebSockets;
@@ -65,41 +66,57 @@ namespace BLAZAM.Database.Context
 
         private void SetupDenyAll(IDatabaseContext seedContext)
         {
-            bool saveRequired = false;
-            var denyAll = seedContext.AccessLevels.First(x => x.Id == 1);
-            if (denyAll != null)
-            {
-                foreach (var adObjectType in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
+            Task.Run(() => {
+                bool saveRequired = false;
+                try
                 {
-                    if ((ActiveDirectoryObjectType)adObjectType != ActiveDirectoryObjectType.All)
+                    var denyAll = seedContext.AccessLevels.First(x => x.Id == 1);
+                    if (denyAll != null)
                     {
-                        if (denyAll.ObjectMap.Any(x => x.ObjectType == (ActiveDirectoryObjectType)adObjectType))
+                        foreach (var adObjectType in Enum.GetValues(typeof(ActiveDirectoryObjectType)))
                         {
-                            var eexisingObjectMap = denyAll.ObjectMap.First(x => x.ObjectType == (ActiveDirectoryObjectType)adObjectType);
-                            if (eexisingObjectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
+                            if ((ActiveDirectoryObjectType)adObjectType != ActiveDirectoryObjectType.All)
                             {
-                                denyAll.ObjectMap.Remove(eexisingObjectMap);
-                                saveRequired = true;
+                                if (denyAll.ObjectMap.Any(x => x.ObjectType == (ActiveDirectoryObjectType)adObjectType))
+                                {
+                                    var eexisingObjectMap = denyAll.ObjectMap.First(x => x.ObjectType == (ActiveDirectoryObjectType)adObjectType);
+                                    if (eexisingObjectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
+                                    {
+                                        denyAll.ObjectMap.Remove(eexisingObjectMap);
+                                        saveRequired = true;
+                                    }
+                                }
+                                if (!denyAll.ObjectMap.Any(x => x.ObjectType == (ActiveDirectoryObjectType)adObjectType && x.ObjectAccessLevel.Id == ObjectAccessLevels.Deny.Id))
+                                {
+                                    denyAll.ObjectMap.Add(new()
+                                    {
+                                        ObjectType = (ActiveDirectoryObjectType)adObjectType,
+                                        ObjectAccessLevelId = ObjectAccessLevels.Deny.Id,
+                                    });
+                                    saveRequired = true;
+
+                                }
                             }
                         }
-                        if (!denyAll.ObjectMap.Any(x => x.ObjectType == (ActiveDirectoryObjectType)adObjectType && x.ObjectAccessLevel.Id == ObjectAccessLevels.Deny.Id))
-                        {
-                            denyAll.ObjectMap.Add(new()
-                            {
-                                ObjectType = (ActiveDirectoryObjectType)adObjectType,
-                                ObjectAccessLevelId = ObjectAccessLevels.Deny.Id,
-                            });
-                            saveRequired = true;
 
-                        }
                     }
-                }
 
-            }
-            if (saveRequired)
-            {
-                seedContext.SaveChanges();
-            }
+                }
+                catch (SqlException ex)
+                {
+                    Loggers.DatabaseLogger.Warning("Error attempting to seed denyAll {@Error}", ex);
+                }
+                catch (Exception ex)
+                {
+                    Loggers.DatabaseLogger.Error("Unexpected error attempting to seed denyAll {@Error}", ex);
+
+                }
+                if (saveRequired)
+                {
+                    seedContext.SaveChanges();
+                }
+            });
+            
         }
 
         private void StartDatabaseCache()

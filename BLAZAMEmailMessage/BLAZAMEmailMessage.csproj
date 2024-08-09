@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -13,12 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.6" />
-    <PackageReference Include="MudBlazor" Version="6.17.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.7" />
+    <PackageReference Include="MudBlazor" Version="7.6.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BLAZAMActiveDirectory\BLAZAMActiveDirectory.csproj" />
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
     <ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
     <ProjectReference Include="..\BLAZAMStatic\BLAZAMStatic.csproj" />

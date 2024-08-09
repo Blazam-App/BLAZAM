@@ -1,7 +1,5 @@
-﻿using BLAZAM.ActiveDirectory;
-using BLAZAM.ActiveDirectory.Data;
+﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
@@ -9,11 +7,6 @@ using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
-using System.DirectoryServices.AccountManagement;
-using System.DirectoryServices.ActiveDirectory;
-using System.DirectoryServices.Protocols;
-using System.Net;
-using System.Security;
 using System.Security.AccessControl;
 using System.Text;
 
@@ -76,7 +69,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             set
             {
-                SetProperty(ActiveDirectoryFields.LogonHours.FieldName, value.EncodeLogonHours());
+                SetProperty(ActiveDirectoryFields.LogonHours.FieldName, value?.EncodeLogonHours());
             }
         }
         public string? MiddleName
@@ -150,11 +143,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (value == null || value == "") return;
 
                
-                PostCommitSteps.Add(new Jobs.JobStep("Create home directory", (JobStep? step) =>
+                PostCommitSteps.Add(new JobStep("Create home directory", (JobStep step) =>
                 {
                     return Directory.Impersonation.Run(() =>
                     {
-                        if (HomeDirectory.IsNullOrEmpty()) return true;
+                        if (HomeDirectory==null || HomeDirectory.IsNullOrEmpty()) return true;
                         var homeDirectory = new SystemDirectory(HomeDirectory);
                         if (!homeDirectory.Exists)
                             homeDirectory.EnsureCreated();

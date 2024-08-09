@@ -8,13 +8,14 @@
              Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)
              Title="@AppLocalization["Browse"]"
              Icon="@Icons.Material.Filled.ViewList">
-    <ADTreeView AdditionalVisibilityFilters=@((entry)=>{if(entry is IADOrganizationalUnit ou) return (ou.CanReadUsersInSubOus || ou.CanReadNonOUs); return false;}) SelectedEntryChanged="@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);})" />
+    <ADTreeView AdditionalVisibilityFilters=@((entry)=>{if(entry is IADOrganizationalUnit ou) return (ou.CanReadUsersInSubOus || ou.CanReadNonOUs); return false;})
+                SelectedEntryChanged="@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);})" />
 </MudNavGroup>
 
 @code {
     [Parameter]
     public EventCallback<bool> BrowseExpandedChanged { get; set; }
     [Parameter]
-    public EventCallback<IDirectoryEntryAdapter> SelectedEntryChanged{ get; set; }
+    public EventCallback<IDirectoryEntryAdapter> SelectedEntryChanged { get; set; }
 
 }

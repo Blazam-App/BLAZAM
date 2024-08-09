@@ -22,7 +22,7 @@
             if (ExpiredModal != null)
             {
                 ExpiredModal.AllowClose = false;
-                ExpiredModal.Show();
+                ExpiredModal.ShowAsync();
             }
         }
         string formattedTimeLeft = "";
@@ -54,10 +54,10 @@
           YesText=@AppLocalization["Log In"]
           OnYes="@(()=>{Refresh();})"
           Options=@(new DialogOptions{
-          ClassBackground="blur-background",
+          BackgroundClass="blur-background",
           CloseButton=false,
           CloseOnEscapeKey=false,
-          DisableBackdropClick=true})>
+          BackdropClick=false})>
 
 
     <MudText>@AppLocalization["Your session has expired."]</MudText>
@@ -83,7 +83,7 @@
             var timeLeft = _ticket?.Properties.ExpiresUtc - DateTime.UtcNow;
             if (timeLeft > TimeSpan.FromSeconds(0) && timeLeft < TimeSpan.FromMinutes(2) && ExpirationWarningModal?.IsShown == false)
             {
-                await InvokeAsync(() => { ExpirationWarningModal.Show(); });
+                await InvokeAsync(() => { ExpirationWarningModal.ShowAsync(); });
 
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.DirectoryServices;
+﻿using BLAZAM.ActiveDirectory.Adapters;
+using System.DirectoryServices;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -23,7 +24,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Indicates whether the current web user can unassign to/from this <see cref="IGroupableDirectoryAdapter"/>
         /// </summary>
         bool CanUnassign { get; }
-      
+        List<GroupMembership> ToUnassignFrom { get; }
+        List<GroupMembership> ToAssignTo { get; }
 
         void AssignTo(IADGroup group);
         bool IsAMemberOf(IADGroup group);

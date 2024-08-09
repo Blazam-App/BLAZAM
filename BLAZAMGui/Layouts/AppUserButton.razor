@@ -31,8 +31,11 @@
         }
 
 
-        <MudMenuItem OnClick="@(()=>{profileModal?.Show();})" Icon="@Icons.Material.Filled.Settings">
+        <MudMenuItem OnClick="@(()=>{profileModal?.ShowAsync();})" Icon="@Icons.Material.Filled.Settings">
             @AppLocalization["Profile Settings"]
+        </MudMenuItem>
+        <MudMenuItem OnClick="@(()=>{notificationsModal?.ShowAsync();})" Icon="@Icons.Material.Filled.Notifications">
+            @AppLocalization["Notification Settings"]
         </MudMenuItem>
         <MudMenuItem Href="https://docs.blazam.org" Target="_blank" Icon="@Icons.Material.Filled.Book">
             @AppLocalization["Documentation"]
@@ -58,8 +61,14 @@
         <AppUserProfileModalContent />
     </CascadingValue>
 </AppModal>
+<AppModal @ref=notificationsModal Title="Notification Settings" Options="new(){ CloseButton=true, MaxWidth=MaxWidth.ExtraLarge,FullWidth=true}">
+    <CascadingValue Value="mainLayout">
+        <NotificaionSubscriptionEditor User="UserState.Preferences"/>
+    </CascadingValue>
+</AppModal>
 @code {
     AppModal? profileModal;
+    AppModal? notificationsModal;
     /// <summary>
     /// Indicates whether the notification panel is open
     /// </summary>

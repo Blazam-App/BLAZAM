@@ -1,0 +1,100 @@
+@inject IStringLocalizer<AppLocalization> AppLocalization
+<tr>
+    @foreach (var type in Enum.GetValues(typeof(NotificationType)))
+    {
+        var originalEnum = (NotificationType)type;
+        <td>
+            @{
+
+            }
+            <MudCheckBox Style="align-items:center;"
+                         ValueChanged=@((bool val)=>{ToggleType(originalEnum,val);})
+                         Value="@(Subscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)" />
+
+        </td>
+    }
+    <td>
+        <MudCheckBox Style="align-items:center;" @bind-Value="@(Subscription.InApp)" />
+
+    </td>
+    <td>
+        <MudCheckBox Style="align-items:center;" @bind-Value="@(Subscription.ByEmail)" />
+
+    </td>
+    <td>
+        <MudCheckBox Style="align-items:center;" @bind-Value="@(Subscription.Block)" />
+
+    </td>
+    @if (Subscription.Id == 0)
+    {
+        <td colspan="2">
+            <MudButton Color=@Color.Tertiary
+                       Disabled=@((!Subscription.ByEmail&&!Subscription.InApp)||Subscription.NotificationTypes.Count==0)
+                       Style="align-items:center;"
+                       StartIcon="@Icons.Material.Filled.Add"
+                       OnClick="@(AddSubscription)">
+                @AppLocalization["Create"]
+            </MudButton>
+        </td>
+    }
+    else
+    {
+
+        <td>
+            <MudFab Color=@Color.Success
+                    OnClick="@(OnSaved)"
+                    Size="Size.Small"
+                    StartIcon="@Icons.Material.Filled.Save" />
+        </td>
+        <td>
+            <MudFab Color=@Color.Error
+                    Size="Size.Small"
+                    OnClick="@(()=>{OnDeleted.InvokeAsync(Subscription);})"
+                    StartIcon="@Icons.Material.Filled.Delete" />
+        </td>
+    }
+</tr>
+
+@code {
+    [Parameter]
+    public IDatabaseContext Context { get; set; }
+
+    [Parameter]
+    public NotificationSubscription Subscription { get; set; }
+
+    [Parameter]
+    public EventCallback<NotificationSubscription> SubscriptionChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnSaved { get; set; }
+
+    [Parameter]
+    public EventCallback<NotificationSubscription> OnDeleted { get; set; }
+
+    [Parameter]
+    public EventCallback OnAdded { get; set; }
+
+    private void ToggleType(NotificationType type, bool value)
+    {
+        if (!value)
+        {
+            Subscription.NotificationTypes.RemoveAll(x => x.NotificationType == type);
+        }
+        else
+        {
+            if (!Subscription.NotificationTypes.Any(x => x.NotificationType == type))
+            {
+                SubscriptionNotificationType notificationType = new();
+                notificationType.NotificationType = type;
+                Subscription.NotificationTypes.Add(notificationType);
+            }
+        }
+    }
+    private async void AddSubscription()
+    {
+        await Context.NotificationSubscriptions.AddAsync(Subscription);
+        OnAdded.InvokeAsync();
+
+    }
+
+}

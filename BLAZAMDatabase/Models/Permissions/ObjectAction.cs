@@ -26,15 +26,14 @@ namespace BLAZAM.Database.Models.Permissions
             switch (type)
             {
                 case ActiveDirectoryObjectType.User:
-                    return true;
                 case ActiveDirectoryObjectType.Computer:
                     switch (Name)
                     {
+                        case "Lock":
+                        case "Unlock":
                         case "Move":
                         case "Delete":
                         case "Create":
-                        case "UnAssign":
-                        case "Assign":
                         case "Enable":
                         case "Disable":
                         case "Rename":
@@ -55,6 +54,7 @@ namespace BLAZAM.Database.Models.Permissions
                         default:
                             return false;
                     }
+                case ActiveDirectoryObjectType.Printer:
                 case ActiveDirectoryObjectType.OU:
                     switch (Name)
                     {
@@ -62,6 +62,14 @@ namespace BLAZAM.Database.Models.Permissions
                         case "Delete":
                         case "Rename":
                         case "Create":
+                            return true;
+                        default:
+                            return false;
+                    }
+                case ActiveDirectoryObjectType.BitLocker:
+                    switch (Name)
+                    {
+                        case "Delete":
                             return true;
                         default:
                             return false;

@@ -47,7 +47,7 @@
     {
         await base.OnInitializedAsync();
 
-        var search = new ADSearch() { SearchRoot = Directory.GetDeleteObjectsEntry() };
+        var search = new ADSearch(Directory) { SearchRoot = Directory.GetDeleteObjectsEntry() };
         search.SearchDeleted = true;
         search.Fields.Changed = DateTime.Now.AddDays(-14);
         deletedObjects = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
@@ -56,16 +56,7 @@
           
 
     }
-    void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
-    {
-        if (args.Item != null)
-        {
-            GoTo(args.Item);
-        }
-    }
+ 
   
-    void GoTo(IDirectoryEntryAdapter args)
-    {
-        Nav.NavigateTo(args.SearchUri);
-    }
+
 }

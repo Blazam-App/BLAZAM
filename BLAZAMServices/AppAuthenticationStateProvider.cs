@@ -1,15 +1,10 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
-using BLAZAM.Server.Data.Services;
 using BLAZAM.Common.Exceptions;
 using DuoUniversal;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 using System.Security.Claims;
 using BLAZAM.Helpers;
-using BLAZAM.Common.Data.Database;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using BLAZAM.Database.Context;
 using BLAZAM.ActiveDirectory.Interfaces;
@@ -17,12 +12,8 @@ using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
 using BLAZAM.Services.Duo;
 using BLAZAM.Server.Helpers;
-using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Components;
-using BLAZAM.Nav;
-using System.Net.WebSockets;
 using BLAZAM.Database.Models;
 
 namespace BLAZAM.Services
@@ -116,10 +107,10 @@ namespace BLAZAM.Services
         }
 
         /// <summary>
-        /// Creates an annonymous ClaimsPrincipal to handle authentication
+        /// Creates an anonymous ClaimsPrincipal to handle authentication
         /// before login.
         /// </summary>
-        /// <returns>An unauthenticated annonymous User ClaimsPrincipal</returns>
+        /// <returns>An unauthenticated anonymous User ClaimsPrincipal</returns>
         private ClaimsPrincipal GetAnonymous(string? sessionId = null, string? mfaToken = null)
         {
 
@@ -304,7 +295,7 @@ namespace BLAZAM.Services
         /// Polls the active directory to either authenticate credentials or simply lookup
         /// a user depending on if the LoginRequest is for impersonation
         /// </summary>
-        /// <param name="loginReq">The parameteres passed from the login attempt</param>
+        /// <param name="loginReq">The parameters passed from the login attempt</param>
         /// <returns>A fully processed ClaimsPrincipal representing the Web user data applied depending on
         /// database permission tables
         /// </returns>
@@ -377,7 +368,7 @@ namespace BLAZAM.Services
         /// actually make the ClaimsIdentity inside the principal.
         /// </summary>
         /// <param name="user">The user found in Active Directory that matches the LoginRequest Username</param>
-        /// <param name="loginReq">The parameteres passed from the login attempt</param>
+        /// <param name="loginReq">The parameters passed from the login attempt</param>
         /// <returns>A fully processed ClaimsPrincipal representing the Web user with data applied depending on
         /// database permission tables</returns>
         private async Task<ClaimsPrincipal?> CreateDirectoryPrincipal(IApplicationUserState loginUser, IADUser? user, LoginRequest loginReq)
@@ -529,8 +520,8 @@ namespace BLAZAM.Services
             return task;
         }
         /// <summary>
-        /// This may not be entirely neccessary the way I am implementin authentication and authorization
-        /// Though, this likey is needed to remove the cookie to actually signout?
+        /// This may not be entirely necessary the way I am implementing authentication and authorization
+        /// Though, this likely is needed to remove the cookie to actually sign out.
         /// </summary>
         /// <param name="claimsPrincipal"></param>
         /// <returns></returns>

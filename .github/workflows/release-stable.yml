@@ -1,4 +1,4 @@
-name: Publish and Release v1 Stable
+name: Publish and Release Stable
 
 on:
   workflow_dispatch:
@@ -10,6 +10,7 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    permissions: write-all
    
         
     steps:
@@ -48,7 +49,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
         with:
           tag_name: Release-v${{ env.ASSEMBLY_VERSION }}
@@ -60,7 +61,7 @@ jobs:
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: blazam-stable-v${{ env.ASSEMBLY_VERSION }}.zip
