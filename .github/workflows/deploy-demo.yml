@@ -7,7 +7,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - blazam
 on:
   push:
     branches:
-      - Beta-Nightly
+      - v1-Nightly
   workflow_dispatch:
 
 jobs:
@@ -17,11 +17,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.x
       - name: Setup .NET Core SDK 8
         uses: actions/setup-dotnet@v1
         with:
