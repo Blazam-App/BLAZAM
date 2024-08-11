@@ -8,9 +8,9 @@
             
             var avatarBgColor = GenerateAvatarColor(UserState?.Username);
         }
-        @if (UserState?.Notifications?.Count > 0)
+        @if (Notifications?.Count > 0)
         {
-            <MudBadge Color=Color.Error Overlap=true Content="@UserState?.Notifications.Count">
+            <MudBadge Color=Color.Error Overlap=true Content="@Notifications.Count">
                 <CurrentUserAvatarIcon UserState="@UserState" />
             </MudBadge>
         }
@@ -25,7 +25,7 @@
             @CurrentUser.Username
         </MudText>
         <MudDivider/>
-        @if (UserState?.Notifications?.Count > 0)
+        @if (Notifications.Count > 0)
         {
             <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})">Notifications</MudMenuItem>
         }
@@ -76,7 +76,7 @@
 
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
-
+    IList<UserNotification> Notifications = new List<UserNotification>();
     private IApplicationUserState UserState;
     protected override void OnInitialized()
     {
@@ -84,9 +84,14 @@
         NotificationPublisher.OnNotificationPublished += ((notifications) =>
         {
             if (notifications.Select(n => n.User).Contains(UserState.Preferences))
+            {
+                Notifications = UserState.Notifications;
+
+            }
                 InvokeAsync(StateHasChanged);
         });
         UserState = CurrentUser.State;
+        Notifications = UserState.Notifications;
         if (UserState != null)
             UserState.OnSettingsChanged += (settings) =>
             {
