@@ -6,13 +6,14 @@ namespace BLAZAM.Server.Data.Services
     public class ApplicationUserSessionCache : IApplicationUserSessionCache
     {
 
-        private Dictionary<Type, object> _cache = new Dictionary<Type, object>();
+        private Dictionary<Type, object> _typeCache = new Dictionary<Type, object>();
+        private Dictionary<string, object> _stringCache = new Dictionary<string, object>();
 
         public T Get<T>(Type key) where T : new()
         {
             try
             {
-                return _cache.Keys.Contains(key) ? (T)_cache[key] : new T();
+                return _typeCache.Keys.Contains(key) ? (T)_typeCache[key] : new T();
             }
             catch
             {
@@ -22,8 +23,23 @@ namespace BLAZAM.Server.Data.Services
 
         public void Set(Type key, object value)
         {
-            _cache[key] = value;
+            _typeCache[key] = value;
+        }
+        public T Get<T>(string key) where T : new()
+        {
+            try
+            {
+                return _stringCache.Keys.Contains(key) ? (T)_stringCache[key] : new T();
+            }
+            catch
+            {
+                return new T();
+            }
         }
 
+        public void Set(string key, object value)
+        {
+            _stringCache[key] = value;
+        }
     }
 }
