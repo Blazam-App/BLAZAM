@@ -239,7 +239,7 @@ namespace BLAZAM.Update
                 catch (Exception ex)
                 {
                     Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-
+                    throw new ApplicationUpdateException("Error trying to apply update files", ex);
                 }
                 return false;
             }
@@ -290,8 +290,8 @@ namespace BLAZAM.Update
 
 
 
-            SystemDirectory updaterDirFromStagedUpdate = new SystemDirectory(UpdateStagingDirectory.Path + "\\updater\\");
-            SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.Path + "updater\\");
+            SystemDirectory updaterDirFromStagedUpdate = new SystemDirectory(UpdateStagingDirectory.FullPath + "updater\\");
+            SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.FullPath + "updater\\");
             updaterDirFromStagedUpdate.CopyTo(updaterDir);
             //File.Copy(UpdateStagingDirectory + "\\updater\\", _applicationRootDirectory + "updater\\", true);
             Loggers.UpdateLogger?.Information("Updater updated");
@@ -410,7 +410,7 @@ namespace BLAZAM.Update
                     try
                     {
                         var zip = new ZipArchive(streamToReadFrom);
-                        zip.ExtractToDirectory(UpdateStagingDirectory.Path, true);
+                        zip.ExtractToDirectory(UpdateStagingDirectory.FullPath, true);
                         Loggers.UpdateLogger?.Debug(UpdateFile + " unzipped successfully to " + UpdateStagingDirectory);
 
                         return true;
