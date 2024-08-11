@@ -46,7 +46,7 @@ namespace BLAZAM.FileSystem
                     {
                         //if (!directoryInfo.Exists) throw new DirectoryNotFoundException("Directory " + Path + " does not exist!");
 
-                        testFilePath = Path + "test.txt";
+                        testFilePath = System.IO.Path.GetFullPath(Path + "\\test.txt");
                         // Attempt to create a test file within the directory.
                         
                         using (File.Create(testFilePath))
