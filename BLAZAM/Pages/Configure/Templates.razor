@@ -226,8 +226,8 @@
             List<TreeItemData<DirectoryTemplate>> treeData = new();
 
             var rootTemplates = Templates.Where(t => t.ParentTemplate == null && t.DeletedAt == null).ToTreeItemData();
-
-            treeData = RecursiveFillTreeViewItems(treeData);
+            
+            treeData = RecursiveFillTreeViewItems(rootTemplates);
             return treeData;
 
         }
