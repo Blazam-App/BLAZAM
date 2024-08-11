@@ -1,6 +1,12 @@
 @inherits MudSelect<T>
 @typeparam T
-<MudMenu Dense=true
+
+<MudStack Row=true>
+@if (Adornment == Adornment.Start)
+    {
+        
+    }
+    <MudMenu Dense=true
          Style="@(Style+" min-width:100px;")"
          FullWidth=true
          @ref=_selectMenu
@@ -67,7 +73,19 @@
         }
     </ChildContent>
 </MudMenu>
-
+    @if (Adornment == Adornment.End)
+    {
+        if (!AdornmentIcon.IsNullOrEmpty())
+        {
+            <MudIconButton Ripple=@(OnAdornmentClick.HasDelegate?true:false)
+             Icon="@AdornmentIcon"
+             Color="@AdornmentColor"
+             OnClick="@OnAdornmentClick"
+             aria-label="@AdornmentAriaLabel"
+             />
+        }
+    }
+</MudStack>
 
 @code {
     private MudMenu? _selectMenu;

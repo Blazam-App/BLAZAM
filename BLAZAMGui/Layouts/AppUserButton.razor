@@ -105,6 +105,11 @@
         if (username is null || username.IsNullOrEmpty()) return "background-color:#0c13a7";
         int usernameHash = username.GetAppHashCode();
         byte[] usernameHashBytes = Helpers.ByteHelpers.ToByteArray(usernameHash, (int?)3);
+        for(int x = 0; x < usernameHashBytes.Length; x++)
+        {
+            if (usernameHashBytes[x] > 200)
+                usernameHashBytes[x] = 200;
+        }
         string hexColor = "background-color:#";
         hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
         return hexColor;
