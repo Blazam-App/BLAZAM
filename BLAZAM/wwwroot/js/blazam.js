@@ -21,7 +21,7 @@ window.updateCookieExpiration = async () => {
 };
 
 window.attemptSignIn = async (loginReq) => {
-
+    formData = new FormData();
     for (var key in loginReq) {
         formData.append(key, loginReq[key]);
     }
