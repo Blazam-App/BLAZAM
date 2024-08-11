@@ -21,7 +21,7 @@
             <MudTextField Label="@AppLocalization["Encryption Seed String"]" ReadOnly=true Value="@(ApplicationInfo.InDemoMode&&CurrentUser.Username=="Demo"?AppLocalization["Private"]:Encryption.Instance?.KeySeedString)" />
 
         </SettingsField>
-    }
+   
 
 
     <MudDivider Class="my-6" />
@@ -50,7 +50,7 @@
                    @bind-Value="@settings.SendDeveloperAnalytics" />
 
     </SettingsField>
-
+    }
     <MudDivider Class="my-6" />
     <MudText Typo="Typo.h6">@AppLocalization["Logging"]</MudText>
 
