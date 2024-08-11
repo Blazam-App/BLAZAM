@@ -1,16 +1,6 @@
 @inherits AppComponentBase
-@{
-    var messages = 0;
-    try
-    {
-    messages = UserState.Notifications?.Count??0;
-    }
-    catch
-    {
-        
-    }
-}
-@if (messages > 0)
+
+@if (messages.Count > 0)
 {
     <MudPopover Open=@Open
         TransformOrigin="Origin.TopRight"
@@ -24,7 +14,7 @@
 
         </MudStack>
         <MudStack Style="max-height:80vh;" Class="overflow-auto">
-        @foreach (var notification in UserState.Notifications)
+            @foreach (var notification in messages)
         {
 
             <MudAlert OnClick=@(()=>{
@@ -48,10 +38,15 @@
 
 @code {
     private bool _open;
-
+    private IList<UserNotification> messages = new List<UserNotification>();
     protected override void OnInitialized(){
         base.OnInitialized();
-        NotificationPublisher.OnNotificationPublished += (notification) => { InvokeAsync(StateHasChanged); };
+        messages = UserState.Notifications;
+
+        NotificationPublisher.OnNotificationPublished += (notification) => { 
+            messages = UserState.Notifications;
+            InvokeAsync(StateHasChanged); 
+        };
     }
 
     [Parameter]

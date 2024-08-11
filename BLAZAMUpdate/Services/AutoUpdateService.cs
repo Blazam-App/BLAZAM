@@ -172,7 +172,7 @@ namespace BLAZAM.Update.Services
                 }
                 catch (Exception ex)
                 {
-                    Loggers.UpdateLogger.Error("Other error cleaning staging files {Directory}{@Error}", dir.Path, ex);
+                    Loggers.UpdateLogger.Error("Other error cleaning staging files {Directory}{@Error}", dir.FullPath, ex);
                     //file.Delete();
                 }
             }

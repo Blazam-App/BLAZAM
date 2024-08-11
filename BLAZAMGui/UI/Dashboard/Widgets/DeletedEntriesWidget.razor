@@ -41,8 +41,11 @@
     <MudProgressLinear Indeterminate=true />
 </MudOverlay>
 @code {
-    List<IDirectoryEntryAdapter> deletedObjects { get; set; } = new();
-
+    List<IDirectoryEntryAdapter> deletedObjects
+    {
+        get => CurrentUser.State.Cache.Get<List<IDirectoryEntryAdapter>>(this.GetType());
+        set => CurrentUser.State.Cache.Set(this.GetType(), value);
+    }
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

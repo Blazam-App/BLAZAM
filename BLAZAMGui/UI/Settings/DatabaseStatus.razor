@@ -80,7 +80,7 @@
     {
     ZipArchive exportZip = new ZipArchive(memoryStream, ZipArchiveMode.Create);
     var exportDir = new SystemDirectory("export");
-    exportZip.AddToZip(exportDir, exportDir.Path);
+    exportZip.AddToZip(exportDir, exportDir.FullPath);
     memoryStream.SaveTo(new SystemFile("export/" + DatabaseCache.ApplicationSettings.AppName + "-" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".zip"));
     return true;
 

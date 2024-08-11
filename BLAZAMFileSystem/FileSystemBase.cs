@@ -12,15 +12,15 @@ namespace BLAZAM.FileSystem
             if (path is null) 
                 throw new ArgumentException("path parameter should not be null");
    
-            path = path.Replace("%temp%", System.IO.Path.GetTempPath());
-            Path = System.IO.Path.GetFullPath(path);
-            if (Path==null || Path=="")
-                Path = path;
+            path = path.Replace("%temp%", Path.GetTempPath());
+            FullPath = Path.GetFullPath(path);
+            if (FullPath==null || FullPath=="")
+                FullPath = path;
         }
         /// <summary>
         /// The full raw path to this file or directory
         /// </summary>
-        public string Path { get; set; }
+        public string FullPath { get; set; }
 
         /// <summary>
         /// Indicates whether the executing identity has write permission to this directory or file
@@ -32,11 +32,11 @@ namespace BLAZAM.FileSystem
                 string? testFilePath = null;
                 try
                 {
-                    var directoryInfo = new DirectoryInfo(Path);
-                    var fileInfo = new FileInfo(Path);
+                    var directoryInfo = new DirectoryInfo(FullPath);
+                    var fileInfo = new FileInfo(FullPath);
                     if (fileInfo.Exists)
                     {
-                        using (File.Open(Path, FileMode.Open, FileAccess.Write, FileShare.ReadWrite))
+                        using (File.Open(FullPath, FileMode.Open, FileAccess.Write, FileShare.ReadWrite))
                         {
                             return true;
                         }
@@ -46,7 +46,7 @@ namespace BLAZAM.FileSystem
                     {
                         //if (!directoryInfo.Exists) throw new DirectoryNotFoundException("Directory " + Path + " does not exist!");
 
-                        testFilePath = System.IO.Path.GetFullPath(Path + "\\test.txt");
+                        testFilePath = System.IO.Path.GetFullPath(FullPath + "\\test.txt");
                         // Attempt to create a test file within the directory.
                         
                         using (File.Create(testFilePath))
@@ -88,12 +88,12 @@ namespace BLAZAM.FileSystem
 
         public override int GetHashCode()
         {
-            return Path.GetHashCode();
+            return FullPath.GetHashCode();
         }
 
         public override string? ToString()
         {
-            return Path;
+            return FullPath;
         }
     }
 }

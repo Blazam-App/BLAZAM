@@ -131,7 +131,7 @@ namespace BLAZAM.Helpers
                 {
                     using FileStream fs = file.OpenReadStream();
                     // Create an entry for each file with its relative path
-                    ZipArchiveEntry entry = archive.CreateEntry(directory.Path.Replace(basePath, "") + file.Name + file.Extension);
+                    ZipArchiveEntry entry = archive.CreateEntry(directory.FullPath.Replace(basePath, "") + file.Name + file.Extension);
 
                     // Copy the file contents to the entry stream
 
