@@ -261,7 +261,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         Task<IJob> CommitChangesAsync(IJob? commitJob = null);
 
         /// <summary>
-        /// Resets the current entry state to it's inital state
+        /// Resets the current entry state to it's initial state
         /// </summary>
         void DiscardChanges();
 

@@ -4,7 +4,7 @@
 @{
 }
     <div>
-    <DirectorySettings SettingsSaved="@(()=>{directoryStatusPanel.ResetStatus();})" />
+    <DirectorySettings ShowStatusPanel=false SettingsSaved="@(()=>{directoryStatusPanel.ResetStatus();})" />
 
         <ActiveDirectoryStatusPanel @ref=directoryStatusPanel DirectoryConnected="@(()=>{disableNext=false;})"/>
         <br/>
