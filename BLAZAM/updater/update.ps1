@@ -245,7 +245,7 @@ Write-Host("Global Process Id: " +  $global:processId);
         Quit
     }
     #>
-    PerformBackup
+    #PerformBackup
    
    ApplyUpdate
 

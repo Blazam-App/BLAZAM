@@ -38,13 +38,17 @@ await ParentTemplateChanged(null);
                                AdornmentIcon="@Icons.Material.Filled.Add"
                                AdornmentColor="@Color.Success"
                                OnAdornmentClick="@(()=>{categoryModal.ShowAsync();})"
-                               Values="@(categories.Count>1?categories:new List<string>())"
+                               Values="@(categories.Count>0?categories:new List<string>())"
                                ValueChanged="@((value)=>{DirectoryTemplate.Category=value;})"
                                @bind-Text=DirectoryTemplate.Category
                                Label="@AppLocalization["Template Category"]" />
                 <AppModal @ref=categoryModal Title=@AppLocalization["Add Category"]>
                     <AddTemplateCategoryModalContent Categories="@categories"
-                                                     CategoryAdded="@(async(newCategory)=>{DirectoryTemplate.Category=newCategory; categories.Add(newCategory); await InvokeAsync(StateHasChanged);})" />
+                                                     CategoryAdded="@(async(newCategory)=>{
+                                    DirectoryTemplate.Category=newCategory;
+                                    categories.Add(newCategory);
+                                    await InvokeAsync(StateHasChanged);
+                                                                                            })" />
                 </AppModal>
                 <MudSwitch Label="@AppLocalization["Visible"]"
                            Color="@(DirectoryTemplate.Visible==true?Color.Success:Color.Warning)"
@@ -152,7 +156,7 @@ await ParentTemplateChanged(null);
                             <MudSwitch Label="@AppLocalization["Send  Welcome Email"]"
                                        Color="@(DirectoryTemplate.EffectiveSendWelcomeEmail==true?Color.Success:Color.Warning)"
                                        @bind-Value=@DirectoryTemplate.EffectiveSendWelcomeEmail />
-                                       @if(DirectoryTemplate.EffectiveSendWelcomeEmail==true && DirectoryTemplate.EffectiveAskForAlternateEmail!=true &&
+                            @if (DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true &&
                         (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id) && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
                             {
                                 <MudAlert Severity="Severity.Warning">
@@ -445,7 +449,7 @@ await ParentTemplateChanged(null);
         {
             if (_template == value)
                 return;
-            if (Context != null)
+            if (Context != null && value.Id>0)
                 value = Context?.DirectoryTemplates.First(dt => dt.Id == value.Id);
             _template = value;
             originalTemplate = value;

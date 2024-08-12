@@ -154,6 +154,30 @@ namespace BLAZAM.Common.Data
             return CompareTo(version) > 0;
         }
 
+        public static bool operator !=(ApplicationVersion version1, ApplicationVersion version2)
+        {
+            return version1.CompareTo(version2) != 0;
+        }
+        public static bool operator ==(ApplicationVersion version1, ApplicationVersion version2)
+        {
+            return version1.CompareTo(version2) == 0;
+        }
+        public static bool operator >=(ApplicationVersion version1, ApplicationVersion version2)
+        {
+            return version1.CompareTo(version2) >= 0;
+        }
+        public static bool operator <=(ApplicationVersion version1, ApplicationVersion version2)
+        {
+            return version1.CompareTo(version2) <= 0;
+        }
+        public static bool operator <(ApplicationVersion version1, ApplicationVersion version2)
+        {
+            return version1.CompareTo(version2) < 0;
+        }
+        public static bool operator >(ApplicationVersion version1, ApplicationVersion version2)
+        {
+            return version1.CompareTo(version2) > 0;
+        }
         public bool OlderThan(ApplicationVersion version)
         {
             return CompareTo(version) < 0;

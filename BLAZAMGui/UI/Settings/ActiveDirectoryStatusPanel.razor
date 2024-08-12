@@ -1,9 +1,44 @@
 ﻿@using System.DirectoryServices;
 @inherits AppComponentBase
-<MudCard>
+<MudCard Class="ma-5 mx-auto pa-3">
     <MudCardHeader>
-        @AppLocalization["Active Directory Connection Status"]
-        </MudCardHeader>
+        <MudText Class="w-100" Align="Align.Center" Typo="@Typo.h6">
+            @AppLocalization["Active Directory Connection Status"]
+        </MudText>
+    </MudCardHeader>
+
+    <MudGrid Spacing="0" Class="mx-auto mud-container-maxwidth-xs">
+        <MudItem xs="8">
+            @AppLocalization["Server Port Open"]
+        </MudItem>
+        <MudItem xs="4">
+            <StatusCheck Status="_portStatus" />
+        </MudItem>
+
+        <MudItem xs="8">
+            @AppLocalization["Credentials OK"]
+
+        </MudItem>
+        <MudItem xs="4">
+            <StatusCheck Status="_credStatus" />
+        </MudItem>
+
+        <MudItem xs="8">
+            @AppLocalization["Connected"]
+        </MudItem>
+        <MudItem xs="4">
+            <StatusCheck Status="Directory.Status==DirectoryConnectionStatus.OK" />
+        </MudItem>
+
+
+        <MudItem xs="8">
+            @AppLocalization["Connection Type"]
+        </MudItem>
+        <MudItem xs="4">
+            <StatusCheck Status=@GetConnectionTypeStatus()
+                         Text="@GetConnectionType()" />
+        </MudItem>
+    </MudGrid>
     @if (showProgress)
     {
         <MudStack Row=true>
@@ -12,78 +47,10 @@
         </MudStack>
     }
 
-    <MudStack Row=true>
-       @AppLocalization["Server Port Open"]
-        <StatusCheck Status="_portStatus" />
-
-    </MudStack>
-    <MudStack Row=true>
-
-        @AppLocalization["Credentials OK"]
-        <StatusCheck Status="_credStatus" />
-
-    </MudStack>
-    <MudStack Row=true>
-        @AppLocalization["Connected"]
-
-        <StatusCheck Status="Directory.Status==DirectoryConnectionStatus.OK" />
-
-
-    </MudStack>
-    <MudStack Row=true Class="align-center">
-        @AppLocalization["Connection Type"]
-
-        <StatusCheck Status=@(Directory.AppRootDirectoryEntry !=null &&(
-            Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.Encryption)||
-        Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.SecureSocketsLayer)||
-        Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.Secure)))
-        Text="@(Directory.AppRootDirectoryEntry?.AuthenticationType.ToString())" />
-
-
-    </MudStack>
-    @*
-    @if (_credStatus)
-    {
-    var firstDC = Directory.DomainControllers.FirstOrDefault();
-    if(firstDC!=null){
-    <MudStack>
-    <MudStack Row=true>
-    <MudText>Domain</MudText>
-    <MudText>@firstDC.Domain.Name</MudText>
-    </MudStack>
-
-    <MudStack Row=true>
-    <MudText>Domain Mode</MudText>
-    <MudText>@firstDC.Domain.DomainMode</MudText>
-    </MudStack>
-
-    <MudStack Row=true>
-    <MudText>Domain Level</MudText>
-    <MudText>@firstDC.Domain.DomainModeLevel</MudText>
-    </MudStack>
-
-    <MudStack Row=true>
-    <MudText>Primary Domain Controller</MudText>
-    <MudText>@firstDC.Domain.PdcRoleOwner</MudText>
-    </MudStack>
-
-    <MudStack Row=true>
-    <MudText>Domain</MudText>
-    <MudText>@Directory.DomainControllers.FirstOrDefault()?.Domain.Forest.RootDomain.Name</MudText>
-    </MudStack>
-    </MudStack>
-    }
-    else
-    {
-    <MudText>Could not reach Domain Controllers directly from application server. Please check DNS.</MudText>
-    }
-
-    }
-    *@
 </MudCard>
 
 @code {
-#nullable disable warnings
+    #nullable disable warnings
 
     [Parameter]
     public EventCallback DirectoryConnected { get; set; }
@@ -110,7 +77,7 @@
     public void ResetStatus()
     {
         //Directory = DirectoryFactory.CreateActiveDirectoryContext();
-        //Directory.ConnectAsync();
+        Directory.ConnectAsync();
         _portStatus = false;
         _credStatus = false;
         showProgress = true;
@@ -194,6 +161,18 @@
         });
 
     }
+    private bool? GetConnectionTypeStatus()
+    {
+        if (Directory.Status != DirectoryConnectionStatus.OK) return false;
+        return Directory.AppRootDirectoryEntry != null && (
+                         Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.Encryption) ||
+                         Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.SecureSocketsLayer) ||
+                         Directory.AppRootDirectoryEntry.AuthenticationType.Equals(AuthenticationTypes.Secure));
+    }
+    private string? GetConnectionType()
+    {
 
-
+        if (Directory.Status != DirectoryConnectionStatus.OK) return null;
+        return Directory.AppRootDirectoryEntry?.AuthenticationType.ToString();
+    }
 }

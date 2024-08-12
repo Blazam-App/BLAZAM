@@ -18,6 +18,7 @@ using BLAZAM.Nav;
 using BLAZAM.Session;
 using Microsoft.AspNetCore.Authentication;
 using System.Management;
+using BLAZAM.Update.Services;
 
 namespace BLAZAM.Server
 {
@@ -347,6 +348,19 @@ namespace BLAZAM.Server
                 if (ApplicationInfo.installationCompleted)
                 {
                     var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            }
+            try
+            {
+                if (ApplicationInfo.installationCompleted)
+                {
+                    var context = Program.AppInstance.Services.GetRequiredService<UpdateService>();
+                    context.Initialize();
                 }
 
             }

@@ -188,7 +188,7 @@ namespace BLAZAM.Update
             var stagingCheckStep = new JobStep("Check prepared files", (step) => { return UpdateStagingDirectory.Exists; });
             var bakupStep = new JobStep("Create backup", Backup);
             var updateUpdaterStep = new JobStep("Apply Files", InitiateFileCopy);
-            var waitForRestart = new JobStep("Wait for completion...",Wait);
+            var waitForRestart = new JobStep("Wait for completion...", Wait);
             updateJob.AddStep(cleanDownloadStep);
             updateJob.AddStep(downloadStep);
             updateJob.AddStep(cleanStageStep);
@@ -196,6 +196,7 @@ namespace BLAZAM.Update
             updateJob.AddStep(stagingCheckStep);
             updateJob.AddStep(bakupStep);
             updateJob.AddStep(updateUpdaterStep);
+            updateJob.AddStep(waitForRestart);
             return updateJob;
 
 
@@ -210,12 +211,11 @@ namespace BLAZAM.Update
         }
         private async Task<bool> Wait(JobStep? step)
         {
-            while (true)
-            {
-                await Task.Delay(1000);
-            }
+
+            await Task.Delay(60000);
+            return false;
         }
-            private async Task<bool> InitiateFileCopy(JobStep? step)
+        private async Task<bool> InitiateFileCopy(JobStep? step)
         {
             //All prerequisites met
 
@@ -239,7 +239,7 @@ namespace BLAZAM.Update
                 catch (Exception ex)
                 {
                     Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-
+                    throw new ApplicationUpdateException("Error trying to apply update files", ex);
                 }
                 return false;
             }
@@ -290,8 +290,8 @@ namespace BLAZAM.Update
 
 
 
-            SystemDirectory updaterDirFromStagedUpdate = new SystemDirectory(UpdateStagingDirectory.Path + "\\updater\\");
-            SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.Path + "updater\\");
+            SystemDirectory updaterDirFromStagedUpdate = new SystemDirectory(UpdateStagingDirectory.FullPath + "updater\\");
+            SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.FullPath + "updater\\");
             updaterDirFromStagedUpdate.CopyTo(updaterDir);
             //File.Copy(UpdateStagingDirectory + "\\updater\\", _applicationRootDirectory + "updater\\", true);
             Loggers.UpdateLogger?.Information("Updater updated");
@@ -410,7 +410,7 @@ namespace BLAZAM.Update
                     try
                     {
                         var zip = new ZipArchive(streamToReadFrom);
-                        zip.ExtractToDirectory(UpdateStagingDirectory.Path, true);
+                        zip.ExtractToDirectory(UpdateStagingDirectory.FullPath, true);
                         Loggers.UpdateLogger?.Debug(UpdateFile + " unzipped successfully to " + UpdateStagingDirectory);
 
                         return true;

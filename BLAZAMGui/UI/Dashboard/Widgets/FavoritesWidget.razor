@@ -47,26 +47,27 @@
     <MudProgressLinear Indeterminate=true />
 </MudOverlay>
 @code {
-    List<IDirectoryEntryAdapter> FavoriteEntries { get; set; } = new();
-
+    List<IDirectoryEntryAdapter> FavoriteEntries 
+    {
+        get => CurrentUser.State.Cache.Get<List<IDirectoryEntryAdapter>>(this.GetType());
+        set => CurrentUser.State.Cache.Set(this.GetType(), value);
+    }
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await Task.Run(() =>
         {
+            var favorites = new List<IDirectoryEntryAdapter>();
             foreach (var entry in CurrentUser.State.Preferences.FavoriteEntries)
             {
                 IDirectoryEntryAdapter match = Directory.GetDirectoryEntryByDN(entry.DN);
-                if (match == null)
+                if (match != null && match.CanRead)
                 {
+                    favorites.Add(match);
+                }
 
-                }
-                else if (match.CanRead)
-                {
-                    FavoriteEntries.Add(match);
-                }
             }
-
+            FavoriteEntries = favorites;
             LoadingData = false;
             InvokeAsync(StateHasChanged);
 
