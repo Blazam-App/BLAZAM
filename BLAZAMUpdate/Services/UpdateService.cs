@@ -50,12 +50,16 @@ namespace BLAZAM.Update.Services
         {
             _dbFactory = dbFactory;
             httpClientFactory = _clientFactory;
-            _updateCheckTimer = new Timer(CheckForUpdate, null, TimeSpan.FromSeconds(20), TimeSpan.FromHours(1));
             _applicationInfo = applicationInfo;
             AppLocalization = appLocalization;
         }
+        public void Initialize()
+        {
+            _updateCheckTimer = new Timer(CheckForUpdate, null, TimeSpan.FromSeconds(20), TimeSpan.FromHours(1));
+
+        }
         /// <summary>
-        /// Polls Github for the latest release in the selected branch
+        /// Polls GitHub for the latest release in the selected branch
         /// </summary>
         /// <remarks>
         /// Also collects all stable releases for changelogs.
@@ -72,13 +76,13 @@ namespace BLAZAM.Update.Services
                 return NewestAvailableUpdate;
 
             }
-            catch (Octokit.RateLimitExceededException ex)
+            catch (RateLimitExceededException ex)
             {
                 throw ex;
             }
             catch (Exception ex)
             {
-                Loggers.UpdateLogger.Error("An error occured while getting latest update {@Error}", ex);
+                Loggers.UpdateLogger.Error("An error occurred while getting latest update {@Error}", ex);
             }
             return null;
 
@@ -86,7 +90,7 @@ namespace BLAZAM.Update.Services
 
         private async Task GetReleases()
         {
-            //Create a github client to get api data from repo
+            //Create a GitHub client to get api data from repo
 
             Release? latestBranchRelease = null;
             Release? latestStableRelease = null;
@@ -114,8 +118,8 @@ namespace BLAZAM.Update.Services
                 {
                     //Get the release filename to prepare a version object
                     var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
-                    //Create that version object
                     if (fn == null) continue;
+                    //Create that update object
                     try
                     {
                         AvailableUpdates.Add(EncapsulateUpdate(release, ApplicationReleaseBranches.Stable));
@@ -133,9 +137,9 @@ namespace BLAZAM.Update.Services
             {
                 if (release != null)
                 {
-                    //Get the release filename to prepare a version object
+                    //Get the release filename to check that the release zip exists
                     var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);
-                    //Create that version object
+                    //Create that update object
                     if (fn == null) continue;
                     try
                     {
