@@ -2,7 +2,7 @@
 @page "/install/{selectedStep}"
 @layout InstallLayout
 @inherits AppComponentBase
-
+@inject ApplicationManager ApplicationManager
 
 <PageTitle>Install - Blazam</PageTitle>
 
@@ -97,7 +97,7 @@ else
 
 
     }
-  
+
     async void UpdateStatuses()
     {
         Context = DbFactory.CreateDbContext();
@@ -130,7 +130,7 @@ else
                                     completedSteps = 4;
 
                                     await InvokeAsync(StateHasChanged);
-                                  
+
                                 }
 
                             }
@@ -178,6 +178,7 @@ else
             var result = await Context.SaveChangesAsync();
             ApplicationInfo.InstallationCompleted = true;
             Nav.NavigateTo("/home", true);
+            ApplicationManager.Restart();
         }
         catch
         {
