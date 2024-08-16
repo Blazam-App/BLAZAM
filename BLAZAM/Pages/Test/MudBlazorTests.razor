@@ -1,0 +1,23 @@
+﻿@page "/test/mudblazor"
+<h3>MudBlazorTests</h3>
+<MudSelectList Values="@testList"
+               T="string"
+               Label="Select List" />
+<MudSelectList Values="@testList"
+               T="string"
+               Label="Selected List Item 1"
+               SelectedValues="@(new List<string>(){"Item 2"})" />
+<MudSelectList Values="@testList"
+               T="string"
+               Label="Selected List Item 2"
+               Value=@("Item 2") />
+
+<MudSelectList Values="@testList"
+               T="string"
+               MultiSelection=true
+               Label="Multi Select"
+                />
+@code {
+    private List<string> testList = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"];
+
+}
