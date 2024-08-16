@@ -1,8 +1,9 @@
 # BLAZAM
 
-## Version 1.0.1 Release Notice
-Blazam will be officially released with the next update or two.
+## Version 1.0.0 Release Notice
+Blazam has been officially released.
 
+### Beta Installations:
 Please ensure .NET Core 8 Runtimes are installed for service-type installations,
 and .NET Core Web Hosting Bundle for IIS-type installations.
 

@@ -2,87 +2,86 @@
 @typeparam T
 
 <MudStack Row=true>
-@if (Adornment == Adornment.Start)
+    @if (Adornment == Adornment.Start)
     {
-        
+
     }
     <MudMenu Dense=true
-         Style="@(Style+" min-width:100px;")"
-         FullWidth=true
-         @ref=_selectMenu
-         Class=@(Class+" mud-width-full")
-         ListClass="minw-max"
-         PopoverClass="minw-max">
-    <ActivatorContent>
-        <MudField Label="@Label">
-            <MudStack Row=true>
-                @if (SelectedValues.Count() > 0)
-                {
-                    <MudElement>
-                        @Text
-                    </MudElement>
-                }
-                else
-                {
-                    <MudElement Class="grey-text">
-                        @Placeholder
-                    </MudElement>
-                }
-                <MudSpacer />
-                <MudIcon Class="align-end"
-                         Icon="@(_selectMenu?.Open==true?Icons.Material.Filled.ArrowDropUp:Icons.Material.Filled.ArrowDropDown)" />
-            </MudStack>
-        </MudField>
-    </ActivatorContent>
-    <ChildContent>
-        @if (Values != null && Values.Count() > 0)
-        {
-            @foreach (var val in Values)
+             Style="@(Style+" min-width:100px;")"
+             FullWidth=true
+             @ref=_selectMenu
+             Class=@(Class+" mud-width-full")
+             ListClass="minw-max"
+             PopoverClass="minw-max">
+        <ActivatorContent>
+            <MudField Label="@Label">
+                <MudStack Row=true>
+                    @if (SelectedValues.Count() > 0 || Value != null)
+                    {
+                        <MudElement>
+                            @Text
+                        </MudElement>
+                    }
+                    else
+                    {
+                        <MudElement Class="grey-text">
+                            @Placeholder
+                        </MudElement>
+                    }
+                    <MudSpacer />
+                    <MudIcon Class="align-end"
+                             Icon="@(_selectMenu?.Open==true?Icons.Material.Filled.ArrowDropUp:Icons.Material.Filled.ArrowDropDown)" />
+                </MudStack>
+            </MudField>
+        </ActivatorContent>
+        <ChildContent>
+            @if (Values != null && Values.Count() > 0)
             {
-                <MudMenuItem Style="min-width:max-content;"
-                             Class="py-0 px-3 ma-0"
-                             OnClick="@(()=>{ToggleSelected(val);})"
-                             AutoClose=@(!MultiSelection)>
-                    <MudStack Class="pa-0 ma-0"
-                              Row=true
-                              Style="min-width:max-content;">
-                        @if (MultiSelection)
-                        {
-                            <MudCheckBox T=bool
-                                         ValueChanged="@(()=>{ToggleSelected(val);})"
-                                         Value="SelectedValues.Contains(val)" />
-                        }
-                        @if (ToStringFunc != null)
-                        {
-                            <MudText Class="align-middle"
-                                     Style="min-width:max-content;min-height:24px;">
-                                @ToStringFunc.Invoke(val)
-                            </MudText>
-                        }
-                        else
-                        {
-                            <MudText Class="align-middle"
-                                     Style="min-width:max-content;min-height:24px;">
-                                @val?.ToString()
-                            </MudText>
-                        }
-                    </MudStack>
-                </MudMenuItem>
-            }
+                @foreach (var val in Values)
+                {
+                    <MudMenuItem Style="min-width:max-content;"
+                                 Class="py-0 px-3 ma-0"
+                                 OnClick="@(()=>{ToggleSelected(val);})"
+                                 AutoClose=@(!MultiSelection)>
+                        <MudStack Class="pa-0 ma-0"
+                                  Row=true
+                                  Style="min-width:max-content;">
+                            @if (MultiSelection)
+                            {
+                                <MudCheckBox T=bool
+                                             ValueChanged="@(()=>{ToggleSelected(val);})"
+                                             Value="SelectedValues.Contains(val)" />
+                            }
+                            @if (ToStringFunc != null)
+                            {
+                                <MudText Class="align-middle"
+                                         Style="min-width:max-content;min-height:24px;">
+                                    @ToStringFunc.Invoke(val)
+                                </MudText>
+                            }
+                            else
+                            {
+                                <MudText Class="align-middle"
+                                         Style="min-width:max-content;min-height:24px;">
+                                    @val?.ToString()
+                                </MudText>
+                            }
+                        </MudStack>
+                    </MudMenuItem>
+                }
 
-        }
-    </ChildContent>
-</MudMenu>
+            }
+        </ChildContent>
+    </MudMenu>
     @if (Adornment == Adornment.End)
     {
         if (!AdornmentIcon.IsNullOrEmpty())
         {
             <MudIconButton Ripple=@(OnAdornmentClick.HasDelegate?true:false)
-             Icon="@AdornmentIcon"
-             Color="@AdornmentColor"
-             OnClick="@OnAdornmentClick"
-             aria-label="@AdornmentAriaLabel"
-             />
+                           Icon="@AdornmentIcon"
+                           Color="@AdornmentColor"
+                           OnClick="@OnAdornmentClick"
+                           aria-label="@AdornmentAriaLabel" />
         }
     }
 </MudStack>
@@ -108,9 +107,28 @@
                         Text += ToStringFunc.Invoke(item) + ", ";
                     }
                 }
-                Text = Text.Substring(0, Text.Length - 2);
+                if (Text != "")
+                {
+                    Text = Text.Substring(0, Text.Length - 2);
+                }
             }
 
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (SelectedValues != null && SelectedValues.Count() > 0)
+        {
+            try
+            {
+
+            }
+            catch
+            {
+
+            }
         }
     }
 
