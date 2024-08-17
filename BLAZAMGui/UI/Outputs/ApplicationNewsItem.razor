@@ -1,0 +1,56 @@
+@using ApplicationNews
+@inject AppDialogService MessageService
+<MudButton Variant="Variant.Filled"
+           Style="border-radius:0px;"
+           FullWidth=true
+           OnClick="@ShowNews">
+    <MudStack Class="mud-width-full pt-1" AlignItems="AlignItems.Start">
+        <MudStack Row=true>
+            @if (Read)
+            {
+                <MudBadge Overlap=true Color="@Color.Success" Icon="@Icons.Material.Filled.Check">
+                    <MudIcon Icon="@Icons.Material.Filled.Email" />
+                </MudBadge>
+            }
+            else
+            {
+                <MudIcon Color=@Color.Warning Icon="@Icons.Material.Filled.Email" />
+            }
+            @Item.Title
+        </MudStack>
+
+    </MudStack>
+</MudButton>
+
+
+@code {
+    [Parameter]
+    public NewsItem Item { get; set; }
+
+    private bool _read;
+    [Parameter]
+    public bool Read
+    {
+        get => _read; set
+        {
+            if (_read == value) return;
+            _read = value;
+            OnRead.InvokeAsync(value);
+
+        }
+    }
+
+    [Parameter]
+    public EventCallback OnRead { get; set; }
+
+    private async void ShowNews()
+    {
+        var result = await Item.ShowNewsItemDialog(MessageService);
+        if (result.Dialog is AppNewsItemDialog dialog)
+        {
+            dialog.OnAcknowledged += () => OnRead.InvokeAsync();
+        }
+
+
+    }
+}

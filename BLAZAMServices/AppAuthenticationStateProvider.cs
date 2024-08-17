@@ -503,6 +503,11 @@ namespace BLAZAM.Services
                 {
                     userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchComputers));
                 }
+                if (user.HasBitLockerPrivilege)
+                {
+                    userRoles.Add(new Claim(ClaimTypes.Role, UserRoles.SearchBitLocker));
+                }
+
             }
             return userRoles;
         }
