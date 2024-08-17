@@ -1,41 +1,54 @@
 ﻿@inherits AppComponentBase
+    <MudMenu AnchorOrigin=Origin.BottomCenter
+             TransformOrigin=Origin.TopCenter
+             Color=Color.Secondary
+             StartIcon="@Icons.Material.Filled.TypeSpecimen"
+             Label="@SearchService.SeachObjectType.ToString()">
+        <CascadingAuthenticationState>
 
-<MudMenu AnchorOrigin=Origin.BottomCenter
-         TransformOrigin=Origin.TopCenter
-         Color=Color.Secondary
-         StartIcon="@Icons.Material.Filled.TypeSpecimen"
-         Label="@SearchService.SeachObjectType.ToString()">
-    <CascadingAuthenticationState>
+            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.All; })>
+                @AppLocalization["All"]
+            </MudMenuItem>
+            <AuthorizeView Roles="@(UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
 
-        <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.All; })>@AppLocalization["All"]</MudMenuItem>
-        <AuthorizeView Roles="@(UserRoles.SearchUsers+","+UserRoles.SuperAdmin)">
+                <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.User; })>
+                    @AppLocalization["User"]
+                </MudMenuItem>
+            </AuthorizeView>
 
-            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.User; })>@AppLocalization["User"]</MudMenuItem>
-        </AuthorizeView>
+            <AuthorizeView Roles="@(UserRoles.SearchGroups+","+UserRoles.SuperAdmin)">
+                <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Group; })>
+                    @AppLocalization["Group"]
+                </MudMenuItem>
 
-        <AuthorizeView Roles="@(UserRoles.SearchGroups+","+UserRoles.SuperAdmin)">
-            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Group; })>@AppLocalization["Group"]</MudMenuItem>
+            </AuthorizeView>
+            <AuthorizeView Roles="@(UserRoles.SearchOUs+","+UserRoles.SuperAdmin)">
+                <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.OU; })>
+                    @AppLocalization["OU"]
+                </MudMenuItem>
 
-        </AuthorizeView>
-        <AuthorizeView Roles="@(UserRoles.SearchOUs+","+UserRoles.SuperAdmin)">
-            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.OU; })>@AppLocalization["OU"]</MudMenuItem>
+            </AuthorizeView>
+            <AuthorizeView Roles="@(UserRoles.SearchComputers+","+UserRoles.SuperAdmin)">
+                <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Computer; })>
+                    @AppLocalization["Computer"]
+                </MudMenuItem>
 
-        </AuthorizeView>
-        <AuthorizeView Roles="@(UserRoles.SearchComputers+","+UserRoles.SuperAdmin)">
-            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Computer; })>@AppLocalization["Computer"]</MudMenuItem>
+            </AuthorizeView>
+            <AuthorizeView Roles="@(UserRoles.SearchPrinters+","+UserRoles.SuperAdmin)">
+                <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Printer; })>
+                    @AppLocalization["Printer"]
+                </MudMenuItem>
 
-        </AuthorizeView>
-        <AuthorizeView Roles="@(UserRoles.SearchPrinters+","+UserRoles.SuperAdmin)">
-            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.Printer; })>@AppLocalization["Printer"]</MudMenuItem>
+            </AuthorizeView>
+            <AuthorizeView Roles="@(UserRoles.SuperAdmin)">
+                <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.BitLocker; })>
+                    @AppLocalization["BitLocker"]
+                </MudMenuItem>
 
-        </AuthorizeView>
-        <AuthorizeView Roles="@(UserRoles.SuperAdmin)">
-            <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.BitLocker; })>@AppLocalization["BitLocker"]</MudMenuItem>
+            </AuthorizeView>
+        </CascadingAuthenticationState>
 
-        </AuthorizeView>
-    </CascadingAuthenticationState>
-
-</MudMenu>
+    </MudMenu>
 
 
 @if (IsAdmin == true || CurrentUser.State?.CanSearchDisabled(ActiveDirectoryObjectType.User) == true)

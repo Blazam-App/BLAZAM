@@ -320,6 +320,7 @@ namespace BLAZAM.Server.Data.Services
 
 
         public bool HasUserPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.User);
+        public bool HasBitLockerPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.BitLocker);
         public bool HasCreateUserPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.User);
         public bool HasGroupPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Group);
         public bool HasCreateGroupPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.Group);
