@@ -98,16 +98,21 @@
         <AppDocumentationButton Page="/admin/templates" />
     </MudStack>
 
-    <AppModal @ref=RenameModal Title=@AppLocalization["Rename Category"]>
+    <AppModal @ref=RenameModal
+              Title=@AppLocalization["Rename Category"]>
 
 
         <MudTextField Label="New Name" @bind-Value=newCategoryName />
 
 
-        <MudButton Color="Color.Primary" OnClick="RenameSelectedCategory">Save</MudButton>
+        <MudButton Color="Color.Primary"
+                   OnClick="RenameSelectedCategory">Save</MudButton>
     </AppModal>
 
-    <AppModal YesText="@AppLocalization["Restore"]" OnYes="RestoreSelectedTemplates" @ref=RestoreModal Title=@AppLocalization["Restore Template"]>
+    <AppModal YesText="@AppLocalization["Restore"]"
+              OnYes="RestoreSelectedTemplates"
+              @ref=RestoreModal
+              Title=@AppLocalization["Restore Template"]>
 
         <MudDataGrid @ref=restoreDataGrid Items="Templates.Where(t=>t.DeletedAt!=null)" SelectOnRowClick=true>
             <Columns>
@@ -224,15 +229,15 @@
     }
     private IReadOnlyCollection<TreeItemData<DirectoryTemplate>> CreateTemplateTreeItemData()
     {
-        
-            List<TreeItemData<DirectoryTemplate>> treeData = new();
 
-            var rootTemplates = Templates.Where(t => t.ParentTemplate == null && t.DeletedAt == null).ToTreeItemData();
+        List<TreeItemData<DirectoryTemplate>> treeData = new();
 
-            treeData = RecursiveFillTreeViewItems(rootTemplates);
-            return treeData;
+        var rootTemplates = Templates.Where(t => t.ParentTemplate == null && t.DeletedAt == null).ToTreeItemData();
 
-        
+        treeData = RecursiveFillTreeViewItems(rootTemplates);
+        return treeData;
+
+
     }
 
     [Obsolete]
