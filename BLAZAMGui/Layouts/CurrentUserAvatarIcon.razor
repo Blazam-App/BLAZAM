@@ -28,12 +28,12 @@ else
             {
                 totalBytes += usernameHashBytes[x];
             }
-            var distanceFrom200 = 255 - totalBytes;
-            if (distanceFrom200 > 0)
+            var distanceFrom255 = 255 - totalBytes;
+            if (distanceFrom255 > 0)
             {
                 for (int x = 0; x < usernameHashBytes.Length; x++)
                 {
-                    usernameHashBytes[x] += (byte)((int)usernameHashBytes[x]+distanceFrom200);
+                    usernameHashBytes[x] = (byte)((int)usernameHashBytes[x]+distanceFrom255);
                 }
             }
             string hexColor = "background-color:#";
