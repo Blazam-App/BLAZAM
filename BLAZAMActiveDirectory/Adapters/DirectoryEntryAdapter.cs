@@ -415,7 +415,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (DirectoryEntry != null)
                     DirectoryEntry.Properties["objectclass"].Value = value;
                 else
-                    Loggers.ActiveDirectryLogger.Error("Error setting objectClass for " + DN);
+                    Loggers.ActiveDirectoryLogger.Error("Error setting objectClass for " + DN);
 
             }
         }
@@ -471,7 +471,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return CurrentUser.HasPermission(DN, allowSelector, denySelector, nestedSearch);
             }catch(Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
                 return false;
             }
         }
@@ -805,7 +805,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     //Existing Active Directory Entry
                     if (DirectoryEntry == null)
                     {
-                        Loggers.ActiveDirectryLogger.Error("The directory entry for an existing " +
+                        Loggers.ActiveDirectoryLogger.Error("The directory entry for an existing " +
                             " entry is somehow missing on commit." + " {@Error}", new ApplicationException("DirectoryEntry is null"));
                         throw new ApplicationException("DirectoryEntry is null");
                     }
@@ -849,7 +849,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     if (DirectoryEntry == null)
                     {
-                        Loggers.ActiveDirectryLogger.Error("The directory entry for new entry " + DN +
+                        Loggers.ActiveDirectoryLogger.Error("The directory entry for new entry " + DN +
                             " is somehow missing on commit." + " {@Error}", new ApplicationException("DirectoryEntry is null"));
                         throw new ApplicationException("DirectoryEntry is null");
                     }
@@ -958,7 +958,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
             }
         }
 
@@ -1080,7 +1080,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Unexpected error while getting property value. {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error("Unexpected error while getting property value. {@Error}", ex);
                 }
 
 

@@ -320,6 +320,7 @@ namespace BLAZAM.Server.Data.Services
 
 
         public bool HasUserPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.User);
+        public bool HasBitLockerPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.BitLocker);
         public bool HasCreateUserPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.User);
         public bool HasGroupPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Group);
         public bool HasCreateGroupPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.Group);
@@ -464,7 +465,7 @@ namespace BLAZAM.Server.Data.Services
 
             if (baseSearch == null)
             {
-                Loggers.ActiveDirectryLogger.Error("The active user state for " + dnTarget + " could not" +
+                Loggers.ActiveDirectoryLogger.Error("The active user state for " + dnTarget + " could not" +
                     "be found in the application cache." + " {@Error}", new ApplicationException());
                 return false;
             }

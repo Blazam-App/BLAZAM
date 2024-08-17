@@ -152,7 +152,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     }
                     else
                     {
-                        Loggers.ActiveDirectryLogger.Warning("Unable to find group in list by DN", list, groupDN, group);
+                        Loggers.ActiveDirectoryLogger.Warning("Unable to find group in list by DN", list, groupDN, group);
                     }
                 }
 

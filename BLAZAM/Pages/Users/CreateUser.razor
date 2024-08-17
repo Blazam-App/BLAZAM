@@ -32,27 +32,40 @@
                                  TData="object">
                         <MudCarouselItem Class="pa-5">
                             <FlexContainer>
+
                                 @foreach (var category in TemplateCategoriesUserCanUse)
                                 {
-                                    <MudButton OnClick=@(()=>{SelectedCategory=category; _templateCarouselIndex=1;}) Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">@category</MudButton>
+                                    <MudButton StartIcon="@Icons.Material.Filled.Folder"
+                                               OnClick=@(()=>{SelectedCategory=category; _templateCarouselIndex=1;})
+                                               Variant="Variant.Filled"
+                                               Color="Color.Secondary"
+                                               Size="Size.Large">@category</MudButton>
                                 }
-
+                                @foreach (var uncategorizedTemplate in TemplatesUserCanUse.Where(t => t.Category.IsNullOrEmpty() && t.DeletedAt == null && t.Visible))
+                                {
+                                    <MudButton StartIcon="@Icons.Material.Filled.DynamicForm"
+                                               OnClick=@(async()=>{await SetTemplate(uncategorizedTemplate);})
+                                               Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               Size="Size.Large">@uncategorizedTemplate.Name</MudButton>
+                                }
                             </FlexContainer>
                         </MudCarouselItem>
 
                         <MudCarouselItem Class="pa-5">
-                          
+
                             <FlexContainer>
-                                  <MudFab StartIcon="@Icons.Material.Filled.ArrowBack"
-                                    Size="Size.Small"
-                                    OnClick="@(()=>{_templateCarouselIndex=0; SelectedCategory=null;})"
-                                    Color="Color.Primary" />
+                                <MudFab StartIcon="@Icons.Material.Filled.ArrowBack"
+                                        Size="Size.Small"
+                                        OnClick="@(()=>{_templateCarouselIndex=0; SelectedCategory=null;})"
+                                        Color="Color.Primary" />
                                 @foreach (var template in TemplatesUserCanUse.Where(t => t.DeletedAt == null && t.Visible))
                                 {
-                                    <MudButton OnClick=@(async()=>{await SetTemplate(template);})
-                                        Variant="Variant.Filled" 
-                                        Color="Color.Primary"
-                                        Size="Size.Large">@template.Name</MudButton>
+                                    <MudButton StartIcon="@Icons.Material.Filled.DynamicForm"
+                                               OnClick=@(async()=>{await SetTemplate(template);})
+                                               Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               Size="Size.Large">@template.Name</MudButton>
 
                                 }
                             </FlexContainer>
@@ -73,7 +86,7 @@
                 }
                 <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true; newUser=null; SelectedTemplate=null; SelectedStep=4;})">Custom</MudButton>
 
-                <MudButton Disabled=@(SelectedTemplate is null && custom!=true) Color=Color.Success OnClick="@(()=>{if(custom==true)SelectedStep=4;else selectedStep=1;})">Next</MudButton>
+                @* <MudButton Disabled=@(SelectedTemplate is null && custom!=true) Color=Color.Success OnClick="@(()=>{if(custom==true)SelectedStep=4;else selectedStep=1;})">Next</MudButton> *@
             </ChildContent>
 
         </MudTabPanel>
@@ -225,7 +238,7 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
     {
         if (entry is IADOrganizationalUnit ou)
         {
-            if(ou.CanCreateUser)
+            if (ou.CanCreateUser)
                 selectedOU = ou;
             else
             {
@@ -297,7 +310,7 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value?.ToString() + " {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value?.ToString() + " {@Error}", ex);
                 }
 
             }
@@ -329,7 +342,7 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
         catch (Exception ex)
         {
 
-            Loggers.ActiveDirectryLogger.Error("Error while creating template user {@Error}", ex);
+            Loggers.ActiveDirectoryLogger.Error("Error while creating template user {@Error}", ex);
 
             SnackBarService.Error(AppLocalization["An error has occurred while trying to create the template user: "] + ex.Message);
         }
@@ -347,7 +360,7 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
     }
     bool AdditionalShow(IDirectoryEntryAdapter entry)
     {
-        if(entry is IADOrganizationalUnit ou)
+        if (entry is IADOrganizationalUnit ou)
         {
             if (ou.CanCreateUser) return true;
             if (ou.CanCreateUserInSubOUs) return true;

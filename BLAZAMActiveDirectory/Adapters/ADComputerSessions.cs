@@ -44,7 +44,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (Computer.IsOnline == true)
                 {
-                    Loggers.ActiveDirectryLogger.Information("Getting sessions for " + Computer);
+                    Loggers.ActiveDirectoryLogger.Information("Getting sessions for " + Computer);
                     Polling = true;
                     var impersonation = Computer.Directory.Impersonation;
                     var success = impersonation.Run(() =>
@@ -77,7 +77,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                }
                                catch (Win32Exception ex)
                                {
-                                   Loggers.ActiveDirectryLogger.Error("Error while collecting sessions for " + Computer + " {@Error}", ex);
+                                   Loggers.ActiveDirectoryLogger.Error("Error while collecting sessions for " + Computer + " {@Error}", ex);
                                }
                            }
                            catch
@@ -91,7 +91,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                        }
                        catch (Exception ex)
                        {
-                           Loggers.ActiveDirectryLogger.Error("Error while connecting to TerminalServices on " + Computer + " {@Error}", ex);
+                           Loggers.ActiveDirectoryLogger.Error("Error while connecting to TerminalServices on " + Computer + " {@Error}", ex);
                            return false;
                        }
                    });

@@ -33,7 +33,7 @@
             <MudTooltip Color=Color.Error
                         ShowOnHover=@(Templates?.Count() < 1)
                         Arrow=true
-                        IsVisible=@(createFirstTemplateTooltipVisible)
+                        Visible=@(createFirstTemplateTooltipVisible)
                         Text="Create your first template">
 
 
@@ -98,16 +98,21 @@
         <AppDocumentationButton Page="/admin/templates" />
     </MudStack>
 
-    <AppModal @ref=RenameModal Title=@AppLocalization["Rename Category"]>
+    <AppModal @ref=RenameModal
+              Title=@AppLocalization["Rename Category"]>
 
 
         <MudTextField Label="New Name" @bind-Value=newCategoryName />
 
 
-        <MudButton Color="Color.Primary" OnClick="RenameSelectedCategory">Save</MudButton>
+        <MudButton Color="Color.Primary"
+                   OnClick="RenameSelectedCategory">Save</MudButton>
     </AppModal>
 
-    <AppModal YesText="@AppLocalization["Restore"]" OnYes="RestoreSelectedTemplates" @ref=RestoreModal Title=@AppLocalization["Restore Template"]>
+    <AppModal YesText="@AppLocalization["Restore"]"
+              OnYes="RestoreSelectedTemplates"
+              @ref=RestoreModal
+              Title=@AppLocalization["Restore Template"]>
 
         <MudDataGrid @ref=restoreDataGrid Items="Templates.Where(t=>t.DeletedAt!=null)" SelectOnRowClick=true>
             <Columns>
@@ -127,7 +132,7 @@
 
     <MudCard Elevation="2">
         <MudExpansionPanel Text="@AppLocalization["Inheritance Tree"]">
-            <TemplateInheritanceTreeView RootTemplate="CreateTemplateTreeItemData"
+            <TemplateInheritanceTreeView RootTemplate="TemplateTreeItemData"
                                          SelectedTemplate="SelectedTemplate"
                                          OnTemplateSelected="@((template)=>{SelectedTemplate=template; Nav.NavigateTo("/templates/"+template.Id);})" />
         </MudExpansionPanel>
@@ -149,7 +154,7 @@
     MudDataGrid<DirectoryTemplate>? restoreDataGrid;
     string? newCategoryName;
 
-
+    IReadOnlyCollection<TreeItemData<DirectoryTemplate>> TemplateTreeItemData = new List<TreeItemData<DirectoryTemplate>>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -164,6 +169,10 @@
 
 
 
+        }
+        else
+        {
+            TemplateTreeItemData = CreateTemplateTreeItemData();
         }
         await RefreshComponents();
     }
@@ -218,19 +227,17 @@
 
         }
     }
-    private IReadOnlyCollection<TreeItemData<DirectoryTemplate>> CreateTemplateTreeItemData
+    private IReadOnlyCollection<TreeItemData<DirectoryTemplate>> CreateTemplateTreeItemData()
     {
-        get
 
-        {
-            List<TreeItemData<DirectoryTemplate>> treeData = new();
+        List<TreeItemData<DirectoryTemplate>> treeData = new();
 
-            var rootTemplates = Templates.Where(t => t.ParentTemplate == null && t.DeletedAt == null).ToTreeItemData();
-            
-            treeData = RecursiveFillTreeViewItems(rootTemplates);
-            return treeData;
+        var rootTemplates = Templates.Where(t => t.ParentTemplate == null && t.DeletedAt == null).ToTreeItemData();
 
-        }
+        treeData = RecursiveFillTreeViewItems(rootTemplates);
+        return treeData;
+
+
     }
 
     [Obsolete]
@@ -273,21 +280,27 @@
     }
     private async void RestoreSelectedTemplates()
     {
-
-        foreach (var template in restoreDataGrid.SelectedItems)
+        if (restoreDataGrid != null)
         {
-            template.DeletedAt = null;
-            try
+            foreach (var template in restoreDataGrid.SelectedItems)
             {
-                Templates.First(t => template.Equals(t)).DeletedAt = null;
+                template.DeletedAt = null;
+                try
+                {
+                    Templates.First(t => template.Equals(t)).DeletedAt = null;
+                }
+                catch
+                {
+                    //Do nothing, it's a best attempt
+                }
             }
-            catch
-            {
-                //Do nothing, it's a best attempt
-            }
+            var result = await Context.SaveChangesAsync();
+            RestoreModal?.Close();
+            SnackBarService.Success(AppLocalization["Template(s) restored"]);
         }
-        var result = await Context.SaveChangesAsync();
-        RestoreModal?.Close();
-        SnackBarService.Success(AppLocalization["Template(s) restored"]);
+        else
+        {
+            Loggers.SystemLogger.Warning("Could not find directory template restore data grid ui reference!", new ApplicationException("restoreDataGrid is NULL"));
+        }
     }
 }

@@ -63,7 +63,7 @@
         catch (Exception ex)
         {
 
-            Loggers.ActiveDirectryLogger.Error("Error attempting to add delegate " + selectedDelegate.CanonicalName + " {@Error}",ex);
+            Loggers.ActiveDirectoryLogger.Error("Error attempting to add delegate " + selectedDelegate.CanonicalName + " {@Error}",ex);
             NotificationService.Error("An unexpected error has occured.");
         }
 

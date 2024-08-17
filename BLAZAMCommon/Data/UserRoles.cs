@@ -17,7 +17,8 @@ namespace BLAZAM.Common.Data
             CreateOUs,
             CreateUsers,
             SearchPrinters,
-            CreatePrinters
+            CreatePrinters,
+            SearchBitLocker
         };
         public const string Login = "Login";
         public const string SearchUsers = "SearchUsers";
@@ -29,6 +30,8 @@ namespace BLAZAM.Common.Data
         public const string SearchPrinters = "SearchPrinters";
         public const string CreatePrinters = "CreatePrinters";
         public const string SearchComputers = "SearchComputers";
+        public const string SearchBitLocker = "SearchBitLocker";
+
         public const string SuperAdmin = "SuperAdmin";
     }
 }
