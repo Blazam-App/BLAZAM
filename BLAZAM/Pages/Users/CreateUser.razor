@@ -310,7 +310,7 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value?.ToString() + " {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value?.ToString() + " {@Error}", ex);
                 }
 
             }
@@ -342,7 +342,7 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
         catch (Exception ex)
         {
 
-            Loggers.ActiveDirectryLogger.Error("Error while creating template user {@Error}", ex);
+            Loggers.ActiveDirectoryLogger.Error("Error while creating template user {@Error}", ex);
 
             SnackBarService.Error(AppLocalization["An error has occurred while trying to create the template user: "] + ex.Message);
         }

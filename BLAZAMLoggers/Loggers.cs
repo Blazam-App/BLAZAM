@@ -21,7 +21,7 @@ namespace BLAZAM.Logger
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public static ILogger RequestLogger { get; private set; }
         public static ILogger DatabaseLogger { get; private set; }
-        public static ILogger ActiveDirectryLogger { get; private set; }
+        public static ILogger ActiveDirectoryLogger { get; private set; }
         public static ILogger UpdateLogger { get; private set; }
         public static ILogger SystemLogger { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -32,7 +32,7 @@ namespace BLAZAM.Logger
             _applicationVersion = applicationVersion;
             RequestLogger = SetupLogger(logPath + @"requests\requests.txt");
             DatabaseLogger = SetupLogger(logPath + @"database\db.txt");
-            ActiveDirectryLogger = SetupLogger(logPath + @"activedirectory\activedirectory.txt");
+            ActiveDirectoryLogger = SetupLogger(logPath + @"activedirectory\activedirectory.txt");
             UpdateLogger = SetupLogger(logPath + @"update\update.txt", RollingInterval.Month);
 
             var systemLoggerBuilder = CreateLogBuilder()

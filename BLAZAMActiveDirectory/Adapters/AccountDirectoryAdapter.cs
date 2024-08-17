@@ -324,7 +324,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Warning("Could not set password via Invoke {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Warning("Could not set password via Invoke {@Error}", ex);
                     //The following works outside the domain but may have issues with certs
                     using (PrincipalContext pContext = new PrincipalContext(
                         ContextType.Domain,
@@ -356,7 +356,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             catch (Exception ex)
             {
 
-                Loggers.ActiveDirectryLogger.Error("Error setting entry password {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error("Error setting entry password {@Error}", ex);
                 if (!Debugger.IsAttached)
                     throw new ApplicationException("Unable to set password", ex);
                 else return true;
