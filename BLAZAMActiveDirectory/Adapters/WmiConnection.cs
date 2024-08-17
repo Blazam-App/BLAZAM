@@ -119,7 +119,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Error polling drives {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error("Error polling drives {@Error}", ex);
                 }
                 return drives;
             }
@@ -145,7 +145,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Error polling printers {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error("Error polling printers {@Error}", ex);
                 }
                
                
@@ -173,7 +173,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("WMI query failure: " + ex.Message);
+                Loggers.ActiveDirectoryLogger.Error("WMI query failure: " + ex.Message);
 
             }
             return new();

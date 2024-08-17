@@ -288,12 +288,12 @@ namespace BLAZAM.ActiveDirectory
                         //not usernam or password is incorrect
                         if (ex.HResult != -2147023570)
                         {
-                            Loggers.ActiveDirectryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
+                            Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
 
                         }
                     }
                     catch (Exception ex) {
-                        Loggers.ActiveDirectryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
+                        Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
                     }
                 }
                 await Task.Delay(30000);
@@ -319,7 +319,7 @@ namespace BLAZAM.ActiveDirectory
             //Set status flag
             Status = DirectoryConnectionStatus.Connecting;
 
-            Loggers.ActiveDirectryLogger.Information("Initiating Active Directory connection");
+            Loggers.ActiveDirectoryLogger.Information("Initiating Active Directory connection");
             try
             {
                 //We want the latest settings each connection attempt so we make a new database connection
@@ -327,12 +327,12 @@ namespace BLAZAM.ActiveDirectory
                 //This may be unneccessary
                 Context = Factory.CreateDbContext();
 
-                Loggers.ActiveDirectryLogger.Information("Connecting to settings database");
+                Loggers.ActiveDirectoryLogger.Information("Connecting to settings database");
 
                 //Proceed no further if the DB is down
                 if (Context.Status == ServiceConnectionState.Up)
                 {
-                    Loggers.ActiveDirectryLogger.Information("Database connected");
+                    Loggers.ActiveDirectoryLogger.Information("Database connected");
                     //No reason connecting if we're already connected
                     if (Status != DirectoryConnectionStatus.OK)
                     {
@@ -344,33 +344,33 @@ namespace BLAZAM.ActiveDirectory
                         {
                             ConnectionSettings = ad;
 
-                            Loggers.ActiveDirectryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
+                            Loggers.ActiveDirectoryLogger.Information("Active Directory settings found in database. {@DirectorySettings}", ad);
                             //We need to determine what security options to use when authenticating
                             //based on the settings in the DB
 
 
                             if (ad != null && ad.FQDN != null && ad.Username != null)
                             {
-                                Loggers.ActiveDirectryLogger.Information("Checking Active Directory port status", ad.ServerAddress, ad.ServerPort);
+                                Loggers.ActiveDirectoryLogger.Information("Checking Active Directory port status", ad.ServerAddress, ad.ServerPort);
 
                                 if (NetworkTools.IsPortOpen(ad.ServerAddress, ad.ServerPort))
                                 {
-                                    Loggers.ActiveDirectryLogger.Information("Active Directory port is open.");
+                                    Loggers.ActiveDirectoryLogger.Information("Active Directory port is open.");
 
                                     try
                                     {
-                                        Loggers.ActiveDirectryLogger.Information("Connecting Active Directory context");
+                                        Loggers.ActiveDirectoryLogger.Information("Connecting Active Directory context");
                                         var pass = _encryption.DecryptObject<string>(ad.Password);
                                         AppRootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.ApplicationBaseDN, ad.Username, pass, AuthType);
-                                        Loggers.ActiveDirectryLogger.Information("App Active Directory context connected");
+                                        Loggers.ActiveDirectoryLogger.Information("App Active Directory context connected");
 
                                         RootDirectoryEntry = new DirectoryEntry("LDAP://" + ad.ServerAddress + ":" + ad.ServerPort + "/" + ad.FQDN.FqdnToDN(), ad.Username, pass, AuthType);
 
-                                        Loggers.ActiveDirectryLogger.Information("Root Active Directory context connected");
+                                        Loggers.ActiveDirectoryLogger.Information("Root Active Directory context connected");
                                         pass = null;
                                         //var nativeEntry = DirectoryEntry.NativeObject;
                                         //Perform Auth check
-                                        Loggers.ActiveDirectryLogger.Information("Performing Active Directory connection test");
+                                        Loggers.ActiveDirectoryLogger.Information("Performing Active Directory connection test");
 
                                         var search = new ADSearch(this)
                                         {
@@ -420,7 +420,7 @@ namespace BLAZAM.ActiveDirectory
                                         {
                                             if (results.Count > 0)
                                             {
-                                                Loggers.ActiveDirectryLogger.Information("Active Directory test passed");
+                                                Loggers.ActiveDirectoryLogger.Information("Active Directory test passed");
 
                                                 Status = DirectoryConnectionStatus.OK;
                                                 //_timer = new Timer(KeepAlive, null, 0, 30000);
@@ -430,7 +430,7 @@ namespace BLAZAM.ActiveDirectory
                                             }
                                             else
                                             {
-                                                Loggers.ActiveDirectryLogger.Warning("Active Directory test failed");
+                                                Loggers.ActiveDirectoryLogger.Warning("Active Directory test failed");
 
                                                 Status = DirectoryConnectionStatus.BadConfiguration;
                                                 if (FailedConnectionAttempts < 10)
@@ -450,7 +450,7 @@ namespace BLAZAM.ActiveDirectory
                                                     Status = DirectoryConnectionStatus.BadCredentials;
                                                     break;
                                                 default:
-                                                    Loggers.ActiveDirectryLogger.Warning("Error collecting domain controllers {@Error}", ex);
+                                                    Loggers.ActiveDirectoryLogger.Warning("Error collecting domain controllers {@Error}", ex);
                                                     break;
                                             }
                                         }
@@ -462,7 +462,7 @@ namespace BLAZAM.ActiveDirectory
 
                                     catch (DirectoryOperationException ex)
                                     {
-                                        Loggers.ActiveDirectryLogger.Warning("Error connecting to Active Directory {@Error}", ex);
+                                        Loggers.ActiveDirectoryLogger.Warning("Error connecting to Active Directory {@Error}", ex);
 
                                         Status = DirectoryConnectionStatus.BadConfiguration;
                                         if (FailedConnectionAttempts < 10)
@@ -471,7 +471,7 @@ namespace BLAZAM.ActiveDirectory
                                     }
                                     catch (CryptographicException ex)
                                     {
-                                        Loggers.ActiveDirectryLogger.Warning("Unable to decrypt Active Directory password {@Error}", ex);
+                                        Loggers.ActiveDirectoryLogger.Warning("Unable to decrypt Active Directory password {@Error}", ex);
                                         Status = DirectoryConnectionStatus.UnreachableConfiguration;
                                         if (FailedConnectionAttempts < 10)
                                             FailedConnectionAttempts++; ;
@@ -480,7 +480,7 @@ namespace BLAZAM.ActiveDirectory
                                     }
                                     catch (Exception ex)
                                     {
-                                        Loggers.ActiveDirectryLogger.Error("Unexpected Error connecting to Active Directory {@Error}", ex);
+                                        Loggers.ActiveDirectoryLogger.Error("Unexpected Error connecting to Active Directory {@Error}", ex);
                                         Status = DirectoryConnectionStatus.BadConfiguration;
                                         if (FailedConnectionAttempts < 10)
                                             FailedConnectionAttempts++; ;
@@ -490,7 +490,7 @@ namespace BLAZAM.ActiveDirectory
                                 }
                                 else
                                 {
-                                    Loggers.ActiveDirectryLogger.Warning("Active Directory port is not open");
+                                    Loggers.ActiveDirectoryLogger.Warning("Active Directory port is not open");
 
                                     Status = DirectoryConnectionStatus.ServerDown;
                                     if (FailedConnectionAttempts < 10)
@@ -509,7 +509,7 @@ namespace BLAZAM.ActiveDirectory
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Warning("Unexpected Error connecting to Active Directory {@Error}", ex);
 
                 Status = DirectoryConnectionStatus.ServerDown;
                 if (FailedConnectionAttempts < 10)
@@ -537,7 +537,7 @@ namespace BLAZAM.ActiveDirectory
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Warning("Could not get domain controllers directly {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Warning("Could not get domain controllers directly {@Error}", ex);
             }
 
         }
@@ -577,7 +577,7 @@ namespace BLAZAM.ActiveDirectory
 
                             try
                             {
-                                Loggers.ActiveDirectryLogger.Information("Authenticating Active Directory credentials");
+                                Loggers.ActiveDirectoryLogger.Information("Authenticating Active Directory credentials");
 
 
 
@@ -620,19 +620,19 @@ namespace BLAZAM.ActiveDirectory
                             }
                             catch (DirectoryServicesCOMException ex)
                             {
-                                Loggers.ActiveDirectryLogger.Error("Error authenticating user: " + ex.Message + " {@Error}", ex);
+                                Loggers.ActiveDirectoryLogger.Error("Error authenticating user: " + ex.Message + " {@Error}", ex);
                                 switch (ex.Message)
                                 {
                                     case "The user name or password is incorrect.":
-                                        Loggers.ActiveDirectryLogger.Debug("Authentication failure: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
+                                        Loggers.ActiveDirectoryLogger.Debug("Authentication failure: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
                                         return null;
                                 }
                             }
                             catch (Exception ex)
                             {
-                                Loggers.ActiveDirectryLogger.Debug("Authentication failure: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
+                                Loggers.ActiveDirectoryLogger.Debug("Authentication failure: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
 
-                                Loggers.ActiveDirectryLogger.Error("Error while authenticating credentials. {@Error}", ex);
+                                Loggers.ActiveDirectoryLogger.Error("Error while authenticating credentials. {@Error}", ex);
                             }
 
 
@@ -642,7 +642,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (LdapException ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Error authenticating user: " + ex.Message + " {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error("Error authenticating user: " + ex.Message + " {@Error}", ex);
                     switch (ex.Message)
                     {
                         case "The user name or password is incorrect.":
@@ -711,18 +711,18 @@ namespace BLAZAM.ActiveDirectory
                                 });
                                 if (authResult == true)
                                 {
-                                    Loggers.ActiveDirectryLogger.Debug("Authentication success: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
+                                    Loggers.ActiveDirectoryLogger.Debug("Authentication success: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
                                     return findUser;
                                 }
                                 throw new ApplicationException("Local AD Auth Failed");
                             }
                             catch (Exception localAttemptEx)
                             {
-                                Loggers.ActiveDirectryLogger.Warning("Local AD auth attempt failed. Attempting remote AD authentication. {@Error}", localAttemptEx);
+                                Loggers.ActiveDirectoryLogger.Warning("Local AD auth attempt failed. Attempting remote AD authentication. {@Error}", localAttemptEx);
 
                                 try
                                 {
-                                    Loggers.ActiveDirectryLogger.Information("Authenticating Active Directory credentials");
+                                    Loggers.ActiveDirectoryLogger.Information("Authenticating Active Directory credentials");
 
 
 
@@ -740,7 +740,7 @@ namespace BLAZAM.ActiveDirectory
                                     var test4 = test3?.Parent;
 
                                     _authenticatedContext.Dispose();
-                                    Loggers.ActiveDirectryLogger.Debug("Authentication success: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
+                                    Loggers.ActiveDirectoryLogger.Debug("Authentication success: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
 
                                     return findUser;
 
@@ -760,19 +760,19 @@ namespace BLAZAM.ActiveDirectory
                                 }
                                 catch (DirectoryServicesCOMException ex)
                                 {
-                                    Loggers.ActiveDirectryLogger.Error("Error authenticating user: " + ex.Message + " {@Error}", ex);
+                                    Loggers.ActiveDirectoryLogger.Error("Error authenticating user: " + ex.Message + " {@Error}", ex);
                                     switch (ex.Message)
                                     {
                                         case "The user name or password is incorrect.":
-                                            Loggers.ActiveDirectryLogger.Debug("Authentication failure: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
+                                            Loggers.ActiveDirectoryLogger.Debug("Authentication failure: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
                                             return null;
                                     }
                                 }
                                 catch (Exception ex)
                                 {
-                                    Loggers.ActiveDirectryLogger.Debug("Authentication failure: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
+                                    Loggers.ActiveDirectoryLogger.Debug("Authentication failure: " + (DateTime.Now - startOfLogon).TotalMilliseconds + "ms");
 
-                                    Loggers.ActiveDirectryLogger.Error("Error while authenticating credentials. {@Error}", ex);
+                                    Loggers.ActiveDirectoryLogger.Error("Error while authenticating credentials. {@Error}", ex);
                                 }
                             }
                            
@@ -784,7 +784,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (LdapException ex)
                 {
-                    Loggers.ActiveDirectryLogger.Debug("Error authenticating user: " + ex.Message + " {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Debug("Error authenticating user: " + ex.Message + " {@Error}", ex);
                     switch (ex.Message)
                     {
                         case "The user name or password is incorrect.":
@@ -842,7 +842,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Error attempting to restore " + model.CanonicalName + "{@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error("Error attempting to restore " + model.CanonicalName + "{@Error}", ex);
                 }
             }
             return false;

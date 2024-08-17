@@ -37,7 +37,7 @@ namespace BLAZAM.Common.Data
                 if (false == returnValue)
                 {
                     int ret = Marshal.GetLastWin32Error();
-                    Loggers.ActiveDirectryLogger.Warning("LogonUser failed with error code : {0}", ret);
+                    Loggers.ActiveDirectoryLogger.Warning("LogonUser failed with error code : {0}", ret);
                     var exception = new System.ComponentModel.Win32Exception(ret);
                     if (exception.NativeErrorCode == 1326)
                     {
@@ -91,7 +91,7 @@ namespace BLAZAM.Common.Data
 
                 //Console.WriteLine("Did LogonUser Succeed? " + (returnValue ? "Yes" : "No"));
                 // Check the identity.
-                Loggers.ActiveDirectryLogger.Information("Before impersonation: " + WindowsIdentity.GetCurrent().Name);
+                Loggers.ActiveDirectoryLogger.Information("Before impersonation: " + WindowsIdentity.GetCurrent().Name);
 
                 try
                 {
@@ -106,10 +106,10 @@ namespace BLAZAM.Common.Data
                           {
                               var exception = new ApplicationException("Impersonation running as application identity");
                               ExceptionDispatchInfo.SetCurrentStackTrace(exception);
-                              Loggers.ActiveDirectryLogger.Error("Impersonation running as application identity  {@Error}", exception);
+                              Loggers.ActiveDirectoryLogger.Error("Impersonation running as application identity  {@Error}", exception);
 
                           }
-                          Loggers.ActiveDirectryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);
+                          Loggers.ActiveDirectoryLogger.Information("During impersonation: " + WindowsIdentity.GetCurrent().Name);
                           result = task.Invoke();
                       }
                       );
@@ -117,7 +117,7 @@ namespace BLAZAM.Common.Data
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Error running impersonated action " + impersonationUser.Username + " {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error("Error running impersonated action " + impersonationUser.Username + " {@Error}", ex);
                 }
                 finally
                 {
@@ -126,7 +126,7 @@ namespace BLAZAM.Common.Data
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("Error trying to impersonate " + impersonationUser.Username + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error("Error trying to impersonate " + impersonationUser.Username + " {@Error}", ex);
             }
 
             return result;
@@ -170,7 +170,7 @@ namespace BLAZAM.Common.Data
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("Error trying to impersonate " + impersonationUser.Username + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error("Error trying to impersonate " + impersonationUser.Username + " {@Error}", ex);
             }
             return output;
 

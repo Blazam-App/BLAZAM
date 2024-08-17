@@ -220,7 +220,7 @@ namespace BLAZAM.Helpers
                 }
                 else
                 {
-                    Loggers.ActiveDirectryLogger.Warning("Unable to match ad object type. {Object}", sr);
+                    Loggers.ActiveDirectoryLogger.Warning("Unable to match ad object type. {Object}", sr);
                     
                 }
             }

@@ -252,7 +252,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("Directory Entry failed to connect {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error("Directory Entry failed to connect {@Error}", ex);
             }
 
             SearchState = SearchState.Completed;

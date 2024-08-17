@@ -67,7 +67,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("Search failed {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error("Search failed {@Error}", ex);
             }
             return null;
             // Set the filter to look for a specific user
