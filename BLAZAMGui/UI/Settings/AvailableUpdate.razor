@@ -37,6 +37,10 @@
                 </MudStack>
                 <MudText>@Update.PrequisiteMessage</MudText>
             }
+            @if(ApplicationInfo.InDebugMode && CurrentUser.State.IsSuperAdmin)
+            {
+                <MudText>@Update.UpdateCommand</MudText>
+            }
         </MudCard>
 
 

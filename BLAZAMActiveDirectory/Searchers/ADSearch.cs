@@ -2,23 +2,11 @@
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.DirectoryServices;
-using System.DirectoryServices.Protocols;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -61,7 +49,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// <summary>
         /// Indicates whether the search is single level or recursive default is recursive
         /// </summary>
-        public System.DirectoryServices.SearchScope SearchScope { get; set; } = System.DirectoryServices.SearchScope.Subtree;
+        public SearchScope SearchScope { get; set; } = SearchScope.Subtree;
 
         /// <summary>
         /// The realtime results of this search. 
@@ -81,6 +69,12 @@ namespace BLAZAM.ActiveDirectory.Searchers
         public List<IDirectoryEntryAdapter> Results { get; set; } = new();
         public string LdapQuery { get; private set; }
         public bool SearchDeleted { get; set; } = false;
+        private IActiveDirectoryContext? _currentUserActiveDirectoryContext;
+
+        public ADSearch(IActiveDirectoryContext? currentUserActiveDirectoryContext)
+        {
+            _currentUserActiveDirectoryContext = currentUserActiveDirectoryContext;
+        }
 
         public async Task<List<I>> SearchAsync<T, I>(CancellationToken? token = null) where T : I, IDirectoryEntryAdapter, new()
         {
@@ -119,7 +113,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             DirectorySearcher searcher;
             try
             {
-                SearchRoot ??= ActiveDirectoryContext.Instance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
+                SearchRoot ??= ActiveDirectoryContext.SystemInstance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
                 var pageOffset = 1;
                 
                 searcher = new DirectorySearcher(SearchRoot)
@@ -258,7 +252,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("Directory Entry failed to connect {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error("Directory Entry failed to connect {@Error}", ex);
             }
 
             SearchState = SearchState.Completed;
@@ -369,11 +363,21 @@ namespace BLAZAM.ActiveDirectory.Searchers
             cancellationToken = new CancellationToken(true);
 
         }
+
+
+
         private void AddResults<T, I>(SearchResultCollection lastResults) where T : I, IDirectoryEntryAdapter, new()
         {
+            List<IDirectoryEntryAdapter> last = new();
+            if (_currentUserActiveDirectoryContext != null)
+            {
+                last = lastResults.Encapsulate(_currentUserActiveDirectoryContext);
 
-
-            var last = lastResults.Encapsulate();
+            }
+            else
+            {
+                last = lastResults.Encapsulate(ActiveDirectoryContext.SystemInstance);
+            }
             Results.AddRange(last);
 
             ResultsCollected?.Invoke(last);

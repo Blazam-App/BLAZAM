@@ -21,14 +21,14 @@
             <MudTextField Label="@AppLocalization["Encryption Seed String"]" ReadOnly=true Value="@(ApplicationInfo.InDemoMode&&CurrentUser.Username=="Demo"?AppLocalization["Private"]:Encryption.Instance?.KeySeedString)" />
 
         </SettingsField>
-    }
+   
 
 
     <MudDivider Class="my-6" />
     <MudText Typo="Typo.h6">@AppLocalization["Data Collection Settings"]</MudText>
 
 
-  
+
 
     <SettingsField Label="@AppLocalization["Send logs to developer"]">
         <MudText>
@@ -50,7 +50,7 @@
                    @bind-Value="@settings.SendDeveloperAnalytics" />
 
     </SettingsField>
-
+    }
     <MudDivider Class="my-6" />
     <MudText Typo="Typo.h6">@AppLocalization["Logging"]</MudText>
 
@@ -61,7 +61,7 @@
     </SettingsField>
 
     <SettingsField Label=@AppLocalization["Logs"]>
-       
+
 
         <MudLink Href="/download/logs" Target="Target.Blank">
             <MudButton Variant=Variant.Outlined Color="Color.Primary">Download Logs</MudButton>
@@ -78,9 +78,10 @@
 
     <ProcessResourceUsage Process="@ApplicationInfo.RunningProcess" />
 
+    <MudDivider Class="my-6" />
+    <MudText Typo="Typo.h6">@AppLocalization["Jobs Monitor"]</MudText>
 
-
-   
+    <JobsMonitor />
 
 
     <SettingsField>

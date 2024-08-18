@@ -9,32 +9,32 @@ namespace BLAZAM.FileSystem
         public SystemFile(string path) : base(path)
         {
         }
-        public bool Exists => File.Exists(Path);
+        public bool Exists => File.Exists(FullPath);
 
 
-        public string Name => System.IO.Path.GetFileNameWithoutExtension(Path);
-        public string Extension => System.IO.Path.GetExtension(Path);
-        public SystemDirectory ParentDirectory => new SystemDirectory(System.IO.Path.GetDirectoryName(Path));
+        public string Name => System.IO.Path.GetFileNameWithoutExtension(FullPath);
+        public string Extension => System.IO.Path.GetExtension(FullPath);
+        public SystemDirectory ParentDirectory => new SystemDirectory(System.IO.Path.GetDirectoryName(FullPath));
 
         public async Task<byte[]> ReadAllBytesAsync()
         {
-            return await File.ReadAllBytesAsync(Path);
+            return await File.ReadAllBytesAsync(FullPath);
         }
         public byte[] ReadAllBytes()
         {
-            return File.ReadAllBytes(Path);
+            return File.ReadAllBytes(FullPath);
         }
         public string ReadAllText()
         {
-            return File.ReadAllText(Path);
+            return File.ReadAllText(FullPath);
         }
         public bool WriteAllText(string? text)
         {
-            File.WriteAllText(Path, text);
+            File.WriteAllText(FullPath, text);
             return true;
         }
 
-        public DateTime LastModified { get => File.GetLastWriteTime(Path); }
+        public DateTime LastModified { get => File.GetLastWriteTime(FullPath); }
 
         public TimeSpan SinceLastModified { get => DateTime.Now - LastModified; }
         /// <summary>
@@ -54,12 +54,12 @@ namespace BLAZAM.FileSystem
 
         public void Delete()
         {
-            File.Delete(Path);
+            File.Delete(FullPath);
         }
 
         public FileStream OpenReadStream()
         {
-            return new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.None, bufferSize: 4096, useAsync: true);
+            return new FileStream(FullPath, FileMode.Open, FileAccess.Read, FileShare.None, bufferSize: 4096, useAsync: true);
         }
         /// <summary>
         /// Returns an opened stream reader to this file
@@ -67,7 +67,7 @@ namespace BLAZAM.FileSystem
         /// <returns></returns>
         public FileStream OpenWriteStream()
         {
-            return new FileStream(Path, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
+            return new FileStream(FullPath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace BLAZAM.FileSystem
             {
                 ParentDirectory.EnsureCreated();
             }
-            var stream = new FileStream(Path, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, bufferSize: 4096, useAsync: true);
+            var stream = new FileStream(FullPath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, bufferSize: 4096, useAsync: true);
             stream.Close();
         }
     }

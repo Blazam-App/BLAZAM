@@ -2,6 +2,7 @@
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
+using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Jobs;
 using System.DirectoryServices;
 
@@ -242,6 +243,12 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         IEnumerable<IDirectoryEntryAdapter> Children { get; }
         IEnumerable<IDirectoryEntryAdapter>? CachedChildren { get; set; }
 
+        List<PermissionMapping> InheritedPermissionMappings { get; }
+        IQueryable<PermissionMapping> AppliedPermissionMappings { get; }
+        List<PermissionMapping> DirectPermissionMappings { get; }
+        IQueryable<PermissionMapping> OffspringPermissionMappings { get; }
+
+
         /// <summary>
         /// Sends all staged changes to the Active Directory server
         /// </summary>
@@ -254,7 +261,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         Task<IJob> CommitChangesAsync(IJob? commitJob = null);
 
         /// <summary>
-        /// Resets the current entry state to it's inital state
+        /// Resets the current entry state to it's initial state
         /// </summary>
         void DiscardChanges();
 

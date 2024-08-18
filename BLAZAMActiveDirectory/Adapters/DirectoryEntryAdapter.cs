@@ -415,14 +415,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (DirectoryEntry != null)
                     DirectoryEntry.Properties["objectclass"].Value = value;
                 else
-                    Loggers.ActiveDirectryLogger.Error("Error setting objectClass for " + DN);
+                    Loggers.ActiveDirectoryLogger.Error("Error setting objectClass for " + DN);
 
             }
         }
 
         public virtual void MoveTo(IADOrganizationalUnit parentOUToMoveTo)
         {
-            CommitSteps.Add(new Jobs.JobStep("Move to OU", (JobStep? step) =>
+            CommitSteps.Add(new JobStep("Move to OU", (JobStep step) =>
               {
                   parentOUToMoveTo.EnsureDirectoryEntry();
                   if (parentOUToMoveTo.DirectoryEntry != null)
@@ -443,7 +443,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             if (DirectoryEntry == null || DirectoryEntry.Parent == null) return null;
 
-            var parent = DirectoryEntry.Parent.Encapsulate();
+            var parent = DirectoryEntry.Parent.Encapsulate(Directory);
 
             return parent;
 
@@ -471,7 +471,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 return CurrentUser.HasPermission(DN, allowSelector, denySelector, nestedSearch);
             }catch(Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
                 return false;
             }
         }
@@ -543,11 +543,60 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected virtual bool HasActionPermission(ObjectAction action,ActiveDirectoryObjectType? objectType=null)
         {
+            if(CurrentUser==null)return false;
             if (objectType == null) objectType = ObjectType; 
             return CurrentUser.HasActionPermission(DN,action, objectType.Value);
         }
 
         public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }
+
+
+        public List<PermissionMapping> InheritedPermissionMappings
+        {
+            get
+            {
+                return AppliedPermissionMappings.Where(m => !m.OU.Equals(DN)).ToList();
+            }
+        }
+        public List<PermissionMapping> DirectPermissionMappings
+        {
+            get
+            {
+
+                return AppliedPermissionMappings.Where(m => m.OU.Equals(DN)).ToList();
+
+            }
+        }
+
+        private IQueryable<PermissionMapping> _appliedPermissionMappings;
+
+        public IQueryable<PermissionMapping> AppliedPermissionMappings
+        {
+            get
+            {
+                if (_appliedPermissionMappings == null)
+                {
+
+                    _appliedPermissionMappings = DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => DN.Contains(m.OU)).OrderByDescending(m => m.OU.Length);
+                }
+                return _appliedPermissionMappings;
+            }
+        }
+        private IQueryable<PermissionMapping> _offspringPermissionMappings;
+        public IQueryable<PermissionMapping> OffspringPermissionMappings
+        {
+            get
+            {
+                if (_offspringPermissionMappings == null)
+                {
+
+                    _offspringPermissionMappings = DbFactory.CreateDbContext().PermissionMap.Include(m => m.PermissionDelegates).Where(m => m.OU.Contains(DN) && m.OU != DN).OrderByDescending(m => m.OU.Length);
+                }
+                return _offspringPermissionMappings;
+            }
+        }
+
+
 
 
         public virtual bool HasUnsavedChanges
@@ -756,7 +805,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     //Existing Active Directory Entry
                     if (DirectoryEntry == null)
                     {
-                        Loggers.ActiveDirectryLogger.Error("The directory entry for an existing " +
+                        Loggers.ActiveDirectoryLogger.Error("The directory entry for an existing " +
                             " entry is somehow missing on commit." + " {@Error}", new ApplicationException("DirectoryEntry is null"));
                         throw new ApplicationException("DirectoryEntry is null");
                     }
@@ -789,10 +838,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                              DirectoryEntry.CommitChanges();
                              return true;
                          });
-                        commitJob.Steps.Add(propertyStep);
+                        commitJob.AddStep(propertyStep);
 
                     }
-                    commitJob.Steps.Add(commitStep);
+                    commitJob.AddStep(commitStep);
 
                 }
                 else
@@ -800,7 +849,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     if (DirectoryEntry == null)
                     {
-                        Loggers.ActiveDirectryLogger.Error("The directory entry for new entry " + DN +
+                        Loggers.ActiveDirectoryLogger.Error("The directory entry for new entry " + DN +
                             " is somehow missing on commit." + " {@Error}", new ApplicationException("DirectoryEntry is null"));
                         throw new ApplicationException("DirectoryEntry is null");
                     }
@@ -814,7 +863,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             DirectoryEntry.Properties[p.Key].Value = p.Value;
                             return true;
                         });
-                        commitJob.Steps.Add(propertyStep);
+                        commitJob.AddStep(propertyStep);
                     }
                 }
 
@@ -822,7 +871,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 //Inject custom commit steps
                 foreach (var step in CommitSteps)
                 {
-                    commitJob.Steps.Add(step);
+                    commitJob.AddStep(step);
+                    commitJob.AddStep(step);
 
 
                 }
@@ -832,22 +882,23 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         foreach (var step in PostCommitSteps)
                         {
-                            commitJob.Steps.Add(step);
+                            commitJob.AddStep(step);
                         }
                         //commitJob.Steps.Add(CommitStep);
 
                     }
                 }
-                commitJob.Steps.Add(commitStep);
+                commitJob.AddStep(commitStep);
+                commitJob.AddStep(commitStep);
                 if (NewEntry)
                 {
                     if (PostCommitSteps.Count > 0)
                     {
                         foreach (var step in PostCommitSteps)
                         {
-                            commitJob.Steps.Add(step);
+                            commitJob.AddStep(step);
                         }
-                        commitJob.Steps.Add(commitStep);
+                        commitJob.AddStep(commitStep);
 
                     }
                 }
@@ -907,7 +958,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
             }
         }
 
@@ -1029,7 +1080,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Unexpected error while getting property value. {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error("Unexpected error while getting property value. {@Error}", ex);
                 }
 
 

@@ -8,6 +8,9 @@ html, body {
 h1:focus {
     outline: none;
 }
+.d-contents{
+    display:contents !important;
+}
 .blur-background {
     backdrop-filter: blur(10px);
 }

@@ -49,7 +49,7 @@
     {
         get
         {
-            IJob job = new Job("Test Job");
+            IJob job = new Job("Test Job",requestingUser:CurrentUser.State.Username);
             IJob job2 = new Job("Nested Job");
             IJobStep step1 = new JobStep("Regular Step Passes", (step) =>
             {
@@ -66,13 +66,13 @@
             IJobStep step5 = new JobStep("Nested Step Fails", (step) => { Task.Delay(2000).Wait(); return false; });
             IJobStep step6 = new JobStep("Nested Step Throws", bool(step) => { Task.Delay(2000).Wait(); throw new ApplicationException("Test exception"); });
 
-            job.Steps.Add(step1);
-            job.Steps.Add(step2);
-            job.Steps.Add(step3);
-            job2.Steps.Add(step4);
-            job2.Steps.Add(step5);
-            job2.Steps.Add(step6);
-            job.Steps.Add((IJobStep)job2);
+            job.AddStep(step1);
+            job.AddStep(step2);
+            job.AddStep(step3);
+            job2.AddStep(step4);
+            job2.AddStep(step5);
+            job2.AddStep(step6);
+            job.AddStep((IJobStep)job2);
             return job;
         }
     }

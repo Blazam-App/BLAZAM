@@ -8,20 +8,20 @@
             <MudTooltip Text="@AppLocalization["Discard Changes"]">
 
             <MudFab Color=Color.Error
-                    Icon="@Icons.Material.Outlined.Undo"
+                    StartIcon="@Icons.Material.Outlined.Undo"
                     OnClick="@(()=>{DiscardChanges.InvokeAsync();})" />
             </MudTooltip>
 
 
             <MudTooltip Text="@AppLocalization["Save Changes"]">
                 <MudFab Color=Color.Success
-                        Icon="@Icons.Material.Filled.Save"
+                        StartIcon="@Icons.Material.Filled.Save"
                         OnClick="@(()=>{SaveChanges.InvokeAsync();})" />
             </MudTooltip>
 
         </MudStack>
 
-        <MudChip Color=Color.Info>
+        <MudChip T="string" Color=Color.Info>
             Unsaved Changes
         </MudChip>
         </MudStack>

@@ -909,6 +909,15 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<bool>("Block")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool>("ByEmail")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("InApp")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("OU")
                         .IsRequired()
                         .HasColumnType("longtext");

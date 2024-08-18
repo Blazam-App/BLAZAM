@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>BLAZAM.Session</RootNamespace>
@@ -10,7 +10,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
-    <ProjectReference Include="..\BLAZAMNotifications\BLAZAMNotifications.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -43,7 +43,7 @@ namespace BLAZAM.Helpers
             var list = enumerable.ToList();
             if (list.Count() < 1) return list;
             List<IDirectoryEntryAdapter> mathingItems=new List<IDirectoryEntryAdapter>();
-            for (int x =1; x < list.Count(); x++)
+            for (int x =0; x < list.Count(); x++)
             {
 
                 if (matchingPredicate.Invoke(list[x]))
@@ -60,18 +60,9 @@ namespace BLAZAM.Helpers
                 list.InsertRange(0,mathingItems.OrderBy(x=>x.CanonicalName));
             }
             return list.AsEnumerable();
-            return default;
         }
 
-        public static Process? Shadow(this IRemoteSession session, bool withoutPermission = false)
-        {
-            if (session == null || session.Server==null) return null;
-            string command = "mstsc.exe";
-            string arguments = "/v:" + session.Server.ServerName + " /shadow:" + session.SessionId;
-            if (withoutPermission) arguments += " /noConsentPrompt";
-            return Process.Start(command, arguments);
-            //Debug.TrackEvent("Shadow (Consent)", properties);
-        }
+        
 
         public static string FqdnToDn(string fqdn)
         {
@@ -132,7 +123,7 @@ namespace BLAZAM.Helpers
         /// </summary>
         /// <param name="r"></param>
         /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
-        public static List<IDirectoryEntryAdapter> Encapsulate(this SearchResultCollection r)
+        public static List<IDirectoryEntryAdapter> Encapsulate(this SearchResultCollection r,IActiveDirectoryContext context)
         {
             List<IDirectoryEntryAdapter> objects = new();
 
@@ -171,7 +162,7 @@ namespace BLAZAM.Helpers
                         }
                         if (thisObject != null)
                         {
-                            thisObject.Parse(directory: ActiveDirectoryContext.Instance, searchResult: sr);
+                            thisObject.Parse(directory: context, searchResult: sr);
 
 
                             objects.Add(thisObject);
@@ -190,7 +181,7 @@ namespace BLAZAM.Helpers
         /// <param name="r"></param>
         /// <returns>A <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
 
-        public static IDirectoryEntryAdapter? Encapsulate(this DirectoryEntry sr)
+        public static IDirectoryEntryAdapter? Encapsulate(this DirectoryEntry sr, IActiveDirectoryContext context)
         {
             IDirectoryEntryAdapter? thisObject = null;
 
@@ -222,14 +213,14 @@ namespace BLAZAM.Helpers
                 }
                 if (thisObject != null)
                 {
-                    thisObject.Parse(directory: ActiveDirectoryContext.Instance, directoryEntry: sr);
+                    thisObject.Parse(directory: context, directoryEntry: sr);
 
                     return thisObject;
 
                 }
                 else
                 {
-                    Loggers.ActiveDirectryLogger.Warning("Unable to match ad object type. {Object}", sr);
+                    Loggers.ActiveDirectoryLogger.Warning("Unable to match ad object type. {Object}", sr);
                     
                 }
             }
@@ -243,7 +234,7 @@ namespace BLAZAM.Helpers
             /// </remarks>
             /// <param name="r"></param>
             /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
-            public static List<IDirectoryEntryAdapter> Encapsulate(this DirectoryEntries r)
+            public static List<IDirectoryEntryAdapter> Encapsulate(this DirectoryEntries r, IActiveDirectoryContext context)
         {
             List<IDirectoryEntryAdapter> objects = new();
 
@@ -253,7 +244,7 @@ namespace BLAZAM.Helpers
 
                 foreach (DirectoryEntry sr in r)
                 {
-                   var encapsulated = Encapsulate(sr);
+                   var encapsulated = Encapsulate(sr,context);
                     if(encapsulated != null)
                          objects.Add(encapsulated);
 

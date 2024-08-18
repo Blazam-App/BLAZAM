@@ -12,17 +12,17 @@
 
             <DirectoryEntryViewHeader EditMode="@EditMode"
                                       DirectoryEntry="@Computer"
-                                      OnAssignTo="@(()=>{AssignToModal?.Show();})"
-                                      OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
+                                      OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
+                                      OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
                                       OnDelete="@DeleteComputer"
                                       OnDisable="@(async()=>{Computer.Enabled=false; await RefreshEntryComponents();})"
                                       OnEnable="@(async()=>{Computer.Enabled=true; await RefreshEntryComponents();})"
-                                      OnMove="@(()=>{MoveToModal?.Show();})"
-                                      OnRename="@(()=>{RenameModal?.Show();})"
-                                      OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
+                                      OnMove="@(()=>{MoveToModal?.ShowAsync();})"
+                                      OnRename="@(()=>{RenameModal?.ShowAsync();})"
+                                      OnResetPassword="@(()=>{ChangePasswordModal?.ShowAsync();})"
                                       OnToggleEditMode="ToggleEditMode"
                                       OnUnlock="@Unlock"
-                                      OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})" />
+                                      OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})" />
             <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
             </MudOverlay>
@@ -67,7 +67,7 @@
 
                                 <Section Title=@AppLocalization["Groups"]>
                                     <MudStack Row=true Class="@_fieldMudStackClasses">
-                                        <MemberOfList AssignToClicked=@(()=>{AssignToModal?.Show();}) Model="Computer" />
+                                        <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="Computer" />
 
                                     </MudStack>
 
@@ -283,6 +283,8 @@
             {
                 Computer.Delete();
                 SnackBarService.Success(Computer.CanonicalName + " has been deleted.");
+                await AuditLogger.Computer.Deleted(Computer);
+                _ = OUNotificationService.PostAsync(Computer, NotificationType.Delete);
 
                 Nav.NavigateTo("/users/search");
 
@@ -304,6 +306,8 @@
 
 
                 await AuditLogger.Computer.Changed(Computer, Computer.Changes);
+                _ = OUNotificationService.PostAsync(Computer, NotificationType.Modify);
+
                 EditMode = false;
                 Nav.WarnOnNavigation = false;
                 SnackBarService.Success("The changes made to this computer have been saved.");

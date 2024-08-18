@@ -1,50 +1,54 @@
 ﻿@inherits AppModalContent
 @if (User != null && _privateUserInstance != null)
 {
-       
-            <MudTextField AutoFocus=true Label="@AppLocalization["First Name"]" @bind-Value="@_privateUserInstance.GivenName" />
+    
+
+    <MudStack Class="px-7">
+        <MudTextField AutoFocus=true Label="@AppLocalization["First Name"]" @bind-Value="@_privateUserInstance.GivenName" />
 
 
 
-        
-
-            <MudTextField Label="@AppLocalization["Middle Name"]" @bind-Value="@_privateUserInstance.MiddleName" />
 
 
-
-        
-       
-            <MudTextField Label="@AppLocalization["Last Name"]" @bind-Value="@_privateUserInstance.Surname" />
+        <MudTextField Label="@AppLocalization["Middle Name"]" @bind-Value="@_privateUserInstance.MiddleName" />
 
 
 
-        
-      
-            <MudTextField T="string" Label="@AppLocalization["Display Name"]" Text="@_privateUserInstance.DisplayName" TextChanged="DisplayNameChanged" />
+
+
+        <MudTextField Label="@AppLocalization["Last Name"]" @bind-Value="@_privateUserInstance.Surname" />
 
 
 
-        
 
 
-    @if (User.CanEditField(ActiveDirectoryFields.SAMAccountName))
-    {
-
-
-        <MudTextField Label="@AppLocalization["Username"]" @bind-Value="@_privateUserInstance.SamAccountName" />
+        <MudTextField T="string" Label="@AppLocalization["Display Name"]" Text="@_privateUserInstance.DisplayName" TextChanged="DisplayNameChanged" />
 
 
 
-    }
-    @if (User.CanEditField(ActiveDirectoryFields.Mail))
-    {
-
-
-        <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@_privateUserInstance.Email" />
 
 
 
-    }
+        @if (User.CanEditField(ActiveDirectoryFields.SAMAccountName))
+        {
+
+
+            <MudTextField Label="@AppLocalization["Username"]" @bind-Value="@_privateUserInstance.SamAccountName" />
+
+
+
+        }
+        @if (User.CanEditField(ActiveDirectoryFields.Mail))
+        {
+
+
+            <MudTextField Label="@AppLocalization["Email Address"]" @bind-Value="@_privateUserInstance.Email" />
+
+
+
+        }
+    </MudStack>
+
 }
 else
 {

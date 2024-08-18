@@ -4,8 +4,12 @@ using BLAZAM.FileSystem;
 namespace BLAZAM.Common.Data.Database
 {
     public enum DatabaseType { SQL, MySQL, SQLite }
+    /// <summary>
+    /// Represents a .NET ConnectionString
+    /// </summary>
     public class DatabaseConnectionString
     {
+
         public DatabaseConnectionString(string connectionString)
         {
             Value = connectionString;
@@ -17,9 +21,23 @@ namespace BLAZAM.Common.Data.Database
             //ConnectionString = ConnectionString.Replace("%temp%", Path.GetTempPath().Substring(0, Path.GetTempPath().Length-1));
             DatabaseType = dbType;
         }
+        /// <summary>
+        /// The type of database calculated from this ConnectionString
+        /// </summary>
         public DatabaseType DatabaseType;
+
+        /// <summary>
+        /// Returns true if the <see cref="ServerAddress"/> ends with ".db"
+        /// </summary>
         public bool FileBased => ServerAddress.EndsWith(".db");
+        /// <summary>
+        /// Returns a file that points to the <see cref="ServerAddress"/>.
+        /// This should only be used for SQLite.
+        /// </summary>
         public SystemFile File => new(ServerAddress);
+        /// <summary>
+        /// The full ConnectionString to the database
+        /// </summary>
         public string? Value { get; set; }
         public string AddressComponent
         {
@@ -50,6 +68,9 @@ namespace BLAZAM.Common.Data.Database
                 throw new ApplicationException("Connection String missing a Server or Data Source parameter");
             }
         }
+        /// <summary>
+        /// Returns the database connected to based on the full ConnectionString
+        /// </summary>
         public string Database
         {
             get
@@ -88,7 +109,9 @@ namespace BLAZAM.Common.Data.Database
                 throw new ApplicationException("Connection String missing a Database or Initial Catalog parameter");
             }
         }
-
+        /// <summary>
+        /// The server IP or hostname as defined in the ConnectionString
+        /// </summary>
         public string ServerAddress
         {
             get
@@ -120,6 +143,10 @@ namespace BLAZAM.Common.Data.Database
 
         }
 
+
+        /// <summary>
+        /// The database server port as defined in the ConnectionString
+        /// </summary>
         public int ServerPort
         {
             get

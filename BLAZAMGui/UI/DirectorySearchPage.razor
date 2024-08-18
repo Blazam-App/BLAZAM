@@ -31,7 +31,7 @@
     }
 
 
-    public ADSearch Searcher { get; set; } = new();
+    public ADSearch Searcher { get; set; }
 
 
 
@@ -64,7 +64,7 @@
     protected override async Task OnInitializedAsync()
     {
 
-        Searcher = new ADSearch();
+        Searcher = new ADSearch(Directory);
         Searcher.GeneralSearchTerm = SearchTermParameter;
         await base.OnInitializedAsync();
         SearchDisabledObjects = UserStateService?.CurrentUserState?.Preferences?.SearchDisabledUsers == true;

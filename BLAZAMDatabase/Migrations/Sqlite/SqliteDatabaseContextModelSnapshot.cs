@@ -904,6 +904,15 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<bool>("Block")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("ByEmail")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("InApp")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("OU")
                         .IsRequired()
                         .HasColumnType("TEXT");

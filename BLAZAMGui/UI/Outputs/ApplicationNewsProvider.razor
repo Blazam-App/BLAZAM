@@ -3,7 +3,11 @@
 @inherits AppComponentBase
 @if (readItems.Count > 0 || unreadItems.Count > 0)
 {
-    <MudMenu Dense=true ListClass="py-0" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+    <MudMenu @ref=newsMenu
+             Dense=true
+             ListClass="py-0"
+             AnchorOrigin="Origin.BottomRight"
+             TransformOrigin="Origin.TopRight">
         <ActivatorContent>
             @{
                 var icon = Icons.Material.Filled.Notifications;
@@ -15,57 +19,59 @@
                 color = Color.Warning;
             }
 
-            <MudTooltip Text=@("Blazam "+AppLocalization["News"])>
-                <MudFab Size=Size.Small Color=@color Class="mx-2" StartIcon="@icon" />
+            <MudTooltip Color=Color.Surface
+                        Text=@("Blazam "+AppLocalization["News"])>
+                <MudFab Size=Size.Small Color=@color
+                        Class="mx-2"
+                        StartIcon="@icon" />
             </MudTooltip>
 
         </ActivatorContent>
 
         <ChildContent>
             <MudContainer Class="px-0" Style="width:300px;">
-                @if (readItems.Count > 0)
-                {
-                    <MudSwitch @bind-Value=showRead Class="ps-2 w-100" Label="@AppLocalization["Show read"]" />
-                }
+                <MudText Class="py-2" Align="Align.Center">
+                    Blazam @AppLocalization["News"]
+                </MudText>
                 @foreach (var item in unreadItems.OrderByDescending(x => x.UpdatedAt))
                 {
-                    <MudButton Variant="Variant.Filled" Style="border-radius:0px;" FullWidth=true OnClick="@((args)=>{ShowNews(item);})">
-                        <MudStack Class="mud-width-full pt-1" AlignItems="AlignItems.Start">
-                            <MudStack Row=true>
-                                <MudIcon Color=@Color.Warning Icon="@Icons.Material.Filled.Email" /> @item.Title
-                            </MudStack>
-                            @if (item.Link != null)
-                            {
-                                <MudLink Color="Color.Secondary" Target="_blank" Href="@item.Link">@item.Link</MudLink>
-                            }
-                        </MudStack>
-                    </MudButton>
+                    <ApplicationNewsItem Item=item Read=false />
+
                 }
                 @if (showRead)
                 {
                     foreach (var item in readItems.OrderByDescending(x => x.UpdatedAt))
                     {
-                        <MudButton Variant="Variant.Filled" Style="border-radius:0px;" FullWidth=true OnClick="@((args)=>{ShowNews(item);})">
-                            <MudStack Class="mud-width-full pt-1" AlignItems="AlignItems.Start">
-                                <MudStack Row=true>
-                                    <MudBadge Overlap=true Color="@Color.Success" Icon="@Icons.Material.Filled.Check">
-                                        <MudIcon Icon="@Icons.Material.Filled.Email" />
-                                    </MudBadge> @item.Title
-                                </MudStack>
-                                @if (item.Link != null)
-                                {
-                                    <MudLink Target="_blank" Href="@item.Link">@item.Link</MudLink>
-                                }
-                            </MudStack>
-                        </MudButton>
+                        <ApplicationNewsItem Item="item" Read=true />
+
                     }
                 }
                 else
                 {
                     if (unreadItems.Count == 0)
                     {
-                        <MudText Class="w-100 align-center pa-2">@AppLocalization["There is nothing new to see here"]</MudText>
+                        <MudText Align=Align.Center Class="w-100 align-center pa-2">
+                            @AppLocalization["There is nothing new to see here"]
+                        </MudText>
                     }
+                }
+                @if (readItems.Count > 0 || unreadItems.Count > 0)
+                {
+                    <MudStack Row=true>
+                        @if (readItems.Count > 0)
+                        {
+                            <MudSwitch @bind-Value=showRead
+                                       Class="ps-2"
+                                       Label="@AppLocalization["Show read"]" />
+                        }
+                        @if (unreadItems.Count > 0)
+                        {
+                            <MudSpacer />
+                            <MudButton Size="Size.Small" OnClick="MarkAllRead">
+                                @AppLocalization["Mark all read"]
+                            </MudButton>
+                        }
+                    </MudStack>
                 }
             </MudContainer>
         </ChildContent>
@@ -75,6 +81,7 @@
     private bool showRead;
     private List<NewsItem> unreadItems = new();
     private List<NewsItem> readItems = new();
+    private MudMenu? newsMenu;
     private ApplicationUpdate? latestUpdate;
     private NewsItem? appUpdateNewsItem
     {
@@ -93,11 +100,42 @@
                 };
         }
     }
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
         ApplicationNewsService.OnNewItemsAvailable += RefreshItems;
         RefreshItems();
+        await InvokeAsync(StateHasChanged);
+
+
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        //Auto-open news when there are unread items
+        if (firstRender && unreadItems.Count > 0)
+        {
+            newsMenu?.OpenMenuAsync(new());
+        }
+    }
+    private async void MarkAllRead()
+    {
+        foreach (var newsItem in unreadItems)
+        {
+            try
+            {
+                CurrentUser.State.ReadNewsItems.Add(new ReadNewsItem { NewsItemId = newsItem.Id, NewsItemUpdatedAt = newsItem.UpdatedAt, User = CurrentUser.State.Preferences });
+            }
+            catch
+            {
+
+            }
+        }
+        await CurrentUser.State.SaveUserSettings();
+        RefreshItems();
+        await InvokeAsync(StateHasChanged);
+
     }
     private void RefreshItems()
     {
@@ -140,14 +178,5 @@
             readItems.Insert(0, appUpdateNewsItem);
         }
     }
-    private async void ShowNews(NewsItem Item)
-    {
-        var result = await Item.ShowNewsItemDialog(MessageService);
-        if (result.Dialog is AppNewsItemDialog dialog)
-        {
-            dialog.OnAcknowledged += RefreshItems;
-        }
 
-
-    }
 }

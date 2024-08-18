@@ -21,6 +21,7 @@ namespace BLAZAM.Themes
             lightPalette.Dark = "#001529";
             lightPalette.Primary = "#2261d3";
             lightPalette.Secondary = "#40449D";
+            lightPalette.DrawerIcon = "#5889B3";
 
 
 
@@ -32,7 +33,7 @@ namespace BLAZAM.Themes
             darkPalette.DrawerBackground = "#0f141e";
             darkPalette.DrawerText = "#c7c7c7";
             darkPalette.Secondary = "#519BD4";
-
+            darkPalette.DrawerIcon = "#95A8B8";
 
 
         }

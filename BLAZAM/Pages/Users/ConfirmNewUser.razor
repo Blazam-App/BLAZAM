@@ -3,6 +3,9 @@
 @using BLAZAM.EmailMessage.Email.Notifications
 @inherits DirectoryModelComponent
 @inject IJSRuntime JSRuntime
+@inject OUNotificationService OUNotificationService
+
+
 <AppPageTitle>Confirm User Creation</AppPageTitle>
 
 
@@ -168,7 +171,7 @@ else
 
 }
 <MudButton StartIcon="@Icons.Material.Filled.Print" Color="Color.Info" OnClick="Print">Print</MudButton>
-<MudButton Color="Color.Success" OnClick="@(()=>{SendWelcomeModal?.Show();})">Test</MudButton>
+<MudButton Color="Color.Success" OnClick="@(()=>{SendWelcomeModal?.ShowAsync();})">Test</MudButton>
 
 <AppModal @ref=SendWelcomeModal Title="@AppLocalization["Send login credentials"]">
     <SendNewUserWelcomeToModalContent OnSubmitEmail="SendWelcomeEmail" />
@@ -229,18 +232,19 @@ else
 
             }
             await AuditLogger.User.Created(User);
+            _ = OUNotificationService.PostAsync(User, NotificationType.Create);
 
             try
             {
-                if (DirectoryTemplate.EffectiveSendWelcomeEmail == true)
+                if (DirectoryTemplate?.EffectiveSendWelcomeEmail == true)
                 {
                     if (DirectoryTemplate.EffectiveAskForAlternateEmail == true || User.Email.IsNullOrEmpty())
                     {
-                        SendWelcomeModal?.Show();
+                        SendWelcomeModal?.ShowAsync();
                     }
                     else
                     {
-                        SendWelcomeEmail(User.Email);
+                        _=SendWelcomeEmail(User.Email);
                     }
 
                 }
@@ -263,13 +267,13 @@ else
     {
         try{
             NewUserWelcomeEmailMessage message = new NewUserWelcomeEmailMessage();
-            message.Domain = User.Directory.ConnectionSettings.FQDN;
+            message.Domain = User.Directory.ConnectionSettings?.FQDN;
             message.Username = _username;
             message.Password = _userPassword;
             var html = message.Render();
             await EmailService.SendMessage(AppLocalization["New Account Details"], message,to);
             SnackBarService.Info(AppLocalization["Welcome Email Sent to "] + to);
-            SendWelcomeModal.Close();
+            SendWelcomeModal?.Close();
         }catch (Exception ex)
         {
             Loggers.SystemLogger.Error("Error sending welcome email {@Error}", ex);

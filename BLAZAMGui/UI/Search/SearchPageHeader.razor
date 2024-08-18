@@ -15,8 +15,10 @@
 
         <MudHidden Breakpoint="Breakpoint.Xs" Invert=true>
             <MudStack Row="true">
-                <MudSpacer/>
-                <MudButton Color="Color.Tertiary" OnClick="@(()=>{_searchModal?.Show();})" Class="align-self-center">Search</MudButton>
+                <MudSpacer />
+                <MudButton Color="Color.Tertiary"
+                           OnClick="@(()=>{_searchModal?.ShowAsync();})"
+                           Class="align-self-center">Search</MudButton>
                 <MudSpacer />
 
             </MudStack>
@@ -43,7 +45,7 @@
     };
 
 
-    public ADSearch Searcher { get; set; } = new ADSearch();
+    public ADSearch Searcher { get; set; }
 
 
 
@@ -57,7 +59,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
+        Searcher = new(Directory);
         Searcher.ResultsCollected += ((batch) => { InvokeAsync(StateHasChanged); });
         Searcher.OnSearchCompleted += (() =>
         {

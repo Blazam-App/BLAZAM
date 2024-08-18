@@ -6,12 +6,10 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
 using BLAZAM.Common.Data;
 using BLAZAM.Server;
-using BLAZAM.Services.Background;
 using System.Net;
 using BLAZAM.Database.Context;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
-using System.Net.WebSockets;
 using BLAZAM.Database.Models;
 
 namespace BLAZAM
@@ -201,7 +199,11 @@ namespace BLAZAM
                     dbSettings = kestrelContext.AppSettings.FirstOrDefault();
 
                     var certBytes = dbSettings.SSLCertificateCipher.Decrypt<byte[]>();
-                    cert = new X509Certificate2(certBytes);
+                    if(certBytes!= null)
+                    {
+                        cert = new X509Certificate2(certBytes);
+
+                    }
 
                 }
                 catch (Exception ex)

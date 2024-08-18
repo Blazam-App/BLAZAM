@@ -938,6 +938,15 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<bool>("Block")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("ByEmail")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("InApp")
+                        .HasColumnType("bit");
+
                     b.Property<string>("OU")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

@@ -124,7 +124,6 @@
     MudTextField<string?> _passwordTextField;
     bool attemptingSignIn = false;
     string redirectUrl;
-    AppModal? _mfaModal;
     bool DemoCustomLogin = false;
     LoginRequest LoginRequest = new();
     protected override async Task OnInitializedAsync()
@@ -133,7 +132,7 @@
         redirectUrl = Nav.Uri;
         LoginRequest.ReturnUrl = Nav.Uri;
         var currentUri = new Uri(Nav.Uri);
-        LoginRequest.CallbackBaseUri = currentUri.Scheme+"://" + currentUri.Authority;
+        LoginRequest.CallbackBaseUri = currentUri.Scheme + "://" + currentUri.Authority;
         if (Monitor.AppReady != ServiceConnectionState.Up)
             Monitor.OnAppReadyChanged += AppReadyChanged;
     }
@@ -150,7 +149,7 @@
     {
         attemptingSignIn = true;
         await InvokeAsync(StateHasChanged);
-        LoginRequest? authenticationResult=null;
+        LoginRequest? authenticationResult = null;
         if (ValidateInput(LoginRequest))
             try
             {
@@ -159,13 +158,13 @@
             }
             catch (Exception ex)
             {
-
+                Loggers.SystemLogger.Error("Error attempting logon {@Error}",ex);
                 SnackBarService.Info(ex.Message);
             }
 
         attemptingSignIn = false;
 
-        if (authenticationResult!=null)
+        if (authenticationResult != null)
         {
 
             switch (authenticationResult.AuthenticationResult)
@@ -198,7 +197,8 @@
                     break;
                 case LoginResultStatus.MFARequested:
                     attemptingSignIn = true;
-                    Nav.NavigateTo(authenticationResult.MFARedirect);
+                    if (authenticationResult != null && authenticationResult.MFARedirect!=null)
+                        Nav.NavigateTo(authenticationResult.MFARedirect);
                     break;
                 case LoginResultStatus.OK:
                     attemptingSignIn = true;
@@ -214,7 +214,7 @@
     }
     bool ValidateInput(LoginRequest? validationResult)
     {
-        if(validationResult == null)
+        if (validationResult == null)
         {
             validationResult = new();
         }

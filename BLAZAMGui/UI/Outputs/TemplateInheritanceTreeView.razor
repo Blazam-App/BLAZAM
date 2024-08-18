@@ -6,27 +6,26 @@
 
     <MudTreeView T="DirectoryTemplate"
                  Items="RootTemplate"
+                 AutoExpand=true
                  Dense="true"
                  Hover="true"
                  Class="py-3"
+                 SelectedValue="SelectedTemplate"
                  SelectedValueChanged=SelectedTemplateChanged
-                 MaxHeight="400px"
-                 Color="Color.Success">
-        <ItemTemplate>
-            <MudTreeViewItem Activated=@(context.Id.Equals(SelectedTemplate?.Id))
-                             Selected=@(context.Id.Equals(SelectedTemplate?.Id))
-                             Expanded="true"
-                             Items="@context.ChildTemplates"
-                             Value="@context">
-                <Content>
-                    <MudTreeViewItemToggleButton Expanded="true"
-                                                 Visible="@(context.ChildTemplates!=null)" />
+                 MaxHeight="400px">
+    <ItemTemplate>
+        <MudTreeViewItem Selected=@(context.Value.Id.Equals(SelectedTemplate?.Id)==true)
+                         Expanded="context.Expanded"
+                         Items="@context.Children"
+                         Value="@context.Value">
+            <Content>
+                <MudTreeViewItemToggleButton ExpandedChanged="@((state)=>{context.Expanded=state;})"
+                                             Visible="@(context.HasChildren)" />
 
-                    <MudBadge
-                              Icon="@Icons.Material.Filled.VisibilityOff"
-                              Visible=@(!context.Visible)
-                              Color="Color.Warning">
-                        @context.Name
+                <MudBadge Icon="@Icons.Material.Filled.VisibilityOff"
+                          Visible=@(!context.Value.Visible)
+                          Color="Color.Warning">
+                    @context.Value.Name
                 </MudBadge>
             </Content>
         </MudTreeViewItem>
@@ -55,7 +54,7 @@
     /// The hashset of all templates, starting at the root templates that have no parents
     /// </summary>
     [Parameter]
-    public HashSet<DirectoryTemplate> RootTemplate { get; set; } = new HashSet<DirectoryTemplate>();
+    public IReadOnlyCollection<TreeItemData<DirectoryTemplate>> RootTemplate { get; set; } = new List<TreeItemData<DirectoryTemplate>>();
 
     /// <summary>
     /// The already or recently selected template
@@ -80,5 +79,5 @@
         await InvokeAsync(StateHasChanged);
 
     }
-
+   
 }

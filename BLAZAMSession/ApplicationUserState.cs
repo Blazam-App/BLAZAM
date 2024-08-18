@@ -7,7 +7,6 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
-using BLAZAM.Notifications.Services;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
@@ -78,20 +77,13 @@ namespace BLAZAM.Server.Data.Services
         public DateTime lastDataRefresh;
         public AppUser? userSettings { get; set; }
 
-        private readonly INotificationPublisher _notificationPublisher;
         private readonly IAppDatabaseFactory _dbFactory;
 
-        public ApplicationUserState(IAppDatabaseFactory factory, INotificationPublisher notificationPublisher)
+        public ApplicationUserState(IAppDatabaseFactory factory)
         {
 
-            _notificationPublisher = notificationPublisher;
             _dbFactory = factory;
-            //userSettings = new();
-            _notificationPublisher.OnNotificationPublished += (notifications) =>
-            {
-                if (notifications.Select(n => n.User).Contains(Preferences))
-                    GetUserSettingFromDB();
-            };
+           
             OnSettingsChanged += (state) => { 
                 if (Id == state.Id)
                 {
@@ -328,6 +320,7 @@ namespace BLAZAM.Server.Data.Services
 
 
         public bool HasUserPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.User);
+        public bool HasBitLockerPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.BitLocker);
         public bool HasCreateUserPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.User);
         public bool HasGroupPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Group);
         public bool HasCreateGroupPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.Group);
@@ -336,6 +329,7 @@ namespace BLAZAM.Server.Data.Services
         public bool HasComputerPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Computer);
 
         public bool CanUnlockUsers => HasObjectActionPermission(ActiveDirectoryObjectType.User,ObjectActions.Unlock);
+        public bool CanAssign => HasObjectActionPermission(ActiveDirectoryObjectType.Group, ObjectActions.Assign);
 
         public string DuoAuthState { get; set; } = "";
         public List<NotificationSubscription> NotificationSubscriptions { get => userSettings?.NotificationSubscriptions; set { userSettings.NotificationSubscriptions=value; } }
@@ -471,7 +465,7 @@ namespace BLAZAM.Server.Data.Services
 
             if (baseSearch == null)
             {
-                Loggers.ActiveDirectryLogger.Error("The active user state for " + dnTarget + " could not" +
+                Loggers.ActiveDirectoryLogger.Error("The active user state for " + dnTarget + " could not" +
                     "be found in the application cache." + " {@Error}", new ApplicationException());
                 return false;
             }

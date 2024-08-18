@@ -178,7 +178,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                ADSearch search = new ADSearch();
+                ADSearch search = new ADSearch(Directory);
                 search.Fields.NestedMemberOf = this;
                 var result = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>();
                 return result;
@@ -193,7 +193,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 var temp = MembersAsStrings;
-                ADSearch search = new ADSearch();
+                ADSearch search = new ADSearch(Directory);
 
                 List<IGroupableDirectoryAdapter> members = new List<IGroupableDirectoryAdapter>();
                 temp?.ForEach(t =>
@@ -224,7 +224,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         /// <summary>
-        /// Removes a memeber from this group
+        /// Removes a member from this group
         /// </summary>
         /// <param name="member">The user or group to remove</param>
         public void UnassignMember(IGroupableDirectoryAdapter member)
@@ -238,7 +238,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
         /// <summary>
-        /// Assigns a memeber to this group
+        /// Assigns a member to this group
         /// </summary>
         /// <param name="member"></param>
         public void AssignMember(IGroupableDirectoryAdapter member)

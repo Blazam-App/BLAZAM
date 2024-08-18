@@ -34,7 +34,7 @@ namespace BLAZAM.ActiveDirectory.Data
             }
         }
 
-        public LogonHours(byte[] rawData) : this()
+        public LogonHours(byte[]? rawData) : this()
         {
             // Initialize schedule with default values (all true, meaning logon allowed)
             //for (int day = 0; day < 7; day++)
@@ -44,39 +44,13 @@ namespace BLAZAM.ActiveDirectory.Data
             //        schedule[day, hour] = true;
             //    }
             //}
-            DecodeLogonHours(rawData);
-        }
-        private void AdjustToTimeZoneOffset(ref DayOfWeek day, ref int hour)
-        {
-            if (0 > hour + timeZoneOffset)
+            if(rawData !=null)
             {
-                if (day == DayOfWeek.Sunday)
-                {
-                    day = DayOfWeek.Saturday;
-                }
-                else
-                {
-                    day--;
-                }
-                hour = 24 + hour + timeZoneOffset;
-            }
-            else if (hour + timeZoneOffset > 23)
-            {
-                if (day == DayOfWeek.Saturday)
-                {
-                    day = DayOfWeek.Sunday;
-                }
-                else
-                {
-                    day++;
-                }
-                hour = hour - 24 + timeZoneOffset;
-            }
-            else
-            {
-                hour=hour+ timeZoneOffset;
+                DecodeLogonHours(rawData);
+
             }
         }
+ 
         private void AdjustFromTimeZoneOffset(ref DayOfWeek day, ref int hour)
         {
             if (0 > hour - timeZoneOffset)

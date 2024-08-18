@@ -6,15 +6,14 @@
     <MudSelectList Label=@AppLocalization["Certificate Type"] Values="@(new List<string>{"PFX","Crt and Key"})"  @bind-Value=SelectedCertType />
         @if(SelectedCertType=="PFX"){
         <MudFileUpload T="IBrowserFile" FilesChanged="LoadPFX" Accept=".pfx">
-        <ButtonTemplate>
+        <ActivatorContent>
             <MudButton HtmlTag="label"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.CloudUpload"
-                       for="@context.Id">
+                       StartIcon="@Icons.Material.Filled.CloudUpload">
                 Upload PFX
             </MudButton>
-        </ButtonTemplate>
+        </ActivatorContent>
         <SelectedTemplate>
             @if (context != null)
             {
@@ -32,15 +31,14 @@
     else
     {
         <MudFileUpload T="IBrowserFile" FilesChanged="LoadCert" Accept=".pem, .crt">
-            <ButtonTemplate>
+            <ActivatorContent>
                 <MudButton HtmlTag="label"
                            Variant="Variant.Filled"
                            Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.CloudUpload"
-                           for="@context.Id">
+                           StartIcon="@Icons.Material.Filled.CloudUpload">
                     Upload Certificate
                 </MudButton>
-            </ButtonTemplate>
+            </ActivatorContent>
             <SelectedTemplate>
                 @if (context != null)
                 {
@@ -54,15 +52,14 @@
         </MudFileUpload>
 
         <MudFileUpload T="IBrowserFile" FilesChanged="LoadKey" Accept=".pem, .key">
-            <ButtonTemplate>
+            <ActivatorContent>
                 <MudButton HtmlTag="label"
                            Variant="Variant.Filled"
                            Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.CloudUpload"
-                           for="@context.Id">
+                           StartIcon="@Icons.Material.Filled.CloudUpload">
                     Upload Key
                 </MudButton>
-            </ButtonTemplate>
+            </ActivatorContent>
             <SelectedTemplate>
                 @if (context != null)
                 {

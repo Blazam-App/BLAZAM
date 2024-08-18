@@ -37,52 +37,75 @@ await ParentTemplateChanged(null);
                                Adornment="Adornment.End"
                                AdornmentIcon="@Icons.Material.Filled.Add"
                                AdornmentColor="@Color.Success"
-                               OnAdornmentClick="@(()=>{categoryModal.Show();})"
-                               Values="@(categories.Count>1?categories:new List<string>())"
+                               OnAdornmentClick="@(()=>{categoryModal.ShowAsync();})"
+                               Values="@(categories.Count>0?categories:new List<string>())"
                                ValueChanged="@((value)=>{DirectoryTemplate.Category=value;})"
                                @bind-Text=DirectoryTemplate.Category
                                Label="@AppLocalization["Template Category"]" />
                 <AppModal @ref=categoryModal Title=@AppLocalization["Add Category"]>
                     <AddTemplateCategoryModalContent Categories="@categories"
-                                                     CategoryAdded="@(async(newCategory)=>{DirectoryTemplate.Category=newCategory; categories.Add(newCategory); await InvokeAsync(StateHasChanged);})" />
+                                                     CategoryAdded="@(async(newCategory)=>{
+                                    DirectoryTemplate.Category=newCategory;
+                                    categories.Add(newCategory);
+                                    await InvokeAsync(StateHasChanged);
+                                                                                            })" />
                 </AppModal>
                 <MudSwitch Label="@AppLocalization["Visible"]"
                            Color="@(DirectoryTemplate.Visible==true?Color.Success:Color.Warning)"
                            @bind-Value=@DirectoryTemplate.Visible />
-                <MudExpansionPanel Text="Variables">
-
-                    <MudStack Row=true>
-                        <code>{fn}</code>:First Name<br />
-                    </MudStack>
-                    <MudStack Row=true>
-
-                        <code>{fi}</code>:First Initial<br />
-                    </MudStack>
-                    <MudStack Row=true>
-                        <code>{mn}</code>:Middle Name<br />
-                    </MudStack>
-                    <MudStack Row=true>
-                        <code>{mi}</code>:Middle Initial<br />
-                    </MudStack>
-                    <MudStack Row=true>
-                        <code>{ln}</code>:Last Name<br />
-                    </MudStack>
-                    <MudStack Row=true>
-                        <code>{li}</code>:Last Initial<br />
-                    </MudStack>
-                    <MudStack Row=true>
-                        <code>{username}</code>:Username<br />
-                    </MudStack>
-                    <MudStack Row=true>
-                        <code>{AlphaNum[u/l]}</code>:Random letter or number (optional force uppercase/lowercase)<br />
-                    </MudStack>
-                    <MudStack Row=true>
-                        <code>{Alpha[u/l]}</code>:Random letter (optional force uppercase/lowercase)<br />
-                    </MudStack>
-                    <MudStack Row=true>
-                        <code>{Num}</code>:Random number<br />
-
-                    </MudStack>
+                <MudExpansionPanel  Text="Variables">
+                    <MudSimpleTable Elevation=0
+                                    Dense=true>
+                        <thead>
+                            <tr>
+                                <th>@AppLocalization["Variable"]</th>
+                                <th>@AppLocalization["Description"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{fn}</td>
+                                <td>@AppLocalization["First Name"]</td>
+                            </tr>
+                            <tr>
+                                <td>{fi}</td>
+                                <td>@AppLocalization["First Initial"]</td>
+                            </tr>
+                            <tr>
+                                <td>{mn}</td>
+                                <td>@AppLocalization["Middle Name"]</td>
+                            </tr>
+                            <tr>
+                                <td>{mi}</td>
+                                <td>@AppLocalization["Middle Initial"]</td>
+                            </tr>
+                            <tr>
+                                <td>{ln}</td>
+                                <td>@AppLocalization["Last Name"]</td>
+                            </tr>
+                            <tr>
+                                <td>{li}</td>
+                                <td>@AppLocalization["Last Initial"]</td>
+                            </tr>
+                            <tr>
+                                <td>{username}</td>
+                                <td>@AppLocalization["Username"]</td>
+                            </tr>
+                            <tr>
+                                <td>{AlphaNum[u/l]}</td>
+                                <td>@AppLocalization["Random letter or number (optional force uppercase/lowercase)"]</td>
+                            </tr>
+                            <tr>
+                                <td>{Alpha[u/l]}</td>
+                                <td>@AppLocalization["Random letter (optional force uppercase/lowercase)"]</td>
+                            </tr>
+                            <tr>
+                                <td>{Num}</td>
+                                <td>@AppLocalization["Random number"]</td>
+                            </tr>
+                        </tbody>
+                    </MudSimpleTable>
+                    
                 </MudExpansionPanel>
                 <Section Title=@AppLocalization["Account and Name"]>
 
@@ -152,7 +175,7 @@ await ParentTemplateChanged(null);
                             <MudSwitch Label="@AppLocalization["Send  Welcome Email"]"
                                        Color="@(DirectoryTemplate.EffectiveSendWelcomeEmail==true?Color.Success:Color.Warning)"
                                        @bind-Value=@DirectoryTemplate.EffectiveSendWelcomeEmail />
-                                       @if(DirectoryTemplate.EffectiveSendWelcomeEmail==true && DirectoryTemplate.EffectiveAskForAlternateEmail!=true &&
+                            @if (DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true &&
                         (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id) && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
                             {
                                 <MudAlert Severity="Severity.Warning">
@@ -445,7 +468,7 @@ await ParentTemplateChanged(null);
         {
             if (_template == value)
                 return;
-            if (Context != null)
+            if (Context != null && value.Id > 0)
                 value = Context?.DirectoryTemplates.First(dt => dt.Id == value.Id);
             _template = value;
             originalTemplate = value;

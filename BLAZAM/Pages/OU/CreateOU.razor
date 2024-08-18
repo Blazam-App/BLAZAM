@@ -1,9 +1,9 @@
 ﻿@page "/ou/create"
 @inherits TabbedAppComponentBase
 @attribute [Authorize]
+
 <AppPageTitle>Create OU</AppPageTitle>
 
-<Row>
     <MudTabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="selectedStep">
         <MudTabPanel>
             <ChildContent>
@@ -35,7 +35,7 @@
         <MudTabPanel Disabled=@(newOU==null || newOUName.IsNullOrEmpty())>
             <ChildContent>
                 <MudText>
-                    <ConfirmNewOU OU="@newOU" Confirmed="OUCreated" />
+                    <ConfirmNewOU OU="@newOU"  />
                 </MudText>
             </ChildContent>
             <TabContent>
@@ -45,7 +45,6 @@
     </MudTabs>
    
 
-</Row>
 
 
 
@@ -116,8 +115,5 @@
 
         await InvokeAsync(StateHasChanged);
     }
-    async Task OUCreated(IADOrganizationalUnit ou)
-    {
-        await AuditLogger.OU.Created(ou);
-    }
+
 }

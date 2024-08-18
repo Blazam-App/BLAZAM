@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -20,7 +21,10 @@ namespace BLAZAM.Database.Migrations.MySql
                     UserId = table.Column<int>(type: "int", nullable: false),
                     OU = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Block = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    InApp = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    ByEmail = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Block = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {

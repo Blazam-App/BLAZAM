@@ -32,7 +32,7 @@ namespace BLAZAM.Tests.FileSystem
             var fileSystemBase = new FileSystemBase(path);
 
             // Assert
-            Assert.Equal(Path.GetTempPath() + "test.txt", fileSystemBase.Path);
+            Assert.Equal(Path.GetTempPath() + "test.txt", fileSystemBase.FullPath);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace BLAZAM.Tests.FileSystem
             var fileSystemBase = new FileSystemBase(path);
 
             // Assert
-            Assert.Equal(Path.GetFullPath(path), fileSystemBase.Path);
+            Assert.Equal(Path.GetFullPath(path), fileSystemBase.FullPath);
         }
 
         [Fact]

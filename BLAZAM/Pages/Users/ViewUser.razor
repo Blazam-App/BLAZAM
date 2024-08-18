@@ -20,16 +20,16 @@
 
                     <DirectoryEntryViewHeader EditMode="@EditMode"
                                               DirectoryEntry="@User"
-                                              OnAssignTo="@(()=>{AssignToModal?.Show();})"
-                                              OnChangeThumbnail="@(()=>{UploadThumbnailModal?.Show();})"
+                                              OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
+                                              OnChangeThumbnail="@(()=>{UploadThumbnailModal?.ShowAsync();})"
                                               OnDelete="@DeleteUser"
                                               OnDisable="@(async()=>{User.Enabled=false; await RefreshEntryComponents();})"
                                               OnEnable="@(async()=>{User.Enabled=true; await RefreshEntryComponents();})"
-                                              OnMove="@(()=>{MoveToModal?.Show();})"
-                                              OnRename="@(()=>{RenameModal?.Show();})"
-                                              OnResetPassword="@(()=>{ChangePasswordModal?.Show();})"
+                                              OnMove="@(()=>{MoveToModal?.ShowAsync();})"
+                                              OnRename="@(()=>{RenameModal?.ShowAsync();})"
+                                              OnResetPassword="@(()=>{ChangePasswordModal?.ShowAsync();})"
                                               OnToggleEditMode="ToggleEditMode"
-                                              OnShowHistory="@(()=>{ChangeHistoryModal?.Show();})"
+                                              OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
                                               OnUnlock="@Unlock" />
                     <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
@@ -108,7 +108,7 @@
                                     }
                                     @if (showRemoveThumbnail && User?.CanEditField(ActiveDirectoryFields.Thumbnail) == true)
                                     {
-                                        <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.Show();})
+                                        <MudIconButton OnClick=@(()=>{UploadThumbnailModal?.ShowAsync();})
                                                        Style="position:absolute !important;width:40px;height:40px;padding:2px;top:10px;right:10px"
                                                        Color=Color.Primary
                                                        Icon="@Icons.Material.Filled.Upload" />
@@ -164,11 +164,12 @@
 
 
 
-                                <MudStack>
-                                    <MudText Typo="Typo.subtitle2">@AppLocalization["Groups"]</MudText>
-                                    @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
-                                    {
-                                        <MemberOfList AssignToClicked=@(()=>{AssignToModal?.Show();}) Model="User" />
+                                @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
+                                {
+                                    <MudStack>
+                                        <MudText Typo="Typo.subtitle2">@AppLocalization["Groups"]</MudText>
+                                        <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="User" />
+
                                     }
                                     else
                                     {
@@ -271,7 +272,7 @@
                                             {
                                                 <MudButton Variant="Variant.Filled"
                                                            Color="@(User.LogOnTo == null || User.LogOnTo == String.Empty?Color.Primary:Color.Warning)"
-                                                           OnClick="@(()=>{LogOnToModal?.Show();})"
+                                                           OnClick="@(()=>{LogOnToModal?.ShowAsync();})"
                                                            Disabled=@(!EditMode)>
                                                     @AppLocalization["Log On To"]
                                                 </MudButton>
@@ -282,7 +283,7 @@
                                             {
                                                 <MudButton Variant="Variant.Filled"
                                                            Color="@(Color.Primary)"
-                                                           OnClick="@(()=>{LogonHoursModal?.Show();})"
+                                                           OnClick="@(()=>{LogonHoursModal?.ShowAsync();})"
                                                            Disabled=@(!EditMode)>
                                                     @AppLocalization["Logon Hours"]
                                                 </MudButton>
@@ -532,7 +533,7 @@
 
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Warning("Error checking user h-drive: {Message}", ex);
+                Loggers.ActiveDirectoryLogger.Warning("Error checking user h-drive: {Message}", ex);
 
             }
         }
@@ -550,13 +551,31 @@
             await RefreshEntryComponents();
             try
             {
+
                 var changes = User.Changes;
+                var assignTo = User.ToAssignTo;
+                var unassignFrom = User.ToUnassignFrom;
                 var jobResults = await User.CommitChangesAsync();
                 if (jobResults.Result == JobResult.Passed)
                 {
 
+                    foreach (var assignment in assignTo)
+                    {
+                        await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
+                        await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
+                    }
 
-                    await AuditLogger.User.Changed(User, changes);
+                    foreach (var assignment in unassignFrom)
+                    {
+                        await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
+                        await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
+                    }
+                    if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
+                    {
+                        _ = OUNotificationService.PostAsync(User, NotificationType.Modify);
+                        await AuditLogger.User.Changed(User, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
+                    }
+
                     EditMode = false;
                     Nav.WarnOnNavigation = false;
                     SnackBarService.Success("The changes made to this user have been saved.");
@@ -600,8 +619,11 @@
             try
             {
                 User.Delete();
+
                 SnackBarService.Success(User.DisplayName + " has been deleted.");
                 await AuditLogger.User.Deleted(User);
+                _ = OUNotificationService.PostAsync(User, NotificationType.Delete);
+
             }
             catch (ApplicationException ex)
             {

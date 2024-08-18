@@ -1,20 +1,17 @@
 ﻿
 
 using Serilog;
-using System.IO;
-using System.Security.Permissions;
-using System.Security;
 
 namespace BLAZAM.FileSystem
 {
     /// <summary>
-    /// Represents a diretory in the filesystem
+    /// Represents a directory in the filesystem
     /// </summary>
     public class SystemDirectory : FileSystemBase
     {
         public SystemDirectory(string path) : base(path)
         {
-
+            FullPath = Path.GetFullPath(path + Path.DirectorySeparatorChar);
         }
         /// <summary>
         /// All direct sub-directories of this directory
@@ -28,7 +25,7 @@ namespace BLAZAM.FileSystem
                 {
                     if (Exists)
                     {
-                        foreach (var directory in Directory.GetDirectories(Path))
+                        foreach (var directory in Directory.GetDirectories(FullPath))
                         {
                             dirs.Add(new SystemDirectory(directory));
                         }
@@ -40,7 +37,7 @@ namespace BLAZAM.FileSystem
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("Error getting directory files: " + Path, ex);
+                    Log.Error("Error getting directory files: " + FullPath, ex);
                 }
                 return dirs;
             }
@@ -48,7 +45,7 @@ namespace BLAZAM.FileSystem
         /// <summary>
         /// Indicates whether this directory currently exists
         /// </summary>
-        public bool Exists => Directory.Exists(Path);
+        public bool Exists => Directory.Exists(FullPath);
 
         /// <summary>
         /// All direct sub-files of this directory
@@ -62,7 +59,7 @@ namespace BLAZAM.FileSystem
                 {
                     if (Exists)
                     {
-                        foreach (var file in Directory.GetFiles(Path))
+                        foreach (var file in Directory.GetFiles(FullPath))
                         {
                             files.Add(new SystemFile(file));
                         }
@@ -74,7 +71,7 @@ namespace BLAZAM.FileSystem
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("Error getting directory files: " + Path, ex);
+                    Log.Error("Error getting directory files: " + FullPath, ex);
                 }
                 return files;
             }
@@ -83,7 +80,7 @@ namespace BLAZAM.FileSystem
         /// <summary>
         /// The full directory name
         /// </summary>
-        public string? Name => Path.Split("\\").Last();
+        public string? Name => FullPath.Split("\\").Last();
 
         public void ClearDirectory()
         {
@@ -103,7 +100,7 @@ namespace BLAZAM.FileSystem
         public bool CopyTo(SystemDirectory parentDirectory)
         {
             bool copyingDownTree = false;
-            if (parentDirectory.Path.Contains(Path))
+            if (parentDirectory.FullPath.Contains(FullPath))
             {
                 copyingDownTree = true;
             }
@@ -111,24 +108,24 @@ namespace BLAZAM.FileSystem
             if (Exists)
             {
 
-                var directories = Directory.GetDirectories(Path, "*", SearchOption.AllDirectories).AsEnumerable();
+                var directories = Directory.GetDirectories(FullPath, "*", SearchOption.AllDirectories).AsEnumerable();
 
                 if (copyingDownTree)
-                    directories = directories.Where(d => !d.Contains(parentDirectory.Path));
+                    directories = directories.Where(d => !d.Contains(parentDirectory.FullPath));
 
                 //Now Create all of the directories
                 foreach (string dirPath in directories)
                 {
-                    Directory.CreateDirectory(dirPath.Replace(Path, parentDirectory.Path));
+                    Directory.CreateDirectory(dirPath.Replace(FullPath, parentDirectory.FullPath));
                 }
-                var files = Directory.GetFiles(Path, "*.*", SearchOption.AllDirectories).AsEnumerable();
+                var files = Directory.GetFiles(FullPath, "*.*", SearchOption.AllDirectories).AsEnumerable();
 
                 if (copyingDownTree)
-                    files = files.Where(f => !f.Contains(parentDirectory.Path));
+                    files = files.Where(f => !f.Contains(parentDirectory.FullPath));
                 //Copy all the files & Replaces any files with the same name
                 foreach (string newPath in files)
                 {
-                    File.Copy(newPath, newPath.Replace(Path, parentDirectory.Path), true);
+                    File.Copy(newPath, newPath.Replace(FullPath, parentDirectory.FullPath), true);
                 }
                 return true;
 
@@ -143,7 +140,7 @@ namespace BLAZAM.FileSystem
         {
             if (Exists)
             {
-                Directory.Delete(Path, recursive);
+                Directory.Delete(FullPath, recursive);
             }
         }
         /// <summary>
@@ -151,7 +148,7 @@ namespace BLAZAM.FileSystem
         /// </summary>
         public void EnsureCreated()
         {
-            Directory.CreateDirectory(Path);
+            Directory.CreateDirectory(FullPath);
         }
     }
 }

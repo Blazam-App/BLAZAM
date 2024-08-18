@@ -10,16 +10,16 @@
         @AppLocalization["Upload Thumbnail Photo"]
     </MudText>
     <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon">
-        <ButtonTemplate>
+        <ActivatorContent>
             <MudButton HtmlTag="label"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.CloudUpload"
-                       for="@context"
+                       
                        Disabled=LoadingData>
                 Upload Files
             </MudButton>
-        </ButtonTemplate>
+        </ActivatorContent>
     </MudFileUpload>
 
 

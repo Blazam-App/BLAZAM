@@ -9,7 +9,8 @@
              Title="@AppLocalization["Browse"]"
              Icon="@Icons.Material.Filled.ViewList">
     <ADTreeView AdditionalVisibilityFilters=@((entry)=>{if(entry is IADOrganizationalUnit ou) return (ou.CanReadUsersInSubOus || ou.CanReadNonOUs); return false;})
-                SelectedEntryChanged="@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);})" />
+                SelectedEntryChanged="@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);})"
+                StartRootExpanded=false/>
 </MudNavGroup>
 
 @code {

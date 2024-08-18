@@ -1,8 +1,6 @@
 ﻿@using BLAZAM.Gui.UI.Computers
 @inherits DirectoryEntryViewBase
-@{
-    string _fieldMudStackClasses = "flex-wrap gap-10";
-}
+
 
 
 <BitLockerViewer Computer="_computer"/>
@@ -21,17 +19,23 @@
 @code {
     IADBitLockerRecovery? BitLocker=> DirectoryEntry as IADBitLockerRecovery;
     List<IADBitLockerRecovery> _recoveries = new();
-    IADComputer _computer;
+    IADComputer? _computer;
     protected override async Task OnInitializedAsync()
     {
 
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
 
+        if (BitLocker != null)
+        {
 
-        _computer = (IADComputer)BitLocker.GetParent();
+            _computer = (IADComputer?)BitLocker.GetParent();
 
+
+            await AuditLogger.Searched(BitLocker);
+        }
         LoadingData = false;
+
         await RefreshEntryComponents();
     }
 

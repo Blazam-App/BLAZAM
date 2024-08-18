@@ -13,51 +13,9 @@
 
 
 
-    <MudTabs ActivePanelIndex="@ActiveTab">
-        <MudTabPanel>
-            <ChildContent>
-
 
                 <NotificationSettings />
 
-
-            </ChildContent>
-            <TabContent>
-                @AppLocalization["Templates"]
-            </TabContent>
-        </MudTabPanel>
-        <MudTabPanel>
-            <ChildContent>
-
-
-                <AccessLevelEditor />
-
-
-            </ChildContent>
-            <TabContent>
-                @AppLocalization["Access Levels"]
-            </TabContent>
-
-        </MudTabPanel>
-        <MudTabPanel>
-            <ChildContent>
-
-                @if (Monitor.DirectoryConnectionStatus == ServiceConnectionState.Up)
-                {
-                    <ImpersonateUser />
-                    <PermissionMapper />
-
-                }
-
-
-            </ChildContent>
-            <TabContent>
-                @AppLocalization["Mappings"]
-            </TabContent>
-
-        </MudTabPanel>
-
-    </MudTabs>
 
 
 

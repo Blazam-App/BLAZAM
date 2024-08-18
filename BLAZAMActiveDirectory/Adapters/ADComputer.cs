@@ -142,7 +142,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
             }
             return false;
 
@@ -219,7 +219,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     catch (Exception ex)
                     {
-                        Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
+                        Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
                     }
                     x++;
                 } while (x < retries);
@@ -231,7 +231,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error(ex.Message + " {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
 
             }
         }

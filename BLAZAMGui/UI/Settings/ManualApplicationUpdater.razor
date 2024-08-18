@@ -90,7 +90,7 @@
 
                     @if (ShowAllUpdates)
                     {
-                        @foreach (var update in UpdateService.AvailableUpdates.Where(x => x.Version.OlderThan(LatestAvailableVersion.Version)).OrderBy(x => x.Version))
+                        @foreach (var update in UpdateService.AvailableUpdates.Where(x => x.Version<=ApplicationInfo.RunningVersion).OrderBy(x => x.Version))
                         {
 
 
@@ -186,7 +186,6 @@
             {
                 MessageService.ShowMessage<JobResultDialog>(output.ToDialogParameters(), AppLocalization["Update"]);
                 await output.RunAsync();
-                // SnackBarService.Success("Update started successfully. The web application will restart and update momentarily.");
 
             }
             await InvokeAsync(StateHasChanged);

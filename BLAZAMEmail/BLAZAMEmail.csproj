@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>BLAZAM.Email</RootNamespace>
@@ -9,13 +9,17 @@
 
   <ItemGroup>
     <PackageReference Include="BlazorTemplater" Version="1.5.1" />
-    <PackageReference Include="MailKit" Version="4.6.0" />
+    <PackageReference Include="MailKit" Version="4.7.1.1" />
     <PackageReference Include="PreMailer.Net" Version="2.6.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BLAZAMDatabase\BLAZAMDatabase.csproj" />
     <ProjectReference Include="..\BLAZAMEmailMessage\BLAZAMEmailMessage.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

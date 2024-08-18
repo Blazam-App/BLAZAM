@@ -1,0 +1,25 @@
+@if (JobMonitor.AllJobs.Count > 0)
+{
+
+    <MudDataGrid T="IJob"
+                 Dense=true
+                 Items="JobMonitor.AllJobs.Where(x=>!x.NestedJob)">
+        <Columns>
+            <PropertyColumn Property="x=>x.Name" />
+            <PropertyColumn Property="x=>x.User" />
+            <PropertyColumn Property="x=>x.StartTime" />
+            <PropertyColumn Property="x=>x.Steps.Count" />
+            <PropertyColumn Property="x=>x.Progress" />
+            <PropertyColumn Property="x=>x.Result" />
+        </Columns>
+    </MudDataGrid>
+
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        JobMonitor.OnUpdate += async () => { await InvokeAsync(StateHasChanged); };
+    }
+}

@@ -13,7 +13,7 @@
                  @bind-Text=@SearchTerm
                  @ref=AutoComplete
                  AutoFocus=@AutoFocus
-                 SearchFuncWithCancel="@GetResults"
+                 SearchFunc="@GetResults"
                  DebounceInterval=500
                  ResetValueOnEmptyText="true"
                  Validation="@Validation"
@@ -66,8 +66,8 @@
         </MoreItemsTemplate>
     </MudAutocomplete>
 
-    @code {
-#nullable disable warnings
+@code {
+    #nullable disable warnings
     [Parameter]
     public Func<object> Validation { get; set; }
     [Parameter]
@@ -86,8 +86,15 @@
     [Parameter]
     public Origin AnchorOrigin { get; set; } = Origin.BottomCenter;
 
+    /// <summary>
+    /// Disables this autocomplete input
+    /// </summary>
     [Parameter]
     public bool Disabled { get; set; }
+
+    /// <summary>
+    /// Automatically bring the text box into focus on load
+    /// </summary>
     [Parameter]
     public bool AutoFocus { get; set; }
 
@@ -99,6 +106,7 @@
     /// </remarks>
     [Parameter]
     public int MaxResults { get; set; } = 10;
+
 
     [Parameter]
     public bool AllowCustomInput { get; set; }
@@ -121,6 +129,10 @@
 
     IEnumerable<IDirectoryEntryAdapter> _searchResults = new List<IDirectoryEntryAdapter>();
     bool _searchDisabled;
+
+    /// <summary>
+    /// Indicates whether to search for disabled Users/Computers
+    /// </summary>
     [Parameter]
     public bool SearchDisabled
     {
@@ -197,10 +209,10 @@
     }
 
 
-    public List<IDirectoryEntryAdapter> _selectedResults;
+    // public List<IDirectoryEntryAdapter> _selectedResults;
 
 
-    List<string> SelectedResultNames = new();
+    // List<string> SelectedResultNames = new();
 
 
 
@@ -223,7 +235,7 @@
              {
                  SearchResults = new List<IDirectoryEntryAdapter>();
 
-                 var search = new ADSearch();
+                 var search = new ADSearch(Directory);
 
                  search.ObjectTypeFilter = SearchObjectType;
                  search.GeneralSearchTerm = searchText.Replace(" ", "*");

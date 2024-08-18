@@ -1,7 +1,13 @@
 # BLAZAM
 
-## Introducing Blazam's new Logo
-<img src="https://raw.githubusercontent.com/Blazam-App/BLAZAM/Beta-Dev/BLAZAM/static/img/default_logo5.png" width=150px/>
+## Version 1.0.0 Release Notice
+Blazam has been officially released.
+
+### Beta Installations:
+Please ensure .NET Core 8 Runtimes are installed for service-type installations,
+and .NET Core Web Hosting Bundle for IIS-type installations.
+
+[https://dotnet.microsoft.com/en-us/download/dotnet/8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 
 ## Website
 [blazam.org](https://blazam.org)

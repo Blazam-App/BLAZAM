@@ -1,9 +1,7 @@
 
 using BLAZAM.ActiveDirectory;
-using BLAZAM.Email.Services;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
-using BLAZAM.Common;
 using BLAZAM.Nav;
 
 namespace BLAZAM.Gui.UI
@@ -44,8 +42,7 @@ namespace BLAZAM.Gui.UI
         [Inject]
         public ICurrentUserStateService CurrentUser { get; set; }
 
-       // protected IApplicationUserState? CurrentUser => UserStateService.CurrentUserState;
-
+      
         [Inject]
         protected AuditLogger AuditLogger { get; set; }
 
@@ -85,7 +82,6 @@ namespace BLAZAM.Gui.UI
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            //Nav = new AppNavigationManager(BaseNav);
             try
             {
                 Context = DbFactory.CreateDbContext();
@@ -101,7 +97,7 @@ namespace BLAZAM.Gui.UI
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectryLogger.Error("Failed to connect to scoped active directory {@Error}", ex);
+                Loggers.ActiveDirectoryLogger.Error("Failed to connect to scoped active directory {@Error}", ex);
 
             }
             Monitor.OnDirectoryConnectionChanged += (status) =>
@@ -130,7 +126,7 @@ namespace BLAZAM.Gui.UI
                 }
                 catch (Exception ex)
                 {
-                    Loggers.ActiveDirectryLogger.Error("Failed to connect to scoped active directory {@Error}", ex);
+                    Loggers.ActiveDirectoryLogger.Error("Failed to connect to scoped active directory {@Error}", ex);
                 }
                 Monitor.OnDirectoryConnectionChanged += (status) =>
                 {
@@ -151,9 +147,7 @@ namespace BLAZAM.Gui.UI
 
         public virtual void Dispose()
         {
-            //Remove for issue #235, Dependency Injection automatically
-            //disposes of objects after they are no longer needed.
-            //Context?.Dispose();
+            //This object requires no further disposal
         }
 
         public async Task CopyToClipboard(string? text)
