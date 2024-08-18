@@ -17,11 +17,7 @@
 
 @if (AllDelegates.Count > 0)
 {
-    var delegates = AllDelegates.Where(l => l.DeletedAt == null)@*.Where(l =>
-  Directory.FindEntryBySID(l.DelegateSid).CanonicalName
-  .StartsWith(DelegateFilter, StringComparison.OrdinalIgnoreCase) ||
-  Directory.FindEntryBySID(l.DelegateSid).CanonicalName
-  .Contains(DelegateFilter, StringComparison.OrdinalIgnoreCase))*@;
+    var delegates = AllDelegates.Where(l => l.DeletedAt == null);
     @foreach (var pl in delegates)
     {
         <DelegateListItem Delegate="pl" Context="Context" DelegateDeleted="DelegatesChanged" />

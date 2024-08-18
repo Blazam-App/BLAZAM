@@ -11,6 +11,7 @@
              @bind-SelectedValue="SelectedEntry">
      <ItemTemplate>
         <MudTreeViewItem Value="@context.Value"
+                         Items="@context.Children"
                          LoadingIconColor="Color.Info"
                          @bind-Expanded="@context.Expanded"
                          @bind-Activated=context.Selected

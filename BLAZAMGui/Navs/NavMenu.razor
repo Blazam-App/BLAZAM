@@ -11,7 +11,6 @@
 
 <MudNavMenu Color="Color.Success"
             Bordered="true"
-            
             Class="py-3 w-100">
     <MudBreakpointProvider>
         <MudHidden Breakpoint="Breakpoint.MdAndUp">
@@ -25,7 +24,8 @@
         </MudHidden>
     </MudBreakpointProvider>
     <NavHomeButton />
-    <NavBrowseButton SelectedEntryChanged=@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);}) BrowseExpandedChanged=@((value)=>{BrowseExpandedChanged.InvokeAsync(value);}) />
+    <NavBrowseButton SelectedEntryChanged=@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);})
+                     BrowseExpandedChanged=@((value)=>{BrowseExpandedChanged.InvokeAsync(value);}) />
     <AuthorizeView Context="createContext" Roles=@createRole>
         <MudNavGroup Icon="@Icons.Material.Filled.Create"
                      Title="@AppLocalization["Create"]"
@@ -88,7 +88,7 @@
 
     public void GotoEntry(IDirectoryEntryAdapter entry)
     {
-        
+
         Nav.NavigateTo(entry.SearchUri);
     }
 
