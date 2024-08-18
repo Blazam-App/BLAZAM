@@ -154,7 +154,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             {
                 RootOU.First().Expanded = true;
                 RootOU.First().Children = GetChildren(RootOU.First().Value);
-                if (StartingSelectedOU !=null && !StartingSelectedOU.Equals(RootOU.First().Value))
+                if (SelectedEntry !=null && !SelectedEntry.Equals(RootOU.First().Value))
                 {
                     var firstThing = RootOU.First();
                     if (firstThing.Value is IADOrganizationalUnit openThis)
