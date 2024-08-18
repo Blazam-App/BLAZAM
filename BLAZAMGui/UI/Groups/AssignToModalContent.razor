@@ -14,7 +14,7 @@
                             Label="Group Name"
                             SearchObjectType="ActiveDirectoryObjectType.Group"
                             @bind-SelectedResult=@Group
-                            CustomDisabledFilter=@((result)=>{
+                            CustomDisableFilter=@((result)=>{
                             if(result is IADGroup group){
                             return !DirectoryModel.MemberOf.Contains(group) && group.CanAssign ;
                             }

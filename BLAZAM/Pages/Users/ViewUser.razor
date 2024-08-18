@@ -170,13 +170,13 @@
                                         <MudText Typo="Typo.subtitle2">@AppLocalization["Groups"]</MudText>
                                         <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="User" />
 
-                                    }
-                                    else
-                                    {
-                                        <NoAccess/>
-                                    }
-                                </MudStack>
-
+                                       
+                                    </MudStack>
+                                }
+                                else
+                                {
+                                <NoAccess />
+                                }
 
 
 
