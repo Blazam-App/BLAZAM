@@ -14,7 +14,7 @@
                     <MudListItem>
                         <ChildContent>
                             <MudStack Row=true>
-                                @if (EditMode)
+                                @if (EditMode && g.CanUnassign)
                                 {
                                     <MudText Class="align-middle">@g.CanonicalName</MudText>
 
@@ -25,7 +25,7 @@
 
                                 }
                                 <MudSpacer />
-                                @if (EditMode)
+                                @if (EditMode && g.CanUnassign)
                                 {
                                     <MudIconButton Size="Size.Small" OnClick="@(()=>{Model.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
                                 }

@@ -163,17 +163,22 @@
 
 
 
+
                                 @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
                                 {
                                     <MudStack>
                                         <MudText Typo="Typo.subtitle2">@AppLocalization["Groups"]</MudText>
                                         <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="User" />
 
-                                    </MudStack>
+                                    }
+                                    else
+                                    {
+                                        <NoAccess/>
+                                    }
+                                </MudStack>
 
 
 
-                                }
 
 
                             </Section>

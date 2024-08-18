@@ -1,4 +1,7 @@
 ﻿@inherits AutoCompleteComponentBase
+@{
+//TODO Finish custom disable 
+}
 <MudAutocomplete Class="@Class"
                  Style="@Style"
                  Disabled=@Disabled
@@ -114,6 +117,9 @@
 
     [Parameter]
     public Func<IDirectoryEntryAdapter, bool> CustomResultsFilter { get; set; }
+
+    [Parameter]
+    public Func<IDirectoryEntryAdapter, bool>? CustomDisableFilter { get; set; }
     @*
     [Parameter]
     public IFluentDisplay Display { get; set; }*@

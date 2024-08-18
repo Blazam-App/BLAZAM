@@ -94,12 +94,17 @@
 
                 </Section>
             </MudItem>
-            <MudItem xs="12" md="12">
-                <Section Style="min-height:200px;" Title=@AppLocalization["Members"]>
-                    <GroupMembersDataGrid Group="Group" />
 
-                </Section>
-            </MudItem>
+
+            @if (Group.CanReadField(ActiveDirectoryFields.MemberOf))
+            {
+                <MudItem xs="12" md="12">
+                    <Section Style="min-height:200px;" Title=@AppLocalization["Members"]>
+                        <GroupMembersDataGrid Group="Group" />
+
+                    </Section>
+                </MudItem>
+            }
         </MudGrid>
 
 
