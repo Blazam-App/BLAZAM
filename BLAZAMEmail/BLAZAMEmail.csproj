@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="BlazorTemplater" Version="1.5.1" />
     <PackageReference Include="MailKit" Version="4.7.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
     <PackageReference Include="PreMailer.Net" Version="2.6.0" />
   </ItemGroup>
 
