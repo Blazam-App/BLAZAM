@@ -58,22 +58,22 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
             });
         }
-        protected HashSet<IDirectoryEntryAdapter> GetChildren(IDirectoryEntryAdapter parentNode)
+        protected IEnumerable<IDirectoryEntryAdapter> GetChildren(IDirectoryEntryAdapter parentNode)
         {
 
             if (ShowAllEntries)
             {
-                var children = parentNode.Children.ToHashSet();
+                var children = parentNode.Children;
                 return children;
 
             }
             else if (parentNode is IADOrganizationalUnit ou)
             {
 
-                var children = ou.Children.Where(c => c.ObjectType == ActiveDirectoryObjectType.OU).ToHashSet();
+                var children = ou.Children.Where(c => c.ObjectType == ActiveDirectoryObjectType.OU);
                 return children;
             }
-            return new();
+            return new List<IDirectoryEntryAdapter>();
 
 
         }
