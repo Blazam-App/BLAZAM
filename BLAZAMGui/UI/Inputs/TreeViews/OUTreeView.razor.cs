@@ -16,23 +16,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         [Parameter]
         public RenderFragment<IADOrganizationalUnit>? EndAdornment { get; set; }
 
-        List<TreeItemData<IDirectoryEntryAdapter>> GetChildren(IDirectoryEntryAdapter context)
-        {
-            if (context is IADOrganizationalUnit ou)
-            {            
-                    return ou.TreeViewSubOUs.Where(o=>ShouldShowOU(o)).ToTreeItemData();
-            }
-            return new List<TreeItemData<IDirectoryEntryAdapter>>();
-        }
-        async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>> GetChildrenAsync(IDirectoryEntryAdapter parentNode)
-        {
-            return await Task.Run(() =>
-                {
-                    return GetChildren(parentNode);
-
-
-                });
-        }
+       
 
 
 

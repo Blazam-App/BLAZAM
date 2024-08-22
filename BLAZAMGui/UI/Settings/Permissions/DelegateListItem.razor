@@ -39,11 +39,13 @@
 
 
 
+           @*  <MudButton Variant="Variant.Outlined"
+                       Color="Color.Info">@AppLocalization["Show All Members"]</MudButton> *@
             <MudButton Variant="Variant.Outlined"
                        @onclick="Save"
-                       Color="Color.Success">Save Changes</MudButton>
+                       Color="Color.Success">@AppLocalization["Save Changes"]</MudButton>
             <AppCloseButton @onclick="DeleteDelegate"
-                            Color="Color.Success" />
+                            Color="Color.Error" />
         </MudStack>
 
 

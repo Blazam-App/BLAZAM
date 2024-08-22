@@ -1,0 +1,10 @@
+﻿@inject IStringLocalizer<AppLocalization> AppLocalization
+<MudAlert ContentAlignment=HorizontalAlignment.Center Severity="Severity.Warning">
+    <MudText Typo="Typo.caption" Align="Align.Center">
+        @AppLocalization["You are missing permissions necessary to see this content"]
+    </MudText>
+</MudAlert>
+
+@code {
+
+}

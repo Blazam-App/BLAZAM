@@ -1,6 +1,8 @@
-<MudCard>
+
+<MudCard Elevation="0">
     <MudStack Row=true>
         <OUTreeView SelectedEntry=_selectedOU
+                    StartRootExpanded=true
                     SelectedEntryChanged="ouChanged" />
         <MudContainer>
             @if (_selectedOU != null)
@@ -14,12 +16,16 @@
     </MudStack>
 </MudCard>
 
-@code{
+@code {
     [Parameter]
-    public AppUser User {get;set;}
+    public AppUser User { get; set; }
 
     IDirectoryEntryAdapter? _selectedOU = null;
 
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
 
     private async void ouChanged(IDirectoryEntryAdapter entry)
     {
