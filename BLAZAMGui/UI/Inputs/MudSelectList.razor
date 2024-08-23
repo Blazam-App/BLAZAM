@@ -28,47 +28,44 @@
                             @Placeholder
                         </MudElement>
                     }
-                    <MudSpacer />
-                    <MudIcon Class="align-end"
-                             Icon="@(_selectMenu?.Open==true?Icons.Material.Filled.ArrowDropUp:Icons.Material.Filled.ArrowDropDown)" />
-                </MudStack>
-            </MudField>
-        </ActivatorContent>
-        <ChildContent>
-            @if (Values != null && Values.Count() > 0)
+                <MudSpacer />
+                <MudIcon Class="align-end" Icon="@(_selectMenu?.Open==true?Icons.Material.Filled.ArrowDropUp:Icons.Material.Filled.ArrowDropDown)" />
+            </MudStack>
+        </MudField>
+    </ActivatorContent>
+    <ChildContent>
+        @if (Values != null && Values.Count() > 0)
+        {
+            @foreach (var val in Values)
             {
-                @foreach (var val in Values)
-                {
-                    <MudMenuItem Style="min-width:max-content;"
-                                 Class="py-0 px-3 ma-0"
-                                 OnClick="@(()=>{ToggleSelected(val);})"
-                                 AutoClose=@(!MultiSelection)>
-                        <MudStack Class="pa-0 ma-0"
-                                  Row=true
-                                  Style="min-width:max-content;">
-                            @if (MultiSelection)
-                            {
-                                <MudCheckBox T=bool
-                                             ValueChanged="@(()=>{ToggleSelected(val);})"
-                                             Value="SelectedValues.Contains(val)" />
-                            }
-                            @if (ToStringFunc != null)
-                            {
-                                <MudText Class="align-middle"
-                                         Style="min-width:max-content;min-height:24px;">
-                                    @ToStringFunc.Invoke(val)
-                                </MudText>
-                            }
-                            else
-                            {
-                                <MudText Class="align-middle"
-                                         Style="min-width:max-content;min-height:24px;">
-                                    @val?.ToString()
-                                </MudText>
-                            }
-                        </MudStack>
-                    </MudMenuItem>
-                }
+                <MudMenuItem Style="min-width:max-content;"
+                             Class="py-0 px-3 ma-0"
+                             OnClick="@(()=>{ToggleSelected(val);})"
+                             AutoClose=@(!MultiSelection)>
+                    <MudStack Class="pa-0 ma-0"
+                              Row=true
+                              Style="min-width:max-content;">
+                        @if (MultiSelection)
+                        {
+                            <MudCheckBox T=bool
+                                         ValueChanged="@(()=>{ToggleSelected(val);})"
+                                         Value="SelectedValues.Contains(val)" />
+                        }
+                        @if (ToStringFunc != null)
+                        {
+                            <MudText Class="align-middle" Style="min-width:max-content;min-height:24px;">
+                                @ToStringFunc.Invoke(val)
+                            </MudText>
+                        }
+                        else
+                        {
+                            <MudText Class="align-middle" Style="min-width:max-content;min-height:24px;">
+                                @val?.ToString()
+                            </MudText>
+                        }
+                    </MudStack>
+                </MudMenuItem>
+            }
 
             }
         </ChildContent>

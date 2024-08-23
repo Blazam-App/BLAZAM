@@ -39,7 +39,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             {
                 if (value == _startingSelectedNode) return;
                 _startingSelectedNode = value;
-                _selectedEntry = value;
+                SelectedEntry = value;
 
 
                 StartingSelectedOUChanged.InvokeAsync(value);
@@ -67,7 +67,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                     if (cache == null && RootOU.Count>0 && value == RootOU.First()) return;
 
 
-                    SelectedEntryChanged.InvokeAsync(value);
+                    InvokeAsync(() => { SelectedEntryChanged.InvokeAsync(value); });
 
 
                     //if (TopLevel == null)
@@ -99,30 +99,53 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             }
             return Color.Default;
         }
-       protected async Task InitializeTreeView()
+
+        protected IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(IDirectoryEntryAdapter? parent)
         {
-            //Wait a few milliseconds to trip the async into acutally awaiting
-            await Task.Delay(500);
-
-            //ApplicationBaseOUs = Directory.OUs.FindSubOusByDN(null);
-
-
-            if (RootOU is null || RootOU.Count < 1)
+            try
             {
-                TopLevel = new ADOrganizationalUnit();
-                TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
-                _ = TopLevel.SubOUs;
-                var TopLevelList = new List<IDirectoryEntryAdapter>() { TopLevel };
-               // RootOU = new HashSet<IDirectoryEntryAdapter>() { TopLevel as IDirectoryEntryAdapter };
-                RootOU = TopLevelList.ToTreeItemData();
+              
+                    var items = parent.Children
+                        .Where(c => c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c));
+                    
+                    
+                    var treeBranchh = items.ToTreeItemData();
+                    return treeBranchh;
+                
             }
-            if (StartingSelectedOU == null)
+            catch (Exception)
             {
-                StartingSelectedOU = TopLevel;
+                return new List<TreeItemData<IDirectoryEntryAdapter>>();
 
             }
 
-            OpenToSelected();
+        }
+
+        protected async Task InitializeTreeView()
+        {
+            await Task.Run(() => {
+
+                //ApplicationBaseOUs = Directory.OUs.FindSubOusByDN(null);
+
+
+                if (RootOU is null || RootOU.Count < 1)
+                {
+                    TopLevel = new ADOrganizationalUnit();
+                    TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
+                    _ = TopLevel.SubOUs;
+                    var TopLevelList = new List<IDirectoryEntryAdapter>() { TopLevel };
+                    // RootOU = new HashSet<IDirectoryEntryAdapter>() { TopLevel as IDirectoryEntryAdapter };
+                    RootOU = TopLevelList.ToTreeItemData();
+                }
+                if (StartingSelectedOU == null)
+                {
+                    //StartingSelectedOU = TopLevel;
+
+                }
+
+                OpenToSelected();
+            });
+
             LoadingData = false;
             await InvokeAsync(StateHasChanged);
         }
@@ -149,9 +172,11 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         protected void OpenToSelected()
         {
 
-            if (StartRootExpanded)
+            if (StartRootExpanded && RootOU!=null && RootOU.Count>0)
             {
-                if (!SelectedEntry.Equals(RootOU))
+                RootOU.First().Expanded = true;
+                RootOU.First().Children = GetChildren(RootOU.First().Value);
+                if (SelectedEntry !=null && !SelectedEntry.Equals(RootOU.First().Value))
                 {
                     var firstThing = RootOU.First();
                     if (firstThing.Value is IADOrganizationalUnit openThis)
@@ -180,6 +205,11 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                         }
                     }
                 }
+                else
+                {
+                    RootOU.First().Selected = true;
+                    SelectedEntry = RootOU.First().Value;
+                }
             }
             //InvokeAsync(StateHasChanged);
 
@@ -205,6 +235,25 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 }
             }
             return false;
+        }
+
+
+        protected List<TreeItemData<IDirectoryEntryAdapter>> GetChildren(IDirectoryEntryAdapter context)
+        {
+            if (context is IADOrganizationalUnit ou)
+            {
+                return ou.TreeViewSubOUs.Where(o => ShouldShowOU(o)).ToTreeItemData();
+            }
+            return new List<TreeItemData<IDirectoryEntryAdapter>>();
+        }
+        protected async Task<IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>> GetChildrenAsync(IDirectoryEntryAdapter parentNode)
+        {
+            return await Task.Run(() =>
+            {
+                return GetChildren(parentNode);
+
+
+            });
         }
     }
 }

@@ -14,11 +14,12 @@
                             Label="Group Name"
                             SearchObjectType="ActiveDirectoryObjectType.Group"
                             @bind-SelectedResult=@Group
-                            CustomResultsFilter=@((result)=>{
-                            if(result is IADGroup){
-                            return !DirectoryModel.MemberOf.Contains(result as IADGroup);
+                            CustomDisableFilter=@((result)=>{
+                            if(result is IADGroup group){
+                            return !DirectoryModel.MemberOf.Contains(group) && group.CanAssign ;
                             }
-                            return true;
+                            return false
+                            ;
                             }) />
             @if (count == 0)
             {

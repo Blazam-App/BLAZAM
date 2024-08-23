@@ -69,7 +69,9 @@
                                      Icon="@Icons.Material.Filled.Edit"
                                      ToggledIcon="@Icons.Material.Filled.EditOff"
                                      ToggledColor="Color.Error"
-                                     Disabled=@(!DirectoryEntry.CanEdit && !CurrentUser.State.CanAssign) />
+                                     Disabled=@(!DirectoryEntry.CanEdit && (accountEntry!=null && (accountEntry.CanAssign||accountEntry.CanUnassign)))
+                                     ToggledTitle="End Edit" />
+
             </MudTooltip>
 
             @if (accountEntry != null && accountEntry.LockedOut)
@@ -87,7 +89,6 @@
                 <MudTooltip Text="@AppLocalization["Assign To"]">
 
                     <MudIconButton OnClick="@Assign"
-                                   Disabled=@(!groupableEntry.CanAssign)
                                    Icon="@Icons.Material.Filled.GroupAdd"
                                    aria-label="assign to" />
                 </MudTooltip>
@@ -172,10 +173,7 @@
             {
                 <MudMenuItem OnClick="@Unlock">Unlock...</MudMenuItem>
             }
-            @if (groupableEntry?.CanAssign == true)
-            {
-                <MudMenuItem OnClick="@Assign">Assign To...</MudMenuItem>
-            }
+            <MudMenuItem OnClick="@Assign">Assign To...</MudMenuItem>
             @if (accountEntry?.CanDisable == true && accountEntry is not IADComputer)
             {
                 <MudMenuItem OnClick="@ResetPassword">Change Password...</MudMenuItem>
