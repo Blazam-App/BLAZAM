@@ -1,4 +1,8 @@
 # BLAZAM
+Proudly serving
+
+![image](https://github.com/user-attachments/assets/9b7a0006-b32f-4f4a-8cef-bf3ead418ba0)
+
 
 ## Version 1.0.0 Release Notice
 Blazam has been officially released.
