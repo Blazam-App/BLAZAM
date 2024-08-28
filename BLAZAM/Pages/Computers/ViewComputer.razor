@@ -300,24 +300,54 @@
     {
         if (Computer != null && await MessageService.Confirm("Are you sure you want to save the changes?"))
         {
-            var jobResults = await Computer.CommitChangesAsync();
-            if (jobResults.Result == JobResult.Passed)
+            SavingChanges = true;
+            await RefreshEntryComponents();
+            try
             {
 
+                var changes = Computer.Changes;
+                var assignTo = Computer.ToAssignTo;
+                var unassignFrom = Computer.ToUnassignFrom;
+                var jobResults = await Computer.CommitChangesAsync();
+                if (jobResults.Result == JobResult.Passed)
+                {
+                    foreach (var assignment in assignTo)
+                    {
+                        await AuditLogger.Computer.Assigned(assignment.Member, assignment.Group);
+                        await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
+                    }
 
-                await AuditLogger.Computer.Changed(Computer, Computer.Changes);
-                _ = OUNotificationService.PostAsync(Computer, NotificationType.Modify);
+                    foreach (var assignment in unassignFrom)
+                    {
+                        await AuditLogger.Computer.Unassigned(assignment.Member, assignment.Group);
+                        await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
+                    }
+                    if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
+                    {
+                        _ = OUNotificationService.PostAsync(Computer, NotificationType.Modify);
+                        await AuditLogger.User.Changed(Computer, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
+                    }
 
-                EditMode = false;
-                Nav.WarnOnNavigation = false;
-                SnackBarService.Success("The changes made to this computer have been saved.");
-                await RefreshEntryComponents();
+                    
+
+                    EditMode = false;
+                    Nav.WarnOnNavigation = false;
+                    SnackBarService.Success("The changes made to this computer have been saved.");
+                    await RefreshEntryComponents();
+                }
+                else
+                {
+                    await jobResults.ShowJobDetailsDialogAsync(MessageService);
+                }
             }
-            else
+            catch (ApplicationException ex)
             {
-                await jobResults.ShowJobDetailsDialogAsync(MessageService);
-            }
+                SnackBarService.Error(ex.Message);
 
+            }
+            SavingChanges = false;
+
+            await RefreshEntryComponents();
 
         }
     }

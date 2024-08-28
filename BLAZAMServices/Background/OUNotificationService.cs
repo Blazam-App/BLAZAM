@@ -43,28 +43,28 @@ namespace BLAZAM.Services.Background
             {
                 case NotificationType.Create:
                     notificationTitle += _appLocalization["Created"];
-                    notificationBody += _appLocalization["was created at"] + source.Created?.ToLocalTime();
+                    notificationBody += _appLocalization["was created at "] + source.Created?.ToLocalTime();
                     var createdMessage = NotificationType.Create.ToNotification<EntryCreatedEmailMessage>();
                     createdMessage.EntryName = source.CanonicalName;
                     emailMessage = createdMessage;
                     break;
                 case NotificationType.Delete:
                     notificationTitle += _appLocalization["Deleted"];
-                    notificationBody += _appLocalization["was deleted at"] + source.LastChanged?.ToLocalTime();
+                    notificationBody += _appLocalization["was deleted at "] + source.LastChanged?.ToLocalTime();
                     var deletedMessage = NotificationType.Delete.ToNotification<EntryDeletedEmailMessage>();
                     deletedMessage.EntryName = source.CanonicalName;
                     emailMessage = deletedMessage;
                     break;
                 case NotificationType.Modify:
                     notificationTitle += _appLocalization["Modified"];
-                    notificationBody += _appLocalization["was modified at"] + source.LastChanged?.ToLocalTime();
+                    notificationBody += _appLocalization["was modified at "] + source.LastChanged?.ToLocalTime();
                     var editedMessage = NotificationType.Modify.ToNotification<EntryEditedEmailMessage>();
                     editedMessage.EntryName = source.CanonicalName;
                     emailMessage = editedMessage;
                     break;
                 case NotificationType.GroupAssignment:
                     notificationTitle += _appLocalization["Group Membership Changed"];
-                    notificationBody += _appLocalization["was modified at"] + source.LastChanged?.ToLocalTime();
+                    notificationBody += _appLocalization["was modified at "] + source.LastChanged?.ToLocalTime();
                   
                     var groupMembershipMessage = NotificationType.GroupAssignment.ToNotification<EntryGroupAssignmentEmailMessage>();
                     groupMembershipMessage.EntryName = source.CanonicalName;
@@ -72,7 +72,7 @@ namespace BLAZAM.Services.Background
                     break;
                 case NotificationType.PasswordChange:
                     notificationTitle += _appLocalization["Password Reset"];
-                    notificationBody += _appLocalization["had a password reset at"] + source.LastChanged?.ToLocalTime();
+                    notificationBody += _appLocalization["had a password reset at "] + source.LastChanged?.ToLocalTime();
                     var passwordChangeMessage = NotificationType.PasswordChange.ToNotification<PasswordChangedEmailMessage>();
                     passwordChangeMessage.EntryName = source.CanonicalName;
                     emailMessage = passwordChangeMessage;

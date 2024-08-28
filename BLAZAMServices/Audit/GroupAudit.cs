@@ -43,7 +43,7 @@ namespace BLAZAM.Services.Audit
         public async Task<bool> MemberRemoved(IDirectoryEntryAdapter parent, IDirectoryEntryAdapter member)
         {
             await Log(c => c.DirectoryEntryAuditLogs,
-                 AuditActions.Group_Member_Added,
+                 AuditActions.Group_Member_Removed,
               parent,
                  null,
                  "Removed member " + member.DN);
