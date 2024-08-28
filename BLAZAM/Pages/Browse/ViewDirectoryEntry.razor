@@ -1,28 +1,32 @@
 @inject IStringLocalizer<AppLocalization> AppLocalization
 <CascadingValue Value="ChangeHistoryModal">
-@switch (DirectoryEntry?.ObjectType)
-{
-    case ActiveDirectoryObjectType.User:
-        <ViewUser DirectoryEntry="DirectoryEntry" />
-        break;
-    case ActiveDirectoryObjectType.Group:
-        <ViewGroup DirectoryEntry="DirectoryEntry" />
-        break;
-    case ActiveDirectoryObjectType.Computer:
-        <ViewComputer DirectoryEntry="DirectoryEntry" />
-        break;
-    case ActiveDirectoryObjectType.OU:
-        <ViewOU DirectoryEntry="DirectoryEntry" />
-        break;
-    case ActiveDirectoryObjectType.Printer:
-        <ViewPrinter DirectoryEntry="DirectoryEntry" />
-        break;
-    case ActiveDirectoryObjectType.BitLocker:
-        <ViewBitLocker DirectoryEntry="DirectoryEntry" />
-        break;
-}
+    @switch (DirectoryEntry?.ObjectType)
+    {
+        case ActiveDirectoryObjectType.User:
+            <ViewUser DirectoryEntry="DirectoryEntry" />
+            break;
+        case ActiveDirectoryObjectType.Group:
+            <ViewGroup DirectoryEntry="DirectoryEntry" />
+            break;
+        case ActiveDirectoryObjectType.Computer:
+            <ViewComputer DirectoryEntry="DirectoryEntry" />
+            break;
+        case ActiveDirectoryObjectType.OU:
+            <ViewOU DirectoryEntry="DirectoryEntry" />
+            break;
+        case ActiveDirectoryObjectType.Printer:
+            <ViewPrinter DirectoryEntry="DirectoryEntry" />
+            break;
+        case ActiveDirectoryObjectType.BitLocker:
+            <ViewBitLocker DirectoryEntry="DirectoryEntry" />
+            break;
+    }
 </CascadingValue>
-<AppModal Title=@AppLocalization["Change History"] @ref=@ChangeHistoryModal Options=@(new DialogOptions(){FullWidth=true,MaxWidth=MaxWidth.ExtraExtraLarge})>
+<AppModal Title=@AppLocalization["Change History"]
+          @ref=@ChangeHistoryModal
+          Options=@(new DialogOptions(){FullWidth=true,
+          MaxWidth=MaxWidth.ExtraExtraLarge,
+          CloseButton=true})>
     @if (ChangeHistoryModal?.IsShown == true)
     {
         <ChangeHistoryModalContent Model="DirectoryEntry" />
@@ -34,5 +38,5 @@
     [Parameter]
     public IDirectoryEntryAdapter? DirectoryEntry { get; set; }
 
-    protected AppModal? ChangeHistoryModal{ get; set; }
+    protected AppModal? ChangeHistoryModal { get; set; }
 }
