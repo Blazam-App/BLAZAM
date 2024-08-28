@@ -9,8 +9,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
     public class ADGroup : GroupableDirectoryAdapter, IADGroup
     {
-        protected List<GroupMembership> MembersToRemove = new List<GroupMembership>();
-        protected List<GroupMembership> MembersToAdd = new List<GroupMembership>();
+        public List<GroupMembership> MembersToRemove { get; private set; } = new List<GroupMembership>();
+        public List<GroupMembership> MembersToAdd { get; private set; } = new List<GroupMembership>();
         public override string? DisplayName { get => base.CanonicalName; set => base.CanonicalName = value; }
         public string? GroupName
         {

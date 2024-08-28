@@ -25,6 +25,27 @@ namespace BLAZAM.Services.Audit
          => await Log(t => t.DirectoryEntryAuditLogs,
              AuditActions.Computer_Deleted, deletedEntry);
 
+        public async Task<bool> Assigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
+        {
+            await Log(c => c.DirectoryEntryAuditLogs,
+               AuditActions.Computer_Assigned,
+            member,
+               null,
+               "Assigned to " + parent.DN);
+
+            return true;
+        }
+        public async Task<bool> Unassigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
+        {
+            await Log(c => c.DirectoryEntryAuditLogs,
+               AuditActions.Computer_Unassigned,
+            member,
+               null,
+               "Unassigned from " + parent.DN);
+
+            return true;
+        }
+
         public override async Task<bool> Searched(IDirectoryEntryAdapter searchedComputer) => await Log(AuditActions.Computer_Searched, (IADComputer)searchedComputer);
 
         private async Task<bool> Log(string action, IADComputer searchedComputer)
