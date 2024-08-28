@@ -14,7 +14,15 @@ namespace BLAZAM.Services.Audit
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
-
+        public async Task<bool> Moved(IDirectoryEntryAdapter movedComputer, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
+        {
+            await Log(c => c.DirectoryEntryAuditLogs,
+               AuditActions.Computer_Moved,
+            movedComputer,
+               ouMovedFrom.OU,
+               ouMovedTo.OU);
+            return true;
+        }
         public override async Task<bool> Changed(IDirectoryEntryAdapter changedComputer, List<AuditChangeLog> changes)
         {
             await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Computer_Edited, changedComputer, changes.GetValueChangesString(c => c.OldValue), changes.GetValueChangesString(c => c.NewValue));

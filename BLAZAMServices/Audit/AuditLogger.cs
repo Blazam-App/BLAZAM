@@ -49,5 +49,19 @@ namespace BLAZAM.Services.Audit
                 await BitLocker.Searched(searchedEntry);
         }
 
+        public async Task Moved(IDirectoryEntryAdapter searchedEntry,IADOrganizationalUnit ouMovedFrom,IADOrganizationalUnit ouMovedTo)
+        {
+            if (searchedEntry is IADUser)
+                await User.Moved(searchedEntry, ouMovedFrom, ouMovedTo);
+            else if (searchedEntry is IADGroup)
+                await Group.Moved(searchedEntry, ouMovedFrom, ouMovedTo);
+            else if (searchedEntry is IADComputer)
+                await Computer.Moved(searchedEntry, ouMovedFrom, ouMovedTo);
+            else if (searchedEntry is IADOrganizationalUnit)
+                await OU.Moved(searchedEntry, ouMovedFrom, ouMovedTo);
+            else if (searchedEntry is IADPrinter)
+                await Printer.Moved(searchedEntry, ouMovedFrom, ouMovedTo);
+        }
+
     }
 }
