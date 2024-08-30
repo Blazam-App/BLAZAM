@@ -5,8 +5,8 @@
     {
         <MudList Disabled=false
                  T="string"
-         Dense=true
-         Style="max-height:200px; overflow-y:auto;">
+                 Dense=true
+                 Style="max-height:200px; overflow-y:auto;">
             @foreach (IADGroup g in Model.MemberOf.Where(group => group.CanRead).OrderBy(g => g.CanonicalName))
             {
                 if (g.CanRead)
@@ -14,20 +14,22 @@
                     <MudListItem>
                         <ChildContent>
                             <MudStack Row=true>
-                                @if (EditMode && g.CanUnassign)
+                                @if (g.CanUnassign)
                                 {
-                                    <MudText Class="align-middle">@g.CanonicalName</MudText>
-
+                                    <MudLink Class="align-middle"
+                                             OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})">
+                                        @g.CanonicalName
+                                    </MudLink>
+                                    <MudSpacer />
+                                    <MudIconButton Size="Size.Small" OnClick="@(()=>{Model.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
                                 }
                                 else
                                 {
-                                    <MudLink Class="align-middle" OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})">@g.CanonicalName</MudLink>
+                                    <MudLink Class="align-middle"
+                                             OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})">
+                                        @g.CanonicalName
+                                    </MudLink>
 
-                                }
-                                <MudSpacer />
-                                @if (EditMode && g.CanUnassign)
-                                {
-                                    <MudIconButton Size="Size.Small" OnClick="@(()=>{Model.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
                                 }
                             </MudStack>
                         </ChildContent>
@@ -47,10 +49,14 @@
     {
         <MudText>@AppLocalization["Not a member of any groups"]</MudText>
     }
-    @if (Model.CanAssign)
+    @if (CurrentUser.State.CanAssign)
     {
 
-        <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.GroupAdd" OnClick="@(()=>{AssignToClicked.InvokeAsync();})" />
+        <MudButton Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.GroupAdd"
+                   OnClick="@(()=>{AssignToClicked.InvokeAsync();})">
+            @AppLocalization["Assign To"]
+        </MudButton>
     }
 }
 @code {

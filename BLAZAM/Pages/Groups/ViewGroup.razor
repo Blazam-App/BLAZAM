@@ -90,21 +90,20 @@
             </MudItem>
             <MudItem xs="12" md="6">
                 <Section Style="min-height:200px;" Title=@AppLocalization["Parent Groups"]>
-                    <MemberOfList Model="Group" />
+                    <MemberOfList AssignToClicked=@AssignToModal.ShowAsync Model="Group" />
 
                 </Section>
             </MudItem>
 
 
-            @if (Group.CanReadField(ActiveDirectoryFields.MemberOf))
-            {
+   
                 <MudItem xs="12" md="12">
                     <Section Style="min-height:200px;" Title=@AppLocalization["Members"]>
                         <GroupMembersDataGrid Group="Group" />
 
                     </Section>
                 </MudItem>
-            }
+            
         </MudGrid>
 
 
@@ -150,12 +149,32 @@
         if (await MessageService.Confirm("Are you sure you want to save the changes to " + Group.CanonicalName + "?", "Save Changes"))
         {
 
+
+            var changes = Group.Changes;
+            var assignTo = Group.MembersToAdd;
+            var unassignFrom = Group.MembersToRemove;
             var jobResults = await Group.CommitChangesAsync();
             if (jobResults.Result == JobResult.Passed)
             {
-                await AuditLogger.Group.Changed(Group, Group.Changes);
+                foreach (var assignment in assignTo)
+                {
+                    await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
+                    await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
+                }
 
-                _ = OUNotificationService.PostAsync(Group, NotificationType.Modify);
+                foreach (var assignment in unassignFrom)
+                {
+                    await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
+                    await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
+                }
+                if (changes.Any(c => c.Field != "member"))
+                {
+                    _ = OUNotificationService.PostAsync(Group, NotificationType.Modify);
+                    await AuditLogger.Group.Changed(Group, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
+                }
+                //await AuditLogger.Group.Changed(Group, Group.Changes);
+
+                //_ = OUNotificationService.PostAsync(Group, NotificationType.Modify);
 
                 EditMode = false;
                 Nav.WarnOnNavigation = false;

@@ -31,16 +31,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             try{
                 if (parent.IsExpanded || parent.CachedChildren != null)
                 {
-
-                    var items = parent.Children
-                        .Where(c => (c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c)) || c.CanRead)
-                        .MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.OU);
-                    if (!ShowAllEntries)
-                    {
-                        items = items.Where(i => i.ObjectType == ActiveDirectoryObjectType.OU);
-                    }
-                    var treeBranchh = items.ToTreeItemData();
-                    return treeBranchh;
+                    return GetChildren(parent).ToTreeItemData();
                 }
             }
             catch(Exception) {
@@ -63,7 +54,10 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
             if (ShowAllEntries)
             {
-                var children = parentNode.Children;
+                var children = parentNode.Children
+                    .Where(c => (c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c)) || c.CanRead)
+                    .MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.Group)
+                    .MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.OU); ;
                 return children;
 
             }

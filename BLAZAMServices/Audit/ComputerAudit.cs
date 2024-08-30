@@ -14,7 +14,15 @@ namespace BLAZAM.Services.Audit
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
-
+        public async Task<bool> Moved(IDirectoryEntryAdapter movedComputer, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
+        {
+            await Log(c => c.DirectoryEntryAuditLogs,
+               AuditActions.Computer_Moved,
+            movedComputer,
+               ouMovedFrom.OU,
+               ouMovedTo.OU);
+            return true;
+        }
         public override async Task<bool> Changed(IDirectoryEntryAdapter changedComputer, List<AuditChangeLog> changes)
         {
             await Log(c => c.DirectoryEntryAuditLogs, AuditActions.Computer_Edited, changedComputer, changes.GetValueChangesString(c => c.OldValue), changes.GetValueChangesString(c => c.NewValue));
@@ -24,6 +32,27 @@ namespace BLAZAM.Services.Audit
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
          => await Log(t => t.DirectoryEntryAuditLogs,
              AuditActions.Computer_Deleted, deletedEntry);
+
+        public async Task<bool> Assigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
+        {
+            await Log(c => c.DirectoryEntryAuditLogs,
+               AuditActions.Computer_Assigned,
+            member,
+               null,
+               "Assigned to " + parent.DN);
+
+            return true;
+        }
+        public async Task<bool> Unassigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
+        {
+            await Log(c => c.DirectoryEntryAuditLogs,
+               AuditActions.Computer_Unassigned,
+            member,
+               null,
+               "Unassigned from " + parent.DN);
+
+            return true;
+        }
 
         public override async Task<bool> Searched(IDirectoryEntryAdapter searchedComputer) => await Log(AuditActions.Computer_Searched, (IADComputer)searchedComputer);
 

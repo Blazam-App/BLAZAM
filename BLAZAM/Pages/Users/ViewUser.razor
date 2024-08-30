@@ -77,18 +77,18 @@
                             <LogonHoursModalContent User="User" />
                         }
                     </AppModal>
-            
+
                     <MudGrid>
                         <MudItem xs="12" md="3">
-                            
+
                             <Section FullWidth=false>
-                                
+
                                 <MudCard Elevation="2"
                                          Style="width:fit-content;height:fit-content"
                                          Class="relative mx-auto my-auto d-block p-1"
                                          @onmouseenter=@(()=>{showRemoveThumbnail=true;})
                                          @onmouseleave=@(()=>{showRemoveThumbnail=false;})>
-                       
+
                                     @if (User?.ThumbnailPhoto != null)
                                     {
                                         <Base64Image Style="max-height:150px;max-width:150px;" Data="User.ThumbnailPhoto.ReizeRawImage(150)" />
@@ -165,19 +165,12 @@
 
 
 
-                                @if (User.CanReadField(ActiveDirectoryFields.MemberOf))
-                                {
-                                    <MudStack>
-                                        <MudText Typo="Typo.subtitle2">@AppLocalization["Groups"]</MudText>
-                                        <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="User" />
 
+                                <MudStack>
+                                    <MudText Typo="Typo.subtitle2">@AppLocalization["Groups"]:</MudText>
+                                    <MemberOfList AssignToClicked=@(()=>{AssignToModal?.ShowAsync();}) Model="User" />
+                                </MudStack>
 
-                                    </MudStack>
-                                }
-                                else
-                                {
-                                    <NoAccess />
-                                }
                                 @if (User.Disabled)
                                 {
                                     <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization["User is disabled"]</MudAlert>
@@ -465,7 +458,7 @@
         </CascadingValue>
 
     </EditForm>
-    @if (User.CanEdit && User.HasUnsavedChanges && !User.NewEntry)
+    @if ((User.CanEdit || CurrentUser.State.CanAssign) && User.HasUnsavedChanges && !User.NewEntry)
     {
         <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
     }

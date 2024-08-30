@@ -6,46 +6,46 @@
 
 <MudText Typo="Typo.h4">@AppLocalization["Application Settings"] <AppDocumentationButton Page="/admin/settings/application" /></MudText>
 <EditForm Context="editContext" OnValidSubmit="Save" Model="settings">
+    <MudStack Spacing="5">
 
-
-    <SettingsField Label="@AppLocalization["Application Name"]">
+        <SettingsField Label="@AppLocalization["Application Name"]">
 
             <MudTextField Class="mt-0" Label=@AppLocalization["Application Name"] @bind-Value="@settings.AppName" />
 
-    </SettingsField>
+        </SettingsField>
 
-    <SettingsField Label="@AppLocalization["Homepage Message"]">
+        <SettingsField Label="@AppLocalization["Homepage Message"]">
 
 
             <MudTextField Label="@AppLocalization["Homepage Message"]" T="string" Variant="Variant.Text" @bind-Text="@settings.MOTD" Lines="5" Placeholder="Place a custom welcome message for your users on the dashboard" />
 
-    </SettingsField>
+        </SettingsField>
 
 
-    <SettingsField Label="@AppLocalization["Force Https"]">
-   
+        <SettingsField Label="@AppLocalization["Force Https"]">
+
             <MudSwitch Label="@AppLocalization["Enabled"]"
-                   Color="Color.Success"
-                   UncheckedColor="Color.Error" 
-                   @bind-Value="@settings.ForceHTTPS" />
+                       Color="Color.Success"
+                       UncheckedColor="Color.Error"
+                       @bind-Value="@settings.ForceHTTPS" />
 
-    </SettingsField>
+        </SettingsField>
 
- @*    <SettingsField Label="@AppLocalization["User Helpdesk URL"]">
+        @*    <SettingsField Label="@AppLocalization["User Helpdesk URL"]">
 
-            <MudTextField Label="@AppLocalization["User Helpdesk URL"]" Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
-                <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
-                    <MudBadge>!</MudBadge>
-                </MudTooltip>
-
-
-            </MudTextField>
-
-    </SettingsField>
- *@
+        <MudTextField Label="@AppLocalization["User Helpdesk URL"]" Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
+        <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
+        <MudBadge>!</MudBadge>
+        </MudTooltip>
 
 
-    <SettingsField Label="@AppLocalization["Branding Icon"]">
+        </MudTextField>
+
+        </SettingsField>
+        *@
+
+
+        <SettingsField Label="@AppLocalization["Branding Icon"]">
 
             <MudContainer>
 
@@ -62,53 +62,52 @@
                     <MudButton HtmlTag="label"
                                Variant="Variant.Filled"
                                Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.CloudUpload">
+                               StartIcon="@Icons.Material.Filled.CloudUpload">
                         Upload Icon
                     </MudButton>
                 </ActivatorContent>
             </MudFileUpload>
-    </SettingsField>
+        </SettingsField>
 
 
 
-    <SettingsField Label="@AppLocalization["Website FQDN"]">
+        <SettingsField Label="@AppLocalization["Website FQDN"]">
 
             <MudTextField Label="@AppLocalization["Website FQDN"]" For=@(()=> settings.AppFQDN) ErrorText="Must be a valid domain name" HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
 
-    </SettingsField>
+        </SettingsField>
 
-    @if (!ApplicationInfo.IsUnderIIS || ApplicationInfo.InDebugMode)
-    {
-        <SettingsField Label="@AppLocalization["SSL Certificate"]">
-            <MudButton OnClick="()=>{uploadCertificateModal?.ShowAsync();}"
-                       Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.CloudUpload"
-                       >
-                Upload Certificate
-            </MudButton>
-        
-    </SettingsField>
-    <AppModal @ref="uploadCertificateModal" Title=@AppLocalization["Upload SSL Certificate"]>
-        <UploadCertificateModalContent AppSettings="settings"/>
-    </AppModal>
-    }
+        @if (!ApplicationInfo.IsUnderIIS || ApplicationInfo.InDebugMode)
+        {
+            <SettingsField Label="@AppLocalization["SSL Certificate"]">
+                <MudButton OnClick="()=>{uploadCertificateModal?.ShowAsync();}"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload">
+                    Upload Certificate
+                </MudButton>
 
-    @*
-    <SettingsField Label="@AppLocalization["Myrtille Web Adress"]">
+            </SettingsField>
+            <AppModal @ref="uploadCertificateModal" Title=@AppLocalization["Upload SSL Certificate"]>
+                <UploadCertificateModalContent AppSettings="settings" />
+            </AppModal>
+        }
+
+        @*
+        <SettingsField Label="@AppLocalization["Myrtille Web Adress"]">
 
         <MudTextField Label="@AppLocalization["Myrtille Web Adress"]" For=@(()=> settings.MyrtilleURL) ErrorText="Must be a valid url" HelperText="Enter the url of the Myrtille server. (eg: http://localhost:8080)" Placeholder="Enter the url of the Myrtille server" @bind-Value="@settings.MyrtilleURL" />
 
-    </SettingsField>
-     <MudButton OnClick=@(()=>{rdpModal.Show();}) >Test Myrtille Connection</MudButton>
-    <AppModal @ref=rdpModal Title="Test Myrtille">
+        </SettingsField>
+        <MudButton OnClick=@(()=>{rdpModal.Show();}) >Test Myrtille Connection</MudButton>
+        <AppModal @ref=rdpModal Title="Test Myrtille">
         <RDPModal/>
-    </AppModal> *@
-    <SettingsField>
-        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
-    </SettingsField>
+        </AppModal> *@
+        <SettingsField>
+            <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+        </SettingsField>
 
-
+    </MudStack>
 </EditForm>
 <MudOverlay Visible="LoadingData" DarkBackground="true" Absolute="true">
     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
@@ -146,7 +145,7 @@
 
 
     }
-  
+
 
     protected override void Save()
     {
