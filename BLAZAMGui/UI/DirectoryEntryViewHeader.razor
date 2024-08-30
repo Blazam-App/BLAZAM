@@ -62,15 +62,14 @@
 
 
 
-            <MudTooltip Text="@AppLocalization["Edit"]">
+            <MudTooltip Text="@(EditMode?AppLocalization["End Edit"]:AppLocalization["Edit"])">
 
                 <MudToggleIconButton Toggled=EditMode
                                      ToggledChanged="@(async(state)=>{await ToggleEditMode(state);})"
                                      Icon="@Icons.Material.Filled.Edit"
                                      ToggledIcon="@Icons.Material.Filled.EditOff"
                                      ToggledColor="Color.Error"
-                                     Disabled=@(!DirectoryEntry.CanEdit && (accountEntry!=null && (accountEntry.CanAssign||accountEntry.CanUnassign)))
-                                     ToggledTitle="End Edit" />
+                                     Disabled=@(!DirectoryEntry.CanEdit && (accountEntry!=null)) />
 
             </MudTooltip>
 

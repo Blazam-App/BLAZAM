@@ -84,9 +84,9 @@
     @if (Group.CanAssign)
     {
 
-        <MudIconButton Color="Color.Primary" 
-        Icon="@Icons.Material.Filled.GroupAdd" 
-        OnClick="@(()=>{AssignMemberModal.ShowAsync();})" />
+        <MudButton Color="Color.Primary" 
+        StartIcon="@Icons.Material.Filled.GroupAdd" 
+        OnClick="@(()=>{AssignMemberModal.ShowAsync();})">@AppLocalization["Add Member..."]</MudButton>
     }
     <AppModal Color="Color.Dark" Title=@AppLocalization["Add Member..."] @ref=@AssignMemberModal>
         <AddMemberModalContent ModelChanged=@(()=>{InvokeAsync(OnInitializedAsync);}) Group="Group" />
