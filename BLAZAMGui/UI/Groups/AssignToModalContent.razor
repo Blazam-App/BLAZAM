@@ -12,13 +12,14 @@
                             Class=""
                             Disabled=@(copyFrom!=null)
                             Label="Group Name"
+                            CustomResultsFilter="(result)=>result is IADGroup group && group.CanRead"
                             SearchObjectType="ActiveDirectoryObjectType.Group"
                             @bind-SelectedResult=@Group
                             CustomDisableFilter=@((result)=>{
-                            if(result is IADGroup group){
-                            return !DirectoryModel.MemberOf.Contains(group) && group.CanAssign ;
+                            if(result is IADGroup group && group.CanAssign){
+                            return DirectoryModel.MemberOf.Contains(group) || !group.CanAssign ;
                             }
-                            return false
+                            return true
                             ;
                             }) />
             @if (count == 0)
@@ -32,13 +33,22 @@
         {
 
             <MudStack Row=true>
-
-                <ADAutoComplete Class=""
+                <ADAutoComplete AutoFocus="true"
+                                Class=""
                                 Disabled=@(copyFrom!=null)
                                 Label="Group Name"
-                                SearchObjectType="ActiveDirectoryObjectType.Group"
+                                CustomResultsFilter="(result)=>result is IADGroup group && group.CanRead"
                                 SelectedResult=@group.Value
-                                SelectedResultChanged="@((newValue)=>{additionalGroups[group.Key]=newValue;})" />
+                                SelectedResultChanged="@((newValue)=>{additionalGroups[group.Key]=newValue;})"
+                                SearchObjectType="ActiveDirectoryObjectType.Group"
+                                CustomDisableFilter=@((result)=>{
+                            if(result is IADGroup group && group.CanAssign){
+                            return DirectoryModel.MemberOf.Contains(group) || !group.CanAssign ;
+                            }
+                            return true
+                            ;
+                            }) />
+
 
 
                 <MudIconButton Icon=@Icons.Material.Filled.Delete OnClick=@(()=>{additionalGroups.Remove(group.Key);}) />
@@ -70,14 +80,14 @@
             @{
                 var existingGroups = DirectoryModel.MemberOf;
             }
-            @if (CopyFrom.MemberOf.Any(g => existingGroups.Contains(g)))
+            @if (CopyFrom.MemberOf.Any(g => existingGroups.Contains(g) && g.CanRead))
             {
                 <MudText>Already a member of...</MudText>
                 <MudList T="string"
                          Dense=true
                          Style="max-height:200px;"
                          Class="overflow-auto">
-                    @foreach (var group in CopyFrom.MemberOf.Where(g => existingGroups.Contains(g)))
+                    @foreach (var group in CopyFrom.MemberOf.Where(g => existingGroups.Contains(g) && g.CanRead))
                     {
                         <MudListItem>
 
@@ -90,7 +100,7 @@
                     }
                 </MudList>
             }
-            @if (CopyFrom.MemberOf.Any(g => !existingGroups.Contains(g)))
+            @if (CopyFrom.MemberOf.Any(g => !existingGroups.Contains(g) && g.CanRead && g.CanAssign))
             {
                 <MudText>Will be added to...</MudText>
                 <MudList T="string"
@@ -98,7 +108,7 @@
                          Style="max-height:200px;"
                          Class="overflow-auto">
 
-                    @foreach (var group in CopyFrom.MemberOf.Where(g => !existingGroups.Contains(g)))
+                    @foreach (var group in CopyFrom.MemberOf.Where(g => !existingGroups.Contains(g) && g.CanRead && g.CanAssign))
                     {
                         <MudListItem>
 
@@ -114,8 +124,29 @@
                 </MudList>
 
             }
+            @if (CopyFrom.MemberOf.Any(g => !existingGroups.Contains(g) && g.CanRead && !g.CanAssign))
+            {
+                <MudText>Can't assign to...</MudText>
+                <MudList T="string"
+                         Dense=true
+                         Style="max-height:200px;"
+                         Class="overflow-auto">
+
+                    @foreach (var group in CopyFrom.MemberOf.Where(g => !existingGroups.Contains(g) && g.CanRead && !g.CanAssign))
+                    {
+                        <MudListItem>
 
 
+
+                            <MudIcon Color=Color.Error Icon="@Icons.Material.Filled.Cancel" />
+
+                            @group.GroupName
+
+                        </MudListItem>
+
+                    }
+                </MudList>
+            }
         </MudStack>
     }
 </MudStack>
@@ -176,7 +207,7 @@
         }
         if (CopyFrom != null)
         {
-            foreach (var g in CopyFrom.MemberOf)
+            foreach (var g in CopyFrom.MemberOf.Where(g =>g.CanAssign))
             {
                 DirectoryModel.AssignTo(g);
 

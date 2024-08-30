@@ -10,7 +10,15 @@ namespace BLAZAM.Services.Audit
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
-
+        public async Task<bool> Moved(IDirectoryEntryAdapter movedPrinter, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
+        {
+            await Log(c => c.DirectoryEntryAuditLogs,
+               AuditActions.Printer_Moved,
+            movedPrinter,
+               ouMovedFrom.OU,
+               ouMovedTo.OU);
+            return true;
+        }
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
          => await Log(t => t.DirectoryEntryAuditLogs,
              AuditActions.Printer_Deleted, deletedEntry);

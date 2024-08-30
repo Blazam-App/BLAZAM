@@ -78,17 +78,17 @@
     if (Members.Where(m => !m.CanRead).Count() > 0)
     {
         <MudAlert Class="mud-alert-filled-info">
-            The group has more members you don't have access to
+            @AppLocalization["The group has more members you don't have access to"]
         </MudAlert>
     }
     @if (Group.CanAssign)
     {
 
-        <MudIconButton Color="Color.Primary" 
-        Icon="@Icons.Material.Filled.GroupAdd" 
-        OnClick="@(()=>{AssignMemberModal.ShowAsync();})" />
+        <MudButton Color="Color.Primary" 
+        StartIcon="@Icons.Material.Filled.GroupAdd" 
+        OnClick="@(()=>{AssignMemberModal.ShowAsync();})">@AppLocalization["Add Member..."]</MudButton>
     }
-    <AppModal Color="Color.Dark" Title="Add Member..." @ref=@AssignMemberModal>
+    <AppModal Color="Color.Dark" Title=@AppLocalization["Add Member..."] @ref=@AssignMemberModal>
         <AddMemberModalContent ModelChanged=@(()=>{InvokeAsync(OnInitializedAsync);}) Group="Group" />
     </AppModal>
 }
@@ -104,7 +104,7 @@ else
     [Parameter]
     public IADGroup Group { get; set; }
     /// <summary>
-    /// Number of membes per page
+    /// Number of members per page
     /// </summary>
     /// <remarks>
     /// Default value is 25

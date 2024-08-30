@@ -3,6 +3,7 @@ using BLAZAM.Common.Data;
 using BLAZAM.Helpers;
 using BLAZAM.Database.Context;
 using BLAZAM.Session.Interfaces;
+using System.Threading.Channels;
 
 namespace BLAZAM.Services.Audit
 {
@@ -32,17 +33,17 @@ namespace BLAZAM.Services.Audit
             member,
                null,
                "Assigned to " + parent.DN);
-           
+
             return true;
         }
-         public async Task<bool> Unassigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
+        public async Task<bool> Unassigned(IDirectoryEntryAdapter member, IDirectoryEntryAdapter parent)
         {
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.User_Unassigned,
             member,
                null,
                "Unassigned from " + parent.DN);
-           
+
             return true;
         }
 
@@ -57,10 +58,22 @@ namespace BLAZAM.Services.Audit
             await Log(c => c.DirectoryEntryAuditLogs, AuditActions.User_Created, newUser, oldValues, newValues);
             return true;
         }
-
+        public async Task<bool>  Moved(IDirectoryEntryAdapter movedUser,IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
+        {
+            await Log(c => c.DirectoryEntryAuditLogs,
+               AuditActions.User_Moved,
+            movedUser,
+               ouMovedFrom.OU,
+               ouMovedTo.OU);
+            return true;
+        }
         public override async Task<bool> Changed(IDirectoryEntryAdapter changedUser, List<AuditChangeLog> changes)
         {
-            await Log(c => c.DirectoryEntryAuditLogs, AuditActions.User_Edited, changedUser, changes.GetValueChangesString(c => c.OldValue), changes.GetValueChangesString(c => c.NewValue));
+            await Log(c => c.DirectoryEntryAuditLogs,
+                AuditActions.User_Edited,
+                changedUser,
+                changes.GetValueChangesString(c => c.OldValue),
+                changes.GetValueChangesString(c => c.NewValue));
             return true;
         }
 
