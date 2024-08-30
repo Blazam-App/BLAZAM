@@ -6,113 +6,112 @@
 
 <MudText Typo="Typo.h4">@AppLocalization["Email Settings"]</MudText>
 <MudForm @onsubmit="Save">
-
-    <SettingsField Label="@AppLocalization["Email Enabled"]">
-        <MudSwitch @bind-Value="settings.Enabled"
-                   Color="Color.Success"
-                   UncheckedColor="Color.Error" />
-    </SettingsField>
-
-
-    <SettingsField Label="@AppLocalization["Admin bcc"]">
-        <MudTextField Label="@AppLocalization["Admin bcc"]" HelperText="Addresses to blind copy all application emails that are sent." @bind-Value="settings.AdminBcc" />
-    </SettingsField>
-
-    <SettingsField Label="@AppLocalization["SMTP Server"]">
-        <MudTextField Label="@AppLocalization["SMTP Server"]" @bind-Value="settings.SMTPServer" />
-    </SettingsField>
-
-    <SettingsField Label="@AppLocalization["SMTP Port"]">
-
-
-        <MudNumericField Label="@AppLocalization["SMTP Port"]" T="int" HideSpinButtons="true" @bind-Value="settings.SMTPPort" />
-
-    </SettingsField>
-
-    <SettingsField Label="@AppLocalization["Use TLS"]">
-
-        <MudSwitch Label="@AppLocalization["Enabled"]"
-                   Color="Color.Success"
-                   UncheckedColor="Color.Error"
-                   @bind-Value="settings.UseTLS" />
-
-    </SettingsField>
-
-
-    <SettingsField Label="@AppLocalization["Use SMTP Authentication"]">
-
-        <MudSwitch Label="@AppLocalization["Enabled"]"
-                Color="Color.Success"
-                   UncheckedColor="Color.Error"
-                   @bind-Value="settings.UseSMTPAuth" />
-
-    </SettingsField>
-
-    @if (settings.UseSMTPAuth)
-    {
-        <SettingsField Label="@AppLocalization["SMTP Username"]">
-
-            <MudTextField Label="@AppLocalization["SMTP Username"]" @bind-Value="settings.SMTPUsername" />
+    <MudStack Spacing="5">
+        <SettingsField Label="@AppLocalization["Email Enabled"]">
+            <MudSwitch @bind-Value="settings.Enabled"
+                       Color="Color.Success"
+                       UncheckedColor="Color.Error" />
         </SettingsField>
 
-        <SettingsField Label="@AppLocalization["SMTP Password"]">
+
+        <SettingsField Label="@AppLocalization["Admin bcc"]">
+            <MudTextField Label="@AppLocalization["Admin bcc"]" HelperText="Addresses to blind copy all application emails that are sent." @bind-Value="settings.AdminBcc" />
+        </SettingsField>
+
+        <SettingsField Label="@AppLocalization["SMTP Server"]">
+            <MudTextField Label="@AppLocalization["SMTP Server"]" @bind-Value="settings.SMTPServer" />
+        </SettingsField>
+
+        <SettingsField Label="@AppLocalization["SMTP Port"]">
 
 
-            <MudTextField Label="@AppLocalization["SMTP Password"]" @bind-Value="settings.SMTPPassword" />
+            <MudNumericField Label="@AppLocalization["SMTP Port"]" T="int" HideSpinButtons="true" @bind-Value="settings.SMTPPort" />
 
         </SettingsField>
-    }
-    <SettingsField Label="@AppLocalization["From Address"]">
+
+        <SettingsField Label="@AppLocalization["Use TLS"]">
+
+            <MudSwitch Label="@AppLocalization["Enabled"]"
+                       Color="Color.Success"
+                       UncheckedColor="Color.Error"
+                       @bind-Value="settings.UseTLS" />
+
+        </SettingsField>
 
 
-        <MudTextField Label="@AppLocalization["From Address"]" @bind-Value="settings.FromAddress" />
-    </SettingsField>
-    <SettingsField Label="@AppLocalization["From Display Name"]">
+        <SettingsField Label="@AppLocalization["Use SMTP Authentication"]">
+
+            <MudSwitch Label="@AppLocalization["Enabled"]"
+                       Color="Color.Success"
+                       UncheckedColor="Color.Error"
+                       @bind-Value="settings.UseSMTPAuth" />
+
+        </SettingsField>
+
+        @if (settings.UseSMTPAuth)
+        {
+            <SettingsField Label="@AppLocalization["SMTP Username"]">
+
+                <MudTextField Label="@AppLocalization["SMTP Username"]" @bind-Value="settings.SMTPUsername" />
+            </SettingsField>
+
+            <SettingsField Label="@AppLocalization["SMTP Password"]">
 
 
-        <MudTextField Label="@AppLocalization["From Display Name"]" @bind-Value="settings.FromName" />
+                <MudTextField Label="@AppLocalization["SMTP Password"]" @bind-Value="settings.SMTPPassword" />
 
-    </SettingsField>
-
-    <SettingsField Label="@AppLocalization["Reply-To Address"]">
-
-
-        <MudTextField Label="@AppLocalization["Reply-To Address"]" @bind-Value="settings.ReplyToAddress" />
-
-    </SettingsField>
-
-    <SettingsField Label="@AppLocalization["Reply-To Display Name"]">
+            </SettingsField>
+        }
+        <SettingsField Label="@AppLocalization["From Address"]">
 
 
-        <MudTextField Label="@AppLocalization["Reply-To Display Name"]" @bind-Value="settings.ReplyToName" />
-
-    </SettingsField>
-
-    <MudTextField Label="@AppLocalization["Test Recipient"]" Disabled=@(!settings.Enabled) @bind-Value=testRecipient />
-
-    <MudButton Disabled=@((!settings.Enabled && !settings.Valid())||LoadingData) @onclick="SendTestEmail" Color="Color.Success">Send Test Email</MudButton>
-    @if (ApplicationInfo.InDebugMode && emailPreview!=null)
-    {
-        <MudContainer MaxWidth
-        ="MaxWidth.Large" Style
-        ="min-height:500px;">
-            @((MarkupString)emailPreview)
-    </MudContainer>
+            <MudTextField Label="@AppLocalization["From Address"]" @bind-Value="settings.FromAddress" />
+        </SettingsField>
+        <SettingsField Label="@AppLocalization["From Display Name"]">
 
 
-    }
-    <SettingsField>
+            <MudTextField Label="@AppLocalization["From Display Name"]" @bind-Value="settings.FromName" />
 
-        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+        </SettingsField>
 
-    </SettingsField>
-    <MudOverlay DarkBackground=true Visible=LoadingData>
-        <MudProgressCircular Indeterminate=true Color=Color.Primary/>
-    </MudOverlay>
+        <SettingsField Label="@AppLocalization["Reply-To Address"]">
+
+
+            <MudTextField Label="@AppLocalization["Reply-To Address"]" @bind-Value="settings.ReplyToAddress" />
+
+        </SettingsField>
+
+        <SettingsField Label="@AppLocalization["Reply-To Display Name"]">
+
+
+            <MudTextField Label="@AppLocalization["Reply-To Display Name"]" @bind-Value="settings.ReplyToName" />
+
+        </SettingsField>
+
+        <MudTextField Label="@AppLocalization["Test Recipient"]" Disabled=@(!settings.Enabled) @bind-Value=testRecipient />
+
+        <MudButton Disabled=@((!settings.Enabled && !settings.Valid())||LoadingData) @onclick="SendTestEmail" Color="Color.Success">Send Test Email</MudButton>
+        @if (ApplicationInfo.InDebugMode && emailPreview != null)
+        {
+            <MudContainer MaxWidth="MaxWidth.Large" Style="min-height:500px;">
+                @((MarkupString)emailPreview)
+            </MudContainer>
+
+
+        }
+        <SettingsField>
+
+            <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+
+        </SettingsField>
+        <MudOverlay DarkBackground=true Visible=LoadingData>
+            <MudProgressCircular Indeterminate=true Color=Color.Primary />
+        </MudOverlay>
+    </MudStack>
 </MudForm>
 @code {
-    #nullable disable warnings
-    string? emailPreview=null;
+#nullable disable warnings
+    string? emailPreview = null;
     BLAZAM.Database.Models.EmailSettings settings = new BLAZAM.Database.Models.EmailSettings();
     string testRecipient;
     protected override async Task OnInitializedAsync()
@@ -134,7 +133,7 @@
         //message.User = user;
         //var html = message.Render();
         //emailPreview = EmailService.PrepareHTMLForEmail(html);
-        if(EmailService.IsConfigured)
+        if (EmailService.IsConfigured)
             emailPreview = EmailService.BuildMessage<TestEmailMessage>("BLAZAM Test Email", "to@test.com").HtmlBody;
 
         LoadingData = false;
@@ -148,7 +147,7 @@
             await InvokeAsync(StateHasChanged);
             await EmailService.SendTestEmail(testRecipient);
             await MessageService.Success("A test email was sent to " + testRecipient, "Test Email Sent");
-       
+
         }
         catch (Exception ex)
         {
