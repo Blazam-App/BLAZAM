@@ -6,173 +6,174 @@
 
 <MudText Typo="Typo.h4">@AppLocalization["Update Settings"] <AppDocumentationButton Page="/update/self/" /></MudText>
 <MudForm @onsubmit="Save">
+    <MudStack Spacing="5">
 
-
-    @if (settings != null)
-    {
-
-        if (updateCredential.HasValue)
+        @if (settings != null)
         {
-            @switch (updateCredential.Value)
+
+            if (updateCredential.HasValue)
             {
-                case UpdateCredential.Application:
-                    <MudAlert Icon="@Icons.Material.Filled.Warning" Class="mud-alert-filled-warning">
-                        The account running Blazam can write to the application directory.
-                        This exposes the host machine to unneccessary risk. Change the application identity
-                        to a lower privileged account to improve security.
-                    </MudAlert>
-                    break;
-                case UpdateCredential.Active_Directory:
-                    <MudAlert Icon="@Icons.Material.Filled.Check" Class="mud-alert-filled-success">
-                        The Active Directory Credentials are validated for updating.
-                    </MudAlert>
-
-                    break;
-                case UpdateCredential.Update:
-                    <MudAlert Icon="@Icons.Material.Filled.Check" Class="mud-alert-filled-success">
-                        The Update Credentials are validated for updating.
-                    </MudAlert>
-
-                    break;
-                case UpdateCredential.None:
-                    <MudAlert Icon="@Icons.Material.Filled.Error" Class="mud-alert-filled-error">
-                        There are no credentials configured with write permission to the application directory!
-                        Try configuring custom update credentials.
-                    </MudAlert>
-                    break;
-
-
-            }
-
-        }
-        if (UpdateService.IncompatibleUpdates.Count > 0)
-        {
-            var latestIncompatibleUpdate = UpdateService.IncompatibleUpdates.Where(x => x.Newer).OrderByDescending(x => x.Release.ReleaseTime).FirstOrDefault();
-            if (latestIncompatibleUpdate != null)
-            {
-                <MudAlert Icon="@Icons.Material.Filled.Error" Class="mud-alert-filled-error">
-                    @AppLocalization["Unable to update!"]
-                    <MudText>@(latestIncompatibleUpdate.PrequisiteMessage)</MudText>
-
-                </MudAlert>
-            }
-        }
-        <SettingsField Label="@AppLocalization["Application Credentials"]">
-
-            <MudTextField T="string" Label="@AppLocalization["Application Credentials"]" Disabled=true Value="@WindowsIdentity.GetCurrent().Name.ToString().Replace('_',' ')" />
-        </SettingsField>
-
-        <SettingsField Label="@AppLocalization["Update Credential Source"]">
-
-            <MudTextField T="string" Label="@AppLocalization["Update Credential Source"]" Disabled=true Value="@updateCredential?.ToString().Replace('_',' ')" />
-        </SettingsField>
-
-        <SettingsField Label="@AppLocalization["Update Credentials"]">
-
-            <MudSwitch @bind-Value=@settings.UseUpdateCredentials
-                       Color="Color.Success"
-                       UncheckedColor="Color.Error"
-                       Label="@AppLocalization["Use Custom Credentials"]" />
-            @if (settings.UseUpdateCredentials)
-            {
-                <MudText>Configure custom update credentials.</MudText>
-
-                <MudCard>
-                    <SettingsField Label="@AppLocalization["Domain"]">
-
-                        <MudTextField Label="@AppLocalization["Domain"]" @bind-Value="settings.UpdateDomain" />
-                    </SettingsField>
-
-                    <SettingsField Label="@AppLocalization["Username"]">
-
-                        <MudTextField Label="@AppLocalization["Username"]" @bind-Value="settings.UpdateUsername" />
-                    </SettingsField>
-
-                    <SettingsField Label="@AppLocalization["Password"]">
-
-                        <MudTextField Label="@AppLocalization["Password"]"
-                                      InputType="InputType.Password"
-                                      @bind-Value="newUpdatePassword" />
-                    </SettingsField>
-                </MudCard>
-            }
-
-
-        </SettingsField>
-        <SettingsField Label="@AppLocalization["Update Branch"]">
-
-            <MudSelect Label="@AppLocalization["Update Branch"]"
-                       @bind-Value=@settings.UpdateBranch
-                       HelperText="The rerlease branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers.">
-                @foreach (var val in updateBranches)
+                @switch (updateCredential.Value)
                 {
-                    <MudSelectItem Value="@val">@val</MudSelectItem>
+                    case UpdateCredential.Application:
+                        <MudAlert Icon="@Icons.Material.Filled.Warning" Class="mud-alert-filled-warning">
+                            The account running Blazam can write to the application directory.
+                            This exposes the host machine to unneccessary risk. Change the application identity
+                            to a lower privileged account to improve security.
+                        </MudAlert>
+                        break;
+                    case UpdateCredential.Active_Directory:
+                        <MudAlert Icon="@Icons.Material.Filled.Check" Class="mud-alert-filled-success">
+                            The Active Directory Credentials are validated for updating.
+                        </MudAlert>
+
+                        break;
+                    case UpdateCredential.Update:
+                        <MudAlert Icon="@Icons.Material.Filled.Check" Class="mud-alert-filled-success">
+                            The Update Credentials are validated for updating.
+                        </MudAlert>
+
+                        break;
+                    case UpdateCredential.None:
+                        <MudAlert Icon="@Icons.Material.Filled.Error" Class="mud-alert-filled-error">
+                            There are no credentials configured with write permission to the application directory!
+                            Try configuring custom update credentials.
+                        </MudAlert>
+                        break;
+
+
                 }
-            </MudSelect>
 
+            }
+            if (UpdateService.IncompatibleUpdates.Count > 0)
+            {
+                var latestIncompatibleUpdate = UpdateService.IncompatibleUpdates.Where(x => x.Newer).OrderByDescending(x => x.Release.ReleaseTime).FirstOrDefault();
+                if (latestIncompatibleUpdate != null)
+                {
+                    <MudAlert Icon="@Icons.Material.Filled.Error" Class="mud-alert-filled-error">
+                        @AppLocalization["Unable to update!"]
+                        <MudText>@(latestIncompatibleUpdate.PrequisiteMessage)</MudText>
 
+                    </MudAlert>
+                }
+            }
+            <SettingsField Label="@AppLocalization["Application Credentials"]">
 
-        </SettingsField>
+                <MudTextField T="string" Label="@AppLocalization["Application Credentials"]" Disabled=true Value="@WindowsIdentity.GetCurrent().Name.ToString().Replace('_',' ')" />
+            </SettingsField>
 
+            <SettingsField Label="@AppLocalization["Update Credential Source"]">
 
+                <MudTextField T="string" Label="@AppLocalization["Update Credential Source"]" Disabled=true Value="@updateCredential?.ToString().Replace('_',' ')" />
+            </SettingsField>
 
-        <SettingsField Label="@AppLocalization["Update"]">
+            <SettingsField Label="@AppLocalization["Update Credentials"]">
 
-            <FieldLabel>
-                <MudText>
-                    @AppLocalization["Update"]
-                </MudText>
-                <MudIconButton Color="Color.Primary"
-                               OnClick=@(async()=>{await appUpdateComponent?.GetLatestUpdate();})
-                               Icon="@Icons.Material.Filled.Refresh" />
-
-            </FieldLabel>
-            <ChildContent>
-
-
-
-            </ChildContent>
-
-        </SettingsField>
-
-        <ManualApplicationUpdater @ref=appUpdateComponent />
-
-        <SettingsField Label="@AppLocalization["Enable Auto Update"]">
-            <MudStack Row=true>
-                <MudSwitch Label="@AppLocalization["Enable Auto Update"]"
+                <MudSwitch @bind-Value=@settings.UseUpdateCredentials
                            Color="Color.Success"
                            UncheckedColor="Color.Error"
-                           @bind-Value=@(settings.AutoUpdate) />
-                <AppDocumentationButton Page="/update/auto/" />
+                           Label="@AppLocalization["Use Custom Credentials"]" />
+                @if (settings.UseUpdateCredentials)
+                {
+                    <MudText>Configure custom update credentials.</MudText>
 
-            </MudStack>
+                    <MudCard>
+                        <SettingsField Label="@AppLocalization["Domain"]">
 
-        </SettingsField>
+                            <MudTextField Label="@AppLocalization["Domain"]" @bind-Value="settings.UpdateDomain" />
+                        </SettingsField>
+
+                        <SettingsField Label="@AppLocalization["Username"]">
+
+                            <MudTextField Label="@AppLocalization["Username"]" @bind-Value="settings.UpdateUsername" />
+                        </SettingsField>
+
+                        <SettingsField Label="@AppLocalization["Password"]">
+
+                            <MudTextField Label="@AppLocalization["Password"]"
+                                          InputType="InputType.Password"
+                                          @bind-Value="newUpdatePassword" />
+                        </SettingsField>
+                    </MudCard>
+                }
 
 
-        @if (settings?.AutoUpdate == true)
-        {
-            <SettingsField Label="@AppLocalization["Auto Update Time"]">
+            </SettingsField>
+            <SettingsField Label="@AppLocalization["Update Branch"]">
 
-                <MudTimePicker HelperText="The time of each day to automatically apply an update."
-                               @bind-Time="@settings.AutoUpdateTime" />
+                <MudSelect Label="@AppLocalization["Update Branch"]"
+                           @bind-Value=@settings.UpdateBranch
+                           HelperText="The rerlease branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers.">
+                    @foreach (var val in updateBranches)
+                    {
+                        <MudSelectItem Value="@val">@val</MudSelectItem>
+                    }
+                </MudSelect>
+
 
 
             </SettingsField>
 
 
+
+            <SettingsField Label="@AppLocalization["Update"]">
+
+                <FieldLabel>
+                    <MudText>
+                        @AppLocalization["Update"]
+                    </MudText>
+                    <MudIconButton Color="Color.Primary"
+                                   OnClick=@(async()=>{await appUpdateComponent?.GetLatestUpdate();})
+                                   Icon="@Icons.Material.Filled.Refresh" />
+
+                </FieldLabel>
+                <ChildContent>
+
+
+
+                </ChildContent>
+
+            </SettingsField>
+
+            <ManualApplicationUpdater @ref=appUpdateComponent />
+
+            <SettingsField Label="@AppLocalization["Enable Auto Update"]">
+                <MudStack Row=true>
+                    <MudSwitch Label="@AppLocalization["Enable Auto Update"]"
+                               Color="Color.Success"
+                               UncheckedColor="Color.Error"
+                               @bind-Value=@(settings.AutoUpdate) />
+                    <AppDocumentationButton Page="/update/auto/" />
+
+                </MudStack>
+
+            </SettingsField>
+
+
+            @if (settings?.AutoUpdate == true)
+            {
+                <SettingsField Label="@AppLocalization["Auto Update Time"]">
+
+                    <MudTimePicker HelperText="The time of each day to automatically apply an update."
+                                   @bind-Time="@settings.AutoUpdateTime" />
+
+
+                </SettingsField>
+
+
+            }
+
         }
+        <SettingsField>
 
-    }
-    <SettingsField>
+            <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
 
-        <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+        </SettingsField>
 
-    </SettingsField>
-
-    <MudOverlay Visible=LoadingData DarkBackground=true>
-        <MudProgressLinear Indeterminate="true" />
-    </MudOverlay>
+        <MudOverlay Visible=LoadingData DarkBackground=true>
+            <MudProgressLinear Indeterminate="true" />
+        </MudOverlay>
+    </MudStack>
 </MudForm>
 @code {
     string? newUpdatePassword;
