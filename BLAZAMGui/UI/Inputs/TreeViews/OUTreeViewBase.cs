@@ -99,7 +99,29 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
             }
             return Color.Default;
         }
-       protected async Task InitializeTreeView()
+
+        protected IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>> GetItems(IDirectoryEntryAdapter? parent)
+        {
+            try
+            {
+              
+                    var items = parent.Children
+                        .Where(c => c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c));
+                    
+                    
+                    var treeBranchh = items.ToTreeItemData();
+                    return treeBranchh;
+                
+            }
+            catch (Exception)
+            {
+                return new List<TreeItemData<IDirectoryEntryAdapter>>();
+
+            }
+
+        }
+
+        protected async Task InitializeTreeView()
         {
             await Task.Run(() => {
 

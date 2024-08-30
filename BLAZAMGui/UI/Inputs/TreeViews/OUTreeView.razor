@@ -2,29 +2,30 @@
 
 <MudText>@Label</MudText>
 
-<MudTreeView ServerData="GetChildrenAsync"
+<MudTreeView T="IDirectoryEntryAdapter"
+             ServerData="GetChildrenAsync"
              Items="RootOU"
              Dense="true"
              Hover="true"
              MaxHeight="400px"
              Color="Color.Primary"
              @bind-SelectedValue="SelectedEntry">
-     <ItemTemplate>
+    <ItemTemplate>
         <MudTreeViewItem Value="@context.Value"
-                         Items="@context.Children"
+                         Items=@GetChildren(context.Value)
                          LoadingIconColor="Color.Info"
                          @bind-Expanded="@context.Expanded"
                          @bind-Activated=context.Selected
-                         Text="@context.Value.CanonicalName"
+                         Text="@context.Value?.CanonicalName"
                          Icon="@Icons.Material.Filled.Folder"
                          IconColor="@(context.Selected==true?Color.Primary:Color.Default)"
                          Class="minw-max w-100"
                          CanExpand=@(context.Value is IADOrganizationalUnit)
-                          Context="treeContext"
+                         Context="treeContext"
                          EndText="@EndText?.Invoke(context.Value)">
-                         
+
         </MudTreeViewItem>
-    </ItemTemplate> 
+    </ItemTemplate>
 </MudTreeView>
 
 @if (RootOU == null || !RootOU.Any() || LoadingData)

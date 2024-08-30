@@ -34,7 +34,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\BLAZAMCommon\BLAZAMCommon.csproj" />
-		<ProjectReference Include="..\BLAZAMEmail\BLAZAMEmail.csproj" />
 		<ProjectReference Include="..\BLAZAMLocalization\BLAZAMLocalization.csproj" />
 		<ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
 		<ProjectReference Include="..\BLAZAMNav\BLAZAMNav.csproj" />

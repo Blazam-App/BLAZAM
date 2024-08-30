@@ -43,13 +43,21 @@ namespace BLAZAM.Services.Audit
         public async Task<bool> MemberRemoved(IDirectoryEntryAdapter parent, IDirectoryEntryAdapter member)
         {
             await Log(c => c.DirectoryEntryAuditLogs,
-                 AuditActions.Group_Member_Added,
+                 AuditActions.Group_Member_Removed,
               parent,
                  null,
                  "Removed member " + member.DN);
             return true;
         }
-
+        public async Task<bool> Moved(IDirectoryEntryAdapter movedGroup, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
+        {
+            await Log(c => c.DirectoryEntryAuditLogs,
+               AuditActions.Group_Moved,
+            movedGroup,
+               ouMovedFrom.OU,
+               ouMovedTo.OU);
+            return true;
+        }
         public override async Task<bool> Changed(IDirectoryEntryAdapter changedGroup, List<AuditChangeLog> changes)
         {
 
