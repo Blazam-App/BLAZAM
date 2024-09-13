@@ -36,6 +36,7 @@
                     We ask that you allow developer logging so we can quickly and transparently improve Blazam and to aid in our developement efforts.
                 </MudText>
                 <MudSwitch Label="@AppLocalization["Enabled"]"
+                           UncheckedColor="Color.Error"
                            Color="Color.Success"
                            @bind-Value="@settings.SendLogsToDeveloper" />
 
@@ -47,6 +48,7 @@
                     efforts on what our users think matters most.
                 </MudText>
                 <MudSwitch Label="@AppLocalization["Enabled"]"
+                           UncheckedColor="Color.Error"
                            Color="Color.Success"
                            @bind-Value="@settings.SendDeveloperAnalytics" />
 

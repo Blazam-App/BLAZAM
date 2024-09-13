@@ -175,7 +175,10 @@
                                 {
                                     <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization["User is disabled"]</MudAlert>
                                 }
-
+                                @if (User.LockedOut)
+                                {
+                                    <MudAlert Severity="Severity.Warning" Class="mud-width-full">@AppLocalization["User is locked out"]</MudAlert>
+                                }
 
 
                             </Section>
