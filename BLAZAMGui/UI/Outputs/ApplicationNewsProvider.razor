@@ -61,6 +61,8 @@
                         @if (readItems.Count > 0)
                         {
                             <MudSwitch @bind-Value=showRead
+                                       UncheckedColor="Color.Error"
+                                       Color="Color.Success"
                                        Class="ps-2"
                                        Label="@AppLocalization["Show read"]" />
                         }

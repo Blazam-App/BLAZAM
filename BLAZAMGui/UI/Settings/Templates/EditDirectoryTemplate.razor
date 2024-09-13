@@ -51,7 +51,8 @@ await ParentTemplateChanged(null);
                                                                                             })" />
                 </AppModal>
                 <MudSwitch Label="@AppLocalization["Visible"]"
-                           Color="@(DirectoryTemplate.Visible==true?Color.Success:Color.Warning)"
+                           UncheckedColor="Color.Warning"
+                           Color="Color.Success"
                            @bind-Value=@DirectoryTemplate.Visible />
                 <MudExpansionPanel  Text="Variables">
                     <MudSimpleTable Elevation=0
@@ -162,7 +163,8 @@ await ParentTemplateChanged(null);
 
                             <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@requirePasswordChangeFromTemplateName">
                                 <MudSwitch Label=@AppLocalization["Require Password Change"]
-                                           Color="@(DirectoryTemplate.EffectiveRequirePasswordChange==true?Color.Success:Color.Warning)"
+                                           UncheckedColor="Color.Warning"
+                                           Color="Color.Success"
                                            @bind-Value=DirectoryTemplate.EffectiveRequirePasswordChange />
                             </TemplateOverride>
                             @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveRequirePasswordChange != DirectoryTemplate.EffectiveRequirePasswordChange)
@@ -173,7 +175,8 @@ await ParentTemplateChanged(null);
                         <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@sendWelcomeEmailFromTemplateName">
 
                             <MudSwitch Label="@AppLocalization["Send  Welcome Email"]"
-                                       Color="@(DirectoryTemplate.EffectiveSendWelcomeEmail==true?Color.Success:Color.Warning)"
+                                       UncheckedColor="Color.Error"
+                                       Color="Color.Success"
                                        @bind-Value=@DirectoryTemplate.EffectiveSendWelcomeEmail />
                             @if (DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true &&
                         (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id) && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
@@ -187,7 +190,8 @@ await ParentTemplateChanged(null);
                         <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@askForAlternateEmailFromTemplateName">
 
                             <MudSwitch Label="@AppLocalization["Ask For Alternate Email"]"
-                                       Color="@(DirectoryTemplate.EffectiveAskForAlternateEmail==true?Color.Success:Color.Warning)"
+                                       UncheckedColor="Color.Error"
+                                       Color="Color.Success"
                                        @bind-Value=@DirectoryTemplate.EffectiveAskForAlternateEmail />
                         </TemplateOverride>
 

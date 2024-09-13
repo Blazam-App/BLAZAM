@@ -4,16 +4,21 @@
     <AppCloseButton />
     <MudStack>
         <ADAutoComplete Label="User or Group" SearchObjectType="ActiveDirectoryObjectType.All"
-        @bind-SelectedResult=@selectedDelegate
+                        @bind-SelectedResult=@selectedDelegate
                         CustomResultsFilter="(result)=>result.ObjectType==ActiveDirectoryObjectType.User|| result.ObjectType==ActiveDirectoryObjectType.Group" />
 
-        <MudSwitch T=bool Label="Super User" @bind-Value="@NewPermissionDelegate.IsSuperAdmin" Disabled=ApplicationInfo.inDemoMode />
+        <MudSwitch T=bool
+                   UncheckedColor="Color.Error"
+                   Color="Color.Success"
+                   Label="Super User"
+                   @bind-Value="@NewPermissionDelegate.IsSuperAdmin"
+                   Disabled=ApplicationInfo.inDemoMode />
         <MudText>Will have complete and total acceess to the application if enabled</MudText>
 
     </MudStack>
-  
 
-   
+
+
 
 
 
@@ -63,7 +68,7 @@
         catch (Exception ex)
         {
 
-            Loggers.ActiveDirectoryLogger.Error("Error attempting to add delegate " + selectedDelegate.CanonicalName + " {@Error}",ex);
+            Loggers.ActiveDirectoryLogger.Error("Error attempting to add delegate " + selectedDelegate.CanonicalName + " {@Error}", ex);
             NotificationService.Error("An unexpected error has occured.");
         }
 
