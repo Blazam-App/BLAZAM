@@ -185,18 +185,21 @@ namespace BLAZAM.Update.Services
                 {
                     using var context = await _dbFactory.CreateDbContextAsync();
                     SelectedBranch = context.AppSettings.FirstOrDefault()?.UpdateBranch;
-                    if (!SelectedBranch.StartsWith("v1"))
+                    if (SelectedBranch.Equals(ApplicationReleaseBranches.Stable, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        var branch = SelectedBranch.Split("-")[1];
+                        return;
+                    }
+                    if (SelectedBranch.Equals("Stable", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        SelectedBranch = ApplicationReleaseBranches.Stable;
 
-                        SelectedBranch = "v1-" + branch;
                         context.AppSettings.FirstOrDefault().UpdateBranch = SelectedBranch;
                         await context.SaveChangesAsync();
                     }
                 }
                 catch (Exception ex)
                 {
-                    Loggers.DatabaseLogger.Error("Error getting update branch from database {@Error}", ex);
+                    Loggers.DatabaseLogger.Warning("Error getting update branch from database {@Error}", ex);
 
                 }
             }
