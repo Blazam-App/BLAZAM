@@ -60,7 +60,7 @@ namespace BLAZAM.Database.Models.Templates
             set => PasswordFormula = value;
         }
 
-        public bool? RequirePasswordChange { get; set; }
+        public bool? RequirePasswordChange { get; set; } = false;
         [NotMapped]
         public bool? EffectiveRequirePasswordChange
         {
@@ -166,7 +166,7 @@ namespace BLAZAM.Database.Models.Templates
             set => AllowCustomGroups = value;
         }
 
-        public bool? AskForAlternateEmail { get; set; }
+        public bool? AskForAlternateEmail { get; set; } = false;
         [NotMapped]
         public bool? EffectiveAskForAlternateEmail
         {
@@ -179,7 +179,7 @@ namespace BLAZAM.Database.Models.Templates
         }
 
 
-        public bool? SendWelcomeEmail { get; set; }
+        public bool? SendWelcomeEmail { get; set; } = false;
         [NotMapped]
         public bool? EffectiveSendWelcomeEmail
         {

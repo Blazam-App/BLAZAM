@@ -37,6 +37,8 @@
     case "Boolean":
         <MudStack>
             <MudSwitch Color=@Color
+                       UncheckedColor=@UncheckedColor
+                      
                        T="T"
                        Label=@Label
                        @bind-Value=@Value
@@ -87,7 +89,9 @@
     public EventCallback<T?> ValueChanged { get; set; }
 
     [Parameter]
-    public Color Color { get; set; }
+    public Color Color { get; set; } = Color.Success;
+    [Parameter]
+    public Color UncheckedColor { get; set; } = Color.Error;
 
 
     /// <summary>
