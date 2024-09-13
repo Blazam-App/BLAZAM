@@ -162,10 +162,6 @@ namespace BLAZAM.Database.Models.Templates
             get
             {
                 return GetEffectiveValue<bool?>(t => t.AllowCustomGroups, t => t.EffectiveAllowCustomGroups);
-                if (AllowCustomGroups == null)
-                    return ParentTemplate?.EffectiveAllowCustomGroups;
-                else
-                    return AllowCustomGroups;
             }
             set => AllowCustomGroups = value;
         }
@@ -178,11 +174,6 @@ namespace BLAZAM.Database.Models.Templates
             {
 
                 return GetEffectiveValue<bool?>(t => t.AskForAlternateEmail, t => t.EffectiveAskForAlternateEmail);
-
-                if (AskForAlternateEmail == null)
-                    return ParentTemplate?.EffectiveAskForAlternateEmail;
-                else
-                    return AskForAlternateEmail;
             }
             set => AskForAlternateEmail = value;
         }
@@ -195,11 +186,6 @@ namespace BLAZAM.Database.Models.Templates
             get
             {
                 return GetEffectiveValue<bool?>(t => t.SendWelcomeEmail, t => t.EffectiveSendWelcomeEmail);
-
-                if (SendWelcomeEmail == null)
-                    return ParentTemplate?.EffectiveSendWelcomeEmail;
-                else
-                    return SendWelcomeEmail;
             }
             set => SendWelcomeEmail = value;
         }
