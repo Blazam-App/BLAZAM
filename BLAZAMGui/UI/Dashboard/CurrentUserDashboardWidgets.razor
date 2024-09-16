@@ -58,11 +58,12 @@
                             <MudCardHeader>
                                 <MudText Typo="Typo.h6"> @widget.Title</MudText>
                                 <MudSpacer />
+                                <MudButton StartIcon="@Icons.Material.Filled.Refresh" Color="Color.Primary" />s
                                 <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
 
                             </MudCardHeader>
 
-                            <DynamicComponent Type="@widget.GetType()" />
+                            <DynamicComponent Parameters="@(new Dictionary<string,object>(){{"ItemsPerPage",5}})" Type="@widget.GetType()" />
                         </MudCard>
                     }
                 }

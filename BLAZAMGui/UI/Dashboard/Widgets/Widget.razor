@@ -5,6 +5,7 @@
     public RenderFragment? WidgetContent { get; set; }
     public string Title{ get; set; }
     public DashboardWidgetType WidgetType{ get; set; }
+    public int ItemsPerPage { get; set; } = 5;
 
     protected virtual void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
     {
