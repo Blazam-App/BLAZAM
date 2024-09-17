@@ -4,7 +4,9 @@
     [Parameter]
     public RenderFragment? WidgetContent { get; set; }
     public string Title{ get; set; }
+    [Parameter]
     public DashboardWidgetType WidgetType{ get; set; }
+    [Parameter]
     public int ItemsPerPage { get; set; } = 5;
 
     protected virtual void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
@@ -17,5 +19,10 @@
     protected virtual void GoTo(IDirectoryEntryAdapter args)
     {
         Nav.NavigateTo(args.SearchUri);
+    }
+    protected async void SetRowsPerPage(int rowPerPage)
+    {
+        CurrentUser.State.Preferences.DashboardWidgets.FirstOrDefault(w=>w.WidgetType.Equals(WidgetType)).ItemsPerPage=rowPerPage;
+        CurrentUser.State.SaveUserSettings();
     }
 }

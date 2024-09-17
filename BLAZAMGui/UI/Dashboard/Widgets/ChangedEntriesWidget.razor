@@ -8,6 +8,7 @@
              Dense=true
              Filterable=true
              RowsPerPage="@ItemsPerPage"
+             RowsPerPageChanged="@SetRowsPerPage"
              FilterMode="DataGridFilterMode.Simple"
              Loading=@LoadingData
              Square=true
@@ -39,7 +40,7 @@
 
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="IDirectoryEntryAdapter" />
+        <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IDirectoryEntryAdapter" />
     </PagerContent>
 </MudDataGrid>
 

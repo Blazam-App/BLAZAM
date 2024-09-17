@@ -4,7 +4,8 @@
              Items="@LockedUsers"
               Dense=true
               Filterable=true
-             RowsPerPage="5"
+             RowsPerPage="@ItemsPerPage"
+             RowsPerPageChanged="@SetRowsPerPage"
              FilterMode="DataGridFilterMode.Simple"
              Loading=@LoadingData
               Square=true
@@ -51,7 +52,7 @@
 
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="IADUser" />
+        <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IADUser" />
     </PagerContent>
 </MudDataGrid>
 

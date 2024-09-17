@@ -7,7 +7,8 @@
              RowClass="cursor-pointer"
              Dense=true
              Filterable=true
-             RowsPerPage="5"
+             RowsPerPage="@ItemsPerPage"
+             RowsPerPageChanged="@SetRowsPerPage"
              FilterMode="DataGridFilterMode.Simple"
              Loading=@LoadingData
              Square=true

@@ -1,6 +1,11 @@
 ﻿@inherits Widget
 @attribute [Authorize]
-<NewEntriesWidgetDataGrid Items="@NewComputers" RowClick=@GoTo T="IADComputer" Loading=LoadingData />
+<NewEntriesWidgetDataGrid Items="@NewComputers"
+                          RowsPerPage="@ItemsPerPage"
+                          RowsPerPageChanged="@SetRowsPerPage"
+                          RowClick=@GoTo
+                          T="IADComputer"
+                          Loading=LoadingData />
 
 @code {
     List<IADComputer> NewComputers

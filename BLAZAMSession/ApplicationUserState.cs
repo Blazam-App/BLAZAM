@@ -224,6 +224,7 @@ namespace BLAZAM.Server.Data.Services
                     {
                         matchingWidget.Slot = widget.Slot;
                         matchingWidget.Order = widget.Order;
+                        matchingWidget.ItemsPerPage  = widget.ItemsPerPage;
                     }
                     else
                     {
