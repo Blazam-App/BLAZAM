@@ -42,11 +42,10 @@
                 @{
 
 
-                    Widget? widget =null;
+                    Widget? widget = null;
                     try
                     {
                         widget = allWidgets.First(w => w.WidgetType == context.WidgetType);
-
                     }
                     catch
                     {
@@ -58,15 +57,22 @@
                             <MudCardHeader>
                                 <MudText Typo="Typo.h6"> @widget.Title</MudText>
                                 <MudSpacer />
+                               @** <MudButton StartIcon="@Icons.Material.Filled.Refresh"
+                                           Color="Color.Primary"
+                                           OnClick="@(()=>{InvokeAsync(StateHasChanged);})" />**@
                                 <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
 
                             </MudCardHeader>
 
-                            <DynamicComponent Type="@widget.GetType()" />
+                            <DynamicComponent Parameters="@(new Dictionary<string,object>(){
+                                    {"ItemsPerPage",context.ItemsPerPage>5?context.ItemsPerPage:5},
+                                    {"WidgetType",context.WidgetType}
+                                 })"
+                                              Type="@widget.GetType()" />
                         </MudCard>
                     }
                 }
-               
+
             </ItemRenderer>
         </MudDropContainer>
     }
@@ -84,7 +90,7 @@
         </MudContainer>
 
     }
-   
+
     <MudMenu Class="d-flex" Style="justify-content: flex-end;" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
         <ActivatorContent>
             <MudTooltip Text="Add Widget">
