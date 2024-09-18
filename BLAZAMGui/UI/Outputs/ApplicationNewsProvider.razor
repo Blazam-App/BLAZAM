@@ -134,7 +134,7 @@
 
             }
         }
-        await CurrentUser.State.SaveUserSettings();
+        await CurrentUser.State.SaveReadNewsItems();
         RefreshItems();
         await InvokeAsync(StateHasChanged);
 

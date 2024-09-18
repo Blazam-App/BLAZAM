@@ -53,7 +53,7 @@
         }
         MudDialog.Close(DialogResult.Ok(true));
 
-        await CurrentUser.State.SaveUserSettings();
+        await CurrentUser.State.SaveReadNewsItems();
         OnAcknowledged?.Invoke();
     }
 }

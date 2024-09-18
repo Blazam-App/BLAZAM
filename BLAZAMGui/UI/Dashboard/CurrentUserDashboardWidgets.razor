@@ -152,7 +152,7 @@
                     }
                 }
 
-                CurrentUser.State.SaveUserSettings();
+                CurrentUser.State.SaveDashboardWidgets();
             }
         }
         return Task.CompletedTask;
@@ -176,7 +176,7 @@
                     WidgetType = widgetType,
                     Order = order
                 });
-            await CurrentUser.State.SaveUserSettings();
+            await CurrentUser.State.SaveDashboardWidgets();
             await InvokeAsync(StateHasChanged);
             widgetContainer?.Refresh();
         }
@@ -187,7 +187,7 @@
         if (CurrentUser.State != null)
         {
             CurrentUser.State.Preferences?.DashboardWidgets.Remove(widget);
-            await CurrentUser.State.SaveUserSettings();
+            await CurrentUser.State.SaveDashboardWidgets();
 
             await InvokeAsync(StateHasChanged);
 

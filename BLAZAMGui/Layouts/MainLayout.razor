@@ -189,7 +189,7 @@ await InvokeAsync(StateHasChanged);
         try
         {
             CurrentUser.State.Preferences.Theme = theme.Name;
-            CurrentUser.State.SaveUserSettings();
+            CurrentUser.State.SaveBasicUserPreferences();
             Nav.NavigateTo(Nav.Uri, true);
         }
         catch (Exception ex)
@@ -206,7 +206,7 @@ await InvokeAsync(StateHasChanged);
         try
         {
             CurrentUser.State.Preferences.DarkMode = darkMode;
-            CurrentUser.State.SaveUserSettings();
+            CurrentUser.State.SaveBasicUserPreferences();
             Nav.NavigateTo(Nav.Uri, true);
         }
         catch (Exception ex)

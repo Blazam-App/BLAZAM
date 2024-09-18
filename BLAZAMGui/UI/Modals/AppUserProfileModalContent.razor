@@ -72,7 +72,7 @@
     {
         LoadingData = true;
         await Modal.RefreshView();
-        if (await CurrentUser.State.SaveUserSettings())
+        if (await CurrentUser.State.SaveAllUserSettings())
         {
             SnackBarService.Success(AppLocalization["Settings saved"]);
 

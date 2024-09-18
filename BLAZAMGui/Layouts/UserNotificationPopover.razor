@@ -14,7 +14,7 @@
 
         </MudStack>
         <MudStack Style="max-height:80vh;" Class="overflow-auto">
-            @foreach (var notification in messages)
+            @foreach (var notification in messages.Where(m=>!m.IsRead))
         {
 
             <MudAlert OnClick=@(()=>{
@@ -68,6 +68,8 @@
         if (UserState.Notifications == null) return;
         foreach (var message in UserState.Notifications)
         {
+            message.IsRead = true;
+
             await UserState.MarkRead(message);
         }
         await InvokeAsync(StateHasChanged);

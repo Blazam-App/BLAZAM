@@ -47,7 +47,7 @@ namespace BLAZAM.Services
             try
             {
                 _userStateService.CurrentUserState.Preferences.SearchDisabledUsers = IncludeDisabled;
-                await _userStateService.CurrentUserState.SaveUserSettings();
+                await _userStateService.CurrentUserState.SaveBasicUserPreferences();
             }
             catch
             {
