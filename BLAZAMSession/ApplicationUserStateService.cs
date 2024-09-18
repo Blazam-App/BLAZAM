@@ -193,7 +193,7 @@ namespace BLAZAM.Server.Data.Services
         public void SetMFAUserState(string mfaToken,IApplicationUserState state)
         {
             _mfaLoginQueue.Add(mfaToken, state);
-            Task.Delay(900000).ContinueWith((val) => {
+            Task.Delay(90000).ContinueWith((val) => {
                 _mfaLoginQueue.Remove(mfaToken);
             });
             SetUserState(state);

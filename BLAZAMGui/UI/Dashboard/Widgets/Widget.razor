@@ -23,6 +23,6 @@
     protected async void SetRowsPerPage(int rowPerPage)
     {
         CurrentUser.State.Preferences.DashboardWidgets.FirstOrDefault(w=>w.WidgetType.Equals(WidgetType)).ItemsPerPage=rowPerPage;
-        CurrentUser.State.SaveUserSettings();
+        CurrentUser.State.SaveDashboardWidgets();
     }
 }

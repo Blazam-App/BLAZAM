@@ -30,88 +30,90 @@ namespace BLAZAM.Services.Background
         private IDatabaseContext Context => _databaseFactory.CreateDbContext();
         public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType)
         {
-            await Task.Delay(150);
-            var context = Context;
-            string notificationTitle;
-            notificationTitle = _appLocalization[source.ObjectType.ToString()] + " ";
+            await Task.Run(async() => {
+                var context = Context;
+                string notificationTitle;
+                notificationTitle = _appLocalization[source.ObjectType.ToString()] + " ";
 
-            string notificationBody;
-            NotificationTemplateComponent? emailMessage = null;
-            notificationBody = "<a href=\"" + source.SearchUri + "\">" + source.CanonicalName + "</a> ";
+                string notificationBody;
+                NotificationTemplateComponent? emailMessage = null;
+                notificationBody = "<a href=\"" + source.SearchUri + "\">" + source.CanonicalName + "</a> ";
 
-            switch (notificationType)
-            {
-                case NotificationType.Create:
-                    notificationTitle += _appLocalization["Created"];
-                    notificationBody += _appLocalization["was created at "] + source.Created?.ToLocalTime();
-                    var createdMessage = NotificationType.Create.ToNotification<EntryCreatedEmailMessage>();
-                    createdMessage.EntryName = source.CanonicalName;
-                    emailMessage = createdMessage;
-                    break;
-                case NotificationType.Delete:
-                    notificationTitle += _appLocalization["Deleted"];
-                    notificationBody += _appLocalization["was deleted at "] + source.LastChanged?.ToLocalTime();
-                    var deletedMessage = NotificationType.Delete.ToNotification<EntryDeletedEmailMessage>();
-                    deletedMessage.EntryName = source.CanonicalName;
-                    emailMessage = deletedMessage;
-                    break;
-                case NotificationType.Modify:
-                    notificationTitle += _appLocalization["Modified"];
-                    notificationBody += _appLocalization["was modified at "] + source.LastChanged?.ToLocalTime();
-                    var editedMessage = NotificationType.Modify.ToNotification<EntryEditedEmailMessage>();
-                    editedMessage.EntryName = source.CanonicalName;
-                    emailMessage = editedMessage;
-                    break;
-                case NotificationType.GroupAssignment:
-                    notificationTitle += _appLocalization["Group Membership Changed"];
-                    notificationBody += _appLocalization["was modified at "] + source.LastChanged?.ToLocalTime();
-                  
-                    var groupMembershipMessage = NotificationType.GroupAssignment.ToNotification<EntryGroupAssignmentEmailMessage>();
-                    groupMembershipMessage.EntryName = source.CanonicalName;
-                    emailMessage = groupMembershipMessage;
-                    break;
-                case NotificationType.PasswordChange:
-                    notificationTitle += _appLocalization["Password Reset"];
-                    notificationBody += _appLocalization["had a password reset at "] + source.LastChanged?.ToLocalTime();
-                    var passwordChangeMessage = NotificationType.PasswordChange.ToNotification<PasswordChangedEmailMessage>();
-                    passwordChangeMessage.EntryName = source.CanonicalName;
-                    emailMessage = passwordChangeMessage;
-                    break;
-
-            }
-            var notification = new NotificationMessage();
-            notification.Title = notificationTitle;
-            notification.Message = notificationBody;
-            notification.Dismissable = true;
-            notification.Created = DateTime.Now;
-            notification.Level = NotificationLevel.Info;
-            var _emailConfigured = _emailService.IsConfigured;
-
-            foreach (var user in Context.UserSettings.ToList())
-            {
-                var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
-                var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
-                if (effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
+                switch (notificationType)
                 {
-                    await _notificationPublisher.PublishNotification(user, notification);
+                    case NotificationType.Create:
+                        notificationTitle += _appLocalization["Created"];
+                        notificationBody += _appLocalization["was created at "] + source.Created?.ToLocalTime();
+                        var createdMessage = NotificationType.Create.ToNotification<EntryCreatedEmailMessage>();
+                        createdMessage.EntryName = source.CanonicalName;
+                        emailMessage = createdMessage;
+                        break;
+                    case NotificationType.Delete:
+                        notificationTitle += _appLocalization["Deleted"];
+                        notificationBody += _appLocalization["was deleted at "] + source.LastChanged?.ToLocalTime();
+                        var deletedMessage = NotificationType.Delete.ToNotification<EntryDeletedEmailMessage>();
+                        deletedMessage.EntryName = source.CanonicalName;
+                        emailMessage = deletedMessage;
+                        break;
+                    case NotificationType.Modify:
+                        notificationTitle += _appLocalization["Modified"];
+                        notificationBody += _appLocalization["was modified at "] + source.LastChanged?.ToLocalTime();
+                        var editedMessage = NotificationType.Modify.ToNotification<EntryEditedEmailMessage>();
+                        editedMessage.EntryName = source.CanonicalName;
+                        emailMessage = editedMessage;
+                        break;
+                    case NotificationType.GroupAssignment:
+                        notificationTitle += _appLocalization["Group Membership Changed"];
+                        notificationBody += _appLocalization["was modified at "] + source.LastChanged?.ToLocalTime();
+
+                        var groupMembershipMessage = NotificationType.GroupAssignment.ToNotification<EntryGroupAssignmentEmailMessage>();
+                        groupMembershipMessage.EntryName = source.CanonicalName;
+                        emailMessage = groupMembershipMessage;
+                        break;
+                    case NotificationType.PasswordChange:
+                        notificationTitle += _appLocalization["Password Reset"];
+                        notificationBody += _appLocalization["had a password reset at "] + source.LastChanged?.ToLocalTime();
+                        var passwordChangeMessage = NotificationType.PasswordChange.ToNotification<PasswordChangedEmailMessage>();
+                        passwordChangeMessage.EntryName = source.CanonicalName;
+                        emailMessage = passwordChangeMessage;
+                        break;
+
                 }
-                if (effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
-                {
-                    if (emailMessage != null)
-                    {
-                        if (_emailConfigured && !user.Email.IsNullOrEmpty())
-                        {
-                            await _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
+                var notification = new NotificationMessage();
+                notification.Title = notificationTitle;
+                notification.Message = notificationBody;
+                notification.Dismissable = true;
+                notification.Created = DateTime.Now;
+                notification.Level = NotificationLevel.Info;
+                var _emailConfigured = _emailService.IsConfigured;
 
+                foreach (var user in Context.UserSettings.ToList())
+                {
+                    var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
+                    var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
+                    if (effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
+                    {
+                        await _notificationPublisher.PublishNotification(user, notification);
+                    }
+                    if (effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
+                    {
+                        if (emailMessage != null)
+                        {
+                            if (_emailConfigured && !user.Email.IsNullOrEmpty())
+                            {
+                                await _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
+
+                            }
+                        }
+                        else
+                        {
+                            var error = new ApplicationException();
+                            Loggers.SystemLogger.Error("Email message template was not found! {@Error}", error);
                         }
                     }
-                    else
-                    {
-                        var error = new ApplicationException();
-                        Loggers.SystemLogger.Error("Email message template was not found! {@Error}", error);
-                    }
                 }
-            }
+            });
+     
         }
         public NotificationSubscription CalculateEffectiveEmailSubscriptions(AppUser user, IDirectoryEntryAdapter ou)
         {
