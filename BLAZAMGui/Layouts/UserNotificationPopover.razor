@@ -3,34 +3,36 @@
 @if (messages.Count > 0)
 {
     <MudPopover Open=@Open
-        TransformOrigin="Origin.TopRight"
-    AnchorOrigin="Origin.BottomRight" 
-    >
+                TransformOrigin="Origin.TopRight"
+                AnchorOrigin="Origin.BottomRight">
         <MudStack Class="mud-theme-dark" Row=true>
             <MudListSubheader Class="align-middle">Notifications</MudListSubheader>
-            <MudSpacer/>
-            <MudIconButton Icon="@Icons.Material.Filled.ClearAll" OnClick="MarkAllRead"/>
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.ClearAll" OnClick="MarkAllRead" />
             <AppCloseButton Class="align-middle" OnClick=@(()=>{Open=false;}) />
 
         </MudStack>
         <MudStack Style="max-height:80vh;" Class="overflow-auto">
-            @foreach (var notification in messages.Where(m=>!m.IsRead))
-        {
+            @foreach (var notification in messages.Where(m => !m.IsRead))
+            {
 
-            <MudAlert OnClick=@(()=>{
+                <MudAlert OnClick=@(()=>{
                   if(notification.Notification.Link!=null)
-              Nav.NavigateTo(notification.Notification.Link.ToString());
+                  Nav.NavigateTo(notification.Notification.Link.ToString());
                   }) ShowCloseIcon=notification.Notification.Dismissable
-              CloseIconClicked="@(async()=>{await UserState.MarkRead(notification); await InvokeAsync(StateHasChanged);})">
+                          CloseIconClicked="@(async()=>{
+                  await UserState.MarkRead(notification);
+                  await InvokeAsync(StateHasChanged);
+              })">
                     @if (!notification.Notification.Title.IsNullOrEmpty())
-                {
-                    <MudText Typo="Typo.subtitle2">@notification.Notification.Title</MudText>
-                }
-                 <MudText Typo="Typo.caption">
+                    {
+                        <MudText Typo="Typo.subtitle2">@notification.Notification.Title</MudText>
+                    }
+                    <MudText Typo="Typo.caption">
                         @((MarkupString)notification.Notification.Message)
                     </MudText>
-            </MudAlert>
-        }
+                </MudAlert>
+            }
         </MudStack>
 
     </MudPopover>
@@ -39,26 +41,31 @@
 @code {
     private bool _open;
     private IList<UserNotification> messages = new List<UserNotification>();
-    protected override void OnInitialized(){
+    protected override void OnInitialized()
+    {
         base.OnInitialized();
         messages = UserState.Notifications;
 
-        NotificationPublisher.OnNotificationPublished += (notification) => { 
+        NotificationPublisher.OnNotificationPublished += (notification) =>
+        {
             messages = UserState.Notifications;
-            InvokeAsync(StateHasChanged); 
+            InvokeAsync(StateHasChanged);
         };
     }
 
     [Parameter]
-    public bool Open { get=>_open; set
+    public bool Open
+    {
+        get => _open; set
         {
             if (_open == value) return;
             _open = value;
             OpenChanged.InvokeAsync(value);
 
-        } }
+        }
+    }
     [Parameter]
-    public EventCallback<bool> OpenChanged { get; set; } 
+    public EventCallback<bool> OpenChanged { get; set; }
 
     [Parameter]
     public IApplicationUserState UserState { get; set; }
@@ -66,14 +73,15 @@
     async Task MarkAllRead()
     {
         if (UserState.Notifications == null) return;
-        foreach (var message in UserState.Notifications)
+        foreach (var message in messages)
         {
             message.IsRead = true;
 
             await UserState.MarkRead(message);
         }
+        Open = false;
         await InvokeAsync(StateHasChanged);
     }
 
-   
+
 }
