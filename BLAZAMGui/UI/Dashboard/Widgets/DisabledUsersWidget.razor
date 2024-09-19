@@ -8,7 +8,7 @@
         @foreach (var user in LockedUsers)
         {
 
-            <MudCard  @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
+            <MudCard @onclick="@(()=>{Nav.NavigateTo(user.SearchUri);})">
 
 
                 @user.DisplayName <br>
@@ -30,10 +30,27 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
+        {
+            if (widget.WidgetType.Equals(WidgetType))
+            {
+                _ = RefreshData();
 
-        Title = "Disabled Users";
+            }
+
+        };
+
+        _ = RefreshData();
+    }
+
+    async Task RefreshData()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
         LockedUsers = (await Directory.Users.FindChangedUsersAsync(false)).Where(u => u.Disabled).ToList();
+
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
+
     }
 }

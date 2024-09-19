@@ -57,18 +57,26 @@
                             <MudCardHeader>
                                 <MudText Typo="Typo.h6"> @widget.Title</MudText>
                                 <MudSpacer />
-                               @** <MudButton StartIcon="@Icons.Material.Filled.Refresh"
-                                           Color="Color.Primary"
-                                           OnClick="@(()=>{InvokeAsync(StateHasChanged);})" />**@
-                                <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
+                                <MudTooltip Text=@AppLocalization["Refresh"]>
+                                    <MudButton StartIcon="@Icons.Material.Filled.Refresh"
+                                               Color="Color.Primary"
+                                               OnClick="@(()=>{OnRefreshWidget?.Invoke(widget);})" />
+                                </MudTooltip>
+
+                                <MudTooltip Text=@AppLocalization["Remove"]>
+                                    <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
+                                </MudTooltip>
 
                             </MudCardHeader>
+                            <CascadingValue Value="this">
 
-                            <DynamicComponent Parameters="@(new Dictionary<string,object>(){
+                                <DynamicComponent Parameters="@(new Dictionary<string,object>(){
                                     {"ItemsPerPage",context.ItemsPerPage>5?context.ItemsPerPage:5},
                                     {"WidgetType",context.WidgetType}
                                  })"
-                                              Type="@widget.GetType()" />
+                                                  Type="@widget.GetType()" />
+                            </CascadingValue>
+
                         </MudCard>
                     }
                 }
@@ -117,13 +125,14 @@
 @code {
 
 
-
+    public AppEvent<Widget> OnRefreshWidget { get; set; } = (val) => { };
     IApplicationUserState _currentUser;
     MudDropContainer<UserDashboardWidget>? widgetContainer;
     List<Widget> allWidgets = new List<Widget>();
 
     protected override Task OnInitializedAsync()
     {
+
         allWidgets = new List<Widget>(AllWidgets.Available(CurrentUser.State));
         _currentUser = CurrentUser.State;
         return base.OnInitializedAsync();
