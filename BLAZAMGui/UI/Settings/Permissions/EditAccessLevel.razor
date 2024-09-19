@@ -72,6 +72,8 @@
                 @if (objectMap.ObjectType == ActiveDirectoryObjectType.User && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id)
                 {
                     <MudSwitch T=bool
+                               UncheckedColor="Color.Error"
+                               Color="Color.Success"
                                Label="@AppLocalization["Allow Disabled User Access"]"
                                @bind-Value=objectMap.AllowDisabled />
                 }

@@ -16,6 +16,9 @@ changelog:
     - title: Exciting New Features 🎉
       labels:
         - enhancement
+    - title: Feature Changes ✏
+      labels:
+        - change
     - title: Security Updates 🔐
       labels:
         - security

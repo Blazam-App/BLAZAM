@@ -114,7 +114,7 @@ namespace BLAZAM.Session
                         {
                             user.ReadNewsItems.Remove(x);
                         });
-                        user.SaveUserSettings();
+                        user.SaveReadNewsItems();
                     }
                 }
                 return unreadItems;

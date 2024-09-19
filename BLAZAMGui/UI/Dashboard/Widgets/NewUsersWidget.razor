@@ -1,6 +1,11 @@
 ﻿@inherits Widget
 @attribute [Authorize]
-<NewEntriesWidgetDataGrid Items="@NewUsers" RowClick=@GoTo T="IADUser" Loading=LoadingData />
+<NewEntriesWidgetDataGrid Items="@NewUsers"
+                          RowsPerPage="@ItemsPerPage"
+                          RowsPerPageChanged="@SetRowsPerPage"
+                          RowClick=@GoTo
+                          T="IADUser"
+                          Loading=LoadingData />
 
 @code {
     List<IADUser> NewUsers
@@ -12,9 +17,29 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        NewUsers = (await Directory.Users.FindNewUsersAsync(14,false)).Where(u => u.CanRead).OrderByDescending(u=>u.Created).ToList();
+
+
+        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
+        {
+            if (widget.WidgetType.Equals(WidgetType))
+            {
+                _ = RefreshData();
+
+            }
+
+        };
+
+        _=RefreshData();
+    }
+    async Task RefreshData()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+
+        NewUsers = (await Directory.Users.FindNewUsersAsync(14, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
+
     }
     void GoTo(DataGridRowClickEventArgs<IADUser> args)
     {

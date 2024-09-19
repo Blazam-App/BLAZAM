@@ -1,4 +1,5 @@
 ﻿@inherits AppComponentBase
+<MudSpacer/>
     <MudMenu AnchorOrigin=Origin.BottomCenter
              TransformOrigin=Origin.TopCenter
              Color=Color.Secondary
@@ -106,7 +107,7 @@
                     SearchDisabled=@SearchService.IncludeDisabled
                     @bind-SearchTerm="@SearchService.SearchTerm" />
 </MudPaper>
-
+<MudSpacer />
 @code {
 
 }

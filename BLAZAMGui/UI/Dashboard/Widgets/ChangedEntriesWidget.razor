@@ -7,7 +7,8 @@
              RowClass="cursor-pointer"
              Dense=true
              Filterable=true
-             RowsPerPage="5"
+             RowsPerPage="@ItemsPerPage"
+             RowsPerPageChanged="@SetRowsPerPage"
              FilterMode="DataGridFilterMode.Simple"
              Loading=@LoadingData
              Square=true
@@ -39,7 +40,7 @@
 
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="IDirectoryEntryAdapter" />
+        <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IDirectoryEntryAdapter" />
     </PagerContent>
 </MudDataGrid>
 
@@ -57,18 +58,28 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Task.Run(async () =>
 
+        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
+         {
+        if (widget.WidgetType.Equals(WidgetType))
         {
-            var search = new ADSearch(Directory);
-            search.Fields.Changed = DateTime.Now.AddDays(-1);
-            changdEntries = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>()).Where(x => x.CanRead).ToList();
-            LoadingData = false;
-            await InvokeAsync(StateHasChanged);
+            _ = RefreshData();
 
-        });
+        }
 
+            };
 
+        _ = RefreshData();
+    }
+    async Task RefreshData()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        var search = new ADSearch(Directory);
+        search.Fields.Changed = DateTime.Now.AddDays(-1);
+        changdEntries = (await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>()).Where(x => x.CanRead).ToList();
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
 
     }
     void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)

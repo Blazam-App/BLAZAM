@@ -42,11 +42,10 @@
                 @{
 
 
-                    Widget? widget =null;
+                    Widget? widget = null;
                     try
                     {
                         widget = allWidgets.First(w => w.WidgetType == context.WidgetType);
-
                     }
                     catch
                     {
@@ -58,15 +57,30 @@
                             <MudCardHeader>
                                 <MudText Typo="Typo.h6"> @widget.Title</MudText>
                                 <MudSpacer />
-                                <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
+                                <MudTooltip Text=@AppLocalization["Refresh"]>
+                                    <MudButton StartIcon="@Icons.Material.Filled.Refresh"
+                                               Color="Color.Primary"
+                                               OnClick="@(()=>{OnRefreshWidget?.Invoke(widget);})" />
+                                </MudTooltip>
+
+                                <MudTooltip Text=@AppLocalization["Remove"]>
+                                    <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
+                                </MudTooltip>
 
                             </MudCardHeader>
+                            <CascadingValue Value="this">
 
-                            <DynamicComponent Type="@widget.GetType()" />
+                                <DynamicComponent Parameters="@(new Dictionary<string,object>(){
+                                    {"ItemsPerPage",context.ItemsPerPage>5?context.ItemsPerPage:5},
+                                    {"WidgetType",context.WidgetType}
+                                 })"
+                                                  Type="@widget.GetType()" />
+                            </CascadingValue>
+
                         </MudCard>
                     }
                 }
-               
+
             </ItemRenderer>
         </MudDropContainer>
     }
@@ -84,7 +98,7 @@
         </MudContainer>
 
     }
-   
+
     <MudMenu Class="d-flex" Style="justify-content: flex-end;" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
         <ActivatorContent>
             <MudTooltip Text="Add Widget">
@@ -111,13 +125,14 @@
 @code {
 
 
-
+    public AppEvent<Widget> OnRefreshWidget { get; set; } = (val) => { };
     IApplicationUserState _currentUser;
     MudDropContainer<UserDashboardWidget>? widgetContainer;
     List<Widget> allWidgets = new List<Widget>();
 
     protected override Task OnInitializedAsync()
     {
+
         allWidgets = new List<Widget>(AllWidgets.Available(CurrentUser.State));
         _currentUser = CurrentUser.State;
         return base.OnInitializedAsync();
@@ -146,7 +161,7 @@
                     }
                 }
 
-                CurrentUser.State.SaveUserSettings();
+                CurrentUser.State.SaveDashboardWidgets();
             }
         }
         return Task.CompletedTask;
@@ -170,7 +185,7 @@
                     WidgetType = widgetType,
                     Order = order
                 });
-            await CurrentUser.State.SaveUserSettings();
+            await CurrentUser.State.SaveDashboardWidgets();
             await InvokeAsync(StateHasChanged);
             widgetContainer?.Refresh();
         }
@@ -181,7 +196,7 @@
         if (CurrentUser.State != null)
         {
             CurrentUser.State.Preferences?.DashboardWidgets.Remove(widget);
-            await CurrentUser.State.SaveUserSettings();
+            await CurrentUser.State.SaveDashboardWidgets();
 
             await InvokeAsync(StateHasChanged);
 

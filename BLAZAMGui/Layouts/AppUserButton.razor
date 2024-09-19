@@ -8,9 +8,9 @@
             
             var avatarBgColor = GenerateAvatarColor(UserState?.Username);
         }
-        @if (Notifications?.Count > 0)
+        @if (Notifications.Where(n=>!n.IsRead).Count() > 0)
         {
-            <MudBadge Color=Color.Error Overlap=true Content="@Notifications.Count">
+            <MudBadge Color=Color.Error Overlap=true Content="@Notifications.Where(n=>!n.IsRead).Count()">
                 <CurrentUserAvatarIcon UserState="@UserState" />
             </MudBadge>
         }
@@ -93,7 +93,7 @@
         UserState = CurrentUser.State;
         Notifications = UserState.Notifications;
         if (UserState != null)
-            UserState.OnSettingsChanged += (settings) =>
+            UserState.OnSettingsChanged += () =>
             {
                 InvokeAsync(StateHasChanged);
             };
