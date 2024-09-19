@@ -75,7 +75,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="8.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
 		<PackageReference Include="MudBlazor" Version="7.8.0" />
-		<PackageReference Include="MudBlazor.Markdown" Version="1.0.2" />
+		<PackageReference Include="MudBlazor.Markdown" Version="7.8.0" />
 		<PackageReference Include="MudBlazor.ThemeManager" Version="2.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Octokit" Version="13.0.1" />
