@@ -7,7 +7,7 @@ using BLAZAM.Logger;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
-    
+
     public class ADGroupSearcher : ADSearcher, IADGroupSearcher
     {
         /// <summary>
@@ -143,11 +143,11 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                     }.Search<ADGroup, IADGroup>().FirstOrDefault();
 
-                   // query = "(distinguishedName=" + groupDN + ")";
-                   // var group = SearchObjects(query, ActiveDirectoryObjectType.Group, 1);
+                    // query = "(distinguishedName=" + groupDN + ")";
+                    // var group = SearchObjects(query, ActiveDirectoryObjectType.Group, 1);
                     if (group != null)
                     {
-                       // var adGroup = ConvertTo<ADGroup>(group);
+                        // var adGroup = ConvertTo<ADGroup>(group);
                         foundGroups.Add(group);
                     }
                     else
@@ -204,8 +204,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 },
                 ExactMatch = false
 
-            }.Search<ADUser, IADUser>().Count>0;
-          
+            }.Search<ADUser, IADUser>().Count > 0;
+
         }
     }
 }

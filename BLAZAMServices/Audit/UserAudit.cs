@@ -55,10 +55,14 @@ namespace BLAZAM.Services.Audit
             {
                 newValues += c.Key + "=" + c.Value;
             }
-            await Log(c => c.DirectoryEntryAuditLogs, AuditActions.User_Created, newUser, oldValues, newValues);
+            await Log(c => c.DirectoryEntryAuditLogs,
+                AuditActions.User_Created,
+                newUser,
+                oldValues,
+                newValues);
             return true;
         }
-        public async Task<bool>  Moved(IDirectoryEntryAdapter movedUser,IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
+        public async Task<bool> Moved(IDirectoryEntryAdapter movedUser, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {
             await Log(c => c.DirectoryEntryAuditLogs,
                AuditActions.User_Moved,

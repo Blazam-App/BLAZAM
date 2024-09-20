@@ -283,7 +283,8 @@ namespace BLAZAM.ActiveDirectory
                     {
                         _keepAliveUser = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
 
-                    }catch(DirectoryServicesCOMException ex)
+                    }
+                    catch (DirectoryServicesCOMException ex)
                     {
                         //not usernam or password is incorrect
                         if (ex.HResult != -2147023570)
@@ -292,7 +293,8 @@ namespace BLAZAM.ActiveDirectory
 
                         }
                     }
-                    catch (Exception ex) {
+                    catch (Exception ex)
+                    {
                         Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
                     }
                 }
@@ -694,7 +696,7 @@ namespace BLAZAM.ActiveDirectory
                                     if (impersonatedIdentity != null &&
                                     impersonatedIdentity.IsAuthenticated)
                                     {
-                                        var impersonatedNameParts = impersonatedIdentity.Name.Split('\\',2);
+                                        var impersonatedNameParts = impersonatedIdentity.Name.Split('\\', 2);
                                         if (impersonatedNameParts != null && impersonatedNameParts.Length > 1)
                                         {
                                             var impersonatedName = impersonatedNameParts[1];
@@ -775,7 +777,7 @@ namespace BLAZAM.ActiveDirectory
                                     Loggers.ActiveDirectoryLogger.Error("Error while authenticating credentials. {@Error}", ex);
                                 }
                             }
-                           
+
 
 
 
