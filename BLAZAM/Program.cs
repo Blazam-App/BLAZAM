@@ -1,16 +1,16 @@
 
-using Microsoft.Extensions.Hosting.WindowsServices;
+using BLAZAM.Common.Data;
+using BLAZAM.Database.Context;
+using BLAZAM.Database.Models;
+using BLAZAM.Server;
 using BLAZAM.Server.Middleware;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
-using BLAZAM.Common.Data;
-using BLAZAM.Server;
-using System.Net;
-using BLAZAM.Database.Context;
 using System.Diagnostics;
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using BLAZAM.Database.Models;
 
 namespace BLAZAM
 {
@@ -97,7 +97,7 @@ namespace BLAZAM
                 Loggers.SeqAPIKey = "8TeLknA8XBk5ybamT5m9";
 
             }
-            
+
             Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
             builder.Host.UseSerilog(Log.Logger);
 
@@ -108,8 +108,8 @@ namespace BLAZAM
 
 
             builder.Services.AddCors();
-            
-            
+
+
             SetupKestrel(builder);
 
 
@@ -119,7 +119,7 @@ namespace BLAZAM
             ApplicationInfo.services = AppInstance.Services;
 
             AppInstance.PreRun();
-          
+
             Loggers.SetupLoggers(WritablePath + @"logs\", ApplicationInfo.runningVersion.ToString());
 
 
@@ -182,7 +182,7 @@ namespace BLAZAM
 
         private static void SetupKestrel(WebApplicationBuilder builder)
         {
-           
+
             var _programDbFactory = new AppDatabaseFactory(Configuration);
             var kestrelContext = _programDbFactory.CreateDbContext();
 
@@ -192,14 +192,14 @@ namespace BLAZAM
                 var listeningAddress = Configuration.GetValue<string>("ListeningAddress");
                 var httpPort = Configuration.GetValue<int>("HTTPPort");
                 var httpsPort = Configuration.GetValue<int>("HTTPSPort");
-                AppSettings? dbSettings=null;
+                AppSettings? dbSettings = null;
                 X509Certificate2? cert = null;
                 try
                 {
                     dbSettings = kestrelContext.AppSettings.FirstOrDefault();
 
                     var certBytes = dbSettings.SSLCertificateCipher.Decrypt<byte[]>();
-                    if(certBytes!= null)
+                    if (certBytes != null)
                     {
                         cert = new X509Certificate2(certBytes);
 
@@ -215,11 +215,11 @@ namespace BLAZAM
                     if (listeningAddress == "*")
                     {
                         options.ListenAnyIP(httpPort);
-                        if (httpsPort != 0 && dbSettings!=null && cert!=null && cert.HasPrivateKey)
+                        if (httpsPort != 0 && dbSettings != null && cert != null && cert.HasPrivateKey)
                         {
                             options.ListenAnyIP(httpsPort, configure =>
                             {
-                                configure.UseHttps(options=>options.ServerCertificate=cert);
+                                configure.UseHttps(options => options.ServerCertificate = cert);
                             });
                         }
                     }

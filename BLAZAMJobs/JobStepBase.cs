@@ -4,7 +4,7 @@ namespace BLAZAM.Jobs
 {
     public class JobStepBase : IJobStepBase
     {
-        protected  CancellationTokenSource cancellationTokenSource = new();
+        protected CancellationTokenSource cancellationTokenSource = new();
         private double? progress = null;
 
         public virtual TimeSpan? ElapsedTime

@@ -85,7 +85,7 @@ namespace BLAZAM.FileSystem
         public void ClearDirectory()
         {
             var fileList = new List<SystemFile>(Files);
-            foreach(var file in fileList)
+            foreach (var file in fileList)
             {
                 file.Delete();
             }

@@ -38,7 +38,7 @@ namespace BLAZAM.Pages
 
         public string AuthResponse { get; private set; }
 
-        public async Task<IActionResult> OnGet(string? state=null,string? code=null)
+        public async Task<IActionResult> OnGet(string? state = null, string? code = null)
         {
             // Duo should have sent a 'state' and 'code' parameter.  If either is missing or blank, something is wrong.
             if (string.IsNullOrWhiteSpace(state))
@@ -49,7 +49,7 @@ namespace BLAZAM.Pages
             {
                 throw new DuoException("Required code value was empty");
             }
-            if(User!=null && User.HasClaim(c=>c.Type == ClaimTypes.Rsa))
+            if (User != null && User.HasClaim(c => c.Type == ClaimTypes.Rsa))
             {
                 if (state == User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Rsa)?.Value)
                 {
@@ -64,7 +64,7 @@ namespace BLAZAM.Pages
                         // Get the Duo client again.  This can be either be cached in the session or newly built.
                         // The only stateful information in the Client is your configuration, so you could even use the same client for multiple
                         // user authentications if desired.
-                        Client duoClient = _duoClientProvider.GetDuoClient(Request.Scheme+"://"+Request.Host+"/mfacallback");
+                        Client duoClient = _duoClientProvider.GetDuoClient(Request.Scheme + "://" + Request.Host + "/mfacallback");
                         var username = user.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value;
                         // Get a summary of the authentication from Duo.  This will trigger an exception if the username does not match.
                         try
@@ -77,19 +77,20 @@ namespace BLAZAM.Pages
                                 await _audit.Logon.Login(user.User, HttpContext.Connection.RemoteIpAddress?.ToString());
                                 return new RedirectResult("/");
                             }
-                        }catch
+                        }
+                        catch
                         {
-                            
+
                             return new RedirectResult("/");
                         }
-                
 
-                      
+
+
                     }
 
-                  
 
-                 
+
+
                 }
                 else
                 {

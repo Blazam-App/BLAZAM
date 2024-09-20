@@ -1,12 +1,12 @@
-﻿@inherits MudDataGrid<T> 
+﻿@inherits MudDataGrid<T>
 @inject IStringLocalizer<AppLocalization> AppLocalization
-@typeparam T where T:IDirectoryEntryAdapter
+@typeparam T where T : IDirectoryEntryAdapter
 
 <MudDataGrid T="@T"
              Items="@Items"
-              Dense=true
+             Dense=true
              Filterable=true
-              RowsPerPage="@RowsPerPage"
+             RowsPerPage="@RowsPerPage"
              FilterMode="DataGridFilterMode.Simple"
              Loading=@Loading
              Square=true
@@ -40,7 +40,7 @@
 </MudDataGrid>
 
 
-@code{
+@code {
 #nullable disable warnings
 
 }

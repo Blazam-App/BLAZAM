@@ -11,7 +11,7 @@ namespace BLAZAM.Server.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ConnMonitor _monitor;
-        private readonly List<string> _uriIgnoreList = new List<string> { "/static","/css", "/_content","/_blazor","/BLAZAM.styles.css","/_framework" };
+        private readonly List<string> _uriIgnoreList = new List<string> { "/static", "/css", "/_content", "/_blazor", "/BLAZAM.styles.css", "/_framework" };
         private string intendedUri;
 
         public ApplicationStatusRedirectMiddleware(
@@ -36,7 +36,7 @@ namespace BLAZAM.Server.Middleware
                             break;
                         case ServiceConnectionState.Up:
                             var dbcontext = factory.CreateDbContext();
-                            if(dbcontext.SeedMismatch)
+                            if (dbcontext.SeedMismatch)
                             {
                                 Oops.ErrorMessage = "The application database is incompatible with this version of the application";
                                 Oops.DetailsMessage = "The database seed is different from the current version of the application";
@@ -46,7 +46,7 @@ namespace BLAZAM.Server.Middleware
                             }
                             if (!ApplicationInfo.installationCompleted)
                             {
-                                SendTo(context,"/install");
+                                SendTo(context, "/install");
                             }
                             break;
                         case ServiceConnectionState.Down:
@@ -54,7 +54,7 @@ namespace BLAZAM.Server.Middleware
 
                             break;
                     }
-                
+
 
                 }
                 catch
@@ -70,12 +70,13 @@ namespace BLAZAM.Server.Middleware
         private void SendTo(HttpContext context, string uri)
         {
             if (intendedUri != uri)
-                context.Response.Redirect(uri);    
+                context.Response.Redirect(uri);
         }
 
         private bool InIgnoreList(string intendedUri)
         {
-            foreach(var uri in _uriIgnoreList) { 
+            foreach (var uri in _uriIgnoreList)
+            {
                 if (intendedUri.StartsWith(uri)) return true;
             }
             return false;

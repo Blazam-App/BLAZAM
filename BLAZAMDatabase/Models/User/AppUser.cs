@@ -22,8 +22,8 @@ namespace BLAZAM.Database.Models.User
         //public List<UnreadChatMessage> UnreadChatMessages { get; set; } = new();
         //public List<ChatRoom> ChatRooms{ get; set; } = new();
 
-        public List<UserDashboardWidget> DashboardWidgets { get; set; }= new();
-        public List<NotificationSubscription> NotificationSubscriptions { get; set; }= new();
+        public List<UserDashboardWidget> DashboardWidgets { get; set; } = new();
+        public List<NotificationSubscription> NotificationSubscriptions { get; set; } = new();
         public byte[]? ProfilePicture { get; set; }
         public string? Email { get; set; }
 

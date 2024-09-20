@@ -11,20 +11,20 @@ namespace BLAZAM.Tests.Updates
 {
     public class VersionTests
     {
-        ApplicationVersion  basicLow = new ApplicationVersion("0.5.1");
-        ApplicationVersion  basicHigh = new ApplicationVersion("0.5.2");
-        ApplicationVersion  longLow = new ApplicationVersion("0.5.1.2023.2.2.1053");
-        ApplicationVersion  longHigh = new ApplicationVersion("0.5.2.2023.2.3.1053");
+        private ApplicationVersion basicLow = new ApplicationVersion("0.5.1");
+        private ApplicationVersion basicHigh = new ApplicationVersion("0.5.2");
+        private ApplicationVersion longLow = new ApplicationVersion("0.5.1.2023.2.2.1053");
+        private ApplicationVersion longHigh = new ApplicationVersion("0.5.2.2023.2.3.1053");
 
         [Fact]
         public void Basic_Comparison_Valid()
         {
-            Assert.True(basicLow.CompareTo(basicHigh)<0);
+            Assert.True(basicLow.CompareTo(basicHigh) < 0);
         }
         [Fact]
         public void Long_Comparison_Returns_LessThanZero_When_Older()
         {
-            Assert.True(longLow.CompareTo(longHigh)< 0);
+            Assert.True(longLow.CompareTo(longHigh) < 0);
         }
         [Fact]
         public void Long_Basic_Comparison_Returns_LessThanZero_When_Other_Is_Older()

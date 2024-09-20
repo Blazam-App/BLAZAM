@@ -21,10 +21,10 @@
         /// </summary>
         bool Dirty { get; }
 
-        
+
         DriveType DriveType { get; }
         string? FileSystem { get; }
-        
+
         /// <summary>
         /// The amount of free space in bytes
         /// </summary>

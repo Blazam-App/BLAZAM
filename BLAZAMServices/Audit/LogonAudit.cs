@@ -12,13 +12,13 @@ namespace BLAZAM.Services.Audit
             IApplicationUserStateService userStateService) : base(factory, userStateService)
         {
         }
-        public async Task<bool> AttemptedPersonation(string? iPAddress=null)
+        public async Task<bool> AttemptedPersonation(string? iPAddress = null)
         {
             CurrentUser = UserStateService.CurrentUserState;
             return await Log("Attempted Personation", iPAddress);
         }
 
-        public async Task<bool> AttemptedLogin(ClaimsPrincipal user, string? iPAddress=null)
+        public async Task<bool> AttemptedLogin(ClaimsPrincipal user, string? iPAddress = null)
         {
             CurrentUser = UserStateService.CreateUserState(user);
             return await Log("Attempted Login", iPAddress);
@@ -29,14 +29,14 @@ namespace BLAZAM.Services.Audit
             CurrentUser.Impersonator = impersonator;
             return await Log("Impersonation", ipAddress);
         }
-        public async Task<bool> Login(ClaimsPrincipal user,string? ipAddress=null)
+        public async Task<bool> Login(ClaimsPrincipal user, string? ipAddress = null)
         {
             CurrentUser = UserStateService.CreateUserState(user);
             return await Log("Login", ipAddress);
         }
         public async Task<bool> Logout() => await Log("Logout");
 
-        private async Task<bool> Log(string action,string ipAddress=null)
+        private async Task<bool> Log(string action, string ipAddress = null)
         {
 
             try

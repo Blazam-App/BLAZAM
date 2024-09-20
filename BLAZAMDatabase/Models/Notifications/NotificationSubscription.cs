@@ -2,7 +2,7 @@
 
 namespace BLAZAM.Database.Models.Notifications
 {
-    public class NotificationSubscription:RecoverableAppDbSetBase
+    public class NotificationSubscription : RecoverableAppDbSetBase
     {
         public int UserId { get; set; }
         public AppUser User { get; set; }

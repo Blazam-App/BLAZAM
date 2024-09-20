@@ -15,7 +15,7 @@ namespace BLAZAM.Notifications.Services
 
         public Task PublishNotification(AppUser user, NotificationMessage notificationMessage)
             => PublishNotification(new List<AppUser> { user }, notificationMessage);
-        
+
 
         public Task PublishNotification(List<AppUser> users, NotificationMessage notificationMessage)
         {
@@ -27,11 +27,11 @@ namespace BLAZAM.Notifications.Services
                 context.SaveChanges();
             }
             List<UserNotification> sentNotificaitons = new();
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 var userNotification = new UserNotification()
                 {
-                    User = context.UserSettings.Where(u=>u.Equals(user)).FirstOrDefault(),
+                    User = context.UserSettings.Where(u => u.Equals(user)).FirstOrDefault(),
                     Notification = notificationMessage
                 };
                 context.UserNotifications.Add(userNotification);

@@ -63,7 +63,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             var newMembers = new List<string>(MembersAsStrings);
             if (MembersToAdd.Count > 0)
             {
-                CommitSteps.Add(new JobStep("Add group members", (JobStep? step) => {
+                CommitSteps.Add(new JobStep("Add group members", (JobStep? step) =>
+                {
                     MembersToAdd.ForEach(g =>
                     {
                         g.Group.Invoke("Add", new object[] { g.Member.ADSPath });
@@ -73,11 +74,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     return true;
                 }));
 
-               
+
             }
             if (MembersToRemove.Count > 0)
             {
-                CommitSteps.Add(new JobStep("Remove group members", (JobStep? step) => {
+                CommitSteps.Add(new JobStep("Remove group members", (JobStep? step) =>
+                {
                     MembersToRemove.ForEach(g =>
                     {
                         g.Group.Invoke("Remove", new object[] { g.Member.ADSPath });
@@ -85,7 +87,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     });
                     return true;
                 }));
-             
+
             }
 
             dcr = base.CommitChanges(dcr);
@@ -102,10 +104,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             _userMembersCache = new();
             base.DiscardChanges();
 
-           
+
         }
         public bool HasMembers => UserMembers.Count > 0 || GroupMembers.Count > 0;
-        List<IADUser> _userMembersCache;
+
+        private List<IADUser> _userMembersCache;
 
         /// <summary>
         /// The members of this group, that are users themselves
@@ -133,9 +136,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-
-
-        List<IADGroup> _groupMembersCache;
+        private List<IADGroup> _groupMembersCache;
         /// <summary>
         /// The members of this group, that are groups themselves
         /// </summary>

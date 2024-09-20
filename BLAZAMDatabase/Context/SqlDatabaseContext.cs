@@ -8,7 +8,7 @@ namespace BLAZAM.Database.Context
 {
     public class SqlDatabaseContext : DatabaseContextBase
     {
-        
+
 
         public SqlDatabaseContext() : base()
         {

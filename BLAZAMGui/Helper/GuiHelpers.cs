@@ -13,21 +13,21 @@ namespace BLAZAM.Helpers
 {
     public static class GuiHelpers
     {
-            public static async Task<byte[]?> ToByteArrayAsync(this IBrowserFile file, int maxReadBytes = 5000000)
+        public static async Task<byte[]?> ToByteArrayAsync(this IBrowserFile file, int maxReadBytes = 5000000)
+        {
+            byte[] fileBytes;
+            using (var stream = file.OpenReadStream(5000000))
             {
-                byte[] fileBytes;
-                using (var stream = file.OpenReadStream(5000000))
+                using (var memoryStream = new MemoryStream())
                 {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await stream.CopyToAsync(memoryStream);
-                        fileBytes = memoryStream.ToArray();
-                    }
+                    await stream.CopyToAsync(memoryStream);
+                    fileBytes = memoryStream.ToArray();
                 }
-                return fileBytes;
             }
+            return fileBytes;
+        }
 
-        public static async Task<IDialogReference> ShowNewsItemDialog(this NewsItem item,AppDialogService dialogService)
+        public static async Task<IDialogReference> ShowNewsItemDialog(this NewsItem item, AppDialogService dialogService)
         {
             var dialogParams = new DialogParameters
             {
@@ -37,8 +37,8 @@ namespace BLAZAM.Helpers
             options.MaxWidth = MaxWidth.ExtraExtraLarge;
             options.CloseButton = true;
             options.CloseOnEscapeKey = true;
-            
-            return (await dialogService.ShowMessage<AppNewsItemDialog>(dialogParams, item.Title,options:options));
+
+            return (await dialogService.ShowMessage<AppNewsItemDialog>(dialogParams, item.Title, options: options));
 
         }
 
@@ -53,6 +53,6 @@ namespace BLAZAM.Helpers
             });
             return treeData;
         }
-       
+
     }
 }

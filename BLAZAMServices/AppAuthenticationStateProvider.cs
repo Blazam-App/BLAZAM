@@ -1,20 +1,20 @@
-﻿using BLAZAM.Common.Data;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
-using DuoUniversal;
-using Microsoft.AspNetCore.Components.Authorization;
-using System.Security.Claims;
-using BLAZAM.Helpers;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using BLAZAM.Database.Context;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Session.Interfaces;
-using Microsoft.AspNetCore.Http;
-using BLAZAM.Services.Duo;
+using BLAZAM.Database.Models;
+using BLAZAM.Helpers;
 using BLAZAM.Server.Helpers;
 using BLAZAM.Services.Audit;
+using BLAZAM.Services.Duo;
+using BLAZAM.Session.Interfaces;
+using DuoUniversal;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
-using BLAZAM.Database.Models;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace BLAZAM.Services
 {
@@ -336,7 +336,7 @@ namespace BLAZAM.Services
                 // Check if Duo seems to be healthy and able to service authentications.
                 // If Duo were unhealthy, you could possibly send user to an error page, or implement a fail mode
                 var isDuoHealthy = await duoClient.DoHealthCheck();
-                if(!isDuoHealthy && settings.DuoUnreachableBehavior== DuoUnreachableBehavior.Bypass)
+                if (!isDuoHealthy && settings.DuoUnreachableBehavior == DuoUnreachableBehavior.Bypass)
                 {
                     return String.Empty;
                 }
@@ -415,7 +415,7 @@ namespace BLAZAM.Services
             {
                 claims.Add(new Claim(ClaimTypes.Name, user.DisplayName));
             }
-            else if(user.SamAccountName != null)
+            else if (user.SamAccountName != null)
             {
                 claims.Add(new Claim(ClaimTypes.Name, user.SamAccountName));
 

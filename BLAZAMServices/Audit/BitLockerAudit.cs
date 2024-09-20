@@ -17,7 +17,7 @@ namespace BLAZAM.Services.Audit
                 AuditActions.BitLocker_Searched,
                 searchedOU);
 
-      
+
 
     }
 }

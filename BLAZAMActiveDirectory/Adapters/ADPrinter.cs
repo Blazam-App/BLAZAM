@@ -69,7 +69,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty("printerName", value);
             }
         }
-        
+
         public string ShortServerName
         {
 
@@ -373,7 +373,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty("versionNumber", value);
             }
         }
-        
+
     }
 
 }

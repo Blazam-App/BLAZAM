@@ -4,7 +4,7 @@ using MudBlazor;
 
 namespace BLAZAM.Helpers
 {
-    public  static class DirectoryAdapterHelpers
+    public static class DirectoryAdapterHelpers
     {
         public static string TypeIcon(this IDirectoryEntryAdapter adapter)
         {

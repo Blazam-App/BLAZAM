@@ -12,14 +12,14 @@ namespace BLAZAM.ActiveDirectory
         //IApplicationUserStateService _userStateService;
         //IEncryptionService _encryptionService;
         //INotificationPublisher _notificationPublisher;
-        ActiveDirectoryContext activeDirectoryContextSeed;
+        private ActiveDirectoryContext activeDirectoryContextSeed;
 
         public ActiveDirectoryContextFactory(IAppDatabaseFactory factory, IApplicationUserStateService userStateService, IEncryptionService encryptionService, INotificationPublisher notificationPublisher)
         {
-           // _factory = factory;
-           //_userStateService = userStateService;
-           // _encryptionService = encryptionService;
-           // _notificationPublisher = notificationPublisher;
+            // _factory = factory;
+            //_userStateService = userStateService;
+            // _encryptionService = encryptionService;
+            // _notificationPublisher = notificationPublisher;
             activeDirectoryContextSeed = new ActiveDirectoryContext(factory, userStateService, encryptionService, notificationPublisher);
         }
 

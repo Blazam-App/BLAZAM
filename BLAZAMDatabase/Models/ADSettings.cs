@@ -19,6 +19,6 @@ namespace BLAZAM.Database.Models
         public string Password { get; set; }
         public bool UseTLS { get; set; } = false;
 
-       
+
     }
 }

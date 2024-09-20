@@ -1,24 +1,24 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using BLAZAM.Helpers;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
+using BLAZAM.Helpers;
+using BLAZAM.Jobs;
+using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
+using MudBlazor;
 using Newtonsoft.Json.Linq;
 using System.Data;
 using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Reflection;
-using MudBlazor;
-using System.DirectoryServices.ActiveDirectory;
-using BLAZAM.Jobs;
-using BLAZAM.Localization;
-using Microsoft.Extensions.Localization;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters
@@ -100,7 +100,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         protected IApplicationUserState? CurrentUser => Directory.CurrentUser;
 
-        bool _newEntry = false;
+        private bool _newEntry = false;
         public bool NewEntry
         {
             get => _newEntry; set
@@ -466,10 +466,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (CurrentUser == null) return false;
                 if (DN == null)
                 {
-                    throw new ApplicationException("The directory object " + ADSPath+ " did not load a distinguished name.");
+                    throw new ApplicationException("The directory object " + ADSPath + " did not load a distinguished name.");
                 }
                 return CurrentUser.HasPermission(DN, allowSelector, denySelector, nestedSearch);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Loggers.ActiveDirectoryLogger.Error(ex.Message + " {@Error}", ex);
                 return false;
@@ -541,11 +542,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual bool CanCreate { get => HasActionPermission(ObjectActions.Create); }
 
 
-        protected virtual bool HasActionPermission(ObjectAction action,ActiveDirectoryObjectType? objectType=null)
+        protected virtual bool HasActionPermission(ObjectAction action, ActiveDirectoryObjectType? objectType = null)
         {
-            if(CurrentUser==null)return false;
-            if (objectType == null) objectType = ObjectType; 
-            return CurrentUser.HasActionPermission(DN,action, objectType.Value);
+            if (CurrentUser == null) return false;
+            if (objectType == null) objectType = ObjectType;
+            return CurrentUser.HasActionPermission(DN, action, objectType.Value);
         }
 
         public virtual bool CanDelete { get => HasActionPermission(ObjectActions.Delete); }
@@ -667,7 +668,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         thisObject = null;
 
                     }
-                    directoryEntries.OrderBy(x=>x.CanonicalName).OrderBy(x=>x.ObjectType);
+                    directoryEntries.OrderBy(x => x.CanonicalName).OrderBy(x => x.ObjectType);
                     CachedChildren = directoryEntries;
                 }
                 return CachedChildren;

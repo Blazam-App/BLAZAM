@@ -1,15 +1,15 @@
 ﻿
-using Octokit;
-using BLAZAM.Update.Exceptions;
-using BLAZAM.Logger;
-using BLAZAM.Helpers;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
-using System.Security.Principal;
-using System.Diagnostics;
+using BLAZAM.Helpers;
 using BLAZAM.Localization;
+using BLAZAM.Logger;
+using BLAZAM.Update.Exceptions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
+using Octokit;
+using System.Diagnostics;
+using System.Security.Principal;
 
 namespace BLAZAM.Update.Services
 {
@@ -114,7 +114,7 @@ namespace BLAZAM.Update.Services
 
             foreach (var release in betaStableReleases)
             {
-                if (release!=null)
+                if (release != null)
                 {
                     //Get the release filename to prepare a version object
                     var fn = Path.GetFileNameWithoutExtension(release?.Assets.FirstOrDefault()?.Name);

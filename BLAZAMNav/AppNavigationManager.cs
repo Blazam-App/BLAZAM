@@ -11,7 +11,7 @@ namespace BLAZAM.Nav
 {
     public class AppNavigationManager
     {
-        NavigationManager Nav;
+        private NavigationManager Nav;
         private bool warnOnNavigation;
 
         public IJSRuntime JS { get; }
@@ -22,8 +22,8 @@ namespace BLAZAM.Nav
             get => warnOnNavigation; set
             {
                 warnOnNavigation = value;
-                JS.InvokeVoidAsync("window.warnOnNavigation",new object[] { warnOnNavigation });
-                     }
+                JS.InvokeVoidAsync("window.warnOnNavigation", new object[] { warnOnNavigation });
+            }
         }
 
 
@@ -43,7 +43,8 @@ namespace BLAZAM.Nav
             try
             {
                 Nav.LocationChanged += (args, other) => { LocationChanged?.Invoke(args, other); };
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Loggers.SystemLogger.Error("Error trying to listen for location changes {@Error}", ex);
             }

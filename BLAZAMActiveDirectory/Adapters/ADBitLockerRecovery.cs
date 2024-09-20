@@ -1,11 +1,11 @@
 ﻿
-using System.Net.NetworkInformation;
-using System.Net;
-using BLAZAM.Logger;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Models;
-using System.Net.Sockets;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models;
+using BLAZAM.Logger;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -33,6 +33,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-       // public override ActiveDirectoryObjectType ObjectType =>  ActiveDirectoryObjectType.BitLocker;
+        // public override ActiveDirectoryObjectType ObjectType =>  ActiveDirectoryObjectType.BitLocker;
     }
 }

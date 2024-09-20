@@ -190,20 +190,21 @@ namespace BLAZAM.Server.Data.Services
             //Invoke event so Active Directory can populate DirectoryUser if required
             //UserStateAdded?.Invoke(state);
         }
-        public void SetMFAUserState(string mfaToken,IApplicationUserState state)
+        public void SetMFAUserState(string mfaToken, IApplicationUserState state)
         {
             _mfaLoginQueue.Add(mfaToken, state);
-            Task.Delay(90000).ContinueWith((val) => {
+            Task.Delay(90000).ContinueWith((val) =>
+            {
                 _mfaLoginQueue.Remove(mfaToken);
             });
             SetUserState(state);
         }
         public IApplicationUserState? GetMFAUser(string mfaToken)
         {
-            var user= _mfaLoginQueue.FirstOrDefault(q=>q.Key== mfaToken).Value;
-            if(user != null)
+            var user = _mfaLoginQueue.FirstOrDefault(q => q.Key == mfaToken).Value;
+            if (user != null)
             {
-                _mfaLoginQueue.Remove(mfaToken );
+                _mfaLoginQueue.Remove(mfaToken);
             }
             return user;
         }

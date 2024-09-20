@@ -35,7 +35,7 @@ namespace BLAZAM.Server.Pages
                     DetailsMessage = exception.InnerException?.Message;
                 }
             }
-           
+
         }
     }
 }

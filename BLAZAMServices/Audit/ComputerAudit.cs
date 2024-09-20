@@ -1,10 +1,10 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Audit;
-using BLAZAM.Session.Interfaces;
-using BLAZAM.Logger;
 using BLAZAM.Helpers;
-using BLAZAM.Common.Data;
+using BLAZAM.Logger;
+using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.Services.Audit
 {

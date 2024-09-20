@@ -30,7 +30,8 @@ namespace BLAZAM.Services.Background
         private IDatabaseContext Context => _databaseFactory.CreateDbContext();
         public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType)
         {
-            await Task.Run(async() => {
+            await Task.Run(async () =>
+            {
                 var context = Context;
                 string notificationTitle;
                 notificationTitle = _appLocalization[source.ObjectType.ToString()] + " ";
@@ -113,7 +114,7 @@ namespace BLAZAM.Services.Background
                     }
                 }
             });
-     
+
         }
         public NotificationSubscription CalculateEffectiveEmailSubscriptions(AppUser user, IDirectoryEntryAdapter ou)
         {

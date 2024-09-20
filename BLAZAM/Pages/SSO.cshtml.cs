@@ -1,21 +1,21 @@
 using BLAZAM.Common.Data;
-using BLAZAM.Services;
+using BLAZAM.Gui.UI.Dashboard.Widgets;
+using BLAZAM.Helpers;
 using BLAZAM.Server.Data.Services;
+using BLAZAM.Services;
+using BLAZAM.Services.Audit;
 using BLAZAM.Services.Background;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using BLAZAM.Helpers;
-using BLAZAM.Gui.UI.Dashboard.Widgets;
-using BLAZAM.Services.Audit;
 
 namespace BLAZAM.Server.Pages
 {
     [IgnoreAntiforgeryToken]
     public class SSOModel : PageModel
     {
-        public SSOModel(AppAuthenticationStateProvider auth, NavigationManager _nav,ConnMonitor _monitor,AuditLogger logger)
+        public SSOModel(AppAuthenticationStateProvider auth, NavigationManager _nav, ConnMonitor _monitor, AuditLogger logger)
         {
             Auth = auth;
             Nav = _nav;
@@ -30,7 +30,7 @@ namespace BLAZAM.Server.Pages
         public ConnMonitor Monitor { get; private set; }
         public AuditLogger AuditLogger { get; private set; }
 
-        public IActionResult OnGet(string returnUrl="")
+        public IActionResult OnGet(string returnUrl = "")
         {
             ViewData["Layout"] = "_Layout";
             if (returnUrl.IsUrlLocalToHost())
@@ -47,7 +47,7 @@ namespace BLAZAM.Server.Pages
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
-        public async Task<IActionResult> OnPost([FromFormAttribute]LoginRequest req)
+        public async Task<IActionResult> OnPost([FromFormAttribute] LoginRequest req)
         {
             try
             {
@@ -57,15 +57,15 @@ namespace BLAZAM.Server.Pages
                     await HttpContext.SignInAsync(result.AuthenticationState.User);
                     await AuditLogger.Logon.Login(result.AuthenticationState.User);
                 }
-               // return new ObjectResult(result.Status);
+                // return new ObjectResult(result.Status);
 
             }
-            catch 
+            catch
             {
 
                 //return new ObjectResult(ex.Message);
             }
-            if (req.ReturnUrl!=null && req.ReturnUrl.IsUrlLocalToHost())
+            if (req.ReturnUrl != null && req.ReturnUrl.IsUrlLocalToHost())
             {
                 return Redirect(req.ReturnUrl);
             }
