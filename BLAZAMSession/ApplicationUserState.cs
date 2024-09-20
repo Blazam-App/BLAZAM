@@ -1,7 +1,5 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
-using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
@@ -10,10 +8,7 @@ using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Net;
 using System.Security.Claims;
-using System.Xml;
 
 namespace BLAZAM.Server.Data.Services
 {
