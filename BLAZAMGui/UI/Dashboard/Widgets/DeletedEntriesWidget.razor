@@ -7,7 +7,8 @@
              RowClass="cursor-pointer"
              Dense=true
              Filterable=true
-             RowsPerPage="5"
+             RowsPerPage="@ItemsPerPage"
+             RowsPerPageChanged="@SetRowsPerPage"
              FilterMode="DataGridFilterMode.Simple"
              Loading=@LoadingData
              Square=true
@@ -49,17 +50,32 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
+        {
+            if (widget.WidgetType.Equals(WidgetType))
+            {
+                _ = RefreshData();
 
+            }
+
+        };
+
+        _ = RefreshData();
+
+    }
+    async Task RefreshData()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
         var search = new ADSearch(Directory) { SearchRoot = Directory.GetDeleteObjectsEntry() };
         search.SearchDeleted = true;
         search.Fields.Changed = DateTime.Now.AddDays(-14);
         deletedObjects = await search.SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
-                LoadingData = false;
-                await InvokeAsync(StateHasChanged);
-          
+        LoadingData = false;
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
 
     }
- 
-  
+
 
 }

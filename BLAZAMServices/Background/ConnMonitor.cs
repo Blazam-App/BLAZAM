@@ -48,7 +48,7 @@ namespace BLAZAM.Services.Background
         public bool DatabaseUpdatePending { get; private set; }
 
         private Timer? _timer;
-        bool _monitoring;
+        private bool _monitoring;
         private ServiceConnectionState _appReady = ServiceConnectionState.Connecting;
 
         public ConnMonitor(IAppDatabaseFactory DbFactory, IActiveDirectoryContext directory, IEncryptionService encryption)
@@ -69,7 +69,7 @@ namespace BLAZAM.Services.Background
                 {
                     OnAppReadyChanged?.Invoke(newStatus);
                     AppReady = newStatus;
-                   
+
                 }
 
 
@@ -79,7 +79,7 @@ namespace BLAZAM.Services.Background
                 OnDirectoryConnectionChanged?.Invoke(newStatus);
             };
 
-            
+
             MonitorDatabaseValues();
         }
 
@@ -103,7 +103,7 @@ namespace BLAZAM.Services.Background
             {
                 using (var _context = _factory.CreateDbContext())
                 {
-                   
+
                     try
                     {
                         var temp = _context.Database.GetPendingMigrations();

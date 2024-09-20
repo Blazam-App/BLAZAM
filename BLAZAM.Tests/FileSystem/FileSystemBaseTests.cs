@@ -74,7 +74,7 @@ namespace BLAZAM.Tests.FileSystem
         //    string path = Path.GetTempFileName();
         //    var fileSystemBase = new FileSystemBase("C:\\Windows\\setuperr.log");
 
-            
+
 
         //    // Act
         //    bool writable = fileSystemBase.Writable;
@@ -91,7 +91,7 @@ namespace BLAZAM.Tests.FileSystem
             // Arrange
             string path = Path.GetTempFileName();
             var fileSystemBase = new FileSystemBase(System.IO.Path.GetDirectoryName(path));
-            
+
 
             // Act
             bool writable = fileSystemBase.Writable;

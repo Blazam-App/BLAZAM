@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.8" />
-    <PackageReference Include="MudBlazor" Version="7.6.0" />
+    <PackageReference Include="MudBlazor" Version="7.8.0" />
     <PackageReference Include="PreMailer.Net" Version="2.6.0" />
   </ItemGroup>
 

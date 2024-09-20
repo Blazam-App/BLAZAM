@@ -12,7 +12,7 @@ namespace PlaywrightTests
             // Expects the URL to contain intro.
             await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
         }
-       
+
 
 
         private async Task LogIn()

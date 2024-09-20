@@ -14,7 +14,7 @@ namespace BLAZAM.Session.Interfaces
     public interface IApplicationUserState
     {
         public int Id { get; }
-        AppEvent<AppUser> OnSettingsChanged { get; set; }
+        AppEvent OnSettingsChanged { get; set; }
 
         /// <summary>
         /// Returns the combined names of the user, and if applicable, the impersonators username
@@ -50,7 +50,7 @@ namespace BLAZAM.Session.Interfaces
         /// </summary>
         /// <remarks>
         /// Changes made to the returned object are not saved
-        /// until <see cref="SaveUserSettings()"/> is called
+        /// until <see cref="SaveAllUserSettings()"/> is called
         /// </remarks>
         AppUser Preferences { get; }
 
@@ -95,9 +95,12 @@ namespace BLAZAM.Session.Interfaces
         /// Saves the current state of the <see cref="Preferences"/> to the database
         /// </summary>
         /// <returns></returns>
-        Task<bool> SaveUserSettings();
+        Task<bool> SaveAllUserSettings();
         Task<bool> MarkRead(UserNotification notification);
         bool HasPermission(string dnTarget, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector, bool nestedSearch);
         bool HasActionPermission(string dnTarget, ObjectAction action, ActiveDirectoryObjectType objectType);
+        Task SaveDashboardWidgets();
+        Task SaveReadNewsItems();
+        Task SaveBasicUserPreferences();
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BLAZAM.Jobs
 {
     public static class JobMonitor
-    { 
+    {
         public static AppEvent? OnUpdate { get; set; }
         private static List<IJob> Jobs = new List<IJob>();
         public static List<IJob> AllJobs => Jobs.ToList();
@@ -20,10 +20,10 @@ namespace BLAZAM.Jobs
 
         public static void AddJob(IJob job)
         {
-            if(Jobs.Contains(job)) return;
+            if (Jobs.Contains(job)) return;
             if (Jobs.Count == _maxJobs) Jobs.RemoveAt(_maxJobs - 1);
             Jobs.Add(job);
-            job.OnProgressUpdated += (progress)=>{ OnUpdate?.Invoke(); };
+            job.OnProgressUpdated += (progress) => { OnUpdate?.Invoke(); };
             OnUpdate?.Invoke();
         }
 

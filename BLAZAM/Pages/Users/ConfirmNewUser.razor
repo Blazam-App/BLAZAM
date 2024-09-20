@@ -60,12 +60,12 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 }
 
 @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone) ||
-       InDirectoryTemplate(ActiveDirectoryFields.StreetAddress) ||
-       InDirectoryTemplate(ActiveDirectoryFields.POBox) ||
-       InDirectoryTemplate(ActiveDirectoryFields.City) ||
-       InDirectoryTemplate(ActiveDirectoryFields.State) ||
-       InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
-       )
+      InDirectoryTemplate(ActiveDirectoryFields.StreetAddress) ||
+      InDirectoryTemplate(ActiveDirectoryFields.POBox) ||
+      InDirectoryTemplate(ActiveDirectoryFields.City) ||
+      InDirectoryTemplate(ActiveDirectoryFields.State) ||
+      InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
+      )
 {
     <Section Title=@AppLocalization["Contact Info"]>
 
@@ -104,10 +104,10 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
     <MudTextField Label="@AppLocalization["Site"]" @bind-Value="@User.Site" Disabled=true />
 }
 @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory) ||
-       InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
-       InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
-       InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
-       )
+      InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
+      InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
+      InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
+      )
 {
     <Section Title=@AppLocalization["Profile"]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
@@ -230,30 +230,30 @@ else
                 await Confirmed.InvokeAsync();
                 //Nav.NavigateTo("/search/" + User.SamAccountName);
 
-            }
-            await AuditLogger.User.Created(User);
-            _ = OUNotificationService.PostAsync(User, NotificationType.Create);
 
-            try
-            {
-                if (DirectoryTemplate?.EffectiveSendWelcomeEmail == true)
+                await AuditLogger.User.Created(User);
+                _ = OUNotificationService.PostAsync(User, NotificationType.Create);
+
+                try
                 {
-                    if (DirectoryTemplate.EffectiveAskForAlternateEmail == true || User.Email.IsNullOrEmpty())
+                    if (DirectoryTemplate?.EffectiveSendWelcomeEmail == true)
                     {
-                        SendWelcomeModal?.ShowAsync();
+                        if (DirectoryTemplate.EffectiveAskForAlternateEmail == true || User.Email.IsNullOrEmpty())
+                        {
+                            SendWelcomeModal?.ShowAsync();
+                        }
+                        else
+                        {
+                            _ = SendWelcomeEmail(User.Email);
+                        }
+
                     }
-                    else
-                    {
-                        _=SendWelcomeEmail(User.Email);
-                    }
+                }
+                catch
+                {
 
                 }
             }
-            catch
-            {
-
-            }
-
 
         }
         catch (ApplicationException ex)
@@ -265,16 +265,18 @@ else
     }
     async Task SendWelcomeEmail(string to)
     {
-        try{
+        try
+        {
             NewUserWelcomeEmailMessage message = new NewUserWelcomeEmailMessage();
             message.Domain = User.Directory.ConnectionSettings?.FQDN;
             message.Username = _username;
             message.Password = _userPassword;
             var html = message.Render();
-            await EmailService.SendMessage(AppLocalization["New Account Details"], message,to);
+            await EmailService.SendMessage(AppLocalization["New Account Details"], message, to);
             SnackBarService.Info(AppLocalization["Welcome Email Sent to "] + to);
             SendWelcomeModal?.Close();
-        }catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             Loggers.SystemLogger.Error("Error sending welcome email {@Error}", ex);
             SnackBarService.Error(ex.Message);

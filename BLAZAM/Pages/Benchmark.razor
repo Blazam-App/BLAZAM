@@ -24,20 +24,7 @@
 
 
 
-@* 
-<h3>Tree View</h3>
-<MudSwitch @bind-Value=adTree Label="OU/AD"/>
-@if (!adTree)
-{
-    <OUTreeView StartRootExpanded=true
-                EndText="@((context)=>context.DirectPermissionMappings.Any()?context.DirectPermissionMappings.Count().ToString():null)" />
-
-}
-else
-{
-    <ADTreeView TextColor="Color.Surface" EndText="@((context)=>context is IADOrganizationalUnit ou?ou.DirectPermissionMappings.Any()?ou.DirectPermissionMappings.Count().ToString():null:null)" />
-
-} *@
+s
 @code {
     #nullable disable warnings
     //ActiveDirectoryContext ad;

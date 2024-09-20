@@ -7,7 +7,8 @@
              RowClass="cursor-pointer"
              Dense=true
              Filterable=true
-             RowsPerPage="5"
+             RowsPerPage="@ItemsPerPage"
+             RowsPerPageChanged="@SetRowsPerPage"
              FilterMode="DataGridFilterMode.Simple"
              Loading=@LoadingData
              Square=true
@@ -38,7 +39,7 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="IDirectoryEntryAdapter" />
+        <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IDirectoryEntryAdapter" />
     </PagerContent>
 </MudDataGrid>
 
@@ -47,7 +48,7 @@
     <MudProgressLinear Indeterminate=true />
 </MudOverlay>
 @code {
-    List<IDirectoryEntryAdapter> FavoriteEntries 
+    List<IDirectoryEntryAdapter> FavoriteEntries
     {
         get => CurrentUser.State.Cache.Get<List<IDirectoryEntryAdapter>>(this.GetType());
         set => CurrentUser.State.Cache.Set(this.GetType(), value);
@@ -55,23 +56,37 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await Task.Run(() =>
+        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
         {
-            var favorites = new List<IDirectoryEntryAdapter>();
-            foreach (var entry in CurrentUser.State.Preferences.FavoriteEntries)
+            if (widget.WidgetType.Equals(WidgetType))
             {
-                IDirectoryEntryAdapter match = Directory.GetDirectoryEntryByDN(entry.DN);
-                if (match != null && match.CanRead)
-                {
-                    favorites.Add(match);
-                }
+                _ = RefreshData();
 
             }
-            FavoriteEntries = favorites;
-            LoadingData = false;
-            InvokeAsync(StateHasChanged);
 
-        });
+        };
+
+        _ = RefreshData();
+
+
+    }
+    async Task RefreshData()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        var favorites = new List<IDirectoryEntryAdapter>();
+        foreach (var entry in CurrentUser.State.Preferences.FavoriteEntries)
+        {
+            IDirectoryEntryAdapter match = Directory.GetDirectoryEntryByDN(entry.DN);
+            if (match != null && match.CanRead)
+            {
+                favorites.Add(match);
+            }
+
+        }
+        FavoriteEntries = favorites;
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
 
     }
     void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
@@ -81,7 +96,7 @@
             GoTo(args.Item);
         }
     }
-  
+
     void GoTo(IDirectoryEntryAdapter args)
     {
         Nav.NavigateTo(args.SearchUri);

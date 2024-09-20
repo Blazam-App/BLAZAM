@@ -1,6 +1,11 @@
 ﻿@inherits Widget
 @attribute [Authorize]
-<NewEntriesWidgetDataGrid Items="@NewComputers" RowClick=@GoTo T="IADComputer" Loading=LoadingData />
+<NewEntriesWidgetDataGrid Items="@NewComputers"
+                          RowsPerPage="@ItemsPerPage"
+                          RowsPerPageChanged="@SetRowsPerPage"
+                          RowClick=@GoTo
+                          T="IADComputer"
+                          Loading=LoadingData />
 
 @code {
     List<IADComputer> NewComputers
@@ -12,9 +17,27 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
+        {
+            if (widget.WidgetType.Equals(WidgetType))
+            {
+                _ = RefreshData();
+
+            }
+
+        };
+
+        _ = RefreshData();
+    }
+    async Task RefreshData()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
         NewComputers = (await Directory.Computers.FindNewComputersAsync()).Where(u => u.CanRead).ToList();
+
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
+
     }
     void GoTo(DataGridRowClickEventArgs<IADComputer> args)
     {

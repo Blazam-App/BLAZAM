@@ -326,7 +326,7 @@
             {
                 CurrentUser.State.Preferences.FavoriteEntries.Add(newFavorrite);
             }
-            await CurrentUser.State.SaveUserSettings();
+            await CurrentUser.State.SaveBasicUserPreferences();
         }
         catch (Exception ex)
         {

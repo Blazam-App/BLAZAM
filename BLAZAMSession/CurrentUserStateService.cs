@@ -62,7 +62,7 @@ namespace BLAZAM.Server.Data.Services
                 Loggers.SystemLogger.Error("Error trying to get current user state {@Error}", ex);
                 return;
             }
-            Loggers.SystemLogger.Information("State Null:{StateNull} Username:{StateUsername}",State==null,State?.Username);
+            Loggers.SystemLogger.Information("State Null:{StateNull} Username:{StateUsername}", State == null, State?.Username);
 
 
         }

@@ -182,7 +182,8 @@ namespace BLAZAM.Update.Services
         private async void CheckForUpdate(object? state)
         {
             IJob updateCheckJob = new Job("Check for Update");
-            IJobStep checkForUpdateStep = new JobStep("Execute", async(step) => {
+            IJobStep checkForUpdateStep = new JobStep("Execute", async (step) =>
+            {
                 try
                 {
                     var appSettings = (await factory.CreateDbContextAsync()).AppSettings.FirstOrDefault();
@@ -219,7 +220,7 @@ namespace BLAZAM.Update.Services
                 {
                     Loggers.UpdateLogger.Error("Error while checking for auto update {@Error}", ex);
                 }
-                return true; 
+                return true;
             });
             updateCheckJob.AddStep(checkForUpdateStep);
             await updateCheckJob.RunAsync();
@@ -278,7 +279,7 @@ namespace BLAZAM.Update.Services
                 return true;
             });
             scheduleUpdatteJob.AddStep(scheduleStep);
-             scheduleUpdatteJob.Run();
+            scheduleUpdatteJob.Run();
         }
 
         private async void Update(object? state)

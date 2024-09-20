@@ -14,10 +14,8 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
     {
 
         protected ADOrganizationalUnit TopLevel;
-        IADOrganizationalUnit? _startingSelectedNode;
-
-
-        IDirectoryEntryAdapter? _selectedEntry;
+        private IADOrganizationalUnit? _startingSelectedNode;
+        private IDirectoryEntryAdapter? _selectedEntry;
 
         [Parameter]
         public bool StartRootExpanded { get; set; } = true;
@@ -64,7 +62,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                     var cache = _selectedEntry;
 
                     _selectedEntry = value;
-                    if (cache == null && RootOU.Count>0 && value == RootOU.First()) return;
+                    if (cache == null && RootOU.Count > 0 && value == RootOU.First()) return;
 
 
                     InvokeAsync(() => { SelectedEntryChanged.InvokeAsync(value); });
@@ -72,9 +70,9 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
                     //if (TopLevel == null)
                     //    OnInitializedAsync();
-                    
-                    if(RootOU.Count > 0)
-                    OpenToSelected();
+
+                    if (RootOU.Count > 0)
+                        OpenToSelected();
 
                 }
             }
@@ -88,7 +86,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         /// </summary>
         [Parameter]
         public Func<IDirectoryEntryAdapter?, string>? EndText { get; set; }
-        
+
         protected Color GetItemColor(IDirectoryEntryAdapter? item)
         {
             if (item is IAccountDirectoryAdapter account)
@@ -104,14 +102,14 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         {
             try
             {
-              
-                    var items = parent.Children
-                        .Where(c => c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c));
-                    
-                    
-                    var treeBranchh = items.ToTreeItemData();
-                    return treeBranchh;
-                
+
+                var items = parent.Children
+                    .Where(c => c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c));
+
+
+                var treeBranchh = items.ToTreeItemData();
+                return treeBranchh;
+
             }
             catch (Exception)
             {
@@ -123,7 +121,8 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
 
         protected async Task InitializeTreeView()
         {
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
 
                 //ApplicationBaseOUs = Directory.OUs.FindSubOusByDN(null);
 
@@ -172,16 +171,16 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         protected void OpenToSelected()
         {
 
-            if (StartRootExpanded && RootOU!=null && RootOU.Count>0)
+            if (StartRootExpanded && RootOU != null && RootOU.Count > 0)
             {
                 RootOU.First().Expanded = true;
                 RootOU.First().Children = GetChildren(RootOU.First().Value);
-                if (SelectedEntry !=null && !SelectedEntry.Equals(RootOU.First().Value))
+                if (SelectedEntry != null && !SelectedEntry.Equals(RootOU.First().Value))
                 {
                     var firstThing = RootOU.First();
                     if (firstThing.Value is IADOrganizationalUnit openThis)
                     {
-                        
+
                         openThis.IsExpanded = true;
                         while (openThis != null)
                         {
@@ -189,7 +188,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                             if (child != null)
                             {
                                 child.IsExpanded = true;
-                                
+
                                 _ = (child as IADOrganizationalUnit)?.TreeViewSubOUs;
                                 openThis = child as IADOrganizationalUnit;
                             }
@@ -220,7 +219,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         /// displayed in the tree view or not
         /// </summary>
         [Parameter]
-        public Func<IDirectoryEntryAdapter,bool>? AdditionalVisibilityFilters { get; set; }
+        public Func<IDirectoryEntryAdapter, bool>? AdditionalVisibilityFilters { get; set; }
 
 
         protected bool ShouldShowOU(IDirectoryEntryAdapter entry)
@@ -231,7 +230,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                     return true;
                 if (AdditionalVisibilityFilters != null)
                 {
-                    if(AdditionalVisibilityFilters(entry)) return true;
+                    if (AdditionalVisibilityFilters(entry)) return true;
                 }
             }
             return false;

@@ -5,12 +5,12 @@
 <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" ListClass="py-0">
     <ActivatorContent>
         @{
-            
+
             var avatarBgColor = GenerateAvatarColor(UserState?.Username);
         }
-        @if (Notifications?.Count > 0)
+        @if (Notifications.Where(n => !n.IsRead).Count() > 0)
         {
-            <MudBadge Color=Color.Error Overlap=true Content="@Notifications.Count">
+            <MudBadge Color=Color.Error Overlap=true Content="@Notifications.Where(n=>!n.IsRead).Count()">
                 <CurrentUserAvatarIcon UserState="@UserState" />
             </MudBadge>
         }
@@ -24,7 +24,7 @@
         <MudText Typo=Typo.body2 Color="Color.Info" Align=Align.Center Class="py-3 w-100 " Style="text-align:center;    background-color: var(--mud-palette-drawer-background);">
             @CurrentUser.Username
         </MudText>
-        <MudDivider/>
+        <MudDivider />
         @if (Notifications.Count > 0)
         {
             <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})">Notifications</MudMenuItem>
@@ -63,7 +63,7 @@
 </AppModal>
 <AppModal @ref=notificationsModal Title="Notification Settings" Options="new(){ CloseButton=true, MaxWidth=MaxWidth.ExtraLarge,FullWidth=true}">
     <CascadingValue Value="mainLayout">
-        <NotificaionSubscriptionEditor User="UserState.Preferences"/>
+        <NotificaionSubscriptionEditor User="UserState.Preferences" />
     </CascadingValue>
 </AppModal>
 @code {
@@ -88,12 +88,12 @@
                 Notifications = UserState.Notifications;
 
             }
-                InvokeAsync(StateHasChanged);
+            InvokeAsync(StateHasChanged);
         });
         UserState = CurrentUser.State;
         Notifications = UserState.Notifications;
         if (UserState != null)
-            UserState.OnSettingsChanged += (settings) =>
+            UserState.OnSettingsChanged += () =>
             {
                 InvokeAsync(StateHasChanged);
             };
@@ -110,7 +110,7 @@
         if (username is null || username.IsNullOrEmpty()) return "background-color:#0c13a7";
         int usernameHash = username.GetAppHashCode();
         byte[] usernameHashBytes = Helpers.ByteHelpers.ToByteArray(usernameHash, (int?)3);
-        for(int x = 0; x < usernameHashBytes.Length; x++)
+        for (int x = 0; x < usernameHashBytes.Length; x++)
         {
             if (usernameHashBytes[x] > 200)
                 usernameHashBytes[x] = 200;

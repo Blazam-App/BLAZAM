@@ -9,19 +9,19 @@ namespace BLAZAM.Server.Pages.Download
     {
         public IActionResult OnGet()
         {
-              var inMemZip = GenerateZip();
-              return File(inMemZip.ToArray(),"application/zip");
+            var inMemZip = GenerateZip();
+            return File(inMemZip.ToArray(), "application/zip");
         }
 
-        MemoryStream GenerateZip()
+        private MemoryStream GenerateZip()
         {
             MemoryStream memoryStream = new MemoryStream();
-        ZipArchive zip = new ZipArchive(memoryStream, ZipArchiveMode.Create);
-        // Recursively add files and subdirectories to the zip archive
-        //TODO make zip file
-       // zip.AddToZip(new SystemDirectory(LogPath),LogPath);
+            ZipArchive zip = new ZipArchive(memoryStream, ZipArchiveMode.Create);
+            // Recursively add files and subdirectories to the zip archive
+            //TODO make zip file
+            // zip.AddToZip(new SystemDirectory(LogPath),LogPath);
 
             return memoryStream;
         }
-}
+    }
 }

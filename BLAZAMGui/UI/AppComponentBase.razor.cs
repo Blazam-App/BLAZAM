@@ -1,13 +1,13 @@
 
 using BLAZAM.ActiveDirectory;
+using BLAZAM.Nav;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
-using BLAZAM.Nav;
 
 namespace BLAZAM.Gui.UI
 {
 
-    public class AppComponentBase : ComponentBase,IDisposable
+    public class AppComponentBase : ComponentBase, IDisposable
     {
         [Inject]
         protected IStringLocalizer<AppLocalization> AppLocalization { get; set; }
@@ -34,15 +34,15 @@ namespace BLAZAM.Gui.UI
         protected IJSRuntime JS { get; set; }
 
         [Inject]
-        public IApplicationUserStateService UserStateService { get; set; } 
-        
+        public IApplicationUserStateService UserStateService { get; set; }
+
         [Inject]
         public IApplicationNewsService ApplicationNewsService { get; set; }
 
         [Inject]
         public ICurrentUserStateService CurrentUser { get; set; }
 
-      
+
         [Inject]
         protected AuditLogger AuditLogger { get; set; }
 

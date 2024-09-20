@@ -4,7 +4,6 @@
 
 
 <MudAppBar Color=Color.Default Elevation="1">
-
     <MudBreakpointProvider>
         @if (mainLayout != null)
         {
@@ -24,10 +23,10 @@
         </MudHidden>
 
 
- 
+
     </MudBreakpointProvider>
     <MudSpacer />
- 
+
     @if (mainLayout?.Header != null)
     {
         @mainLayout.Header.ChildContent
@@ -35,7 +34,7 @@
     }
     else
     {
-        <SearchPageHeader/>
+        <SearchPageHeader />
     }
 
     <MudSpacer />
@@ -43,7 +42,6 @@
         <ApplicationNewsProvider />
     </AuthorizeView>
     <AppUserButton />
-
 </MudAppBar>
 
 

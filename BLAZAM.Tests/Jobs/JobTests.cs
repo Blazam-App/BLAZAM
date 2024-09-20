@@ -62,7 +62,7 @@ namespace BLAZAM.Tests.Jobs
             var result = testJob.Run();
 
             // Assert
-            Assert.True(testJob.Steps[1].Result == JobResult.Failed && testJob.Steps[2].Result==JobResult.Cancelled && testJob.Steps[3].Result== JobResult.Cancelled);
+            Assert.True(testJob.Steps[1].Result == JobResult.Failed && testJob.Steps[2].Result == JobResult.Cancelled && testJob.Steps[3].Result == JobResult.Cancelled);
         }
         [Fact]
         public void Nested_Job_Runs()
@@ -94,7 +94,7 @@ namespace BLAZAM.Tests.Jobs
                 && testJob.EndTime != DateTime.MinValue
                 && testJob.ElapsedTime.HasValue
                 && testJob.ElapsedTime.Value.TotalMilliseconds > 500
-                ) ;
+                );
         }
 
     }

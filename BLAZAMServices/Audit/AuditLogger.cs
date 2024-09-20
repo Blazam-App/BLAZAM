@@ -49,7 +49,7 @@ namespace BLAZAM.Services.Audit
                 await BitLocker.Searched(searchedEntry);
         }
 
-        public async Task Moved(IDirectoryEntryAdapter searchedEntry,IADOrganizationalUnit ouMovedFrom,IADOrganizationalUnit ouMovedTo)
+        public async Task Moved(IDirectoryEntryAdapter searchedEntry, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {
             if (searchedEntry is IADUser)
                 await User.Moved(searchedEntry, ouMovedFrom, ouMovedTo);

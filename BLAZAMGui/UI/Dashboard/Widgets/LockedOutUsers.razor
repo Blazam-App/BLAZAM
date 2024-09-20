@@ -2,14 +2,15 @@
 @attribute [Authorize]
 <MudDataGrid T="IADUser"
              Items="@LockedUsers"
-              Dense=true
-              Filterable=true
-             RowsPerPage="5"
+             Dense=true
+             Filterable=true
+             RowsPerPage="@ItemsPerPage"
+             RowsPerPageChanged="@SetRowsPerPage"
              FilterMode="DataGridFilterMode.Simple"
              Loading=@LoadingData
-              Square=true
+             Square=true
              ColumnResizeMode="ResizeMode.Column"
-              Virtualize
+             Virtualize
              RowClass="cursor-pointer"
              RowClick=@GoTo
              Class="py-0"
@@ -19,25 +20,25 @@
             <CellTemplate>
                 <MudContextMenu>
 
-                        <ChildContent>
+                    <ChildContent>
 
-                <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                        <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
                             <MudText>@context.Item?.CanonicalName</MudText>
                         </MudTooltip>
 
-                        </ChildContent>
+                    </ChildContent>
                     <MenuContents>
 
-                            @if (@context.Item.CanUnlock)
-                            {
+                        @if (@context.Item.CanUnlock)
+                        {
                             <MudMenuItem OnClick="(()=>{UnlockAccount(context.Item);})" Icon="@Icons.Material.Outlined.LockOpen">
                                 @AppLocalization["Unlock User"]
-                                </MudMenuItem>
+                            </MudMenuItem>
 
-                                }
+                        }
 
-                        </MenuContents>
-                    </MudContextMenu>
+                    </MenuContents>
+                </MudContextMenu>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="Locked Out">
@@ -51,7 +52,7 @@
 
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="IADUser" />
+        <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IADUser" />
     </PagerContent>
 </MudDataGrid>
 
@@ -66,11 +67,20 @@
     {
         await base.OnInitializedAsync();
 
-        Title = "Locked Out Users";
-        await RefreshUsers();
+        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
+        {
+            if (widget.WidgetType.Equals(WidgetType))
+            {
+                _ = RefreshData();
+
+            }
+
+        };
+
+        _ = RefreshData();
     }
 
-    async Task RefreshUsers()
+    async Task RefreshData()
     {
         LoadingData = true;
         await InvokeAsync(StateHasChanged);
@@ -85,22 +95,23 @@
     }
     async void UnlockAccount(IADUser userToUnlock)
     {
-        if (userToUnlock.LockedOut){
+        if (userToUnlock.LockedOut)
+        {
 
-            userToUnlock.LockedOut=false;
+            userToUnlock.LockedOut = false;
             var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
             await AuditLogger.User.Changed(userToUnlock, changes);
-            if(unlockJob.Result== JobResult.Passed)
+            if (unlockJob.Result == JobResult.Passed)
             {
-                await RefreshUsers();
+                await RefreshData();
 
                 SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" unlocked"]);
             }
             else
             {
-                SnackBarService.Error("Could not unlock: "+unlockJob.Exception?.Message);
+                SnackBarService.Error("Could not unlock: " + unlockJob.Exception?.Message);
             }
         }
     }

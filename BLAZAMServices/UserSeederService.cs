@@ -15,7 +15,7 @@ namespace BLAZAM.Services
         private readonly IActiveDirectoryContext _activeDirectoryContext;
         private readonly IAppDatabaseFactory _dbFactory;
 
-        public UserSeederService(IAppDatabaseFactory dbFactory, 
+        public UserSeederService(IAppDatabaseFactory dbFactory,
             IActiveDirectoryContextFactory adFactory,
             ApplicationInfo applicationInfo)
         {
@@ -25,13 +25,14 @@ namespace BLAZAM.Services
 
             //TODO Move ProgramEvents to Common
             //ProgramEvents.PermissionsChanged += SeedUsers;
-            Task.Delay(30000).ContinueWith(task => {
+            Task.Delay(30000).ContinueWith(task =>
+            {
                 SeedUsers();
             });
             //SeedUsers();
         }
 
-        private void SeedUsers(object obj=null)
+        private void SeedUsers(object obj = null)
         {
             try
             {
@@ -40,7 +41,7 @@ namespace BLAZAM.Services
                     EnsureDemoExists();
                 using var context = _dbFactory.CreateDbContext();
                 if (context.Status != ServiceConnectionState.Up) return;
-                foreach (var deleg in context.PermissionDelegate.Where(x=>x.DeletedAt==null).ToList())
+                foreach (var deleg in context.PermissionDelegate.Where(x => x.DeletedAt == null).ToList())
                 {
                     var entry = _activeDirectoryContext.FindEntryBySID(deleg.DelegateSid);
                     if (entry != null)
@@ -80,7 +81,7 @@ namespace BLAZAM.Services
                     Username = user.SamAccountName,
                     UserGUID = user.SID.ToSidString(),
                     Email = user.Email
-                }) ;
+                });
             }
             context.SaveChanges();
         }

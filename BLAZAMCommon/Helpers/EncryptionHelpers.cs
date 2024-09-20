@@ -16,7 +16,7 @@ namespace BLAZAM.Helpers
         }
         public static string Decrypt(this string input)
         {
-            var str= Encryption.Instance.DecryptObject<string>(input);
+            var str = Encryption.Instance.DecryptObject<string>(input);
             return str == null ? "" : str;
         }
 

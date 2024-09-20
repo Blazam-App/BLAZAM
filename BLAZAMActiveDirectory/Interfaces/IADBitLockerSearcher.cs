@@ -7,7 +7,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     /// </summary>
     public interface IADBitLockerSearcher
     {
-        
+
         List<IADBitLockerRecovery> FindByRecoveryId(string searchTerm);
         Task<List<IADBitLockerRecovery>> FindByRecoveryIdAsync(string searchTerm);
         List<IADBitLockerRecovery> FindByComputer(IADComputer computer);

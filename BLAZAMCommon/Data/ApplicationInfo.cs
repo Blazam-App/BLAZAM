@@ -48,7 +48,7 @@ namespace BLAZAM.Common.Data
         /// <returns>
         /// A list of address strings eg: {"https://localhost:7900/","http://localhost:5900/"}
         /// </returns>
-        public static IEnumerable<string> listeningAddresses=new List<string>();
+        public static IEnumerable<string> listeningAddresses = new List<string>();
 
         /// <summary>
         /// A static access to <see cref="InDebugMode"/>
@@ -67,7 +67,7 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// Indicates whether Blazam is running under IIS or as a service
         /// </summary>
-        public static bool isUnderIIS=>runningProcess.ProcessName.Contains("w3wp")|| runningProcess.ProcessName.Contains("iisexpress");
+        public static bool isUnderIIS => runningProcess.ProcessName.Contains("w3wp") || runningProcess.ProcessName.Contains("iisexpress");
 
         /// <summary>
         /// A local store of the .Net web application Services
@@ -112,7 +112,7 @@ namespace BLAZAM.Common.Data
         /// A list of address strings eg: {"https://localhost:7900/","http://localhost:5900/"}
         /// </returns>
         public IEnumerable<string> ListeningAddresses { get => listeningAddresses; set => listeningAddresses = value; }
-        
+
         /// <summary>
         /// Indicates whether installation wizard has been completed
         /// </summary>
@@ -120,7 +120,7 @@ namespace BLAZAM.Common.Data
         /// This relies on a database connection being functional
         /// </remarks>
         public bool InstallationCompleted { get => installationCompleted; set => installationCompleted = value; }
-        
+
         /// <summary>
         /// Indicates whether Blazam is in Debug Mode
         /// </summary>
@@ -144,16 +144,16 @@ namespace BLAZAM.Common.Data
         /// </summary>
         public static bool installationCompleted
         {
-            get;set;
+            get; set;
         }
-        public Guid InstallationId { get => installationId; set => installationId = value; } 
+        public Guid InstallationId { get => installationId; set => installationId = value; }
 
         /// <summary>
         /// Use only for UnitTests
         /// </summary>
         public ApplicationInfo()
         {
-            
+
         }
 
         /// <summary>

@@ -76,7 +76,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty("name", value);
             }
         }
-      
+
         public virtual bool CanReadUsersInSubOus
         {
             get
@@ -202,10 +202,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 return HasPermission(p => p.Where(pm =>
                 pm.AccessLevels.Any(al =>
-                al.ActionMap.Any(am=>
-                am.ObjectType==ActiveDirectoryObjectType.User &&
-                am.ObjectAction.Id==ObjectActions.Create.Id &&
-                am.AllowOrDeny==true))),
+                al.ActionMap.Any(am =>
+                am.ObjectType == ActiveDirectoryObjectType.User &&
+                am.ObjectAction.Id == ObjectActions.Create.Id &&
+                am.AllowOrDeny == true))),
                 p => p.Where(pm =>
                 pm.AccessLevels.Any(al =>
                 al.ActionMap.Any(am =>

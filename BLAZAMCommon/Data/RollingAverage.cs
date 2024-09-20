@@ -11,7 +11,7 @@ namespace BLAZAM.Common.Data
         private int memory;
         private List<double> _history;
 
-        public RollingAverage(int memory=10)
+        public RollingAverage(int memory = 10)
         {
             this.memory = memory;
             _history = new List<double>(memory);
@@ -21,7 +21,7 @@ namespace BLAZAM.Common.Data
         /// </summary>
         /// <param name="value"></param>
         /// <returns>The new average</returns>
-        public double AddValue (double value)
+        public double AddValue(double value)
         {
             if (_history.Count == memory)
                 _history.RemoveAt(0);

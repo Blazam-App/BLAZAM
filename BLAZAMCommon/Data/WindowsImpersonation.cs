@@ -1,19 +1,18 @@
-﻿using System.Diagnostics;
-using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
-using System.Security.Principal;
-using BLAZAM.Common.Exceptions;
+﻿using BLAZAM.Common.Exceptions;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.Win32.SafeHandles;
 using Serilog;
+using System.Diagnostics;
+using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
+using System.Security.Principal;
 namespace BLAZAM.Common.Data
 {
     public class WindowsImpersonation
     {
-        SafeAccessTokenHandle safeAccessTokenHandle;
-
-        WindowsImpersonationUser impersonationUser;
+        private SafeAccessTokenHandle safeAccessTokenHandle;
+        private WindowsImpersonationUser impersonationUser;
         private readonly WindowsIdentity ApplicationIdentity;
 
         public SafeAccessTokenHandle ImpersonatedToken
@@ -50,16 +49,15 @@ namespace BLAZAM.Common.Data
             }
         }
 
-
-        const int LOGON32_LOGON_INTERACTIVE = 2;
-        const int LOGON32_LOGON_NETWORK = 3;
-        const int LOGON32_LOGON_BATCH = 4;
-        const int LOGON32_LOGON_SERVICE = 5;
-        const int LOGON32_LOGON_UNLOCK = 7;
-        const int LOGON32_LOGON_NETWORK_CLEARTEXT = 8;
-        const int LOGON32_LOGON_NEW_CREDENTIALS = 9;
-        const int LOGON32_PROVIDER_DEFAULT = 0;
-        const int LOGON32_PROVIDER_WINNT50 = 3;
+        private const int LOGON32_LOGON_INTERACTIVE = 2;
+        private const int LOGON32_LOGON_NETWORK = 3;
+        private const int LOGON32_LOGON_BATCH = 4;
+        private const int LOGON32_LOGON_SERVICE = 5;
+        private const int LOGON32_LOGON_UNLOCK = 7;
+        private const int LOGON32_LOGON_NETWORK_CLEARTEXT = 8;
+        private const int LOGON32_LOGON_NEW_CREDENTIALS = 9;
+        private const int LOGON32_PROVIDER_DEFAULT = 0;
+        private const int LOGON32_PROVIDER_WINNT50 = 3;
         //This parameter causes LogonUser to create a primary token. 
 
 

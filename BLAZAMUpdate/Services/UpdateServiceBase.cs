@@ -11,7 +11,7 @@ namespace BLAZAM.Update.Services
 
         protected Timer _updateCheckTimer;
 
-      
+
 
 
 

@@ -1,7 +1,5 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
-using BLAZAM.Database.Models.Chat;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
@@ -10,10 +8,7 @@ using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Net;
 using System.Security.Claims;
-using System.Xml;
 
 namespace BLAZAM.Server.Data.Services
 {
@@ -30,7 +25,7 @@ namespace BLAZAM.Server.Data.Services
     public class ApplicationUserState : IApplicationUserState
     {
 
-        public AppEvent<AppUser> OnSettingsChanged { get; set; }
+        public AppEvent OnSettingsChanged { get; set; }
 
         public ClaimsPrincipal User { get; set; }
 
@@ -47,7 +42,7 @@ namespace BLAZAM.Server.Data.Services
 
         public string? IPAddress { get; set; }
 
-        public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries?? new List<UserFavoriteEntry>();
+        public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries ?? new List<UserFavoriteEntry>();
 
         public IList<UserNotification>? Notifications
         {
@@ -60,10 +55,10 @@ namespace BLAZAM.Server.Data.Services
 
             }
         }
-        public IList<ReadNewsItem> ReadNewsItems => Preferences?.ReadNewsItems??new();
+        public IList<ReadNewsItem> ReadNewsItems => Preferences?.ReadNewsItems ?? new();
         //public List<ReadChatMessage> ReadChatMessages => Preferences.ReadChatMessages.ToList();
 
-        public int Id => Preferences!=null?Preferences.Id:0;
+        public int Id => Preferences != null ? Preferences.Id : 0;
 
 
         //public bool IsChatMessageRead(ChatMessage message)
@@ -83,13 +78,8 @@ namespace BLAZAM.Server.Data.Services
         {
 
             _dbFactory = factory;
-           
-            OnSettingsChanged += (state) => { 
-                if (Id == state.Id)
-                {
 
-                }
-            };
+
         }
 
 
@@ -111,6 +101,7 @@ namespace BLAZAM.Server.Data.Services
 
         public async Task<bool> MarkRead(UserNotification notification)
         {
+            notification.IsRead = true;
             using var context = await _dbFactory.CreateDbContextAsync();
             var message = context.UserNotifications.Where(un => un.Id == notification.Id).FirstOrDefault(); ;
             if (message != null)
@@ -120,10 +111,10 @@ namespace BLAZAM.Server.Data.Services
 
                 if (result == 1)
                 {
-                    GetUserSettingFromDB();
+                    //GetUserSettingFromDB();
                     if (userSettings != null)
                     {
-                        OnSettingsChanged?.Invoke(userSettings);
+                        OnSettingsChanged?.Invoke();
                     }
 
                     return true;
@@ -139,7 +130,7 @@ namespace BLAZAM.Server.Data.Services
                 if (User == null) return;
                 using var context = _dbFactory.CreateDbContext();
 
-                userSettings = context.UserSettings.Include(x=>x.NotificationSubscriptions).Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
+                userSettings = context.UserSettings.Include(x => x.NotificationSubscriptions).Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefault();
                 if (userSettings == null)
                 {
                     userSettings = new AppUser();
@@ -151,22 +142,23 @@ namespace BLAZAM.Server.Data.Services
                     userSettings.UserGUID = User.FindFirstValue(ClaimTypes.Sid);
                     userSettings.Username = User.Identity?.Name;
                     context.UserSettings.Add(userSettings);
-                    
+
                     context.SaveChanges();
 
                 }
-                else if (Preferences!=null && Preferences.Email == null)
+                else if (Preferences != null && Preferences.Email == null)
                 {
                     var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
                     if (emailClaim != null && !emailClaim.Value.IsNullOrEmpty())
                     {
-                        
-                            Preferences.Email = emailClaim.Value;
-                            Task.Run(() => {
-                                Task.Delay(1000).Wait();
-                                SaveUserSettings();
 
-                            });
+                        Preferences.Email = emailClaim.Value;
+                        Task.Run(() =>
+                        {
+                            Task.Delay(1000).Wait();
+                            SaveBasicUserPreferences();
+
+                        });
                     }
                 }
 
@@ -179,66 +171,108 @@ namespace BLAZAM.Server.Data.Services
         }
 
 
-        public async Task<bool> SaveUserSettings()
+        public async Task<bool> SaveAllUserSettings()
         {
-            try
-            {
-                using var context = await _dbFactory.CreateDbContextAsync();
-                var dbUserSettings = await context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefaultAsync();
-                if (dbUserSettings != null)
-                {
-                    dbUserSettings.Theme = this.Preferences?.Theme;
-                    dbUserSettings.DarkMode = this.Preferences?.DarkMode == true;
-                    dbUserSettings.ProfilePicture = this.Preferences?.ProfilePicture;
-                    dbUserSettings.SearchDisabledUsers = this.Preferences?.SearchDisabledUsers == true;
-                    dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
-                    dbUserSettings.FavoriteEntries = this.Preferences?.FavoriteEntries??new();
-                    dbUserSettings.Email = this.Preferences?.Email;
-                    dbUserSettings.ReadNewsItems = this.Preferences?.ReadNewsItems??new();
-                    SaveDashboardWidgets(dbUserSettings);
-                    await context.SaveChangesAsync();
-                    GetUserSettingFromDB();
-                    OnSettingsChanged?.Invoke(dbUserSettings);
-
-                    return true;
-                }
 
 
+            await SaveBasicUserPreferences();
 
-            }
-            catch
-            {
+            await SaveReadNewsItems();
+            await SaveDashboardWidgets();
+            //GetUserSettingFromDB();
+            OnSettingsChanged?.Invoke();
 
-            }
-            return false;
+            return true;
+
         }
-
-        private void SaveDashboardWidgets(AppUser? dbUserSettings)
+        public async Task SaveBasicUserPreferences()
         {
             if (Preferences != null)
             {
-                foreach (var widget in Preferences.DashboardWidgets)
+                try
                 {
-                    var matchingWidget = dbUserSettings?.DashboardWidgets.FirstOrDefault(w => w.WidgetType == widget.WidgetType);
-                    if (matchingWidget != null)
+                    using var context = await _dbFactory.CreateDbContextAsync();
+                    var dbUserSettings = await context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefaultAsync();
+                    if (dbUserSettings != null)
                     {
-                        matchingWidget.Slot = widget.Slot;
-                        matchingWidget.Order = widget.Order;
-                    }
-                    else
-                    {
-                        dbUserSettings?.DashboardWidgets.Add(widget);
-                    }
-                }
-                var widgetsInDB = new List<UserDashboardWidget>(dbUserSettings?.DashboardWidgets);
-                foreach (var widget in widgetsInDB)
-                {
-                    if (!this.Preferences.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType))
-                    {
-                        dbUserSettings.DashboardWidgets.Remove(widget);
+                        dbUserSettings.Theme = this.Preferences?.Theme;
+                        dbUserSettings.DarkMode = this.Preferences?.DarkMode == true;
+                        dbUserSettings.ProfilePicture = this.Preferences?.ProfilePicture;
+                        dbUserSettings.SearchDisabledUsers = this.Preferences?.SearchDisabledUsers == true;
+                        dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
+                        dbUserSettings.FavoriteEntries = this.Preferences?.FavoriteEntries ?? new();
+                        dbUserSettings.Email = this.Preferences?.Email;
+                        await context.SaveChangesAsync();
+
                     }
 
                 }
+                catch { }
+
+            }
+        }
+        public async Task SaveReadNewsItems()
+        {
+            if (Preferences != null)
+            {
+                try
+                {
+                    using var context = await _dbFactory.CreateDbContextAsync();
+                    var dbUserSettings = await context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefaultAsync();
+                    if (dbUserSettings != null)
+                    {
+                        dbUserSettings.ReadNewsItems = this.Preferences?.ReadNewsItems ?? new();
+
+                        await context.SaveChangesAsync();
+
+                    }
+
+                }
+                catch { }
+
+            }
+        }
+
+        public async Task SaveDashboardWidgets()
+        {
+            if (Preferences != null)
+            {
+                try
+                {
+                    using var context = await _dbFactory.CreateDbContextAsync();
+                    var dbUserSettings = await context.UserSettings.Where(us => us.UserGUID == User.FindFirstValue(ClaimTypes.Sid)).FirstOrDefaultAsync();
+                    if (dbUserSettings != null)
+                    {
+                        foreach (var widget in Preferences.DashboardWidgets)
+                        {
+                            var matchingWidget = dbUserSettings?.DashboardWidgets.FirstOrDefault(w => w.WidgetType == widget.WidgetType);
+                            if (matchingWidget != null)
+                            {
+                                matchingWidget.Slot = widget.Slot;
+                                matchingWidget.Order = widget.Order;
+                                matchingWidget.ItemsPerPage = widget.ItemsPerPage;
+                            }
+                            else
+                            {
+                                dbUserSettings?.DashboardWidgets.Add(widget);
+                            }
+                        }
+                        var widgetsInDB = new List<UserDashboardWidget>(dbUserSettings?.DashboardWidgets);
+                        foreach (var widget in widgetsInDB)
+                        {
+                            if (!this.Preferences.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType))
+                            {
+                                dbUserSettings.DashboardWidgets.Remove(widget);
+                            }
+
+                        }
+                        await context.SaveChangesAsync();
+
+                    }
+
+                }
+                catch { }
+
             }
         }
 
@@ -328,11 +362,11 @@ namespace BLAZAM.Server.Data.Services
         public bool HasCreateOUPrivilege => HasObjectCreatePermissions(ActiveDirectoryObjectType.OU);
         public bool HasComputerPrivilege => HasObjectReadPermissions(ActiveDirectoryObjectType.Computer);
 
-        public bool CanUnlockUsers => HasObjectActionPermission(ActiveDirectoryObjectType.User,ObjectActions.Unlock);
+        public bool CanUnlockUsers => HasObjectActionPermission(ActiveDirectoryObjectType.User, ObjectActions.Unlock);
         public bool CanAssign => HasObjectActionPermission(ActiveDirectoryObjectType.Group, ObjectActions.Assign);
 
         public string DuoAuthState { get; set; } = "";
-        public List<NotificationSubscription> NotificationSubscriptions { get => userSettings?.NotificationSubscriptions; set { userSettings.NotificationSubscriptions=value; } }
+        public List<NotificationSubscription> NotificationSubscriptions { get => userSettings?.NotificationSubscriptions; set { userSettings.NotificationSubscriptions = value; } }
 
         private bool HasObjectActionPermission(ActiveDirectoryObjectType objectType, ObjectAction actionType)
         {
@@ -357,7 +391,8 @@ namespace BLAZAM.Server.Data.Services
         /// <param name="allowSelector"></param>
         /// <param name="denySelector"></param>
         /// <returns></returns>
-        private  bool HasPermission(ActiveDirectoryObjectType objectType, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null)        {
+        private bool HasPermission(ActiveDirectoryObjectType objectType, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector = null)
+        {
 
             if (IsSuperAdmin) return true;
 
@@ -448,7 +483,7 @@ namespace BLAZAM.Server.Data.Services
         public bool HasPermission(string dnTarget, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector, bool nestedSearch)
         {
             if (IsSuperAdmin) return true;
-            
+
             IOrderedEnumerable<PermissionMapping>? baseSearch = null;
             if (!nestedSearch)
             {
@@ -503,7 +538,7 @@ namespace BLAZAM.Server.Data.Services
             }
             return false;
         }
-        
+
         public bool HasActionPermission(string dnTarget, ObjectAction action, ActiveDirectoryObjectType objectType)
         {
             return HasPermission(dnTarget, p => p.Where(pm =>
@@ -515,7 +550,7 @@ namespace BLAZAM.Server.Data.Services
                pm.AccessLevels.Any(al => al.ActionMap.Any(am =>
               !am.AllowOrDeny && am.ObjectAction.Id == action.Id &&
               am.ObjectType == objectType
-               ))),false
+               ))), false
                );
         }
     }

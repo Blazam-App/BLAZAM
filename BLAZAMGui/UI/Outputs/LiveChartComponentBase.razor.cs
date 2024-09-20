@@ -13,7 +13,7 @@ namespace BLAZAM.Gui.UI.Outputs
         {
             get => enabled; set
             {
-                if(enabled== value) return; 
+                if (enabled == value) return;
                 enabled = value;
                 if (enabled)
                 {
@@ -70,7 +70,7 @@ namespace BLAZAM.Gui.UI.Outputs
         {
             _pollingTimer = new Timer(Tick, null, 500, 5000);
         }
-         private void StopPolling()
+        private void StopPolling()
         {
             _pollingTimer.Dispose();
         }

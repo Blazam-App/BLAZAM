@@ -15,7 +15,7 @@ namespace BLAZAM.Common.Data
             var salt = new byte[maximumSaltLength];
 
             RandomNumberGenerator.Create().GetNonZeroBytes(salt);
-            
+
 
             Salt = salt;
         }
@@ -130,7 +130,7 @@ namespace BLAZAM.Common.Data
 
                 using StreamReader streamReader = new StreamReader(cryptoStream);
 
-                var decrypted= JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+                var decrypted = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
                 return decrypted;
 
 
@@ -255,7 +255,7 @@ namespace BLAZAM.Common.Data
                     var cipherText = Convert.ToBase64String(encryptedMessage);
                     cipherText = Convert.ToBase64String(Salt) + "," + cipherText;
 
-                    
+
 
                     return cipherText;
 

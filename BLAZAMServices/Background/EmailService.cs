@@ -1,21 +1,21 @@
 ﻿
 
+using BLAZAM.Common.Data;
+using BLAZAM.Common.Exceptions;
+using BLAZAM.Database.Context;
+using BLAZAM.Database.Models;
+using BLAZAM.EmailMessage;
+using BLAZAM.EmailMessage.Email;
+using BLAZAM.EmailMessage.Email.Base;
+using BLAZAM.FileSystem;
+using BLAZAM.Helpers;
+using BLAZAM.Static;
 using BlazorTemplater;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Components;
 using MimeKit;
 using MimeKit.Utils;
-using BLAZAM.Database.Models;
-using BLAZAM.Database.Context;
-using BLAZAM.Helpers;
-using BLAZAM.Common.Exceptions;
-using BLAZAM.EmailMessage;
-using BLAZAM.EmailMessage.Email;
-using BLAZAM.Common.Data;
-using BLAZAM.Static;
-using BLAZAM.FileSystem;
-using BLAZAM.EmailMessage.Email.Base;
 using System.Configuration;
 
 namespace BLAZAM.Services.Background
@@ -136,9 +136,9 @@ namespace BLAZAM.Services.Background
             {
                 EmailSettings? settings = GetSettings();
 
-                if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty()) email.Sender=MailboxAddress.Parse(settings.SMTPUsername);
-                else email.Sender=MailboxAddress.Parse(settings.FromAddress);
-                if(!settings.FromName.IsNullOrEmpty()) email.Sender.Name = settings.FromName;
+                if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty()) email.Sender = MailboxAddress.Parse(settings.SMTPUsername);
+                else email.Sender = MailboxAddress.Parse(settings.FromAddress);
+                if (!settings.FromName.IsNullOrEmpty()) email.Sender.Name = settings.FromName;
                 email.From.Add(email.Sender);
                 if (to != null) email.To.Add(MailboxAddress.Parse(to));
                 if (cc != null) email.Cc.Add(MailboxAddress.Parse(cc));

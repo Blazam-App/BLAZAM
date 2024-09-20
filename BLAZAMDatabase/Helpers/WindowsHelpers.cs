@@ -19,7 +19,7 @@ namespace BLAZAM.Helpers
                 FQDN = settings.FQDN,
                 Username = settings.Username,
 
-                Password =settings.Password.Decrypt().ToSecureString(),
+                Password = settings.Password.Decrypt().ToSecureString(),
             });
         }
         /// <summary>

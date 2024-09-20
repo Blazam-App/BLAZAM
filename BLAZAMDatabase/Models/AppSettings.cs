@@ -143,6 +143,6 @@ namespace BLAZAM.Database.Models
 
         public string? MyrtilleURL { get; set; }
 
-     
+
     }
 }

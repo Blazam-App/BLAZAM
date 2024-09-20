@@ -58,9 +58,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// to confirm search is completed and no more results are coming.</para>
         /// </summary>
         public AppEvent<IEnumerable<IDirectoryEntryAdapter>> ResultsCollected { get; set; }
-        
-        int PageSize = 40;
-        
+
+        private int PageSize = 40;
+
         public ActiveDirectoryObjectType? ObjectTypeFilter { get; set; }
         public bool? EnabledOnly { get; set; }
         public int MaxResults { get; set; } = 50;
@@ -91,7 +91,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             return Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
         }
-        
+
         public async Task<List<IDirectoryEntryAdapter>> SearchAsync()
         {
             return await SearchAsync<DirectoryEntryAdapter, IDirectoryEntryAdapter>();
@@ -107,7 +107,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             if (token != null) cancellationToken = token;
             else cancellationToken = new CancellationToken();
-            if (cancellationToken?.IsCancellationRequested == true) 
+            if (cancellationToken?.IsCancellationRequested == true)
                 return new();
             DateTime startTime = InitializeSearch();
             DirectorySearcher searcher;
@@ -115,15 +115,15 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 SearchRoot ??= ActiveDirectoryContext.SystemInstance.GetDirectoryEntry(DatabaseCache.ActiveDirectorySettings?.ApplicationBaseDN);
                 var pageOffset = 1;
-                
+
                 searcher = new DirectorySearcher(SearchRoot)
                 {
                     //TODO Ensure bbroken
                     //Make sure this is not  usable
                     //Seems to never pull ou's
                     //VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset),
-                    SearchScope=SearchScope,
-                    SizeLimit= MaxResults,
+                    SearchScope = SearchScope,
+                    SizeLimit = MaxResults,
                     Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
                 };
                 if (EnabledOnly != true)
@@ -188,7 +188,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                         break;
                 }
-              
+
 
                 if (!FilterQuery.IsNullOrEmpty() && ExactMatch)
                     FilterQuery = FilterQuery.Replace("*", "");
@@ -221,18 +221,18 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
 
                 }
-                if (cancellationToken?.IsCancellationRequested == true) 
+                if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
                 PrepareSearcher(searcher);
-                if (cancellationToken?.IsCancellationRequested == true) 
+                if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
                 SearchTime = DateTime.Now - startTime;
 
                 PerformSearch<TObject, TInterface>(startTime, searcher, PageSize);
 
-                if (cancellationToken?.IsCancellationRequested == true) 
+                if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
                 SearchState = SearchState.Completed;
@@ -240,7 +240,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
 
 
-                if (cancellationToken?.IsCancellationRequested == true) 
+                if (cancellationToken?.IsCancellationRequested == true)
                     return new();
 
                 OnSearchCompleted?.Invoke();
@@ -310,7 +310,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             if (lastResults.Count < pageSize)
                 moreResults = false;
 
-            while (moreResults && cancellationToken?.IsCancellationRequested != true && searcher.VirtualListView!=null)
+            while (moreResults && cancellationToken?.IsCancellationRequested != true && searcher.VirtualListView != null)
             {
                 if (searcher.VirtualListView != null)
                     searcher.VirtualListView.Offset += pageSize;
@@ -318,7 +318,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 //    throw new ApplicationException("The searcher lost it's VirtualListView in the middle of searching!");
                 lastResults = searcher.FindAll();
                 AddResults<TObject, TInterface>(lastResults);
-                if (searcher.VirtualListView==null || lastResults.Count < pageSize)
+                if (searcher.VirtualListView == null || lastResults.Count < pageSize)
                     moreResults = false;
 
             }
@@ -384,6 +384,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         }
 
-       
+
     }
 }
