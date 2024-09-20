@@ -33,7 +33,7 @@ namespace BLAZAM.Common.Data
         /// </summary>
         public string Version { get => AssemblyVersion.ToString() + "." + BuildNumber; }
 
-       
+
 
         /// <summary>
         /// Only the first three . segments of the version number

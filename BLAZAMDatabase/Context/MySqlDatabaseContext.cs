@@ -9,7 +9,7 @@ namespace BLAZAM.Database.Context
 {
     public class MySqlDatabaseContext : DatabaseContextBase
     {
-        
+
         public MySqlDatabaseContext() : base()
         {
             ConnectionString = new("server=localhost");

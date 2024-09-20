@@ -4,9 +4,9 @@ namespace BLAZAM.Notifications.Notifications
 {
     public static class NotificationTypeExtentions
     {
-        public static T? ToNotification<T>(this NotificationType type) where T:NotificationTemplateComponent
+        public static T? ToNotification<T>(this NotificationType type) where T : NotificationTemplateComponent
         {
-            NotificationTemplateComponent? notificationTemplate=null; 
+            NotificationTemplateComponent? notificationTemplate = null;
             switch (type)
             {
                 case NotificationType.PasswordChange:
@@ -24,11 +24,11 @@ namespace BLAZAM.Notifications.Notifications
                 case NotificationType.GroupAssignment:
                     notificationTemplate = new EntryGroupAssignmentEmailMessage();
                     break;
-               
+
             }
-            if(notificationTemplate != null)
+            if (notificationTemplate != null)
             {
-                return (T?)notificationTemplate;    
+                return (T?)notificationTemplate;
             }
             return default(T);
         }

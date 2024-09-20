@@ -6,7 +6,7 @@ using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Inputs.TreeViews
 {
-    public partial class OUTreeView:OUTreeViewBase
+    public partial class OUTreeView : OUTreeViewBase
     {
 #nullable disable warnings
 
@@ -16,7 +16,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         [Parameter]
         public RenderFragment<IADOrganizationalUnit>? EndAdornment { get; set; }
 
-       
+
 
 
 

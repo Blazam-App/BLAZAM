@@ -16,8 +16,8 @@ namespace BLAZAM.Helpers
     public static class SessionHelpers
     {
 
-            public static IServiceCollection AddSessionServices(this IServiceCollection services)
-            {
+        public static IServiceCollection AddSessionServices(this IServiceCollection services)
+        {
             //Provide UserStates as a service
             //This service is a "hack" for Blazor Server not having, in a real sense, sessions
             //It allows data to persist between refreshes/reloading page navigations per logged
@@ -27,8 +27,8 @@ namespace BLAZAM.Helpers
 
             services.AddScoped<ICurrentUserStateService, CurrentUserStateService>();
             return services;
-            }
-        
+        }
+
 
         public static void SlideCookieExpiration(this HttpContext httpContext, IApplicationUserState? userState = null)
         {

@@ -232,7 +232,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <remarks>
         /// Only looks for "top" object types
         /// </remarks>
-        bool HasChildren { get;}
+        bool HasChildren { get; }
 
         /// <summary>
         /// The children of this entry
@@ -253,7 +253,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Sends all staged changes to the Active Directory server
         /// </summary>
         /// <returns>A job with the results of the performed actions</returns>
-        IJob CommitChanges(IJob? commitJob=null);
+        IJob CommitChanges(IJob? commitJob = null);
         /// <summary>
         /// Sends all staged changes to the Active Directory server asynchronously
         /// </summary>
@@ -304,8 +304,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <param name="result"></param>
         /// <param name="directory"></param>
         /// <returns></returns>
-        void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry=null, SearchResult? searchResult=null);
-      
+        void Parse(IActiveDirectoryContext directory, DirectoryEntry? directoryEntry = null, SearchResult? searchResult = null);
+
         /// <summary>
         /// Move this entry to a new <see cref="IADOrganizationalUnit"/>
         /// </summary>

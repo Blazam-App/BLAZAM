@@ -165,7 +165,7 @@ namespace BLAZAM.Helpers
 
 
             using var outStream = destinationFile.OpenWriteStream();
-            memoryStream.Seek(0,SeekOrigin.Begin);
+            memoryStream.Seek(0, SeekOrigin.Begin);
             memoryStream.CopyTo(outStream);
             outStream.Close();
             memoryStream.Close();
@@ -177,7 +177,7 @@ namespace BLAZAM.Helpers
             return (collection == null || collection.Count < 1);
         }
 
-       
+
 
         /// <summary>
         /// Resizes a raw byte array, assumed to be an image, to the maximum dimension provided
@@ -243,7 +243,7 @@ namespace BLAZAM.Helpers
             var enumerator = enumerable.GetEnumerator();
             while (enumerator.MoveNext())
             {
-                action.Invoke((T)enumerator.Current);
+                action.Invoke(enumerator.Current);
             }
 
         }
@@ -310,7 +310,7 @@ namespace BLAZAM.Helpers
                 Int64 longInt = Int64.MinValue;
                 try
                 {
-                    Int64.TryParse(value.ToString(),out longInt);
+                    Int64.TryParse(value.ToString(), out longInt);
                 }
                 catch (FormatException)
                 {
@@ -318,7 +318,7 @@ namespace BLAZAM.Helpers
                     // a com object.
 
                 }
-                if (longInt != Int64.MinValue && longInt!=0)
+                if (longInt != Int64.MinValue && longInt != 0)
                 {
                     dateTime = DateTime.FromFileTimeUtc(longInt);
                 }

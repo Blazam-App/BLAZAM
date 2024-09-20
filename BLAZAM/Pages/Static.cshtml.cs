@@ -45,7 +45,7 @@ namespace BLAZAM.Server.Pages
                 return NotFound();
             });
 
-     
+
 
         }
 

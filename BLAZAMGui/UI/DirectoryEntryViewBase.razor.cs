@@ -68,7 +68,7 @@ namespace BLAZAM.Gui.UI
             EditMode = !EditMode;
         }
 
-        bool _savingChanges;
+        private bool _savingChanges;
         protected bool SavingChanges
         {
             get => _savingChanges; set

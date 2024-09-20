@@ -63,7 +63,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var raw= GetProperty<byte[]>(ActiveDirectoryFields.LogonHours.FieldName);
+                var raw = GetProperty<byte[]>(ActiveDirectoryFields.LogonHours.FieldName);
                 var decoded = new LogonHours(raw);
                 return decoded;
             }
@@ -142,12 +142,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetProperty(ActiveDirectoryFields.HomeDirectory.FieldName, value);
                 if (value == null || value == "") return;
 
-               
+
                 PostCommitSteps.Add(new JobStep("Create home directory", (JobStep step) =>
                 {
                     return Directory.Impersonation.Run(() =>
                     {
-                        if (HomeDirectory==null || HomeDirectory.IsNullOrEmpty()) return true;
+                        if (HomeDirectory == null || HomeDirectory.IsNullOrEmpty()) return true;
                         var homeDirectory = new SystemDirectory(HomeDirectory);
                         if (!homeDirectory.Exists)
                             homeDirectory.EnsureCreated();

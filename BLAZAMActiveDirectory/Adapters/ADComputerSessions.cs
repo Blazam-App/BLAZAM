@@ -1,20 +1,19 @@
-﻿using Cassia;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
+using BLAZAM.Logger;
+using Cassia;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Logger;
-using BLAZAM.Common.Data;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADComputerSessions : IDisposable
     {
-
-        ITerminalServicesManager manager = new TerminalServicesManager();
-        ITerminalServer server;
+        private ITerminalServicesManager manager = new TerminalServicesManager();
+        private ITerminalServer server;
         private bool Polling;
         public List<IRemoteSession> ConnectedSessions = new List<IRemoteSession>();
-        IADComputer Computer;
+        private IADComputer Computer;
 
         public AppEvent ConnectedSessionsChanged { get; set; }
         public ADComputerSessions(IADComputer host)
@@ -96,7 +95,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                        }
                    });
                 }
-             
+
 
             }
 
@@ -104,12 +103,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public void Dispose()
         {
-            foreach(var session in ConnectedSessions)
+            foreach (var session in ConnectedSessions)
             {
                 session.Dispose();
             }
             ConnectedSessions.Clear();
-          
+
         }
 
 

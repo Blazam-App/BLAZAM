@@ -6,16 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Gui.UI
 {
-    public partial class DirectoryModelComponent:ValidatedForm
+    public partial class DirectoryModelComponent : ValidatedForm
     {
         protected bool EditMode = false;
 
         protected string _searchTerm;
-
-
-
-        IADUser _user;
-        IADGroup _group;
+        private IADUser _user;
+        private IADGroup _group;
 
         [Parameter]
         public IADGroup Group
@@ -28,8 +25,7 @@ namespace BLAZAM.Gui.UI
             }
         }
 
-
-        List<IADGroup> _groups;
+        private List<IADGroup> _groups;
 
         [Parameter]
         public List<IADGroup> Groups

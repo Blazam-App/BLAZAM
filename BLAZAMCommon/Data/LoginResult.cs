@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BLAZAM.Common.Data
 {
-    public enum LoginResultStatus { OK,BadCredentials,UnauthorizedImpersonation, NoData,NoUsername, NoPassword, UnknownFailure,
+    public enum LoginResultStatus
+    {
+        OK, BadCredentials, UnauthorizedImpersonation, NoData, NoUsername, NoPassword, UnknownFailure,
         DeniedLogin, MFARequested
     }
     public class LoginResult
@@ -31,19 +33,19 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
-          public LoginResult NoData()
+        public LoginResult NoData()
         {
             Status = LoginResultStatus.NoData;
 
             return this;
         }
-          public LoginResult NoUsername()
+        public LoginResult NoUsername()
         {
             Status = LoginResultStatus.NoUsername;
 
             return this;
         }
-          public LoginResult NoPassword()
+        public LoginResult NoPassword()
         {
             Status = LoginResultStatus.NoPassword;
 

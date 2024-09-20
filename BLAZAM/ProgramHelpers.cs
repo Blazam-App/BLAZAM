@@ -1,24 +1,24 @@
 ﻿
-using BLAZAM.Common.Data.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using MudBlazor.Services;
-using System.Globalization;
-using MudBlazor;
-using BLAZAM.Database.Context;
-using BLAZAM.Session.Interfaces;
-using BLAZAM.Notifications.Services;
 using BLAZAM.Common.Data;
-using BLAZAM.Services;
-using BLAZAM.Services.Duo;
-using System.Diagnostics;
-using System.Reflection;
-using BLAZAM.Services.Chat;
-using BLAZAM.Services.Audit;
+using BLAZAM.Common.Data.Services;
+using BLAZAM.Database.Context;
 using BLAZAM.Nav;
+using BLAZAM.Notifications.Services;
+using BLAZAM.Services;
+using BLAZAM.Services.Audit;
+using BLAZAM.Services.Chat;
+using BLAZAM.Services.Duo;
 using BLAZAM.Session;
-using Microsoft.AspNetCore.Authentication;
-using System.Management;
+using BLAZAM.Session.Interfaces;
 using BLAZAM.Update.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using MudBlazor;
+using MudBlazor.Services;
+using System.Diagnostics;
+using System.Globalization;
+using System.Management;
+using System.Reflection;
 
 namespace BLAZAM.Server
 {
@@ -43,13 +43,14 @@ namespace BLAZAM.Server
                 ApplicationInfo.installationId = GetInstallationId();
 
 
-            }catch
+            }
+            catch
             {
                 //Default to a hash type method on the machine name
                 ApplicationInfo.installationId = Environment.MachineName.ToGuid();
 
             }
-            
+
             Program.AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Blazam\\");
 
 
@@ -60,7 +61,7 @@ namespace BLAZAM.Server
             ApplicationInfo.runningProcess = Process.GetCurrentProcess();
 
             //Gets the application version from he running assembly version
-            ApplicationInfo.runningVersion = new ApplicationVersion(Assembly.GetExecutingAssembly()) ;
+            ApplicationInfo.runningVersion = new ApplicationVersion(Assembly.GetExecutingAssembly());
 
 
 
@@ -83,17 +84,17 @@ namespace BLAZAM.Server
                 foreach (ManagementObject WmiObject in Searcher.Get())
                 {
                     return Guid.Parse(WmiObject["UUID"].ToString());
-                                     
+
                 }
                 throw new ApplicationException("Searched but could not find a CSProduct UUID");
             }
-        
+
             catch (Exception ex)
-                {
-                    Console.WriteLine("Failed to get client ID (GUID). Error: " + ex.Message);
-                    throw ex;
-                }
-           
+            {
+                Console.WriteLine("Failed to get client ID (GUID). Error: " + ex.Message);
+                throw ex;
+            }
+
 
         }
 
@@ -117,7 +118,7 @@ namespace BLAZAM.Server
                     new CultureInfo("pl"),
                     new CultureInfo("ru"),
                     new CultureInfo("zh-Hans")
-                    
+
                  };
 
                 options.SupportedCultures = supportedCultures;
@@ -192,7 +193,8 @@ namespace BLAZAM.Server
 
             //Run as server side blazor with detailed errors controlled by DebugMode configuration
             builder.Services.AddServerSideBlazor()
-                .AddCircuitOptions(options => {
+                .AddCircuitOptions(options =>
+                {
                     options.DetailedErrors = ApplicationInfo.inDebugMode;
                 });
 
@@ -200,7 +202,7 @@ namespace BLAZAM.Server
 
             DatabaseContextBase.Configuration = builder.Configuration;
 
-            builder.Services.AddSingleton<IAppDatabaseFactory,AppDatabaseFactory>();
+            builder.Services.AddSingleton<IAppDatabaseFactory, AppDatabaseFactory>();
 
             //Provide an Http client as a service with custom construction via api service class
             builder.Services.AddHttpClient();
@@ -213,14 +215,14 @@ namespace BLAZAM.Server
             builder.Services.AddHttpContextAccessor();
 
 
-            
+
 
             //Provide the email client as a service
             builder.Services.AddSingleton<EmailService>();
 
 
             //Provide chat as a service
-            builder.Services.AddSingleton<IChatService,ChatService>();
+            builder.Services.AddSingleton<IChatService, ChatService>();
 
             //Sets up Active Directory communications
             builder.Services.AddActiveDirectoryServices();
@@ -231,7 +233,7 @@ namespace BLAZAM.Server
 
             //Provide a PermissionHandler as a service
             builder.Services.AddSingleton<PermissionApplicator>();
-            
+
             builder.Services.AddSingleton<UserSeederService>();
 
             builder.Services.AddSingleton<IApplicationNewsService, ApplicationNewsService>();
@@ -271,16 +273,16 @@ namespace BLAZAM.Server
 
 
             //Provide notification publishing as a service
-            builder.Services.AddSingleton<INotificationPublisher,NotificationPublisher>();
+            builder.Services.AddSingleton<INotificationPublisher, NotificationPublisher>();
 
 
 
 
             builder.Services.AddSessionServices();
-            
-            
+
+
             builder.Services.AddUpdateServices();
-          
+
 
 
 

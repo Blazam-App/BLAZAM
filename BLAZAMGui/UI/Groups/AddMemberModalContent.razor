@@ -2,14 +2,15 @@
 
 
 <MudStack>
-    
-            <ADAutoComplete Label="Member" @bind-SelectedResult="@Entry" />
-    
-    
-            <ADAutoComplete Label="Copy Memberships From" SearchObjectType="ActiveDirectoryObjectType.Group"
-                        @bind-SelectedResult=@copyFrom
-                        CustomResultsFilter="(result)=>result is IADGroup" />
-    
+
+    <ADAutoComplete Label="Member" @bind-SelectedResult="@Entry" />
+
+
+    <ADAutoComplete Label="Copy Memberships From"
+                    SearchObjectType="ActiveDirectoryObjectType.Group"
+                    @bind-SelectedResult=@copyFrom
+                    CustomResultsFilter="(result)=>result is IADGroup" />
+
     @if (CopyFrom != null)
     {
         var existingMembers = Group.UserMembers;

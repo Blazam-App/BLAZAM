@@ -6,14 +6,14 @@ using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.User;
+using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Session.Interfaces;
 using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
 using System.DirectoryServices.Protocols;
 using System.Net;
-using BLAZAM.Helpers;
-using System.DirectoryServices.ActiveDirectory;
 using System.Security.Cryptography;
 using System.Security.Principal;
 
@@ -33,7 +33,7 @@ namespace BLAZAM.ActiveDirectory
         }
 
         private WmiFactory _wmiFactory;
-        IEncryptionService _encryption;
+        private IEncryptionService _encryption;
         private INotificationPublisher _notificationPublisher;
         public static ActiveDirectoryContext SystemInstance;
 
@@ -161,7 +161,7 @@ namespace BLAZAM.ActiveDirectory
                 if (ConnectionSettings != null)
                     if (ConnectionSettings.ServerAddress != null && ConnectionSettings.ServerAddress != "")
                         if (ConnectionSettings.ServerPort != 0)
-                            return NetworkTools.IsPortOpen(ConnectionSettings.ServerAddress, (int)ConnectionSettings.ServerPort);
+                            return NetworkTools.IsPortOpen(ConnectionSettings.ServerAddress, ConnectionSettings.ServerPort);
                 return false;
             }
         }
@@ -283,7 +283,8 @@ namespace BLAZAM.ActiveDirectory
                     {
                         _keepAliveUser = Users?.FindUsersByString(ConnectionSettings?.Username, false)?.FirstOrDefault();
 
-                    }catch(DirectoryServicesCOMException ex)
+                    }
+                    catch (DirectoryServicesCOMException ex)
                     {
                         //not usernam or password is incorrect
                         if (ex.HResult != -2147023570)
@@ -292,7 +293,8 @@ namespace BLAZAM.ActiveDirectory
 
                         }
                     }
-                    catch (Exception ex) {
+                    catch (Exception ex)
+                    {
                         Loggers.ActiveDirectoryLogger.Error("Unexpected error performing keep alive search.{@Error}", ex);
                     }
                 }
@@ -694,7 +696,7 @@ namespace BLAZAM.ActiveDirectory
                                     if (impersonatedIdentity != null &&
                                     impersonatedIdentity.IsAuthenticated)
                                     {
-                                        var impersonatedNameParts = impersonatedIdentity.Name.Split('\\',2);
+                                        var impersonatedNameParts = impersonatedIdentity.Name.Split('\\', 2);
                                         if (impersonatedNameParts != null && impersonatedNameParts.Length > 1)
                                         {
                                             var impersonatedName = impersonatedNameParts[1];
@@ -775,7 +777,7 @@ namespace BLAZAM.ActiveDirectory
                                     Loggers.ActiveDirectoryLogger.Error("Error while authenticating credentials. {@Error}", ex);
                                 }
                             }
-                           
+
 
 
 

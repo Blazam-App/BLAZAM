@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Database.Models.Chat
 {
-    public class UnreadChatMessage:AppDbSetBase
+    public class UnreadChatMessage : AppDbSetBase
     {
         public ChatMessage ChatMessage { get; set; }
         //This  causes a cyclic FK loop

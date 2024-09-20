@@ -16,7 +16,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private ManagementScope managementScope;
         private IADComputer target;
 
-        public WmiConnection(ManagementScope managementScope,IADComputer target)
+        public WmiConnection(ManagementScope managementScope, IADComputer target)
         {
             this.managementScope = managementScope;
             this.target = target;
@@ -138,7 +138,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         if ((bool)mo["Shared"])
                         {
                             Console.WriteLine(mo["Name"]);
-                            sharedPrinters.Add(new SharedPrinter(target,mo));
+                            sharedPrinters.Add(new SharedPrinter(target, mo));
 
                         }
                     }
@@ -147,8 +147,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     Loggers.ActiveDirectoryLogger.Error("Error polling printers {@Error}", ex);
                 }
-               
-               
+
+
 
                 return sharedPrinters;
             }

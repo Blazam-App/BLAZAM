@@ -19,7 +19,7 @@ namespace BLAZAM.Common.Data.Validators
             if (value is string strValue)
             {
                 Regex regex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$");
-                if(regex.Match(strValue).Success)
+                if (regex.Match(strValue).Success)
                     return ValidationResult.Success;
 
             }

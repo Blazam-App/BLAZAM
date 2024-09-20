@@ -10,7 +10,8 @@ namespace BLAZAM.Database.Models.Templates
         public DirectoryTemplateGroup Clone(IDatabaseContext context)
         {
             var matched = context.DirectoryTemplateGroups.FirstOrDefault(g => g.Id == Id);
-            if (matched == null) {
+            if (matched == null)
+            {
                 matched = this;
             }
             return matched;

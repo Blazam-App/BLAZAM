@@ -84,7 +84,7 @@ namespace BLAZAM.Server.Data.Services
 
             _dbFactory = factory;
 
-      
+
         }
 
 
@@ -180,15 +180,15 @@ namespace BLAZAM.Server.Data.Services
         {
 
 
-                    await SaveBasicUserPreferences();
+            await SaveBasicUserPreferences();
 
-                    await SaveReadNewsItems();
-                    await SaveDashboardWidgets();
-                    //GetUserSettingFromDB();
-                    OnSettingsChanged?.Invoke();
+            await SaveReadNewsItems();
+            await SaveDashboardWidgets();
+            //GetUserSettingFromDB();
+            OnSettingsChanged?.Invoke();
 
-                    return true;
-             
+            return true;
+
         }
         public async Task SaveBasicUserPreferences()
         {

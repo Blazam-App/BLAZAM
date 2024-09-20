@@ -14,7 +14,7 @@ namespace BLAZAM.Helpers
     {
         public static MarkupString ToMarkupString(this string input)
         {
-            return (MarkupString)input.Replace("\r\n","<br>").Replace("\n","<br>");
+            return (MarkupString)input.Replace("\r\n", "<br>").Replace("\n", "<br>");
         }
         /// <summary>
         /// Hash code that doesn't change with application
@@ -33,8 +33,8 @@ namespace BLAZAM.Helpers
                 }
                 return hash;
             }
-        }   
-        
+        }
+
 
 
 
@@ -94,7 +94,7 @@ namespace BLAZAM.Helpers
                 .Select(m => m.Groups[1].Value)
                 .ToList();
             ouComponents.Reverse();
-            return "/"+string.Join("/", ouComponents);
+            return "/" + string.Join("/", ouComponents);
         }
         public static string FqdnToDN(this string fqdn)
         {

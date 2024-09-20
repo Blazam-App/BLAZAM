@@ -26,8 +26,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         string? Title { get; set; }
         string? UserPrincipalName { get; set; }
         string? Zip { get; set; }
-      
-      
+
+
         byte[]? ThumbnailPhoto { get; set; }
         string? LogOnTo { get; set; }
         LogonHours? LogonHours { get; set; }

@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.DirectoryServices;
-using BLAZAM.Session.Interfaces;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
-using BLAZAM.Common.Data;
+using BLAZAM.Session.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
@@ -11,7 +11,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     /// <summary>
     /// Provides a connection to an Active Directory Domain
     /// </summary>
-    public interface IActiveDirectoryContext:IDisposable
+    public interface IActiveDirectoryContext : IDisposable
     {
         /// <summary>
         /// The database factory to use for this connection
@@ -53,7 +53,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// Provides User search functions
         /// </summary>
         IADUserSearcher Users { get; }
-          /// <summary>
+        /// <summary>
         /// Provides Printer search functions
         /// </summary>
         IADPrinterSearcher Printers { get; }

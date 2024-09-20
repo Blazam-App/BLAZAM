@@ -18,7 +18,7 @@ namespace BLAZAM.Services.Chat
 {
     public class ChatService : IChatService
     {
-       // private List<ChatRoom> chatRooms;
+        // private List<ChatRoom> chatRooms;
 
         //private List<ChatRoom> ChatRooms
         //{

@@ -1,6 +1,6 @@
-﻿using BLAZAM.Helpers;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
+using BLAZAM.Helpers;
 
 namespace BLAZAM.Static
 {

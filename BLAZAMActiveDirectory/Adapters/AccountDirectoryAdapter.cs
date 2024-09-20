@@ -15,14 +15,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class AccountDirectoryAdapter : GroupableDirectoryAdapter, IAccountDirectoryAdapter
     {
-        const int ADS_UF_ACCOUNTDISABLE = 0x0002;
-        const int ADS_UF_PASSWD_NOTREQD = 0x0020;
-        const int ADS_UF_PASSWD_CANT_CHANGE = 0x0040;
-        const int ADS_UF_NORMAL_ACCOUNT = 0x0200;
-        const int ADS_UF_DONT_EXPIRE_PASSWD = 0x10000;
-        const int PASSWD_NOTREQD_MASK = 0xFFDF;
-
-        const int ACCOUNT_ENABLE_MASK = 0xFFFFFFD;
+        private const int ADS_UF_ACCOUNTDISABLE = 0x0002;
+        private const int ADS_UF_PASSWD_NOTREQD = 0x0020;
+        private const int ADS_UF_PASSWD_CANT_CHANGE = 0x0040;
+        private const int ADS_UF_NORMAL_ACCOUNT = 0x0200;
+        private const int ADS_UF_DONT_EXPIRE_PASSWD = 0x10000;
+        private const int PASSWD_NOTREQD_MASK = 0xFFDF;
+        private const int ACCOUNT_ENABLE_MASK = 0xFFFFFFD;
 
 
 

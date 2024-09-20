@@ -58,7 +58,7 @@ namespace BLAZAM.Common.Data
 
         public static bool IsLength(string value, int min, int max)
         {
-            return value.Length>min && value.Length<max;
+            return value.Length > min && value.Length < max;
         }
 
         //
@@ -187,7 +187,7 @@ namespace BLAZAM.Common.Data
 
             foreach (char c in value)
             {
-                if (!char.IsLetter(c)&& !char.IsNumber(c))
+                if (!char.IsLetter(c) && !char.IsNumber(c))
                     return false;
             }
 
@@ -208,7 +208,7 @@ namespace BLAZAM.Common.Data
 
             foreach (char c in value)
             {
-                if (!char.IsLetter(c) && !char.IsNumber(c) && c!='_')
+                if (!char.IsLetter(c) && !char.IsNumber(c) && c != '_')
                     return false;
             }
 

@@ -9,7 +9,7 @@ namespace BLAZAM.Database.Context
 {
     public class SqliteDatabaseContext : DatabaseContextBase
     {
-        
+
 
         public SqliteDatabaseContext() : base()
         {

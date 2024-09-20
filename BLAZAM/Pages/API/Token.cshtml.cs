@@ -16,9 +16,9 @@ namespace BLAZAM.Server.Pages.API
     {
         public JwtSecurityTokenHandler JwtTokenHandler { get; private set; }
         public string Token { get; private set; }
-        public  IDatabaseContext Context { get; private set; }
+        public IDatabaseContext Context { get; private set; }
 
-      
+
         public TokenModel(IDatabaseContext context)
         {
             Context = context;
@@ -38,11 +38,11 @@ namespace BLAZAM.Server.Pages.API
             var token = new JwtSecurityToken("ExampleServer", "ExampleClients", claims, expires: DateTime.Now.AddSeconds(60), signingCredentials: credentials);
             Token = JwtTokenHandler.WriteToken(token);
             var userSettings = Context.UserSettings.Where(u => u.UserGUID == this.User.Identity.Name).FirstOrDefault();
-            if(userSettings != null)
+            if (userSettings != null)
             {
                 userSettings.APIToken = Token;
             }
-           
+
             Context.SaveChanges();
             return new JsonResult(userSettings);
         }

@@ -69,7 +69,7 @@ namespace BLAZAM.Logger
 
         private static Serilog.ILogger SetupLogger(string logFilePath, RollingInterval rollingInterval = RollingInterval.Hour)
         {
-            var loggerBuilder =CreateLogBuilder()
+            var loggerBuilder = CreateLogBuilder()
                 .WriteTo.File(logFilePath,
                 rollingInterval: rollingInterval,
          outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] {Message}{NewLine}{Exception}",

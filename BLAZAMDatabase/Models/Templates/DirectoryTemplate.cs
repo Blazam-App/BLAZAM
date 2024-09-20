@@ -36,14 +36,14 @@ namespace BLAZAM.Database.Models.Templates
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public string? DisplayNameFormula { get; set; }
 
-        
+
         [NotMapped]
         public string? EffectiveDisplayNameFormula
         {
             get
             {
                 return GetEffectiveValue<string>(t => t.DisplayNameFormula, t => t.EffectiveDisplayNameFormula);
-           
+
             }
             set => DisplayNameFormula = value;
         }
@@ -55,7 +55,7 @@ namespace BLAZAM.Database.Models.Templates
             get
             {
                 return GetEffectiveValue<string>(t => t.PasswordFormula, t => t.EffectivePasswordFormula);
-             
+
             }
             set => PasswordFormula = value;
         }
@@ -79,7 +79,7 @@ namespace BLAZAM.Database.Models.Templates
             get
             {
                 return GetEffectiveValue<string>(t => t.UsernameFormula, t => t.EffectiveUsernameFormula);
-              
+
             }
             set => UsernameFormula = value;
         }
@@ -90,17 +90,17 @@ namespace BLAZAM.Database.Models.Templates
         {
             get
             {
-                return GetEffectiveValue<string>(t=>t.ParentOU,t=>t.EffectiveParentOU);
+                return GetEffectiveValue<string>(t => t.ParentOU, t => t.EffectiveParentOU);
             }
             set => ParentOU = value;
         }
 
-        private T? GetEffectiveValue<T>(Func<DirectoryTemplate,T?>localSelector, Func<DirectoryTemplate, T?> effectiveSelector)
+        private T? GetEffectiveValue<T>(Func<DirectoryTemplate, T?> localSelector, Func<DirectoryTemplate, T?> effectiveSelector)
         {
             if (localSelector.Invoke(this) == null)
             {
                 if (ParentTemplate == null) return default(T);
-               var effectiveValue = effectiveSelector.Invoke(ParentTemplate);
+                var effectiveValue = effectiveSelector.Invoke(ParentTemplate);
                 if (effectiveValue == null)
                     return default(T);
                 else

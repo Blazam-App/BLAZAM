@@ -1,23 +1,23 @@
 ﻿
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Database;
-using BLAZAM.Helpers;
 using BLAZAM.Database.Exceptions;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Audit;
+using BLAZAM.Database.Models.Chat;
+using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
+using BLAZAM.FileSystem;
+using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using BLAZAM.Server.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
-using BLAZAM.Database.Models.Chat;
-using BLAZAM.Server.Data;
 using System.Data;
-using BLAZAM.FileSystem;
-using BLAZAM.Database.Models.Notifications;
 
 namespace BLAZAM.Database.Context
 {
@@ -39,9 +39,7 @@ namespace BLAZAM.Database.Context
             }
         }
 
-
-
-        static IEnumerable<string> _pendingMigrations;
+        private static IEnumerable<string> _pendingMigrations;
         public virtual IEnumerable<string> PendingMigrations
         {
             get
@@ -50,7 +48,8 @@ namespace BLAZAM.Database.Context
                 return _pendingMigrations;
             }
         }
-        static IEnumerable<string> _appliedMigrations;
+
+        private static IEnumerable<string> _appliedMigrations;
 
 
 
@@ -518,7 +517,7 @@ namespace BLAZAM.Database.Context
                 entity.Navigation(e => e.Field).AutoInclude();
                 entity.Navigation(e => e.CustomField).AutoInclude();
             });
-        
+
             modelBuilder.Entity<ObjectAction>().HasData(
                   new ObjectAction() { Id = 1, Name = "Assign", Action = ActiveDirectoryObjectAction.Assign },
                   new ObjectAction() { Id = 2, Name = "UnAssign", Action = ActiveDirectoryObjectAction.Unassign },
@@ -570,24 +569,24 @@ namespace BLAZAM.Database.Context
                     entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
 
             });
-          
 
-          
-         modelBuilder.Entity<AuthenticationSettings>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                if (Database.IsMySql())
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
 
-                else
-                    entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
-                entity.HasData(new AuthenticationSettings
-                {
-                    Id = 1,
-                    AdminPassword = "password"
-                });
-            });
+            modelBuilder.Entity<AuthenticationSettings>(entity =>
+               {
+                   entity.Property(e => e.Id).ValueGeneratedNever();
+
+                   if (Database.IsMySql())
+                       entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "Id = 1"));
+
+                   else
+                       entity.ToTable(t => t.HasCheckConstraint("CK_Table_Column", "[Id] = 1"));
+                   entity.HasData(new AuthenticationSettings
+                   {
+                       Id = 1,
+                       AdminPassword = "password"
+                   });
+               });
 
             modelBuilder.Entity<EmailSettings>(entity =>
             {
@@ -609,7 +608,7 @@ namespace BLAZAM.Database.Context
                 entity.Navigation(e => e.ReadNewsItems).AutoInclude();
                 entity.Navigation(e => e.FavoriteEntries).AutoInclude();
                 entity.Navigation(e => e.DashboardWidgets).AutoInclude();
-               // entity.Navigation(e => e.NotificationSubscriptions).AutoInclude();
+                // entity.Navigation(e => e.NotificationSubscriptions).AutoInclude();
 
                 //entity.Navigation(e => e.UnreadChatMessages).AutoInclude();
 
@@ -794,8 +793,8 @@ namespace BLAZAM.Database.Context
         public virtual bool IsSeeded()
         {
             if (AppliedMigrations.Count() > 0) return true;
-            
-     
+
+
 
             try
             {
@@ -869,9 +868,9 @@ namespace BLAZAM.Database.Context
                     {
                         var fields = row.ItemArray.Select(f => f?.ToString());
                         List<string> lines = new();
-                        foreach(var field in fields)
+                        foreach (var field in fields)
                         {
-                            lines.Add( '"' + field + '"');
+                            lines.Add('"' + field + '"');
                         }
                         writer.WriteLine(string.Join(",", lines));
                     }
@@ -882,7 +881,7 @@ namespace BLAZAM.Database.Context
         protected virtual DataTable SelectAllDataFromTable(string? tableName)
         {
             throw new NotImplementedException("The SelectAllDataFromTable method has not been implemented");
-           
+
         }
 
     }

@@ -22,19 +22,21 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         public bool ShowAllEntries { get; set; } = true;
 
 
-      
-      
-       
+
+
+
 
         private IReadOnlyCollection<TreeItemData<IDirectoryEntryAdapter>>? GetItems(IDirectoryEntryAdapter? parent)
         {
-            try{
+            try
+            {
                 if (parent.IsExpanded || parent.CachedChildren != null)
                 {
                     return GetChildren(parent).ToTreeItemData();
                 }
             }
-            catch(Exception) {
+            catch (Exception)
+            {
                 return null;
 
             }

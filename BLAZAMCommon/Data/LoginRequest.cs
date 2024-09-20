@@ -1,16 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BLAZAM.Helpers;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
-using BLAZAM.Helpers;
-using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BLAZAM.Common.Data
 {
     public class LoginRequest
     {
-        public Guid Id { get; set; }= Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.NewGuid();
         private SecureString? password;
         /// <summary>
         /// The username provided during the app login attempt

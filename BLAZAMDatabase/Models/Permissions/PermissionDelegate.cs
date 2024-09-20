@@ -22,11 +22,11 @@ namespace BLAZAM.Database.Models.Permissions
         {
             return Id.ToString().GetHashCode();
         }
-   
+
 
         public override string? ToString()
         {
-            if(!DelegateName.IsNullOrEmpty())
+            if (!DelegateName.IsNullOrEmpty())
             {
                 return DelegateName;
             }

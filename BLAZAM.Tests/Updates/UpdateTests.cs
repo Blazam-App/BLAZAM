@@ -12,7 +12,7 @@ namespace BLAZAM.Tests.Updates
 {
     public class UpdateTests
     {
-        readonly Mock_UpdateService _updateService = new();
+        private readonly Mock_UpdateService _updateService = new();
         //[Fact]
         //public async void Update_Returns_Data()
         //{

@@ -1,7 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using BLAZAM.Helpers;
 using BLAZAM.Database.Context;
+using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.Services.Audit
@@ -31,7 +31,7 @@ namespace BLAZAM.Services.Audit
               "Added member " + member.DN);
             return true;
         }
-        public async Task<bool> MemberAdded(IDirectoryEntryAdapter parent,IDirectoryEntryAdapter member)
+        public async Task<bool> MemberAdded(IDirectoryEntryAdapter parent, IDirectoryEntryAdapter member)
         {
             await Log(c => c.DirectoryEntryAuditLogs,
                  AuditActions.Group_Member_Added,

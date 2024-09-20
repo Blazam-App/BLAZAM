@@ -38,12 +38,12 @@ namespace BLAZAM.Helpers
 
             return services;
         }
-        public static IEnumerable<IDirectoryEntryAdapter> MoveToTop(this IEnumerable<IDirectoryEntryAdapter> enumerable, Func<IDirectoryEntryAdapter,bool>matchingPredicate)
+        public static IEnumerable<IDirectoryEntryAdapter> MoveToTop(this IEnumerable<IDirectoryEntryAdapter> enumerable, Func<IDirectoryEntryAdapter, bool> matchingPredicate)
         {
             var list = enumerable.ToList();
             if (list.Count() < 1) return list;
-            List<IDirectoryEntryAdapter> mathingItems=new List<IDirectoryEntryAdapter>();
-            for (int x =0; x < list.Count(); x++)
+            List<IDirectoryEntryAdapter> mathingItems = new List<IDirectoryEntryAdapter>();
+            for (int x = 0; x < list.Count(); x++)
             {
 
                 if (matchingPredicate.Invoke(list[x]))
@@ -52,17 +52,17 @@ namespace BLAZAM.Helpers
                     list.RemoveAt(x);
                     x--;
                     mathingItems.Add(toMove);
-                    
+
                 }
             }
-            if(mathingItems.Count > 0)
+            if (mathingItems.Count > 0)
             {
-                list.InsertRange(0,mathingItems.OrderBy(x=>x.CanonicalName));
+                list.InsertRange(0, mathingItems.OrderBy(x => x.CanonicalName));
             }
             return list.AsEnumerable();
         }
 
-        
+
 
         public static string FqdnToDn(string fqdn)
         {
@@ -101,7 +101,7 @@ namespace BLAZAM.Helpers
 
         public static string? ParentOU(string? dN)
         {
-            return dN!=null?dN.Substring(dN.IndexOf("OU=")):null;
+            return dN != null ? dN.Substring(dN.IndexOf("OU=")) : null;
         }
         /// <summary>
         /// Takes a raw OU DN and removes all OU='s and separates by /'s
@@ -123,7 +123,7 @@ namespace BLAZAM.Helpers
         /// </summary>
         /// <param name="r"></param>
         /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
-        public static List<IDirectoryEntryAdapter> Encapsulate(this SearchResultCollection r,IActiveDirectoryContext context)
+        public static List<IDirectoryEntryAdapter> Encapsulate(this SearchResultCollection r, IActiveDirectoryContext context)
         {
             List<IDirectoryEntryAdapter> objects = new();
 
@@ -221,20 +221,20 @@ namespace BLAZAM.Helpers
                 else
                 {
                     Loggers.ActiveDirectoryLogger.Warning("Unable to match ad object type. {Object}", sr);
-                    
+
                 }
             }
             return null;
         }
-            /// <summary>
-            /// Encapsulates a raw DirectoryEntry search's <see cref="DirectoryEntries"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
-            /// </summary>
-            /// <remarks>
-            /// This is used when getting child ojects from a OU
-            /// </remarks>
-            /// <param name="r"></param>
-            /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
-            public static List<IDirectoryEntryAdapter> Encapsulate(this DirectoryEntries r, IActiveDirectoryContext context)
+        /// <summary>
+        /// Encapsulates a raw DirectoryEntry search's <see cref="DirectoryEntries"/> within a <see cref="IDirectoryEntryAdapter"/>  of the appropriate entry type
+        /// </summary>
+        /// <remarks>
+        /// This is used when getting child ojects from a OU
+        /// </remarks>
+        /// <param name="r"></param>
+        /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond the directory object type they encapsulate</returns>
+        public static List<IDirectoryEntryAdapter> Encapsulate(this DirectoryEntries r, IActiveDirectoryContext context)
         {
             List<IDirectoryEntryAdapter> objects = new();
 
@@ -244,9 +244,9 @@ namespace BLAZAM.Helpers
 
                 foreach (DirectoryEntry sr in r)
                 {
-                   var encapsulated = Encapsulate(sr,context);
-                    if(encapsulated != null)
-                         objects.Add(encapsulated);
+                    var encapsulated = Encapsulate(sr, context);
+                    if (encapsulated != null)
+                        objects.Add(encapsulated);
 
                 }
             }

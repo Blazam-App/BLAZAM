@@ -7,10 +7,10 @@ namespace BLAZAM.Helpers
 {
     public static class DirectoryTools
     {
-        public static T? GetPropertyValue<T>(this ManagementObject? mo,string propertyName)
+        public static T? GetPropertyValue<T>(this ManagementObject? mo, string propertyName)
         {
             var value = mo.GetPropertyValue(propertyName);
-            if(value is T) {  return (T)value; }
+            if (value is T) { return (T)value; }
             return default;
             try
             {
@@ -26,7 +26,7 @@ namespace BLAZAM.Helpers
             // Split the FQDN into its domain components
             string[] domainComponents = fqdn.Split('.');
 
-            
+
 
             // Build the DN by appending each reversed domain component as a RDN (relative distinguished name)
             StringBuilder dnBuilder = new StringBuilder();
@@ -46,7 +46,7 @@ namespace BLAZAM.Helpers
 
         public static string? DnToOu(string? dN)
         {
-            if(dN== null) return null;
+            if (dN == null) return null;
             var ouComponents = Regex.Matches(dN, @"OU=([^,]+)")
                             .Select(m => m.Value)
                             .ToList();
@@ -61,7 +61,7 @@ namespace BLAZAM.Helpers
 
         public static string? PrettifyOu(string? ou)
         {
-            if(ou == null) return null;
+            if (ou == null) return null;
             var ouComponents = Regex.Matches(ou, @"OU=([^,]*)")
                 .Select(m => m.Groups[1].Value)
                 .ToList();
@@ -69,6 +69,6 @@ namespace BLAZAM.Helpers
             return string.Join("/", ouComponents);
         }
 
-      
+
     }
 }

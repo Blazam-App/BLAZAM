@@ -15,7 +15,7 @@ namespace BLAZAM.Database.Context
     /// </summary>
     public class AppDatabaseFactory : IAppDatabaseFactory
     {
-        IConfiguration _configuration;
+        private IConfiguration _configuration;
 
         public static DatabaseException DatabaseCreationFailureReason { get; set; }
         public static AppEvent? OnMigrationApplied { get; set; }
@@ -62,11 +62,12 @@ namespace BLAZAM.Database.Context
             SetupDenyAll(seedContext);
         }
 
-    
+
 
         private void SetupDenyAll(IDatabaseContext seedContext)
         {
-            Task.Run(() => {
+            Task.Run(() =>
+            {
                 bool saveRequired = false;
                 try
                 {
@@ -116,7 +117,7 @@ namespace BLAZAM.Database.Context
                     seedContext.SaveChanges();
                 }
             });
-            
+
         }
 
         private void StartDatabaseCache()

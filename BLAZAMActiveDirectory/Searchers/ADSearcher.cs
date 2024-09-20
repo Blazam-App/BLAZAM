@@ -48,21 +48,21 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
 
 
-                
 
-                  ADSearch search = new ADSearch(Directory);
 
-                  search.ObjectTypeFilter = searchType;
-                  search.SearchRoot = Directory.GetDirectoryEntry(searchBaseDN);
-                  search.FilterQuery = fieldQuery;
-                  search.MaxResults = returnCount;
-                  search.SearchScope = searchScope;
-                  search.EnabledOnly = enabledOnly;
-                  var results = search.Search();
+                ADSearch search = new ADSearch(Directory);
+
+                search.ObjectTypeFilter = searchType;
+                search.SearchRoot = Directory.GetDirectoryEntry(searchBaseDN);
+                search.FilterQuery = fieldQuery;
+                search.MaxResults = returnCount;
+                search.SearchScope = searchScope;
+                search.EnabledOnly = enabledOnly;
+                var results = search.Search();
                 return results;
 
 
-                  
+
 
             }
             catch (Exception ex)
@@ -95,7 +95,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 foreach (SearchResult sr in r)
                 {
                     var o = new T();
-                    o.Parse(directory:Directory,searchResult: sr);
+                    o.Parse(directory: Directory, searchResult: sr);
 
                     objects.Add(o);
                 }

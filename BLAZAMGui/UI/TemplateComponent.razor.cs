@@ -17,13 +17,13 @@ namespace BLAZAM.Gui.UI
 
         protected SetHeader? Header { get; set; }
 
-       
+
 
         protected IEnumerable<DirectoryTemplate> Templates
         {
             get
             {
-                if (SelectedCategory == null || SelectedCategory == "" || SelectedCategory=="All")
+                if (SelectedCategory == null || SelectedCategory == "" || SelectedCategory == "All")
                     return templates;
                 else
                     return templates.Where(t => t.Category == SelectedCategory).ToList();
@@ -32,8 +32,11 @@ namespace BLAZAM.Gui.UI
             set => templates = value;
         }
 
-        public IEnumerable<DirectoryTemplate> TemplatesUserCanUse { get { 
-            var list = new List<DirectoryTemplate>();
+        public IEnumerable<DirectoryTemplate> TemplatesUserCanUse
+        {
+            get
+            {
+                var list = new List<DirectoryTemplate>();
                 foreach (var template in Templates)
                 {
                     if (CurrentUser.State.HasActionPermission(template.ParentOU, ObjectActions.Create, ActiveDirectoryObjectType.User))
@@ -41,19 +44,24 @@ namespace BLAZAM.Gui.UI
                         list.Add(template);
 
                     }
-                  
+
                 }
                 return list;
-            } }
+            }
+        }
         protected IEnumerable<string?> TemplateCategories { get; private set; }
-        protected IEnumerable<string?> TemplateCategoriesUserCanUse { get {
-                var cats =  TemplatesUserCanUse.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().ToList();
+        protected IEnumerable<string?> TemplateCategoriesUserCanUse
+        {
+            get
+            {
+                var cats = TemplatesUserCanUse.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().ToList();
                 if (cats != null)
                 {
                     cats.Prepend("All");
                 }
                 return cats;
-            } }
+            }
+        }
 
         public DirectoryTemplate? SelectedTemplate
         {
@@ -97,10 +105,10 @@ namespace BLAZAM.Gui.UI
             set
             {
                 _templateIdParameter = value;
-                if (value == null||value > 0 )
+                if (value == null || value > 0)
                 {
                     var cachedTemplate = Templates.Where(t => t.Id == value).FirstOrDefault();
-                    if(cachedTemplate != null)
+                    if (cachedTemplate != null)
                     {
                         SelectedTemplate = cachedTemplate;
                     }
@@ -116,11 +124,11 @@ namespace BLAZAM.Gui.UI
 
         protected async Task FetchTemplates()
         {
-            if(Context==null) return;
-            var temp = await Context.DirectoryTemplates.Include(t=>t.ParentTemplate).OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
+            if (Context == null) return;
+            var temp = await Context.DirectoryTemplates.Include(t => t.ParentTemplate).OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
             if (temp != null)
                 Templates = temp;
-            var cats = await Context.DirectoryTemplates.Select(c => c.Category).Where(c=>c!="" && c!=null).Distinct().ToListAsync();
+            var cats = await Context.DirectoryTemplates.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().ToListAsync();
             if (cats != null)
             {
                 TemplateCategories = cats;
@@ -129,7 +137,7 @@ namespace BLAZAM.Gui.UI
             }
             if (TemplateIdParameter != 0)
             {
-                SelectedTemplate= Templates.Where(t=>t.Id==TemplateIdParameter).FirstOrDefault();
+                SelectedTemplate = Templates.Where(t => t.Id == TemplateIdParameter).FirstOrDefault();
             }
             await InvokeAsync(StateHasChanged);
             Header?.OnRefreshRequested?.Invoke();

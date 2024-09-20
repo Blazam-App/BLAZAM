@@ -2,7 +2,7 @@
 
 namespace BLAZAM.Gui.UI.Inputs
 {
-    public class AutoCompleteComponentBase:AppComponentBase
+    public class AutoCompleteComponentBase : AppComponentBase
     {
 
         [Parameter]
@@ -22,6 +22,6 @@ namespace BLAZAM.Gui.UI.Inputs
         [Parameter]
         public EventCallback<string> SearchTermChanged { get; set; }
 
-        string searchTerm;
+        private string searchTerm;
     }
 }

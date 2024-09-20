@@ -23,12 +23,12 @@ namespace BLAZAM.Services.Chat
         /// </summary>
         /// <param name="parties">The two parties in the private chat.</param>
         /// <returns></returns>
-        ChatRoom GetPrivateTwoWayChat(AppUser currentUser,AppUser otherUser);
+        ChatRoom GetPrivateTwoWayChat(AppUser currentUser, AppUser otherUser);
         void MessageRead(ChatMessage message, AppUser user);
         void PostMessage(ChatMessage message);
         Task<ChatRoom?> GetChatRoom(ChatRoom? chatRoom);
         List<ChatMessage> GetUnreadMessages(AppUser user);
         List<ChatRoom> GetPrivateChats(AppUser user);
-        List<ChatMessage> GetUnreadMessages( AppUser user, ChatRoom room);
+        List<ChatMessage> GetUnreadMessages(AppUser user, ChatRoom room);
     }
 }

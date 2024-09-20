@@ -34,7 +34,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (directory != null)
             {
                 var printer = directory.Printers.FindPrintersByString(ShareName).FirstOrDefault();
-                if(printer != null)
+                if (printer != null)
                 {
 
                     ADPrinter = printer;
