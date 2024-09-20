@@ -15,7 +15,7 @@ namespace BLAZAM.Database.Context
     /// </summary>
     public class AppDatabaseFactory : IAppDatabaseFactory
     {
-        IConfiguration _configuration;
+        private IConfiguration _configuration;
 
         public static DatabaseException DatabaseCreationFailureReason { get; set; }
         public static AppEvent? OnMigrationApplied { get; set; }

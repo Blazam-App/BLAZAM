@@ -9,12 +9,12 @@ namespace BLAZAM.FileSystem
     {
         public FileSystemBase(string path)
         {
-            if (path is null) 
+            if (path is null)
                 throw new ArgumentException("path parameter should not be null");
-   
+
             path = path.Replace("%temp%", Path.GetTempPath());
             FullPath = Path.GetFullPath(path);
-            if (FullPath==null || FullPath=="")
+            if (FullPath == null || FullPath == "")
                 FullPath = path;
         }
         /// <summary>
@@ -48,7 +48,7 @@ namespace BLAZAM.FileSystem
 
                         testFilePath = System.IO.Path.GetFullPath(FullPath + "\\test.txt");
                         // Attempt to create a test file within the directory.
-                        
+
                         using (File.Create(testFilePath))
                         {
                             // If the file can be created, it indicates write permissions on the directory.

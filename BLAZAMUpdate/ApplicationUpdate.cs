@@ -1,18 +1,18 @@
-﻿using System.IO.Compression;
-using System.Diagnostics;
-using Microsoft.AspNetCore.Components;
-using BLAZAM.Common.Data.Database;
-using BLAZAM.Common;
+﻿using BLAZAM.Common;
 using BLAZAM.Common.Data;
+using BLAZAM.Common.Data.Database;
 using BLAZAM.Common.Exceptions;
-using BLAZAM.Update.Exceptions;
-using BLAZAM.FileSystem;
-using BLAZAM.Logger;
 using BLAZAM.Database.Context;
+using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
-using System.Security.Principal;
 using BLAZAM.Jobs;
+using BLAZAM.Logger;
+using BLAZAM.Update.Exceptions;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
+using System.Diagnostics;
+using System.IO.Compression;
+using System.Security.Principal;
 
 namespace BLAZAM.Update
 {
@@ -126,10 +126,9 @@ namespace BLAZAM.Update
 
         public AppEvent<FileProgress?> DownloadPercentageChanged { get; set; }
 
-
-        ApplicationVersion _runningVersion;
-        Process _runningProcess;
-        SystemDirectory _applicationRootDirectory;
+        private ApplicationVersion _runningVersion;
+        private Process _runningProcess;
+        private SystemDirectory _applicationRootDirectory;
 
 
         public ApplicationUpdate(ApplicationInfo applicationInfo, IAppDatabaseFactory dbFactory)

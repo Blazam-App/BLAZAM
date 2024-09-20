@@ -5,7 +5,7 @@ using System.Security.Principal;
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
 
-    public interface IRemoteSession: IDisposable
+    public interface IRemoteSession : IDisposable
     {
         IPAddress ClientIPAddress { get; }
         Cassia.ConnectionState ConnectionState { get; }

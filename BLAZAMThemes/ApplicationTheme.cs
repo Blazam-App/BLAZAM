@@ -5,10 +5,10 @@ using System.Drawing;
 
 
 namespace BLAZAM.Themes
-{ 
+{
     public class ApplicationTheme
     {
-        public static List<ApplicationTheme> Themes = new List<ApplicationTheme> { new BlueTheme(), new RedTheme(),new GreenTheme(),new OrangeTheme() };
+        public static List<ApplicationTheme> Themes = new List<ApplicationTheme> { new BlueTheme(), new RedTheme(), new GreenTheme(), new OrangeTheme() };
         protected PaletteLight lightPalette { get; set; }
         protected PaletteDark darkPalette { get; set; }
         protected string _name;

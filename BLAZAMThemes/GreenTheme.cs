@@ -29,12 +29,12 @@ namespace BLAZAM.Themes
             darkPalette.TextSecondary = "#7EA782";
             darkPalette.ActionDefault = "#7BB18B";
 
-            darkPalette.Dark = "#0F1E12"; 
+            darkPalette.Dark = "#0F1E12";
             darkPalette.Primary = "#66AB72";
 
             darkPalette.AppbarBackground = "#134018";
             darkPalette.DrawerBackground = "#0F1E12";
-            darkPalette.DrawerText = "#c7c7c7"; 
+            darkPalette.DrawerText = "#c7c7c7";
             darkPalette.Secondary = "#51D470";
 
             darkPalette.DrawerIcon = "#95B899";

@@ -69,7 +69,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
             }.Search<ADUser, IADUser>();
 
-       
+
         }
 
 

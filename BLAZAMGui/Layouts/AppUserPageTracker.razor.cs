@@ -5,7 +5,7 @@ namespace BLAZAM.Gui.Layouts
 {
     public partial class AppUserPageTracker
     {
-        string _lastUri;
+        private string _lastUri;
         protected override void OnInitialized()
         {
             base.OnInitialized();

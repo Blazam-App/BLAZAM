@@ -10,7 +10,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class GroupableDirectoryAdapter : DirectoryEntryAdapter, IGroupableDirectoryAdapter
     {
-      
+
         public List<GroupMembership> ToAssignTo { get; protected set; } = new List<GroupMembership>();
         public List<GroupMembership> ToUnassignFrom { get; protected set; } = new List<GroupMembership>();
 
@@ -101,10 +101,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-      
 
-     
-    
+
+
+
         public override List<AuditChangeLog> Changes
         {
             get
@@ -125,7 +125,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public override IJob CommitChanges(IJob? commitJob=null)
+        public override IJob CommitChanges(IJob? commitJob = null)
         {
             if (ToAssignTo.Count > 0)
             {

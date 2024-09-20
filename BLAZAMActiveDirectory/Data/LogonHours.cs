@@ -11,7 +11,7 @@ namespace BLAZAM.ActiveDirectory.Data
 {
     public class LogonHours
     {
-   
+
         private int timeZoneOffset;
 
         private const int TotalBits = 168;
@@ -44,13 +44,13 @@ namespace BLAZAM.ActiveDirectory.Data
             //        schedule[day, hour] = true;
             //    }
             //}
-            if(rawData !=null)
+            if (rawData != null)
             {
                 DecodeLogonHours(rawData);
 
             }
         }
- 
+
         private void AdjustFromTimeZoneOffset(ref DayOfWeek day, ref int hour)
         {
             if (0 > hour - timeZoneOffset)
@@ -79,10 +79,10 @@ namespace BLAZAM.ActiveDirectory.Data
             }
             else
             {
-                hour=hour - timeZoneOffset;
+                hour = hour - timeZoneOffset;
             }
         }
-      
+
 
         public void SetLogonHour(DayOfWeek day, int hour, bool allowed)
         {

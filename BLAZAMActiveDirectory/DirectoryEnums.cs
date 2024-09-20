@@ -5,7 +5,7 @@
     /// </summary>
     public enum DirectoryConnectionStatus
     {
-        OK, 
+        OK,
         ConnectionDown,
         BadCredentials,
         ContainerNotFound,

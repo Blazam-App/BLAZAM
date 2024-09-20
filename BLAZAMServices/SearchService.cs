@@ -38,11 +38,7 @@ namespace BLAZAM.Services
             includeDisabled = _userStateService.CurrentUserState?.Preferences?.SearchDisabledUsers == true;
         }
 
-
-
-
-
-        async Task DisabledOptionChanged()
+        private async Task DisabledOptionChanged()
         {
             try
             {

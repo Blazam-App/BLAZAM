@@ -13,7 +13,7 @@ namespace BLAZAM.Tests
         /// </summary>
         /// <remarks>Value: thisisaseedkeystring</remarks>
         private const string TestSeedString = "thisisaseedkeystring";
-        Encryption encryption;
+        private Encryption encryption;
 
         public EncryptionTests()
         {
@@ -24,7 +24,7 @@ namespace BLAZAM.Tests
         [Fact]
         public void CanEncrypt()
         {
-             var test = "test";
+            var test = "test";
             var result = encryption.EncryptObject(test);
             Assert.NotEqual<string>(test, result);
         }
@@ -102,7 +102,8 @@ namespace BLAZAM.Tests
             Assert.Equal(test, result);
 
         }
-        List<string> testSeedStrings = new List<string> {TestSeedString,
+
+        private List<string> testSeedStrings = new List<string> {TestSeedString,
         "differentseedkeystring",
         "differentseedkeystrin",
         "diferentseedkeystring",
@@ -180,7 +181,7 @@ namespace BLAZAM.Tests
 
             encryption = new Encryption(seedString);
             Assert.Null(encryption.Key);
-            
+
         }
     }
 }

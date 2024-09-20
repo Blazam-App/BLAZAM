@@ -31,7 +31,7 @@ namespace BLAZAM.Jobs
         public IList<IJobStep> PassedSteps { get; protected set; } = new List<IJobStep>();
 
 
-        public Guid Id{ get; set; }
+        public Guid Id { get; set; }
         public bool NestedJob { get; set; } = false;
 
         public Job(string? title = null, string? requestingUser = null, CancellationTokenSource? externalCancellationToken = null)
@@ -42,7 +42,7 @@ namespace BLAZAM.Jobs
             {
                 cancellationTokenSource = externalCancellationToken;
             }
-            Id= Guid.NewGuid();
+            Id = Guid.NewGuid();
             JobMonitor.AddJob(this);
         }
 
@@ -68,7 +68,7 @@ namespace BLAZAM.Jobs
         }
         public void AddStep(IJobStep step)
         {
-            if(User != null && step is IJob jobStep)
+            if (User != null && step is IJob jobStep)
             {
                 jobStep.User = User;
                 jobStep.NestedJob = true;

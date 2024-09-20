@@ -18,7 +18,7 @@ namespace BLAZAM.Jobs
         /// <param name="name">The name of the step</param>
         /// <param name="action">The action to perform during step execution</param>
         /// <param name="stopOnError"></param>
-        public JobStep(string name, Func<JobStep, bool> action,bool stopOnError=false)
+        public JobStep(string name, Func<JobStep, bool> action, bool stopOnError = false)
         {
             StopOnFailedStep = stopOnError;
             Name = name;
@@ -68,7 +68,7 @@ namespace BLAZAM.Jobs
                 StartTime = DateTime.Now;
                 Result = JobResult.Running;
                 OnProgressUpdated?.Invoke(0);
-   
+
                 bool actionResult = false;
                 if (Action != null)
                 {

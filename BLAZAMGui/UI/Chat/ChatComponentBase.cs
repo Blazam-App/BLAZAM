@@ -60,12 +60,12 @@ namespace BLAZAM.Gui.UI.Chat
 
         protected int GetUnreadMessages()
         {
-           
-                if (ChatRoom is null) return 0;
-                if (CurrentUser == null || CurrentUser.State.Preferences == null) return 0;
-                    return Chat.GetUnreadMessages(CurrentUser.State.Preferences).Count();
-                
-           
+
+            if (ChatRoom is null) return 0;
+            if (CurrentUser == null || CurrentUser.State.Preferences == null) return 0;
+            return Chat.GetUnreadMessages(CurrentUser.State.Preferences).Count();
+
+
         }
         protected async Task RefreshChatRooms()
         {
@@ -82,7 +82,7 @@ namespace BLAZAM.Gui.UI.Chat
 
             AppChatRoom = room;
 
-            if(ChatRoom is not null)
+            if (ChatRoom is not null)
             {
                 ChatRoom = await Chat.GetChatRoom(ChatRoom);
 
@@ -91,7 +91,8 @@ namespace BLAZAM.Gui.UI.Chat
             {
                 unreadAppChatMessages = Chat.GetUnreadMessages(CurrentUser.State.Preferences).Where(ur => ur.ChatRoomId == AppChatRoom.Id).Count();
                 unreadChatMessages = Chat.GetUnreadMessages(CurrentUser.State.Preferences).Where(ur => ur.ChatRoomId != AppChatRoom.Id).Count();
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Loggers.DatabaseLogger.Error("Error getting unread chat messages {@Error}", ex);
             }

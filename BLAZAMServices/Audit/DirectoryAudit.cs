@@ -1,8 +1,8 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using BLAZAM.Helpers;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Audit;
+using BLAZAM.Helpers;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

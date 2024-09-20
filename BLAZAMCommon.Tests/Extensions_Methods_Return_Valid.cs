@@ -14,9 +14,9 @@ namespace BLAZAM.Tests
             var decoded = encoded.ToPlainText();
             bool result = decoded.Equals(test);
 
-            Assert.True(result,"Decrypted secure string should match plain text that was encrypted");
+            Assert.True(result, "Decrypted secure string should match plain text that was encrypted");
         }
-        
+
         [Fact]
         public void ToSecureString_NotPlainText()
         {
@@ -36,7 +36,7 @@ namespace BLAZAM.Tests
 
             bool result = pretty?.Equals(valid) == true;
 
-            Assert.True(result, "The pretty ou format returned was not correct. "+ test + " should be formatted as "+ valid);
+            Assert.True(result, "The pretty ou format returned was not correct. " + test + " should be formatted as " + valid);
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace BLAZAM.Tests
             Assert.True(result, "The conversion of COM large integers to DateTime is not returning the correct DateTime");
         }
 
-      
+
         //133241760000000000
         //31029034
         //1743527936
@@ -101,9 +101,9 @@ namespace BLAZAM.Tests
             var valid = DateTime.Parse("3/17/2023 12:00:00 AM");
             var converted = test.AdsValueToDateTime();
             bool result = converted.Equals(valid);
-            
-            Assert.True(result, "The conversion of COM large integers to DateTime is not returning the correct DateTime: Expected "+valid.ToString()+" Tested "+converted.ToString());
+
+            Assert.True(result, "The conversion of COM large integers to DateTime is not returning the correct DateTime: Expected " + valid.ToString() + " Tested " + converted.ToString());
         }
-        
+
     }
 }

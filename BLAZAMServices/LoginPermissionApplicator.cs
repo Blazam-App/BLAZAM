@@ -22,9 +22,9 @@ namespace BLAZAM.Services
             _directory = directory;
         }
 
-      
 
-      
+
+
 
         /// <summary>
         /// Reads the current database settings and applies the assign permissions for the

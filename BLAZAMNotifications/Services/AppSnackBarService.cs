@@ -15,7 +15,7 @@ namespace BLAZAM.Notifications.Services
 
         public void Error(string message)
         {
-            _snackbar.Add(message, Severity.Error,configure=>configure.RequireInteraction=true);
+            _snackbar.Add(message, Severity.Error, configure => configure.RequireInteraction = true);
 
         }
         public void Error(RenderFragment message)

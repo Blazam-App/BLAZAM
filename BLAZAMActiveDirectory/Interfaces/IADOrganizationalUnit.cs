@@ -9,10 +9,10 @@ namespace BLAZAM.ActiveDirectory.Interfaces
     {
 
         string? Name { get; set; }
-        
+
         IEnumerable<IDirectoryEntryAdapter> SubOUs { get; }
 
-        HashSet<IDirectoryEntryAdapter> CachedTreeViewSubOUs { get;}
+        HashSet<IDirectoryEntryAdapter> CachedTreeViewSubOUs { get; }
         HashSet<IDirectoryEntryAdapter> TreeViewSubOUs { get; }
         bool CanReadUsersInSubOus { get; }
         bool CanCreateUser { get; }

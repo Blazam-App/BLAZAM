@@ -41,7 +41,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             search.GeneralSearchTerm = searchTerm;
             var temp = search.Search<ADOrganizationalUnit, IADOrganizationalUnit>();
             return temp;
-           }
+        }
 
         public IADOrganizationalUnit? FindOuByDN(string searchTerm)
         {
@@ -53,13 +53,14 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public List<IADUser> FindSubUsersByDN(string searchBaseDN) => SearchObjects(searchBaseDN, "", ActiveDirectoryObjectType.User, 1000, true, SearchScope.OneLevel).Cast<IADUser>().ToList();
 
-        public List<IADComputer> FindSubComputerByDN(string searchBaseDN) {
+        public List<IADComputer> FindSubComputerByDN(string searchBaseDN)
+        {
             var search = NewSearch;
             search.GeneralSearchTerm = searchBaseDN;
             var temp = search.Search<ADComputer, IADComputer>();
             return temp;
         }
-       // new List<IADComputer>(ConvertTo<ADComputer>(SearchObjects(searchBaseDN, "", ActiveDirectoryObjectType.Computer, 1000, true, SearchScope.OneLevel)));
+        // new List<IADComputer>(ConvertTo<ADComputer>(SearchObjects(searchBaseDN, "", ActiveDirectoryObjectType.Computer, 1000, true, SearchScope.OneLevel)));
 
         public List<IADGroup> FindSubGroupsByDN(string searchBaseDN) => SearchObjects(searchBaseDN, "", ActiveDirectoryObjectType.Group, 1000, true, SearchScope.OneLevel).Cast<IADGroup>().ToList();
 
@@ -90,6 +91,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         }
 
-      
+
     }
 }

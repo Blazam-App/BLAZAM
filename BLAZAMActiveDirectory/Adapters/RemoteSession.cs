@@ -13,8 +13,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class RemoteSession : IRemoteSession
     {
-        ITerminalServicesSession? _session;
-        ITerminalServicesSession? Session
+        private ITerminalServicesSession? _session;
+
+        private ITerminalServicesSession? Session
         {
             get => _session; set
             {
@@ -98,7 +99,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public AppEvent<IRemoteSession> OnSessionDown { get; set; }
         public AppEvent<IRemoteSession> OnSessionUpdated { get; set; }
 
-        Timer t;
+        private Timer t;
         public RemoteSession(ITerminalServicesSession session, IADComputer host)
         {
             Host = host;
@@ -117,7 +118,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public ITerminalServer? Server => _session?.Server;
 
-        NTAccount _user;
+        private NTAccount _user;
         public NTAccount User
         {
             get
@@ -126,7 +127,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-        DateTime? _connectTime;
+
+        private DateTime? _connectTime;
         public DateTime? ConnectTime
         {
             get
@@ -135,7 +137,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-        DateTime? _loginTime;
+
+        private DateTime? _loginTime;
         public DateTime? LoginTime
         {
             get
@@ -144,7 +147,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-        TimeSpan? _idleTime;
+
+        private TimeSpan? _idleTime;
         public TimeSpan? IdleTime
         {
             get
@@ -153,7 +157,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-        Cassia.ConnectionState _connectionState;
+
+        private Cassia.ConnectionState _connectionState;
         public Cassia.ConnectionState ConnectionState
         {
             get
@@ -162,7 +167,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-        IPAddress _clientIPAddress;
+
+        private IPAddress _clientIPAddress;
         public IPAddress ClientIPAddress
         {
             get
@@ -171,7 +177,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             }
         }
-        int _sessionId;
+
+        private int _sessionId;
         public int SessionId
         {
             get
@@ -263,7 +270,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Log.Error("An error occurred while refreshing a computer session state.", ex); 
+                Log.Error("An error occurred while refreshing a computer session state.", ex);
                 this.Dispose();
             }
         }

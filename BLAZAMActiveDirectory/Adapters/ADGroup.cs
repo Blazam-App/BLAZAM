@@ -107,7 +107,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
         public bool HasMembers => UserMembers.Count > 0 || GroupMembers.Count > 0;
-        List<IADUser> _userMembersCache;
+
+        private List<IADUser> _userMembersCache;
 
         /// <summary>
         /// The members of this group, that are users themselves
@@ -135,9 +136,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-
-
-        List<IADGroup> _groupMembersCache;
+        private List<IADGroup> _groupMembersCache;
         /// <summary>
         /// The members of this group, that are groups themselves
         /// </summary>

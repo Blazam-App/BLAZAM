@@ -13,18 +13,18 @@ namespace BLAZAM.Server.Pages.API.Auth
         {
 
             var response = new Dictionary<string, string>();
-                if (HttpContext.User.Identity?.IsAuthenticated==true)
-                    HttpContext.SlideCookieExpiration(ApplicationUserStateService.Instance.GetUserState(HttpContext.User));
-                else
-                {
-                     response.Add("expired", "true");
-                    return new JsonResult(response);
-                }
-                     response.Add("expired", "false");
+            if (HttpContext.User.Identity?.IsAuthenticated == true)
+                HttpContext.SlideCookieExpiration(ApplicationUserStateService.Instance.GetUserState(HttpContext.User));
+            else
+            {
+                response.Add("expired", "true");
+                return new JsonResult(response);
+            }
+            response.Add("expired", "false");
             return new JsonResult(response);
 
             //return new OkResult();
-        
+
         }
 
     }
