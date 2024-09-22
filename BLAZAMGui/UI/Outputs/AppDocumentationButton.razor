@@ -1,7 +1,7 @@
 ﻿@inject IStringLocalizer<AppLocalization> AppLocalization
 @if (!Page.IsNullOrEmpty())
 {
-    <MudTooltip Text=@AppLocalization["Click to view help documentation"] RootClass="d-inline align-middle"> 
+    <AppTooltip Text=@AppLocalization["Click to view help documentation"] RootClass="d-inline align-middle"> 
         <MudFab StartIcon="@Icon"
                 Href=@("https://docs.blazam.org"+@Page)
                 Target="_blank"
@@ -11,7 +11,7 @@
                 IconSize="@IconSize"
                 IconColor="@IconColor"
                 Color="@Color" />
-    </MudTooltip>
+    </AppTooltip>
 }
 @code {
     [Parameter]

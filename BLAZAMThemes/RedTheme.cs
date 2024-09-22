@@ -21,6 +21,9 @@ namespace BLAZAM.Themes
 
             lightPalette.DrawerIcon = "#B89595";
 
+
+            darkPalette.DarkContrastText = "#c7c7c7";
+            darkPalette.TextPrimary = "#c7c7c7";
             darkPalette.TextSecondary = "#A77E86";
             darkPalette.ActionDefault = "#B17B7E";
             darkPalette.Dark = "#1E110F";

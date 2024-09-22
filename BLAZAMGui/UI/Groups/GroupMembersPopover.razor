@@ -1,5 +1,11 @@
 @inherits AppComponentBase
-@if (Members != null)
+<MudPopover Open=@IsOpen>
+    <MudStack Row=true>
+        <MudText>@Group.CanonicalName @AppLocalization["Members"]</MudText>
+        <MudSpacer/>
+        <AppCloseButton OnClick="Close"/>
+    </MudStack>
+    @if (Members != null)
 {
     <MudDataGrid Elevation=0
                  Items="@Members.Where(m=>m.CanRead).OrderBy(m=>m.ObjectType).ThenBy(m=>m.CanonicalName)"
@@ -64,7 +70,7 @@
                     <AppTooltip 
                                 ShowOnClick=@(!cellContext.Item.CanUnassign)
                                 ShowOnHover=@(!cellContext.Item.CanUnassign)
-                                Text="You don't have permission to remove this group member">
+                                Text=@AppLocalization["You don't have permission to remove this group member"]>
                         <MudButton Disabled=@(!Group.CanUnassign)
                                    Color="Color.Error"
                                    OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
@@ -81,16 +87,6 @@
             @AppLocalization["The group has more members you don't have access to"]
         </MudAlert>
     }
-    @if (Group.CanAssign)
-    {
-
-        <MudButton Color="Color.Primary" 
-        StartIcon="@Icons.Material.Filled.GroupAdd" 
-        OnClick="@(()=>{AssignMemberModal.ShowAsync();})">@AppLocalization["Add Member..."]</MudButton>
-    }
-    <AppModal Color="Color.Dark" Title=@AppLocalization["Add Member..."] @ref=@AssignMemberModal>
-        <AddMemberModalContent ModelChanged=@(()=>{InvokeAsync(OnInitializedAsync);}) Group="Group" />
-    </AppModal>
 }
 else
 {
@@ -98,9 +94,15 @@ else
         <MudProgressCircular Indeterminate Color=Color.Primary />
     </MudOverlay>
 }
+</MudPopover>
+
 
 
 @code {
+    [Parameter]
+    public bool IncludeNested { get; set; }
+    [Parameter]
+    public bool IsOpen { get; set; }
     [Parameter]
     public IADGroup Group { get; set; }
     /// <summary>
@@ -116,18 +118,40 @@ else
 
 
     AppModal AssignMemberModal;
+
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         _=Task.Run(() =>
         {
-            Members = Group.Members;
+            if (IncludeNested)
+            {
+                Members = Group.NestedMembers.ToList();
+            }
+            else
+            {
+
+                Members = Group.Members;
+            }
             LoadingData = false;
             InvokeAsync(StateHasChanged);
 
         });
         await InvokeAsync(StateHasChanged);
 
+    }
+
+
+    public async void Open()
+    {
+       IsOpen = true;
+        await InvokeAsync(StateHasChanged);
+    }
+      public async void Close()
+    {
+       IsOpen = false;
+        await InvokeAsync(StateHasChanged);
     }
 
 }

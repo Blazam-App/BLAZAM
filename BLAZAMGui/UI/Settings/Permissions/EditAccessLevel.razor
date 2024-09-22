@@ -177,16 +177,16 @@
 
                                     @if (context.Item?.Field != null)
                                     {
-                                        <MudTooltip Text="@context.Item.Field.FieldName">
+                                        <AppTooltip Text="@context.Item.Field.FieldName">
                                             <MudText>@context.Item.Field.DisplayName</MudText>
-                                        </MudTooltip>
+                                        </AppTooltip>
                                     }
                                     else if (context.Item?.CustomField != null)
                                     {
-                                        <MudTooltip Text="@context.Item.CustomField.FieldName">
+                                        <AppTooltip Text="@context.Item.CustomField.FieldName">
 
                                             <MudText>@context.Item.CustomField.DisplayName</MudText>
-                                        </MudTooltip>
+                                        </AppTooltip>
 
                                     }
 

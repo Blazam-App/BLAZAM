@@ -8,17 +8,18 @@
 
             var avatarBgColor = GenerateAvatarColor(UserState?.Username);
         }
-        @if (Notifications.Where(n => !n.IsRead).Count() > 0)
-        {
-            <MudBadge Color=Color.Error Overlap=true Content="@Notifications.Where(n=>!n.IsRead).Count()">
+        <AppTooltip Text="@CurrentUser.Username">
+            @if (Notifications.Where(n => !n.IsRead).Count() > 0)
+            {
+                <MudBadge Color=Color.Error Overlap=true Content="@Notifications.Where(n=>!n.IsRead).Count()">
+                    <CurrentUserAvatarIcon UserState="@UserState" />
+                </MudBadge>
+            }
+            else
+            {
                 <CurrentUserAvatarIcon UserState="@UserState" />
-            </MudBadge>
-        }
-        else
-        {
-            <CurrentUserAvatarIcon UserState="@UserState" />
-        }
-
+            }
+        </AppTooltip>
     </ActivatorContent>
     <ChildContent>
         <MudText Typo=Typo.body2 Color="Color.Info" Align=Align.Center Class="py-3 w-100 " Style="text-align:center;    background-color: var(--mud-palette-drawer-background);">

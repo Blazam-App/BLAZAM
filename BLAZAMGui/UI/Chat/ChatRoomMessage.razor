@@ -33,10 +33,10 @@
             <MudText Class="align-middle">@Message.Message</MudText>
 
         </MudStack>
-        <MudTooltip Text="@localTimestamp.ToString()" ShowOnHover=@timestampeShortend>
+        <AppTooltip Text="@localTimestamp.ToString()" ShowOnHover=@timestampeShortend>
 
             <MudText Class="w-max" Typo="Typo.caption">@timestamp</MudText>
-        </MudTooltip>
+        </AppTooltip>
     </MudStack>
 }
 else
@@ -52,10 +52,10 @@ else
             </MudChip>
 
         </MudStack>
-        <MudTooltip RootClass="align-end" Style="z-index:1500 !important;" Text="@localTimestamp.ToString()" ShowOnHover=@timestampeShortend>
+        <AppTooltip RootClass="align-end" Style="z-index:1500 !important;" Text="@localTimestamp.ToString()" ShowOnHover=@timestampeShortend>
 
             <MudText Class="w-max" Typo="Typo.caption">@timestamp</MudText>
-        </MudTooltip>
+        </AppTooltip>
     </MudStack>
 
 }

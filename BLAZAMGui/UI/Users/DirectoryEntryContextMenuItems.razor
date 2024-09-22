@@ -1,0 +1,42 @@
+﻿@inherits AppComponentBase
+@if(Entry is IAccountDirectoryAdapter account)
+{
+    if(account.CanUnlock && account.LockedOut)
+    {
+        <MudMenuItem OnClick="(()=>{UnlockAccount(account);})" Icon="@Icons.Material.Outlined.LockOpen">
+            @AppLocalization["Unlock User"]
+        </MudMenuItem>
+
+    }
+}
+
+<MudMenuItem>
+
+</MudMenuItem>
+
+@code {
+    [Parameter]
+    public IDirectoryEntryAdapter Entry{ get; set; }
+
+    async void UnlockAccount(IAccountDirectoryAdapter userToUnlock)
+    {
+        if (userToUnlock.LockedOut)
+        {
+
+            userToUnlock.LockedOut = false;
+            var changes = userToUnlock.Changes;
+
+            var unlockJob = await userToUnlock.CommitChangesAsync();
+            await AuditLogger.User.Changed(userToUnlock, changes);
+            if (unlockJob.Result == JobResult.Passed)
+            {
+
+                SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" unlocked"]);
+            }
+            else
+            {
+                SnackBarService.Error("Could not unlock: " + unlockJob.Exception?.Message);
+            }
+        }
+    }
+}
