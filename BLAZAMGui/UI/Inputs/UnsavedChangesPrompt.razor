@@ -5,19 +5,19 @@
 
         <MudStack Row Class="mx-auto">
 
-            <MudTooltip Text="@AppLocalization["Discard Changes"]">
+            <AppTooltip Text="@AppLocalization["Discard Changes"]">
 
             <MudFab Color=Color.Error
                     StartIcon="@Icons.Material.Outlined.Undo"
                     OnClick="@(()=>{DiscardChanges.InvokeAsync();})" />
-            </MudTooltip>
+            </AppTooltip>
 
 
-            <MudTooltip Text="@AppLocalization["Save Changes"]">
+            <AppTooltip Text="@AppLocalization["Save Changes"]">
                 <MudFab Color=Color.Success
                         StartIcon="@Icons.Material.Filled.Save"
                         OnClick="@(()=>{SaveChanges.InvokeAsync();})" />
-            </MudTooltip>
+            </AppTooltip>
 
         </MudStack>
 

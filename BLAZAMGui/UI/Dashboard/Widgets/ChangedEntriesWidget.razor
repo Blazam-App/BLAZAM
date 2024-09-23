@@ -24,9 +24,9 @@
         </TemplateColumn>
         <TemplateColumn Title="Name">
             <CellTemplate>
-                <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
                     <MudText>@context.Item?.CanonicalName</MudText>
-                </MudTooltip>
+                </AppTooltip>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization["Changed"]>

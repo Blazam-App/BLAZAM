@@ -45,11 +45,11 @@
 
                     @*
                     TODO Add this as a popover
-                    <MudTooltip Display="Display.InlineBlock" Multiline Style="max-width:300px" Text="The application will automatically use an SSL
+                    <AppTooltip Display="Display.InlineBlock" Multiline Style="max-width:300px" Text="The application will automatically use an SSL
                     connection if the server's CA Certificate is a trusted CA on this web server. Using port 636 can work,
                     but may lead to unexpected behaviour of other services that listen to Active Directory changes.">
                     <MudIcon Icon="IconName.QuestionCircle" Color="Color.Info" />
-                    </MudTooltip>*@
+                    </AppTooltip>*@
 
                     @if (ApplicationInfo.InDemoMode && UserStateService.CurrentUsername == "Demo")
                     {

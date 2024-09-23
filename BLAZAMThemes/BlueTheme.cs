@@ -24,6 +24,9 @@ namespace BLAZAM.Themes
 
 
 
+
+            darkPalette.DarkContrastText = "#c7c7c7";
+            darkPalette.TextPrimary = "#c7c7c7";
             darkPalette.TextSecondary = "#7e95a7";
             darkPalette.ActionDefault = "#7b9ab1";
             darkPalette.Dark = "#0f141e";

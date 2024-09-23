@@ -1,7 +1,7 @@
 ﻿@using System.Reflection
 @inject IStringLocalizer<AppLocalization> AppLocalization
 
-<MudTooltip Text="@AppLocalization["Revert to inherited value"]">
+<AppTooltip Text="@AppLocalization["Revert to inherited value"]">
 
     <MudIconButton DisableElevation=true
                    Class="d-inline-flex pa-0"
@@ -9,7 +9,7 @@
                    Color="Color.Dark"
                    Icon="@Icons.Material.Filled.Undo"
                    OnClick=@(()=>{OnClick.InvokeAsync();}) />
-</MudTooltip>
+</AppTooltip>
 @code {
     [CascadingParameter]
     public DirectoryTemplate DirectoryTemplate{ get; set; }

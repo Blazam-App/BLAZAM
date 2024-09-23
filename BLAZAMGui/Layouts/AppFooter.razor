@@ -7,32 +7,32 @@
     {
         <AuthorizeView Roles="@UserRoles.SuperAdmin">
             <Authorized>
-                <MudTooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/update");})
+                <AppTooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/update");})
                             Class="mud-theme-info"
                           
                             Style="width:max-content"
                             Text="An automatic update is scheduled. Click for details">
 
                     <MudIcon Color="@Color.Success" Icon=@Icons.Material.Filled.ArrowCircleUp />
-                </MudTooltip>
+                </AppTooltip>
             </Authorized>
             <NotAuthorized>
-                <MudTooltip Class="mud-theme-info"
+                <AppTooltip Class="mud-theme-info"
                             Style="width:max-content"
                             Text="An automatic update is scheduled.">
 
                     <MudIcon Color="@Color.Success" Icon=@Icons.Material.Filled.ArrowCircleUp />
-                </MudTooltip>
+                </AppTooltip>
             </NotAuthorized>
         </AuthorizeView>
 
     }
     <MudSpacer />
     @*
-    <MudTooltip Class="mud-theme-info" Style="width:max-content" Text="@ApplicationInfo.RunningVersion.Version">
+    <AppTooltip Class="mud-theme-info" Style="width:max-content" Text="@ApplicationInfo.RunningVersion.Version">
 
     Version: @ApplicationInfo.RunningVersion.ShortVersion
-    </MudTooltip>*@
+    </AppTooltip>*@
 
 
 </MudStack>

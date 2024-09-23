@@ -34,9 +34,9 @@
         @*    <SettingsField Label="@AppLocalization["User Helpdesk URL"]">
 
         <MudTextField Label="@AppLocalization["User Helpdesk URL"]" Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
-        <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
+        <AppTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
         <MudBadge>!</MudBadge>
-        </MudTooltip>
+        </AppTooltip>
 
 
         </MudTextField>
@@ -52,9 +52,9 @@
                 @if (settings != null && settings.AppIcon != null && settings.AppIcon.Length > 0)
                 {
                     <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
-                    <MudTooltip Text="Remove custom icon">
+                    <AppTooltip Text="Remove custom icon">
                         <AppCloseButton OnClick="@(()=>{settings.AppIcon=null;})" />
-                    </MudTooltip>
+                    </AppTooltip>
                 }
             </MudContainer>
             <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon" Accept="image/*">

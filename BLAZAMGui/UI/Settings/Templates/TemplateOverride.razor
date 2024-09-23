@@ -1,6 +1,6 @@
 @inject NavigationManager Nav
 @inject IStringLocalizer<AppLocalization> AppLocalization
-<MudTooltip ShowOnHover=@(SourceTemplate!=null)
+<AppTooltip ShowOnHover=@(SourceTemplate!=null)
             Text=""
             RootClass="@Class">
     <MudBadge Visible=@(SourceTemplate!=null)
@@ -17,7 +17,7 @@
             <MudButton OnClick="@(()=>{_popoverOpen=false;})" Class="ml-auto mr-n3 mb-1" Color="Color.Error">Close</MudButton>
         </div>
     </MudPopover>
-</MudTooltip>
+</AppTooltip>
 
     @code {
     [Parameter]

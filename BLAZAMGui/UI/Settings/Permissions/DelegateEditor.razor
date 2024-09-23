@@ -44,14 +44,14 @@
 <AppModal @ref=@addGroupModal
           Title="Add Delegate"
           YesText="Add">
-    <AddPrivilegeLevelModalContent DelegateAdded=@(()=>{SnackBarService.Success("Delegate added"); DelegatesChanged();}) />
+    <AddPrivilegeLevelModalContent DelegateAdded=@(()=>{SnackBarService.Success(AppLocalization["Delegate added"]); DelegatesChanged();}) />
 </AppModal>
 
 @{
 
 }
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     string _DelegateFilter = "";
     string DelegateFilter
     {
@@ -95,8 +95,8 @@
     {
         delegateToRestore.DeletedAt = null;
         await Context.SaveChangesAsync();
-        SnackBarService.Success("Delegate restored");
-        if (AllDelegates.Where(l => l.DeletedAt != null).Count() < 1)
+        SnackBarService.Success(AppLocalization["Delegate restored"]);
+    if (AllDelegates.Where(l => l.DeletedAt != null).Count() < 1)
         {
             trashModal.Close();
         }

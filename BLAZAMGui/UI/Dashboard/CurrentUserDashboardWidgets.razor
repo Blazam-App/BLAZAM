@@ -57,15 +57,15 @@
                             <MudCardHeader>
                                 <MudText Typo="Typo.h6"> @widget.Title</MudText>
                                 <MudSpacer />
-                                <MudTooltip Text=@AppLocalization["Refresh"]>
+                                <AppTooltip Text=@AppLocalization["Refresh"]>
                                     <MudButton StartIcon="@Icons.Material.Filled.Refresh"
                                                Color="Color.Primary"
                                                OnClick="@(()=>{OnRefreshWidget?.Invoke(widget);})" />
-                                </MudTooltip>
+                                </AppTooltip>
 
-                                <MudTooltip Text=@AppLocalization["Remove"]>
+                                <AppTooltip Text=@AppLocalization["Remove"]>
                                     <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
-                                </MudTooltip>
+                                </AppTooltip>
 
                             </MudCardHeader>
                             <CascadingValue Value="this">
@@ -101,9 +101,9 @@
 
     <MudMenu Class="d-flex" Style="justify-content: flex-end;" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
         <ActivatorContent>
-            <MudTooltip Text="Add Widget">
+            <AppTooltip Text="Add Widget">
                 <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
-            </MudTooltip>
+            </AppTooltip>
         </ActivatorContent>
         <ChildContent>
             @foreach (var widget in allWidgets)

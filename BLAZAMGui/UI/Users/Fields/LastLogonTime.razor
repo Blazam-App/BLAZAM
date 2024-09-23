@@ -1,9 +1,9 @@
 ﻿@if (!_loadingLogonTime)
 {
-    <MudTooltip Text="@userLastLogonTime?.ToLocalTime().TimeOfDay.ToString()">
+    <AppTooltip Text="@userLastLogonTime?.ToLocalTime().TimeOfDay.ToString()">
 
         <MudText Style="text-align:end;" Typo="Typo.caption">@userLastLogonTime?.ToLocalTime().ToShortDateString()</MudText>
-    </MudTooltip>
+    </AppTooltip>
 }
 else
 {
