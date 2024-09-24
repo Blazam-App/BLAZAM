@@ -118,9 +118,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 searcher = new DirectorySearcher(SearchRoot)
                 {
-                    //TODO Ensure bbroken
+                    //TODO Ensure broken
                     //Make sure this is not  usable
-                    //Seems to never pull ou's
+                    //Seems to never pull OU's
                     //VirtualListView = new DirectoryVirtualListView(0, pageSize - 1, pageOffset),
                     SearchScope = SearchScope,
                     SizeLimit = MaxResults,
