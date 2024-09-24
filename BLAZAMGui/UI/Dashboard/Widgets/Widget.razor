@@ -24,7 +24,13 @@
     }
     protected async void SetRowsPerPage(int rowPerPage)
     {
-        CurrentUser.State.Preferences.DashboardWidgets.FirstOrDefault(w => w.WidgetType.Equals(WidgetType)).ItemsPerPage = rowPerPage;
-        CurrentUser.State.SaveDashboardWidgets();
+        try
+        {
+            CurrentUser.State.Preferences.DashboardWidgets.FirstOrDefault(w => w.WidgetType.Equals(WidgetType)).ItemsPerPage = rowPerPage;
+            await CurrentUser.State.SaveDashboardWidgets();
+        }catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error("Error attempting to set a widgets rows per page preference. {Error}", ex);
+        }
     }
 }

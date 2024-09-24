@@ -2,6 +2,7 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
+using BLAZAM.Gui.Services;
 using BLAZAM.Nav;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Services;
@@ -126,12 +127,13 @@ namespace BLAZAM.Server
             });
             /*
              * Uncomment this to force a language
-             
-             
+             */
+
             CultureInfo culture = new CultureInfo("ru");
             //CultureInfo culture = new CultureInfo("zh-Hans");
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
+            /*
            */
 
 
@@ -254,6 +256,10 @@ namespace BLAZAM.Server
             //A substitue Navigation Manager for the app to enable navigation warning on unsaved
             //changes
             builder.Services.AddScoped<AppNavigationManager>();
+
+
+            //A service to provide the appropriate widgets to users, based on permissions
+            builder.Services.AddScoped<WidgetService>();
 
 
 

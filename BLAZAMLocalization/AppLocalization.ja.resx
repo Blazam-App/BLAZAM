@@ -204,6 +204,9 @@
   <data name="Application Credentials" xml:space="preserve">
     <value>アプリケーション資格情報</value>
   </data>
+  <data name="Application logons" xml:space="preserve">
+    <value>アプリケーションのログオン</value>
+  </data>
   <data name="Application Name" xml:space="preserve">
     <value>アプリケーション名</value>
   </data>
@@ -252,6 +255,9 @@
   <data name="BaseDN" xml:space="preserve">
     <value>ベース DN</value>
   </data>
+  <data name="Block" xml:space="preserve">
+    <value>ブロック</value>
+  </data>
   <data name="Branch" xml:space="preserve">
     <value>枝</value>
   </data>
@@ -260,6 +266,9 @@
   </data>
   <data name="Browse" xml:space="preserve">
     <value>ブラウズ</value>
+  </data>
+  <data name="Bypass" xml:space="preserve">
+    <value>バイパス</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>キャンセル</value>
@@ -284,6 +293,9 @@
   </data>
   <data name="City" xml:space="preserve">
     <value>都市</value>
+  </data>
+  <data name="Click to view help documentation" xml:space="preserve">
+    <value>クリックしてヘルプドキュメントを表示</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>閉める</value>
@@ -357,6 +369,9 @@
   <data name="Custom Login" xml:space="preserve">
     <value>カスタムログイン</value>
   </data>
+  <data name="Data Collection Settings" xml:space="preserve">
+    <value>データ収集設定</value>
+  </data>
   <data name="Database" xml:space="preserve">
     <value>データベース</value>
   </data>
@@ -393,6 +408,9 @@
   <data name="Details" xml:space="preserve">
     <value>細部</value>
   </data>
+  <data name="Developer Analytics" xml:space="preserve">
+    <value>開発者分析</value>
+  </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>変更を破棄する</value>
   </data>
@@ -405,6 +423,9 @@
   <data name="Domain" xml:space="preserve">
     <value>ドメイン</value>
   </data>
+  <data name="Download Logs" xml:space="preserve">
+    <value>ログのダウンロード</value>
+  </data>
   <data name="Drive Details" xml:space="preserve">
     <value>ドライブの詳細</value>
   </data>
@@ -413,6 +434,18 @@
   </data>
   <data name="Driver Version" xml:space="preserve">
     <value>ドライバのバージョン</value>
+  </data>
+  <data name="Duo Enabled" xml:space="preserve">
+    <value>Duo 有効</value>
+  </data>
+  <data name="Duo Health Check" xml:space="preserve">
+    <value>デュオヘルスチェック</value>
+  </data>
+  <data name="Duo Security MFA (optional)" xml:space="preserve">
+    <value>Duo Security MFA (オプション)</value>
+  </data>
+  <data name="Duo Unreachable Behavior" xml:space="preserve">
+    <value>Duo の到達不能な動作</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>編集</value>
@@ -455,6 +488,9 @@
   </data>
   <data name="Failed" xml:space="preserve">
     <value>失敗 しました</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>お気に入り</value>
   </data>
   <data name="Field Name" xml:space="preserve">
     <value>フィールド名</value>
@@ -525,8 +561,14 @@
   <data name="Inherited Permissions" xml:space="preserve">
     <value>継承されたアクセス許可</value>
   </data>
+  <data name="Installation Id" xml:space="preserve">
+    <value>インストール ID</value>
+  </data>
   <data name="Job Title" xml:space="preserve">
     <value>役職</value>
+  </data>
+  <data name="Jobs Monitor" xml:space="preserve">
+    <value>ジョブモニター</value>
   </data>
   <data name="Last Change" xml:space="preserve">
     <value>最終変更日</value>
@@ -549,6 +591,9 @@
   <data name="Location" xml:space="preserve">
     <value>場所</value>
   </data>
+  <data name="Locked Out Users" xml:space="preserve">
+    <value>ロックアウトされたユーザー</value>
+  </data>
   <data name="Lockout Time" xml:space="preserve">
     <value>ロックアウト時間</value>
   </data>
@@ -557,6 +602,9 @@
   </data>
   <data name="Log In To Demo" xml:space="preserve">
     <value>デモにログイン</value>
+  </data>
+  <data name="Logging" xml:space="preserve">
+    <value>伐採</value>
   </data>
   <data name="Logins" xml:space="preserve">
     <value>ログイン</value>
@@ -620,6 +668,9 @@
   </data>
   <data name="Not started" xml:space="preserve">
     <value>未開始</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>通知</value>
   </data>
   <data name="Office" xml:space="preserve">
     <value>オフィス</value>
@@ -759,6 +810,9 @@
   <data name="Reset Password" xml:space="preserve">
     <value>パスワードのリセット</value>
   </data>
+  <data name="Resource Usage" xml:space="preserve">
+    <value>リソース使用量</value>
+  </data>
   <data name="Restore" xml:space="preserve">
     <value>戻す</value>
   </data>
@@ -791,6 +845,9 @@
   </data>
   <data name="Script Path" xml:space="preserve">
     <value>スクリプトパス</value>
+  </data>
+  <data name="Send logs to developer" xml:space="preserve">
+    <value>開発者にログを送信する</value>
   </data>
   <data name="Server" xml:space="preserve">
     <value>サーバー</value>
@@ -873,6 +930,9 @@
   <data name="There are no templates available" xml:space="preserve">
     <value>使用可能なテンプレートはありません</value>
   </data>
+  <data name="Time in minutes" xml:space="preserve">
+    <value>時間(分単位)</value>
+  </data>
   <data name="Type" xml:space="preserve">
     <value>種類</value>
   </data>
@@ -914,6 +974,12 @@
   </data>
   <data name="Upload" xml:space="preserve">
     <value>アップロード</value>
+  </data>
+  <data name="Upload Certificate" xml:space="preserve">
+    <value>証明書のアップロード</value>
+  </data>
+  <data name="Upload Icon" xml:space="preserve">
+    <value>アップロードアイコン</value>
   </data>
   <data name="Upload SSL Certificate" xml:space="preserve">
     <value>SSL証明書のアップロード</value>

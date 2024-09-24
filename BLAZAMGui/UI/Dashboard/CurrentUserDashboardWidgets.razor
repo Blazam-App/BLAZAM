@@ -1,3 +1,4 @@
+@using BLAZAM.Gui.Services
 @using BLAZAM.Gui.UI.Dashboard.Widgets;
 @using MudBlazor.Utilities;
 
@@ -124,7 +125,8 @@
 
 @code {
 
-
+    [Inject]
+    public WidgetService WidgetService { get; set; }
     public AppEvent<Widget> OnRefreshWidget { get; set; } = (val) => { };
     IApplicationUserState _currentUser;
     MudDropContainer<UserDashboardWidget>? widgetContainer;
@@ -133,7 +135,7 @@
     protected override Task OnInitializedAsync()
     {
 
-        allWidgets = new List<Widget>(AllWidgets.Available(CurrentUser.State));
+        allWidgets = new List<Widget>(WidgetService.Available());
         _currentUser = CurrentUser.State;
         return base.OnInitializedAsync();
     }

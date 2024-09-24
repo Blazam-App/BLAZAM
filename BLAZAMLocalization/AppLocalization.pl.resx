@@ -204,6 +204,9 @@
   <data name="Application Credentials" xml:space="preserve">
     <value>Poświadczenia aplikacji</value>
   </data>
+  <data name="Application logons" xml:space="preserve">
+    <value>Logowanie do aplikacji</value>
+  </data>
   <data name="Application Name" xml:space="preserve">
     <value>Nazwa aplikacji</value>
   </data>
@@ -252,6 +255,9 @@
   <data name="BaseDN" xml:space="preserve">
     <value>Podstawowa nazwa wyróżniająca</value>
   </data>
+  <data name="Block" xml:space="preserve">
+    <value>Blok</value>
+  </data>
   <data name="Branch" xml:space="preserve">
     <value>Gałąź</value>
   </data>
@@ -260,6 +266,9 @@
   </data>
   <data name="Browse" xml:space="preserve">
     <value>Przeglądać</value>
+  </data>
+  <data name="Bypass" xml:space="preserve">
+    <value>Ominąć</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Anuluj</value>
@@ -284,6 +293,9 @@
   </data>
   <data name="City" xml:space="preserve">
     <value>Miasto</value>
+  </data>
+  <data name="Click to view help documentation" xml:space="preserve">
+    <value>Kliknij, aby wyświetlić dokumentację pomocy</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Zamykać</value>
@@ -357,6 +369,9 @@
   <data name="Custom Login" xml:space="preserve">
     <value>Niestandardowe logowanie</value>
   </data>
+  <data name="Data Collection Settings" xml:space="preserve">
+    <value>Ustawienia zbierania danych</value>
+  </data>
   <data name="Database" xml:space="preserve">
     <value>Baza danych</value>
   </data>
@@ -393,6 +408,9 @@
   <data name="Details" xml:space="preserve">
     <value>Szczegóły</value>
   </data>
+  <data name="Developer Analytics" xml:space="preserve">
+    <value>Analityka dla programistów</value>
+  </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>Odrzuć zmiany</value>
   </data>
@@ -405,6 +423,9 @@
   <data name="Domain" xml:space="preserve">
     <value>Domena</value>
   </data>
+  <data name="Download Logs" xml:space="preserve">
+    <value>Pobieranie dzienników</value>
+  </data>
   <data name="Drive Details" xml:space="preserve">
     <value>Szczegóły napędu</value>
   </data>
@@ -413,6 +434,18 @@
   </data>
   <data name="Driver Version" xml:space="preserve">
     <value>Wersja sterownika</value>
+  </data>
+  <data name="Duo Enabled" xml:space="preserve">
+    <value>Duo Włączone</value>
+  </data>
+  <data name="Duo Health Check" xml:space="preserve">
+    <value>Kontrola stanu Duo</value>
+  </data>
+  <data name="Duo Security MFA (optional)" xml:space="preserve">
+    <value>Duo Security MFA (opcjonalnie)</value>
+  </data>
+  <data name="Duo Unreachable Behavior" xml:space="preserve">
+    <value>Nieosiągalne zachowanie w duecie</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Redagować</value>
@@ -455,6 +488,9 @@
   </data>
   <data name="Failed" xml:space="preserve">
     <value>Nie powiodło się</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Ulubione</value>
   </data>
   <data name="Field Name" xml:space="preserve">
     <value>Nazwa pola</value>
@@ -525,8 +561,14 @@
   <data name="Inherited Permissions" xml:space="preserve">
     <value>Uprawnienia dziedziczone</value>
   </data>
+  <data name="Installation Id" xml:space="preserve">
+    <value>Identyfikator instalacji</value>
+  </data>
   <data name="Job Title" xml:space="preserve">
     <value>Stanowisko</value>
+  </data>
+  <data name="Jobs Monitor" xml:space="preserve">
+    <value>Monitor ofert pracy</value>
   </data>
   <data name="Last Change" xml:space="preserve">
     <value>Ostatnia zmiana</value>
@@ -549,6 +591,9 @@
   <data name="Location" xml:space="preserve">
     <value>Lokalizacja</value>
   </data>
+  <data name="Locked Out Users" xml:space="preserve">
+    <value>Zablokowani użytkownicy</value>
+  </data>
   <data name="Lockout Time" xml:space="preserve">
     <value>Czas blokady</value>
   </data>
@@ -557,6 +602,9 @@
   </data>
   <data name="Log In To Demo" xml:space="preserve">
     <value>Zaloguj się, aby przejść do wersji demonstracyjnej</value>
+  </data>
+  <data name="Logging" xml:space="preserve">
+    <value>Wyrąb</value>
   </data>
   <data name="Logins" xml:space="preserve">
     <value>Logowania</value>
@@ -620,6 +668,9 @@
   </data>
   <data name="Not started" xml:space="preserve">
     <value>Nie rozpoczęto</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Powiadomienia</value>
   </data>
   <data name="Office" xml:space="preserve">
     <value>Biuro</value>
@@ -759,6 +810,9 @@
   <data name="Reset Password" xml:space="preserve">
     <value>Zresetuj hasło</value>
   </data>
+  <data name="Resource Usage" xml:space="preserve">
+    <value>Wykorzystanie zasobów</value>
+  </data>
   <data name="Restore" xml:space="preserve">
     <value>Przywrócić</value>
   </data>
@@ -791,6 +845,9 @@
   </data>
   <data name="Script Path" xml:space="preserve">
     <value>Ścieżka skryptu</value>
+  </data>
+  <data name="Send logs to developer" xml:space="preserve">
+    <value>Wysyłanie dzienników do programisty</value>
   </data>
   <data name="Server" xml:space="preserve">
     <value>Serwer</value>
@@ -873,6 +930,9 @@
   <data name="There are no templates available" xml:space="preserve">
     <value>Brak dostępnych szablonów</value>
   </data>
+  <data name="Time in minutes" xml:space="preserve">
+    <value>Czas w minutach</value>
+  </data>
   <data name="Type" xml:space="preserve">
     <value>Typ</value>
   </data>
@@ -914,6 +974,12 @@
   </data>
   <data name="Upload" xml:space="preserve">
     <value>Przesyłać</value>
+  </data>
+  <data name="Upload Certificate" xml:space="preserve">
+    <value>Prześlij certyfikat</value>
+  </data>
+  <data name="Upload Icon" xml:space="preserve">
+    <value>Ikona przesyłania</value>
   </data>
   <data name="Upload SSL Certificate" xml:space="preserve">
     <value>Prześlij certyfikat SSL</value>
