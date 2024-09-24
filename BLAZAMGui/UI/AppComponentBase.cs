@@ -74,7 +74,7 @@ namespace BLAZAM.Gui.UI
         private ScopedActiveDirectoryContext userActiveDirectoryService { get; set; }
 
         protected bool LoadingData { get; set; } = true;
-        protected IDatabaseContext? Context;
+        //protected IDatabaseContext? Context;
         [Inject]
         protected IAppDatabaseFactory DbFactory { get; set; }
 
@@ -82,14 +82,14 @@ namespace BLAZAM.Gui.UI
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            try
-            {
-                Context = DbFactory.CreateDbContext();
-            }
-            catch (Exception ex)
-            {
-                Loggers.DatabaseLogger.Error("Failed to connect to database {@Error}", ex);
-            }
+            //try
+            //{
+            //    Context = DbFactory.CreateDbContext();
+            //}
+            //catch (Exception ex)
+            //{
+            //    Loggers.DatabaseLogger.Error("Failed to connect to database {@Error}", ex);
+            //}
             try
             {
 
@@ -109,30 +109,31 @@ namespace BLAZAM.Gui.UI
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            if (Context == null)
+            //if (Context == null)
+            //{
+            //    try
+            //    {
+            //        Context = await DbFactory.CreateDbContextAsync();
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Loggers.DatabaseLogger.Error("Failed to connect to database {@Error}", ex);
+            //    }
+            //}
+            try
             {
-                try
-                {
-                    Context = await DbFactory.CreateDbContextAsync();
-                }
-                catch (Exception ex)
-                {
-                    Loggers.DatabaseLogger.Error("Failed to connect to database {@Error}", ex);
-                }
-                try
-                {
 
-                    Directory = userActiveDirectoryService.Context;
-                }
-                catch (Exception ex)
-                {
-                    Loggers.ActiveDirectoryLogger.Error("Failed to connect to scoped active directory {@Error}", ex);
-                }
-                Monitor.OnDirectoryConnectionChanged += (status) =>
-                {
-                    InvokeAsync(StateHasChanged);
-                };
+                Directory = userActiveDirectoryService.Context;
             }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Error("Failed to connect to scoped active directory {@Error}", ex);
+            }
+            Monitor.OnDirectoryConnectionChanged += (status) =>
+            {
+                InvokeAsync(StateHasChanged);
+            };
+
         }
 
         protected void Refresh()

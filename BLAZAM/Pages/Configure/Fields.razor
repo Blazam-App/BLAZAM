@@ -1,6 +1,6 @@
 ﻿@page "/fields"
 @using System.Collections.ObjectModel;
-@inherits AppComponentBase
+@inherits DatabaseComponentBase
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 <MudDataGrid @ref=fieldGrid

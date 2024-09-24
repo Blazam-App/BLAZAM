@@ -9,7 +9,7 @@ namespace BLAZAM.Gui.UI
     /// 
     /// <para>This is primarily geared towards search result pages</para>
     /// </summary>
-    public class DirectoryEntryViewBase : AppComponentBase
+    public class DirectoryEntryViewBase : DatabaseComponentBase
     {
         [Inject]
         public OUNotificationService OUNotificationService { get; set; }
