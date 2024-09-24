@@ -9,7 +9,7 @@
 }
 else
 {
-    <MudAvatar Elevation="4" Style="@AvatarColor">@UserStateService.CurrentUsername?.FirstOrDefault()</MudAvatar>
+    <MudAvatar Elevation="4" Style="@AvatarColor">@GetInitials()</MudAvatar>
 
 }
 
@@ -21,10 +21,10 @@ else
         get
         {
             if (UserState == null) return "background-color:#0c13a7";
-            int usernameHash = UserState.Username?.GetAppHashCode()??0;
+            int usernameHash = UserState.Username?.GetAppHashCode() ?? 0;
             byte[] usernameHashBytes = Helpers.ByteHelpers.ToByteArray(usernameHash, 3);
             int totalBytes = 0;
-            for(int x = 0; x < usernameHashBytes.Length; x++)
+            for (int x = 0; x < usernameHashBytes.Length; x++)
             {
                 totalBytes += usernameHashBytes[x];
             }
@@ -33,7 +33,7 @@ else
             {
                 for (int x = 0; x < usernameHashBytes.Length; x++)
                 {
-                    usernameHashBytes[x] = (byte)((int)usernameHashBytes[x]+distanceFrom255);
+                    usernameHashBytes[x] = (byte)((int)usernameHashBytes[x] + distanceFrom255);
                 }
             }
             string hexColor = "background-color:#";
@@ -43,12 +43,28 @@ else
         }
     }
     [Parameter]
-    public IApplicationUserState? UserState{ get; set; }
+    public IApplicationUserState? UserState { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
     }
-   
+    private string GetInitials()
+    {
+        if (!UserStateService.CurrentUsername.IsNullOrEmpty())
+        {
+            if (UserStateService.CurrentUsername.Split(" ").Length > 1)
+            {
+                string initials = "";
+                UserStateService.CurrentUsername.Split(" ").ForEach(p => initials += p.First());
+                return initials;
+            }
+            else
+            {
+                return UserStateService.CurrentUsername?.FirstOrDefault().ToString();
+            }
+        }
+        return default;
 
+    }
 }
