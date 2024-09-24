@@ -204,6 +204,9 @@
   <data name="Application Credentials" xml:space="preserve">
     <value>응용 프로그램 자격 증명</value>
   </data>
+  <data name="Application logons" xml:space="preserve">
+    <value>응용 프로그램 로그온</value>
+  </data>
   <data name="Application Name" xml:space="preserve">
     <value>응용 프로그램 이름</value>
   </data>
@@ -252,6 +255,9 @@
   <data name="BaseDN" xml:space="preserve">
     <value>기본 DN</value>
   </data>
+  <data name="Block" xml:space="preserve">
+    <value>차단</value>
+  </data>
   <data name="Branch" xml:space="preserve">
     <value>가지</value>
   </data>
@@ -260,6 +266,9 @@
   </data>
   <data name="Browse" xml:space="preserve">
     <value>찾아보기</value>
+  </data>
+  <data name="Bypass" xml:space="preserve">
+    <value>우회</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>취소</value>
@@ -284,6 +293,9 @@
   </data>
   <data name="City" xml:space="preserve">
     <value>도시</value>
+  </data>
+  <data name="Click to view help documentation" xml:space="preserve">
+    <value>도움말 문서를 보려면 클릭하십시오.</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>닫다</value>
@@ -357,6 +369,9 @@
   <data name="Custom Login" xml:space="preserve">
     <value>사용자 지정 로그인</value>
   </data>
+  <data name="Data Collection Settings" xml:space="preserve">
+    <value>데이터 수집 설정</value>
+  </data>
   <data name="Database" xml:space="preserve">
     <value>데이터베이스</value>
   </data>
@@ -393,6 +408,9 @@
   <data name="Details" xml:space="preserve">
     <value>세부 정보</value>
   </data>
+  <data name="Developer Analytics" xml:space="preserve">
+    <value>개발자 분석</value>
+  </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>변경 내용 취소</value>
   </data>
@@ -405,6 +423,9 @@
   <data name="Domain" xml:space="preserve">
     <value>도메인</value>
   </data>
+  <data name="Download Logs" xml:space="preserve">
+    <value>로그 다운로드</value>
+  </data>
   <data name="Drive Details" xml:space="preserve">
     <value>드라이브 세부 정보</value>
   </data>
@@ -413,6 +434,18 @@
   </data>
   <data name="Driver Version" xml:space="preserve">
     <value>드라이버 버전</value>
+  </data>
+  <data name="Duo Enabled" xml:space="preserve">
+    <value>Duo 사용</value>
+  </data>
+  <data name="Duo Health Check" xml:space="preserve">
+    <value>Duo 상태 확인</value>
+  </data>
+  <data name="Duo Security MFA (optional)" xml:space="preserve">
+    <value>Duo Security MFA(선택 사항)</value>
+  </data>
+  <data name="Duo Unreachable Behavior" xml:space="preserve">
+    <value>Duo에 연결할 수 없는 동작</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>편집하다</value>
@@ -455,6 +488,9 @@
   </data>
   <data name="Failed" xml:space="preserve">
     <value>실패</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>즐겨찾기</value>
   </data>
   <data name="Field Name" xml:space="preserve">
     <value>필드 이름</value>
@@ -525,8 +561,14 @@
   <data name="Inherited Permissions" xml:space="preserve">
     <value>상속된 사용 권한</value>
   </data>
+  <data name="Installation Id" xml:space="preserve">
+    <value>설치 ID</value>
+  </data>
   <data name="Job Title" xml:space="preserve">
     <value>직책</value>
+  </data>
+  <data name="Jobs Monitor" xml:space="preserve">
+    <value>작업 모니터</value>
   </data>
   <data name="Last Change" xml:space="preserve">
     <value>마지막 변경</value>
@@ -549,6 +591,9 @@
   <data name="Location" xml:space="preserve">
     <value>위치</value>
   </data>
+  <data name="Locked Out Users" xml:space="preserve">
+    <value>잠긴 사용자</value>
+  </data>
   <data name="Lockout Time" xml:space="preserve">
     <value>잠금 시간</value>
   </data>
@@ -557,6 +602,9 @@
   </data>
   <data name="Log In To Demo" xml:space="preserve">
     <value>데모에 로그인</value>
+  </data>
+  <data name="Logging" xml:space="preserve">
+    <value>로깅</value>
   </data>
   <data name="Logins" xml:space="preserve">
     <value>로그인</value>
@@ -620,6 +668,9 @@
   </data>
   <data name="Not started" xml:space="preserve">
     <value>시작되지 않음</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>알림을</value>
   </data>
   <data name="Office" xml:space="preserve">
     <value>사무실</value>
@@ -759,6 +810,9 @@
   <data name="Reset Password" xml:space="preserve">
     <value>비밀번호 재설정</value>
   </data>
+  <data name="Resource Usage" xml:space="preserve">
+    <value>리소스 사용량</value>
+  </data>
   <data name="Restore" xml:space="preserve">
     <value>복원</value>
   </data>
@@ -791,6 +845,9 @@
   </data>
   <data name="Script Path" xml:space="preserve">
     <value>스크립트 경로</value>
+  </data>
+  <data name="Send logs to developer" xml:space="preserve">
+    <value>개발자에게 로그 보내기</value>
   </data>
   <data name="Server" xml:space="preserve">
     <value>서버</value>
@@ -873,6 +930,9 @@
   <data name="There are no templates available" xml:space="preserve">
     <value>사용할 수 있는 템플릿이 없습니다.</value>
   </data>
+  <data name="Time in minutes" xml:space="preserve">
+    <value>시간(분)</value>
+  </data>
   <data name="Type" xml:space="preserve">
     <value>형</value>
   </data>
@@ -914,6 +974,12 @@
   </data>
   <data name="Upload" xml:space="preserve">
     <value>업로드</value>
+  </data>
+  <data name="Upload Certificate" xml:space="preserve">
+    <value>인증서 업로드</value>
+  </data>
+  <data name="Upload Icon" xml:space="preserve">
+    <value>업로드 아이콘</value>
   </data>
   <data name="Upload SSL Certificate" xml:space="preserve">
     <value>SSL 인증서 업로드</value>

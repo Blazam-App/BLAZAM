@@ -204,6 +204,9 @@
   <data name="Application Credentials" xml:space="preserve">
     <value>Учетные данные приложения</value>
   </data>
+  <data name="Application logons" xml:space="preserve">
+    <value>Вход в систему приложений</value>
+  </data>
   <data name="Application Name" xml:space="preserve">
     <value>Имя приложения</value>
   </data>
@@ -252,6 +255,9 @@
   <data name="BaseDN" xml:space="preserve">
     <value>Базовое DN</value>
   </data>
+  <data name="Block" xml:space="preserve">
+    <value>Блок</value>
+  </data>
   <data name="Branch" xml:space="preserve">
     <value>Ветка</value>
   </data>
@@ -260,6 +266,9 @@
   </data>
   <data name="Browse" xml:space="preserve">
     <value>Просматривать</value>
+  </data>
+  <data name="Bypass" xml:space="preserve">
+    <value>Обходить</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Отмена</value>
@@ -284,6 +293,9 @@
   </data>
   <data name="City" xml:space="preserve">
     <value>Город</value>
+  </data>
+  <data name="Click to view help documentation" xml:space="preserve">
+    <value>Нажмите, чтобы просмотреть справочную документацию</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Закрывать</value>
@@ -357,6 +369,9 @@
   <data name="Custom Login" xml:space="preserve">
     <value>Пользовательский вход</value>
   </data>
+  <data name="Data Collection Settings" xml:space="preserve">
+    <value>Настройки сбора данных</value>
+  </data>
   <data name="Database" xml:space="preserve">
     <value>База данных</value>
   </data>
@@ -393,6 +408,9 @@
   <data name="Details" xml:space="preserve">
     <value>Подробности</value>
   </data>
+  <data name="Developer Analytics" xml:space="preserve">
+    <value>Аналитика для разработчиков</value>
+  </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>Отмена изменений</value>
   </data>
@@ -405,6 +423,9 @@
   <data name="Domain" xml:space="preserve">
     <value>Домен</value>
   </data>
+  <data name="Download Logs" xml:space="preserve">
+    <value>Скачать журналы</value>
+  </data>
   <data name="Drive Details" xml:space="preserve">
     <value>Сведения о диске</value>
   </data>
@@ -413,6 +434,18 @@
   </data>
   <data name="Driver Version" xml:space="preserve">
     <value>Версия драйвера</value>
+  </data>
+  <data name="Duo Enabled" xml:space="preserve">
+    <value>Duo Включен</value>
+  </data>
+  <data name="Duo Health Check" xml:space="preserve">
+    <value>Проверка работоспособности Duo</value>
+  </data>
+  <data name="Duo Security MFA (optional)" xml:space="preserve">
+    <value>Duo Security MFA (опционально)</value>
+  </data>
+  <data name="Duo Unreachable Behavior" xml:space="preserve">
+    <value>Поведение Duo Unreachable</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Редактировать</value>
@@ -455,6 +488,9 @@
   </data>
   <data name="Failed" xml:space="preserve">
     <value>Неудавшийся</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Избранное</value>
   </data>
   <data name="Field Name" xml:space="preserve">
     <value>Имя поля</value>
@@ -525,8 +561,14 @@
   <data name="Inherited Permissions" xml:space="preserve">
     <value>Унаследованные разрешения</value>
   </data>
+  <data name="Installation Id" xml:space="preserve">
+    <value>Идентификатор установки</value>
+  </data>
   <data name="Job Title" xml:space="preserve">
     <value>Должность</value>
+  </data>
+  <data name="Jobs Monitor" xml:space="preserve">
+    <value>Монитор заданий</value>
   </data>
   <data name="Last Change" xml:space="preserve">
     <value>Последнее изменение</value>
@@ -549,6 +591,9 @@
   <data name="Location" xml:space="preserve">
     <value>Местоположение</value>
   </data>
+  <data name="Locked Out Users" xml:space="preserve">
+    <value>Заблокированные пользователи</value>
+  </data>
   <data name="Lockout Time" xml:space="preserve">
     <value>Время блокировки</value>
   </data>
@@ -557,6 +602,9 @@
   </data>
   <data name="Log In To Demo" xml:space="preserve">
     <value>Войти в демонстрацию</value>
+  </data>
+  <data name="Logging" xml:space="preserve">
+    <value>Лесозаготовка</value>
   </data>
   <data name="Logins" xml:space="preserve">
     <value>Имена входа</value>
@@ -620,6 +668,9 @@
   </data>
   <data name="Not started" xml:space="preserve">
     <value>Не начато</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Уведомления</value>
   </data>
   <data name="Office" xml:space="preserve">
     <value>Офис</value>
@@ -759,6 +810,9 @@
   <data name="Reset Password" xml:space="preserve">
     <value>Сброс пароля</value>
   </data>
+  <data name="Resource Usage" xml:space="preserve">
+    <value>Использование ресурсов</value>
+  </data>
   <data name="Restore" xml:space="preserve">
     <value>Восстанавливать</value>
   </data>
@@ -791,6 +845,9 @@
   </data>
   <data name="Script Path" xml:space="preserve">
     <value>Путь к сценарию</value>
+  </data>
+  <data name="Send logs to developer" xml:space="preserve">
+    <value>Отправка логов разработчику</value>
   </data>
   <data name="Server" xml:space="preserve">
     <value>Сервер</value>
@@ -873,6 +930,9 @@
   <data name="There are no templates available" xml:space="preserve">
     <value>Нет доступных шаблонов</value>
   </data>
+  <data name="Time in minutes" xml:space="preserve">
+    <value>Время в минутах</value>
+  </data>
   <data name="Type" xml:space="preserve">
     <value>Тип</value>
   </data>
@@ -914,6 +974,12 @@
   </data>
   <data name="Upload" xml:space="preserve">
     <value>Закачать</value>
+  </data>
+  <data name="Upload Certificate" xml:space="preserve">
+    <value>Загрузить сертификат</value>
+  </data>
+  <data name="Upload Icon" xml:space="preserve">
+    <value>Значок загрузки</value>
   </data>
   <data name="Upload SSL Certificate" xml:space="preserve">
     <value>Загрузить SSL-сертификат</value>
