@@ -11,12 +11,17 @@
 
         <SettingsField Label="@AppLocalization["Admin Password"]">
 
-            <MudTextField Label="@AppLocalization["Admin Password"]" InputType="InputType.Password" @bind-Value="newAdminPassword" />
+            <MudTextField Label="@AppLocalization["Admin Password"]"
+                          InputType="InputType.Password"
+                          @bind-Value="newAdminPassword" />
         </SettingsField>
 
         <SettingsField Label="@AppLocalization["Session Timeout"]">
 
-            <MudNumericField Label="@AppLocalization["Session Timeout"]" HelperText="Time in minute" T="int?" @bind-Value="@settings.SessionTimeout" />
+            <MudNumericField Label="@AppLocalization["Session Timeout"]"
+                             HelperText=@AppLocalization["Time in minutes"] 
+                             T="int?" 
+                             @bind-Value="@settings.SessionTimeout" />
 
         </SettingsField>
         <MudDivider Class="my-6" />
@@ -35,7 +40,7 @@
         </SettingsField>
         <SettingsField Label="@AppLocalization["Duo Unreachable Behavior"]">
 
-            <MudSwitch Label=@settings.DuoUnreachableBehavior.ToString()
+            <MudSwitch Label=@AppLocalization[settings.DuoUnreachableBehavior.ToString()]
                        T="DuoUnreachableBehavior"
                        Converter=@(new BehaviorConverter())
                        @bind-Value="@settings.DuoUnreachableBehavior"
@@ -65,7 +70,11 @@
 
         <SettingsField>
 
-            <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+            <MudButton Disabled="SaveDisabled"
+                ButtonType="ButtonType.Submit"
+                Color="Color.Success">
+                @AppLocalization["Save Changes"]
+            </MudButton>
 
         </SettingsField>
 
@@ -79,7 +88,6 @@
     string adminPasswordInDb;
     bool? duoHealthCheckResult = null;
 
-    string _timeoutString = "Loading...";
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -91,7 +99,6 @@
             originalSettings = await Context.AuthenticationSettings.AsNoTracking().FirstOrDefaultAsync();
 
             settings = await Context.AuthenticationSettings.FirstOrDefaultAsync();
-            _timeoutString = settings.SessionTimeout.ToString() + " Minutes";
 
             //Pull encrypted admin pass and store encrypted value
             adminPasswordInDb = settings?.AdminPassword;
@@ -118,12 +125,7 @@
         }
         await InvokeAsync(StateHasChanged);
     }
-    private void UpdateTimeoutDisplay()
-    {
-        _timeoutString = settings.SessionTimeout.ToString() + " Minutes";
-        InvokeAsync(StateHasChanged);
-
-    }
+   
     protected override async void Save()
     {
         var decryptedPass = adminPasswordInDb.Decrypt<string>();

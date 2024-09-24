@@ -11,10 +11,11 @@
     </ItemOpposite>
     <ItemContent>
         <MudCard Class="pa-3">
-
-            <MudText Color="UpdateColor" Typo="Typo.h6" GutterBottom="true">@Title</MudText>
-            <MudText Typo="Typo.body1" GutterBottom="true">@AppLocalization["Branch"]: @Update.Branch</MudText>
-            <MudExpansionPanels Elevation=0 DisableBorders=true>
+            <MudStack Row=true>
+                <MudText Color="UpdateColor" Typo="Typo.h6" GutterBottom="true">@Title</MudText>
+                <MudChip Size=Size.Small T="string" Color="@Color.Tertiary">@Update.Branch</MudChip>
+            </MudStack>
+            <MudExpansionPanels Elevation=0>
                 <MudExpansionPanel Text="@AppLocalization["Release Notes"]">
                     <MudMarkdown OverrideHeaderTypo=ConvertHeaders Value="@Update.Release.ReleaseNotes" />
                 </MudExpansionPanel>
@@ -23,7 +24,7 @@
             {
                 <MudButton Class="mx-6" Variant=Variant.Filled Color=Color.Success OnClick="(()=>{OnApply.InvokeAsync();})">Apply Update</MudButton>
                 @if (ApplicationInfo.InDebugMode)
-                { 
+                {
                     <MudButton Class="mx-6" Disabled=@(AutoUpdateService.IsUpdatedScheduled) OnClick="(()=>{OnSchedule.InvokeAsync();})" Color="Color.Success">Test Auto Update</MudButton>
 
 
@@ -32,12 +33,12 @@
             else if (Update.Newer && !Update.PassesPrerequisiteChecks)
             {
                 <MudStack Row=true>
-                    <MudIcon Color=Color.Error Icon="@Icons.Material.Filled.Error"/>
+                    <MudIcon Color=Color.Error Icon="@Icons.Material.Filled.Error" />
                     <MudText>@AppLocalization["Unable to update!"]</MudText>
                 </MudStack>
                 <MudText>@Update.PrequisiteMessage</MudText>
             }
-            @if(ApplicationInfo.InDebugMode && CurrentUser.State.IsSuperAdmin)
+            @if (ApplicationInfo.InDebugMode && CurrentUser.State.IsSuperAdmin)
             {
                 <MudText>@Update.UpdateCommand</MudText>
             }
@@ -117,7 +118,10 @@
     }
     private TimelineAlign UpdateAlign => Even == true ? TimelineAlign.End : TimelineAlign.Default;
 
-    private Color UpdateColor {get{
+    private Color UpdateColor
+    {
+        get
+        {
             switch (ApplicationInfo.RunningVersion.CompareTo(Update.Version))
             {
                 case 1:
@@ -139,7 +143,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-      
+
     }
 
 }

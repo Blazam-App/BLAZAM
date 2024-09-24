@@ -67,7 +67,7 @@
 
 
             <MudLink Href="/download/logs" Target="Target.Blank">
-                <MudButton Variant=Variant.Outlined Color="Color.Primary">Download Logs</MudButton>
+                <MudButton Variant=Variant.Outlined Color="Color.Primary">@AppLocalization["Download Logs"]</MudButton>
             </MudLink>
             <MudText>Log Directory: @Loggers.LogPath</MudText>
 
@@ -89,7 +89,11 @@
 
         <SettingsField>
 
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+            <MudButton
+                ButtonType="ButtonType.Submit"
+            Color="Color.Success">
+                @AppLocalization["Save Changes"]
+        </MudButton>
 
         </SettingsField>
     </MudStack>
