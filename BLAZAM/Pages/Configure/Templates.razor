@@ -8,20 +8,20 @@
 <SetHeader @ref=Header>
 
 
-    <MudStack Row=true>
+    <MudStack Row=true AlignItems="AlignItems.Center">
         <MudText Class="align-middle" Align="Align.Center">
             @AppLocalization["Templates"]
 
         </MudText>
 
         <MudSelectList T="string"
-                       Label="Category"
+                       Label=@AppLocalization["Category"]
                        Values="TemplateCategories"
                        @bind-Value="@SelectedCategory" />
 
         <MudSelectList T="DirectoryTemplate"
                        Disabled=@(Templates.Where(t=>t.DeletedAt==null).Count()<1)
-                       Label="Template"
+                       Label=@AppLocalization["Template"]
                        Values="@Templates.Where(t=>t.DeletedAt==null)"
                        Value="@SelectedTemplate"
                        ValueChanged="@((selected)=>{
@@ -259,9 +259,9 @@
     {
         foreach (var template in setToFill)
         {
-            if (Templates.Any(t => t.ParentTemplateId == template.Value.Id))
+            if (Templates.Any(t => t.ParentTemplateId == template.Value?.Id))
             {
-                var children = Templates.Where(t => t.ParentTemplateId == template.Value.Id && t.DeletedAt == null).ToTreeItemData();
+                var children = Templates.Where(t => t.ParentTemplateId == template.Value?.Id && t.DeletedAt == null).ToTreeItemData();
                 children = RecursiveFillTreeViewItems(children);
                 template.Children = children;
             }

@@ -63,7 +63,7 @@
                                Variant="Variant.Filled"
                                Color="Color.Primary"
                                StartIcon="@Icons.Material.Filled.CloudUpload">
-                        Upload Icon
+                       @AppLocalization["Upload Icon"]
                     </MudButton>
                 </ActivatorContent>
             </MudFileUpload>
@@ -73,7 +73,12 @@
 
         <SettingsField Label="@AppLocalization["Website FQDN"]">
 
-            <MudTextField Label="@AppLocalization["Website FQDN"]" For=@(()=> settings.AppFQDN) ErrorText="Must be a valid domain name" HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
+            <MudTextField Label="@AppLocalization["Website FQDN"]"
+                          For=@(()=> settings.AppFQDN)
+                          ErrorText="Must be a valid domain name"
+                          HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)"
+                          Placeholder="Enter the web address"
+                          @bind-Value="@settings.AppFQDN" />
 
         </SettingsField>
 
@@ -84,7 +89,7 @@
                            Variant="Variant.Filled"
                            Color="Color.Primary"
                            StartIcon="@Icons.Material.Filled.CloudUpload">
-                    Upload Certificate
+                    @AppLocalization["Upload Certificate"]
                 </MudButton>
 
             </SettingsField>
@@ -104,7 +109,11 @@
         <RDPModal/>
         </AppModal> *@
         <SettingsField>
-            <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+            <MudButton Disabled="SaveDisabled"
+                ButtonType="ButtonType.Submit"
+                Color="Color.Success">
+                @AppLocalization["Save Changes"]
+            </MudButton>
         </SettingsField>
 
     </MudStack>

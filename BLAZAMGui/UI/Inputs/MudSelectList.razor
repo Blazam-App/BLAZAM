@@ -12,15 +12,17 @@
              @ref=_selectMenu
              Class=@(Class+" mud-width-full")
              ListClass="minw-max"
+             AnchorOrigin="Origin.BottomCenter"
+             TransformOrigin="Origin.TopCenter"
              PopoverClass="minw-max">
         <ActivatorContent>
             <MudField Label="@Label">
                 <MudStack Row=true>
                     @if (SelectedValues.Count() > 0 || Value != null)
                     {
-                        <MudElement>
+                        <MudText>
                             @Text
-                        </MudElement>
+                        </MudText>
                     }
                     else
                     {
