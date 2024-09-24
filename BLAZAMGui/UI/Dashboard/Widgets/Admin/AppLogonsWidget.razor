@@ -1,0 +1,80 @@
+﻿@using BLAZAM.Database.Models.Audit
+@inherits Widget
+@attribute [Authorize]
+
+<MudDataGrid T="LogonAuditLog"
+             Items="@UserLogons"
+             Dense=true
+             Filterable=true
+             RowsPerPage="@ItemsPerPage"
+             RowsPerPageChanged="@SetRowsPerPage"
+             FilterMode="DataGridFilterMode.Simple"
+             Loading=@LoadingData
+             Square=true
+             ColumnResizeMode="ResizeMode.Column"
+             Virtualize
+             Class="py-0"
+             SortMode="SortMode.Single">
+    <Columns>
+        <TemplateColumn Title="User">
+            <CellTemplate>
+                            <MudText>@context.Item?.Username</MudText>
+            </CellTemplate>
+        </TemplateColumn> 
+        <TemplateColumn Title="IP">
+            <CellTemplate>
+                            <MudText>@context.Item?.IpAddress</MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Logged On">
+            <CellTemplate>
+                            <MudText>@context.Item?.Timestamp</MudText>
+            </CellTemplate>
+        </TemplateColumn>
+       
+
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="LogonAuditLog" />
+    </PagerContent>
+</MudDataGrid>
+
+@code {
+    List<LogonAuditLog> UserLogons
+    {
+        get => CurrentUser.State?.Cache.Get<List<LogonAuditLog>>(this.GetType());
+        set => CurrentUser.State?.Cache.Set(this.GetType(), value);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
+        {
+            if (widget.WidgetType.Equals(WidgetType))
+            {
+                _ = RefreshData();
+
+            }
+
+        };
+
+        _ = RefreshData();
+    }
+
+    async Task RefreshData()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        UserLogons = (await Context.LogonAuditLog.OrderByDescending(u => u.Timestamp).Take(50).ToListAsync());
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    void GoTo(DataGridRowClickEventArgs<IADUser> args)
+    {
+        Nav.NavigateTo(args.Item.SearchUri);
+    }
+   
+}
