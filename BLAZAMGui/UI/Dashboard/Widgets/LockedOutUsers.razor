@@ -1,7 +1,7 @@
 ﻿@inherits Widget
 @attribute [Authorize]
 <MudDataGrid T="IADUser"
-             Items="@LockedUsers"
+             Items="@LockedUsers.Where(u=>u.LockedOut)"
              Dense=true
              Filterable=true
              RowsPerPage="@ItemsPerPage"

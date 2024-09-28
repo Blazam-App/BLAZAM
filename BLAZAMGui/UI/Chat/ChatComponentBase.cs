@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Gui.UI.Chat
 {
-    public class ChatComponentBase : AppComponentBase
+    public class ChatComponentBase : DatabaseComponentBase
     {
         /// <summary>
         /// Set's predefined page for this chat display
