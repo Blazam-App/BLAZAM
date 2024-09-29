@@ -1,3 +1,4 @@
+@inject IStringLocalizer<AppLocalization> AppLocalization
 @{
     var lockoutBadgeVisible = false;
     var disabledBadgeVisible = false;
@@ -18,7 +19,10 @@
 
 <MudGrid Class="mud-width-full" Spacing="0">
     <MudItem sm="12" md="2">
-        <MudIcon Disabled=Disabled Icon="@typeIcon"/>
+        <AppTooltip Text="@AppLocalization[Entry.ObjectType.ToString()]">
+            <MudIcon Disabled=Disabled Icon="@typeIcon" />
+        </AppTooltip>
+
 
     </MudItem>
     <MudItem sm="12" md="10">
@@ -36,19 +40,19 @@
             @if (lockoutBadgeVisible)
             {
                 <MudChip T="string"
-                    Size=Size.Small 
-                    Disabled=true
-                    Color="Color.Warning" 
-                    Text=@("Locked") />
+                         Size=Size.Small
+                         Disabled=true
+                         Color="Color.Warning"
+                         Text=@("Locked") />
 
             }
             @if (disabledBadgeVisible)
             {
                 <MudChip T="string"
-                    Size=Size.Small
-                    Disabled=true
-                    Color="Color.Error" 
-                    Text=@("Disabled") />
+                         Size=Size.Small
+                         Disabled=true
+                         Color="Color.Error"
+                         Text=@("Disabled") />
 
             }
         </MudStack>
@@ -74,11 +78,11 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _=Task.Run(async() =>
+        _ = Task.Run(async () =>
         {
             await Task.Delay(10);
             await LoadTypeIcon();
-        
+
         });
 
     }
@@ -88,4 +92,3 @@
         await InvokeAsync(StateHasChanged);
     }
 }
-                
