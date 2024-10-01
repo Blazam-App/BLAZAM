@@ -19,9 +19,21 @@
     <Columns>
         <TemplateColumn Style="width:100px;" Title="Type">
             <CellTemplate>
-                <AppTooltip Text="@AppLocalization[context.Item.ObjectType.ToString()]">
-                    <MudIcon Icon="@context.Item.TypeIcon()" />
-                </AppTooltip>
+                <MudContextMenu>
+
+                    <ChildContent>
+
+                        <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                            <MudText>@context.Item?.CanonicalName</MudText>
+                        </AppTooltip>
+
+                    </ChildContent>
+                    <MenuContents>
+
+                        <DirectoryEntryContextMenuItems Entry="@context.Item" />
+
+                    </MenuContents>
+                </MudContextMenu>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="Name">
