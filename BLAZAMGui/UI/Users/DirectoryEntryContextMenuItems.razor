@@ -52,7 +52,7 @@
         }
     }
 
-    async void EnableUser(IAccountDirectoryAdapter userToUnlock)
+    async void EnableAccount(IAccountDirectoryAdapter userToUnlock)
     {
         if (userToUnlock.Disabled)
         {
@@ -74,7 +74,7 @@
         }
     }
 
-    async void DisableUser(IAccountDirectoryAdapter userToUnlock)
+    async void DisableAccount(IAccountDirectoryAdapter userToUnlock)
     {
         if (userToUnlock.Enabled)
         {
