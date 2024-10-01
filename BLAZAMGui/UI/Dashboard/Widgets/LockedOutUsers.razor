@@ -29,13 +29,7 @@
                     </ChildContent>
                     <MenuContents>
 
-                        @if (@context.Item.CanUnlock)
-                        {
-                            <MudMenuItem OnClick="(()=>{UnlockAccount(context.Item);})" Icon="@Icons.Material.Outlined.LockOpen">
-                                @AppLocalization["Unlock User"]
-                            </MudMenuItem>
-
-                        }
+                     <DirectoryEntryContextMenuItems Entry="@context.Item"/>
 
                     </MenuContents>
                 </MudContextMenu>

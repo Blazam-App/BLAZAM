@@ -4,9 +4,21 @@
     if(account.CanUnlock && account.LockedOut)
     {
         <MudMenuItem OnClick="(()=>{UnlockAccount(account);})" Icon="@Icons.Material.Outlined.LockOpen">
-            @AppLocalization["Unlock User"]
+            @AppLocalization["Unlock"] @AppLocalization[account.ObjectType.ToString()]
         </MudMenuItem>
 
+    }
+    if (account.Enabled)
+    {
+        <MudMenuItem OnClick="(()=>{UnlockAccount(account);})" Icon="@Icons.Material.Outlined.Cancel">
+            @AppLocalization["Disable"] @AppLocalization[account.ObjectType.ToString()]
+        </MudMenuItem>
+    }
+    if (account.Disabled)
+    {
+        <MudMenuItem OnClick="(()=>{UnlockAccount(account);})" Icon="@Icons.Material.Outlined.Check">
+            @AppLocalization["Enable"] @AppLocalization[account.ObjectType.ToString()]
+        </MudMenuItem>
     }
 }
 
