@@ -20,15 +20,28 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
-                <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
-                    <MudText>@context.Item.CanonicalName</MudText>
-                </AppTooltip>
+                <MudContextMenu>
+
+                    <ChildContent>
+
+                        <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                            <MudText>@context.Item?.CanonicalName</MudText>
+                        </AppTooltip>
+
+                    </ChildContent>
+                    <MenuContents>
+
+                        <DirectoryEntryContextMenuItems Entry="@context.Item" />
+
+                    </MenuContents>
+                </MudContextMenu>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization["Created"]>
             <CellTemplate>
                 @if (context.Item?.Created != null)
                 {
+    
                     <MudText>@context.Item.Created.Value.ToLocalTime()</MudText>
                 }
             </CellTemplate>

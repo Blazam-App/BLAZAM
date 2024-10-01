@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.0.3</AssemblyVersion>
-		<Version>2024.09.28.2308</Version>
+		<Version>2024.10.01.0034</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -57,7 +57,7 @@
 		<PackageReference Include="BlazorTemplater" Version="1.5.1" />
 		<PackageReference Include="Cassia" Version="2.0.0.60" />
 		<PackageReference Include="DuoUniversal" Version="1.2.5" />
-		<PackageReference Include="MailKit" Version="4.7.1.1" />
+		<PackageReference Include="MailKit" Version="4.8.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.8" />

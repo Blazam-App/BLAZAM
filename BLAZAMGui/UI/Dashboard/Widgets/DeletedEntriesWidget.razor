@@ -19,7 +19,9 @@
     <Columns>
         <TemplateColumn Style="width:100px;" Title="Type">
             <CellTemplate>
-                <MudIcon Icon="@context.Item.TypeIcon()" />
+                <AppTooltip Text="@AppLocalization[context.Item.ObjectType.ToString()]">
+                    <MudIcon Icon="@context.Item.TypeIcon()" />
+                </AppTooltip>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="Name">

@@ -4,9 +4,21 @@
     if(account.CanUnlock && account.LockedOut)
     {
         <MudMenuItem OnClick="(()=>{UnlockAccount(account);})" Icon="@Icons.Material.Outlined.LockOpen">
-            @AppLocalization["Unlock User"]
+            @AppLocalization["Unlock"] @AppLocalization[account.ObjectType.ToString()]
         </MudMenuItem>
 
+    }
+    if (account.Enabled)
+    {
+        <MudMenuItem OnClick="(()=>{DisableAccount(account);})" Icon="@Icons.Material.Outlined.Cancel">
+            @AppLocalization["Disable"] @AppLocalization[account.ObjectType.ToString()]
+        </MudMenuItem>
+    }
+    if (account.Disabled)
+    {
+        <MudMenuItem OnClick="(()=>{EnableAccount(account);})" Icon="@Icons.Material.Outlined.Check">
+            @AppLocalization["Enable"] @AppLocalization[account.ObjectType.ToString()]
+        </MudMenuItem>
     }
 }
 
@@ -36,6 +48,50 @@
             else
             {
                 SnackBarService.Error("Could not unlock: " + unlockJob.Exception?.Message);
+            }
+        }
+    }
+
+    async void EnableAccount(IAccountDirectoryAdapter userToUnlock)
+    {
+        if (userToUnlock.Disabled)
+        {
+
+            userToUnlock.Enabled = true;
+            var changes = userToUnlock.Changes;
+
+            var unlockJob = await userToUnlock.CommitChangesAsync();
+            await AuditLogger.User.Changed(userToUnlock, changes);
+            if (unlockJob.Result == JobResult.Passed)
+            {
+
+                SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" enabled"]);
+            }
+            else
+            {
+                SnackBarService.Error("Could not enable: " + unlockJob.Exception?.Message);
+            }
+        }
+    }
+
+    async void DisableAccount(IAccountDirectoryAdapter userToUnlock)
+    {
+        if (userToUnlock.Enabled)
+        {
+
+            userToUnlock.Enabled = false;
+            var changes = userToUnlock.Changes;
+
+            var unlockJob = await userToUnlock.CommitChangesAsync();
+            await AuditLogger.User.Changed(userToUnlock, changes);
+            if (unlockJob.Result == JobResult.Passed)
+            {
+
+                SnackBarService.Success(userToUnlock.CanonicalName + AppLocalization[" disabled"]);
+            }
+            else
+            {
+                SnackBarService.Error("Could not disable: " + unlockJob.Exception?.Message);
             }
         }
     }
