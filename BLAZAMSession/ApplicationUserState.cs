@@ -56,15 +56,10 @@ namespace BLAZAM.Server.Data.Services
             }
         }
         public IList<ReadNewsItem> ReadNewsItems => Preferences?.ReadNewsItems ?? new();
-        //public List<ReadChatMessage> ReadChatMessages => Preferences.ReadChatMessages.ToList();
 
         public int Id => Preferences != null ? Preferences.Id : 0;
 
 
-        //public bool IsChatMessageRead(ChatMessage message)
-        //{
-        //    return ReadChatMessages.Any(rm=>rm.Equals(message));
-        //}
         public IApplicationUserSessionCache Cache { get; set; } = new ApplicationUserSessionCache();
 
         public AuthenticationTicket? Ticket { get; set; }
@@ -140,7 +135,7 @@ namespace BLAZAM.Server.Data.Services
                         userSettings.Email = email;
                     }
                     userSettings.UserGUID = User.FindFirstValue(ClaimTypes.Sid);
-                    userSettings.Username = User.Identity?.Name;
+                    userSettings.Username = Username;
                     context.UserSettings.Add(userSettings);
 
                     context.SaveChanges();

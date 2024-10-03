@@ -1,0 +1,46 @@
+﻿@inherits MudTooltip
+<MudTooltip Color=@Color
+            Arrow=@Arrow
+            Class="@Class"
+            Delay="@Delay"
+            Disabled=@Disabled
+            Duration="@Duration"
+            Inline=@Inline
+            Placement="@Placement"
+            RootClass="@RootClass"
+            RootStyle="@RootStyle"
+            ShowOnClick=@ShowOnClick
+            ShowOnFocus=@ShowOnFocus
+            ShowOnHover=@ShowOnHover
+            Style="@Style"
+            Tag="@Tag"
+            UserAttributes="@UserAttributes"
+            Visible=@Visible
+            VisibleChanged="@VisibleChanged">
+    <TooltipContent>
+        @if (Text.IsNullOrEmpty())
+        {
+            @TooltipContent
+        }
+        else
+        {
+            <MudText Typo=Typo.caption
+                     Color="@TextColor">@Text</MudText>
+        }
+    </TooltipContent>
+    <ChildContent>
+        @ChildContent
+    </ChildContent>
+</MudTooltip>
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        //if (Color is Color.Default) Color = Color.Surface;
+    }
+
+    [Parameter]
+    public Color TextColor { get; set; }
+}

@@ -15,12 +15,12 @@
         </MudText>
 
     }
-    <MudTooltip Text="@AppLocalization["Remove Group"]">
+    <AppTooltip Text="@AppLocalization["Remove Group"]">
         <MudIconButton OnClick=@(()=>{
                        Template.AssignedGroupSids.Remove(Group);
                        OnGroupRemoved.InvokeAsync(Group);
                        }) Color=Color.Error Icon="@Icons.Material.Filled.Close" />
-    </MudTooltip>
+    </AppTooltip>
 </MudStack>
 @code {
     [Parameter]

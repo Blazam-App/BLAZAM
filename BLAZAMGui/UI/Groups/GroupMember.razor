@@ -1,17 +1,22 @@
 ﻿@inherits DirectoryModelComponent
 
-    @if (Member != null)
-    {
+@if (Member != null)
+{
 
-    <MudText Style="cursor:pointer;" Display=Display.InlineBlock onclick="@(()=>{Nav.NavigateTo(Member.SearchUri);})">
-                @Member.CanonicalName
+    <MudText Style="cursor:pointer;"
+             Display=Display.InlineBlock
+             onclick="@(()=>{Nav.NavigateTo(Member.SearchUri);})">
+        @Member.CanonicalName
 
-            </MudText>
+    </MudText>
 
-    <MudIcon Icon="@("fa-times")" OnClick="RemoveFromGroup" Float=Float.End Color="Color.Error" Style="cursor:pointer;" />
+    <MudIcon Icon="@("fa-times")" sOnClick="RemoveFromGroup"
+             Float=Float.End
+             Color="Color.Error"
+             Style="cursor:pointer;" />
 
-      
-    }
+
+}
 
 
 @code {
@@ -27,12 +32,9 @@
     public EventCallback<GroupMembershipChange> OnGroupMembershipChange { get; set; }
     async Task RemoveFromGroup()
     {
-      
-            Group.UnassignMember(Member);
-            await OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group,GroupMembershipAction.Unassign));
 
-           // Notifications.Success("Removed from " + Group.DisplayName, "Sucess", options => options.IntervalBeforeClose = 5000);
-        
+        Group.UnassignMember(Member);
+        await OnGroupMembershipChange.InvokeAsync(new GroupMembershipChange(Member, Group, GroupMembershipAction.Unassign));    
     }
 
 }

@@ -2,7 +2,7 @@
 
 namespace BLAZAM.Gui.UI
 {
-    public class TabbedAppComponentBase : AppComponentBase
+    public class TabbedAppComponentBase : DatabaseComponentBase
     {
         /// <summary>
         /// The base tab uri

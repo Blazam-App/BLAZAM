@@ -58,7 +58,9 @@
             <Columns>
                 <TemplateColumn Title=@AppLocalization["Type"]>
                     <CellTemplate>
+                    <AppTooltip Text="@AppLocalization[context.Item.ObjectType.ToString()]">
                         <MudIcon Icon="@context.Item.TypeIcon()" />
+                    </AppTooltip>
                     </CellTemplate>
                 </TemplateColumn>
                 <PropertyColumn Title="@AppLocalization["Name"]" Property="x=>x.CanonicalName" />

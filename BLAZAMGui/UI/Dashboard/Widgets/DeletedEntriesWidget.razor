@@ -19,21 +19,25 @@
     <Columns>
         <TemplateColumn Style="width:100px;" Title="Type">
             <CellTemplate>
-                <MudIcon Icon="@context.Item.TypeIcon()" />
+               
+                        <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                            <MudText>@context.Item?.CanonicalName</MudText>
+                        </AppTooltip>
+
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="Name">
             <CellTemplate>
-                <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
                     <MudText>@context.Item?.CanonicalName</MudText>
-                </MudTooltip>
+                </AppTooltip>
             </CellTemplate>
         </TemplateColumn>
         <PropertyColumn Property="x=>x.LastChanged" Title="Deleted" />
 
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="IDirectoryEntryAdapter" />
+        <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IDirectoryEntryAdapter" />
     </PagerContent>
 </MudDataGrid>
 

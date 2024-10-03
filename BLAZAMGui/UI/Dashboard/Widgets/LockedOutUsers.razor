@@ -1,7 +1,7 @@
 ﻿@inherits Widget
 @attribute [Authorize]
 <MudDataGrid T="IADUser"
-             Items="@LockedUsers"
+             Items="@LockedUsers.Where(u=>u.LockedOut)"
              Dense=true
              Filterable=true
              RowsPerPage="@ItemsPerPage"
@@ -22,20 +22,14 @@
 
                     <ChildContent>
 
-                        <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                        <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
                             <MudText>@context.Item?.CanonicalName</MudText>
-                        </MudTooltip>
+                        </AppTooltip>
 
                     </ChildContent>
                     <MenuContents>
 
-                        @if (@context.Item.CanUnlock)
-                        {
-                            <MudMenuItem OnClick="(()=>{UnlockAccount(context.Item);})" Icon="@Icons.Material.Outlined.LockOpen">
-                                @AppLocalization["Unlock User"]
-                            </MudMenuItem>
-
-                        }
+                     <DirectoryEntryContextMenuItems Entry="@context.Item"/>
 
                     </MenuContents>
                 </MudContextMenu>

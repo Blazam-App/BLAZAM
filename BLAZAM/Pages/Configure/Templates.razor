@@ -8,20 +8,20 @@
 <SetHeader @ref=Header>
 
 
-    <MudStack Row=true>
+    <MudStack Row=true AlignItems="AlignItems.Center">
         <MudText Class="align-middle" Align="Align.Center">
             @AppLocalization["Templates"]
 
         </MudText>
 
         <MudSelectList T="string"
-                       Label="Category"
+                       Label=@AppLocalization["Category"]
                        Values="TemplateCategories"
                        @bind-Value="@SelectedCategory" />
 
         <MudSelectList T="DirectoryTemplate"
                        Disabled=@(Templates.Where(t=>t.DeletedAt==null).Count()<1)
-                       Label="Template"
+                       Label=@AppLocalization["Template"]
                        Values="@Templates.Where(t=>t.DeletedAt==null)"
                        Value="@SelectedTemplate"
                        ValueChanged="@((selected)=>{
@@ -30,7 +30,7 @@
                                         })" />
         @if (createFirstTemplateTooltipVisible)
         {
-            <MudTooltip Color=Color.Error
+            <AppTooltip Color=Color.Error
                         ShowOnHover=@(Templates?.Count() < 1)
                         Arrow=true
                         Visible=@(createFirstTemplateTooltipVisible)
@@ -43,56 +43,56 @@
                                OnClick="@(NewTemplate)"
                                Icon="@Icons.Material.Filled.AddCard" />
 
-            </MudTooltip>
+            </AppTooltip>
         }
         else
         {
-            <MudTooltip Text="@AppLocalization["New template"]">
+            <AppTooltip Text="@AppLocalization["New template"]">
                 <MudIconButton Color=Color.Tertiary
                                Class="align-middle"
                                OnClick="@(NewTemplate)"
                                Icon="@Icons.Material.Filled.AddCard" />
 
-            </MudTooltip>
+            </AppTooltip>
         }
 
         @if (SelectedCategory != null && SelectedCategory != "All")
         {
-            <MudTooltip Text="@AppLocalization["Rename Category"]">
+            <AppTooltip Text="@AppLocalization["Rename Category"]">
                 <MudIconButton OnClick=@(()=>{RenameModal?.ShowAsync();})
                                Color="Color.Tertiary"
                                Class="align-middle"
                                Icon="@Icons.Material.Filled.ChangeCircle" />
-            </MudTooltip>
+            </AppTooltip>
         }
         @if (SelectedTemplate != null)
         {
-            <MudTooltip Text="@AppLocalization["Copy template"]">
+            <AppTooltip Text="@AppLocalization["Copy template"]">
 
                 <MudIconButton OnClick=@(async()=>{await DuplicateTemplate(SelectedTemplate);})
                                Color="Color.Tertiary"
                                Class="align-middle"
                                Icon="@Icons.Material.Filled.FileCopy" />
-            </MudTooltip>
-            <MudTooltip Text="@AppLocalization["Remove template"]">
+            </AppTooltip>
+            <AppTooltip Text="@AppLocalization["Remove template"]">
 
 
                 <MudIconButton Color=Color.Error
                                Class="align-middle"
                                OnClick="DeleteTemplate"
                                Icon="@Icons.Material.Filled.Delete" />
-            </MudTooltip>
+            </AppTooltip>
         }
 
         @if (Templates?.Any(t => t.DeletedAt != null) == true)
         {
-            <MudTooltip Text="@AppLocalization["Restore templates"]">
+            <AppTooltip Text="@AppLocalization["Restore templates"]">
 
                 <MudIconButton OnClick=@(async()=>{RestoreModal?.ShowAsync();})
                                Color="Color.Warning"
                                Class="align-middle"
                                Icon="@Icons.Material.Filled.RestoreFromTrash" />
-            </MudTooltip>
+            </AppTooltip>
         }
         <MudSpacer />
         <AppDocumentationButton Page="/admin/templates" />
@@ -259,9 +259,9 @@
     {
         foreach (var template in setToFill)
         {
-            if (Templates.Any(t => t.ParentTemplateId == template.Value.Id))
+            if (Templates.Any(t => t.ParentTemplateId == template.Value?.Id))
             {
-                var children = Templates.Where(t => t.ParentTemplateId == template.Value.Id && t.DeletedAt == null).ToTreeItemData();
+                var children = Templates.Where(t => t.ParentTemplateId == template.Value?.Id && t.DeletedAt == null).ToTreeItemData();
                 children = RecursiveFillTreeViewItems(children);
                 template.Children = children;
             }

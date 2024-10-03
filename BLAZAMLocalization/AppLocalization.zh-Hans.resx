@@ -204,6 +204,9 @@
   <data name="Application Credentials" xml:space="preserve">
     <value>应用程序凭据</value>
   </data>
+  <data name="Application logons" xml:space="preserve">
+    <value>应用程序登录</value>
+  </data>
   <data name="Application Name" xml:space="preserve">
     <value>应用程序名称</value>
   </data>
@@ -252,6 +255,9 @@
   <data name="BaseDN" xml:space="preserve">
     <value>基本 DN</value>
   </data>
+  <data name="Block" xml:space="preserve">
+    <value>块</value>
+  </data>
   <data name="Branch" xml:space="preserve">
     <value>分支</value>
   </data>
@@ -260,6 +266,9 @@
   </data>
   <data name="Browse" xml:space="preserve">
     <value>浏览</value>
+  </data>
+  <data name="Bypass" xml:space="preserve">
+    <value>旁路</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
@@ -284,6 +293,9 @@
   </data>
   <data name="City" xml:space="preserve">
     <value>城市</value>
+  </data>
+  <data name="Click to view help documentation" xml:space="preserve">
+    <value>单击以查看帮助文档</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>关闭</value>
@@ -357,6 +369,9 @@
   <data name="Custom Login" xml:space="preserve">
     <value>自定义登录</value>
   </data>
+  <data name="Data Collection Settings" xml:space="preserve">
+    <value>数据收集设置</value>
+  </data>
   <data name="Database" xml:space="preserve">
     <value>数据库</value>
   </data>
@@ -393,6 +408,9 @@
   <data name="Details" xml:space="preserve">
     <value>详</value>
   </data>
+  <data name="Developer Analytics" xml:space="preserve">
+    <value>开发人员分析</value>
+  </data>
   <data name="Discard Changes" xml:space="preserve">
     <value>放弃更改</value>
   </data>
@@ -405,6 +423,9 @@
   <data name="Domain" xml:space="preserve">
     <value>域</value>
   </data>
+  <data name="Download Logs" xml:space="preserve">
+    <value>下载日志</value>
+  </data>
   <data name="Drive Details" xml:space="preserve">
     <value>驱动器详细信息</value>
   </data>
@@ -413,6 +434,18 @@
   </data>
   <data name="Driver Version" xml:space="preserve">
     <value>驱动程序版本</value>
+  </data>
+  <data name="Duo Enabled" xml:space="preserve">
+    <value>Duo 启用</value>
+  </data>
+  <data name="Duo Health Check" xml:space="preserve">
+    <value>Duo 运行状况检查</value>
+  </data>
+  <data name="Duo Security MFA (optional)" xml:space="preserve">
+    <value>Duo Security MFA（可选）</value>
+  </data>
+  <data name="Duo Unreachable Behavior" xml:space="preserve">
+    <value>Duo 无法访问行为</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>编辑</value>
@@ -455,6 +488,9 @@
   </data>
   <data name="Failed" xml:space="preserve">
     <value>失败</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>收藏 夹</value>
   </data>
   <data name="Field Name" xml:space="preserve">
     <value>字段名称</value>
@@ -525,8 +561,14 @@
   <data name="Inherited Permissions" xml:space="preserve">
     <value>继承的权限</value>
   </data>
+  <data name="Installation Id" xml:space="preserve">
+    <value>安装 ID</value>
+  </data>
   <data name="Job Title" xml:space="preserve">
     <value>职称</value>
+  </data>
+  <data name="Jobs Monitor" xml:space="preserve">
+    <value>作业监视器</value>
   </data>
   <data name="Last Change" xml:space="preserve">
     <value>上次更改</value>
@@ -549,6 +591,9 @@
   <data name="Location" xml:space="preserve">
     <value>位置</value>
   </data>
+  <data name="Locked Out Users" xml:space="preserve">
+    <value>被锁定的用户</value>
+  </data>
   <data name="Lockout Time" xml:space="preserve">
     <value>锁定时间</value>
   </data>
@@ -557,6 +602,9 @@
   </data>
   <data name="Log In To Demo" xml:space="preserve">
     <value>登录演示</value>
+  </data>
+  <data name="Logging" xml:space="preserve">
+    <value>伐木</value>
   </data>
   <data name="Logins" xml:space="preserve">
     <value>登录</value>
@@ -620,6 +668,9 @@
   </data>
   <data name="Not started" xml:space="preserve">
     <value>未启动</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>通知</value>
   </data>
   <data name="Office" xml:space="preserve">
     <value>办公室</value>
@@ -759,6 +810,9 @@
   <data name="Reset Password" xml:space="preserve">
     <value>重置密码</value>
   </data>
+  <data name="Resource Usage" xml:space="preserve">
+    <value>资源使用情况</value>
+  </data>
   <data name="Restore" xml:space="preserve">
     <value>恢复</value>
   </data>
@@ -791,6 +845,9 @@
   </data>
   <data name="Script Path" xml:space="preserve">
     <value>脚本路径</value>
+  </data>
+  <data name="Send logs to developer" xml:space="preserve">
+    <value>将日志发送给开发人员</value>
   </data>
   <data name="Server" xml:space="preserve">
     <value>服务器</value>
@@ -873,6 +930,9 @@
   <data name="There are no templates available" xml:space="preserve">
     <value>没有可用的模板</value>
   </data>
+  <data name="Time in minutes" xml:space="preserve">
+    <value>时间（分钟）</value>
+  </data>
   <data name="Type" xml:space="preserve">
     <value>类型</value>
   </data>
@@ -914,6 +974,12 @@
   </data>
   <data name="Upload" xml:space="preserve">
     <value>上传</value>
+  </data>
+  <data name="Upload Certificate" xml:space="preserve">
+    <value>上传证书</value>
+  </data>
+  <data name="Upload Icon" xml:space="preserve">
+    <value>上传图标</value>
   </data>
   <data name="Upload SSL Certificate" xml:space="preserve">
     <value>上传SSL证书</value>

@@ -1,7 +1,9 @@
 ﻿@using Microsoft.EntityFrameworkCore;
 
-@inherits AppComponentBase
-<MudText Typo="Typo.h3">Delegates  <AppDocumentationButton Page="/admin/permissions" /></MudText>
+@inherits DatabaseComponentBase
+
+
+<MudText Typo="Typo.h3">@AppLocalization["Delegates"]<AppDocumentationButton Page="/admin/permissions" /></MudText>
 <MudText> Delegates are your approved application users. Only the users your define here, or users in the following Active Directory groups (or nested groups) will be allowed to log in to the application.</MudText>
 <MudText> The access allowed to each delegate is controlled by the mapped access level.</MudText>
 
@@ -44,14 +46,14 @@
 <AppModal @ref=@addGroupModal
           Title="Add Delegate"
           YesText="Add">
-    <AddPrivilegeLevelModalContent DelegateAdded=@(()=>{SnackBarService.Success("Delegate added"); DelegatesChanged();}) />
+    <AddPrivilegeLevelModalContent DelegateAdded=@(()=>{SnackBarService.Success(AppLocalization["Delegate added"]); DelegatesChanged();}) />
 </AppModal>
 
 @{
 
 }
 @code {
-#nullable disable warnings
+    #nullable disable warnings
     string _DelegateFilter = "";
     string DelegateFilter
     {
@@ -95,8 +97,8 @@
     {
         delegateToRestore.DeletedAt = null;
         await Context.SaveChangesAsync();
-        SnackBarService.Success("Delegate restored");
-        if (AllDelegates.Where(l => l.DeletedAt != null).Count() < 1)
+        SnackBarService.Success(AppLocalization["Delegate restored"]);
+    if (AllDelegates.Where(l => l.DeletedAt != null).Count() < 1)
         {
             trashModal.Close();
         }

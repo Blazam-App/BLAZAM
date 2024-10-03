@@ -1,6 +1,5 @@
 ﻿@inherits Widget
 @attribute [Authorize]
-
 <MudDataGrid T="IDirectoryEntryAdapter"
              Items="changdEntries"
              RowClick="@RowClicked"
@@ -19,14 +18,28 @@
     <Columns>
         <TemplateColumn Style="width:100px;" Title="Type">
             <CellTemplate>
-                <MudIcon Icon="@context.Item.TypeIcon()" />
+                <AppTooltip Text="@AppLocalization[context.Item.ObjectType.ToString()]">
+                    <MudIcon Icon="@context.Item.TypeIcon()" />
+                </AppTooltip>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="Name">
             <CellTemplate>
-                <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
-                    <MudText>@context.Item?.CanonicalName</MudText>
-                </MudTooltip>
+                <MudContextMenu>
+
+                    <ChildContent>
+
+                        <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                            <MudText>@context.Item?.CanonicalName</MudText>
+                        </AppTooltip>
+
+                    </ChildContent>
+                    <MenuContents>
+
+                        <DirectoryEntryContextMenuItems Entry="@context.Item" />
+
+                    </MenuContents>
+                </MudContextMenu>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization["Changed"]>

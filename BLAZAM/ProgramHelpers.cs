@@ -2,6 +2,7 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
+using BLAZAM.Gui.Services;
 using BLAZAM.Nav;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Services;
@@ -127,11 +128,12 @@ namespace BLAZAM.Server
             /*
              * Uncomment this to force a language
              
-             
+
             CultureInfo culture = new CultureInfo("ru");
             //CultureInfo culture = new CultureInfo("zh-Hans");
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
+            
            */
 
 
@@ -202,6 +204,8 @@ namespace BLAZAM.Server
 
             DatabaseContextBase.Configuration = builder.Configuration;
 
+
+
             builder.Services.AddSingleton<IAppDatabaseFactory, AppDatabaseFactory>();
 
             //Provide an Http client as a service with custom construction via api service class
@@ -251,9 +255,13 @@ namespace BLAZAM.Server
             builder.Services.AddScoped<SearchService>();
 
 
-            //A substitue Navigation Manager for the app to enable navigation warning on unsaved
+            //A substitute Navigation Manager for the app to enable navigation warning on unsaved
             //changes
             builder.Services.AddScoped<AppNavigationManager>();
+
+
+            //A service to provide the appropriate widgets to users, based on permissions
+            builder.Services.AddScoped<WidgetService>();
 
 
 
@@ -263,18 +271,17 @@ namespace BLAZAM.Server
             //Provide DuoSecurity service
             builder.Services.AddScoped<IDuoClientProvider, DuoClientProvider>();
 
-            //Provide encyption service
+            //Provide encryption service
             //There's no benefit to filling memory with identical instances of this, so singleton
             builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 
             //Provide database and active directory monitoring service
-            //This serivice runs a Timer, and so singleton
+            //This service runs a Timer, and so singleton
             builder.Services.AddSingleton<ConnMonitor>();
 
 
             //Provide notification publishing as a service
             builder.Services.AddSingleton<INotificationPublisher, NotificationPublisher>();
-
 
 
 
@@ -285,16 +292,10 @@ namespace BLAZAM.Server
 
 
 
-
-
-
-
-
             builder.Services.AddMudServices(configuration =>
             {
                 configuration.SnackbarConfiguration.HideTransitionDuration = 250;
                 configuration.SnackbarConfiguration.ShowTransitionDuration = 250;
-
             });
 
             builder.Services.AddMudMarkdownServices();
@@ -338,8 +339,6 @@ namespace BLAZAM.Server
             try
             {
                 var context = Program.AppInstance.Services.GetRequiredService<OUNotificationService>();
-
-
             }
             catch (Exception ex)
             {

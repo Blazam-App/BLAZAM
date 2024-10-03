@@ -1,8 +1,11 @@
-﻿
+﻿@inject IStringLocalizer<AppLocalization> AppLocalization
+
 <MudCard onclick=@(()=>{OnSelected.InvokeAsync();}) Class="cursor-pointer d-inline-flex pa-4">
     <MudCardContent>
         <MudStack Row=true>
-            <MudIcon Icon="@Entry.TypeIcon()"/>
+            <AppTooltip Text="@AppLocalization[Entry.ObjectType.ToString()]">
+                <MudIcon Icon="@Entry.TypeIcon()" />
+            </AppTooltip>
             <MudText>@Entry.CanonicalName</MudText>
 
         </MudStack>

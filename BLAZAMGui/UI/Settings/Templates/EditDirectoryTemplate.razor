@@ -310,10 +310,10 @@ await ParentTemplateChanged(null);
                                                 }
                                                 else
                                                 {
-                                                    <MudTooltip Text="@AppLocalization["Remove field"]">
+                                                    <AppTooltip Text="@AppLocalization["Remove field"]">
                                                         <AppCloseButton Disabled=@(!DirectoryTemplate.FieldValues.Contains(cellContext.Item))
                                                                         OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
-                                                    </MudTooltip>
+                                                    </AppTooltip>
                                                 }
 
                                             </CellTemplate>

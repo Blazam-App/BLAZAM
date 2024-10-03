@@ -49,7 +49,7 @@
             @if (accountEntry != null)
 
             {
-                <MudTooltip Text="@AppLocalization[accountEntry.Enabled==true?"Disable":"Enable"]">
+                <AppTooltip Text="@AppLocalization[accountEntry.Enabled==true?"Disable":"Enable"]">
 
                     <MudToggleIconButton @bind-Toggled="@accountEntry.Enabled"
                                          Icon="@Icons.Material.Filled.PersonOff"
@@ -57,12 +57,12 @@
                                          Disabled=@(!(accountEntry.Enabled && accountEntry.CanDisable) && !(accountEntry.Disabled && accountEntry.CanEnable))
                                          ToggledIcon="@Icons.Material.Filled.Person"
                                          ToggledColor="Color.Success" />
-                </MudTooltip>
+                </AppTooltip>
             }
 
 
 
-            <MudTooltip Text="@(EditMode?AppLocalization["End Edit"]:AppLocalization["Edit"])">
+            <AppTooltip Text="@(EditMode?AppLocalization["End Edit"]:AppLocalization["Edit"])">
 
                 <MudToggleIconButton Toggled=EditMode
                                      ToggledChanged="@(async(state)=>{await ToggleEditMode(state);})"
@@ -71,75 +71,75 @@
                                      ToggledColor="Color.Error"
                                      Disabled=@(!DirectoryEntry.CanEdit && (accountEntry!=null)) />
 
-            </MudTooltip>
+            </AppTooltip>
 
             @if (accountEntry != null && accountEntry.LockedOut)
             {
-                <MudTooltip Text="@AppLocalization["Unlock"]">
+                <AppTooltip Text="@AppLocalization["Unlock"]">
 
                     <MudIconButton OnClick="Unlock"
                                    Icon="@Icons.Material.Filled.LockOpen"
                                    Disabled=@(!accountEntry.CanUnlock)
                                    aria-label="unlock" />
-                </MudTooltip>
+                </AppTooltip>
             }
             @if (groupableEntry != null)
             {
-                <MudTooltip Text="@AppLocalization["Assign To"]">
+                <AppTooltip Text="@AppLocalization["Assign To"]">
 
                     <MudIconButton OnClick="@Assign"
                                    Icon="@Icons.Material.Filled.GroupAdd"
                                    aria-label="assign to" />
-                </MudTooltip>
+                </AppTooltip>
 
             }
             @if (accountEntry != null && accountEntry is not IADComputer)
             {
-                <MudTooltip Text="@AppLocalization["Change Password"]">
+                <AppTooltip Text="@AppLocalization["Change Password"]">
                     <MudIconButton OnClick="@ResetPassword"
                                    Disabled=@(!accountEntry.CanDisable)
                                    Icon="@Icons.Material.Filled.Password"
                                    aria-label="change password" />
-                </MudTooltip>
+                </AppTooltip>
             }
-            <MudTooltip Text="@AppLocalization["Rename"]">
+            <AppTooltip Text="@AppLocalization["Rename"]">
 
                 <MudIconButton OnClick="@Rename"
                                Disabled=@(!DirectoryEntry.CanRename)
                                Icon="@Icons.Material.Filled.DriveFileRenameOutline"
                                aria-label="rename" />
 
-            </MudTooltip>
+            </AppTooltip>
 
-            <MudTooltip Text="@AppLocalization["Move"]">
+            <AppTooltip Text="@AppLocalization["Move"]">
 
                 <MudIconButton OnClick="@Move"
                                Disabled=@(!DirectoryEntry.CanMove)
                                Icon="@Icons.Material.Filled.DriveFileMove"
                                aria-label="move" />
-            </MudTooltip>
-            <MudTooltip Text="@AppLocalization["Delete"]">
+            </AppTooltip>
+            <AppTooltip Text="@AppLocalization["Delete"]">
 
                 <MudIconButton OnClick="@DeleteUser"
                                Color="Color.Error"
                                Disabled=@(!DirectoryEntry.CanDelete)
                                Icon="@Icons.Material.Filled.Delete"
                                aria-label="change password" />
-            </MudTooltip>
+            </AppTooltip>
 
-            <MudTooltip Text="@AppLocalization["Change History"]">
+            <AppTooltip Text="@AppLocalization["Change History"]">
                 <MudIconButton OnClick="@ShowHistory"
                                Disabled=@(!DirectoryEntry.CanEdit)
                                Icon="@Icons.Material.Filled.History" />
-            </MudTooltip>
+            </AppTooltip>
 
 
 
-            <MudTooltip Text="@(IsFavorite==true?AppLocalization["Remove from favorites"]:AppLocalization["Add to favorites"])">
+            <AppTooltip Text="@(IsFavorite==true?AppLocalization["Remove from favorites"]:AppLocalization["Add to favorites"])">
                 <MudIconButton OnClick="@ToggleFavorite"
                                Icon="@(IsFavorite==true?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
                                Color="@(IsFavorite==true?Color.Warning:Color.Default)" />
-            </MudTooltip>
+            </AppTooltip>
         </MudToolBar>
     </MudHidden>
     <MudSpacer />

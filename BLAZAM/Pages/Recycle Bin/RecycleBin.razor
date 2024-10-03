@@ -32,7 +32,9 @@
         <SelectColumn T="IDirectoryEntryAdapter" ShowInFooter=false ShowInHeader=true />
         <TemplateColumn Title="Type">
             <CellTemplate>
-                <MudIcon Icon="@context.Item.TypeIcon()" />@context.Item.ObjectType
+                <AppTooltip Text="@AppLocalization[context.Item.ObjectType.ToString()]">
+                    <MudIcon Icon="@context.Item.TypeIcon()" />
+                </AppTooltip>
 
             </CellTemplate>
         </TemplateColumn>

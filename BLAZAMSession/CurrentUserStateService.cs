@@ -15,7 +15,6 @@ namespace BLAZAM.Server.Data.Services
         private Timer? _retryTimer;
         private IApplicationUserState state;
 
-        //private static Dictionary<string, IApplicationUserState> _userStateCache = new Dictionary<string, IApplicationUserState>();
 
         /// <summary>
         /// The current user's session state

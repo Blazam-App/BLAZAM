@@ -34,9 +34,9 @@
         @*    <SettingsField Label="@AppLocalization["User Helpdesk URL"]">
 
         <MudTextField Label="@AppLocalization["User Helpdesk URL"]" Placeholder="If not provided, support links will be disabled" @bind-Value="@settings.UserHelpdeskURL">
-        <MudTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
+        <AppTooltip Display=Display.InlineFlex Margin=Margin.IsAuto.OnX Style="width:max-content" Text="Not Yet Implemented">
         <MudBadge>!</MudBadge>
-        </MudTooltip>
+        </AppTooltip>
 
 
         </MudTextField>
@@ -52,9 +52,9 @@
                 @if (settings != null && settings.AppIcon != null && settings.AppIcon.Length > 0)
                 {
                     <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
-                    <MudTooltip Text="Remove custom icon">
+                    <AppTooltip Text="Remove custom icon">
                         <AppCloseButton OnClick="@(()=>{settings.AppIcon=null;})" />
-                    </MudTooltip>
+                    </AppTooltip>
                 }
             </MudContainer>
             <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon" Accept="image/*">
@@ -63,7 +63,7 @@
                                Variant="Variant.Filled"
                                Color="Color.Primary"
                                StartIcon="@Icons.Material.Filled.CloudUpload">
-                        Upload Icon
+                       @AppLocalization["Upload Icon"]
                     </MudButton>
                 </ActivatorContent>
             </MudFileUpload>
@@ -73,7 +73,12 @@
 
         <SettingsField Label="@AppLocalization["Website FQDN"]">
 
-            <MudTextField Label="@AppLocalization["Website FQDN"]" For=@(()=> settings.AppFQDN) ErrorText="Must be a valid domain name" HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)" Placeholder="Enter the web address" @bind-Value="@settings.AppFQDN" />
+            <MudTextField Label="@AppLocalization["Website FQDN"]"
+                          For=@(()=> settings.AppFQDN)
+                          ErrorText="Must be a valid domain name"
+                          HelperText="Enter the fqdn of the published website. (eg: blazam.mydomain.company)"
+                          Placeholder="Enter the web address"
+                          @bind-Value="@settings.AppFQDN" />
 
         </SettingsField>
 
@@ -84,7 +89,7 @@
                            Variant="Variant.Filled"
                            Color="Color.Primary"
                            StartIcon="@Icons.Material.Filled.CloudUpload">
-                    Upload Certificate
+                    @AppLocalization["Upload Certificate"]
                 </MudButton>
 
             </SettingsField>
@@ -104,7 +109,11 @@
         <RDPModal/>
         </AppModal> *@
         <SettingsField>
-            <MudButton Disabled="SaveDisabled" ButtonType="ButtonType.Submit" Color="Color.Success">Save Changes</MudButton>
+            <MudButton Disabled="SaveDisabled"
+                ButtonType="ButtonType.Submit"
+                Color="Color.Success">
+                @AppLocalization["Save Changes"]
+            </MudButton>
         </SettingsField>
 
     </MudStack>

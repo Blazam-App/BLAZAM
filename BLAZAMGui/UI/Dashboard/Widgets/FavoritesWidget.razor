@@ -19,14 +19,28 @@
     <Columns>
         <TemplateColumn Style="width:100px;" Title="Type">
             <CellTemplate>
-                <MudIcon Icon="@context.Item.TypeIcon()" />
+                <MudContextMenu>
+
+                    <ChildContent>
+
+                        <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                            <MudText>@context.Item?.CanonicalName</MudText>
+                        </AppTooltip>
+
+                    </ChildContent>
+                    <MenuContents>
+
+                        <DirectoryEntryContextMenuItems Entry="@context.Item" />
+
+                    </MenuContents>
+                </MudContextMenu>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="Name">
             <CellTemplate>
-                <MudTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
                     <MudText>@context.Item?.CanonicalName</MudText>
-                </MudTooltip>
+                </AppTooltip>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization["Changed"]>
