@@ -111,7 +111,21 @@ namespace BLAZAM.ActiveDirectory.Searchers
         {
             var threeMonthsAgo = DateTime.Today - TimeSpan.FromDays(90);
 
-            var tstamp = threeMonthsAgo.ToString("yyyyMMddHHmmss.fZ");
+            var tstamp = threeMonthsAgo.ToFileTimeUtc();
+
+            var results = new ADSearch(Directory)
+            {
+                ObjectTypeFilter = ActiveDirectoryObjectType.User,
+                EnabledOnly = ignoreDisabledUsers,
+                Fields = new()
+                {
+                    PasswordLastSet = threeMonthsAgo.ToFileTimeUtc().ToString()
+                }
+
+            }.Search<ADUser, IADUser>();
+            return results.OrderByDescending(u => u.PasswordLastSet).ToList();
+
+            //var tstamp = threeMonthsAgo.ToString("yyyyMMddHHmmss.fZ");
             string UserSearchFieldsQuery = "(pwdLastSet>=" + tstamp + ")";
 
             return SearchObjects(UserSearchFieldsQuery, ActiveDirectoryObjectType.User, 1000, ignoreDisabledUsers).Cast<IADUser>().OrderByDescending(u => u.PasswordLastSet).ToList();

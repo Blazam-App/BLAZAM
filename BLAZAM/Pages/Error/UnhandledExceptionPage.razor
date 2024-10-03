@@ -10,11 +10,10 @@
 
 
 <MudAlert Elevation="5"
-    Square
-    ShowCloseIcon 
-    
+    Square=true
+    ShowCloseIcon=true
     CloseIconClicked=@(()=>{Nav.NavigateTo(Nav.Uri,true);}) 
-    Class="mud-alert-outlined-error" 
+    Class="mud-alert-outlined-error mb-5" 
     ContentAlignment="HorizontalAlignment.Center">
     <MudContainer>
     <MudText Typo="Typo.h4">
@@ -26,14 +25,11 @@
             @if (ApplicationInfo.InDebugMode)
             {
 
-                <MudCard      
-        Square Class="mud-border-error mx-auto">
+                <MudCard Square Class="mud-border-error mx-auto">
                 <MudCardHeader Class="mud-error">
                 @Error.Source : @Error.GetType()
                 </MudCardHeader>
-                <MudPaper        
-            Square
-                    >
+                <MudPaper Square=true>
                         Error Message: @Error?.Message
                     </MudPaper Square>
                     <MudPaper Class="overflow-auto mud-typography-nowrap">
@@ -44,6 +40,7 @@
                     </MudPaper>
                 </MudCard>
             }
+            <MudText Class="my-7">To see error details, set DebugMode to true in appsettings.json in the Blazam installation directory.</MudText>
 
         }
         catch (Exception ex)

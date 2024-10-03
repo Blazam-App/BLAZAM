@@ -28,7 +28,7 @@
         </TemplateColumn>
         <TemplateColumn Title="Logged On">
             <CellTemplate>
-                            <MudText>@context.Item?.Timestamp</MudText>
+                            <MudText>@context.Item?.Timestamp.ToLocalTime()</MudText>
             </CellTemplate>
         </TemplateColumn>
        

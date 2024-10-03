@@ -217,7 +217,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(memberOf:1.2.840.113556.1.4.1941:={Fields.NestedMemberOf.DN})";
                     if (Fields.BitLockerRecoveryId != null)
                         FilterQuery += $"(name=*{Fields.BitLockerRecoveryId}*)";
-
+                    if(!Fields.PasswordLastSet.IsNullOrEmpty())
+                        FilterQuery += $"(pwdLastSet>={Fields.PasswordLastSet})";
 
 
                 }

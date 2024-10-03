@@ -4,34 +4,32 @@
 
 
 <PageTitle>Loading</PageTitle>
-    <MudLayout>
-    <CascadingValue Value="this">
+<MudLayout Style="min-height:98vh;">
 
-        @*<MainAppBar />*@
-    </CascadingValue>
-        <MudContainer Fixed>
-            @if (PageHeader != null)
-            {
-                @PageHeader
-            }
-        </MudContainer>
-        <MudMainContent>
-            <MudContainer MaxWidth="MaxWidth.Large" Class="pt-5">
-                    @Body
+        <MinAppBar />
+    <MudContainer Fixed>
+        @if (PageHeader != null)
+        {
+            @PageHeader
+        }
+    </MudContainer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="pt-5">
+            @Body
 
         </MudContainer>
-        </MudMainContent>
+    </MudMainContent>
 
-        <MudContainer Fixed>
+    <MudContainer Fixed>
         @if (ApplicationInfo.installationCompleted)
-            {
-                <DirectoryConnectingIndicator />
+        {
+            <DirectoryConnectingIndicator />
 
-            }
-            <AppFooter />
+        }
+        <AppFooter />
 
-        </MudContainer>
-    </MudLayout>
+    </MudContainer>
+</MudLayout>
 
 @code {
     [Parameter]

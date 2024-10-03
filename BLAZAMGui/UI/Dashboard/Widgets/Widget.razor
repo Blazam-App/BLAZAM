@@ -1,8 +1,35 @@
 ﻿@inherits DatabaseComponentBase
 
 @code {
+    protected List<TimeSpan> _timeSpan_Days = new List<TimeSpan>
+    {
+           TimeSpan.FromDays(1),
+           TimeSpan.FromDays(5),
+           TimeSpan.FromDays(14),
+           TimeSpan.FromDays(30),
+           TimeSpan.FromDays(90),
+           TimeSpan.FromDays(180),
+           TimeSpan.FromDays(360)
+    
+    }; 
+    protected List<TimeSpan> _timeSpan_Hours = new List<TimeSpan>
+    {
+           TimeSpan.FromHours(1),
+           TimeSpan.FromHours(4),
+           TimeSpan.FromHours(8),
+           TimeSpan.FromHours(12),
+           TimeSpan.FromHours(24),
+           TimeSpan.FromHours(48),
+           TimeSpan.FromHours(72)
+    
+    };
+
+
+
     [Parameter]
     public RenderFragment? WidgetContent { get; set; }
+    [Parameter]
+    public TimeSpan TimeSpan { get; set; }
     public string Title { get; set; }
     [Parameter]
     public DashboardWidgetType WidgetType { get; set; }
