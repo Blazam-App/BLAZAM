@@ -51,7 +51,9 @@
 
                 @if (settings != null && settings.AppIcon != null && settings.AppIcon.Length > 0)
                 {
-                    <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
+                    @* <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" /> *@
+                    <Base64Image Width=100 Data="@settings.AppIcon" />
+                    @*  <MudImage Class="app-icon" Src="@Convert.ToBase64String(settings.AppIcon)" /> *@
                     <AppTooltip Text="Remove custom icon">
                         <AppCloseButton OnClick="@(()=>{settings.AppIcon=null;})" />
                     </AppTooltip>
@@ -63,10 +65,11 @@
                                Variant="Variant.Filled"
                                Color="Color.Primary"
                                StartIcon="@Icons.Material.Filled.CloudUpload">
-                       @AppLocalization["Upload Icon"]
+                        @AppLocalization["Upload Icon"]
                     </MudButton>
                 </ActivatorContent>
             </MudFileUpload>
+            <MudAlert Severity="Severity.Info">@AppLocalization["Changes may take up to 24 hrs to take effect"]</MudAlert>
         </SettingsField>
 
 
@@ -110,8 +113,8 @@
         </AppModal> *@
         <SettingsField>
             <MudButton Disabled="SaveDisabled"
-                ButtonType="ButtonType.Submit"
-                Color="Color.Success">
+                       ButtonType="ButtonType.Submit"
+                       Color="Color.Success">
                 @AppLocalization["Save Changes"]
             </MudButton>
         </SettingsField>
