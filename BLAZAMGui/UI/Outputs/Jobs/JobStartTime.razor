@@ -3,13 +3,13 @@
 
 
 @code {
-    [CascadingParameter]
-    public IJob Job { get; set; }
+    [Parameter]
+    public IJobStep Step { get; set; }
 
     private string StartTime {
         get{
-            if (Job.StartTime == null || !Job.StartTime.HasValue) return AppLocalization["Not started"];
-            return Job.StartTime.Value.ToShortTimeString();
+            if (Step.StartTime == null || !Step.StartTime.HasValue) return AppLocalization["Not started"];
+            return Step.StartTime.Value.ToShortTimeString();
         }
     }
 }

@@ -1,33 +1,44 @@
 @inherits AppComponentBase
-<MudText Typo="Typo.caption">@AppLocalization["Elapsed Time"]: @ElapsedTime </MudText>
+<MudText Typo="Typo.caption">@ElapsedTime</MudText>
 
 @code {
-    [CascadingParameter]
-    public IJob Job { get; set; }
+    [Parameter]
+    public IJobStep Step { get; set; }
+
+    Timer? _refreshTimer;
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Job.OnProgressUpdated += (progress) =>
-        {
-            InvokeAsync(StateHasChanged);
-        };
+
+        _refreshTimer = new Timer(UpdateElapsedTime, null, 400, 400);
     }
 
     public override void Dispose()
     {
+        _refreshTimer?.Dispose();
         base.Dispose();
     }
-
+    private async void UpdateElapsedTime(object? state)
+    {
+        if (Step.Result == JobResult.Running)
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        else if(Step.Result != JobResult.NotRun)
+        {
+            _refreshTimer?.Dispose();
+        }
+    }
     private string ElapsedTime
     {
         get
         {
-            if (Job.ElapsedTime == null || !Job.ElapsedTime.HasValue) return AppLocalization["Not finished"];
-            if (Job.ElapsedTime.Value.TotalSeconds < 1)
+            if (Step.ElapsedTime == null || !Step.ElapsedTime.HasValue) return AppLocalization["Not finished"];
+            if (Step.ElapsedTime.Value.TotalSeconds < 1)
             {
-                return Job.ElapsedTime.Value.TotalMilliseconds + "ms";   
+                return Step.ElapsedTime.Value.TotalMilliseconds + "ms";   
             }
-            return (int)Job.ElapsedTime.Value.TotalMinutes + "m " + (int)(Job.ElapsedTime.Value.TotalMinutes % 1 * 60) + "s";
+            return (int)Step.ElapsedTime.Value.TotalMinutes + "m " + (int)(Step.ElapsedTime.Value.TotalMinutes % 1 * 60) + "s";
         }
     }
 }
