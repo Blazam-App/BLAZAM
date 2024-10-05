@@ -55,8 +55,8 @@ namespace BLAZAM.Pages
                 {
 
                     //This is a valid callback for this user
-                    var user = _userStateService.GetMFAUser(state);
-                    if (user != null)
+                    var mFARequest = _userStateService.GetMFARequest(state);
+                    if (mFARequest != null)
                     {
 
 
@@ -65,17 +65,17 @@ namespace BLAZAM.Pages
                         // The only stateful information in the Client is your configuration, so you could even use the same client for multiple
                         // user authentications if desired.
                         Client duoClient = _duoClientProvider.GetDuoClient(Request.Scheme + "://" + Request.Host + "/mfacallback");
-                        var username = user.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value;
+                        var username = mFARequest.user.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value;
                         // Get a summary of the authentication from Duo.  This will trigger an exception if the username does not match.
                         try
                         {
                             IdToken token = await duoClient.ExchangeAuthorizationCodeFor2faResult(code, username);
                             if (token.AuthResult.Result.Equals("allow", StringComparison.InvariantCultureIgnoreCase))
                             {
-                                var authenticatedState = await _auth.SetUser(user.User);
-                                await HttpContext.SignInAsync(user.User);
-                                await _audit.Logon.Login(user.User, HttpContext.Connection.RemoteIpAddress?.ToString());
-                                return new RedirectResult("/");
+                                var authenticatedState = await _auth.SetUser(mFARequest.user.User);
+                                await HttpContext.SignInAsync(mFARequest.user.User);
+                                await _audit.Logon.Login(mFARequest.user.User, HttpContext.Connection.RemoteIpAddress?.ToString());
+                                return new RedirectResult(mFARequest.redirectUrl);
                             }
                         }
                         catch

@@ -23,8 +23,8 @@
 
                     <ChildContent>
 
-                        <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
-                            <MudText>@context.Item?.CanonicalName</MudText>
+                        <AppTooltip Text="@AppLocalization[context.Item.ObjectType.ToString()]">
+                            <MudIcon Icon="@context.Item.TypeIcon()" />
                         </AppTooltip>
 
                     </ChildContent>

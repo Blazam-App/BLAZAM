@@ -241,7 +241,7 @@ namespace BLAZAM.Services
                                     var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
                                     var authResult = await SetUser(twostepState);
                                     newUserState.User = userClaim;
-                                    _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState);
+                                    _userStateService.SetMFAUserState(loginReq.MFAToken, newUserState, loginReq.ReturnUrl);
                                     authenticationState = authResult;
                                     return loginReq.MFARequested(authenticationState);
 
