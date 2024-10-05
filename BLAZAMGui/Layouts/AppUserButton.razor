@@ -79,26 +79,36 @@
     public MainLayout mainLayout { get; set; }
     IList<UserNotification> Notifications = new List<UserNotification>();
     private IApplicationUserState UserState;
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
         NotificationPublisher.OnNotificationPublished += ((notifications) =>
-        {
-            if (notifications.Select(n => n.User).Contains(UserState.Preferences))
-            {
-                Notifications = UserState.Notifications;
+           {
+               if (notifications.Select(n => n.User).Contains(UserState.Preferences))
+               {
+                   Notifications = UserState.Notifications;
 
-            }
-            InvokeAsync(StateHasChanged);
-        });
+               }
+               InvokeAsync(StateHasChanged);
+           });
+
+
         UserState = CurrentUser.State;
-        Notifications = UserState.Notifications;
+        InvokeAsync(StateHasChanged);
         if (UserState != null)
             UserState.OnSettingsChanged += () =>
-            {
-                InvokeAsync(StateHasChanged);
-            };
+        {
+            InvokeAsync(StateHasChanged);
+        };
+        Task.Run(() =>
+               {
+                   Notifications = UserState.Notifications;
+                   InvokeAsync(StateHasChanged);
+               });
+
     }
+
 
 
     /// <summary>
