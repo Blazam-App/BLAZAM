@@ -8,7 +8,7 @@ namespace BLAZAM.Server.Data.Services
         public string redirectUrl;
         public IApplicationUserState user;
 
-        public MFARequest(string mfaToken, string redirectUrl,IApplicationUserState user)
+        public MFARequest(string mfaToken, string redirectUrl, IApplicationUserState user)
         {
             this.mfaToken = mfaToken;
             this.redirectUrl = redirectUrl;

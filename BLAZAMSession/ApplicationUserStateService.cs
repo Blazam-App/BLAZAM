@@ -192,7 +192,7 @@ namespace BLAZAM.Server.Data.Services
         }
         public void SetMFAUserState(string mfaToken, IApplicationUserState state, string redirectUrl = "/")
         {
-            MFARequest mfaRequest = new MFARequest(mfaToken,redirectUrl,state);
+            MFARequest mfaRequest = new MFARequest(mfaToken, redirectUrl, state);
             _mfaLoginQueue.Add(mfaRequest);
             Task.Delay(90000).ContinueWith((val) =>
             {

@@ -155,7 +155,7 @@
         {
             await Printer?.CommitChangesAsync();
             EditMode = false;
-            Nav.WarnOnNavigation = false;
+            //Nav.WarnOnNavigation = false;
             SnackBarService.Success("The changes made to this printer have been saved.");
             await RefreshEntryComponents();
 

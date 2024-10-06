@@ -79,14 +79,13 @@
                     <MudPaper Width="300px">
                         <MudText>@AppLocalization["There are no templates available"]</MudText>
                         <AuthorizeView Roles="@UserRoles.SuperAdmin">
-                            <MudLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">Create One</MudLink>
+                            <MudLink Href="/templates">Create One</MudLink>
 
                         </AuthorizeView>
                     </MudPaper>
                 }
                 <MudButton Color=Color.Secondary OnClick="@(()=>{custom=true; newUser=null; SelectedTemplate=null; SelectedStep=4;})">Custom</MudButton>
 
-                @* <MudButton Disabled=@(SelectedTemplate is null && custom!=true) Color=Color.Success OnClick="@(()=>{if(custom==true)SelectedStep=4;else selectedStep=1;})">Next</MudButton> *@
             </ChildContent>
 
         </MudTabPanel>

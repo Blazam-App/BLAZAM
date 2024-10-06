@@ -94,7 +94,7 @@
             var changes = OU.Changes;
             await OU.CommitChangesAsync();
             EditMode = false;
-            Nav.WarnOnNavigation = false;
+            //Nav.WarnOnNavigation = false;
             await AuditLogger.OU.Changed(OU, changes);
             _ = OUNotificationService.PostAsync(OU, NotificationType.Modify);
 

@@ -10,7 +10,7 @@
 
                 <CascadingValue Value="this">
         <MudAppBar Color=Color.Default Elevation="1" >
-            <MudLink OnClick="@(()=>{Nav.NavigateTo(Nav.Uri);})">
+            <MudLink Href="/">
                 <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
             </MudLink>
             </MudAppBar>
@@ -49,21 +49,5 @@
          
     </MudLayout>
 
-@*
-<MudLayout>
-          <ErrorMenu />
 
-    <MudLayout>
-        <MudMainContent>
-            <MudCard Margin="Margin.Is4.OnX.OnDesktop">
-                @Body
-                <MudLink To="/">
-                    <MudButton Color="Color.Primary">Try Home Page</MudButton>
-                </MudLink>
-            </MudCard>
-        </MudMainContent>
-            <AppFooter />
-
-    </MudLayout>
-</MudLayout>*@
 
