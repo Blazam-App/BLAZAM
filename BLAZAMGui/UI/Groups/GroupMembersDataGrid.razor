@@ -41,7 +41,7 @@
                     @AppLocalization["Name"]
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
-                    <MudLink OnClick="@(()=>{Nav.NavigateTo(cellContext.Item.SearchUri);})">
+                    <MudLink Href="@cellContext.Item.SearchUri">
                         @cellContext.Item.CanonicalName
                     </MudLink>
                 </CellTemplate>

@@ -27,6 +27,7 @@
         </MudStack>
         </MudElement>
 
+<AppNavLock Lock="true" />
  @code {
     [Parameter]
     public EventCallback SaveChanges { get; set; }
@@ -36,6 +37,6 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Nav.WarnOnNavigation = true;
+        //Nav.WarnOnNavigation = true;
     }
 }

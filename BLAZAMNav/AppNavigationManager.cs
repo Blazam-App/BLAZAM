@@ -17,14 +17,14 @@ namespace BLAZAM.Nav
         public IJSRuntime JS { get; }
         public EventHandler<LocationChangedEventArgs> LocationChanged { get; set; }
 
-        public bool WarnOnNavigation
-        {
-            get => warnOnNavigation; set
-            {
-                warnOnNavigation = value;
-                JS.InvokeVoidAsync("window.warnOnNavigation", new object[] { warnOnNavigation });
-            }
-        }
+        //public bool WarnOnNavigation
+        //{
+        //    get => warnOnNavigation; set
+        //    {
+        //        warnOnNavigation = value;
+        //        JS.InvokeVoidAsync("window.warnOnNavigation", new object[] { warnOnNavigation });
+        //    }
+        //}
 
 
         public string ToBaseRelativePath(string uri)
@@ -54,18 +54,15 @@ namespace BLAZAM.Nav
 
         public async void NavigateTo(string uri, bool forceLoad = false)
         {
-            if (!WarnOnNavigation)
-            {
-                Nav.NavigateTo(uri, forceLoad);
-            }
-            else
-            {
-                if (await MessageService.Confirm(AppLocalization["Are you sure you want to navigate away?"], AppLocalization["You have unsaved changes"]) == true)
-                {
-                    WarnOnNavigation = false;
-                    Nav.NavigateTo(uri, forceLoad);
-                }
-            }
+
+            Nav.NavigateTo(uri, forceLoad);
+
+            //if (await MessageService.Confirm(AppLocalization["Are you sure you want to navigate away?"], AppLocalization["You have unsaved changes"]) == true)
+            //{
+            //    WarnOnNavigation = false;
+            //    Nav.NavigateTo(uri, forceLoad);
+            //}
+
         }
 
     }

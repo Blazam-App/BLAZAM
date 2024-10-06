@@ -1,4 +1,4 @@
-@inherits AppComponentBase
+@inherits DatabaseComponentBase
 
 @if (messages.Count > 0)
 {
@@ -41,14 +41,16 @@
 @code {
     private bool _open;
     private IList<UserNotification> messages = new List<UserNotification>();
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        messages = UserState.Notifications;
+        await base.OnInitializedAsync();
+        messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+        //messages = UserState.Notifications;
 
-        NotificationPublisher.OnNotificationPublished += (notification) =>
+        NotificationPublisher.OnNotificationPublished += async (notification) =>
         {
-            messages = UserState.Notifications;
+            messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+
             InvokeAsync(StateHasChanged);
         };
     }
@@ -72,7 +74,8 @@
 
     async Task MarkAllRead()
     {
-        if (UserState.Notifications == null) return;
+        messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+
         foreach (var message in messages)
         {
             message.IsRead = true;
@@ -82,6 +85,7 @@
         Open = false;
         await InvokeAsync(StateHasChanged);
     }
+
 
 
 }

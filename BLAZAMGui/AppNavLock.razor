@@ -1,0 +1,27 @@
+﻿@page "/nav-lock"
+@using Microsoft.AspNetCore.Components.Routing
+@inject IJSRuntime JSRuntime
+@inject IStringLocalizer<AppLocalization> AppLocalization
+@inject NavigationManager Navigation
+@if (Lock)
+{
+
+    <NavigationLock ConfirmExternalNavigation="true"
+                    OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+}
+
+@code {
+    [Parameter]
+    public bool Lock { get; set; } = true;
+
+    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        var isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm",
+        AppLocalization["You have unsaved changes"].ToString() + ". " + AppLocalization["Are you sure you want to navigate away?"].ToString());
+
+        if (!isConfirmed)
+        {
+            context.PreventNavigation();
+        }
+    }
+}

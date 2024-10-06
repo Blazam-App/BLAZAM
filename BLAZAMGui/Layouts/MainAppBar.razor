@@ -14,7 +14,7 @@
                                OnClick="@((e) => {mainLayout.DrawerOpen=!mainLayout.DrawerOpen; })" />
             </MudHidden>
         }
-        <MudLink OnClick="@(()=>{Nav.NavigateTo("/");})">
+        <MudLink Href="/">
             <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
         </MudLink>
         <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert=true>

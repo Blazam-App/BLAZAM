@@ -1,4 +1,4 @@
-@inherits AppComponentBase
+@inherits DatabaseComponentBase
 
 <UserNotificationPopover UserState="@UserState" @bind-Open="@NotificationsOpen" />
 
@@ -83,29 +83,28 @@
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        NotificationPublisher.OnNotificationPublished += ((notifications) =>
+        NotificationPublisher.OnNotificationPublished += (async (notifications) =>
            {
                if (notifications.Select(n => n.User).Contains(UserState.Preferences))
                {
-                   Notifications = UserState.Notifications;
-
+                   Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
                }
-               InvokeAsync(StateHasChanged);
+               await InvokeAsync(StateHasChanged);
            });
 
 
         UserState = CurrentUser.State;
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
         if (UserState != null)
-            UserState.OnSettingsChanged += () =>
+            UserState.OnSettingsChanged += async () =>
         {
             InvokeAsync(StateHasChanged);
         };
-        Task.Run(() =>
-               {
-                   Notifications = UserState.Notifications;
-                   InvokeAsync(StateHasChanged);
-               });
+
+        Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+
+        await InvokeAsync(StateHasChanged);
+
 
     }
 

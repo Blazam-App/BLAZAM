@@ -1,6 +1,6 @@
 namespace BLAZAM.Gui.UI
 {
-    public class DatabaseComponentBase:AppComponentBase
+    public class DatabaseComponentBase : AppComponentBase
     {
 #nullable disable warnings
         protected IDatabaseContext Context;

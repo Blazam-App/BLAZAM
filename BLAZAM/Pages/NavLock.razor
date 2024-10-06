@@ -1,0 +1,21 @@
+﻿@page "/nav-lock"
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
+
+<AppNavLock Lock="true"/>
+
+<p>
+    <button @onclick="Navigate">Navigate</button>
+</p>
+
+<p>
+    <a href="https://www.microsoft.com">Microsoft homepage</a>
+</p>
+
+@code {
+    private void Navigate()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+}

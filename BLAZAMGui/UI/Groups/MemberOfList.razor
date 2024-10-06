@@ -17,7 +17,7 @@
                                 @if (g.CanUnassign)
                                 {
                                     <MudLink Class="align-middle"
-                                             OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})">
+                                             Href="@g.SearchUri">
                                         @g.CanonicalName
                                     </MudLink>
                                     <MudSpacer />
@@ -26,7 +26,7 @@
                                 else
                                 {
                                     <MudLink Class="align-middle"
-                                             OnClick="@(()=>{Nav.NavigateTo(g.SearchUri);})">
+                                             Href="@g.SearchUri">
                                         @g.CanonicalName
                                     </MudLink>
 
