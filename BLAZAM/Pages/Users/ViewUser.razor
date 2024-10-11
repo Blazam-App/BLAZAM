@@ -463,6 +463,7 @@
     </EditForm>
     @if ((User.CanEdit || CurrentUser.State.CanAssign) && User.HasUnsavedChanges && !User.NewEntry)
     {
+
         <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
     }
     <MudOverlay Visible="SavingChanges" DarkBackground="true" Absolute="true">
@@ -577,7 +578,7 @@
                     }
 
                     EditMode = false;
-                    Nav.WarnOnNavigation = false;
+                    //Nav.WarnOnNavigation = false;
                     SnackBarService.Success("The changes made to this user have been saved.");
                 }
                 else

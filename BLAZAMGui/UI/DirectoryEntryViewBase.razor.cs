@@ -88,7 +88,7 @@ namespace BLAZAM.Gui.UI
                 DirectoryEntry.DiscardChanges();
                 EditMode = false;
 
-                Nav.WarnOnNavigation = false;
+                //Nav.WarnOnNavigation = false;
 
                 await RefreshEntryComponents();
 
@@ -116,7 +116,7 @@ namespace BLAZAM.Gui.UI
         protected void Renamed(IDirectoryEntryAdapter renamedEntry)
         {
 
-            Nav.WarnOnNavigation = false;
+            //Nav.WarnOnNavigation = false;
             Nav.NavigateTo(renamedEntry.SearchUri);
 
 

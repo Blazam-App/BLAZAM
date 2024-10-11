@@ -35,7 +35,7 @@
                     <PropertyColumn Property="x => x.Action" Filterable="true" />
                     <TemplateColumn>
                         <CellTemplate>
-                            <MudLink OnClick="@(()=>{Nav.NavigateTo("/view/"+context.Item.Target);})">@context.Item.Target</MudLink>
+                            <MudLink Href="@("/view/"+context.Item.Target)">@context.Item.Target</MudLink>
                         </CellTemplate>
                     </TemplateColumn>
                     <PropertyColumn Property="x => x.BeforeAction"  Filterable="true" />

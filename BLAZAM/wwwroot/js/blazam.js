@@ -85,22 +85,22 @@ window.createGauge = async (id,maxValue) => {
 window.setGaugeValue = async (id, val, time) => {
     dialGauges[id].setValueAnimated(val, time);
 }
-const listener = (e) => {
-    e.preventDefault();
-    e.returnValue = '';
-    return false;
-}
+//const listener = (e) => {
+//    e.preventDefault();
+//    e.returnValue = '';
+//    return false;
+//}
 
-window.warnOnNavigation = async (active) => {
-    if (active) {
-        window.addEventListener('beforeunload', listener);
-        //window.popstate = listener;
-        //window.addEventListener('popstate', listener);
-    } else {
-        window.removeEventListener('beforeunload', listener);
-        //window.removeEventListener('beforepopstate', listener);
+//window.warnOnNavigation = async (active) => {
+//    if (active) {
+//        window.addEventListener('beforeunload', listener);
+//        //window.popstate = listener;
+//        //window.addEventListener('popstate', listener);
+//    } else {
+//        window.removeEventListener('beforeunload', listener);
+//        //window.removeEventListener('beforepopstate', listener);
 
-    }
+//    }
 
    
-}
+//}

@@ -1,4 +1,4 @@
-@inherits AppComponentBase
+@inherits DatabaseComponentBase
 
 <UserNotificationPopover UserState="@UserState" @bind-Open="@NotificationsOpen" />
 
@@ -79,26 +79,35 @@
     public MainLayout mainLayout { get; set; }
     IList<UserNotification> Notifications = new List<UserNotification>();
     private IApplicationUserState UserState;
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        NotificationPublisher.OnNotificationPublished += ((notifications) =>
-        {
-            if (notifications.Select(n => n.User).Contains(UserState.Preferences))
-            {
-                Notifications = UserState.Notifications;
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+        NotificationPublisher.OnNotificationPublished += (async (notifications) =>
+           {
+               if (notifications.Select(n => n.User).Contains(UserState.Preferences))
+               {
+                   Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+               }
+               await InvokeAsync(StateHasChanged);
+           });
 
-            }
-            InvokeAsync(StateHasChanged);
-        });
+
         UserState = CurrentUser.State;
-        Notifications = UserState.Notifications;
+        await InvokeAsync(StateHasChanged);
         if (UserState != null)
-            UserState.OnSettingsChanged += () =>
-            {
-                InvokeAsync(StateHasChanged);
-            };
+            UserState.OnSettingsChanged += async () =>
+        {
+            InvokeAsync(StateHasChanged);
+        };
+
+        Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+
+        await InvokeAsync(StateHasChanged);
+
+
     }
+
 
 
     /// <summary>

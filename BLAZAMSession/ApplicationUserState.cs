@@ -44,17 +44,17 @@ namespace BLAZAM.Server.Data.Services
 
         public List<UserFavoriteEntry> FavoriteEntries => userSettings?.FavoriteEntries ?? new List<UserFavoriteEntry>();
 
-        public IList<UserNotification>? Notifications
-        {
-            get
-            {
-                if (User.Identity?.IsAuthenticated != true) return default;
-                if ((DateTime.Now - lastDataRefresh).TotalSeconds > 1)
-                    GetUserSettingFromDB();
-                return userSettings?.Messages.Where(m => !m.IsRead).ToList();
+        //public IList<UserNotification>? Notifications
+        //{
+        //    get
+        //    {
+        //        if (User.Identity?.IsAuthenticated != true) return default;
+        //        if ((DateTime.Now - lastDataRefresh).TotalSeconds > 1)
+        //            GetUserSettingFromDB();
+        //        return userSettings?.Notifications.Where(m => !m.IsRead).ToList();
 
-            }
-        }
+        //    }
+        //}
         public IList<ReadNewsItem> ReadNewsItems => Preferences?.ReadNewsItems ?? new();
 
         public int Id => Preferences != null ? Preferences.Id : 0;

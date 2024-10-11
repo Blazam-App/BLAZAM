@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using BLAZAM.Server.Data.Services;
+using System.Security.Claims;
 
 namespace BLAZAM.Session.Interfaces
 {
@@ -11,13 +12,13 @@ namespace BLAZAM.Session.Interfaces
 
 
         IApplicationUserState CreateUserState(ClaimsPrincipal user);
-        IApplicationUserState? GetMFAUser(string state);
+        MFARequest? GetMFARequest(string state);
         IApplicationUserState? GetUserState(ClaimsPrincipal userClaim);
 
         // IApplicationUserState? GetUserState(ClaimsPrincipal userClaim);
         void RemoveUserState(IApplicationUserState state);
         void RemoveUserState(ClaimsPrincipal currentUser);
-        void SetMFAUserState(string mfaToken, IApplicationUserState state);
+        void SetMFAUserState(string mfaToken, IApplicationUserState state, string returnURL);
         void SetUserState(IApplicationUserState state);
     }
 }

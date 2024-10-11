@@ -19,6 +19,13 @@
     <Columns>
         <TemplateColumn Style="width:100px;" Title="Type">
             <CellTemplate>
+                <AppTooltip Text="@AppLocalization[context.Item.ObjectType.ToString()]">
+                    <MudIcon Icon="@context.Item.TypeIcon()" />
+                </AppTooltip>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Name">
+            <CellTemplate>
                 <MudContextMenu>
 
                     <ChildContent>
@@ -34,13 +41,6 @@
 
                     </MenuContents>
                 </MudContextMenu>
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title="Name">
-            <CellTemplate>
-                <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
-                    <MudText>@context.Item?.CanonicalName</MudText>
-                </AppTooltip>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization["Changed"]>

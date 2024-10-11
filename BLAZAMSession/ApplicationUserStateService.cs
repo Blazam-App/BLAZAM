@@ -32,7 +32,7 @@ namespace BLAZAM.Server.Data.Services
 
         private int? Timeout { get; set; }
 
-        private Dictionary<string, IApplicationUserState> _mfaLoginQueue = new();
+        private List<MFARequest> _mfaLoginQueue = new();
 
         /// <summary>
         /// Called when a new UserState is added to the cache.
@@ -190,23 +190,24 @@ namespace BLAZAM.Server.Data.Services
             //Invoke event so Active Directory can populate DirectoryUser if required
             //UserStateAdded?.Invoke(state);
         }
-        public void SetMFAUserState(string mfaToken, IApplicationUserState state)
+        public void SetMFAUserState(string mfaToken, IApplicationUserState state, string redirectUrl = "/")
         {
-            _mfaLoginQueue.Add(mfaToken, state);
+            MFARequest mfaRequest = new MFARequest(mfaToken, redirectUrl, state);
+            _mfaLoginQueue.Add(mfaRequest);
             Task.Delay(90000).ContinueWith((val) =>
             {
-                _mfaLoginQueue.Remove(mfaToken);
+                _mfaLoginQueue.Remove(mfaRequest);
             });
             SetUserState(state);
         }
-        public IApplicationUserState? GetMFAUser(string mfaToken)
+        public MFARequest? GetMFARequest(string mfaToken)
         {
-            var user = _mfaLoginQueue.FirstOrDefault(q => q.Key == mfaToken).Value;
-            if (user != null)
+            var request = _mfaLoginQueue.FirstOrDefault(q => q.mfaToken.Equals(mfaToken));
+            if (request != null)
             {
-                _mfaLoginQueue.Remove(mfaToken);
+                _mfaLoginQueue.Remove(request);
             }
-            return user;
+            return request;
         }
         public void SetUserState(IApplicationUserState state)
         {

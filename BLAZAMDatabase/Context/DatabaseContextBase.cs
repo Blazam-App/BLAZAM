@@ -604,7 +604,7 @@ namespace BLAZAM.Database.Context
             modelBuilder.Entity<AppUser>(entity =>
             {
                 entity.HasIndex(e => e.UserGUID).IsUnique();
-                entity.Navigation(e => e.Messages).AutoInclude();
+                //entity.Navigation(e => e.Notifications).AutoInclude();
                 entity.Navigation(e => e.ReadNewsItems).AutoInclude();
                 entity.Navigation(e => e.FavoriteEntries).AutoInclude();
                 entity.Navigation(e => e.DashboardWidgets).AutoInclude();

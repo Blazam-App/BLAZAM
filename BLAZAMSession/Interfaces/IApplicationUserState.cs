@@ -61,7 +61,7 @@ namespace BLAZAM.Session.Interfaces
         AuthenticationTicket? Ticket { get; set; }
 
 
-        IList<UserNotification>? Notifications { get; }
+        //IList<UserNotification>? Notifications { get; }
         IApplicationUserSessionCache Cache { get; set; }
 
         string? IPAddress { get; set; }
