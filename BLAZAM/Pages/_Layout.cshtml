@@ -26,7 +26,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 
-
+    <link rel="manifest" href="manifest.json" />
 
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
@@ -100,7 +100,16 @@
             }
         }).observe(document.body, { childList: true, subtree: true });
     </script>
+    <script>
+        if('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js', {scope: '/'})
+        .then((reg) => {
+           // registration worked
+               console.log('Registration succeeded. Scope is ' + reg.scope);
+        });
+        }
 
+    </script>
 
 </body>
 </html>
