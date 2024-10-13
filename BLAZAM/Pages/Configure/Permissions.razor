@@ -8,6 +8,7 @@
 <AuthorizeView Roles=@UserRoles.SuperAdmin>
 
     <SetHeader>
+
     </SetHeader>
 
 
@@ -59,7 +60,22 @@
             </TabContent>
 
         </MudTabPanel>
-       
+        <MudTabPanel>
+            <ChildContent>
+
+                @if (Monitor.DirectoryConnectionStatus == ServiceConnectionState.Up)
+                {
+                    <EffectivePermissionSimulator />
+
+                }
+
+
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Effective Permissions"]
+            </TabContent>
+
+        </MudTabPanel>
     </MudTabs>
 
 

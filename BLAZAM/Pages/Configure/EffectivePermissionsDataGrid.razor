@@ -1,0 +1,126 @@
+﻿@using BLAZAM.Server.Data.Services
+@inherits AppComponentBase
+
+@if (Target != null && Target.AppliedPermissionMappings.Count() > 0)
+{
+    @if (!Disabled)
+    {
+        @*      <MudDataGrid Items="Target.AppliedPermissionMappings">
+            <Columns>
+                <PropertyColumn Property="x=>x.Id" />
+                <PropertyColumn Property="x=>x.OU" />
+                <PropertyColumn Property="x=>x.DeletedAt" />
+
+            </Columns>
+        </MudDataGrid> *@
+    }
+    <MudSimpleTable>
+        <tr>
+            <th>
+                @AppLocalization["Read"]
+            </th>
+            <th>
+                @AppLocalization["Edit"]
+            </th>
+            <th>
+                @AppLocalization["Move"]
+            </th>
+            <th>
+                @AppLocalization["Rename"]
+            </th>
+            <th>
+                @AppLocalization["Assign"]
+            </th>
+            <th>
+                @AppLocalization["Enable"]
+            </th>
+            <th>
+                @AppLocalization["Disable"]
+            </th>
+            <th>
+                @AppLocalization["Delete"]
+            </th>
+        </tr>
+        @if (!Disabled)
+        {
+            <tr>
+                <td class="d-flex justify-center">
+                    <MudText Align="Align.Center">
+                        <StatusCheck Status="@(Target.CanRead)" />
+
+                    </MudText>
+                </td>
+                <td>
+
+                    <MudText Align="Align.Center">
+                        <StatusCheck Status="@(Target.CanEdit)" />
+                    </MudText>
+
+                </td>
+                <td>
+
+                    <MudText Align="Align.Center">
+                        <StatusCheck Status="@(Target.CanMove)" />
+                    </MudText>
+
+                </td>
+                <td>
+
+                    <MudText Align="Align.Center">
+                        <StatusCheck Status="@(Target.CanRename)" />
+                    </MudText>
+
+                </td>
+              
+                        <td>
+                    @if (Target is IGroupableDirectoryAdapter groupable)
+                    {
+                        <MudText Align="Align.Center">
+                            <StatusCheck Status="@(groupable.CanAssign)" />
+                    </MudText>
+                    }
+                </td>
+                  
+                        <td>
+                    @if (Target is IAccountDirectoryAdapter account)
+                    {
+                            <MudText Align="Align.Center">
+                                <StatusCheck Status="@(account.CanEnable)" />
+                            </MudText>
+                    }
+                        </td>
+                        <td>
+                    @if (Target is IAccountDirectoryAdapter account1)
+                    {
+                            <MudText Align="Align.Center">
+                                <StatusCheck Status="@(account1.CanDisable)" />
+                            </MudText>
+                    }
+                        </td>
+                    
+                
+            
+                <td>
+
+                    <MudText Align="Align.Center">
+                        <StatusCheck Status="@(Target.CanDelete)" />
+                    </MudText>
+
+                </td>
+            </tr>
+        }
+    </MudSimpleTable>
+
+}
+
+@code {
+    /// <summary>
+    /// The target with the appropriate current user set within it
+    /// </summary>
+    [Parameter]
+    public IDirectoryEntryAdapter Target { get; set; }
+    [Parameter]
+    public bool Disabled { get; set; } = false;
+
+
+}

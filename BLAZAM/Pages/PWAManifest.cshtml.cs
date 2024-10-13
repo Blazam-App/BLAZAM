@@ -16,7 +16,7 @@ namespace BLAZAM.Pages
     {
         public string short_name = "Blazam";
         public string name = "Blazam";
-        public List<ManifestIcon> icons= new List<ManifestIcon>();
+        public List<ManifestIcon> icons = new List<ManifestIcon>();
         public string start_url = ".";
         public string display = "standalone";
         public string theme_color = "#000000";
@@ -31,7 +31,7 @@ namespace BLAZAM.Pages
 
         public PWAManifestModel(IAppDatabaseFactory factory)
         {
-            _factory  = factory;
+            _factory = factory;
         }
 
         public async Task<IActionResult> OnGet()

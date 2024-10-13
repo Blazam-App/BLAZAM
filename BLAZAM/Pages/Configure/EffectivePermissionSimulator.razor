@@ -1,0 +1,43 @@
+@using BLAZAM.Server.Data.Services
+@inherits AppComponentBase
+<MudGrid>
+    <MudItem  xs=12 md="5">
+        <ADAutoComplete Label=@AppLocalization["Application User"]
+                        SearchObjectType="ActiveDirectoryObjectType.User"
+                        @bind-SelectedResult=@selectedUser />
+    </MudItem>
+    <MudItem xs=12 md="2" Class="align-middle">
+        <MudText Align="Align.Center" >
+            <MudIcon Class="align-center" Icon="@Icons.Material.Filled.ArrowRightAlt" />
+
+        </MudText>
+    </MudItem>
+    <MudItem xs="12" md="5">
+        <ADAutoComplete Label=@AppLocalization["Target"]
+                        @bind-SelectedResult=@target />
+    </MudItem>
+</MudGrid>
+
+   
+    <MudButton  Disabled=@(selectedUser==null || target==null)
+        OnClick=onRun
+        Color="Color.Success">
+  
+        @AppLocalization["Run"]
+    </MudButton>
+    
+    <EffectivePermissionsDataGrid Target="target" Disabled="!simRan"/>
+@code{
+    private IDirectoryEntryAdapter selectedUser;
+    private IDirectoryEntryAdapter target;
+    private AppEvent runSimulation;
+    bool simRan;
+    private async void onRun(){
+        var permissionApplicator = new PermissionApplicator(UserStateService, DbFactory, Directory);
+        var simUser = new ApplicationUserState(DbFactory);
+       await permissionApplicator.LoadPermissions(simUser,selectedUser as IADUser);
+        target.SetCurrentUser(simUser);
+        simRan=true;
+        await InvokeAsync(StateHasChanged);
+    }
+}

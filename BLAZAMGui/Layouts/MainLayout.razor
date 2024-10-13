@@ -44,10 +44,10 @@
                                Elevation="3"
                                ClipMode="DrawerClipMode.Docked">
                         <NavMenu SelectedEntryChanged=GotoEntry BrowseExpandedChanged="@(async(value)=>{
-BrowseExpanded=value;
-await Task.Delay(100);
-await InvokeAsync(StateHasChanged);
-})" />
+                            BrowseExpanded=value;
+                            await Task.Delay(100);
+                            await InvokeAsync(StateHasChanged);
+                            })" />
                         @if (ApplicationInfo.InDebugMode)
                         {
                             <AuthorizeView Roles="@UserRoles.SuperAdmin">
@@ -74,7 +74,7 @@ await InvokeAsync(StateHasChanged);
                   
                     <MudContainer Style="@topMarginForContent"
                                   MaxWidth="MaxWidth.ExtraExtraLarge"
-                                  Class="px-0 pb-10 mud-height-full">
+                                  Class="px-0 pb-10 mx-0 mud-height-full">
 
 
 
@@ -87,8 +87,8 @@ await InvokeAsync(StateHasChanged);
                                 @SubHeader?.ChildContent
 
                             </MudAppBar>
-
-                            <MudElement Class="d-block" Style="height:50px">&nbsp;</MudElement>
+@* 
+                            <MudElement Class="d-block" Style="height:50px">&nbsp;</MudElement> *@
                         }
 
                         <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">

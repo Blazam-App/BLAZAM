@@ -4,6 +4,7 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Jobs;
+using BLAZAM.Session.Interfaces;
 using System.DirectoryServices;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
@@ -365,5 +366,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         DateTime? GetDateTimeProperty(string propertyName);
         void SetCustomProperty(string propertyName, object? value);
         void EnsureDirectoryEntry();
+        void SetCurrentUser(IApplicationUserState user);
     }
 }

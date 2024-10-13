@@ -45,9 +45,11 @@
             @if (_delegateEntry is IADGroup delegateGroup)
             {
                 <MudButton Variant="Variant.Outlined"
-                           OnClick="@(()=>{_groupMembersPopover.Open();})"
-                           Color="Color.Info">@AppLocalization["Show All Members"]</MudButton>
-                <GroupMembersPopover @ref=_groupMembersPopover Group="delegateGroup" IncludeNested=true />
+                           OnClick="@(()=>{_groupMembersShown=true;})"
+                           Color="Color.Info">
+                    @AppLocalization["Show All Members"]
+                </MudButton>
+
             }
 
             <MudButton Variant="Variant.Outlined"
@@ -56,7 +58,12 @@
             <AppCloseButton @onclick="DeleteDelegate"
                             Color="Color.Error" />
         </MudStack>
+        @if (_groupMembersShown)
+        {
+            <MudDivider />
+            <GroupMembersPopover Group="@(_delegateEntry as IADGroup)" IncludeNested=true />
 
+        }
 
     </ChildContent>
 </MudExpansionPanel>
@@ -64,6 +71,7 @@
 
 @code {
     private GroupMembersPopover? _groupMembersPopover;
+    bool _groupMembersShown;
 #nullable disable warnings
     IDirectoryEntryAdapter? _delegateEntry;
     [Parameter]
