@@ -25,8 +25,13 @@
                 @if (ApplicationInfo.inDebugMode)
                 {
 
-                    <AuthorizeView Context="authorizedContext" Roles=@UserRoles.SuperAdmin>
-                        <MudDrawer Width="450px" @bind-Open=@_devDrawerOpen Anchor=Anchor.End Elevation="2" Class="mud-theme-dark">
+                    <AuthorizeView Context="authorizedContext"
+                                   Roles=@UserRoles.SuperAdmin>
+                        <MudDrawer Width="450px"
+                                   @bind-Open=@_devDrawerOpen
+                                   Anchor=Anchor.End
+                                   Elevation="2"
+                                   Class="mud-theme-dark">
                             <MudDrawerContainer>
                                 <DevTools />
                             </MudDrawerContainer>
@@ -71,7 +76,7 @@ await InvokeAsync(StateHasChanged);
                 <MudMainContent Class=" mud-height-full">
 
 
-                  
+
                     <MudContainer Style="@topMarginForContent"
                                   MaxWidth="MaxWidth.ExtraExtraLarge"
                                   Class="px-0 pb-10 mud-height-full">
@@ -165,7 +170,7 @@ await InvokeAsync(StateHasChanged);
 
             Header.OnRefreshRequested += (async () => { await InvokeAsync(StateHasChanged); });
 
-       
+
         InvokeAsync(StateHasChanged);
     }
     SetSubHeader? SubHeader;
@@ -225,7 +230,7 @@ await InvokeAsync(StateHasChanged);
         get
 
         {
-            if(BrowseExpanded == false)
+            if (BrowseExpanded == false)
             {
                 if (_mudBreakPoint?.Breakpoint == Breakpoint.Sm ||
                 _mudBreakPoint?.Breakpoint == Breakpoint.Xs)
@@ -236,9 +241,11 @@ await InvokeAsync(StateHasChanged);
                 {
                     return DrawerVariant.Responsive;
                 }
-            }else{
+            }
+            else
+            {
                 return DrawerVariant.Temporary;
-            } 
+            }
 
         }
     }
