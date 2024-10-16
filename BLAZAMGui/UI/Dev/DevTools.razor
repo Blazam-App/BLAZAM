@@ -2,8 +2,8 @@
 @inherits AppComponentBase
 @inject IHttpContextAccessor ca
 
-<MudPaper Class="mud-theme-dark py-3" Width="250px" Elevation="0">
-    <MudNavMenu Color="Color.Success" Bordered="true">
+@* <MudPaper Class="mud-theme-dark py-3" Width="250px" Elevation="0">
+    <MudNavMenu Color="Color.Success" Bordered="true"> *@
 
 
         <MudText Typo="Typo.h6">Dev Tools</MudText>
@@ -55,12 +55,27 @@
                 <PropertyColumn Title="Session Expiration Time" Property="x => x.Ticket==null?null:(DateTimeOffset.UtcNow-x.Ticket.Properties.ExpiresUtc)" />
 
 
-               
 
-                <PropertyColumn Title="Has User Priv" Property="x => x.HasUserPrivilege.ToString()" />
-                <PropertyColumn Title="Has Group Priv" Property="x => x.HasGroupPrivilege.ToString()" />
-                <PropertyColumn Title="Has OU Priv" Property="x => x.HasOUPrivilege.ToString()" />
-                <PropertyColumn Title="Has Computer Priv" Property="x => x.HasComputerPrivilege.ToString()" />
+                <TemplateColumn Title="Has User Priv">
+                    <CellTemplate>
+                        @context.Item.HasUserPrivilege
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="Has Group Priv">
+                    <CellTemplate>
+                        @context.Item.HasGroupPrivilege
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="Has OU Priv">
+                    <CellTemplate>
+                        @context.Item.HasOUPrivilege
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="Has Computer Priv">
+                    <CellTemplate>
+                        @context.Item.HasComputerPrivilege
+                    </CellTemplate>
+                </TemplateColumn>
             </Columns>
         </MudDataGrid>
 
@@ -110,8 +125,8 @@
             </Row>
         </MudCard>
 
-    </MudNavMenu>
-</MudPaper>
+@*     </MudNavMenu>
+</MudPaper> *@
 
 @code {
     string DirectoryStatus = "";
