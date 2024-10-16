@@ -27,9 +27,11 @@
 
                     <AuthorizeView Context="authorizedContext"
                                    Roles=@UserRoles.SuperAdmin>
-                        <MudDrawer Width="450px"
+                        <MudDrawer Width="750px"
                                    @bind-Open=@_devDrawerOpen
                                    Anchor=Anchor.End
+                                    ClipMode=DrawerClipMode.Never
+                                    Variant="@DrawerVariant.Temporary"
                                    Elevation="2"
                                    Class="mud-theme-dark">
                             <MudDrawerContainer>
