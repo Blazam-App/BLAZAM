@@ -70,7 +70,7 @@ await ParentTemplateChanged(null);
                         </MudText>
 
                     </MudStack>
-                    
+
                     <MudSimpleTable Elevation=0
                                     Dense=true>
                         <thead>
@@ -273,8 +273,8 @@ await ParentTemplateChanged(null);
 
                             </tr>
                             <tr>
-                                <td>AlphaNum</td>
-                                <td>@AppLocalization["Random letter or number (optional force uppercase/lowercase)"]</td>
+                                <td>alphanum</td>
+                                <td>@AppLocalization["Random letter or number"]</td>
                                 <td>
                                     <MudStack>
                                         <span>
@@ -300,8 +300,8 @@ await ParentTemplateChanged(null);
 
                             </tr>
                             <tr>
-                                <td>Alpha</td>
-                                <td>@AppLocalization["Random letter (optional force uppercase/lowercase)"]</td>
+                                <td>alpha</td>
+                                <td>@AppLocalization["Random letter"]</td>
                                 <td>
                                     <MudStack>
                                         <span>
@@ -327,7 +327,7 @@ await ParentTemplateChanged(null);
 
                             </tr>
                             <tr>
-                                <td>Num</td>
+                                <td>num</td>
                                 <td>@AppLocalization["Random number"]</td>
                                 <td></td>
                                 <td></td>
@@ -337,7 +337,37 @@ await ParentTemplateChanged(null);
                             </tr>
                         </tbody>
                     </MudSimpleTable>
+                    <MudText Typo="Typo.h6">
+                        @AppLocalization["Examples"]
+                    </MudText>
+                    <MudSimpleTable Elevation=0
+                                    Dense=true>
+                        <thead>
+                            <tr>
+                                <th>@AppLocalization["Expression"]</th>
+                                <th>@AppLocalization["Description"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{fn}</td>
+                                <td>Returns the whole first name</td>
+                            </tr>
+                            <tr>
+                                <td>{fn[1]} or {fi}</td>
+                                <td>Returns the first initial</td>
+                            </tr>
+                            <tr>
+                                <td>{fn:l[2]}</td>
+                                <td>Returns the first two characters of the first name in lower case</td>
+                            </tr>
 
+                            <tr>
+                                <td>{ln:regex[^(.{3})(.*Jr)$]}</td>
+                                <td>A regex search on the last name pulling the first 3 characters and includes Jr if the last name ends in Jr</td>
+                            </tr>
+                        </tbody>
+                    </MudSimpleTable>
                 </MudExpansionPanel>
                 <Section Title=@AppLocalization["Account and Name"]>
 
