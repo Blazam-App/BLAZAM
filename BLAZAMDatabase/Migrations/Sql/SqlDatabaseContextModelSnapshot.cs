@@ -1306,6 +1306,9 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<bool?>("AllowCustomGroups")
                         .HasColumnType("bit");
 
+                    b.Property<bool?>("AllowUsernameOverride")
+                        .HasColumnType("bit");
+
                     b.Property<bool?>("AskForAlternateEmail")
                         .HasColumnType("bit");
 
@@ -1867,7 +1870,7 @@ namespace BLAZAM.Common.Migrations.Sql
                         .IsRequired();
 
                     b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
-                        .WithMany("Messages")
+                        .WithMany("Notifications")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1949,9 +1952,9 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.Navigation("FavoriteEntries");
 
-                    b.Navigation("Messages");
-
                     b.Navigation("NotificationSubscriptions");
+
+                    b.Navigation("Notifications");
 
                     b.Navigation("ReadNewsItems");
                 });
