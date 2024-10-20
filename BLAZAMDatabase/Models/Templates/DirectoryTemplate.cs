@@ -331,9 +331,9 @@ namespace BLAZAM.Database.Models.Templates
         {
             return ReplaceVariables(EffectiveDisplayNameFormula, newUser);
         }
-        public string GeneratePassword()
+        public string GeneratePassword(NewUserName newUser)
         {
-            return ReplaceVariables(EffectivePasswordFormula);
+            return ReplaceVariables(EffectivePasswordFormula, newUser);
         }
 
         public override string? ToString()
