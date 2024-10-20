@@ -54,59 +54,320 @@ await ParentTemplateChanged(null);
                            UncheckedColor="Color.Warning"
                            Color="Color.Success"
                            @bind-Value=@DirectoryTemplate.Visible />
-                <MudExpansionPanel  Text="Variables">
+                <MudExpansionPanel Text="Variables">
+                    <MudStack>
+                        <MudText Typo="Typo.h6">
+                            @AppLocalization["Syntax"]
+                        </MudText>
+                        <MudText>
+                            {variable:modifier[argument]}, {variable:modifier}, {variable[argument]}, or just {variable}
+                        </MudText>
+                        <MudText Typo="Typo.caption">
+                            Variables Expressions must be surrounded by curly braces eg:{fn}
+                        </MudText>
+                        <MudText Typo="Typo.caption">
+                            Modifiers and Arguments are both optional
+                        </MudText>
+
+                    </MudStack>
+
                     <MudSimpleTable Elevation=0
                                     Dense=true>
                         <thead>
                             <tr>
                                 <th>@AppLocalization["Variable"]</th>
+                                <th>@AppLocalization["Variable Description"]</th>
+                                <th>@AppLocalization["Modifier"]</th>
+                                <th>@AppLocalization["Modifier Description"]</th>
+                                <th>@AppLocalization["Argument"]</th>
+                                <th>@AppLocalization["Argument Description"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>fn</td>
+                                <td>@AppLocalization["First Name"]</td>
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            u
+                                        </span>
+                                        <span>
+                                            l
+                                        </span>
+                                        <span>
+                                            regex
+                                        </span>
+                                    </MudStack>
+                                </td>
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            Upper Case
+                                        </span>
+                                        <span>
+                                            Lower Case
+                                        </span>
+                                        <span>
+                                            Regular Expression
+                                        </span>
+                                    </MudStack>
+                                </td>
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            0-10000
+                                        </span>
+                                        <span>
+                                            Regex Expression eg: @(@"(?<!\d)([a-zA-Z])(\d)")
+                                        </span>
+                                    </MudStack>
+                                </td>
+
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            Pulls the first x number of characters
+                                        </span>
+                                        <span>
+                                            A custom regular expression in match mode
+                                        </span>
+                                    </MudStack>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>fi</td>
+                                <td>@AppLocalization["First Initial"]</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+
+                            </tr>
+                            <tr>
+                                <td>mn</td>
+                                <td>@AppLocalization["Middle Name"]</td>
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            u
+                                        </span>
+                                        <span>
+                                            l
+                                        </span>
+                                        <span>
+                                            regex
+                                        </span>
+                                    </MudStack>
+                                </td>
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            Upper Case
+                                        </span>
+                                        <span>
+                                            Lower Case
+                                        </span>
+                                        <span>
+                                            Regular Expression
+                                        </span>
+                                    </MudStack>
+                                </td>
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            0-10000
+                                        </span>
+                                        <span>
+                                            Regex Expression eg: @(@"(?<!\d)([a-zA-Z])(\d)")
+                                        </span>
+                                    </MudStack>
+                                </td>
+
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            Pulls the first x number of characters
+                                        </span>
+                                        <span>
+                                            A custom regular expression in match mode
+                                        </span>
+                                    </MudStack>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>mi</td>
+                                <td>@AppLocalization["Middle Initial"]</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>ln</td>
+                                <td>@AppLocalization["Last Name"]</td>
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            u
+                                        </span>
+                                        <span>
+                                            l
+                                        </span>
+                                        <span>
+                                            regex
+                                        </span>
+                                    </MudStack>
+                                </td>
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            Upper Case
+                                        </span>
+                                        <span>
+                                            Lower Case
+                                        </span>
+                                        <span>
+                                            Regular Expression
+                                        </span>
+                                    </MudStack>
+                                </td>
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            0-10000
+                                        </span>
+                                        <span>
+                                            Regex Expression eg: @(@"(?<!\d)([a-zA-Z])(\d)")
+                                        </span>
+                                    </MudStack>
+                                </td>
+
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            Pulls the first x number of characters
+                                        </span>
+                                        <span>
+                                            A custom regular expression in match mode
+                                        </span>
+                                    </MudStack>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>li</td>
+                                <td>@AppLocalization["Last Initial"]</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+
+                            </tr>
+                            <tr>
+                                <td>username</td>
+                                <td>@AppLocalization["Username"]</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+
+                            </tr>
+                            <tr>
+                                <td>alphanum</td>
+                                <td>@AppLocalization["Random letter or number"]</td>
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            u
+                                        </span>
+                                        <span>
+                                            l
+                                        </span>
+                                    </MudStack>
+                                </td>
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            Upper Case
+                                        </span>
+                                        <span>
+                                            Lower Case
+                                        </span>
+                                    </MudStack>
+                                </td>
+                                <td></td>
+                                <td></td>
+
+                            </tr>
+                            <tr>
+                                <td>alpha</td>
+                                <td>@AppLocalization["Random letter"]</td>
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            u
+                                        </span>
+                                        <span>
+                                            l
+                                        </span>
+                                    </MudStack>
+                                </td>
+                                <td>
+                                    <MudStack>
+                                        <span>
+                                            Upper Case
+                                        </span>
+                                        <span>
+                                            Lower Case
+                                        </span>
+                                    </MudStack>
+                                </td>
+                                <td></td>
+                                <td></td>
+
+                            </tr>
+                            <tr>
+                                <td>num</td>
+                                <td>@AppLocalization["Random number"]</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+
+                            </tr>
+                        </tbody>
+                    </MudSimpleTable>
+                    <MudText Typo="Typo.h6">
+                        @AppLocalization["Examples"]
+                    </MudText>
+                    <MudSimpleTable Elevation=0
+                                    Dense=true>
+                        <thead>
+                            <tr>
+                                <th>@AppLocalization["Expression"]</th>
                                 <th>@AppLocalization["Description"]</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>{fn}</td>
-                                <td>@AppLocalization["First Name"]</td>
+                                <td>Returns the whole first name</td>
                             </tr>
                             <tr>
-                                <td>{fi}</td>
-                                <td>@AppLocalization["First Initial"]</td>
+                                <td>{fn[1]} or {fi}</td>
+                                <td>Returns the first initial</td>
                             </tr>
                             <tr>
-                                <td>{mn}</td>
-                                <td>@AppLocalization["Middle Name"]</td>
+                                <td>{fn:l[2]}</td>
+                                <td>Returns the first two characters of the first name in lower case</td>
                             </tr>
+
                             <tr>
-                                <td>{mi}</td>
-                                <td>@AppLocalization["Middle Initial"]</td>
-                            </tr>
-                            <tr>
-                                <td>{ln}</td>
-                                <td>@AppLocalization["Last Name"]</td>
-                            </tr>
-                            <tr>
-                                <td>{li}</td>
-                                <td>@AppLocalization["Last Initial"]</td>
-                            </tr>
-                            <tr>
-                                <td>{username}</td>
-                                <td>@AppLocalization["Username"]</td>
-                            </tr>
-                            <tr>
-                                <td>{AlphaNum[u/l]}</td>
-                                <td>@AppLocalization["Random letter or number (optional force uppercase/lowercase)"]</td>
-                            </tr>
-                            <tr>
-                                <td>{Alpha[u/l]}</td>
-                                <td>@AppLocalization["Random letter (optional force uppercase/lowercase)"]</td>
-                            </tr>
-                            <tr>
-                                <td>{Num}</td>
-                                <td>@AppLocalization["Random number"]</td>
+                                <td>{ln:regex[^(.{3})(.*Jr)$]}</td>
+                                <td>A regex search on the last name pulling the first 3 characters and includes Jr if the last name ends in Jr</td>
                             </tr>
                         </tbody>
                     </MudSimpleTable>
-                    
                 </MudExpansionPanel>
                 <Section Title=@AppLocalization["Account and Name"]>
 
@@ -187,13 +448,59 @@ await ParentTemplateChanged(null);
                             }
                         </TemplateOverride>
 
-                        <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@askForAlternateEmailFromTemplateName">
+                        <TemplateOverride Class="mud-width-full"
+                                          BadgeClass="mud-width-full"
+                                          SourceTemplate="@askForAlternateEmailFromTemplateName">
 
                             <MudSwitch Label="@AppLocalization["Ask For Alternate Email"]"
                                        UncheckedColor="Color.Error"
                                        Color="Color.Success"
                                        @bind-Value=@DirectoryTemplate.EffectiveAskForAlternateEmail />
                         </TemplateOverride>
+                        <MudExpansionPanel Text="@AppLocalization["Formula sim"]">
+                            <MudGrid>
+                                <MudItem xs="12" md="6">
+                                    <MudStack>
+
+
+                                        <MudTextField T="string"
+                                                      Label="@AppLocalization["First Name"]"
+                                                      @bind-Value="@_testFirstName" />
+                                        <MudTextField T="string"
+                                                      Label="@AppLocalization["Middle Name"]"
+                                                      @bind-Value="@_testMiddleName" />
+                                        <MudTextField T="string"
+                                                      Label="@AppLocalization["Last Name"]"
+                                                      @bind-Value="@_testLastName" />
+
+                                    </MudStack>
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudStack>
+                                        @{
+                                            var testName = new NewUserName()
+                                                {
+                                                    GivenName = _testFirstName,
+                                                    MiddleName = _testMiddleName,
+                                                    Surname = _testLastName
+                                                };
+                                        }
+                                        <MudTextField T="string"
+                                                      Label="@AppLocalization["Username"]"
+                                                      Value="@DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectiveUsernameFormula,testName)" />
+                                        <MudTextField T="string"
+                                                      Label="@AppLocalization["Display Name"]"
+                                                      Value="@DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectiveDisplayNameFormula,testName)" />
+                                        <MudTextField T="string"
+                                                      Label="@AppLocalization["Password"]"
+                                                      Value="@DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectivePasswordFormula,testName)" />
+
+                                    </MudStack>
+                                </MudItem>
+                            </MudGrid>
+
+
+                        </MudExpansionPanel>
 
                     </MudStack>
 
@@ -211,8 +518,11 @@ await ParentTemplateChanged(null);
                 <Section Title=@AppLocalization["Fields"]>
 
 
-                    <MudDrawerContainer Class="mud-height-full" Style="min-height:200px">
-                        <MudDrawer @bind-Open="@fieldDrawerOpen" Elevation="0" Variant="@DrawerVariant.Persistent">
+                    <MudDrawerContainer Class="mud-height-full"
+                                        Style="min-height:200px">
+                        <MudDrawer @bind-Open="@fieldDrawerOpen"
+                                   Elevation="0"
+                                   Variant="@DrawerVariant.Persistent">
                             <MudStack Class="my-0 py-0">
                                 @foreach (var field in fields.OrderBy(f => f.DisplayName))
                                 {
@@ -407,6 +717,10 @@ await ParentTemplateChanged(null);
 }
 
 @code {
+    string? _testFirstName;
+    string? _testMiddleName;
+    string? _testLastName;
+
 
     [Parameter]
     public SetHeader? Header { get; set; }

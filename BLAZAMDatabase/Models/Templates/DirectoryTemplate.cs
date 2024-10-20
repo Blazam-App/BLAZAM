@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Configuration;
 using System.Text.RegularExpressions;
 using IndexAttribute = Microsoft.EntityFrameworkCore.IndexAttribute;
 
@@ -243,19 +244,21 @@ namespace BLAZAM.Database.Models.Templates
         }
         public string ReplaceVariables(string toParse, NewUserName? newUser = null)
         {
-            var regex = new Regex(@"\{(?<var>\w+)(:(?<mod>[ul]))?\}");
+            var regex = new Regex(@"\{(?<var>\w+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
             return regex.Replace(toParse, match =>
             {
                 var variable = match.Groups["var"].Value.ToLower();
                 var modifier = match.Groups["mod"].Value;
+                var arg = match.Groups["arg"].Value;
+
                 switch (variable)
                 {
-                    case "fn": return newUser?.GivenName;
-                    case "fi": return newUser?.GivenName?.Substring(0, 1);
-                    case "mn": return newUser?.MiddleName;
-                    case "mi": return newUser?.MiddleName?.Substring(0, 1);
-                    case "ln": return newUser?.Surname;
-                    case "li": return newUser?.Surname?.Substring(0, 1);
+                    case "fn": return ProcessVariable(newUser?.GivenName,modifier,arg);
+                    case "fi": return ProcessVariable(newUser?.GivenName?.Substring(0, 1), modifier, arg);
+                    case "mn": return ProcessVariable(newUser?.MiddleName, modifier, arg);
+                    case "mi": return ProcessVariable(newUser?.MiddleName?.Substring(0, 1), modifier, arg);
+                    case "ln": return ProcessVariable(newUser?.Surname, modifier, arg);
+                    case "li": return ProcessVariable(newUser?.Surname?.Substring(0, 1), modifier, arg);
                     case "username": return ReplaceVariables(EffectiveUsernameFormula, newUser).Replace(" ", "");
                     case "alphanum":
                         var ch = RandomLetterOrDigit();
@@ -269,6 +272,28 @@ namespace BLAZAM.Database.Models.Templates
                         return match.Value; // preserve unknown variables
                 }
             });
+        }
+        private string ProcessVariable(string? value, string? modifier, string? argument)
+        {
+            if(value == null) return null;
+            switch (modifier)
+            {
+                case "":
+                case null:
+                    if(argument!=null)
+                    {
+                        var number = 0;
+                        int.TryParse(argument, out number);
+                        if(number != 0)
+                            return value.Substring(0, number);  
+
+                    }
+                    return value;
+                case "regex":
+                    var regex = new Regex(argument);
+                    return regex.Match(value).Value;
+                default: return value;
+            }
         }
 
         private static readonly Random _random = new Random();
