@@ -35,7 +35,7 @@ namespace BLAZAM.Server.Pages
         {
             var user = this.User;
             var state = UserStateService.GetUserState(user);
-            if (state.User.Identity.IsAuthenticated)
+            if (state?.User.Identity?.IsAuthenticated==true)
             {
                 await AuditLogger.Logon.Logout();
 
