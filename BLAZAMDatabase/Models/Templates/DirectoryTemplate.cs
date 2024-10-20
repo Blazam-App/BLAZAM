@@ -115,7 +115,7 @@ namespace BLAZAM.Database.Models.Templates
 
         public List<DirectoryTemplateGroup> AssignedGroupSids { get; set; } = new();
         [NotMapped]
-        public List<DirectoryTemplateGroup> InheritedAssignedGroupSids
+        public List<DirectoryTemplateGroup> EffectiveAssignedGroupSids
         {
             get
             {
@@ -123,7 +123,7 @@ namespace BLAZAM.Database.Models.Templates
 
                 if (ParentTemplate != null)
                 {
-                    allAssignedGroupSids.AddRange(ParentTemplate.InheritedAssignedGroupSids);
+                    allAssignedGroupSids.AddRange(ParentTemplate.EffectiveAssignedGroupSids);
                 }
                 return allAssignedGroupSids;
             }
@@ -190,7 +190,16 @@ namespace BLAZAM.Database.Models.Templates
             }
             set => SendWelcomeEmail = value;
         }
-
+        public bool? AllowUsernameOverride { get; set; }
+        [NotMapped]
+        public bool? EffectiveAllowUsernameOverride
+        {
+            get
+            {
+                return GetEffectiveValue<bool?>(t => t.AllowUsernameOverride, t => t.EffectiveAllowUsernameOverride);
+            }
+            set => AllowUsernameOverride = value;
+        }
 
         public bool IsValueOverriden(DirectoryTemplateFieldValue fieldValue)
         {
@@ -242,7 +251,7 @@ namespace BLAZAM.Database.Models.Templates
             return toParse;
 
         }
-        public string ReplaceVariables(string toParse, NewUserName? newUser = null)
+        public string ReplaceVariables(string toParse, NewUserName? newUser = null, string? username=null)
         {
             var regex = new Regex(@"\{(?<var>\w+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
             return regex.Replace(toParse, match =>
@@ -259,7 +268,7 @@ namespace BLAZAM.Database.Models.Templates
                     case "mi": return ProcessVariable(newUser?.MiddleName?.Substring(0, 1), modifier, arg);
                     case "ln": return ProcessVariable(newUser?.Surname, modifier, arg);
                     case "li": return ProcessVariable(newUser?.Surname?.Substring(0, 1), modifier, arg);
-                    case "username": return ReplaceVariables(EffectiveUsernameFormula, newUser).Replace(" ", "");
+                    case "username": return username??ReplaceVariables(EffectiveUsernameFormula, newUser).Replace(" ", "");
                     case "alphanum":
                         var ch = RandomLetterOrDigit();
                         return modifier == "u" ? ch.ToUpper() : ch.ToLower();

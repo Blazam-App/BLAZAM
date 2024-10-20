@@ -26,7 +26,7 @@
 
 
         <AppModal Title=@AppLocalization["Assign To"] @ref=@AssignToModal>
-            <AssignToModalContent OnGroupMembershipChange=@((change)=>{AssignToModal?.Close(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
+            <AssignToModalContent ModelChanged=@((change)=>{AssignToModal?.Close(); InvokeAsync(StateHasChanged);}) DirectoryModel="Group" />
         </AppModal>
         <AppModal Title=@AppLocalization["Add Members"] @ref=@AssignMemberModal>
             <AddMemberModalContent ModelChanged=@((change)=>{AssignMemberModal?.Close();InvokeAsync(StateHasChanged);}) Group="Group" />

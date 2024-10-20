@@ -374,11 +374,12 @@ await ParentTemplateChanged(null);
                     <MudStack>
                         @{
                             var usernameFromTemplate = GetParentOfValue<string?>(DirectoryTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
-                            var displayNameFromTemplateName = GetParentOfValue<string?>(DirectoryTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
+                            var displayNameFromTemplate = GetParentOfValue<string?>(DirectoryTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
                             var passwordFromTemplateName = GetParentOfValue<string?>(DirectoryTemplate.EffectivePasswordFormula, template => template.PasswordFormula); ;
-                            var requirePasswordChangeFromTemplateName = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange); ;
-                            var sendWelcomeEmailFromTemplateName = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail); ;
-                            var askForAlternateEmailFromTemplateName = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail); ;
+                            var allowUsernameOverrideFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange); ;
+                            var requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange); ;
+                            var sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail); ;
+                            var askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(DirectoryTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail); ;
 
                         }
                         <MudStack Row=true>
@@ -393,7 +394,7 @@ await ParentTemplateChanged(null);
                                 }
                             </MudStack>
                             <MudStack Row=true>
-                                <TemplateOverride SourceTemplate="@displayNameFromTemplateName">
+                                <TemplateOverride SourceTemplate="@displayNameFromTemplate">
                                     <MudTextField Label=@AppLocalization["Display Name Format"]
                                                   @bind-Value=DirectoryTemplate.EffectiveDisplayNameFormula />
                                 </TemplateOverride>
@@ -419,10 +420,22 @@ await ParentTemplateChanged(null);
                                 <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.PasswordFormula=null;}) />
                             }
                         </MudStack>
-
                         <MudStack Row=true>
 
-                            <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@requirePasswordChangeFromTemplateName">
+                            <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@requirePasswordChangeFromTemplate">
+                                <MudSwitch Label=@AppLocalization["Allow Username Override"]
+                                           UncheckedColor="Color.Error"
+                                           Color="Color.Success"
+                                           @bind-Value=DirectoryTemplate.EffectiveAllowUsernameOverride />
+                            </TemplateOverride>
+                            @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveAllowUsernameOverride != DirectoryTemplate.EffectiveAllowUsernameOverride)
+                            {
+                                <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.AllowUsernameOverride=null;}) />
+                            }
+                        </MudStack>
+                        <MudStack Row=true>
+
+                            <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@requirePasswordChangeFromTemplate">
                                 <MudSwitch Label=@AppLocalization["Require Password Change"]
                                            UncheckedColor="Color.Warning"
                                            Color="Color.Success"
@@ -433,12 +446,16 @@ await ParentTemplateChanged(null);
                                 <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.RequirePasswordChange=null;}) />
                             }
                         </MudStack>
-                        <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@sendWelcomeEmailFromTemplateName">
+                        <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@sendWelcomeEmailFromTemplate">
 
                             <MudSwitch Label="@AppLocalization["Send  Welcome Email"]"
                                        UncheckedColor="Color.Error"
                                        Color="Color.Success"
                                        @bind-Value=@DirectoryTemplate.EffectiveSendWelcomeEmail />
+                            @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveSendWelcomeEmail != DirectoryTemplate.EffectiveSendWelcomeEmail)
+                            {
+                                <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.SendWelcomeEmail=null;}) />
+                            }
                             @if (DirectoryTemplate.EffectiveSendWelcomeEmail == true && DirectoryTemplate.EffectiveAskForAlternateEmail != true &&
                         (DirectoryTemplate.EffectiveFieldValues.Any(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id) && !DirectoryTemplate.EffectiveFieldValues.First(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
                             {
@@ -450,13 +467,17 @@ await ParentTemplateChanged(null);
 
                         <TemplateOverride Class="mud-width-full"
                                           BadgeClass="mud-width-full"
-                                          SourceTemplate="@askForAlternateEmailFromTemplateName">
+                                          SourceTemplate="@askForAlternateEmailFromTemplate">
 
                             <MudSwitch Label="@AppLocalization["Ask For Alternate Email"]"
                                        UncheckedColor="Color.Error"
                                        Color="Color.Success"
                                        @bind-Value=@DirectoryTemplate.EffectiveAskForAlternateEmail />
                         </TemplateOverride>
+                        @if (DirectoryTemplate.ParentTemplate != null && DirectoryTemplate.ParentTemplate.EffectiveAskForAlternateEmail != DirectoryTemplate.EffectiveAskForAlternateEmail)
+                        {
+                            <RevertTemplateValueButton OnClick=@(()=>{ DirectoryTemplate.AskForAlternateEmail=null;}) />
+                        }
                         <MudExpansionPanel Text="@AppLocalization["Formula sim"]">
                             <MudGrid>
                                 <MudItem xs="12" md="6">
@@ -662,16 +683,20 @@ await ParentTemplateChanged(null);
                 <Section Title=@AppLocalization["Assigned Groups"]>
 
                     <MudStack>
-                        @foreach (var group in DirectoryTemplate.InheritedAssignedGroupSids)
-                        {
+                        
+                            @foreach (var group in DirectoryTemplate.EffectiveAssignedGroupSids)
+                            {
 
-                            var groupFromTemplate = dropdownTemplates.Where(ot => ot.AssignedGroupSids.Contains(group)).FirstOrDefault();
-                            <TemplateOverride SourceTemplate="@groupFromTemplate">
-                                <AssignedTemplateGroup Group="group"
-                                                       OnGroupRemoved="@(async (group)=>{await InvokeAsync(StateHasChanged);})" />
-                            </TemplateOverride>
+                                var groupFromTemplate = dropdownTemplates.Where(ot => ot.AssignedGroupSids.Contains(group)).FirstOrDefault();
+                                <TemplateOverride SourceTemplate="@groupFromTemplate">
 
-                        }
+                                   
+
+                                    <AssignedTemplateGroup Group="group"
+                                                           OnGroupRemoved="@(async (group)=>{await InvokeAsync(StateHasChanged);})" />
+                                </TemplateOverride>
+
+                            }
                     </MudStack>
                     <MudStack Row=true>
                         <ADAutoComplete SearchObjectType=ActiveDirectoryObjectType.Group
