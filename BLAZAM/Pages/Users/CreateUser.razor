@@ -121,8 +121,8 @@
             <ChildContent>
                 @{
 
-                    var conflictingEntry = Directory.Users.FindUserByUsername(newUser.SamAccountName, false);
-                    if (conflictingEntry != null && conflictingEntry.SamAccountName?.Equals(newUser.SamAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
+                    var conflictingEntry = Directory.Users.FindUserByUsername(newUser?.SamAccountName, false);
+                    if (conflictingEntry != null && conflictingEntry.SamAccountName?.Equals(newUser?.SamAccountName, StringComparison.InvariantCultureIgnoreCase) == true)
                     {
                         //newUser = null;
                         SnackBarService.Warning("An account with that name already exists! " + conflictingEntry.SamAccountName);
