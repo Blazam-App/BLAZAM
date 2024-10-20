@@ -59,11 +59,7 @@ namespace BLAZAM.Nav
                 Nav.NavigateTo(uri, forceLoad);
             }
             catch { }
-            //if (await MessageService.Confirm(AppLocalization["Are you sure you want to navigate away?"], AppLocalization["You have unsaved changes"]) == true)
-            //{
-            //    WarnOnNavigation = false;
-            //    Nav.NavigateTo(uri, forceLoad);
-            //}
+       
 
         }
 
