@@ -14,22 +14,16 @@
                     <MudListItem>
                         <ChildContent>
                             <MudStack Row=true>
+
+                                <MudLink Target="@Target"
+                                         Class="align-middle"
+                                         Href="@g.SearchUri">
+                                    @g.CanonicalName
+                                </MudLink>
                                 @if (g.CanUnassign)
                                 {
-                                    <MudLink Class="align-middle"
-                                             Href="@g.SearchUri">
-                                        @g.CanonicalName
-                                    </MudLink>
                                     <MudSpacer />
-                                    <MudIconButton Size="Size.Small" OnClick="@(()=>{Model.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
-                                }
-                                else
-                                {
-                                    <MudLink Class="align-middle"
-                                             Href="@g.SearchUri">
-                                        @g.CanonicalName
-                                    </MudLink>
-
+                                    <MudIconButton Disabled=@Disabled Size="Size.Small" OnClick="@(()=>{Model.UnassignFrom(g);})" Class="align-end align-middle" Color=Color.Error Icon="@Icons.Material.Filled.Close" />
                                 }
                             </MudStack>
                         </ChildContent>
@@ -62,6 +56,10 @@
 @code {
     [CascadingParameter]
     public bool EditMode { get; set; }
+    [Parameter]
+    public string? Target { get; set; }
+    [Parameter]
+    public bool Disabled { get; set; }
     [Parameter]
     public IGroupableDirectoryAdapter Model { get; set; }
     [Parameter]
