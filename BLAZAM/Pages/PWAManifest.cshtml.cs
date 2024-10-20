@@ -18,7 +18,7 @@ namespace BLAZAM.Pages
         public string name = "Blazam";
         public List<ManifestIcon> icons= new List<ManifestIcon>();
         public string start_url = ".";
-        public string display = "standalone";
+        public string display = "minimal-ui";
         public string theme_color = "#000000";
         public string background_color = "#FFFFFF";
         public string description = "The modern Active Directory management tool.";

@@ -29,16 +29,39 @@
                          SortMode="@SortMode.Multiple"
                          Groupable="false">
                 <Columns>
-                    <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" Sortable="true" />
-                    <PropertyColumn Property="x => x.Username" Filterable="true"/>
-                    <PropertyColumn Property="x => x.IpAddress" Filterable="true" />
+                    @* <PropertyColumn Property="x => x.Timestamp.ToLocalTime()"   Sortable="true" /> *@
+                    <TemplateColumn Title=@AppLocalization["Timestamp"] Sortable="true">
+                        <CellTemplate>
+                            <MudText>
+                                @context.Item.Timestamp.ToLocalTime()
+                            </MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <PropertyColumn Property="x => x.Username" Filterable="true" />
+                    <TemplateColumn Title=@AppLocalization["Ip Address"] Filterable="true">
+                        <CellTemplate>
+                            @if (ApplicationInfo.InDemoMode && !CurrentUser.Username.Equals("admin", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                <MudText Style="filter:blur(4px);">
+                                    10.20.30.40
+                                </MudText>
+                            }
+                            else
+                            {
+                                <MudText>
+                                    @context.Item.IpAddress
+                                </MudText>
+                            }
+
+                        </CellTemplate>
+                    </TemplateColumn>
                     <PropertyColumn Property="x => x.Action" Filterable="true" />
                     <TemplateColumn>
                         <CellTemplate>
                             <MudLink Href="@("/view/"+context.Item.Target)">@context.Item.Target</MudLink>
                         </CellTemplate>
                     </TemplateColumn>
-                    <PropertyColumn Property="x => x.BeforeAction"  Filterable="true" />
+                    <PropertyColumn Property="x => x.BeforeAction" Filterable="true" />
                     <PropertyColumn Property="x => x.AfterAction" Filterable="true" />
 
                 </Columns>
@@ -55,7 +78,7 @@
     <MudTabPanel>
         <ChildContent>
             <LoginHistoryChart />
-           
+
 
             <MudDataGrid Virtualize=true
                          Height="600px"
@@ -67,9 +90,33 @@
                          SortMode="@SortMode.Multiple"
                          Groupable="false">
                 <Columns>
-                    <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" />
+                    @* <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" /> *@
+                    <TemplateColumn Title=@AppLocalization["Timestamp"] Sortable="true">
+                        <CellTemplate>
+                            <MudText>
+                                @context.Item.Timestamp.ToLocalTime()
+                            </MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
                     <PropertyColumn Property="x => x.Username" />
-                    <PropertyColumn Property="x => x.IpAddress" />
+
+                    <TemplateColumn Title=@AppLocalization["Ip Address"] Filterable="true">
+                        <CellTemplate>
+                            @if (ApplicationInfo.InDemoMode && !CurrentUser.Username.Equals("admin", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                <MudText Style="filter:blur(4px);">
+                                    10.20.30.40
+                                </MudText>
+                            }
+                            else
+                            {
+                                <MudText>
+                                    @context.Item.IpAddress
+                                </MudText>
+                            }
+                           
+                        </CellTemplate>
+                    </TemplateColumn>
                     <PropertyColumn Property="x => x.Action" />
 
                 </Columns>
@@ -85,7 +132,7 @@
     </MudTabPanel>
     <MudTabPanel>
         <ChildContent>
-            @if(ApplicationInfo.InDemoMode && CurrentUser.Username == "Demo")
+            @if (ApplicationInfo.InDemoMode && CurrentUser.Username == "Demo")
             {
                 <MudText>Disabled in demo</MudText>
             }
@@ -101,7 +148,14 @@
                              SortMode="@SortMode.Multiple"
                              Groupable="false">
                     <Columns>
-                        <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" />
+                        @* <PropertyColumn Property="x => x.Timestamp.ToLocalTime()" /> *@
+                        <TemplateColumn Title=@AppLocalization["Timestamp"] Sortable="true">
+                            <CellTemplate>
+                                <MudText>
+                                    @context.Item.Timestamp.ToLocalTime()
+                                </MudText>
+                            </CellTemplate>
+                        </TemplateColumn>
                         <PropertyColumn Property="x => x.Username" />
                         <PropertyColumn Property="x => x.IpAddress" />
                         <PropertyColumn Property="x => x.Target" />
@@ -113,7 +167,7 @@
                     </Columns>
                 </MudDataGrid>
             }
-         
+
 
 
 
@@ -128,7 +182,7 @@
 </MudTabs>
 
 
-            @code {
+@code {
     List<LogonAuditLog> logonEntries = new();
     List<DirectoryEntryAuditLog> auditEntries = new();
     List<SystemAuditLog> systemAuditEntries = new();
@@ -146,10 +200,10 @@
 
 
 
-           
+
         }
 
 
     }
-   
+
 }

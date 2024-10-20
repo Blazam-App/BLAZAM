@@ -1,30 +1,30 @@
 @inherits AppComponentBase
 <MudStack Row=true>
-    @if (ADGroup != null)
-    {
-        <MudText>
 
-            @ADGroup?.CanonicalName
-        </MudText>
-
-    }
-    else
-    {
-        <MudText>
-            Unknown Group: @Group.GroupSid
-        </MudText>
-
-    }
-    <AppTooltip Text="@AppLocalization["Remove Group"]">
-        <MudIconButton OnClick=@(()=>{
-                       Template.AssignedGroupSids.Remove(Group);
-                       OnGroupRemoved.InvokeAsync(Group);
-                       }) Color=Color.Error Icon="@Icons.Material.Filled.Close" />
-    </AppTooltip>
+    <MudChip Color="Color.Primary"
+             T="DirectoryTemplateGroup"
+             Value="Group"
+             Selected=false
+             Text="@(ADGroup!=null?ADGroup.CanonicalName:("Unknown Group:"+ Group.GroupSid))"
+             OnClose=@(Template.AssignedGroupSids?.Contains(Group)==true?(group)=>{
+             Template.AssignedGroupSids.Remove(group.Value);
+             OnGroupRemoved.InvokeAsync(Group);
+             }:null) />
 </MudStack>
 @code {
+    private DirectoryTemplateGroup _group;
+
     [Parameter]
-    public DirectoryTemplateGroup Group { get; set; }
+    public DirectoryTemplateGroup Group
+    {
+        get => _group; set
+        {
+            if (_group == value) return;
+            _group =value;
+            LookupGroup();
+
+        }
+    }
 
     [CascadingParameter]
     public DirectoryTemplate Template { get; set; }
@@ -37,6 +37,14 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        ADGroup = Directory.Groups.FindGroupBySID(Group.GroupSid);
+        LookupGroup();
+    }
+    private void LookupGroup()
+    {
+        Task.Run(() =>
+        {
+            ADGroup = Directory.Groups.FindGroupBySID(Group.GroupSid);
+            InvokeAsync(StateHasChanged);
+        });
     }
 }
