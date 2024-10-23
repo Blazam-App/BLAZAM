@@ -27,7 +27,7 @@
 
                 <MudCard Square Class="mud-border-error mx-auto">
                 <MudCardHeader Class="mud-error">
-                @Error.Source : @Error.GetType()
+                @Error?.Source : @Error?.GetType()
                 </MudCardHeader>
                 <MudPaper Square=true>
                         Error Message: @Error?.Message

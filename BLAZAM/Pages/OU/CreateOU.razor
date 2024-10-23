@@ -59,14 +59,12 @@
 
 
     string newOUName;
-    List<DirectoryTemplate> templates;
     IADOrganizationalUnit? parentOU;
     IADOrganizationalUnit? newOU;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        templates = await Context?.DirectoryTemplates.ToListAsync();
         await InvokeAsync(StateHasChanged);
     }
     /*

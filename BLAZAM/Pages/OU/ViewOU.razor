@@ -91,7 +91,7 @@
     {
         if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
         {
-            var changes = OU.Changes;
+            var changes = OU?.Changes;
             await OU.CommitChangesAsync();
             EditMode = false;
             //Nav.WarnOnNavigation = false;

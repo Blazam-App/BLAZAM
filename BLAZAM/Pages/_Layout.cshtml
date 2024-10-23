@@ -48,7 +48,7 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.server.js"></script>
-    @if (!!ApplicationInfo.InDemoMode && !ApplicationInfo.InDebugMode && !Debugger.IsAttached && DatabaseCache.ApplicationSettings?.SendDeveloperAnalytics == true)
+    @if (!ApplicationInfo.InDemoMode && !ApplicationInfo.InDebugMode && !Debugger.IsAttached && DatabaseCache.ApplicationSettings?.SendDeveloperAnalytics == true)
     {
         <!-- BLAZAM Dev Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-415DR9ZVBH"></script>

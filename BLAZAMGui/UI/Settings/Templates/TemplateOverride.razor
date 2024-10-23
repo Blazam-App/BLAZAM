@@ -10,6 +10,7 @@
               Overlap=true
               Color="Color.Info">
         @ChildContent
+      
     </MudBadge>
     <MudPopover Open="@_popoverOpen" Fixed="true" Class="px-4 pt-4">
         <div class="d-flex flex-column">
@@ -21,12 +22,21 @@
     </MudPopover>
 </AppTooltip>
 
-    @code {
+@code {
+    /// <summary>
+    /// The template where this value is inherited from if not itself
+    /// </summary>
     [Parameter]
     public DirectoryTemplate? SourceTemplate { get; set; }
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public Func<DirectoryTemplate,object> Selector { get; set; }
+
+    [CascadingParameter]
+    public DirectoryTemplate Template{ get; set; }
 
     [Parameter]
     public string Class { get; set; }

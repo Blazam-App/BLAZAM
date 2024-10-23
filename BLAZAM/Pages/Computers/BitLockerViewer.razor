@@ -34,7 +34,10 @@
 
     }
     private async void GetRecoveries(){
-        _recoveries = await Computer.GetBitLockerRecoveryAsync();
+        var recs = await Computer?.GetBitLockerRecoveryAsync();
+        if (recs != null)
+            _recoveries = recs;
+
         await InvokeAsync(StateHasChanged);
     }
 }

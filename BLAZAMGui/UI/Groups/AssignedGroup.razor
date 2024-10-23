@@ -1,10 +1,10 @@
 ﻿@inherits DirectoryModelComponent
 
-<MudCard>
+<MudCard Elevation="@Elevation">
     @if (Group != null)
     {
         <MudCardHeader>
-            <MudText Style="cursor:pointer;" @onclick="@(()=>{
+            <MudText Style="@(AllowNavigation==true?"cursor:pointer;":"")" @onclick="@(()=>{
             if(AllowNavigation)
              Nav.NavigateTo(Group.SearchUri);
             })">
@@ -75,6 +75,8 @@
 
     [Parameter]
     public bool AllowNavigation { get; set; } = true; 
+      [Parameter]
+    public int Elevation { get; set; } = 1; 
     
     [Parameter]
     public bool AllowUnassign { get; set; } = true;
