@@ -97,8 +97,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
         protected SearchResult? searchResult;
 
         protected IAppDatabaseFactory DbFactory => Directory.Factory;
-
-        protected IApplicationUserState? CurrentUser => Directory.CurrentUser;
+        public void SetCurrentUser(IApplicationUserState user)
+        {
+            _currentUser = user;
+        }
+        protected IApplicationUserState? _currentUser;
+        protected IApplicationUserState? CurrentUser => _currentUser;
 
         private bool _newEntry = false;
         public bool NewEntry
@@ -113,8 +117,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
         public Dictionary<string, object> NewEntryProperties { get; set; } = new();
-
-        public IActiveDirectoryContext Directory { get; private set; }
+        private IActiveDirectoryContext _directory;
+        public IActiveDirectoryContext Directory
+        {
+            get => _directory;
+            private set
+            {
+                if (value.Equals(_directory)) return;
+                _directory = value;
+                _currentUser = value.CurrentUser;
+            }
+        }
         private bool hasUnsavedChanges = false;
 
 
