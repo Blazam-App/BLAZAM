@@ -10,8 +10,12 @@
         <MudDropContainer @ref=widgetContainer
                           T="UserDashboardWidget" Items="CurrentUser.State?.Preferences?.DashboardWidgets.OrderBy(uw => uw.Slot).ThenBy(uw => uw.Order)"
                           ItemsSelector="ItemSelector"
+                          ItemDraggingClass="mud-info-text"
+                          DisabledClass=""
+                          ItemsClassSelector=@((item,name)=>{return _editMode==false?"cursor-pointer":"";})
+                          ItemDisabled=@((item)=>{return !_editMode;})
                           ItemDropped="ItemDropped"
-                          Class="d-flex flex-wrap flex-grow-1 mud-width-full  mt-5">
+                          Class="d-flex flex-wrap flex-grow-1 mud-width-full  mt-5 cursor-">
             <ChildContent>
 
                 <FlexContainer Spacing="4" Class="mx-auto">
@@ -65,7 +69,7 @@
                                 </AppTooltip>
 
                                 <AppTooltip Text=@AppLocalization["Remove"]>
-                                    <AppCloseButton OnClick=@(async()=>{await RemoveWidget(context);}) />
+                                    <AppCloseButton Disabled="!_editMode" OnClick=@(async()=>{await RemoveWidget(context);}) />
                                 </AppTooltip>
 
                             </MudCardHeader>
@@ -100,23 +104,36 @@
 
     }
 
-    <MudMenu Class="d-flex mt-5" Style="justify-content: flex-end;" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
-        <ActivatorContent>
-            <AppTooltip Text="Add Widget">
-                <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
-            </AppTooltip>
-        </ActivatorContent>
-        <ChildContent>
-            @foreach (var widget in allWidgets)
-            {
-                @if (!CurrentUser.State?.Preferences?.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType) == true)
-                {
-                    <MudMenuItem OnClick="@(async()=>{await AddWidget(widget.WidgetType);})">@widget.Title</MudMenuItem>
-                }
+    <MudStack Class="d-flex mt-5"
+              Style="justify-content: flex-end;" Row=true>
+              <AppTooltip Text=@AppLocalization["Edit"]>
+        <MudFab StartIcon="@(_editMode==false?Icons.Material.Filled.Edit:Icons.Material.Filled.EditOff)"
+                Color="@(_editMode==false?Color.Success:Color.Error)"
+                OnClick="@(()=>{_editMode=!_editMode;  widgetContainer.Refresh();})" />
+                </AppTooltip>
+        @if (_editMode && CurrentUser.State.Preferences?.DashboardWidgets.Count > 0 && allWidgets.Count> CurrentUser.State.Preferences?.DashboardWidgets.Count)
+        {
+            <MudMenu AnchorOrigin="Origin.BottomRight"
+                     TransformOrigin="Origin.TopRight">
+                <ActivatorContent>
+                    <AppTooltip Text=@AppLocalization["Add Widget"]>
+                        <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
+                    </AppTooltip>
+                </ActivatorContent>
+                <ChildContent>
+                    @foreach (var widget in allWidgets)
+                    {
+                        @if (!CurrentUser.State?.Preferences?.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType) == true)
+                        {
+                            <MudMenuItem OnClick="@(async()=>{await AddWidget(widget.WidgetType);})">@widget.Title</MudMenuItem>
+                        }
 
-            }
-        </ChildContent>
-    </MudMenu>
+                    }
+                </ChildContent>
+            </MudMenu>
+        }
+    </MudStack>
+
 }
 
 
@@ -124,7 +141,7 @@
 
 
 @code {
-
+    bool _editMode;
     [Inject]
     public WidgetService WidgetService { get; set; }
     public AppEvent<Widget> OnRefreshWidget { get; set; } = (val) => { };
@@ -149,24 +166,53 @@
         if (dropItem.Item == null) return Task.CompletedTask;
         if (CurrentUser.State != null)
         {
-            var refItem = CurrentUser.State.Preferences?.DashboardWidgets.Where(w => w.WidgetType == dropItem.Item.WidgetType).FirstOrDefault();
-            if (refItem != null)
-            {
-                refItem.Slot = dropItem.DropzoneIdentifier;
-                refItem.Order = dropItem.IndexInZone;
+            // Find the dropped widget
+            var droppedWidget = CurrentUser.State.Preferences?.DashboardWidgets
+                .FirstOrDefault(w => w.WidgetType == dropItem.Item.WidgetType);
 
-                foreach (var widget in CurrentUser.State.Preferences.DashboardWidgets)
+            if (droppedWidget != null)
+            {
+                // **1. Update the Slot of the dropped widget**
+                droppedWidget.Slot = dropItem.DropzoneIdentifier;
+
+                // **2. Get widgets in the ORIGINAL slot**
+                var widgetsInOriginalSlot = CurrentUser.State.Preferences.DashboardWidgets
+                    .Where(w => w.Slot == droppedWidget.Slot)
+                    .OrderBy(w => w.Order)
+                    .ToList();
+
+                // **3. Remove from the ORIGINAL slot**
+                widgetsInOriginalSlot.Remove(droppedWidget);
+
+                // **4. Reorder widgets in the ORIGINAL slot**
+                for (int i = 0; i < widgetsInOriginalSlot.Count; i++)
                 {
-                    if (widget.Slot == dropItem.DropzoneIdentifier && widget.Order >= dropItem.IndexInZone)
-                    {
-                        widget.Order++;
-                    }
+                    widgetsInOriginalSlot[i].Order = i;
+                }
+
+                // **5. Get widgets in the NEW slot**
+                var widgetsInNewSlot = CurrentUser.State.Preferences.DashboardWidgets
+                    .Where(w => w.Slot == dropItem.DropzoneIdentifier)
+                    .OrderBy(w => w.Order)
+                    .ToList();
+
+                // **6. Remove from the NEW slot**
+                widgetsInNewSlot.Remove(droppedWidget);
+
+                // **7. Insert into the NEW slot**
+                widgetsInNewSlot.Insert(dropItem.IndexInZone, droppedWidget);
+
+                // **8. Reorder widgets in the NEW slot**
+                for (int i = 0; i < widgetsInNewSlot.Count; i++)
+                {
+                    widgetsInNewSlot[i].Order = i;
                 }
 
                 CurrentUser.State.SaveDashboardWidgets();
             }
         }
         return Task.CompletedTask;
+
     }
 
 
