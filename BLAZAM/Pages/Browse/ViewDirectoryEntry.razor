@@ -1,5 +1,6 @@
 @inject IStringLocalizer<AppLocalization> AppLocalization
-<CascadingValue Value="ChangeHistoryModal">
+<CascadingValue Value="ChangeHistoryModal" Name="ChangeHistoryModal">
+    <CascadingValue Value="EffectivePermissionsModal" Name="EffectivePermissionsModal">
     @switch (DirectoryEntry?.ObjectType)
     {
         case ActiveDirectoryObjectType.User:
@@ -22,6 +23,7 @@
             break;
     }
 </CascadingValue>
+</CascadingValue>
 <AppModal Title=@AppLocalization["Change History"]
           @ref=@ChangeHistoryModal
           Options=@(new DialogOptions(){FullWidth=true,
@@ -32,11 +34,21 @@
         <ChangeHistoryModalContent Model="DirectoryEntry" />
     }
 </AppModal>
-
+<AppModal Title=@AppLocalization["Effective Permissions"]
+          @ref=@EffectivePermissionsModal
+          Options=@(new DialogOptions(){FullWidth=true,
+          MaxWidth=MaxWidth.ExtraExtraLarge,
+          CloseButton=true})>
+    @if (EffectivePermissionsModal?.IsShown == true)
+    {
+        <EffectivePermissionsModalContent Target="DirectoryEntry" />
+    }
+</AppModal>
 
 @code {
     [Parameter]
     public IDirectoryEntryAdapter? DirectoryEntry { get; set; }
 
     protected AppModal? ChangeHistoryModal { get; set; }
+    protected AppModal? EffectivePermissionsModal { get; set; }
 }

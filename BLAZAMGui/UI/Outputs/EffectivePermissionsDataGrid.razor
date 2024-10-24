@@ -3,17 +3,7 @@
 
 @if (Target != null && Target.AppliedPermissionMappings.Count() > 0)
 {
-    @if (!Disabled)
-    {
-        @*      <MudDataGrid Items="Target.AppliedPermissionMappings">
-            <Columns>
-                <PropertyColumn Property="x=>x.Id" />
-                <PropertyColumn Property="x=>x.OU" />
-                <PropertyColumn Property="x=>x.DeletedAt" />
 
-            </Columns>
-        </MudDataGrid> *@
-    }
     <MudSimpleTable>
         <tr>
             <th>
@@ -79,6 +69,12 @@
                             <StatusCheck Status="@(groupable.CanAssign)" />
                     </MudText>
                     }
+                    else
+                    {
+                        <MudText Align="Align.Center">
+                            @AppLocalization["N/A"]
+                        </MudText>
+                    }
                 </td>
                   
                         <td>
@@ -86,7 +82,13 @@
                     {
                             <MudText Align="Align.Center">
                                 <StatusCheck Status="@(account.CanEnable)" />
-                            </MudText>
+                        </MudText>
+                    }
+                    else
+                    {
+                        <MudText Align="Align.Center">
+                            @AppLocalization["N/A"]
+                        </MudText>
                     }
                         </td>
                         <td>
@@ -95,6 +97,12 @@
                             <MudText Align="Align.Center">
                                 <StatusCheck Status="@(account1.CanDisable)" />
                             </MudText>
+                    }
+                    else
+                    {
+                        <MudText Align="Align.Center">
+                            @AppLocalization["N/A"]
+                        </MudText>
                     }
                         </td>
                     

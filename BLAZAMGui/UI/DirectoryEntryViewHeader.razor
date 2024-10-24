@@ -132,9 +132,13 @@
                                Disabled=@(!DirectoryEntry.CanEdit)
                                Icon="@Icons.Material.Filled.History" />
             </AppTooltip>
-
-
-
+            @if (CurrentUser.State.IsSuperAdmin)
+            {
+                <AppTooltip Text="@AppLocalization["Effective Permissions"]">
+                    <MudIconButton OnClick="@ShowPermissions"
+                               Icon="@Icons.Material.Filled.RunCircle" />
+            </AppTooltip>
+            }
             <AppTooltip Text="@(IsFavorite==true?AppLocalization["Remove from favorites"]:AppLocalization["Add to favorites"])">
                 <MudIconButton OnClick="@ToggleFavorite"
                                Icon="@(IsFavorite==true?Icons.Material.Filled.Star:Icons.Material.TwoTone.Star)"
@@ -166,45 +170,36 @@
             }
             @if (DirectoryEntry.CanEdit)
             {
-                <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!EditMode);})">Edit...</MudMenuItem>
+                <MudMenuItem OnClick="(async()=>{await ToggleEditMode(!EditMode);})">@(EditMode ? AppLocalization["End Edit"] : AppLocalization["Edit"])</MudMenuItem>
             }
             @if (accountEntry != null && accountEntry.LockedOut && accountEntry.CanUnlock)
             {
-                <MudMenuItem OnClick="@Unlock">Unlock...</MudMenuItem>
+                <MudMenuItem OnClick="@Unlock">@AppLocalization["Unlock"]</MudMenuItem>
             }
-            <MudMenuItem OnClick="@Assign">Assign To...</MudMenuItem>
+            <MudMenuItem OnClick="@Assign">@AppLocalization["Assign To"]</MudMenuItem>
             @if (accountEntry?.CanDisable == true && accountEntry is not IADComputer)
             {
-                <MudMenuItem OnClick="@ResetPassword">Change Password...</MudMenuItem>
+                <MudMenuItem OnClick="@ResetPassword">@AppLocalization["Change Password"]</MudMenuItem>
             }
             @if (DirectoryEntry.CanRename)
             {
-                <MudMenuItem OnClick="@(Rename)">Rename...</MudMenuItem>
-                @if (DirectoryEntry is IADUser userEntry)
-                {
-                    if (userEntry.ThumbnailPhoto == null)
-                    {
-                        <MudMenuItem OnClick="@ChangeThumbnail">Upload Photo...</MudMenuItem>
-
-                    }
-                    else
-                    {
-                        <MudMenuItem OnClick="@ChangeThumbnail">Replace Photo...</MudMenuItem>
-
-                    }
-                }
+                <MudMenuItem OnClick="@(Rename)">@AppLocalization["Rename"]</MudMenuItem>
             }
             @if (DirectoryEntry.CanMove)
             {
-                <MudMenuItem OnClick="@Move">Move To...</MudMenuItem>
+                <MudMenuItem OnClick="@Move">@AppLocalization["Move"]</MudMenuItem>
             }
             @if (DirectoryEntry.CanDelete)
             {
-                <MudMenuItem OnClick="@DeleteUser">Delete...</MudMenuItem>
+                <MudMenuItem OnClick="@DeleteUser">@AppLocalization["Delete"]</MudMenuItem>
             }
             @if (DirectoryEntry.CanEdit)
             {
-                <MudMenuItem OnClick="@ShowHistory">Change History</MudMenuItem>
+                <MudMenuItem OnClick="@ShowHistory">@AppLocalization["Change History"]</MudMenuItem>
+            } 
+            @if (CurrentUser.State.IsSuperAdmin)
+            {
+                <MudMenuItem OnClick="@ShowPermissions">@AppLocalization["Effective Permissions"]</MudMenuItem>
             }
         </MudMenu>
     </MudHidden>
@@ -286,6 +281,13 @@
     private async Task ShowHistory()
     {
         await OnShowHistory.InvokeAsync();
+    } 
+    
+    [Parameter]
+    public EventCallback OnShowPermissions { get; set; }
+    private async Task ShowPermissions()
+    {
+        await OnShowPermissions.InvokeAsync();
     }
 
 

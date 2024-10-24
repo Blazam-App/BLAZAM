@@ -13,26 +13,28 @@
         </MudText>
     </MudItem>
     <MudItem xs="12" md="5">
-        <ADAutoComplete Label=@AppLocalization["Target"]
-                        @bind-SelectedResult=@target />
+        <ADAutoComplete Disabled="selectedUser==null" Label=@AppLocalization["Target"]
+                        SelectedResult=@target
+                        SelectedResultChanged="@(async(tgt)=>{target=tgt; await onRun();})" />
     </MudItem>
 </MudGrid>
 
    
-    <MudButton  Disabled=@(selectedUser==null || target==null)
+  @*   <MudButton  Disabled=@(selectedUser==null || target==null)
         OnClick=onRun
         Color="Color.Success">
   
         @AppLocalization["Run"]
-    </MudButton>
+    </MudButton> *@
     
     <EffectivePermissionsDataGrid Target="target" Disabled="!simRan"/>
 @code{
     private IDirectoryEntryAdapter selectedUser;
     private IDirectoryEntryAdapter target;
-    private AppEvent runSimulation;
     bool simRan;
-    private async void onRun(){
+    private async Task onRun(){
+        simRan = false;
+        await InvokeAsync(StateHasChanged);
         var permissionApplicator = new PermissionApplicator(UserStateService, DbFactory, Directory);
         var simUser = new ApplicationUserState(DbFactory);
        await permissionApplicator.LoadPermissions(simUser,selectedUser as IADUser);

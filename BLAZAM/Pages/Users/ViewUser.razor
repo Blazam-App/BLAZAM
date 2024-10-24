@@ -30,6 +30,7 @@
                                               OnResetPassword="@(()=>{ChangePasswordModal?.ShowAsync();})"
                                               OnToggleEditMode="ToggleEditMode"
                                               OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
+                                      OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})"
                                               OnUnlock="@Unlock" />
                     <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
 
