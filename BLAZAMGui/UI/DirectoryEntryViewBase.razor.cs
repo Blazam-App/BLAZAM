@@ -34,8 +34,11 @@ namespace BLAZAM.Gui.UI
         protected AppModal? LogonHoursModal { get; set; }
         protected AppModal? LogOnToModal { get; set; }
         protected AppModal? ChangePasswordModal { get; set; }
-        [CascadingParameter]
+        [CascadingParameter(Name = "ChangeHistoryModal")]
         protected AppModal? ChangeHistoryModal { get; set; }
+
+        [CascadingParameter(Name = "EffectivePermissionsModal")]
+        protected AppModal? EffectivePermissionsModal { get; set; }
         protected SetSubHeader? SubHeader { get; set; }
 
 

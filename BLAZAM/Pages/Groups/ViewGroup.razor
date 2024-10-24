@@ -18,6 +18,7 @@
                                   OnRename="@(()=>{RenameModal?.ShowAsync();})"
                                   OnResetPassword="@(()=>{ChangePasswordModal?.ShowAsync();})"
                                   OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
+                                  OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})"
                                   OnToggleEditMode="@ToggleEditMode" />
         <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true" />
     </SetSubHeader>
