@@ -16,7 +16,7 @@
                            MultiSelection=true
                            @bind-Text=@selectedPermissionDelegateNames
                            @bind-SelectedValues=@Map.PermissionDelegates />
-         
+
 
 
             <MudSelectList Validation="@(_permissionDelegates?.Count>0)"
@@ -25,12 +25,15 @@
                            T="AccessLevel"
                            ToStringFunc="item=>item?.Name"
                            Label="@AppLocalization["Access Levels"]"
-            @bind-Text=@selectedAccessLevelNames
-                              MultiSelection
-             @bind-SelectedValues=@Map.AccessLevels />
+                           @bind-Text=@selectedAccessLevelNames
+                           MultiSelection="true"
+                           @bind-SelectedValues=@Map.AccessLevels />
 
-            <MudButton Color=Color.Success Disabled=SaveDisabled ButtonType="ButtonType.Submit">Save Mapping</MudButton>
-            <AppCloseButton OnClick="DeleteMapping" />
+            <MudButton Color=Color.Success
+                       Disabled=SaveDisabled
+                       ButtonType="ButtonType.Submit">Save Mapping</MudButton>
+            <AppCloseButton OnClick="DeleteMapping"
+                            Tooltip=@AppLocalization["Remove"] />
         }
         else
         {
@@ -39,14 +42,16 @@
                 {
                     @foreach (var pd in selectedPermissionDelegateNames.Split(SELECTION_DELIMITER))
                     {
-                        <MudButton Disabled Color="Color.Secondary">@pd</MudButton>
+                        <MudButton Disabled="true"
+                                   Color="Color.Secondary">@pd</MudButton>
                     }
                 }
                 @if (_map?.AccessLevels != null)
                 {
                     @foreach (var al in _map.AccessLevels)
                     {
-                        <MudButton Disabled Color="Color.Secondary">@al.Name</MudButton>
+                        <MudButton Disabled="true"
+                                   Color="Color.Secondary">@al.Name</MudButton>
                     }
                 }
             </MudStack>
@@ -115,36 +120,36 @@
                 _permissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin).ToListAsync();
                 if (Map.Id != 0)
                 {
-                    string concatenatd = "";
+                    string concatenated = "";
 
                     Map.AccessLevels.Select(a => a.Name).ToList().ForEach(s =>
                     {
-                        concatenatd += s + SELECTION_DELIMITER;
+                        concatenated += s + SELECTION_DELIMITER;
 
                     });
-                    if (concatenatd != "")
+                    if (concatenated != "")
 
-                        concatenatd = concatenatd.Substring(0, concatenatd.Length - 2);
+                        concatenated = concatenated.Substring(0, concatenated.Length - 2);
 
-                    selectedAccessLevelNames = concatenatd;
-                    concatenatd = "";
+                    selectedAccessLevelNames = concatenated;
+                    concatenated = "";
                     var sids = Map.PermissionDelegates.Select(a => a.DelegateSid).ToList();
-                    foreach(var sid in sids)
+                    foreach (var sid in sids)
                     {
                         try
                         {
-                            concatenatd += Directory.FindEntryBySID(sid) + ", ";
+                            concatenated += Directory.FindEntryBySID(sid) + ", ";
                         }
                         catch (Exception)
                         {
-                            concatenatd += sid.ToSidString()+", ";
+                            concatenated += sid.ToSidString() + ", ";
                         }
                     }
 
-                    if (concatenatd != "")
-                        concatenatd = concatenatd.Substring(0, concatenatd.Length - 2);
+                    if (concatenated != "")
+                        concatenated = concatenated.Substring(0, concatenated.Length - 2);
 
-                    selectedPermissionDelegateNames = concatenatd;
+                    selectedPermissionDelegateNames = concatenated;
                 }
             }
 
@@ -176,7 +181,7 @@
         return deleg?.DelegateName;
         if (deleg == null) return AppLocalization["Unknown delegate"];
         if (deleg.DelegateSid != null)
-            return Directory.FindEntryBySID(deleg?.DelegateSid)?.CanonicalName??deleg.DelegateSid.ToSidString();
+            return Directory.FindEntryBySID(deleg?.DelegateSid)?.CanonicalName ?? deleg.DelegateSid.ToSidString();
         else
             return "Loading...";
     }

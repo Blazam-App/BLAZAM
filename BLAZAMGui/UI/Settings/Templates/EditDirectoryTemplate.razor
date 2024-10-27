@@ -643,6 +643,7 @@ await ParentTemplateChanged(null);
                                                 {
                                                     <AppTooltip Text="@AppLocalization["Remove field"]">
                                                         <AppCloseButton Disabled=@(!DirectoryTemplate.FieldValues.Contains(cellContext.Item))
+                                                                        Tooltip=@AppLocalization["Remove"]
                                                                         OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
                                                     </AppTooltip>
                                                 }
