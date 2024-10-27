@@ -2,7 +2,7 @@
 
 <Audio Src="/audio/messagePop.mp3" @bind-Playing=@playingPop />
 <Audio Src="/audio/bell.wav" @bind-Playing=@playingBell />
-@if (AlwaysShowChatButton || ChatMessages!=null &&  ChatMessages.Count() > 0)
+@if (AlwaysShowChatButton || ChatMessages != null && ChatMessages.Count() > 0)
 {
     <ChatButton ChatRoom=ChatRoom OnClick="@(()=>{_chatOpen=!_chatOpen;})" />
 }
@@ -10,8 +10,8 @@
 {
     var otherViewers = Viewers[ChatUri].Where(us => !us.Equals(currentUserState));
     <OtherViewersButton ChatRoom=ChatRoom
-                    OnClick=@(()=>{_chatOpen=true;})
-                    OtherViewers="otherViewers" />
+                        OnClick=@(()=>{_chatOpen=true;})
+                        OtherViewers="otherViewers" />
 
 }
 
@@ -19,8 +19,7 @@
             Open="@_chatOpen"
             Fixed="true"
             Class="px-1 pt-4">
-    <AppChatRoom 
-                 OnCloseClicked=@(()=>{_chatOpen=!_chatOpen;})
+    <AppChatRoom OnCloseClicked=@(()=>{_chatOpen=!_chatOpen;})
                  ChatRoom="ChatRoom" />
 </MudPopover>
 
@@ -58,71 +57,79 @@
     {
 
         await base.OnInitializedAsync();
-
-
-        if (ChatUri.IsNullOrEmpty())
+        try
         {
 
+            if (ChatUri.IsNullOrEmpty())
+            {
 
-            //ChatUri = Nav.ToBaseRelativePath(Nav.Uri);
-            ChatUri = Entry.DN;
-            Nav.LocationChanged += ((state, args) =>
-          {
-              if (Nav.ToBaseRelativePath(args.Location) != ChatUri)
+
+                //ChatUri = Nav.ToBaseRelativePath(Nav.Uri);
+                ChatUri = Entry.DN;
+                Nav.LocationChanged += ((state, args) =>
               {
-                  RemoveThisViewer();
-              }
-          });
-        }
-        var chatRoom = Context.ChatRooms.Where(cr=>cr.Name.Equals(ChatUri)).FirstOrDefault();
-        if (chatRoom is null)
-        {
-            chatRoom = new() { CreatedAt = DateTime.Now, IsPublic = true, Name=ChatUri };
-            Chat.CreateChatRoom(chatRoom);
+                  if (Nav.ToBaseRelativePath(args.Location) != ChatUri)
+                  {
+                      RemoveThisViewer();
+                  }
+              });
+            }
 
-        }
-        ChatRoom = chatRoom;
+            var chatRoom = await Context.ChatRooms.Where(cr => cr.Name.Equals(ChatUri)).FirstOrDefaultAsync();
+            if (chatRoom is null)
+            {
+                chatRoom = new() { CreatedAt = DateTime.Now, IsPublic = true, Name = ChatUri };
+                Chat.CreateChatRoom(chatRoom);
 
-       // await RefreshChatRooms();
-
-        //Setup other viewers button listeners
-        ViewersChanged += (async () =>
-       {
-          // await RefreshChatRooms();
-
-           await InvokeAsync(StateHasChanged);
-
-       });
-        currentUserState = CurrentUser.State;
-        AddThisViewer();
+            }
+            ChatRoom = chatRoom;
 
 
 
 
-        //Setup chat message listeners
+            // await RefreshChatRooms();
 
-        Chat.OnMessagePosted += ((ChatMessage message) =>
-       {
-           if (message.User != currentUserState.Preferences)
+            //Setup other viewers button listeners
+            ViewersChanged += (async () =>
            {
-               if (_chatOpen && !playingPop)
+               // await RefreshChatRooms();
+
+               await InvokeAsync(StateHasChanged);
+
+           });
+            currentUserState = CurrentUser.State;
+            AddThisViewer();
+
+
+
+
+            //Setup chat message listeners
+
+            Chat.OnMessagePosted += ((ChatMessage message) =>
+           {
+               if (message.User != currentUserState.Preferences)
                {
-                   playingPop = true;
+                   if (_chatOpen && !playingPop)
+                   {
+                       playingPop = true;
 
+                   }
+                   else if (!_chatOpen && !playingBell)
+                   {
+                       playingBell = true;
+                   }
+
+                   InvokeAsync(StateHasChanged);
                }
-               else if (!_chatOpen && !playingBell)
-               {
-                   playingBell = true;
-               }
-
-               InvokeAsync(StateHasChanged);
-           }
-       });
+           });
 
 
+        }
+        catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error("Error trying to get page chat {Error}", ex);
+        }
     }
-
-
 
     private void AddThisViewer()
     {
