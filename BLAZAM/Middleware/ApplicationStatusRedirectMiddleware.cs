@@ -35,7 +35,7 @@ namespace BLAZAM.Server.Middleware
                             SendTo(context, "/");
                             break;
                         case ServiceConnectionState.Up:
-                            var dbcontext = factory.CreateDbContext();
+                            var dbcontext = await factory.CreateDbContextAsync();
                             if (dbcontext.SeedMismatch)
                             {
                                 Oops.ErrorMessage = "The application database is incompatible with this version of the application";
@@ -44,10 +44,10 @@ namespace BLAZAM.Server.Middleware
                                 SendTo(context, "/oops");
 
                             }
-                            if (!ApplicationInfo.installationCompleted)
-                            {
-                                SendTo(context, "/install");
-                            }
+                            //if (!ApplicationInfo.installationCompleted)
+                            //{
+                            //    SendTo(context, "/install");
+                            //}
                             break;
                         case ServiceConnectionState.Down:
                             SendTo(context, "/oops");
