@@ -3,7 +3,8 @@
     <MudStack Row=true>
         <MudText>@Group.CanonicalName @AppLocalization["Members"]</MudText>
         <MudSpacer/>
-        <AppCloseButton OnClick="Close"/>
+        <AppCloseButton Tooltip=@AppLocalization["Close"]
+        OnClick="Close"/>
     </MudStack>
     @if (Members != null)
 {

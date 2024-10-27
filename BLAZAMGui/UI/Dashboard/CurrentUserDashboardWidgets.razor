@@ -13,7 +13,7 @@
     }
     if (CurrentUser.State?.Preferences?.DashboardWidgets.Count > 0)
     {
-     
+
         <MudDropContainer @ref=widgetContainer
                           T="UserDashboardWidget" Items="CurrentUser.State?.Preferences?.DashboardWidgets.OrderBy(uw => uw.Slot).ThenBy(uw => uw.Order)"
                           ItemsSelector="ItemSelector"
@@ -34,7 +34,7 @@
                                          T="UserDashboardWidget"
                                          Identifier="slot1"
                                          Class="flex-grow-1"
-                                         Style="min-height:50px;min-width:300px;" />
+                                         Style="min-height:150px;min-width:300px;" />
                         </MudList>
                     </MudCard>
                     <MudCard Class="pa-0 mx-auto" Elevation="2">
@@ -44,7 +44,7 @@
                                          T="UserDashboardWidget"
                                          Identifier="slot2"
                                          Class="flex-grow-1"
-                                         Style="min-height:50px; min-width:300px;" />
+                                         Style="min-height:150px; min-width:300px;" />
                         </MudList>
                     </MudCard>
 
@@ -67,17 +67,17 @@
                     {
                         <MudCard Class="my-5 " Elevation="1">
                             <MudCardHeader>
-                                <MudText Typo="Typo.h6"> @widget.Title</MudText>
+                                <MudText Typo="Typo.h6">@AppLocalization[widget.Title]</MudText>
                                 <MudSpacer />
-                                <AppTooltip Text=@AppLocalization["Refresh"]>
-                                    <MudButton StartIcon="@Icons.Material.Filled.Refresh"
+                                <AppIconButton Icon="@Icons.Material.Filled.Refresh"
                                                Color="Color.Primary"
+                                               Tooltip=@AppLocalization["Refresh"]
                                                OnClick="@(()=>{OnRefreshWidget?.Invoke(widget);})" />
-                                </AppTooltip>
 
-                                <AppTooltip Text=@AppLocalization["Remove"]>
-                                    <AppCloseButton Disabled="!_editMode" OnClick=@(async()=>{await RemoveWidget(context);}) />
-                                </AppTooltip>
+
+                                <AppCloseButton Disabled="!_editMode"
+                                                Tooltip=@AppLocalization["Remove"]
+                                                OnClick=@(async()=>{await RemoveWidget(context);}) />
 
                             </MudCardHeader>
                             <CascadingValue Value="this">

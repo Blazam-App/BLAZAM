@@ -251,7 +251,7 @@ namespace BLAZAM.Database.Models.Templates
             return toParse;
 
         }
-        public string ReplaceVariables(string toParse, NewUserName? newUser = null, string? username=null)
+        public string ReplaceVariables(string toParse, NewUserName? newUser = null, string? username = null)
         {
             var regex = new Regex(@"\{(?<var>\w+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
             return regex.Replace(toParse, match =>
@@ -262,13 +262,13 @@ namespace BLAZAM.Database.Models.Templates
 
                 switch (variable)
                 {
-                    case "fn": return ProcessVariable(newUser?.GivenName,modifier,arg);
+                    case "fn": return ProcessVariable(newUser?.GivenName, modifier, arg);
                     case "fi": return ProcessVariable(newUser?.GivenName?.Substring(0, 1), modifier, arg);
                     case "mn": return ProcessVariable(newUser?.MiddleName, modifier, arg);
                     case "mi": return ProcessVariable(newUser?.MiddleName?.Substring(0, 1), modifier, arg);
                     case "ln": return ProcessVariable(newUser?.Surname, modifier, arg);
                     case "li": return ProcessVariable(newUser?.Surname?.Substring(0, 1), modifier, arg);
-                    case "username": return username??ReplaceVariables(EffectiveUsernameFormula, newUser).Replace(" ", "");
+                    case "username": return username ?? ReplaceVariables(EffectiveUsernameFormula, newUser).Replace(" ", "");
                     case "alphanum":
                         var ch = RandomLetterOrDigit();
                         return modifier == "u" ? ch.ToUpper() : ch.ToLower();
@@ -284,17 +284,17 @@ namespace BLAZAM.Database.Models.Templates
         }
         private string ProcessVariable(string? value, string? modifier, string? argument)
         {
-            if(value == null) return null;
+            if (value == null) return null;
             switch (modifier)
             {
                 case "":
                 case null:
-                    if(argument!=null)
+                    if (argument != null)
                     {
                         var number = 0;
                         int.TryParse(argument, out number);
-                        if(number != 0)
-                            return value.Substring(0, number);  
+                        if (number != 0)
+                            return value.Substring(0, number);
 
                     }
                     return value;

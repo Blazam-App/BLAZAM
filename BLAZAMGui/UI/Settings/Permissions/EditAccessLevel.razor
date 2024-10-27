@@ -42,8 +42,6 @@
         //Prepare data to show object access fields
         var name = objectMap.ObjectType.ToString();
 
-        // var name = Enum.GetName(typeof(ActiveDirectoryObjectType), objectMap.ObjectType);
-
 
         <MudCard Class="mud-container-maxwidth-sm mx-auto" Elevation="3">
             <MudCardHeader>
@@ -62,6 +60,7 @@
                     }
                 </MudSelect>
                 <AppCloseButton Disabled=@(WorkingModel.Id==1)
+                                Tooltip=@AppLocalization["Remove"]
                                 OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
 
             </MudCardHeader>
@@ -206,7 +205,8 @@
 
                             <TemplateColumn Title="Remove">
                                 <CellTemplate>
-                                    <AppCloseButton OnClick="()=>RemoveFieldAccess(context.Item)" />
+                                    <AppCloseButton Tooltip=@AppLocalization["Remove"]
+                                        OnClick="()=>RemoveFieldAccess(context.Item)" />
 
                                 </CellTemplate>
                             </TemplateColumn>
