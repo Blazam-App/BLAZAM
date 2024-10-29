@@ -68,28 +68,28 @@
                         <MudCard Class="my-5 " Elevation="1">
                             <MudCardHeader>
                                 <MudText Typo="Typo.h6">@AppLocalization[widget.Title]</MudText>
-                                <MudSpacer />
-                                <AppIconButton Icon="@Icons.Material.Filled.Refresh"
-                                               Color="Color.Primary"
-                                               Tooltip=@AppLocalization["Refresh"]
-                                               OnClick="@(()=>{OnRefreshWidget?.Invoke(widget);})" />
+                                    <MudSpacer />
+                                    <AppIconButton Icon="@Icons.Material.Filled.Refresh"
+                                                   Color="Color.Primary"
+                                                   Tooltip=@AppLocalization["Refresh"]
+                                                   OnClick="@(()=>{OnRefreshWidget?.Invoke(widget);})" />
 
 
-                                <AppCloseButton Disabled="!_editMode"
-                                                Tooltip=@AppLocalization["Remove"]
-                                                OnClick=@(async()=>{await RemoveWidget(context);}) />
+                                    <AppCloseButton Disabled="!_editMode"
+                                                    Tooltip=@AppLocalization["Remove"]
+                                                    OnClick=@(async()=>{await RemoveWidget(context);}) />
 
-                            </MudCardHeader>
-                            <CascadingValue Value="this">
+                                </MudCardHeader>
+                                <CascadingValue Value="this">
 
-                                <DynamicComponent Parameters="@(new Dictionary<string,object>(){
+                                    <DynamicComponent Parameters="@(new Dictionary<string,object>(){
                                     {"ItemsPerPage",context.ItemsPerPage>5?context.ItemsPerPage:5},
                                     {"WidgetType",context.WidgetType}
                                  })"
-                                                  Type="@widget.GetType()" />
-                            </CascadingValue>
+                                                      Type="@widget.GetType()" />
+                                </CascadingValue>
 
-                        </MudCard>
+                            </MudCard>
                     }
                 }
 
@@ -121,32 +121,42 @@
         <AppTooltip Text=@AppLocalization["Edit"]>
             <MudFab StartIcon="@(_editMode==false?Icons.Material.Filled.Edit:Icons.Material.Filled.EditOff)"
                     Color="@(_editMode==false?Color.Success:Color.Error)"
-                    OnClick="@(()=>{_editMode=!_editMode;  widgetContainer.Refresh();})" />
+                    OnClick="@(()=>{_editMode=!_editMode;  widgetContainer?.Refresh();})" />
         </AppTooltip>
-        @if (_editMode && CurrentUser.State.Preferences?.DashboardWidgets.Count > 0 && allWidgets.Count > CurrentUser.State.Preferences?.DashboardWidgets.Count)
+        @if (_editMode)
         {
-            <MudMenu AnchorOrigin="Origin.BottomRight"
-                     TransformOrigin="Origin.TopRight">
-                <ActivatorContent>
-                    <AppTooltip Text=@AppLocalization["Add Widget"]>
-                        <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
-                    </AppTooltip>
-                </ActivatorContent>
-                <ChildContent>
-                    @foreach (var widget in allWidgets)
-                    {
-                        @if (!CurrentUser.State?.Preferences?.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType) == true)
+            if (allWidgets.Count > CurrentUser.State?.Preferences?.DashboardWidgets.Count)
+            {
+                <MudMenu AnchorOrigin="Origin.BottomRight"
+                         TransformOrigin="Origin.TopRight">
+                    <ActivatorContent>
+                        <AppTooltip Text=@AppLocalization["Add Widget"]>
+                            <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
+                        </AppTooltip>
+                    </ActivatorContent>
+                    <ChildContent>
+                        @foreach (var widget in allWidgets)
                         {
-                            <MudMenuItem OnClick="@(async()=>{await AddWidget(widget.WidgetType);})">@widget.Title</MudMenuItem>
-                        }
+                            @if (!CurrentUser.State?.Preferences?.DashboardWidgets.Any(w => w.WidgetType == widget.WidgetType) == true)
+                            {
+                                <MudMenuItem OnClick="@(async()=>{await AddWidget(widget.WidgetType);})">@widget.Title</MudMenuItem>
+                            }
 
-                    }
-                </ChildContent>
-            </MudMenu>
+                        }
+                    </ChildContent>
+                </MudMenu>
+            }
+            else
+            {
+                <AppTooltip Text=@AppLocalization["No more widgets to add"]>
+                    <MudFab Disabled="true" Color="Color.Error" StartIcon="@Icons.Material.Filled.Add" />
+                </AppTooltip>
+            }
+
         }
         else
         {
-            <AppTooltip Text=@AppLocalization["No more widgets to add"]>
+            <AppTooltip Text=@AppLocalization["Enable edit mode"]>
                 <MudFab Disabled="true" Color="Color.Error" StartIcon="@Icons.Material.Filled.Add" />
             </AppTooltip>
         }
