@@ -498,24 +498,24 @@ await ParentTemplateChanged(null);
                                 </MudItem>
                                 <MudItem xs="12" md="6">
                                     <MudStack>
-                                        @{
+                                       
+                                    @{
                                             var testName = new NewUserName()
                                                 {
                                                     GivenName = _testFirstName,
                                                     MiddleName = _testMiddleName,
                                                     Surname = _testLastName
                                                 };
-                                        }
+                                          }
                                         <MudTextField T="string"
                                                       Label="@AppLocalization["Username"]"
-                                                      Value="@DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectiveUsernameFormula,testName)" />
+                                                      Value="@(DirectoryTemplate.EffectiveUsernameFormula.IsNullOrEmpty()==false?DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectiveUsernameFormula,testName):null)" />
                                         <MudTextField T="string"
                                                       Label="@AppLocalization["Display Name"]"
-                                                      Value="@DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectiveDisplayNameFormula,testName)" />
+                                                      Value="@(DirectoryTemplate.EffectiveDisplayNameFormula.IsNullOrEmpty()==false?DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectiveDisplayNameFormula,testName):null)" />
                                         <MudTextField T="string"
                                                       Label="@AppLocalization["Password"]"
-                                                      Value="@DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectivePasswordFormula,testName)" />
-
+                                                      Value="@(DirectoryTemplate.EffectivePasswordFormula.IsNullOrEmpty()==false?DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectivePasswordFormula,testName):null)" />
                                     </MudStack>
                                 </MudItem>
                             </MudGrid>
