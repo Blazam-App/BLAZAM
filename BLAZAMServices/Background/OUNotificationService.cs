@@ -9,6 +9,7 @@ using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Notifications;
 using BLAZAM.Notifications.Services;
+using BLAZAM.Server.Data.Services;
 using Microsoft.Extensions.Localization;
 
 namespace BLAZAM.Services.Background
@@ -28,7 +29,7 @@ namespace BLAZAM.Services.Background
             _emailService = emailService;
         }
         private IDatabaseContext Context => _databaseFactory.CreateDbContext();
-        public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType)
+        public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType, ApplicationUserState? actor=null, IDirectoryEntryAdapter? target = null)
         {
             await Task.Run(async () =>
             {
@@ -65,7 +66,7 @@ namespace BLAZAM.Services.Background
                         break;
                     case NotificationType.GroupAssignment:
                         notificationTitle += _appLocalization["Group Membership Changed"];
-                        notificationBody += _appLocalization["was modified at "] + source.LastChanged?.ToLocalTime();
+                        notificationBody += _appLocalization["was assigned/removed from "] + "<a href=\"" + target.SearchUri + "\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + source.LastChanged?.ToLocalTime();
 
                         var groupMembershipMessage = NotificationType.GroupAssignment.ToNotification<EntryGroupAssignmentEmailMessage>();
                         groupMembershipMessage.EntryName = source.CanonicalName;
