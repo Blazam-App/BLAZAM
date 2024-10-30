@@ -9,7 +9,9 @@
             <MudListSubheader Class="align-middle">Notifications</MudListSubheader>
             <MudSpacer />
             <MudIconButton Icon="@Icons.Material.Filled.ClearAll" OnClick="MarkAllRead" />
-            <AppCloseButton Class="align-middle" OnClick=@(()=>{Open=false;}) />
+            <AppCloseButton Tooltip="@AppLocalization["Close"]"
+                Class="align-middle"
+            OnClick=@(()=>{Open=false;}) />
 
         </MudStack>
         <MudStack Style="max-height:80vh;" Class="overflow-auto">

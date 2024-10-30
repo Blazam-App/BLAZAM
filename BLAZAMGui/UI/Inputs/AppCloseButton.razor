@@ -1,23 +1,20 @@
-@inherits MudIcon
-<MudButton Class="@(Class+" rounded-circle")"
-           Color="@Color"
-           Disabled=@Disabled
-           Size=@Size
-           IconClass="ma-0"
-           Style=@(Style+"width:min-content;height:min-content;min-width:0")
-           Tag=@Tag
-           StartIcon="@Icons.Material.Filled.Close"
-           @onclick=@OnClick />
+@inherits AppIconButton
 
+<AppIconButton Color="@Color"
+               Disabled=@Disabled
+               Size=@Size
+               Style=@Style
+               Tooltip=@Tooltip
+               OnClick="@OnClick"
+               Tag=@Tag
+               Icon="@Icons.Material.Filled.Close" />
 @code {
-    [Parameter]
-    public EventCallback<MouseEventArgs> OnClick { get; set; }
 
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        if (Color == Color.Inherit)
+        if (Color == Color.Inherit || Color == Color.Default)
             Color = Color.Error;
 
     }

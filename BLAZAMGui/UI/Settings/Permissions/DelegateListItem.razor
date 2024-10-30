@@ -56,6 +56,7 @@
                        @onclick="Save"
                        Color="Color.Success">@AppLocalization["Save Changes"]</MudButton>
             <AppCloseButton @onclick="DeleteDelegate"
+                            Tooltip=@AppLocalization["Remove"]
                             Color="Color.Error" />
         </MudStack>
         @if (_groupMembersShown)

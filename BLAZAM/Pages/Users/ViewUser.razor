@@ -40,7 +40,6 @@
                 </SetSubHeader>
             }
             <CascadingValue Value="User">
-                <FlexContainer>
 
                     <AppModal Color="Color.Dark" Title=@AppLocalization["Upload Thumbnail"] @ref=@UploadThumbnailModal>
                         <UploadThumbnailModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="User" />
@@ -457,7 +456,6 @@
 
 
 
-                </FlexContainer>
             </CascadingValue>
         </CascadingValue>
 
@@ -565,12 +563,16 @@
                     {
                         await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
                         await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
+                        _ = OUNotificationService.PostAsync(User, NotificationType.GroupAssignment,target:assignment.Group);
+
                     }
 
                     foreach (var assignment in unassignFrom)
                     {
                         await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
                         await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
+                        _ = OUNotificationService.PostAsync(User, NotificationType.GroupAssignment, target: assignment.Group);
+
                     }
                     if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
                     {

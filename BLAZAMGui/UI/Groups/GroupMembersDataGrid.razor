@@ -18,20 +18,12 @@
                 </HeaderTemplate>
                 <CellTemplate Context="cellContext">
                     @{
-                        var icon = Icons.Material.Filled.Person;
-                        switch (cellContext.Item.ObjectType)
-                        {
-                            case ActiveDirectoryObjectType.Group:
-                                icon = Icons.Material.Filled.People;
-                                break;
-                            case ActiveDirectoryObjectType.Computer:
-                                icon = Icons.Material.Filled.Computer;
-                                break;
-                        }
+                        var account = cellContext.Item as IAccountDirectoryAdapter;
+                       
 
                     }
                     <AppTooltip Text="@cellContext.Item.ObjectType.ToString()">
-                        <MudIcon Icon="@icon" />
+                        <MudIcon Color=@(account!=null&&account.Disabled?Color.Error:Color.Default) Icon="@cellContext.Item.TypeIcon()" />
                     </AppTooltip>
 
                 </CellTemplate>
@@ -64,7 +56,7 @@
                     <AppTooltip 
                                 ShowOnClick=@(!cellContext.Item.CanUnassign)
                                 ShowOnHover=@(!cellContext.Item.CanUnassign)
-                                Text="You don't have permission to remove this group member">
+                                Text=@AppLocalization["You don't have permission to remove this group member"]>
                         <MudButton Disabled=@(!Group.CanUnassign)
                                    Color="Color.Error"
                                    OnClick="(()=>{Group.UnassignMember(cellContext.Item);InvokeAsync(OnInitializedAsync);})">
