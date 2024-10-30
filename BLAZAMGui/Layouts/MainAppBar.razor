@@ -18,8 +18,16 @@
             <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" />
         </MudLink>
         <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert=true>
-            <MudText Align="Align.Center" Class="px-3 align-middle"> @DatabaseCache.ApplicationSettings?.AppAbbreviation</MudText>
-
+            @if (DatabaseCache.ApplicationSettings?.AppName != DatabaseCache.ApplicationSettings?.AppAbbreviation)
+            {
+                <AppTooltip Text="@DatabaseCache.ApplicationSettings?.AppName">
+                    <MudText Align="Align.Center" Class="px-3 align-middle">@DatabaseCache.ApplicationSettings?.AppAbbreviation</MudText>
+                </AppTooltip>
+            }
+            else
+            {
+                <MudText Align="Align.Center" Class="px-3 align-middle">@DatabaseCache.ApplicationSettings?.AppAbbreviation</MudText>
+            }
         </MudHidden>
 
 
