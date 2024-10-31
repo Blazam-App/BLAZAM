@@ -1,5 +1,5 @@
 ﻿@inherits AppComponentBase
-<MudElement Style="width:0px;height:65px;" Class="mx-auto relative">
+<MudElement Style="width:0px;height:85px;" Class="mx-auto  relative d-block">
 
     <MudStack Style="right:21px;max-width: 300px;bottom: 30px;z-index: 5;" Class="mx-auto p-3 fixed">
 
@@ -32,7 +32,7 @@
     [Parameter]
     public EventCallback SaveChanges { get; set; }
     [Parameter]
-    public EventCallback DiscardChanges { get; set; }
+    public EventCallback DiscardChanges { get; set; } 
 
     protected override void OnInitialized()
     {
