@@ -253,6 +253,7 @@ namespace BLAZAM.Database.Models.Templates
         }
         public string ReplaceVariables(string toParse, NewUserName? newUser = null, string? username = null)
         {
+            if (toParse.IsNullOrEmpty()) return "";
             var regex = new Regex(@"\{(?<var>\w+)(:(?<mod>\w+))?(\[(?<arg>.*?)\])?\}");
             return regex.Replace(toParse, match =>
             {
