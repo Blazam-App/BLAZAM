@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.Sql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -1243,6 +1243,12 @@ namespace BLAZAM.Common.Migrations.Sql
                             Id = 9,
                             Action = 1,
                             Name = "Delete"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Action = 9,
+                            Name = "Set Password"
                         });
                 });
 

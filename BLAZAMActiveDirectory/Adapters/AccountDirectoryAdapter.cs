@@ -33,7 +33,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public virtual bool CanDisable { get => HasActionPermission(ObjectActions.Disable); }
 
         public virtual bool CanUnlock { get => HasActionPermission(ObjectActions.Unlock); }
-
+        
+        
 
         public bool CanSearchDisabled
         {
