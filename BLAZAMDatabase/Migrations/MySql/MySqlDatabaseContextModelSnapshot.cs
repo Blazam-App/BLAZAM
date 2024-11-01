@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -1243,6 +1243,12 @@ namespace BLAZAM.Common.Migrations.MySql
                             Id = 9,
                             Action = 1,
                             Name = "Delete"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Action = 9,
+                            Name = "Set Password"
                         });
                 });
 

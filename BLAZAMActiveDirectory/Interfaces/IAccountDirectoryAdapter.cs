@@ -39,6 +39,11 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         bool Enabled { get; set; }
 
         /// <summary>
+        /// Indicates whether the current web user can reset the password for this <see cref="IAccountDirectoryAdapter"/>
+        /// </summary>
+        bool CanSetPassword { get; }
+
+        /// <summary>
         /// Indicates whether the current web user can search disabled <see cref="IAccountDirectoryAdapter"/>'s
         /// </summary>
         bool CanSearchDisabled { get; }

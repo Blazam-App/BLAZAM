@@ -5,7 +5,7 @@ namespace BLAZAM.Database.Models.Permissions
     public enum ActiveDirectoryObjectAction
     {
         Move, Delete, Create, Unassign, Assign, Enable, Disable, Rename,
-        Unlock
+        Unlock, SetPassword
     }
     public class ObjectAction : AppDbSetBase
     {
@@ -37,6 +37,7 @@ namespace BLAZAM.Database.Models.Permissions
                         case "Enable":
                         case "Disable":
                         case "Rename":
+                        case "Set Password":
                             return true;
                         default:
                             return false;

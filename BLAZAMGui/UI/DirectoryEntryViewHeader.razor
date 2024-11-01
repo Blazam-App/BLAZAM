@@ -97,7 +97,7 @@
             {
                 <AppTooltip Text="@AppLocalization["Change Password"]">
                     <MudIconButton OnClick="@ResetPassword"
-                                   Disabled=@(!accountEntry.CanDisable)
+                                   Disabled=@(!accountEntry.CanSetPassword)
                                    Icon="@Icons.Material.Filled.Password"
                                    aria-label="change password" />
                 </AppTooltip>
@@ -151,7 +151,7 @@
     <MudHidden Breakpoint="Breakpoint.MdAndUp">
 
         <MudMenu Class="align-self-end"
-                 IconColor="@Color.Surface"
+                 IconColor="@Color.Tertiary"
                  StartIcon="@Icons.Material.Filled.Settings">
             @if (accountEntry != null)
             {
@@ -160,8 +160,8 @@
                     <MudMenuItem>
                         <MudSwitch T=bool
                                    Color=Color.Success
-                                   Label="Account Enabled"
-                                   @bind-Value=@(accountEntry.Enabled)
+                                   Label=@AppLocalization["Account Enabled"]
+                                   @bind-Value=@accountEntry.Enabled
                                    Disabled=@((accountEntry.Disabled && !accountEntry.CanEnable)||(accountEntry.Enabled && !accountEntry.CanDisable)) />
 
                     </MudMenuItem>
@@ -177,7 +177,7 @@
                 <MudMenuItem OnClick="@Unlock">@AppLocalization["Unlock"]</MudMenuItem>
             }
             <MudMenuItem OnClick="@Assign">@AppLocalization["Assign To"]</MudMenuItem>
-            @if (accountEntry?.CanDisable == true && accountEntry is not IADComputer)
+            @if (accountEntry?.CanSetPassword == true && accountEntry is not IADComputer)
             {
                 <MudMenuItem OnClick="@ResetPassword">@AppLocalization["Change Password"]</MudMenuItem>
             }
