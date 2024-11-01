@@ -20,6 +20,7 @@ using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using static MudBlazor.Colors;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -1027,11 +1028,45 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
+        //protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
+        //{
+        //    var list = new List<T?>();
+        //    var dcs = new List<DomainController>(Directory.DomainControllers);
+        //    foreach (var dc in dcs)
+        //    {
+        //        try
+        //        {
+        //            if (dc.IsPingable())
+        //            {
+        //                var searcher = dc.GetDirectorySearcher();
+        //                searcher.Filter = "(distinguishedName=" + this.DN + ")";
+        //                searcher.ClientTimeout = TimeSpan.FromMilliseconds(500);
+        //                searcher.ServerTimeLimit = TimeSpan.FromMilliseconds(500);
+        //                var searchResult = searcher.FindOne();
+        //                if (searchResult != null)
+        //                {
+        //                    var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
+
+        //                    list.Add((T)value);
+        //                }
+
+        //            }
+        //        }
+        //        catch
+        //        {
+        //            //list.Add(default(T));
+        //        }
+        //    }
+        //    return list;
+        //}
+
+
         protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
         {
             var list = new List<T?>();
             var dcs = new List<DomainController>(Directory.DomainControllers);
-            foreach (var dc in dcs)
+
+            Parallel.ForEach(dcs, dc =>
             {
                 try
                 {
@@ -1045,19 +1080,26 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         if (searchResult != null)
                         {
                             var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
-
-                            list.Add((T)value);
+                            lock (list)
+                            {
+                                list.Add((T)value);
+                            }
                         }
-
                     }
                 }
                 catch
                 {
-                    //list.Add(default(T));
+                    // Consider logging the exception or handling it appropriately.
+                    lock (list)
+                    {
+                        list.Add(default(T));
+                    }
                 }
-            }
+            });
+
             return list;
         }
+
 
         protected virtual T? GetProperty<T>(string propertyName)
         {
