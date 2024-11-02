@@ -1,4 +1,5 @@
  <AppTooltip Text="@Tooltip"
+            Placement="@TooltipPlacement"
             Disabled="@(Tooltip.IsNullOrEmpty())">
  
     <MudIconButton Color="@Color"
@@ -16,6 +17,8 @@
     [Parameter]
     public EventCallback<MouseEventArgs> OnClick { get; set; }
 
+    [Parameter]
+    public Placement TooltipPlacement { get; set; } = Placement.Bottom;
     [Parameter]
     public Color Color { get; set; }
     [Parameter]
