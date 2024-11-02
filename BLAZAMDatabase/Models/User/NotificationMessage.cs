@@ -1,4 +1,6 @@
 ﻿
+using BLAZAM.Database.Models.Permissions;
+
 namespace BLAZAM.Database.Models.User
 {
 
@@ -20,6 +22,23 @@ namespace BLAZAM.Database.Models.User
         /// The message type of this notification
         /// </summary>
         public MessageType MessageType { get; set; }  = MessageType.Notification;
+
+        /// <summary>
+        /// The DN of the target for this notification
+        /// </summary>
+        public string? TargetDN { get; set; }
+
+        /// <summary>
+        /// The action being requested access to
+        /// </summary>
+        public ObjectAction? Action { get; set; }
+
+        /// <summary>
+        /// The user who triggered this notification
+        /// </summary>
+        public AppUser? Creator { get; set; }
+        public int? CreatorId { get; set; }
+
         /// <summary>
         /// The title of the notification
         /// </summary>
@@ -51,10 +70,7 @@ namespace BLAZAM.Database.Models.User
         {
 
             return obj is NotificationMessage message && (
-                   Id != 0 && Id == message.Id ||
-                   Level == message.Level &&
-                   Title == message.Title &&
-                   Message == message.Message);
+                   Id != 0 && Id == message.Id);
         }
     }
 }
