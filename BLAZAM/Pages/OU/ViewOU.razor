@@ -96,7 +96,7 @@
             EditMode = false;
             //Nav.WarnOnNavigation = false;
             await AuditLogger.OU.Changed(OU, changes);
-            _ = OUNotificationService.PostAsync(OU, NotificationType.Modify);
+            _ = OUNotificationService.PostAsync(OU, NotificationType.Modify, CurrentUser.State);
 
             SnackBarService.Success("The changes made to this ou have been saved.");
             await RefreshEntryComponents();
@@ -118,7 +118,7 @@
                 OU.Delete();
                 SnackBarService.Success(OU.CanonicalName + " has been deleted.");
                 await AuditLogger.OU.Deleted(OU);
-                _ = OUNotificationService.PostAsync(OU, NotificationType.Delete);
+                _ = OUNotificationService.PostAsync(OU, NotificationType.Delete, CurrentUser.State);
 
 
                 Nav.NavigateTo("/ou/search");

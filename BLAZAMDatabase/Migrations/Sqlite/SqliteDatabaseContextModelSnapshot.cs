@@ -1412,8 +1412,14 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("ActionId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("CreatorId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("Dismissable")
                         .HasColumnType("INTEGER");
@@ -1430,10 +1436,20 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<string>("Message")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("MessageType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TargetDN")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ActionId");
+
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("NotificationMessages");
                 });
@@ -1758,6 +1774,21 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplate", null)
                         .WithMany("AssignedGroupSids")
                         .HasForeignKey("DirectoryTemplateId");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.User.NotificationMessage", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Permissions.ObjectAction", "Action")
+                        .WithMany()
+                        .HasForeignKey("ActionId");
+
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId");
+
+                    b.Navigation("Action");
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.ReadNewsItem", b =>

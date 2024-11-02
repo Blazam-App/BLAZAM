@@ -285,7 +285,7 @@ else
                 confirmed = true;
                 await Confirmed.InvokeAsync();
                 await AuditLogger.User.Created(User);
-                _ = OUNotificationService.PostAsync(User, NotificationType.Create);
+                _ = OUNotificationService.PostAsync(User, NotificationType.Create, CurrentUser.State);
 
                 try
                 {
