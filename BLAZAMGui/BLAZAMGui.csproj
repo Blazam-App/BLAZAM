@@ -52,6 +52,9 @@
 		<Content Update="UI\Chat\EntrySpecificChat.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
+		<Content Update="UI\Dashboard\Widgets\StaleUsersWidget.razor">
+		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</Content>
 		<Content Update="UI\FlexContainer.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
