@@ -1,7 +1,17 @@
 @inherits DatabaseComponentBase
 
-<UserNotificationPopover UserState="@UserState" @bind-Open="@NotificationsOpen" />
-
+@* <UserNotificationPopover UserState="@UserState" @bind-Open="@NotificationsOpen" /> *@
+<MudDrawer Width="350px"
+           @bind-Open=@NotificationsOpen
+           Anchor=Anchor.End
+           ClipMode=DrawerClipMode.Always
+           Overlay="false"
+           Variant="@DrawerVariant.Temporary"
+           Elevation="2">
+    <MudDrawerContainer>
+        <UserNotificationPopover @bind-Open=@NotificationsOpen UserState="@UserState" />
+    </MudDrawerContainer>
+</MudDrawer>
 <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" ListClass="py-0">
     <ActivatorContent>
         @{
@@ -28,17 +38,22 @@
         <MudDivider />
         @if (Notifications.Count > 0)
         {
-            <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})">Notifications</MudMenuItem>
+            <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})"
+                         Icon="@Icons.Material.Filled.MenuOpen">Notifications</MudMenuItem>
         }
 
 
-        <MudMenuItem OnClick="@(()=>{profileModal?.ShowAsync();})" Icon="@Icons.Material.Filled.Settings">
+        <MudMenuItem OnClick="@(()=>{profileModal?.ShowAsync();})"
+                     Icon="@Icons.Material.Filled.Settings">
             @AppLocalization["Profile Settings"]
         </MudMenuItem>
-        <MudMenuItem OnClick="@(()=>{notificationsModal?.ShowAsync();})" Icon="@Icons.Material.Filled.Notifications">
+        <MudMenuItem OnClick="@(()=>{notificationsModal?.ShowAsync();})"
+                     Icon="@Icons.Material.Filled.Notifications">
             @AppLocalization["Notification Settings"]
         </MudMenuItem>
-        <MudMenuItem Href="https://docs.blazam.org" Target="_blank" Icon="@Icons.Material.Filled.Book">
+        <MudMenuItem Href="https://docs.blazam.org"
+                     Target="_blank"
+                     Icon="@Icons.Material.Filled.Book">
             @AppLocalization["Documentation"]
         </MudMenuItem>
 

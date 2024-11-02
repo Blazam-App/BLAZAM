@@ -1,0 +1,52 @@
+@inherits DatabaseComponentBase
+
+<MudStack Style="max-height:80vh;" Class="overflow-auto">
+    @foreach (var notification in messages.Where(m => !m.IsRead))
+    {
+        <MudStack Row=true Class="px-4">
+            <MudIcon Icon="@Icons.Material.Outlined.EventNote"/>
+            <MudStack>
+                @if (!notification.Notification.Title.IsNullOrEmpty())
+                {
+                    <MudText Typo="Typo.subtitle2">@notification.Notification.Title</MudText>
+                }
+                <MudText Typo="Typo.caption">
+                    @((MarkupString)notification.Notification.Message)
+                </MudText>
+            </MudStack>
+            <MudSpacer/>
+            <AppCloseButton Tooltip="@AppLocalization["Dismiss Notification"]" OnClick="@(async()=>{
+                  await UserState.MarkRead(notification);
+                  await InvokeAsync(StateHasChanged);
+              })"/>
+        </MudStack>
+        
+       
+    }
+</MudStack>
+
+@code {
+
+    [Parameter]
+    public IApplicationUserState UserState { get; set; }
+
+
+
+
+    private IList<UserNotification> messages = new List<UserNotification>();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+        //messages = UserState.Notifications;
+
+        NotificationPublisher.OnNotificationPublished += async (notification) =>
+        {
+            messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+
+            InvokeAsync(StateHasChanged);
+        };
+    }
+
+
+}

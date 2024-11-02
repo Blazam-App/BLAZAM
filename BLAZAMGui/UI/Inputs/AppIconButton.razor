@@ -1,16 +1,16 @@
-<AppTooltip Text="@Tooltip"
+ <AppTooltip Text="@Tooltip"
             Disabled="@(Tooltip.IsNullOrEmpty())">
-    <MudButton Class="@(Class+" rounded-circle")"
-               Color="@Color"
-               Disabled=@Disabled
-               Size=@Size
-               IconClass="ma-0"
-               Style=@(Style+"width:min-content;height:min-content;min-width:0")
-               Tag=@Tag
-               StartIcon="@Icon"
-               @onclick=@OnClick />
-</AppTooltip>
+ 
+    <MudIconButton Color="@Color"
+                   Disabled=@Disabled
+                   Class="@(Class)"
+                   Size=@Size
+                   Style=@(Style)
+                   OnClick="@OnClick"
+                   Tag=@Tag
+                   Icon="@Icon" />
 
+</AppTooltip>
 
 @code {
     [Parameter]

@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
 		<AssemblyVersion>1.0.7</AssemblyVersion>
-		<Version>2024.11.02.0204</Version>
+		<Version>2024.11.02.0114</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -101,10 +101,6 @@
 		<Content Include="static\img\default_logo5.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="..\BLAZAMGui\Layouts\NotificationList.razor" Link="NotificationList.razor" />
 	</ItemGroup>
 
 	<ItemGroup>
