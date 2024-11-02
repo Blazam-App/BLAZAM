@@ -15,7 +15,7 @@ namespace BLAZAM.Jobs
         public static List<IJob> FailedJobs => Jobs.Where(x => x.Result == JobResult.Failed).ToList();
         public static List<IJob> CompletedJobs => Jobs.Where(x => x.Result == JobResult.Passed).ToList();
         public static List<IJob> PendingJobs => Jobs.Where(x => x.Result == JobResult.NotRun).ToList();
-        private static int _maxJobs = 50;
+        private static int _maxJobs = 200;
 
 
         public static void AddJob(IJob job)
