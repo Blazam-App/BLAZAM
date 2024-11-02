@@ -34,7 +34,11 @@
                 </MudText>
                 @foreach (var item in unreadItems.OrderByDescending(x => x.UpdatedAt))
                 {
-                    <ApplicationNewsItem Item=item Read=false />
+                    <ApplicationNewsItem Item=item
+                                         Read=false
+                                         OnRead="@(()=>{
+                                            RefreshItems();
+                                            })" />
 
                 }
                 @if (showRead)
