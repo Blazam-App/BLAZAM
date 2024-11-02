@@ -78,6 +78,15 @@
         </ChildContent>
     </MudMenu>
 }
+else
+{
+    <AppTooltip Text=@("Blazam "+AppLocalization["News"])>
+        <MudFab Size=Size.Small Color=@Color.Success
+                Disabled="true"
+                Class="mx-2"
+                StartIcon="@Icons.Material.Filled.Notifications" />
+    </AppTooltip>
+}
 @code {
     private bool showRead;
     private List<NewsItem> unreadItems = new();
