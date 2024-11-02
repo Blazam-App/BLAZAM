@@ -139,6 +139,7 @@ namespace BLAZAM.Database.Context
 
         public virtual DbSet<PermissionDelegate> PermissionDelegate { get; set; }
         public virtual DbSet<PermissionMapping> PermissionMap { get; set; }
+        public virtual DbSet<GlobalPermissionSettings> GlobalPermissionSettings { get; set; }
 
         public virtual DbSet<ChatRoom> ChatRooms { get; set; }
         public virtual DbSet<ChatMessage> ChatMessages { get; set; }
