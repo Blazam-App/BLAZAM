@@ -18,9 +18,7 @@
     <MudLayout Style="min-height:98vh;">
         <AuthorizeView Context="authContext">
             <Authorized>
-                <CascadingValue Value="this">
-                    <MainAppBar />
-                </CascadingValue>
+                <MainAppBar />
 
                 @if (ApplicationInfo.inDebugMode)
                 {
@@ -30,8 +28,8 @@
                         <MudDrawer Width="750px"
                                    @bind-Open=@_devDrawerOpen
                                    Anchor=Anchor.End
-                                    ClipMode=DrawerClipMode.Never
-                                    Variant="@DrawerVariant.Temporary"
+                                   ClipMode=DrawerClipMode.Never
+                                   Variant="@DrawerVariant.Temporary"
                                    Elevation="2"
                                    Class="mud-theme-dark">
                             <MudDrawerContainer>
@@ -41,9 +39,20 @@
 
                     </AuthorizeView>
                 }
-
-
-               
+                <CascadingValue Value="this">
+                    <MudDrawer Width="350px"
+                               @bind-Open=@NotificationsOpen
+                               Anchor=Anchor.End
+                               ClipMode=DrawerClipMode.Always
+                               Overlay="false"
+                               Variant="@DrawerVariant.Temporary"
+                               Elevation="2">
+                        <MudDrawerContainer Class="">
+                            <UserNotificationPopover @bind-Open=@NotificationsOpen
+                                                     UserState="@CurrentUser.State" />
+                        </MudDrawerContainer>
+                    </MudDrawer>
+                </CascadingValue>
 
 
                 <MudBreakpointProvider @ref=_mudBreakPoint>
@@ -98,8 +107,8 @@
                                 @SubHeader?.ChildContent
 
                             </MudAppBar>
-@* 
-                            <MudElement Class="d-block" Style="height:50px">&nbsp;</MudElement> *@
+                            @*
+                        <MudElement Class="d-block" Style="height:50px">&nbsp;</MudElement> *@
                         }
 
                         <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Style="@(SubHeader==null?"":"padding-top: calc(var(--mud-appbar-height) - var(--mud-appbar-height) / 4);")">
@@ -154,6 +163,18 @@
     AppModal? dataBrowser;
     bool _drawerOpen = true;
     bool _devDrawerOpen = false;
+    bool _notificationsOpen = false;
+    public bool NotificationsOpen
+    {
+        get => _notificationsOpen; set
+        {
+            if (_notificationsOpen == value) return;
+            _notificationsOpen = value;
+            //TODO Add drawer open preference to user settings
+
+            InvokeAsync(StateHasChanged);
+        }
+    }
     public bool BrowseExpanded = false;
 
     public bool DrawerOpen

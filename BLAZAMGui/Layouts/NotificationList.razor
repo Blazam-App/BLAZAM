@@ -1,27 +1,70 @@
 @inherits DatabaseComponentBase
 
-<MudStack Style="max-height:80vh;" Class="overflow-auto">
+<MudStack Class="pa-3 mud-height-full">
+    @if (messages.Where(m => !m.IsRead).Count() < 1 || messages.Where(m => !m.IsRead) == null)
+    {
+        <MudCard Class="py-3" Elevation="2">
+            <MudStack Row=true Class="px-4">
+                <MudIcon Color="Color.Success" Icon="@Icons.Material.Outlined.Check" />
+                <MudText Typo="Typo.subtitle2">@AppLocalization["No unread notifications"]</MudText>
+            </MudStack>
+        </MudCard>
+    }
     @foreach (var notification in messages.Where(m => !m.IsRead))
     {
-        <MudStack Row=true Class="px-4">
-            <MudIcon Icon="@Icons.Material.Outlined.EventNote"/>
-            <MudStack>
-                @if (!notification.Notification.Title.IsNullOrEmpty())
-                {
-                    <MudText Typo="Typo.subtitle2">@notification.Notification.Title</MudText>
-                }
-                <MudText Typo="Typo.caption">
-                    @((MarkupString)notification.Notification.Message)
-                </MudText>
-            </MudStack>
-            <MudSpacer/>
-            <AppCloseButton Tooltip="@AppLocalization["Dismiss Notification"]" OnClick="@(async()=>{
+        <MudCard Class="py-3" Elevation="2">
+            <MudStack Row=true Class="px-4">
+                <MudIcon Icon="@Icons.Material.Outlined.EventNote" />
+                <MudStack>
+                    @if (!notification.Notification.Title.IsNullOrEmpty())
+                    {
+                        <MudText Typo="Typo.subtitle2">@notification.Notification.Title</MudText>
+                    }
+                    <MudText Typo="Typo.caption">
+                        @((MarkupString)notification.Notification.Message)
+                    </MudText>
+                </MudStack>
+                <MudSpacer />
+                <AppCloseButton TooltipPlacement="Placement.Left" Tooltip="@AppLocalization["Dismiss Notification"]" OnClick="@(async()=>{
                   await UserState.MarkRead(notification);
                   await InvokeAsync(StateHasChanged);
-              })"/>
-        </MudStack>
+              })" />
+            </MudStack>
+        </MudCard>
+
+    }
+     @if (messages.Where(m => m.IsRead).Count() > 0 )
+    {
+        <MudCard Class="py-3 cursor-pointer" Elevation="2" @onclick=@(()=>{_showRead=!_showRead; })>
+            <MudStack Row=true Class="px-4">
+                <MudIcon Color="Color.Success" Icon="@(_showRead==true?Icons.Material.Filled.Remove:Icons.Material.Filled.Add)" />
+                <MudText Typo="Typo.subtitle2">@AppLocalization["Read Notifications"]</MudText>
+            </MudStack>
+        </MudCard>
+        @if (_showRead)
+        {
+            foreach (var notification in messages.Where(m => m.IsRead))
+            {
+                <MudCard Class="py-3" Elevation="2">
+                    <MudStack Row=true Class="px-4">
+                        <MudIcon Icon="@Icons.Material.Outlined.EventNote" />
+                        <MudStack>
+                            @if (!notification.Notification.Title.IsNullOrEmpty())
+                            {
+                                <MudText Typo="Typo.subtitle2">@notification.Notification.Title</MudText>
+                            }
+                            <MudText Typo="Typo.caption">
+                                @((MarkupString)notification.Notification.Message)
+                            </MudText>
+                        </MudStack>
+                        <MudSpacer />
+
+                    </MudStack>
+                </MudCard>
+
+            }
+        }
         
-       
     }
 </MudStack>
 
@@ -31,21 +74,28 @@
     public IApplicationUserState UserState { get; set; }
 
 
-
+    bool _showRead;
 
     private IList<UserNotification> messages = new List<UserNotification>();
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+        messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id).OrderByDescending(un=>un.Notification.Created).ToListAsync();
         //messages = UserState.Notifications;
-
-        NotificationPublisher.OnNotificationPublished += async (notification) =>
+        UserState.OnSettingsChanged += async () =>
         {
-            messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+            messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id).OrderByDescending(un => un.Notification.Created).ToListAsync();
 
             InvokeAsync(StateHasChanged);
         };
+        NotificationPublisher.OnNotificationPublished += async (notification) =>
+        {
+            messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id).OrderByDescending(un => un.Notification.Created).ToListAsync();
+
+            InvokeAsync(StateHasChanged);
+        };
+
     }
 
 

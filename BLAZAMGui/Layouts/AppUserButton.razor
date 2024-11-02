@@ -1,27 +1,20 @@
 @inherits DatabaseComponentBase
 
 @* <UserNotificationPopover UserState="@UserState" @bind-Open="@NotificationsOpen" /> *@
-<MudDrawer Width="350px"
-           @bind-Open=@NotificationsOpen
-           Anchor=Anchor.End
-           ClipMode=DrawerClipMode.Always
-           Overlay="false"
-           Variant="@DrawerVariant.Temporary"
-           Elevation="2">
-    <MudDrawerContainer>
-        <UserNotificationPopover @bind-Open=@NotificationsOpen UserState="@UserState" />
-    </MudDrawerContainer>
-</MudDrawer>
-<MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" ListClass="py-0">
-    <ActivatorContent>
-        @{
 
-            var avatarBgColor = GenerateAvatarColor(UserState?.Username);
-        }
+<MudMenu @ref=@_userMenu
+         AnchorOrigin="Origin.BottomRight"
+         TransformOrigin="Origin.TopRight"
+         ListClass="py-0">
+    <ActivatorContent>
+
         <AppTooltip Text="@CurrentUser.Username">
             @if (Notifications.Where(n => !n.IsRead).Count() > 0)
             {
-                <MudBadge Color=Color.Error Overlap=true Content="@Notifications.Where(n=>!n.IsRead).Count()">
+                <MudBadge Color=Color.Error
+                          Overlap=true
+                          Content="@Notifications.Where(n=>!n.IsRead).Count()"
+                          OnClick="@ToggleNotifications">
                     <CurrentUserAvatarIcon UserState="@UserState" />
                 </MudBadge>
             }
@@ -32,15 +25,17 @@
         </AppTooltip>
     </ActivatorContent>
     <ChildContent>
-        <MudText Typo=Typo.body2 Color="Color.Info" Align=Align.Center Class="py-3 w-100 " Style="text-align:center;    background-color: var(--mud-palette-drawer-background);">
+        <MudText Typo=Typo.body2
+                 Color="Color.Info"
+                 Align=Align.Center
+                 Class="py-3 w-100 "
+                 Style="text-align:center; background-color: var(--mud-palette-drawer-background);">
             @CurrentUser.Username
         </MudText>
         <MudDivider />
-        @if (Notifications.Count > 0)
-        {
-            <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})"
-                         Icon="@Icons.Material.Filled.MenuOpen">Notifications</MudMenuItem>
-        }
+        <MudMenuItem OnClick="@ToggleNotifications"
+                     Icon="@Icons.Material.Filled.MenuOpen">Notifications</MudMenuItem>
+
 
 
         <MudMenuItem OnClick="@(()=>{profileModal?.ShowAsync();})"
@@ -72,12 +67,15 @@
         }
     </ChildContent>
 </MudMenu>
-<AppModal @ref=profileModal Title="Profile Settings">
+<AppModal @ref=profileModal
+          Title="Profile Settings">
     <CascadingValue Value="mainLayout">
         <AppUserProfileModalContent />
     </CascadingValue>
 </AppModal>
-<AppModal @ref=notificationsModal Title="Notification Settings" Options="new(){ CloseButton=true, MaxWidth=MaxWidth.ExtraLarge,FullWidth=true}">
+<AppModal @ref=notificationsModal
+          Title="Notification Settings"
+          Options="new(){ CloseButton=true, MaxWidth=MaxWidth.ExtraLarge,FullWidth=true}">
     <CascadingValue Value="mainLayout">
         <NotificaionSubscriptionEditor User="UserState.Preferences" />
     </CascadingValue>
@@ -85,11 +83,7 @@
 @code {
     AppModal? profileModal;
     AppModal? notificationsModal;
-    /// <summary>
-    /// Indicates whether the notification panel is open
-    /// </summary>
-    bool NotificationsOpen;
-
+    MudMenu? _userMenu;
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
     IList<UserNotification> Notifications = new List<UserNotification>();
@@ -113,6 +107,8 @@
         if (UserState != null)
             UserState.OnSettingsChanged += async () =>
         {
+            Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+
             InvokeAsync(StateHasChanged);
         };
 
@@ -123,26 +119,17 @@
 
     }
 
-
-
-    /// <summary>
-    /// Generate a repeatable hex color based on the given username
-    /// </summary>
-    /// <param name="username"></param>
-    /// <returns>A background-color style string</returns>
-    string GenerateAvatarColor(string? username)
+    private void ToggleNotifications()
     {
-        if (username is null || username.IsNullOrEmpty()) return "background-color:#0c13a7";
-        int usernameHash = username.GetAppHashCode();
-        byte[] usernameHashBytes = Helpers.ByteHelpers.ToByteArray(usernameHash, (int?)3);
-        for (int x = 0; x < usernameHashBytes.Length; x++)
+        mainLayout.NotificationsOpen = !mainLayout.NotificationsOpen;
+        _userMenu.Disabled = true;
+        Task.Delay(500).ContinueWith((t) =>
         {
-            if (usernameHashBytes[x] > 200)
-                usernameHashBytes[x] = 200;
-        }
-        string hexColor = "background-color:#";
-        hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
-        return hexColor;
+            InvokeAsync(() => { _userMenu.Disabled = false; _userMenu?.CloseMenuAsync(); });
+
+        });
+
     }
+
 
 }

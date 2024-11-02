@@ -145,7 +145,10 @@ namespace BLAZAM.Gui.UI
         {
             Nav.NavigateTo(Nav.Uri, forceReload);
         }
-
+        public void UpdateState()
+        {
+            _=InvokeAsync(StateHasChanged);
+        }
         public virtual void Dispose()
         {
             //This object requires no further disposal

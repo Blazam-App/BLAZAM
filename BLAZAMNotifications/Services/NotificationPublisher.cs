@@ -23,8 +23,15 @@ namespace BLAZAM.Notifications.Services
 
             if (notificationMessage.Id == 0)
             {
-                notificationMessage = context.NotificationMessages.Add(notificationMessage).Entity;
-                context.SaveChanges();
+                try
+                {
+                    notificationMessage = context.NotificationMessages.Add(notificationMessage).Entity;
+                    context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
             List<UserNotification> sentNotificaitons = new();
             foreach (var user in users)
@@ -32,7 +39,7 @@ namespace BLAZAM.Notifications.Services
                 var userNotification = new UserNotification()
                 {
                     User = context.UserSettings.Where(u => u.Equals(user)).FirstOrDefault(),
-                    Notification = notificationMessage
+                    NotificationId = notificationMessage.Id
                 };
                 context.UserNotifications.Add(userNotification);
                 sentNotificaitons.Add(userNotification);
