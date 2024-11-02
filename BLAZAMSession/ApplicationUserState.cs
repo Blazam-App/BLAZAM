@@ -118,7 +118,7 @@ namespace BLAZAM.Server.Data.Services
             return false;
         }
 
-        private void GetUserSettingFromDB()
+        public void GetUserSettingFromDB()
         {
             try
             {

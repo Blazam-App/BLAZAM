@@ -1,25 +1,32 @@
 @inherits DatabaseComponentBase
 
+<MudStack Row=true Class="px-3 sticky mud-theme-secondary mud-width-full" Style="height=60px;">
 
-<MudStack Row=true Class="ma-3">
-    <MudText Typo="Typo.h6" Class="align-middle">Notifications</MudText>
+    <MudText Typo="Typo.h6"
+             Class="align-middle">
+        @AppLocalization["Notifications"]
+    </MudText>
     <MudSpacer />
-    <AppIconButton Size="Size.Large" Icon="@Icons.Material.Filled.ClearAll"
-                   Tooltip="@AppLocalization["Mark all read"]"
+    <AppIconButton Size="Size.Large"
+                   Icon="@Icons.Material.Filled.ClearAll"
+                   Tooltip="@AppLocalization["Dismiss all"]"
                    Color="Color.Warning"
                    OnClick="MarkAllRead" />
     <AppCloseButton Size="Size.Large"
+                    Icon="@Icons.Material.Filled.Start"
                     Tooltip="@AppLocalization["Close"]"
-                    OnClick=@(()=>{Open=false;}) />
+                    OnClick=@(()=>{mainLayout.NotificationsOpen=false;}) />
 
 </MudStack>
-<NotificationList UserState="@UserState" />
+    <NotificationList @ref=_notificationList UserState="@UserState" />
+
+
 
 
 
 @code {
     private bool _open;
-
+    private NotificationList? _notificationList;
     [Parameter]
     public bool Open
     {
@@ -37,14 +44,14 @@
     [Parameter]
     public IApplicationUserState UserState { get; set; }
 
-
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
 
     async Task MarkAllRead()
     {
 
         var messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
 
-        messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
 
         foreach (var message in messages)
         {
@@ -52,7 +59,11 @@
 
             await UserState.MarkRead(message);
         }
+        UserState.SaveAllUserSettings();
+        UserState.GetUserSettingFromDB();
+        
         Open = false;
+        _notificationList?.UpdateState();
         await InvokeAsync(StateHasChanged);
     }
 

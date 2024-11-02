@@ -10,6 +10,8 @@ using BLAZAM.Logger;
 using BLAZAM.Notifications.Notifications;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Server.Data.Services;
+using BLAZAM.Session.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace BLAZAM.Services.Background
@@ -29,7 +31,7 @@ namespace BLAZAM.Services.Background
             _emailService = emailService;
         }
         private IDatabaseContext Context => _databaseFactory.CreateDbContext();
-        public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType, ApplicationUserState? actor=null, IDirectoryEntryAdapter? target = null)
+        public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
         {
             await Task.Run(async () =>
             {
@@ -60,6 +62,7 @@ namespace BLAZAM.Services.Background
                     case NotificationType.Modify:
                         notificationTitle += _appLocalization["Modified"];
                         notificationBody += _appLocalization["was modified at "] + source.LastChanged?.ToLocalTime();
+                       
                         var editedMessage = NotificationType.Modify.ToNotification<EntryEditedEmailMessage>();
                         editedMessage.EntryName = source.CanonicalName;
                         emailMessage = editedMessage;
@@ -81,15 +84,20 @@ namespace BLAZAM.Services.Background
                         break;
 
                 }
+                if (actor != null)
+                {
+                    notificationBody += " " + _appLocalization["by"] + " " + actor.AuditUsername;
+                }
                 var notification = new NotificationMessage();
                 notification.Title = notificationTitle;
                 notification.Message = notificationBody;
                 notification.Dismissable = true;
                 notification.Created = DateTime.Now;
+                notification.CreatorId = actor?.Preferences.Id;
                 notification.Level = NotificationLevel.Info;
                 var _emailConfigured = _emailService.IsConfigured;
-
-                foreach (var user in Context.UserSettings.ToList())
+                var users = Context.UserSettings.Include(us => us.NotificationSubscriptions).ToList();
+                foreach (var user in users)
                 {
                     var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
                     var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
