@@ -69,7 +69,7 @@
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="8.0.1" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
-		<PackageReference Include="MudBlazor" Version="7.11.0" />
+		<PackageReference Include="MudBlazor" Version="7.15.0" />
 		<PackageReference Include="MudBlazor.Markdown" Version="7.8.0" />
 		<PackageReference Include="MudBlazor.ThemeManager" Version="2.1.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
