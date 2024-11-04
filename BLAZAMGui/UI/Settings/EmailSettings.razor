@@ -163,7 +163,7 @@
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
     }
-    protected override void Save()
+    protected override async Task Save()
     {
         if (settings.Id == 0 && Context != null)
         {
@@ -171,7 +171,7 @@
             Context.EmailSettings.Add(settings);
         }
         AuditLogger.System.SettingsChanged("Email", settings.GetChanges(originalSettings));
-        base.Save();
+        await base.Save();
 
     }
 }

@@ -64,6 +64,7 @@ namespace BLAZAM.Database.Context
         DbSet<UnreadChatMessage> UnreadChatMessages { get; set; }
         DbSet<ActiveDirectoryFieldObjectType> ActiveDirectoryFieldObjectMappings { get; set; }
         DbSet<NotificationSubscription> NotificationSubscriptions { get; set; }
+        DbSet<GlobalPermissionSettings> GlobalPermissionSettings { get; set; }
 
         void Export(string directory);
     }

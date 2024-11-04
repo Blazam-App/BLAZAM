@@ -136,10 +136,10 @@
         }
     }
 
-    protected override void Save()
+    protected override async Task Save()
     {
         AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
-        base.Save();
+        await base.Save();
     }
 
 }

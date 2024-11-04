@@ -192,7 +192,7 @@
         await InvokeAsync(StateHasChanged);
 
     }
-    protected override async void Save()
+    protected override async Task Save()
     {
 
         if (!settings.Password.Equals(passwordInDb))

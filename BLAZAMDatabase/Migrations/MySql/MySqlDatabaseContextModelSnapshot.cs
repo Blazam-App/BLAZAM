@@ -1109,6 +1109,30 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("AccessLevelFieldMapping");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AllowAccessRequest")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("AllowSelfModification")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int?>("SelfAccessLevelId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SelfAccessLevelId");
+
+                    b.ToTable("GlobalPermissionSettings");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
                 {
                     b.Property<int>("Id")
@@ -1181,11 +1205,16 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<int>("Action")
                         .HasColumnType("int");
 
+                    b.Property<int?>("GlobalPermissionSettingsId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GlobalPermissionSettingsId");
 
                     b.ToTable("ObjectActionFlag");
 
@@ -1804,6 +1833,15 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("FieldAccessLevel");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Permissions.AccessLevel", "SelfAccessLevel")
+                        .WithMany()
+                        .HasForeignKey("SelfAccessLevelId");
+
+                    b.Navigation("SelfAccessLevel");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", "ObjectAccessLevel")
@@ -1813,6 +1851,13 @@ namespace BLAZAM.Common.Migrations.MySql
                         .IsRequired();
 
                     b.Navigation("ObjectAccessLevel");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAction", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", null)
+                        .WithMany("AllowedAccessRequestActions")
+                        .HasForeignKey("GlobalPermissionSettingsId");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
@@ -1969,6 +2014,11 @@ namespace BLAZAM.Common.Migrations.MySql
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
                 {
                     b.Navigation("ActionMap");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", b =>
+                {
+                    b.Navigation("AllowedAccessRequestActions");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
