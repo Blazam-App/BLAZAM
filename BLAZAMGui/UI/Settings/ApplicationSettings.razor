@@ -54,9 +54,9 @@
                     @* <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" /> *@
                     <Base64Image Width=100 Data="@settings.AppIcon" />
                     @*  <MudImage Class="app-icon" Src="@Convert.ToBase64String(settings.AppIcon)" /> *@
-                    <AppTooltip Text="Remove custom icon">
+                 
                         <AppCloseButton Tooltip=@AppLocalization["Remove"] OnClick="@(()=>{settings.AppIcon=null;})" />
-                    </AppTooltip>
+      
                 }
             </MudContainer>
             <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon" Accept="image/*">

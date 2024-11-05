@@ -20,9 +20,13 @@
             }
 
             <AppTooltip Text=@("Blazam "+AppLocalization["News"])>
-                <MudFab Size=Size.Small Color=@color
+                 <AppIconButton Class="mud-height-full"
+                    Size="Size.Large"
+                    Icon="@Icons.Material.TwoTone.NewReleases"
+                    Color="@color"/>
+               @*  <MudFab Size=Size.Small Color=@color
                         Class="mx-2"
-                        StartIcon="@icon" />
+                        StartIcon="@icon" /> *@
             </AppTooltip>
 
         </ActivatorContent>
