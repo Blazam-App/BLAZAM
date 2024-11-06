@@ -95,7 +95,7 @@
             {
                 var contextAction = Context.ObjectActionFlag.FirstOrDefault(x => x.Id == action.Id);
 
-                var requestAction = new GlobalPermissionRequestActions() { GlobalPermissionSettings = settings, ObjectAction = contextAction, ObjectActionId=contextAction.Id };
+                var requestAction = new GlobalPermissionRequestActions() { GlobalPermissionSettings = settings, ObjectActionId=contextAction.Id };
                 if (requestAction != null)
                 {
                     settings.AllowedAccessRequestActions.Add(requestAction);
@@ -108,7 +108,7 @@
                 if (requestAction != null)
                 {
                     settings.AllowedAccessRequestActions.Remove(requestAction);
-
+                    
                 }
             }
         }
