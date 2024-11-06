@@ -7,64 +7,79 @@
             <MudStack Row=true Class="px-4">
                 <MudIcon Color="Color.Success" Icon="@Icons.Material.Outlined.Check" />
                 <MudText Typo="Typo.subtitle2">@AppLocalization["No unread notifications"]</MudText>
-            </MudStack>
-        </MudCard>
-    }
-    @foreach (var notification in messages.Where(m => !m.IsRead))
-    {
-        <MudCard Class="py-3" Elevation="2">
-            <MudStack Row=true Class="px-4">
-                <MudIcon Icon="@Icons.Material.Outlined.EventNote" />
-                <MudStack>
-                    @if (!notification.Notification.Title.IsNullOrEmpty())
-                    {
-                        <MudText Typo="Typo.subtitle2">@notification.Notification.Title</MudText>
-                    }
-                    <MudText Typo="Typo.caption">
-                        @((MarkupString)notification.Notification.Message)
-                    </MudText>
                 </MudStack>
-                <MudSpacer />
-                <AppCloseButton TooltipPlacement="Placement.Left" Tooltip="@AppLocalization["Dismiss Notification"]" OnClick="@(async()=>{
-                  await UserState.MarkRead(notification);
-                  await InvokeAsync(StateHasChanged);
-              })" />
-            </MudStack>
-        </MudCard>
-
+            </MudCard>
     }
-     @if (messages.Where(m => m.IsRead).Count() > 0 )
+    else
+    {
+        <Virtualize TItem="UserNotification" Items="@messages.Where(m => !m.IsRead).ToList()">
+            <ItemContent>
+                <NotificationMessageListItem Notification="@context" />
+            </ItemContent>
+        </Virtualize>
+    }
+    @*   @foreach (var notification in messages.Where(m => !m.IsRead))
+    {
+    <MudCard Class="py-3" Elevation="2">
+    <MudStack Row=true Class="px-4">
+    <MudIcon Icon="@Icons.Material.Outlined.EventNote" />
+    <MudStack>
+    @if (!notification.Notification.Title.IsNullOrEmpty())
+    {
+    <MudText Typo="Typo.subtitle2">@notification.Notification.Title</MudText>
+    }
+    <MudText Typo="Typo.caption">
+    @((MarkupString)notification.Notification.Message)
+    </MudText>
+    </MudStack>
+    <MudSpacer />
+    <AppCloseButton TooltipPlacement="Placement.Left" Tooltip="@AppLocalization["Dismiss Notification"]" OnClick="@(async()=>{
+    await UserState.MarkRead(notification);
+    await InvokeAsync(StateHasChanged);
+    })" />
+    </MudStack>
+    </MudCard>
+
+    } *@
+    @if (messages.Where(m => m.IsRead).Count() > 0)
     {
         <MudCard Class="py-3 cursor-pointer" Elevation="2" @onclick=@(()=>{_showRead=!_showRead; })>
             <MudStack Row=true Class="px-4">
                 <MudIcon Color="Color.Success" Icon="@(_showRead==true?Icons.Material.Filled.Remove:Icons.Material.Filled.Add)" />
                 <MudText Typo="Typo.subtitle2">@AppLocalization["Read Notifications"]</MudText>
-            </MudStack>
-        </MudCard>
+                </MudStack>
+            </MudCard>
         @if (_showRead)
         {
-            foreach (var notification in messages.Where(m => m.IsRead))
-            {
-                <MudCard Class="py-3" Elevation="2">
-                    <MudStack Row=true Class="px-4">
-                        <MudIcon Icon="@Icons.Material.Outlined.EventNote" />
-                        <MudStack>
-                            @if (!notification.Notification.Title.IsNullOrEmpty())
-                            {
-                                <MudText Typo="Typo.subtitle2">@notification.Notification.Title</MudText>
-                            }
-                            <MudText Typo="Typo.caption">
-                                @((MarkupString)notification.Notification.Message)
-                            </MudText>
-                        </MudStack>
-                        <MudSpacer />
+            <Virtualize TItem="UserNotification" Items="@messages.Where(m => m.IsRead).ToList()">
+                <ItemContent>
+                    <NotificationMessageListItem Notification="@context" />
+                </ItemContent>
+            </Virtualize>
 
-                    </MudStack>
-                </MudCard>
+            @*   @foreach (var notification in messages.Where(m => m.IsRead))
+    {
+    <MudCard Class="py-3" Elevation="2">
+    <MudStack Row=true Class="px-4">
+    <MudIcon Icon="@Icons.Material.Outlined.EventNote" />
+    <MudStack>
+    @if (!notification.Notification.Title.IsNullOrEmpty())
+    {
+    <MudText Typo="Typo.subtitle2">@notification.Notification.Title</MudText>
+    }
+    <MudText Typo="Typo.caption">
+    @((MarkupString)notification.Notification.Message)
+    </MudText>
+    </MudStack>
+    <MudSpacer />
 
-            }
+    </MudStack>
+    </MudCard>
+
+    } *@
+
         }
-        
+
     }
 </MudStack>
 
@@ -81,7 +96,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id).OrderByDescending(un=>un.Notification.Created).ToListAsync();
+        messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id).OrderByDescending(un => un.Notification.Created).ToListAsync();
         //messages = UserState.Notifications;
         UserState.OnSettingsChanged += async () =>
         {

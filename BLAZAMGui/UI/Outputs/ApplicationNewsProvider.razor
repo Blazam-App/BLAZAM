@@ -10,12 +10,12 @@
              TransformOrigin="Origin.TopRight">
         <ActivatorContent>
             @{
-                var icon = Icons.Material.Filled.Notifications;
+                //var icon = Icons.Material.Filled.Notifications;
                 var color = Color.Success;
             }
             @if (unreadItems.Count > 0)
             {
-                icon = Icons.Material.Filled.NotificationImportant;
+                //icon = Icons.Material.Filled.NotificationImportant;
                 color = Color.Info;
             }
 
@@ -32,7 +32,7 @@
 
         <ChildContent>
             <MudContainer Class="px-0" Style="width:300px;">
-                <MudText Class="py-2" Align="Align.Center">
+                <MudText Typo=Typo.h6 Class="py-2" Align="Align.Center">
                     Blazam @AppLocalization["News"]
                 </MudText>
                 @foreach (var item in unreadItems.OrderByDescending(x => x.UpdatedAt))

@@ -8,6 +8,11 @@
     </MudText>
     <MudSpacer />
     <AppIconButton Size="Size.Large"
+                   Icon="@Icons.Material.Filled.Settings"
+                   Tooltip="@AppLocalization["Notification Settings"]"
+                   Color="Color.Warning"
+                   OnClick="@(()=>{notificationsModal?.ShowAsync();})" />
+    <AppIconButton Size="Size.Large"
                    Icon="@Icons.Material.Filled.ClearAll"
                    Tooltip="@AppLocalization["Dismiss all"]"
                    Color="Color.Warning"
@@ -15,16 +20,23 @@
     <AppCloseButton Size="Size.Large"
                     Icon="@Icons.Material.Filled.Start"
                     Tooltip="@AppLocalization["Close"]"
+                    TooltipPlacement="Placement.Left"
                     OnClick=@(()=>{mainLayout.NotificationsOpen=false;}) />
 
 </MudStack>
     <NotificationList @ref=_notificationList UserState="@UserState" />
 
-
+<AppModal @ref=notificationsModal
+          Title="Notification Settings"
+          Options="new(){ CloseButton=true, MaxWidth=MaxWidth.ExtraLarge,FullWidth=true}">
+    <NotificaionSubscriptionEditor User="UserState.Preferences" />
+</AppModal>
 
 
 
 @code {
+
+    AppModal? notificationsModal;
     private bool _open;
     private NotificationList? _notificationList;
     [Parameter]
