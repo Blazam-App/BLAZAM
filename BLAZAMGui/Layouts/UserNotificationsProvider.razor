@@ -1,25 +1,19 @@
 @inherits DatabaseComponentBase
+@{
+    var notifs = Notifications.Where(n => !n.IsRead);
+}
+    <MudBadge Color=Color.Error
+          Visible="@(notifs.Count() > 0)"
+    Overlap=true
+    BadgeClass="badge-repos cursor-pointer"
+    Content="@Notifications.Where(n=>!n.IsRead).Count()"
+    OnClick="@ToggleNotifications">
 
-<MudBadge Color=Color.Error
-          Overlap=true
-          BadgeClass="badge-repos cursor-pointer"
-          Content="@Notifications.Where(n=>!n.IsRead).Count()"
-          OnClick="@ToggleNotifications">
-    @{
-        var icon = Icons.Material.Filled.Notifications;
-        var color = Color.Success;
-    }
-    @if (Notifications.Where(n => !n.IsRead).Count() > 0)
-    {
-        icon = Icons.Material.Filled.NotificationImportant;
-        color = Color.Warning;
-    }
-
-    <AppIconButton Size="Size.Large"
-                   OnClick="@ToggleNotifications"
-                   Icon="@icon"
-                   Color="@color" />
-</MudBadge>
+        <AppIconButton Size="Size.Large"
+        OnClick="@ToggleNotifications"
+                   Icon="@(notifs.Count() > 0?Icons.Material.Filled.NotificationImportant:Icons.Material.Filled.Notifications)"
+                   Color="@(notifs.Count() > 0?Color.Warning:Color.Success)" />
+    </MudBadge>
 
 
 @code {
