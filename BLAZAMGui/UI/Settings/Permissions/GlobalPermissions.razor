@@ -14,9 +14,9 @@
             @if (settings.AllowAccessRequest)
             {
                 <MudToggleGroup T="bool">
-                        <MudSwitch Value="@settings.AllowedAccessRequestActions.Any(x=>x.Name=="Assign")" 
-                        ValueChanged="@((bool  val)=>{ AddAction(ObjectActions.Assign); })">
-                    @AppLocalization["Assign/Unassign"]
+                    <MudSwitch Value="@settings.AllowedAccessRequestActions.Any(x=>x.ObjectActionId==ObjectActions.Assign.Id)"
+                               ValueChanged="@((bool  val)=>{ AddAction(ObjectActions.Assign); })">
+                        @AppLocalization["Assign/Unassign"]
                     </MudSwitch>
                 </MudToggleGroup>
             }
@@ -91,26 +91,30 @@
     {
         if (settings.AllowAccessRequest)
         {
-            if (!settings.AllowedAccessRequestActions.Any(x => x.Id == action.Id))
+            if (!settings.AllowedAccessRequestActions.Any(x => x.ObjectActionId == action.Id))
             {
                 var contextAction = Context.ObjectActionFlag.FirstOrDefault(x => x.Id == action.Id);
-                if (contextAction != null)
-                {
-                    settings.AllowedAccessRequestActions.Add(contextAction);
 
+                var requestAction = new GlobalPermissionRequestActions() { GlobalPermissionSettings = settings, ObjectAction = contextAction, ObjectActionId=contextAction.Id };
+                if (requestAction != null)
+                {
+                    settings.AllowedAccessRequestActions.Add(requestAction);
                 }
+
             }
             else
             {
-                var contextAction = Context.ObjectActionFlag.FirstOrDefault(x => x.Id == action.Id);
-                if (contextAction != null)
+                var requestAction = settings.AllowedAccessRequestActions.FirstOrDefault(x => x.ObjectActionId == action.Id);
+                if (requestAction != null)
                 {
-                    settings.AllowedAccessRequestActions.Remove(contextAction);
+                    settings.AllowedAccessRequestActions.Remove(requestAction);
 
                 }
             }
         }
-    }
+        
+    
+}
     protected override async Task Save()
     {
         AccessLevel? accessLevel=null;

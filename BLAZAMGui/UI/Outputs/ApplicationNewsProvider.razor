@@ -16,12 +16,11 @@
             @if (unreadItems.Count > 0)
             {
                 icon = Icons.Material.Filled.NotificationImportant;
-                color = Color.Warning;
+                color = Color.Info;
             }
 
             <AppTooltip Text=@("Blazam "+AppLocalization["News"])>
-                 <AppIconButton Class="mud-height-full"
-                    Size="Size.Large"
+                 <AppIconButton Size="Size.Large"
                     Icon="@Icons.Material.TwoTone.NewReleases"
                     Color="@color"/>
                @*  <MudFab Size=Size.Small Color=@color

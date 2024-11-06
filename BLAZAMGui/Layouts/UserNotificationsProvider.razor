@@ -1,0 +1,72 @@
+@inherits DatabaseComponentBase
+
+<MudBadge Color=Color.Error
+          Overlap=true
+          BadgeClass="badge-repos cursor-pointer"
+          Content="@Notifications.Where(n=>!n.IsRead).Count()"
+          OnClick="@ToggleNotifications">
+    @{
+        var icon = Icons.Material.Filled.Notifications;
+        var color = Color.Success;
+    }
+    @if (Notifications.Where(n => !n.IsRead).Count() > 0)
+    {
+        icon = Icons.Material.Filled.NotificationImportant;
+        color = Color.Warning;
+    }
+
+    <AppIconButton Size="Size.Large"
+                   OnClick="@ToggleNotifications"
+                   Icon="@icon"
+                   Color="@color" />
+</MudBadge>
+
+
+@code {
+
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+    IList<UserNotification> Notifications = new List<UserNotification>();
+    private IApplicationUserState UserState;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InvokeAsync(StateHasChanged);
+        NotificationPublisher.OnNotificationPublished += (async (notifications) =>
+           {
+               if (notifications.Select(n => n.User).Contains(UserState.Preferences))
+               {
+                   Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+               }
+               await InvokeAsync(StateHasChanged);
+           });
+
+
+        UserState = CurrentUser.State;
+        await InvokeAsync(StateHasChanged);
+        if (UserState != null)
+            UserState.OnSettingsChanged += async () =>
+        {
+            Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+
+            InvokeAsync(StateHasChanged);
+        };
+
+        Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+
+        await InvokeAsync(StateHasChanged);
+
+
+    }
+    private void ToggleNotifications()
+    {
+        mainLayout.NotificationsOpen = !mainLayout.NotificationsOpen;
+        // _userMenu.Disabled = true;
+        // Task.Delay(500).ContinueWith((t) =>
+        // {
+        //     InvokeAsync(() => { _userMenu.Disabled = false; _userMenu?.CloseMenuAsync(); });
+
+        // });
+
+    }
+}

@@ -13,7 +13,7 @@ namespace BLAZAM.Database.Models.Permissions
         public int? SelfAccessLevelId { get; set; }
 
         public bool AllowAccessRequest { get; set; }
-        public List<ObjectAction>? AllowedAccessRequestActions { get; set; }
+        public List<GlobalPermissionRequestActions>? AllowedAccessRequestActions { get; set; }
         
     }
 }

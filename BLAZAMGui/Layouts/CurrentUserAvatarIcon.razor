@@ -1,15 +1,20 @@
+@using System.Security.Claims
 @inherits AppComponentBase
 
 
 
 @if (UserState?.Preferences?.ProfilePicture != null)
 {
-    <Base64Image Elevation="4" Class="  mud-border-secondary border-2 mud-avatar mud-avatar-medium" Data="@UserState.Preferences?.ProfilePicture" />
+    <Base64Image Elevation="4"
+                 Class=" ma-5 mud-border-secondary border-2 mud-avatar mud-avatar-medium"
+                 Data="@UserState.Preferences?.ProfilePicture" />
 
 }
 else
 {
-    <MudAvatar Elevation="4" Style="@AvatarColor">@GetInitials()</MudAvatar>
+    <MudAvatar Elevation="4"
+               Class="ma-5"
+               Style="@AvatarColor">@GetInitials()</MudAvatar>
 
 }
 
@@ -53,15 +58,25 @@ else
     {
         if (!UserStateService.CurrentUsername.IsNullOrEmpty())
         {
-            if (UserStateService.CurrentUsername.Split(" ").Length > 1)
+            var fname = CurrentUser.State.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value;
+            var lname = CurrentUser.State.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value;
+            if (!fname.IsNullOrEmpty() && !lname.IsNullOrEmpty())
             {
-                string initials = "";
-                UserStateService.CurrentUsername.Split(" ").ForEach(p => initials += p.First());
-                return initials;
+                string initials = fname.Substring(0, 1) + lname.Substring(0, 1);
+                initials = initials.ToUpper();
             }
             else
             {
-                return UserStateService.CurrentUsername?.FirstOrDefault().ToString();
+                if (UserStateService.CurrentUsername.Split(" ").Length > 1)
+                {
+                    string initials = "";
+                    UserStateService.CurrentUsername.Split(" ").ForEach(p => initials += p.First());
+                    return initials;
+                }
+                else
+                {
+                    return UserStateService.CurrentUsername?.FirstOrDefault().ToString();
+                }
             }
         }
         return default;
