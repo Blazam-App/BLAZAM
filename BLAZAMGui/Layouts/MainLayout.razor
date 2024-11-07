@@ -46,8 +46,9 @@
                                ClipMode=DrawerClipMode.Always
                                Overlay="false"
                                Variant="@DrawerVariant.Temporary"
-                               Elevation="2">
-                        <MudDrawerContainer Class="">
+                               Elevation="2"
+                               Class=" rounded-tl-lg">
+                        <MudDrawerContainer >
                             <UserNotificationPopover @bind-Open=@NotificationsOpen
                                                      UserState="@CurrentUser.State" />
                         </MudDrawerContainer>

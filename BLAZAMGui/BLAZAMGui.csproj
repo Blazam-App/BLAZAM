@@ -58,6 +58,9 @@
 		<Content Update="UI\FlexContainer.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
+		<Content Update="UI\Modals\RequestAccessModalContent.razor">
+		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</Content>
 		<Content Update="UI\Section.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>

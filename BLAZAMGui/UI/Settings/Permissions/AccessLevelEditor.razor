@@ -35,23 +35,16 @@
         await InvokeAsync(StateHasChanged);
         if (Context != null)
         {
-            AccessLevel? selfLevel=null;
-            var globalSettings = await Context.GlobalPermissionSettings.Include(x => x.SelfAccessLevel).FirstOrDefaultAsync();
-            if (globalSettings != null)
+            AccessLevel? selfLevel = null;
+            var selfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
+            if (selfAccessLevel != null)
             {
-                selfLevel = globalSettings.SelfAccessLevel;
+                selfLevel = selfAccessLevel;
             }
-            if (selfLevel?.Id > 0)
-            {
 
-                CurrentAccessLevels = await Context.AccessLevels.Where(al => al.DeletedAt == null && al.Id != selfLevel.Id).ToListAsync();
+            CurrentAccessLevels = await Context.AccessLevels.Where(al => al.DeletedAt == null && al.Name != AccessLevel.SelfAccessLevelName).ToListAsync();
 
-            }
-            else
-            {
-                CurrentAccessLevels = await Context.AccessLevels.Where(al => al.DeletedAt == null).ToListAsync();
 
-            }
             LoadingData = false;
         }
         await InvokeAsync(StateHasChanged);

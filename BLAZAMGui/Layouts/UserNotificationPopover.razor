@@ -1,6 +1,8 @@
 @inherits DatabaseComponentBase
 
-<MudStack Row=true Class="px-3 sticky mud-theme-secondary mud-width-full" Style="height=60px;">
+<MudStack Row=true
+          Class="px-3 sticky mud-theme-secondary mud-width-full"
+          Style="height=60px;">
 
     <MudText Typo="Typo.h6"
              Class="align-middle">
@@ -10,7 +12,7 @@
     <AppIconButton Size="Size.Large"
                    Icon="@Icons.Material.Filled.Settings"
                    Tooltip="@AppLocalization["Notification Settings"]"
-                   Color="Color.Warning"
+                   Color="Color.Info"
                    OnClick="@(()=>{notificationsModal?.ShowAsync();})" />
     <AppIconButton Size="Size.Large"
                    Icon="@Icons.Material.Filled.ClearAll"
@@ -24,7 +26,7 @@
                     OnClick=@(()=>{mainLayout.NotificationsOpen=false;}) />
 
 </MudStack>
-    <NotificationList @ref=_notificationList UserState="@UserState" />
+<NotificationList @ref=_notificationList UserState="@UserState" />
 
 <AppModal @ref=notificationsModal
           Title="Notification Settings"
@@ -73,7 +75,7 @@
         }
         UserState.SaveAllUserSettings();
         UserState.GetUserSettingFromDB();
-        
+
         Open = false;
         _notificationList?.UpdateState();
         await InvokeAsync(StateHasChanged);

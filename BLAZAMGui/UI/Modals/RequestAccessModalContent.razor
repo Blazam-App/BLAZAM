@@ -1,0 +1,25 @@
+@inherits DatabaseComponentBase
+@if (_objectActions != null && _objectActions.Count > 0)
+{
+    <MudChipSet T="ObjectAction" SelectionMode="SelectionMode.MultiSelection" Color="Color.Info" SelectedColor="Color.Success">
+        @foreach (var action in _objectActions)
+        {
+            if (Context.GlobalPermissionRequestActions.Any(x => x.ObjectActionId == action.Id))
+            {
+                <MudChip Value="action" Text="@AppLocalization[action.Action.ToString()]" SelectedChanged="@((val)=>{})" />
+            }
+        }
+    </MudChipSet>
+}
+@code {
+    [Parameter]
+    public IDirectoryEntryAdapter Entry { get; set; }
+
+    List<ObjectAction> _objectActions;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _objectActions = Context.ObjectActionFlag.ToList();
+    }
+}

@@ -3,8 +3,11 @@
 
 
 <MudStack Row=true>
-    <MudTextField Disabled=@(WorkingModel.Id==1 || Self) Label="@AppLocalization["Name"]" @bind-Value=WorkingModel.Name />
-
+    @if (!Self)
+    {
+        <MudTextField Disabled=@(WorkingModel.Id==1) Label="@AppLocalization["Name"]" @bind-Value=WorkingModel.Name
+        />
+    }
     @if (!Self)
     {
         <MudItem>
@@ -294,7 +297,7 @@
         }
         if (Self && WorkingModel != null)
         {
-            WorkingModel.Name = AppLocalization["Self"];
+            WorkingModel.Name = AccessLevel.SelfAccessLevelName;
             if (!WorkingModel.ObjectMap.Any(x => x.ObjectType == ActiveDirectoryObjectType.User))
             {
 

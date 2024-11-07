@@ -13,12 +13,23 @@
 
             @if (settings.AllowAccessRequest)
             {
+
+
                 <MudToggleGroup T="bool">
-                    <MudSwitch Value="@settings.AllowedAccessRequestActions.Any(x=>x.ObjectActionId==ObjectActions.Assign.Id)"
+                    <MudSwitch Value="@Context.GlobalPermissionRequestActions.Any(x => x.ObjectActionId == ObjectActions.Assign.Id)"
                                ValueChanged="@((bool  val)=>{ AddAction(ObjectActions.Assign); })">
-                        @AppLocalization["Assign/Unassign"]
+                        @AppLocalization["Assign"]
                     </MudSwitch>
                 </MudToggleGroup>
+                
+                <MudToggleGroup T="bool">
+                    <MudSwitch Value="@Context.GlobalPermissionRequestActions.Any(x => x.ObjectActionId == ObjectActions.UnAssign.Id)"
+                               ValueChanged="@((bool  val)=>{ AddAction(ObjectActions.UnAssign); })">
+                        @AppLocalization["Unassign"]
+                    </MudSwitch>
+                </MudToggleGroup>
+
+               
             }
 
         </SettingsField>
@@ -33,7 +44,7 @@
             @if (settings.AllowSelfModification)
             {
                 <EditAccessLevel Self=true
-                                 Model="settings.SelfAccessLevel" />
+                                 Model="selfAccessLevel" />
             }
         </SettingsField>
         <MudDivider />
@@ -55,18 +66,14 @@
 
 @code {
     GlobalPermissionSettings settings = new GlobalPermissionSettings();
-
+    AccessLevel selfAccessLevel = new();
     protected override async Task OnInitializedAsync()
     {
         originalSettings = await Context.GlobalPermissionSettings
-        .Include(x => x.AllowedAccessRequestActions)
-        .Include(x => x.SelfAccessLevel)
         .AsNoTracking()
         .FirstOrDefaultAsync();
 
         var dbData = await Context.GlobalPermissionSettings
-        .Include(x => x.AllowedAccessRequestActions)
-        .Include(x => x.SelfAccessLevel)
         .FirstOrDefaultAsync();
 
         if (dbData != null)
@@ -78,9 +85,14 @@
             // Context.GlobalPermissionSettings.Add(settings);
 
         }
-        if (settings.SelfAccessLevel == null)
+        var dbSelfAccessLevel = Context.AccessLevels.FirstOrDefault(x => x.Name == AccessLevel.SelfAccessLevelName);
+        if (dbSelfAccessLevel != null)
         {
-            settings.SelfAccessLevel = new();
+            selfAccessLevel = dbSelfAccessLevel;
+        }
+        else
+        {
+            selfAccessLevel.Name = AccessLevel.SelfAccessLevelName;
         }
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
@@ -89,42 +101,49 @@
 
     private void AddAction(ObjectAction action)
     {
+
         if (settings.AllowAccessRequest)
         {
-            if (!settings.AllowedAccessRequestActions.Any(x => x.ObjectActionId == action.Id))
+            if (!Context.GlobalPermissionRequestActions.Any(x => x.ObjectActionId == action.Id))
             {
                 var contextAction = Context.ObjectActionFlag.FirstOrDefault(x => x.Id == action.Id);
 
-                var requestAction = new GlobalPermissionRequestActions() { GlobalPermissionSettings = settings, ObjectActionId=contextAction.Id };
+                var requestAction = new GlobalPermissionRequestActions() { ObjectActionId = contextAction.Id };
                 if (requestAction != null)
                 {
-                    settings.AllowedAccessRequestActions.Add(requestAction);
+                    var ctx  = DbFactory.CreateDbContext();
+                    // settings.AllowedAccessRequestActions.Add(requestAction);
+                    ctx.GlobalPermissionRequestActions.Add(requestAction);
+                    ctx.SaveChanges();
                 }
 
             }
             else
             {
-                var requestAction = settings.AllowedAccessRequestActions.FirstOrDefault(x => x.ObjectActionId == action.Id);
+                var requestAction = Context.GlobalPermissionRequestActions.FirstOrDefault(x => x.ObjectActionId == action.Id);
                 if (requestAction != null)
                 {
-                    settings.AllowedAccessRequestActions.Remove(requestAction);
-                    
+
+                    var ctx = DbFactory.CreateDbContext();
+
+                    ctx.GlobalPermissionRequestActions.Remove(requestAction);
+                    //settings.AllowedAccessRequestActions.Remove(requestAction);
+                    ctx.SaveChanges();
+
                 }
             }
         }
-        
-    
-}
+
+
+    }
     protected override async Task Save()
     {
-        AccessLevel? accessLevel=null;
+        //AccessLevel? accessLevel = null;
 
-        if (settings.SelfAccessLevel!=null)
-        {
-            settings.SelfAccessLevelId = settings.SelfAccessLevel?.Id;
-            accessLevel = settings.SelfAccessLevel;
-            settings.SelfAccessLevel = null;
-        }
+        // if (selfAccessLevel != null && selfAccessLevel.Id<1)
+        // {
+        //     Context.AccessLevels.Add(selfAccessLevel);
+        // }
         if (settings.Id == 0)
         {
             await Context.GlobalPermissionSettings.AddAsync(settings);
@@ -154,7 +173,7 @@
             SnackBarService.Success("Database not available");
 
         }
-        settings.SelfAccessLevel = accessLevel;
+        //selfAccessLevel = accessLevel;
 
     }
 }

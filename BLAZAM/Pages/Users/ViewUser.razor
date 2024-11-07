@@ -532,7 +532,7 @@
     }
     [Parameter]
     public EventCallback<string> ConfirmPasswordChanged { get; set; }
-
+    AccessLevel? selfAccessLevel;
     bool homeDirectoryExists;
     bool showRemoveThumbnail = false;
     IADUser User => DirectoryEntry as IADUser;
@@ -544,7 +544,7 @@
         {
             if (_globalPermissionSettings != null)
             {
-                if (_globalPermissionSettings.SelfAccessLevel != null)
+                if (selfAccessLevel != null)
                 {
                     return User.SamAccountName.Equals(CurrentUser.Username, StringComparison.InvariantCultureIgnoreCase);
                 }
@@ -562,11 +562,11 @@
         }
         else
         {
-            if (_globalPermissionSettings.SelfAccessLevel.FieldMap.Any(x => x.Field.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level))
+            if (selfAccessLevel.FieldMap.Any(x => x.Field.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level))
             {
                 return true;
             }
-            else if (_globalPermissionSettings.SelfAccessLevel.FieldMap.Any(x => x.CustomField.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level))
+            else if (selfAccessLevel.FieldMap.Any(x => x.CustomField.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Deny.Level))
             {
                 return true;
             }
@@ -585,11 +585,11 @@
         }
         else
         {
-            if (_globalPermissionSettings.SelfAccessLevel.FieldMap.Any(x => x.Field.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Read.Level))
+            if (selfAccessLevel.FieldMap.Any(x => x.Field.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Read.Level))
             {
                 return true;
             }
-            else if (_globalPermissionSettings.SelfAccessLevel.FieldMap.Any(x => x.CustomField.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Read.Level))
+            else if (selfAccessLevel.FieldMap.Any(x => x.CustomField.Id == field.Id && x.FieldAccessLevel.Level > FieldAccessLevels.Read.Level))
             {
                 return true;
             }
@@ -619,6 +619,7 @@
             _globalPermissionSettings = Context.GlobalPermissionSettings.FirstOrDefault();
 
         }
+        selfAccessLevel = Context.AccessLevels.FirstOrDefault(x => x.Name == AccessLevel.SelfAccessLevelName);
 
 
         if (User.HomeDirectory != null)

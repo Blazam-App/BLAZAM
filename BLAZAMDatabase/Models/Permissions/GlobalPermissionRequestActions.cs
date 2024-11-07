@@ -9,7 +9,7 @@ namespace BLAZAM.Database.Models.Permissions
     public class GlobalPermissionRequestActions:AppDbSetBase
     {
         public int ObjectActionId { get; set; }
-        public GlobalPermissionSettings GlobalPermissionSettings { get; set; }
+        public ObjectAction ObjectAction { get; set; }
         
     }
 }
