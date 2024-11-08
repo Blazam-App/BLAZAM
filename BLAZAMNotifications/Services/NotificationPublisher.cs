@@ -58,7 +58,7 @@ namespace BLAZAM.Notifications.Services
             return Task.CompletedTask;
 
         }
-
+      
         public Task PublishNotification(NotificationMessage notificationMessage)
         {
             using var context = _databaseFactory.CreateDbContext();

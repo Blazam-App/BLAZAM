@@ -13,18 +13,20 @@
 
             @if (settings.AllowAccessRequest)
             {
-
+                 
 
                 <MudToggleGroup T="bool">
+                    <MudText Typo="Typo.h6">
+                        @AppLocalization["Actions"]
+                    </MudText>
                     <MudSwitch Value="@Context.GlobalPermissionRequestActions.Any(x => x.ObjectActionId == ObjectActions.Assign.Id)"
-                               ValueChanged="@((bool  val)=>{ AddAction(ObjectActions.Assign); })">
+                               ValueChanged="@((bool  val)=>{ AddAction(ObjectActions.Assign); })"
+                               Color="Color.Success">
                         @AppLocalization["Assign"]
                     </MudSwitch>
-                </MudToggleGroup>
-                
-                <MudToggleGroup T="bool">
                     <MudSwitch Value="@Context.GlobalPermissionRequestActions.Any(x => x.ObjectActionId == ObjectActions.UnAssign.Id)"
-                               ValueChanged="@((bool  val)=>{ AddAction(ObjectActions.UnAssign); })">
+                               ValueChanged="@((bool  val)=>{ AddAction(ObjectActions.UnAssign); })"
+                               Color="Color.Success">
                         @AppLocalization["Unassign"]
                     </MudSwitch>
                 </MudToggleGroup>
@@ -49,7 +51,7 @@
         </SettingsField>
         <MudDivider />
         <SettingsField>
-            <MudButton Disabled="SaveDisabled"
+            <MudButton Disabled="@(SaveDisabled ||(settings.AllowSelfModification && selfAccessLevel.Id==0))"
                        ButtonType="ButtonType.Submit"
                        Color="Color.Success">
                 @AppLocalization["Save Changes"]

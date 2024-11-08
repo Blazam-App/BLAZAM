@@ -10,24 +10,23 @@
              TransformOrigin="Origin.TopRight">
         <ActivatorContent>
             @{
-                //var icon = Icons.Material.Filled.Notifications;
                 var color = Color.Success;
             }
             @if (unreadItems.Count > 0)
             {
-                //icon = Icons.Material.Filled.NotificationImportant;
                 color = Color.Info;
             }
-
-            <AppTooltip Text=@("Blazam "+AppLocalization["News"])>
-                 <AppIconButton Size="Size.Large"
-                    Icon="@Icons.Material.TwoTone.NewReleases"
-                    Color="@color"/>
-               @*  <MudFab Size=Size.Small Color=@color
-                        Class="mx-2"
-                        StartIcon="@icon" /> *@
-            </AppTooltip>
-
+            <MudBadge Color=Color.Error
+                      Visible="@(unreadItems.Count() > 0)"
+                      Overlap=true
+                      BadgeClass="badge-repos cursor-pointer"
+                      Content="@unreadItems.Count()">
+                <AppTooltip Text=@("Blazam "+AppLocalization["News"])>
+                    <AppIconButton Size="Size.Large"
+                                   Icon="@Icons.Material.TwoTone.NewReleases"
+                                   Color="@color" />
+                </AppTooltip>
+            </MudBadge>
         </ActivatorContent>
 
         <ChildContent>

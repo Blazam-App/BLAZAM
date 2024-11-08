@@ -1,19 +1,37 @@
-@inherits DatabaseComponentBase
+@using BLAZAM.Common.Exceptions
+@using BLAZAM.Server.Data.Services
+@inherits AppModalContent
 @if (_objectActions != null && _objectActions.Count > 0)
 {
-    <MudChipSet T="ObjectAction" SelectionMode="SelectionMode.MultiSelection" Color="Color.Info" SelectedColor="Color.Success">
-        @foreach (var action in _objectActions)
-        {
-            if (Context.GlobalPermissionRequestActions.Any(x => x.ObjectActionId == action.Id))
+    if (Context.GlobalPermissionRequestActions.Count() > 0)
+    {
+        <MudChipSet T="ObjectAction"
+            @bind-SelectedValues="_selectedActions"
+                    SelectionMode="SelectionMode.MultiSelection"
+                    Color="Color.Info"
+                    CheckedIcon="@Icons.Material.Filled.Check"
+                    IconColor="Color.Success"
+                    SelectedColor="Color.Success">
+            @foreach (var action in _objectActions)
             {
-                <MudChip Value="action" Text="@AppLocalization[action.Action.ToString()]" SelectedChanged="@((val)=>{})" />
+                if (Context.GlobalPermissionRequestActions.Any(x => x.ObjectActionId == action.Id))
+                {
+                    <MudChip Value="action"
+                             Text="@AppLocalization[action.Action.ToString()]" />
+                }
             }
-        }
-    </MudChipSet>
+        </MudChipSet>
+    }
 }
 @code {
+
+    [Inject]
+    private AppAuthenticationStateProvider AppAuthenticationStateProvider { get; set; }
+
     [Parameter]
     public IDirectoryEntryAdapter Entry { get; set; }
+
+    IReadOnlyCollection<ObjectAction>? _selectedActions = new List<ObjectAction>();
 
     List<ObjectAction> _objectActions;
 
@@ -21,5 +39,42 @@
     {
         base.OnInitialized();
         _objectActions = Context.ObjectActionFlag.ToList();
+        Modal.OnYes+=Submit;
+    }
+    public async void Submit()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        var users = await Context.UserSettings.ToListAsync();
+        var adminUsers = new List<AppUser>();
+        foreach (var user in users)
+        {
+            var adUser = Directory.Users.FindUserBySID(user.UserGUID);
+            var userState = new ApplicationUserState(DbFactory);
+            try
+            {
+                var appUser = await AppAuthenticationStateProvider.CreateDirectoryPrincipal(userState, adUser);
+                userState.User = appUser;
+                if (userState.IsSuperAdmin || user.Username=="admin" || user.Username=="Demo")
+                {
+                    adminUsers.Add(user);
+                }
+
+            }
+            catch (DeniedLoginException ex)
+            {
+                LoadingData = false;
+                await InvokeAsync(StateHasChanged);
+                return;
+            }
+
+        }
+        foreach (var action in _selectedActions)
+        {
+            NotificationPublisher.PublishAdminNotification();
+        }
+        await Modal.CloseAsync();
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
     }
 }
