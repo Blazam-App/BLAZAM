@@ -11,7 +11,7 @@ namespace BLAZAM.Notifications.Services
     {
         private readonly IAppDatabaseFactory _databaseFactory;
         public AppEvent<List<UserNotification>> OnNotificationPublished { get; set; }
-        public AppEvent OnNotificationDeleted{ get; set; }
+        public AppEvent OnNotificationDeleted { get; set; }
         public NotificationPublisher(IAppDatabaseFactory databaseFactory)
         {
             _databaseFactory = databaseFactory;
@@ -29,7 +29,7 @@ namespace BLAZAM.Notifications.Services
             {
                 try
                 {
-                 
+
                     notificationMessage = context.NotificationMessages.Add(notificationMessage).Entity;
                     context.SaveChanges();
                 }
@@ -63,7 +63,7 @@ namespace BLAZAM.Notifications.Services
             return Task.CompletedTask;
 
         }
-      
+
         public Task PublishNotification(NotificationMessage notificationMessage)
         {
             using var context = _databaseFactory.CreateDbContext();
@@ -71,8 +71,8 @@ namespace BLAZAM.Notifications.Services
             PublishNotification(allUsers, notificationMessage);
             return Task.CompletedTask;
         }
-      
-        public async Task<bool> DeleteNotification(NotificationMessage notificationMessage,AppUser user)
+
+        public async Task<bool> DeleteNotification(NotificationMessage notificationMessage, AppUser user)
         {
             try
             {

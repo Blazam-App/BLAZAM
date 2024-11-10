@@ -62,7 +62,7 @@ namespace BLAZAM.Services.Background
                     case NotificationType.Modify:
                         notificationTitle += _appLocalization["Modified"];
                         notificationBody += _appLocalization["was modified at "] + time;
-                       
+
                         var editedMessage = NotificationType.Modify.ToNotification<EntryEditedEmailMessage>();
                         editedMessage.EntryName = source.CanonicalName;
                         emailMessage = editedMessage;

@@ -18,7 +18,7 @@ namespace BLAZAM.Database.Models.User
         DeletedEntries,
         ChangedEntries,
         AppLogons,
-        StaleUsers    
+        StaleUsers
     }
     public class UserDashboardWidget : AppDbSetBase
     {

@@ -1,0 +1,61 @@
+﻿@using BLAZAM.Database.Models.Audit;
+@using BLAZAM.Services.Audit;
+@using System.Security.Cryptography.X509Certificates
+@inherits AppModalContent
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-0">
+    @if (_usedInMappings.Count > 0)
+    {
+        <MudAlert Severity="Severity.Warning">
+            @_usedInMappings.Count @AppLocalization["mappings use this Access Level and will be deleted"]
+            <MudDataGrid Items="_usedInMappings" T="PermissionMapping">
+                <Columns>
+                    <TemplateColumn Title=@AppLocalization["Delegate"]>
+                        <CellTemplate>
+                            <MudList>
+                                @foreach (var delag in context.Item.PermissionDelegates)
+                                {
+                                    <MudListItem Ripple="false">@delag.DelegateName</MudListItem>
+                                }
+                            </MudList>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title=@AppLocalization["Target"]>
+                        <CellTemplate>
+                           <MudText>@context.Item.OU</MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+              
+                </Columns>
+            </MudDataGrid>
+        </MudAlert>
+    }
+</MudContainer>
+<LoadingData Loading="LoadingData"/>
+@code {
+
+    [Parameter]
+    public AccessLevel AccessLevel { get; set; }
+    [Parameter]
+    public EventCallback OnConfirm { get; set; }
+
+    List<PermissionMapping> _usedInMappings = new List<PermissionMapping>();
+    protected override async Task OnInitializedAsync()
+    {
+        Modal.Options.MaxWidth = MaxWidth.Medium;
+        Modal.YesText = AppLocalization["Delete"];
+        Modal.OnYes += ()=>{ OnConfirm.InvokeAsync(); };
+        await base.OnInitializedAsync();
+        Modal.RefreshView();
+
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        Task.Run(() =>
+        {
+            _usedInMappings = Context.PermissionMap.Where(x => x.AccessLevels.Any(al => al.Id == AccessLevel.Id)).Include(x=>x.PermissionDelegates).ToList();
+            LoadingData = false;
+        });
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+}

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace BLAZAM.Database.Models.Permissions
 {
-    public class GlobalPermissionSettings:AppDbSetBase
+    public class GlobalPermissionSettings : AppDbSetBase
     {
         public bool AllowSelfModification { get; set; }
 
         public bool AllowAccessRequest { get; set; }
-        
+
     }
 }

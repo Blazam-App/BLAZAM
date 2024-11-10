@@ -371,7 +371,7 @@ namespace BLAZAM.Services
         /// <param name="loginReq">The parameters passed from the login attempt</param>
         /// <returns>A fully processed ClaimsPrincipal representing the Web user with data applied depending on
         /// database permission tables</returns>
-        public async Task<ClaimsPrincipal?> CreateDirectoryPrincipal(IApplicationUserState loginUser, IADUser? user, LoginRequest? loginReq=null)
+        public async Task<ClaimsPrincipal?> CreateDirectoryPrincipal(IApplicationUserState loginUser, IADUser? user, LoginRequest? loginReq = null)
         {
             ClaimsPrincipal? principal = null;
 
@@ -391,7 +391,7 @@ namespace BLAZAM.Services
         /// <param name="loginReq">The parameteres passed from the login attempt</param>
         /// <returns>A fully processed ClaimsIdentity representing the user in Active Directory with data applied depending on
         /// database permission tables</returns>
-        public async Task<ClaimsIdentity?> CreateDirectoryIdentity(IApplicationUserState loginUser, IADUser user, LoginRequest? loginReq=null)
+        public async Task<ClaimsIdentity?> CreateDirectoryIdentity(IApplicationUserState loginUser, IADUser user, LoginRequest? loginReq = null)
         {
 
             var identity = new ClaimsIdentity();
@@ -429,7 +429,7 @@ namespace BLAZAM.Services
             if (user.Email != null)
                 claims.Add(new Claim(ClaimTypes.Email, user.Email));
 
-            if (loginReq!=null && loginReq.Impersonation)
+            if (loginReq != null && loginReq.Impersonation)
             {
                 //Handle Impersonated login
                 claims.Add(new Claim(ClaimTypes.UserData, "impersonated"));

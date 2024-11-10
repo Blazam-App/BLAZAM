@@ -73,13 +73,16 @@ namespace BLAZAM.Gui.UI
         [Inject]
         private ScopedActiveDirectoryContext userActiveDirectoryService { get; set; }
         private bool _loadingData = true;
+        /// <summary>
+        /// Indicates whether the current component is loading data. Changing this value causes the component to re-render.
+        /// </summary>
         protected bool LoadingData
         {
             get => _loadingData; set
             {
                 if (_loadingData == value) return;
                 _loadingData = value;
-                _=InvokeAsync(StateHasChanged);
+                _ = InvokeAsync(StateHasChanged);
 
             }
         }

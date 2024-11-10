@@ -21,6 +21,6 @@ namespace BLAZAM.Database.Models.Permissions
             return Name.GetHashCode();
         }
 
-       
+
     }
 }

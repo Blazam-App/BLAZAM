@@ -65,7 +65,7 @@ namespace BLAZAM.Database.Context
 
         }
 
-       
+
 
         private void SetupDenyAll(IDatabaseContext seedContext)
         {

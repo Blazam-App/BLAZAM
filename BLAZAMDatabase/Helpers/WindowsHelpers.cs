@@ -8,15 +8,15 @@ namespace BLAZAM.Helpers
     {
         public static WindowsImpersonationUser GetDirectoryImpersonationUser(this ADSettings settings)
         {
-            
-                return new WindowsImpersonationUser()
-                {
-                    FQDN = settings.FQDN,
-                    Username = settings.Username,
 
-                    Password = settings.Password.Decrypt().ToSecureString(),
-                };
-            
+            return new WindowsImpersonationUser()
+            {
+                FQDN = settings.FQDN,
+                Username = settings.Username,
+
+                Password = settings.Password.Decrypt().ToSecureString(),
+            };
+
         }
         public static WindowsImpersonationUser GetUpdateImpersonationUser(this AppSettings settings)
         {
