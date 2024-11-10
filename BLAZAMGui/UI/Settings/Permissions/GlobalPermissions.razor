@@ -14,23 +14,21 @@
             @if (settings.AllowAccessRequest)
             {
                  
-
-                <MudToggleGroup T="bool">
-                    <MudText Typo="Typo.h6">
+                <MudStack Class="ms-4">
+                    <MudText>
                         @AppLocalization["Actions"]
                     </MudText>
-                    <MudSwitch Value="@Context.GlobalPermissionRequestActions.Any(x => x.ObjectActionId == ObjectActions.Assign.Id)"
-                               ValueChanged="@((bool  val)=>{ AddAction(ObjectActions.Assign); })"
+                    <MudSwitch Value="@Context.GlobalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Assign)"
+                               ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Assign); })"
                                Color="Color.Success">
                         @AppLocalization["Assign"]
                     </MudSwitch>
-                    <MudSwitch Value="@Context.GlobalPermissionRequestActions.Any(x => x.ObjectActionId == ObjectActions.UnAssign.Id)"
-                               ValueChanged="@((bool  val)=>{ AddAction(ObjectActions.UnAssign); })"
+                    <MudSwitch Value="@Context.GlobalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unassign)"
+                               ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unassign); })"
                                Color="Color.Success">
                         @AppLocalization["Unassign"]
                     </MudSwitch>
-                </MudToggleGroup>
-
+                </MudStack>
                
             }
 
@@ -61,10 +59,7 @@
 
     </MudStack>
 </EditForm>
-<MudOverlay Visible="LoadingData" DarkBackground="true" Absolute="true">
-    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
-</MudOverlay>
-
+<LoadingData Loading=LoadingData />
 
 @code {
     GlobalPermissionSettings settings = new GlobalPermissionSettings();
@@ -101,16 +96,15 @@
 
     }
 
-    private void AddAction(ObjectAction action)
+    private void AddAction(ActiveDirectoryObjectAction action)
     {
 
         if (settings.AllowAccessRequest)
         {
-            if (!Context.GlobalPermissionRequestActions.Any(x => x.ObjectActionId == action.Id))
+            if (!Context.GlobalPermissionRequestActions.Any(x => x.ObjectAction == action))
             {
-                var contextAction = Context.ObjectActionFlag.FirstOrDefault(x => x.Id == action.Id);
-
-                var requestAction = new GlobalPermissionRequestActions() { ObjectActionId = contextAction.Id };
+               
+                var requestAction = new GlobalPermissionRequestActions() { ObjectAction = action };
                 if (requestAction != null)
                 {
                     var ctx  = DbFactory.CreateDbContext();
@@ -122,7 +116,7 @@
             }
             else
             {
-                var requestAction = Context.GlobalPermissionRequestActions.FirstOrDefault(x => x.ObjectActionId == action.Id);
+                var requestAction = Context.GlobalPermissionRequestActions.FirstOrDefault(x => x.ObjectAction == action);
                 if (requestAction != null)
                 {
 
