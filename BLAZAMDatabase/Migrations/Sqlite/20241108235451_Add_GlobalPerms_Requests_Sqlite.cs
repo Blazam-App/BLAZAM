@@ -5,13 +5,13 @@
 namespace BLAZAM.Database.Migrations.Sqlite
 {
     /// <inheritdoc />
-    public partial class Add_Request_Notifications_Sqlite : Migration
+    public partial class Add_GlobalPerms_Requests_Sqlite : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "ActionId",
+                name: "Action",
                 table: "NotificationMessages",
                 type: "INTEGER",
                 nullable: true);
@@ -35,22 +35,37 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 type: "TEXT",
                 nullable: true);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_NotificationMessages_ActionId",
-                table: "NotificationMessages",
-                column: "ActionId");
+            migrationBuilder.CreateTable(
+                name: "GlobalPermissionRequestActions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ObjectAction = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GlobalPermissionRequestActions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GlobalPermissionSettings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AllowSelfModification = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AllowAccessRequest = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GlobalPermissionSettings", x => x.Id);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_NotificationMessages_CreatorId",
                 table: "NotificationMessages",
                 column: "CreatorId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_NotificationMessages_ObjectActionFlag_ActionId",
-                table: "NotificationMessages",
-                column: "ActionId",
-                principalTable: "ObjectActionFlag",
-                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_NotificationMessages_UserSettings_CreatorId",
@@ -64,23 +79,21 @@ namespace BLAZAM.Database.Migrations.Sqlite
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_NotificationMessages_ObjectActionFlag_ActionId",
-                table: "NotificationMessages");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_NotificationMessages_UserSettings_CreatorId",
                 table: "NotificationMessages");
 
-            migrationBuilder.DropIndex(
-                name: "IX_NotificationMessages_ActionId",
-                table: "NotificationMessages");
+            migrationBuilder.DropTable(
+                name: "GlobalPermissionRequestActions");
+
+            migrationBuilder.DropTable(
+                name: "GlobalPermissionSettings");
 
             migrationBuilder.DropIndex(
                 name: "IX_NotificationMessages_CreatorId",
                 table: "NotificationMessages");
 
             migrationBuilder.DropColumn(
-                name: "ActionId",
+                name: "Action",
                 table: "NotificationMessages");
 
             migrationBuilder.DropColumn(

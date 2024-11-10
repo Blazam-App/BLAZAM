@@ -1109,6 +1109,41 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.ToTable("AccessLevelFieldMapping");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionRequestActions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ObjectAction")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GlobalPermissionRequestActions");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AllowAccessRequest")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("AllowSelfModification")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GlobalPermissionSettings");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
                 {
                     b.Property<int>("Id")
@@ -1476,7 +1511,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ActionId")
+                    b.Property<int?>("Action")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Created")
@@ -1510,8 +1545,6 @@ namespace BLAZAM.Common.Migrations.Sql
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ActionId");
 
                     b.HasIndex("CreatorId");
 
@@ -1852,15 +1885,9 @@ namespace BLAZAM.Common.Migrations.Sql
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.NotificationMessage", b =>
                 {
-                    b.HasOne("BLAZAM.Database.Models.Permissions.ObjectAction", "Action")
-                        .WithMany()
-                        .HasForeignKey("ActionId");
-
                     b.HasOne("BLAZAM.Database.Models.User.AppUser", "Creator")
                         .WithMany()
                         .HasForeignKey("CreatorId");
-
-                    b.Navigation("Action");
 
                     b.Navigation("Creator");
                 });

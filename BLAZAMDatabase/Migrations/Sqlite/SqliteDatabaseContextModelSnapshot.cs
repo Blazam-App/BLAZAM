@@ -1065,6 +1065,37 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.ToTable("AccessLevelFieldMapping");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionRequestActions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ObjectAction")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GlobalPermissionRequestActions");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("AllowAccessRequest")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("AllowSelfModification")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GlobalPermissionSettings");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
                 {
                     b.Property<int>("Id")
@@ -1412,7 +1443,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ActionId")
+                    b.Property<int?>("Action")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Created")
@@ -1446,8 +1477,6 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ActionId");
 
                     b.HasIndex("CreatorId");
 
@@ -1778,15 +1807,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.NotificationMessage", b =>
                 {
-                    b.HasOne("BLAZAM.Database.Models.Permissions.ObjectAction", "Action")
-                        .WithMany()
-                        .HasForeignKey("ActionId");
-
                     b.HasOne("BLAZAM.Database.Models.User.AppUser", "Creator")
                         .WithMany()
                         .HasForeignKey("CreatorId");
-
-                    b.Navigation("Action");
 
                     b.Navigation("Creator");
                 });

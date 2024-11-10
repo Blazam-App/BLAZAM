@@ -1,0 +1,175 @@
+﻿@inherits SettingsComponents
+<MudText Typo="Typo.h3">@AppLocalization["Global Permission Settings"]<AppDocumentationButton Page="/admin/permissions" /></MudText>
+<EditForm Context="editContext" OnValidSubmit="Save" Model="settings">
+    <MudStack Spacing="5">
+
+        <SettingsField Label="@AppLocalization["Allow access requests"]">
+
+            <MudSwitch @bind-Value=settings.AllowAccessRequest
+                       T=bool
+                       Class="mt-0"
+                       Color="Color.Success"
+                       Label=@AppLocalization["Allow access requests"] />
+
+            @if (settings.AllowAccessRequest)
+            {
+                 
+                <MudStack Class="ms-4">
+                    <MudText>
+                        @AppLocalization["Actions"]
+                    </MudText>
+                    <MudSwitch Value="@Context.GlobalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Assign)"
+                               ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Assign); })"
+                               Color="Color.Success">
+                        @AppLocalization["Assign"]
+                    </MudSwitch>
+                    <MudSwitch Value="@Context.GlobalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unassign)"
+                               ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unassign); })"
+                               Color="Color.Success">
+                        @AppLocalization["Unassign"]
+                    </MudSwitch>
+                </MudStack>
+               
+            }
+
+        </SettingsField>
+
+        <SettingsField Label="@AppLocalization["Allow self edit"]">
+
+            <MudSwitch @bind-Value=settings.AllowSelfModification
+                       T=bool
+                       Class="mt-0"
+                       Color="Color.Success"
+                       Label=@AppLocalization["Allow self edit"] />
+            @if (settings.AllowSelfModification)
+            {
+                <EditAccessLevel Self=true
+                                 Model="selfAccessLevel" />
+            }
+        </SettingsField>
+        <MudDivider />
+        <SettingsField>
+            <MudButton Disabled="@(SaveDisabled ||(settings.AllowSelfModification && selfAccessLevel.Id==0))"
+                       ButtonType="ButtonType.Submit"
+                       Color="Color.Success">
+                @AppLocalization["Save Changes"]
+            </MudButton>
+        </SettingsField>
+
+
+    </MudStack>
+</EditForm>
+<LoadingData Loading=LoadingData />
+
+@code {
+    GlobalPermissionSettings settings = new GlobalPermissionSettings();
+    AccessLevel selfAccessLevel = new();
+    protected override async Task OnInitializedAsync()
+    {
+        originalSettings = await Context.GlobalPermissionSettings
+        .AsNoTracking()
+        .FirstOrDefaultAsync();
+
+        var dbData = await Context.GlobalPermissionSettings
+        .FirstOrDefaultAsync();
+
+        if (dbData != null)
+        {
+            settings = dbData;
+        }
+        else
+        {
+            // Context.GlobalPermissionSettings.Add(settings);
+
+        }
+        var dbSelfAccessLevel = Context.AccessLevels.FirstOrDefault(x => x.Name == AccessLevel.SelfAccessLevelName);
+        if (dbSelfAccessLevel != null)
+        {
+            selfAccessLevel = dbSelfAccessLevel;
+        }
+        else
+        {
+            selfAccessLevel.Name = AccessLevel.SelfAccessLevelName;
+        }
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    private void AddAction(ActiveDirectoryObjectAction action)
+    {
+
+        if (settings.AllowAccessRequest)
+        {
+            if (!Context.GlobalPermissionRequestActions.Any(x => x.ObjectAction == action))
+            {
+               
+                var requestAction = new GlobalPermissionRequestActions() { ObjectAction = action };
+                if (requestAction != null)
+                {
+                    var ctx  = DbFactory.CreateDbContext();
+                    // settings.AllowedAccessRequestActions.Add(requestAction);
+                    ctx.GlobalPermissionRequestActions.Add(requestAction);
+                    ctx.SaveChanges();
+                }
+
+            }
+            else
+            {
+                var requestAction = Context.GlobalPermissionRequestActions.FirstOrDefault(x => x.ObjectAction == action);
+                if (requestAction != null)
+                {
+
+                    var ctx = DbFactory.CreateDbContext();
+
+                    ctx.GlobalPermissionRequestActions.Remove(requestAction);
+                    //settings.AllowedAccessRequestActions.Remove(requestAction);
+                    ctx.SaveChanges();
+
+                }
+            }
+        }
+
+
+    }
+    protected override async Task Save()
+    {
+        //AccessLevel? accessLevel = null;
+
+        // if (selfAccessLevel != null && selfAccessLevel.Id<1)
+        // {
+        //     Context.AccessLevels.Add(selfAccessLevel);
+        // }
+        if (settings.Id == 0)
+        {
+            await Context.GlobalPermissionSettings.AddAsync(settings);
+        }
+
+
+
+
+        AuditLogger.System.SettingsChanged("Global Permissions", settings.GetChanges(originalSettings));
+        if (Context != null)
+        {
+            try
+            {
+
+                await Context.SaveChangesAsync();
+                SnackBarService.Success("Settings have been saved");
+            }
+            catch (Exception ex)
+            {
+                SnackBarService.Error(ex.Message);
+
+            }
+            await InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            SnackBarService.Success("Database not available");
+
+        }
+        //selfAccessLevel = accessLevel;
+
+    }
+}

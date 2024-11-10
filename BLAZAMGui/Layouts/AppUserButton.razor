@@ -9,19 +9,7 @@
     <ActivatorContent>
 
         <AppTooltip Text="@CurrentUser.Username">
-            @if (Notifications.Where(n => !n.IsRead).Count() > 0)
-            {
-                <MudBadge Color=Color.Error
-                          Overlap=true
-                          Content="@Notifications.Where(n=>!n.IsRead).Count()"
-                          OnClick="@ToggleNotifications">
-                    <CurrentUserAvatarIcon UserState="@UserState" />
-                </MudBadge>
-            }
-            else
-            {
-                <CurrentUserAvatarIcon UserState="@UserState" />
-            }
+            <CurrentUserAvatarIcon UserState="@UserState" />
         </AppTooltip>
     </ActivatorContent>
     <ChildContent>
@@ -33,19 +21,12 @@
             @CurrentUser.Username
         </MudText>
         <MudDivider />
-        <MudMenuItem OnClick="@ToggleNotifications"
-                     Icon="@Icons.Material.Filled.MenuOpen">Notifications</MudMenuItem>
-
-
-
+      
         <MudMenuItem OnClick="@(()=>{profileModal?.ShowAsync();})"
                      Icon="@Icons.Material.Filled.Settings">
             @AppLocalization["Profile Settings"]
         </MudMenuItem>
-        <MudMenuItem OnClick="@(()=>{notificationsModal?.ShowAsync();})"
-                     Icon="@Icons.Material.Filled.Notifications">
-            @AppLocalization["Notification Settings"]
-        </MudMenuItem>
+    
         <MudMenuItem Href="https://docs.blazam.org"
                      Target="_blank"
                      Icon="@Icons.Material.Filled.Book">
@@ -76,9 +57,7 @@
 <AppModal @ref=notificationsModal
           Title="Notification Settings"
           Options="new(){ CloseButton=true, MaxWidth=MaxWidth.ExtraLarge,FullWidth=true}">
-    <CascadingValue Value="mainLayout">
-        <NotificaionSubscriptionEditor User="UserState.Preferences" />
-    </CascadingValue>
+    <NotificaionSubscriptionEditor User="UserState.Preferences" />
 </AppModal>
 @code {
     AppModal? profileModal;
@@ -86,20 +65,11 @@
     MudMenu? _userMenu;
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
-    IList<UserNotification> Notifications = new List<UserNotification>();
     private IApplicationUserState UserState;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        NotificationPublisher.OnNotificationPublished += (async (notifications) =>
-           {
-               if (notifications.Select(n => n.User).Contains(UserState.Preferences))
-               {
-                   Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
-               }
-               await InvokeAsync(StateHasChanged);
-           });
 
 
         UserState = CurrentUser.State;
@@ -107,29 +77,17 @@
         if (UserState != null)
             UserState.OnSettingsChanged += async () =>
         {
-            Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
 
             InvokeAsync(StateHasChanged);
         };
 
-        Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
 
         await InvokeAsync(StateHasChanged);
 
 
     }
 
-    private void ToggleNotifications()
-    {
-        mainLayout.NotificationsOpen = !mainLayout.NotificationsOpen;
-        _userMenu.Disabled = true;
-        Task.Delay(500).ContinueWith((t) =>
-        {
-            InvokeAsync(() => { _userMenu.Disabled = false; _userMenu?.CloseMenuAsync(); });
 
-        });
-
-    }
 
 
 }

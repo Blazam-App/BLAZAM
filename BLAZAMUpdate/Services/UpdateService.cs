@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using Octokit;
 using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 using System.Security.Principal;
 
 namespace BLAZAM.Update.Services
@@ -231,7 +232,7 @@ namespace BLAZAM.Update.Services
                     Version = releaseVersion,
 
                 };
-                var update = new ApplicationUpdate(_applicationInfo, _dbFactory) { Release = release };
+                var update = new ApplicationUpdate(_applicationInfo, this, _dbFactory) { Release = release };
                 if (releaseVersion.NewerThan(new ApplicationVersion("0.9.99")))
                 {
                     update.PreRequisiteChecks.Add(new(() =>
@@ -305,7 +306,42 @@ namespace BLAZAM.Update.Services
                 return UpdateCredential.None;
             }
         }
-
+        public WindowsImpersonationUser? GetImpersonationUser()
+        {
+            using var context = _dbFactory.CreateDbContext();
+            switch (UpdateCredential)
+            {
+                case UpdateCredential.Application:
+                    return null;
+                case UpdateCredential.Active_Directory:
+                    //Pull ad settings to test if app ad account can write to the application directory
+                    var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
+                    return adSettings.GetDirectoryImpersonationUser();
+                case UpdateCredential.Update:
+                    var appSettings = context.AppSettings.FirstOrDefault();
+                    return appSettings.GetUpdateImpersonationUser();
+                default:
+                    return null;
+            }
+        }
+        public WindowsImpersonation? GetUpdateCredentials()
+        {
+            using var context = _dbFactory.CreateDbContext();
+            switch (UpdateCredential)
+            {
+                case UpdateCredential.Application:
+                    return null;
+                case UpdateCredential.Active_Directory:
+                    //Pull ad settings to test if app ad account can write to the application directory
+                    var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
+                    return adSettings.CreateDirectoryAdminImpersonator();
+                case UpdateCredential.Update:
+                    var appSettings = context.AppSettings.FirstOrDefault();
+                    return appSettings.CreateUpdateImpersonator();
+                default:
+                    return null;
+            }
+        }
         private bool TestCustomCredentials()
         {
             using var context = _dbFactory.CreateDbContext();
@@ -349,10 +385,18 @@ namespace BLAZAM.Update.Services
             if (impersonation != null)
             {
 
+                var applicationIdentity = WindowsIdentity.GetCurrent();
                 return impersonation.Run(() =>
                {
                    Loggers.UpdateLogger.Information("Checking AD update credential permissions: " + WindowsIdentity.GetCurrent().Name);
-
+                   var impersonatedIdentity = WindowsIdentity.GetCurrent();
+                   if (adSettings.Username != applicationIdentity.Name && impersonatedIdentity.Name.Equals(applicationIdentity.Name))
+                   {
+                       var exception = new ApplicationException("Impersonation running as application identity");
+                       ExceptionDispatchInfo.SetCurrentStackTrace(exception);
+                       Loggers.ActiveDirectoryLogger.Error("Impersonation running as application identity  {@Error}", exception);
+                       return false;
+                   }
                    if (ApplicationInfo.applicationRoot.Writable)
                        return true;
                    return false;

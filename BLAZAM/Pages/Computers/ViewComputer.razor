@@ -24,9 +24,7 @@
                                       OnUnlock="@Unlock"
                                       OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
                                       OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})" />
-            <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
-
-            </MudOverlay>
+            <LoadingData Loading=SavingChanges />
 
 
         </SetSubHeader>
@@ -231,9 +229,7 @@
         <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
     }
 }
-<MudOverlay Visible="SavingChanges" DarkBackground="true" Absolute="true">
-    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
-</MudOverlay>
+<LoadingData Loading=SavingChanges />
 
 
 

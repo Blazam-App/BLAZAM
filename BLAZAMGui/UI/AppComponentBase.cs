@@ -72,8 +72,17 @@ namespace BLAZAM.Gui.UI
 
         [Inject]
         private ScopedActiveDirectoryContext userActiveDirectoryService { get; set; }
+        private bool _loadingData = true;
+        protected bool LoadingData
+        {
+            get => _loadingData; set
+            {
+                if (_loadingData == value) return;
+                _loadingData = value;
+                _=InvokeAsync(StateHasChanged);
 
-        protected bool LoadingData { get; set; } = true;
+            }
+        }
         //protected IDatabaseContext? Context;
         [Inject]
         protected IAppDatabaseFactory DbFactory { get; set; }
@@ -145,9 +154,10 @@ namespace BLAZAM.Gui.UI
         {
             Nav.NavigateTo(Nav.Uri, forceReload);
         }
-        public void UpdateState()
+        public virtual async Task UpdateState()
         {
-            _=InvokeAsync(StateHasChanged);
+
+            await InvokeAsync(StateHasChanged);
         }
         public virtual void Dispose()
         {

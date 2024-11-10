@@ -8,6 +8,13 @@ html, body {
 h1:focus {
     outline: none;
 }
+
+.badge-repos {
+    left: 37px !important;
+    top: 2px !important;
+}
+
+
 .d-contents{
     display:contents !important;
 }
@@ -168,3 +175,5 @@ a, .btn-link {
         top: 64px !important;
     }
 }
+
+

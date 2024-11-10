@@ -42,26 +42,26 @@ namespace BLAZAM.Services.Background
                 string notificationBody;
                 NotificationTemplateComponent? emailMessage = null;
                 notificationBody = "<a href=\"" + source.SearchUri + "\">" + source.CanonicalName + "</a> ";
-
+                var time = DateTime.Now.ToString();
                 switch (notificationType)
                 {
                     case NotificationType.Create:
                         notificationTitle += _appLocalization["Created"];
-                        notificationBody += _appLocalization["was created at "] + source.Created?.ToLocalTime();
+                        notificationBody += _appLocalization["was created at "] + time;
                         var createdMessage = NotificationType.Create.ToNotification<EntryCreatedEmailMessage>();
                         createdMessage.EntryName = source.CanonicalName;
                         emailMessage = createdMessage;
                         break;
                     case NotificationType.Delete:
                         notificationTitle += _appLocalization["Deleted"];
-                        notificationBody += _appLocalization["was deleted at "] + source.LastChanged?.ToLocalTime();
+                        notificationBody += _appLocalization["was deleted at "] + time;
                         var deletedMessage = NotificationType.Delete.ToNotification<EntryDeletedEmailMessage>();
                         deletedMessage.EntryName = source.CanonicalName;
                         emailMessage = deletedMessage;
                         break;
                     case NotificationType.Modify:
                         notificationTitle += _appLocalization["Modified"];
-                        notificationBody += _appLocalization["was modified at "] + source.LastChanged?.ToLocalTime();
+                        notificationBody += _appLocalization["was modified at "] + time;
                        
                         var editedMessage = NotificationType.Modify.ToNotification<EntryEditedEmailMessage>();
                         editedMessage.EntryName = source.CanonicalName;
@@ -69,7 +69,7 @@ namespace BLAZAM.Services.Background
                         break;
                     case NotificationType.GroupAssignment:
                         notificationTitle += _appLocalization["Group Membership Changed"];
-                        notificationBody += _appLocalization["was assigned/removed from "] + "<a href=\"" + target.SearchUri + "\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + source.LastChanged?.ToLocalTime();
+                        notificationBody += _appLocalization["was assigned/removed from "] + "<a href=\"" + target.SearchUri + "\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + time;
 
                         var groupMembershipMessage = NotificationType.GroupAssignment.ToNotification<EntryGroupAssignmentEmailMessage>();
                         groupMembershipMessage.EntryName = source.CanonicalName;
@@ -77,7 +77,7 @@ namespace BLAZAM.Services.Background
                         break;
                     case NotificationType.PasswordChange:
                         notificationTitle += _appLocalization["Password Reset"];
-                        notificationBody += _appLocalization["had a password reset at "] + source.LastChanged?.ToLocalTime();
+                        notificationBody += _appLocalization["had a password reset at "] + time;
                         var passwordChangeMessage = NotificationType.PasswordChange.ToNotification<PasswordChangedEmailMessage>();
                         passwordChangeMessage.EntryName = source.CanonicalName;
                         emailMessage = passwordChangeMessage;
@@ -92,7 +92,6 @@ namespace BLAZAM.Services.Background
                 notification.Title = notificationTitle;
                 notification.Message = notificationBody;
                 notification.Dismissable = true;
-                notification.Created = DateTime.Now;
                 notification.CreatorId = actor?.Preferences.Id;
                 notification.Level = NotificationLevel.Info;
                 var _emailConfigured = _emailService.IsConfigured;
