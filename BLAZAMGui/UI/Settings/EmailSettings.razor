@@ -111,9 +111,7 @@
             </MudButton>
 
         </SettingsField>
-        <MudOverlay DarkBackground=true Visible=LoadingData>
-            <MudProgressCircular Indeterminate=true Color=Color.Primary />
-        </MudOverlay>
+        <LoadingData Loading=LoadingData />
     </MudStack>
 </MudForm>
 @code {
