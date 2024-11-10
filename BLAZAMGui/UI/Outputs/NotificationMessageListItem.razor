@@ -1,7 +1,8 @@
 ﻿@inherits AppComponentBase
 <MudCard Class="py-3" Elevation="2">
     <MudStack Row=true Class="px-4">
-        <MudIcon Icon="@Icons.Material.Outlined.EventNote" />
+        <MudIcon Icon="@Icons.Material.Outlined.EventNote"
+        Color="Color.Info"/>
         <MudStack>
             @if (!Notification.Notification.Title.IsNullOrEmpty())
             {
