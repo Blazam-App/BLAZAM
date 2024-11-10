@@ -46,7 +46,9 @@
     }
 
     <MudSpacer />
-    <ApplicationNewsProvider />
+    <AuthorizeView Roles="@UserRoles.SuperAdmin">
+        <ApplicationNewsProvider />
+    </AuthorizeView>
     <UserNotificationsProvider />
     <AppUserButton />
 </MudAppBar>
