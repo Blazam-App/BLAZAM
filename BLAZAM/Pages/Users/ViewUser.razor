@@ -32,9 +32,8 @@
                                               OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
                                               OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})"
                                               OnUnlock="@Unlock" />
-                    <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
+                    <LoadingData Loading=SavingChanges />
 
-                    </MudOverlay>
 
 
                 </SetSubHeader>
@@ -492,9 +491,8 @@
 
         <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
     }
-    <MudOverlay Visible="SavingChanges" DarkBackground="true" Absolute="true">
-        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
-    </MudOverlay>
+    <LoadingData Loading=SavingChanges />
+
 
 }
 
@@ -650,7 +648,7 @@
 
     async void SaveChanges()
     {
-        if (await MessageService.Confirm("Are you sure you want to save the changes?"))
+        if (await MessageService.Confirm(AppLocalization["Are you sure you want to save the changes?"]))
         {
             SavingChanges = true;
             await RefreshEntryComponents();

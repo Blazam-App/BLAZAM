@@ -20,7 +20,7 @@
                                   OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
                                   OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})"
                                   OnToggleEditMode="@ToggleEditMode" />
-        <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true" />
+        <LoadingData Loading=SavingChanges />
     </SetSubHeader>
 
     <CascadingValue Value="EditMode">
