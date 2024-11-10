@@ -92,7 +92,6 @@ namespace BLAZAM.Services.Background
                 notification.Title = notificationTitle;
                 notification.Message = notificationBody;
                 notification.Dismissable = true;
-                notification.Created = DateTime.Now;
                 notification.CreatorId = actor?.Preferences.Id;
                 notification.Level = NotificationLevel.Info;
                 var _emailConfigured = _emailService.IsConfigured;
