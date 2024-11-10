@@ -5,8 +5,8 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>false</ServerGarbageCollection>
-		<AssemblyVersion>1.0.7</AssemblyVersion>
-		<Version>2024.11.08.0229</Version>
+		<AssemblyVersion>1.1.0</AssemblyVersion>
+		<Version>2024.11.10.1432</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<RootNamespace>BLAZAM</RootNamespace>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -101,12 +101,6 @@
 		<Content Include="static\img\default_logo5.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="..\BLAZAMGui\Layouts\NotificationList.razor" Link="NotificationList.razor" />
-	  <None Include="..\BLAZAMGui\Layouts\NotificationsAppBarButtton.razor" Link="NotificationsAppBarButtton.razor" />
-	  <None Include="..\BLAZAMGui\Layouts\UserNotificationsProvider.razor" Link="UserNotificationsProvider.razor" />
 	</ItemGroup>
 
 	<ItemGroup>
