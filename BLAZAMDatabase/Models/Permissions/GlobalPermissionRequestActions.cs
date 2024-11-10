@@ -8,8 +8,7 @@ namespace BLAZAM.Database.Models.Permissions
 {
     public class GlobalPermissionRequestActions:AppDbSetBase
     {
-        public int ObjectActionId { get; set; }
-        public ObjectAction ObjectAction { get; set; }
+        public ActiveDirectoryObjectAction ObjectAction { get; set; }
         
     }
 }

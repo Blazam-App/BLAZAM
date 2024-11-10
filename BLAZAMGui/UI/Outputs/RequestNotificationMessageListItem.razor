@@ -1,0 +1,180 @@
+﻿@inherits DatabaseComponentBase
+@if (LoadingData)
+{
+    <MudCard Class="py-3"
+             Elevation="2">
+        <MudStack Row=true
+                  Class="px-4">
+            <MudSkeleton SkeletonType="SkeletonType.Circle" Width="25px" Height="25px" />
+
+
+            <MudStack>
+                <MudSkeleton />
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="246px" Height="30px" />
+
+
+
+                <MudStack Row="true">
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="78px" Height="30px" />
+                    <MudSpacer />
+
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="78px" Height="30px" />
+
+                </MudStack>
+
+            </MudStack>
+            <MudSpacer />
+
+        </MudStack>
+
+    </MudCard>
+}
+else
+{
+    <MudCard Class="py-3"
+             Elevation="2">
+        <MudStack Row=true
+                  Class="px-4">
+            <MudIcon Icon="@Icons.Material.Filled.ThumbsUpDown"
+                     Color="Color.Warning" />
+
+            <MudStack>
+                @if (Notification.Notification.Title.IsNullOrEmpty())
+                {
+                    <MudText Typo="Typo.subtitle2">
+                        @AppLocalization["Request to"] @AppLocalization[Notification.Notification.Action.ToString()]
+                    </MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.subtitle2">
+                        @AppLocalization["Request to"] @AppLocalization[Notification.Notification.Title]
+                    </MudText>
+                }
+
+                @if (Notification.Notification.Message.IsNullOrEmpty())
+                {
+                    <MudText Typo="Typo.caption">
+                        <MudLink Typo="Typo.caption" Href="@_creator?.SearchUri" Disabled="@(_creator==null)">
+                            @(_creator != null ? _creator.DisplayName : _creatorAppUser?.Username)
+                        </MudLink>
+                        @AppLocalization["is requesting"]
+                        @AppLocalization[Notification.Notification.Action.ToString()].ToString().ToLower()
+                        @AppLocalization["access to"]
+                        <MudLink Typo="Typo.caption" Href="@_target?.SearchUri" Disabled=@(_target==null)>
+                            @(_target != null ? _target.CanonicalName : Notification.Notification.TargetDN)
+                        </MudLink>
+                    </MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.subtitle2" Style="text-wrap: wrap;">
+                        @((MarkupString)Notification.Notification.Message)
+                    </MudText>
+                }
+                <MudStack Row="true">
+                    <MudButton Size="Size.Small"
+                               Variant="Variant.Filled"
+                               StartIcon="@Icons.Material.Filled.ThumbDownAlt"
+                               OnClick="DenyRequest"
+                               Color="Color.Error">@AppLocalization["Deny"]</MudButton>
+                    <MudSpacer />
+                    <MudButton Size="Size.Small"
+                               Variant="Variant.Filled"
+                               StartIcon="@Icons.Material.Filled.ThumbUpAlt"
+                               OnClick="@(()=>{_approvalModal.ShowAsync();})"
+                               Color="Color.Success">@AppLocalization["Approve"]</MudButton>
+                </MudStack>
+
+            </MudStack>
+            <MudSpacer />
+
+        </MudStack>
+
+    </MudCard>
+
+    <AppModal @ref=_approvalModal Title="@AppLocalization["Approve Request"]">
+        @if (_approvalModal.IsShown)
+        {
+            <AccessApprovalModalContent OnApproved=@OnApproved Request="@Notification" />
+        }
+    </AppModal>
+}
+@code {
+    AppModal? _approvalModal;
+    [Parameter]
+    public UserNotification Notification { get; set; }
+    private IADUser? _creator;
+    private IDirectoryEntryAdapter? _target;
+    private AppUser? _creatorAppUser;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        LoadData();
+
+
+    }
+    private void LoadData()
+    {
+        Task.Run(async () =>
+        {
+            LoadingData = true;
+            //await Task.Delay(10000);
+            var appUser = await Context.UserSettings.FirstOrDefaultAsync(x => x.Id == Notification.Notification.CreatorId);
+            if (appUser != null)
+            {
+                _creatorAppUser = appUser;
+                if (!appUser.Username.Equals("admin", StringComparison.InvariantCultureIgnoreCase)
+            && !appUser.Username.Equals("demo", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var directoryUser = Directory.GetDirectoryEntryBySid(appUser.UserGUID);
+                    if (directoryUser != null && directoryUser is IADUser)
+                    {
+                        _creator = directoryUser as IADUser;
+                    }
+                }
+            }
+
+            if (Notification.Notification.TargetDN != null)
+            {
+                var dirEntry = Directory.GetDirectoryEntryByDN(Notification.Notification.TargetDN);
+                if (dirEntry != null)
+                {
+                    _target = dirEntry;
+                }
+            }
+            LoadingData = false;
+        });
+    }
+    private async void DenyRequest()
+    {
+        if (await MessageService.Confirm(AppLocalization["Are you sure you want to deny this request?"]))
+        {
+            try
+            {
+                if (await NotificationPublisher.DeleteNotification(Notification.Notification, Notification.User))
+                {
+                    SnackBarService.Info(AppLocalization["The request has been denied"]);
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                SnackBarService.Warning(AppLocalization["The request could not be deleted"]);
+
+            }
+        }
+    }
+    private async Task OnApproved()
+    {
+
+        SnackBarService.Success(AppLocalization["The request has been approved"]);
+        if (!await NotificationPublisher.DeleteNotification(Notification.Notification, Notification.User))
+        {
+            Loggers.SystemLogger.Error("There was an issue deleting a request notification");
+
+        }
+    }
+}

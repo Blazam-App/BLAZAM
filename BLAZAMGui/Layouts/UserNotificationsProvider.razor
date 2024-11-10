@@ -29,13 +29,21 @@
         await InvokeAsync(StateHasChanged);
         NotificationPublisher.OnNotificationPublished += (async (notifications) =>
            {
-               if (notifications.Select(n => n.User).Contains(UserState.Preferences))
+
+               if (notifications != null && notifications.Select(n => n.User).Contains(UserState.Preferences))
                {
                    Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+                   await InvokeAsync(StateHasChanged);
+
                }
-               await InvokeAsync(StateHasChanged);
            });
 
+        NotificationPublisher.OnNotificationDeleted += async () =>
+            {
+                Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+
+                InvokeAsync(StateHasChanged);
+            };
 
         UserState = CurrentUser.State;
         await InvokeAsync(StateHasChanged);

@@ -31,7 +31,7 @@
 <AppModal @ref=notificationsModal
           Title="Notification Settings"
           Options="new(){ CloseButton=true, MaxWidth=MaxWidth.ExtraLarge,FullWidth=true}">
-    <NotificaionSubscriptionEditor User="UserState.Preferences" />
+        <NotificaionSubscriptionEditor User="UserState.Preferences" />
 </AppModal>
 
 
@@ -64,7 +64,7 @@
     async Task MarkAllRead()
     {
 
-        var messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+        var messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead && un.Notification.MessageType != MessageType.AccessRequest).ToListAsync();
 
 
         foreach (var message in messages)

@@ -1117,12 +1117,10 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ObjectActionId")
+                    b.Property<int>("ObjectAction")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ObjectActionId");
 
                     b.ToTable("GlobalPermissionRequestActions");
                 });
@@ -1513,7 +1511,7 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ActionId")
+                    b.Property<int?>("Action")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Created")
@@ -1547,8 +1545,6 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ActionId");
 
                     b.HasIndex("CreatorId");
 
@@ -1841,17 +1837,6 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("FieldAccessLevel");
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionRequestActions", b =>
-                {
-                    b.HasOne("BLAZAM.Database.Models.Permissions.ObjectAction", "ObjectAction")
-                        .WithMany()
-                        .HasForeignKey("ObjectActionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ObjectAction");
-                });
-
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", "ObjectAccessLevel")
@@ -1900,15 +1885,9 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.NotificationMessage", b =>
                 {
-                    b.HasOne("BLAZAM.Database.Models.Permissions.ObjectAction", "Action")
-                        .WithMany()
-                        .HasForeignKey("ActionId");
-
                     b.HasOne("BLAZAM.Database.Models.User.AppUser", "Creator")
                         .WithMany()
                         .HasForeignKey("CreatorId");
-
-                    b.Navigation("Action");
 
                     b.Navigation("Creator");
                 });

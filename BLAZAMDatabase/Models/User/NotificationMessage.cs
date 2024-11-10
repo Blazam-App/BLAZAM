@@ -31,7 +31,7 @@ namespace BLAZAM.Database.Models.User
         /// <summary>
         /// The action being requested access to
         /// </summary>
-        public ObjectAction? Action { get; set; }
+        public ActiveDirectoryObjectAction? Action { get; set; }
 
         /// <summary>
         /// The user who triggered this notification
@@ -72,5 +72,6 @@ namespace BLAZAM.Database.Models.User
             return obj is NotificationMessage message && (
                    Id != 0 && Id == message.Id);
         }
+        
     }
 }

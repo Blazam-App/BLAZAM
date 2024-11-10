@@ -1,0 +1,181 @@
+@using BLAZAM.Common.Exceptions
+@using BLAZAM.Server.Data.Services
+@inherits AppModalContent
+
+<MudSimpleTable Class="mud-width-full p-5 m-5">
+    <thead>
+        <tr>
+            <th>@AppLocalization["Delegate"]</th>
+            <th>@AppLocalization["Access Level"]</th>
+            <th>@AppLocalization["Permission Mapping"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <StatusCheck Status="@(_delegate?.Id>0)" Text="@(_delegate?.Id>0?"Use existing":"Will be created")" />
+            </td>
+            <td>
+                <StatusCheck Status="@(_accessLevel?.Id>0)" Text="@(_accessLevel?.Id>0?"Use existing":"Will be created")" />
+            </td>
+            <td>
+                <StatusCheck Status="@(_permissionMapping?.Id>0)" Text="@(_permissionMapping?.Id>0?"Use existing":"Will be created")" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <MudText>@AppLocalization["Name"]: </MudText><MudText>@_delegate?.DelegateName</MudText>
+            </td>
+            <td>
+                <MudText>@AppLocalization["Name"]: </MudText><MudText>@_accessLevel?.Name</MudText>
+
+            </td>
+            <td>
+                <MudText>@AppLocalization["Name"]: </MudText><MudText>@_target?.CanonicalName</MudText>
+
+            </td>
+        </tr>
+    </tbody>
+</MudSimpleTable>
+<LoadingData Loading=LoadingData />
+@code {
+
+    [Parameter]
+    public UserNotification Request { get; set; }
+    [Parameter]
+    public EventCallback OnApproved { get; set; }
+
+    private IADUser? _creator;
+    private IDirectoryEntryAdapter? _target;
+    private PermissionDelegate? _delegate;
+    private AccessLevel? _accessLevel;
+    private PermissionMapping? _permissionMapping;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Modal.Options.MaxWidth = MaxWidth.Large;
+        Modal.YesText = AppLocalization["Approve"];
+        base.Modal.OnYes += async () => { await Approve(); };
+        _ = LoadData();
+        Modal.RefreshView();
+
+    }
+
+    private async Task Approve()
+    {
+        LoadingData = true;
+        if (_delegate.Id == 0)
+        {
+            Context.PermissionDelegate.Add(_delegate);
+        }
+        if (_permissionMapping.Id == 0)
+        {
+            Context.PermissionMap.Add(_permissionMapping);
+        }
+        try
+        {
+            Context.SaveChangesAsync();
+            Modal.Close();
+            OnApproved.InvokeAsync();
+
+            LoadingData = false;
+        }catch(Exception ex)
+        {
+            Loggers.DatabaseLogger.Error("Error adding approved permission mapping {Error}", ex.InnerException);
+            SnackBarService.Error("Error trying to create permission mapping");
+            LoadData();
+        }
+        
+    }
+
+    private async Task LoadData()
+    {
+        //Get matching delegate, access level and mapping from the db, or prepare new ones
+        await Task.Run(async () =>
+        {
+            LoadingData = true;
+
+            var _creator = await Context.UserSettings.FirstOrDefaultAsync(x => x.Id == Request.Notification.CreatorId);
+            var _creatorAD = Directory.GetDirectoryEntryBySid(_creator.UserGUID);
+
+            //Prepare delegate
+            var _deleg = await Context.PermissionDelegate.FirstOrDefaultAsync(x => x.DelegateSid == _creator.UserGUID.ToSidByteArray());
+            if (_deleg == null)
+            {
+                _deleg = new PermissionDelegate()
+                    {
+                        DelegateName = _creatorAD != null ? _creatorAD.CanonicalName : _creator.Username,
+                        DelegateSid = _creator.UserGUID.ToSidByteArray()
+                    };
+            }
+            else
+            {
+                _deleg.DeletedAt = null;
+            }
+            _delegate = _deleg;
+
+            //Prepare target
+            if (!Request.Notification.TargetDN.IsNullOrEmpty())
+            {
+                var tgtDN = Request.Notification.TargetDN;
+                _target = Directory.GetDirectoryEntryByDN(tgtDN);
+
+            }
+
+            //Prepare Access Level
+            var _accessLvl = await Context.AccessLevels.FirstOrDefaultAsync(x => x.ObjectMap.Count == 1
+            && x.ObjectMap.Any(x => x.ObjectType == _target.ObjectType)
+        && x.ActionMap.Count == 1 && x.ActionMap.Any(x => x.AllowOrDeny == true && x.ObjectAction.Action == Request.Notification.Action));
+            if (_accessLvl == null)
+            {
+                var objActions = await Context.ObjectActionFlag.ToListAsync();
+                var objectMap = new ObjectAccessMapping()
+                    {
+                        ObjectAccessLevelId = ObjectAccessLevels.Read.Id,
+                        ObjectType = _target != null ? _target.ObjectType : ActiveDirectoryObjectType.Group
+
+                    };
+                var actionMap = new ActionAccessMapping()
+                    {
+                        ObjectActionId = objActions.FirstOrDefault(x => x.Action == Request.Notification.Action).Id,
+                        AllowOrDeny = true,
+                        ObjectType = _target != null ? _target.ObjectType : ActiveDirectoryObjectType.Group
+                    };
+                _accessLvl = new AccessLevel()
+                    {
+                        ActionMap = new List<ActionAccessMapping>() { actionMap },
+                        ObjectMap = new List<ObjectAccessMapping>() { objectMap },
+                        Name = AppLocalization[Request.Notification.Action.ToString()] + " " + AppLocalization[_target.ObjectType.ToString()]
+                    };
+            }
+            else
+            {
+                _accessLvl.DeletedAt = null;
+            }
+            _accessLevel = _accessLvl;
+
+
+            //Prepare mapping
+            var _permMap = await Context.PermissionMap.FirstOrDefaultAsync(x => x.OU == _target.DN && x.AccessLevels.Count() == 1
+        && x.AccessLevels.Any(x => x.Id == _accessLevel.Id) && x.PermissionDelegates.Count() == 1
+        && x.PermissionDelegates.Any(x => x.DelegateSid == _creator.UserGUID.ToSidByteArray()));
+            if (_permMap == null)
+            {
+                _permMap = new PermissionMapping()
+                    {
+                        AccessLevels = new List<AccessLevel>() { _accessLevel },
+                        PermissionDelegates = new List<PermissionDelegate>() { _delegate },
+                        OU = _target.DN,
+                    };
+            }
+            _permissionMapping = _permMap;
+
+            LoadingData = false;
+
+        });
+
+    }
+}
+
+
+
