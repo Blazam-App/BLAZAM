@@ -37,16 +37,16 @@
 <LoadingData Loading=LoadingData />
 @code {
 
-        [Inject]
-        private AppAuthenticationStateProvider AppAuthenticationStateProvider { get; set; }
+    [Inject]
+    private AppAuthenticationStateProvider AppAuthenticationStateProvider { get; set; }
 
-        [Parameter]
-        public IDirectoryEntryAdapter Entry { get; set; }
+    [Parameter]
+    public IDirectoryEntryAdapter Entry { get; set; }
 
-        IReadOnlyCollection<ActiveDirectoryObjectAction>? _selectedActions = new List<ActiveDirectoryObjectAction>();
+    IReadOnlyCollection<ActiveDirectoryObjectAction>? _selectedActions = new List<ActiveDirectoryObjectAction>();
 
-        List<ActiveDirectoryObjectAction> _objectActions;
-        List<ActiveDirectoryObjectAction> _dbAllowedActions;
+    List<ActiveDirectoryObjectAction> _objectActions;
+    List<ActiveDirectoryObjectAction> _dbAllowedActions;
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,7 +63,7 @@
             await InvokeAsync(StateHasChanged);
             var users = await Context.UserSettings.ToListAsync();
             var adminUsers = new List<AppUser>();
-            foreach (var user in users)
+            await Parallel.ForEachAsync(users, async (user, cancellationToken) =>
             {
                 var adUser = Directory.Users.FindUserBySID(user.UserGUID);
                 var userState = new ApplicationUserState(DbFactory);
@@ -73,17 +73,38 @@
                     userState.User = appUser;
                     if (userState.IsSuperAdmin || user.Username == "admin" || user.Username == "Demo")
                     {
-                        adminUsers.Add(user);
+                        lock (adminUsers)
+                        {
+                            adminUsers.Add(user);
+                        }
                     }
-
                 }
-
                 catch (DeniedLoginException ex)
                 {
-                    continue;
+                    // Consider logging the exception or handling it appropriately.
                 }
+            });
+            // foreach (var user in users)
+            // {
+            //     var adUser = Directory.Users.FindUserBySID(user.UserGUID);
+            //     var userState = new ApplicationUserState(DbFactory);
+            //     try
+            //     {
+            //         var appUser = await AppAuthenticationStateProvider.CreateDirectoryPrincipal(userState, adUser);
+            //         userState.User = appUser;
+            //         if (userState.IsSuperAdmin || user.Username == "admin" || user.Username == "Demo")
+            //         {
+            //             adminUsers.Add(user);
+            //         }
 
-            }
+            //     }
+
+            //     catch (DeniedLoginException ex)
+            //     {
+            //         continue;
+            //     }
+
+            // }
             foreach (var action in _selectedActions)
             {
                 NotificationMessage message = new();
