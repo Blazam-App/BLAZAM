@@ -172,7 +172,7 @@ namespace BLAZAM
 
             AppInstance.Start();
             GetRunningWebServerConfiguration();
-           //ScheduleAutoLoad();
+            //ScheduleAutoLoad();
 
             AppInstance.WaitForShutdown();
             Log.Information("Application Shutting Down");

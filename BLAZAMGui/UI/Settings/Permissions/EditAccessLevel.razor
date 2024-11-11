@@ -1,3 +1,4 @@
+@using BLAZAM.Gui.UI.Settings.Modals
 @inherits ValidatedForm
 
 
@@ -41,6 +42,7 @@
                 }
             </MudButtonGroup>
         </MudItem>
+
     }
 </MudStack>
 <FlexContainer>
@@ -238,7 +240,7 @@
         </MudCard>
 
     }
-
+       
 </FlexContainer>
 
 @{
@@ -249,8 +251,12 @@
 <MudButton Disabled=@(SaveDisabled || WorkingModel.Id==1) Color=Color.Success Margin=Margin.IsAuto.OnX OnClick="SaveAccessLevel">@buttonLabel</MudButton>
 @if (WorkingModel.Id != 0 && !Self)
 {
-    <MudButton Disabled=@(WorkingModel.Id==1) Color=Color.Error Margin=Margin.IsAuto.OnX OnClick="DeleteAccessLevel">@AppLocalization["Delete Access Level"]</MudButton>
+    <MudButton Disabled=@(WorkingModel.Id==1) Color=Color.Error Margin=Margin.IsAuto.OnX OnClick="@(()=>{_deleteModal.ShowAsync();})">@AppLocalization["Delete Access Level"]</MudButton>
+ <AppModal Width="MaxWidth.Medium" @ref=_deleteModal Title="@AppLocalization["Confirm deletion"]">
+    <DeleteAccessLevelModalContent AccessLevel="Model" OnConfirm="@(()=>{DeleteAccessLevel();})"/>
+</AppModal>
 }
+
 @code {
 
     [Parameter]
@@ -259,6 +265,8 @@
     [Parameter]
     public bool Self { get; set; }
 
+    
+    AppModal? _deleteModal;
 
     bool ShowFields
     {

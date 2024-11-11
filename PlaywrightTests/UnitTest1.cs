@@ -23,7 +23,7 @@ namespace PlaywrightTests
             await OpenUserMenu();
             await OpenProfileSettings();
             await CloseDialog();
-            
+
             await OpenUserMenu();
             await OpenNotificationSettings();
             await CloseDialog();
@@ -32,16 +32,16 @@ namespace PlaywrightTests
 
             await OpenConfigureSubMenu();
 
-            
+
             // Expects the URL to contain intro.
             //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
         }
-           [Test]
+        [Test]
         public async Task MainMenuTest()
         {
             await LogIn();
 
-          
+
             await OpenRecycleBin();
 
             await OpenConfigureSubMenu();
@@ -56,14 +56,14 @@ namespace PlaywrightTests
 
             await OpenTemplates();
 
-            
+
             // Expects the URL to contain intro.
             //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));
         }
 
         private async Task CloseDialog()
         {
-            var closeButton = Page.GetByRole(AriaRole.Button, new() { Name= "Close dialog" });
+            var closeButton = Page.GetByRole(AriaRole.Button, new() { Name = "Close dialog" });
 
             await Expect(closeButton).ToBeVisibleAsync();
             await Expect(closeButton).ToBeEnabledAsync();
@@ -93,8 +93,8 @@ namespace PlaywrightTests
             var recycleHeader = Page.Locator("text=Settings");
 
             await Expect(recycleHeader).ToBeVisibleAsync();
-        } 
-        
+        }
+
         private async Task OpenManageNotifications()
         {
             var recycleButton = Page.Locator("text=Notifications");
@@ -203,7 +203,7 @@ namespace PlaywrightTests
             await Task.Delay(500);
 
 
-          
+
 
 
         }

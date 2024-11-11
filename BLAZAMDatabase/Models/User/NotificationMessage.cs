@@ -21,7 +21,7 @@ namespace BLAZAM.Database.Models.User
         /// <summary>
         /// The message type of this notification
         /// </summary>
-        public MessageType MessageType { get; set; }  = MessageType.Notification;
+        public MessageType MessageType { get; set; } = MessageType.Notification;
 
         /// <summary>
         /// The DN of the target for this notification
@@ -44,7 +44,7 @@ namespace BLAZAM.Database.Models.User
         /// </summary>
         public string? Title { get; set; }
 
-        
+
         /// <summary>
         /// The message of the notification
         /// </summary>
@@ -72,6 +72,6 @@ namespace BLAZAM.Database.Models.User
             return obj is NotificationMessage message && (
                    Id != 0 && Id == message.Id);
         }
-        
+
     }
 }

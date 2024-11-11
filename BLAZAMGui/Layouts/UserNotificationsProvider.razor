@@ -12,7 +12,7 @@
         <AppIconButton Size="Size.Large"
                        OnClick="@ToggleNotifications"
                        Icon="@(notifs.Count() > 0?Icons.Material.Filled.NotificationImportant:Icons.Material.Filled.Notifications)"
-                       Color="@(notifs.Count() > 0?Color.Warning:Color.Success)" />
+                       Color="@(notifs.Count() > 0?Color.Warning:Color.Info)" />
     </AppTooltip>
 </MudBadge>
 
