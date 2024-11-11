@@ -35,10 +35,11 @@ namespace BLAZAM.Notifications.Services
                 }
                 catch (Exception ex)
                 {
+                    Loggers.SystemLogger.Error("Error saving new notification {Error}", ex);
 
                 }
             }
-            List<UserNotification> sentNotificaitons = new();
+            List<UserNotification> sentNotifications = new();
             foreach (var user in users)
             {
                 var userNotification = new UserNotification()
@@ -47,18 +48,18 @@ namespace BLAZAM.Notifications.Services
                     NotificationId = notificationMessage.Id
                 };
                 context.UserNotifications.Add(userNotification);
-                sentNotificaitons.Add(userNotification);
+                sentNotifications.Add(userNotification);
             }
             try
             {
                 context.SaveChanges();
 
-                OnNotificationPublished?.Invoke(sentNotificaitons);
+                OnNotificationPublished?.Invoke(sentNotifications);
 
             }
             catch (Exception ex)
             {
-
+                Loggers.SystemLogger.Error("Error saving new usernotification {Error}", ex);
             }
             return Task.CompletedTask;
 

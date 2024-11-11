@@ -24,4 +24,10 @@
     <ProjectReference Include="..\BLAZAMStatic\BLAZAMStatic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Email\Notifications\AccessRequestEmailMessage.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>
