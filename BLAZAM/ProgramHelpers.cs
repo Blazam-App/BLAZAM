@@ -305,7 +305,7 @@ namespace BLAZAM.Server
 
             builder.Services.AddScoped<AppDialogService>();
 
-            builder.Services.AddSingleton<OUNotificationService>();
+            builder.Services.AddSingleton<NotificationGenerationService>();
 
 
             builder.Host.UseWindowsService();
@@ -338,7 +338,7 @@ namespace BLAZAM.Server
         {
             try
             {
-                var context = Program.AppInstance.Services.GetRequiredService<OUNotificationService>();
+                var context = Program.AppInstance.Services.GetRequiredService<NotificationGenerationService>();
             }
             catch (Exception ex)
             {

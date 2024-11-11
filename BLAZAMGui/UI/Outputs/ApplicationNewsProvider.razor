@@ -86,12 +86,14 @@
 }
 else
 {
+
     <AppTooltip Text=@("Blazam "+AppLocalization["News"])>
-        <MudFab Size=Size.Small Color=@Color.Success
-                Disabled="true"
-                Class="mx-2"
-                StartIcon="@Icons.Material.Filled.Notifications" />
+        <AppIconButton Size="Size.Large"
+                       Disabled="true"
+                       Icon="@Icons.Material.TwoTone.NewReleases"
+                       Color=@Color.Success />
     </AppTooltip>
+
 }
 @code {
     private bool showRead;

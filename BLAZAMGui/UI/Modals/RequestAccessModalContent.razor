@@ -1,6 +1,10 @@
 @using BLAZAM.Common.Exceptions
+@using BLAZAM.EmailMessage.Email.Base
+@using BLAZAM.EmailMessage.Email.Notifications
 @using BLAZAM.Server.Data.Services
 @inherits AppModalContent
+@inject NotificationGenerationService notificationGenerationService
+
 @if (_objectActions != null && _objectActions.Count > 0)
 {
     if (Context.GlobalPermissionRequestActions.Count() > 0)
@@ -81,42 +85,31 @@
                 }
                 catch (DeniedLoginException ex)
                 {
-                    // Consider logging the exception or handling it appropriately.
+                    //Ignore users who can't login
                 }
             });
-            // foreach (var user in users)
-            // {
-            //     var adUser = Directory.Users.FindUserBySID(user.UserGUID);
-            //     var userState = new ApplicationUserState(DbFactory);
-            //     try
-            //     {
-            //         var appUser = await AppAuthenticationStateProvider.CreateDirectoryPrincipal(userState, adUser);
-            //         userState.User = appUser;
-            //         if (userState.IsSuperAdmin || user.Username == "admin" || user.Username == "Demo")
-            //         {
-            //             adminUsers.Add(user);
-            //         }
 
-            //     }
-
-            //     catch (DeniedLoginException ex)
-            //     {
-            //         continue;
-            //     }
-
-            // }
             foreach (var action in _selectedActions)
             {
-                NotificationMessage message = new();
+                NotificationMessage notification;
+                notificationGenerationService.PackageRequest(Entry, action, CurrentUser.State,  out notification);
+               
+                NotificationPublisher.PublishNotification(adminUsers, notification);
 
-                NotificationPublisher.PublishNotification(adminUsers, new NotificationMessage()
+                
+                var requestEmail = new AccessRequestEmailMessage(); 
+                requestEmail.Notification= notification;
+                requestEmail.TargetName = Entry.CanonicalName;
+                foreach (var user in adminUsers)
+                {
+                    if (EmailService.IsConfigured && !user.Email.IsNullOrEmpty())
                     {
-                        Action = action,
-                        CreatorId = CurrentUser.State.Preferences.Id,
-                        Level = NotificationLevel.Info,
-                        TargetDN = Entry.DN,
-                        MessageType = MessageType.AccessRequest
-                    });
+                        string body = CurrentUser.Username + " " + AppLocalization["is requesting"]
+                        + " " + AppLocalization[action.ToString()].ToString().ToLower() + " " + AppLocalization["access to"] + " " +
+                        Entry.CanonicalName;
+                        await EmailService.SendMessage(notification.Title, requestEmail , user.Email);
+                    }
+                }
             }
             SnackBarService.Success(AppLocalization["Access request sent"]);
         }

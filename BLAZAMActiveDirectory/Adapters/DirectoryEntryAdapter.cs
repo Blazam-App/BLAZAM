@@ -55,6 +55,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 List<AuditChangeLog> changes = new();
+
+
+
+
                 foreach (var prop in NewEntryProperties)
                 {
                     object? currentValue = null;
@@ -640,9 +644,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     List<IDirectoryEntryAdapter> directoryEntries = new List<IDirectoryEntryAdapter>();
                     var children = DirectoryEntry.Children;
                     DirectoryEntryAdapter? thisObject = null;
+                    var list = new List<DirectoryEntry>();
                     foreach (DirectoryEntry child in children)
                     {
-
+                        list.Add(child);
+                    }
+                    Parallel.ForEach<DirectoryEntry>(list, child =>
+                    {
                         if (child.Properties["objectClass"].Contains("top"))
                         {
                             var objectClass = child.Properties["objectClass"];
@@ -674,14 +682,58 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             if (thisObject != null)
                             {
                                 thisObject.Parse(directory: Directory, directoryEntry: child);
-                                directoryEntries.Add(thisObject);
+                                lock (directoryEntries)
+                                {
+                                    directoryEntries.Add(thisObject);
+                                }
 
                             }
 
                         }
                         thisObject = null;
+                    });
+                    //foreach (DirectoryEntry child in children)
+                    //{
 
-                    }
+                    //    if (child.Properties["objectClass"].Contains("top"))
+                    //    {
+                    //        var objectClass = child.Properties["objectClass"];
+                    //        if (objectClass.Contains("computer"))
+                    //        {
+                    //            thisObject = new ADComputer();
+                    //        }
+                    //        else if (objectClass.Contains("user"))
+                    //        {
+                    //            thisObject = new ADUser();
+                    //        }
+                    //        else if (objectClass.Contains("organizationalUnit"))
+                    //        {
+                    //            thisObject = new ADOrganizationalUnit();
+                    //        }
+                    //        else if (objectClass.Contains("group"))
+                    //        {
+                    //            thisObject = new ADGroup();
+                    //        }
+                    //        else if (objectClass.Contains("printQueue"))
+                    //        {
+                    //            thisObject = new ADPrinter();
+                    //        }
+
+                    //        else if (objectClass.Contains("msFVE-RecoveryInformation"))
+                    //        {
+                    //            thisObject = new ADBitLockerRecovery();
+                    //        }
+                    //        if (thisObject != null)
+                    //        {
+                    //            thisObject.Parse(directory: Directory, directoryEntry: child);
+                    //            directoryEntries.Add(thisObject);
+
+                    //        }
+
+                    //    }
+                    //    thisObject = null;
+
+                    //}
                     directoryEntries.OrderBy(x => x.CanonicalName).OrderBy(x => x.ObjectType);
                     CachedChildren = directoryEntries;
                 }
