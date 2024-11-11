@@ -62,6 +62,7 @@ namespace BLAZAM.Gui.Services
                     widgets.Add(new ChangedPasswordsWidget() { WidgetType = DashboardWidgetType.PasswordsChanged, Title = AppLocalization["Passwords changed in the last 90 days"] });
                     widgets.Add(new DeletedEntriesWidget() { WidgetType = DashboardWidgetType.DeletedEntries, Title = AppLocalization["Entries deleted in the last 14 days"] });
                     widgets.Add(new AppLogonsWidget() { WidgetType = DashboardWidgetType.AppLogons, Title = AppLocalization["Application logons"] });
+                    widgets.Add(new StaleUsersWidget() { WidgetType = DashboardWidgetType.StaleUsers, Title = AppLocalization["Stale users"] });
 
                 }
 

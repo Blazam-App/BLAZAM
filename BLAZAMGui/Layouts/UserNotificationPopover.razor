@@ -1,62 +1,46 @@
 @inherits DatabaseComponentBase
 
-@if (messages.Count > 0)
-{
-    <MudPopover Open=@Open
-                TransformOrigin="Origin.TopRight"
-                AnchorOrigin="Origin.BottomRight">
-        <MudStack Class="mud-theme-dark" Row=true>
-            <MudListSubheader Class="align-middle">Notifications</MudListSubheader>
-            <MudSpacer />
-            <MudIconButton Icon="@Icons.Material.Filled.ClearAll" OnClick="MarkAllRead" />
-            <AppCloseButton Tooltip="@AppLocalization["Close"]"
-                Class="align-middle"
-            OnClick=@(()=>{Open=false;}) />
+<MudStack Row=true
+          Class="px-3 sticky mud-theme-secondary mud-width-full"
+          Style="height=60px;">
 
-        </MudStack>
-        <MudStack Style="max-height:80vh;" Class="overflow-auto">
-            @foreach (var notification in messages.Where(m => !m.IsRead))
-            {
+    <MudText Typo="Typo.h6"
+             Class="sticky align-middle">
+        @AppLocalization["Notifications"]
+    </MudText>
+    <MudSpacer />
+    <AppIconButton Size="Size.Large"
+                   Icon="@Icons.Material.Filled.Settings"
+                   Tooltip="@AppLocalization["Notification Settings"]"
+                   Color="Color.Info"
+                   OnClick="@(()=>{notificationsModal?.ShowAsync();})" />
+    <AppIconButton Size="Size.Large"
+                   Icon="@Icons.Material.Filled.ClearAll"
+                   Tooltip="@AppLocalization["Dismiss all"]"
+                   Color="Color.Warning"
+                   OnClick="MarkAllRead" />
+    <AppCloseButton Size="Size.Large"
+                    Icon="@Icons.Material.Filled.Start"
+                    Tooltip="@AppLocalization["Close"]"
+                    TooltipPlacement="Placement.Left"
+                    OnClick=@(()=>{mainLayout.NotificationsOpen=false;}) />
 
-                <MudAlert OnClick=@(()=>{
-                  if(notification.Notification.Link!=null)
-                  Nav.NavigateTo(notification.Notification.Link.ToString());
-                  }) ShowCloseIcon=notification.Notification.Dismissable
-                          CloseIconClicked="@(async()=>{
-                  await UserState.MarkRead(notification);
-                  await InvokeAsync(StateHasChanged);
-              })">
-                    @if (!notification.Notification.Title.IsNullOrEmpty())
-                    {
-                        <MudText Typo="Typo.subtitle2">@notification.Notification.Title</MudText>
-                    }
-                    <MudText Typo="Typo.caption">
-                        @((MarkupString)notification.Notification.Message)
-                    </MudText>
-                </MudAlert>
-            }
-        </MudStack>
+</MudStack>
+<NotificationList @ref=_notificationList UserState="@UserState" />
 
-    </MudPopover>
-}
+<AppModal @ref=notificationsModal
+          Title="Notification Settings"
+          Options="new(){ CloseButton=true, MaxWidth=MaxWidth.ExtraLarge,FullWidth=true}">
+        <NotificaionSubscriptionEditor User="UserState.Preferences" />
+</AppModal>
+
+
 
 @code {
+
+    AppModal? notificationsModal;
     private bool _open;
-    private IList<UserNotification> messages = new List<UserNotification>();
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
-        //messages = UserState.Notifications;
-
-        NotificationPublisher.OnNotificationPublished += async (notification) =>
-        {
-            messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
-
-            InvokeAsync(StateHasChanged);
-        };
-    }
-
+    private NotificationList? _notificationList;
     [Parameter]
     public bool Open
     {
@@ -74,9 +58,14 @@
     [Parameter]
     public IApplicationUserState UserState { get; set; }
 
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+
     async Task MarkAllRead()
     {
-        messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
+
+        var messages = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead && un.Notification.MessageType != MessageType.AccessRequest).ToListAsync();
+
 
         foreach (var message in messages)
         {
@@ -84,10 +73,12 @@
 
             await UserState.MarkRead(message);
         }
+        UserState.SaveAllUserSettings();
+        UserState.GetUserSettingFromDB();
+
         Open = false;
+        _notificationList?.UpdateState();
         await InvokeAsync(StateHasChanged);
     }
-
-
 
 }

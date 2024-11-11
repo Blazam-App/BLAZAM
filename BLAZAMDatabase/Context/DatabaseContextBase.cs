@@ -139,6 +139,8 @@ namespace BLAZAM.Database.Context
 
         public virtual DbSet<PermissionDelegate> PermissionDelegate { get; set; }
         public virtual DbSet<PermissionMapping> PermissionMap { get; set; }
+        public virtual DbSet<GlobalPermissionSettings> GlobalPermissionSettings { get; set; }
+        public virtual DbSet<GlobalPermissionRequestActions> GlobalPermissionRequestActions { get; set; }
 
         public virtual DbSet<ChatRoom> ChatRooms { get; set; }
         public virtual DbSet<ChatMessage> ChatMessages { get; set; }
@@ -527,7 +529,8 @@ namespace BLAZAM.Database.Context
                   new ObjectAction() { Id = 6, Name = "Rename", Action = ActiveDirectoryObjectAction.Rename },
                   new ObjectAction() { Id = 7, Name = "Move", Action = ActiveDirectoryObjectAction.Move },
                   new ObjectAction() { Id = 8, Name = "Create", Action = ActiveDirectoryObjectAction.Create },
-                  new ObjectAction() { Id = 9, Name = "Delete", Action = ActiveDirectoryObjectAction.Delete }
+                  new ObjectAction() { Id = 9, Name = "Delete", Action = ActiveDirectoryObjectAction.Delete },
+                  new ObjectAction() { Id = 10, Name = "Set Password", Action = ActiveDirectoryObjectAction.SetPassword }
 
             );
             modelBuilder.Entity<ActionAccessMapping>(entity =>

@@ -43,6 +43,7 @@
     [Parameter]
     public EventCallback OnRead { get; set; }
 
+   
     private async void ShowNews()
     {
         var result = await Item.ShowNewsItemDialog(MessageService);

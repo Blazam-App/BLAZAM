@@ -18,6 +18,7 @@ namespace BLAZAM.Database.Models.Permissions
         /// <see cref="AllowOrDeny"/>
         /// </summary>
         public ObjectAction ObjectAction { get; set; }
+        public int ObjectActionId { get; set; }
         public override int GetHashCode()
         {
             return (ObjectType.ToString() + ObjectAction.Name).GetHashCode();

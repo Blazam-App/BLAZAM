@@ -1,44 +1,35 @@
 @inherits DatabaseComponentBase
 
-<UserNotificationPopover UserState="@UserState" @bind-Open="@NotificationsOpen" />
+@* <UserNotificationPopover UserState="@UserState" @bind-Open="@NotificationsOpen" /> *@
 
-<MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" ListClass="py-0">
+<MudMenu @ref=@_userMenu
+         AnchorOrigin="Origin.BottomRight"
+         TransformOrigin="Origin.TopRight"
+         ListClass="py-0">
     <ActivatorContent>
-        @{
 
-            var avatarBgColor = GenerateAvatarColor(UserState?.Username);
-        }
         <AppTooltip Text="@CurrentUser.Username">
-            @if (Notifications.Where(n => !n.IsRead).Count() > 0)
-            {
-                <MudBadge Color=Color.Error Overlap=true Content="@Notifications.Where(n=>!n.IsRead).Count()">
-                    <CurrentUserAvatarIcon UserState="@UserState" />
-                </MudBadge>
-            }
-            else
-            {
-                <CurrentUserAvatarIcon UserState="@UserState" />
-            }
+            <CurrentUserAvatarIcon UserState="@UserState" />
         </AppTooltip>
     </ActivatorContent>
     <ChildContent>
-        <MudText Typo=Typo.body2 Color="Color.Info" Align=Align.Center Class="py-3 w-100 " Style="text-align:center;    background-color: var(--mud-palette-drawer-background);">
+        <MudText Typo=Typo.body2
+                 Color="Color.Info"
+                 Align=Align.Center
+                 Class="py-3 w-100 "
+                 Style="text-align:center; background-color: var(--mud-palette-drawer-background);">
             @CurrentUser.Username
         </MudText>
         <MudDivider />
-        @if (Notifications.Count > 0)
-        {
-            <MudMenuItem OnClick="@(()=>{NotificationsOpen=!NotificationsOpen;})">Notifications</MudMenuItem>
-        }
-
-
-        <MudMenuItem OnClick="@(()=>{profileModal?.ShowAsync();})" Icon="@Icons.Material.Filled.Settings">
+      
+        <MudMenuItem OnClick="@(()=>{profileModal?.ShowAsync();})"
+                     Icon="@Icons.Material.Filled.Settings">
             @AppLocalization["Profile Settings"]
         </MudMenuItem>
-        <MudMenuItem OnClick="@(()=>{notificationsModal?.ShowAsync();})" Icon="@Icons.Material.Filled.Notifications">
-            @AppLocalization["Notification Settings"]
-        </MudMenuItem>
-        <MudMenuItem Href="https://docs.blazam.org" Target="_blank" Icon="@Icons.Material.Filled.Book">
+    
+        <MudMenuItem Href="https://docs.blazam.org"
+                     Target="_blank"
+                     Icon="@Icons.Material.Filled.Book">
             @AppLocalization["Documentation"]
         </MudMenuItem>
 
@@ -57,40 +48,28 @@
         }
     </ChildContent>
 </MudMenu>
-<AppModal @ref=profileModal Title="Profile Settings">
+<AppModal @ref=profileModal
+          Title="Profile Settings">
     <CascadingValue Value="mainLayout">
         <AppUserProfileModalContent />
     </CascadingValue>
 </AppModal>
-<AppModal @ref=notificationsModal Title="Notification Settings" Options="new(){ CloseButton=true, MaxWidth=MaxWidth.ExtraLarge,FullWidth=true}">
-    <CascadingValue Value="mainLayout">
-        <NotificaionSubscriptionEditor User="UserState.Preferences" />
-    </CascadingValue>
+<AppModal @ref=notificationsModal
+          Title="Notification Settings"
+          Options="new(){ CloseButton=true, MaxWidth=MaxWidth.ExtraLarge,FullWidth=true}">
+    <NotificaionSubscriptionEditor User="UserState.Preferences" />
 </AppModal>
 @code {
     AppModal? profileModal;
     AppModal? notificationsModal;
-    /// <summary>
-    /// Indicates whether the notification panel is open
-    /// </summary>
-    bool NotificationsOpen;
-
+    MudMenu? _userMenu;
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
-    IList<UserNotification> Notifications = new List<UserNotification>();
     private IApplicationUserState UserState;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await InvokeAsync(StateHasChanged);
-        NotificationPublisher.OnNotificationPublished += (async (notifications) =>
-           {
-               if (notifications.Select(n => n.User).Contains(UserState.Preferences))
-               {
-                   Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
-               }
-               await InvokeAsync(StateHasChanged);
-           });
 
 
         UserState = CurrentUser.State;
@@ -98,10 +77,10 @@
         if (UserState != null)
             UserState.OnSettingsChanged += async () =>
         {
+
             InvokeAsync(StateHasChanged);
         };
 
-        Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
 
         await InvokeAsync(StateHasChanged);
 
@@ -110,24 +89,5 @@
 
 
 
-    /// <summary>
-    /// Generate a repeatable hex color based on the given username
-    /// </summary>
-    /// <param name="username"></param>
-    /// <returns>A background-color style string</returns>
-    string GenerateAvatarColor(string? username)
-    {
-        if (username is null || username.IsNullOrEmpty()) return "background-color:#0c13a7";
-        int usernameHash = username.GetAppHashCode();
-        byte[] usernameHashBytes = Helpers.ByteHelpers.ToByteArray(usernameHash, (int?)3);
-        for (int x = 0; x < usernameHashBytes.Length; x++)
-        {
-            if (usernameHashBytes[x] > 200)
-                usernameHashBytes[x] = 200;
-        }
-        string hexColor = "background-color:#";
-        hexColor += Convert.ToHexString(usernameHashBytes.Take(3).ToArray());
-        return hexColor;
-    }
 
 }

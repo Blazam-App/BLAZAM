@@ -4,6 +4,7 @@ namespace BLAZAM.Database.Models
 {
     public interface IActiveDirectoryField
     {
+        public int Id { get; set; }
         /// <summary>
         /// The display name for this field in the application
         /// </summary>

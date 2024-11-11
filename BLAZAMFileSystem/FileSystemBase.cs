@@ -1,5 +1,4 @@
-﻿using Serilog.Configuration;
-using System.Security;
+﻿using System.Security;
 using System.Security.AccessControl;
 using System.Security.Permissions;
 

@@ -1,9 +1,13 @@
+@inherits AppComponentBase
 @if (JobMonitor.AllJobs.Count > 0)
 {
 
     <MudDataGrid T="IJob"
                  Dense=true
-                 Items="JobMonitor.AllJobs.Where(x=>!x.NestedJob)">
+                 Virtualize="true"
+                 Items="JobMonitor.AllJobs.Where(x=>!x.NestedJob)"
+                 RowClick="ShowJobDetails"
+                 RowClass="cursor-pointer">
         <Columns>
             <PropertyColumn Property="x=>x.Name" />
             <PropertyColumn Property="x=>x.User" />
@@ -17,9 +21,19 @@
 }
 
 @code {
+    IJob _selectedJob;
     protected override void OnInitialized()
     {
         base.OnInitialized();
         JobMonitor.OnUpdate += async () => { await InvokeAsync(StateHasChanged); };
+    }
+    private void ShowJobDetails(DataGridRowClickEventArgs<IJob> rowClickEventArgs)
+    {
+        var job = rowClickEventArgs.Item;
+        if (job != null)
+        {
+            MessageService.ShowMessage<JobResultDialog>(job.ToDialogParameters(), AppLocalization[job.Name]);
+
+        }
     }
 }

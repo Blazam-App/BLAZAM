@@ -1,0 +1,40 @@
+﻿@using BLAZAM.Database.Models.User
+@using BLAZAM.Helpers
+@using System.Security
+@inherits NotificationTemplateComponent
+
+<EmailTemplateHeader>
+    <strong>  @Notification.Title</strong>
+</EmailTemplateHeader>
+
+<EmailTemplateBody>
+    <MudText Typo="Typo.caption">
+        @(Notification.Creator?.Username)
+        @AppLocalization["is requesting"]
+        @AppLocalization[Notification.Action.ToString()].ToString().ToLower()
+        @AppLocalization["access to"]
+        @TargetName
+    </MudText>
+    <br />
+
+
+</EmailTemplateBody>
+
+
+@code {
+    [Parameter]
+    public NotificationMessage Notification { get; set; }
+    [Parameter]
+    public string TargetName { get; set; }
+
+
+    public override string Render() => new ComponentRenderer<AccessRequestEmailMessage>()
+            .UseLayout<DefaultEmailLayout>()
+            .AddServiceProvider(ApplicationInfo.services)
+            .Set(c => c.Notification, Notification)
+            .Set(c => c.TargetName, TargetName)
+            .Render();
+}
+
+
+

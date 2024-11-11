@@ -76,6 +76,22 @@
             </TabContent>
 
         </MudTabPanel>
+        <MudTabPanel>
+            <ChildContent>
+
+                @if (Monitor.DirectoryConnectionStatus == ServiceConnectionState.Up)
+                {
+                    <GlobalPermissions />
+
+                }
+
+
+            </ChildContent>
+            <TabContent>
+                @AppLocalization["Global Settings"]
+            </TabContent>
+
+        </MudTabPanel>
     </MudTabs>
 
 

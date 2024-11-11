@@ -1,0 +1,31 @@
+﻿@inherits AppComponentBase
+<MudCard Class="py-3" Elevation="2">
+    <MudStack Row=true Class="px-4">
+        <MudIcon Icon="@Icons.Material.Outlined.EventNote"
+        Color="Color.Info"/>
+        <MudStack>
+            @if (!Notification.Notification.Title.IsNullOrEmpty())
+            {
+                <MudText Typo="Typo.subtitle2">@Notification.Notification.Title</MudText>
+            }
+            <MudText Typo="Typo.caption">
+                @((MarkupString)Notification.Notification.Message)
+            </MudText>
+        </MudStack>
+        <MudSpacer />
+        @if (!Notification.IsRead)
+        {
+            <AppCloseButton TooltipPlacement="Placement.Left" Tooltip="@AppLocalization["Dismiss Notification"]" OnClick="@(async () =>
+        {
+            await CurrentUser.State.MarkRead(Notification);
+            await InvokeAsync(StateHasChanged);
+        })" />
+        }
+    </MudStack>
+   
+</MudCard>
+
+@code {
+    [Parameter]
+    public UserNotification Notification { get; set; }
+}

@@ -126,7 +126,7 @@
         await InvokeAsync(StateHasChanged);
     }
    
-    protected override async void Save()
+    protected override async Task Save()
     {
         var decryptedPass = adminPasswordInDb.Decrypt<string>();
         if (!newAdminPassword.Equals(adminPasswordInDb) || decryptedPass.Equals(adminPasswordInDb))

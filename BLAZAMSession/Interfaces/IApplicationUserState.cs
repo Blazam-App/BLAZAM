@@ -102,5 +102,6 @@ namespace BLAZAM.Session.Interfaces
         Task SaveDashboardWidgets();
         Task SaveReadNewsItems();
         Task SaveBasicUserPreferences();
+        void GetUserSettingFromDB();
     }
 }

@@ -101,7 +101,7 @@
     async void CreateNewOU()
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
+       
         newOU = parentOU?.CreateOU(newOUName);
 
 
@@ -109,7 +109,7 @@
         selectedStep = 1;
 
 
-        LoadingData = true;
+        LoadingData = false;
 
         await InvokeAsync(StateHasChanged);
     }

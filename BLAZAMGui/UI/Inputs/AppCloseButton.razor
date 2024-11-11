@@ -1,13 +1,15 @@
 @inherits AppIconButton
 
+
 <AppIconButton Color="@Color"
                Disabled=@Disabled
                Size=@Size
                Style=@Style
                Tooltip=@Tooltip
+               TooltipPlacement="@TooltipPlacement"
                OnClick="@OnClick"
                Tag=@Tag
-               Icon="@Icons.Material.Filled.Close" />
+               Icon="@(Icon==null?Icons.Material.Filled.Close:Icon)" />
 @code {
 
 

@@ -110,7 +110,7 @@
         SnackBarService.Success("Permission Delegate removed.");
         await DelegateDeleted.InvokeAsync();
     }
-    protected async override void Save()
+    protected async override Task Save()
     {
         Delegate.DelegateSid = _delegateEntry.SID;
         await Context.SaveChangesAsync();

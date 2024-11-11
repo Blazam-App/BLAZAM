@@ -5,7 +5,7 @@ namespace BLAZAM.Database.Models.Permissions
     public enum ActiveDirectoryObjectAction
     {
         Move, Delete, Create, Unassign, Assign, Enable, Disable, Rename,
-        Unlock
+        Unlock, SetPassword
     }
     public class ObjectAction : AppDbSetBase
     {
@@ -21,63 +21,6 @@ namespace BLAZAM.Database.Models.Permissions
             return Name.GetHashCode();
         }
 
-        public bool IsActionAppropriateForObject(ActiveDirectoryObjectType type)
-        {
-            switch (type)
-            {
-                case ActiveDirectoryObjectType.User:
-                case ActiveDirectoryObjectType.Computer:
-                    switch (Name)
-                    {
-                        case "Lock":
-                        case "Unlock":
-                        case "Move":
-                        case "Delete":
-                        case "Create":
-                        case "Enable":
-                        case "Disable":
-                        case "Rename":
-                            return true;
-                        default:
-                            return false;
-                    }
-                case ActiveDirectoryObjectType.Group:
-                    switch (Name)
-                    {
-                        case "Move":
-                        case "Delete":
-                        case "Create":
-                        case "UnAssign":
-                        case "Rename":
-                        case "Assign":
-                            return true;
-                        default:
-                            return false;
-                    }
-                case ActiveDirectoryObjectType.Printer:
-                case ActiveDirectoryObjectType.OU:
-                    switch (Name)
-                    {
-                        case "Move":
-                        case "Delete":
-                        case "Rename":
-                        case "Create":
-                            return true;
-                        default:
-                            return false;
-                    }
-                case ActiveDirectoryObjectType.BitLocker:
-                    switch (Name)
-                    {
-                        case "Delete":
-                            return true;
-                        default:
-                            return false;
-                    }
 
-                default:
-                    return false;
-            }
-        }
     }
 }

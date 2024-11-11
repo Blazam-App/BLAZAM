@@ -48,16 +48,5 @@
 		</Reference>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Content Update="UI\Chat\EntrySpecificChat.razor">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-		</Content>
-		<Content Update="UI\FlexContainer.razor">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-		</Content>
-		<Content Update="UI\Section.razor">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-		</Content>
-	</ItemGroup>
 
 </Project>

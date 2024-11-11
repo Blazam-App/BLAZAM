@@ -89,11 +89,7 @@
 
         </MudContainer>
 
-        <MudOverlay Visible="attemptingSignIn"
-                    DarkBackground="true"
-                    Absolute="true">
-            @*<MudProgressCircular Color="Color.Secondary" Indeterminate="true" />*@
-        </MudOverlay>
+        <LoadingData Loading=attemptingSignIn />
     </form>
     <MudElement Class="d-flex mud-width-full justify-end">
         <Copyright Style="font-size:0.8em;" />

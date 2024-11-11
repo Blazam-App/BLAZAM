@@ -362,7 +362,18 @@ namespace BLAZAM.Helpers
             return securityIdentifier.Value;
 
         }
+        public static byte[] ToSidByteArray(this string sidString)
+        {
+            if (string.IsNullOrEmpty(sidString)) return Array.Empty<byte>();
 
+            var securityIdentifier = new SecurityIdentifier(sidString);
+
+            // Use GetBinaryForm method with appropriate buffer size
+            byte[] sidBytes = new byte[securityIdentifier.BinaryLength];
+            securityIdentifier.GetBinaryForm(sidBytes, 0);
+
+            return sidBytes;
+        }
 
         #endregion
     }

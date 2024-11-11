@@ -8,6 +8,7 @@ using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Update.Exceptions;
+using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using System.Diagnostics;
@@ -41,6 +42,7 @@ namespace BLAZAM.Update
         public string Branch { get => Release.Branch; }
 
         private IAppDatabaseFactory _dbFactory;
+        private UpdateService _updateService;
 
         /// <summary>
         /// The application update directory, in temporary files
@@ -102,7 +104,7 @@ namespace BLAZAM.Update
         {
             get
             {
-                var testPath = new SystemFile(_applicationRootDirectory + @"bin\Debug\net6.0\updater\update.ps1");
+                var testPath = new SystemFile(_applicationRootDirectory + @"bin\Debug\net8.0\updater\update.ps1");
 
 
                 if (!testPath.Exists)
@@ -116,10 +118,20 @@ namespace BLAZAM.Update
         {
             get
             {
-                return " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory + "'" +
-                   " -Username " + DatabaseCache.ActiveDirectorySettings?.Username +
-                   " -Domain " + DatabaseCache.ActiveDirectorySettings?.FQDN +
-                   " -Password '" + DatabaseCache.ActiveDirectorySettings?.Password.Decrypt() + "'";
+                var creds = _updateService.GetImpersonationUser();
+                var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory + "'";
+                if (creds != null)
+                {
+                    args += " -Username " + creds.Username +
+                   " -Password '" + creds.Password.ToPlainText() + "'";
+                    if (!creds.FQDN.IsNullOrEmpty())
+                    {
+
+                        args += " -Domain " + creds.FQDN;
+                    }
+                }
+                return args;
+
             }
         }
 
@@ -131,10 +143,10 @@ namespace BLAZAM.Update
         private SystemDirectory _applicationRootDirectory;
 
 
-        public ApplicationUpdate(ApplicationInfo applicationInfo, IAppDatabaseFactory dbFactory)
+        public ApplicationUpdate(ApplicationInfo applicationInfo, UpdateService updateService, IAppDatabaseFactory dbFactory)
         {
             _dbFactory = dbFactory;
-
+            _updateService = updateService;
             UpdateTempDirectory = new SystemDirectory(applicationInfo.TempDirectory + "update\\");
             _runningProcess = applicationInfo.RunningProcess;
             _runningVersion = applicationInfo.RunningVersion;
@@ -249,11 +261,28 @@ namespace BLAZAM.Update
 
                 if (settings == null) throw new ApplicationUpdateException("No credentials are configured for updates");
 
-                var impersonation = settings.CreateDirectoryAdminImpersonator();
+
                 try
                 {
+                    var updateCredentials = _updateService.GetUpdateCredentials();
+                    if (updateCredentials != null)
+                    {
 
-                    return impersonation.Run(() =>
+                        return updateCredentials.Run(() =>
+                        {
+                            try
+                            {
+                                return ApplyFiles();
+                            }
+                            catch (Exception ex)
+                            {
+                                Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
+
+                            }
+                            return false;
+                        });
+                    }
+                    else
                     {
                         try
                         {
@@ -265,7 +294,8 @@ namespace BLAZAM.Update
 
                         }
                         return false;
-                    });
+                    }
+
 
 
                 }
@@ -274,7 +304,6 @@ namespace BLAZAM.Update
                     Loggers.UpdateLogger?.Error("Unable to apply files {@Error}", ex);
                     return false;
                 }
-
 
 
             }

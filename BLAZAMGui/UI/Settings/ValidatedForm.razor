@@ -14,7 +14,7 @@
     [Parameter]
     public EventCallback OnValidSubmit{ get; set; }
 
-    protected virtual async void Save()
+    protected virtual async Task Save()
     {
         if (Context != null)
         {

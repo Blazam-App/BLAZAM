@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.Sql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -1109,6 +1109,41 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.ToTable("AccessLevelFieldMapping");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionRequestActions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ObjectAction")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GlobalPermissionRequestActions");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AllowAccessRequest")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("AllowSelfModification")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GlobalPermissionSettings");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
                 {
                     b.Property<int>("Id")
@@ -1243,6 +1278,12 @@ namespace BLAZAM.Common.Migrations.Sql
                             Id = 9,
                             Action = 1,
                             Name = "Delete"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Action = 9,
+                            Name = "Set Password"
                         });
                 });
 
@@ -1470,8 +1511,14 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("Action")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("CreatorId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Dismissable")
                         .HasColumnType("bit");
@@ -1488,10 +1535,18 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("MessageType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TargetDN")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("NotificationMessages");
                 });
@@ -1826,6 +1881,15 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplate", null)
                         .WithMany("AssignedGroupSids")
                         .HasForeignKey("DirectoryTemplateId");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.User.NotificationMessage", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId");
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.ReadNewsItem", b =>
