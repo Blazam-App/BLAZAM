@@ -51,7 +51,7 @@
 
     List<ActiveDirectoryObjectAction> _objectActions;
     List<ActiveDirectoryObjectAction> _dbAllowedActions;
-    List<GlobalPermissionRequestActions> globalPermissionRequestActions;
+    List<GlobalPermissionRequestActions> globalPermissionRequestActions = new();
 
     protected override async Task OnInitializedAsync()
     {
