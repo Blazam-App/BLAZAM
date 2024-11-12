@@ -98,7 +98,7 @@ namespace BLAZAM.Update
         {
             get
             {
-                return "/c start Powershell -ExecutionPolicy Bypass -command \"$ '" + CommandProcessPath
+                return "/c start Powershell -ExecutionPolicy Bypass -command \"& '" + CommandProcessPath
                     + "' " + CommandArguments + "\"";
             }
         }
