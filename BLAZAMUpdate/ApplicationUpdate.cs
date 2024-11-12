@@ -256,23 +256,50 @@ namespace BLAZAM.Update
             }
             else
             {
-                var settings = context.ActiveDirectorySettings.FirstOrDefault();
-
-
-                if (settings == null) throw new ApplicationUpdateException("No credentials are configured for updates");
+         
 
                 try
                 {
-                    return ApplyFiles();
+                    var updateCredentials = _updateService.GetUpdateCredentials();
+                    if (updateCredentials != null)
+                    {
+
+                        return updateCredentials.Run(() =>
+                        {
+                            try
+                            {
+                                return ApplyFiles();
+                            }
+                            catch (Exception ex)
+                            {
+                                Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
+
+                            }
+                            return false;
+                        });
+                    }
+                    else
+                    {
+                        try
+                        {
+                            return ApplyFiles();
+                        }
+                        catch (Exception ex)
+                        {
+                            Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
+
+                        }
+                        return false;
+                    }
+
+
+
                 }
-                catch (Exception ex)
+                catch (ApplicationException ex)
                 {
-                    Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-
+                    Loggers.UpdateLogger?.Error("Unable to apply files {@Error}", ex);
+                    return false;
                 }
-                return false;
-
-
 
 
 
