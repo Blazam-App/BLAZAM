@@ -14,6 +14,7 @@ using Microsoft.Extensions.Localization;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Security.Principal;
+using System.Text;
 
 namespace BLAZAM.Update
 {
@@ -325,7 +326,7 @@ namespace BLAZAM.Update
             }
         }
 
-        private bool InvokeUpdateExecutable()
+        private bool InvokeUpdateExecutable_old()
         {
             var startTime = DateTime.Now;
             var process = new Process
@@ -355,7 +356,46 @@ namespace BLAZAM.Update
 
             return true;
         }
+        private bool InvokeUpdateExecutable()
+        {
+            var startTime = DateTime.Now;
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = UpdateCommandProcess,
+                    Arguments = UpdateCommandArguments,
+                    RedirectStandardOutput = true, // Enable output redirection
+                    UseShellExecute = false,       // Required for redirection
+                    CreateNoWindow = true,
+                }
+            };
 
+            Loggers.UpdateLogger?.Information("Starting update process");
+            process.Start();
+            Loggers.UpdateLogger?.Information("Update process id: " + process.Id);
+
+            // Read and log the output asynchronously
+            var output = new StringBuilder();
+            process.OutputDataReceived += (sender, e) =>
+            {
+                if (!string.IsNullOrEmpty(e.Data))
+                {
+                    output.AppendLine(e.Data);
+                    Loggers.UpdateLogger?.Information("Update process output: " + e.Data);
+                }
+            };
+            process.BeginOutputReadLine(); // Start asynchronous reading
+
+            process.WaitForExit();
+            Loggers.UpdateLogger?.Information("Update process exited: " + process.ExitCode);
+            Loggers.UpdateLogger?.Information("Update process execution time: " + (DateTime.Now - startTime).TotalMilliseconds + "ms");
+
+            // Log the complete output (if needed)
+            Loggers.UpdateLogger?.Information("Complete update process output:\n" + output.ToString());
+
+            return true;
+        }
         public async Task<bool> Backup(JobStep? step)
         {
             Loggers.UpdateLogger?.Information("Attempting backup of current version to: " + BackupPath);
