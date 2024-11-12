@@ -252,12 +252,9 @@ namespace BLAZAM.Update
                     Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
                     throw new ApplicationUpdateException("Error trying to apply update files", ex);
                 }
-                return false;
             }
             else
             {
-         
-
                 try
                 {
                     var updateCredentials = _updateService.GetUpdateCredentials();
@@ -291,21 +288,13 @@ namespace BLAZAM.Update
                         }
                         return false;
                     }
-
-
-
                 }
                 catch (ApplicationException ex)
                 {
                     Loggers.UpdateLogger?.Error("Unable to apply files {@Error}", ex);
                     return false;
                 }
-
-
-
             }
-
-
         }
 
         private bool ApplyFiles()
