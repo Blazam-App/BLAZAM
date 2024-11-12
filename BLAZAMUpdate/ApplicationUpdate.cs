@@ -261,49 +261,19 @@ namespace BLAZAM.Update
 
                 if (settings == null) throw new ApplicationUpdateException("No credentials are configured for updates");
 
-
                 try
                 {
-                    var updateCredentials = _updateService.GetUpdateCredentials();
-                    if (updateCredentials != null)
-                    {
-
-                        return updateCredentials.Run(() =>
-                        {
-                            try
-                            {
-                                return ApplyFiles();
-                            }
-                            catch (Exception ex)
-                            {
-                                Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-
-                            }
-                            return false;
-                        });
-                    }
-                    else
-                    {
-                        try
-                        {
-                            return ApplyFiles();
-                        }
-                        catch (Exception ex)
-                        {
-                            Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-
-                        }
-                        return false;
-                    }
-
-
-
+                    return ApplyFiles();
                 }
-                catch (ApplicationException ex)
+                catch (Exception ex)
                 {
-                    Loggers.UpdateLogger?.Error("Unable to apply files {@Error}", ex);
-                    return false;
+                    Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
+
                 }
+                return false;
+
+
+
 
 
             }
@@ -341,6 +311,7 @@ namespace BLAZAM.Update
 
         private bool InvokeUpdateExecutable()
         {
+            var startTime = DateTime.Now;
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -355,12 +326,16 @@ namespace BLAZAM.Update
 
                 }
             };
+            Loggers.UpdateLogger?.Information("Starting update process");
 
             process.Start();
 
+            Loggers.UpdateLogger?.Information("Update process id: "+ process.Id);
 
 
             process.WaitForExit();
+            Loggers.UpdateLogger?.Information("Update process exited: " + process.ExitCode);
+            Loggers.UpdateLogger?.Information("Update process execution time: " + (DateTime.Now-startTime).TotalMilliseconds+"ms");
 
             return true;
         }
