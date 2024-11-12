@@ -120,9 +120,9 @@ namespace BLAZAM.Update
             get
             {
                 var creds = _updateService.GetImpersonationUser();
-                var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory;
+                var args = " -UpdateSourcePath '" + UpdateStagingDirectory+"\\" + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory+"\\";
                 if (Debugger.IsAttached)
-                    args += "bin\\Debug\\net8.0\\";
+                    args += "bin\\Debug\\net8.0\\\\";
                 args += "'";
                 if (creds != null)
                 {
