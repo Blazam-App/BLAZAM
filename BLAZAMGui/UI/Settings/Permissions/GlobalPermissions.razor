@@ -18,12 +18,12 @@
                     <MudText>
                         @AppLocalization["Actions"]
                     </MudText>
-                    <MudSwitch Value="@Context.GlobalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Assign)"
+                    <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Assign)"
                                ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Assign); })"
                                Color="Color.Success">
                         @AppLocalization["Assign"]
                     </MudSwitch>
-                    <MudSwitch Value="@Context.GlobalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unassign)"
+                    <MudSwitch Value="@globalPermissionRequestActions.Any(x => x.ObjectAction == ActiveDirectoryObjectAction.Unassign)"
                                ValueChanged="@((bool  val)=>{ AddAction(ActiveDirectoryObjectAction.Unassign); })"
                                Color="Color.Success">
                         @AppLocalization["Unassign"]
@@ -63,6 +63,7 @@
 
 @code {
     GlobalPermissionSettings settings = new GlobalPermissionSettings();
+    List<GlobalPermissionRequestActions> globalPermissionRequestActions = new List<GlobalPermissionRequestActions>();
     AccessLevel selfAccessLevel = new();
     protected override async Task OnInitializedAsync()
     {
@@ -76,6 +77,7 @@
         if (dbData != null)
         {
             settings = dbData;
+            globalPermissionRequestActions = await Context.GlobalPermissionRequestActions.ToListAsync();
         }
         else
         {
