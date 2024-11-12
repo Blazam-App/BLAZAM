@@ -7,7 +7,7 @@
 
 @if (_objectActions != null && _objectActions.Count > 0)
 {
-    if (Context.GlobalPermissionRequestActions.Count() > 0)
+    if (globalPermissionRequestActions.Count() > 0)
     {
         @if (_dbAllowedActions.Any(x => x.IsActionAppropriateForObject(Entry.ObjectType)))
         {
@@ -20,7 +20,7 @@
                         SelectedColor="Color.Success">
                 @foreach (var action in _objectActions)
                 {
-                    if (action.IsActionAppropriateForObject(Entry.ObjectType) && Context.GlobalPermissionRequestActions.Any(x => x.ObjectAction == action))
+                    if (action.IsActionAppropriateForObject(Entry.ObjectType) && globalPermissionRequestActions.Any(x => x.ObjectAction == action))
                     {
                         <MudChip Value="action"
                                  Disabled="@(IsActionDisabled(action))"
@@ -51,12 +51,14 @@
 
     List<ActiveDirectoryObjectAction> _objectActions;
     List<ActiveDirectoryObjectAction> _dbAllowedActions;
+    List<GlobalPermissionRequestActions> globalPermissionRequestActions;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         _objectActions = ActiveDirectoryObjectAction.Assign.ToList();
         _dbAllowedActions = await Context.GlobalPermissionRequestActions.Select(x => x.ObjectAction).ToListAsync();
+        globalPermissionRequestActions = await Context.GlobalPermissionRequestActions.ToListAsync();
         Modal.OnYes += Submit;
     }
     public async void Submit()
