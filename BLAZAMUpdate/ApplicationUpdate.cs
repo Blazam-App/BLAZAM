@@ -321,8 +321,8 @@ namespace BLAZAM.Update
             SystemDirectory updaterDirFromStagedUpdate = new SystemDirectory(UpdateStagingDirectory.FullPath + "updater\\");
             SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.FullPath + "updater\\");
             updaterDirFromStagedUpdate.CopyTo(updaterDir);
-            //File.Copy(UpdateStagingDirectory + "\\updater\\", _applicationRootDirectory + "updater\\", true);
             Loggers.UpdateLogger?.Information("Updater updated");
+
             //If the updater updated we can  run the updater
             var updaterRan = InvokeUpdateExecutable();
 
