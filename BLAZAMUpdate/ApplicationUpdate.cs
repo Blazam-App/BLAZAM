@@ -120,21 +120,21 @@ namespace BLAZAM.Update
         {
             get
             {
-                var creds = _updateService.GetImpersonationUser();
+                //var creds = _updateService.GetImpersonationUser();
                 var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory;
                 if (Debugger.IsAttached)
                     args += "bin\\Debug\\net8.0\\";
                 args += "'";
-                if (creds != null)
-                {
-                    args += " -Username " + creds.Username +
-                   " -Password '" + creds.Password.ToPlainText() + "'";
-                    if (!creds.FQDN.IsNullOrEmpty())
-                    {
+                //if (creds != null)
+                //{
+                //    args += " -Username " + creds.Username +
+                //   " -Password '" + creds.Password.ToPlainText() + "'";
+                //    if (!creds.FQDN.IsNullOrEmpty())
+                //    {
 
-                        args += " -Domain " + creds.FQDN;
-                    }
-                }
+                //        args += " -Domain " + creds.FQDN;
+                //    }
+                //}
                 return args;
 
             }
@@ -242,7 +242,36 @@ namespace BLAZAM.Update
 
 
             using var context = await _dbFactory.CreateDbContextAsync();
+            var updateCredentials = _updateService.GetUpdateCredentials();
+            if (updateCredentials != null)
+            {
+                return updateCredentials.Run(() =>
+                {
+                    try
+                    {
+                        return ApplyFiles();
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
 
+                    }
+                    return false;
+                });
+            }
+            else
+            {
+                try
+                {
+                    return ApplyFiles();
+                }
+                catch (Exception ex)
+                {
+                    Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
+
+                }
+            }
+            return false;
             switch (_updateService.UpdateCredential)
             {
 
@@ -401,6 +430,7 @@ namespace BLAZAM.Update
             process.BeginOutputReadLine(); // Start asynchronous reading
 
             process.WaitForExit();
+
             Loggers.UpdateLogger?.Information("Update process exited: " + process.ExitCode);
             Loggers.UpdateLogger?.Information("Update process execution time: " + (DateTime.Now - startTime).TotalMilliseconds + "ms");
 
