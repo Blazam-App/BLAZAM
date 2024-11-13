@@ -54,24 +54,6 @@
 
 @if (IsAdmin == true || CurrentUser.State?.CanSearchDisabled(ActiveDirectoryObjectType.User) == true)
 {
-    var buttonColor = Color.Error;
-    if (!SearchService.IncludeDisabled)
-
-    {
-        buttonColor = Color.Success;
-    }
-    @*    <MudButton Size=Size.Small
-               Class="d-flex"
-               Variant="Variant.Filled"
-               ButtonType="ButtonType.Button"
-               OnClick=@(async()=>{
-           SearchService.IncludeDisabled= !SearchService.IncludeDisabled;
-           await InvokeAsync(StateHasChanged);
-           }) Color=buttonColor>
-        @AppLocalization["Enabled Only"]
-    </MudButton> *@
-
-
     <MudSwitch Class="d-flex align-middle"
         Size=Size.Small
                @bind-Value=SearchService.IncludeDisabled
@@ -79,8 +61,6 @@
                Color=Color.Success>
         @AppLocalization["Include Disabled"]
     </MudSwitch>
-
-
 }
 @{
     var adornmentIcon = Icons.Material.Filled.AccountTree;

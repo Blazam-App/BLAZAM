@@ -267,7 +267,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// Directory.
         /// </summary>
         /// <param name="containerName">The container name of the new group</param>
-        /// <returns>An uncommited group</returns>
+        /// <returns>An uncommitted group</returns>
         public IADGroup CreateGroup(string containerName)
         {
             EnsureDirectoryEntry();

@@ -666,7 +666,7 @@
                     {
                         await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
                         await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
-                        _ = OUNotificationService.PostAsync(User, NotificationType.GroupAssignment, CurrentUser.State, assignment.Group);
+                        _ = NotificationGenerationService.PostAsync(User, NotificationType.GroupAssignment, CurrentUser.State, assignment.Group);
 
                     }
 
@@ -674,12 +674,12 @@
                     {
                         await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
                         await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
-                        _ = OUNotificationService.PostAsync(User, NotificationType.GroupAssignment, CurrentUser.State, assignment.Group);
+                        _ = NotificationGenerationService.PostAsync(User, NotificationType.GroupAssignment, CurrentUser.State, assignment.Group);
 
                     }
                     if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
                     {
-                        _ = OUNotificationService.PostAsync(User, NotificationType.Modify, CurrentUser.State);
+                        _ = NotificationGenerationService.PostAsync(User, NotificationType.Modify, CurrentUser.State);
                         await AuditLogger.User.Changed(User, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
                     }
 
@@ -729,7 +729,7 @@
 
                 SnackBarService.Success(User.DisplayName + " has been deleted.");
                 await AuditLogger.User.Deleted(User);
-                _ = OUNotificationService.PostAsync(User, NotificationType.Delete, CurrentUser.State);
+                _ = NotificationGenerationService.PostAsync(User, NotificationType.Delete, CurrentUser.State);
 
             }
             catch (ApplicationException ex)
