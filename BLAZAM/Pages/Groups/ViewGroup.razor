@@ -20,7 +20,7 @@
                                   OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
                                   OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})"
                                   OnToggleEditMode="@ToggleEditMode" />
-        <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true" />
+        <LoadingData Loading=SavingChanges />
     </SetSubHeader>
 
     <CascadingValue Value="EditMode">
@@ -161,7 +161,7 @@
                 {
                     await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
                     await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
-                    _ = OUNotificationService.PostAsync(assignment.Member, NotificationType.GroupAssignment, target: Group);
+                    _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.GroupAssignment, CurrentUser.State, Group);
 
                 }
 
@@ -169,12 +169,12 @@
                 {
                     await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
                     await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
-                    _ = OUNotificationService.PostAsync(assignment.Member, NotificationType.GroupAssignment, target: Group);
+                    _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.GroupAssignment, CurrentUser.State, Group);
 
                 }
                 if (changes.Any(c => c.Field != "member"))
                 {
-                    _ = OUNotificationService.PostAsync(Group, NotificationType.Modify);
+                    _ = NotificationGenerationService.PostAsync(Group, NotificationType.Modify, CurrentUser.State);
                     await AuditLogger.Group.Changed(Group, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
                 }
                 //await AuditLogger.Group.Changed(Group, Group.Changes);
@@ -205,7 +205,7 @@
                 Group.Delete();
                 SnackBarService.Success(Group.CanonicalName + " has been deleted.");
                 await AuditLogger.Group.Deleted(Group);
-                _ = OUNotificationService.PostAsync(Group, NotificationType.Delete);
+                _ = NotificationGenerationService.PostAsync(Group, NotificationType.Delete, CurrentUser.State);
 
                 //Group = null;
                 Nav.NavigateTo("/groups/search");

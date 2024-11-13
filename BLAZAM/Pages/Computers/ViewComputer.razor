@@ -24,9 +24,7 @@
                                       OnUnlock="@Unlock"
                                       OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
                                       OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})" />
-            <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
-
-            </MudOverlay>
+            <LoadingData Loading=SavingChanges />
 
 
         </SetSubHeader>
@@ -231,9 +229,7 @@
         <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />
     }
 }
-<MudOverlay Visible="SavingChanges" DarkBackground="true" Absolute="true">
-    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
-</MudOverlay>
+<LoadingData Loading=SavingChanges />
 
 
 
@@ -292,7 +288,7 @@
                 Computer.Delete();
                 SnackBarService.Success(Computer.CanonicalName + " has been deleted.");
                 await AuditLogger.Computer.Deleted(Computer);
-                _ = OUNotificationService.PostAsync(Computer, NotificationType.Delete);
+                _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Delete, CurrentUser.State);
 
                 Nav.NavigateTo("/users/search");
 
@@ -332,7 +328,7 @@
                     }
                     if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
                     {
-                        _ = OUNotificationService.PostAsync(Computer, NotificationType.Modify);
+                        _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Modify, CurrentUser.State);
                         await AuditLogger.User.Changed(Computer, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
                     }
 

@@ -1,5 +1,5 @@
 @inherits DatabaseComponentBase
-
+<MudText Typo="Typo.h4">@AppLocalization["Access Levels"] <AppDocumentationButton Page="/admin/permissions" /></MudText>
 <MudText Typo="Typo.h6" Size="HeadingSize.Is3">
     @AppLocalization["Access Levels"]
 </MudText>
@@ -34,9 +34,19 @@
         LoadingData = true;
         await InvokeAsync(StateHasChanged);
         if (Context != null)
-            CurrentAccessLevels = await Context.AccessLevels.Where(al => al.DeletedAt == null).ToListAsync();
-        LoadingData = false;
+        {
+            AccessLevel? selfLevel = null;
+            var selfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
+            if (selfAccessLevel != null)
+            {
+                selfLevel = selfAccessLevel;
+            }
 
+            CurrentAccessLevels = await Context.AccessLevels.Where(al => al.DeletedAt == null && al.Name != AccessLevel.SelfAccessLevelName).ToListAsync();
+
+
+            LoadingData = false;
+        }
         await InvokeAsync(StateHasChanged);
     }
 }

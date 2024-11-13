@@ -1,10 +1,14 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Database.Models.Permissions
 {
     public class AccessLevel : RecoverableAppDbSetBase, IComparable<AccessLevel>
     {
+        [NotMapped]
+        public const string SelfAccessLevelName = "BLAZAM_INTERNAL_SelfAccessLevel";
+
         [Required]
         public string Name { get; set; }
         /// <summary>

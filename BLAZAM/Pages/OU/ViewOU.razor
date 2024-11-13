@@ -1,5 +1,4 @@
 ﻿@inherits DirectoryEntryViewBase
-@inject OUNotificationService OUNotificationService
 
 <AppPageTitle>@OU?.CanonicalName</AppPageTitle>
 
@@ -11,9 +10,7 @@
                                   OnMove="@(()=>{MoveToModal?.ShowAsync();})"
                                   OnRename="@(()=>{RenameModal?.ShowAsync();})"
                                   OnToggleEditMode="ToggleEditMode" />
-        <MudOverlay Visible="SavingChanges" DarkBackground="false" Absolute="true">
-
-        </MudOverlay>
+    <LoadingData Loading=SavingChanges />
 
 
     </SetSubHeader>
@@ -89,21 +86,27 @@
     }
     async void SaveChanges()
     {
-        if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
+        if (OU != null)
         {
-            var changes = OU?.Changes;
-            await OU.CommitChangesAsync();
-            EditMode = false;
-            //Nav.WarnOnNavigation = false;
-            await AuditLogger.OU.Changed(OU, changes);
-            _ = OUNotificationService.PostAsync(OU, NotificationType.Modify);
+            if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
+            {
+                var changes = OU?.Changes;
+                await OU.CommitChangesAsync();
+                EditMode = false;
+                //Nav.WarnOnNavigation = false;
+                await AuditLogger.OU.Changed(OU, changes);
+                _ = NotificationGenerationService.PostAsync(OU, NotificationType.Modify, CurrentUser.State);
 
-            SnackBarService.Success("The changes made to this ou have been saved.");
-            await RefreshEntryComponents();
+                SnackBarService.Success(AppLocalization["The changes made to this ou have been saved."]);
+                await RefreshEntryComponents();
 
 
+            }
         }
-
+        else
+        {
+            SnackBarService.Error("OU is null");
+        }
     }
     void ChildClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
     {
@@ -118,7 +121,7 @@
                 OU.Delete();
                 SnackBarService.Success(OU.CanonicalName + " has been deleted.");
                 await AuditLogger.OU.Deleted(OU);
-                _ = OUNotificationService.PostAsync(OU, NotificationType.Delete);
+                _ = NotificationGenerationService.PostAsync(OU, NotificationType.Delete, CurrentUser.State);
 
 
                 Nav.NavigateTo("/ou/search");

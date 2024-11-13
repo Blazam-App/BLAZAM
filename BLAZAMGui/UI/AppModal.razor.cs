@@ -119,6 +119,8 @@ namespace BLAZAM.Gui.UI
 
         [Parameter]
         public EventCallback<bool> IsShownChanged { get; set; }
+        [Parameter]
+        public MaxWidth? Width { get; set; }
 
 
         protected override void OnInitialized()
@@ -127,6 +129,10 @@ namespace BLAZAM.Gui.UI
             YesText = AppLocalization["Ok"];
             if (Options == null)
                 Options = new();
+            if (Width != null)
+            {
+                Options.MaxWidth = Width;
+            }
             AllowClose = true;
         }
         /// <summary>

@@ -37,6 +37,8 @@ namespace BLAZAM.Services
             try
             {
                 EnsureAdminExists();
+                EnsureSelfExists();
+
                 if (_applicationInfo.InDemoMode)
                     EnsureDemoExists();
                 using var context = _dbFactory.CreateDbContext();
@@ -113,6 +115,22 @@ namespace BLAZAM.Services
                 {
                     Username = "Demo",
                     UserGUID = "2"
+                });
+            }
+            context.SaveChanges();
+        }
+        /// <summary>
+        /// Checks the database for the self user, if not found it is added
+        /// </summary>
+        private void EnsureSelfExists()
+        {
+            using var context = _dbFactory.CreateDbContext();
+            if (!context.UserSettings.Any(us => us.UserGUID == "3"))
+            {
+                context.UserSettings.Add(new()
+                {
+                    Username = "Self",
+                    UserGUID = "3"
                 });
             }
             context.SaveChanges();

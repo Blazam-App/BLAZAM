@@ -1,49 +1,37 @@
 ﻿@page "/ou/create"
 @inherits TabbedAppComponentBase
 @attribute [Authorize]
-
-<AppPageTitle>Create OU</AppPageTitle>
-
-    <MudTabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="selectedStep">
-        <MudTabPanel>
-            <ChildContent>
-                <MudText>
-                    
-
-                        <OUTreeView Label="Parent Organizational Unit"
-                                SelectedEntryChanged="OUSelected">
-                           @* <NodeContent>
-                                @context.Name
-                            </NodeContent>*@
-                        </OUTreeView>
-
-                    
-
-                    
-
-                        <MudTextField Immediate=true Label="Organizational Unit Name" @bind-Value=@newOUName />
+<AppPageTitle>@AppLocalization["Create OU"]</AppPageTitle>
 
 
-                    
-                    <MudButton Disabled=@(parentOU==null || newOUName.IsNullOrEmpty()) Color="Color.Primary" OnClick="CreateNewOU">Next</MudButton>
-                </MudText>
-            </ChildContent>
-            <TabContent>
-                Create
-            </TabContent>
-        </MudTabPanel>
-        <MudTabPanel Disabled=@(newOU==null || newOUName.IsNullOrEmpty())>
-            <ChildContent>
-                <MudText>
-                    <ConfirmNewOU OU="@newOU"  />
-                </MudText>
-            </ChildContent>
-            <TabContent>
-                Confirm
-            </TabContent>
-        </MudTabPanel>
-    </MudTabs>
-   
+<MudTabs Elevation="0" Outlined="true" @bind-ActivePanelIndex="selectedStep">
+    <MudTabPanel>
+        <ChildContent>
+            <MudText>
+                <OUTreeView Label="Parent Organizational Unit"
+                            SelectedEntryChanged="OUSelected"/>
+
+                <MudTextField Immediate=true Label="Organizational Unit Name" @bind-Value=@newOUName />
+
+                <MudButton Disabled=@(parentOU==null || newOUName.IsNullOrEmpty()) Color="Color.Primary" OnClick="CreateNewOU">Next</MudButton>
+            </MudText>
+        </ChildContent>
+        <TabContent>
+            Create
+        </TabContent>
+    </MudTabPanel>
+    <MudTabPanel Disabled=@(newOU==null || newOUName.IsNullOrEmpty())>
+        <ChildContent>
+            <MudText>
+                <ConfirmNewOU OU="@newOU" />
+            </MudText>
+        </ChildContent>
+        <TabContent>
+            Confirm
+        </TabContent>
+    </MudTabPanel>
+</MudTabs>
+
 
 
 
@@ -52,11 +40,6 @@
 
 
     int selectedStep;
-
-   
-
-
-
 
     string newOUName;
     IADOrganizationalUnit? parentOU;
@@ -101,7 +84,7 @@
     async void CreateNewOU()
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
+
         newOU = parentOU?.CreateOU(newOUName);
 
 
@@ -109,7 +92,7 @@
         selectedStep = 1;
 
 
-        LoadingData = true;
+        LoadingData = false;
 
         await InvokeAsync(StateHasChanged);
     }

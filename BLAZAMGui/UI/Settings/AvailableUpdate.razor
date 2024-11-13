@@ -20,12 +20,22 @@
                     <MudMarkdown OverrideHeaderTypo=ConvertHeaders Value="@Update.Release.ReleaseNotes" />
                 </MudExpansionPanel>
             </MudExpansionPanels>
-            @if (Update.Newer && Update.PassesPrerequisiteChecks)
+            @if ((Update.Newer || ApplicationInfo.InDebugMode) && Update.PassesPrerequisiteChecks)
             {
-                <MudButton Class="mx-6" Variant=Variant.Filled Color=Color.Success OnClick="(()=>{OnApply.InvokeAsync();})">Apply Update</MudButton>
+                <MudButton Class="mx-6" 
+                Variant=Variant.Filled
+                Color=Color.Success 
+                OnClick="(()=>{OnApply.InvokeAsync();})">
+                @AppLocalization["Apply Update"]
+            </MudButton>
                 @if (ApplicationInfo.InDebugMode)
                 {
-                    <MudButton Class="mx-6" Disabled=@(AutoUpdateService.IsUpdatedScheduled) OnClick="(()=>{OnSchedule.InvokeAsync();})" Color="Color.Success">Test Auto Update</MudButton>
+                    <MudButton Class="mx-6"
+                               Disabled=@(AutoUpdateService.IsUpdatedScheduled)
+                               OnClick="(()=>{OnSchedule.InvokeAsync();})"
+                               Color="Color.Success">
+                        Test Auto Update
+                    </MudButton>
 
 
                 }

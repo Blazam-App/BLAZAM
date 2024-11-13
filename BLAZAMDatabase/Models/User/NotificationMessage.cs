@@ -1,8 +1,11 @@
 ﻿
+using BLAZAM.Database.Models.Permissions;
+
 namespace BLAZAM.Database.Models.User
 {
 
     public enum NotificationLevel { Info, Success, Warning, Error }
+    public enum MessageType { Notification, AccessRequest }
     /// <summary>
     /// A notification message for the web user. These are
     /// placed under the user's notifications panel
@@ -14,12 +17,36 @@ namespace BLAZAM.Database.Models.User
         /// The severity level of this notification
         /// </summary>
         public NotificationLevel Level { get; set; }
+
         /// <summary>
-        /// The title of the notificaiton
+        /// The message type of this notification
+        /// </summary>
+        public MessageType MessageType { get; set; } = MessageType.Notification;
+
+        /// <summary>
+        /// The DN of the target for this notification
+        /// </summary>
+        public string? TargetDN { get; set; }
+
+        /// <summary>
+        /// The action being requested access to
+        /// </summary>
+        public ActiveDirectoryObjectAction? Action { get; set; }
+
+        /// <summary>
+        /// The user who triggered this notification
+        /// </summary>
+        public AppUser? Creator { get; set; }
+        public int? CreatorId { get; set; }
+
+        /// <summary>
+        /// The title of the notification
         /// </summary>
         public string? Title { get; set; }
+
+
         /// <summary>
-        /// The message of the notificatioon
+        /// The message of the notification
         /// </summary>
         public string? Message { get; set; }
 
@@ -43,10 +70,8 @@ namespace BLAZAM.Database.Models.User
         {
 
             return obj is NotificationMessage message && (
-                   Id != 0 && Id == message.Id ||
-                   Level == message.Level &&
-                   Title == message.Title &&
-                   Message == message.Message);
+                   Id != 0 && Id == message.Id);
         }
+
     }
 }

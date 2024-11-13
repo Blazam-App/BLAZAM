@@ -174,9 +174,7 @@
 
         </SettingsField>
 
-        <MudOverlay Visible=LoadingData DarkBackground=true>
-            <MudProgressLinear Indeterminate="true" />
-        </MudOverlay>
+        <LoadingData Loading=LoadingData />
     </MudStack>
 </MudForm>
 @code {
@@ -212,7 +210,7 @@
 
     }
 
-    protected override async void Save()
+    protected override async Task Save()
     {
         if ((newUpdatePassword == null && updatePasswordInDb is null) == false)
         {

@@ -1,5 +1,5 @@
 ﻿@inherits AppModalContent
-@inject OUNotificationService OUNotificationService
+@inject NotificationGenerationService OUNotificationService
 
 <MudText>Choose OU</MudText>
 
@@ -47,7 +47,7 @@
             DirectoryModel.MoveTo(ouToMoveTo);
 
             SnackBarService.Warning(DirectoryModel.CanonicalName + " has been moved to " + ouToMoveTo.CanonicalName + ", but changes need to be saved.");
-            _ = OUNotificationService.PostAsync(DirectoryModel, NotificationType.Modify);
+            _ = OUNotificationService.PostAsync(DirectoryModel, NotificationType.Modify, CurrentUser.State);
             _ = AuditLogger.Moved(DirectoryModel,ouMovedFrom, ouToMoveTo);
             await ModelChanged.InvokeAsync();
             Close();

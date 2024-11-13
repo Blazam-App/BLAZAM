@@ -60,6 +60,9 @@ namespace BLAZAM.Database.Context
 
 
             SetupDenyAll(seedContext);
+
+            //EnsureGlobalPermissionSettingsExists(seedContext);
+
         }
 
 

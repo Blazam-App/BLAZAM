@@ -54,9 +54,9 @@
                     @* <MudImage Class="app-icon" Src="@StaticAssets.ApplicationIconUri" /> *@
                     <Base64Image Width=100 Data="@settings.AppIcon" />
                     @*  <MudImage Class="app-icon" Src="@Convert.ToBase64String(settings.AppIcon)" /> *@
-                    <AppTooltip Text="Remove custom icon">
+                 
                         <AppCloseButton Tooltip=@AppLocalization["Remove"] OnClick="@(()=>{settings.AppIcon=null;})" />
-                    </AppTooltip>
+      
                 }
             </MudContainer>
             <MudFileUpload T="IBrowserFile" FilesChanged="LoadIcon" Accept="image/*">
@@ -121,9 +121,7 @@
 
     </MudStack>
 </EditForm>
-<MudOverlay Visible="LoadingData" DarkBackground="true" Absolute="true">
-    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
-</MudOverlay>
+<LoadingData Loading=LoadingData />
 @code {
     AppSettings settings = new AppSettings();
 
@@ -159,10 +157,10 @@
     }
 
 
-    protected override void Save()
+    protected override async Task Save()
     {
         AuditLogger.System.SettingsChanged("Application", settings.GetChanges(originalSettings));
-        base.Save();
+        await base.Save();
     }
 
 }

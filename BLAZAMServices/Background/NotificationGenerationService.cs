@@ -1,6 +1,8 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using AngleSharp.Dom;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Notifications;
+using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.EmailMessage.Email.Base;
 using BLAZAM.EmailMessage.Email.Notifications;
@@ -10,18 +12,21 @@ using BLAZAM.Logger;
 using BLAZAM.Notifications.Notifications;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Server.Data.Services;
+using BLAZAM.Session.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System;
 
 namespace BLAZAM.Services.Background
 {
-    public class OUNotificationService
+    public class NotificationGenerationService
     {
         private IAppDatabaseFactory _databaseFactory;
         private readonly INotificationPublisher _notificationPublisher;
         private readonly IStringLocalizer<AppLocalization> _appLocalization;
         private readonly EmailService _emailService;
 
-        public OUNotificationService(IAppDatabaseFactory databaseFactory, INotificationPublisher notificationPublisher, IStringLocalizer<AppLocalization> appLocalization, EmailService emailService)
+        public NotificationGenerationService(IAppDatabaseFactory databaseFactory, INotificationPublisher notificationPublisher, IStringLocalizer<AppLocalization> appLocalization, EmailService emailService)
         {
             _databaseFactory = databaseFactory;
             _notificationPublisher = notificationPublisher;
@@ -29,74 +34,36 @@ namespace BLAZAM.Services.Background
             _emailService = emailService;
         }
         private IDatabaseContext Context => _databaseFactory.CreateDbContext();
-        public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType, ApplicationUserState? actor=null, IDirectoryEntryAdapter? target = null)
+
+        /// <summary>
+        /// Post a notification to OU subscribers
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="notificationType"></param>
+        /// <param name="actor"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
         {
             await Task.Run(async () =>
             {
-                var context = Context;
+                NotificationMessage notification;
                 string notificationTitle;
-                notificationTitle = _appLocalization[source.ObjectType.ToString()] + " ";
-
-                string notificationBody;
-                NotificationTemplateComponent? emailMessage = null;
-                notificationBody = "<a href=\"" + source.SearchUri + "\">" + source.CanonicalName + "</a> ";
-
-                switch (notificationType)
-                {
-                    case NotificationType.Create:
-                        notificationTitle += _appLocalization["Created"];
-                        notificationBody += _appLocalization["was created at "] + source.Created?.ToLocalTime();
-                        var createdMessage = NotificationType.Create.ToNotification<EntryCreatedEmailMessage>();
-                        createdMessage.EntryName = source.CanonicalName;
-                        emailMessage = createdMessage;
-                        break;
-                    case NotificationType.Delete:
-                        notificationTitle += _appLocalization["Deleted"];
-                        notificationBody += _appLocalization["was deleted at "] + source.LastChanged?.ToLocalTime();
-                        var deletedMessage = NotificationType.Delete.ToNotification<EntryDeletedEmailMessage>();
-                        deletedMessage.EntryName = source.CanonicalName;
-                        emailMessage = deletedMessage;
-                        break;
-                    case NotificationType.Modify:
-                        notificationTitle += _appLocalization["Modified"];
-                        notificationBody += _appLocalization["was modified at "] + source.LastChanged?.ToLocalTime();
-                        var editedMessage = NotificationType.Modify.ToNotification<EntryEditedEmailMessage>();
-                        editedMessage.EntryName = source.CanonicalName;
-                        emailMessage = editedMessage;
-                        break;
-                    case NotificationType.GroupAssignment:
-                        notificationTitle += _appLocalization["Group Membership Changed"];
-                        notificationBody += _appLocalization["was assigned/removed from "] + "<a href=\"" + target.SearchUri + "\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + source.LastChanged?.ToLocalTime();
-
-                        var groupMembershipMessage = NotificationType.GroupAssignment.ToNotification<EntryGroupAssignmentEmailMessage>();
-                        groupMembershipMessage.EntryName = source.CanonicalName;
-                        emailMessage = groupMembershipMessage;
-                        break;
-                    case NotificationType.PasswordChange:
-                        notificationTitle += _appLocalization["Password Reset"];
-                        notificationBody += _appLocalization["had a password reset at "] + source.LastChanged?.ToLocalTime();
-                        var passwordChangeMessage = NotificationType.PasswordChange.ToNotification<PasswordChangedEmailMessage>();
-                        passwordChangeMessage.EntryName = source.CanonicalName;
-                        emailMessage = passwordChangeMessage;
-                        break;
-
-                }
-                var notification = new NotificationMessage();
-                notification.Title = notificationTitle;
-                notification.Message = notificationBody;
-                notification.Dismissable = true;
-                notification.Created = DateTime.Now;
-                notification.Level = NotificationLevel.Info;
+                NotificationTemplateComponent? emailMessage;
+                PackageNotification(source, notificationType, actor, target, out notification, out notificationTitle, out emailMessage);
                 var _emailConfigured = _emailService.IsConfigured;
+                var users = Context.UserSettings.Include(us => us.NotificationSubscriptions).ToList();
 
-                foreach (var user in Context.UserSettings.ToList())
+                Parallel.ForEach(users, async user =>
                 {
                     var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
                     var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
+
                     if (effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                     {
                         await _notificationPublisher.PublishNotification(user, notification);
                     }
+
                     if (effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                     {
                         if (emailMessage != null)
@@ -104,7 +71,6 @@ namespace BLAZAM.Services.Background
                             if (_emailConfigured && !user.Email.IsNullOrEmpty())
                             {
                                 await _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
-
                             }
                         }
                         else
@@ -113,10 +79,106 @@ namespace BLAZAM.Services.Background
                             Loggers.SystemLogger.Error("Email message template was not found! {@Error}", error);
                         }
                     }
-                }
+                });
+
+
             });
 
         }
+        /// <summary>
+        /// Package a notification from event parameters
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="notificationType"></param>
+        /// <param name="actor"></param>
+        /// <param name="target"></param>
+        /// <param name="notification"></param>
+        /// <param name="notificationTitle"></param>
+        /// <param name="emailMessage"></param>
+        public void PackageNotification(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor, IDirectoryEntryAdapter? target, out NotificationMessage notification, out string notificationTitle, out NotificationTemplateComponent? emailMessage)
+        {
+            notification = new NotificationMessage();
+            notificationTitle = _appLocalization[source.ObjectType.ToString()] + " ";
+
+            string notificationBody;
+            emailMessage = null;
+            notificationBody = "<a href=\"" + source.SearchUri + "\" class=\"mud-typography mud-link mud-primary-text mud-link-underline-hover mud-typography-caption\">" + source.CanonicalName + "</a> ";
+            var time = DateTime.Now.ToString();
+            switch (notificationType)
+            {
+                case NotificationType.Create:
+                    notification.Action = ActiveDirectoryObjectAction.Create;
+
+                    notificationTitle += _appLocalization["Created"];
+                    notificationBody += _appLocalization["was created at "] + time;
+                    var createdMessage = NotificationType.Create.ToNotification<EntryCreatedEmailMessage>();
+                    createdMessage.EntryName = source.CanonicalName;
+                    emailMessage = createdMessage;
+                    break;
+                case NotificationType.Delete:
+                    notification.Action = ActiveDirectoryObjectAction.Delete;
+
+                    notificationTitle += _appLocalization["Deleted"];
+                    notificationBody += _appLocalization["was deleted at "] + time;
+                    var deletedMessage = NotificationType.Delete.ToNotification<EntryDeletedEmailMessage>();
+                    deletedMessage.EntryName = source.CanonicalName;
+                    emailMessage = deletedMessage;
+                    break;
+                case NotificationType.Modify:
+                    notificationTitle += _appLocalization["Modified"];
+                    notificationBody += _appLocalization["was modified at "] + time;
+
+                    var editedMessage = NotificationType.Modify.ToNotification<EntryEditedEmailMessage>();
+                    editedMessage.EntryName = source.CanonicalName;
+                    emailMessage = editedMessage;
+                    break;
+                case NotificationType.GroupAssignment:
+                    notification.Action = ActiveDirectoryObjectAction.Assign;
+
+                    notificationTitle += _appLocalization["Group Membership Changed"];
+                    notificationBody += _appLocalization["was assigned/removed from "] + "<a href=\"" + target.SearchUri + "\" class=\"mud-typography mud-link mud-primary-text mud-link-underline-hover mud-typography-caption\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + time;
+
+                    var groupMembershipMessage = NotificationType.GroupAssignment.ToNotification<EntryGroupAssignmentEmailMessage>();
+                    groupMembershipMessage.EntryName = source.CanonicalName;
+                    emailMessage = groupMembershipMessage;
+                    break;
+                case NotificationType.PasswordChange:
+                    notification.Action = ActiveDirectoryObjectAction.SetPassword;
+
+                    notificationTitle += _appLocalization["Password Reset"];
+                    notificationBody += _appLocalization["had a password reset at "] + time;
+                    var passwordChangeMessage = NotificationType.PasswordChange.ToNotification<PasswordChangedEmailMessage>();
+                    passwordChangeMessage.EntryName = source.CanonicalName;
+                    emailMessage = passwordChangeMessage;
+                    break;
+
+            }
+            if (actor != null)
+            {
+                notificationBody += " " + _appLocalization["by"] + " " + actor.AuditUsername;
+            }
+            notification.Title = notificationTitle;
+            notification.Message = notificationBody;
+            notification.Dismissable = true;
+            notification.CreatorId = actor?.Preferences.Id;
+            notification.Level = NotificationLevel.Info;
+        }
+
+        public void PackageRequest(IDirectoryEntryAdapter target, ActiveDirectoryObjectAction action, IApplicationUserState? actor, out NotificationMessage notification)
+        {
+            notification = new NotificationMessage()
+            {
+                Action = action,
+                CreatorId = actor?.Preferences.Id,
+                Level = NotificationLevel.Info,
+                TargetDN = target.DN,
+                MessageType = MessageType.AccessRequest,
+                Title = _appLocalization["Request to"] + " " + _appLocalization[action.ToString()]
+            };
+
+            notification.Level = NotificationLevel.Info;
+        }
+
         public NotificationSubscription CalculateEffectiveEmailSubscriptions(AppUser user, IDirectoryEntryAdapter ou)
         {
             if (ou is not IADOrganizationalUnit)

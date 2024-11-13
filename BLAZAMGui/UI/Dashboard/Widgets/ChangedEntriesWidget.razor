@@ -58,9 +58,7 @@
 </MudDataGrid>
 
 
-<MudOverlay Visible=LoadingData>
-    <MudProgressLinear Indeterminate=true />
-</MudOverlay>
+<LoadingData Loading=LoadingData />
 @code {
     List<IDirectoryEntryAdapter> changdEntries
     {

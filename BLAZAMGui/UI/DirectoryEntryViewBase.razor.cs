@@ -12,7 +12,7 @@ namespace BLAZAM.Gui.UI
     public class DirectoryEntryViewBase : DatabaseComponentBase
     {
         [Inject]
-        public OUNotificationService OUNotificationService { get; set; }
+        public NotificationGenerationService NotificationGenerationService { get; set; }
         [Parameter]
         public IDirectoryEntryAdapter DirectoryEntry { get; set; }
 

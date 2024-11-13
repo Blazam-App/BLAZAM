@@ -1,5 +1,5 @@
 @inherits AppComponentBase
-@inject OUNotificationService OUNotificationService
+@inject NotificationGenerationService OUNotificationService
 
 <AppPageTitle>Confirm OU Creation</AppPageTitle>
 
@@ -30,7 +30,7 @@
             await OU.CommitChangesAsync();
             SnackBarService.Success("OU created");
             await AuditLogger.OU.Created(OU);
-            _ = OUNotificationService.PostAsync(OU, NotificationType.Create);
+            _ = OUNotificationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
             await Confirmed.InvokeAsync(OU);
             Nav.NavigateTo("/ou/create",true);
         }

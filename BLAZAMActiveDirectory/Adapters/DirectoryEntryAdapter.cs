@@ -20,6 +20,7 @@ using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using static MudBlazor.Colors;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -54,6 +55,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {
                 List<AuditChangeLog> changes = new();
+
+
+
+
                 foreach (var prop in NewEntryProperties)
                 {
                     object? currentValue = null;
@@ -639,9 +644,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     List<IDirectoryEntryAdapter> directoryEntries = new List<IDirectoryEntryAdapter>();
                     var children = DirectoryEntry.Children;
                     DirectoryEntryAdapter? thisObject = null;
+                    var list = new List<DirectoryEntry>();
                     foreach (DirectoryEntry child in children)
                     {
-
+                        list.Add(child);
+                    }
+                    Parallel.ForEach<DirectoryEntry>(list, child =>
+                    {
                         if (child.Properties["objectClass"].Contains("top"))
                         {
                             var objectClass = child.Properties["objectClass"];
@@ -673,14 +682,58 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             if (thisObject != null)
                             {
                                 thisObject.Parse(directory: Directory, directoryEntry: child);
-                                directoryEntries.Add(thisObject);
+                                lock (directoryEntries)
+                                {
+                                    directoryEntries.Add(thisObject);
+                                }
 
                             }
 
                         }
                         thisObject = null;
+                    });
+                    //foreach (DirectoryEntry child in children)
+                    //{
 
-                    }
+                    //    if (child.Properties["objectClass"].Contains("top"))
+                    //    {
+                    //        var objectClass = child.Properties["objectClass"];
+                    //        if (objectClass.Contains("computer"))
+                    //        {
+                    //            thisObject = new ADComputer();
+                    //        }
+                    //        else if (objectClass.Contains("user"))
+                    //        {
+                    //            thisObject = new ADUser();
+                    //        }
+                    //        else if (objectClass.Contains("organizationalUnit"))
+                    //        {
+                    //            thisObject = new ADOrganizationalUnit();
+                    //        }
+                    //        else if (objectClass.Contains("group"))
+                    //        {
+                    //            thisObject = new ADGroup();
+                    //        }
+                    //        else if (objectClass.Contains("printQueue"))
+                    //        {
+                    //            thisObject = new ADPrinter();
+                    //        }
+
+                    //        else if (objectClass.Contains("msFVE-RecoveryInformation"))
+                    //        {
+                    //            thisObject = new ADBitLockerRecovery();
+                    //        }
+                    //        if (thisObject != null)
+                    //        {
+                    //            thisObject.Parse(directory: Directory, directoryEntry: child);
+                    //            directoryEntries.Add(thisObject);
+
+                    //        }
+
+                    //    }
+                    //    thisObject = null;
+
+                    //}
                     directoryEntries.OrderBy(x => x.CanonicalName).OrderBy(x => x.ObjectType);
                     CachedChildren = directoryEntries;
                 }
@@ -1027,11 +1080,45 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
+        //protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
+        //{
+        //    var list = new List<T?>();
+        //    var dcs = new List<DomainController>(Directory.DomainControllers);
+        //    foreach (var dc in dcs)
+        //    {
+        //        try
+        //        {
+        //            if (dc.IsPingable())
+        //            {
+        //                var searcher = dc.GetDirectorySearcher();
+        //                searcher.Filter = "(distinguishedName=" + this.DN + ")";
+        //                searcher.ClientTimeout = TimeSpan.FromMilliseconds(500);
+        //                searcher.ServerTimeLimit = TimeSpan.FromMilliseconds(500);
+        //                var searchResult = searcher.FindOne();
+        //                if (searchResult != null)
+        //                {
+        //                    var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
+
+        //                    list.Add((T)value);
+        //                }
+
+        //            }
+        //        }
+        //        catch
+        //        {
+        //            //list.Add(default(T));
+        //        }
+        //    }
+        //    return list;
+        //}
+
+
         protected virtual List<T?> GetNonReplicatedProperty<T>(string propertyName)
         {
             var list = new List<T?>();
             var dcs = new List<DomainController>(Directory.DomainControllers);
-            foreach (var dc in dcs)
+
+            Parallel.ForEach(dcs, dc =>
             {
                 try
                 {
@@ -1045,19 +1132,26 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         if (searchResult != null)
                         {
                             var value = searchResult.GetDirectoryEntry().Properties[propertyName].Value;
-
-                            list.Add((T)value);
+                            lock (list)
+                            {
+                                list.Add((T)value);
+                            }
                         }
-
                     }
                 }
                 catch
                 {
-                    //list.Add(default(T));
+                    // Consider logging the exception or handling it appropriately.
+                    lock (list)
+                    {
+                        list.Add(default(T));
+                    }
                 }
-            }
+            });
+
             return list;
         }
+
 
         protected virtual T? GetProperty<T>(string propertyName)
         {
