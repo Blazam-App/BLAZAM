@@ -408,6 +408,7 @@ namespace BLAZAM.Update
                     FileName = UpdateCommandProcess,
                     Arguments = UpdateCommandArguments,
                     RedirectStandardOutput = true, // Enable output redirection
+                    RedirectStandardError = true,
                     UseShellExecute = false,       // Required for redirection
                     CreateNoWindow = true,
                 }
@@ -425,6 +426,14 @@ namespace BLAZAM.Update
                 {
                     output.AppendLine(e.Data);
                     Loggers.UpdateLogger?.Information("Update process output: " + e.Data);
+                }
+            };
+            process.ErrorDataReceived += (sender, e) =>
+            {
+                if (!string.IsNullOrEmpty(e.Data))
+                {
+                    output.AppendLine(e.Data);
+                    Loggers.UpdateLogger?.Error("Update process error: " + e.Data); // Log as error
                 }
             };
             process.BeginOutputReadLine(); // Start asynchronous reading
