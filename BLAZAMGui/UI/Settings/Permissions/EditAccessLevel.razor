@@ -6,8 +6,9 @@
 <MudStack Row=true>
     @if (!Self)
     {
-        <MudTextField Disabled=@(WorkingModel.Id==1) Label="@AppLocalization["Name"]" @bind-Value=WorkingModel.Name
-        />
+        <MudTextField Disabled=@(WorkingModel.Id==1)
+                      Label="@AppLocalization["Name"]"
+                      @bind-Value=WorkingModel.Name />
     }
     @if (!Self)
     {
@@ -70,20 +71,20 @@
 
                         }
                     </MudSelect>
-                
-               
-                <AppCloseButton Disabled=@(WorkingModel.Id==1)
-                                Tooltip=@AppLocalization["Remove"]
-                                OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
+
+
+                    <AppCloseButton Disabled=@(WorkingModel.Id==1)
+                                    Tooltip=@AppLocalization["Remove"]
+                                    OnClick="()=>RemoveObjectTypeAccess(objectMap)" />
                 }
             </MudCardHeader>
             <MudCardContent>
 
 
 
-                @if (objectMap.ObjectType == ActiveDirectoryObjectType.User 
-                && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id
-                && !Self)
+                @if (objectMap.ObjectType == ActiveDirectoryObjectType.User
+               && objectMap.ObjectAccessLevelId != ObjectAccessLevels.Deny.Id
+               && !Self)
                 {
                     <MudSwitch T=bool
                                UncheckedColor="Color.Error"
@@ -240,7 +241,7 @@
         </MudCard>
 
     }
-       
+
 </FlexContainer>
 
 @{
@@ -248,13 +249,20 @@
     if (Model.Id > 0)
         buttonLabel = AppLocalization["Update Access Level"];
 }
-<MudButton Disabled=@(SaveDisabled || WorkingModel.Id==1) Color=Color.Success Margin=Margin.IsAuto.OnX OnClick="SaveAccessLevel">@buttonLabel</MudButton>
+<MudButton Disabled=@(SaveDisabled || WorkingModel.Id==1)
+           Color=Color.Success
+           OnClick="SaveAccessLevel">@buttonLabel</MudButton>
 @if (WorkingModel.Id != 0 && !Self)
 {
-    <MudButton Disabled=@(WorkingModel.Id==1) Color=Color.Error Margin=Margin.IsAuto.OnX OnClick="@(()=>{_deleteModal.ShowAsync();})">@AppLocalization["Delete Access Level"]</MudButton>
- <AppModal Width="MaxWidth.Medium" @ref=_deleteModal Title="@AppLocalization["Confirm deletion"]">
-    <DeleteAccessLevelModalContent AccessLevel="Model" OnConfirm="@(()=>{DeleteAccessLevel();})"/>
-</AppModal>
+    <MudButton Disabled=@(WorkingModel.Id==1)
+               Color=Color.Error
+               OnClick="@(()=>{_deleteModal.ShowAsync();})">@AppLocalization["Delete Access Level"]</MudButton>
+    <AppModal Width="MaxWidth.Medium"
+              @ref=_deleteModal
+              Title="@AppLocalization["Confirm deletion"]">
+        <DeleteAccessLevelModalContent AccessLevel="Model"
+                                       OnConfirm="@(()=>{DeleteAccessLevel();})" />
+    </AppModal>
 }
 
 @code {
@@ -265,7 +273,7 @@
     [Parameter]
     public bool Self { get; set; }
 
-    
+
     AppModal? _deleteModal;
 
     bool ShowFields
@@ -338,7 +346,7 @@
             SnackBarService.Success(WorkingModel.Name + " has been updated");
 
 
-        if (addition&& !Self)
+        if (addition && !Self)
             WorkingModel = new();
         await LevelsChanged.InvokeAsync();
 

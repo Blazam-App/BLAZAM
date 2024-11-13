@@ -14,6 +14,7 @@ using Microsoft.Extensions.Localization;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Security.Principal;
+using System.Text;
 
 namespace BLAZAM.Update
 {
@@ -97,7 +98,8 @@ namespace BLAZAM.Update
         {
             get
             {
-                return "/c start Powershell -ExecutionPolicy Bypass -command \"" + CommandProcessPath + CommandArguments + "\"";
+                return "/c start Powershell -ExecutionPolicy Bypass -command \"& '" + CommandProcessPath
+                    + "' " + CommandArguments + "\"";
             }
         }
         private SystemFile CommandProcessPath
@@ -118,18 +120,21 @@ namespace BLAZAM.Update
         {
             get
             {
-                var creds = _updateService.GetImpersonationUser();
-                var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory + "'";
-                if (creds != null)
-                {
-                    args += " -Username " + creds.Username +
-                   " -Password '" + creds.Password.ToPlainText() + "'";
-                    if (!creds.FQDN.IsNullOrEmpty())
-                    {
+                //var creds = _updateService.GetImpersonationUser();
+                var args = " -UpdateSourcePath '" + UpdateStagingDirectory + "' -ProcessId " + _runningProcess.Id + " -ApplicationDirectory '" + _applicationRootDirectory;
+                if (Debugger.IsAttached)
+                    args += "bin\\Debug\\net8.0\\";
+                args += "'";
+                //if (creds != null)
+                //{
+                //    args += " -Username " + creds.Username +
+                //   " -Password '" + creds.Password.ToPlainText() + "'";
+                //    if (!creds.FQDN.IsNullOrEmpty())
+                //    {
 
-                        args += " -Domain " + creds.FQDN;
-                    }
-                }
+                //        args += " -Domain " + creds.FQDN;
+                //    }
+                //}
                 return args;
 
             }
@@ -231,18 +236,31 @@ namespace BLAZAM.Update
             //All prerequisites met
 
 
-            //Update the updater first
             Loggers.UpdateLogger?.Debug("Copying updater script");
             Loggers.UpdateLogger?.Debug("Source: " + UpdateStagingDirectory + "\\updater\\*");
             Loggers.UpdateLogger?.Debug("Dest: " + _applicationRootDirectory + "updater\\");
 
 
             using var context = await _dbFactory.CreateDbContextAsync();
-
-
-            if (_applicationRootDirectory.Writable)
+            var updateCredentials = _updateService.GetUpdateCredentials();
+            if (updateCredentials != null)
             {
-                Loggers.UpdateLogger?.Warning("The application user has write permission to the application directory!");
+                return updateCredentials.Run(() =>
+                {
+                    try
+                    {
+                        return ApplyFiles();
+                    }
+                    catch (Exception ex)
+                    {
+                        Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
+
+                    }
+                    return false;
+                });
+            }
+            else
+            {
                 try
                 {
                     return ApplyFiles();
@@ -250,64 +268,69 @@ namespace BLAZAM.Update
                 catch (Exception ex)
                 {
                     Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-                    throw new ApplicationUpdateException("Error trying to apply update files", ex);
+
                 }
-                return false;
             }
-            else
-            {
-                var settings = context.ActiveDirectorySettings.FirstOrDefault();
+            return false;
+            //switch (_updateService.UpdateCredential)
+            //{
 
+            //    case UpdateCredential.Application:
+            //        Loggers.UpdateLogger?.Warning("The application user has write permission to the application directory!");
+            //        try
+            //        {
+            //            return ApplyFiles();
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
+            //            throw new ApplicationUpdateException("Error trying to apply update files", ex);
+            //        }
+            //    case UpdateCredential.Active_Directory:
+            //        var adCredentials = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
+            //        if (adCredentials != null)
+            //        {
 
-                if (settings == null) throw new ApplicationUpdateException("No credentials are configured for updates");
+            //            return adCredentials.Run(() =>
+            //            {
+            //                try
+            //                {
+            //                    return ApplyFiles();
+            //                }
+            //                catch (Exception ex)
+            //                {
+            //                    Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
 
+            //                }
+            //                return false;
+            //            });
+            //        }
+            //        break;
+            //    case UpdateCredential.Update:
+            //        var updateCredentials = _updateService.GetUpdateCredentials();
+            //        if (updateCredentials != null)
+            //        {
 
-                try
-                {
-                    var updateCredentials = _updateService.GetUpdateCredentials();
-                    if (updateCredentials != null)
-                    {
+            //            return updateCredentials.Run(() =>
+            //            {
+            //                try
+            //                {
+            //                    return ApplyFiles();
+            //                }
+            //                catch (Exception ex)
+            //                {
+            //                    Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
 
-                        return updateCredentials.Run(() =>
-                        {
-                            try
-                            {
-                                return ApplyFiles();
-                            }
-                            catch (Exception ex)
-                            {
-                                Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-
-                            }
-                            return false;
-                        });
-                    }
-                    else
-                    {
-                        try
-                        {
-                            return ApplyFiles();
-                        }
-                        catch (Exception ex)
-                        {
-                            Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-
-                        }
-                        return false;
-                    }
-
-
-
-                }
-                catch (ApplicationException ex)
-                {
-                    Loggers.UpdateLogger?.Error("Unable to apply files {@Error}", ex);
-                    return false;
-                }
-
-
-            }
-
+            //                }
+            //                return false;
+            //            });
+            //        }
+            //        break;
+            //    default:
+            //    case UpdateCredential.None:
+            //        return false;
+            //}
+            //return false;
 
         }
 
@@ -320,9 +343,15 @@ namespace BLAZAM.Update
 
             SystemDirectory updaterDirFromStagedUpdate = new SystemDirectory(UpdateStagingDirectory.FullPath + "updater\\");
             SystemDirectory updaterDir = new SystemDirectory(_applicationRootDirectory.FullPath + "updater\\");
+
+
+
+
+
+            //Update the updater first
             updaterDirFromStagedUpdate.CopyTo(updaterDir);
-            //File.Copy(UpdateStagingDirectory + "\\updater\\", _applicationRootDirectory + "updater\\", true);
             Loggers.UpdateLogger?.Information("Updater updated");
+
             //If the updater updated we can  run the updater
             var updaterRan = InvokeUpdateExecutable();
 
@@ -339,8 +368,9 @@ namespace BLAZAM.Update
             }
         }
 
-        private bool InvokeUpdateExecutable()
+        private bool InvokeUpdateExecutable_old()
         {
+            var startTime = DateTime.Now;
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -355,16 +385,69 @@ namespace BLAZAM.Update
 
                 }
             };
+            Loggers.UpdateLogger?.Information("Starting update process");
 
             process.Start();
 
+            Loggers.UpdateLogger?.Information("Update process id: " + process.Id);
 
 
             process.WaitForExit();
+            Loggers.UpdateLogger?.Information("Update process exited: " + process.ExitCode);
+            Loggers.UpdateLogger?.Information("Update process execution time: " + (DateTime.Now - startTime).TotalMilliseconds + "ms");
 
             return true;
         }
+        private bool InvokeUpdateExecutable()
+        {
+            var startTime = DateTime.Now;
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = UpdateCommandProcess,
+                    Arguments = UpdateCommandArguments,
+                    RedirectStandardOutput = true, // Enable output redirection
+                    RedirectStandardError = true,
+                    UseShellExecute = false,       // Required for redirection
+                    CreateNoWindow = true,
+                }
+            };
 
+            Loggers.UpdateLogger?.Information("Starting update process");
+            process.Start();
+            Loggers.UpdateLogger?.Information("Update process id: " + process.Id);
+
+            // Read and log the output asynchronously
+            var output = new StringBuilder();
+            process.OutputDataReceived += (sender, e) =>
+            {
+                if (!string.IsNullOrEmpty(e.Data))
+                {
+                    output.AppendLine(e.Data);
+                    Loggers.UpdateLogger?.Information("Update process output: " + e.Data);
+                }
+            };
+            process.ErrorDataReceived += (sender, e) =>
+            {
+                if (!string.IsNullOrEmpty(e.Data))
+                {
+                    output.AppendLine(e.Data);
+                    Loggers.UpdateLogger?.Error("Update process error: " + e.Data); // Log as error
+                }
+            };
+            process.BeginOutputReadLine(); // Start asynchronous reading
+
+            process.WaitForExit();
+
+            Loggers.UpdateLogger?.Information("Update process exited: " + process.ExitCode);
+            Loggers.UpdateLogger?.Information("Update process execution time: " + (DateTime.Now - startTime).TotalMilliseconds + "ms");
+
+            // Log the complete output (if needed)
+            Loggers.UpdateLogger?.Information("Complete update process output:\n" + output.ToString());
+
+            return true;
+        }
         public async Task<bool> Backup(JobStep? step)
         {
             Loggers.UpdateLogger?.Information("Attempting backup of current version to: " + BackupPath);

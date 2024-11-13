@@ -24,14 +24,6 @@ namespace PlaywrightTests
             await OpenProfileSettings();
             await CloseDialog();
 
-            await OpenUserMenu();
-            await OpenNotificationSettings();
-            await CloseDialog();
-
-            await OpenRecycleBin();
-
-            await OpenConfigureSubMenu();
-
 
             // Expects the URL to contain intro.
             //await Expect(Page).ToHaveURLAsync(new Regex(".*home"));

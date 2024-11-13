@@ -62,6 +62,8 @@ $updateScript= {
         
         if(!$global:iis){
             Stop-Process -ID $global:processId -Force
+            
+            Stop-Service -Name "Blazam" -Force -ErrorAction Continue
         }
         
         Start-Sleep -Seconds 15
@@ -74,56 +76,11 @@ $updateScript= {
             Remove-Item -Path $global:destination\app_offline.htm -Force
         
         if(!$global:iis){
-            Write-Host("Process path: " + $global:processFilePath)
+            Start-Service -Name "Blazam" -ErrorAction Continue
 
-            if($global:processArguments -ne $null -and $global:processArguments -ne "")
-            {
-                
-                Write-Host("Starting with arguments: " + $global:processArguments)
-                $restartedProcess = Start-Process -FilePath $global:processFilePath -ArgumentList $global:processArguments -WorkingDirectory $global:destination -PassThru
-
-            }else{
-                $restartedProcess = Start-Process -FilePath $global:processFilePath -WorkingDirectory $global:destination -PassThru
-
-            }
             Write-Host("Waiting 15 seconds for Application to restart")
             Start-Sleep -Seconds 15
-            <#
-            Write-Host("Process Stats: "+($restartedProcess| Select-Object *))
-            if ($restartedProcess.ExitTime -eq $null -or $global:iis) {
-                Write-Host("Error: Web Application failed to restart rolling back changes")
-                #Perform Rollback Section
-                $restoreSource = $backupDirectory + "*"
-                Write-Host("Rolling back update")
-                Write-Host("Source: " + $restoreSource)
-                Write-Host("Destination: " + $global:destination)
-                Copy-Item -Path $restoreSource -Destination $backupDirectory -Recurse -Verbose -Force
-                Write-Host("Restarting ApplicationPool")
-        
-                if($global:processArguments -ne $null -and $global:processArguments -ne "")
-                {
-                    
-                    Write-Host("Starting with arguments: " + $global:processArguments)
-                    $restartedProcess = Start-Process -FilePath $global:processFilePath -ArgumentList $global:processArguments -PassThru
-            
-                }else{
-                    $restartedProcess = Start-Process -FilePath $global:processFilePath -PassThru
-            
-                }
-                #$runningSite | Start-IISSite
-                Write-Host("Waiting 15 seconds for Application to restart")
-            
-                Start-Sleep -Seconds 15
-                if ($restartedProcess.ExitTime -eq $null) {
-                    Write-Host("Error: Rollback performed, but application did not start! Oh no...")
-                }
-                else {
-                    Write-Host("Rollback completed successfully")
-                }
-                Stop-Transcript
-                exit
-            }
-            #>
+           
         }
         
 

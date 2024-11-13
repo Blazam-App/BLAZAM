@@ -63,7 +63,10 @@
             default:
 
 
-                <MudTimeline TimelineAlign="TimelineAlign.Default" TimelinePosition="TimelinePosition.Top" Style="max-height:600px;" Class="overflow-y-auto">
+                <MudTimeline TimelineAlign="TimelineAlign.Default"
+                             TimelinePosition="TimelinePosition.Top"
+                             Style="max-height:600px;"
+                             Class="overflow-y-auto">
                     @{
                         int i = 0;
                     }
@@ -76,7 +79,11 @@
                             <MudCard Class="pa-3">
 
 
-                                <MudButton Class="mx-6" OnClick="(()=>{ShowAllUpdates=!ShowAllUpdates;})" Color="Color.Success">@(ShowAllUpdates == false ? "Show Previous Updates" : "Hide Previous Updates")</MudButton>
+                                <MudButton Class="mx-6"
+                                           OnClick="(()=>{ShowAllUpdates=!ShowAllUpdates;})"
+                                           Color="Color.Success">
+                                    @(ShowAllUpdates == false ? "Show Previous Updates" : "Hide Previous Updates")
+                                </MudButton>
 
 
 
@@ -90,7 +97,7 @@
 
                     @if (ShowAllUpdates)
                     {
-                        @foreach (var update in UpdateService.AvailableUpdates.Where(x => x.Version<=ApplicationInfo.RunningVersion).OrderBy(x => x.Version))
+                        @foreach (var update in UpdateService.AvailableUpdates.Where(x => x.Version <= ApplicationInfo.RunningVersion).OrderBy(x => x.Version))
                         {
 
 
@@ -100,6 +107,7 @@
 
                         }
                     }
+                    
                     @if (UpdateService.NewestAvailableUpdate != null)
                     {
                         if (UpdateService.NewestAvailableUpdate.Version.NewerThan(ApplicationInfo.RunningVersion))
@@ -119,7 +127,7 @@
                             </MudTimelineItem>
                         }
                     }
-                  
+
                     @if (UpdateService.IncompatibleUpdates.Count > 0)
                     {
                         var latestIncompatibleUpdate = UpdateService.IncompatibleUpdates.Where(x => x.Newer).OrderByDescending(x => x.Release.ReleaseTime).FirstOrDefault();
