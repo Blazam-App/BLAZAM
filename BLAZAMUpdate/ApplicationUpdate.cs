@@ -272,65 +272,65 @@ namespace BLAZAM.Update
                 }
             }
             return false;
-            switch (_updateService.UpdateCredential)
-            {
+            //switch (_updateService.UpdateCredential)
+            //{
 
-                case UpdateCredential.Application:
-                    Loggers.UpdateLogger?.Warning("The application user has write permission to the application directory!");
-                    try
-                    {
-                        return ApplyFiles();
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
-                        throw new ApplicationUpdateException("Error trying to apply update files", ex);
-                    }
-                case UpdateCredential.Active_Directory:
-                    var adCredentials = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
-                    if (adCredentials != null)
-                    {
+            //    case UpdateCredential.Application:
+            //        Loggers.UpdateLogger?.Warning("The application user has write permission to the application directory!");
+            //        try
+            //        {
+            //            return ApplyFiles();
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
+            //            throw new ApplicationUpdateException("Error trying to apply update files", ex);
+            //        }
+            //    case UpdateCredential.Active_Directory:
+            //        var adCredentials = context.ActiveDirectorySettings.FirstOrDefault()?.CreateDirectoryAdminImpersonator();
+            //        if (adCredentials != null)
+            //        {
 
-                        return adCredentials.Run(() =>
-                        {
-                            try
-                            {
-                                return ApplyFiles();
-                            }
-                            catch (Exception ex)
-                            {
-                                Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
+            //            return adCredentials.Run(() =>
+            //            {
+            //                try
+            //                {
+            //                    return ApplyFiles();
+            //                }
+            //                catch (Exception ex)
+            //                {
+            //                    Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
 
-                            }
-                            return false;
-                        });
-                    }
-                    break;
-                case UpdateCredential.Update:
-                    var updateCredentials = _updateService.GetUpdateCredentials();
-                    if (updateCredentials != null)
-                    {
+            //                }
+            //                return false;
+            //            });
+            //        }
+            //        break;
+            //    case UpdateCredential.Update:
+            //        var updateCredentials = _updateService.GetUpdateCredentials();
+            //        if (updateCredentials != null)
+            //        {
 
-                        return updateCredentials.Run(() =>
-                        {
-                            try
-                            {
-                                return ApplyFiles();
-                            }
-                            catch (Exception ex)
-                            {
-                                Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
+            //            return updateCredentials.Run(() =>
+            //            {
+            //                try
+            //                {
+            //                    return ApplyFiles();
+            //                }
+            //                catch (Exception ex)
+            //                {
+            //                    Loggers.UpdateLogger?.Error("Error applying update: {@Error}", ex);
 
-                            }
-                            return false;
-                        });
-                    }
-                    break;
-                default:
-                case UpdateCredential.None:
-                    return false;
-            }
-            return false;
+            //                }
+            //                return false;
+            //            });
+            //        }
+            //        break;
+            //    default:
+            //    case UpdateCredential.None:
+            //        return false;
+            //}
+            //return false;
 
         }
 
