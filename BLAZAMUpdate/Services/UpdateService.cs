@@ -306,24 +306,7 @@ namespace BLAZAM.Update.Services
                 return UpdateCredential.None;
             }
         }
-        public WindowsImpersonationUser? GetImpersonationUser()
-        {
-            using var context = _dbFactory.CreateDbContext();
-            switch (UpdateCredential)
-            {
-                case UpdateCredential.Application:
-                    return null;
-                case UpdateCredential.Active_Directory:
-                    //Pull ad settings to test if app ad account can write to the application directory
-                    var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
-                    return adSettings.GetDirectoryImpersonationUser();
-                case UpdateCredential.Update:
-                    var appSettings = context.AppSettings.FirstOrDefault();
-                    return appSettings.GetUpdateImpersonationUser();
-                default:
-                    return null;
-            }
-        }
+
         public WindowsImpersonation? GetUpdateCredentials()
         {
             using var context = _dbFactory.CreateDbContext();
@@ -334,10 +317,10 @@ namespace BLAZAM.Update.Services
                 case UpdateCredential.Active_Directory:
                     //Pull ad settings to test if app ad account can write to the application directory
                     var adSettings = context.ActiveDirectorySettings.FirstOrDefault();
-                    return adSettings.CreateDirectoryAdminImpersonator();
+                    return adSettings?.CreateDirectoryAdminImpersonator();
                 case UpdateCredential.Update:
                     var appSettings = context.AppSettings.FirstOrDefault();
-                    return appSettings.CreateUpdateImpersonator();
+                    return appSettings?.CreateUpdateImpersonator();
                 default:
                     return null;
             }

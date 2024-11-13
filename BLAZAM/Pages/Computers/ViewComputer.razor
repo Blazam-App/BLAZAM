@@ -288,7 +288,7 @@
                 Computer.Delete();
                 SnackBarService.Success(Computer.CanonicalName + " has been deleted.");
                 await AuditLogger.Computer.Deleted(Computer);
-                _ = OUNotificationService.PostAsync(Computer, NotificationType.Delete, CurrentUser.State);
+                _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Delete, CurrentUser.State);
 
                 Nav.NavigateTo("/users/search");
 
@@ -328,7 +328,7 @@
                     }
                     if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
                     {
-                        _ = OUNotificationService.PostAsync(Computer, NotificationType.Modify, CurrentUser.State);
+                        _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Modify, CurrentUser.State);
                         await AuditLogger.User.Changed(Computer, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
                     }
 

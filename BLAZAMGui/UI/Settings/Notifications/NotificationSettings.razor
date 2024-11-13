@@ -1,5 +1,6 @@
 ﻿@inherits DatabaseComponentBase
-<h3>@AppLocalization["Manage Notifications"]</h3>
+<MudText Typo="Typo.h4">@AppLocalization["Manage Notifications"] <AppDocumentationButton Page="/admin/notifications" /></MudText>
+
 <MudAutocomplete @bind-Value=_selectedUser
                  MaxItems="50"
                  SearchFunc="SearchUsers"

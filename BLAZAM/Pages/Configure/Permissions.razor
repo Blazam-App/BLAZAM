@@ -3,8 +3,8 @@
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 @inherits TabbedAppComponentBase
+<AppPageTitle>@AppLocalization["Permissions"]</AppPageTitle>
 
-<AppPageTitle>Permissions</AppPageTitle>
 <AuthorizeView Roles=@UserRoles.SuperAdmin>
 
     <SetHeader>
@@ -48,7 +48,7 @@
 
                 @if (Monitor.DirectoryConnectionStatus == ServiceConnectionState.Up)
                 {
-                    <ImpersonateUser />
+            
                     <PermissionMapper />
 
                 }

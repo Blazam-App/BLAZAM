@@ -1,5 +1,8 @@
 @using BLAZAM.Server.Data.Services
 @inherits AppComponentBase
+
+<MudText Typo="Typo.h4">@AppLocalization["Effective Permissions"] <AppDocumentationButton Page="/admin/permissions" /></MudText>
+<ImpersonateUser />
 <MudGrid>
     <MudItem  xs=12 md="5">
         <ADAutoComplete Label=@AppLocalization["Application User"]

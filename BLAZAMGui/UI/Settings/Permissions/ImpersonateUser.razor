@@ -2,11 +2,11 @@
 @using System.Diagnostics
 @inherits AppComponentBase
 @inject IJSRuntime JSRuntime
-@if ((CurrentUser.State.IsSuperAdmin && CurrentUser.Username != "Demo") || (CurrentUser.State.IsSuperAdmin|| Debugger.IsAttached))
+@if ((CurrentUser.State.IsSuperAdmin && CurrentUser.Username != "Demo") || (CurrentUser.State.IsSuperAdmin && Debugger.IsAttached))
 {
     <form action="" @onsubmit=@AttemptSignIn id="login-form">
 
-        <SettingsField>
+     
 
             <ADAutoComplete Disabled=@attemptingImpersonation 
             Label="@AppLocalization["Impersonate User"]" 
@@ -20,8 +20,6 @@
                 Impersonate User
             </MudButton>
 
-
-        </SettingsField>
 
 
     </form>

@@ -1,8 +1,8 @@
 ﻿@page "/recyclebin"
 @inherits AppComponentBase
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
+<AppPageTitle>@AppLocalization["Recycle Bin"]</AppPageTitle>
 
-<AppPageTitle>Recycle Bin</AppPageTitle>
 
 <MudDataGrid T="IDirectoryEntryAdapter"
              Virtualize=true

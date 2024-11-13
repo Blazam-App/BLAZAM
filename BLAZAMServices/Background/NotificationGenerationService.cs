@@ -34,7 +34,7 @@ namespace BLAZAM.Services.Background
             _emailService = emailService;
         }
         private IDatabaseContext Context => _databaseFactory.CreateDbContext();
-        
+
         /// <summary>
         /// Post a notification to OU subscribers
         /// </summary>
@@ -166,15 +166,16 @@ namespace BLAZAM.Services.Background
 
         public void PackageRequest(IDirectoryEntryAdapter target, ActiveDirectoryObjectAction action, IApplicationUserState? actor, out NotificationMessage notification)
         {
-            notification = new NotificationMessage() {
+            notification = new NotificationMessage()
+            {
                 Action = action,
                 CreatorId = actor?.Preferences.Id,
                 Level = NotificationLevel.Info,
                 TargetDN = target.DN,
                 MessageType = MessageType.AccessRequest,
-                Title = _appLocalization["Request to"] +" "+ _appLocalization[action.ToString()]
+                Title = _appLocalization["Request to"] + " " + _appLocalization[action.ToString()]
             };
-            
+
             notification.Level = NotificationLevel.Info;
         }
 
