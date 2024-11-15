@@ -241,7 +241,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// Directory.
         /// </summary>
         /// <param name="containerName">The container name of the new user</param>
-        /// <returns>An uncommited user</returns>
+        /// <returns>An uncommitted user</returns>
         public IADUser CreateUser(string containerName)
         {
             var fullContainerName = "CN=" + containerName.Trim().Replace(",", "\\,");
