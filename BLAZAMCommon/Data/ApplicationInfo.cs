@@ -74,8 +74,7 @@ namespace BLAZAM.Common.Data
         /// </summary>
         public static IServiceProvider services;
 
-        [Obsolete("Not using any local REST API")]
-        public static SecurityKey tokenKey;
+        public static SecurityKey TokenKey;
 
 
         /// <summary>

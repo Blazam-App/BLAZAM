@@ -1,13 +1,14 @@
 ﻿@inject IHttpContextAccessor context
 @inject IApplicationUserStateService userStateService
 @inject ICurrentUserStateService currentUser
-<CascadingAuthenticationState>
 
 
 
-    <ErrorBoundary>
+<ErrorBoundary>
 
-        <ChildContent>
+    <ChildContent>
+        <CascadingAuthenticationState>
+
             <Router AppAssembly="@typeof(App).Assembly">
                 <Found Context="routeData">
                     <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
@@ -42,20 +43,22 @@
                     </LayoutView>
                 </NotFound>
             </Router>
-        </ChildContent>
-        <ErrorContent>
-            <LayoutView Layout="@typeof(MinLayout)">
-                <UnhandledExceptionPage Error="@context" />
 
-            </LayoutView>
-        </ErrorContent>
-    </ErrorBoundary>
+        </CascadingAuthenticationState>
+
+    </ChildContent>
+    <ErrorContent>
+        <LayoutView Layout="@typeof(MinLayout)">
+            <UnhandledExceptionPage Error="@context" />
+
+        </LayoutView>
+    </ErrorContent>
+</ErrorBoundary>
 
 
 
 
 
-</CascadingAuthenticationState>
 
 <MudThemeProvider IsDarkMode="@darkMode" Theme="@activeTheme.Theme" />
 <MudDialogProvider />
@@ -84,7 +87,7 @@
                     activeTheme = new BlueTheme();
 
                 }
-              
+
             }
             darkMode = currentUser.State?.Preferences?.DarkMode == true;
         }

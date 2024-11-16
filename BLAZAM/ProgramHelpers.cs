@@ -14,6 +14,9 @@ using BLAZAM.Session.Interfaces;
 using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using MudBlazor;
 using MudBlazor.Services;
 using System.Diagnostics;
@@ -142,45 +145,44 @@ namespace BLAZAM.Server
 
 
 
-            //Set up authentication and api token authentication
+            // Set up authentication and API token authentication
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(AppAuthenticationStateProvider.ApplyAuthenticationCookieOptions());
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                // Cookie auth is the default
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Challenge with cookies
+            })
+            .AddCookie(AppAuthenticationStateProvider.ApplyAuthenticationCookieOptions())
+            .AddNegotiate().AddJwtBearer(options => // Add JWT Bearer for API
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateActor = true,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = ApplicationInfo.TokenKey
+                };
+            });
 
             builder.Services.Configure<AuthenticationOptions>(options =>
             {
                 options.RequireAuthenticatedSignIn = false;
             });
-            /*
-            Keeping  this here for a possible API in the future
-            It's some original test code from before AppAuthenticatinProvider was
-            completed so it may not be usable as is
 
-            builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-            .AddNegotiate().AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters =
-                    new TokenValidationParameters
-                    {
-                        ValidateAudience = false,
-                        ValidateIssuer = false,
-                        ValidateActor = false,
-                        ValidateLifetime = true,
-                        IssuerSigningKey = TokenKey
-                    };
-            });
-            
-          
-            builder.Services.AddAuthorization(options =>
-            {
-                // By default, all incoming requests will be authorized according to the default policy.
-                options.FallbackPolicy = options.DefaultPolicy;
-            });
-            */
+            /*
+              builder.Services.AddAuthorization(options =>
+              {
+                  // By default, all incoming requests will be authorized according to the default policy.
+                  options.FallbackPolicy = options.DefaultPolicy;
+              });
+              */
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
@@ -245,6 +247,9 @@ namespace BLAZAM.Server
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();
 
+            //Provide a JwtTokens as a service
+            builder.Services.AddSingleton<JwtTokenService>();
+
 
 
 
@@ -307,6 +312,12 @@ namespace BLAZAM.Server
 
             builder.Services.AddSingleton<NotificationGenerationService>();
 
+            builder.Services.AddMvc();
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Blazam API", Version = "v1" });
+            });
 
             builder.Host.UseWindowsService();
 

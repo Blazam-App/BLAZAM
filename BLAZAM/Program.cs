@@ -166,6 +166,11 @@ namespace BLAZAM
             AppInstance.UseAuthentication();
             AppInstance.UseAuthorization();
             AppInstance.UseSession();
+            AppInstance.UseSwagger();
+            AppInstance.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("v1/swagger.json", "Blazam API V1");
+            });
             //AppInstance.MapControllers();
             AppInstance.MapBlazorHub();
             AppInstance.MapFallbackToPage("/_Host");

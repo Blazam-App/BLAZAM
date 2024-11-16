@@ -7,7 +7,7 @@ namespace BLAZAM.Services
     public class EncryptionService : IEncryptionService
     {
         private Encryption Encryption { get; set; }
-
+        public byte[] Key => Encryption.Key;
         public ServiceConnectionState Status
         {
             get

@@ -56,6 +56,13 @@
 
 
     </MudNavGroup>
+
+    <MudTextField ReadOnly="true" T="string" Value="@("Bearer "+CurrentUser.State.Preferences.APIToken)" Label="@AppLocalization["API Token"]" />
+    <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@(()=>{
+        var token = JwtTokenService.GenerateJwtToken(CurrentUser.Username,CurrentUser.State.Preferences.UserGUID);
+        CurrentUser.State.Preferences.APIToken = token;
+        //CurrentUser.State.SaveBasicUserPreferences();
+    })">@AppLocalization["Generate New API Token"]</MudButton>
     <LoadingData Loading=LoadingData />
 </MudStack>
 @code {

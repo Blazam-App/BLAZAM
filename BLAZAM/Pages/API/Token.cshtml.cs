@@ -11,17 +11,17 @@ using System.Security.Claims;
 
 namespace BLAZAM.Server.Pages.API
 {
-    [Obsolete("Not using any  local REST API")]
     public class TokenModel : PageModel
     {
+        private readonly IAppDatabaseFactory _factory;
+
         public JwtSecurityTokenHandler JwtTokenHandler { get; private set; }
         public string Token { get; private set; }
-        public IDatabaseContext Context { get; private set; }
 
 
-        public TokenModel(IDatabaseContext context)
+        public TokenModel(IAppDatabaseFactory factory)
         {
-            Context = context;
+            _factory = factory;
         }
 
         public JsonResult OnGet()
@@ -34,16 +34,17 @@ namespace BLAZAM.Server.Pages.API
             }
 
             var claims = new[] { new Claim(ClaimTypes.Name, user) };
-            var credentials = new SigningCredentials(ApplicationInfo.tokenKey, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken("ExampleServer", "ExampleClients", claims, expires: DateTime.Now.AddSeconds(60), signingCredentials: credentials);
+            var credentials = new SigningCredentials(ApplicationInfo.TokenKey, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken("Blazam", "ExampleClients", claims, expires: DateTime.Now.AddSeconds(60), signingCredentials: credentials);
             Token = JwtTokenHandler.WriteToken(token);
-            var userSettings = Context.UserSettings.Where(u => u.UserGUID == this.User.Identity.Name).FirstOrDefault();
+            using var context = _factory.CreateDbContext();
+            var userSettings = context.UserSettings.Where(u => u.UserGUID == this.User.Identity.Name).FirstOrDefault();
             if (userSettings != null)
             {
                 userSettings.APIToken = Token;
             }
 
-            Context.SaveChanges();
+            context.SaveChanges();
             return new JsonResult(userSettings);
         }
     }
