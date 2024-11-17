@@ -1,8 +1,12 @@
 ﻿using BLAZAM.FileSystem;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Configuration;
 using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace BLAZAM.Common.Data
 
@@ -73,8 +77,13 @@ namespace BLAZAM.Common.Data
         /// A local store of the .Net web application Services
         /// </summary>
         public static IServiceProvider services;
+        public static SymmetricSecurityKey tokenKey { get {
 
-        public static SecurityKey TokenKey;
+                var keyString = configuration.GetValue<string>("EncryptionKey");
+                var keyBytes = Encoding.ASCII.GetBytes(keyString);
+                return new SymmetricSecurityKey(keyBytes);
+            } }
+
 
 
         /// <summary>
@@ -103,6 +112,8 @@ namespace BLAZAM.Common.Data
         /// eg: C:\Users\user\appdata\temp\
         /// </returns>
         public SystemDirectory TempDirectory { get => tempDirectory; set => tempDirectory = value; }
+        public Microsoft.Extensions.Configuration.ConfigurationManager Configuration { get => configuration; }
+        public static Microsoft.Extensions.Configuration.ConfigurationManager configuration;
 
         /// <summary>
         /// A collection of active listening address's with port
@@ -146,6 +157,7 @@ namespace BLAZAM.Common.Data
             get; set;
         }
         public Guid InstallationId { get => installationId; set => installationId = value; }
+        public SymmetricSecurityKey TokenKey { get => tokenKey; }
 
         /// <summary>
         /// Use only for UnitTests
@@ -164,6 +176,7 @@ namespace BLAZAM.Common.Data
             RunningProcess = Process.GetCurrentProcess();
             ApplicationRoot = new SystemDirectory(builder.Environment.ContentRootPath);
             TempDirectory = new SystemDirectory(Path.GetTempPath() + "Blazam\\");
+            configuration = builder.Configuration;
             //AppDataDirectory = new SystemDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "Blazam\\");
         }
     }

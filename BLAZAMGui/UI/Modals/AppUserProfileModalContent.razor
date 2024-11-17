@@ -61,6 +61,7 @@
     <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@(()=>{
         var token = JwtTokenService.GenerateJwtToken(CurrentUser.Username,CurrentUser.State.Preferences.UserGUID);
         CurrentUser.State.Preferences.APIToken = token;
+var decoded = JwtTokenService.DecodeJwtToken(token);
         //CurrentUser.State.SaveBasicUserPreferences();
     })">@AppLocalization["Generate New API Token"]</MudButton>
     <LoadingData Loading=LoadingData />

@@ -1,4 +1,5 @@
 ﻿
+using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
@@ -14,15 +15,20 @@ using BLAZAM.Session.Interfaces;
 using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MimeKit;
 using MudBlazor;
 using MudBlazor.Services;
+using Serilog;
 using System.Diagnostics;
 using System.Globalization;
 using System.Management;
 using System.Reflection;
+using System.Text;
 
 namespace BLAZAM.Server
 {
@@ -144,7 +150,6 @@ namespace BLAZAM.Server
             builder.Services.AddSingleton<ApplicationInfo>();
 
 
-
             // Set up authentication and API token authentication
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
@@ -154,26 +159,28 @@ namespace BLAZAM.Server
 
             builder.Services.AddAuthentication(options =>
             {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                // Cookie auth is the default
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Challenge with cookies
-            })
-            .AddCookie(AppAuthenticationStateProvider.ApplyAuthenticationCookieOptions())
-            .AddNegotiate().AddJwtBearer(options => // Add JWT Bearer for API
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+
+            }).AddCookie(AppAuthenticationStateProvider.ApplyAuthenticationCookieOptions())
+            .AddJwtBearer(options =>  // Configure JWT Bearer here
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateAudience = false,
+                    ValidateIssuerSigningKey = true, // Important: Validate the signing key
+                    IssuerSigningKey = ApplicationInfo.tokenKey,
                     ValidateIssuer = false,
-                    ValidateActor = true,
-                    ValidateLifetime = true,
-                    IssuerSigningKey = ApplicationInfo.TokenKey
+                    ValidateAudience = false,
+                    ValidateActor = false,
+                    ValidateLifetime = true
                 };
-            });
-
-            builder.Services.Configure<AuthenticationOptions>(options =>
-            {
-                options.RequireAuthenticatedSignIn = false;
+                options.Events = new JwtAuthenticationEventsHandler(
+                    builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>(),
+                    builder.Services.BuildServiceProvider().GetRequiredService<IApplicationUserStateService>(),
+                    builder.Services.BuildServiceProvider().GetRequiredService<IAppDatabaseFactory>(),
+                    builder.Services.BuildServiceProvider().GetRequiredService<ICurrentUserStateService>()
+                );
             });
 
             /*
@@ -248,7 +255,7 @@ namespace BLAZAM.Server
             builder.Services.AddScoped<AuditLogger>();
 
             //Provide a JwtTokens as a service
-            builder.Services.AddSingleton<JwtTokenService>();
+            builder.Services.AddScoped<JwtTokenService>();
 
 
 
@@ -312,14 +319,44 @@ namespace BLAZAM.Server
 
             builder.Services.AddSingleton<NotificationGenerationService>();
 
+            builder.Services.AddControllers(options =>
+            {
+
+                options.Conventions.Add(new LowercaseControllerRouteConvention());
+            });
+
             builder.Services.AddMvc();
 
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Blazam API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Blazam API", 
+                    Version = "v1" ,
+                    Description="The official Blazam API documentation",
+                    Contact=new() { Email = "support@blazam.org",
+                        Name="Blazam Support", 
+                        Url=new("https://blazam.org/support") },
+                    TermsOfService=new Uri("https://blazam.org/tos")
+                });
+
+                // Add descriptions using XML comments
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+                // Configure Swagger to use JWT Bearer authorization
+                //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                //{
+                //    Description = "JWT Authorization header using the Bearer scheme.Example: \"Authorization: Bearer {token}\"",
+                //    Name = "Authorization",
+                //    In = ParameterLocation.Header,
+                //    Type = SecuritySchemeType.Http,
+                //    Scheme = "bearer",
+                //    BearerFormat = "JWT"
+                //});
             });
 
             builder.Host.UseWindowsService();
+
+
 
             return builder;
         }

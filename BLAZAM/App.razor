@@ -18,7 +18,6 @@
                         <NotAuthorized>
                             @if (context.User.Identity?.IsAuthenticated != true)
                             {
-                                <PageTitle>Login</PageTitle>
                                 <LayoutView Layout="@typeof(LoginLayout)">
                                     <Login />
                                 </LayoutView>

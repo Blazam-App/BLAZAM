@@ -1,8 +1,13 @@
-﻿using BLAZAM.Common.Data.Services;
+﻿using BLAZAM.Common.Data;
+using BLAZAM.Common.Data.Services;
+using BLAZAM.Database.Context;
 using BLAZAM.Logger;
+using BLAZAM.Server.Data.Services;
+using BLAZAM.Session.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -13,18 +18,20 @@ namespace BLAZAM.Services
 {
     public class JwtTokenService
     {
-        private readonly IEncryptionService _encryptionService;
+        private readonly ICurrentUserStateService _currentUserStateService;
+        private readonly ApplicationInfo _applicationInfo;
 
-        public JwtTokenService(IEncryptionService encryptionService)
+        public JwtTokenService(ApplicationInfo applicationInfo, ICurrentUserStateService currentUserStateService)
 
         {
-            _encryptionService = encryptionService;
+            _currentUserStateService = currentUserStateService;
+            _applicationInfo = applicationInfo;
         }
 
-        public string GenerateJwtToken(string userName,string userGuid)
+        public string GenerateJwtToken(string userName, string userGuid)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = _encryptionService.Key;
+
             var claims = new Dictionary<string, object>
             {
                 { ClaimTypes.Sid, userGuid }
@@ -32,11 +39,15 @@ namespace BLAZAM.Services
             // Get key from config
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, userName) }),
-                 Claims  = claims,
-                Expires     = DateTime.UtcNow.AddDays(7), // Set expiration
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Subject = _currentUserStateService.State.User.Claims.FirstOrDefault()?.Subject,
+                //Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, userName) }),
+                Claims = claims,
+                IssuedAt = DateTime.UtcNow,
+                Issuer = DatabaseCache.ApplicationSettings.AppName,
+                Expires = DateTime.UtcNow.AddDays(365), // Set expiration
+                SigningCredentials = new SigningCredentials(_applicationInfo.TokenKey, SecurityAlgorithms.HmacSha256Signature)
             };
+            var autheenticated = tokenDescriptor.Subject.IsAuthenticated;
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
@@ -45,15 +56,15 @@ namespace BLAZAM.Services
      token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = _encryptionService.Key; // Get key from config
+
 
             try
             {
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer  = false,
+                    IssuerSigningKey = _applicationInfo.TokenKey,
+                    ValidateIssuer = false,
                     ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero // Set clock skew to zero
                 }, out SecurityToken validatedToken);

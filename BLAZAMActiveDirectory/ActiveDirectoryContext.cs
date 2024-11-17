@@ -26,6 +26,7 @@ namespace BLAZAM.ActiveDirectory
             get
             {
                 if (currentUser != null) return currentUser;
+                if (UserStateService.CurrentUserState != null) return UserStateService.CurrentUserState;
                 //throw new ApplicationException("Current User State was not provided to this directory entry");
                 return null;
             }
