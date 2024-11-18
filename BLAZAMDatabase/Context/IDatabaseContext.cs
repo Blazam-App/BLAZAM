@@ -27,6 +27,7 @@ namespace BLAZAM.Database.Context
         DbSet<DirectoryTemplate> DirectoryTemplates { get; set; }
         DbSet<EmailSettings> EmailSettings { get; set; }
         DbSet<EmailTemplate> EmailTemplates { get; set; }
+        //DbSet<EmailAuditLog> EmailAuditLog { get; set; }
         DbSet<FieldAccessLevel> FieldAccessLevel { get; set; }
         //DbSet<GroupAuditLog> GroupAuditLog { get; set; }
         DbSet<LogonAuditLog> LogonAuditLog { get; set; }
