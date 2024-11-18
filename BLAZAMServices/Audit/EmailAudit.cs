@@ -34,19 +34,19 @@ namespace BLAZAM.Services.Audit
             try
             {
                 using var context = await Factory.CreateDbContextAsync();
-                var table = context.EmailAuditLog;
-                var auditEntry = new EmailAuditLog()
-                {
-                    MessageGuid = emailId,
-                    From = from,
-                    To = to,
-                    Cc = cc,
-                    Bcc = bcc,
-                    Subject = subject,
-                    HtmlBody = body,
-                    ServerResponse = response
-                };
-                table.Add(auditEntry);
+                //var table = context.EmailAuditLog;
+                //var auditEntry = new EmailAuditLog()
+                //{
+                //    MessageGuid = emailId,
+                //    From = from,
+                //    To = to,
+                //    Cc = cc,
+                //    Bcc = bcc,
+                //    Subject = subject,
+                //    HtmlBody = body,
+                //    ServerResponse = response
+                //};
+                //table.Add(auditEntry);
                 context.SaveChanges();
                 return true;
 

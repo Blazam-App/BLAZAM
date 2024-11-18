@@ -27,29 +27,39 @@ namespace BLAZAM.Services
             _currentUserStateService = currentUserStateService;
             _applicationInfo = applicationInfo;
         }
-
-        public string GenerateJwtToken(string userName, string userGuid)
+        /// <summary>
+        /// Generates a new <see cref="JwtSecurityToken"/> for the <see cref="ICurrentUserStateService"/> user and places
+        /// it into the database
+        /// </summary>
+        /// <param name="lifetime">The amount of time the token should be allowed to be used. Defaults to 365 days.</param>
+        /// <returns>The newly generated <see cref="JwtSecurityToken"/></returns>
+        public string GenerateJwtToken(TimeSpan? lifetime=null)
         {
+            if (lifetime == null) {lifetime = TimeSpan.FromDays(365); }
             var tokenHandler = new JwtSecurityTokenHandler();
 
+            var currentUser = _currentUserStateService.State;
             var claims = new Dictionary<string, object>
             {
-                { ClaimTypes.Sid, userGuid }
+                { ClaimTypes.Sid, currentUser.Preferences.UserGUID}
             };
             // Get key from config
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = _currentUserStateService.State.User.Claims.FirstOrDefault()?.Subject,
+                Subject = currentUser.User.Claims.FirstOrDefault()?.Subject,
                 //Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, userName) }),
                 Claims = claims,
                 IssuedAt = DateTime.UtcNow,
                 Issuer = DatabaseCache.ApplicationSettings.AppName,
-                Expires = DateTime.UtcNow.AddDays(365), // Set expiration
+                Expires = (DateTime.UtcNow+lifetime.Value), // Set expiration
                 SigningCredentials = new SigningCredentials(_applicationInfo.TokenKey, SecurityAlgorithms.HmacSha256Signature)
             };
-            var autheenticated = tokenDescriptor.Subject.IsAuthenticated;
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            var jwtToken = tokenHandler.WriteToken(token);
+
+
+
+            return jwtToken;
         }
 
         public ClaimsPrincipal DecodeJwtToken(string

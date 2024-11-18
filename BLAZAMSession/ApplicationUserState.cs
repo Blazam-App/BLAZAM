@@ -197,7 +197,6 @@ namespace BLAZAM.Server.Data.Services
                         dbUserSettings.SearchDisabledComputers = this.Preferences?.SearchDisabledComputers == true;
                         dbUserSettings.FavoriteEntries = this.Preferences?.FavoriteEntries ?? new();
                         dbUserSettings.Email = this.Preferences?.Email;
-                        dbUserSettings.APIToken = this.Preferences?.APIToken;
                         await context.SaveChangesAsync();
 
                     }

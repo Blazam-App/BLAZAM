@@ -3,11 +3,11 @@
 @inject ICurrentUserStateService currentUser
 
 
+<CascadingAuthenticationState>
 
-<ErrorBoundary>
+    <ErrorBoundary>
 
-    <ChildContent>
-        <CascadingAuthenticationState>
+        <ChildContent>
 
             <Router AppAssembly="@typeof(App).Assembly">
                 <Found Context="routeData">
@@ -43,27 +43,27 @@
                 </NotFound>
             </Router>
 
-        </CascadingAuthenticationState>
 
-    </ChildContent>
-    <ErrorContent>
-        <LayoutView Layout="@typeof(MinLayout)">
-            <UnhandledExceptionPage Error="@context" />
+        </ChildContent>
+        <ErrorContent>
+            <LayoutView Layout="@typeof(MinLayout)">
+                <UnhandledExceptionPage Error="@context" />
 
-        </LayoutView>
-    </ErrorContent>
-</ErrorBoundary>
-
+            </LayoutView>
+        </ErrorContent>
+    </ErrorBoundary>
 
 
 
 
 
-<MudThemeProvider IsDarkMode="@darkMode" Theme="@activeTheme.Theme" />
-<MudDialogProvider />
-<MudPopoverProvider />
-<MudSnackbarProvider />
-<SessionExpirationWarningProvider />
+
+    <MudThemeProvider IsDarkMode="@darkMode" Theme="@activeTheme.Theme" />
+    <MudDialogProvider />
+    <MudPopoverProvider />
+    <MudSnackbarProvider />
+    <SessionExpirationWarningProvider />
+</CascadingAuthenticationState>
 
 @code {
     bool darkMode = false;

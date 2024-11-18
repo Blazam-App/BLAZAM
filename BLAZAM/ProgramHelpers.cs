@@ -331,7 +331,7 @@ namespace BLAZAM.Server
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Blazam API", 
                     Version = "v1" ,
-                    Description="The official Blazam API documentation",
+                    Description="The official Blazam API documentation \nAuthorization is required for API access.",
                     Contact=new() { Email = "support@blazam.org",
                         Name="Blazam Support", 
                         Url=new("https://blazam.org/support") },

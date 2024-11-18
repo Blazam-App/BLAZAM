@@ -67,6 +67,7 @@ namespace BLAZAM.Database.Context
         DbSet<NotificationSubscription> NotificationSubscriptions { get; set; }
         DbSet<GlobalPermissionSettings> GlobalPermissionSettings { get; set; }
         DbSet<GlobalPermissionRequestActions> GlobalPermissionRequestActions { get; set; }
+        DbSet<ApiToken> ApiTokens { get; set; }
 
         void Export(string directory);
     }
