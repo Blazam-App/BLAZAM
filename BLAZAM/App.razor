@@ -1,13 +1,14 @@
 ﻿@inject IHttpContextAccessor context
 @inject IApplicationUserStateService userStateService
 @inject ICurrentUserStateService currentUser
+
+
 <CascadingAuthenticationState>
-
-
 
     <ErrorBoundary>
 
         <ChildContent>
+
             <Router AppAssembly="@typeof(App).Assembly">
                 <Found Context="routeData">
                     <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
@@ -17,7 +18,6 @@
                         <NotAuthorized>
                             @if (context.User.Identity?.IsAuthenticated != true)
                             {
-                                <PageTitle>Login</PageTitle>
                                 <LayoutView Layout="@typeof(LoginLayout)">
                                     <Login />
                                 </LayoutView>
@@ -42,6 +42,8 @@
                     </LayoutView>
                 </NotFound>
             </Router>
+
+
         </ChildContent>
         <ErrorContent>
             <LayoutView Layout="@typeof(MinLayout)">
@@ -55,13 +57,13 @@
 
 
 
-</CascadingAuthenticationState>
 
-<MudThemeProvider IsDarkMode="@darkMode" Theme="@activeTheme.Theme" />
-<MudDialogProvider />
-<MudPopoverProvider />
-<MudSnackbarProvider />
-<SessionExpirationWarningProvider />
+    <MudThemeProvider IsDarkMode="@darkMode" Theme="@activeTheme.Theme" />
+    <MudDialogProvider />
+    <MudPopoverProvider />
+    <MudSnackbarProvider />
+    <SessionExpirationWarningProvider />
+</CascadingAuthenticationState>
 
 @code {
     bool darkMode = false;
@@ -84,7 +86,7 @@
                     activeTheme = new BlueTheme();
 
                 }
-              
+
             }
             darkMode = currentUser.State?.Preferences?.DarkMode == true;
         }

@@ -34,6 +34,9 @@
                 <MudText Typo=Typo.h6 Class="py-2" Align="Align.Center">
                     Blazam @AppLocalization["News"]
                 </MudText>
+                <MudText Typo="Typo.caption" Class="px-3 py-2" Align="Align.Center">
+                    @AppLocalization["Important update and changes are posted here."]
+                </MudText>
                 @foreach (var item in unreadItems.OrderByDescending(x => x.UpdatedAt))
                 {
                     <ApplicationNewsItem Item=item
@@ -41,13 +44,14 @@
                                          OnRead="@(()=>{
                                             RefreshItems();
                                             })" />
-
+                    <MudDivider />
                 }
                 @if (showRead)
                 {
                     foreach (var item in readItems.OrderByDescending(x => x.UpdatedAt))
                     {
                         <ApplicationNewsItem Item="item" Read=true />
+                        <MudDivider />
 
                     }
                 }
@@ -66,6 +70,7 @@
                         @if (readItems.Count > 0)
                         {
                             <MudSwitch @bind-Value=showRead
+                                       Size="Size.Small"
                                        UncheckedColor="Color.Error"
                                        Color="Color.Success"
                                        Class="ps-2"

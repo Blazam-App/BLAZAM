@@ -1,0 +1,132 @@
+@inherits DatabaseComponentBase
+<MudDataGrid Items="@(_tokens.Where(t=>t.DeletedAt == null))" Class="mb-5">
+    <Columns>
+        <TemplateColumn Title="@AppLocalization["Token"]">
+            <CellTemplate>
+                @{
+                    var decrypted = context.Item.Token.Decrypt<string>();
+
+                }
+                <MudStack Row=true>
+                    <MudText>@(decrypted.Substring(0, 10))...</MudText>
+                    <AppCopyButton TextToCopy="@decrypted" />
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@AppLocalization["Created"]">
+            <CellTemplate>
+                <MudText>@(context.Item.CreatedAt.ToLocalTime())</MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@AppLocalization["Expires"]">
+            <CellTemplate>
+                <MudText>@(context.Item.ExpiresAt.ToLocalTime())</MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@AppLocalization["Description"]">
+            <CellTemplate>
+                <MudTextField @bind-Value=@(context.Item.Description) />
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@AppLocalization["Last Used"]">
+            <CellTemplate>
+                <MudText>
+                    @(context.Item.LastUsedAt != null ?
+                        context.Item.LastUsedAt.Value.ToLocalTime() :
+                        AppLocalization["Never used"])
+                </MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@AppLocalization["Is Revoked"]">
+            <CellTemplate>
+                <MudSwitch Color="Color.Error" @bind-Value=@context.Item.IsRevoked />
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@AppLocalization["Delete"]">
+            <CellTemplate>
+                <AppIconButton Color="@Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="@(()=>{Delete(context.Item);})" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+<SettingsField Label="@AppLocalization["Create new token"]">
+    <MudSelect @bind-Value="_apiValidDays"
+               Class="mb-3"
+               Label="@AppLocalization["Token Lifetime"]">
+
+        <MudSelectItem Value="TimeSpan.FromDays(30)">30 @AppLocalization["days"]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(60)">60 @AppLocalization["days"]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(90)">90 @AppLocalization["days"]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(180)">180 @AppLocalization["days"]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(1*365)">1 @AppLocalization["year"]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(2*365)">2 @AppLocalization["years"]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(5*365)">5 @AppLocalization["years"]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(10*365)">10 @AppLocalization["years"]</MudSelectItem>
+        <MudSelectItem Value="TimeSpan.FromDays(1000*365)">@AppLocalization["Forever"]</MudSelectItem>
+
+    </MudSelect>
+    <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@GenerateToken">@AppLocalization["Generate New API Token"]</MudButton>
+</SettingsField>
+@code {
+    List<ApiToken> _tokens = new();
+    TimeSpan _apiValidDays = TimeSpan.FromDays(30);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        GetTokens();
+    }
+
+    private async Task GenerateToken()
+    {
+        var token = JwtTokenService.GenerateJwtToken(_apiValidDays);
+        var decodedToken = JwtTokenService.DecodeJwtToken(token);
+        var raw = decodedToken.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
+        var lng = long.Parse(raw);
+
+
+        var dt = DateTime.UnixEpoch.AddSeconds(lng);
+
+        var newToken = new ApiToken()
+            {
+                Token = token.Encrypt(),
+                UserId = CurrentUser.State.Id,
+                ExpiresAt = dt,
+                TokenHash = token.GetAppHashCode()
+            };
+        Context.ApiTokens.Add(newToken);
+        await Context.SaveChangesAsync();
+        GetTokens();
+        //CurrentUser.State.Preferences.APIToken = token;
+        //CurrentUser.State.SaveBasicUserPreferences();
+    }
+    public async Task Save()
+    {
+        await Context.SaveChangesAsync();
+        SnackBarService.Success(AppLocalization["Changes have been saved"]);
+    }
+
+    private async Task Delete(ApiToken? tokenToDelete)
+    {
+        if(await MessageService.Confirm(AppLocalization["Are you sure you want to delete this API token?"],AppLocalization["Confirm delete"]))
+        {
+            if (tokenToDelete != null)
+            {
+                tokenToDelete.DeletedAt = DateTime.UtcNow;
+                Context.SaveChangesAsync();
+            }
+        }
+       
+    }
+
+    private void GetTokens()
+    {
+        Task.Run(async () =>
+       {
+           _tokens = Context.ApiTokens.Where(t => t.UserId == CurrentUser.State.Id).ToList();
+           await InvokeAsync(StateHasChanged);
+       });
+    }
+
+}

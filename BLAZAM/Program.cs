@@ -4,13 +4,18 @@ using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Server;
 using BLAZAM.Server.Middleware;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Hosting.WindowsServices;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System;
 using System.Diagnostics;
 using System.Net;
+using System.Security;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace BLAZAM
 {
@@ -51,8 +56,9 @@ namespace BLAZAM
         /// core application configuration
         /// </summary>
         public static ConfigurationManager? Configuration { get; set; }
+
         /// <summary>
-        /// Indicates whether the Account running the website can wrrite to the writable path
+        /// Indicates whether the Account running the website can write to the writable path
         /// </summary>
         public static bool Writable { get; private set; }
 
@@ -156,6 +162,8 @@ namespace BLAZAM
             AppInstance.UseMiddleware<ApplicationStatusRedirectMiddleware>();
             AppInstance.UseStaticFiles();
             AppInstance.UseRouting();
+            AppInstance.MapControllers();
+            
             //AppInstance.UseCors(builder =>
             //      builder.AllowAnyOrigin()
             //      .SetIsOriginAllowed((host) => true)
@@ -166,10 +174,29 @@ namespace BLAZAM
             AppInstance.UseAuthentication();
             AppInstance.UseAuthorization();
             AppInstance.UseSession();
+            AppInstance.UseSwagger();
+            AppInstance.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("v1/swagger.json", "Blazam API V1");
+            });
             //AppInstance.MapControllers();
             AppInstance.MapBlazorHub();
             AppInstance.MapFallbackToPage("/_Host");
 
+            //AppInstance.UseExceptionHandler(errorApp =>
+            //{
+            //    errorApp.Run(async context =>
+            //    {
+            //        var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+
+            //        var exception = exceptionHandlerPathFeature?.Error;
+
+            //        // Log the exception (you can use a logging framework like Serilog or NLog)
+            //        Console.WriteLine($"Unhandled exception: {exception}");
+
+            //        // ... optional: Customize the response (e.g., return a custom error page)
+            //    });
+            //});
             AppInstance.Start();
             GetRunningWebServerConfiguration();
             //ScheduleAutoLoad();

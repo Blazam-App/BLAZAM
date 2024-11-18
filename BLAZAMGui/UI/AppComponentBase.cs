@@ -68,6 +68,9 @@ namespace BLAZAM.Gui.UI
         protected IEncryptionService EncryptionService { get; set; }
 
         [Inject]
+        protected JwtTokenService JwtTokenService { get; set; }
+
+        [Inject]
         protected AppSnackBarService SnackBarService { get; set; }
 
         [Inject]

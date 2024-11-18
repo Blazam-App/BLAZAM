@@ -1,4 +1,5 @@
 ﻿
+using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
@@ -14,12 +15,20 @@ using BLAZAM.Session.Interfaces;
 using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using MimeKit;
 using MudBlazor;
 using MudBlazor.Services;
+using Serilog;
 using System.Diagnostics;
 using System.Globalization;
 using System.Management;
 using System.Reflection;
+using System.Text;
 
 namespace BLAZAM.Server
 {
@@ -141,46 +150,46 @@ namespace BLAZAM.Server
             builder.Services.AddSingleton<ApplicationInfo>();
 
 
-
-            //Set up authentication and api token authentication
+            // Set up authentication and API token authentication
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(AppAuthenticationStateProvider.ApplyAuthenticationCookieOptions());
 
-            builder.Services.Configure<AuthenticationOptions>(options =>
+            builder.Services.AddAuthentication(options =>
             {
-                options.RequireAuthenticatedSignIn = false;
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+
+            }).AddCookie(AppAuthenticationStateProvider.ApplyAuthenticationCookieOptions())
+            .AddJwtBearer(options =>  // Configure JWT Bearer here
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true, // Important: Validate the signing key
+                    IssuerSigningKey = ApplicationInfo.tokenKey,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateActor = false,
+                    ValidateLifetime = true
+                };
+                options.Events = new JwtAuthenticationEventsHandler(
+                    builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>(),
+                    builder.Services.BuildServiceProvider().GetRequiredService<IApplicationUserStateService>(),
+                    builder.Services.BuildServiceProvider().GetRequiredService<IAppDatabaseFactory>(),
+                    builder.Services.BuildServiceProvider().GetRequiredService<ICurrentUserStateService>()
+                );
             });
+
             /*
-            Keeping  this here for a possible API in the future
-            It's some original test code from before AppAuthenticatinProvider was
-            completed so it may not be usable as is
-
-            builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-            .AddNegotiate().AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters =
-                    new TokenValidationParameters
-                    {
-                        ValidateAudience = false,
-                        ValidateIssuer = false,
-                        ValidateActor = false,
-                        ValidateLifetime = true,
-                        IssuerSigningKey = TokenKey
-                    };
-            });
-            
-          
-            builder.Services.AddAuthorization(options =>
-            {
-                // By default, all incoming requests will be authorized according to the default policy.
-                options.FallbackPolicy = options.DefaultPolicy;
-            });
-            */
+              builder.Services.AddAuthorization(options =>
+              {
+                  // By default, all incoming requests will be authorized according to the default policy.
+                  options.FallbackPolicy = options.DefaultPolicy;
+              });
+              */
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
@@ -245,6 +254,9 @@ namespace BLAZAM.Server
             //Provide a AuditLogger as a service
             builder.Services.AddScoped<AuditLogger>();
 
+            //Provide a JwtTokens as a service
+            builder.Services.AddScoped<JwtTokenService>();
+
 
 
 
@@ -307,8 +319,44 @@ namespace BLAZAM.Server
 
             builder.Services.AddSingleton<NotificationGenerationService>();
 
+            builder.Services.AddControllers(options =>
+            {
+
+                options.Conventions.Add(new LowercaseControllerRouteConvention());
+            });
+
+            builder.Services.AddMvc();
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Blazam API", 
+                    Version = "v1" ,
+                    Description="The official Blazam API documentation \nAuthorization is required for API access.",
+                    Contact=new() { Email = "support@blazam.org",
+                        Name="Blazam Support", 
+                        Url=new("https://blazam.org/support") },
+                    TermsOfService=new Uri("https://blazam.org/tos")
+                });
+
+                // Add descriptions using XML comments
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+                // Configure Swagger to use JWT Bearer authorization
+                //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                //{
+                //    Description = "JWT Authorization header using the Bearer scheme.Example: \"Authorization: Bearer {token}\"",
+                //    Name = "Authorization",
+                //    In = ParameterLocation.Header,
+                //    Type = SecuritySchemeType.Http,
+                //    Scheme = "bearer",
+                //    BearerFormat = "JWT"
+                //});
+            });
 
             builder.Host.UseWindowsService();
+
+
 
             return builder;
         }

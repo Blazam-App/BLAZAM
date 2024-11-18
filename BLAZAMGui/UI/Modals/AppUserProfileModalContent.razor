@@ -56,6 +56,11 @@
 
 
     </MudNavGroup>
+    @* <AuthorizeView Roles="@UserRoles.SuperAdmin"> *@
+        
+        @* <MudTextField ReadOnly="true" T="string" Value="@("Bearer "+CurrentUser.State.Preferences.APIToken)" Label="@AppLocalization["API Token"]" /> *@
+        
+    @* </AuthorizeView> *@
     <LoadingData Loading=LoadingData />
 </MudStack>
 @code {

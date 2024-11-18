@@ -1,9 +1,9 @@
 @using ApplicationNews
 @inject AppDialogService MessageService
-<MudButton Variant="Variant.Filled"
+<MudContainer 
            Style="border-radius:0px;"
-           FullWidth=true
-           OnClick="@ShowNews">
+           Class="px-1 py-0 cursor-pointer"
+           @onclick="@ShowNews">
     <MudStack Class="mud-width-full pt-1" AlignItems="AlignItems.Start">
         <MudStack Row=true>
             @if (Read)
@@ -20,7 +20,7 @@
         </MudStack>
 
     </MudStack>
-</MudButton>
+</MudContainer>
 
 
 @code {
