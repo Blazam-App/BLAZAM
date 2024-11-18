@@ -67,6 +67,37 @@
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
+    <MudText Align="Align.End">
+        @AppLocalization["Members"]: @Members.Count
+    </MudText>
+    @if(Members.Any(m=>m is IADGroup))
+    {
+
+        <MudText Align="Align.End">
+            @AppLocalization["Groups"]: @Members.Where(m=>m is IADGroup).Count()
+        </MudText>
+    }
+    @if(Members.Any(m=>m is IADUser))
+    {
+
+        <MudText Align="Align.End">
+            @AppLocalization["Users"]: @Members.Where(m => m is IADUser).Count()
+        </MudText>
+    }
+    @if(Members.Any(m=>m is IADComputer))
+    {
+
+        <MudText Align="Align.End">
+            @AppLocalization["Computers"]: @Members.Where(m => m is IADComputer).Count()
+        </MudText>
+    }
+    @if(Members.Any(m=>m is IADPrinter))
+    {
+
+        <MudText Align="Align.End">
+            @AppLocalization["Printers"]: @Members.Where(m => m is IADPrinter).Count()
+        </MudText>
+    }
     if (Members.Where(m => !m.CanRead).Count() > 0)
     {
         <MudAlert Class="mud-alert-filled-info">
