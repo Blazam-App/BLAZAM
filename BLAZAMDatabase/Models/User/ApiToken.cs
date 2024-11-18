@@ -13,6 +13,10 @@ namespace BLAZAM.Database.Models.User
         /// </summary>
         public string Token { get; set; }
 
+
+        /// <summary>
+        /// The AppHashCode for this token
+        /// </summary>
         public int TokenHash { get; set; }
 
         /// <summary>
