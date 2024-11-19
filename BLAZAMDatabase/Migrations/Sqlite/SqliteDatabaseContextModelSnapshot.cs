@@ -946,6 +946,55 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.ToTable("SubscriptionNotificationType");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionWebHookType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NotificationType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("WebHookSubscriptionId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WebHookSubscriptionId");
+
+                    b.ToTable("SubscriptionWebHookType");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookSubscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AuthorizationToken")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IgnoreSSLVerification")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("URL")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("WebHookAuthorization")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("WebHookMethod")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WebHookSubscriptions");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
                 {
                     b.Property<int>("Id")
@@ -1759,6 +1808,17 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Navigation("NotificationSubscription");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionWebHookType", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Notifications.WebHookSubscription", "WebHookSubscription")
+                        .WithMany("NotificationTypes")
+                        .HasForeignKey("WebHookSubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WebHookSubscription");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ActionAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Permissions.AccessLevel", null)
@@ -1960,6 +2020,11 @@ namespace BLAZAM.Common.Migrations.Sqlite
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
+                {
+                    b.Navigation("NotificationTypes");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookSubscription", b =>
                 {
                     b.Navigation("NotificationTypes");
                 });
