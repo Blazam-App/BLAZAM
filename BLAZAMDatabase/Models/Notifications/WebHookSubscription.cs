@@ -10,19 +10,23 @@ namespace BLAZAM.Database.Models.Notifications
     }
     public enum WebHookAuthorization
     {
+        None,
         Basic,
         Bearer
     }
     public class WebHookSubscription : RecoverableAppDbSetBase
     {
-        public List<SubscriptionNotificationType> NotificationTypes { get; set; } = new();
-        public string OU { get; set; }
+        public List<SubscriptionWebHookType> NotificationTypes { get; set; } = new();
+        //public string OU { get; set; }
         public bool IgnoreSSLVerification { get; set; }
         public string URL { get; set; }
         public WebHookMethod WebHookMethod { get; set; }
-        public WebHookAuthorization? WebHookAuthorization { get;set;}
+        public WebHookAuthorization WebHookAuthorization { get;set;}
+        /// <summary>
+        /// The destination authorization token in encrypted form
+        /// </summary>
         public string? AuthorizationToken { get; set; }
 
-        public bool Block { get; set; } = false;
+        //public bool Block { get; set; } = false;
     }
 }

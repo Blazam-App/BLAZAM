@@ -54,6 +54,7 @@
             <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/permissions");})">@AppLocalization["Permissions"]</MudNavLink>
             <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/fields");})">@AppLocalization["Fields"]</MudNavLink>
             <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">@AppLocalization["Templates"]</MudNavLink>
+            <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/webhooks");})">@AppLocalization["WebHooks"]</MudNavLink>
         </MudNavGroup>
         <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/audit");})"
                     Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix

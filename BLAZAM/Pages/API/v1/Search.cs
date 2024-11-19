@@ -7,6 +7,7 @@ namespace BLAZAM.Pages.API.v1
     /// <summary>
     /// Searches Active Directory.
     /// </summary>
+    [Produces("application/json")]
     public class Search : ApiController
     {
         public Search(IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(httpContextAccessor, adFactory)
@@ -16,6 +17,12 @@ namespace BLAZAM.Pages.API.v1
         /// <summary>
         /// Run a general search term query against all AD object types.
         /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/v1/search?query=fragment
+        ///
+        /// </remarks>
         /// <param name="query">The string fragment to search for</param>
         /// <response code="200">Returns a list of matching Active Directory objects.</response>
         /// <response code="401">Unauthorized - The user is not authenticated.</response>

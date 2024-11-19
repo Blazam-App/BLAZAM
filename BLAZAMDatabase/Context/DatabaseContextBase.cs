@@ -101,6 +101,9 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<AuthenticationSettings> AuthenticationSettings { get; set; }
         public virtual DbSet<EmailSettings> EmailSettings { get; set; }
         public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
+        public virtual DbSet<WebHookSubscription> WebHookSubscriptions { get; set; }
+
+
 
         //User Tables
         public virtual DbSet<AppUser> UserSettings { get; set; }

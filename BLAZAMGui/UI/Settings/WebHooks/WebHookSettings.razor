@@ -1,0 +1,16 @@
+﻿@inherits DatabaseComponentBase
+<MudText Typo="Typo.h4">@AppLocalization["Manage WebHooks"] <AppDocumentationButton Page="/admin/webhooks" /></MudText>
+
+
+ <WebHookSubscriptionEditor/>
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+    
+    
+
+
+
+}

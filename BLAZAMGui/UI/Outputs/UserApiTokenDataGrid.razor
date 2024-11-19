@@ -1,54 +1,6 @@
 @inherits DatabaseComponentBase
-<MudDataGrid Items="@(_tokens.Where(t=>t.DeletedAt == null))" Class="mb-5">
-    <Columns>
-        <TemplateColumn Title="@AppLocalization["Token"]">
-            <CellTemplate>
-                @{
-                    var decrypted = context.Item.Token.Decrypt<string>();
+<ApiTokenDataGrid OnTokenDeleted="@((token)=>{Delete(token);})" Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
 
-                }
-                <MudStack Row=true>
-                    <MudText>@(decrypted.Substring(0, 10))...</MudText>
-                    <AppCopyButton TextToCopy="@decrypted" />
-                </MudStack>
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Created"]">
-            <CellTemplate>
-                <MudText>@(context.Item.CreatedAt.ToLocalTime())</MudText>
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Expires"]">
-            <CellTemplate>
-                <MudText>@(context.Item.ExpiresAt.ToLocalTime())</MudText>
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Description"]">
-            <CellTemplate>
-                <MudTextField @bind-Value=@(context.Item.Description) />
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Last Used"]">
-            <CellTemplate>
-                <MudText>
-                    @(context.Item.LastUsedAt != null ?
-                        context.Item.LastUsedAt.Value.ToLocalTime() :
-                        AppLocalization["Never used"])
-                </MudText>
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Is Revoked"]">
-            <CellTemplate>
-                <MudSwitch Color="Color.Error" @bind-Value=@context.Item.IsRevoked />
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title="@AppLocalization["Delete"]">
-            <CellTemplate>
-                <AppIconButton Color="@Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="@(()=>{Delete(context.Item);})" />
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-</MudDataGrid>
 
 <SettingsField Label="@AppLocalization["Create new token"]">
     <MudSelect @bind-Value="_apiValidDays"

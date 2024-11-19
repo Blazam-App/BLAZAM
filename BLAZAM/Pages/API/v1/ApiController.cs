@@ -9,7 +9,7 @@ namespace BLAZAM.Pages.API.v1
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Login)]
     [ApiController]
-
+    [Produces("application/json")]
     [Route("api/v1/[controller]")]
     public class ApiController : Controller
     {

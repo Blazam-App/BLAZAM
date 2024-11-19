@@ -179,6 +179,7 @@ namespace BLAZAM
             {
                 c.SwaggerEndpoint("v1/swagger.json", "Blazam API V1");
             });
+            AppInstance.MapSwagger().RequireAuthorization();
             //AppInstance.MapControllers();
             AppInstance.MapBlazorHub();
             AppInstance.MapFallbackToPage("/_Host");

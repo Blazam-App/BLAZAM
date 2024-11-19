@@ -1,0 +1,119 @@
+@inherits DatabaseComponentBase
+<MudDataGrid Items="_subscriptions">
+    <Columns>
+        @foreach (var type in Enum.GetValues(typeof(NotificationType)))
+        {
+            var originalEnum = (NotificationType)type;
+            <TemplateColumn Title="@AppLocalization[originalEnum.ToString()]">
+                <CellTemplate>
+                    <MudSwitch Value="@(context.Item.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)"
+                               Color="Color.Success"
+                               UncheckedColor="Color.Error"
+                               ValueChanged=@((bool val)=>{ToggleType(context.Item,originalEnum,val);}) />
+                </CellTemplate>
+            </TemplateColumn>
+
+        }
+        <TemplateColumn Title="@AppLocalization["HTTP Method"]">
+            <CellTemplate>
+                <MudSelect @bind-Value=context.Item.WebHookMethod>
+                    <MudSelectItem Value="WebHookMethod.GET">@AppLocalization["GET"]</MudSelectItem>
+                    <MudSelectItem Value="WebHookMethod.POST">@AppLocalization["POST"]</MudSelectItem>
+                </MudSelect>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Style="min-width:100px" Title="@AppLocalization["URL"]">
+            <CellTemplate>
+                <MudTextField T="string" @bind-Value=context.Item.URL />
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn Title="@AppLocalization["Authorization Type"]">
+            <CellTemplate>
+                <MudSelect @bind-Value=context.Item.WebHookAuthorization>
+                    <MudSelectItem Value="WebHookAuthorization.None">@AppLocalization["None"]</MudSelectItem>
+                    <MudSelectItem Value="WebHookAuthorization.Basic">@AppLocalization["Basic"]</MudSelectItem>
+                    <MudSelectItem Value="WebHookAuthorization.Bearer">@AppLocalization["Bearer"]</MudSelectItem>
+                </MudSelect>
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn Title="@AppLocalization["Authorization Token"]">
+            <CellTemplate>
+
+                <MudTextField Disabled="context.Item.WebHookAuthorization==WebHookAuthorization.None" T="string" @bind-Value=context.Item.AuthorizationToken />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+<AppTooltip Text="@AppLocalization["Add new WebHook"]">
+    <MudFab StartIcon="@Icons.Material.Filled.Add"
+            Color="Color.Success"
+            OnClick="@(()=>{webhookModal?.ShowAsync();})" />
+</AppTooltip>
+<AppModal @ref=webhookModal 
+    Options="new(){ CloseButton=true, MaxWidth=MaxWidth.Medium}"
+    Title="@AppLocalization["Add new WebHook"]">
+    <NewWebHookModalContent OnCreateNewSubscription="AddSubscription"/>
+</AppModal>
+
+@code {
+    AppModal? webhookModal;
+    [Parameter]
+    public AppUser User { get; set; }
+
+    private List<WebHookSubscription> _subscriptions = new();
+    IDirectoryEntryAdapter? _selectedOU = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _ = GetSubscriptions();
+    }
+    private async Task AddSubscription(WebHookSubscription _newSubscription)
+    {
+        try{
+            Context.WebHookSubscriptions.Add(_newSubscription);
+            await Context.SaveChangesAsync();
+            GetSubscriptions();
+        }catch(Exception ex)
+        {
+            Loggers.SystemLogger.Warning("Error while adding webhook subscription {@Error}", ex);
+            SnackBarService.Error(ex.Message);
+        }
+    }
+        
+        private async Task GetSubscriptions()
+    {
+        LoadingData = true;
+        _subscriptions = await Context.WebHookSubscriptions.Include(x=>x.NotificationTypes).ToListAsync();
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ouChanged(IDirectoryEntryAdapter entry)
+    {
+        var ou = (IADOrganizationalUnit)entry;
+        if (ou != null)
+        {
+            _selectedOU = ou;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+    private void ToggleType(WebHookSubscription subscription, NotificationType type, bool value)
+    {
+        if (!value)
+        {
+            subscription.NotificationTypes.RemoveAll(x => x.NotificationType == type);
+        }
+        else
+        {
+            if (!subscription.NotificationTypes.Any(x => x.NotificationType == type))
+            {
+                SubscriptionWebHookType notificationType = new();
+                notificationType.NotificationType = type;
+                subscription.NotificationTypes.Add(notificationType);
+            }
+        }
+    }
+}
