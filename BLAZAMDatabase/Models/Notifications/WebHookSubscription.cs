@@ -21,6 +21,9 @@ namespace BLAZAM.Database.Models.Notifications
         public string URL { get; set; }
         public WebHookMethod WebHookMethod { get; set; }
         public WebHookAuthorization? WebHookAuthorization { get;set;}
+        /// <summary>
+        /// The destination authorization token in encrypted form
+        /// </summary>
         public string? AuthorizationToken { get; set; }
 
         public bool Block { get; set; } = false;

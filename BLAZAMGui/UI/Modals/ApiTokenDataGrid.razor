@@ -1,0 +1,66 @@
+@inherits AppComponentBase
+<MudDataGrid Items="@Tokens" Class="mb-5">
+    <Columns>
+        <TemplateColumn Title="@AppLocalization["Token"]">
+            <CellTemplate>
+                @{
+                    var decrypted = context.Item.Token.Decrypt<string>();
+
+                }
+                <MudStack Row=true>
+                    <MudText>@(decrypted.Substring(0, 10))...</MudText>
+                    <AppCopyButton TextToCopy="@decrypted" />
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@AppLocalization["Created"]">
+            <CellTemplate>
+                <MudText>@(context.Item.CreatedAt.ToLocalTime())</MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@AppLocalization["Expires"]">
+            <CellTemplate>
+                <MudText>@(context.Item.ExpiresAt.ToLocalTime())</MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@AppLocalization["Description"]">
+            <CellTemplate>
+                <MudTextField @bind-Value=@(context.Item.Description) />
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@AppLocalization["Last Used"]">
+            <CellTemplate>
+                <MudText>
+                    @(context.Item.LastUsedAt != null ?
+                        context.Item.LastUsedAt.Value.ToLocalTime() :
+                        AppLocalization["Never used"])
+                </MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@AppLocalization["Is Revoked"]">
+            <CellTemplate>
+                <MudSwitch Color="Color.Error" @bind-Value=@context.Item.IsRevoked />
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@AppLocalization["Delete"]">
+            <CellTemplate>
+                <AppIconButton Color="@Color.Error" 
+                Icon="@Icons.Material.Filled.Delete" 
+                OnClick="@(()=>{Delete(context.Item);})" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+
+@code{
+    [Parameter]
+    public IEnumerable<ApiToken> Tokens {get;set;}
+
+    [Parameter]
+    public EventCallback<ApiToken?> OnTokenDeleted{get;set;}
+    private async Task Delete(ApiToken? tokenToDelete)
+    {
+        OnTokenDeleted.InvokeAsync(tokenToDelete);
+    }
+}
