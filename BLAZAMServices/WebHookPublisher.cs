@@ -32,9 +32,9 @@ namespace BLAZAM.Notifications.Services
             Dictionary<string, object?> data = new()
             {
                   { "actor", actor?.Username }, // Use ?. to handle null actor
-                    { "object", target?.CanonicalName }, // Use ?. to handle null target
-                    { "objectDN", target?.DN }, // Use ?. to handle null target
-                    { "objectType", target?.ObjectType.ToString()}, // Use ?. to handle null target
+                    { "object", source?.CanonicalName }, // Use ?. to handle null target
+                    { "objectDN", source?.DN }, // Use ?. to handle null target
+                    { "objectType", source?.ObjectType.ToString()}, // Use ?. to handle null target
             };
             payload.Add("data", data);
 
