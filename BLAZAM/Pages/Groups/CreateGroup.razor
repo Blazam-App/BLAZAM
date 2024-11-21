@@ -1,4 +1,4 @@
-﻿@page "/groups/create"
+﻿@page "/create/group"
 @inherits TabbedAppComponentBase
 @attribute [Authorize]
 <AppPageTitle>Create Group</AppPageTitle>
@@ -106,7 +106,6 @@
     async void CreateNewGroup()
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
         newGroup = parentOU?.CreateGroup(newGroupName);
 
 
@@ -116,6 +115,5 @@
 
         LoadingData = true;
 
-        await InvokeAsync(StateHasChanged);
     }
 }

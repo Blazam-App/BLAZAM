@@ -44,6 +44,12 @@
                 <MudTextField Disabled="context.Item.WebHookAuthorization==WebHookAuthorization.None" T="string" @bind-Value=context.Item.AuthorizationToken />
             </CellTemplate>
         </TemplateColumn>
+        <TemplateColumn Title="@AppLocalization["Save"]">
+            <CellTemplate>
+
+                <MudFab StartIcon="@Icons.Material.Filled.Save" Color="Color.Success" OnClick="Save" />
+            </CellTemplate>
+        </TemplateColumn>
     </Columns>
 </MudDataGrid>
 <AppTooltip Text="@AppLocalization["Add new WebHook"]">
@@ -82,13 +88,25 @@
             SnackBarService.Error(ex.Message);
         }
     }
+           private async Task Save()
+    {
+        try{
+            await Context.SaveChangesAsync();
+            SnackBarService.Success(AppLocalization["Changes saved successfully"]);
+
+            GetSubscriptions();
+        }catch(Exception ex)
+        {
+            Loggers.SystemLogger.Warning("Error while saving webhook subscriptions {@Error}", ex);
+            SnackBarService.Error(ex.Message);
+        }
+    }
         
         private async Task GetSubscriptions()
     {
         LoadingData = true;
         _subscriptions = await Context.WebHookSubscriptions.Include(x=>x.NotificationTypes).ToListAsync();
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void ouChanged(IDirectoryEntryAdapter entry)

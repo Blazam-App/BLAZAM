@@ -47,7 +47,6 @@ namespace BLAZAM.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = currentUser.User.Claims.FirstOrDefault()?.Subject,
-                //Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, userName) }),
                 Claims = claims,
                 IssuedAt = DateTime.UtcNow,
                 Issuer = DatabaseCache.ApplicationSettings.AppName,

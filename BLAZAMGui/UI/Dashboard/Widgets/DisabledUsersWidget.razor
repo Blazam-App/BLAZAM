@@ -46,11 +46,9 @@
     async Task RefreshData()
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
         LockedUsers = (await Directory.Users.FindChangedUsersAsync(false)).Where(u => u.Disabled).ToList();
 
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
 
     }
 }

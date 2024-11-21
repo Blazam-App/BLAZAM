@@ -128,13 +128,11 @@ namespace BLAZAM.Gui.UI
         {
 
             LoadingData = true;
-            await InvokeAsync(StateHasChanged);
             if (User != null)
                 memberOfGroups = User.MemberOf;
 
             LoadingData = false;
 
-            await InvokeAsync(StateHasChanged);
 
 
         }
@@ -149,12 +147,10 @@ namespace BLAZAM.Gui.UI
         {
 
             LoadingData = true;
-            await InvokeAsync(StateHasChanged);
 
             if (Group != null)
                 memberOfGroups = Group.MemberOf;
             LoadingData = false;
-            await InvokeAsync(StateHasChanged);
 
 
         }
@@ -162,7 +158,6 @@ namespace BLAZAM.Gui.UI
         {
 
             LoadingData = true;
-            await InvokeAsync(StateHasChanged);
 
             if (Computer != null)
                 memberOfGroups = Computer.MemberOf;
@@ -170,7 +165,6 @@ namespace BLAZAM.Gui.UI
 
             LoadingData = false;
 
-            await InvokeAsync(StateHasChanged);
 
 
         }
