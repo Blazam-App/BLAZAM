@@ -181,7 +181,10 @@ namespace BLAZAM.Server
                     builder.Services.BuildServiceProvider().GetRequiredService<ICurrentUserStateService>()
                 );
             });
-
+            builder.Services.Configure<AuthenticationOptions>(options =>
+            {
+                options.RequireAuthenticatedSignIn = false;
+            });
             /*
               builder.Services.AddAuthorization(options =>
               {
