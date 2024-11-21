@@ -2,7 +2,9 @@
 @inject IApplicationUserStateService userStateService
 @inject ICurrentUserStateService currentUser
 
-
+@{
+    var dsad = 3;
+}
 <CascadingAuthenticationState>
 
     <ErrorBoundary>
@@ -31,7 +33,6 @@
                                 <p>You are not authorized to access this resource.</p>
                             }
                         </NotAuthorized>
-
                     </AuthorizeRouteView>
                     <FocusOnNavigate RouteData="@routeData" Selector="h1" />
                 </Found>

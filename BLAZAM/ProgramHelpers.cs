@@ -4,7 +4,6 @@ using BLAZAM.Common.Data;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Database.Context;
 using BLAZAM.Gui.Services;
-using BLAZAM.Nav;
 using BLAZAM.Notifications.Services;
 using BLAZAM.Services;
 using BLAZAM.Services.Audit;
@@ -257,6 +256,9 @@ namespace BLAZAM.Server
             //Provide a JwtTokens as a service
             builder.Services.AddScoped<JwtTokenService>();
 
+            //Provide a JwtTokens as a service
+            builder.Services.AddSingleton<WebHookPublisher>();
+
 
 
 
@@ -266,10 +268,6 @@ namespace BLAZAM.Server
             //Add web user application search as a service
             builder.Services.AddScoped<SearchService>();
 
-
-            //A substitute Navigation Manager for the app to enable navigation warning on unsaved
-            //changes
-            builder.Services.AddScoped<AppNavigationManager>();
 
 
             //A service to provide the appropriate widgets to users, based on permissions

@@ -1,11 +1,19 @@
 @inherits AppComponentBase
-<MudDataGrid Items="@Tokens" Class="mb-5">
+<MudDataGrid Items="@Tokens"
+    Class="mb-5">
     <Columns>
-        <TemplateColumn Title="@AppLocalization["Token"]">
+        @if (ShowUser)
+        {
+            <TemplateColumn Class="" Title="@AppLocalization["User"]">
+                <CellTemplate>
+                        <MudText>@(context.Item.User.Username)</MudText>
+                </CellTemplate>
+            </TemplateColumn>
+        }
+        <TemplateColumn Class="" Title="@AppLocalization["Token"]">
             <CellTemplate>
                 @{
                     var decrypted = context.Item.Token.Decrypt<string>();
-
                 }
                 <MudStack Row=true>
                     <MudText>@(decrypted.Substring(0, 10))...</MudText>
@@ -25,7 +33,8 @@
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization["Description"]">
             <CellTemplate>
-                <MudTextField @bind-Value=@(context.Item.Description) />
+                <MudTextField Disabled="context.Item.DeletedAt!=null"
+ @bind-Value=@(context.Item.Description) />
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization["Last Used"]">
@@ -39,26 +48,39 @@
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization["Is Revoked"]">
             <CellTemplate>
-                <MudSwitch Color="Color.Error" @bind-Value=@context.Item.IsRevoked />
+                <MudSwitch Color="Color.Error"
+                Disabled="context.Item.DeletedAt!=null"
+                @bind-Value=@context.Item.IsRevoked />
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization["Delete"]">
             <CellTemplate>
-                <AppIconButton Color="@Color.Error" 
-                Icon="@Icons.Material.Filled.Delete" 
-                OnClick="@(()=>{Delete(context.Item);})" />
+               @if(context.Item.DeletedAt==null){
+                <AppIconButton Color="@Color.Error"
+                               Icon="@Icons.Material.Filled.Delete"
+                    OnClick="@(()=>{Delete(context.Item);})" />
+                }
+                else
+                {
+                    <MudAlert Severity="Severity.Error">@AppLocalization["Deleted"]</MudAlert>
+                }
             </CellTemplate>
         </TemplateColumn>
     </Columns>
+    <NoRecordsContent>
+        @AppLocalization["You don't have any active API tokens."]
+    </NoRecordsContent>
 </MudDataGrid>
 
 
-@code{
+@code {
     [Parameter]
-    public IEnumerable<ApiToken> Tokens {get;set;}
+    public IEnumerable<ApiToken> Tokens { get; set; }
+    [Parameter]
+    public bool ShowUser{ get; set; }
 
     [Parameter]
-    public EventCallback<ApiToken?> OnTokenDeleted{get;set;}
+    public EventCallback<ApiToken?> OnTokenDeleted { get; set; }
     private async Task Delete(ApiToken? tokenToDelete)
     {
         OnTokenDeleted.InvokeAsync(tokenToDelete);

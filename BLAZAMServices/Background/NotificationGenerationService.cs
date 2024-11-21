@@ -25,13 +25,15 @@ namespace BLAZAM.Services.Background
         private readonly INotificationPublisher _notificationPublisher;
         private readonly IStringLocalizer<AppLocalization> _appLocalization;
         private readonly EmailService _emailService;
+        private readonly WebHookPublisher _webHookPublisher;
 
-        public NotificationGenerationService(IAppDatabaseFactory databaseFactory, INotificationPublisher notificationPublisher, IStringLocalizer<AppLocalization> appLocalization, EmailService emailService)
+        public NotificationGenerationService(IAppDatabaseFactory databaseFactory, INotificationPublisher notificationPublisher, IStringLocalizer<AppLocalization> appLocalization, EmailService emailService, WebHookPublisher webHookPublisher)
         {
             _databaseFactory = databaseFactory;
             _notificationPublisher = notificationPublisher;
             _appLocalization = appLocalization;
             _emailService = emailService;
+            _webHookPublisher = webHookPublisher;
         }
         private IDatabaseContext Context => _databaseFactory.CreateDbContext();
 
@@ -80,10 +82,23 @@ namespace BLAZAM.Services.Background
                         }
                     }
                 });
-
+                PostWebHooks(source, notificationType, actor , target );
 
             });
 
+        }
+        private async Task PostWebHooks(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
+        {
+            var webhooks = await Context.WebHookSubscriptions.Where(w => w.DeletedAt == null).Include(w=>w.NotificationTypes).ToListAsync();
+            if (webhooks.Any(w => w.NotificationTypes.Any(nt => nt.NotificationType == notificationType)))
+            {
+                var subscribedWebhooks = webhooks.Where(w => w.NotificationTypes.Any(nt => nt.NotificationType == notificationType));
+                Parallel.ForEach(subscribedWebhooks, async webhook => {
+                    _webHookPublisher.PublishWebhook(webhook, source,  notificationType,actor, target);
+                });
+
+                
+            }
         }
         /// <summary>
         /// Package a notification from event parameters

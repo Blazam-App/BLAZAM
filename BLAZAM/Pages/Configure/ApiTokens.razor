@@ -1,4 +1,4 @@
-﻿@page "/api"
+﻿@page "/api-tokens"
 @attribute [Authorize(Roles = UserRoles.SuperAdmin)]
 
 @inherits DatabaseComponentBase
@@ -7,23 +7,47 @@
 <AuthorizeView Roles=@UserRoles.SuperAdmin>
 
     <SetHeader>
-
+        <MudSwitch T=bool Color="@Color.Success"
+                   @bind-Value=ShowDeleted
+                   UncheckedColor="Color.Error"
+                   Label="@AppLocalization["Show Deleted"]" />
     </SetHeader>
 
 
-    <ApiTokenDataGrid OnTokenDeleted="@((token)=>{Delete(token);})" Tokens="@_tokens" />
-    
+    <ApiTokenDataGrid ShowUser="true" OnTokenDeleted="@((token)=>{Delete(token);})" Tokens="@_tokens" />
+
 </AuthorizeView>
 
 
 @code {
     List<ApiToken> _tokens;
+    bool _showDeleted;
+
+    bool ShowDeleted
+    {
+        get => _showDeleted; set
+        {
+            if (_showDeleted == value) return;
+            _showDeleted = value;
+            _=GetTokens();
+
+        }
+    }
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        _tokens = Context.ApiTokens.Where(t=>t.DeletedAt == null).ToList();
+        _=GetTokens();
     }
+    public async Task GetTokens()
+    {
+        LoadingData = true;
+        if (_showDeleted)
+            _tokens = await Context.ApiTokens.Include(t=>t.User).ToListAsync();
+        else
+            _tokens = await Context.ApiTokens.Where(t => t.DeletedAt == null).Include(t => t.User).ToListAsync();
+        LoadingData = false;
 
+    }
     public async Task Save()
     {
         await Context.SaveChangesAsync();

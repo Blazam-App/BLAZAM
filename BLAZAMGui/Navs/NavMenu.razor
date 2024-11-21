@@ -23,7 +23,11 @@
             </MudStack>
         </MudHidden>
     </MudBreakpointProvider>
-    <NavHomeButton />
+    <MudNavLink Href="/home"
+                Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix
+                Icon="@Icons.Material.Filled.Dashboard">
+        @AppLocalization["Home"]
+    </MudNavLink>
     <NavBrowseButton SelectedEntryChanged=@((entry)=>{SelectedEntryChanged.InvokeAsync(entry);})
                      BrowseExpandedChanged=@((value)=>{BrowseExpandedChanged.InvokeAsync(value);}) />
     <AuthorizeView Context="createContext" Roles=@createRole>
@@ -31,32 +35,60 @@
                      Title="@AppLocalization["Create"]"
                      Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)>
             <AuthorizeView Roles="@UserRoles.CreateUsers">
-                <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/users/create");})">@AppLocalization["Create User"]</MudNavLink>
+                <MudNavLink Href="/create/user"
+                            Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+                    @AppLocalization["Create User"]
+                    </MudNavLink>
             </AuthorizeView>
             <AuthorizeView Roles="@UserRoles.CreateGroups">
-                <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/groups/create");})">@AppLocalization["Create Group"]</MudNavLink>
+                <MudNavLink Href="/create/group"
+                            Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+                            @AppLocalization["Create Group"]
+                            </MudNavLink>
             </AuthorizeView>
             <AuthorizeView Roles="@UserRoles.CreateOUs">
-                <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/ou/create");})">@AppLocalization["Create OU"]</MudNavLink>
+                <MudNavLink Href="/create/ou"
+                            Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+                    @AppLocalization["Create OU"]
+                </MudNavLink>
             </AuthorizeView>
         </MudNavGroup>
     </AuthorizeView>
     <AuthorizeView Roles=@UserRoles.SuperAdmin>
-        <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/recyclebin");})"
+        <MudNavLink Href="/recyclebin"
+                    Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix
                     Icon="@Icons.Material.Filled.DeleteOutline"
                     Disabled=@(Monitor.DirectoryConnectionStatus != ServiceConnectionState.Up)>
             @AppLocalization["Recycle Bin"]
         </MudNavLink>
 
         <MudNavGroup Title="@AppLocalization["Configure"]" Icon="@Icons.Material.Filled.Handyman">
-            <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/settings");})">@AppLocalization["Settings"]</MudNavLink>
-            <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/notifications");})">@AppLocalization["Notifications"]</MudNavLink>
-            <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/permissions");})">@AppLocalization["Permissions"]</MudNavLink>
-            <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/fields");})">@AppLocalization["Fields"]</MudNavLink>
-            <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/templates");})">@AppLocalization["Templates"]</MudNavLink>
-            <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/webhooks");})">@AppLocalization["WebHooks"]</MudNavLink>
+            <MudNavLink Href="/settings"
+                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+                @AppLocalization["Settings"]
+            </MudNavLink>
+            <MudNavLink Href="/notifications"
+                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+                @AppLocalization["Notifications"]
+            </MudNavLink>
+            <MudNavLink Href="/permissions"
+                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+                @AppLocalization["Permissions"]
+            </MudNavLink>
+            <MudNavLink Href="/fields"
+                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+                @AppLocalization["Fields"]
+            </MudNavLink>
+            <MudNavLink Href="/webhooks"
+                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+                @AppLocalization["WebHooks"]
+            </MudNavLink>
+            <MudNavLink Href="/api-tokens"
+                        Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix>
+                @AppLocalization["Api Token"]
+            </MudNavLink>
         </MudNavGroup>
-        <MudNavLink OnClick="@(()=>{Nav.NavigateTo("/audit");})"
+        <MudNavLink Href="/audit"
                     Match=Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix
                     Icon="@Icons.Material.Filled.ReceiptLong">
             @AppLocalization["Audit"]

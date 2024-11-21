@@ -1,12 +1,17 @@
 @inherits DatabaseComponentBase
-<ApiTokenDataGrid OnTokenDeleted="@((token)=>{Delete(token);})" Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
+<ApiTokenDataGrid OnTokenDeleted="@((token)=>{Delete(token);})"
+                  Tokens="@(_tokens.Where(t=>t.DeletedAt == null))" />
 
 
 <SettingsField Label="@AppLocalization["Create new token"]">
     <MudSelect @bind-Value="_apiValidDays"
                Class="mb-3"
                Label="@AppLocalization["Token Lifetime"]">
+        @if (ApplicationInfo.InDebugMode)
+        {
+            <MudSelectItem Value="TimeSpan.FromSeconds(30)">30 @AppLocalization["seconds"]</MudSelectItem>
 
+        }
         <MudSelectItem Value="TimeSpan.FromDays(30)">30 @AppLocalization["days"]</MudSelectItem>
         <MudSelectItem Value="TimeSpan.FromDays(60)">60 @AppLocalization["days"]</MudSelectItem>
         <MudSelectItem Value="TimeSpan.FromDays(90)">90 @AppLocalization["days"]</MudSelectItem>
@@ -61,15 +66,16 @@
 
     private async Task Delete(ApiToken? tokenToDelete)
     {
-        if(await MessageService.Confirm(AppLocalization["Are you sure you want to delete this API token?"],AppLocalization["Confirm delete"]))
+        if (await MessageService.Confirm(AppLocalization["Are you sure you want to delete this API token?"], AppLocalization["Confirm delete"]))
         {
             if (tokenToDelete != null)
             {
                 tokenToDelete.DeletedAt = DateTime.UtcNow;
                 Context.SaveChangesAsync();
+                GetTokens();
             }
         }
-       
+
     }
 
     private void GetTokens()

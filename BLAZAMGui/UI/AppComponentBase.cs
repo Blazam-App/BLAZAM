@@ -1,6 +1,5 @@
 
 using BLAZAM.ActiveDirectory;
-using BLAZAM.Nav;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Chat;
 
@@ -16,7 +15,7 @@ namespace BLAZAM.Gui.UI
         protected SearchService SearchService { get; set; }
 
         [Inject]
-        protected AppNavigationManager Nav { get; set; }
+        protected NavigationManager Nav { get; set; }
 
         [Inject]
         protected ConnMonitor Monitor { get; set; }
