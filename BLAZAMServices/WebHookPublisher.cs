@@ -27,7 +27,8 @@ namespace BLAZAM.Notifications.Services
                 {
                     { "timestamp", DateTime.UtcNow.ToString() },
                     { "actor", actor?.Username }, // Use ?. to handle null actor
-                    { "subject", target?.CanonicalName }, // Use ?. to handle null target
+                    { "object", target?.CanonicalName }, // Use ?. to handle null target
+                    { "objectType", target?.ObjectType.ToString()}, // Use ?. to handle null target
                     { "eventType", notificationType.ToString() }
                 };
 
