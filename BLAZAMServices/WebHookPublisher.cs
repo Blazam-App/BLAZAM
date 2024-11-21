@@ -26,12 +26,17 @@ namespace BLAZAM.Notifications.Services
             Dictionary<string, object?> payload = new()
                 {
                     { "timestamp", DateTime.UtcNow.ToString() },
-                    { "actor", actor?.Username }, // Use ?. to handle null actor
+                  
+                    { "type", notificationType.ToString() }
+                };
+            Dictionary<string, object?> data = new()
+            {
+                  { "actor", actor?.Username }, // Use ?. to handle null actor
                     { "object", target?.CanonicalName }, // Use ?. to handle null target
                     { "objectDN", target?.DN }, // Use ?. to handle null target
                     { "objectType", target?.ObjectType.ToString()}, // Use ?. to handle null target
-                    { "eventType", notificationType.ToString() }
-                };
+            };
+            payload.Add("data", data);
 
             var httpClient = _httpClientFactory.CreateClient();
 
