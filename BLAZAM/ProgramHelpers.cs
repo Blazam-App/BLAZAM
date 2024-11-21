@@ -22,17 +22,21 @@ using Microsoft.OpenApi.Models;
 using MimeKit;
 using MudBlazor;
 using MudBlazor.Services;
+using Polly.Extensions.Http;
+using Polly;
 using Serilog;
 using System.Diagnostics;
 using System.Globalization;
 using System.Management;
 using System.Reflection;
 using System.Text;
+using Polly.Contrib.WaitAndRetry;
 
 namespace BLAZAM.Server
 {
     public static class ProgramHelpers
     {
+
         /// <summary>
         /// Sets up the core configuration like debug, installation id, and running process and version
         /// </summary>
@@ -222,6 +226,10 @@ namespace BLAZAM.Server
             //Provide an Http client as a service with custom construction via api service class
             builder.Services.AddHttpClient();
 
+            builder.Services.AddHttpClient(HttpClientNames.WebHookHttpClientName)
+                    .SetHandlerLifetime(TimeSpan.FromMinutes(1440))  //Set lifetime to five minutes
+                    .AddPolicyHandler(GetWebhookRetryPolicy());
+
             //Also keeping this here for a possible future API, though this would be for internal use
             //builder.Services.AddTransient<ApiService>();
             //builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>().HttpContext.User);
@@ -328,6 +336,8 @@ namespace BLAZAM.Server
 
             builder.Services.AddMvc();
 
+
+
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Blazam API", 
@@ -383,7 +393,15 @@ namespace BLAZAM.Server
             PreloadServices();
 
         }
+        static IAsyncPolicy<HttpResponseMessage> GetWebhookRetryPolicy()
+        {
+            var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 15);
 
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                .WaitAndRetryAsync(delay);
+        }
         private static void PreloadServices()
         {
             try

@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
@@ -26,19 +27,26 @@ namespace BLAZAM.Notifications.Services
             Dictionary<string, object?> payload = new()
                 {
                     { "timestamp", DateTime.UtcNow.ToString() },
-                  
-                    { "type", notificationType.ToString() }
+
+                    { "type", source.ObjectType.ToString().ToLower()+"."+notificationType.ToString().ToLower() }
                 };
             Dictionary<string, object?> data = new()
             {
                   { "actor", actor?.Username }, // Use ?. to handle null actor
                     { "object", source?.CanonicalName }, // Use ?. to handle null target
+                    { "objectOU", source?.OU }, // Use ?. to handle null target
                     { "objectDN", source?.DN }, // Use ?. to handle null target
                     { "objectType", source?.ObjectType.ToString()}, // Use ?. to handle null target
             };
+            if (target != null)
+            {
+                data.Add("target", target.CanonicalName);
+                data.Add("targetOU", target.OU);
+                data.Add("targetDN", target.DN);
+                data.Add("targetType", target.ObjectType.ToString());
+            }
             payload.Add("data", data);
-
-            var httpClient = _httpClientFactory.CreateClient();
+            HttpClient httpClient = CreateAPIClient();
 
             var request = new HttpRequestMessage
             {
@@ -69,6 +77,11 @@ namespace BLAZAM.Notifications.Services
                 // Handle exceptions (e.g., log the error)
                 Loggers.SystemLogger.Error("Webhook failed {Error}", ex);
             }
+        }
+
+        private HttpClient CreateAPIClient()
+        {
+            return _httpClientFactory.CreateClient(HttpClientNames.WebHookHttpClientName);
         }
     }
 }
