@@ -62,13 +62,18 @@
                 }
                 else
                 {
-                    <MudAlert Severity="Severity.Error">@AppLocalization["Deleted"]</MudAlert>
+                    <MudAlert Severity="Severity.Error">
+                        <MudStack>
+                            <MudText>@AppLocalization["Deleted"]</MudText>
+                            <MudText>@context.Item.DeletedAt.Value.ToLocalTime().ToString()</MudText>
+                        </MudStack></MudAlert>
                 }
             </CellTemplate>
         </TemplateColumn>
     </Columns>
     <NoRecordsContent>
-        @AppLocalization["You don't have any active API tokens."]
+        
+        @AppLocalization[ShowUser==true?"There are no active API tokens." :"You don't have any active API tokens."]
     </NoRecordsContent>
 </MudDataGrid>
 
