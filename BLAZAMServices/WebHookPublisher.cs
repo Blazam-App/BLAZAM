@@ -43,7 +43,7 @@ namespace BLAZAM.Notifications.Services
         {
             _httpClientFactory = httpClientFactory;
             _appDatabaseFactory = appDatabaseFactory;
-            _ = Run();
+            //_ = Run();
         }
         private async Task Run()
         {
