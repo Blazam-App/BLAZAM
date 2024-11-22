@@ -13,6 +13,7 @@
                    Label="@AppLocalization["Show Deleted"]" />
     </SetHeader>
 
+    <MudText Typo="Typo.h4">@AppLocalization["API Tokens"] <AppDocumentationButton Page="/admin/api" /></MudText>
 
     <ApiTokenDataGrid ShowUser="true" OnTokenDeleted="@((token)=>{Delete(token);})" Tokens="@_tokens" />
 
