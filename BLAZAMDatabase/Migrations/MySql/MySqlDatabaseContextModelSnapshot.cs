@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -1459,49 +1459,6 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("DirectoryTemplateGroups", (string)null);
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.User.ApiToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("IsRevoked")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime?>("LastUsedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("TokenHash")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ApiTokens", (string)null);
-                });
-
             modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
                 {
                     b.Property<int>("Id")
@@ -1509,6 +1466,9 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("APIToken")
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("DarkMode")
                         .HasColumnType("tinyint(1)");
@@ -1923,17 +1883,6 @@ namespace BLAZAM.Common.Migrations.MySql
                         .HasForeignKey("DirectoryTemplateId");
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.User.ApiToken", b =>
-                {
-                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
-                        .WithMany("APITokens")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("BLAZAM.Database.Models.User.NotificationMessage", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.User.AppUser", "Creator")
@@ -2063,8 +2012,6 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
                 {
-                    b.Navigation("APITokens");
-
                     b.Navigation("DashboardWidgets");
 
                     b.Navigation("FavoriteEntries");

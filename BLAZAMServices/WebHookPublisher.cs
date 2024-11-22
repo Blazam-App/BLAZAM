@@ -138,6 +138,12 @@ namespace BLAZAM.Notifications.Services
                 signature = Sign(bytekey, msgId.ToString(), DateTime.UtcNow, payloadString);
 
             }
+            
+            await SendWebHook(subscription, msgId, attemptId, timestamp, signature, payloadString);
+        }
+
+        private async Task SendWebHook(WebHookSubscription subscription, Guid msgId, Guid attemptId, string timestamp, string? signature, string payloadString)
+        {
             var webHookAttempt = new WebHookAttempt()
             {
                 Body = payloadString,
@@ -148,14 +154,11 @@ namespace BLAZAM.Notifications.Services
                 EventTimestamp = DateTime.Parse(timestamp),
                 Signature = signature
             };
-            using var context = await _appDatabaseFactory.CreateDbContextAsync();
-            context.WebHookAttempts.Add(webHookAttempt);
-            await context.SaveChangesAsync();
-            await SendWebHook(subscription, msgId, attemptId, timestamp, signature, payloadString);
-        }
+            using var dbcontext = await _appDatabaseFactory.CreateDbContextAsync();
+            dbcontext.WebHookAttempts.Add(webHookAttempt);
+            await dbcontext.SaveChangesAsync();
 
-        private async Task SendWebHook(WebHookSubscription subscription, Guid msgId, Guid attemptId, string timestamp, string? signature, string payloadString)
-        {
+
             var httpClient = CreateAPIClient();
 
             var request = new HttpRequestMessage
