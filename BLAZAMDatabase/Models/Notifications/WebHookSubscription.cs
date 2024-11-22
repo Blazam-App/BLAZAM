@@ -7,6 +7,13 @@ namespace BLAZAM.Database.Models.Notifications
     {
         GET,
         POST
+    } 
+
+    public enum WebHookSignature
+    {
+        None,
+        HMAC,
+        Asymmetric
     }
     public enum WebHookAuthorization
     {
@@ -40,6 +47,12 @@ namespace BLAZAM.Database.Models.Notifications
         public WebHookMethod WebHookMethod { get; set; }
 
         /// <summary>
+        /// The signature to type to include in the message to verify the
+        /// authenticity of the message by the receiver
+        /// </summary>
+        public WebHookSignature WebHookSignature { get; set; }
+
+        /// <summary>
         /// The authorization type to use. None, basic, or bearer.
         /// </summary>
         public WebHookAuthorization WebHookAuthorization { get;set;}
@@ -47,6 +60,15 @@ namespace BLAZAM.Database.Models.Notifications
         /// The destination authorization token in encrypted form
         /// </summary>
         public string? AuthorizationToken { get; set; }
+
+        /// <summary>
+        /// The authenticity HMAC key for this webhook connection
+        /// in encrypted form
+        /// </summary>
+        public string? HmacKey { get; set; }
+
+        public string? PrivateKey { get; set; }
+        public string? PublicKey { get; set; }
 
         //public bool Block { get; set; } = false;
     }

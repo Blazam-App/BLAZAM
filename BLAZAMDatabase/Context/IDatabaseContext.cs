@@ -69,6 +69,7 @@ namespace BLAZAM.Database.Context
         DbSet<GlobalPermissionRequestActions> GlobalPermissionRequestActions { get; set; }
         DbSet<ApiToken> ApiTokens { get; set; }
         DbSet<WebHookSubscription> WebHookSubscriptions { get; set; }
+        DbSet<WebHookAttempt> WebHookAttempts { get; set; }
 
         void Export(string directory);
     }

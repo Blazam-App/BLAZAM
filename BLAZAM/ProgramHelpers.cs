@@ -227,7 +227,7 @@ namespace BLAZAM.Server
             builder.Services.AddHttpClient();
 
             builder.Services.AddHttpClient(HttpClientNames.WebHookHttpClientName)
-                    .SetHandlerLifetime(TimeSpan.FromMinutes(1440))  //Set lifetime to five minutes
+                    .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
                     .AddPolicyHandler(GetWebhookRetryPolicy());
 
             //Also keeping this here for a possible future API, though this would be for internal use
@@ -395,7 +395,7 @@ namespace BLAZAM.Server
         }
         static IAsyncPolicy<HttpResponseMessage> GetWebhookRetryPolicy()
         {
-            var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 15);
+            var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 5);
 
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
@@ -430,6 +430,19 @@ namespace BLAZAM.Server
                 {
                     var context = Program.AppInstance.Services.GetRequiredService<UpdateService>();
                     context.Initialize();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+            } 
+            try
+            {
+                if (ApplicationInfo.installationCompleted)
+                {
+                    var context = Program.AppInstance.Services.GetRequiredService<WebHookPublisher>();
+                    
                 }
 
             }
