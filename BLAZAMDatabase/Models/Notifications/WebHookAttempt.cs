@@ -15,6 +15,7 @@ namespace BLAZAM.Database.Models.Notifications
         public DateTime EventTimestamp { get; set; }
         public WebHookSubscription WebHookSubscription { get;set;}
         public int WebHookSubscriptionId {get;set;}
+        public string Uri { get; set; }
         public bool Delivered { get; set; }
         public string Body { get; set; }
         public string? Signature { get; set; }

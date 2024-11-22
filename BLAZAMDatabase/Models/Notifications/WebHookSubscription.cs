@@ -1,4 +1,5 @@
 ﻿using BLAZAM.Database.Models.User;
+using BLAZAM.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BLAZAM.Database.Models.Notifications
@@ -7,7 +8,7 @@ namespace BLAZAM.Database.Models.Notifications
     {
         GET,
         POST
-    } 
+    }
 
     public enum WebHookSignature
     {
@@ -56,7 +57,7 @@ namespace BLAZAM.Database.Models.Notifications
         /// <summary>
         /// The authorization type to use. None, basic, or bearer.
         /// </summary>
-        public WebHookAuthorization WebHookAuthorization { get;set;}
+        public WebHookAuthorization WebHookAuthorization { get; set; }
         /// <summary>
         /// The destination authorization token in encrypted form
         /// </summary>
@@ -72,5 +73,16 @@ namespace BLAZAM.Database.Models.Notifications
         public string? PublicKey { get; set; }
 
         //public bool Block { get; set; } = false;
+
+        public bool IsValid
+        {
+            get
+            {
+                var valid= ((WebHookAuthorization == WebHookAuthorization.None || !AuthorizationToken.IsNullOrEmpty()) &&
+                        NotificationTypes.Count>0 &&
+                        !URL.IsNullOrEmpty());
+                return valid;
+            }
+        }
     }
 }
