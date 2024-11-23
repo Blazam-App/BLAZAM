@@ -276,7 +276,7 @@ else
             _username = User.SamAccountName;
             _userPassword = User.NewPassword;
             var result = await User.CommitChangesAsync(createUserJob);
-
+            User = (IADUser)Directory.GetDirectoryEntryByDN(User.DN);
             disableCreateUserButton = false;
             await InvokeAsync(StateHasChanged);
             if (result.FailedSteps.Count == 0)

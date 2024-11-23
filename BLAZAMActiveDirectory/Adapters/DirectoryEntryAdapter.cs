@@ -19,6 +19,7 @@ using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Web;
 using static MudBlazor.Colors;
 
@@ -305,6 +306,23 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
+                if (NewEntry)
+                {
+                    // Regular expression to match everything after the last slash
+                    string pattern = @"[^/]+$";
+
+                    Match match = Regex.Match(ADSPath, pattern);
+
+                    if (match.Success)
+                    {
+                        return match.Value;
+                    }
+                    else
+                    {
+                        // Handle the case where no match is found
+                        return null;
+                    }
+                }
                 return GetStringProperty("distinguishedName");
             }
             set
