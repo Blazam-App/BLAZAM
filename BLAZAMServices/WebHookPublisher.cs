@@ -11,8 +11,6 @@ using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Configuration;
 using MudBlazor.Extensions;
 using System;
-using Polly.Extensions.Http;
-using Polly;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -20,7 +18,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using BLAZAM.Database.Context;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
+using System.Security.Authentication;
+using Azure;
+using Polly;
+
 
 namespace BLAZAM.Notifications.Services
 {
@@ -28,6 +31,7 @@ namespace BLAZAM.Notifications.Services
     {
         internal static readonly UTF8Encoding SafeUTF8Encoding = new UTF8Encoding(false, true);
         internal const string UNBRANDED_ID_HEADER_KEY = "webhook-id";
+        internal const string UNBRANDED_ATTEMPT_ID_HEADER_KEY = "webhook-attempt-id";
         internal const string UNBRANDED_SIGNATURE_HEADER_KEY = "webhook-signature";
         internal const string UNBRANDED_TIMESTAMP_HEADER_KEY = "webhook-timestamp";
         internal const string UNBRANDED_ATTEMPT_TIMESTAMP_HEADER_KEY = "webhook-attempt-timestamp";
@@ -43,7 +47,7 @@ namespace BLAZAM.Notifications.Services
         {
             _httpClientFactory = httpClientFactory;
             _appDatabaseFactory = appDatabaseFactory;
-            //_ = Run();
+            _ = Run();
         }
         private async Task Run()
         {
@@ -63,27 +67,18 @@ namespace BLAZAM.Notifications.Services
                         Parallel.ForEachAsync(undeliveredWebhooks, async (attempt, cancel) =>
                         {
                             var attemptId = Guid.NewGuid();
-                            var webHookAttempt = new WebHookAttempt()
-                            {
-                                Body = attempt.Body,
-                                RetryCount = attempt.RetryCount++,
-                                AttemptGuid = attemptId,
-                                MessageGuid = attempt.MessageGuid,
-                                WebHookSubscriptionId = attempt.WebHookSubscriptionId,
-                                Timestamp = DateTime.UtcNow,
-                                EventTimestamp = attempt.EventTimestamp,
-                                Signature = attempt.Signature
-                            };
-                            await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp.ToString(), attempt.Signature, attempt.Body);
+
+                            await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp.ToString(), attempt.Body, attempt.EventType ,attempt.Signature);
 
                         });
-                    }catch(Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         Loggers.SystemLogger.Error("Unexpected error retrying webhook {Error}", ex);
                     }
                     var rand = new Random();
 
-                    await Task.Delay(60000 + rand.Next(-10000, 10000));
+                    await Task.Delay(600000 + rand.Next(-10000, 10000));
                 }
             }
         }
@@ -93,9 +88,12 @@ namespace BLAZAM.Notifications.Services
             IApplicationUserState? actor = null,
             IDirectoryEntryAdapter? target = null)
         {
-            var msgId = Guid.NewGuid();
-            var timestamp = DateTime.UtcNow.ToString();
+            var pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
+            var msgId = Guid.NewGuid();
+            var timestamp = DateTime.UtcNow.ToString(pattern);
+
+            var eventType = source.ObjectType.ToString().ToLower() + "." + notificationType.ToString().ToLower();
 
 
             string? signature = null;
@@ -104,18 +102,17 @@ namespace BLAZAM.Notifications.Services
                 {
                     { "timestamp", timestamp},
 
-                    { "type", source.ObjectType.ToString().ToLower()+"."+notificationType.ToString().ToLower() }
+                    { "type", eventType}
                 };
             var attemptId = Guid.NewGuid();
             Dictionary<string, object?> data = new()
             {
-                  { "id", msgId }, // Use ?. to handle null actor
-                  { "attemptId", attemptId }, // Use ?. to handle null actor
+                  { "id", msgId },
                   { "actor", actor?.Username }, // Use ?. to handle null actor
-                    { "entry", source?.CanonicalName }, // Use ?. to handle null target
-                    { "entryOU", source?.OU }, // Use ?. to handle null target
-                    { "entryDN", source?.DN }, // Use ?. to handle null target
-                    { "entryType", source?.ObjectType.ToString()}, // Use ?. to handle null target
+                    { "entry", source?.CanonicalName }, // Use ?. to handle null source
+                    { "entryOU", source?.OU }, // Use ?. to handle null source
+                    { "entryDN", source?.DN }, // Use ?. to handle null source
+                    { "entryType", source?.ObjectType.ToString()}, // Use ?. to handle null source
             };
             if (target != null)
             {
@@ -138,28 +135,19 @@ namespace BLAZAM.Notifications.Services
                 signature = Sign(bytekey, msgId.ToString(), DateTime.UtcNow, payloadString);
 
             }
-            
-            await SendWebHook(subscription, msgId, attemptId, timestamp, signature, payloadString);
+
+            await SendWebHook(subscription, msgId, attemptId, timestamp, eventType, payloadString, signature);
         }
 
-        private async Task SendWebHook(WebHookSubscription subscription, Guid msgId, Guid attemptId, string timestamp, string? signature, string payloadString)
+        private async Task SendWebHook(WebHookSubscription subscription, Guid msgId, Guid attemptId, string timestamp, string eventType, string payloadString, string? signature)
         {
-            var webHookAttempt = new WebHookAttempt()
-            {
-                Body = payloadString,
-                AttemptGuid = attemptId,
-                MessageGuid = msgId,
-                WebHookSubscriptionId = subscription.Id,
-                Timestamp = DateTime.UtcNow,
-                EventTimestamp = DateTime.Parse(timestamp),
-                Signature = signature
-            };
-            using var dbcontext = await _appDatabaseFactory.CreateDbContextAsync();
-            dbcontext.WebHookAttempts.Add(webHookAttempt);
-            await dbcontext.SaveChangesAsync();
+            var httpClientHandler = new HttpClientHandler();
+            var httpClient = CreateAPIClient(subscription.IgnoreSSLVerification);
+            using var context = await _appDatabaseFactory.CreateDbContextAsync();
+
+            var thisMessage = await context.WebHookAttempts.FirstOrDefaultAsync(a => a.MessageGuid == msgId);
 
 
-            var httpClient = CreateAPIClient();
 
             var request = new HttpRequestMessage
             {
@@ -168,9 +156,12 @@ namespace BLAZAM.Notifications.Services
                 Content = new StringContent(payloadString, Encoding.UTF8, "application/json")
 
             };
+            var pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
             request.Headers.Add(UNBRANDED_ID_HEADER_KEY, msgId.ToString());
+            request.Headers.Add(UNBRANDED_ATTEMPT_ID_HEADER_KEY, attemptId.ToString());
             request.Headers.Add(UNBRANDED_TIMESTAMP_HEADER_KEY, timestamp);
-            request.Headers.Add(UNBRANDED_ATTEMPT_TIMESTAMP_HEADER_KEY, DateTime.UtcNow.ToString());
+            request.Headers.Add(UNBRANDED_ATTEMPT_TIMESTAMP_HEADER_KEY, DateTime.UtcNow.ToString(pattern));
             if (!signature.IsNullOrEmpty())
             {
                 request.Headers.Add(UNBRANDED_SIGNATURE_HEADER_KEY, signature);
@@ -190,39 +181,101 @@ namespace BLAZAM.Notifications.Services
 
             try
             {
+                if (thisMessage == null)
+                {
+                    var webHookAttempt = new WebHookAttempt()
+                    {
+                        Body = payloadString,
+                        MessageGuid = msgId,
+                        EventType= eventType,
+                        Uri = request.RequestUri.ToString(),
+                        Delivered = false,
+                        WebHookSubscriptionId = subscription.Id,
+                        LastAttemptTimestamp = DateTime.UtcNow,
+                        EventTimestamp = DateTime.Parse(timestamp),
+                        Signature = signature
+                    };
+                    thisMessage = webHookAttempt;
+                    context.WebHookAttempts.Add(thisMessage);
+
+                }
+                else
+                {
+                    thisMessage.RetryCount++;
+                    thisMessage.Uri = request.RequestUri.ToString();
+                }
+                await context.SaveChangesAsync();
+
 
                 var response = await httpClient.SendAsync(request);
+
+
+
+
+
+
                 if (response.IsSuccessStatusCode)
                 {
-                    using var context = await _appDatabaseFactory.CreateDbContextAsync();
-                    var thisAttempt = await context.WebHookAttempts.FirstOrDefaultAsync(a => a.AttemptGuid == attemptId);
-                    thisAttempt.Delivered = true;
-                    thisAttempt.RepsonseCode = response.StatusCode;
-                    thisAttempt.ResponseMessage = response.ReasonPhrase;
+                    thisMessage.Delivered = true;
+                    thisMessage.ResponseCode = response.StatusCode;
+                    thisMessage.ResponseMessage = null;
                     await context.SaveChangesAsync();
                 }
                 else
                 {
                     Loggers.SystemLogger.Information("Webhook failed {Subscription}", subscription);
-                    using var context = await _appDatabaseFactory.CreateDbContextAsync();
-                    var thisAttempt = await context.WebHookAttempts.FirstOrDefaultAsync(a => a.AttemptGuid == attemptId);
-                    thisAttempt.Delivered = false;
-                    thisAttempt.RepsonseCode = response.StatusCode;
-                    thisAttempt.ResponseMessage = response.ReasonPhrase;
+                    thisMessage.Delivered = false;
+                    thisMessage.ResponseCode = response.StatusCode;
+                    thisMessage.ResponseMessage = null;
                     await context.SaveChangesAsync();
                 }
             }
+            catch (HttpRequestException ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    if (thisMessage != null)
+                    {
+                        thisMessage.ResponseCode = HttpStatusCode.UnprocessableEntity;
+                        thisMessage.ResponseMessage = ex.InnerException.Message;
+                    }
+
+                }
+                else
+                {
+                    if (thisMessage != null)
+                    {
+                        thisMessage.ResponseCode = HttpStatusCode.UnprocessableEntity;
+                        thisMessage.ResponseMessage = ex.Message;
+                    }
+                }
+                await context.SaveChangesAsync();
+
+            }
             catch (Exception ex)
             {
+
                 // Handle exceptions (e.g., log the error)
                 Loggers.SystemLogger.Error("Unexpected Webhook error occurred {Error}", ex);
 
             }
         }
 
-        private HttpClient CreateAPIClient()
+        private HttpClient CreateAPIClient(bool ignoreSSL)
         {
-            return _httpClientFactory.CreateClient(HttpClientNames.WebHookHttpClientName);
+            if (!ignoreSSL)
+            {
+                // Use the default handler if none is provided
+                return _httpClientFactory.CreateClient(HttpClientNames.WebHookHttpClientName);
+            }
+            else
+            {
+
+                // Use the provided handler for custom configuration
+                var client = _httpClientFactory.CreateClient(HttpClientNames.WebHookHttpClientNoSSLCheckName);
+
+                return client;
+            }
         }
         //public void Verify(string payload, WebHeaderCollection headers)
         //{

@@ -1,6 +1,7 @@
 @inherits AppModalContent
 <MudForm @ref=Form Model="_newSubscription">
     <MudStack Style="min-width:300px;">
+        <MudText>@AppLocalization["Trigger On"]</MudText>
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
         {
             var originalEnum = (NotificationType)type;
@@ -21,7 +22,7 @@
         }
         <MudSelect Label="@AppLocalization["HTTP Method"]"
                    @bind-Value=_newSubscription.WebHookMethod>
-            <MudSelectItem Value="WebHookMethod.GET">@AppLocalization["GET"]</MudSelectItem>
+            @* <MudSelectItem Value="WebHookMethod.GET">@AppLocalization["GET"]</MudSelectItem> *@
                 <MudSelectItem Value="WebHookMethod.POST">@AppLocalization["POST"]</MudSelectItem>
             </MudSelect>
             @if (_newSubscription.WebHookMethod == WebHookMethod.GET)
@@ -50,10 +51,17 @@
                       Immediate=true
                       @bind-Value=_newSubscription.URL />
 
-        <MudSwitch Color="Color.Warning"
-                   Label="@AppLocalization["Ignore SSL Verification"]"
-                   @bind-Value=_newSubscription.IgnoreSSLVerification />
+            <MudSwitch Color="Color.Warning"
+                       Label="@AppLocalization["Ignore SSL Verification"]"
+                       @bind-Value=_newSubscription.IgnoreSSLVerification />
+            @if (_newSubscription.IgnoreSSLVerification)
+            {
+                <MudAlert Severity="Severity.Warning">
+                    @AppLocalization["Ignoring SSL verification could expose sensitive data to unintended recipients"]
+                </MudAlert>
+            }
 
+   
         <MudSelect Label="@AppLocalization["Authorization Type"]"
                    @bind-Value=_newSubscription.WebHookAuthorization>
             <MudSelectItem Value="WebHookAuthorization.None">@AppLocalization["None"]</MudSelectItem>
