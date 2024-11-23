@@ -1,6 +1,7 @@
 ﻿using BLAZAM.Database.Models.User;
 using BLAZAM.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Database.Models.Notifications
 {
@@ -28,7 +29,10 @@ namespace BLAZAM.Database.Models.Notifications
         /// The notification types this subscription should trigger on
         /// </summary>
         public List<SubscriptionWebHookType> NotificationTypes { get; set; } = new();
-        //public string OU { get; set; }
+        /// <summary>
+        /// Currently not used, but could be used for future per OU mapping of webhook subscriptions
+        /// </summary>
+        public string? OU { get; set; }
         public List<WebHookAttempt> WebHookAttempts { get; set; } = new();
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace BLAZAM.Database.Models.Notifications
         /// <summary>
         /// The HTTP method to use
         /// </summary>
-        public WebHookMethod WebHookMethod { get; set; }
+        public WebHookMethod WebHookMethod { get; set; } = WebHookMethod.POST;
 
         /// <summary>
         /// The signature to type to include in the message to verify the
@@ -73,7 +77,7 @@ namespace BLAZAM.Database.Models.Notifications
         public string? PublicKey { get; set; }
 
         //public bool Block { get; set; } = false;
-
+        [NotMapped]
         public bool IsValid
         {
             get

@@ -34,7 +34,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("FieldMapId");
 
-                    b.ToTable("AccessLevelFieldAccessMapping", (string)null);
+                    b.ToTable("AccessLevelFieldAccessMapping");
                 });
 
             modelBuilder.Entity("AccessLevelObjectAccessMapping", b =>
@@ -49,7 +49,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("ObjectMapId");
 
-                    b.ToTable("AccessLevelObjectAccessMapping", (string)null);
+                    b.ToTable("AccessLevelObjectAccessMapping");
                 });
 
             modelBuilder.Entity("AccessLevelPermissionMapping", b =>
@@ -64,7 +64,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("PermissionMapsId");
 
-                    b.ToTable("AccessLevelPermissionMapping", (string)null);
+                    b.ToTable("AccessLevelPermissionMapping");
                 });
 
             modelBuilder.Entity("AppUserChatRoom", b =>
@@ -79,7 +79,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("MembersId");
 
-                    b.ToTable("AppUserChatRoom", (string)null);
+                    b.ToTable("AppUserChatRoom");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.ADSettings", b =>
@@ -115,7 +115,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActiveDirectorySettings", null, t =>
+                    b.ToTable("ActiveDirectorySettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
                         });
@@ -142,7 +142,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActiveDirectoryFields", (string)null);
+                    b.ToTable("ActiveDirectoryFields");
 
                     b.HasData(
                         new
@@ -427,7 +427,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("CustomActiveDirectoryFieldId");
 
-                    b.ToTable("ActiveDirectoryFieldObjectMappings", (string)null);
+                    b.ToTable("ActiveDirectoryFieldObjectMappings");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.AppSettings", b =>
@@ -499,7 +499,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppSettings", null, t =>
+                    b.ToTable("AppSettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[Id] = 1")
                                 .HasName("CK_Table_Column1");
@@ -543,7 +543,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("DirectoryEntryAuditLogs", (string)null);
+                    b.ToTable("DirectoryEntryAuditLogs");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.LogonAuditLog", b =>
@@ -579,7 +579,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("LogonAuditLog", (string)null);
+                    b.ToTable("LogonAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.PermissionsAuditLog", b =>
@@ -615,7 +615,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("PermissionsAuditLog", (string)null);
+                    b.ToTable("PermissionsAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.RequestAuditLog", b =>
@@ -651,7 +651,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("RequestAuditLog", (string)null);
+                    b.ToTable("RequestAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.SettingsAuditLog", b =>
@@ -687,7 +687,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("SettingsAuditLog", (string)null);
+                    b.ToTable("SettingsAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Audit.SystemAuditLog", b =>
@@ -723,7 +723,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("SystemAuditLog", (string)null);
+                    b.ToTable("SystemAuditLog");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.AuthenticationSettings", b =>
@@ -755,7 +755,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuthenticationSettings", null, t =>
+                    b.ToTable("AuthenticationSettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[Id] = 1")
                                 .HasName("CK_Table_Column2");
@@ -798,7 +798,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChatRooms", (string)null);
+                    b.ToTable("ChatRooms");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Chat.UnreadChatMessage", b =>
@@ -822,7 +822,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("ChatMessageId");
 
-                    b.ToTable("UnreadChatMessages", (string)null);
+                    b.ToTable("UnreadChatMessages");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.CustomActiveDirectoryField", b =>
@@ -849,7 +849,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("CustomActiveDirectoryFields", (string)null);
+                    b.ToTable("CustomActiveDirectoryFields");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.EmailSettings", b =>
@@ -896,7 +896,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailSettings", null, t =>
+                    b.ToTable("EmailSettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[Id] = 1")
                                 .HasName("CK_Table_Column3");
@@ -924,7 +924,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailTemplates", (string)null);
+                    b.ToTable("EmailTemplates");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
@@ -958,7 +958,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("NotificationSubscriptions", (string)null);
+                    b.ToTable("NotificationSubscriptions");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionNotificationType", b =>
@@ -979,7 +979,132 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("NotificationSubscriptionId");
 
-                    b.ToTable("SubscriptionNotificationType", (string)null);
+                    b.ToTable("SubscriptionNotificationType");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionWebHookType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("NotificationType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WebHookSubscriptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WebHookSubscriptionId");
+
+                    b.ToTable("SubscriptionWebHookType");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookAttempt", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Delivered")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("EventTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastAttemptTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MessageGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ResponseCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ResponseHeaders")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResponseMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RetryCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Signature")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Uri")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("WebHookSubscriptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WebHookSubscriptionId");
+
+                    b.ToTable("WebHookAttempts");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookSubscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorizationToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("HmacKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IgnoreSSLVerification")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OU")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PrivateKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublicKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("URL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("WebHookAuthorization")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WebHookMethod")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WebHookSignature")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WebHookSubscriptions");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
@@ -999,7 +1124,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccessLevels", (string)null);
+                    b.ToTable("AccessLevels");
 
                     b.HasData(
                         new
@@ -1035,7 +1160,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("ObjectActionId");
 
-                    b.ToTable("ActionAccessMapping", (string)null);
+                    b.ToTable("ActionAccessMapping");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.FieldAccessLevel", b =>
@@ -1055,7 +1180,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("FieldAccessLevel", (string)null);
+                    b.ToTable("FieldAccessLevel");
 
                     b.HasData(
                         new
@@ -1106,7 +1231,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("FieldId");
 
-                    b.ToTable("AccessLevelFieldMapping", (string)null);
+                    b.ToTable("AccessLevelFieldMapping");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionRequestActions", b =>
@@ -1122,7 +1247,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("GlobalPermissionRequestActions", (string)null);
+                    b.ToTable("GlobalPermissionRequestActions");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.GlobalPermissionSettings", b =>
@@ -1141,7 +1266,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("GlobalPermissionSettings", (string)null);
+                    b.ToTable("GlobalPermissionSettings");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAccessLevel", b =>
@@ -1161,7 +1286,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("ObjectAccessLevel", (string)null);
+                    b.ToTable("ObjectAccessLevel");
 
                     b.HasData(
                         new
@@ -1202,7 +1327,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("ObjectAccessLevelId");
 
-                    b.ToTable("AccessLevelObjectMapping", (string)null);
+                    b.ToTable("AccessLevelObjectMapping");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ObjectAction", b =>
@@ -1222,7 +1347,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("ObjectActionFlag", (string)null);
+                    b.ToTable("ObjectActionFlag");
 
                     b.HasData(
                         new
@@ -1313,7 +1438,7 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.HasIndex("DelegateSid")
                         .IsUnique();
 
-                    b.ToTable("PermissionDelegate", (string)null);
+                    b.ToTable("PermissionDelegate");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.PermissionMapping", b =>
@@ -1333,7 +1458,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("PermissionMap", (string)null);
+                    b.ToTable("PermissionMap");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
@@ -1397,7 +1522,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("ParentTemplateId");
 
-                    b.ToTable("DirectoryTemplates", (string)null);
+                    b.ToTable("DirectoryTemplates");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValue", b =>
@@ -1434,7 +1559,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("FieldId");
 
-                    b.ToTable("DirectoryTemplateFieldValues", (string)null);
+                    b.ToTable("DirectoryTemplateFieldValues");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateGroup", b =>
@@ -1456,7 +1581,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("DirectoryTemplateId");
 
-                    b.ToTable("DirectoryTemplateGroups", (string)null);
+                    b.ToTable("DirectoryTemplateGroups");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.ApiToken", b =>
@@ -1499,7 +1624,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ApiTokens", (string)null);
+                    b.ToTable("ApiTokens");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
@@ -1540,7 +1665,7 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.HasIndex("UserGUID")
                         .IsUnique();
 
-                    b.ToTable("UserSettings", (string)null);
+                    b.ToTable("UserSettings");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.NotificationMessage", b =>
@@ -1588,7 +1713,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("NotificationMessages", (string)null);
+                    b.ToTable("NotificationMessages");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.ReadNewsItem", b =>
@@ -1612,7 +1737,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ReadNewsItems", (string)null);
+                    b.ToTable("ReadNewsItems");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserDashboardWidget", b =>
@@ -1643,7 +1768,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserDashboardWidgets", (string)null);
+                    b.ToTable("UserDashboardWidgets");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserFavoriteEntry", b =>
@@ -1665,7 +1790,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserFavoriteEntries", (string)null);
+                    b.ToTable("UserFavoriteEntries");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.UserNotification", b =>
@@ -1691,7 +1816,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserNotifications", (string)null);
+                    b.ToTable("UserNotifications");
                 });
 
             modelBuilder.Entity("BLAZAM.Server.Data.ChatMessage", b =>
@@ -1721,7 +1846,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ChatMessages", (string)null);
+                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("PermissionDelegatePermissionMapping", b =>
@@ -1736,7 +1861,7 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("PermissionsMapsId");
 
-                    b.ToTable("PermissionDelegatePermissionMapping", (string)null);
+                    b.ToTable("PermissionDelegatePermissionMapping");
                 });
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
@@ -1837,6 +1962,28 @@ namespace BLAZAM.Common.Migrations.Sql
                         .IsRequired();
 
                     b.Navigation("NotificationSubscription");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionWebHookType", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Notifications.WebHookSubscription", "WebHookSubscription")
+                        .WithMany("NotificationTypes")
+                        .HasForeignKey("WebHookSubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WebHookSubscription");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookAttempt", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Notifications.WebHookSubscription", "WebHookSubscription")
+                        .WithMany("WebHookAttempts")
+                        .HasForeignKey("WebHookSubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WebHookSubscription");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ActionAccessMapping", b =>
@@ -2042,6 +2189,13 @@ namespace BLAZAM.Common.Migrations.Sql
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
                 {
                     b.Navigation("NotificationTypes");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookSubscription", b =>
+                {
+                    b.Navigation("NotificationTypes");
+
+                    b.Navigation("WebHookAttempts");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>

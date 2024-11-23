@@ -230,6 +230,13 @@ namespace BLAZAM.Server
                     .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
                     .AddPolicyHandler(GetWebhookRetryPolicy());
 
+              builder.Services.AddHttpClient(HttpClientNames.WebHookHttpClientNoSSLCheckName)
+                    .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
+                    .AddPolicyHandler(GetWebhookRetryPolicy()).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
+                    });
+
             //Also keeping this here for a possible future API, though this would be for internal use
             //builder.Services.AddTransient<ApiService>();
             //builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>().HttpContext.User);

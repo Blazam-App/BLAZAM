@@ -89,7 +89,10 @@ namespace BLAZAM.Services.Background
         }
         private async Task PostWebHooks(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
         {
-            var webhooks = await Context.WebHookSubscriptions.Where(w => w.DeletedAt == null).Include(w=>w.NotificationTypes).ToListAsync();
+            var webhooks = await Context.WebHookSubscriptions.Where(w => w.DeletedAt == null)
+                .Include(w=>w.NotificationTypes)
+                .Where(x => x.DeletedAt == null)
+                .ToListAsync();
             if (webhooks.Any(w => w.NotificationTypes.Any(nt => nt.NotificationType == notificationType)))
             {
                 var subscribedWebhooks = webhooks.Where(w => w.NotificationTypes.Any(nt => nt.NotificationType == notificationType));
