@@ -573,7 +573,7 @@ await ParentTemplateChanged(null);
                                        DirectoryTemplate.FieldValues.Add(new(){ CustomField=customField});
                                        }
                                        })>
-                                            <MudText Color="Color.Tertiary">@field.DisplayName</MudText>
+                                                <MudText Color="Color.Tertiary">@field.DisplayName</MudText>
                                         </MudButton>
 
                                     }
@@ -605,7 +605,10 @@ await ParentTemplateChanged(null);
                                                     var fromTemplateName = dropdownTemplates.Where(ot => ot.FieldValues.Contains(cellContext.Item)).FirstOrDefault();
                                                 }
                                                 <TemplateOverride SourceTemplate="@fromTemplateName">
-                                                    <MudText>@cellContext.Item.FieldDisplayName</MudText>
+                                                     <AppTooltip Text="@cellContext.Item.FieldName">
+
+                                                            <MudText>@cellContext.Item.FieldDisplayName</MudText>
+                                                    </AppTooltip>
 
                                                 </TemplateOverride>
 
