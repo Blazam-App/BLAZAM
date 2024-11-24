@@ -86,12 +86,12 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
 }
 
 @if (InDirectoryTemplate(ActiveDirectoryFields.HomePhone) ||
-   InDirectoryTemplate(ActiveDirectoryFields.StreetAddress) ||
-   InDirectoryTemplate(ActiveDirectoryFields.POBox) ||
-   InDirectoryTemplate(ActiveDirectoryFields.City) ||
-   InDirectoryTemplate(ActiveDirectoryFields.State) ||
-   InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
-   )
+  InDirectoryTemplate(ActiveDirectoryFields.StreetAddress) ||
+  InDirectoryTemplate(ActiveDirectoryFields.POBox) ||
+  InDirectoryTemplate(ActiveDirectoryFields.City) ||
+  InDirectoryTemplate(ActiveDirectoryFields.State) ||
+  InDirectoryTemplate(ActiveDirectoryFields.PostalCode)
+  )
 {
     <Section Title=@AppLocalization["Contact Info"]>
 
@@ -146,10 +146,10 @@ InDirectoryTemplate(ActiveDirectoryFields.PhysicalDeliveryOffice)
                   Disabled=true />
 }
 @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory) ||
-   InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
-   InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
-   InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
-   )
+  InDirectoryTemplate(ActiveDirectoryFields.HomeDrive) ||
+  InDirectoryTemplate(ActiveDirectoryFields.ScriptPath) ||
+  InDirectoryTemplate(ActiveDirectoryFields.ProfilePath)
+  )
 {
     <Section Title=@AppLocalization["Profile"]>
         @if (InDirectoryTemplate(ActiveDirectoryFields.HomeDirectory))
@@ -276,11 +276,12 @@ else
             _username = User.SamAccountName;
             _userPassword = User.NewPassword;
             var result = await User.CommitChangesAsync(createUserJob);
-            User = (IADUser)Directory.GetDirectoryEntryByDN(User.DN);
             disableCreateUserButton = false;
             await InvokeAsync(StateHasChanged);
             if (result.FailedSteps.Count == 0)
             {
+                User = (IADUser)Directory.GetDirectoryEntryByDN(User.DN);
+
                 SnackBarService.Success("User has been created");
                 confirmed = true;
                 await Confirmed.InvokeAsync();

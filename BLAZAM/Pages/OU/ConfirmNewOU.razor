@@ -13,9 +13,9 @@
 }
 @code {
 
-#nullable disable warnings
+    #nullable disable warnings
 
-    
+
 
     [Parameter]
     public EventCallback<IADOrganizationalUnit> Confirmed { get; set; }
@@ -27,12 +27,16 @@
     {
         if (await MessageService.Confirm("Are you sure you want to create this OU?", "Create OU"))
         {
-            await OU.CommitChangesAsync();
-            SnackBarService.Success("OU created");
-            await AuditLogger.OU.Created(OU);
-            _ = OUNotificationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
-            await Confirmed.InvokeAsync(OU);
-            Nav.NavigateTo("/ou/create",true);
+            var results = await OU.CommitChangesAsync();
+            if (results.FailedSteps.Count == 0)
+            {
+                OU = (IADOrganizationalUnit)Directory.GetDirectoryEntryByDN(OU.DN);
+                SnackBarService.Success("OU created");
+                await AuditLogger.OU.Created(OU);
+                _ = OUNotificationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
+                await Confirmed.InvokeAsync(OU);
+                Nav.NavigateTo("/ou/create", true);
+            }
         }
     }
 }
