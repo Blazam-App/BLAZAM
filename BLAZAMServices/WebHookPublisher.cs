@@ -35,6 +35,7 @@ namespace BLAZAM.Notifications.Services
         internal const string UNBRANDED_SIGNATURE_HEADER_KEY = "webhook-signature";
         internal const string UNBRANDED_TIMESTAMP_HEADER_KEY = "webhook-timestamp";
         internal const string UNBRANDED_ATTEMPT_TIMESTAMP_HEADER_KEY = "webhook-attempt-timestamp";
+        private const string webhookDateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
         private const int TOLERANCE_IN_SECONDS = 60 * 5;
         private static string prefix = "whsec_";
@@ -68,7 +69,7 @@ namespace BLAZAM.Notifications.Services
                         {
                             var attemptId = Guid.NewGuid();
 
-                            await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp.ToString(), attempt.Body, attempt.EventType ,attempt.Signature);
+                            await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp, attempt.Body, attempt.EventType ,attempt.Signature);
 
                         });
                     }
@@ -82,16 +83,17 @@ namespace BLAZAM.Notifications.Services
                 }
             }
         }
+
+
         public async Task PublishWebhook(WebHookSubscription subscription,
             IDirectoryEntryAdapter source,
             NotificationType notificationType,
             IApplicationUserState? actor = null,
             IDirectoryEntryAdapter? target = null)
         {
-            var pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
             var msgId = Guid.NewGuid();
-            var timestamp = DateTime.UtcNow.ToString(pattern);
+            var eventTimestamp = DateTime.UtcNow;
 
             var eventType = source.ObjectType.ToString().ToLower() + "." + notificationType.ToString().ToLower();
 
@@ -100,7 +102,7 @@ namespace BLAZAM.Notifications.Services
 
             Dictionary<string, object?> payload = new()
                 {
-                    { "timestamp", timestamp},
+                    { "timestamp", eventTimestamp.ToString(webhookDateTimeFormat)},
 
                     { "type", eventType}
                 };
@@ -125,7 +127,8 @@ namespace BLAZAM.Notifications.Services
             var payloadString = System.Text.Json.JsonSerializer.Serialize(payload);
             if (subscription.WebHookSignature == WebHookSignature.HMAC)
             {
-                if (subscription.HmacKey.IsNullOrEmpty()) throw new ApplicationException("HMAC Key not supplied to subscription set to use it.");
+                if (subscription.HmacKey.IsNullOrEmpty()) 
+                    throw new ApplicationException("HMAC Key not supplied to subscription set to use it.");
                 var key = subscription.HmacKey.Decrypt<string>();
                 if (key.StartsWith(prefix))
                 {
@@ -136,10 +139,10 @@ namespace BLAZAM.Notifications.Services
 
             }
 
-            await SendWebHook(subscription, msgId, attemptId, timestamp, eventType, payloadString, signature);
+            await SendWebHook(subscription, msgId, attemptId, eventTimestamp, eventType, payloadString, signature);
         }
 
-        private async Task SendWebHook(WebHookSubscription subscription, Guid msgId, Guid attemptId, string timestamp, string eventType, string payloadString, string? signature)
+        private async Task SendWebHook(WebHookSubscription subscription, Guid msgId, Guid attemptId, DateTime eventTimestamp, string eventType, string payloadString, string? signature)
         {
             var httpClientHandler = new HttpClientHandler();
             var httpClient = CreateAPIClient(subscription.IgnoreSSLVerification);
@@ -155,13 +158,12 @@ namespace BLAZAM.Notifications.Services
                 Method = subscription.WebHookMethod == WebHookMethod.GET ? HttpMethod.Get : HttpMethod.Post,
                 Content = new StringContent(payloadString, Encoding.UTF8, "application/json")
 
-            };
-            var pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+            }; 
 
             request.Headers.Add(UNBRANDED_ID_HEADER_KEY, msgId.ToString());
             request.Headers.Add(UNBRANDED_ATTEMPT_ID_HEADER_KEY, attemptId.ToString());
-            request.Headers.Add(UNBRANDED_TIMESTAMP_HEADER_KEY, timestamp);
-            request.Headers.Add(UNBRANDED_ATTEMPT_TIMESTAMP_HEADER_KEY, DateTime.UtcNow.ToString(pattern));
+            request.Headers.Add(UNBRANDED_TIMESTAMP_HEADER_KEY, eventTimestamp.ToString(webhookDateTimeFormat));
+            request.Headers.Add(UNBRANDED_ATTEMPT_TIMESTAMP_HEADER_KEY, DateTime.UtcNow.ToString(webhookDateTimeFormat));
             if (!signature.IsNullOrEmpty())
             {
                 request.Headers.Add(UNBRANDED_SIGNATURE_HEADER_KEY, signature);
@@ -192,7 +194,7 @@ namespace BLAZAM.Notifications.Services
                         Delivered = false,
                         WebHookSubscriptionId = subscription.Id,
                         LastAttemptTimestamp = DateTime.UtcNow,
-                        EventTimestamp = DateTime.Parse(timestamp),
+                        EventTimestamp = eventTimestamp,
                         Signature = signature
                     };
                     thisMessage = webHookAttempt;
@@ -250,14 +252,10 @@ namespace BLAZAM.Notifications.Services
                     }
                 }
                 await context.SaveChangesAsync();
-
             }
             catch (Exception ex)
             {
-
-                // Handle exceptions (e.g., log the error)
                 Loggers.SystemLogger.Error("Unexpected Webhook error occurred {Error}", ex);
-
             }
         }
 
@@ -265,13 +263,13 @@ namespace BLAZAM.Notifications.Services
         {
             if (!ignoreSSL)
             {
-                // Use the default handler if none is provided
+                // Use the default client if validating ssl
                 return _httpClientFactory.CreateClient(HttpClientNames.WebHookHttpClientName);
             }
             else
             {
 
-                // Use the provided handler for custom configuration
+                // Use the client with validation disabled
                 var client = _httpClientFactory.CreateClient(HttpClientNames.WebHookHttpClientNoSSLCheckName);
 
                 return client;
