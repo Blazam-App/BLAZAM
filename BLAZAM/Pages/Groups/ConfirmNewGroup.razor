@@ -44,7 +44,6 @@
                 await AuditLogger.Group.Created(Group);
                 _ = OUNotificationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
 
-                var commitJob = Group.CommitChanges();
                 await Confirmed.InvokeAsync(Group);
             }
            
