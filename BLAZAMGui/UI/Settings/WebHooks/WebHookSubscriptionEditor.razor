@@ -62,7 +62,8 @@
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization["Last Message Status"]">
             <CellTemplate>
-                <StatusCheck StatusFunc="(()=>{return GetLastMessageStatus(context.Item);})"/>
+                <LastMessageStatus Subscription="context.Item"/>
+                @* <StatusCheck StatusFunc="(()=>{return GetLastMessageStatus(context.Item);})"/> *@
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization["Delete"]">

@@ -324,7 +324,11 @@ namespace BLAZAM.Database.Models.Templates
         {
             return _random.Next(9);
         }
-        public bool HasEmptyFields()
+        public bool HasRequiredFields()
+        {
+            return EffectiveFieldValues.Any(fv => fv.Required && fv.Editable);
+        }
+        public bool HasEditableFields()
         {
             return EffectiveFieldValues.Any(fv => fv.Editable);
         }

@@ -554,6 +554,7 @@ namespace BLAZAM.Database.Context
 
             modelBuilder.Entity<DirectoryTemplate>(entity =>
             {
+                //entity.Navigation(e => e.ParentTemplate).AutoInclude();
                 entity.Navigation(e => e.AssignedGroupSids).AutoInclude();
 
             });

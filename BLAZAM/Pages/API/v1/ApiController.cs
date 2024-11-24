@@ -1,9 +1,13 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using BLAZAM.Services.Audit;
+using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -15,11 +19,21 @@ namespace BLAZAM.Pages.API.v1
     {
         private DateTime _startTime = DateTime.Now;
         protected Dictionary<string, object?> ResponseData = new();
+        protected readonly IAppDatabaseFactory DbFactory;
+        protected readonly AuditLogger AuditLogger;
+        protected readonly IApplicationUserStateService UserStateService;
 
-        public ApiController(IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
+        protected IApplicationUserState? CurrentUserState { get; }
+
+        public ApiController(IApplicationUserStateService applicationUserStateService, AuditLogger audit, IAppDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
         {
             //User = httpContextAccessor.HttpContext.User;
+            AuditLogger = audit;
+            UserStateService = applicationUserStateService;
+            CurrentUserState = UserStateService.CurrentUserState;
+
             Directory = adFactory.CreateActiveDirectoryContext();
+            DbFactory = appDatabaseFactory;
             RequestId = Guid.NewGuid();
             ResponseData.Add("Request Id", RequestId);
             ResponseData.Add("Version", "1.0");

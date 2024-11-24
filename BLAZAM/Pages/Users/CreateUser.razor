@@ -356,34 +356,8 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
         {
             LoadingData = true;
             await InvokeAsync(StateHasChanged);
-            var ou = Directory.OUs.FindOuByString(SelectedTemplate.EffectiveParentOU).FirstOrDefault();
-            if (ou == null) throw new ApplicationException("OU could not be found for new user");
-            newUser = ou.CreateUser(SelectedTemplate.GenerateDisplayName(newUserName));
-
-            newUser.SamAccountName = SelectedTemplate.GenerateUsername(newUserName);
-            newUser.DisplayName = SelectedTemplate.GenerateDisplayName(newUserName);
-            //newUser.SetPassword(SelectedTemplate.GeneratePassword().ToSecureString(),false);
-            //newUser.CanonicalName = SelectedTemplate.GenerateDisplayName(newUserName);
-            newUser.StagePasswordChange(SelectedTemplate.GeneratePassword(newUserName).ToSecureString());
-            if (SelectedTemplate.EffectiveRequirePasswordChange == true)
-                newUser.StageRequirePasswordChange(true);
-            if (!newUserName.GivenName.IsNullOrEmpty())
-                newUser.GivenName = newUserName.GivenName;
-            if (!newUserName.MiddleName.IsNullOrEmpty())
-                newUser.MiddleName = newUserName.MiddleName;
-            if (!newUserName.Surname.IsNullOrEmpty())
-                newUser.Surname = newUserName.Surname;
-
-
-
-            SelectedTemplate.EffectiveAssignedGroupSids.ForEach(sid =>
-            {
-                var group = Directory.Groups.FindGroupBySID(sid.GroupSid);
-                if (group != null)
-                    newUser.AssignTo(group);
-
-            });
-            if (IsAdmin || SelectedTemplate.HasEmptyFields())
+            newUser = SelectedTemplate.GenerateTemplateUser(newUserName,Directory);
+            if (IsAdmin || SelectedTemplate.HasEditableFields())
             {
                 SelectedStep = 2;
             }
@@ -405,7 +379,7 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
 
         await InvokeAsync(StateHasChanged);
     }
-
+   
     async Task SetTemplate(DirectoryTemplate selectedTemplate)
     {
         SelectedTemplate = selectedTemplate;

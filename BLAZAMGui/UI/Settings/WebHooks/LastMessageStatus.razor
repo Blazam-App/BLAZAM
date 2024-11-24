@@ -1,0 +1,24 @@
+﻿@inherits AppComponentBase
+<StatusCheck Status="_lastAttemp?.Delivered" 
+Text="@_lastAttemp?.LastAttemptTimestamp.ToLocalTime().ToString()"/>
+
+@code {
+    [Parameter]
+    public  WebHookSubscription Subscription{ get; set; }
+
+    WebHookAttempt? _lastAttemp;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        using var dbContext = await DbFactory.CreateDbContextAsync();
+        var lastAttempt = dbContext.WebHookAttempts
+        .Where(x => x.WebHookSubscriptionId == Subscription.Id)
+        .OrderByDescending(x => x.LastAttemptTimestamp)
+        .FirstOrDefault();
+        if (lastAttempt != null)
+        {
+            _lastAttemp = lastAttempt;
+        }
+        
+    }
+}

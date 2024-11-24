@@ -38,9 +38,16 @@
                 <StatusCheck Status="context.Item.Delivered" />
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn Title=@AppLocalization["Event Timestamp"]
-                        Property="x => x.EventTimestamp"
-                        Sortable="true" />
+        <TemplateColumn Title=@AppLocalization["Event Timestamp"]
+                        Filterable="true"
+                        Sortable="true"
+                        SortBy="x=>x.EventTimestamp">
+            <CellTemplate>
+                <MudText>
+                    @context.Item.EventTimestamp.ToLocalTime()
+                </MudText>
+            </CellTemplate>
+        </TemplateColumn>
 
         <PropertyColumn Title=@AppLocalization["Response Code"]
                         Property="x => x.ResponseCode"
