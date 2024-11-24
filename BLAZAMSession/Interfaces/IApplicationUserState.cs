@@ -13,6 +13,9 @@ namespace BLAZAM.Session.Interfaces
 {
     public interface IApplicationUserState
     {
+        /// <summary>
+        /// This user's id as in the database
+        /// </summary>
         public int Id { get; }
         AppEvent OnSettingsChanged { get; set; }
 

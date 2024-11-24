@@ -2,25 +2,30 @@
 <MudText Typo="Typo.h4">@AppLocalization["User Activity"]</MudText>
 <MudDataGrid Items="@UserStateService.UserStates.Where(u=>u.User.Identity?.IsAuthenticated==true)">
     <Columns>
-        <PropertyColumn Title="Username" Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
-        <PropertyColumn Title="IP Address" Property="x => x.IPAddress==null?null:x.IPAddress" />
+        <PropertyColumn Title=@AppLocalization["Username"] Property="x => x.User.Identity==null?null:x.User.Identity.Name" />
+        <PropertyColumn Title=@AppLocalization["IP Address"] Property="x => x.IPAddress==null?null:x.IPAddress" />
 
        
-        <TemplateColumn Title="Impersonator">
+        <TemplateColumn Title=@AppLocalization["Impersonator"]>
             <CellTemplate>
                 <MudText>@context.Item.Impersonator?.Identity?.Name</MudText>
             </CellTemplate>
         </TemplateColumn>
        
-        <PropertyColumn Title="Last URI" Property="x => x.LastUri" />
+        <PropertyColumn Title=@AppLocalization["Last URI"] Property="x => x.LastUri" />
        
-        <TemplateColumn Title="Last Access">
+        <TemplateColumn Title=@AppLocalization["Last Access"]>
             <CellTemplate>
                 <MudText>@context.Item.LastAccessed.ToLocalTime()</MudText>
             </CellTemplate>
         </TemplateColumn>
        
-        <PropertyColumn Title="Session Expiration Time" Property="x => x.Ticket==null?null:(DateTimeOffset.UtcNow-x.Ticket.Properties.ExpiresUtc)" />
+@*         <TemplateColumn Title=@AppLocalization["Session Expiration Time"]>
+            <CellTemplate>
+                <MudText>@(DateTimeOffset.UtcNow - context.Item.Ticket?.Properties.ExpiresUtc)</MudText>
+            </CellTemplate>
+        </TemplateColumn> *@
+        <PropertyColumn Title=@AppLocalization["Session Expiration Time"] Property="x => x.Ticket==null?null:(DateTimeOffset.UtcNow-x.Ticket.Properties.ExpiresUtc)" />
 
 
 

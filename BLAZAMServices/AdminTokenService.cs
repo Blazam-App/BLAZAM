@@ -13,6 +13,7 @@ namespace BLAZAM.Services
     /// 
     /// If a real RestAPI is implemente this will need to change to jwt tokens.
     /// </summary>
+    [Obsolete("Use JwtTokenService instead.")]
     public class AdminTokenService
     {
         private readonly ApplicationManager _applicationManager;

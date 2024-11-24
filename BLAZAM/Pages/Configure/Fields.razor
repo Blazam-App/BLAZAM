@@ -88,15 +88,14 @@
     async Task<GridData<CustomActiveDirectoryField>> RefreshData(GridState<CustomActiveDirectoryField> currentState)
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
         if (Context != null)
         {
             ADFields = await Context.CustomActiveDirectoryFields.Where(x => x.DeletedAt == null).ToListAsync();
         }
-        LoadingData = false;
         var data = new GridData<CustomActiveDirectoryField>();
         data.Items = ADFields;
         data.TotalItems = ADFields.Count;
+        LoadingData = false;
         return data;
 
     }

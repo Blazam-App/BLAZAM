@@ -119,7 +119,6 @@
         results.Clear();
 
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
         if (!SearchTermParameter.IsNullOrEmpty() && SearchTermParameter.Length > 2)
         {
             await InvokeSearch();
@@ -132,7 +131,6 @@
 
         LoadingData = false;
 
-        await InvokeAsync(StateHasChanged);
 
 
 

@@ -1,13 +1,16 @@
 ﻿@inject IHttpContextAccessor context
 @inject IApplicationUserStateService userStateService
 @inject ICurrentUserStateService currentUser
+
+@{
+    var dsad = 3;
+}
 <CascadingAuthenticationState>
-
-
 
     <ErrorBoundary>
 
         <ChildContent>
+
             <Router AppAssembly="@typeof(App).Assembly">
                 <Found Context="routeData">
                     <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
@@ -17,7 +20,6 @@
                         <NotAuthorized>
                             @if (context.User.Identity?.IsAuthenticated != true)
                             {
-                                <PageTitle>Login</PageTitle>
                                 <LayoutView Layout="@typeof(LoginLayout)">
                                     <Login />
                                 </LayoutView>
@@ -31,7 +33,6 @@
                                 <p>You are not authorized to access this resource.</p>
                             }
                         </NotAuthorized>
-
                     </AuthorizeRouteView>
                     <FocusOnNavigate RouteData="@routeData" Selector="h1" />
                 </Found>
@@ -42,6 +43,8 @@
                     </LayoutView>
                 </NotFound>
             </Router>
+
+
         </ChildContent>
         <ErrorContent>
             <LayoutView Layout="@typeof(MinLayout)">
@@ -55,13 +58,13 @@
 
 
 
-</CascadingAuthenticationState>
 
-<MudThemeProvider IsDarkMode="@darkMode" Theme="@activeTheme.Theme" />
-<MudDialogProvider />
-<MudPopoverProvider />
-<MudSnackbarProvider />
-<SessionExpirationWarningProvider />
+    <MudThemeProvider IsDarkMode="@darkMode" Theme="@activeTheme.Theme" />
+    <MudDialogProvider />
+    <MudPopoverProvider />
+    <MudSnackbarProvider />
+    <SessionExpirationWarningProvider />
+</CascadingAuthenticationState>
 
 @code {
     bool darkMode = false;
@@ -84,7 +87,7 @@
                     activeTheme = new BlueTheme();
 
                 }
-              
+
             }
             darkMode = currentUser.State?.Preferences?.DarkMode == true;
         }

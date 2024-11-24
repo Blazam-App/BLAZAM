@@ -1,0 +1,27 @@
+﻿@page "/webhooks"
+@using BLAZAM.Gui.UI.Settings.WebHooks
+@attribute [Authorize(Roles = UserRoles.SuperAdmin)]
+
+@inherits TabbedAppComponentBase
+
+<AppPageTitle>@AppLocalization["Webhooks"]</AppPageTitle>
+<AuthorizeView Roles=@UserRoles.SuperAdmin>
+
+    <SetHeader>
+    </SetHeader>
+
+
+
+
+
+    <WebHookSettings />
+
+
+
+
+</AuthorizeView>
+
+
+@code {
+
+}

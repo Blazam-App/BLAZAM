@@ -19,9 +19,11 @@ namespace BLAZAM.Database.Models.Templates
         /// Require the field to have a value
         /// </summary>
         public bool Required { get; set; }
+        [NotMapped]
+        public string? FieldName => Field != null ? Field?.FieldName : CustomField?.FieldName;
 
         [NotMapped]
-        public string FieldDisplayName => Field != null ? Field?.DisplayName : CustomField?.DisplayName;
+        public string? FieldDisplayName => Field != null ? Field?.DisplayName : CustomField?.DisplayName;
 
         public object Clone(IDatabaseContext context)
         {

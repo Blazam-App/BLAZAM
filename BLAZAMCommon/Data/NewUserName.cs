@@ -12,7 +12,7 @@ namespace BLAZAM.Common.Data
 
         public string? MiddleName { get => middleName; set => middleName = value; }
 
-        public string Surname { get => surname; set => surname = value; }
+        public string? Surname { get => surname; set => surname = value; }
 
 
     }

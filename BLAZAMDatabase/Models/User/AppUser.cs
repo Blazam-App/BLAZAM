@@ -9,7 +9,7 @@ namespace BLAZAM.Database.Models.User
     public class AppUser : AppDbSetBase
     {
         public string UserGUID { get; set; }
-        public string? APIToken { get; set; }
+        public List<ApiToken>? APITokens { get; set; }
         public string? Theme { get; set; }
         public bool DarkMode { get; set; }
         public bool SearchDisabledUsers { get; set; }

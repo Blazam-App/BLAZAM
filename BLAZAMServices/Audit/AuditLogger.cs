@@ -21,6 +21,7 @@ namespace BLAZAM.Services.Audit
         public PrinterAudit Printer;
         public LogonAudit Logon;
         public BitLockerAudit BitLocker;
+        public EmailAudit Email;
 
         public AuditLogger(IAppDatabaseFactory factory, IApplicationUserStateService userStateService)
         {

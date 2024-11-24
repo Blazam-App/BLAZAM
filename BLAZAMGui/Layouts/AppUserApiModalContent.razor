@@ -1,0 +1,20 @@
+@inherits AppModalContent
+<MudLink Href="/swagger" Target="_blank">
+    <MudAlert Severity="Severity.Info" Icon="@Icons.Material.Filled.BookOnline">@AppLocalization["Click to view API documentation"].</MudAlert>
+</MudLink>
+<UserApiTokenDataGrid @ref=apiDataGrid/>
+@code{
+
+    UserApiTokenDataGrid? apiDataGrid;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Modal.SetYesText(AppLocalization["Save"]);
+        Modal.OnYes += SaveSettings;
+        Modal.YesEnabled = () => { return !LoadingData; };
+    }
+    private void SaveSettings()
+    {
+        apiDataGrid?.Save();
+    }
+}

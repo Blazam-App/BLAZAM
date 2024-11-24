@@ -1,7 +1,19 @@
+@if(!Tooltip.IsNullOrEmpty()){
+
  <AppTooltip Text="@Tooltip"
             Placement="@TooltipPlacement"
             Disabled="@(Tooltip.IsNullOrEmpty())">
- 
+        <MudIconButton Color="@Color"
+                       Disabled=@Disabled
+                       Class="@(Class)"
+                       Size=@Size
+                       Style=@(Style)
+                       OnClick="@OnClick"
+                       Tag=@Tag
+                       Icon="@Icon" />
+
+    </AppTooltip>
+}else{
     <MudIconButton Color="@Color"
                    Disabled=@Disabled
                    Class="@(Class)"
@@ -10,8 +22,9 @@
                    OnClick="@OnClick"
                    Tag=@Tag
                    Icon="@Icon" />
-
-</AppTooltip>
+}
+ 
+   
 
 @code {
     [Parameter]

@@ -32,11 +32,9 @@
     async Task RefreshData()
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
         NewGroups = (await Directory.Groups.FindNewGroupsAsync()).Where(u => u.CanRead).ToList();
 
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
 
     }
     void GoTo(DataGridRowClickEventArgs<IADGroup> args)

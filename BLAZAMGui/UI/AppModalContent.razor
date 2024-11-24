@@ -26,12 +26,14 @@
         base.OnAfterRender(firstRender);
         ValidateModal();
     }
-
+    protected MudForm? Form{ get; set; }
 
     protected virtual bool IsValid { get; set; } = true;
     private bool _lastIsValid;
-    protected virtual bool ValidateModal()
+    private bool ValidateModal()
     {
+        Form?.Validate();
+
         if (_lastIsValid != IsValid)
         {
             _lastIsValid = IsValid;

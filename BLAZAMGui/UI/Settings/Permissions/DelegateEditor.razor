@@ -82,13 +82,11 @@
     private async Task RefreshDelegates()
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
 
         AllDelegates.Clear();
         AllDelegates = await settings.ToListAsync();
         LoadingData = false;
 
-        await InvokeAsync(StateHasChanged);
 
     }
 

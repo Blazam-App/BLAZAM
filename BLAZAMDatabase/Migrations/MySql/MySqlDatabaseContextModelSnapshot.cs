@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -982,6 +982,131 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("SubscriptionNotificationType");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionWebHookType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("NotificationType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WebHookSubscriptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WebHookSubscriptionId");
+
+                    b.ToTable("SubscriptionWebHookType");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookAttempt", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("Delivered")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("EventTimestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("LastAttemptTimestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("MessageGuid")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("ResponseCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ResponseHeaders")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ResponseMessage")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("RetryCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Signature")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Uri")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("WebHookSubscriptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WebHookSubscriptionId");
+
+                    b.ToTable("WebHookAttempts");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookSubscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorizationToken")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("HmacKey")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IgnoreSSLVerification")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("OU")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PrivateKey")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PublicKey")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("URL")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("WebHookAuthorization")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WebHookMethod")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WebHookSignature")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WebHookSubscriptions");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
                 {
                     b.Property<int>("Id")
@@ -1459,7 +1584,7 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.ToTable("DirectoryTemplateGroups");
                 });
 
-            modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
+            modelBuilder.Entity("BLAZAM.Database.Models.User.ApiToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1467,8 +1592,48 @@ namespace BLAZAM.Common.Migrations.MySql
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("APIToken")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
                         .HasColumnType("longtext");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("LastUsedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("TokenHash")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ApiTokens");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("DarkMode")
                         .HasColumnType("tinyint(1)");
@@ -1799,6 +1964,28 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("NotificationSubscription");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionWebHookType", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Notifications.WebHookSubscription", "WebHookSubscription")
+                        .WithMany("NotificationTypes")
+                        .HasForeignKey("WebHookSubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WebHookSubscription");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookAttempt", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Notifications.WebHookSubscription", "WebHookSubscription")
+                        .WithMany("WebHookAttempts")
+                        .HasForeignKey("WebHookSubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WebHookSubscription");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ActionAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Permissions.AccessLevel", null)
@@ -1881,6 +2068,17 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplate", null)
                         .WithMany("AssignedGroupSids")
                         .HasForeignKey("DirectoryTemplateId");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.User.ApiToken", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.User.AppUser", "User")
+                        .WithMany("APITokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.NotificationMessage", b =>
@@ -1993,6 +2191,13 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Navigation("NotificationTypes");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookSubscription", b =>
+                {
+                    b.Navigation("NotificationTypes");
+
+                    b.Navigation("WebHookAttempts");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
                 {
                     b.Navigation("ActionMap");
@@ -2012,6 +2217,8 @@ namespace BLAZAM.Common.Migrations.MySql
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
                 {
+                    b.Navigation("APITokens");
+
                     b.Navigation("DashboardWidgets");
 
                     b.Navigation("FavoriteEntries");
