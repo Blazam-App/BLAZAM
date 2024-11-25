@@ -43,8 +43,15 @@
     {
         Task.Run(() =>
         {
-            ADGroup = Directory.Groups.FindGroupBySID(Group.GroupSid);
-            InvokeAsync(StateHasChanged);
+            try
+            {
+                var sid = Group.GroupSid;
+                ADGroup = Directory.Groups.FindGroupBySID(sid);
+                InvokeAsync(StateHasChanged);
+            }catch(Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Warning("Unable to find group {Error}", ex);
+            }
         });
     }
 }

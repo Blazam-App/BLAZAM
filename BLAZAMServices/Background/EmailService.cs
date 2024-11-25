@@ -9,6 +9,7 @@ using BLAZAM.EmailMessage.Email;
 using BLAZAM.EmailMessage.Email.Base;
 using BLAZAM.FileSystem;
 using BLAZAM.Helpers;
+using BLAZAM.Services.Audit;
 using BLAZAM.Static;
 using BlazorTemplater;
 using MailKit.Net.Smtp;
@@ -24,6 +25,7 @@ namespace BLAZAM.Services.Background
     {
         public static EmailService? Instance { get; set; }
         private IAppDatabaseFactory Factory { get; set; }
+
         public bool IsConfigured
         {
             get
@@ -132,6 +134,7 @@ namespace BLAZAM.Services.Background
         {
 
             var email = new MimeMessage();
+            email.MessageId = Guid.NewGuid().ToString();
             if (IsConfigured)
             {
                 EmailSettings? settings = GetSettings();
@@ -157,6 +160,7 @@ namespace BLAZAM.Services.Background
                 image.ContentId = MimeUtils.GenerateMessageId();
                 //Replace logo placeholder in template with referenced img tag
                 body = body.Replace("{{ApplicationLogo}}", "<img src=\"cid:" + image.ContentId + "\">");
+                body = body.Replace("{{TrackingImgLink}}", "<img src=\"/background/acknowlegeEmail/" + email.MessageId+ "\">");
                 body = PrepareHTMLForEmail(body);
                 builder.HtmlBody = body;
                 //Compile body
@@ -199,9 +203,11 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private static async Task<bool> TrySend(SmtpClient client, MimeMessage message)
+        private async Task<bool> TrySend(SmtpClient client, MimeMessage message)
         {
             var response = await client.SendAsync(message);
+            //AuditLogger.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody,response);
+
             //TODO Audit to database
             return true;
         }

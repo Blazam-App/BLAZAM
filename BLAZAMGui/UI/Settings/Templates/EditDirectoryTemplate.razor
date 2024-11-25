@@ -25,6 +25,9 @@ await ParentTemplateChanged(null);
                                Value="@DirectoryTemplate.ParentTemplate"
                                ValueChanged="@ParentTemplateChanged" />
 
+                <MudTextField Label="@AppLocalization["Template Id"]"
+                              ReadOnly=true
+                              @bind-Value=DirectoryTemplate.Id />
 
                 <MudTextField Label="@AppLocalization["Template Name"]"
                               @bind-Value=DirectoryTemplate.Name />
@@ -498,15 +501,15 @@ await ParentTemplateChanged(null);
                                 </MudItem>
                                 <MudItem xs="12" md="6">
                                     <MudStack>
-                                       
-                                    @{
+
+                                        @{
                                             var testName = new NewUserName()
                                                 {
                                                     GivenName = _testFirstName,
                                                     MiddleName = _testMiddleName,
                                                     Surname = _testLastName
                                                 };
-                                          }
+                                        }
                                         <MudTextField T="string"
                                                       Label="@AppLocalization["Username"]"
                                                       Value="@(DirectoryTemplate.EffectiveUsernameFormula.IsNullOrEmpty()==false?DirectoryTemplate.ReplaceVariables(DirectoryTemplate.EffectiveUsernameFormula,testName):null)" />
@@ -570,7 +573,7 @@ await ParentTemplateChanged(null);
                                        DirectoryTemplate.FieldValues.Add(new(){ CustomField=customField});
                                        }
                                        })>
-                                            <MudText Color="Color.Tertiary">@field.DisplayName</MudText>
+                                                <MudText Color="Color.Tertiary">@field.DisplayName</MudText>
                                         </MudButton>
 
                                     }
@@ -602,7 +605,10 @@ await ParentTemplateChanged(null);
                                                     var fromTemplateName = dropdownTemplates.Where(ot => ot.FieldValues.Contains(cellContext.Item)).FirstOrDefault();
                                                 }
                                                 <TemplateOverride SourceTemplate="@fromTemplateName">
-                                                    <MudText>@cellContext.Item.FieldDisplayName</MudText>
+                                                     <AppTooltip Text="@cellContext.Item.FieldName">
+
+                                                            <MudText>@cellContext.Item.FieldDisplayName</MudText>
+                                                    </AppTooltip>
 
                                                 </TemplateOverride>
 
@@ -684,20 +690,20 @@ await ParentTemplateChanged(null);
                 <Section Title=@AppLocalization["Assigned Groups"]>
 
                     <MudStack>
-                        
-                            @foreach (var group in DirectoryTemplate.EffectiveAssignedGroupSids)
-                            {
 
-                                var groupFromTemplate = dropdownTemplates.Where(ot => ot.AssignedGroupSids.Contains(group)).FirstOrDefault();
-                                <TemplateOverride SourceTemplate="@groupFromTemplate">
+                        @foreach (var group in DirectoryTemplate.EffectiveAssignedGroupSids)
+                        {
 
-                                   
+                            var groupFromTemplate = dropdownTemplates.Where(ot => ot.AssignedGroupSids.Contains(group)).FirstOrDefault();
+                            <TemplateOverride SourceTemplate="@groupFromTemplate">
 
-                                    <AssignedTemplateGroup Group="group"
-                                                           OnGroupRemoved="@(async (group)=>{await InvokeAsync(StateHasChanged);})" />
-                                </TemplateOverride>
 
-                            }
+
+                                <AssignedTemplateGroup Group="group"
+                                                       OnGroupRemoved="@(async (group)=>{await InvokeAsync(StateHasChanged);})" />
+                            </TemplateOverride>
+
+                        }
                     </MudStack>
                     <MudStack Row=true>
                         <ADAutoComplete SearchObjectType=ActiveDirectoryObjectType.Group

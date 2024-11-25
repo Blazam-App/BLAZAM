@@ -46,7 +46,6 @@
         // Modal.OnYes = SaveChanges;
         Modal.YesText = AppLocalization["Next"];
         Modal.Title = "Register Printers";
-        Modal.YesEnabled = ValidateModal;
         Modal.OnYes = (() => { activePanel = 1; InvokeAsync(StateHasChanged); });
         base.OnInitialized();
 

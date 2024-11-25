@@ -32,11 +32,9 @@
     async Task RefreshData()
     {
         LoadingData = true;
-        await InvokeAsync(StateHasChanged);
         NewOUs = (await Directory.OUs.FindNewOUsAsync()).Where(u => u.CanRead).ToList();
 
         LoadingData = false;
-        await InvokeAsync(StateHasChanged);
 
     }
     void GoTo(DataGridRowClickEventArgs<IADOrganizationalUnit> args)

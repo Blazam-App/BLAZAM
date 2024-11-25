@@ -33,20 +33,20 @@
             createGroupJob.StopOnFailedStep = true;
             createGroupJob.ShowJobDetailsDialog(MessageService);
             var result = await Group.CommitChangesAsync(createGroupJob);
-
+        
             disableCreateGroupButton = false;
             await InvokeAsync(StateHasChanged);
             if (result.FailedSteps.Count == 0)
             {
+                Group = (IADGroup)Directory.GetDirectoryEntryByDN(Group.DN);
 
                 SnackBarService.Success("Group created");
+                await AuditLogger.Group.Created(Group);
+                _ = OUNotificationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
 
+                await Confirmed.InvokeAsync(Group);
             }
-            await AuditLogger.Group.Created(Group);
-            _ = OUNotificationService.PostAsync(Group, NotificationType.Create,CurrentUser.State);
-
-            var commitJob = Group.CommitChanges();
-            await Confirmed.InvokeAsync(Group);
+           
         }
     }
 }

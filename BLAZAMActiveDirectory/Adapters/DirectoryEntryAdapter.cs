@@ -19,6 +19,7 @@ using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Web;
 using static MudBlazor.Colors;
 
@@ -305,6 +306,23 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
+                if (NewEntry)
+                {
+                    // Regular expression to match everything after the last slash
+                    string pattern = @"[^/]+$";
+
+                    Match match = Regex.Match(ADSPath, pattern);
+
+                    if (match.Success)
+                    {
+                        return match.Value;
+                    }
+                    else
+                    {
+                        // Handle the case where no match is found
+                        return null;
+                    }
+                }
                 return GetStringProperty("distinguishedName");
             }
             set
@@ -643,7 +661,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     List<IDirectoryEntryAdapter> directoryEntries = new List<IDirectoryEntryAdapter>();
                     var children = DirectoryEntry.Children;
-                    DirectoryEntryAdapter? thisObject = null;
                     var list = new List<DirectoryEntry>();
                     foreach (DirectoryEntry child in children)
                     {
@@ -651,6 +668,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
                     Parallel.ForEach<DirectoryEntry>(list, child =>
                     {
+                        DirectoryEntryAdapter? thisObject = null;
+
                         if (child.Properties["objectClass"].Contains("top"))
                         {
                             var objectClass = child.Properties["objectClass"];
@@ -690,7 +709,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             }
 
                         }
-                        thisObject = null;
                     });
                     //foreach (DirectoryEntry child in children)
                     //{

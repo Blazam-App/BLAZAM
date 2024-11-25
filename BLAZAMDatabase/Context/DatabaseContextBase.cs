@@ -101,6 +101,10 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<AuthenticationSettings> AuthenticationSettings { get; set; }
         public virtual DbSet<EmailSettings> EmailSettings { get; set; }
         public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
+        public virtual DbSet<WebHookSubscription> WebHookSubscriptions { get; set; }
+        public virtual DbSet<WebHookAttempt> WebHookAttempts{ get; set; }
+
+
 
         //User Tables
         public virtual DbSet<AppUser> UserSettings { get; set; }
@@ -110,11 +114,13 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<UserDashboardWidget> UserDashboardWidgets { get; set; }
         public virtual DbSet<NotificationMessage> NotificationMessages { get; set; }
         public virtual DbSet<NotificationSubscription> NotificationSubscriptions { get; set; }
+        public virtual DbSet<ApiToken> ApiTokens { get; set; }
 
 
         //Audit Logs
         public virtual DbSet<SystemAuditLog> SystemAuditLog { get; set; }
         public virtual DbSet<LogonAuditLog> LogonAuditLog { get; set; }
+        //public virtual DbSet<EmailAuditLog> EmailAuditLog { get; set; }
         public virtual DbSet<DirectoryEntryAuditLog> DirectoryEntryAuditLogs { get; set; }
         //public virtual DbSet<UserAuditLog> UserAuditLog { get; set; }
         //public virtual DbSet<GroupAuditLog> GroupAuditLog { get; set; }
@@ -548,6 +554,7 @@ namespace BLAZAM.Database.Context
 
             modelBuilder.Entity<DirectoryTemplate>(entity =>
             {
+                //entity.Navigation(e => e.ParentTemplate).AutoInclude();
                 entity.Navigation(e => e.AssignedGroupSids).AutoInclude();
 
             });

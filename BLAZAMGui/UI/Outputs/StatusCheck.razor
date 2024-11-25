@@ -19,11 +19,21 @@ else
     [Parameter]
     public bool? Status { get; set; } = false;  
     [Parameter]
+    public Func<Task<bool>>? StatusFunc { get; set; }
+    [Parameter]
     public string? Text { get; set; }
-    private Color Color = Color.Error;
-    private string Icon = Icons.Material.Filled.Close;
+    private Color Color = Color.Warning;
+    private string Icon = Icons.Material.Filled.QuestionMark;
 
-
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (StatusFunc != null)
+        {
+            Status = await StatusFunc.Invoke(); 
+        }
+        await InvokeAsync(StateHasChanged);
+    }
 
     protected override async void OnParametersSet()
     {

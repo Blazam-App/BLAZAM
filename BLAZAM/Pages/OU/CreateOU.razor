@@ -1,4 +1,4 @@
-﻿@page "/ou/create"
+﻿@page "/create/ou"
 @inherits TabbedAppComponentBase
 @attribute [Authorize]
 <AppPageTitle>@AppLocalization["Create OU"]</AppPageTitle>
@@ -94,7 +94,6 @@
 
         LoadingData = false;
 
-        await InvokeAsync(StateHasChanged);
     }
 
 }

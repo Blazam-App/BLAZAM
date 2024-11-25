@@ -1,0 +1,77 @@
+ @inherits DatabaseComponentBase
+<MudDataGrid Virtualize=true
+             Height="600px"
+             ColumnResizeMode="ResizeMode.Container"
+             FixedHeader=true
+             Hideable=true
+             Items="@_attempts.OrderByDescending(ae=>ae.LastAttemptTimestamp)"
+             Filterable="true"
+             SortMode="@SortMode.Multiple"
+             Groupable="false">
+    <Columns>
+        <TemplateColumn Title=@AppLocalization["Message Id"]
+                        Filterable="true"
+                        Sortable="true"
+                        SortBy="x=>x.MessageGuid">
+            <CellTemplate>
+                <MudText>
+                    @context.Item.MessageGuid.ToString()
+                </MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title=@AppLocalization["Last Attempt Timestamp"]
+                        Filterable="true"
+                        Sortable="true"
+                        SortBy="x=>x.LastAttemptTimestamp">
+            <CellTemplate>
+                <MudText>
+                    @context.Item.LastAttemptTimestamp.ToLocalTime()
+                </MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.Uri" />
+        <TemplateColumn Title=@AppLocalization["Delivered"]
+                        Filterable="true"
+                        Sortable="true"
+                        SortBy="x=>x.Delivered">
+            <CellTemplate>
+                <StatusCheck Status="context.Item.Delivered" />
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title=@AppLocalization["Event Timestamp"]
+                        Filterable="true"
+                        Sortable="true"
+                        SortBy="x=>x.EventTimestamp">
+            <CellTemplate>
+                <MudText>
+                    @context.Item.EventTimestamp.ToLocalTime()
+                </MudText>
+            </CellTemplate>
+        </TemplateColumn>
+
+        <PropertyColumn Title=@AppLocalization["Response Code"]
+                        Property="x => x.ResponseCode"
+                        Sortable="true" />
+        <PropertyColumn Title=@AppLocalization["Error Message"]
+                        Property="x => x.ResponseMessage" />
+        <PropertyColumn Title=@AppLocalization["Retry Count"]
+                        Property="x => x.RetryCount"
+                        Sortable="true" />
+
+    </Columns>
+</MudDataGrid>
+
+@code {
+    private List<WebHookAttempt> _attempts = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _ = GetAttempts();
+    }
+    private async Task GetAttempts()
+    {
+        _attempts = await Context.WebHookAttempts.ToListAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+}
+

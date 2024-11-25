@@ -1,4 +1,6 @@
 ﻿using BLAZAM.Helpers;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.Text;
@@ -93,12 +95,32 @@ namespace BLAZAM.Common.Data
         /// <returns>The key based on the <see cref="KeySeedString"/></returns>
         private byte[] GenerateKeyFromSeedString(byte[] salt)
         {
-            // Use a key derivation function to generate a repeatable key
-            var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 1000);
+        
+                // Use a key derivation function to generate a repeatable key
+                var keyGenerator = new Rfc2898DeriveBytes(KeySeedString, salt, 1000);
 
-            return keyGenerator.GetBytes(KeySize / 8); ;
+                return keyGenerator.GetBytes(KeySize / 8); ;
+        
+
         }
+        /// <summary>
+        /// Generates a key of the configured key size, seeding the
+        /// key from the appsettings configuration value "EncryptionKey"
+        /// </summary>
+        /// <remarks>
+        /// Sets the local <see cref="Key"/> value to the newly generated key
+        /// </remarks>
+        /// <returns>The key based on the <see cref="KeySeedString"/></returns>
+        private static byte[] GenerateKeyFromSeedString(byte[] salt, string seedString,int keySize)
+        {
 
+                // Use a key derivation function to generate a repeatable key
+                var keyGenerator = new Rfc2898DeriveBytes(seedString, salt, 1000);
+
+                return keyGenerator.GetBytes(keySize / 8); ;
+            
+
+        }
         /// <summary>
         /// Decrypts cipher-text
         /// </summary>
@@ -262,6 +284,7 @@ namespace BLAZAM.Common.Data
                 }
             }
         }
+
 
     }
 
