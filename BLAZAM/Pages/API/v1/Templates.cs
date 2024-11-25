@@ -63,10 +63,11 @@ namespace BLAZAM.Pages.API.v1
         ///
         /// </remarks>
         /// <param name="templateId">The ID of the template to execute.</param>
-        /// <param name="newUserData">A JSON formatted key-value list of attribute names and values.</param>
-        /// <response code="200">Returns details about the user performing the test.</response>
+        /// <param name="newUserDetails">A complete NewUserDetails request schema</param>
+        /// <response code="200">Returns the DN of the created user.</response>
         /// <response code="401">Unauthorized - The user is not authenticated.</response>
         /// <response code="403">Forbidden - The user does not have the required role.</response>
+        /// <response code="422">Unprocessable - The creation request cannot be processed due to an internal error.</response>
         [HttpPost]
         [Route("/api/v1/templates/execute/{templateId}")]
 
@@ -99,7 +100,12 @@ namespace BLAZAM.Pages.API.v1
                     MiddleName = newUserDetails.MiddleName,
                     Surname = newUserDetails.LastName
                 };
+             
                 var newUser = template.GenerateTemplateUser(newUserName, Directory);
+                if (!newUserDetails.Username.IsNullOrEmpty())
+                {
+                    newUser.SamAccountName = newUserDetails.Username;
+                }
                 var password = newUser.NewPassword.ToPlainText().ToSecureString();
                 foreach (var fieldValue in template.EffectiveFieldValues)
                 {
@@ -191,15 +197,12 @@ namespace BLAZAM.Pages.API.v1
                     {
 
                     }
-                    return new CreatedResult(newUser.OU,newUser.CanonicalName);
+                    return new CreatedResult(newUser.OU, newUser.DN);
                 }
                 else
                 {
-                    return new UnprocessableEntityObjectResult(result.FailedSteps.Select(s=>s.Exception.InnerException!=null?s.Exception.InnerException.Message:s.Exception.Message));
+                    return new UnprocessableEntityObjectResult(result.FailedSteps.Select(s => s.Exception.InnerException != null ? s.Exception.InnerException.Message : s.Exception.Message));
                 }
-
-
-                var tdest = 3;
             }
             else
             {
@@ -212,7 +215,7 @@ namespace BLAZAM.Pages.API.v1
         /// <summary>
         /// Returns all user creation templates the user has access to.
         /// </summary>
-        /// <response code="200">Returns details about the user performing the test.</response>
+        /// <response code="200">Returns a list of user creation templates.</response>
         /// <response code="401">Unauthorized - The user is not authenticated.</response>
         /// <response code="403">Forbidden - The user does not have the required role.</response>
         [HttpGet]
