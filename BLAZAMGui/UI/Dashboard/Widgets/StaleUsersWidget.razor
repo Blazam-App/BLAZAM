@@ -38,7 +38,9 @@
         await InvokeAsync(StateHasChanged);
         var users= Directory.Users.FindUsersByString(null);
         ADSearch searcher = new ADSearch(Directory);
-  
+        searcher.Fields.LastLogonTime = (DateTime.UtcNow - TimeSpan.FromDays(180)).ToFileTimeUtc();
+        searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
+        var results = await searcher.SearchAsync();
         StaleUsers = (await Directory.Users.FindNewUsersAsync(14, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
         LoadingData = false;
         await InvokeAsync(StateHasChanged);

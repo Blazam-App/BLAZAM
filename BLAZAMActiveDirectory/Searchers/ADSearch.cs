@@ -205,6 +205,8 @@ namespace BLAZAM.ActiveDirectory.Searchers
                         FilterQuery += $"(whenCreated>={Fields.Created.Value.ToString("yyyyMMddHHmmss.fZ")})";
                     if (!Fields.SamAccountName.IsNullOrEmpty())
                         FilterQuery += $"(samaccountname=*{Fields.SamAccountName}*)";
+                    if (Fields.LastLogonTime != null)
+                        FilterQuery += $"(last>={Fields.LastLogonTime})";
                     if (Fields.LockoutTime != null)
                         FilterQuery += $"(lockoutTime>={Fields.LockoutTime})";
                     if (!Fields.DN.IsNullOrEmpty())
