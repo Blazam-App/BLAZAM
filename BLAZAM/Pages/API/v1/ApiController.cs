@@ -11,6 +11,10 @@ using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.Pages.API.v1
 {
+    /// <summary>
+    /// Base class for all API controllers that contains common
+    /// shared elements that make the API work
+    /// </summary>
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Login)]
     [ApiController]
     [Produces("application/json")]
@@ -19,10 +23,19 @@ namespace BLAZAM.Pages.API.v1
     {
         private DateTime _startTime = DateTime.Now;
         protected Dictionary<string, object?> ResponseData = new();
+        /// <summary>
+        /// A factory for <see cref="IDatabaseContext"/> connections
+        /// </summary>
         protected readonly IAppDatabaseFactory DbFactory;
+        /// <summary>
+        /// The API audit logger
+        /// </summary>
         protected readonly AuditLogger AuditLogger;
         protected readonly IApplicationUserStateService UserStateService;
 
+        /// <summary>
+        /// The current API user state
+        /// </summary>
         protected IApplicationUserState? CurrentUserState { get; }
 
         public ApiController(IApplicationUserStateService applicationUserStateService, AuditLogger audit, IAppDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory)
@@ -49,8 +62,18 @@ namespace BLAZAM.Pages.API.v1
         //    return new BadRequestResult();
         //}
         protected IActiveDirectoryContext Directory { get; }
+        /// <summary>
+        /// A unique ID for the execution of this controller
+        /// </summary>
         protected Guid RequestId { get; }
 
+
+        /// <summary>
+        /// Returns a JSON response with the data and footer
+        /// fields appended
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         protected IActionResult FormatData(dynamic data)
         {
             ResponseData.Add("Data", data);

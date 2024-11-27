@@ -270,14 +270,19 @@ else
         {
             disableCreateUserButton = true;
             await InvokeAsync(StateHasChanged);
+
             IJob createUserJob = new Job(AppLocalization["Create User"]);
             createUserJob.StopOnFailedStep = true;
             createUserJob.ShowJobDetailsDialog(MessageService);
+
             _username = User.SamAccountName;
             _userPassword = User.NewPassword;
+
             var result = await User.CommitChangesAsync(createUserJob);
+
             disableCreateUserButton = false;
             await InvokeAsync(StateHasChanged);
+
             if (result.FailedSteps.Count == 0)
             {
                 User = (IADUser)Directory.GetDirectoryEntryByDN(User.DN);
