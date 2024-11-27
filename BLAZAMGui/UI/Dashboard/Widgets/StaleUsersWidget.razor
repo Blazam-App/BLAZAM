@@ -40,8 +40,9 @@
         ADSearch searcher = new ADSearch(Directory);
         searcher.Fields.LastLogonTime = (DateTime.UtcNow - TimeSpan.FromDays(180)).ToFileTimeUtc();
         searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
+        searcher.EnabledOnly = true;
         var results = await searcher.SearchAsync();
-        StaleUsers = (await Directory.Users.FindNewUsersAsync(14, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
+        StaleUsers = results.Where(u => u.CanRead).OrderByDescending(u => u.Created).Cast<IADUser>().ToList();
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
 
