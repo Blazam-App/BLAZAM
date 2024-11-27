@@ -65,8 +65,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 List<DateTime?> times = new List<DateTime?>();
                 foreach (var c in coms)
                 {
-                    if (c is DateTime)
+                    if (c is DateTime dt)
                     {
+                        times.Add(dt);
+                    }
+                    else { 
                         times.Add(c.AdsValueToDateTime());
                     }
                 }
