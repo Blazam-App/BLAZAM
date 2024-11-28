@@ -4,7 +4,7 @@
          TransformOrigin=Origin.TopCenter
          Color=Color.Tertiary
          StartIcon="@Icons.Material.Filled.TypeSpecimen"
-         Label="@SearchService.SeachObjectType.ToString()">
+         Label="@AppLocalization[SearchService.SeachObjectType.ToString()]">
     <CascadingAuthenticationState>
 
         <MudMenuItem OnClick=@(()=>{ SearchService.SeachObjectType=ActiveDirectoryObjectType.All; })>
@@ -91,7 +91,7 @@
                     Style="max-width:550px;"
                     AdornmentIcon="@adornmentIcon"
                     Variant="Variant.Filled"
-                    Label="Search Directory"
+                    Label=@AppLocalization["Search Directory"]
                     SelectedResultChanged="@((result)=>{if(result!=null)SearchService.Search(SearchService.SearchTerm);})"
                     SearchObjectType="@SearchService.SeachObjectType"
                     SearchDisabled=@SearchService.IncludeDisabled

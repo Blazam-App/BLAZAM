@@ -81,7 +81,11 @@ namespace BLAZAM.Server
 
             return builder;
         }
-
+        /// <summary>
+        /// Attempts to get the windows installation id 
+        /// </summary>
+        /// <returns>A unique GUID for this machine</returns>
+        /// <exception cref="ApplicationException">Thrown when the running context does not have read permission for the Windows UUID</exception>
         private static Guid GetInstallationId()
         {
             //Try and get os id

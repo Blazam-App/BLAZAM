@@ -58,27 +58,31 @@ namespace BLAZAM.Services.Background
 
                 Parallel.ForEach(users, async user =>
                 {
-                    var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
-                    var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
-
-                    if (effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
+                    //Avoid sending to triggering user if actor is set
+                    if (user.Id != actor?.Id)
                     {
-                        await _notificationPublisher.PublishNotification(user, notification);
-                    }
+                        var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
+                        var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
 
-                    if (effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
-                    {
-                        if (emailMessage != null)
+                        if (effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                         {
-                            if (_emailConfigured && !user.Email.IsNullOrEmpty())
-                            {
-                                await _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
-                            }
+                            await _notificationPublisher.PublishNotification(user, notification);
                         }
-                        else
+
+                        if (effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
                         {
-                            var error = new ApplicationException();
-                            Loggers.SystemLogger.Error("Email message template was not found! {@Error}", error);
+                            if (emailMessage != null)
+                            {
+                                if (_emailConfigured && !user.Email.IsNullOrEmpty())
+                                {
+                                    await _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
+                                }
+                            }
+                            else
+                            {
+                                var error = new ApplicationException();
+                                Loggers.SystemLogger.Error("Email message template was not found! {@Error}", error);
+                            }
                         }
                     }
                 });
