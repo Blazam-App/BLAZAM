@@ -90,6 +90,8 @@ namespace BLAZAM
 
             //Assign installation ID
             Loggers.InstallationId = ApplicationInfo.installationId.ToString();
+            Loggers.InstallationType = ApplicationInfo.isUnderIIS==true?"IIS":"Service";
+            Loggers.DatabaseType = Configuration.GetValue<string>("DatabaseType");
 
             //Setup host logging so it can catch the earliest logs possible
             Loggers.SeqServerUri = "http://logs.blazam.org:5341";
