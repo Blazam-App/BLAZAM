@@ -41,6 +41,7 @@
         searcher.Fields.LastLogonTime = (DateTime.UtcNow - TimeSpan.FromDays(180)).ToFileTimeUtc();
         searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
         searcher.EnabledOnly = true;
+        searcher.MaxResults = 200;
         var results = await searcher.SearchAsync();
         StaleUsers = results.Where(u => u.CanRead).OrderByDescending(u => u.Created).Cast<IADUser>().ToList();
         LoadingData = false;
