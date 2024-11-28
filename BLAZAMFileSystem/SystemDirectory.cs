@@ -80,7 +80,18 @@ namespace BLAZAM.FileSystem
         /// <summary>
         /// The full directory name
         /// </summary>
-        public string? Name => FullPath.Split("\\").Last();
+        public string? Name
+        {
+            get
+            {
+                string path = FullPath;
+                if (path.EndsWith("\\"))
+                {
+                    path = path.Substring(0, path.Length - 1);
+                }
+                return path.Split("\\").Last();
+            }
+        }
 
         public void ClearDirectory()
         {
