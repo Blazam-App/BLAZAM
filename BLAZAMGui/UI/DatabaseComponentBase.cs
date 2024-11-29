@@ -17,6 +17,7 @@ namespace BLAZAM.Gui.UI
                     Loggers.DatabaseLogger.Error("Failed to connect to database {@Error}", ex);
                 }
             }
+
         }
         protected override void OnInitialized()
         {
