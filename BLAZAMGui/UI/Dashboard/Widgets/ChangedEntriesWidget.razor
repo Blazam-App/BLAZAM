@@ -66,23 +66,7 @@
         set => CurrentUser.State.Cache.Set(this.GetType(), value);
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
-         {
-        if (widget.WidgetType.Equals(WidgetType))
-        {
-            _ = RefreshData();
-
-        }
-
-            };
-
-        _ = RefreshData();
-    }
-    async Task RefreshData()
+    protected override async Task RefreshData()
     {
         LoadingData = true;
         await InvokeAsync(StateHasChanged);
@@ -93,16 +77,6 @@
         await InvokeAsync(StateHasChanged);
 
     }
-    void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
-    {
-        if (args.Item != null)
-        {
-            GoTo(args.Item);
-        }
-    }
 
-    void GoTo(IDirectoryEntryAdapter args)
-    {
-        Nav.NavigateTo(args.SearchUri);
-    }
+   
 }

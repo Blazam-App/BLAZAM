@@ -10,7 +10,7 @@
            TimeSpan.FromDays(90),
            TimeSpan.FromDays(180),
            TimeSpan.FromDays(360)
-    
+
     }; 
     protected List<TimeSpan> _timeSpan_Hours = new List<TimeSpan>
     {
@@ -21,7 +21,7 @@
            TimeSpan.FromHours(24),
            TimeSpan.FromHours(48),
            TimeSpan.FromHours(72)
-    
+
     };
 
 
@@ -38,6 +38,26 @@
     [CascadingParameter]
     public CurrentUserDashboardWidgets CurrentUserDashboardWidgets { get; set; }
 
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
+       {
+           if (widget.WidgetType.Equals(WidgetType))
+           {
+               _ = RefreshData();
+
+           }
+
+       };
+        _ = RefreshData();
+    }
+
+    protected virtual async Task RefreshData()
+    {
+        
+    }
     protected virtual void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
     {
         if (args.Item != null)
@@ -49,6 +69,7 @@
     {
         Nav.NavigateTo(args.SearchUri);
     }
+  
     protected async void SetRowsPerPage(int rowPerPage)
     {
         try
