@@ -59,6 +59,12 @@
                                         <DynamicMudInput T=string Label="@AppLocalization["Name"]" @bind-Value="@Computer.CanonicalName" Disabled=@(!EditMode) />
                                         <DynamicMudInput T=string Label="@AppLocalization["Operating System"]" @bind-Value="@Computer.OperatingSystem" Disabled=@true />
                                         <DynamicMudInput T=bool Label="@AppLocalization["Online"]" Value="@(Computer.IsOnline==true)" Disabled=@true />
+                                        <MudStack Row=true>
+
+                                            <MudText Typo="Typo.subtitle2">@AppLocalization["Last Logon"]:</MudText>
+                                            <MudSpacer />
+                                            <LastLogonTime DirectoryEntry="Computer" />
+                                        </MudStack>
                                         @if (Computer.Disabled)
                                         {
                                             <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization["Computer is disabled"]</MudAlert>
