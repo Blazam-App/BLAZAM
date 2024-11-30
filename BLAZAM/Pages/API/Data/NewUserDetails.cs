@@ -37,12 +37,12 @@ namespace BLAZAM.Pages.API.Data
         /// The fields to set for this user. Template field with values will also
         /// be applied.
         /// </summary>
-        public List<NewUserField>? Fields { get; set; }
+        public List<NewUserField>? Fields { get; set; } = new();
         /// <summary>
         /// A list of group SID's to assign for this user. Template groups will also
         /// be applied.
         /// </summary>
-        public List<string>? Groups { get; set; }
+        public List<string>? Groups { get; set; } = new();
 
         /// <summary>
         /// If the template is set to send a welcome email, and requests a destination, will be sent

@@ -1,5 +1,5 @@
 ﻿@inherits AppModalContent
-    <Section Title=@AppLocalization["Name"]>
+    @* <Section Title=@AppLocalization["Name"]> *@
 
         @if (Group.CanEditField(ActiveDirectoryFields.SAMAccountName))
         {
@@ -12,7 +12,7 @@
         }
 
       
-    </Section>
+    @* </Section> *@
 
     @if (Group.CanEditField(ActiveDirectoryFields.Mail))
     {

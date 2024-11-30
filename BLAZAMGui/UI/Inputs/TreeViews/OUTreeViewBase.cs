@@ -187,6 +187,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                             var child = openThis.SubOUs.Where(c => SelectedEntry.DN.Contains(c.DN) && !SelectedEntry.DN.Equals(c.DN)).FirstOrDefault();
                             if (child != null)
                             {
+                                
                                 child.IsExpanded = true;
 
                                 _ = (child as IADOrganizationalUnit)?.TreeViewSubOUs;

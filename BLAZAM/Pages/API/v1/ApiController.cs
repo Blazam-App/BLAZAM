@@ -22,6 +22,10 @@ namespace BLAZAM.Pages.API.v1
     public class ApiController : Controller
     {
         private DateTime _startTime = DateTime.Now;
+
+        /// <summary>
+        /// A string dictionary that contains the base of the response.
+        /// </summary>
         protected Dictionary<string, object?> ResponseData = new();
         /// <summary>
         /// A factory for <see cref="IDatabaseContext"/> connections
@@ -31,6 +35,9 @@ namespace BLAZAM.Pages.API.v1
         /// The API audit logger
         /// </summary>
         protected readonly AuditLogger AuditLogger;
+        /// <summary>
+        /// 
+        /// </summary>
         protected readonly IApplicationUserStateService UserStateService;
 
         /// <summary>
@@ -56,11 +63,9 @@ namespace BLAZAM.Pages.API.v1
             ResponseData.Add("IP Address", httpContextAccessor?.HttpContext?.Connection?.RemoteIpAddress?.ToString());
 
         }
-        //[HttpGet("badrequest")] // Add a route attribute
-        //public IActionResult BadRequest()
-        //{
-        //    return new BadRequestResult();
-        //}
+        /// <summary>
+        /// The current API users Active Directory connection
+        /// </summary>
         protected IActiveDirectoryContext Directory { get; }
         /// <summary>
         /// A unique ID for the execution of this controller
@@ -72,8 +77,8 @@ namespace BLAZAM.Pages.API.v1
         /// Returns a JSON response with the data and footer
         /// fields appended
         /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
+        /// <param name="data">A JSON serializable object</param>
+        /// <returns>A new <see cref="JsonResult"/> containing the <see cref="ResponseData"/></returns>
         protected IActionResult FormatData(dynamic data)
         {
             ResponseData.Add("Data", data);

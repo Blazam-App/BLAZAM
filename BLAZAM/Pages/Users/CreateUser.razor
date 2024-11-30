@@ -24,8 +24,6 @@
 
                 @if (TemplateCategories != null && Templates != null && Templates.Count(t => t.DeletedAt == null && t.Visible) > 0)
                 {
-                    @* <MudSelectList Values="TemplateCategories"
-                @bind-Value=SelectedCategory /> *@
 
                     <MudCarousel Style="height:50vh"
                                  ShowArrows=false
@@ -180,7 +178,7 @@
             <ChildContent>
                 <MemberOfList Target="_blank"
                               AssignToClicked="@(async()=>{await _assignToModal?.ShowAsync();})"
-                              Disabled="@(SelectedTemplate.EffectiveAllowCustomGroups!=true  && !CurrentUser.State.IsSuperAdmin)"
+                              Disabled="@(SelectedTemplate?.EffectiveAllowCustomGroups!=true  && !CurrentUser.State.IsSuperAdmin)"
                               Model="@newUser" />
                 <AppModal @ref=_assignToModal>
                     <AssignToModalContent ModelChanged=@(async()=>{
@@ -203,7 +201,6 @@
                 @AppLocalization["OU"]
             </TabContent>
             <ChildContent>
-                @* <ADTreeView ShowAllEntries=false SelectedEntryChanged="OUSelected"/> *@
                 <OUTreeView AdditionalVisibilityFilters=@(AdditionalShow)
                             StartRootExpanded=true
                             SelectedEntryChanged="OUSelected" />
@@ -242,10 +239,10 @@ selectedStep=6;
                            OnClick="@(()=>{SelectedStep=4;})">Back</MudButton>
                 <MudButton Color=Color.Success
                            OnClick="@(()=>{
-SelectedStep=7;
-if(newUser?.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
-newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
-})"
+                                            SelectedStep=7;
+                                            if(newUser?.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
+                                            newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
+                                            })"
                            Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
 
                     @AppLocalization["Next"]
