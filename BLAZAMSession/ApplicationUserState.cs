@@ -96,12 +96,50 @@ namespace BLAZAM.Server.Data.Services
 
         public async Task<bool> MarkRead(UserNotification notification)
         {
-            notification.IsRead = true;
-            using var context = await _dbFactory.CreateDbContextAsync();
-            var message = context.UserNotifications.Where(un => un.Id == notification.Id).FirstOrDefault(); ;
-            if (message != null)
+            try
             {
-                message.IsRead = true;
+                notification.IsRead = true;
+                using var context = await _dbFactory.CreateDbContextAsync();
+                var message = context.UserNotifications.Where(un => un.Id == notification.Id).FirstOrDefault(); ;
+                if (message != null)
+                {
+                    message.IsRead = true;
+                    var result = await context.SaveChangesAsync();
+
+                    if (result == 1)
+                    {
+                        //GetUserSettingFromDB();
+                        if (userSettings != null)
+                        {
+                            OnSettingsChanged?.Invoke();
+                        }
+
+                        return true;
+                    }
+                }
+            }catch(Exception ex)
+            {
+                Loggers.SystemLogger.Error("Error trying to mark all notification read for user {Error}", ex);
+            }
+            return false;
+
+        }
+        public async Task<bool> MarkAllRead()
+        {
+            try
+            {
+                using var context = await _dbFactory.CreateDbContextAsync();
+
+                var messages = await context.UserNotifications.Where(un => un.User.Id == Id && !un.IsRead && un.Notification.MessageType != MessageType.AccessRequest).ToListAsync();
+                foreach(var notification in messages) {
+                    if (notification != null)
+                    {
+                        notification.IsRead = true;
+                       
+
+                    }
+               
+                }
                 var result = await context.SaveChangesAsync();
 
                 if (result == 1)
@@ -115,7 +153,12 @@ namespace BLAZAM.Server.Data.Services
                     return true;
                 }
             }
+            catch(Exception ex)
+            {
+                Loggers.SystemLogger.Error("Error trying to mark all notification read for user {Error}", ex);
+            }
             return false;
+
         }
 
         public void GetUserSettingFromDB()
