@@ -1,0 +1,62 @@
+﻿@inherits MudDataGrid<T>
+@inject IStringLocalizer<AppLocalization> AppLocalization
+@typeparam T where T : IAccountDirectoryAdapter
+
+<MudDataGrid T="@T"
+             Items="@Items"
+             Dense=true
+             Filterable=true
+             RowsPerPage="@RowsPerPage"
+             FilterMode="DataGridFilterMode.Simple"
+             Loading=@Loading
+             Square=true
+             ColumnResizeMode="ResizeMode.Column"
+             Virtualize=true
+             RowClass="cursor-pointer"
+             RowClick=@RowClick
+             RowsPerPageChanged="@RowsPerPageChanged"
+             Class="py-0"
+             SortMode="SortMode.Single">
+    <Columns>
+        <TemplateColumn Title=@AppLocalization["Name"]>
+            <CellTemplate>
+                <MudContextMenu>
+
+                    <ChildContent>
+
+                        <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
+                            <MudText>@context.Item?.CanonicalName</MudText>
+                        </AppTooltip>
+
+                    </ChildContent>
+                    <MenuContents>
+
+                        <DirectoryEntryContextMenuItems Entry="@context.Item" />
+
+                    </MenuContents>
+                </MudContextMenu>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title=@AppLocalization["Last Logon"]>
+            <CellTemplate>
+                @if (context.Item?.Created != null)
+                {
+    
+                    <MudText>@context.Item.LastLogonTime?.ToLocalTime()</MudText>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="@T" />
+    </PagerContent>
+    <NoRecordsContent>
+        <MudText>@AppLocalization["No matching entries"]</MudText>
+    </NoRecordsContent>
+</MudDataGrid>
+
+
+@code {
+#nullable disable warnings
+
+}
