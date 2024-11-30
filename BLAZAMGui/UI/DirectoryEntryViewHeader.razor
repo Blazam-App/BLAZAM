@@ -39,9 +39,9 @@ else
                     @DirectoryEntry.CanonicalName
                 </MudText>
             }
-            @if (!DirectoryEntry.OU.IsNullOrEmpty())
+            @if (DirectoryEntry.OU!=null)
             {
-                <MudText Typo="Typo.caption" Class="align-middle mt">@DirectoryTools.PrettifyOu(DirectoryEntry.OU) </MudText>
+                <MudText Typo="Typo.caption" Class="align-middle mt">@DirectoryEntry.OU.ToPrettyOu() </MudText>
 
             }
 

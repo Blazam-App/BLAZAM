@@ -87,7 +87,7 @@ namespace BLAZAM.Helpers
             return dnBuilder.ToString();
         }
 
-        public static string? DnToOu(string? dN)
+        public static string? DnToOu(this string? dN)
         {
             if (dN == null) return null;
             var ouComponents = Regex.Matches(dN, @"OU=([^,]+)")
@@ -97,7 +97,15 @@ namespace BLAZAM.Helpers
             return string.Join(",", ouComponents);
         }
 
-
+        public static string? ToPrettyOu(this IADOrganizationalUnit? ou)
+        {
+            if (ou == null) return null;
+            var ouComponents = Regex.Matches(ou.DN, @"OU=([^,]*)")
+                .Select(m => m.Groups[1].Value)
+                .ToList();
+            ouComponents.Reverse();
+            return "/" + string.Join("/", ouComponents);
+        }
 
         public static string? ParentOU(string? dN)
         {
@@ -252,5 +260,10 @@ namespace BLAZAM.Helpers
             }
             return objects;
         }
+
+
+
+       
+
     }
 }
