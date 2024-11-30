@@ -3,7 +3,7 @@
 <MudText>@Label</MudText>
 
 <MudTreeView T="IDirectoryEntryAdapter"
-             ServerData="GetChildrenAsync"
+             ServerData="GetOUChildrenAsync"
              Items="RootOU"
              Dense="true"
              Hover="true"
@@ -12,7 +12,7 @@
              @bind-SelectedValue="SelectedEntry">
     <ItemTemplate>
         <MudTreeViewItem Value="@context.Value"
-                         Items=@GetChildren(context.Value)
+                         Items=@GetChildren(context)
                          LoadingIconColor="Color.Info"
                          @bind-Expanded="@context.Expanded"
                          @bind-Activated=context.Selected
