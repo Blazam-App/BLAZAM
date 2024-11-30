@@ -22,6 +22,10 @@ using System.Text.Json;
 
 namespace BLAZAM.Pages.API.v1
 {
+    /// <summary>
+    /// Template API endpoints provide listing of templates
+    /// and execution to create users.
+    /// </summary>
     public class Templates : ApiController
     {
         private IAppDatabaseFactory _appDatabaseFactory;
@@ -42,7 +46,7 @@ namespace BLAZAM.Pages.API.v1
         /// Executes a user creation template. Any required fields will need to be
         /// provided in post body data.
         /// </summary>
-        ///  /// <remarks>
+        /// <remarks>
         /// Sample request:
         ///
         ///     POST /api/v1/templates/execute/2
