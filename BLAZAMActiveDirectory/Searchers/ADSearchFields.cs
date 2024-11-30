@@ -14,6 +14,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// </remarks>
         public long? LockoutTime { get; set; }
 
+
+        public long? LastLogonTime { get; set; }
+
         public string? SID { get; set; }
 
         public string? DN { get; set; }

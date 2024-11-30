@@ -140,7 +140,9 @@ namespace BLAZAM.Update
             }
         }
 
-
+        /// <summary>
+        /// Called when download progress has changed
+        /// </summary>
         public AppEvent<FileProgress?> DownloadPercentageChanged { get; set; }
 
         private ApplicationVersion _runningVersion;

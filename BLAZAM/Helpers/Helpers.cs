@@ -9,6 +9,14 @@ namespace BLAZAM.Helpers
 {
     public static class Helpers
     {
+        /// <summary>
+        /// Processes a template given a <see cref="NewUserName"/>
+        /// </summary>
+        /// <param name="template">The template to be applied</param>
+        /// <param name="newUserName">The new user name</param>
+        /// <param name="directory">The directory to create the use under</param>
+        /// <returns></returns>
+        /// <exception cref="ApplicationException"></exception>
         public static IADUser GenerateTemplateUser(this DirectoryTemplate template, NewUserName newUserName, IActiveDirectoryContext directory)
         {
             IADUser? newUser;

@@ -106,5 +106,6 @@ namespace BLAZAM.Session.Interfaces
         Task SaveReadNewsItems();
         Task SaveBasicUserPreferences();
         void GetUserSettingFromDB();
+        Task<bool> MarkAllRead();
     }
 }
