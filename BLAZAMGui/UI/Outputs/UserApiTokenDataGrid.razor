@@ -23,7 +23,11 @@
         <MudSelectItem Value="TimeSpan.FromDays(1000*365)">@AppLocalization["Forever"]</MudSelectItem>
 
     </MudSelect>
-    <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@GenerateToken">@AppLocalization["Generate New API Token"]</MudButton>
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Success"
+               OnClick="@GenerateToken">
+        @AppLocalization["Generate New API Token"]
+    </MudButton>
 </SettingsField>
 @code {
     List<ApiToken> _tokens = new();
