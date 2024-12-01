@@ -2,6 +2,7 @@
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Models.Templates;
 using BLAZAM.Logger;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -86,8 +87,35 @@ namespace BLAZAM.Helpers
             // Return the DN
             return dnBuilder.ToString();
         }
+        /// <summary>
+        /// Populates the fields of the provided <see cref="IADUser"/>
+        /// with the values set within this <see cref="DirectoryTemplate"/>
+        /// </summary>
+        /// <param name="template">This template</param>
+        /// <param name="user">The user to set the template fields for</param>
+        /// <param name="newUserName">The new user's name details</param>
+        public static void PopulateFields(this DirectoryTemplate template,IADUser user,NewUserName newUserName)
+        {
+            foreach (var fieldValue in template.EffectiveFieldValues)
+            {
+                try
+                {
+                    if (fieldValue.Field != null && fieldValue.Value != null)
+                        if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
+                            user.HomeDirectory = template.ReplaceVariables(fieldValue.Value, newUserName, user.SamAccountName);
+                        else
+                            user.NewEntryProperties[fieldValue.Field.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SamAccountName);
+                    else if (fieldValue.CustomField != null && fieldValue.Value != null)
+                        user.NewEntryProperties[fieldValue.CustomField.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, user.SamAccountName);
+                }
+                catch (Exception ex)
+                {
+                    Loggers.ActiveDirectoryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value?.ToString() + " {@Error}", ex);
+                }
 
-        public static string? DnToOu(string? dN)
+            }
+        }
+        public static string? DnToOu(this string? dN)
         {
             if (dN == null) return null;
             var ouComponents = Regex.Matches(dN, @"OU=([^,]+)")
@@ -97,7 +125,15 @@ namespace BLAZAM.Helpers
             return string.Join(",", ouComponents);
         }
 
-
+        public static string? ToPrettyOu(this IADOrganizationalUnit? ou)
+        {
+            if (ou == null) return null;
+            var ouComponents = Regex.Matches(ou.DN, @"OU=([^,]*)")
+                .Select(m => m.Groups[1].Value)
+                .ToList();
+            ouComponents.Reverse();
+            return "/" + string.Join("/", ouComponents);
+        }
 
         public static string? ParentOU(string? dN)
         {
@@ -252,5 +288,10 @@ namespace BLAZAM.Helpers
             }
             return objects;
         }
+
+
+
+       
+
     }
 }

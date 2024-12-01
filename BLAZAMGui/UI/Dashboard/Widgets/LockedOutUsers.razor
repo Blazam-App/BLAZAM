@@ -48,6 +48,9 @@
     <PagerContent>
         <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IADUser" />
     </PagerContent>
+    <NoRecordsContent>
+        <MudText>@AppLocalization["No user are locked out"]</MudText>
+    </NoRecordsContent>
 </MudDataGrid>
 
 @code {
