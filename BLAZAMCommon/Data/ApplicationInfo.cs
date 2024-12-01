@@ -78,19 +78,7 @@ namespace BLAZAM.Common.Data
         /// </summary>
         public static IServiceProvider services;
 
-        /// <summary>
-        /// A symmetric key version of the encryption key
-        /// for use with API signing
-        /// </summary>
-        public static SymmetricSecurityKey tokenKey { get {
-
-                var keyString = configuration.GetValue<string>("EncryptionKey");
-                var keyBytes = Encoding.ASCII.GetBytes(keyString);
-                return new SymmetricSecurityKey(keyBytes);
-            } }
-
-
-
+      
         /// <summary>
         /// The running Blazam version
         /// </summary>
@@ -173,11 +161,7 @@ namespace BLAZAM.Common.Data
         /// Unique ID for this machine
         /// </summary>
         public Guid InstallationId { get => installationId; set => installationId = value; }
-        /// <summary>
-        /// A symmetric key version of the encryption key
-        /// for use with API signing
-        /// </summary>
-        public SymmetricSecurityKey TokenKey { get => tokenKey; }
+  
 
         /// <summary>
         /// Use only for UnitTests
