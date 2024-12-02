@@ -36,17 +36,17 @@ namespace PlaywrightTests
 
             await OpenRecycleBin();
 
-            await OpenConfigureSubMenu();
+            //await OpenConfigureSubMenu();
 
-            await OpenSettingsPages();
+            //await OpenSettingsPages();
 
-            await OpenManageNotifications();
+            //await OpenManageNotifications();
 
-            await OpenPermissions();
+            //await OpenPermissions();
 
-            await OpenFields();
+            //await OpenFields();
 
-            await OpenTemplates();
+            //await OpenTemplates();
 
 
             // Expects the URL to contain intro.

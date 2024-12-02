@@ -22,6 +22,10 @@ using System.Text.Json;
 
 namespace BLAZAM.Pages.API.v1
 {
+    /// <summary>
+    /// Template API endpoints provide listing of templates
+    /// and execution to create users.
+    /// </summary>
     public class Templates : ApiController
     {
         private IAppDatabaseFactory _appDatabaseFactory;
@@ -39,9 +43,10 @@ namespace BLAZAM.Pages.API.v1
 
 
         /// <summary>
-        /// Executes a user creation template. Any required fields will need to be provided in form data.
+        /// Executes a user creation template. Any required fields will need to be
+        /// provided in post body data.
         /// </summary>
-        ///  /// <remarks>
+        /// <remarks>
         /// Sample request:
         ///
         ///     POST /api/v1/templates/execute/2
@@ -51,7 +56,7 @@ namespace BLAZAM.Pages.API.v1
         ///       "fields": [
         ///          {
         ///            "FieldName": "l",
-        ///           "FieldValue": "Boston"
+        ///            "FieldValue": "Boston"
         ///         }
         ///       ]
         ///       "groups": [
@@ -73,19 +78,19 @@ namespace BLAZAM.Pages.API.v1
 
         public async Task<IActionResult> Execute(int templateId, [FromBody] NewUserDetails newUserDetails)
         {
-            //newUserDetails.Fields.Add(new() { FieldName = "test", FieldValue = "val" });
-            //var test = JsonConvert.SerializeObject(newUserDetails);
             
             var context = await DbFactory.CreateDbContextAsync();
             var template = await context.DirectoryTemplates.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id == templateId);
             
             if (template != null)
             {
+                //Check if the request has the required fields for this template
                 if (template.HasRequiredFields())
                 {
                     var requiredFields = template.EffectiveFieldValues.Where(fv => fv.Required).ToList();
                     foreach (var field in requiredFields)
                     {
+                        //If any are missing return an error with explanation
                         if (!newUserDetails.Fields.Any(f => f.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase)))
                         {
                             return new BadRequestObjectResult(field.FieldName + " is a required field");
@@ -94,6 +99,7 @@ namespace BLAZAM.Pages.API.v1
                     }
                 }
 
+                //Prepare new user name
                 var newUserName = new NewUserName()
                 {
                     GivenName = newUserDetails.FirstName,
@@ -101,30 +107,22 @@ namespace BLAZAM.Pages.API.v1
                     Surname = newUserDetails.LastName
                 };
              
+                //Generate IADUser
                 var newUser = template.GenerateTemplateUser(newUserName, Directory);
+
+                //Override username if provided
                 if (!newUserDetails.Username.IsNullOrEmpty())
                 {
                     newUser.SamAccountName = newUserDetails.Username;
                 }
-                var password = newUser.NewPassword.ToPlainText().ToSecureString();
-                foreach (var fieldValue in template.EffectiveFieldValues)
-                {
-                    try
-                    {
-                        if (fieldValue.Field != null && fieldValue.Value != null)
-                            if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
-                                newUser.HomeDirectory = template.ReplaceVariables(fieldValue.Value, newUserName, newUser.SamAccountName);
-                            else
-                                newUser.NewEntryProperties[fieldValue.Field.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, newUser.SamAccountName);
-                        else if (fieldValue.CustomField != null && fieldValue.Value != null)
-                            newUser.NewEntryProperties[fieldValue.CustomField.FieldName] = template.ReplaceVariables(fieldValue.Value, newUserName, newUser.SamAccountName);
-                    }
-                    catch (Exception ex)
-                    {
-                        Loggers.ActiveDirectoryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value?.ToString() + " {@Error}", ex);
-                    }
 
-                }
+                //Store password in memory for later
+                var password = newUser.NewPassword.ToPlainText().ToSecureString();
+
+                //Set each field in template
+                template.PopulateFields(newUser, newUserName);
+
+                //Set API provided fields
                 if (newUserDetails.Fields != null)
                 {
                     foreach (var field in newUserDetails.Fields)
@@ -146,6 +144,8 @@ namespace BLAZAM.Pages.API.v1
                         newUser.SetCustomProperty(field.FieldName,value) ;
                     }
                 }
+
+                //Set API provided groups
                 if (newUserDetails.Groups != null)
                 {
                     foreach (var groupSid in newUserDetails.Groups)
@@ -163,12 +163,11 @@ namespace BLAZAM.Pages.API.v1
                     }
                 }
                 
-
+                //Prepare commit job
                 IJob createUserJob = new Job(AppLocalization["Create User"]);
                 createUserJob.StopOnFailedStep = true;
-                //createUserJob.ShowJobDetailsDialog(MessageService);
-                //_username = User.SamAccountName;
-                //_userPassword = User.NewPassword;
+
+                //Commmit
                 var result = await newUser.CommitChangesAsync(createUserJob);
                 if (result.FailedSteps.Count == 0)
                 {
@@ -208,7 +207,6 @@ namespace BLAZAM.Pages.API.v1
             {
                 return new NotFoundObjectResult(templateId);
             }
-            return new BadRequestResult();
         }
 
 

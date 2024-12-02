@@ -18,12 +18,14 @@ namespace BLAZAM.Services
 {
     public class JwtTokenService
     {
+        private readonly IEncryptionService _encryptionService;
         private readonly ICurrentUserStateService _currentUserStateService;
         private readonly ApplicationInfo _applicationInfo;
 
-        public JwtTokenService(ApplicationInfo applicationInfo, ICurrentUserStateService currentUserStateService)
+        public JwtTokenService(IEncryptionService encryptionService, ApplicationInfo applicationInfo, ICurrentUserStateService currentUserStateService)
 
         {
+            _encryptionService = encryptionService;
             _currentUserStateService = currentUserStateService;
             _applicationInfo = applicationInfo;
         }
@@ -51,7 +53,7 @@ namespace BLAZAM.Services
                 IssuedAt = DateTime.UtcNow,
                 Issuer = DatabaseCache.ApplicationSettings.AppName,
                 Expires = (DateTime.UtcNow+lifetime.Value), // Set expiration
-                SigningCredentials = new SigningCredentials(_applicationInfo.TokenKey, SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encryption.Instance.Key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwtToken = tokenHandler.WriteToken(token);
@@ -72,7 +74,7 @@ namespace BLAZAM.Services
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = _applicationInfo.TokenKey,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encryption.Instance.Key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero // Set clock skew to zero

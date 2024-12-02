@@ -1,7 +1,7 @@
 ﻿
 @inherits Widget
 @attribute [Authorize]
-<NewEntriesWidgetDataGrid Items="@StaleUsers"
+<StaleEntriesWidgetDataGrid Items="@StaleUsers"
                           RowsPerPage="@ItemsPerPage"
                           RowsPerPageChanged="@SetRowsPerPage"
                           RowClick=@GoTo
