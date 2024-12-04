@@ -7,11 +7,16 @@
           ChartOptions="@ChartOptions"></MudChart>
 @*
 <MudFab Icon="@Icons.Material.Filled.ShowChart" OnClick="ToggleLineMode" />*@
-@code{
+@code {
 
-    
+
     [Parameter]
-    public ChartOptions ChartOptions { get; set; } = new() { InterpolationOption=InterpolationOption.Straight };
+    public ChartOptions ChartOptions { get; set; } = new()
+        {
+            InterpolationOption = InterpolationOption.Straight
+        };
+
+
     [Parameter]
     public DateTime EndDate { get; set; } = DateTime.Today;
 
@@ -40,13 +45,14 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-       
-        var startDate = EndDate.AddDays(-1*Days);
+        loginChart = new() { Name = AppLocalization["Daily Logins"] };
+        uniqueUsersChart = new() { Name = AppLocalization["Daily Users"] };
+        var startDate = EndDate.AddDays(-1 * Days);
         allDates = Enumerable.Range(0, (int)(EndDate - startDate).TotalDays + 1)
                                  .Select(d => startDate.AddDays(d));
         using (var context = await DbFactory.CreateDbContextAsync())
         {
-           
+
             logonEntries = await context.LogonAuditLog.ToListAsync();
 
 

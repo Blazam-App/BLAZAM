@@ -16,14 +16,14 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Style="width:100px;" Title="Type">
+        <TemplateColumn Style="width:100px;" Title=@AppLocalization["Type"]>
             <CellTemplate>
                 <AppTooltip Text="@AppLocalization[context.Item.ObjectType.ToString()]">
                     <MudIcon Icon="@context.Item.TypeIcon()" />
                 </AppTooltip>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="Name">
+        <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
                 <MudContextMenu>
 

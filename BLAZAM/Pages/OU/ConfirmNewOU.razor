@@ -1,7 +1,7 @@
 @inherits AppComponentBase
 @inject NotificationGenerationService OUNotificationService
 
-<AppPageTitle>Confirm OU Creation</AppPageTitle>
+<AppPageTitle>@AppLocalization["Confirm OU Creation"]</AppPageTitle>
 
 @if (OU != null)
 {
@@ -9,7 +9,7 @@
             @OU.ADSPath
         
     </MudCard>
-    <MudButton Color=Color.Success OnClick="CommitChanges">Create...</MudButton>
+    <MudButton Color=Color.Success OnClick="CommitChanges">@AppLocalization["Create"]</MudButton>
 }
 @code {
 
@@ -31,7 +31,7 @@
             if (results.FailedSteps.Count == 0)
             {
                 OU = (IADOrganizationalUnit)Directory.GetDirectoryEntryByDN(OU.DN);
-                SnackBarService.Success("OU created");
+                SnackBarService.Success(AppLocalization["OU created"]);
                 await AuditLogger.OU.Created(OU);
                 _ = OUNotificationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
                 await Confirmed.InvokeAsync(OU);

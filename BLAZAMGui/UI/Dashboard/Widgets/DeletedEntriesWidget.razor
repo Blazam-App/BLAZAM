@@ -17,7 +17,7 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Style="width:100px;" Title="Type">
+        <TemplateColumn Style="width:100px;" Title=@AppLocalization["Type"]>
             <CellTemplate>
                
                         <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
@@ -26,14 +26,14 @@
 
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="Name">
+        <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
                 <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
                     <MudText>@context.Item?.CanonicalName</MudText>
                 </AppTooltip>
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="x=>x.LastChanged" Title="Deleted" />
+        <PropertyColumn Property="x=>x.LastChanged" Title=@AppLocalization["Deleted"] />
 
     </Columns>
     <PagerContent>
