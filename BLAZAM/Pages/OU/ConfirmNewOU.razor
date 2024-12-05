@@ -30,7 +30,7 @@
             var results = await OU.CommitChangesAsync();
             if (results.FailedSteps.Count == 0)
             {
-                OU = (IADOrganizationalUnit)Directory.GetDirectoryEntryByDN(OU.DN);
+                OU = (IADOrganizationalUnit)Directory.OUs.FindOuByDN(OU.DN);
                 SnackBarService.Success(AppLocalization["OU created"]);
                 await AuditLogger.OU.Created(OU);
                 _ = OUNotificationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
