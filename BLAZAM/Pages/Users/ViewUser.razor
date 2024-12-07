@@ -666,7 +666,17 @@
                     {
                         await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
                         await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
-                        _ = NotificationGenerationService.PostAsync(User, NotificationType.GroupAssignment, CurrentUser.State, assignment.Group);
+                        //Run synchronously if using sqlite
+                        if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                        {
+                            await NotificationGenerationService.PostAsync(User, NotificationType.Assign, CurrentUser.State, assignment.Group);
+
+                        }
+                        else
+                        {
+                            _ = NotificationGenerationService.PostAsync(User, NotificationType.Assign, CurrentUser.State, assignment.Group);
+
+                        }
 
                     }
 
@@ -674,13 +684,31 @@
                     {
                         await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
                         await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
-                        _ = NotificationGenerationService.PostAsync(User, NotificationType.GroupAssignment, CurrentUser.State, assignment.Group);
+                        //Run synchronously if using sqlite
+                        if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                        {
+                            await NotificationGenerationService.PostAsync(User, NotificationType.Unassign, CurrentUser.State, assignment.Group);
+
+                        }
+                        else
+                        {
+                            _ = NotificationGenerationService.PostAsync(User, NotificationType.Unassign, CurrentUser.State, assignment.Group);
+
+                        }
 
                     }
                     if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
                     {
-                        _ = NotificationGenerationService.PostAsync(User, NotificationType.Modify, CurrentUser.State);
                         await AuditLogger.User.Changed(User, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
+
+                        //Run synchronously if using sqlite
+                        if(DbFactory.DatabaseType == DatabaseType.SQLite){
+                            await NotificationGenerationService.PostAsync(User, NotificationType.Modify, CurrentUser.State);
+
+                        }else{
+                            _ = NotificationGenerationService.PostAsync(User, NotificationType.Modify, CurrentUser.State);
+
+                        }
                     }
 
                     EditMode = false;

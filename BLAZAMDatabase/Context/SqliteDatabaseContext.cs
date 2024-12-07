@@ -25,7 +25,16 @@ namespace BLAZAM.Database.Context
 
 
 
-
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                return await base.SaveChangesAsync(cancellationToken);
+            }catch(Exception ex)
+            {
+                return -1;
+            }
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

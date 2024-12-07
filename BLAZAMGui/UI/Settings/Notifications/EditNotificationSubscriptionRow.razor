@@ -1,12 +1,20 @@
 @inject IStringLocalizer<AppLocalization> AppLocalization
 <tr>
+
+    <td>
+        <MudCheckBox Style="align-items:center;"
+                     ValueChanged=@((bool val)=>{ToggleType(NotificationType.Assign,val);ToggleType(NotificationType.Unassign,val);})
+                     Value="@(Subscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==NotificationType.Assign)!=null)" />
+
+    </td>
     @foreach (var type in Enum.GetValues(typeof(NotificationType)))
     {
-        var originalEnum = (NotificationType)type;
-        <td>
-            @{
 
-            }
+        var originalEnum = (NotificationType)type;
+        if(originalEnum== NotificationType.Unassign || originalEnum == NotificationType.Assign){
+            continue;
+        }
+        <td>
             <MudCheckBox Style="align-items:center;"
                          ValueChanged=@((bool val)=>{ToggleType(originalEnum,val);})
                          Value="@(Subscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)" />

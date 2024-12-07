@@ -1,5 +1,5 @@
 @inherits AppComponentBase
-@inject NotificationGenerationService OUNotificationService
+@inject NotificationGenerationService NotificationGenerationService
 
 <AppPageTitle>@AppLocalization["Confirm Group Creation"]</AppPageTitle>
 
@@ -44,8 +44,16 @@
 
                 SnackBarService.Success(AppLocalization["Group created"]);
                 await AuditLogger.Group.Created(Group);
-                _ = OUNotificationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
+                if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                {
+                    await NotificationGenerationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
 
+                }
+                else
+                {
+                    _= NotificationGenerationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
+
+                }
                 await Confirmed.InvokeAsync(Group);
             }
 
