@@ -16,7 +16,7 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Title="Name">
+        <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
                 <MudContextMenu>
 
@@ -35,7 +35,7 @@
                 </MudContextMenu>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="Locked Out">
+        <TemplateColumn Title=@AppLocalization["Locked Out"]>
             <CellTemplate>
                 @if (context.Item?.LockoutTime != null)
                 {

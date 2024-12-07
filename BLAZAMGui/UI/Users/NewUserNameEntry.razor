@@ -25,10 +25,14 @@
     </Section>
 </EditForm>
 <MudButton Color=Color.Primary
-           OnClick="OnBack">Back</MudButton>
+           OnClick="OnBack">
+    @AppLocalization["Back"]
+</MudButton>
 <MudButton Color="Color.Success"
            OnClick="OnNext"
-           Disabled=@(newUserName is null || (newUserName.Surname.IsNullOrEmpty() && newUserName.GivenName.IsNullOrEmpty()))>Next</MudButton>
+           Disabled=@(newUserName is null || (newUserName.Surname.IsNullOrEmpty() && newUserName.GivenName.IsNullOrEmpty()))>
+    @AppLocalization["Next"]
+</MudButton>
 
 
 @code {

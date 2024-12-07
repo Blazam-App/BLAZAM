@@ -176,4 +176,6 @@ a, .btn-link {
     }
 }
 
-
+#jsd-widget{
+    position:relative !important;
+}

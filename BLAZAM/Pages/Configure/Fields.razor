@@ -15,15 +15,22 @@
              EditTrigger="DataGridEditTrigger.Manual">
     <ToolBarContent>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.Add" Color=@Color.Success OnClick="@(()=>{addFieldModal?.ShowAsync();})" />
+        <MudIconButton Icon="@Icons.Material.Filled.Add"
+                       Color=@Color.Success
+                       OnClick="@(()=>{addFieldModal?.ShowAsync();})" />
 
     </ToolBarContent>
 
     <Columns>
 
-        <TemplateColumn Context="cellContext" CellClass="d-flex justify-end" Title="Edit" Sortable="false">
+        <TemplateColumn Context="cellContext"
+                        CellClass="d-flex justify-end"
+                        Title=@AppLocalization["Edit"]
+                        Sortable="false">
             <CellTemplate>
-                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@cellContext.Actions.StartEditingItemAsync" />
+                <MudIconButton Size="@Size.Small"
+                               Icon="@Icons.Material.Outlined.Edit"
+                               OnClick="@cellContext.Actions.StartEditingItemAsync" />
             </CellTemplate>
         </TemplateColumn>
 
@@ -38,7 +45,8 @@
         <TemplateColumn Title=@AppLocalization["Field Type"]
                         Sortable="true">
             <EditTemplate>
-                <FieldTypeSelect Variant="@Variant.Outlined" @bind-Value=context.Item.FieldType />
+                <FieldTypeSelect Variant="@Variant.Outlined"
+                                 @bind-Value=context.Item.FieldType />
 
             </EditTemplate>
             <CellTemplate>
@@ -66,7 +74,9 @@
                 </CellTemplate>
             </TemplateColumn>
         }
-        <TemplateColumn CellClass="d-flex justify-end" Title=@AppLocalization["Delete"] Sortable="false">
+        <TemplateColumn CellClass="d-flex justify-end"
+                        Title=@AppLocalization["Delete"]
+                        Sortable="false">
             <CellTemplate>
                 <MudIconButton Disabled=@(context.Item.Id>100000)
                                Size="@Size.Small"
@@ -77,7 +87,8 @@
     </Columns>
 </MudDataGrid>
 
-<AppModal @ref=addFieldModal Title="Add Field">
+<AppModal @ref=addFieldModal
+          Title="Add Field">
     <AddFieldModalContent FieldCreated="FieldCreated" />
 </AppModal>
 @code {
