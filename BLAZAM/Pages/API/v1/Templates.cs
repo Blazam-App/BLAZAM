@@ -19,6 +19,7 @@ using BLAZAM.Jobs;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using System.Text.Json;
+using BLAZAM.Common.Data.Database;
 
 namespace BLAZAM.Pages.API.v1
 {
@@ -173,8 +174,16 @@ namespace BLAZAM.Pages.API.v1
                 {
                     newUser = (IADUser)Directory.GetDirectoryEntryByDN(newUser.DN);
                     await AuditLogger.User.Created(newUser);
+                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                    {
+                        await OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
 
-                    _ = OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
+                    }
+                    else
+                    {
+                        _ = OUNotificationService.PostAsync(newUser, NotificationType.Create, CurrentUserState);
+
+                    }
 
                     try
                     {

@@ -356,7 +356,9 @@ namespace BLAZAM.Server
             {
                 Title = "Blazam API",
                 Version = "v1",
-                Description = "The official Blazam API documentation. Authorization is required for API access.",
+                Description = "The official Blazam API documentation." +
+                "<br/>Authorization is required for API access." +
+                "<br/>The \"Authorization\" header value must be \"Bearer {token}\"",
                 License = new OpenApiLicense() { Name = "MIT License", Url = new Uri("https://github.com/Blazam-App/BLAZAM/blob/v1-Dev/LICENSE") },
                 Contact = new()
                 {
@@ -374,7 +376,7 @@ namespace BLAZAM.Server
             // Configure Swagger to use JWT Bearer authorization
             var jwtSecurityScheme = new OpenApiSecurityScheme
             {
-                Description = "JWT Authorization header using the Bearer scheme.Example: \"Authorization: Bearer {token}\"",
+                Description = "Enter only the token supplied by Blazam",
                 Name = "Authorization",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,

@@ -161,21 +161,47 @@
                 {
                     await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
                     await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
-                    _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.GroupAssignment, CurrentUser.State, Group);
+                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                    {
+                        await NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
 
+                    }
+                    else
+                    {
+                        _= NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Assign, CurrentUser.State, Group);
+
+                    }
                 }
 
                 foreach (var assignment in unassignFrom)
                 {
                     await AuditLogger.User.Unassigned(assignment.Member, assignment.Group);
                     await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
-                    _ = NotificationGenerationService.PostAsync(assignment.Member, NotificationType.GroupAssignment, CurrentUser.State, Group);
+                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                    {
+                        await NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Unassign, CurrentUser.State, Group);
 
+                    }
+                    else
+                    {
+                        _= NotificationGenerationService.PostAsync(assignment.Member, NotificationType.Unassign, CurrentUser.State, Group);
+
+                    }
                 }
                 if (changes.Any(c => c.Field != "member"))
                 {
-                    _ = NotificationGenerationService.PostAsync(Group, NotificationType.Modify, CurrentUser.State);
                     await AuditLogger.Group.Changed(Group, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
+
+                    if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                    {
+                        await NotificationGenerationService.PostAsync(Group, NotificationType.Modify, CurrentUser.State);
+
+                    }
+                    else
+                    {
+                        _ = NotificationGenerationService.PostAsync(Group, NotificationType.Modify, CurrentUser.State);
+
+                    }
                 }
                 //await AuditLogger.Group.Changed(Group, Group.Changes);
 

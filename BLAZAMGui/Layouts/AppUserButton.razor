@@ -37,6 +37,10 @@
                          Icon="@Icons.Material.Filled.Api">
                 @AppLocalization["API"]
             </MudMenuItem>
+@*             <MudMenuItem OnClick="@(async()=>{await JS.InvokeAsync<object>("openFeatureRequestDialog");})"
+                         Icon="@Icons.Material.Filled.RequestPage">
+                @AppLocalization["Feature Request"]
+            </MudMenuItem> *@
         </AuthorizeView>
         @if (UserState?.Impersonator == null)
         {

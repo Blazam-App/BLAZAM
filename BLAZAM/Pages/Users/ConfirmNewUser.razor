@@ -3,7 +3,7 @@
 @using BLAZAM.EmailMessage.Email.Notifications
 @inherits DirectoryModelComponent
 @inject IJSRuntime JSRuntime
-@inject NotificationGenerationService OUNotificationService
+@inject NotificationGenerationService NotificationGenerationService
 
 
 <AppPageTitle>Confirm User Creation</AppPageTitle>
@@ -291,8 +291,15 @@ else
                 confirmed = true;
                 await Confirmed.InvokeAsync();
                 await AuditLogger.User.Created(User);
-                _ = OUNotificationService.PostAsync(User, NotificationType.Create, CurrentUser.State);
+                if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                {
+                    await NotificationGenerationService.PostAsync(User, NotificationType.Create, CurrentUser.State);
 
+                }
+                else
+                {
+                    _ = NotificationGenerationService.PostAsync(User, NotificationType.Create, CurrentUser.State);
+                }
                 try
                 {
                     if (DirectoryTemplate?.EffectiveSendWelcomeEmail == true)

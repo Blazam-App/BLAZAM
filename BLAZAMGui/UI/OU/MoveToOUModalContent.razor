@@ -25,7 +25,7 @@
         StartingOU = (IADOrganizationalUnit)DirectoryModel.GetParent();
         Modal.OnYes = MoveTo;
         Modal.YesText = AppLocalization["Move"];
-        Modal.Title = "Move To";
+        Modal.Title = AppLocalization["Move To"];
 
     }
 
@@ -40,8 +40,7 @@
         {
 
 
-            // if (await MessageService.Confirm("Are you sure you want to move this " + DirectoryModel.ObjectType.ToString().ToLower() + " to " + SelectedOU.CanonicalName, "Confirm move"))
-            // {
+          
 
             var ouMovedFrom = DirectoryModel.GetParent() as IADOrganizationalUnit;
             DirectoryModel.MoveTo(ouToMoveTo);
@@ -53,8 +52,6 @@
             Close();
             return;
 
-
-            //}
         }
 
     }

@@ -1,5 +1,5 @@
 @inherits AppComponentBase
-@inject NotificationGenerationService OUNotificationService
+@inject NotificationGenerationService NotificationGenerationService
 
 <AppPageTitle>@AppLocalization["Confirm OU Creation"]</AppPageTitle>
 
@@ -33,7 +33,16 @@
                 OU = (IADOrganizationalUnit)Directory.OUs.FindOuByDN(OU.DN);
                 SnackBarService.Success(AppLocalization["OU created"]);
                 await AuditLogger.OU.Created(OU);
-                _ = OUNotificationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
+                if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                {
+                    await NotificationGenerationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
+
+                }
+                else
+                {
+                    _ = NotificationGenerationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
+
+                }
                 await Confirmed.InvokeAsync(OU);
                 Nav.NavigateTo("/ou/create", true);
             }

@@ -23,6 +23,7 @@ using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using System.Security.Authentication;
 using Azure;
 using Polly;
+using BLAZAM.Common.Data.Database;
 
 
 namespace BLAZAM.Notifications.Services
@@ -65,13 +66,27 @@ namespace BLAZAM.Notifications.Services
                             .Where(w => w.Delivered == false &&
                             w.RetryCount < 15)
                             .ToList();
-                        Parallel.ForEachAsync(undeliveredWebhooks, async (attempt, cancel) =>
+                        if (_appDatabaseFactory.DatabaseType == DatabaseType.SQLite)
+                        {
+                            foreach(var attempt in undeliveredWebhooks)
+                            {
+                                var attemptId = Guid.NewGuid();
+
+                                await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp, attempt.Body, attempt.EventType, attempt.Signature);
+                            }
+                        }
+                        else
+                        {
+
+
+                            Parallel.ForEachAsync(undeliveredWebhooks, async (attempt, cancel) =>
                         {
                             var attemptId = Guid.NewGuid();
 
-                            await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp, attempt.Body, attempt.EventType ,attempt.Signature);
+                            await SendWebHook(attempt.WebHookSubscription, attempt.MessageGuid, attemptId, attempt.EventTimestamp, attempt.Body, attempt.EventType, attempt.Signature);
 
                         });
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -127,7 +142,7 @@ namespace BLAZAM.Notifications.Services
             var payloadString = System.Text.Json.JsonSerializer.Serialize(payload);
             if (subscription.WebHookSignature == WebHookSignature.HMAC)
             {
-                if (subscription.HmacKey.IsNullOrEmpty()) 
+                if (subscription.HmacKey.IsNullOrEmpty())
                     throw new ApplicationException("HMAC Key not supplied to subscription set to use it.");
                 var key = subscription.HmacKey.Decrypt<string>();
                 if (key.StartsWith(prefix))
@@ -158,7 +173,7 @@ namespace BLAZAM.Notifications.Services
                 Method = subscription.WebHookMethod == WebHookMethod.GET ? HttpMethod.Get : HttpMethod.Post,
                 Content = new StringContent(payloadString, Encoding.UTF8, "application/json")
 
-            }; 
+            };
 
             request.Headers.Add(UNBRANDED_ID_HEADER_KEY, msgId.ToString());
             request.Headers.Add(UNBRANDED_ATTEMPT_ID_HEADER_KEY, attemptId.ToString());
@@ -189,7 +204,7 @@ namespace BLAZAM.Notifications.Services
                     {
                         Body = payloadString,
                         MessageGuid = msgId,
-                        EventType= eventType,
+                        EventType = eventType,
                         Uri = request.RequestUri.ToString(),
                         Delivered = false,
                         WebHookSubscriptionId = subscription.Id,
