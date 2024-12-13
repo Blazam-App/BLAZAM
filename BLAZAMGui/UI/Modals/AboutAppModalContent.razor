@@ -1,0 +1,45 @@
+﻿@inherits AppModalContent
+<MudStack Style="width:min-content;" Class="mx-auto">
+
+
+    <MudText Align="Align.Center">
+        Author: Chris Jacobsen
+    </MudText>
+    <MudText Align="Align.Center">
+
+        <MudLink Href="https://github.com/Blazam-App/BLAZAM">Source Code</MudLink>
+    </MudText>
+    <MudText Align="Align.Center">
+        @AppLocalization["Founded"] 2022
+    </MudText>
+    <MudText Align="Align.Center">
+        @AppLocalization["Version"]: @ApplicationInfo.RunningVersion.ToString()
+    </MudText>
+    <MudText Align="Align.Center">
+        <MudBreakpointProvider>
+            <MudHidden Breakpoint="Breakpoint.SmAndUp">
+                <MudImage Width="250" Src="/img/maggie.png" />
+            </MudHidden>
+            <MudHidden Breakpoint="Breakpoint.Xs">
+                <MudImage Width="350" Src="/img/maggie.png" />
+            </MudHidden>
+        </MudBreakpointProvider>
+
+    </MudText>
+    <MudText Align="Align.Center">@AppLocalization["Dedicated To"] Maggie</MudText>
+    <MudText Align="Align.Center">@AppLocalization["In Loving Memory"]</MudText>
+    <MudText Align="Align.Center">2014-2024</MudText>
+</MudStack>
+
+@code {
+    protected override void OnInitialized()
+    {
+
+        // Modal.OnYes = SaveChanges;
+        Modal.YesText = AppLocalization["Close"];
+        base.OnInitialized();
+
+
+    }
+
+}
