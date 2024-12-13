@@ -1,0 +1,39 @@
+﻿
+@inherits Widget
+@attribute [Authorize]
+<StaleEntriesWidgetDataGrid Items="@StaleComputers"
+                          RowsPerPage="@ItemsPerPage"
+                          RowsPerPageChanged="@SetRowsPerPage"
+                          RowClick=@GoTo
+                          T="IADComputer"
+                          Loading=LoadingData />
+
+@code {
+    List<IADComputer> StaleComputers
+    {
+        get => CurrentUser.State.Cache.Get<List<IADComputer>>("StaleComputers");
+        set => CurrentUser.State.Cache.Set("StaleComputers", value);
+    }
+
+
+    protected override async Task RefreshData()
+    {
+        LoadingData = true;
+        await InvokeAsync(StateHasChanged);
+        var users= Directory.Users.FindUsersByString(null);
+        ADSearch searcher = new ADSearch(Directory);
+        searcher.Fields.LastLogonTime = (DateTime.UtcNow - TimeSpan.FromDays(180)).ToFileTimeUtc();
+        searcher.ObjectTypeFilter = ActiveDirectoryObjectType.Computer;
+        searcher.EnabledOnly = true;
+        searcher.MaxResults = 200;
+        var results = await searcher.SearchAsync();
+        StaleComputers = results.Where(u => u.CanRead).OrderByDescending(u => u.Created).Cast<IADComputer>().ToList();
+        LoadingData = false;
+        await InvokeAsync(StateHasChanged);
+
+    }
+    void GoTo(DataGridRowClickEventArgs<IADComputer> args)
+    {
+        Nav.NavigateTo(args.Item.SearchUri);
+    }
+}

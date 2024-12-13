@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Database.Migrations.MySql
 {
     [DbContext(typeof(MySqlDatabaseContext))]
-    [Migration("20241118154722_Add_Api_Tokens_MySql")]
-    partial class Add_Api_Tokens_MySql
+    [Migration("20241123221439_Add_Webhooks_MySql")]
+    partial class Add_Webhooks_MySql
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -985,6 +985,131 @@ namespace BLAZAM.Database.Migrations.MySql
                     b.ToTable("SubscriptionNotificationType");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionWebHookType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("NotificationType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WebHookSubscriptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WebHookSubscriptionId");
+
+                    b.ToTable("SubscriptionWebHookType");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookAttempt", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("Delivered")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("EventTimestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("LastAttemptTimestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("MessageGuid")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("ResponseCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ResponseHeaders")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ResponseMessage")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("RetryCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Signature")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Uri")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("WebHookSubscriptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WebHookSubscriptionId");
+
+                    b.ToTable("WebHookAttempts");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookSubscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorizationToken")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("HmacKey")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IgnoreSSLVerification")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("OU")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PrivateKey")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PublicKey")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("URL")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("WebHookAuthorization")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WebHookMethod")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WebHookSignature")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WebHookSubscriptions");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>
                 {
                     b.Property<int>("Id")
@@ -1842,6 +1967,28 @@ namespace BLAZAM.Database.Migrations.MySql
                     b.Navigation("NotificationSubscription");
                 });
 
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.SubscriptionWebHookType", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Notifications.WebHookSubscription", "WebHookSubscription")
+                        .WithMany("NotificationTypes")
+                        .HasForeignKey("WebHookSubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WebHookSubscription");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookAttempt", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Notifications.WebHookSubscription", "WebHookSubscription")
+                        .WithMany("WebHookAttempts")
+                        .HasForeignKey("WebHookSubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WebHookSubscription");
+                });
+
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.ActionAccessMapping", b =>
                 {
                     b.HasOne("BLAZAM.Database.Models.Permissions.AccessLevel", null)
@@ -2045,6 +2192,13 @@ namespace BLAZAM.Database.Migrations.MySql
             modelBuilder.Entity("BLAZAM.Database.Models.Notifications.NotificationSubscription", b =>
                 {
                     b.Navigation("NotificationTypes");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Notifications.WebHookSubscription", b =>
+                {
+                    b.Navigation("NotificationTypes");
+
+                    b.Navigation("WebHookAttempts");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Permissions.AccessLevel", b =>

@@ -25,17 +25,21 @@
         </th>
     </tr>
     <tr>
-
-        @{
-            bool first = true;
-        }
+        <th style="border-left:solid;" class="align-self-center">
+            @AppLocalization["Group Membership Changes"]
+            </th>
+ 
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
         {
+           
             var originalEnum = (NotificationType)type;
-            <th style="@(first==true?"border-left:solid;":"")" class="align-self-center">
+             if (originalEnum == NotificationType.Unassign || originalEnum == NotificationType.Assign)
+            {
+                continue;
+            }
+            <th class="align-self-center">
                 @originalEnum.ToString()
             </th>
-            first=false;
             
         }
         <th style="border-left:solid;">
@@ -102,10 +106,16 @@
 
     </tr>
     <tr>
-
+        <th style="border-left:solid;" class="align-self-center">
+            @AppLocalization["Group Membership Changes"]
+        </th>
         @foreach (var type in Enum.GetValues(typeof(NotificationType)))
         {
             var originalEnum = (NotificationType)type;
+            if (originalEnum == NotificationType.Unassign || originalEnum == NotificationType.Assign)
+            {
+                continue;
+            }
             <th>
                 @originalEnum.ToString()
             </th>

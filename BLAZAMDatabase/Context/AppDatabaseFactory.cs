@@ -178,7 +178,30 @@ namespace BLAZAM.Database.Context
         /// </summary>
         /// <returns></returns>
         public async Task<IDatabaseContext> CreateDbContextAsync() => await Task.Run(() => { return CreateDbContext(); });
+        public DatabaseType DatabaseType
+        {
+            get
+            {
+                var _dbType = _configuration.GetValue<string>("DatabaseType");
+                if (_dbType == null) throw new DatabaseException("DatabaseType missing in configuration file");
+                // Console.WriteLine("Database Type: " + _dbType);
+                IDatabaseContext? databaseContext = null;
+                switch (_dbType.ToLower())
+                {
 
+                    case "sql":
+                       return DatabaseType.SQL;
+                    case "sqlite":
+
+                        return DatabaseType.SQLite;
+
+                    case "mysql":
+                        return DatabaseType.MySQL;
+
+                }
+                return DatabaseType.SQLite;
+            }
+        }
         /// <summary>
         /// Creates a new application <see cref="DbContext"/> based on the configured DatabaseType
         /// and DBConnectionString in appsettings.json
@@ -194,30 +217,28 @@ namespace BLAZAM.Database.Context
         /// <exception cref="Exception">Thrown for unexpected exceptions</exception>
         public IDatabaseContext CreateDbContext()
         {
-            var _dbType = _configuration.GetValue<string>("DatabaseType");
-            if (_dbType == null) throw new DatabaseException("DatabaseType missing in configuration file");
-            // Console.WriteLine("Database Type: " + _dbType);
+           
             IDatabaseContext? databaseContext = null;
-            switch (_dbType.ToLower())
+            switch (DatabaseType)
             {
 
-                case "sql":
+                case DatabaseType.SQL:
                     databaseContext = new SqlDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("DBConnectionString"), DatabaseType.SQL));
 
                     break;
-                case "sqlite":
+                case DatabaseType.SQLite:
 
                     databaseContext = new SqliteDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("DBConnectionString"), DatabaseType.SQLite));
                     break;
 
-                case "mysql":
+                case DatabaseType.MySQL:
                     databaseContext = new MySqlDatabaseContext(new DatabaseConnectionString(_configuration.GetConnectionString("DBConnectionString"), DatabaseType.MySQL));
                     break;
 
             }
             return databaseContext == null
                 ? throw new Exception("Database Context is null. Attempted connection to a "
-                + _dbType + " type database")
+                + DatabaseType + " type database")
                 : databaseContext;
         }
 

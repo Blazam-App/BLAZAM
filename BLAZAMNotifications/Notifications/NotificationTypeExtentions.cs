@@ -21,8 +21,11 @@ namespace BLAZAM.Notifications.Notifications
                 case NotificationType.Modify:
                     notificationTemplate = new EntryEditedEmailMessage();
                     break;
-                case NotificationType.GroupAssignment:
-                    notificationTemplate = new EntryGroupAssignmentEmailMessage();
+                case NotificationType.Unassign:
+                    notificationTemplate = new EntryUnassignedEmailMessage();
+                    break;
+                case NotificationType.Assign:
+                    notificationTemplate = new EntryAssignedEmailMessage();
                     break;
 
             }

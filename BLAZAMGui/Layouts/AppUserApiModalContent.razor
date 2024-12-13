@@ -1,6 +1,12 @@
 @inherits AppModalContent
 <MudLink Href="/swagger" Target="_blank">
-    <MudAlert Severity="Severity.Info" Icon="@Icons.Material.Filled.BookOnline">@AppLocalization["Click to view API documentation"].</MudAlert>
+    <MudAlert Severity="Severity.Info"
+    Variant="Variant.Filled"
+    Class="mb-5"
+     
+    Icon="@Icons.Material.Filled.BookOnline">
+    @AppLocalization["Click to view API documentation"].
+    </MudAlert>
 </MudLink>
 <UserApiTokenDataGrid @ref=apiDataGrid/>
 @code{

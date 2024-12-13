@@ -84,7 +84,10 @@
     {
         Task.Run(async () =>
         {
-            LoadingData = true;
+            if(messages ==  null || messages.Count==0)
+            {
+                LoadingData = true;
+            }
             await InvokeAsync(StateHasChanged);
             var context = await DbFactory.CreateDbContextAsync();
 

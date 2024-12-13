@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BLAZAM.Database.Migrations.Sqlite
 {
     /// <inheritdoc />
-    public partial class Add_WebHook_Subscriptions_Sqlite : Migration
+    public partial class Add_Webhooks_Sqlite : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,11 +17,16 @@ namespace BLAZAM.Database.Migrations.Sqlite
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    OU = table.Column<string>(type: "TEXT", nullable: true),
                     IgnoreSSLVerification = table.Column<bool>(type: "INTEGER", nullable: false),
                     URL = table.Column<string>(type: "TEXT", nullable: false),
                     WebHookMethod = table.Column<int>(type: "INTEGER", nullable: false),
+                    WebHookSignature = table.Column<int>(type: "INTEGER", nullable: false),
                     WebHookAuthorization = table.Column<int>(type: "INTEGER", nullable: false),
                     AuthorizationToken = table.Column<string>(type: "TEXT", nullable: true),
+                    HmacKey = table.Column<string>(type: "TEXT", nullable: true),
+                    PrivateKey = table.Column<string>(type: "TEXT", nullable: true),
+                    PublicKey = table.Column<string>(type: "TEXT", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -49,9 +54,45 @@ namespace BLAZAM.Database.Migrations.Sqlite
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "WebHookAttempts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    MessageGuid = table.Column<Guid>(type: "TEXT", nullable: false),
+                    LastAttemptTimestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EventTimestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EventType = table.Column<string>(type: "TEXT", nullable: false),
+                    WebHookSubscriptionId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Uri = table.Column<string>(type: "TEXT", nullable: false),
+                    Delivered = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Body = table.Column<string>(type: "TEXT", nullable: false),
+                    Signature = table.Column<string>(type: "TEXT", nullable: true),
+                    RetryCount = table.Column<int>(type: "INTEGER", nullable: false),
+                    ResponseCode = table.Column<int>(type: "INTEGER", nullable: false),
+                    ResponseHeaders = table.Column<string>(type: "TEXT", nullable: true),
+                    ResponseMessage = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WebHookAttempts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WebHookAttempts_WebHookSubscriptions_WebHookSubscriptionId",
+                        column: x => x.WebHookSubscriptionId,
+                        principalTable: "WebHookSubscriptions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_SubscriptionWebHookType_WebHookSubscriptionId",
                 table: "SubscriptionWebHookType",
+                column: "WebHookSubscriptionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WebHookAttempts_WebHookSubscriptionId",
+                table: "WebHookAttempts",
                 column: "WebHookSubscriptionId");
         }
 
@@ -60,6 +101,9 @@ namespace BLAZAM.Database.Migrations.Sqlite
         {
             migrationBuilder.DropTable(
                 name: "SubscriptionWebHookType");
+
+            migrationBuilder.DropTable(
+                name: "WebHookAttempts");
 
             migrationBuilder.DropTable(
                 name: "WebHookSubscriptions");

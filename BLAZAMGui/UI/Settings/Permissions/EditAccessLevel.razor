@@ -55,7 +55,7 @@
 
         <MudCard Class="mud-container-maxwidth-sm mx-auto" Elevation="3">
             <MudCardHeader>
-                <MudText Typo="Typo.h4">@name</MudText>
+                <MudText Typo="Typo.h4">@AppLocalization[name]-</MudText>
                 <MudSpacer />
                 @if (!Self)
                 {
@@ -106,7 +106,7 @@
                                  Elevation="0">
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">
-                                @name Actions
+                                @AppLocalization[name] @AppLocalization["Actions"]
                             </MudText>
                             <MudSpacer />
                             <MudMenu MaxHeight="200"
@@ -121,7 +121,9 @@
 
 
 
-                                            <MudMenuItem OnClick="()=>AddActionAccess(action,objectMap.ObjectType)">@AppLocalization[@action.Name]</MudMenuItem>
+                                            <MudMenuItem OnClick="()=>AddActionAccess(action,objectMap.ObjectType)">
+                                                @AppLocalization[@action.Name]
+                                                </MudMenuItem>
                                         }
                                     }
                                 }
@@ -130,8 +132,8 @@
                         </ToolBarContent>
                         <Columns>
                             <PropertyColumn Property="x => x.ObjectAction.Name"
-                                            Title="Action" />
-                            <TemplateColumn Title="Access">
+                                            Title=@AppLocalization["Action"] />
+                            <TemplateColumn Title=@AppLocalization["Access"]>
                                 <CellTemplate>
                                     <MudRadioGroup T="bool" @bind-Value=context.Item.AllowOrDeny>
                                         <MudRadio T="bool" Value="false">@AppLocalization["Deny"]</MudRadio>
@@ -140,7 +142,7 @@
                                     </MudRadioGroup>
                                 </CellTemplate>
                             </TemplateColumn>
-                            <TemplateColumn Title="Remove">
+                            <TemplateColumn Title=@AppLocalization["Remove"]>
                                 <CellTemplate>
                                     <MudIconButton Icon="@Icons.Material.Filled.Close"
                                                    Color="Color.Error"
@@ -158,7 +160,7 @@
                                  Items="@WorkingModel.FieldMap.Where(am=>am.ObjectType==objectMap.ObjectType)">
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">
-                                @name Fields
+                                @AppLocalization[name] @AppLocalization["Fields"]
                             </MudText>
                             <MudSpacer />
                             <MudMenu MaxHeight="200"
@@ -175,7 +177,9 @@
                                         if (existingFieldAccess == null)
                                         {
 
-                                            <MudMenuItem OnClick="()=>AddFieldAccess(field,objectMap.ObjectType)">@AppLocalization[field.DisplayName]</MudMenuItem>
+                                            <MudMenuItem OnClick="()=>AddFieldAccess(field,objectMap.ObjectType)">
+                                                @AppLocalization[field.DisplayName]
+                                                </MudMenuItem>
 
 
                                         }
@@ -187,39 +191,41 @@
                         </ToolBarContent>
 
                         <Columns>
-                            <TemplateColumn Title="Field">
+                            <TemplateColumn Title=@AppLocalization["Field"]>
                                 <CellTemplate>
 
                                     @if (context.Item?.Field != null)
                                     {
-                                        <AppTooltip Text="@context.Item.Field.FieldName">
-                                            <MudText>@context.Item.Field.DisplayName</MudText>
+                                        <AppTooltip Text=@context.Item.Field.FieldName>
+                                            <MudText>@AppLocalization[context.Item.Field.DisplayName]</MudText>
                                         </AppTooltip>
                                     }
                                     else if (context.Item?.CustomField != null)
                                     {
                                         <AppTooltip Text="@context.Item.CustomField.FieldName">
 
-                                            <MudText>@context.Item.CustomField.DisplayName</MudText>
+                                            <MudText>@AppLocalization[context.Item.CustomField.DisplayName]</MudText>
                                         </AppTooltip>
 
                                     }
 
                                 </CellTemplate>
                             </TemplateColumn>
-                            <TemplateColumn Title="Access">
+                            <TemplateColumn Title=@AppLocalization["Access"]>
 
                                 <CellTemplate>
                                     <MudSelect T="int" @bind-Value="context.Item.FieldAccessLevelId">
                                         @foreach (FieldAccessLevel levelValue in FieldAccessLevels.Levels)
                                         {
-                                            <MudSelectItem Value="levelValue.Id">@AppLocalization[levelValue.Name]</MudSelectItem>
+                                            <MudSelectItem Value="levelValue.Id">
+                                                @AppLocalization[levelValue.Name]
+                                                </MudSelectItem>
                                         }
                                     </MudSelect>
                                 </CellTemplate>
                             </TemplateColumn>
 
-                            <TemplateColumn Title="Remove">
+                            <TemplateColumn Title=@AppLocalization["Remove"]>
                                 <CellTemplate>
                                     <AppCloseButton Tooltip=@AppLocalization["Remove"]
                                                     OnClick="()=>RemoveFieldAccess(context.Item)" />

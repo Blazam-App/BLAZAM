@@ -1,19 +1,21 @@
 @inherits AppComponentBase
-@inject NotificationGenerationService OUNotificationService
+@inject NotificationGenerationService NotificationGenerationService
 
-<AppPageTitle>Confirm Group Creation</AppPageTitle>
+<AppPageTitle>@AppLocalization["Confirm Group Creation"]</AppPageTitle>
 
 @if (Group != null)
 {
     <MudCard>
         @Group.ADSPath
-        
+
     </MudCard>
-    <MudButton Disabled=@disableCreateGroupButton Color=Color.Success OnClick="CommitChanges">Create...</MudButton>
+    <MudButton Disabled=@disableCreateGroupButton Color=Color.Success OnClick="CommitChanges">
+        @AppLocalization["Create"]
+    </MudButton>
 }
 @code {
 
-    #nullable disable warnings
+#nullable disable warnings
 
     private bool disableCreateGroupButton = false;
 
@@ -38,15 +40,23 @@
             await InvokeAsync(StateHasChanged);
             if (result.FailedSteps.Count == 0)
             {
+                Group = (IADGroup)Directory.GetDirectoryEntryByDN(Group.DN);
 
-                SnackBarService.Success("Group created");
+                SnackBarService.Success(AppLocalization["Group created"]);
+                await AuditLogger.Group.Created(Group);
+                if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                {
+                    await NotificationGenerationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
 
+                }
+                else
+                {
+                    _= NotificationGenerationService.PostAsync(Group, NotificationType.Create, CurrentUser.State);
+
+                }
+                await Confirmed.InvokeAsync(Group);
             }
-            await AuditLogger.Group.Created(Group);
-            _ = OUNotificationService.PostAsync(Group, NotificationType.Create,CurrentUser.State);
 
-            var commitJob = Group.CommitChanges();
-            await Confirmed.InvokeAsync(Group);
         }
     }
 }

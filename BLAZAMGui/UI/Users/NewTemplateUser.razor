@@ -334,7 +334,9 @@
 
         <MudButton Color=Color.Success
                    Disabled=@(!IsValid)
-                   OnClick="@(()=>{OnValidSubmit.InvokeAsync();})">Next</MudButton>
+                   OnClick="@(()=>{OnValidSubmit.InvokeAsync();})">
+                   @AppLocalization["Next"]
+                   </MudButton>
 
 
 
@@ -350,7 +352,7 @@
 @code {
 
 
-#nullable disable warnings
+    #nullable disable warnings
     MudForm form;
 
     [Parameter]
@@ -364,24 +366,8 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        foreach (var fieldValue in DirectoryTemplate.EffectiveFieldValues)
-        {
-            try
-            {
-                if (fieldValue.Field != null && fieldValue.Value != null)
-                    if (fieldValue.Field.FieldName.ToLower() == "homedirectory")
-                        User.HomeDirectory = DirectoryTemplate.ReplaceVariables(fieldValue.Value, NewUserName, User.SamAccountName);
-                    else
-                        User.NewEntryProperties[fieldValue.Field.FieldName] = DirectoryTemplate.ReplaceVariables(fieldValue.Value, NewUserName, User.SamAccountName);
-                else if (fieldValue.CustomField != null && fieldValue.Value != null)
-                    User.NewEntryProperties[fieldValue.CustomField.FieldName] = DirectoryTemplate.ReplaceVariables(fieldValue.Value, NewUserName, User.SamAccountName);
-            }
-            catch (Exception ex)
-            {
-                Loggers.ActiveDirectoryLogger.Error("Could not set value for " + fieldValue.Field?.FieldName + ": " + fieldValue.Value?.ToString() + " {@Error}", ex);
-            }
-
-        }
+        DirectoryTemplate.PopulateFields(User,NewUserName);
+       
     }
 
     bool InDirectoryTemplate(IActiveDirectoryField field)

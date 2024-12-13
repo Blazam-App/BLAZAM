@@ -16,7 +16,7 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Title="Name">
+        <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
                 <MudContextMenu>
 
@@ -35,7 +35,7 @@
                 </MudContextMenu>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="Locked Out">
+        <TemplateColumn Title=@AppLocalization["Locked Out"]>
             <CellTemplate>
                 @if (context.Item?.LockoutTime != null)
                 {
@@ -48,6 +48,9 @@
     <PagerContent>
         <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IADUser" />
     </PagerContent>
+    <NoRecordsContent>
+        <MudText>@AppLocalization["No user are locked out"]</MudText>
+    </NoRecordsContent>
 </MudDataGrid>
 
 @code {
@@ -57,24 +60,8 @@
         set => CurrentUser.State?.Cache.Set(this.GetType(), value);
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
 
-        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
-        {
-            if (widget.WidgetType.Equals(WidgetType))
-            {
-                _ = RefreshData();
-
-            }
-
-        };
-
-        _ = RefreshData();
-    }
-
-    async Task RefreshData()
+    protected override async Task RefreshData()
     {
         LoadingData = true;
         await InvokeAsync(StateHasChanged);

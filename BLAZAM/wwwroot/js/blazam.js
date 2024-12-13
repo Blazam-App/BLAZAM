@@ -85,22 +85,12 @@ window.createGauge = async (id,maxValue) => {
 window.setGaugeValue = async (id, val, time) => {
     dialGauges[id].setValueAnimated(val, time);
 }
-//const listener = (e) => {
-//    e.preventDefault();
-//    e.returnValue = '';
-//    return false;
-//}
 
-//window.warnOnNavigation = async (active) => {
-//    if (active) {
-//        window.addEventListener('beforeunload', listener);
-//        //window.popstate = listener;
-//        //window.addEventListener('popstate', listener);
-//    } else {
-//        window.removeEventListener('beforeunload', listener);
-//        //window.removeEventListener('beforepopstate', listener);
 
-//    }
+//window.openFeatureRequestDialog = async () => {
+//    // Create a new Event object
+//    const event = new Event('openFeatureRequestDialog');
 
-   
+//    // Dispatch the event on the document object
+//    document.dispatchEvent(event);
 //}

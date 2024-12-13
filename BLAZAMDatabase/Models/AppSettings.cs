@@ -38,7 +38,7 @@ namespace BLAZAM.Database.Models
         /// <summary>
         /// An administrator set message for their users
         /// </summary>
-        public string? MOTD { get; set; } = "Welcome to Blazam. Head over to the <a href=\"/settings\">settings<a/> page to configure this application.<br/>To remove this message, modify or clear the Homepage Message settings on the <a href=\"/settings\">settings<a/> page.";
+        public string? MOTD { get; set; } = "Welcome to Blazam. Head over to the <a href=\"/settings\">settings</a> page to configure this application.<br/>To remove this message, modify or clear the Homepage Message settings on the <a href=\"/settings\">settings</a> page.";
 
         /// <summary>
         /// Administrator setting to indicate whether to forward HTTP requests to HTTPS

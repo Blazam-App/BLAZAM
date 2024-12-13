@@ -22,17 +22,21 @@ using Microsoft.OpenApi.Models;
 using MimeKit;
 using MudBlazor;
 using MudBlazor.Services;
+using Polly.Extensions.Http;
+using Polly;
 using Serilog;
 using System.Diagnostics;
 using System.Globalization;
 using System.Management;
 using System.Reflection;
 using System.Text;
+using Polly.Contrib.WaitAndRetry;
 
 namespace BLAZAM.Server
 {
     public static class ProgramHelpers
     {
+
         /// <summary>
         /// Sets up the core configuration like debug, installation id, and running process and version
         /// </summary>
@@ -77,7 +81,11 @@ namespace BLAZAM.Server
 
             return builder;
         }
-
+        /// <summary>
+        /// Attempts to get the windows installation id 
+        /// </summary>
+        /// <returns>A unique GUID for this machine</returns>
+        /// <exception cref="ApplicationException">Thrown when the running context does not have read permission for the Windows UUID</exception>
         private static Guid GetInstallationId()
         {
             //Try and get os id
@@ -135,7 +143,7 @@ namespace BLAZAM.Server
             });
             /*
              * Uncomment this to force a language
-             
+            
 
             CultureInfo culture = new CultureInfo("zh-Hans");
             //CultureInfo culture = new CultureInfo("zh-Hans");
@@ -168,11 +176,12 @@ namespace BLAZAM.Server
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true, // Important: Validate the signing key
-                    IssuerSigningKey = ApplicationInfo.tokenKey,
+                    IssuerSigningKey = new SymmetricSecurityKey (Encryption.Instance.Key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateActor = false,
-                    ValidateLifetime = true
+                    ValidateLifetime = true,
+                     
                 };
                 options.Events = new JwtAuthenticationEventsHandler(
                     builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>(),
@@ -221,6 +230,17 @@ namespace BLAZAM.Server
 
             //Provide an Http client as a service with custom construction via api service class
             builder.Services.AddHttpClient();
+
+            builder.Services.AddHttpClient(HttpClientNames.WebHookHttpClientName)
+                    .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
+                    .AddPolicyHandler(GetWebhookRetryPolicy());
+
+            builder.Services.AddHttpClient(HttpClientNames.WebHookHttpClientNoSSLCheckName)
+                  .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
+                  .AddPolicyHandler(GetWebhookRetryPolicy()).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                  {
+                      ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
+                  });
 
             //Also keeping this here for a possible future API, though this would be for internal use
             //builder.Services.AddTransient<ApiService>();
@@ -328,33 +348,52 @@ namespace BLAZAM.Server
 
             builder.Services.AddMvc();
 
+
+
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Blazam API", 
-                    Version = "v1" ,
-                    Description="The official Blazam API documentation. Authorization is required for API access.",
-                     License=new OpenApiLicense() { Name="MIT License", Url= new Uri("https://github.com/Blazam-App/BLAZAM/blob/v1-Dev/LICENSE") },
-                    Contact=new() { Email = "support@blazam.org",
-                        Name="Blazam Support", 
-                        Url=new("https://blazam.org/support") },
-                    TermsOfService=new Uri("https://blazam.org/tos")
-                });
-
-                // Add descriptions using XML comments
-                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-
-                // Configure Swagger to use JWT Bearer authorization
-                //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                //{
-                //    Description = "JWT Authorization header using the Bearer scheme.Example: \"Authorization: Bearer {token}\"",
-                //    Name = "Authorization",
-                //    In = ParameterLocation.Header,
-                //    Type = SecuritySchemeType.Http,
-                //    Scheme = "bearer",
-                //    BearerFormat = "JWT"
-                //});
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "Blazam API",
+                Version = "v1",
+                Description = "The official Blazam API documentation." +
+                "<br/>Authorization is required for API access." +
+                "<br/>The \"Authorization\" header value must be \"Bearer {token}\"",
+                License = new OpenApiLicense() { Name = "MIT License", Url = new Uri("https://github.com/Blazam-App/BLAZAM/blob/v1-Dev/LICENSE") },
+                Contact = new()
+                {
+                    Email = "support@blazam.org",
+                    Name = "Blazam Support",
+                    Url = new("https://blazam.org/support")
+                },
+                TermsOfService = new Uri("https://blazam.org/tos")
             });
+
+            // Add descriptions using XML comments
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+            // Configure Swagger to use JWT Bearer authorization
+            var jwtSecurityScheme = new OpenApiSecurityScheme
+            {
+                Description = "Enter only the token supplied by Blazam",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                BearerFormat = "JWT",
+                Reference = new OpenApiReference
+                {
+                    Id = JwtBearerDefaults.AuthenticationScheme,
+                    Type = ReferenceType.SecurityScheme
+                }
+            };
+
+                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
+                    { jwtSecurityScheme,Array.Empty<string>() }
+                });
+        });
 
             builder.Host.UseWindowsService();
 
@@ -363,63 +402,84 @@ namespace BLAZAM.Server
             return builder;
         }
 
-        public static void PreRun(this WebApplication application)
+    public static void PreRun(this WebApplication application)
+    {
+        //Setup Seq logging if allowed by admin
+        try
         {
-            //Setup Seq logging if allowed by admin
-            try
+            var context = Program.AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
+            if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
             {
-                var context = Program.AppInstance.Services.GetRequiredService<IAppDatabaseFactory>().CreateDbContext();
-                if (context != null && context.AppSettings.FirstOrDefault()?.SendLogsToDeveloper != null)
-                {
-                    Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
+                Loggers.SendToSeqServer = context.AppSettings.FirstOrDefault().SendLogsToDeveloper;
 
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-            }
-            PreloadServices();
-
-        }
-
-        private static void PreloadServices()
-        {
-            try
-            {
-                var context = Program.AppInstance.Services.GetRequiredService<NotificationGenerationService>();
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-            }
-            try
-            {
-                if (ApplicationInfo.installationCompleted)
-                {
-                    var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
-            }
-            try
-            {
-                if (ApplicationInfo.installationCompleted)
-                {
-                    var context = Program.AppInstance.Services.GetRequiredService<UpdateService>();
-                    context.Initialize();
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
             }
 
         }
+        catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+        }
+        PreloadServices();
+
     }
+    static IAsyncPolicy<HttpResponseMessage> GetWebhookRetryPolicy()
+    {
+        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 5);
+
+        return HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+            .WaitAndRetryAsync(delay);
+    }
+    private static void PreloadServices()
+    {
+        try
+        {
+            var context = Program.AppInstance.Services.GetRequiredService<NotificationGenerationService>();
+        }
+        catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+        }
+        try
+        {
+            if (ApplicationInfo.installationCompleted)
+            {
+                var context = Program.AppInstance.Services.GetRequiredService<UserSeederService>();
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+        }
+        try
+        {
+            if (ApplicationInfo.installationCompleted)
+            {
+                var context = Program.AppInstance.Services.GetRequiredService<UpdateService>();
+                context.Initialize();
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+        }
+        try
+        {
+            if (ApplicationInfo.installationCompleted)
+            {
+                var context = Program.AppInstance.Services.GetRequiredService<WebHookPublisher>();
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Loggers.SystemLogger.Error(ex.Message + " {@Error}", ex);
+        }
+
+    }
+}
 }

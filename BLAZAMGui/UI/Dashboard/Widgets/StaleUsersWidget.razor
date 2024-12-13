@@ -1,7 +1,7 @@
 ﻿
 @inherits Widget
 @attribute [Authorize]
-<NewEntriesWidgetDataGrid Items="@StaleUsers"
+<StaleEntriesWidgetDataGrid Items="@StaleUsers"
                           RowsPerPage="@ItemsPerPage"
                           RowsPerPageChanged="@SetRowsPerPage"
                           RowClick=@GoTo
@@ -38,8 +38,12 @@
         await InvokeAsync(StateHasChanged);
         var users= Directory.Users.FindUsersByString(null);
         ADSearch searcher = new ADSearch(Directory);
-  
-        StaleUsers = (await Directory.Users.FindNewUsersAsync(14, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
+        searcher.Fields.LastLogonTime = (DateTime.UtcNow - TimeSpan.FromDays(180)).ToFileTimeUtc();
+        searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
+        searcher.EnabledOnly = true;
+        searcher.MaxResults = 200;
+        var results = await searcher.SearchAsync();
+        StaleUsers = results.Where(u => u.CanRead).OrderByDescending(u => u.Created).Cast<IADUser>().ToList();
         LoadingData = false;
         await InvokeAsync(StateHasChanged);
 

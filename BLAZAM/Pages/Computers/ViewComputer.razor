@@ -59,6 +59,12 @@
                                         <DynamicMudInput T=string Label="@AppLocalization["Name"]" @bind-Value="@Computer.CanonicalName" Disabled=@(!EditMode) />
                                         <DynamicMudInput T=string Label="@AppLocalization["Operating System"]" @bind-Value="@Computer.OperatingSystem" Disabled=@true />
                                         <DynamicMudInput T=bool Label="@AppLocalization["Online"]" Value="@(Computer.IsOnline==true)" Disabled=@true />
+                                        <MudStack Row=true>
+
+                                            <MudText Typo="Typo.subtitle2">@AppLocalization["Last Logon"]:</MudText>
+                                            <MudSpacer />
+                                            <LastLogonTime DirectoryEntry="Computer" />
+                                        </MudStack>
                                         @if (Computer.Disabled)
                                         {
                                             <MudAlert Severity="Severity.Error" Class="mud-width-full">@AppLocalization["Computer is disabled"]</MudAlert>
@@ -319,17 +325,46 @@
                     {
                         await AuditLogger.Computer.Assigned(assignment.Member, assignment.Group);
                         await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
+                        if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                        {
+                            await NotificationGenerationService.PostAsync(Computer, NotificationType.Assign, CurrentUser.State, assignment.Group);
+
+                        }
+                        else
+                        {
+                            _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Assign, CurrentUser.State, assignment.Group);
+
+                        }
                     }
 
                     foreach (var assignment in unassignFrom)
                     {
                         await AuditLogger.Computer.Unassigned(assignment.Member, assignment.Group);
                         await AuditLogger.Group.MemberRemoved(assignment.Group, assignment.Member);
+                        if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                        {
+                            await NotificationGenerationService.PostAsync(Computer, NotificationType.Unassign, CurrentUser.State, assignment.Group);
+
+                        }
+                        else
+                        {
+                            _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Unassign, CurrentUser.State, assignment.Group);
+
+                        }
                     }
                     if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
                     {
-                        _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Modify, CurrentUser.State);
                         await AuditLogger.User.Changed(Computer, changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList());
+                        if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                        {
+                            await NotificationGenerationService.PostAsync(Computer, NotificationType.Modify, CurrentUser.State);
+                           
+                        }
+                        else
+                        {
+                            _ = NotificationGenerationService.PostAsync(Computer, NotificationType.Modify, CurrentUser.State);
+
+                        }
                     }
 
                     

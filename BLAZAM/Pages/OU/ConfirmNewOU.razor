@@ -1,7 +1,7 @@
 @inherits AppComponentBase
-@inject NotificationGenerationService OUNotificationService
+@inject NotificationGenerationService NotificationGenerationService
 
-<AppPageTitle>Confirm OU Creation</AppPageTitle>
+<AppPageTitle>@AppLocalization["Confirm OU Creation"]</AppPageTitle>
 
 @if (OU != null)
 {
@@ -9,13 +9,13 @@
             @OU.ADSPath
         
     </MudCard>
-    <MudButton Color=Color.Success OnClick="CommitChanges">Create...</MudButton>
+    <MudButton Color=Color.Success OnClick="CommitChanges">@AppLocalization["Create"]</MudButton>
 }
 @code {
 
-#nullable disable warnings
+    #nullable disable warnings
 
-    
+
 
     [Parameter]
     public EventCallback<IADOrganizationalUnit> Confirmed { get; set; }
@@ -27,12 +27,25 @@
     {
         if (await MessageService.Confirm("Are you sure you want to create this OU?", "Create OU"))
         {
-            await OU.CommitChangesAsync();
-            SnackBarService.Success("OU created");
-            await AuditLogger.OU.Created(OU);
-            _ = OUNotificationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
-            await Confirmed.InvokeAsync(OU);
-            Nav.NavigateTo("/ou/create",true);
+            var results = await OU.CommitChangesAsync();
+            if (results.FailedSteps.Count == 0)
+            {
+                OU = (IADOrganizationalUnit)Directory.OUs.FindOuByDN(OU.DN);
+                SnackBarService.Success(AppLocalization["OU created"]);
+                await AuditLogger.OU.Created(OU);
+                if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                {
+                    await NotificationGenerationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
+
+                }
+                else
+                {
+                    _ = NotificationGenerationService.PostAsync(OU, NotificationType.Create, CurrentUser.State);
+
+                }
+                await Confirmed.InvokeAsync(OU);
+                Nav.NavigateTo("/ou/create", true);
+            }
         }
     }
 }

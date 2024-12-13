@@ -3,11 +3,11 @@
 @inherits NotificationTemplateComponent
 
     <EmailTemplateHeader>
-    <strong>@AppLocalization["Group membership changed"]</strong>
+    <strong>@AppLocalization["Group member removed"]</strong>
     </EmailTemplateHeader>
    
     <EmailTemplateBody>
-    @(AppLocalization["he password for "] + EntryName + AppLocalization[" has been changed."])
+    @EntryName @AppLocalization["has been unassigned from"]) 
     <br/>
    
    
@@ -18,7 +18,7 @@
     [Parameter]
     public string EntryName { get; set; }
  
-    public override string Render() => new ComponentRenderer<EntryGroupAssignmentEmailMessage>()
+    public override string Render() => new ComponentRenderer<EntryUnassignedEmailMessage>()
             .UseLayout<DefaultEmailLayout>()
             .AddServiceProvider(ApplicationInfo.services)
             .Set(c => c.EntryName, EntryName).Render();

@@ -1,42 +1,87 @@
 @inherits AppModalContent
+<MudForm @ref=Form Model="_newSubscription">
+    <MudStack Style="min-width:300px;">
+        <MudText>@AppLocalization["Trigger On"]</MudText>
+        @foreach (var type in Enum.GetValues(typeof(NotificationType)))
+        {
+            var originalEnum = (NotificationType)type;
 
-<MudStack Style="min-width:300px;">
-    @foreach (var type in Enum.GetValues(typeof(NotificationType)))
-    {
-        var originalEnum = (NotificationType)type;
-
-        <MudSwitch Color="Color.Success"
-                   UncheckedColor="Color.Error"
-                   Label="@AppLocalization[originalEnum.ToString()]"
-                   Value="@(_newSubscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)"
-                   ValueChanged=@((bool val)=>{ToggleType(originalEnum,val);}) />
-
-
-    }
-    <MudSelect Label="@AppLocalization["HTTP Method"]"
-               @bind-Value=_newSubscription.WebHookMethod>
-        <MudSelectItem Value="WebHookMethod.GET">@AppLocalization["GET"]</MudSelectItem>
-        <MudSelectItem Value="WebHookMethod.POST">@AppLocalization["POST"]</MudSelectItem>
-    </MudSelect>
-    <MudTextField Label="@AppLocalization["URL"]" T="string" @bind-Value=_newSubscription.URL />
+            <MudSwitch Color="Color.Success"
+                       UncheckedColor="Color.Error"
+                       Label="@AppLocalization[originalEnum.ToString()]"
+                       Value="@(_newSubscription.NotificationTypes.FirstOrDefault(x=>x.NotificationType==originalEnum)!=null)"
+                       ValueChanged=@((bool val)=>{ToggleType(originalEnum,val);}) />
 
 
-    <MudSelect Label="@AppLocalization["Authorization Type"]"
-               @bind-Value=_newSubscription.WebHookAuthorization>
-        <MudSelectItem Value="WebHookAuthorization.None">@AppLocalization["None"]</MudSelectItem>
-        <MudSelectItem Value="WebHookAuthorization.Basic">@AppLocalization["Basic"]</MudSelectItem>
-        <MudSelectItem Value="WebHookAuthorization.Bearer">@AppLocalization["Bearer"]</MudSelectItem>
-    </MudSelect>
+        }
+        @if (_newSubscription.NotificationTypes.Count == 0)
+        {
+            <MudAlert Severity="Severity.Error">
+                @AppLocalization["You must choose at least one notification type."]
+            </MudAlert>
+        }
+        <MudSelect Label="@AppLocalization["HTTP Method"]"
+                   @bind-Value=_newSubscription.WebHookMethod>
+            @* <MudSelectItem Value="WebHookMethod.GET">@AppLocalization["GET"]</MudSelectItem> *@
+                <MudSelectItem Value="WebHookMethod.POST">@AppLocalization["POST"]</MudSelectItem>
+            </MudSelect>
+            @if (_newSubscription.WebHookMethod == WebHookMethod.GET)
+        {
+            <MudText>
+
+                @AppLocalization["The webhook contents will be sent as URL parameters eg:?object=Username&objectOU=OU"]
+            </MudText>
+
+        }
+        else
+        {
+            <MudText>
+
+                @AppLocalization["The webhook contents will be sent a JSON object in the posted form body"]
+            </MudText>
 
 
-    <MudTextField Label="@AppLocalization["Authorization Token"]"
-                  Disabled="_newSubscription.WebHookAuthorization==WebHookAuthorization.None"
-                  T="string"
-                  @bind-Value=_newSubscription.AuthorizationToken />
+        }
+        <MudTextField Label="@AppLocalization["URL"]"
+                      T="string"
+                      Required=true
+                      RequiredError="@AppLocalization["You must provide an endpoint Url."]"
+                      OnlyValidateIfDirty=false
+                      Validation="@(_newSubscription.URL.IsNullOrEmpty()==true?@AppLocalization["You must provide an endpoint Url."]:null)"
+                      Immediate=true
+                      @bind-Value=_newSubscription.URL />
 
-</MudStack>
+            <MudSwitch Color="Color.Warning"
+                       Label="@AppLocalization["Ignore SSL Verification"]"
+                       @bind-Value=_newSubscription.IgnoreSSLVerification />
+            @if (_newSubscription.IgnoreSSLVerification)
+            {
+                <MudAlert Severity="Severity.Warning">
+                    @AppLocalization["Ignoring SSL verification could expose sensitive data to unintended recipients"]
+                </MudAlert>
+            }
 
-@code {
+   
+        <MudSelect Label="@AppLocalization["Authorization Type"]"
+                   @bind-Value=_newSubscription.WebHookAuthorization>
+            <MudSelectItem Value="WebHookAuthorization.None">@AppLocalization["None"]</MudSelectItem>
+                <MudSelectItem Value="WebHookAuthorization.Basic">@AppLocalization["Basic"]</MudSelectItem>
+                <MudSelectItem Value="WebHookAuthorization.Bearer">@AppLocalization["Bearer"]</MudSelectItem>
+            </MudSelect>
+
+
+            <MudTextField Label="@AppLocalization["Authorization Token"]"
+                          Immediate=true
+                          Required=@(_newSubscription.WebHookAuthorization!=WebHookAuthorization.None)
+                          RequiredError="@AppLocalization["You must provide a token when authorization is enabled."]"
+                          Disabled="_newSubscription.WebHookAuthorization==WebHookAuthorization.None"
+                          T="string"
+                          Value=_newSubscription.AuthorizationToken.Decrypt()
+                          ValueChanged=@((val)=>{_newSubscription.AuthorizationToken = val.Encrypt(); }) />
+
+        </MudStack>
+    </MudForm>
+    @code {
     WebHookSubscription _newSubscription = new();
     [Parameter]
     public EventCallback<WebHookSubscription> OnCreateNewSubscription { get; set; }
@@ -46,7 +91,9 @@
         Modal.SetYesText(AppLocalization["Add"]);
         Modal.OnYes += SaveSettings;
 
+
     }
+    protected override bool IsValid => _newSubscription.IsValid;
     private void SaveSettings()
     {
         if (!_newSubscription.URL.IsNullOrEmpty() && _newSubscription.NotificationTypes.Count > 0)

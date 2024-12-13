@@ -102,6 +102,7 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<EmailSettings> EmailSettings { get; set; }
         public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
         public virtual DbSet<WebHookSubscription> WebHookSubscriptions { get; set; }
+        public virtual DbSet<WebHookAttempt> WebHookAttempts{ get; set; }
 
 
 
@@ -553,6 +554,7 @@ namespace BLAZAM.Database.Context
 
             modelBuilder.Entity<DirectoryTemplate>(entity =>
             {
+                //entity.Navigation(e => e.ParentTemplate).AutoInclude();
                 entity.Navigation(e => e.AssignedGroupSids).AutoInclude();
 
             });

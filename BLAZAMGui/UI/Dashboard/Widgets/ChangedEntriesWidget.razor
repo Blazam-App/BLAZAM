@@ -16,14 +16,14 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Style="width:100px;" Title="Type">
+        <TemplateColumn Style="width:100px;" Title=@AppLocalization["Type"]>
             <CellTemplate>
                 <AppTooltip Text="@AppLocalization[context.Item.ObjectType.ToString()]">
                     <MudIcon Icon="@context.Item.TypeIcon()" />
                 </AppTooltip>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="Name">
+        <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
                 <MudContextMenu>
 
@@ -55,6 +55,9 @@
     <PagerContent>
         <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IDirectoryEntryAdapter" />
     </PagerContent>
+    <NoRecordsContent>
+        <MudText>@AppLocalization["No matching entries"]</MudText>
+    </NoRecordsContent>
 </MudDataGrid>
 
 
@@ -66,23 +69,7 @@
         set => CurrentUser.State.Cache.Set(this.GetType(), value);
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
-         {
-        if (widget.WidgetType.Equals(WidgetType))
-        {
-            _ = RefreshData();
-
-        }
-
-            };
-
-        _ = RefreshData();
-    }
-    async Task RefreshData()
+    protected override async Task RefreshData()
     {
         LoadingData = true;
         await InvokeAsync(StateHasChanged);
@@ -93,16 +80,6 @@
         await InvokeAsync(StateHasChanged);
 
     }
-    void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
-    {
-        if (args.Item != null)
-        {
-            GoTo(args.Item);
-        }
-    }
 
-    void GoTo(IDirectoryEntryAdapter args)
-    {
-        Nav.NavigateTo(args.SearchUri);
-    }
+   
 }

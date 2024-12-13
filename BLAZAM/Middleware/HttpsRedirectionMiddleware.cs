@@ -4,6 +4,11 @@ using BLAZAM.Services.Background;
 
 namespace BLAZAM.Server.Middleware
 {
+    /// <summary>
+    /// Redirects the request to HTTPS is the
+    /// request is HTTP if the database has
+    /// force HTTPS set to true
+    /// </summary>
     public class HttpsRedirectionMiddleware
     {
         private readonly RequestDelegate _next;

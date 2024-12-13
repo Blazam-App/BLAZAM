@@ -1,5 +1,8 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
+using BLAZAM.Database.Context;
+using BLAZAM.Services.Audit;
+using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,9 +11,11 @@ namespace BLAZAM.Pages.API.v1
 {
     public class Test : ApiController
     {
-        public Test(IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(httpContextAccessor, adFactory)
+        public Test(IApplicationUserStateService applicationUserStateService, AuditLogger audit, IAppDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
         {
         }
+
+
 
         /// <summary>
         /// API connection check to test the configuration.

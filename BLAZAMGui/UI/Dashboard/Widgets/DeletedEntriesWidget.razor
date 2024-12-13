@@ -17,7 +17,7 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Style="width:100px;" Title="Type">
+        <TemplateColumn Style="width:100px;" Title=@AppLocalization["Type"]>
             <CellTemplate>
                
                         <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
@@ -26,19 +26,22 @@
 
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="Name">
+        <TemplateColumn Title=@AppLocalization["Name"]>
             <CellTemplate>
                 <AppTooltip Text="@context.Item?.OU.ToPrettyOu()">
                     <MudText>@context.Item?.CanonicalName</MudText>
                 </AppTooltip>
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="x=>x.LastChanged" Title="Deleted" />
+        <PropertyColumn Property="x=>x.LastChanged" Title=@AppLocalization["Deleted"] />
 
     </Columns>
     <PagerContent>
         <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IDirectoryEntryAdapter" />
     </PagerContent>
+    <NoRecordsContent>
+        <MudText>@AppLocalization["No matching entries"]</MudText>
+    </NoRecordsContent>
 </MudDataGrid>
 
 
@@ -49,23 +52,9 @@
         get => CurrentUser.State.Cache.Get<List<IDirectoryEntryAdapter>>(this.GetType());
         set => CurrentUser.State.Cache.Set(this.GetType(), value);
     }
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        CurrentUserDashboardWidgets.OnRefreshWidget += (Widget widget) =>
-        {
-            if (widget.WidgetType.Equals(WidgetType))
-            {
-                _ = RefreshData();
+   
 
-            }
-
-        };
-
-        _ = RefreshData();
-
-    }
-    async Task RefreshData()
+    protected override async Task RefreshData()
     {
         LoadingData = true;
         await InvokeAsync(StateHasChanged);

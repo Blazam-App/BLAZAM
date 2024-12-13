@@ -77,15 +77,8 @@ namespace BLAZAM.Common.Data
         /// A local store of the .Net web application Services
         /// </summary>
         public static IServiceProvider services;
-        public static SymmetricSecurityKey tokenKey { get {
 
-                var keyString = configuration.GetValue<string>("EncryptionKey");
-                var keyBytes = Encoding.ASCII.GetBytes(keyString);
-                return new SymmetricSecurityKey(keyBytes);
-            } }
-
-
-
+      
         /// <summary>
         /// The running Blazam version
         /// </summary>
@@ -112,7 +105,15 @@ namespace BLAZAM.Common.Data
         /// eg: C:\Users\user\appdata\temp\
         /// </returns>
         public SystemDirectory TempDirectory { get => tempDirectory; set => tempDirectory = value; }
+
+        /// <summary>
+        /// The running AppConfig configuration
+        /// </summary>
         public Microsoft.Extensions.Configuration.ConfigurationManager Configuration { get => configuration; }
+
+        /// <summary>
+        /// The running AppConfig configuration
+        /// </summary>
         public static Microsoft.Extensions.Configuration.ConfigurationManager configuration;
 
         /// <summary>
@@ -156,8 +157,11 @@ namespace BLAZAM.Common.Data
         {
             get; set;
         }
+        /// <summary>
+        /// Unique ID for this machine
+        /// </summary>
         public Guid InstallationId { get => installationId; set => installationId = value; }
-        public SymmetricSecurityKey TokenKey { get => tokenKey; }
+  
 
         /// <summary>
         /// Use only for UnitTests

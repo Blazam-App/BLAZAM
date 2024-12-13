@@ -18,14 +18,12 @@
 
         <MudTabPanel>
             <TabContent>
-                Template
+                @AppLocalization["Template"]
             </TabContent>
             <ChildContent>
 
                 @if (TemplateCategories != null && Templates != null && Templates.Count(t => t.DeletedAt == null && t.Visible) > 0)
                 {
-                    @* <MudSelectList Values="TemplateCategories"
-                @bind-Value=SelectedCategory /> *@
 
                     <MudCarousel Style="height:50vh"
                                  ShowArrows=false
@@ -83,7 +81,7 @@
                     <MudPaper Width="300px">
                         <MudText>@AppLocalization["There are no templates available"]</MudText>
                         <AuthorizeView Roles="@UserRoles.SuperAdmin">
-                            <MudLink Href="/templates">Create One</MudLink>
+                            <MudLink Href="/templates">@AppLocalization["Create One"]</MudLink>
 
                         </AuthorizeView>
                     </MudPaper>
@@ -135,7 +133,7 @@
                         {
                             usernameStepValid = true;
                         }
-                       
+
                     }
 
                 }
@@ -147,15 +145,20 @@
 
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=1;})">Back</MudButton>
+                           OnClick="@(()=>{SelectedStep=1;})">
+                    @AppLocalization["Back"]
+                </MudButton>
                 <MudButton Color=Color.Success
-                Disabled="@(conflictingEntry !=null)"
-                           OnClick="@(()=>{SelectedStep=3;})">Next</MudButton>
+                           Disabled="@(conflictingEntry !=null)"
+                           OnClick="@(()=>{SelectedStep=3;})">
+                    @AppLocalization["Next"]
+                </MudButton>
 
             </ChildContent>
 
         </MudTabPanel>
-        <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null || usernameStepValid==false)">
+        <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
+                     Disabled="@(newUser==null || usernameStepValid==false)">
             <TabContent>
                 @AppLocalization["Fields"]
             </TabContent>
@@ -166,7 +169,9 @@
                                  DirectoryTemplate="SelectedTemplate" />
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=2;})">Back</MudButton>
+                           OnClick="@(()=>{SelectedStep=2;})">
+                    @AppLocalization["Back"]
+                </MudButton>
 
             </ChildContent>
 
@@ -180,7 +185,7 @@
             <ChildContent>
                 <MemberOfList Target="_blank"
                               AssignToClicked="@(async()=>{await _assignToModal?.ShowAsync();})"
-                              Disabled="@(SelectedTemplate.EffectiveAllowCustomGroups!=true  && !CurrentUser.State.IsSuperAdmin)"
+                              Disabled="@(SelectedTemplate?.EffectiveAllowCustomGroups!=true  && !CurrentUser.State.IsSuperAdmin)"
                               Model="@newUser" />
                 <AppModal @ref=_assignToModal>
                     <AssignToModalContent ModelChanged=@(async()=>{
@@ -189,9 +194,13 @@
                 </AppModal>
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=3;})">Back</MudButton>
+                           OnClick="@(()=>{SelectedStep=3;})">
+                    @AppLocalization["Back"]
+                </MudButton>
                 <MudButton Color=Color.Success
-                           OnClick="@(()=>{SelectedStep=7;})">Next</MudButton>
+                           OnClick="@(()=>{SelectedStep=7;})">
+                    @AppLocalization["Next"]
+                </MudButton>
 
             </ChildContent>
 
@@ -203,7 +212,6 @@
                 @AppLocalization["OU"]
             </TabContent>
             <ChildContent>
-                @* <ADTreeView ShowAllEntries=false SelectedEntryChanged="OUSelected"/> *@
                 <OUTreeView AdditionalVisibilityFilters=@(AdditionalShow)
                             StartRootExpanded=true
                             SelectedEntryChanged="OUSelected" />
@@ -214,13 +222,17 @@
 
 
                 <MudButton Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=0;})">Back</MudButton>
+                           OnClick="@(()=>{SelectedStep=0;})">
+                    @AppLocalization["Back"]
+                </MudButton>
                 <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()|| selectedOU==null)
                            Color=Color.Success
                            OnClick="@(async()=>{
-await CreateCustomUser();
-selectedStep=6;
-})">Next</MudButton>
+                                                await CreateCustomUser();
+                                                selectedStep=6;
+                                                })">
+                    @AppLocalization["Next"]
+                </MudButton>
 
 
             </ChildContent>
@@ -239,15 +251,15 @@ selectedStep=6;
                           @bind-ConfirmPassword=@customConfirmPassword
                           @bind-Password=customPassword />
                 <MudButton Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=4;})">Back</MudButton>
+                           OnClick="@(()=>{SelectedStep=4;})">
+                           @AppLocalization["Back"]</MudButton>
                 <MudButton Color=Color.Success
                            OnClick="@(()=>{
-SelectedStep=7;
-if(newUser?.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
-newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
-})"
+                                            SelectedStep=7;
+                                            if(newUser?.NewPassword==null || !newUser.NewPassword.Equals(customConfirmPassword))
+                                            newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
+                                            })"
                            Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
-
                     @AppLocalization["Next"]
                 </MudButton>
             </ChildContent>
@@ -356,34 +368,8 @@ newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
         {
             LoadingData = true;
             await InvokeAsync(StateHasChanged);
-            var ou = Directory.OUs.FindOuByString(SelectedTemplate.EffectiveParentOU).FirstOrDefault();
-            if (ou == null) throw new ApplicationException("OU could not be found for new user");
-            newUser = ou.CreateUser(SelectedTemplate.GenerateDisplayName(newUserName));
-
-            newUser.SamAccountName = SelectedTemplate.GenerateUsername(newUserName);
-            newUser.DisplayName = SelectedTemplate.GenerateDisplayName(newUserName);
-            //newUser.SetPassword(SelectedTemplate.GeneratePassword().ToSecureString(),false);
-            //newUser.CanonicalName = SelectedTemplate.GenerateDisplayName(newUserName);
-            newUser.StagePasswordChange(SelectedTemplate.GeneratePassword(newUserName).ToSecureString());
-            if (SelectedTemplate.EffectiveRequirePasswordChange == true)
-                newUser.StageRequirePasswordChange(true);
-            if (!newUserName.GivenName.IsNullOrEmpty())
-                newUser.GivenName = newUserName.GivenName;
-            if (!newUserName.MiddleName.IsNullOrEmpty())
-                newUser.MiddleName = newUserName.MiddleName;
-            if (!newUserName.Surname.IsNullOrEmpty())
-                newUser.Surname = newUserName.Surname;
-
-
-
-            SelectedTemplate.EffectiveAssignedGroupSids.ForEach(sid =>
-            {
-                var group = Directory.Groups.FindGroupBySID(sid.GroupSid);
-                if (group != null)
-                    newUser.AssignTo(group);
-
-            });
-            if (IsAdmin || SelectedTemplate.HasEmptyFields())
+            newUser = SelectedTemplate.GenerateTemplateUser(newUserName, Directory);
+            if (IsAdmin || SelectedTemplate.HasEditableFields())
             {
                 SelectedStep = 2;
             }

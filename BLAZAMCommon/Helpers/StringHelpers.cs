@@ -95,7 +95,8 @@ namespace BLAZAM.Helpers
                 .ToList();
             ouComponents.Reverse();
             return "/" + string.Join("/", ouComponents);
-        }
+        } 
+     
         public static string FqdnToDN(this string fqdn)
         {
             // Split the FQDN into its domain components

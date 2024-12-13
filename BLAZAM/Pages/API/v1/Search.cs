@@ -1,5 +1,8 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
+using BLAZAM.Database.Context;
+using BLAZAM.Services.Audit;
+using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BLAZAM.Pages.API.v1
@@ -10,9 +13,11 @@ namespace BLAZAM.Pages.API.v1
     [Produces("application/json")]
     public class Search : ApiController
     {
-        public Search(IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(httpContextAccessor, adFactory)
+        public Search(IApplicationUserStateService applicationUserStateService, AuditLogger audit, IAppDatabaseFactory appDatabaseFactory, IHttpContextAccessor httpContextAccessor, IActiveDirectoryContextFactory adFactory) : base(applicationUserStateService, audit, appDatabaseFactory, httpContextAccessor, adFactory)
         {
         }
+
+
 
         /// <summary>
         /// Run a general search term query against all AD object types.

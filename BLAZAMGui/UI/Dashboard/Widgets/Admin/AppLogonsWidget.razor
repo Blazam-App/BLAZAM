@@ -16,7 +16,7 @@
              Class="py-0"
              SortMode="SortMode.Single">
     <Columns>
-        <TemplateColumn Title="User">
+        <TemplateColumn Title=@AppLocalization["User"]>
             <CellTemplate>
                             <MudText>@context.Item?.Username</MudText>
             </CellTemplate>
@@ -38,7 +38,7 @@
 
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="Logged On">
+        <TemplateColumn Title=@AppLocalization["Timestamp"]>
             <CellTemplate>
                             <MudText>@context.Item?.Timestamp.ToLocalTime()</MudText>
             </CellTemplate>

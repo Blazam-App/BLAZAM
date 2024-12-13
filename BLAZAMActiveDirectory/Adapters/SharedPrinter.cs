@@ -1,4 +1,5 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Helpers;
+using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Helpers;
 using System;
 using System.Collections.Generic;

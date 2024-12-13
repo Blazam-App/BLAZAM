@@ -17,6 +17,8 @@ namespace BLAZAM.Logger
         public static bool SendToSeqServer { get; set; } = true;
         public static string SeqServerUri { get; set; }
         public static string InstallationId { get; set; }
+        public static string InstallationType { get; set; }
+        public static string DatabaseType { get; set; }
         public static string SeqAPIKey { get; set; }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public static ILogger RequestLogger { get; private set; }
@@ -63,7 +65,9 @@ namespace BLAZAM.Logger
                                .Enrich.WithEnvironmentName()
                                .Enrich.WithEnvironmentUserName()
                              .Enrich.WithProperty("Application Name", "Blazam")
+                             .Enrich.WithProperty("Installation Type", InstallationType)
                              .Enrich.WithProperty("Installation Id", InstallationId)
+                             .Enrich.WithProperty("Database Type", DatabaseType)
                                .Enrich.WithProperty("Application Version", _applicationVersion);
         }
 

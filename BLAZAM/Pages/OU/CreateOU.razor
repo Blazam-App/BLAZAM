@@ -17,7 +17,7 @@
             </MudText>
         </ChildContent>
         <TabContent>
-            Create
+            @AppLocalization["Create"]
         </TabContent>
     </MudTabPanel>
     <MudTabPanel Disabled=@(newOU==null || newOUName.IsNullOrEmpty())>
@@ -27,7 +27,7 @@
             </MudText>
         </ChildContent>
         <TabContent>
-            Confirm
+            @AppLocalization["Confirm"]
         </TabContent>
     </MudTabPanel>
 </MudTabs>
