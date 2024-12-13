@@ -2,24 +2,24 @@
 @inherits AppComponentBase
 <MudStack Row=true Class=@("relative mud-width-full "+Class)>
 
-    <Copyright />
+    <Copyright OnClick="(()=>{aboutModal.ShowAsync();})" />
     @if (AutoUpdateService.IsUpdatedScheduled)
     {
         <AuthorizeView Roles="@UserRoles.SuperAdmin">
             <Authorized>
                 <AppTooltip @onclick=@((c)=>{Nav.NavigateTo("/settings/update");})
-                            Class="mud-theme-info"
-                          
-                            Style="width:max-content"
-                            Text="An automatic update is scheduled. Click for details">
+                Class="mud-theme-info"
+
+                Style="width:max-content"
+                Text="An automatic update is scheduled. Click for details">
 
                     <MudIcon Color="@Color.Success" Icon=@Icons.Material.Filled.ArrowCircleUp />
                 </AppTooltip>
             </Authorized>
             <NotAuthorized>
                 <AppTooltip Class="mud-theme-info"
-                            Style="width:max-content"
-                            Text="An automatic update is scheduled.">
+                Style="width:max-content"
+                Text="An automatic update is scheduled.">
 
                     <MudIcon Color="@Color.Success" Icon=@Icons.Material.Filled.ArrowCircleUp />
                 </AppTooltip>
@@ -36,6 +36,9 @@
 
 
 </MudStack>
+<AppModal @ref=aboutModal>
+    <AboutAppModalContent/>
+</AppModal>
 @code {
     [Parameter]
     public string? Class { get; set; }
@@ -45,4 +48,6 @@
         base.OnInitialized();
 
     }
+
+    AppModal? aboutModal;
 }

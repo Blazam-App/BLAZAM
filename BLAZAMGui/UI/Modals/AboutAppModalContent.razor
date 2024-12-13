@@ -1,0 +1,33 @@
+﻿@inherits AppModalContent
+
+<MudStack>
+    <MudText Align="Align.Center" Color=Color.Primary Typo="Typo.h5">
+        Blazam
+    </MudText>
+    <MudText Align="Align.Center">
+        2022-@DateTime.Now.Year
+    </MudText>
+    <MudText Align="Align.Center">
+        Author: Chris Jacobsen
+
+        <MudLink Href="https://github.com/Blazam-App/BLAZAM">Source Code</MudLink>
+    </MudText>
+    <MudImage Src="/img/maggie.png"/>
+    <MudText Align="Align.Center">@AppLocalization["For"] Maggie</MudText>
+</MudStack>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Modal.Options.FullWidth = true;
+        Modal.Options.MaxWidth = MaxWidth.Large;
+
+        // Modal.OnYes = SaveChanges;
+        Modal.YesText = AppLocalization["Close"];
+        Modal.Title = "About";
+        base.OnInitialized();
+
+
+    }
+
+}
