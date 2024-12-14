@@ -1,5 +1,5 @@
 ﻿@inherits AppModalContent
-<MudStack Style="width:min-content;" Class="mx-auto">
+<MudStack Spacing="1" Style="width:min-content;" Class="mx-auto">
 
 
     <MudText Align="Align.Center">
@@ -11,6 +11,10 @@
     </MudText>
     <MudText Align="Align.Center">
         @AppLocalization["Version"]: @ApplicationInfo.RunningVersion.ToString()
+    </MudText>
+    <MudText Align="Align.Center">
+
+        <MudLink Href="https://blazam.org">blazam.org</MudLink>
     </MudText>
     <MudText Align="Align.Center">
 
