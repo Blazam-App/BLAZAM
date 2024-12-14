@@ -18,7 +18,7 @@
 
         <MudTabPanel>
             <TabContent>
-                Template
+                @AppLocalization["Template"]
             </TabContent>
             <ChildContent>
 
@@ -81,7 +81,7 @@
                     <MudPaper Width="300px">
                         <MudText>@AppLocalization["There are no templates available"]</MudText>
                         <AuthorizeView Roles="@UserRoles.SuperAdmin">
-                            <MudLink Href="/templates">Create One</MudLink>
+                            <MudLink Href="/templates">@AppLocalization["Create One"]</MudLink>
 
                         </AuthorizeView>
                     </MudPaper>
@@ -133,7 +133,7 @@
                         {
                             usernameStepValid = true;
                         }
-                       
+
                     }
 
                 }
@@ -145,15 +145,20 @@
 
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=1;})">Back</MudButton>
+                           OnClick="@(()=>{SelectedStep=1;})">
+                    @AppLocalization["Back"]
+                </MudButton>
                 <MudButton Color=Color.Success
-                Disabled="@(conflictingEntry !=null)"
-                           OnClick="@(()=>{SelectedStep=3;})">Next</MudButton>
+                           Disabled="@(conflictingEntry !=null)"
+                           OnClick="@(()=>{SelectedStep=3;})">
+                    @AppLocalization["Next"]
+                </MudButton>
 
             </ChildContent>
 
         </MudTabPanel>
-        <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none") Disabled="@(newUser==null || usernameStepValid==false)">
+        <MudTabPanel Class=@(SelectedTemplate!=null?"":"d-none")
+                     Disabled="@(newUser==null || usernameStepValid==false)">
             <TabContent>
                 @AppLocalization["Fields"]
             </TabContent>
@@ -164,7 +169,9 @@
                                  DirectoryTemplate="SelectedTemplate" />
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=2;})">Back</MudButton>
+                           OnClick="@(()=>{SelectedStep=2;})">
+                    @AppLocalization["Back"]
+                </MudButton>
 
             </ChildContent>
 
@@ -187,9 +194,13 @@
                 </AppModal>
                 <MudButton Disabled=LoadingData
                            Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=3;})">Back</MudButton>
+                           OnClick="@(()=>{SelectedStep=3;})">
+                    @AppLocalization["Back"]
+                </MudButton>
                 <MudButton Color=Color.Success
-                           OnClick="@(()=>{SelectedStep=7;})">Next</MudButton>
+                           OnClick="@(()=>{SelectedStep=7;})">
+                    @AppLocalization["Next"]
+                </MudButton>
 
             </ChildContent>
 
@@ -211,13 +222,17 @@
 
 
                 <MudButton Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=0;})">Back</MudButton>
+                           OnClick="@(()=>{SelectedStep=0;})">
+                    @AppLocalization["Back"]
+                </MudButton>
                 <MudButton Disabled=@(customUserDisplayName.IsNullOrEmpty()|| selectedOU==null)
                            Color=Color.Success
                            OnClick="@(async()=>{
-await CreateCustomUser();
-selectedStep=6;
-})">Next</MudButton>
+                                                await CreateCustomUser();
+                                                selectedStep=6;
+                                                })">
+                    @AppLocalization["Next"]
+                </MudButton>
 
 
             </ChildContent>
@@ -236,7 +251,8 @@ selectedStep=6;
                           @bind-ConfirmPassword=@customConfirmPassword
                           @bind-Password=customPassword />
                 <MudButton Color=Color.Primary
-                           OnClick="@(()=>{SelectedStep=4;})">Back</MudButton>
+                           OnClick="@(()=>{SelectedStep=4;})">
+                           @AppLocalization["Back"]</MudButton>
                 <MudButton Color=Color.Success
                            OnClick="@(()=>{
                                             SelectedStep=7;
@@ -244,7 +260,6 @@ selectedStep=6;
                                             newUser?.StagePasswordChange(customConfirmPassword.ToSecureString());
                                             })"
                            Disabled=@(customConfirmPassword.IsNullOrEmpty()||customPassword.IsNullOrEmpty()||!customPassword.Equals(customConfirmPassword))>
-
                     @AppLocalization["Next"]
                 </MudButton>
             </ChildContent>
@@ -353,7 +368,7 @@ selectedStep=6;
         {
             LoadingData = true;
             await InvokeAsync(StateHasChanged);
-            newUser = SelectedTemplate.GenerateTemplateUser(newUserName,Directory);
+            newUser = SelectedTemplate.GenerateTemplateUser(newUserName, Directory);
             if (IsAdmin || SelectedTemplate.HasEditableFields())
             {
                 SelectedStep = 2;
@@ -376,7 +391,7 @@ selectedStep=6;
 
         await InvokeAsync(StateHasChanged);
     }
-   
+
     async Task SetTemplate(DirectoryTemplate selectedTemplate)
     {
         SelectedTemplate = selectedTemplate;

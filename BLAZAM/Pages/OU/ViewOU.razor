@@ -95,8 +95,16 @@
                 EditMode = false;
                 //Nav.WarnOnNavigation = false;
                 await AuditLogger.OU.Changed(OU, changes);
-                _ = NotificationGenerationService.PostAsync(OU, NotificationType.Modify, CurrentUser.State);
+                if (DbFactory.DatabaseType == DatabaseType.SQLite)
+                {
+                    await NotificationGenerationService.PostAsync(OU, NotificationType.Modify, CurrentUser.State);
 
+                }
+                else
+                {
+                    _= NotificationGenerationService.PostAsync(OU, NotificationType.Modify, CurrentUser.State);
+
+                }
                 SnackBarService.Success(AppLocalization["The changes made to this ou have been saved."]);
                 await RefreshEntryComponents();
 

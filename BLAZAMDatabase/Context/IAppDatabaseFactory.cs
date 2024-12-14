@@ -1,4 +1,5 @@
-﻿using BLAZAM.Database.Exceptions;
+﻿using BLAZAM.Common.Data.Database;
+using BLAZAM.Database.Exceptions;
 
 namespace BLAZAM.Database.Context
 {
@@ -9,6 +10,8 @@ namespace BLAZAM.Database.Context
     /// </summary>
     public interface IAppDatabaseFactory
     {
+        DatabaseType DatabaseType { get; }
+
         /// <summary>
         /// Applies any pending database migrations to the database synchronously
         /// </summary>

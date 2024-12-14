@@ -334,7 +334,9 @@
 
         <MudButton Color=Color.Success
                    Disabled=@(!IsValid)
-                   OnClick="@(()=>{OnValidSubmit.InvokeAsync();})">Next</MudButton>
+                   OnClick="@(()=>{OnValidSubmit.InvokeAsync();})">
+                   @AppLocalization["Next"]
+                   </MudButton>
 
 
 

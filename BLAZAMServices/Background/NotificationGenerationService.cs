@@ -1,5 +1,7 @@
 ﻿using AngleSharp.Dom;
 using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
+using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
@@ -55,56 +57,84 @@ namespace BLAZAM.Services.Background
                 PackageNotification(source, notificationType, actor, target, out notification, out notificationTitle, out emailMessage);
                 var _emailConfigured = _emailService.IsConfigured;
                 var users = Context.UserSettings.Include(us => us.NotificationSubscriptions).ToList();
-
-                Parallel.ForEach(users, async user =>
+                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
                 {
-                    //Avoid sending to triggering user if actor is set
-                    if (user.Id != actor?.Id)
+
+
+                    foreach (var user in users)
                     {
-                        var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
-                        var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
-
-                        if (effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
-                        {
-                            await _notificationPublisher.PublishNotification(user, notification);
-                        }
-
-                        if (effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
-                        {
-                            if (emailMessage != null)
-                            {
-                                if (_emailConfigured && !user.Email.IsNullOrEmpty())
-                                {
-                                    await _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
-                                }
-                            }
-                            else
-                            {
-                                var error = new ApplicationException();
-                                Loggers.SystemLogger.Error("Email message template was not found! {@Error}", error);
-                            }
-                        }
+                        await ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
                     }
-                });
-                PostWebHooks(source, notificationType, actor , target );
+                }
+                else
+                {
+                    Parallel.ForEach(users, async user =>
+                    {
+                        await ProcessUserNotification(source, notificationType, actor, user, notification, notificationTitle, emailMessage, _emailConfigured);
+                    });
+                }
+                PostWebHooks(source, notificationType, actor, target);
 
             });
 
         }
+
+        private async Task ProcessUserNotification(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor, AppUser user, NotificationMessage notification, string notificationTitle, NotificationTemplateComponent? emailMessage, bool _emailConfigured)
+        {
+            //Avoid sending to triggering user if actor is set
+            if (user.Id != actor?.Id)
+            {
+                var effectiveInAppSubscriptions = CalculateEffectiveInAppSubscriptions(user, source);
+                var effectiveEmailSubscriptions = CalculateEffectiveEmailSubscriptions(user, source);
+
+                if (effectiveInAppSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
+                {
+                    await _notificationPublisher.PublishNotification(user, notification);
+                }
+
+                if (effectiveEmailSubscriptions.NotificationTypes.Any(x => x.NotificationType == notificationType))
+                {
+                    if (emailMessage != null)
+                    {
+                        if (_emailConfigured && !user.Email.IsNullOrEmpty())
+                        {
+                            await _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
+                        }
+                    }
+                    else
+                    {
+                        var error = new ApplicationException();
+                        Loggers.SystemLogger.Error("Email message template was not found! {@Error}", error);
+                    }
+                }
+            }
+        }
+
         private async Task PostWebHooks(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
         {
             var webhooks = await Context.WebHookSubscriptions.Where(w => w.DeletedAt == null)
-                .Include(w=>w.NotificationTypes)
+                .Include(w => w.NotificationTypes)
                 .Where(x => x.DeletedAt == null)
                 .ToListAsync();
             if (webhooks.Any(w => w.NotificationTypes.Any(nt => nt.NotificationType == notificationType)))
             {
                 var subscribedWebhooks = webhooks.Where(w => w.NotificationTypes.Any(nt => nt.NotificationType == notificationType));
-                Parallel.ForEach(subscribedWebhooks, async webhook => {
-                    _webHookPublisher.PublishWebhook(webhook, source,  notificationType,actor, target);
-                });
+                if (_databaseFactory.DatabaseType == DatabaseType.SQLite)
+                {
+                    foreach(var webhook in subscribedWebhooks)
+                    {
+                        _webHookPublisher.PublishWebhook(webhook, source, notificationType, actor, target);
+                    }
+                }
+                else
+                {
+                    Parallel.ForEach(subscribedWebhooks, async webhook =>
+                    {
+                        _webHookPublisher.PublishWebhook(webhook, source, notificationType, actor, target);
+                    });
+                }
 
-                
+
             }
         }
         /// <summary>
@@ -154,15 +184,25 @@ namespace BLAZAM.Services.Background
                     editedMessage.EntryName = source.CanonicalName;
                     emailMessage = editedMessage;
                     break;
-                case NotificationType.GroupAssignment:
+                case NotificationType.Unassign:
+                    notification.Action = ActiveDirectoryObjectAction.Unassign;
+
+                    notificationTitle += _appLocalization["Removed from Group"];
+                    notificationBody += _appLocalization["was removed from"] + " <a href=\"" + target.SearchUri + "\" class=\"mud-typography mud-link mud-primary-text mud-link-underline-hover mud-typography-caption\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + time;
+
+                    var groupMemberRemovedMessage = NotificationType.Unassign.ToNotification<EntryUnassignedEmailMessage>();
+                    groupMemberRemovedMessage.EntryName = source.CanonicalName;
+                    emailMessage = groupMemberRemovedMessage;
+                    break;
+                case NotificationType.Assign:
                     notification.Action = ActiveDirectoryObjectAction.Assign;
 
-                    notificationTitle += _appLocalization["Group Membership Changed"];
-                    notificationBody += _appLocalization["was assigned/removed from "] + "<a href=\"" + target.SearchUri + "\" class=\"mud-typography mud-link mud-primary-text mud-link-underline-hover mud-typography-caption\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + time;
+                    notificationTitle += _appLocalization["Added to Group"];
+                    notificationBody += _appLocalization["was assigned to"] + " <a href=\"" + target.SearchUri + "\" class=\"mud-typography mud-link mud-primary-text mud-link-underline-hover mud-typography-caption\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + time;
 
-                    var groupMembershipMessage = NotificationType.GroupAssignment.ToNotification<EntryGroupAssignmentEmailMessage>();
-                    groupMembershipMessage.EntryName = source.CanonicalName;
-                    emailMessage = groupMembershipMessage;
+                    var groupMemberAssignedMessage = NotificationType.Assign.ToNotification<EntryAssignedEmailMessage>();
+                    groupMemberAssignedMessage.EntryName = source.CanonicalName;
+                    emailMessage = groupMemberAssignedMessage;
                     break;
                 case NotificationType.PasswordChange:
                     notification.Action = ActiveDirectoryObjectAction.SetPassword;
