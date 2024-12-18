@@ -191,7 +191,8 @@ namespace BLAZAM.Services.Background
                     notificationBody += _appLocalization["was removed from"] + " <a href=\"" + target.SearchUri + "\" class=\"mud-typography mud-link mud-primary-text mud-link-underline-hover mud-typography-caption\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + time;
 
                     var groupMemberRemovedMessage = NotificationType.Unassign.ToNotification<EntryUnassignedEmailMessage>();
-                    groupMemberRemovedMessage.EntryName = source.CanonicalName;
+                    groupMemberRemovedMessage.EntryName = source?.CanonicalName;
+                    groupMemberRemovedMessage.GroupName = target?.CanonicalName;
                     emailMessage = groupMemberRemovedMessage;
                     break;
                 case NotificationType.Assign:
@@ -201,7 +202,9 @@ namespace BLAZAM.Services.Background
                     notificationBody += _appLocalization["was assigned to"] + " <a href=\"" + target.SearchUri + "\" class=\"mud-typography mud-link mud-primary-text mud-link-underline-hover mud-typography-caption\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + time;
 
                     var groupMemberAssignedMessage = NotificationType.Assign.ToNotification<EntryAssignedEmailMessage>();
-                    groupMemberAssignedMessage.EntryName = source.CanonicalName;
+                    groupMemberAssignedMessage.EntryName = source?.CanonicalName;
+                    groupMemberAssignedMessage.GroupName = target?.CanonicalName;
+
                     emailMessage = groupMemberAssignedMessage;
                     break;
                 case NotificationType.PasswordChange:
