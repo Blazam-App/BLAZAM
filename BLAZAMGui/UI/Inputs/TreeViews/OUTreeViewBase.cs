@@ -17,7 +17,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         protected ADOrganizationalUnit TopLevel;
         private IADOrganizationalUnit? _startingSelectedNode;
         private IDirectoryEntryAdapter? _selectedEntry;
-
+        protected MudTreeView<IDirectoryEntryAdapter>? treeView;
         [Parameter]
         public bool StartRootExpanded { get; set; } = true;
 
@@ -60,26 +60,31 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 if (value == _selectedEntry) return;
                 if (value != null)
                 {
+                    var firstSet = true;
+                    if (_selectedEntry != null)
+                        firstSet = false;
+                        
                     var cache = _selectedEntry;
 
                     _selectedEntry = value;
                     if (cache == null && RootOU.Count > 0 && value == RootOU.First()) return;
 
-
+                    
                     InvokeAsync(() => { SelectedEntryChanged.InvokeAsync(value); });
+            
 
-
-                    //if (TopLevel == null)
-                    //    OnInitializedAsync();
-
-                    if (RootOU.Count > 0)
-                        OpenToSelected();
+                    
+                    //if (RootOU.Count > 0 && firstSet)
+                    //    OpenToSelected();
 
                 }
             }
 
         }
-
+        protected Color GetIconColor(TreeItemData<IDirectoryEntryAdapter>context)
+        {
+            return context.Selected == true ? Color.Primary : Color.Default;
+        }
         [Parameter]
         public EventCallback<IDirectoryEntryAdapter> SelectedEntryChanged { get; set; }
         /// <summary>
@@ -124,23 +129,13 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         {
             await Task.Run(() =>
             {
-
-                //ApplicationBaseOUs = Directory.OUs.FindSubOusByDN(null);
-
-
                 if (RootOU is null || RootOU.Count < 1)
                 {
                     TopLevel = new ADOrganizationalUnit();
                     TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
                     _ = TopLevel.SubOUs;
                     var TopLevelList = new List<IDirectoryEntryAdapter>() { TopLevel };
-                    // RootOU = new HashSet<IDirectoryEntryAdapter>() { TopLevel as IDirectoryEntryAdapter };
                     RootOU = TopLevelList.ToTreeItemData();
-                }
-                if (StartingSelectedOU == null)
-                {
-                    //StartingSelectedOU = TopLevel;
-
                 }
 
                 OpenToSelected();
@@ -186,6 +181,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                    
                         while (openThis != null)
                         {
+                            
                             openThis.Children = GetChildren(openThis);
                             var child = openThis.Children.Where(
                                 c => SelectedEntry.DN.Contains(c.Value.DN)
@@ -193,7 +189,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                                                             ).FirstOrDefault();
                             if (child != null)
                             {
-
+                                
                                 child.Expanded = true;
 
                                 openThis = child;
