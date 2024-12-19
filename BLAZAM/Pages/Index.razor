@@ -77,6 +77,7 @@
             {
                 if (Monitor.AppReady == ServiceConnectionState.Up)
                 {
+                    waitingForLoadToComplete = false;
                     await Task.Delay(2500); // Initial delay
                     Nav.NavigateTo("/install", true);
                 }
@@ -95,7 +96,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Monitor.OnAppReadyChanged += AppReady;
+        //Monitor.OnAppReadyChanged += AppReady;
 
     }
     private void AppReady(ServiceConnectionState newStatus)
