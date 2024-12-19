@@ -1,7 +1,7 @@
 # BLAZAM
 Proudly serving
 
-![image](https://github.com/user-attachments/assets/32c47f17-cd57-47a1-b029-b3c19900d429)
+![image](https://github.com/user-attachments/assets/cae7fc08-2036-4f44-a948-11a8f74fa929)
 
 
 ## Version 1.0.0 Release Notice
