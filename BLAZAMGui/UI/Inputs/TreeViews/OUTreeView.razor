@@ -5,7 +5,9 @@
 <MudTreeView T="IDirectoryEntryAdapter"
              ServerData="GetOUChildrenAsync"
              Items="RootOU"
+             @ref=treeView
              Dense="true"
+             SelectionMode="SelectionMode.SingleSelection"
              Hover="true"
              MaxHeight="400px"
              Color="Color.Primary"
@@ -18,7 +20,7 @@
                          @bind-Activated=context.Selected
                          Text="@context.Value?.CanonicalName"
                          Icon="@Icons.Material.Filled.Folder"
-                         IconColor="@(context.Selected==true?Color.Primary:Color.Default)"
+                         IconColor=@(GetIconColor(context))
                          Class="minw-max w-100"
                          CanExpand=@(context.Value is IADOrganizationalUnit)
                          Context="treeContext"

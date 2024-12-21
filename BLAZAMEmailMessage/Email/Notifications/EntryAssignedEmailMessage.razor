@@ -7,7 +7,7 @@
     </EmailTemplateHeader>
    
     <EmailTemplateBody>
-    @EntryName @AppLocalization["has been assigned to"]) 
+    @EntryName @AppLocalization["has been assigned to"] @GroupName
     <br/>
    
    
@@ -17,11 +17,15 @@
 @code{
     [Parameter]
     public string EntryName { get; set; }
- 
-    public override string Render() => new ComponentRenderer<EntryUnassignedEmailMessage>()
+
+    [Parameter]
+    public string GroupName { get; set; }
+    public override string Render() => new ComponentRenderer<EntryAssignedEmailMessage>()
             .UseLayout<DefaultEmailLayout>()
             .AddServiceProvider(ApplicationInfo.services)
-            .Set(c => c.EntryName, EntryName).Render();
+            .Set(c => c.EntryName, EntryName)
+
+            .Set(c => c.GroupName, GroupName).Render();
 }
 
 
